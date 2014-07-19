@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+
+    <import resource="classpath:/dss_applicationContext_cxf.xml"/>
+
+    <import resource="classpath:spring/applicationContext-handler.xml"/>
+
+    <context:annotation-config/>
+    <context:component-scan base-package="eu.europa.ec.markt.dss"/>
+    <context:property-placeholder location="classpath:datasource.properties"/>
+
+
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:structure.sql"/>
+        <jdbc:script location="classpath:load.sql"/>
+    </jdbc:initialize-database>
+
+    <!-- The TrustedLists are reloaded every minute -->
+    <bean id="tlReload"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="trustedListSource"/>
+        <property name="targetMethod" value="refresh"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="tlReload"/>
+        <property name="startDelay" value="6000"/>
+        <property name="repeatInterval" value="3600000"/>
+    </bean>
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          destroy-method="destroy">
+        <property name="triggers">
+            <list>
+                <ref bean="simpleTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list merge="true">
+                <value>classpath:i18n/application</value>
+                <value>classpath:i18n/policy</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>

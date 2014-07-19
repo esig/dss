@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>sd-dss</artifactId>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+	    <version>4.1.0</version>
+        <relativePath>../..</relativePath>
+    </parent>
+
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>sscd-mocca-adapter</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>at.gv.egiz</groupId>
+            <artifactId>smcc</artifactId>
+            <version>1.3.8-signed</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dss-spi</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                META-INF/**/*,javax/servlet/**/*,junit/**/*,org/apache/log4j/**/*,org/bouncycastle/**/*,org/junit/**/*,org/springframework/**/*
+                            </excludes>
+                            <includes>**/*</includes>
+                            <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                    <type>JKS</type>
+                    <keystore>src/sign.jks</keystore>
+                    <alias>dss</alias>
+                    <storepass>password</storepass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>ARHS</id>
+            <name>ARHS Maven Repository</name>
+            <url>http://maven.aris-lux.lan/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+</project>

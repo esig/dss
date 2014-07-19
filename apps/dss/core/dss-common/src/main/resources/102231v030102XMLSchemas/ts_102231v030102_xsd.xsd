@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--                  ****** NOTICE ******
+This document is part of ETSI TS 102 231. In the event that any
+part of this document in conflict with the text of TS 102 231 
+then that text shall prevail as the authoritative source
+-->
+<xsd:schema targetNamespace="http://uri.etsi.org/02231/v2#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:tsl="http://uri.etsi.org/02231/v2#" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <!-- Imports -->
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+    <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#"
+                schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd"/>
+    <!-- Begin auxiliary types -->
+    <!--InternationalNamesType-->
+    <xsd:complexType name="InternationalNamesType">
+        <xsd:sequence>
+            <xsd:element name="Name" type="tsl:MultiLangNormStringType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="MultiLangNormStringType">
+        <xsd:simpleContent>
+            <xsd:extension base="tsl:NonEmptyNormalizedString">
+                <xsd:attribute ref="xml:lang" use="required"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="MultiLangStringType">
+        <xsd:simpleContent>
+            <xsd:extension base="tsl:NonEmptyString">
+                <xsd:attribute ref="xml:lang" use="required"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="NonEmptyString">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="NonEmptyNormalizedString">
+        <xsd:restriction base="xsd:normalizedString">
+            <xsd:minLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!-- AddressType -->
+    <xsd:complexType name="AddressType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:PostalAddresses"/>
+            <xsd:element ref="tsl:ElectronicAddress"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!--PostalAddressList Type-->
+    <xsd:element name="PostalAddresses" type="tsl:PostalAddressListType"/>
+    <xsd:complexType name="PostalAddressListType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:PostalAddress" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!--PostalAddress Type-->
+    <xsd:element name="PostalAddress" type="tsl:PostalAddressType"/>
+    <xsd:complexType name="PostalAddressType">
+        <xsd:sequence>
+            <xsd:element name="StreetAddress" type="tsl:NonEmptyString"/>
+            <xsd:element name="Locality" type="tsl:NonEmptyString"/>
+            <xsd:element name="StateOrProvince" type="tsl:NonEmptyString" minOccurs="0"/>
+            <xsd:element name="PostalCode" type="tsl:NonEmptyString" minOccurs="0"/>
+            <xsd:element name="CountryName" type="tsl:NonEmptyString"/>
+        </xsd:sequence>
+        <xsd:attribute ref="xml:lang" use="required"/>
+    </xsd:complexType>
+    <!--ElectronicAddressType-->
+    <xsd:element name="ElectronicAddress" type="tsl:ElectronicAddressType"/>
+    <xsd:complexType name="ElectronicAddressType">
+        <xsd:sequence>
+            <xsd:element name="URI" type="tsl:NonEmptyURIType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- Types for extensions in TSL -->
+    <xsd:complexType name="AnyType" mixed="true">
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+            <xsd:any processContents="lax"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="Extension" type="tsl:ExtensionType"/>
+    <xsd:complexType name="ExtensionType">
+        <xsd:complexContent>
+            <xsd:extension base="tsl:AnyType">
+                <xsd:attribute name="Critical" type="xsd:boolean" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ExtensionsListType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:Extension" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!--NonEmptyURIType-->
+    <xsd:simpleType name="NonEmptyURIType">
+        <xsd:restriction base="xsd:anyURI">
+            <xsd:minLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!--NonEmptyURIType with language indication-->
+    <xsd:complexType name="NonEmptyMultiLangURIType">
+        <xsd:simpleContent>
+            <xsd:extension base="tsl:NonEmptyURIType">
+                <xsd:attribute ref="xml:lang" use="required"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <!--List of NonEmptyURIType with language indication-->
+    <xsd:complexType name="NonEmptyMultiLangURIListType">
+        <xsd:sequence>
+            <xsd:element name="URI" type="tsl:NonEmptyMultiLangURIType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!--List of NonEmptyURIType-->
+    <xsd:complexType name="NonEmptyURIListType">
+        <xsd:sequence>
+            <xsd:element name="URI" type="tsl:NonEmptyURIType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- End auxiliary types -->
+    <!-- ROOT Element -->
+    <xsd:element name="TrustServiceStatusList" type="tsl:TrustStatusListType"/>
+    <!-- Trust Status List Type Definition -->
+    <xsd:complexType name="TrustStatusListType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:SchemeInformation"/>
+            <xsd:element ref="tsl:TrustServiceProviderList" minOccurs="0"/>
+            <xsd:element ref="ds:Signature" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="TSLTag" type="tsl:TSLTagType" use="required"/>
+        <xsd:attribute name="Id" type="xsd:ID" use="optional"/>
+    </xsd:complexType>
+    <!-- TSLTagType -->
+    <xsd:simpleType name="TSLTagType">
+        <xsd:restriction base="xsd:anyURI">
+            <xsd:enumeration value="http://uri.etsi.org/02231/TSLTag"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!-- TrustServiceProviderListType-->
+    <xsd:element name="TrustServiceProviderList" type="tsl:TrustServiceProviderListType"/>
+    <xsd:complexType name="TrustServiceProviderListType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:TrustServiceProvider" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- TSL Scheme Information -->
+    <xsd:element name="SchemeInformation" type="tsl:TSLSchemeInformationType"/>
+    <xsd:complexType name="TSLSchemeInformationType">
+        <xsd:sequence>
+            <xsd:element name="TSLVersionIdentifier" type="xsd:integer" fixed="3"/>
+            <xsd:element name="TSLSequenceNumber" type="xsd:positiveInteger"/>
+            <xsd:element ref="tsl:TSLType"/>
+            <xsd:element ref="tsl:SchemeOperatorName"/>
+            <xsd:element name="SchemeOperatorAddress" type="tsl:AddressType"/>
+            <xsd:element ref="tsl:SchemeName"/>
+            <xsd:element ref="tsl:SchemeInformationURI"/>
+            <xsd:element name="StatusDeterminationApproach" type="tsl:NonEmptyURIType"/>
+            <xsd:element ref="tsl:SchemeTypeCommunityRules" minOccurs="0"/>
+            <xsd:element ref="tsl:SchemeTerritory" minOccurs="0"/>
+            <xsd:element ref="tsl:PolicyOrLegalNotice" minOccurs="0"/>
+            <xsd:element name="HistoricalInformationPeriod" type="xsd:nonNegativeInteger"/>
+            <xsd:element ref="tsl:PointersToOtherTSL" minOccurs="0"/>
+            <xsd:element name="ListIssueDateTime" type="xsd:dateTime"/>
+            <xsd:element ref="tsl:NextUpdate"/>
+            <xsd:element ref="tsl:DistributionPoints" minOccurs="0"/>
+            <xsd:element name="SchemeExtensions" type="tsl:ExtensionsListType" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="TSLType" type="tsl:NonEmptyURIType"/>
+    <xsd:element name="SchemeOperatorName" type="tsl:InternationalNamesType"/>
+    <xsd:element name="SchemeName" type="tsl:InternationalNamesType"/>
+    <xsd:element name="SchemeInformationURI" type="tsl:NonEmptyMultiLangURIListType"/>
+    <xsd:element name="SchemeTypeCommunityRules" type="tsl:NonEmptyURIListType"/>
+    <!-- SchemeTerritory -->
+    <xsd:element name="SchemeTerritory" type="tsl:SchemeTerritoryType"/>
+    <xsd:simpleType name="SchemeTerritoryType">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="2"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!-- Policy or Legal Notice -->
+    <xsd:element name="PolicyOrLegalNotice" type="tsl:PolicyOrLegalnoticeType"/>
+    <xsd:complexType name="PolicyOrLegalnoticeType">
+        <xsd:choice>
+            <xsd:element name="TSLPolicy" type="tsl:NonEmptyMultiLangURIType" maxOccurs="unbounded"/>
+            <xsd:element name="TSLLegalNotice" type="tsl:MultiLangStringType" maxOccurs="unbounded"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:element name="NextUpdate" type="tsl:NextUpdateType"/>
+    <xsd:complexType name="NextUpdateType">
+        <xsd:sequence>
+            <xsd:element name="dateTime" type="xsd:dateTime" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!--OtherTSLPointersType-->
+    <xsd:element name="PointersToOtherTSL" type="tsl:OtherTSLPointersType"/>
+    <xsd:complexType name="OtherTSLPointersType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:OtherTSLPointer" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="OtherTSLPointer" type="tsl:OtherTSLPointerType"/>
+    <xsd:complexType name="OtherTSLPointerType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:ServiceDigitalIdentities" minOccurs="0"/>
+            <xsd:element name="TSLLocation" type="tsl:NonEmptyURIType"/>
+            <xsd:element ref="tsl:AdditionalInformation" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="ServiceDigitalIdentities" type="tsl:ServiceDigitalIdentityListType"/>
+    <xsd:complexType name="ServiceDigitalIdentityListType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:ServiceDigitalIdentity" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="AdditionalInformation" type="tsl:AdditionalInformationType"/>
+    <xsd:complexType name="AdditionalInformationType">
+        <xsd:choice maxOccurs="unbounded">
+            <xsd:element name="TextualInformation" type="tsl:MultiLangStringType"/>
+            <xsd:element name="OtherInformation" type="tsl:AnyType"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <!--DistributionPoints element-->
+    <xsd:element name="DistributionPoints" type="tsl:ElectronicAddressType"/>
+    <!-- TSPType -->
+    <xsd:element name="TrustServiceProvider" type="tsl:TSPType"/>
+    <xsd:complexType name="TSPType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:TSPInformation"/>
+            <xsd:element ref="tsl:TSPServices"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- TSPInformationType -->
+    <xsd:element name="TSPInformation" type="tsl:TSPInformationType"/>
+    <xsd:complexType name="TSPInformationType">
+        <xsd:sequence>
+            <xsd:element name="TSPName" type="tsl:InternationalNamesType"/>
+            <xsd:element name="TSPTradeName" type="tsl:InternationalNamesType" minOccurs="0"/>
+            <xsd:element name="TSPAddress" type="tsl:AddressType"/>
+            <xsd:element name="TSPInformationURI" type="tsl:NonEmptyMultiLangURIListType"/>
+            <xsd:element name="TSPInformationExtensions" type="tsl:ExtensionsListType" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- TSP Services-->
+    <xsd:element name="TSPServices" type="tsl:TSPServicesListType"/>
+    <xsd:complexType name="TSPServicesListType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:TSPService" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="TSPService" type="tsl:TSPServiceType"/>
+    <xsd:complexType name="TSPServiceType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:ServiceInformation"/>
+            <xsd:element ref="tsl:ServiceHistory" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- TSPServiceInformationType -->
+    <xsd:element name="ServiceInformation" type="tsl:TSPServiceInformationType"/>
+    <xsd:complexType name="TSPServiceInformationType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:ServiceTypeIdentifier"/>
+            <xsd:element name="ServiceName" type="tsl:InternationalNamesType"/>
+            <xsd:element ref="tsl:ServiceDigitalIdentity"/>
+            <xsd:element ref="tsl:ServiceStatus"/>
+            <xsd:element name="StatusStartingTime" type="xsd:dateTime"/>
+            <xsd:element name="SchemeServiceDefinitionURI" type="tsl:NonEmptyMultiLangURIListType" minOccurs="0"/>
+            <xsd:element ref="tsl:ServiceSupplyPoints" minOccurs="0"/>
+            <xsd:element name="TSPServiceDefinitionURI" type="tsl:NonEmptyMultiLangURIListType" minOccurs="0"/>
+            <xsd:element name="ServiceInformationExtensions" type="tsl:ExtensionsListType" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- Service status -->
+    <xsd:element name="ServiceStatus" type="tsl:NonEmptyURIType"/>
+    <!-- Type for Service Supply Points -->
+    <xsd:element name="ServiceSupplyPoints" type="tsl:ServiceSupplyPointsType"/>
+    <xsd:complexType name="ServiceSupplyPointsType">
+        <xsd:sequence maxOccurs="unbounded">
+            <xsd:element name="ServiceSupplyPoint" type="tsl:NonEmptyURIType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- TSPServiceIdentifier -->
+    <xsd:element name="ServiceTypeIdentifier" type="tsl:NonEmptyURIType"/>
+    <!-- DigitalIdentityType  -->
+    <xsd:element name="ServiceDigitalIdentity" type="tsl:DigitalIdentityListType"/>
+    <xsd:complexType name="DigitalIdentityListType">
+        <xsd:sequence>
+            <xsd:element name="DigitalId" type="tsl:DigitalIdentityType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DigitalIdentityType">
+        <xsd:choice>
+            <xsd:element name="X509Certificate" type="xsd:base64Binary"/>
+            <xsd:element name="X509SubjectName" type="xsd:string"/>
+            <xsd:element ref="ds:KeyValue"/>
+            <xsd:element name="X509SKI" type="xsd:base64Binary"/>
+            <xsd:element name="Other" type="tsl:AnyType"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <!-- ServiceHistory element-->
+    <xsd:element name="ServiceHistory" type="tsl:ServiceHistoryType"/>
+    <xsd:complexType name="ServiceHistoryType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:ServiceHistoryInstance" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="ServiceHistoryInstance" type="tsl:ServiceHistoryInstanceType"/>
+    <xsd:complexType name="ServiceHistoryInstanceType">
+        <xsd:sequence>
+            <xsd:element ref="tsl:ServiceTypeIdentifier"/>
+            <xsd:element name="ServiceName" type="tsl:InternationalNamesType"/>
+            <xsd:element ref="tsl:ServiceDigitalIdentity"/>
+            <xsd:element ref="tsl:ServiceStatus"/>
+            <xsd:element name="StatusStartingTime" type="xsd:dateTime"/>
+            <xsd:element name="ServiceInformationExtensions" type="tsl:ExtensionsListType" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- Elements and types for Extensions -->
+    <!-- Extensions children of tsl:VaExtension-->
+    <!-- Element ExpiredCertsRevocationInfo -->
+    <xsd:element name="ExpiredCertsRevocationInfo" type="xsd:dateTime"/>
+    <!-- Element additionalServiceInformation -->
+    <xsd:element name="AdditionalServiceInformation" type="tsl:AdditionalServiceInformationType"/>
+    <xsd:complexType name="AdditionalServiceInformationType">
+        <xsd:sequence>
+            <xsd:element name="URI" type="tsl:NonEmptyMultiLangURIType"/>
+            <xsd:element name="InformationValue" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="OtherInformation" type="tsl:AnyType" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

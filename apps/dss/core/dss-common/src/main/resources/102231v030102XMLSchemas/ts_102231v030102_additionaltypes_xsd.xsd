@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--                  ****** NOTICE ******
+This document is part of ETSI TS 102 231. In the event that any
+part of this document in conflict with the text of TS 102 231 
+then that text shall prevail as the authoritative source
+-->
+<schema targetNamespace="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tsl="http://uri.etsi.org/02231/v2#"
+        xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:tslx="http://uri.etsi.org/02231/v2/additionaltypes#"
+        xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <import namespace="http://uri.etsi.org/02231/v2#" schemaLocation="http://uri.etsi.org/02231/v3.1.2/tsl.xsd"/>
+    <import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"/>
+    <element name="MimeType" type="xsd:string"/>
+    <element name="X509CertificateLocation" type="tsl:NonEmptyURIType"/>
+    <element name="PublicKeyLocation" type="tsl:NonEmptyURIType"/>
+    <element name="ExtendedKeyUsage" type="tslx:ExtendedKeyUsageType"/>
+    <complexType name="ExtendedKeyUsageType">
+        <sequence maxOccurs="unbounded">
+            <element name="KeyPurposeId" type="xades:ObjectIdentifierType"/>
+        </sequence>
+    </complexType>
+    <element name="TakenOverBy" type="tslx:TakenOverByType"/>
+    <complexType name="TakenOverByType">
+        <sequence>
+            <element name="URI" type="tsl:NonEmptyMultiLangURIType"/>
+            <element name="TSPName" type="tsl:InternationalNamesType"/>
+            <element ref="tsl:SchemeOperatorName"/>
+            <element ref="tsl:SchemeTerritory"/>
+            <element name="OtherQualifier" type="tsl:AnyType" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+    <element name="CertSubjectDNAttribute" type="tslx:CertSubjectDNAttributeType"/>
+    <complexType name="CertSubjectDNAttributeType">
+        <sequence maxOccurs="unbounded">
+            <element name="AttributeOID" type="xades:ObjectIdentifierType"/>
+        </sequence>
+    </complexType>
+</schema>

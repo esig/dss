@@ -1,0 +1,105 @@
+# Release #
+
+The release contains the current snapshot of the future version 3.0 of DSS as of 18/12/2012.
+Note, that this is partially a work in progress and not fully (re-) tested although all JUnit tests are successful.
+
+The release consists of the following artefacts:
+a) dss-package-3.0-SNAPSHOT-dss-tlmanager.zip
+- The sources of the several DSS components
+- a Tomcat 6 bundle with a Oracle JDK 6
+- The DSS Web archive application
+- The standalone TL-Manager application 
+b) dss-package-3.0-SNAPSHOT-dss-mocca.zip
+Sources of the MOCCA SSCD adapter.
+
+# Changes #
+* DSS-Applet 
+  * Refactoring to MVC pattern. Full separation in layers.
+  * Use of JGoodies Form & Bindings to simplify the view layer.
+  * PKCS#12 
+    * [ADD] Accept file extension .p12 and .pxf .
+  * Improved configurability
+    * [ADD] parameter for DSS WebApp services
+      * 'service_url'
+        - mandatory
+        - configurable by the webapp
+        - e.g http://localhost:8080/dss-test/services/
+    * [ADD] parameter for pcks11 file
+      * 'pkcs11_file'
+        - optional
+        - set by default the path of pkcs11 file 
+        - e.g c:\repo\pkcs11.dll
+    * [ADD] parameter for pkcs12 file
+      * 'pkcs12_file'
+        - optional 
+        - set by default the path of pkcs12 file (accept file extension .p12 or .pxf)
+        - e.g c:\repo\pkcs12.p12 or c:\repo\pkcs12.pxf
+    * [ADD] parameter for rfc3370
+      * 'strict_rfc3370'
+        - optional
+        - use the rfc3370 SignatureToken implementation ( deprecated )
+        - true / false
+    * [ADD] parameter for signature format ( CAdES / XAdES / PAdES / ASIC-S )
+      * 'signature_format'
+        - optional
+        - set by default the signature format level value 
+        - e.g. CAdES / XAdES / PAdES / ASiC-S
+    * [ADD] parameter for signature packaging 
+      * 'signature_packaging' 
+        - optional
+        - set by default the signature packaging value
+        - e.g. ENVELOPING / ENVELOPED / DETACHED
+    * [ADD] parameter for level of signature (CAdES-BES, CAdES-EPES, ...)
+      * 'signature_level' 
+        - optional
+        - set by default the signature level value
+        - e.g. 
+          XAdES_BES / XAdES_EPES / XAdES_T / XAdES_C / XAdES_X / XAdES_XL / XAdES_A
+          CAdES_BES / CAdES_EPES / CAdES_T / CAdES_C / CAdES_X / CAdES_XL / CAdES_A
+          PAdES_BES / PAdES_EPES / PAdES_LTV
+          ASiC_S_BES / ASiC_S_EPES / ASiC_S_T
+    * [ADD] parameter for SSCD API  token_type (MSCAPI, PKCS11, PKCS12, MOCCA)
+      * 'token_type'
+        - optional
+        - Set by default the signature token value. If it set , the associated screen is ignored.
+        - true / false
+    * [ADD] parameter for (provisional) Signature Policy  
+      * 'check_policy'
+        - optional 
+        - a list of values separated by ";" that contains the fully qualified name of "policy checker clas" and the "checkLevel" (YELLOW/RED).
+        - e.g. eu.europa.ec.markt.dss.checks.policy.LinkedLOTLChecker,YELLOW; eu.europa.ec.markt.dss.checks.policy.ProducedWithSSCDChecker,RED  
+    * [ADD] parameter for signature policy algorithm
+      * 'signature_policy_algo'
+        - optional
+        - e.g. SHA1
+    * [ADD] parameters for signature policy hash
+      * 'signature_policy_hash'
+        - optional
+  * Signature policy 
+    * [FIX] aligned with the specification. The signature policy is visible only if the signature level is different than BES level. 
+  *  Validation 
+    * [ADD] Report simplification (ongoing)
+    * [ADD] Validation policy report (ongoing)
+* DSS-Web 
+  * New HTML5 Design 
+  * Rewritten with Spring MVC 
+  * Configuration
+    * [ADD] secured administration area
+    * [ADD] preferences administration page
+    * [ADD] proxy adminstration page
+    * [ADD] Trusted List administration page
+    * [ADD] Signature Policy administration page
+    * [ADD] Algorithm Constraints administration page
+    * [ADD] default data storage in a embedded database for the configuration
+* DSS Core
+  * General 
+    * Refactoring and code improvements (ongoing)
+  * ASiC-S 
+    * [ADD] possibility to add a comment field in the ZIP header used to identify the type of the data object within the container
+    * [FIX] root element of the signature uses the recommended format "asic:XAdESSignatures" (ETSI TS 1020918 v1.2.1 (2012-02)
+    * [FIX] mimeType zip entry un-compressed and un-encrypted
+* DSS Document
+  * Refactoring and code improvements (ongoing)
+* DSS Checker
+  * [ADD] maven module for validation policy.
+  * [ADD] draft of several validation policy checker implementations. (ongoing)

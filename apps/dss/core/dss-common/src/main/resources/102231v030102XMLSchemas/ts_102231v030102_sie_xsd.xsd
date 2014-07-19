@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--                  ****** NOTICE ******
+This document is part of ETSI TS 102 231. In the event that any
+part of this document in conflict with the text of TS 102 231 
+then that text shall prevail as the authoritative source
+-->
+<schema targetNamespace="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:tsl="http://uri.etsi.org/02231/v2#"
+        xmlns:tns="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"/>
+    <element name="Qualifications" type="tns:QualificationsType"/>
+    <complexType name="QualificationsType">
+        <sequence maxOccurs="unbounded">
+            <element name="QualificationElement" type="tns:QualificationElementType"/>
+        </sequence>
+    </complexType>
+    <complexType name="QualificationElementType">
+        <sequence>
+            <element name="Qualifiers" type="tns:QualifiersType"/>
+            <element name="CriteriaList" type="tns:CriteriaListType"/>
+        </sequence>
+    </complexType>
+    <complexType name="CriteriaListType">
+        <annotation>
+            <documentation>Please first try to use the CriteriaList before doing the OtherCriteria extension point.</documentation>
+        </annotation>
+        <sequence>
+            <element name="KeyUsage" type="tns:KeyUsageType" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="PolicySet" type="tns:PoliciesListType" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="CriteriaList" type="tns:CriteriaListType" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="Description" type="xsd:string" minOccurs="0"/>
+            <element name="otherCriteriaList" type="xades:AnyType" minOccurs="0"/>
+        </sequence>
+        <attribute name="assert">
+            <simpleType>
+                <restriction base="xsd:string">
+                    <enumeration value="all"/>
+                    <enumeration value="atLeastOne"/>
+                    <enumeration value="none"/>
+                </restriction>
+            </simpleType>
+        </attribute>
+    </complexType>
+    <complexType name="QualifiersType">
+        <sequence maxOccurs="unbounded">
+            <element name="Qualifier" type="tns:QualifierType"/>
+        </sequence>
+    </complexType>
+    <complexType name="QualifierType">
+        <attribute name="uri" type="anyURI"/>
+    </complexType>
+    <complexType name="PoliciesListType">
+        <sequence maxOccurs="unbounded">
+            <element name="PolicyIdentifier" type="xades:ObjectIdentifierType"/>
+        </sequence>
+    </complexType>
+    <complexType name="KeyUsageType">
+        <sequence maxOccurs="9">
+            <element name="KeyUsageBit" type="tns:KeyUsageBitType"/>
+        </sequence>
+    </complexType>
+    <complexType name="KeyUsageBitType">
+        <simpleContent>
+            <extension base="xsd:boolean">
+                <attribute name="name">
+                    <simpleType>
+                        <restriction base="xsd:string">
+                            <enumeration value="digitalSignature"/>
+                            <enumeration value="nonRepudiation"/>
+                            <enumeration value="keyEncipherment"/>
+                            <enumeration value="dataEncipherment"/>
+                            <enumeration value="keyAgreement"/>
+                            <enumeration value="keyCertSign"/>
+                            <enumeration value="crlSign"/>
+                            <enumeration value="encipherOnly"/>
+                            <enumeration value="decipherOnly"/>
+                        </restriction>
+                    </simpleType>
+                </attribute>
+            </extension>
+        </simpleContent>
+    </complexType>
+</schema>

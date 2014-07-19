@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<jaxb:bindings 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	version="2.1" jaxb:extensionBindingPrefixes="xjc">
+	
+  <jaxb:globalBindings localScoping="toplevel"/>
+  
+  <jaxb:bindings schemaLocation="DiagnosticData.xsd" node="/xs:schema">
+    <jaxb:schemaBindings>
+      <jaxb:nameXmlTransform>
+        <jaxb:typeName prefix="Xml"/>
+        <jaxb:anonymousTypeName prefix="Xml"/>
+      </jaxb:nameXmlTransform>
+    </jaxb:schemaBindings>
+  </jaxb:bindings>
+  
+</jaxb:bindings>

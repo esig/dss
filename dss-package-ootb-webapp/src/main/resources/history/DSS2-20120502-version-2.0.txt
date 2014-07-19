@@ -1,0 +1,4 @@
+- Inclusion of support for Elliptic Curve Digital Signature Algorithm
+- Inclusion of support for Associated Signature Containers (ASiC) following ETSI TS 102 918
+- Possibility to export the validation results to PDF in PDF/A
+- Enhancements to DSS for the inclusion of smart cards used in Member States, in particular the integration of MOCCA framework.

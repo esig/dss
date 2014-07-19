@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+	<id>dss-mocca</id>
+	<baseDirectory>mocca</baseDirectory>
+
+	<formats>
+		<format>zip</format>
+	</formats>
+
+	<fileSets>
+		<fileSet>
+			<directory>target/</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>dss-mocca-src.zip</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>../apps/sscd-mocca-adapter/target/</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>sscd-mocca-adapter-${project.version}.jar</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+
+</assembly>

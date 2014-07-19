@@ -1,0 +1,5 @@
+The dss-package version 4.0.1 is a minor bug fix.
+
+This version includes :
+- Correction of issues in packaging (related to MOCCA).
+- Correction of minor bug in TLManager.

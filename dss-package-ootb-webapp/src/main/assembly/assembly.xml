@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <id>dss-webapp-full</id>
+	<baseDirectory>/</baseDirectory>
+
+  <formats>
+		<format>zip</format>
+	</formats>
+
+  <fileSets>
+    <fileSet>
+      <directory>src/main/resources</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>readme.txt</include>
+        <include>DSS-Web.URL</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/resources/bin/32</directory>
+      <outputDirectory>/bin/32</outputDirectory>
+      <includes>
+        <include>startup.bat</include>
+        <include>shutdown.bat</include>
+        <include>tlmanager.bat</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/resources/bin/64</directory>
+      <outputDirectory>/bin/64</outputDirectory>
+      <includes>
+        <include>startup.bat</include>
+        <include>shutdown.bat</include>
+        <include>tlmanager.bat</include>
+      </includes>
+    </fileSet>
+		<fileSet>
+			<directory>target/bundle</directory>
+			<outputDirectory>/</outputDirectory>
+			<excludes>
+				<exclude>/tomcat/webapps/tomcat-users.xml</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/resources</directory>
+			<outputDirectory>/tomcat/conf</outputDirectory>
+			<includes>
+				<include>tomcat-users.xml</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/bundle/</directory>
+			<outputDirectory>/tomcat/webapps/</outputDirectory>
+			<includes>
+				<include>dss-webapp.war</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+
+</assembly>

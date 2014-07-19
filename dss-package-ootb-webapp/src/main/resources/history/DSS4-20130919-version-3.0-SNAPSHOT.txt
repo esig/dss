@@ -1,0 +1,10 @@
+The dss-package version 3.0-SNAPSHOT-20130919 is a work in progress.
+It is meant to early get feedback by the technical adviser of the DG MARKT - foremost on the design aspects.
+
+This version aims the implementation of :
+- The new validation policy with advanced report during the validation of an eSignature.
+- The customisation of the validation policy.
+- The new ETSI TSL standard in the TLManager.
+
+At the current stage, all features have been covered.
+However, this new version has not been fully tested yet. Minor bugs can remain and will be corrected for the version Submitted for Review.

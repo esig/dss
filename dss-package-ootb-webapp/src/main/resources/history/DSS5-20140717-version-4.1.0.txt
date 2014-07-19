@@ -1,0 +1,18 @@
+The dss-package version 4.1.0.
+
+This version includes :
+- Validation with warnings:
+- To give more flexibility to the process of validating a signature a new constraint level "WARN" was introduced. Now every constraint within the validation policy may not be blocking but considered as a simple warning.
+- Make ASiC-S signature handling multiple signatures:
+- This type of signature can contain a timestamp as a separate signature which must also be validated.
+- Make ASiC-S containers compatible with CAdES signature:
+- This type of container can contain a XAdES or CAdES kind of signature. The inclusion of this last one has been added.
+- Java 1.7 compatibility
+- Parallelise the information search to improve performance:
+- To accelerate the process of the signature validation, the issuer certificate and the revocation data are retrieved in parallel manner.
+- Manage the scope of signatures:
+- The validation report must include the indication of the scope of signature (if the whole document(s) is covered by signature)
+- Support plain signature:
+- The validation process must support the validation of non AdES signature.
+- Fix the validation of the signatures with the archive timestamp using the link to the TSL:
+- When validating a signature the validity of the associated service must be taken into account.

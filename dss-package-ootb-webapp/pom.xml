@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--
+    Execute with
+      mvn package
+    or (in case you have properly built DSS before)
+      mvn -o package -Dmaven.test.skip=true
+
+    It creates several items:
+      - dss-history
+      - dss-licences
+      - dss-src (including mocca)
+      - dss-webapp-full
+
+    These items are then zipped separately (in zips/) and then
+    finally aggregated in DSS-<version>-package-<timestamp>.zip.
+
+    Note: That in dss-src/pom.xml some modules are deactivated: sscd-mocca-adapter
+    -->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>sd-dss-app</artifactId>
+        <version>4.1.0</version>
+        <relativePath>../apps/dss</relativePath>
+    </parent>
+
+    <name>DSS Package: OOTB Web-Application</name>
+    <description>The out-of-the-box demo including history, licenses, sources and tomcat-based web-application (to manage digital signatures and Trusted Lists)</description>
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>dss-package-ootb-webapp</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>..</module>
+    </modules>
+
+    <properties>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-demo-webapp</artifactId>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+
+                                <!--history: -->
+                                <mkdir dir="target/dss-history"/>
+                                <copy todir="target/dss-history">
+                                    <fileset dir="src/main/resources/history"/>
+                                </copy>
+
+                                <!--licenses: -->
+                                <mkdir dir="target/dss-licences"/>
+                                <copy todir="target/dss-licences">
+                                    <fileset dir="../buildtools/license">
+                                        <include name="*"/>
+                                        <exclude name="classheader.txt"/>
+                                        <exclude name="fileheader.txt"/>
+                                    </fileset>
+                                </copy>
+
+                                <!--sources: -->
+                                <mkdir dir="target/dss-src"/>
+                                <copy todir="target/dss-src">
+                                    <fileset dir="../">
+                                        <include name="apps/dss/**/*"/>
+                                        <include name="apps/sscd-mocca-adapter/**/*"/>
+                                        <include name="pom.xml"/>
+                                        <exclude name="**/*.iml"/>
+                                        <exclude name="**/.project"/>
+                                        <exclude name="**/.settings/"/>
+                                        <exclude name="**/.classpath"/>
+                                        <exclude name="**/test/**"/>
+                                        <exclude name="**/target/**"/>
+                                    </fileset>
+                                </copy>
+                                <!--web-app: -->
+                                <mkdir dir="target/dss-webapp-full/"/>
+                                <copy todir="target/dss-webapp-full/">
+                                    <fileset dir="src/main/resources/">
+                                        <include name="readme.txt"/>
+                                        <include name="DSS-Web.URL"/>
+                                    </fileset>
+                                </copy>
+
+                                <!--web-app: create bin-->
+                                <mkdir dir="target/dss-webapp-full/bin/"/>
+                                <copy todir="target/dss-webapp-full/bin">
+                                    <fileset dir="src/main/resources/bin"/>
+                                </copy>
+
+                                <!--web-app: create java-->
+                                <mkdir dir="target/dss-webapp-full/java/"/>
+                                <unzip src="src/main/resources/java/java.zip" dest="target/dss-webapp-full/java"/>
+
+                                <!--web-app: create tomcat-->
+                                <unzip src="src/main/resources/tomcat.zip" dest="target/dss-webapp-full"/>
+                                <copy todir="target/dss-webapp-full/tomcat/conf">
+                                    <fileset dir="src/main/resources/">
+                                        <include name="tomcat-users.xml"/>
+                                    </fileset>
+                                </copy>
+                                <move todir="target/dss-webapp-full/tomcat/webapps">
+                                    <fileset dir="target/dss-webapp-full/">
+                                        <include name="dss-webapp.war"/>
+                                    </fileset>
+                                </move>
+
+                                <!--zip the created item directories-->
+                                <mkdir dir="target/zips/"/>
+                                <zip destfile="target/zips/dss-history.zip">
+                                    <zipfileset dir="target/dss-history/" prefix="dss-history"/>
+                                </zip>
+
+                                <zip destfile="target/zips/dss-licences.zip">
+                                    <zipfileset dir="target/dss-licences/" prefix="dss-licences"/>
+                                </zip>
+
+                                <zip destfile="target/zips/dss-src.zip">
+                                    <zipfileset dir="target/dss-src/" prefix="dss-src"/>
+                                </zip>
+
+                                <zip destfile="target/zips/dss-webapp-full.zip">
+                                    <zipfileset dir="target/dss-webapp-full/" prefix="dss-webapp-full"/>
+                                </zip>
+
+                                <echo file="target/zips/version.txt" append="false">
+                                    Project: ${project.name}
+                                    ${project.description}
+                                    Version: ${project.version}
+                                    Build date: ${maven.build.timestamp}
+                                </echo>
+
+                                <!--create the final zip-->
+                                <zip destfile="target/DSS-${project.version}-package-${maven.build.timestamp}.zip">
+                                    <zipfileset dir="target/zips/"/>
+                                </zip>
+
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>commons-net</groupId>
+                        <artifactId>commons-net</artifactId>
+                        <version>1.4.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-commons-net</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+                                    <artifactId>dss-demo-webapp</artifactId>
+                                    <type>war</type>
+                                    <outputDirectory>${project.build.directory}/dss-webapp-full/</outputDirectory>
+                                    <destFileName>dss-webapp.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

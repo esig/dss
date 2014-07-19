@@ -1,0 +1,5 @@
+SYSTEM "http://www.w3.org/2001/xml.xsd" "xml.xsd"
+SYSTEM "http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" "xmldsig-core-schema.xsd"
+PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "XMLSchema.dtd"
+SYSTEM "http://uri.etsi.org/01903/v1.3.2/XAdES.xsd" "XAdES.xsd"
+SYSTEM "http://uri.etsi.org/02231/v3.1.2/tsl.xsd" "ts_xsd.xsd"
