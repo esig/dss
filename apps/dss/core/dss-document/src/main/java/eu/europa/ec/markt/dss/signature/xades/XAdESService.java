@@ -20,6 +20,10 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import java.util.List;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import eu.europa.ec.markt.dss.DSSXMLUtils;
+import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 import org.apache.xml.security.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +41,9 @@ import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * XAdES implementation of DocumentSignatureService
@@ -143,6 +150,56 @@ public class XAdESService extends AbstractSignatureService {
 			return dssDocument;
 		}
 		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel().name());
+	}
+
+	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final String signatureId, final SignatureParameters parameters) throws DSSException {
+
+		if (parameters.getSignatureLevel() == null) {
+			throw new DSSNullException(SignatureParameters.class);
+		}
+
+		final SignatureTokenConnection signingToken = parameters.getSigningToken();
+
+		if (signingToken == null) {
+			throw new DSSNullException(SignatureTokenConnection.class);
+		}
+
+		parameters.getContext().setOperationKind(Operation.COUNTERSIGNING);
+		final XAdESLevelBaselineB profile = new XAdESLevelBaselineB(certificateVerifier);
+
+
+		final Document toCounterSignDom = DSSXMLUtils.buildDOM(toCounterSignDocument);
+		final NodeList signatures = toCounterSignDom.getElementsByTagName(XPathQueryHolder.XML_SIGNATURE);
+		Element signatureElement = null;
+		for (int i = 0; i < signatures.getLength(); i++) {
+			signatureElement = (Element) signatures.item(i);
+			if (signatureId.equals(signatureElement.getAttribute("Id"))) {
+				break;
+			}
+		}
+
+		if (signatureElement == null) {
+			throw new DSSNullException(Element.class);
+		}
+
+		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+		Element signatureValue = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
+
+		if (signatureValue == null) {
+			throw new DSSNullException(Element.class);
+		}
+
+		final byte[] dataToSign = DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.INCLUSIVE, signatureValue);
+		parameters.getContext().setProfile(profile);
+
+		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+		final DSSPrivateKeyEntry dssPrivateKeyEntry = parameters.getPrivateKeyEntry();
+		final byte[] counterSignatureValue = signingToken.sign(dataToSign, digestAlgorithm, dssPrivateKeyEntry);
+
+		//include obtained value (base64 encoded) in "toCounterSignDom" + add references
+		//return toCounterSign as DSSDocument
+
+		return null;
 	}
 
 	/**
