@@ -77,7 +77,7 @@ public class ProfileParameters {
      */
     public static enum Operation {
 
-        SIGNING, EXTENDING
+        SIGNING, EXTENDING, COUNTERSIGNING
     }
 
     /*
