@@ -10,9 +10,14 @@ public class TimestampInclude {
 
 	public TimestampInclude() {}
 
-    public TimestampInclude(String uri, String referencedData) {
+	public TimestampInclude(String uri, String referencedData) {
+		this.uri = uri;
+		this.referencedData = Boolean.parseBoolean(referencedData);
+	}
+
+    public TimestampInclude(String uri, boolean referencedData) {
         this.uri = uri;
-        this.referencedData = Boolean.parseBoolean(referencedData);
+        this.referencedData = referencedData;
     }
 
     public String getURI() {
