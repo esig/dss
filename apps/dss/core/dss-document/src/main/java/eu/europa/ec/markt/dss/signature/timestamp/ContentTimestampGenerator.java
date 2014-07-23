@@ -21,9 +21,12 @@
 package eu.europa.ec.markt.dss.signature.timestamp;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -171,16 +174,27 @@ public class ContentTimestampGenerator {
 		}
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		byte[] digest = parameters.getDigest();
+		List<TimestampInclude> timestampIncludes = new ArrayList<TimestampInclude>();
+
 		if (digest == null) {
 
 			for (final ContentTimestampReference reference : parameters.getReferences()) {
 
 				DSSUtils.write(reference.getData(), buffer);
+				TimestampInclude include = new TimestampInclude(reference.getUri(), new String(reference.getData()));
+				timestampIncludes.add(include);
 			}
 			digest = DSSUtils.digest(digestAlgorithm, buffer.toByteArray());
+		} else {
+			//At present time (21/07/2014), signatures generated with DSS only support one reference: signed-data-ref
+			//TODO: future versions - support of multiple references
+			TimestampInclude timestampInclude = new TimestampInclude("signed-data-ref", true);
+			timestampIncludes.add(timestampInclude);
 		}
+
 		final TimestampToken token = generateTimestampToken(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, digestAlgorithm, digest);
-		//token.setTimestampIncludes(parameters.getReferences());
+		token.setTimestampIncludes(timestampIncludes);
+
 		return token;
 	}
 
