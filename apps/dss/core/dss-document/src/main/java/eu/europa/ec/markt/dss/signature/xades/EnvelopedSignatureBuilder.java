@@ -78,6 +78,27 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		final DSSReference reference = references.get(0);
 
 		// <ds:Reference Id="xml_ref_id" URI="">
+		incorporateReference(reference);
+	}
+
+	/**
+	 * This method incorporates a given list of references in the DOM
+	 * @param references
+	 */
+	protected void incorporateReferences(List<DSSReference> references) {
+
+		for (DSSReference reference : references) {
+			incorporateReference(reference);
+		}
+	}
+
+	/**
+	 * This method incorporates a reference in the DOM
+	 * @param reference
+	 * @throws DSSException
+	 */
+	protected void incorporateReference(DSSReference reference) throws DSSException {
+
 		final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
 		referenceDom.setAttribute("Id", reference.getId());
 		referenceDom.setAttribute("URI", reference.getUri());
