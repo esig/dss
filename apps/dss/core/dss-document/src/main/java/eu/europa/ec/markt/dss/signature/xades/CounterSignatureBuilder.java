@@ -126,7 +126,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder implements XAdESSi
 	/**
 	 * This method incorporates a given countersignature in the current signature XML DOM.
 	 * TODO
-	 * @param signature
+	 * @param counterSignatureDocument the newly obtained signature, as a DSSDocument
+	 * @param counterSignedSignatureId the id of the signature that was countersigned
 	 */
 	private void incorporateCounterSignature(DSSDocument counterSignatureDocument, String counterSignedSignatureId) {
 
@@ -145,19 +146,25 @@ public class CounterSignatureBuilder extends ExtensionBuilder implements XAdESSi
 		//		Add DigestMethod
 		//		Add DigestValue
 		DSSReference csReference = new DSSReference();
-		csReference.setDigestMethod(signature.getDigestAlgorithm().getXmlId());
+//		csReference.setDigestMethod(signature.getDigestAlgorithm().getXmlId());
 		csReference.setId(""); //need to be "Reference-XXX" -> deterministic ID ?
 		csReference.setTransforms(null); //no idea what to put here ???
 		csReference.setType(xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE);
 		csReference.setUri(counterSignedSignatureId); //add "#" in front ?
 
 		//2. 	Need reference of type "http://uri.etsi.org/01903#SignedProperties", URI -> id of related SignedProperties
-		//		Add DigestMethod
 		//		Add DigestValue
+//		DSSReference spReference = new DSSReference();
+//		spReference.setDigestMethod();
+//		spReference.setType(xPathQueryHolder.XADES_SIGNED_PROPERTIES);
+//		spReference.setUri(); //Id of countersignature + "-SignedProperties" at end
+
 
 		//3. 	Need reference with URI -> id of related KeyInfo
-		//		Add DigestMethod
 		//		Add DigestValue
+//		DSSReference kiReference = new DSSReference();
+//		kiReference.setUri(); //Id of countersignature + "-KeyInfo" at end
+//		kiReference.setDigestMethod();
 
 		//build Countersignature element
 		//1. 	Build Signature element
