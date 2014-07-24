@@ -113,6 +113,8 @@ public class SignatureParameters {
 	private String contactInfo;
 	private String deterministicId;
 
+	private String toCounterSignSignatureId;
+
 	private DigestAlgorithm timestampDigestAlgorithm = DigestAlgorithm.SHA256;
 	private DigestAlgorithm archiveTimestampDigestAlgorithm = DigestAlgorithm.SHA256;
 
@@ -159,9 +161,26 @@ public class SignatureParameters {
 		signingToken = source.signingToken;
 		timestampDigestAlgorithm = source.timestampDigestAlgorithm;
 		contentTimestamps = source.getContentTimestamps();
+		toCounterSignSignatureId = source.getToCounterSignSignatureId();
 
 		// This is a simple copy of reference and not of the object content!
 		context = source.context;
+	}
+
+	/**
+	 * This method returns the Id of the signature to be countersigned.
+	 * @return
+	 */
+	public String getToCounterSignSignatureId() {
+		return toCounterSignSignatureId;
+	}
+
+	/**
+	 * This method sets the Id of the signature to be countersigned.
+	 * @param toCounterSignSignatureId
+	 */
+	public void setToCounterSignSignatureId(String toCounterSignSignatureId) {
+		this.toCounterSignSignatureId = toCounterSignSignatureId;
 	}
 
 	/**
