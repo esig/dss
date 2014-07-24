@@ -32,8 +32,6 @@ public class XPathQueryHolder {
 	public static final String XMLE_ARCHIVE_TIME_STAMP = "ArchiveTimeStamp";
 	public static final String XMLE_ARCHIVE_TIME_STAMP_V2 = "ArchiveTimeStampV2";
 
-	public static final String XML_SIGNATURE = "ds:Signature";
-
 	public String XADES_SIGNED_PROPERTIES = "http://uri.etsi.org/01903#SignedProperties";
 
 	public String XADES_COUNTERSIGNED_SIGNATURE = "http://uri.etsi.org/01903#CountersignedSignature";

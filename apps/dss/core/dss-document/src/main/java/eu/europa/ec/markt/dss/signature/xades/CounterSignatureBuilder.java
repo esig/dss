@@ -68,7 +68,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder implements XAdESSi
 
 		//retrieve signature based on ID provided in parameters
 		final Document toCounterSignDom = DSSXMLUtils.buildDOM(dssDocument);
-		final NodeList signatures = toCounterSignDom.getElementsByTagName(XPathQueryHolder.XML_SIGNATURE);
+		final NodeList signatures = toCounterSignDom.getElementsByTagName(XPathQueryHolder.XMLE_SIGNATURE);
 		Element signatureElement = null;
 		for (int i = 0; i < signatures.getLength(); i++) {
 			signatureElement = (Element) signatures.item(i);
