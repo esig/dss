@@ -355,7 +355,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public void validateTimestamps() {
 
         /*
-	     * This validates the signature timestamp tokensToProcess present in the signature.
+	     * This validates the content-timestamp tokensToProcess present in the signature.
          */
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
 

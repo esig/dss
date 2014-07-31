@@ -118,8 +118,11 @@ public final class RuleUtils {
      */
     public static String formatDate(final Date date) {
 
-        final String stringDate = SDF.format(date);
-        return stringDate;
+		if (date != null) {
+			final String stringDate = SDF.format(date);
+			return stringDate;
+		}
+		return "";
     }
 
     /**

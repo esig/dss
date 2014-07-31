@@ -59,6 +59,7 @@
                                                 </xs:simpleContent>
                                             </xs:complexType>
                                         </xs:element>
+                                        <xs:element name="ContentTimeStamp" type="tns:ContentTimeStampType"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
@@ -424,5 +425,28 @@
                 <xs:attribute type="xs:string" name="Date" use="optional"/>
             </xs:extension>
         </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="ContentTimeStampType">
+        <xs:sequence>
+            <xs:element name="MessageImprintDataFound">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="tns:level" name="Level"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="MessageImprintDataIntact">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="tns:level" name="Level"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="tns:level" name="Level"/>
     </xs:complexType>
 </xs:schema>

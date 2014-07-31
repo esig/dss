@@ -173,6 +173,7 @@ public class TimestampToken extends Token {
 			timestampValidity = TimestampValidity.VALID;
 		} catch (IllegalArgumentException e) {
 			timestampValidity = TimestampValidity.NO_SIGNING_CERTIFICATE;
+			LOG.error("No signing certificate for timestamp token: " + e);
 		} catch (TSPValidationException e) {
 			timestampValidity = TimestampValidity.NOT_VALID_SIGNATURE;
 		} catch (TSPException e) {
@@ -203,8 +204,10 @@ public class TimestampToken extends Token {
 			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
 			if (!messageImprintIntact) {
 
+				String encodedHexString = DSSUtils.encodeHexString(data);
+				int maxLength = encodedHexString.length() <= 200 ? encodedHexString.length() : 200;
 				// Produces very big output
-				LOG.error("Extracted data from the document: {} truncated", DSSUtils.encodeHexString(data).substring(0, 200));
+				LOG.error("Extracted data from the document: {} truncated", DSSUtils.encodeHexString(data).substring(0, maxLength));
 				LOG.error("Computed digest ({}) on the extracted data from the document : {}", new Object[]{digestAlgorithm, DSSUtils.encodeHexString(computedDigest)});
 				LOG.error("Digest present in TimestampToken: {}", DSSUtils.encodeHexString(timestampDigest));
 				LOG.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
@@ -410,5 +413,15 @@ public class TimestampToken extends Token {
 
 	public int getHashCode() {
 		return hashCode;
+	}
+
+	/**
+	 * Checks whether the timestamp token was generated before the signature
+	 * @param signatureSigningTime
+	 * @return
+	 */
+	public boolean isBeforeSignatureSigningTime(Date signatureSigningTime) {
+
+		return this.getGenerationTime().before(signatureSigningTime);
 	}
 }

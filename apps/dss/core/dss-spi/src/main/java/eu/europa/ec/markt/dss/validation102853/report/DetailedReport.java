@@ -239,4 +239,26 @@ public class DetailedReport extends XmlDom {
         final String status = getValue("//Name[@NameId='%s']/../Status/text()", tag.name());
         return status;
     }
+
+	/**
+	 * This method returns the conclusion indication related to the AdESTValidation of a given signature
+	 * @param signatureId
+	 * @return
+	 */
+	public String getAdESTValidationIndication(final String signatureId) {
+
+		final String indication = getValue("/ValidationData/AdESTValidationData/Signature[@Id='%s']/Conclusion/Indication/text()", signatureId);
+		return indication;
+	}
+
+	/**
+	 * This method returns the conclusion subIndication related to the AdESTValidation of a given signature
+	 * @param signatureId
+	 * @return
+	 */
+	public String getAdESTValidationSubIndication(final String signatureId) {
+
+		final String subIndication = getValue("/ValidationData/AdESTValidationData/Signature[@Id='%s']/Conclusion/SubIndication/text()", signatureId);
+		return subIndication;
+	}
 }

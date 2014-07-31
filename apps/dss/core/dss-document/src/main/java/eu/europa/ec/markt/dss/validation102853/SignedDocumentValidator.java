@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -452,6 +453,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final XmlSignature xmlSignature = validateSignature(signature);
 			usedCertificatesDigestAlgorithms.addAll(signature.getUsedCertificatesDigestAlgorithms());
 			jaxbDiagnosticData.getSignature().add(xmlSignature);
+			final List<SignatureCryptographicVerification> counterSignaturesVerifications = verifyCounterSignatures(signature, validationContext);
+			if (counterSignaturesVerifications.size() > 0) {
+				//add to jaxbDiagnosticData ?
+			}
 		}
 		final Set<CertificateToken> processedCertificates = validationContext.getProcessedCertificates();
 		dealUsedCertificates(usedCertificatesDigestAlgorithms, processedCertificates);
@@ -1305,34 +1310,31 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 /*
     TODO: (Bob) Old code to be adapted when we are ready to handle the countersignatures.
+*/
 
-    protected SignatureVerification[] verifyCounterSignatures(final AdvancedSignature signature, final ValidationContext ctx) {
+	/**
+	 * This method performs a global check on all countersignatures present in a given signature
+	 * @param signature
+	 * @param ctx
+	 * @return a list of SignatureCryptographicVerification objects
+	 */
+    protected List<SignatureCryptographicVerification> verifyCounterSignatures(final AdvancedSignature signature, final ValidationContext ctx) {
 
         final List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 
         if (counterSignatures == null) {
-            return null;
+			return null;
         }
 
-        final List<SignatureVerification> counterSigVerifs = new ArrayList<SignatureVerification>();
-        for (final AdvancedSignature counterSig : counterSignatures) {
+		List<SignatureCryptographicVerification> verifications = new ArrayList<SignatureCryptographicVerification>();
 
-            final Result counterSigResult;
-            try {
+		for (final AdvancedSignature counterSignature : counterSignatures) {
+			final SignatureCryptographicVerification scv = counterSignature.checkSignatureIntegrity();//checkCounterSignatureIntegrity();
+			verifications.add(scv);
+		}
 
-                final SignatureCryptographicVerification scv = counterSig.checkSignatureIntegrity(getExternalContent());
-                counterSigResult = new Result(scv.signatureValid());
-            } catch (DSSException e) {
-                throw new RuntimeException(e);
-            }
-            final String counterSigAlg = counterSig.getEncryptionAlgorithm().getName();
-            counterSigVerifs.add(new SignatureVerification(counterSigResult, counterSigAlg, signature.getId()));
-        }
-
-        final SignatureVerification[] ret = new SignatureVerification[counterSigVerifs.size()];
-        return counterSigVerifs.toArray(ret);
+		return verifications;
     }
-*/
 
 	protected XmlSigningCertificateType xmlForSigningCertificate(final CertificateToken certificateToken, boolean signatureValid) {
 

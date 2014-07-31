@@ -243,9 +243,9 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	 *
 	 * @return {@code Constraint} if ContentTimeStamp element is present in the constraint file, null otherwise.
 	 */
-	public Constraint getContentTimeStampConstraint() {
+	public Constraint getContentTimestampPresenceConstraint() {
 
-		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimeStamp/@Level");
+		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/@Level");
 		if (DSSUtils.isNotBlank(level)) {
 
 			final Constraint constraint = new Constraint(level);
@@ -758,7 +758,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 
 
 	/**
-	 * This constraint is has only two levels: FAIL, or NOTHING
+	 * This constraint has only two levels: FAIL, or NOTHING
 	 *
 	 * @return
 	 */
@@ -772,6 +772,17 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 			return constraint;
 		}
 		return null;
+	}
+
+	public Constraint getContentTimestampImprintIntactConstraint() {
+
+		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/MessageImprintDataIntact";
+		return getBasicConstraint(XP_ROOT, true);
+	}
+
+	public Constraint getContentTimestampImprintFoundConstraint() {
+		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/MessageImprintDataFound";
+		return getBasicConstraint(XP_ROOT, true);
 	}
 }
 

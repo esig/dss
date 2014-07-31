@@ -239,9 +239,7 @@ public class BasicValidation implements Indication, SubIndication, NodeName, Nod
 
         if (INDETERMINATE.equals(savIndication) && CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(savSubIndication)) {
 
-            // The DSS framework doesn't handle the content-time-stamps.
-            // List<XmlDom> contentTimestamps = signature.getElements("./ContentTimestamps/ProductionTime");
-            final List<XmlDom> contentTimestamps = new ArrayList<XmlDom>();
+            List<XmlDom> contentTimestamps = signature.getElements("./ContentTimestamps/ProductionTime");
             if (contentTimestamps.isEmpty()) {
 
                 conclusionNode.addChildrenOf(savConclusion);

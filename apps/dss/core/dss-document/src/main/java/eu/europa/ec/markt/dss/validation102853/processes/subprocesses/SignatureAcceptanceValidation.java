@@ -63,7 +63,13 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_I
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPSTP_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPXTIP;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPXTIP_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIDF;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_ITVPC;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.EMPTY;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIDF_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC_ANS;
+
 
 /**
  * 5.5 Signature Acceptance Validation (SAV)
@@ -241,7 +247,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		// TODO: (Bob: 2014 Mar 08)
 
 		// content-time-stamp
-		if (!checkContentTimeStampConstraint(conclusion)) {
+		if (!checkContentTimeStampConstraints(conclusion)) {
 			return conclusion;
 		}
 
@@ -522,19 +528,68 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 	}
 
 	/**
-	 * Check of content-time-stamp
+	 * Check of content-time-stamp: verifies whether a content-timestamp (or similar) element is present
 	 *
 	 * @param conclusion the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
-	private boolean checkContentTimeStampConstraint(final Conclusion conclusion) {
+	private boolean checkContentTimeStampConstraints(final Conclusion conclusion) {
 
-		final Constraint constraint = constraintData.getContentTimeStampConstraint();
+		final Constraint constraint1 = constraintData.getContentTimestampPresenceConstraint();
+		if (constraint1 == null) {
+			return true;
+		}
+		constraint1.create(subProcessNode, BBB_SAV_ISQPCTSIP);
+
+		//get count of all possible content timestamps
+		long count = signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.CONTENT_TIMESTAMP);
+		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+
+		final String countValue = count <= 0 ? "" : String.valueOf(count);
+		constraint1.setValue(countValue);
+		constraint1.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_SAV_ISQPCTSIP_ANS);
+		constraint1.setConclusionReceiver(conclusion);
+
+		final Constraint constraint2 = constraintData.getContentTimestampImprintFoundConstraint();
+		if (constraint2 == null) {
+			return constraint1.check();
+		}
+		constraint2.create(subProcessNode, ADEST_IMIDF);
+		constraint2.setValue(true);
+		constraint2.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, ADEST_IMIDF_ANS);
+		constraint2.setConclusionReceiver(conclusion);
+
+		final Constraint constraint3 = constraintData.getContentTimestampImprintIntactConstraint();
+		if (constraint3 == null) {
+			return constraint1.check() && constraint2.check();
+		}
+		constraint3.create(subProcessNode, ADEST_IMIVC);
+		constraint3.setValue(true);
+		constraint3.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, ADEST_IMIVC_ANS);
+		constraint3.setConclusionReceiver(conclusion);
+
+		return constraint1.check() && constraint2.check() && constraint3.check();
+	}
+
+	/**
+	 *
+	 * @param conclusion
+	 * @return
+	 */
+	private boolean checkContentTimestampImprintFoundConstraint(final Conclusion conclusion) {
+
+		final Constraint constraint = constraintData.getContentTimestampPresenceConstraint();
 		if (constraint == null) {
 			return true;
 		}
 		constraint.create(subProcessNode, BBB_SAV_ISQPCTSIP);
-		final long count = signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.CONTENT_TIMESTAMP);
+
+		//get all possible content timestamps
+		long count = signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.CONTENT_TIMESTAMP);
+		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+
 		final String countValue = count <= 0 ? "" : String.valueOf(count);
 		constraint.setValue(countValue);
 		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_SAV_ISQPCTSIP_ANS);
