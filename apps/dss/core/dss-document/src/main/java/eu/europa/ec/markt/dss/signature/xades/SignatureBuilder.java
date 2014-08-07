@@ -30,9 +30,14 @@ import java.util.UUID;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import eu.europa.ec.markt.dss.parameter.DSSReference;
+import eu.europa.ec.markt.dss.parameter.DSSTransform;
+import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -168,7 +173,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	/**
 	 * This method creates a new instance of Signature element.
 	 */
-	private void incorporateSignatureDom() {
+	public void incorporateSignatureDom() {
 
 		signatureDom = documentDom.createElementNS(XMLSignature.XMLNS, "ds:Signature");
 		signatureDom.setAttribute("xmlns:ds", XMLSignature.XMLNS);
@@ -176,7 +181,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		documentDom.appendChild(signatureDom);
 	}
 
-	private void incorporateSignedInfo() {
+	public void incorporateSignedInfo() {
 
 		// <ds:SignedInfo>
 		signedInfoDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, "ds:SignedInfo");
@@ -264,6 +269,64 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 			LOG.trace("Canonicalised REF_2      --> {}", new String(canonicalizedBytes));
 		}
 		incorporateDigestValue(reference, digestAlgorithm, new InMemoryDocument(canonicalizedBytes));
+	}
+
+	/**
+	 * This method incorporates a given list of references in the DOM
+	 * @param references
+	 */
+	protected void incorporateReferences(List<DSSReference> references) {
+
+		for (DSSReference reference : references) {
+			incorporateReference(reference);
+		}
+	}
+
+	/**
+	 * This method incorporates a reference in the signedInfoDom
+	 * @param reference
+	 * @throws DSSException
+	 */
+	protected void incorporateReference(DSSReference reference) throws DSSException {
+
+		final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
+		referenceDom.setAttribute("Id", reference.getId());
+		referenceDom.setAttribute("URI", reference.getUri());
+		referenceDom.setAttribute("Type", reference.getType());
+
+		final Element transformsDom = DSSXMLUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, "ds:Transforms");
+
+		final List<DSSTransform> transforms = reference.getTransforms();
+		for (final DSSTransform transform : transforms) {
+
+			final Element transformDom = DSSXMLUtils.addElement(documentDom, transformsDom, XMLSignature.XMLNS, "ds:Transform");
+			transformDom.setAttribute("Algorithm", transform.getAlgorithm());
+			final String elementName = transform.getElementName();
+			if (elementName != null && !elementName.isEmpty()) {
+
+				final String namespace = transform.getNamespace();
+				final String textContent = transform.getTextContent();
+				DSSXMLUtils.addTextElement(documentDom, transformDom, namespace, elementName, textContent);
+			}
+		}
+		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
+		incorporateDigestMethod(referenceDom, digestAlgorithm);
+
+		// We remove existing signatures
+		final Document domDoc = DSSXMLUtils.buildDOM(originalDocument);
+		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+
+			final Element signatureDOM = (Element) signatureNodeList.item(ii);
+			signatureDOM.getParentNode().removeChild(signatureDOM);
+		}
+		byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, domDoc);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Canonicalization method  -->" + signedInfoCanonicalizationMethod);
+			LOG.trace("Canonicalized REF_1      --> " + new String(canonicalizedBytes));
+		}
+		incorporateDigestValue(referenceDom, digestAlgorithm, new InMemoryDocument(canonicalizedBytes));
 	}
 
 	/**

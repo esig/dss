@@ -455,7 +455,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			jaxbDiagnosticData.getSignature().add(xmlSignature);
 			final List<SignatureCryptographicVerification> counterSignaturesVerifications = verifyCounterSignatures(signature, validationContext);
 			if (counterSignaturesVerifications.size() > 0) {
-				//add to jaxbDiagnosticData ?
+				for (AdvancedSignature countersignature : signature.getCounterSignatures()) {
+					final XmlSignature xmlCounterSignature = validateSignature(countersignature);
+					jaxbDiagnosticData.getSignature().add(xmlCounterSignature);
+				}
+				//TODO-Vincent (7/8/2014): add countersignatures to diagnosticData
 			}
 		}
 		final Set<CertificateToken> processedCertificates = validationContext.getProcessedCertificates();
