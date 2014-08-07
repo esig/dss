@@ -351,9 +351,8 @@ public class BasicValidation implements Indication, SubIndication, NodeName, Nod
 
         if (INDETERMINATE.equals(xcvIndication) && OUT_OF_BOUNDS_NO_POE.equals(xcvSubIndication)) {
 
-            // The DSS framework doesn't handle the content-time-stamps.
             XmlDom contentTimestamps = signature.getElement("./ContentTimestamps/ProductionTime");
-            //XmlDom contentTimestamps = null;
+
             if (contentTimestamps != null) {
 
                 final XmlDom adestConclusionDom = contentTimestampsAdESTValidationData

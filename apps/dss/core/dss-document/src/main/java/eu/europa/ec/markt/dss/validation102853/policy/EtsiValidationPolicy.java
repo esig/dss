@@ -784,5 +784,23 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/MessageImprintDataFound";
 		return getBasicConstraint(XP_ROOT, true);
 	}
+
+	public Constraint getCounterSignatureReferenceDataExistenceConstraint() {
+
+		final String XP_ROOT = "/ConstaintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataExistence";
+		return getBasicConstraint(XP_ROOT, true);
+	}
+
+	public Constraint getCounterSignatureReferenceDataIntactConstraint() {
+
+		final String XP_ROOT = "/ConstaintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataIntact";
+		return getBasicConstraint(XP_ROOT, true);
+	}
+
+	public Constraint getCounterSignatureIntactConstraint() {
+
+		final String XP_ROOT = "/ConstaintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/SignatureIntact";
+		return getBasicConstraint(XP_ROOT, true);
+	}
 }
 

@@ -251,6 +251,10 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 			return conclusion;
 		}
 
+		/*if (!checkCounterSignatureConstraints(conclusion)) {
+			return conclusion;
+		}*/
+
 		/**
 		 * <MandatedUnsignedQProperties>
 		 *
@@ -296,9 +300,6 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		 * 3) Apply the constraints for content-time-stamp attributes to the results returned in the previous steps. If
 		 * any check fails, return INVALID/SIG_CONSTRAINTS_FAILURE with an explanation of the unverified constraint.
 		 */
-
-		// The DSS framework doesn't handle at the level of the signature constraints any specific constraints for
-		// content-time-stamp attributes.
 
 		/**
 		 5.5.4.7 Processing Countersignatures
@@ -653,4 +654,43 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 
 		return constraint.check();
 	}
+
+	/**
+	 * Check of countersignature attributes:
+	 *
+	 * 5.5.4.7 Processing Countersignatures
+	 If the signature constraints define specific constraints for countersignature attributes, the SVA shall check that they are
+	 satisfied. To do so, the SVA shall do the following steps for each countersignature attribute:
+	 1) Perform the validation process for AdES-BES/EPES using the countersignature in the property/attribute and
+	 the signature value octet string of the signature as the signed data object.
+	 2) Apply the constraints for countersignature attributes to the result returned in the previous step. If any check
+	 fails, return INVALID/SIG_CONSTRAINTS_FAILURE with an explanation of the unverified constraint.
+	 If the signature constraints do not contain any constraint on countersignatures, the SVA may still verify the
+	 countersignature and provide the results in the validation report. However, it shall not consider the signature validation
+	 to having failed if the countersignature could not be verified.
+
+	 * @param conclusion
+	 * @return
+	 */
+	/*private boolean checkCounterSignatureConstraints(Conclusion conclusion) {
+		//get countersignatures
+		final Constraint constraint = constraintData.getCounterSignatureConstraint();
+		if (constraint == null) {
+			return true;
+		}
+		constraint.create(subProcessNode, BBB_SAV_ISQPCTSIP);
+
+		//get all possible content timestamps
+		long count = signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.CONTENT_TIMESTAMP);
+		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+
+		final String countValue = count <= 0 ? "" : String.valueOf(count);
+		constraint.setValue(countValue);
+		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_SAV_ISQPCTSIP_ANS);
+		constraint.setConclusionReceiver(conclusion);
+
+		return constraint.check();
+		//perform validation process for each of them
+	}*/
 }

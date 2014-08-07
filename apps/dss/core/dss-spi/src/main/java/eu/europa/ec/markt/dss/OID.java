@@ -94,4 +94,9 @@ public class OID {
      * attributes(2) 5 }
      */
     public static final ASN1ObjectIdentifier id_aa_ATSHashIndex = id_etsi_electronicSignatureStandard_attributes.branch("5");
+
+	/**
+	 * id-countersignature OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs9(9) 6 }
+	 */
+	public static final ASN1ObjectIdentifier id_countersignature = new ASN1ObjectIdentifier("1.2.840.113549.1.9.6");
 }

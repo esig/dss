@@ -20,11 +20,18 @@
 
 package eu.europa.ec.markt.dss.signature.cades;
 
+import java.io.InputStream;
+import org.bouncycastle.asn1.cms.SignerInfo;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.operator.ContentSigner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +48,7 @@ import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
+import org.w3c.dom.css.Counter;
 
 /**
  * CAdES implementation of DocumentSignatureService
@@ -140,6 +148,55 @@ public class CAdESService extends AbstractSignatureService {
 		byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), parameters.getPrivateKeyEntry());
 		final DSSDocument document = signDocument(toSignDocument, parameters, signatureValue);
 		return document;
+	}
+
+	/**
+	 * This method countersigns a signature identified through its SignerId
+	 * @param toCounterSignDocument the original signature document containing the signature to countersign
+	 * @param parameters the signature parameters
+	 * @param selector the SignerId identifying the signature to countersign
+	 * @return the updated signature document, in which the countersignature has been embedded
+	 */
+	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final SignatureParameters parameters, SignerId selector) {
+
+		final SignatureTokenConnection token = parameters.getSigningToken();
+		if (token == null) {
+
+			throw new DSSNullException(SignatureTokenConnection.class, "", "The connection through available API to the SSCD must be set.");
+		}
+
+		try {
+			//Retrieve the original signature
+			final InputStream input = toCounterSignDocument.openStream();
+			final CMSSignedData cmsSignedData = new CMSSignedData(input);
+
+			SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
+			SignerInformation signerInformation = signerInfos.get(selector);
+
+			//Generate a signed digest on the contents octets of the signature octet String in the identified SignerInfo value
+			//of the original signature's SignedData
+			byte[] dataToSign = signerInformation.getSignature();
+			byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), parameters.getPrivateKeyEntry());
+
+			//Set the countersignature builder
+			CounterSignatureBuilder builder = new CounterSignatureBuilder(certificateVerifier);
+			builder.setCmsSignedData(cmsSignedData);
+			builder.setSelector(selector);
+
+			final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
+			final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue);
+
+			SignerInfoGeneratorBuilder signerInformationGeneratorBuilder = builder.getSignerInfoGeneratorBuilder(parameters, true);
+			CMSSignedDataGenerator cmsSignedDataGenerator = builder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInformationGeneratorBuilder, null);
+			CMSTypedData content = cmsSignedData.getSignedContent();
+			CMSSignedData signedData = cmsSignedDataGenerator.generate(content);
+			final CMSSignedData countersignedCMSData = builder.signDocument(signedData);
+			final CMSSignedDocument signature = new CMSSignedDocument(countersignedCMSData);
+			return signature;
+
+		} catch (CMSException e) {
+			throw new DSSException("Cannot parse CMS data", e);
+		}
 	}
 
 	@Override
