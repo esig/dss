@@ -51,7 +51,7 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
     public void timestamp(final DSSDocument document, final OutputStream signedStream, final SignatureParameters parameters, final TSPSource tspSource,
                           final Map.Entry<String, PdfDict>... dictToAdd) throws DSSException {
 
-        final DigestAlgorithm timestampDigestAlgorithm = parameters.getTimestampDigestAlgorithm();
+        final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
         final byte[] digest = digest(document.openStream(), parameters, timestampDigestAlgorithm, dictToAdd);
         final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
         final byte[] encoded = DSSASN1Utils.getEncoded(timeStampToken);
