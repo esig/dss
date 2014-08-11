@@ -1,0 +1,12 @@
+target/
+.settings/
+.project
+.classpath
+test-output
+*.iml
+*.ipr
+*.iws
+.idea
+.DS_Store
+atlassian-ide-plugin.xml
+
