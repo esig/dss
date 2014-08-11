@@ -459,7 +459,7 @@ public class DiagnosticData extends XmlDom {
 
 	public String getTimestampCanonicalizationMethod(final String timestampId) {
 
-		final String canonicalizationMethod = getValue("/DiagnosticData/Signature/Timestamps/Timestamp[@Id='%s']/@CanonicalizationMethod", timestampId);
+		final String canonicalizationMethod = getValue("/DiagnosticData/Signature/Timestamps/Timestamp[@Id='%s']/CanonicalizationMethod/text()", timestampId);
 		return canonicalizationMethod;
 	}
 

@@ -53,6 +53,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import eu.europa.ec.markt.dss.exception.DSSNullException;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -796,6 +797,30 @@ public final class DSSXMLUtils {
 			return xmlGregorianCalendar.toGregorianCalendar().getTime();
 		} catch (DatatypeConfigurationException e) {
 			// do nothing
+		}
+		return null;
+	}
+
+	/**
+	 * This method retrieves a signature based on its ID
+	 * @param currentDom the DOM in which the signature has to be retrieved
+	 * @param signatureId the specified ID
+	 * @return
+	 * @throws DSSNullException
+	 */
+	public static Element getSignatureById (Document currentDom, String signatureId) throws DSSNullException {
+
+		Element signatureElement = null;
+		NodeList signatures = currentDom.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
+
+		for (int i = 0; i < signatures.getLength(); i++) {
+			signatureElement = (Element) signatures.item(i);
+			if (signatureId.equals(DSSXMLUtils.getIDIdentifier(signatureElement))) {
+				return signatureElement;
+			}
+		}
+		if (signatureElement == null) {
+			throw new DSSNullException(Element.class);
 		}
 		return null;
 	}

@@ -563,6 +563,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlTimestampToken.setEncodedSignedDataDigestValue(timestampToken.getEncodedSignedDataDigestValue());
 		xmlTimestampToken.setMessageImprintDataFound(timestampToken.isMessageImprintDataFound());
 		xmlTimestampToken.setMessageImprintDataIntact(timestampToken.isMessageImprintDataIntact());
+		xmlTimestampToken.setCanonicalizationMethod(timestampToken.getCanonicalizationMethod());
 
 		final SignatureAlgorithm signatureAlgorithm = timestampToken.getSignatureAlgo();
 		final XmlBasicSignatureType xmlBasicSignatureType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
@@ -1311,10 +1312,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return theSigningCertificateValidity;
 	}
 
-/*
-    TODO: (Bob) Old code to be adapted when we are ready to handle the countersignatures.
-*/
-
 	/**
 	 * This method performs a global check on all countersignatures present in a given signature
 	 * @param signature
@@ -1332,7 +1329,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		List<SignatureCryptographicVerification> verifications = new ArrayList<SignatureCryptographicVerification>();
 
 		for (final AdvancedSignature counterSignature : counterSignatures) {
-			final SignatureCryptographicVerification scv = counterSignature.checkSignatureIntegrity();//checkCounterSignatureIntegrity();
+			final SignatureCryptographicVerification scv = counterSignature.checkSignatureIntegrity();
 			verifications.add(scv);
 		}
 

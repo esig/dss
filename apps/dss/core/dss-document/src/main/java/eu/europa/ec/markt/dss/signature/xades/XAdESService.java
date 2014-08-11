@@ -171,10 +171,13 @@ public class XAdESService extends AbstractSignatureService {
 		final Document toCounterSignDom = DSSXMLUtils.buildDOM(toCounterSignDocument);
 
 		//Retrieve signature element to countersign
-		final Element toSignSignatureElement = getSignatureById(toCounterSignDom, parameters.getToCounterSignSignatureId());
+		//make sure we call recursiveIdBrowse before
+		final Element toSignSignatureElement = DSSXMLUtils.getSignatureById(toCounterSignDom, parameters.getToCounterSignSignatureId());
 		parameters.getContext().setOperationKind(Operation.COUNTERSIGNING);
 
 		//Retrieve signatureValue element
+		//User should have the possibility to force XPathQueryHolder value - otherwise, method automatically retrieves
+		//the appropriate/relevant queryHolder
 		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
 		Element signatureValueElement = DSSXMLUtils.getElement(toSignSignatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
 
@@ -196,23 +199,6 @@ public class XAdESService extends AbstractSignatureService {
 		counterSignatureBuilder.setSignatureValueId(signatureValueElement.getAttribute("Id"));
 		counterSignatureBuilder.signDocument(counterSignatureValue);
 
-		return null;
-	}
-
-	private Element getSignatureById (Document currentDom, String signatureId) throws DSSNullException {
-
-		Element signatureElement = null;
-		NodeList signatures = currentDom.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
-
-		for (int i = 0; i < signatures.getLength(); i++) {
-			signatureElement = (Element) signatures.item(i);
-			if (signatureId.equals(signatureElement.getAttribute("Id"))) {
-				return signatureElement;
-			}
-		}
-		if (signatureElement == null) {
-			throw new DSSNullException(Element.class);
-		}
 		return null;
 	}
 
