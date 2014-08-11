@@ -107,13 +107,13 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
     private AttributeTable addArchiveTimestampV3Attribute(CAdESSignature cadesSignature, CMSSignedData cmsSignedData, SignerInformation signerInformation,
                                                           SignatureParameters parameters, AttributeTable unsignedAttributes) throws DSSException {
         final CadesLevelBaselineLTATimestampExtractor cadesLevelBaselineLTATimestampExtractor = new CadesLevelBaselineLTATimestampExtractor();
-        final DigestAlgorithm timestampDigestAlgorithm = parameters.getTimestampDigestAlgorithm();
+        final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
         final Attribute atsHashIndexAttribute = cadesLevelBaselineLTATimestampExtractor.getAtsHashIndex(signerInformation, timestampDigestAlgorithm, cadesSignature);
 
         final byte[] originalDocumentBytes = getOriginalDocumentBytes(cmsSignedData, parameters);
 
         final byte[] encodedToTimestamp = cadesLevelBaselineLTATimestampExtractor
-              .getArchiveTimestampDataV3(cadesSignature, signerInformation, atsHashIndexAttribute, originalDocumentBytes, parameters.getTimestampDigestAlgorithm());
+              .getArchiveTimestampDataV3(cadesSignature, signerInformation, atsHashIndexAttribute, originalDocumentBytes, parameters.getSignatureTimestampParameters().getDigestAlgorithm());
 
         final ASN1Object timeStampAttributeValue = getTimeStampAttributeValue(signatureTsa, encodedToTimestamp, timestampDigestAlgorithm, atsHashIndexAttribute);
 

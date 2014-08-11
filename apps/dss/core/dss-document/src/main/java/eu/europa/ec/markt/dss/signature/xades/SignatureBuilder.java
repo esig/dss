@@ -659,7 +659,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 		try {
 
-			final DigestAlgorithm timestampDigestAlgorithm = params.getTimestampDigestAlgorithm();
+			final DigestAlgorithm timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
 			if (LOG.isInfoEnabled()) {
 
 				final String encodedDigestValue = DSSUtils.base64Encode(digestValue);

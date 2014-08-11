@@ -21,6 +21,7 @@ package eu.europa.ec.markt.dss.parameter;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 
 /**
@@ -66,6 +67,11 @@ public class TimestampParameters {
 	}
 
 	public DigestAlgorithm getDigestAlgorithm() {
+
+		//TODO-Vincent (7/8/2014): This is a temporary measure, returning the previous default value in case the digest algorithm was not specified by the user.
+		if (digestAlgorithm == null) {
+			return DigestAlgorithm.SHA256;
+		}
 		return digestAlgorithm;
 	}
 
@@ -74,10 +80,24 @@ public class TimestampParameters {
 	}
 
 	public String getCanonicalizationMethod() {
+
+		//TODO-Vincent (7/8/2014): This is a temporary measure, returning the previous default value in case the digest algorithm was not specified by the user.
+		if (canonicalizationMethod == null) {
+			return CanonicalizationMethod.EXCLUSIVE;
+		}
 		return canonicalizationMethod;
 	}
 
 	public void setCanonicalizationMethod(String canonicalizationMethod) {
 		this.canonicalizationMethod = canonicalizationMethod;
+	}
+
+	public String toString() {
+		return "TimestampParameters{" +
+				"digest=" + new String(digest) +
+				", digestAlgorithm=" + digestAlgorithm.getName() +
+				", canonicalizationMethod=" + canonicalizationMethod +
+				", references= {" + references.toString() + "}" +
+				"}";
 	}
 }

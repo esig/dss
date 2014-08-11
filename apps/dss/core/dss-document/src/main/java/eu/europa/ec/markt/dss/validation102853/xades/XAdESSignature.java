@@ -107,6 +107,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * This array contains all the XAdES signatures levels
+	 * TODO: do not return redundant levels.
 	 */
 	private static SignatureLevel[] signatureLevels = new SignatureLevel[]{SignatureLevel.XMLDSIG, SignatureLevel.XAdES_BASELINE_B, SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL, SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A};
 
@@ -1416,31 +1417,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 
 		//checks whether the countersignature has a DigestValue element
-		NodeList subNodes = countersignedSignatureReference.getElementsByTagName("ds:DigestValue");
+		NodeList subNodes = countersignedSignatureReference.getElementsByTagName(xPathQueryHolder.XPATH__DIGEST_VALUE);
 		if (subNodes.getLength() > 1 || subNodes.getLength() < 1) {
 			return false;
 		}
 		
 		return true;
-	}
-
-	/**
-	 * Validates a countersignature
-	 * @param signature
-	 */
-	public void validateCounterSignature (XAdESSignature signature) {
-		CertificateToken certToken = signature.getSigningCertificateToken();
-		PublicKey publicKey = certToken.getCertificate().getPublicKey();
-
-		DOMValidateContext domValidateContext = new DOMValidateContext(publicKey, DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE));
-		boolean isSignatureValid = false;
-
-		try {
-			final XMLSignature santuarioSignature = new XMLSignature(signature.getSignatureElement(), "");
-			isSignatureValid = santuarioSignature.checkSignatureValue(publicKey);
-		} catch (XMLSignatureException e) {
-		} catch (XMLSecurityException e) {
-		}
 	}
 	
 	@Override

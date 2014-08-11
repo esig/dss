@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.parameter;
 
+import java.security.Timestamp;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
+import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
  * Parameters for a Signature creation/extension
@@ -114,9 +116,10 @@ public class SignatureParameters {
 	private String deterministicId;
 
 	private String toCounterSignSignatureId;
+	private String xPathLocationString;
 
-	private DigestAlgorithm timestampDigestAlgorithm = DigestAlgorithm.SHA256;
-	private DigestAlgorithm archiveTimestampDigestAlgorithm = DigestAlgorithm.SHA256;
+	private TimestampParameters signatureTimestampParameters;
+	private TimestampParameters archiveTimestampParameters;
 
 	private List<TimestampToken> contentTimestamps;
 
@@ -159,9 +162,10 @@ public class SignatureParameters {
 		signingCertificate = source.signingCertificate;
 		signWithExpiredCertificate = source.signWithExpiredCertificate;
 		signingToken = source.signingToken;
-		timestampDigestAlgorithm = source.timestampDigestAlgorithm;
 		contentTimestamps = source.getContentTimestamps();
 		toCounterSignSignatureId = source.getToCounterSignSignatureId();
+		signatureTimestampParameters = source.signatureTimestampParameters;
+		archiveTimestampParameters = source.archiveTimestampParameters;
 
 		// This is a simple copy of reference and not of the object content!
 		context = source.context;
@@ -585,12 +589,34 @@ public class SignatureParameters {
 		return aSiCParams;
 	}
 
-	public DigestAlgorithm getTimestampDigestAlgorithm() {
-		return timestampDigestAlgorithm;
+	public TimestampParameters getSignatureTimestampParameters() {
+		if (signatureTimestampParameters == null) {
+			return new TimestampParameters();
+		}
+		return signatureTimestampParameters;
 	}
 
-	public void setTimestampDigestAlgorithm(final DigestAlgorithm timestampDigestAlgorithm) {
-		this.timestampDigestAlgorithm = timestampDigestAlgorithm;
+	public void setSignatureTimestampParameters(TimestampParameters signatureTimestampParameters) {
+		this.signatureTimestampParameters = signatureTimestampParameters;
+	}
+
+	public TimestampParameters getArchiveTimestampParameters() {
+		if (archiveTimestampParameters == null) {
+			return new TimestampParameters();
+		}
+		return archiveTimestampParameters;
+	}
+
+	public void setArchiveTimestampParameters(TimestampParameters archiveTimestampParameters) {
+		this.archiveTimestampParameters = archiveTimestampParameters;
+	}
+
+	public String getXPathLocationString() {
+		return xPathLocationString;
+	}
+
+	public void setXPathLocationString(String xPathLocationString) {
+		this.xPathLocationString = xPathLocationString;
 	}
 
 	@Override
@@ -613,10 +639,13 @@ public class SignatureParameters {
 			  ", reason='" + reason + '\'' +
 			  ", contactInfo='" + contactInfo + '\'' +
 			  ", deterministicId='" + deterministicId + '\'' +
-			  ", timestampDigestAlgorithm=" + timestampDigestAlgorithm +
-			  ", archiveTimestampDigestAlgorithm=" + archiveTimestampDigestAlgorithm +
+			  ", signatureTimestampParameters=" + signatureTimestampParameters.toString() +
+			  ", archiveTimestampParameters=" + archiveTimestampParameters.toString() +
 			  ", contentTimestamps=" + contentTimestamps +
 			  ", detachedContent=" + detachedContent +
+			  ", toCountersignSignatureId=" + toCounterSignSignatureId +
 			  '}';
 	}
+
+
 }

@@ -457,6 +457,12 @@ public class DiagnosticData extends XmlDom {
 		return timestampType;
 	}
 
+	public String getTimestampCanonicalizationMethod(final String timestampId) {
+
+		final String canonicalizationMethod = getValue("/DiagnosticData/Signature/Timestamps/Timestamp[@Id='%s']/@CanonicalizationMethod", timestampId);
+		return canonicalizationMethod;
+	}
+
 	/**
 	 * This method indicates if the certificate signature is valid and the revocation status is valid.
 	 *

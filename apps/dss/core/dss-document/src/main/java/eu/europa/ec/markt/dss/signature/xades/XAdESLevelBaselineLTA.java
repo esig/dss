@@ -22,6 +22,7 @@ package eu.europa.ec.markt.dss.signature.xades;
 
 import java.util.List;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import org.w3c.dom.Element;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -118,8 +119,9 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
     private void incorporateArchiveTimestamp() {
 
         final byte[] archiveTimestampData = xadesSignature.getArchiveTimestampData(null);
-        final DigestAlgorithm timestampDigestAlgorithm = params.getTimestampDigestAlgorithm();
+        final DigestAlgorithm timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
         final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, archiveTimestampData);
-        createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, XAdESSignature.DEFAULT_TIMESTAMP_CREATION_CANONICALIZATION_METHOD, digestBytes);
+		String archiveTimestampCanonicalizationMethod = params.getArchiveTimestampParameters().getCanonicalizationMethod();
+        createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP,archiveTimestampCanonicalizationMethod, digestBytes);
     }
 }

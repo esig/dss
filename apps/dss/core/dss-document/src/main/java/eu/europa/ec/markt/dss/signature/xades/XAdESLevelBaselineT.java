@@ -162,9 +162,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 		if (!xadesSignature.hasTProfile() || SignatureLevel.XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
 
 			final byte[] canonicalisedValue = xadesSignature.getSignatureTimestampData(null);
-			final DigestAlgorithm timestampDigestAlgorithm = params.getTimestampDigestAlgorithm();
+			final DigestAlgorithm timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalisedValue);
-			final String canonicalizationMethod = XAdESSignature.DEFAULT_TIMESTAMP_CREATION_CANONICALIZATION_METHOD;
+			final String canonicalizationMethod = params.getSignatureTimestampParameters().getCanonicalizationMethod();
 			createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
 		}
 	}
@@ -228,7 +228,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 
 		try {
 
-			final DigestAlgorithm timestampDigestAlgorithm = params.getTimestampDigestAlgorithm();
+			final DigestAlgorithm timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
 			if (LOG.isInfoEnabled()) {
 
 				final String encodedDigestValue = DSSUtils.base64Encode(digestValue);

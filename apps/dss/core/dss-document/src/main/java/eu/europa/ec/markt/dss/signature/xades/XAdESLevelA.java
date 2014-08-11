@@ -65,7 +65,7 @@ public class XAdESLevelA extends XAdESLevelXL {
         xadesSignature.checkSignatureIntegrity();
 
         final byte[] data = xadesSignature.getArchiveTimestampData(null);
-        final DigestAlgorithm timestampDigestAlgorithm = params.getTimestampDigestAlgorithm();
+        final DigestAlgorithm timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
         final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, data);
         createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, XAdESSignature.DEFAULT_TIMESTAMP_CREATION_CANONICALIZATION_METHOD, digestBytes);
     }

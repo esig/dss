@@ -82,63 +82,6 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	}
 
 	/**
-	 * This method incorporates a given list of references in the DOM
-	 * @param references
-	 */
-	protected void incorporateReferences(List<DSSReference> references) {
-
-		for (DSSReference reference : references) {
-			incorporateReference(reference);
-		}
-	}
-
-	/**
-	 * This method incorporates a reference in the DOM
-	 * @param reference
-	 * @throws DSSException
-	 */
-	protected void incorporateReference(DSSReference reference) throws DSSException {
-
-		final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
-		referenceDom.setAttribute("Id", reference.getId());
-		referenceDom.setAttribute("URI", reference.getUri());
-
-		final Element transformsDom = DSSXMLUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, "ds:Transforms");
-
-		final List<DSSTransform> transforms = reference.getTransforms();
-		for (final DSSTransform transform : transforms) {
-
-			final Element transformDom = DSSXMLUtils.addElement(documentDom, transformsDom, XMLSignature.XMLNS, "ds:Transform");
-			transformDom.setAttribute("Algorithm", transform.getAlgorithm());
-			final String elementName = transform.getElementName();
-			if (elementName != null && !elementName.isEmpty()) {
-
-				final String namespace = transform.getNamespace();
-				final String textContent = transform.getTextContent();
-				DSSXMLUtils.addTextElement(documentDom, transformDom, namespace, elementName, textContent);
-			}
-		}
-		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
-		incorporateDigestMethod(referenceDom, digestAlgorithm);
-
-		// We remove existing signatures
-		final Document domDoc = DSSXMLUtils.buildDOM(originalDocument);
-		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-
-			final Element signatureDOM = (Element) signatureNodeList.item(ii);
-			signatureDOM.getParentNode().removeChild(signatureDOM);
-		}
-		byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, domDoc);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Canonicalization method  -->" + signedInfoCanonicalizationMethod);
-			LOG.trace("Canonicalized REF_1      --> " + new String(canonicalizedBytes));
-		}
-		incorporateDigestValue(referenceDom, digestAlgorithm, new InMemoryDocument(canonicalizedBytes));
-	}
-
-	/**
 	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
 	 *
 	 * @param signatureValue
@@ -159,9 +102,13 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		signatureValueDom.appendChild(signatureValueNode);
 
 		final Document originalDocumentDom = DSSXMLUtils.buildDOM(originalDocument);
-
 		final Node copiedNode = originalDocumentDom.importNode(signatureDom, true);
-		originalDocumentDom.getDocumentElement().appendChild(copiedNode);
+
+		if (params.getXPathLocationString() != null) {
+			DSSXMLUtils.getElement(originalDocumentDom, params.getXPathLocationString()).appendChild(copiedNode);
+		} else {
+			originalDocumentDom.getDocumentElement().appendChild(copiedNode);
+		}
 
 		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(originalDocumentDom);
 		return new InMemoryDocument(documentBytes);

@@ -249,7 +249,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 
 	protected ASN1Object getTimeStampAttributeValue(TSPSource tspSource, byte[] message, SignatureParameters parameters) {
 
-		final DigestAlgorithm timestampDigestAlgorithm = parameters.getTimestampDigestAlgorithm();
+		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		ASN1Object signatureTimeStampValue = getTimeStampAttributeValue(tspSource, message, timestampDigestAlgorithm);
 		return signatureTimeStampValue;
 	}

@@ -246,8 +246,8 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 	private void extractTimestamp(final XmlDom signature, final TimestampType timestampType, final List<XmlDom> timestamps) {
 
 		final String xPath = "./Timestamps/Timestamp[@Type='%s']";
-		final List<XmlDom> contentTimestamps = signature.getElements(xPath, timestampType);
-		timestamps.addAll(contentTimestamps);
+		final List<XmlDom> extractedTimestamps = signature.getElements(xPath, timestampType);
+		timestamps.addAll(extractedTimestamps);
 	}
 
 	/**
