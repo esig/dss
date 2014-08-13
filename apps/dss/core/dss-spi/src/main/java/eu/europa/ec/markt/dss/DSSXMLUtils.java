@@ -90,7 +90,7 @@ public final class DSSXMLUtils {
 
 	private static final XPathFactory factory = XPathFactory.newInstance();
 
-	private static final NamespaceContext namespacePrefixMapper;
+	private static NamespaceContext namespacePrefixMapper;
 
 	private static final Map<String, String> namespaces;
 
@@ -823,5 +823,14 @@ public final class DSSXMLUtils {
 			throw new DSSNullException(Element.class);
 		}
 		return null;
+	}
+
+	/**
+	 * This method enables a user to add a specific namespace + corresponding prefix
+	 * @param namespace a hashmap containing the additional namespace, with the prefix as key and the namespace URI as value
+	 */
+	public static void addNamespace(HashMap<String, String> namespace) {
+		namespaces.putAll(namespace);
+		namespacePrefixMapper = new NamespaceContextMap(namespaces);
 	}
 }
