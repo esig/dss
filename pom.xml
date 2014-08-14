@@ -508,8 +508,8 @@
 			<modules>
 				<!--The sscd-mocca-adapter is not delivered within this release because its usage requires some additional commercial libraries.-->
 				<!--
-					To use this module, you need mocca-1.3.7 (-SNAPSHOT)
-					 see joinup URL: https://joinup.ec.europa.eu/software/mocca/release/100-20
+					To use this module, you need mocca-1.3.14 (-SNAPSHOT)
+					 see joinup URL: https://joinup.ec.europa.eu/software/mocca/asset_release/mocca-1314
 
 					This requires additional commercial libraries:
 					  iaik_jce_full_signed-3.16 and iaik_jce_me4se-3.04 as jar and pom
@@ -518,7 +518,7 @@
 					  mvn install:install-file -Dfile=iaik_jce_me4se-3.04.jar -DpomFile=iaik_jce_me4se-3.04.pom
 					  mvn install:install-file -Dfile=iaik_jce_full_signed-3.16.jar -DpomFile=iaik_jce_full_signed-3.16.pom
 				-->
-				<!--<module>apps/sscd-mocca-adapter</module>-->
+				<!-- <module>apps/sscd-mocca-adapter</module> -->
 			</modules>
 			<id>default</id>
 		</profile>
