@@ -26,7 +26,7 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>sd-dss-app</artifactId>
-        <version>4.1.0</version>
+        <version>4.2.0-SNAPSHOT</version>
         <relativePath>../apps/dss</relativePath>
     </parent>
 
@@ -75,7 +75,7 @@
                                 <!--licenses: -->
                                 <mkdir dir="target/dss-licences"/>
                                 <copy todir="target/dss-licences">
-                                    <fileset dir="../buildtools/license">
+					<fileset dir="src/main/resources/license">
                                         <include name="*"/>
                                         <exclude name="classheader.txt"/>
                                         <exclude name="fileheader.txt"/>
