@@ -34,7 +34,6 @@ import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.cades.CAdESLevelBaselineB;
 import eu.europa.ec.markt.dss.signature.cades.CMSSignedDataBuilder;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
@@ -73,7 +72,7 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 	 */
 	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final SignatureParameters parameters, final byte[] messageDigest) {
 
-		final CAdESLevelBaselineB cAdESLevelBaselineB = new CAdESLevelBaselineB();
+		final CAdESLevelBaselineB cAdESLevelBaselineB = new CAdESLevelBaselineB(true);
 		final PAdESLevelBaselineB pAdESProfileEPES = new PAdESLevelBaselineB();
 
 		final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
