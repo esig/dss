@@ -6,6 +6,7 @@ import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
@@ -14,7 +15,6 @@ import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
 
 /**
  * TODO
- * <p/>
  * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
@@ -101,4 +101,15 @@ public interface DocumentValidator {
 	Reports getReports();
 
 	void printReports();
+
+	/**
+	 * TODO (31/07/2014): to be implemented (proposal for v5)
+	 * This method allows the removal of the signature from the given signed document.
+	 * - With XAdES signature this operation is only possible for ENVELOPED signatures;
+	 * - With ASiC signature this operation is only possible for XAdES kind of container;
+	 *
+	 * @param signatureId the id of the signature to be removed.
+	 * @throws DSSException the exception is thrown when the removal is not possible.
+	 */
+	DSSDocument removeSignature(final String signatureId) throws DSSException;
 }

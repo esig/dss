@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
 import eu.europa.ec.markt.dss.signature.pdf.PdfObjFactory;
@@ -81,6 +82,11 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			}
 		});
 		return signatures;
+	}
+
+	@Override
+	public DSSDocument removeSignature(String signatureId) throws DSSException {
+		throw new DSSUnsupportedOperationException("This method is not applicable for this kind of signatures!");
 	}
 
 	@Override

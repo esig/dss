@@ -30,6 +30,7 @@ import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
@@ -104,6 +105,11 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return signatures;
+	}
+
+	@Override
+	public DSSDocument removeSignature(final String signatureId) throws DSSException {
+		throw new DSSUnsupportedOperationException("This method is not applicable for this kind of signatures!");
 	}
 
 	@Override

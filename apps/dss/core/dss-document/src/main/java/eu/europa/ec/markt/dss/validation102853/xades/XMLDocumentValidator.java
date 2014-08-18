@@ -27,11 +27,15 @@ import javax.xml.crypto.dsig.XMLSignature;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinder;
@@ -93,6 +97,31 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			signatures.add(xadesSignature);
 		}
 		return signatures;
+	}
+
+	@Override
+	public DSSDocument removeSignature(final String signatureId) throws DSSException {
+
+		if (DSSUtils.isBlank(signatureId)) {
+			throw new DSSNullException(String.class, "signatureId");
+		}
+		// TODO (31/07/2014): Checks on signature packaging to be added
+		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+
+			final Element signatureEl = (Element) signatureNodeList.item(ii);
+			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
+			if (signatureId.equals(idIdentifier)) {
+
+				signatureEl.getParentNode().removeChild(signatureEl);
+				// TODO (31/07/2014): Save the modified document
+				final Node documentElement = rootElement.getDocumentElement();
+				final byte[] documentBytes = DSSXMLUtils.serializeNode(documentElement);
+				final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+				return inMemoryDocument;
+			}
+		}
+		throw new DSSException("The signature with the given id was not found!");
 	}
 
 	/**
