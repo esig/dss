@@ -743,7 +743,7 @@ public final class DSSUtils {
 	 */
 	public static X509Certificate loadCertificate(final File file) throws DSSException {
 
-		final InputStream inputStream = DSSUtils.toInputStream(file);
+		final InputStream inputStream = DSSUtils.toByteArrayInputStream(file);
 		final X509Certificate x509Certificate = loadCertificate(inputStream);
 		return x509Certificate;
 	}
@@ -1375,18 +1375,38 @@ public final class DSSUtils {
 	public static InputStream toInputStream(final String filePath) throws DSSException {
 
 		final File file = getFile(filePath);
-		final InputStream inputStream = toInputStream(file);
+		final InputStream inputStream = toByteArrayInputStream(file);
 		return inputStream;
+	}
+
+	/**
+	 * This method returns an {@code InputStream} which needs to be closed (based on {@code FileInputStream}.
+	 *
+	 * @param file {@code File} to read.
+	 * @return {@code FileInputStream} representing the contents of the file.
+	 * @throws DSSException
+	 */
+	public static InputStream toInputStream(final File file) throws DSSException {
+
+		if (file == null) {
+
+			throw new DSSNullException(File.class);
+		}
+		try {
+			final FileInputStream fileInputStream = openInputStream(file);
+			return fileInputStream;
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	/**
 	 * This method returns an {@code InputStream} which does not need to be closed (based on {@code ByteArrayInputStream}.
 	 *
-	 * @param file {@code File} to read.
-	 * @return {@code ByteArrayInputStream} representing the contents of the file.
-	 * @throws DSSException
+	 * @param file {@code File} to read
+	 * @return {@code InputStream} based on {@code ByteArrayInputStream}
 	 */
-	public static InputStream toInputStream(final File file) throws DSSException {
+	public static InputStream toByteArrayInputStream(final File file) {
 
 		if (file == null) {
 

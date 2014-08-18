@@ -349,7 +349,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (policyFile == null || !policyFile.exists()) {
 			return validateDocument((InputStream) null);
 		} else {
-			final InputStream inputStream = DSSUtils.toInputStream(policyFile);
+			final InputStream inputStream = DSSUtils.toByteArrayInputStream(policyFile);
 			return validateDocument(inputStream);
 		}
 	}
