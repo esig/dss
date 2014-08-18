@@ -49,7 +49,7 @@ public class FileDocument implements DSSDocument {
 	 *
 	 * @param pathName
 	 */
-	public FileDocument(String pathName) {
+	public FileDocument(final String pathName) {
 		this(new File(pathName));
 	}
 

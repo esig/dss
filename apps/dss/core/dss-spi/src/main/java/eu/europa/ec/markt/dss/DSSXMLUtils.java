@@ -53,7 +53,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -73,6 +72,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 
 /**
@@ -802,6 +802,7 @@ public final class DSSXMLUtils {
 	}
 
 	/**
+	 * // TODO-Vin (18/08/2014): This method is business. Here only technical methods... Namespace and tag name must be parameters
 	 * This method retrieves a signature based on its ID
 	 * @param currentDom the DOM in which the signature has to be retrieved
 	 * @param signatureId the specified ID

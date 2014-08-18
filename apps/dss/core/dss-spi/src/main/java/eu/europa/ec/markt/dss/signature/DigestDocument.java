@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.signature;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,7 +33,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 
 /**
- * In memory representation of a document
+ * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed.
  *
  * @version $Revision$ - $Date$
  */

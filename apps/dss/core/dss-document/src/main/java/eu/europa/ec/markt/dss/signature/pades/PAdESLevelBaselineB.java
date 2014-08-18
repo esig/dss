@@ -28,10 +28,10 @@ import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.cms.CMSAttributeTableGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.cades.CAdESLevelBaselineB;
 
 /**
@@ -42,7 +42,7 @@ import eu.europa.ec.markt.dss.signature.cades.CAdESLevelBaselineB;
 
 class PAdESLevelBaselineB {
 
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(PAdESLevelBaselineB.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineB.class);
 
 	AttributeTable getSignedAttributes(Map params, CAdESLevelBaselineB cadesProfile, SignatureParameters parameters, byte[] messageDigest) {
 

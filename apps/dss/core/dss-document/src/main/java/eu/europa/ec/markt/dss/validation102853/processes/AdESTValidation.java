@@ -20,12 +20,10 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -397,8 +395,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * This method returns the latest content timestamp production date. Note that there are three different content timestamps: CONTENT_TIMESTAMP (CAdES),
-	 * ALL_DATA_OBJECTS_TIMESTAMP
-	 * (XAdES), INDIVIDUAL_DATA_OBJECTS_TIMESTAMP (XAdES).
+	 * ALL_DATA_OBJECTS_TIMESTAMP (XAdES), INDIVIDUAL_DATA_OBJECTS_TIMESTAMP (XAdES).
 	 *
 	 * @return {@code Date}
 	 */
@@ -465,6 +462,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	}
 
 	/**
+	 * // TODO-Vin (18/08/2014): incoherent parameters
 	 * Same as previous method, but does not add the timestamp to the list of right timestamps, and does not return any result
 	 * -> Only performs the functional validation of the timestamp
 	 * @param found
