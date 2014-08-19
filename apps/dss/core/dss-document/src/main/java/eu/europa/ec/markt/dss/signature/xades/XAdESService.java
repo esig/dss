@@ -20,8 +20,12 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
+import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 import org.apache.xml.security.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,15 +172,24 @@ public class XAdESService extends AbstractSignatureService {
 
 		final Document toCounterSignDom = DSSXMLUtils.buildDOM(toCounterSignDocument);
 
+		XAdESSignature toCounterSignSignature = new XAdESSignature(toCounterSignDom.getDocumentElement(), null);
+		DSSXMLUtils.recursiveIdBrowse(toCounterSignDom.getDocumentElement());
+		toCounterSignSignature.recursiveNamespaceBrowser(toCounterSignSignature.getSignatureElement());
+
+		if (parameters.getToCountersignXPathQueryHolder() != null) {
+			toCounterSignSignature.addXPathQueryHolder(parameters.getToCountersignXPathQueryHolder());
+		}
+
 		//Retrieve signature element to countersign
-		//make sure we call recursiveIdBrowse before
 		final Element toSignSignatureElement = DSSXMLUtils.getSignatureById(toCounterSignDom, parameters.getToCounterSignSignatureId());
 		parameters.getContext().setOperationKind(Operation.COUNTERSIGNING);
 
 		//Retrieve signatureValue element
+
 		//User should have the possibility to force XPathQueryHolder value - otherwise, method automatically retrieves
 		//the appropriate/relevant queryHolder
-		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+		XPathQueryHolder xPathQueryHolder = toCounterSignSignature.getXPathQueryHolder();
+
 		Element signatureValueElement = DSSXMLUtils.getElement(toSignSignatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
 
 		if (signatureValueElement == null) {
@@ -195,9 +208,9 @@ public class XAdESService extends AbstractSignatureService {
 		counterSignatureBuilder.setParams(parameters);
 		counterSignatureBuilder.setToCounterSignDocument(toCounterSignDom);
 		counterSignatureBuilder.setSignatureValueId(signatureValueElement.getAttribute("Id"));
-		counterSignatureBuilder.signDocument(counterSignatureValue);
+		DSSDocument countersignatureDocument = counterSignatureBuilder.signDocument(counterSignatureValue);
 
-		return null;
+		return countersignatureDocument;
 	}
 
 	/**

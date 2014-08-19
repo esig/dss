@@ -218,7 +218,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * This method os called when creating a new instance of the {@code XAdESSignature} with unknown schema.
+	 * This method is called when creating a new instance of the {@code XAdESSignature} with unknown schema.
 	 */
 	private void initialiseSettings() {
 
@@ -2080,5 +2080,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			references.add(element);
 		}
 		return references;
+	}
+
+	public void addXPathQueryHolder(XPathQueryHolder xPathQueryHolder) {
+		xPathQueryHolders.add(xPathQueryHolder);
 	}
 }

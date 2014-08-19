@@ -123,6 +123,8 @@ public class SignatureParameters {
 
 	private List<TimestampToken> contentTimestamps;
 
+	private XPathQueryHolder toCountersignXPathQueryHolder;
+
 	public SignatureParameters() {
 
 	}
@@ -166,6 +168,7 @@ public class SignatureParameters {
 		toCounterSignSignatureId = source.getToCounterSignSignatureId();
 		signatureTimestampParameters = source.signatureTimestampParameters;
 		archiveTimestampParameters = source.archiveTimestampParameters;
+		toCountersignXPathQueryHolder = source.toCountersignXPathQueryHolder;
 
 		// This is a simple copy of reference and not of the object content!
 		context = source.context;
@@ -619,6 +622,14 @@ public class SignatureParameters {
 		this.xPathLocationString = xPathLocationString;
 	}
 
+	public XPathQueryHolder getToCountersignXPathQueryHolder() {
+		return toCountersignXPathQueryHolder;
+	}
+
+	public void setToCountersignXPathQueryHolder(XPathQueryHolder toCountersignXPathQueryHolder) {
+		this.toCountersignXPathQueryHolder = toCountersignXPathQueryHolder;
+	}
+
 	@Override
 	public String toString() {
 		return "SignatureParameters{" +
@@ -644,6 +655,7 @@ public class SignatureParameters {
 			  ", contentTimestamps=" + contentTimestamps +
 			  ", detachedContent=" + detachedContent +
 			  ", toCountersignSignatureId=" + toCounterSignSignatureId +
+			  ", toCountersignXPathQueryHolder=" + toCountersignXPathQueryHolder.toString() +
 			  '}';
 	}
 
