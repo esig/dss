@@ -36,8 +36,8 @@ import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERUTF8String;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
 import org.bouncycastle.asn1.esf.SignaturePolicyId;
 import org.bouncycastle.asn1.esf.SignaturePolicyIdentifier;
@@ -51,7 +51,6 @@ import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.Attribute;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
@@ -108,23 +107,27 @@ public class CAdESLevelBaselineB {
 		return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, ASN1Encodable>());
 	}
 
-	public AttributeTable getSignedAttributes(SignatureParameters parameters) {
+	public AttributeTable getSignedAttributes(final SignatureParameters parameters) {
 
-		AttributeTable signedAttributes = new AttributeTable(new Hashtable<ASN1ObjectIdentifier, ASN1Encodable>());
-		signedAttributes = addSigningCertificateAttribute(parameters, signedAttributes);
-		signedAttributes = addSigningTimeAttribute(parameters, signedAttributes);
-		signedAttributes = addSignerAttribute(parameters, signedAttributes);
-		signedAttributes = addSignaturePolicyId(parameters, signedAttributes);
-		signedAttributes = addContentHints(parameters, signedAttributes);
-		signedAttributes = addContentIdentifier(parameters, signedAttributes);
-		signedAttributes = addCommitmentType(parameters, signedAttributes);
-		signedAttributes = addSignerLocation(parameters, signedAttributes);
-		signedAttributes = addContentTimestamps(parameters, signedAttributes);
+		ASN1EncodableVector signedAttributes = new ASN1EncodableVector();
+
+
+		addSigningCertificateAttribute(parameters, signedAttributes);
+		addSigningTimeAttribute(parameters, signedAttributes);
+		addSignerAttribute(parameters, signedAttributes);
+		addSignaturePolicyId(parameters, signedAttributes);
+		addContentHints(parameters, signedAttributes);
+		addContentIdentifier(parameters, signedAttributes);
+		addCommitmentType(parameters, signedAttributes);
+		addSignerLocation(parameters, signedAttributes);
+		addContentTimestamps(parameters, signedAttributes);
 
 		// mime-type attribute breaks parallel signatures by adding PKCS7 as a mime-type for subsequent signers.
 		// This attribute is not mandatory, so it has been disabled.
 		// signedAttributes = addMimeType(document, signedAttributes);
-		return signedAttributes;
+
+		final AttributeTable signedAttributesTable = new AttributeTable(signedAttributes);
+		return signedAttributesTable;
 	}
 
 	/**
@@ -153,17 +156,17 @@ public class CAdESLevelBaselineB {
 	 * @param document
 	 * @param signedAttributes
 	 */
-	private AttributeTable addMimeType(DSSDocument document, AttributeTable signedAttributes) {
+	private void addMimeType(final DSSDocument document, final ASN1EncodableVector signedAttributes) {
 
 		if (!padesUsage) {
 			final MimeType mimeType = document.getMimeType();
 			if (mimeType != null && DSSUtils.isNotBlank(mimeType.getCode())) {
 
-				signedAttributes = signedAttributes.add(OID.id_aa_ets_mimeType, new DERUTF8String(mimeType.getCode()));
-
+				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_mimeType,
+					  new DERSet(new DERUTF8String(mimeType.getCode())));
+				signedAttributes.add(attribute);
 			}
 		}
-		return signedAttributes;
 	}
 
 	/**
@@ -181,33 +184,34 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 * @return
 	 */
-	private AttributeTable addSignerAttribute(SignatureParameters parameters, AttributeTable signedAttributes) {
+	private void addSignerAttribute(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+
 		// In PAdES, the role is in the signature dictionary
 		if (!padesUsage) {
 
 			final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
 			if (claimedSignerRoles != null) {
 
-				List<Attribute> claimedAttributes = new ArrayList<Attribute>(claimedSignerRoles.size());
+				List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
 				for (final String claimedSignerRole : claimedSignerRoles) {
 
 					final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
 
 					//TODO: role attribute key (id_at_name) should be customizable
-					final Attribute id_aa_ets_signerAttr = new Attribute(X509ObjectIdentifiers.id_at_name, new DERSet(roles));
+					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name, new DERSet(roles));
 					claimedAttributes.add(id_aa_ets_signerAttr);
 				}
-				signedAttributes = signedAttributes
-					  .add(PKCSObjectIdentifiers.id_aa_ets_signerAttr, new SignerAttribute(claimedAttributes.toArray(new Attribute[claimedAttributes.size()])));
+				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr,
+					  new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+				signedAttributes.add(attribute);
 			}
-
 			//TODO: handle CertifiedAttributes ::= AttributeCertificate -- as defined in RFC 3281: see clause 4.1.
 			// final List<String> certifiedSignerRoles = parameters.bLevel().getCertifiedSignerRoles();
 		}
-		return signedAttributes;
 	}
 
-	private AttributeTable addSigningTimeAttribute(SignatureParameters parameters, AttributeTable signedAttributes) {
+	private void addSigningTimeAttribute(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+
 		if (!padesUsage) {
 		    /*
 		     * In PAdES, we don't include the signing time : ETSI TS 102 778-3 V1.2.1 (2010-07): 4.5.3 signing-time
@@ -215,10 +219,12 @@ public class CAdESLevelBaselineB {
              */
 			final Date signingDate = parameters.bLevel().getSigningDate();
 			if (signingDate != null) {
-				signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.pkcs_9_at_signingTime, new Time(signingDate));
+
+				final DERSet attrValues = new DERSet(new Time(signingDate));
+				final Attribute attribute = new Attribute(PKCSObjectIdentifiers.pkcs_9_at_signingTime, attrValues);
+				signedAttributes.add(attribute);
 			}
 		}
-		return signedAttributes;
 	}
 
 	/**
@@ -233,7 +239,8 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 * @return
 	 */
-	private AttributeTable addSignerLocation(SignatureParameters parameters, AttributeTable signedAttributes) {
+	private void addSignerLocation(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+
 		if (!padesUsage) {
 		    /*
 		     * In PAdES, the role is in the signature dictionary
@@ -253,11 +260,12 @@ public class CAdESLevelBaselineB {
 					}
 				}
 				final DERSequence derSequencePostalAddress = new DERSequence(postalAddress);
-				SignerLocation signerLocation = new SignerLocation(country, locality, derSequencePostalAddress);
-				signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.id_aa_ets_signerLocation, signerLocation);
+				final SignerLocation signerLocation = new SignerLocation(country, locality, derSequencePostalAddress);
+				final DERSet attrValues = new DERSet(signerLocation);
+				final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_ets_signerLocation, attrValues);
+				signedAttributes.add(attribute);
 			}
 		}
-		return signedAttributes;
 	}
 
 	/**
@@ -271,22 +279,28 @@ public class CAdESLevelBaselineB {
 	 * @param parameters
 	 * @param signedAttributes
 	 */
-	private AttributeTable addCommitmentType(SignatureParameters parameters, AttributeTable signedAttributes) {
-		// commitmentTypeQualifier are not implemented
+	private void addCommitmentType(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+
+		// TODO (19/08/2014): commitmentTypeQualifier is not implemented
 		final BLevelParameters bLevelParameters = parameters.bLevel();
 
-		if (bLevelParameters.getCommitmentTypeIndications() != null && !bLevelParameters.getCommitmentTypeIndications().isEmpty()) {
+		final List<String> commitmentTypeIndications = bLevelParameters.getCommitmentTypeIndications();
+		if (commitmentTypeIndications != null && !commitmentTypeIndications.isEmpty()) {
 
-			ASN1EncodableVector vector = new ASN1EncodableVector();
-			for (final String commitmentTypeId : bLevelParameters.getCommitmentTypeIndications()) {
+			final int size = commitmentTypeIndications.size();
+			ASN1Encodable[] asn1Encodables = new ASN1Encodable[size];
+			for (int ii = 0; ii < size; ii++) {
 
+				final String commitmentTypeId = commitmentTypeIndications.get(ii);
 				final ASN1ObjectIdentifier objectIdentifier = new ASN1ObjectIdentifier(commitmentTypeId);
-				final CommitmentTypeIndication instance = new CommitmentTypeIndication(objectIdentifier);
-				vector.add(instance);
+				// final CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(objectIdentifier);
+				//				final ASN1Primitive asn1Primitive = commitmentTypeIndication.toASN1Primitive();
+				asn1Encodables[ii] = new DERSequence(objectIdentifier);
 			}
-			signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.id_aa_ets_commitmentType, new DERSequence(vector));
+			final DERSet attrValues = new DERSet(asn1Encodables);
+			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_ets_commitmentType, attrValues);
+			signedAttributes.add(attribute);
 		}
-		return signedAttributes;
 	}
 
 	/**
@@ -313,17 +327,19 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 * @return
 	 */
-	private AttributeTable addContentTimestamps(SignatureParameters parameters, AttributeTable signedAttributes) {
+	private void addContentTimestamps(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		if (parameters.getContentTimestamps() != null && !parameters.getContentTimestamps().isEmpty()) {
 
-			List<TimestampToken> contentTimestamps = parameters.getContentTimestamps();
-			for (TimestampToken contentTimestamp : contentTimestamps) {
-				ASN1Object asn1Object = DSSASN1Utils.toASN1Primitive(contentTimestamp.getEncoded());
-				signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.id_aa_ets_contentTimestamp, asn1Object);
+			final List<TimestampToken> contentTimestamps = parameters.getContentTimestamps();
+			for (final TimestampToken contentTimestamp : contentTimestamps) {
+
+				final ASN1Object asn1Object = DSSASN1Utils.toASN1Primitive(contentTimestamp.getEncoded());
+				final DERSet attrValues = new DERSet(asn1Object);
+				final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_ets_contentTimestamp, attrValues);
+				signedAttributes.add(attribute);
 			}
 		}
-		return signedAttributes;
 	}
 
 	/**
@@ -350,7 +366,7 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 * @return
 	 */
-	private AttributeTable addContentHints(SignatureParameters parameters, AttributeTable signedAttributes) {
+	private void addContentHints(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		final BLevelParameters bLevelParameters = parameters.bLevel();
 		if (DSSUtils.isNotBlank(bLevelParameters.getContentHintsType())) {
@@ -362,9 +378,10 @@ public class CAdESLevelBaselineB {
 			//		"1.2.840.113549.1.7.1";
 
 			final ContentHints contentHints = new ContentHints(contentHintsType, contentHintsDescription);
-			signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.id_aa_contentHint, contentHints);
+			final DERSet attrValues = new DERSet(contentHints);
+			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_contentHint, attrValues);
+			signedAttributes.add(attribute);
 		}
-		return signedAttributes;
 	}
 
 	/**
@@ -383,7 +400,7 @@ public class CAdESLevelBaselineB {
 	 * @param parameters
 	 * @param signedAttributes
 	 */
-	private AttributeTable addContentIdentifier(SignatureParameters parameters, AttributeTable signedAttributes) {
+	private void addContentIdentifier(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
         /* this attribute is prohibited in PAdES B */
 		if (!padesUsage) {
@@ -405,13 +422,14 @@ public class CAdESLevelBaselineB {
 				}
 				final String contentIdentifierString = contentIdentifierPrefix + contentIdentifierSuffix;
 				final ContentIdentifier contentIdentifier = new ContentIdentifier(contentIdentifierString.getBytes());
-				signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.id_aa_contentIdentifier, contentIdentifier);
+				final DERSet attrValues = new DERSet(contentIdentifier);
+				final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_contentIdentifier, attrValues);
+				signedAttributes.add(attribute);
 			}
 		}
-		return signedAttributes;
 	}
 
-	private AttributeTable addSignaturePolicyId(final SignatureParameters parameters, AttributeTable signedAttributes) {
+	private void addSignaturePolicyId(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		Policy policy = parameters.bLevel().getSignaturePolicy();
 		if (policy != null && policy.getId() != null) {
@@ -428,12 +446,13 @@ public class CAdESLevelBaselineB {
 			} else {// implicit
 				sigPolicy = new SignaturePolicyIdentifier();
 			}
-			signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId, sigPolicy);
+			final DERSet attrValues = new DERSet(sigPolicy);
+			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId, attrValues);
+			signedAttributes.add(attribute);
 		}
-		return signedAttributes;
 	}
 
-	private AttributeTable addSigningCertificateAttribute(final SignatureParameters parameters, AttributeTable signedAttributes) throws DSSException {
+	private void addSigningCertificateAttribute(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		final X509Certificate signingCertificate = parameters.getSigningCertificate();
@@ -447,15 +466,17 @@ public class CAdESLevelBaselineB {
 
 			final ESSCertID essCertId = new ESSCertID(certHash, issuerSerial);
 			final SigningCertificate cadesSigningCertificate = new SigningCertificate(essCertId);
-			signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.id_aa_signingCertificate, cadesSigningCertificate);
+			final DERSet attrValues = new DERSet(cadesSigningCertificate);
+			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_signingCertificate, attrValues);
+			signedAttributes.add(attribute);
 		} else {
 
 			final ESSCertIDv2 essCertIDv2 = new ESSCertIDv2(digestAlgorithm.getAlgorithmIdentifier(), certHash, issuerSerial);
 			final ESSCertIDv2[] essCertIDv2Array = new ESSCertIDv2[]{essCertIDv2};
 			final SigningCertificateV2 cadesSigningCertificateV2 = new SigningCertificateV2(essCertIDv2Array);
-			signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.id_aa_signingCertificateV2, cadesSigningCertificateV2);
+			final DERSet attrValues = new DERSet(cadesSigningCertificateV2);
+			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_signingCertificateV2, attrValues);
+			signedAttributes.add(attribute);
 		}
-		return signedAttributes;
 	}
-
 }
