@@ -382,6 +382,10 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			return signatureConclusion;
 		}
 
+		if (!checkTimestampOrderConstraint(signatureConclusion)) {
+			return signatureConclusion;
+		}
+
 		if (!checkSigningTimeProperty(signatureConclusion)) {
 			return signatureConclusion;
 		}
@@ -859,7 +863,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		return constraint.check();
 	}
 
-	private boolean checkTimestampOrderConstraint(final Conclusion conclusion, final List<String> rightTimestamps, List<XmlDom> timestamps) {
+	private boolean checkTimestampOrderConstraint(final Conclusion conclusion) {
 
 		final Constraint constraint = constraintData.getTimestampOrderConstraint();
 		if (constraint == null) {
@@ -880,7 +884,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		final String formattedLatestSignatureTimestampProductionDate = RuleUtils.formatDate(latestSignatureTimestampProductionDate);
 		final String formattedLatestArchiveTimestampProductionDate = RuleUtils.formatDate(latestArchiveTimestampProductionDate);
 		constraint.setAttribute(LATEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME, formattedLatestSignatureTimestampProductionDate);
-		constraint.setAttribute(LATEST_ARCHIVE_TIMESTAMP_PRODUCTION_TIME, formattedLatestSignatureTimestampProductionDate);
+		constraint.setAttribute(LATEST_ARCHIVE_TIMESTAMP_PRODUCTION_TIME, formattedLatestArchiveTimestampProductionDate);
 
 		constraint.setConclusionReceiver(conclusion);
 
