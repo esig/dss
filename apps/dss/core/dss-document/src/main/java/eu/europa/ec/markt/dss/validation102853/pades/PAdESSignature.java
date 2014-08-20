@@ -173,11 +173,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		if (pdfSignatureInfo.getSigningDate() != null) {
 			date = pdfSignatureInfo.getSigningDate();
 		}
-		if (date == null) {
-			return cadesSignature.getSigningTime();
-		} else {
-			return date;
-		}
+		return date;
 	}
 
 	@Override
