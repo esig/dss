@@ -885,7 +885,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		if (latestRefsTimestampProductionDate != null) {
 			ok = latestSignatureTimestampProductionDate.before(latestRefsTimestampProductionDate);
 		}
-		if (ok && latestArchiveTimestampProductionDate != null) {
+		if (ok && latestRefsTimestampProductionDate != null && latestArchiveTimestampProductionDate != null) {
 			ok = latestRefsTimestampProductionDate.before(latestArchiveTimestampProductionDate);
 		}
 
