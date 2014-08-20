@@ -474,8 +474,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	/**
 	 * Same as previous method, but does not add the timestamp to the list of right timestamps, and does not return any result
 	 * -> Only performs the functional validation of the timestamp
-	 * @param found
-	 * @param productionTime
+	 * @param contentTimestamp
 	 * @return
 	 */
 	private void checkTimestampValidationProcessConstraint(XmlDom contentTimestamp) {
@@ -863,6 +862,13 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		return constraint.check();
 	}
 
+	/**
+	 * Similarly to the checkTimestampCoherenceConstraint method, this method verifies whether the ordering of the timestamps present in the
+	 * signature actually makes sense. I.e. whether the SIGNATURE TIMESTAMPS were actually produced before the REFERENCE TIMESTAMPS, and whether
+	 * the REFERENCE TIMESTAMPS were actually produced before the ARCHIVE TIMESTAMPS.
+	 * @param conclusion
+	 * @return
+	 */
 	private boolean checkTimestampOrderConstraint(final Conclusion conclusion) {
 
 		final Constraint constraint = constraintData.getTimestampOrderConstraint();
@@ -873,12 +879,18 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		constraint.setIndications(INVALID, TIMESTAMP_ORDER_FAILURE, TSV_ATITRO_ANS);
 
 		final Date latestSignatureTimestampProductionDate = getLatestTimestampProductionTime(TimestampType.SIGNATURE_TIMESTAMP);
+		final Date latestRefsTimestampProductionDate = getLatestRefsTimestampProductionTime();
 		final Date latestArchiveTimestampProductionDate = getLatestTimestampProductionTime(TimestampType.ARCHIVE_TIMESTAMP);
 
-		if(latestArchiveTimestampProductionDate == null) {
-			return true;
+		boolean ok = true;
+
+		if (latestRefsTimestampProductionDate != null) {
+			ok = latestSignatureTimestampProductionDate.before(latestRefsTimestampProductionDate);
 		}
-		boolean ok = latestSignatureTimestampProductionDate.before(latestArchiveTimestampProductionDate);
+		if (ok && latestArchiveTimestampProductionDate != null) {
+			ok = latestRefsTimestampProductionDate.before(latestArchiveTimestampProductionDate);
+		}
+
 		constraint.setValue(ok);
 
 		final String formattedLatestSignatureTimestampProductionDate = RuleUtils.formatDate(latestSignatureTimestampProductionDate);
@@ -889,6 +901,21 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
+	}
+
+	private Date getLatestRefsTimestampProductionTime() {
+
+		final Date X1ProductionTime = getLatestTimestampProductionTime(TimestampType.VALIDATION_DATA_TIMESTAMP);
+		final Date X2ProductionTime = getLatestTimestampProductionTime(TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+
+		if (X1ProductionTime != null) {
+			if (X2ProductionTime != null) {
+				return X1ProductionTime.after(X2ProductionTime) ? X1ProductionTime : X2ProductionTime;
+			} else {
+				return X1ProductionTime;
+			}
+		}
+		return X2ProductionTime;
 	}
 
 	/**

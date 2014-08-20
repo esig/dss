@@ -226,6 +226,8 @@
 			<xs:element type="xs:string" name="EncodedSignedDataDigestValue"/>
 			<xs:element type="xs:boolean" name="MessageImprintDataFound"/>
 			<xs:element type="xs:boolean" name="MessageImprintDataIntact"/>
+            <xs:element type="xs:boolean" name="Coherence"/>
+            <xs:element type="xs:boolean" name="RightOrder"/>
 
             <xs:element type="xs:string" name="CanonicalizationMethod"/>
 
