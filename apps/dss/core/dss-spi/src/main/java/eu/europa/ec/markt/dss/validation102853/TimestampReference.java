@@ -23,48 +23,46 @@ package eu.europa.ec.markt.dss.validation102853;
 /**
  * This class stocks the timestamp reference, which is composed of digest algorithm used to calculate the digest value
  * on the timestamp, the digest value and the timestamp category.
- * 
+ *
  * @author bielecro
- * 
  */
 public class TimestampReference {
 
-   private String signatureId;
+	private String signatureId;
 
-   private String digestAlgorithm;
-   private String digestValue;
-   private TimestampReferenceCategory category;
+	private String digestAlgorithm;
+	private String digestValue;
+	private TimestampReferenceCategory category;
 
-   public String getDigestAlgorithm() {
-      return digestAlgorithm;
-   }
+	public String getDigestAlgorithm() {
+		return digestAlgorithm;
+	}
 
-   public void setDigestAlgorithm(String digestAlgorithm) {
-      this.digestAlgorithm = digestAlgorithm;
-   }
+	public void setDigestAlgorithm(String digestAlgorithm) {
+		this.digestAlgorithm = digestAlgorithm;
+	}
 
-   public String getDigestValue() {
-      return digestValue;
-   }
+	public String getDigestValue() {
+		return digestValue;
+	}
 
-   public void setDigestValue(String digestValue) {
-      this.digestValue = digestValue;
-   }
+	public void setDigestValue(String digestValue) {
+		this.digestValue = digestValue;
+	}
 
-   public TimestampReferenceCategory getCategory() {
-      return category;
-   }
+	public TimestampReferenceCategory getCategory() {
+		return category;
+	}
 
-   public void setCategory(TimestampReferenceCategory category) {
-      this.category = category;
-   }
+	public void setCategory(TimestampReferenceCategory category) {
+		this.category = category;
+	}
 
-   public String getSignatureId() {
-      return signatureId;
-   }
+	public String getSignatureId() {
+		return signatureId;
+	}
 
-   public void setSignatureId(String signatureId) {
-      this.signatureId = signatureId;
-   }
-
+	public void setSignatureId(String signatureId) {
+		this.signatureId = signatureId;
+	}
 }
