@@ -157,61 +157,66 @@ public interface AdvancedSignature {
 	/**
 	 * Returns the Signature Policy OID from the signature.
 	 *
-	 * @return
+	 * @return {@code SignaturePolicy}
 	 */
 	public SignaturePolicy getPolicyId();
 
 	/**
-	 * Return information about the place where the signature was generated
+	 * Returns information about the place where the signature was generated
 	 *
-	 * @return
+	 * @return {@code SignatureProductionPlace}
 	 */
 	public SignatureProductionPlace getSignatureProductionPlace();
 
+	/**
+	 * This method obtains the information concerning commitment type indication linked to the signature
+	 *
+	 * @return {@code CommitmentType}
+	 */
 	public CommitmentType getCommitmentTypeIndication();
 
 	/**
 	 * Returns the content type of the signed data
 	 *
-	 * @return
+	 * @return content type as {@code String}
 	 */
 	public String getContentType();
 
 	/**
-	 * @return
+	 * @return content identifier as {@code String}
 	 */
 	public abstract String getContentIdentifier();
 
 	/**
-	 * @return
+	 * @return content hints as {@code String}
 	 */
 	public abstract String getContentHints();
 
 	/**
 	 * Returns the claimed role of the signer.
 	 *
-	 * @return
+	 * @return array of the claimed roles as {@code String} array
 	 */
 	public String[] getClaimedSignerRoles();
 
 	/**
 	 * Returns the certified role of the signer.
 	 *
-	 * @return
+	 * @return array of the certified roles
 	 */
 	public List<CertifiedRole> getCertifiedSignerRoles();
 
 	/**
 	 * Get certificates embedded in the signature
 	 *
-	 * @reutrn a list of certificate contained in the signature
+	 * @reutrn a list of certificate contained within the signature
 	 */
 	public List<CertificateToken> getCertificates();
 
 	/**
 	 * Returns the content timestamps
 	 *
-	 * @return
+	 * @return {@code List} of {@code TimestampToken}
 	 */
 	public List<TimestampToken> getContentTimestamps();
 
@@ -226,7 +231,7 @@ public interface AdvancedSignature {
 	/**
 	 * Returns the signature timestamps
 	 *
-	 * @return
+	 * @return {@code List} of {@code TimestampToken}
 	 */
 	public List<TimestampToken> getSignatureTimestamps();
 
@@ -242,6 +247,8 @@ public interface AdvancedSignature {
 	 * Returns the time-stamp which is placed on the digital signature (XAdES example: ds:SignatureValue element), the
 	 * signature time-stamp(s) present in the AdES-T form, the certification path references and the revocation status
 	 * references.
+	 *
+	 * @return {@code List} of {@code TimestampToken}
 	 */
 	public List<TimestampToken> getTimestampsX1();
 
@@ -258,7 +265,7 @@ public interface AdvancedSignature {
 	 * Returns the time-stamp which is computed over the concatenation of CompleteCertificateRefs and
 	 * CompleteRevocationRefs elements (XAdES example).
 	 *
-	 * @return
+	 * @return {@code List} of {@code TimestampToken}
 	 */
 	public List<TimestampToken> getTimestampsX2();
 
@@ -271,9 +278,9 @@ public interface AdvancedSignature {
 	public byte[] getTimestampX2Data(final TimestampToken timestampToken);
 
 	/**
-	 * Returns the archive TimeStamps
+	 * Returns the archive Timestamps
 	 *
-	 * @return
+	 * @return {@code List} of {@code TimestampToken}
 	 */
 	public List<TimestampToken> getArchiveTimestamps();
 
@@ -289,20 +296,22 @@ public interface AdvancedSignature {
 	/**
 	 * Returns a list of counter signatures applied to this signature
 	 *
-	 * @return a list of AdvancedSignatures representing the counter signatures
+	 * @return a {@code List} of {@code AdvancedSignatures} representing the counter signatures
 	 */
 	public List<AdvancedSignature> getCounterSignatures();
 
 	/**
-	 * Returns the digest value of the certification path references and the revocation status references. (XAdES
+	 * Returns the {@code List} of {@code TimestampReference} representing digest value of the certification path references and the revocation status references. (XAdES
 	 * example: CompleteCertificateRefs and CompleteRevocationRefs elements)
+	 *
+	 * @return a {@code List} of {@code TimestampReference}
 	 */
 	public List<TimestampReference> getTimestampedReferences();
 
 	/**
 	 * Retrieve list of certificate ref
 	 *
-	 * @return
+	 * @return {@code List} of {@code CertificateRef}
 	 */
 	public List<CertificateRef> getCertificateRefs();
 
@@ -347,5 +356,4 @@ public interface AdvancedSignature {
 	void prepareTimestamps(ValidationContext validationContext);
 
 	void validateTimestamps();
-
 }

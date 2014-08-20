@@ -745,20 +745,20 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			return null;
 		}
-
-		Attribute commitmentTypeIndicationAttribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_commitmentType);
+		final Attribute commitmentTypeIndicationAttribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_commitmentType);
 		if (commitmentTypeIndicationAttribute != null) {
 
 			try {
-				final DERSequence derSequence = (DERSequence) commitmentTypeIndicationAttribute.getAttrValues().getObjectAt(0);
-				final int size = derSequence.size();
+
+				final ASN1Set attrValues = commitmentTypeIndicationAttribute.getAttrValues();
+				final int size = attrValues.size();
 				if (size > 0) {
 
-					CommitmentType commitmentType = new CommitmentType();
+					final CommitmentType commitmentType = new CommitmentType();
 					for (int ii = 0; ii < size; ii++) {
 
-						final ASN1Encodable objectAt = derSequence.getObjectAt(ii);
-						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(objectAt);
+						final DERSequence derSequence = (DERSequence) attrValues.getObjectAt(ii);
+						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(derSequence);
 						final ASN1ObjectIdentifier commitmentTypeId = commitmentTypeIndication.getCommitmentTypeId();
 						commitmentType.addIdentifier(commitmentTypeId.getId());
 					}
@@ -778,7 +778,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (attributes == null) {
 			return null;
 		}
-
 		final Attribute id_aa_ets_signerAttr = attributes.get(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
 		if (id_aa_ets_signerAttr == null) {
 			return null;
