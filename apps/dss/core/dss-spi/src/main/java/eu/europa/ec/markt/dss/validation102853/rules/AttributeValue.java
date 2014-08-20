@@ -39,6 +39,8 @@ public interface AttributeValue {
     public static final String SIGNATURE_ID = "SignatureId";
 	public static final String LATEST_CONTENT_TIMESTAMP_PRODUCTION_TIME = "LatestContentTimestampProductionDate";
 	public static final String EARLIEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME = "EarliestSignatureTimestampProductionDate";
+	public static final String LATEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME = "LatestSignatureTimestampProductionDate";
+	public static final String LATEST_ARCHIVE_TIMESTAMP_PRODUCTION_TIME = "LatestArchiveTimestampProductionDate";
 
     public static final String ALGORITHM_EXPIRATION_DATE = "AlgorithmExpirationDate";
 

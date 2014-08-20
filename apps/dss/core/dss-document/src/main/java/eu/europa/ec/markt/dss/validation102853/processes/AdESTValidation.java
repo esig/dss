@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes;
 
+import java.security.Timestamp;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,6 +77,8 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ISCNV
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ISCNVABST_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_WACRABST;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_WACRABST_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ATITRO;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ATITRO_ANS;
 
 /**
  * This class implements:<br>
@@ -850,6 +853,34 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		final String formattedEarliestSignatureTimestampProductionDate = RuleUtils.formatDate(earliestSignatureTimestampProductionDate);
 		constraint.setAttribute(LATEST_CONTENT_TIMESTAMP_PRODUCTION_TIME, formattedLatestContentTimestampProductionDate);
 		constraint.setAttribute(EARLIEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME, formattedEarliestSignatureTimestampProductionDate);
+
+		constraint.setConclusionReceiver(conclusion);
+
+		return constraint.check();
+	}
+
+	private boolean checkTimestampOrderConstraint(final Conclusion conclusion, final List<String> rightTimestamps, List<XmlDom> timestamps) {
+
+		final Constraint constraint = constraintData.getTimestampOrderConstraint();
+		if (constraint == null) {
+			return true;
+		}
+		constraint.create(signatureXmlNode, TSV_ATITRO);
+		constraint.setIndications(INVALID, TIMESTAMP_ORDER_FAILURE, TSV_ATITRO_ANS);
+
+		final Date latestSignatureTimestampProductionDate = getLatestTimestampProductionTime(TimestampType.SIGNATURE_TIMESTAMP);
+		final Date latestArchiveTimestampProductionDate = getLatestTimestampProductionTime(TimestampType.ARCHIVE_TIMESTAMP);
+
+		if(latestArchiveTimestampProductionDate == null) {
+			return true;
+		}
+		boolean ok = latestSignatureTimestampProductionDate.before(latestArchiveTimestampProductionDate);
+		constraint.setValue(ok);
+
+		final String formattedLatestSignatureTimestampProductionDate = RuleUtils.formatDate(latestSignatureTimestampProductionDate);
+		final String formattedLatestArchiveTimestampProductionDate = RuleUtils.formatDate(latestArchiveTimestampProductionDate);
+		constraint.setAttribute(LATEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME, formattedLatestSignatureTimestampProductionDate);
+		constraint.setAttribute(LATEST_ARCHIVE_TIMESTAMP_PRODUCTION_TIME, formattedLatestSignatureTimestampProductionDate);
 
 		constraint.setConclusionReceiver(conclusion);
 
