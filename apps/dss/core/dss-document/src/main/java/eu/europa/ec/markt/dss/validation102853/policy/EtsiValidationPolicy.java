@@ -756,6 +756,12 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	public Constraint getTimestampOrderConstraint() {
+
+		final String XP_ROOT = "/ConstraintsParameters/Timestamp/RightOrder";
+		return getBasicConstraint(XP_ROOT, true);
+	}
+
 
 	/**
 	 * This constraint has only two levels: FAIL, or NOTHING
@@ -787,19 +793,19 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 
 	public Constraint getCounterSignatureReferenceDataExistenceConstraint() {
 
-		final String XP_ROOT = "/ConstaintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataExistence";
+		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataExistence";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
 	public Constraint getCounterSignatureReferenceDataIntactConstraint() {
 
-		final String XP_ROOT = "/ConstaintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataIntact";
+		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataIntact";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
 	public Constraint getCounterSignatureIntactConstraint() {
 
-		final String XP_ROOT = "/ConstaintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/SignatureIntact";
+		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/SignatureIntact";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 }

@@ -133,6 +133,8 @@ public enum MessageTag {
 	TSV_IBSTAIDOSC_ANS("The best-signature-time is before the issuance date of the signing certificate!"),
 	TSV_ISCNVABST("Is the signing certificate not valid at the best-signature-time?"),
 	TSV_ISCNVABST_ANS("The signing certificate is not valid at the best-signature-time!"),
+	TSV_ATITRO("Are timestamps in the right order?"),
+	TSV_ATITRO_ANS("The timestamps were not generated in the right order!"),
 
 	// TSV___("The signature-time-stamp protects the signature against the revocation of the signer's certificate but not against its expiration!"),
 	ADEST_IRTPTBST("Is revocation time posterior to best-signature-time?"),

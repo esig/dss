@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +75,8 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ISCNV
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ISCNVABST_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_WACRABST;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_WACRABST_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ATITRO;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ATITRO_ANS;
 
 /**
  * This class implements:<br>
@@ -377,6 +380,10 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			return signatureConclusion;
 		}
 
+		if (!checkTimestampOrderConstraint(signatureConclusion)) {
+			return signatureConclusion;
+		}
+
 		if (!checkSigningTimeProperty(signatureConclusion)) {
 			return signatureConclusion;
 		}
@@ -395,7 +402,8 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * This method returns the latest content timestamp production date. Note that there are three different content timestamps: CONTENT_TIMESTAMP (CAdES),
-	 * ALL_DATA_OBJECTS_TIMESTAMP (XAdES), INDIVIDUAL_DATA_OBJECTS_TIMESTAMP (XAdES).
+	 * ALL_DATA_OBJECTS_TIMESTAMP
+	 * (XAdES), INDIVIDUAL_DATA_OBJECTS_TIMESTAMP (XAdES).
 	 *
 	 * @return {@code Date}
 	 */
@@ -462,11 +470,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	}
 
 	/**
-	 * // TODO-Vin (18/08/2014): incoherent parameters
 	 * Same as previous method, but does not add the timestamp to the list of right timestamps, and does not return any result
 	 * -> Only performs the functional validation of the timestamp
-	 * @param found
-	 * @param productionTime
+	 * @param contentTimestamp
 	 * @return
 	 */
 	private void checkTimestampValidationProcessConstraint(XmlDom contentTimestamp) {
@@ -852,6 +858,62 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
+	}
+
+	/**
+	 * Similarly to the checkTimestampCoherenceConstraint method, this method verifies whether the ordering of the timestamps present in the
+	 * signature actually makes sense. I.e. whether the SIGNATURE TIMESTAMPS were actually produced before the REFERENCE TIMESTAMPS, and whether
+	 * the REFERENCE TIMESTAMPS were actually produced before the ARCHIVE TIMESTAMPS.
+	 * @param conclusion
+	 * @return
+	 */
+	private boolean checkTimestampOrderConstraint(final Conclusion conclusion) {
+
+		final Constraint constraint = constraintData.getTimestampOrderConstraint();
+		if (constraint == null) {
+			return true;
+		}
+		constraint.create(signatureXmlNode, TSV_ATITRO);
+		constraint.setIndications(INVALID, TIMESTAMP_ORDER_FAILURE, TSV_ATITRO_ANS);
+
+		final Date latestSignatureTimestampProductionDate = getLatestTimestampProductionTime(TimestampType.SIGNATURE_TIMESTAMP);
+		final Date latestRefsTimestampProductionDate = getLatestRefsTimestampProductionTime();
+		final Date latestArchiveTimestampProductionDate = getLatestTimestampProductionTime(TimestampType.ARCHIVE_TIMESTAMP);
+
+		boolean ok = true;
+
+		if (latestRefsTimestampProductionDate != null) {
+			ok = latestSignatureTimestampProductionDate.before(latestRefsTimestampProductionDate);
+		}
+		if (ok && latestRefsTimestampProductionDate != null && latestArchiveTimestampProductionDate != null) {
+			ok = latestRefsTimestampProductionDate.before(latestArchiveTimestampProductionDate);
+		}
+
+		constraint.setValue(ok);
+
+		final String formattedLatestSignatureTimestampProductionDate = RuleUtils.formatDate(latestSignatureTimestampProductionDate);
+		final String formattedLatestArchiveTimestampProductionDate = RuleUtils.formatDate(latestArchiveTimestampProductionDate);
+		constraint.setAttribute(LATEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME, formattedLatestSignatureTimestampProductionDate);
+		constraint.setAttribute(LATEST_ARCHIVE_TIMESTAMP_PRODUCTION_TIME, formattedLatestArchiveTimestampProductionDate);
+
+		constraint.setConclusionReceiver(conclusion);
+
+		return constraint.check();
+	}
+
+	private Date getLatestRefsTimestampProductionTime() {
+
+		final Date X1ProductionTime = getLatestTimestampProductionTime(TimestampType.VALIDATION_DATA_TIMESTAMP);
+		final Date X2ProductionTime = getLatestTimestampProductionTime(TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+
+		if (X1ProductionTime != null) {
+			if (X2ProductionTime != null) {
+				return X1ProductionTime.after(X2ProductionTime) ? X1ProductionTime : X2ProductionTime;
+			} else {
+				return X1ProductionTime;
+			}
+		}
+		return X2ProductionTime;
 	}
 
 	/**

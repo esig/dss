@@ -171,8 +171,7 @@ public class XAdESService extends AbstractSignatureService {
 		}
 
 		final Document toCounterSignDom = DSSXMLUtils.buildDOM(toCounterSignDocument);
-
-		XAdESSignature toCounterSignSignature = new XAdESSignature(toCounterSignDom.getDocumentElement(), null);
+		final XAdESSignature toCounterSignSignature = new XAdESSignature(toCounterSignDom.getDocumentElement(), null);
 		DSSXMLUtils.recursiveIdBrowse(toCounterSignDom.getDocumentElement());
 		toCounterSignSignature.recursiveNamespaceBrowser(toCounterSignSignature.getSignatureElement());
 
@@ -184,19 +183,13 @@ public class XAdESService extends AbstractSignatureService {
 		final Element toSignSignatureElement = DSSXMLUtils.getSignatureById(toCounterSignDom, parameters.getToCounterSignSignatureId());
 		parameters.getContext().setOperationKind(Operation.COUNTERSIGNING);
 
-		//Retrieve signatureValue element
-
-		//User should have the possibility to force XPathQueryHolder value - otherwise, method automatically retrieves
-		//the appropriate/relevant queryHolder
-		XPathQueryHolder xPathQueryHolder = toCounterSignSignature.getXPathQueryHolder();
-
-		Element signatureValueElement = DSSXMLUtils.getElement(toSignSignatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
+		final XPathQueryHolder xPathQueryHolder = toCounterSignSignature.getXPathQueryHolder();
+		final Element signatureValueElement = DSSXMLUtils.getElement(toSignSignatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
 
 		if (signatureValueElement == null) {
 			throw new DSSNullException(Element.class);
 		}
 
-		final EncryptionAlgorithm encryptionAlgorithm = parameters.getEncryptionAlgorithm();
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		final DSSPrivateKeyEntry dssPrivateKeyEntry = parameters.getPrivateKeyEntry();
 

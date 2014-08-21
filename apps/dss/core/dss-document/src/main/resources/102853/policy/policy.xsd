@@ -150,6 +150,15 @@
 			                        </xs:simpleContent>
 		                        </xs:complexType>
 	                        </xs:element>
+                            <xs:element name="RightOrder">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute type="tns:level" name="Level"/>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
                             <xs:element name="SigningCertificate" type="tns:CertificateType"></xs:element>
                             <xs:element name="CACertificate" type="tns:CertificateType"></xs:element>
                         </xs:sequence>

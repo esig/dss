@@ -101,8 +101,19 @@
 		</Cryptographic>
 		<MandatedSignedQProperties>
 			<SigningTime Level="FAIL"/>
+            <ContentTimeStamp>
+                <MessageImprintDataFound Level="FAIL" />
+                <MessageImprintDataIntact Level="FAIL" />
+            </ContentTimeStamp>
 			<!--<ContentType Level="FAIL">1.2.840.113549.1.7.1</ContentType>-->
 		</MandatedSignedQProperties>
+        <MandatedUnsignedQProperties>
+            <CounterSignature>
+                <ReferenceDataExistence Level="FAIL" />
+                <ReferenceDataIntact Level="FAIL" />
+                <SignatureIntact Level="FAIL" />
+            </CounterSignature>
+        </MandatedUnsignedQProperties>
 	</MainSignature>
 	<Timestamp>
 		<TimestampDelay Unit="DAYS">0</TimestampDelay>
@@ -113,6 +124,7 @@
 		<SigningCertificateValidityAtBestSignatureTime Level="FAIL"/>
 		<AlgorithmReliableAtBestSignatureTime Level="FAIL"/>
 		<Coherence Level="FAIL"/>
+        <RightOrder Level="FAIL" />
 		<SigningCertificate>
 			<Recognition Level="FAIL"/>
 			<DigestValueMatch Level="FAIL">true</DigestValueMatch>
