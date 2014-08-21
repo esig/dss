@@ -20,14 +20,10 @@
 
 package eu.europa.ec.markt.dss.signature;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
@@ -49,7 +45,7 @@ public class DigestDocument implements DSSDocument {
 	private MimeType mimeType;
 
 	/**
-	 * Creates dss document that retains the data in memory
+	 * Creates dss document that retains only the digest of the document.
 	 *
 	 * @param name the file name if the data originates from a file
 	 */
@@ -60,7 +56,7 @@ public class DigestDocument implements DSSDocument {
 	}
 
 	/**
-	 * Creates dss document that retains the data in memory
+	 * Creates dss document that retains only the digest of the document.
 	 *
 	 * @param name     the file name if the data originates from a file
 	 * @param mimeType the mime type of the file if the data originates from a file
@@ -90,7 +86,7 @@ public class DigestDocument implements DSSDocument {
 	@Override
 	public byte[] getBytes() throws DSSException {
 
-		throw new DSSUnsupportedOperationException("...");
+		throw new DSSUnsupportedOperationException("A DigestDocument does not contains document but only its digest!");
 	}
 
 	public void setName(final String name) {
@@ -108,18 +104,7 @@ public class DigestDocument implements DSSDocument {
 	@Override
 	public void save(final String filePath) {
 
-		try {
-
-			final FileOutputStream fos = new FileOutputStream(filePath);
-			DSSUtils.write(getBytes(), fos);
-			fos.close();
-		} catch (FileNotFoundException e) {
-			throw new DSSException(e);
-		} catch (DSSException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+		throw new DSSUnsupportedOperationException("A DigestDocument does not contains document but only its digest!");
 	}
 
 	@Override
