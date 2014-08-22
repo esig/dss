@@ -59,13 +59,16 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		this.resourceLoader = resourceLoader;
 	}
 
-	public void addToBeLoaded(String url) {
+	public void addToBeLoaded(final String url) {
 
 		if (toBeLoaded == null) {
 
 			toBeLoaded = new ArrayList<String>();
 		}
-		toBeLoaded.add(url);
+		if (DSSUtils.isNotBlank(url)) {
+
+			toBeLoaded.add(url);
+		}
 	}
 
 	@Override
@@ -112,6 +115,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	private File getCacheFile(final String fileName) {
 
 		final String trimmedFileName = fileName.trim();
+		// TODO (22/08/2014): This condition must be removed when publishing the source code!
 		if ("http___ev01-wpg.mdef.es_9308.EEB99CE1C64D2A898E34AB28491CCF52"
 			  .equals(trimmedFileName) || "ldap___ldappkiff.difesa.it_389_CN=crl-firmadigitale-tsa2009,O=Ministero%20della%20Difesa,C=IT"
 			  .equals(trimmedFileName) /*|| "".equals(trimmedFileName) || "".equals(trimmedFileName) || "".equals(trimmedFileName) || "".equals(trimmedFileName)*/) {
