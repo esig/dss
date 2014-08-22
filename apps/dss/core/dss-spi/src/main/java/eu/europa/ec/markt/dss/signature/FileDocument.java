@@ -21,9 +21,6 @@
 package eu.europa.ec.markt.dss.signature;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
@@ -47,16 +44,16 @@ public class FileDocument implements DSSDocument {
 	/**
 	 * Create a FileDocument
 	 *
-	 * @param pathName
+	 * @param path the path to the file
 	 */
-	public FileDocument(final String pathName) {
-		this(new File(pathName));
+	public FileDocument(final String path) {
+		this(new File(path));
 	}
 
 	/**
 	 * Create a FileDocument
 	 *
-	 * @param file
+	 * @param file {@code File}
 	 */
 	public FileDocument(final File file) {
 
@@ -110,28 +107,26 @@ public class FileDocument implements DSSDocument {
 	@Override
 	public byte[] getBytes() throws DSSException {
 
-		return DSSUtils.toByteArray(openStream());
+		final InputStream inputStream = openStream();
+		final byte[] bytes = DSSUtils.toByteArray(inputStream);
+		DSSUtils.closeQuietly(inputStream);
+		return bytes;
 	}
 
 	@Override
-	public void save(final String filePath) throws DSSException {
+	public void save(final String path) throws DSSException {
 
-		try {
-
-			final FileOutputStream fos = new FileOutputStream(filePath);
-			DSSUtils.write(getBytes(), fos);
-			fos.close();
-		} catch (FileNotFoundException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+		final InputStream inputStream = openStream();
+		DSSUtils.saveToFile(inputStream, path);
+		DSSUtils.closeQuietly(inputStream);
 	}
 
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
+		final InputStream inputStream = openStream();
+		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, inputStream);
+		DSSUtils.closeQuietly(inputStream);
 		final String base64Encode = DSSUtils.base64Encode(digestBytes);
 		return base64Encode;
 	}

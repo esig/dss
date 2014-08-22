@@ -20,8 +20,7 @@
 
 package eu.europa.ec.markt.dss.signature;
 
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.File;
 import java.util.HashMap;
 
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -29,90 +28,47 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 
 /**
- * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed.
+ * Digest representation of a {@code FileDocument}. It can be used to handle a large file to be signed. The computation of the digest associated to the file can be done externally.
  *
  * @version $Revision$ - $Date$
  */
 
-public class DigestDocument implements DSSDocument {
+public class DigestDocument extends FileDocument {
 
 	private HashMap<DigestAlgorithm, String> base64EncodeDigestMap = new HashMap<DigestAlgorithm, String>();
 
-	private String name;
-
-	private String absolutePath;
-
-	private MimeType mimeType;
-
 	/**
-	 * Creates dss document that retains only the digest of the document.
+	 * Creates dss document from the path and for which the digest can be provided externally.
 	 *
-	 * @param name the file name if the data originates from a file
+	 * @param path the path to the file
 	 */
-	public DigestDocument(final String name) {
+	public DigestDocument(final String path) {
 
-		this.name = name;
-		this.mimeType = MimeType.fromFileName(name);
+		super(path);
 	}
 
 	/**
-	 * Creates dss document that retains only the digest of the document.
+	 * Creates dss document from the {@code File} and for which the digest can be provided externally.
 	 *
-	 * @param name     the file name if the data originates from a file
-	 * @param mimeType the mime type of the file if the data originates from a file
+	 * @param file {@code File}
 	 */
-	public DigestDocument(final String name, final MimeType mimeType) {
+	public DigestDocument(final File file) {
 
-		this.name = name;
-		this.mimeType = mimeType;
-	}
-
-	@Override
-	public InputStream openStream() throws DSSException {
-
-		throw new DSSUnsupportedOperationException("...");
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public MimeType getMimeType() {
-		return mimeType;
+		super(file);
 	}
 
 	@Override
 	public byte[] getBytes() throws DSSException {
 
-		throw new DSSUnsupportedOperationException("A DigestDocument does not contains document but only its digest!");
+		throw new DSSUnsupportedOperationException("The underlying file is too large to convert it into byte array!");
 	}
 
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	public void setMimeType(final MimeType mimeType) {
-		this.mimeType = mimeType;
-	}
-
-	public void setAbsolutePath(final String absolutePath) {
-		this.absolutePath = absolutePath;
-	}
-
-	@Override
-	public void save(final String filePath) {
-
-		throw new DSSUnsupportedOperationException("A DigestDocument does not contains document but only its digest!");
-	}
-
-	@Override
-	public String getAbsolutePath() {
-
-		return absolutePath;
-	}
-
+	/**
+	 * This method allows to add a pair: {@code DigestAlgorithm} and the corresponding digest value calculated externally on the encapsulated file. The digest value is base 64 encoded.
+	 *
+	 * @param digestAlgorithm {@code DigestAlgorithm}
+	 * @param base64EncodeDigest the corresponding base 64 encoded digest value
+	 */
 	public void addDigest(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest) {
 
 		base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
@@ -121,25 +77,10 @@ public class DigestDocument implements DSSDocument {
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 
-		return base64EncodeDigestMap.get(digestAlgorithm);
-	}
-
-	@Override
-	public String toString() {
-
-		final StringWriter stringWriter = new StringWriter();
-		final MimeType mimeType = getMimeType();
-		final String name = getName();
-		if (name != null) {
-
-			stringWriter.append("Name: ").append(name).append(" / ");
+		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
+		if (base64EncodeDigest == null) {
+			base64EncodeDigest = super.getDigest(digestAlgorithm);
 		}
-		if (mimeType != null) {
-
-			stringWriter.append(mimeType.name()).append(" / ");
-		}
-		stringWriter.append(getAbsolutePath());
-		final String string = stringWriter.toString();
-		return string;
+		return base64EncodeDigest;
 	}
 }

@@ -103,9 +103,8 @@ public class OfflineResolver extends ResourceResolverSpi {
 		String uriNodeValue = uriAttr.getNodeValue();
 		if (uriNodeValue.equals(documentURI) || document != null) {
 
-			// TODO-Bob (18/08/2014):  To be investigated how to handle the big data
+			// The input stream is closed automatically by XMLSignatureInput class
 			final InputStream inputStream = document.openStream();
-			// LOG.debug("Available inputStream = " + inputStream.length);
 			final XMLSignatureInput result = new XMLSignatureInput(inputStream);
 			result.setSourceURI(uriNodeValue);
 			final MimeType mimeType = document.getMimeType();

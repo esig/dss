@@ -34,9 +34,9 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 public interface DSSDocument {
 
     /**
-     * Opens a InputStream on the Document content. {@code ByteArrayInputStream} must be always used, so closing the stream is not necessary.
+     * Opens a InputStream on the Document content.
      *
-     * @return
+     * @return an {@code InputStream}
      * @throws DSSException
      */
     public InputStream openStream() throws DSSException;

@@ -550,8 +550,7 @@ public final class DSSUtils {
 	 * @throws java.io.IOException  if an I/O error occurs
 	 * @since Commons IO 1.3
 	 */
-	private
-	static long copyLarge(Reader input, Writer output) throws DSSException {
+	private static long copyLarge(Reader input, Writer output) throws DSSException {
 		try {
 			char[] buffer = new char[DEFAULT_BUFFER_SIZE];
 			long count = 0;
@@ -1366,24 +1365,24 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which does not need to be closed (based on {@code ByteArrayInputStream}.
+	 * This method returns an {@code InputStream} which needs to be closed, based on {@code FileInputStream}.
 	 *
-	 * @param filePath The path to the file
-	 * @return
+	 * @param filePath The path to the file to read
+	 * @return an {@code InputStream} materialized by a {@code FileInputStream} representing the contents of the file
 	 * @throws DSSException
 	 */
 	public static InputStream toInputStream(final String filePath) throws DSSException {
 
 		final File file = getFile(filePath);
-		final InputStream inputStream = toByteArrayInputStream(file);
+		final InputStream inputStream = toInputStream(file);
 		return inputStream;
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which needs to be closed (based on {@code FileInputStream}.
+	 * This method returns an {@code InputStream} which needs to be closed, based on {@code FileInputStream}.
 	 *
 	 * @param file {@code File} to read.
-	 * @return {@code FileInputStream} representing the contents of the file.
+	 * @return an {@code InputStream} materialized by a {@code FileInputStream} representing the contents of the file
 	 * @throws DSSException
 	 */
 	public static InputStream toInputStream(final File file) throws DSSException {
@@ -1401,7 +1400,52 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which does not need to be closed (based on {@code ByteArrayInputStream}.
+	 * This method returns the {@code InputStream} which does not need to be closed, based on {@code ByteArrayInputStream}.
+	 *
+	 * @param bytes An array of {@code byte} to convert to {@code InputStream}
+	 * @return the {@code InputStream} based on {@code ByteArrayInputStream}
+	 */
+	public static InputStream toInputStream(byte[] bytes) {
+
+		final InputStream inputStream = new ByteArrayInputStream(bytes);
+		return inputStream;
+	}
+
+	/**
+	 * This method returns the {@code InputStream} based on the given {@code String} and char set. This stream does not need to be closed, it is based on {@code
+	 * ByteArrayInputStream}.
+	 *
+	 * @param string  {@code String} to convert
+	 * @param charset char set to use
+	 * @return the {@code InputStream} based on {@code ByteArrayInputStream}
+	 */
+	public static InputStream toInputStream(final String string, final String charset) throws DSSException {
+
+		try {
+			final InputStream inputStream = new ByteArrayInputStream(string.getBytes(charset));
+			return inputStream;
+		} catch (UnsupportedEncodingException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * This method returns a {@code FileOutputStream} based on the provided path to the file.
+	 *
+	 * @param path to the file
+	 * @return {@code FileOutputStream}
+	 */
+	public static FileOutputStream toFileOutputStream(final String path) throws DSSException {
+
+		try {
+			return new FileOutputStream(path);
+		} catch (FileNotFoundException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * This method returns an {@code InputStream} which does not need to be closed, based on {@code ByteArrayInputStream}.
 	 *
 	 * @param file {@code File} to read
 	 * @return {@code InputStream} based on {@code ByteArrayInputStream}
@@ -1422,35 +1466,10 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * @param bytes
-	 * @return
-	 */
-	public static InputStream toInputStream(byte[] bytes) {
-
-		final InputStream inputStream = new ByteArrayInputStream(bytes);
-		return inputStream;
-	}
-
-	/**
-	 * @param string
-	 * @param charset
-	 * @return
-	 */
-	public static InputStream toInputStream(final String string, final String charset) throws DSSException {
-
-		try {
-			final InputStream inputStream = new ByteArrayInputStream(string.getBytes(charset));
-			return inputStream;
-		} catch (UnsupportedEncodingException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * This method returns the byte array representing the contents of the file.
 	 *
-	 * @param file {@code File} to read.
-	 * @return
+	 * @param file {@code File} to read
+	 * @return an array of {@code byte}
 	 * @throws DSSException
 	 */
 	public static byte[] toByteArray(final File file) throws DSSException {
@@ -1478,7 +1497,8 @@ public final class DSSUtils {
 	 * @throws IOException in case of an I/O error
 	 * @since Commons IO 1.1
 	 */
-	private static byte[] readFileToByteArray(File file) throws IOException {
+	private static byte[] readFileToByteArray(final File file) throws IOException {
+
 		InputStream in = null;
 		try {
 			in = openInputStream(file);
@@ -1508,7 +1528,7 @@ public final class DSSUtils {
 	 * @throws IOException                   if the file cannot be read
 	 * @since Commons IO 1.3
 	 */
-	private static FileInputStream openInputStream(File file) throws IOException {
+	private static FileInputStream openInputStream(final File file) throws IOException {
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				throw new IOException("File '" + file + "' exists but is a directory");
@@ -1576,18 +1596,39 @@ public final class DSSUtils {
 		return string;
 	}
 
+	/**
+	 * This method saves the given array of {@code byte} to the provided {@code File}.
+	 *
+	 * @param bytes to save
+	 * @param file
+	 * @throws DSSException
+	 */
 	public static void saveToFile(final byte[] bytes, final File file) throws DSSException {
+
 		file.getParentFile().mkdirs();
 		try {
 
-			final FileOutputStream fos = new FileOutputStream(file);
+			final FileOutputStream fileOutputStream = new FileOutputStream(file);
 			final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-			copy(inputStream, fos);
+			copy(inputStream, fileOutputStream);
 			closeQuietly(inputStream);
-			closeQuietly(fos);
+			closeQuietly(fileOutputStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * This method saves the given {@code InputStream} to a file representing by the provided path. The {@code InputStream} is not closed.
+	 *
+	 * @param inputStream {@code InputStream} to save
+	 * @param path        the path to the file to be created
+	 */
+	public static void saveToFile(final InputStream inputStream, final String path) {
+
+		final FileOutputStream fileOutputStream = toFileOutputStream(path);
+		copy(inputStream, fileOutputStream);
+		closeQuietly(fileOutputStream);
 	}
 
 	/**

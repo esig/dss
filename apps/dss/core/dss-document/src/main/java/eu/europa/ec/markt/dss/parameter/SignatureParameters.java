@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.parameter;
 
-import java.security.Timestamp;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
