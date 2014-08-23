@@ -31,20 +31,11 @@ public interface DocumentValidator {
 	DSSDocument getDocument();
 
 	/**
-	 * This method returns the signed document in the case of the detached signatures.
+	 * This method returns the {@code List} of the signed documents in the case of the detached signatures.
 	 *
-	 * @return the detached document
-	 * @deprecated 4.1.0: {@code getDetachedContent} to be used
+	 * @return the {@code List} of the detached document {@code DSSDocument}
 	 */
-	@Deprecated
-	DSSDocument getExternalContent();
-
-	/**
-	 * This method returns the signed document in the case of the detached signatures.
-	 *
-	 * @return the detached document {@code DSSDocument}
-	 */
-	DSSDocument getDetachedContent();
+	List<DSSDocument> getDetachedContents();
 
 	/**
 	 * Retrieves the signatures found in the document
@@ -56,20 +47,11 @@ public interface DocumentValidator {
 	void setCertificateVerifier(final CertificateVerifier certVerifier);
 
 	/**
-	 * Sets the Document containing the original content to sign, for detached signature scenarios.
+	 * Sets the {@code List} of {@code DSSDocument} containing the original contents to sign, for detached signature scenarios.
 	 *
-	 * @param externalContent the externalContent to set
-	 * @deprecated 4.1.0: {@code setDetachedContent} to be used
+	 * @param detachedContent the {@code List} of {@code DSSDocument} to set
 	 */
-	@Deprecated
-	void setExternalContent(final DSSDocument externalContent);
-
-	/**
-	 * Sets the Document containing the original content to sign, for detached signature scenarios.
-	 *
-	 * @param detachedContent the externalContent to set
-	 */
-	void setDetachedContent(final DSSDocument detachedContent);
+	void setDetachedContents(final List<DSSDocument> detachedContent);
 
 	/**
 	 * This method allows to define the signing certificate. It is useful in the case of ,non AdES signatures.

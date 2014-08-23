@@ -21,6 +21,8 @@
 package eu.europa.ec.markt.dss.ws.impl;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jws.WebService;
 
@@ -29,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
+import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
@@ -75,7 +78,9 @@ public class ValidationServiceImpl implements ValidationService {
             validator.setCertificateVerifier(certificateVerifier);
             if (detachedContent != null) {
 
-                validator.setDetachedContent(detachedContent);
+	            List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+	            detachedContents.add(detachedContent);
+                validator.setDetachedContents(detachedContents);
             }
 
             final InputStream inputStream = policy == null ? null : policy.openStream();

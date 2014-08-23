@@ -23,16 +23,13 @@ package eu.europa.ec.markt.dss.validation102853.asic;
 import java.io.IOException;
 import java.util.List;
 
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNotApplicableMethodException;
+import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
-import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
 
 /**
@@ -74,19 +71,18 @@ public class ASiCTimestampDocumentValidator extends CMSDocumentValidator {
 	/**
 	 * In case of a detached signature this is the signed document.
 	 */
-	protected DSSDocument timestampExternalContent;
+	protected List<DSSDocument> timestampExternalContents;
 
 	/**
 	 * The default constructor for ASiCXMLDocumentValidator.
 	 *
-	 * @param timeStampBytes
-	 * @param signedContent
-	 * @param signedDocumentFileName
+	 * @param timestamp        {@code DSSDocument} representing the timestamp to validate
+	 * @param detachedContents the {@code List} containing the potential signed documents
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
-	public ASiCTimestampDocumentValidator(final byte[] timeStampBytes, final byte[] signedContent, final String signedDocumentFileName) throws DSSException {
+	public ASiCTimestampDocumentValidator(final DSSDocument timestamp, final List<DSSDocument> detachedContents) throws DSSException {
 
-		super(new InMemoryDocument(timeStampBytes));
+		super(timestamp);
 
 		try {
 			timeStampToken = new TimeStampToken(cmsSignedData);
@@ -95,7 +91,10 @@ public class ASiCTimestampDocumentValidator extends CMSDocumentValidator {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-		timestampExternalContent = new InMemoryDocument(signedContent, signedDocumentFileName);
+		if (detachedContents == null || detachedContents.size() == 0) {
+			throw new DSSNullException(DSSDocument.class, "detachedContents");
+		}
+		timestampExternalContents = detachedContents;
 	}
 
 	public MimeType getAsicContainerMimeType() {
@@ -128,19 +127,5 @@ public class ASiCTimestampDocumentValidator extends CMSDocumentValidator {
 
 	public void setMagicNumberMimeType(final MimeType magicNumberMimeType) {
 		this.magicNumberMimeType = magicNumberMimeType;
-	}
-
-	/**
-	 * This method is overridden because in the case of ASiC timestamp only the document's hash is timestamped and not the external document.
-	 *
-	 * @return
-	 */
-	@Override
-	public MimeType getExternalContentMimeType() {
-
-		if (timestampExternalContent != null) {
-			return timestampExternalContent.getMimeType();
-		}
-		return null;
 	}
 }

@@ -45,7 +45,7 @@ public class DSSNotETSICompliantException extends RuntimeException {
      * Supported messages
      */
     public enum MSG {
-        TSL_NOT_SIGNED, MORE_THAN_ONE_SIGNATURE, SIGNATURE_INVALID, NOT_A_VALID_XML,
+        TSL_NOT_SIGNED, MORE_THAN_ONE_SIGNATURE, DIFFERENT_SIGNATURE_FORMATS, SIGNATURE_INVALID, NOT_A_VALID_XML,
 
         UNRECOGNIZED_TAG, UNSUPPORTED_ASSERT,
 

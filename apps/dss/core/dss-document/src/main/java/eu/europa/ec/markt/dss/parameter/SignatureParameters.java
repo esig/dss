@@ -534,7 +534,6 @@ public class SignatureParameters {
 			dssTransform = new DSSTransform();
 			dssTransform.setAlgorithm("http://www.w3.org/TR/1999/REC-xpath-19991116");
 			dssTransform.setElementName("ds:XPath");
-			// TODO: (Bob: 2014 Feb 18) xPathQueryHolder.XMLDSIG_NAMESPACE
 			dssTransform.setNamespace(XMLSignature.XMLNS);
 			dssTransform.setTextContent("not(ancestor-or-self::ds:Signature)");
 			dssTransformList.add(dssTransform);

@@ -21,7 +21,6 @@
 package eu.europa.ec.markt.dss.validation102853;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,14 +28,11 @@ import java.net.URL;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -57,14 +53,10 @@ import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.OID;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.validation102853.asic.ASiCCMSDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.asic.ASiCTimestampDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.asic.ASiCXMLDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.asic.ASiCDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
 import eu.europa.ec.markt.dss.validation102853.bean.CertifiedRole;
 import eu.europa.ec.markt.dss.validation102853.bean.CommitmentType;
@@ -162,9 +154,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected DSSDocument document;
 
 	/**
-	 * In case of a detached signature this is the signed document.
+	 * In case of a detached signature this {@code List} contains the signed documents.
 	 */
-	protected DSSDocument detachedContent;
+	protected List<DSSDocument> detachedContents;
 
 	protected CertificateToken providedSigningCertificateToken = null;
 
@@ -199,6 +191,86 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private HashMap<String, File> policyDocuments;
 
+	/**
+	 * This method guesses the document format and returns an appropriate document validator.
+	 *
+	 * @param dssDocument The instance of {@code DSSDocument} to validate
+	 * @return returns the specific instance of SignedDocumentValidator in terms of the document type
+	 */
+	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
+
+		BufferedInputStream bufferedInputStream = null;
+		try {
+
+			final String dssDocumentName = dssDocument.getName();
+			if (dssDocumentName != null && dssDocumentName.toLowerCase().endsWith(".xml")) {
+
+				return new XMLDocumentValidator(dssDocument);
+			}
+
+			bufferedInputStream = new BufferedInputStream(dssDocument.openStream()); // The underlying stream is closed by the parent (bufferedInputStream).
+			/**
+			 * In case of ASiC it can be possible to read the mimetype from the binary file:
+			 * FROM: ETSI TS 102 918 V1.2.1
+			 * A.1 Mimetype
+			 * The "mimetype" object, when stored in a ZIP, file can be used to support operating systems that rely on some content in
+			 * specific positions in a file (the so called "magic number" as described in RFC 4288 [11] in order to select the specific
+			 * application that can load and elaborate the file content. The following restrictions apply to the mimetype to support this
+			 * feature:
+			 * • it has to be the first in the archive;
+			 * • it cannot contain "Extra fields" (i.e. extra field length at offset 28 shall be zero);
+			 * • it cannot be compressed (i.e. compression method at offset 8 shall be zero);
+			 * • the first 4 octets shall have the hex values: "50 4B 03 04".
+			 * An application can ascertain if this feature is used by checking if the string "mimetype" is found starting at offset 30. In
+			 * this case it can be assumed that a string representing the container mime type is present starting at offset 38; the length
+			 * of this string is contained in the 4 octets starting at offset 18.
+			 * All multi-octets values are little-endian.
+			 * The "mimetype" shall NOT be compressed or encrypted inside the ZIP file.
+			 */
+			int headerLength = 500;
+			bufferedInputStream.mark(headerLength);
+			byte[] preamble = new byte[headerLength];
+			int read = bufferedInputStream.read(preamble);
+			bufferedInputStream.reset();
+			if (read < 5) {
+
+				throw new DSSException("The signature is not found.");
+			}
+			String preambleString = new String(preamble);
+			byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
+			byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
+			if (DSSUtils.equals(preamble, xmlPreamble, 5) || DSSUtils.equals(preamble, xmlUtf8, 5)) {
+
+				return new XMLDocumentValidator(dssDocument);
+			} else if (preambleString.startsWith("%PDF-")) {
+
+				return new PDFDocumentValidator(dssDocument);
+			} else if (preamble[0] == 'P' && preamble[1] == 'K') {
+
+				/**
+				 * --> The use of two first bytes is not standard conforming.
+				 *
+				 * 5.2.1 Media type identification
+				 * 1) File extension: ".asics"|".asice" should be used (".scs"|".sce" is allowed for operating systems and/or file systems not
+				 * allowing more than 3 characters file extensions). In the case where the container content is to be handled
+				 * manually, the ".zip" extension may be used.
+				 */
+				DSSUtils.closeQuietly(bufferedInputStream);
+				bufferedInputStream = null;
+				return ASiCDocumentValidator.getInstanceForAsics(dssDocument, preamble);
+			} else if (preambleString.getBytes()[0] == 0x30) {
+
+				return new CMSDocumentValidator(dssDocument);
+			} else {
+				throw new DSSException("Document format not recognized/handled");
+			}
+		} catch (IOException e) {
+			throw new DSSException(e);
+		} finally {
+			DSSUtils.closeQuietly(bufferedInputStream);
+		}
+	}
+
 	@Override
 	public DSSDocument getDocument() {
 
@@ -206,29 +278,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	@Deprecated
-	public DSSDocument getExternalContent() {
+	public List<DSSDocument> getDetachedContents() {
 
-		return detachedContent;
-	}
-
-	@Override
-	public DSSDocument getDetachedContent() {
-
-		return detachedContent;
-	}
-
-	/**
-	 * This method returns the external content mime-type.
-	 *
-	 * @return
-	 */
-	public MimeType getExternalContentMimeType() {
-
-		if (detachedContent != null) {
-			return detachedContent.getMimeType();
-		}
-		return null;
+		return detachedContents;
 	}
 
 	@Override
@@ -255,16 +307,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	@Deprecated
-	public void setExternalContent(final DSSDocument externalContent) {
+	public void setDetachedContents(final List<DSSDocument> detachedContents) {
 
-		this.detachedContent = externalContent;
-	}
-
-	@Override
-	public void setDetachedContent(final DSSDocument detachedContent) {
-
-		this.detachedContent = detachedContent;
+		this.detachedContents = detachedContents;
 	}
 
 	/**
@@ -1314,17 +1359,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * This method performs a global check on all countersignatures present in a given signature
+	 *
 	 * @param signature
 	 * @param ctx
 	 * @return a list of SignatureCryptographicVerification objects
 	 */
-    protected List<SignatureCryptographicVerification> verifyCounterSignatures(final AdvancedSignature signature, final ValidationContext ctx) {
+	protected List<SignatureCryptographicVerification> verifyCounterSignatures(final AdvancedSignature signature, final ValidationContext ctx) {
 
-        final List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
+		final List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 
-        if (counterSignatures == null) {
+		if (counterSignatures == null) {
 			return null;
-        }
+		}
 
 		List<SignatureCryptographicVerification> verifications = new ArrayList<SignatureCryptographicVerification>();
 
@@ -1334,7 +1380,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 
 		return verifications;
-    }
+	}
 
 	protected XmlSigningCertificateType xmlForSigningCertificate(final CertificateToken certificateToken, boolean signatureValid) {
 
@@ -1439,272 +1485,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	protected abstract SignatureScopeFinder getSignatureScopeFinder();
-
-	/**
-	 * ******************************************************************************************
-	 * <p/>
-	 * BUILDER METHODS (Should be in a specific class)
-	 * <p/>
-	 * *******************************************************************************************
-	 */
-
-	public static final String MIME_TYPE = "mimetype";
-	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
-
-	private static final String PATTERN_SIGNATURES_XML = "META-INF/signatures.xml";
-	private static final String PATTERN_SIGNATURES_P7S = "META-INF/signature.p7s";
-	private static final String PATTERN_TIMESTAMP_TST = "META-INF/timestamp.tst";
-
-	/**
-	 * This method guesses the document format and returns an appropriate document validator.
-	 *
-	 * @param dssDocument The instance of {@code DSSDocument} to validate
-	 * @return returns the specific instance of SignedDocumentValidator in terms of the document type
-	 */
-	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
-
-		BufferedInputStream input = null;
-		try {
-
-			final String dssDocumentName = dssDocument.getName();
-			if (dssDocumentName != null && dssDocumentName.toLowerCase().endsWith(".xml")) {
-
-				return new XMLDocumentValidator(dssDocument);
-			}
-
-			input = new BufferedInputStream(dssDocument.openStream());
-			/**
-			 * In case of ASiC it can be possible to read the mimetype from the binary file:
-			 * FROM: ETSI TS 102 918 V1.2.1
-			 * A.1 Mimetype
-			 * The "mimetype" object, when stored in a ZIP, file can be used to support operating systems that rely on some content in
-			 * specific positions in a file (the so called "magic number" as described in RFC 4288 [11] in order to select the specific
-			 * application that can load and elaborate the file content. The following restrictions apply to the mimetype to support this
-			 * feature:
-			 * • it has to be the first in the archive;
-			 * • it cannot contain "Extra fields" (i.e. extra field length at offset 28 shall be zero);
-			 * • it cannot be compressed (i.e. compression method at offset 8 shall be zero);
-			 * • the first 4 octets shall have the hex values: "50 4B 03 04".
-			 * An application can ascertain if this feature is used by checking if the string "mimetype" is found starting at offset 30. In
-			 * this case it can be assumed that a string representing the container mime type is present starting at offset 38; the length
-			 * of this string is contained in the 4 octets starting at offset 18.
-			 * All multi-octets values are little-endian.
-			 * The "mimetype" shall NOT be compressed or encrypted inside the ZIP file.
-			 */
-			int headerLength = 500;
-			input.mark(headerLength);
-			byte[] preamble = new byte[headerLength];
-			int read = input.read(preamble);
-			input.reset();
-			if (read < 5) {
-
-				throw new DSSException("The signature is not found.");
-			}
-			String preambleString = new String(preamble);
-			byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
-			byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
-			if (DSSUtils.equals(preamble, xmlPreamble, 5) || DSSUtils.equals(preamble, xmlUtf8, 5)) {
-
-				return new XMLDocumentValidator(dssDocument);
-			} else if (preambleString.startsWith("%PDF-")) {
-
-				return new PDFDocumentValidator(dssDocument);
-			} else if (preamble[0] == 'P' && preamble[1] == 'K') {
-
-				/**
-				 * --> The use of two first bytes is not standard conforming.
-				 *
-				 * 5.2.1 Media type identification
-				 * 1) File extension: ".asics" should be used (".scs" is allowed for operating systems and/or file systems not
-				 * allowing more than 3 characters file extensions). In the case that the container content is to be handled
-				 * manually, the ".zip" extension may be used.
-				 */
-				DSSUtils.closeQuietly(input);
-				input = null;
-				return getInstanceForAsics(dssDocument, preamble);
-			} else if (preambleString.getBytes()[0] == 0x30) {
-
-				return new CMSDocumentValidator(dssDocument);
-			} else {
-				throw new DSSException("Document format not recognized/handled");
-			}
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} finally {
-			DSSUtils.closeQuietly(input);
-		}
-	}
-
-	/**
-	 * @param asicContainer The instance of {@code DSSDocument} to validate
-	 * @param preamble      contains the beginning of the file
-	 * @return
-	 * @throws eu.europa.ec.markt.dss.exception.DSSException
-	 */
-	private static SignedDocumentValidator getInstanceForAsics(final DSSDocument asicContainer, byte[] preamble) throws DSSException {
-
-		ZipInputStream asics = null;
-		try {
-
-			asics = new ZipInputStream(asicContainer.openStream());
-
-			String dataFileName = "";
-			ByteArrayOutputStream signedDocument = null;
-			ByteArrayOutputStream signature = null;
-			ByteArrayOutputStream timeStamp = null;
-			ZipEntry entry;
-
-			boolean cadesSigned = false;
-			boolean xadesSigned = false;
-			boolean timestamped = false;
-
-			MimeType asicMimeType = null;
-
-			while ((entry = asics.getNextEntry()) != null) {
-
-				final String entryName = entry.getName();
-				if (entryName.contains(PATTERN_SIGNATURES_P7S)) {
-
-					if (xadesSigned) {
-						throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.MORE_THAN_ONE_SIGNATURE);
-					}
-					signature = new ByteArrayOutputStream();
-					DSSUtils.copy(asics, signature);
-					cadesSigned = true;
-				} else if (entryName.contains(PATTERN_SIGNATURES_XML)) {
-
-					if (cadesSigned) {
-						throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.MORE_THAN_ONE_SIGNATURE);
-					}
-					signature = new ByteArrayOutputStream();
-					DSSUtils.copy(asics, signature);
-					xadesSigned = true;
-				} else if (entryName.contains(PATTERN_TIMESTAMP_TST)) {
-
-					timeStamp = new ByteArrayOutputStream();
-					DSSUtils.copy(asics, timeStamp);
-					timestamped = true;
-				} else if (entryName.equalsIgnoreCase(MIME_TYPE)) {
-
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					DSSUtils.copy(asics, byteArrayOutputStream);
-					final String mimeTypeString = byteArrayOutputStream.toString("UTF-8");
-					asicMimeType = MimeType.fromCode(mimeTypeString);
-				} else if (entryName.indexOf("/") == -1) {
-
-					if (signedDocument == null) {
-
-						signedDocument = new ByteArrayOutputStream();
-						DSSUtils.copy(asics, signedDocument);
-						dataFileName = entryName;
-					} else {
-						throw new DSSException("ASiC-S profile support only one data file");
-					}
-				}
-			}
-
-			final MimeType asicCommentString = getZipComment(asicContainer.getBytes());
-			final MimeType magicNumberMimeType = getMagicNumberMimeType(preamble);
-
-			if (xadesSigned) {
-
-				final ASiCXMLDocumentValidator xmlValidator = new ASiCXMLDocumentValidator(signature.toByteArray(), signedDocument.toByteArray(), dataFileName);
-				xmlValidator.setAsicContainerMimeType(asicContainer.getMimeType());
-				xmlValidator.setAsicMimeType(asicMimeType);
-				xmlValidator.setAsicCommentMimeType(asicCommentString);
-				xmlValidator.setMagicNumberMimeType(magicNumberMimeType);
-				return xmlValidator;
-			} else if (cadesSigned) {
-
-				final ASiCCMSDocumentValidator cmsValidator = new ASiCCMSDocumentValidator(signature.toByteArray(), signedDocument.toByteArray(), dataFileName);
-				cmsValidator.setAsicContainerMimeType(asicContainer.getMimeType());
-				cmsValidator.setAsicMimeType(asicMimeType);
-				cmsValidator.setAsicCommentMimeType(asicCommentString);
-				cmsValidator.setMagicNumberMimeType(magicNumberMimeType);
-				return cmsValidator;
-			} else if (timestamped) {
-
-				final ASiCTimestampDocumentValidator timestampValidator = new ASiCTimestampDocumentValidator(timeStamp.toByteArray(), signedDocument.toByteArray(), dataFileName);
-				timestampValidator.setAsicContainerMimeType(asicContainer.getMimeType());
-				timestampValidator.setAsicMimeType(asicMimeType);
-				timestampValidator.setAsicCommentMimeType(asicCommentString);
-				timestampValidator.setMagicNumberMimeType(magicNumberMimeType);
-				return timestampValidator;
-			} else {
-				throw new DSSException("It is neither XAdES nor CAdES, nor timestamp signature!");
-			}
-		} catch (Exception e) {
-			if (e instanceof DSSException) {
-				throw (DSSException) e;
-			}
-			throw new DSSException(e);
-		} finally {
-			DSSUtils.closeQuietly(asics);
-		}
-	}
-
-	private static MimeType getZipComment(final byte[] buffer) {
-
-		final int len = buffer.length;
-		final byte[] magicDirEnd = {0x50, 0x4b, 0x05, 0x06};
-		final int buffLen = Math.min(buffer.length, len);
-		// Check the buffer from the end
-		for (int ii = buffLen - magicDirEnd.length - 22; ii >= 0; ii--) {
-
-			boolean isMagicStart = true;
-			for (int jj = 0; jj < magicDirEnd.length; jj++) {
-
-				if (buffer[ii + jj] != magicDirEnd[jj]) {
-
-					isMagicStart = false;
-					break;
-				}
-			}
-			if (isMagicStart) {
-
-				// Magic Start found!
-				int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
-				int realLen = buffLen - ii - 22;
-				if (commentLen != realLen) {
-					LOG.warn("WARNING! ZIP comment size mismatch: directory says len is " + commentLen + ", but file ends after " + realLen + " bytes!");
-				}
-				final String comment = new String(buffer, ii + 22, Math.min(commentLen, realLen));
-
-				final int indexOf = comment.indexOf(SignedDocumentValidator.MIME_TYPE_COMMENT);
-				if (indexOf > -1) {
-
-					final String asicCommentMimeTypeString = comment.substring(SignedDocumentValidator.MIME_TYPE_COMMENT.length() + indexOf);
-					final MimeType mimeType = MimeType.fromCode(asicCommentMimeTypeString);
-					return mimeType;
-				}
-			}
-		}
-		LOG.warn("ZIP comment NOT found!");
-		return null;
-	}
-
-	private static MimeType getMagicNumberMimeType(final byte[] preamble) {
-
-		if (preamble[28] == 0 && preamble[8] == 0) {
-
-			final byte[] lengthBytes = Arrays.copyOfRange(preamble, 18, 18 + 4);
-			final int length = java.nio.ByteBuffer.wrap(lengthBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN).getInt();
-
-			final byte[] mimeTypeTagBytes = Arrays.copyOfRange(preamble, 30, 30 + 8);
-			final String mimeTypeTagString = DSSUtils.getUtf8String(mimeTypeTagBytes);
-			if (MIME_TYPE.equals(mimeTypeTagString)) {
-
-				final byte[] mimeTypeBytes = Arrays.copyOfRange(preamble, 30 + 8, 30 + 8 + length);
-				String magicNumberMimeType = DSSUtils.getUtf8String(mimeTypeBytes);
-				if (DSSUtils.isNotBlank(magicNumberMimeType)) {
-
-					MimeType mimeType = MimeType.fromCode(magicNumberMimeType);
-					return mimeType;
-				}
-			}
-		}
-		return null;
-	}
 
 	@Override
 	public Reports getReports() {
