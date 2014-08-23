@@ -62,7 +62,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	}
 
 	/**
-	 * This method creates the references other than the "http://uri.etsi.org/01903#SignedProperties" reference. This method is specific for each form of signature.
+	 * {@inheritDoc}
 	 * Per default the value of the URI is set to http://www.w3.org/TR/1999/REC-xpath-19991116 (XPath recommendation) which means that an XPath-expression must be used to select a
 	 * defined subset of the document tree.
 	 */
@@ -70,10 +70,11 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	protected void incorporateReference1() throws DSSException {
 
 		final List<DSSReference> references = params.getReferences();
-		final DSSReference reference = references.get(0);
+		for (final DSSReference reference : references) {
 
-		// <ds:Reference Id="xml_ref_id" URI="">
-		incorporateReference(reference);
+			// <ds:Reference Id="xml_ref_id" URI="">
+			incorporateReference(reference);
+		}
 	}
 
 	/**

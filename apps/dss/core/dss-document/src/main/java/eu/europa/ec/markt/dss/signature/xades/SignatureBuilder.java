@@ -30,9 +30,6 @@ import java.util.UUID;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import eu.europa.ec.markt.dss.parameter.DSSReference;
-import eu.europa.ec.markt.dss.parameter.DSSTransform;
-import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,6 +45,8 @@ import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
+import eu.europa.ec.markt.dss.parameter.DSSReference;
+import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
@@ -55,6 +54,7 @@ import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
+import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
  * This class implements all the necessary mechanisms to build each form of the XML signature. <p/> <p/> DISCLAIMER: Project owner DG-MARKT.
@@ -203,6 +203,11 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		canonicalizationMethodDom.setAttribute("Algorithm", signedInfoCanonicalizationMethod);
 	}
 
+	/**
+	 * This method incorporates the references other than the one concerning "http://uri.etsi.org/01903#SignedProperties".
+	 *
+	 * @throws DSSException
+	 */
 	protected abstract void incorporateReference1() throws DSSException;
 
 	/**
@@ -273,6 +278,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 	/**
 	 * This method incorporates a given list of references in the DOM
+	 *
 	 * @param references
 	 */
 	protected void incorporateReferences(List<DSSReference> references) {
@@ -283,15 +289,17 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	}
 
 	/**
-	 * This method incorporates a reference in the signedInfoDom
-	 * @param reference
+	 * This method incorporates a reference within the signedInfoDom
+	 *
+	 * @param reference {@code DSSReference}
 	 * @throws DSSException
 	 */
-	protected void incorporateReference(DSSReference reference) throws DSSException {
+	protected void incorporateReference(final DSSReference reference) throws DSSException {
 
 		final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
 		referenceDom.setAttribute("Id", reference.getId());
-		referenceDom.setAttribute("URI", reference.getUri());
+		final String uri = reference.getUri();
+		referenceDom.setAttribute("URI", uri);
 		referenceDom.setAttribute("Type", reference.getType());
 
 		final Element transformsDom = DSSXMLUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, "ds:Transforms");
@@ -321,7 +329,17 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 			final Element signatureDOM = (Element) signatureNodeList.item(ii);
 			signatureDOM.getParentNode().removeChild(signatureDOM);
 		}
-		byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, domDoc);
+		final byte[] canonicalizedBytes;
+		if (DSSUtils.isNotBlank(uri) && uri.startsWith("#")) {
+
+			final String uri_id = uri.substring(1);
+			DSSXMLUtils.recursiveIdBrowse(domDoc.getDocumentElement());
+			final Element elementById = domDoc.getElementById(uri_id);
+			canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, elementById);
+		} else {
+
+			canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, domDoc);
+		}
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method  -->" + signedInfoCanonicalizationMethod);
 			LOG.trace("Canonicalized REF_1      --> " + new String(canonicalizedBytes));
