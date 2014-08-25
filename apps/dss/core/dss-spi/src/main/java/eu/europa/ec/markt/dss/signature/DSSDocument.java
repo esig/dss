@@ -33,60 +33,62 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 
 public interface DSSDocument {
 
-    /**
-     * Opens a InputStream on the Document content.
-     *
-     * @return an {@code InputStream}
-     * @throws DSSException
-     */
-    public InputStream openStream() throws DSSException;
-
-    /**
-     * Returns the array of bytes representing the document
-     *
-     * @return
-     */
-    public byte[] getBytes() throws DSSException;
-
-    /**
-     * Returns the name of the document
-     *
-     * @return
-     */
-    public String getName();
-
-    /**
-     * Returns the absolute pathName string of this abstract pathName.
-     *
-     * @return
-     */
-    public String getAbsolutePath();
-
-    /**
-     * Returns the mime-type of the document
-     *
-     * @return
-     */
-    public MimeType getMimeType();
-
-    /**
-     * This method set the mime-type of the document
-     *
-     * @return
-     */
-    public void setMimeType(final MimeType mimeType);
-
-    /**
-     * Save the content of the DSSDocument to the file.
-     *
-     * @param filePath
-     */
-    public void save(final String filePath);
+	/**
+	 * Opens a {@code InputStream} on the {@code DSSDocument} contents. The type of the {@code InputStream} depends on the type of the {@code DSSDocument}. The stream must be
+	 * closed in case of the {@code FileDocument}.
+	 *
+	 * @return an {@code InputStream}
+	 * @throws DSSException
+	 */
+	public InputStream openStream() throws DSSException;
 
 	/**
+	 * Returns the array of bytes representing the document. Do not use this method with large files.
 	 *
-	 * @param digestAlgorithm
-	 * @return
+	 * @return array of {@code byte}
+	 */
+	public byte[] getBytes() throws DSSException;
+
+	/**
+	 * Returns the name of the document. If the {@code DSSDocument} was built based on the {@code File} then the file name is returned.
+	 *
+	 * @return {@code String}  representing the name of the current {@code DSSDocument}
+	 */
+	public String getName();
+
+	/**
+	 * Returns the {@code String} representing the absolute path to the encapsulated document.
+	 *
+	 * @return {@code String} representing the absolute path to the encapsulated document.
+	 */
+	public String getAbsolutePath();
+
+	/**
+	 * Returns the mime-type of the {@code DSSDocument}.
+	 *
+	 * @return {@code MimeType}
+	 */
+	public MimeType getMimeType();
+
+	/**
+	 * This method sets the mime-type of the {@code DSSDocument}.
+	 *
+	 * @param mimeType {@code MimeType}
+	 */
+	public void setMimeType(final MimeType mimeType);
+
+	/**
+	 * Save the content of the DSSDocument to the file.
+	 *
+	 * @param filePath the path to the file to be created
+	 */
+	public void save(final String filePath);
+
+	/**
+	 * This method returns the encoded digest value of the current {@code DSSDocument} using the base64 algorithm.
+	 *
+	 * @param digestAlgorithm {@code DigestAlgorithm}
+	 * @return base64 encoded {@code String}
 	 */
 	public String getDigest(final DigestAlgorithm digestAlgorithm);
 }

@@ -629,7 +629,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final CertificateToken issuerToken = timestampToken.getIssuerToken();
 
-		XmlSigningCertificateType xmlTSSignCert = xmlForSigningCertificate(issuerToken, timestampToken.isSignatureValid());
+		XmlSigningCertificateType xmlTSSignCert = xmlForSigningCertificate(issuerToken);
 		xmlTimestampToken.setSigningCertificate(xmlTSSignCert);
 
 		final XmlCertificateChainType xmlCertChainType = xmlForCertificateChain(issuerToken);
@@ -851,7 +851,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlCert.setBasicSignature(xmlBasicSignatureType);
 
 		final CertificateToken issuerToken = certToken.getIssuerToken();
-		final XmlSigningCertificateType xmlSigningCertificate = xmlForSigningCertificate(issuerToken, certToken.isSignatureValid());
+		final XmlSigningCertificateType xmlSigningCertificate = xmlForSigningCertificate(issuerToken);
 		xmlCert.setSigningCertificate(xmlSigningCertificate);
 
 		final XmlCertificateChainType xmlCertChainType = xmlForCertificateChain(issuerToken);
@@ -982,7 +982,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlRevocation.setBasicSignature(xmlBasicSignatureType);
 
 			final CertificateToken issuerToken = revocationToken.getIssuerToken();
-			final XmlSigningCertificateType xmlRevocationSignCert = xmlForSigningCertificate(issuerToken, revocationToken.isSignatureValid());
+			final XmlSigningCertificateType xmlRevocationSignCert = xmlForSigningCertificate(issuerToken);
 			xmlRevocation.setSigningCertificate(xmlRevocationSignCert);
 
 			final XmlCertificateChainType xmlCertChainType = xmlForCertificateChain(issuerToken);
@@ -1326,8 +1326,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method finds the signing certificate and creates its JAXB object representation. The signing certificate used to produce the main signature (signature being analysed).
-	 * If the signingToken is null (the signing certificate was not found) then Id is set to 0.
+	 * This method finds the signing certificate and creates its JAXB object representation. This is the signing certificate used to produce the main signature (signature being
+	 * analysed). If the signingToken is null (the signing certificate was not found) then Id is set to 0.
 	 *
 	 * @param signature    Signature to be validated (can be XAdES, CAdES, PAdES).
 	 * @param xmlSignature The JAXB object containing all diagnostic data pertaining to the signature
@@ -1382,16 +1382,19 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return verifications;
 	}
 
-	protected XmlSigningCertificateType xmlForSigningCertificate(final CertificateToken certificateToken, boolean signatureValid) {
+	/**
+	 * This method creates the SigningCertificate element for the current token.
+	 *
+	 * @param issuerCertificateToken the issuer certificate of the current token
+	 * @return
+	 */
+	protected XmlSigningCertificateType xmlForSigningCertificate(final CertificateToken issuerCertificateToken) {
 
-		if (certificateToken != null) {
+		if (issuerCertificateToken != null) {
 
 			final XmlSigningCertificateType xmlSignCertType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSigningCertificateType();
 
-			xmlSignCertType.setId(certificateToken.getDSSId());
-			xmlSignCertType.setAttributePresent(signatureValid);
-			xmlSignCertType.setDigestValueMatch(signatureValid);
-			xmlSignCertType.setIssuerSerialMatch(signatureValid);
+			xmlSignCertType.setId(issuerCertificateToken.getDSSId());
 			return xmlSignCertType;
 		}
 		return null;

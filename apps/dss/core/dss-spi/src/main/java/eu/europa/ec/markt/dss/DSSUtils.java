@@ -749,10 +749,8 @@ public final class DSSUtils {
 
 	/**
 	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied in binary or printable (Base64) encoding. If the
-	 * certificate
-	 * is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and must be bounded at the end by -----END CERTIFICATE-----. It throws
-	 * an
-	 * {@code DSSException} or return {@code null} when the certificate cannot be loaded.
+	 * certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and must be bounded at the end by -----END CERTIFICATE-----.
+	 * It throws an {@code DSSException} or return {@code null} when the certificate cannot be loaded.
 	 *
 	 * @param inputStream input stream containing the certificate
 	 * @return
