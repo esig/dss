@@ -20,6 +20,9 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
@@ -28,9 +31,10 @@ import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.DSSReference;
+import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
@@ -38,8 +42,8 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 
 /**
  * This class handles the specifics of the enveloping XML signature
- *
- * <p>
+ * <p/>
+ * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
@@ -47,96 +51,116 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
  */
 class EnvelopingSignatureBuilder extends SignatureBuilder {
 
-    /**
-     * The default constructor for EnvelopingSignatureBuilder. The enveloped signature uses by default the inclusive
-     * method of canonicalization.
-     *
-     * @param params  The set of parameters relating to the structure and process of the creation or extension of the
-     *                electronic signature.
-     * @param origDoc The original document to sign.
-     */
-    public EnvelopingSignatureBuilder(SignatureParameters params, DSSDocument origDoc) {
+	/**
+	 * The default constructor for EnvelopingSignatureBuilder. The enveloped signature uses by default the inclusive
+	 * method of canonicalization.
+	 *
+	 * @param params  The set of parameters relating to the structure and process of the creation or extension of the
+	 *                electronic signature.
+	 * @param origDoc The original document to sign.
+	 */
+	public EnvelopingSignatureBuilder(SignatureParameters params, DSSDocument origDoc) {
 
-        super(params, origDoc);
-        signedInfoCanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
-        reference2CanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
-    }
+		super(params, origDoc);
+		signedInfoCanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
+		reference2CanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
+	}
 
-    /**
-     * This method creates the first reference (this is a reference to the file to sign) witch is specific for each form
-     * of signature. Here, the value of the URI is an unique identifier to the base64 encoded data (file). The data are
-     * included in the signature XML.
-     *
-     * @throws DSSException
-     */
-    @Override
-    protected void incorporateReference1() throws DSSException {
+	/**
+	 * This method creates the first reference (this is a reference to the file to sign) witch is specific for each form
+	 * of signature. Here, the value of the URI is an unique identifier to the base64 encoded data (file). The data are
+	 * included in the signature XML.
+	 *
+	 * @throws DSSException
+	 */
+	@Override
+	protected void incorporateReference1() throws DSSException {
 
-        //<ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
-        final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
-        referenceDom.setAttribute("Id", "signed-data-ref");
-        referenceDom.setAttribute("Type", "http://www.w3.org/2000/09/xmldsig#Object");
-        referenceDom.setAttribute("URI", "#signed-data-" + deterministicId);
+		List<DSSReference> references = params.getReferences();
+		if (references == null || references.size() == 0) {
 
-        final Element transformsDom = DSSXMLUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, "ds:Transforms");
+			references = createDefaultReference();
+		}
+		for (final DSSReference reference : references) {
 
-        final Element transform1Dom = DSSXMLUtils.addElement(documentDom, transformsDom, XMLSignature.XMLNS, "ds:Transform");
-        transform1Dom.setAttribute("Algorithm", CanonicalizationMethod.BASE64);
+			incorporateReference(reference);
+		}
+	}
 
-        // <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-        final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
-        incorporateDigestMethod(referenceDom, digestAlgorithm);
+	private List<DSSReference> createDefaultReference() {
 
-	    final InMemoryDocument inMemoryDocument = new InMemoryDocument(originalDocument.getBytes());
-	    incorporateDigestValue(referenceDom, digestAlgorithm, inMemoryDocument);
-    }
+		final List<DSSReference> references = new ArrayList<DSSReference>();
 
-    /**
-     * Adds signature value to the signature and returns XML signature (InMemoryDocument)
-     *
-     * @param signatureValue
-     * @return
-     * @throws DSSException
-     */
-    @Override
-    public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
+		//<ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
+		final DSSReference reference = new DSSReference();
+		reference.setId("signed-data-ref");
+		reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
+		reference.setUri("#signed-data-" + deterministicId);
 
-        if (!built) {
+		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 
-            build();
-        }
+		final DSSTransform transform = new DSSTransform();
+		transform.setAlgorithm(CanonicalizationMethod.BASE64);
 
-        final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
-        final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
-        final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);
-        final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
-        signatureValueDom.appendChild(signatureValueNode);
+		transforms.add(transform);
+		reference.setTransforms(transforms);
+		references.add(reference);
 
-        // <ds:Object>
-        final String base64EncodedOriginalDocument = DSSUtils.base64Encode(originalDocument);
-        final Element objectDom = DSSXMLUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, "ds:Object", base64EncodedOriginalDocument);
-        objectDom.setAttribute("Id", "signed-data-" + deterministicId);
+		return references;
+	}
 
-        byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
-        final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-        return inMemoryDocument;
-    }
+	@Override
+	protected DSSDocument canonicalizeReference(final DSSReference reference) {
 
-    /**
-     * This method returns data format reference specific for enveloped signature.
-     */
-    @Override
-    protected String getDataObjectFormatObjectReference() {
+		return originalDocument;
+	}
 
-        return "#signed-data-ref";
-    }
+	/**
+	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
+	 *
+	 * @param signatureValue
+	 * @return
+	 * @throws DSSException
+	 */
+	@Override
+	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
 
-    /**
-     * This method returns data format mime type specific for enveloped signature.
-     */
-    @Override
-    protected String getDataObjectFormatMimeType() {
+		if (!built) {
 
-        return "text/plain";
-    }
+			build();
+		}
+
+		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
+		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
+		final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);
+		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
+		signatureValueDom.appendChild(signatureValueNode);
+
+		// <ds:Object>
+		final String base64EncodedOriginalDocument = DSSUtils.base64Encode(originalDocument);
+		final Element objectDom = DSSXMLUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
+		objectDom.setAttribute(ID, "signed-data-" + deterministicId);
+
+		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
+		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+		return inMemoryDocument;
+	}
+
+	/**
+	 * This method returns data format reference specific for enveloped signature.
+	 */
+	@Override
+	protected String getDataObjectFormatObjectReference() {
+
+		return "#signed-data-ref";
+	}
+
+	/**
+	 * This method returns data format mime type specific for enveloped signature.
+	 */
+	@Override
+	protected String getDataObjectFormatMimeType() {
+
+		return "text/plain";
+	}
 }

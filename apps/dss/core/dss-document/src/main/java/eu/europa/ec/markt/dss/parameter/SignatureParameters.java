@@ -511,36 +511,6 @@ public class SignatureParameters {
 
 	public List<DSSReference> getReferences() {
 
-		if (references == null) {
-
-			references = new ArrayList<DSSReference>();
-
-			DSSReference dssReference = new DSSReference();
-			dssReference.setId("xml_ref_id");
-			dssReference.setUri("");
-			/// dssReference.setType("");
-
-			final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
-
-			DSSTransform dssTransform = new DSSTransform();
-			dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
-			dssTransformList.add(dssTransform);
-
-			dssTransform = new DSSTransform();
-			dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
-			dssTransformList.add(dssTransform);
-
-			// For double signatures
-			dssTransform = new DSSTransform();
-			dssTransform.setAlgorithm("http://www.w3.org/TR/1999/REC-xpath-19991116");
-			dssTransform.setElementName("ds:XPath");
-			dssTransform.setNamespace(XMLSignature.XMLNS);
-			dssTransform.setTextContent("not(ancestor-or-self::ds:Signature)");
-			dssTransformList.add(dssTransform);
-			dssReference.setTransforms(dssTransformList);
-
-			references.add(dssReference);
-		}
 		return references;
 	}
 

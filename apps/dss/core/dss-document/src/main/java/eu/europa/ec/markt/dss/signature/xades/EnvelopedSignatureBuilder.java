@@ -20,12 +20,16 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.XMLSignature;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -33,10 +37,12 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
+import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
  * This class handles the specifics of the enveloped XML signature
@@ -69,11 +75,83 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	@Override
 	protected void incorporateReference1() throws DSSException {
 
-		final List<DSSReference> references = params.getReferences();
+		List<DSSReference> references = params.getReferences();
+		if (references == null || references.size() == 0) {
+
+			references = createDefaultReference();
+		}
 		for (final DSSReference reference : references) {
 
-			// <ds:Reference Id="xml_ref_id" URI="">
 			incorporateReference(reference);
+		}
+	}
+
+	private List<DSSReference> createDefaultReference() {
+
+		final List<DSSReference> references = new ArrayList<DSSReference>();
+
+		DSSReference dssReference = new DSSReference();
+		dssReference.setId("xml_ref_id");
+		dssReference.setUri("");
+		// dssReference.setType("");
+
+		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
+
+		DSSTransform dssTransform = new DSSTransform();
+		dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
+		dssTransformList.add(dssTransform);
+
+		dssTransform = new DSSTransform();
+		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
+		dssTransformList.add(dssTransform);
+
+		// For double signatures
+		dssTransform = new DSSTransform();
+		dssTransform.setAlgorithm(HTTP_WWW_W3_ORG_TR_1999_REC_XPATH_19991116);
+		dssTransform.setElementName(DS_XPATH);
+		dssTransform.setNamespace(XMLSignature.XMLNS);
+		dssTransform.setTextContent("not(ancestor-or-self::ds:Signature)");
+		dssTransformList.add(dssTransform);
+		dssReference.setTransforms(dssTransformList);
+
+		references.add(dssReference);
+
+		return references;
+	}
+
+	@Override
+	protected DSSDocument canonicalizeReference(final DSSReference reference) {
+
+		final Document domDoc = DSSXMLUtils.buildDOM(originalDocument);
+		removeExistingSignatures(domDoc);
+
+		byte[] canonicalizedBytes;
+		final String uri = reference.getUri();
+		if (DSSUtils.isNotBlank(uri) && uri.startsWith("#")) {
+
+			final String uri_id = uri.substring(1);
+			DSSXMLUtils.recursiveIdBrowse(domDoc.getDocumentElement());
+			final Element elementById = domDoc.getElementById(uri_id);
+			canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, elementById);
+		} else {
+
+			canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, domDoc);
+		}
+		return new InMemoryDocument(canonicalizedBytes);
+	}
+
+	/**
+	 * In case of the enveloped signature the existing signatures are removed
+	 *
+	 * @param domDoc {@code Document} containing the signatures to analyse
+	 */
+	protected void removeExistingSignatures(final Document domDoc) {
+
+		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+
+			final Element signatureDOM = (Element) signatureNodeList.item(ii);
+			signatureDOM.getParentNode().removeChild(signatureDOM);
 		}
 	}
 

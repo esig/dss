@@ -2527,7 +2527,7 @@ public final class DSSUtils {
 	 * This method returns an UTC date base on the year, the month and the day. The year must be encoded as 1978... and not 78
 	 *
 	 * @param year  the year
-	 * @param month the month
+	 * @param month the month. Month value is 0-based. e.g., 0 for January.
 	 * @param day   the day
 	 * @return the UTC date base on parameters
 	 */

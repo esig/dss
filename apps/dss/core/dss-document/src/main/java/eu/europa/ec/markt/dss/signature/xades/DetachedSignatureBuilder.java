@@ -20,17 +20,18 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.w3c.dom.Element;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+
 import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
@@ -98,21 +99,40 @@ class DetachedSignatureBuilder extends SignatureBuilder {
     @Override
     protected void incorporateReference1() throws DSSException {
 
-        //<ds:Reference Id="detached-ref-id" URI="xml_example.xml">
-        final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
-        referenceDom.setAttribute("Id", "detached-ref-id");
-        final String fileURI = fileName != null ? fileName : "";
-        referenceDom.setAttribute("URI", fileURI);
+	    List<DSSReference> references = params.getReferences();
+	    if (references == null || references.size() == 0) {
 
-        // <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-        final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
-        incorporateDigestMethod(referenceDom, digestAlgorithm);
+		    references = createDefaultReference();
+	    }
+	    for (final DSSReference reference : references) {
 
-        // <ds:DigestValue>EGx5Dc+GjdzKf0Dqh9h3a+WlixaKpYkjCmXTA/3Y2J4=</ds:DigestValue>
-        incorporateDigestValue(referenceDom, digestAlgorithm, originalDocument);
+		    incorporateReference(reference);
+	    }
     }
 
-    /**
+	private List<DSSReference> createDefaultReference() {
+
+		final List<DSSReference> references = new ArrayList<DSSReference>();
+
+		//<ds:Reference Id="detached-ref-id" URI="xml_example.xml">
+
+		final DSSReference reference = new DSSReference();
+		reference.setId("detached-ref-id");
+		final String fileURI = fileName != null ? fileName : "";
+		reference.setUri(fileURI);
+
+		references.add(reference);
+
+		return references;
+	}
+
+	@Override
+	protected DSSDocument canonicalizeReference(final DSSReference reference) {
+
+		return originalDocument;
+	}
+
+	/**
      * Adds signature value to the signature and returns XML signature (InMemoryDocument)
      *
      * @param signatureValue
