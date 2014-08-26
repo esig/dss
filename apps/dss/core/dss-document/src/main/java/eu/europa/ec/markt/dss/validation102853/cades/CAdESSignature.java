@@ -639,7 +639,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				// must be ASN1UTCTime
 				if (!(attrValue instanceof ASN1UTCTime)) {
 					LOG.error(
-						  "RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) must be encoded as UTCTime. Any dates with year values before 1950 or after 2049 must be encoded as GeneralizedTime. Date found is %s encoded as %s",
+						  "RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) must be encoded as UTCTime. Any dates with year values before 1950 or after 2049 must be encoded as GeneralizedTime. Date found is {} encoded as {}",
 						  signingDate.toString(), attrValue.getClass());
 					return null;
 				}
