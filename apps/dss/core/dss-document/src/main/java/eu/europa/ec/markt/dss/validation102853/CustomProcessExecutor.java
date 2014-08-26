@@ -103,7 +103,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	 * This method executes the long term validation processes. The underlying processes are automatically executed.
 	 */
 	@Override
-	public DetailedReport execute() {
+	public Reports execute() {
 
 		processParams = new ProcessParameters();
 		diagnosticData = new DiagnosticData(diagnosticDataDom);
@@ -126,7 +126,8 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		final SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(validationPolicy, diagnosticData);
 		simpleReport = simpleReportBuilder.build(processParams);
 
-		return detailedReport;
+		final Reports reports = new Reports(diagnosticData, detailedReport, simpleReport);
+		return reports;
 	}
 
 	/**
@@ -136,42 +137,5 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	 */
 	public Date getCurrentTime() {
 		return currentTime;
-	}
-
-	/**
-	 * Returns the diagnostic report. This is another representation od {code DiagnosticData}.
-	 *
-	 * @return
-	 */
-	public DiagnosticData getDiagnosticData() {
-
-		return diagnosticData;
-	}
-
-	/**
-	 * Returns the simple report. This is the simplest representation of the validation result.
-	 *
-	 * @return
-	 */
-	public SimpleReport getSimpleReport() {
-
-		return simpleReport;
-	}
-
-	/**
-	 * Returns the detailed validation report.
-	 *
-	 * @return
-	 */
-	public DetailedReport getDetailedReport() {
-
-		return detailedReport;
-	}
-
-	@Override
-	public Reports getReports() {
-
-		final Reports reports = new Reports(diagnosticData, detailedReport, simpleReport);
-		return reports;
 	}
 }

@@ -8,10 +8,7 @@ import java.util.List;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
-import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
-import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
 
 /**
  * TODO
@@ -64,25 +61,45 @@ public interface DocumentValidator {
 
 	void setPolicyFile(final String signatureId, final File policyDocument);
 
+	/**
+	 * Validates the document and all its signatures. The default constraint file is used.
+	 *
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument();
 
+	/**
+	 * Validates the document and all its signatures. If the validation policy URL is set then the policy constraints are retrieved from this location. If null or empty the
+	 * default file is used.
+	 *
+	 * @param validationPolicyURL
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument(final URL validationPolicyURL);
 
+	/**
+	 * Validates the document and all its signatures. The policyResourcePath specifies the constraint file. If null or empty the default file is used.
+	 *
+	 * @param policyResourcePath is located against the classpath (getClass().getResourceAsStream), and NOT the filesystem
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument(final String policyResourcePath);
 
+	/**
+	 * Validates the document and all its signatures. The {@code File} parameter specifies the constraint file. If null or empty the default file is used.
+	 *
+	 * @param policyFile contains the validation policy (xml) as {@code File}
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument(final File policyFile);
 
+	/**
+	 * Validates the document and all its signatures. The policyDataStream contains the constraint file. If null or empty the default file is used.
+	 *
+	 * @param policyDataStream contains the validation policy (xml) as {@code InputStream}
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument(final InputStream policyDataStream);
-
-	DiagnosticData getDiagnosticData();
-
-	SimpleReport getSimpleReport();
-
-	DetailedReport getDetailedReport();
-
-	Reports getReports();
-
-	void printReports();
 
 	/**
 	 * TODO (31/07/2014): to be implemented (proposal for v5)

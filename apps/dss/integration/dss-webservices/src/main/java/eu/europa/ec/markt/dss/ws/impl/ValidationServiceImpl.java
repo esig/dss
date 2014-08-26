@@ -36,6 +36,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
+import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
 import eu.europa.ec.markt.dss.ws.ValidationService;
 import eu.europa.ec.markt.dss.ws.WSDocument;
@@ -84,12 +85,12 @@ public class ValidationServiceImpl implements ValidationService {
             }
 
             final InputStream inputStream = policy == null ? null : policy.openStream();
-            validator.validateDocument(inputStream);
+	        final Reports reports = validator.validateDocument(inputStream);
 
-            final SimpleReport simpleReport = validator.getSimpleReport();
+	        final SimpleReport simpleReport = reports.getSimpleReport();
             final String simpleReportXml = simpleReport.toString();
 
-            final DetailedReport detailedReport = validator.getDetailedReport();
+            final DetailedReport detailedReport = reports.getDetailedReport();
             final String detailedReportXml = detailedReport.toString();
 
             final WSValidationReport wsValidationReport = new WSValidationReport();
@@ -97,7 +98,7 @@ public class ValidationServiceImpl implements ValidationService {
             wsValidationReport.setXmlDetailedReport(detailedReportXml);
             if (diagnosticDataToBeReturned) {
 
-                final DiagnosticData diagnosticData = validator.getDiagnosticData();
+                final DiagnosticData diagnosticData = reports.getDiagnosticData();
                 final String diagnosticDataXml = diagnosticData.toString();
                 wsValidationReport.setXmlDiagnosticData(diagnosticDataXml);
             }

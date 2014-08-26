@@ -23,7 +23,6 @@ import java.util.Date;
 
 import org.w3c.dom.Document;
 
-import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
 /**
@@ -60,15 +59,7 @@ public interface ProcessExecutor {
 	/**
 	 * This method allows to run the validation process.
 	 *
-	 * @return
+	 * @return {@code Reports}
 	 */
-	DetailedReport execute();
-
-	/**
-	 * Returns an object {@code Reports} containing all reports: {@code DetailedReport}, {@code eu.europa.ec.markt.dss.validation102853.report.SimpleReport} and {@code
-	 * DiagnosticData}
-	 *
-	 * @return
-	 */
-	Reports getReports();
+	Reports execute();
 }

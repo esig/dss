@@ -57,6 +57,7 @@ import eu.europa.ec.markt.dss.validation102853.CommonTrustedCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
+import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
 import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
@@ -286,8 +287,8 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 					throw new DSSException("Not ETSI compliant signature. The Xml is not signed.");
 				}
 
-				xmlDocumentValidator.validateDocument();
-				final SimpleReport simpleReport = xmlDocumentValidator.getSimpleReport();
+				final Reports reports = xmlDocumentValidator.validateDocument();
+				final SimpleReport simpleReport = reports.getSimpleReport();
 				final List<String> signatureIdList = simpleReport.getSignatureIds();
 				final String signatureId = signatureIdList.get(0);
 				final String indication = simpleReport.getIndication(signatureId);
@@ -296,7 +297,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 				if (!coreValidity) {
 
 					LOG.info("The TSL signature validity details:\n" + simpleReport);
-					System.out.println(xmlDocumentValidator.getDiagnosticData());
+					System.out.println(reports.getDiagnosticData());
 					throw new DSSException("Not ETSI compliant signature. The signature is not valid.");
 				}
 			}
