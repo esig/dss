@@ -2996,7 +2996,7 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method lists all defined secutity providers.
+	 * This method lists all defined security providers.
 	 */
 	public static void printSecurityProvides() {
 
@@ -3010,6 +3010,32 @@ public final class DSSUtils {
 				System.out.println("\tALGORITHM: " + service.getAlgorithm() + " / " + service.getType() + " / " + service.getClassName());
 			}
 		}
+	}
+
+	/**
+	 * This method return the summary of the given exception. The analysis of the stack trace stops when the provided class is found.
+	 *
+	 * @param exception {@code Exception} to summarize
+	 * @param javaClass {@code Class}
+	 * @return {@code String} containing the summary message
+	 */
+	public static String getSummaryMessage(final Exception exception, final Class<?> javaClass) {
+
+		final String javaClassName = javaClass.getName();
+		final StackTraceElement[] stackTrace = exception.getStackTrace();
+		String message = "See log file for full stack trace.\n";
+		message += exception.toString() + '\n';
+		for (int ii = 0; ii < stackTrace.length; ii++) {
+
+			final String className = stackTrace[ii].getClassName();
+			if (className.equals(javaClassName)) {
+
+				message += stackTrace[ii].toString() + '\n';
+				break;
+			}
+			message += stackTrace[ii].toString() + '\n';
+		}
+		return message;
 	}
 }
 

@@ -27,7 +27,7 @@ public class DSSNullException extends DSSException {
      * This constructor creates an exception with the name of the parameter's class and the name of the parameter. This constructor can be used when
      * the class of the parameter doesn't allow to unambiguously identify the parameter.
      *
-     * @param javaClass the null object
+     * @param javaClass the null object class
      * @param name      the name of the null object
      */
     public DSSNullException(final Class<?> javaClass, final String name) {

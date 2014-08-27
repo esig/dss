@@ -34,15 +34,15 @@ import org.w3c.dom.Document;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.TSLConstant;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.CertificateQualification;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.SignatureQualification;
 import eu.europa.ec.markt.dss.validation102853.SignatureType;
 import eu.europa.ec.markt.dss.validation102853.TLQualification;
+import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
-import eu.europa.ec.markt.dss.validation102853.processes.dss.InvolvedServiceInfo;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
+import eu.europa.ec.markt.dss.validation102853.processes.dss.InvolvedServiceInfo;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
@@ -73,7 +73,7 @@ public class SimpleReportBuilder {
 
 	public SimpleReportBuilder(final ValidationPolicy constraintData, final DiagnosticData diagnosticData) {
 
-		this.constraintData = (EtsiValidationPolicy)constraintData;
+		this.constraintData = (EtsiValidationPolicy) constraintData;
 		this.diagnosticData = diagnosticData;
 	}
 
@@ -254,11 +254,11 @@ public class SimpleReportBuilder {
 		}
 	}
 
-    private void addSignatureScope(XmlNode signatureNode, XmlDom signatureSoopes) {
-        signatureNode.addChild(signatureSoopes);
-    }
+	private void addSignatureScope(XmlNode signatureNode, XmlDom signatureSoopes) {
+		signatureNode.addChild(signatureSoopes);
+	}
 
-    private void addBasicInfo(XmlNode signatureNode, List<XmlDom> basicValidationErrorList) {
+	private void addBasicInfo(XmlNode signatureNode, List<XmlDom> basicValidationErrorList) {
 		for (final XmlDom error : basicValidationErrorList) {
 
 			signatureNode.addChild(error);
@@ -343,9 +343,15 @@ public class SimpleReportBuilder {
 	 */
 	private static void notifyException(final XmlNode signatureNode, final Exception exception) {
 
-		signatureNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE);
-		signatureNode.addChild(NodeName.SUB_INDICATION, "An unexpected error occurred during the signature validation process.");
-		signatureNode.addChild(NodeName.INFO, exception.toString());
 		LOG.error(exception.getMessage(), exception);
+
+		signatureNode.removeChild(NodeName.INDICATION);
+		signatureNode.removeChild(NodeName.SUB_INDICATION);
+
+		signatureNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE);
+		signatureNode.addChild(NodeName.SUB_INDICATION, SubIndication.UNEXPECTED_ERROR);
+
+		final String message = DSSUtils.getSummaryMessage(exception, SimpleReportBuilder.class);
+		signatureNode.addChild(NodeName.INFO, message);
 	}
 }
