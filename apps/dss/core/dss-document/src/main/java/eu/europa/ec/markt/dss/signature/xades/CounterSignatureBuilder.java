@@ -77,6 +77,11 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 	}
 
 	@Override
+	protected List<DSSReference> createDefaultReference() {
+		return null;
+	}
+
+	@Override
 	protected DSSDocument canonicalizeReference(DSSReference reference) {
 		return null;
 	}
@@ -164,23 +169,4 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 	public void setParams(SignatureParameters parameters) {
 		params = parameters;
 	}
-
-	/**
-	 * This method returns data format reference specific for enveloped signature.
-	 */
-	@Override
-	protected String getDataObjectFormatObjectReference() {
-
-		return "#xml_ref_id";
-	}
-
-	/**
-	 * This method returns data format mime type specific for enveloped signature.
-	 */
-	@Override
-	protected String getDataObjectFormatMimeType() {
-
-		return "text/xml";
-	}
-
 }

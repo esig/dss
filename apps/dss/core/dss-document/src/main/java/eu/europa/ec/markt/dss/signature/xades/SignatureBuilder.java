@@ -48,6 +48,7 @@ import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
@@ -140,6 +141,15 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		documentDom = DSSXMLUtils.buildDOM();
 
 		deterministicId = params.getDeterministicId();
+
+
+		final List<DSSReference> references = params.getReferences();
+		if (references == null || references.size() == 0) {
+
+			final List<DSSReference> defaultReference = createDefaultReference();
+			// The SignatureParameters object is updated with the default references.
+			params.setReferences(defaultReference);
+		}
 
 		incorporateSignatureDom();
 
@@ -317,6 +327,13 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	}
 
 	/**
+	 * When the user does not want to create its own reference (only when signing one contents) the default one must be created.
+	 *
+	 * @return {@code List} of {@code DSSReference}
+	 */
+	protected abstract List<DSSReference> createDefaultReference();
+
+	/**
 	 * This method canonicalize the given reference
 	 *
 	 * @param reference {@code DSSReference} to be canonicalized
@@ -447,16 +464,23 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 */
 	private void incorporateSignedDataObjectProperties() {
 
-		final String dataObjectFormatObjectReference = getDataObjectFormatObjectReference();
-		final String dataObjectFormatMimeType = getDataObjectFormatMimeType();
-
 		signedDataObjectPropertiesDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNED_DATA_OBJECT_PROPERTIES);
 
-		final Element dataObjectFormatDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_DATA_OBJECT_FORMAT);
-		dataObjectFormatDom.setAttribute("ObjectReference", dataObjectFormatObjectReference);
+		final List<DSSReference> references = params.getReferences();
+		for (final DSSReference reference : references) {
 
-		final Element mimeTypeDom = DSSXMLUtils.addElement(documentDom, dataObjectFormatDom, XAdESNamespaces.XAdES, XADES_MIME_TYPE);
-		DSSXMLUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType);
+			final String dataObjectFormatObjectReference = "#" + reference.getId();
+			MimeType dataObjectFormatMimeType = reference.getContents().getMimeType();
+			if (dataObjectFormatMimeType == null) {
+				dataObjectFormatMimeType = MimeType.BINARY;
+			}
+
+			final Element dataObjectFormatDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_DATA_OBJECT_FORMAT);
+			dataObjectFormatDom.setAttribute("ObjectReference", dataObjectFormatObjectReference);
+
+			final Element mimeTypeDom = DSSXMLUtils.addElement(documentDom, dataObjectFormatDom, XAdESNamespaces.XAdES, XADES_MIME_TYPE);
+			DSSXMLUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType.getCode());
+		}
 
 		incorporateContentTimestamps();
 	}
@@ -599,20 +623,6 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	public abstract DSSDocument signDocument(final byte[] signatureValue) throws DSSException;
 
 	/**
-	 * This method returns data format reference.
-	 *
-	 * @return
-	 */
-	protected abstract String getDataObjectFormatObjectReference();
-
-	/**
-	 * This method returns data format mime type.
-	 *
-	 * @return
-	 */
-	protected abstract String getDataObjectFormatMimeType();
-
-	/**
 	 * Adds the content of a timestamp into a given timestamp element
 	 *
 	 * @param timestampElement
@@ -643,12 +653,12 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	}
 
 	/**
-	 * Creates XAdES TimeStamp object representation. The time stamp token is obtained from TSP source
+	 * Creates any XAdES Timestamp object representation. The timestamp token is obtained from TSP source.
 	 *
-	 * @param timestampC14nMethod
-	 * @param digestValue
-	 * @return
-	 * @throws eu.europa.ec.markt.dss.exception.DSSException
+	 * @param timestampType       {@code TimestampType}
+	 * @param timestampC14nMethod canonicalization method
+	 * @param digestValue         array of {@code byte} representing the digest to timestamp
+	 * @throws DSSException in case of any error
 	 */
 	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final byte[] digestValue) throws DSSException {
 
@@ -663,7 +673,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 			final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
 			final byte[] timeStampTokenBytes = timeStampToken.getEncoded();
 
-			final String signatureTimestampId = "time-stamp-token-" + UUID.randomUUID().toString();
+			final String timestampId = "time-stamp-token-" + UUID.randomUUID().toString();
 			final String base64EncodedTimeStampToken = DSSUtils.base64Encode(timeStampTokenBytes);
 
 			Element timeStampDom = null;
@@ -692,14 +702,14 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 					timeStampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP);
 					break;
 			}
-			timeStampDom.setAttribute("Id", signatureTimestampId);
+			timeStampDom.setAttribute("Id", timestampId);
 
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
 
 			// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
 			final Element encapsulatedTimeStampDom = DSSXMLUtils.addElement(documentDom, timeStampDom, XAdESNamespaces.XAdES, XADES_ENCAPSULATED_TIME_STAMP);
-			encapsulatedTimeStampDom.setAttribute(ID, signatureTimestampId);
+			encapsulatedTimeStampDom.setAttribute(ID, timestampId);
 			DSSXMLUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
 		} catch (IOException e) {
 

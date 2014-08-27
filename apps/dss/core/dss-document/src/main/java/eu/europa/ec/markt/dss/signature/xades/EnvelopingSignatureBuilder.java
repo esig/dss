@@ -76,26 +76,24 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 	@Override
 	protected void incorporateReference1() throws DSSException {
 
-		List<DSSReference> references = params.getReferences();
-		if (references == null || references.size() == 0) {
-
-			references = createDefaultReference();
-		}
+		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
 
 			incorporateReference(reference);
 		}
 	}
 
-	private List<DSSReference> createDefaultReference() {
+	@Override
+	protected List<DSSReference> createDefaultReference() {
 
 		final List<DSSReference> references = new ArrayList<DSSReference>();
 
 		//<ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
 		final DSSReference reference = new DSSReference();
-		reference.setId("signed-data-ref");
+		reference.setId("r-id-1");
 		reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
-		reference.setUri("#signed-data-" + deterministicId);
+		reference.setUri("#o-id-1");
+		reference.setContents(originalDocument);
 
 		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 
@@ -112,7 +110,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 	@Override
 	protected DSSDocument canonicalizeReference(final DSSReference reference) {
 
-		return originalDocument;
+		return reference.getContents();
 	}
 
 	/**
@@ -136,31 +134,18 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 
-		// <ds:Object>
-		final String base64EncodedOriginalDocument = DSSUtils.base64Encode(originalDocument);
-		final Element objectDom = DSSXMLUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
-		objectDom.setAttribute(ID, "signed-data-" + deterministicId);
+		final List<DSSReference> references = params.getReferences();
+		for (final DSSReference reference : references) {
+
+			// <ds:Object>
+			final String base64EncodedOriginalDocument = DSSUtils.base64Encode(reference.getContents());
+			final Element objectDom = DSSXMLUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
+			final String id = reference.getUri().substring(1);
+			objectDom.setAttribute(ID, id);
+		}
 
 		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
 		return inMemoryDocument;
-	}
-
-	/**
-	 * This method returns data format reference specific for enveloped signature.
-	 */
-	@Override
-	protected String getDataObjectFormatObjectReference() {
-
-		return "#signed-data-ref";
-	}
-
-	/**
-	 * This method returns data format mime type specific for enveloped signature.
-	 */
-	@Override
-	protected String getDataObjectFormatMimeType() {
-
-		return "text/plain";
 	}
 }

@@ -75,25 +75,22 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	@Override
 	protected void incorporateReference1() throws DSSException {
 
-		List<DSSReference> references = params.getReferences();
-		if (references == null || references.size() == 0) {
-
-			references = createDefaultReference();
-		}
+		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
 
 			incorporateReference(reference);
 		}
 	}
 
-	private List<DSSReference> createDefaultReference() {
+	@Override
+	protected List<DSSReference> createDefaultReference() {
 
 		final List<DSSReference> references = new ArrayList<DSSReference>();
 
 		DSSReference dssReference = new DSSReference();
-		dssReference.setId("xml_ref_id");
+		dssReference.setId("r-id-1");
 		dssReference.setUri("");
-		// dssReference.setType("");
+		dssReference.setContents(originalDocument);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
@@ -186,23 +183,5 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 
 		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(originalDocumentDom);
 		return new InMemoryDocument(documentBytes);
-	}
-
-	/**
-	 * This method returns data format reference specific for enveloped signature.
-	 */
-	@Override
-	protected String getDataObjectFormatObjectReference() {
-
-		return "#xml_ref_id";
-	}
-
-	/**
-	 * This method returns data format mime type specific for enveloped signature.
-	 */
-	@Override
-	protected String getDataObjectFormatMimeType() {
-
-		return "text/xml";
 	}
 }

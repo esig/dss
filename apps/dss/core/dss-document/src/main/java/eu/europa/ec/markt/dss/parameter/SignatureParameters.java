@@ -193,7 +193,7 @@ public class SignatureParameters {
 	 * This method returns the document to sign. In the case of the DETACHED signature this is the detached document.
 	 *
 	 * @return
-	 * @deprecated (4.1.0) use {@code getDetachedContent}
+	 * @deprecated (4.1.0) use {@code getContents}
 	 */
 	@Deprecated
 	public DSSDocument getOriginalDocument() {
@@ -215,7 +215,7 @@ public class SignatureParameters {
 	 * When extending this method must be invoked to indicate the {@code detachedContent}.
 	 *
 	 * @param document
-	 * @deprecated (4.1.0) use {@code setDetachedContent}
+	 * @deprecated (4.1.0) use {@code setContents}
 	 */
 	@Deprecated
 	public void setOriginalDocument(final DSSDocument document) {
