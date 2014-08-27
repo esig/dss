@@ -17,6 +17,7 @@
 package eu.europa.ec.markt.dss.validation102853.xades;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -43,19 +44,16 @@ public class OfflineResolver extends ResourceResolverSpi {
 	 */
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineResolver.class);
 
-	private final String documentURI;
-
-	private final DSSDocument document;
+	private final List<DSSDocument> documents;
 
 	static {
 
 		Init.init();
 	}
 
-	public OfflineResolver(final DSSDocument document) {
+	public OfflineResolver(final List<DSSDocument> documents) {
 
-		this.documentURI = (document != null) ? document.getName() : null;
-		this.document = document;
+		this.documents = documents;
 	}
 
 	@Override
@@ -64,19 +62,19 @@ public class OfflineResolver extends ResourceResolverSpi {
 		final Attr uriAttr = context.attr;
 		final String baseUriString = context.baseUri;
 
-		String uriNodeValue = uriAttr.getNodeValue();
-		if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
+		String documentUri = uriAttr.getNodeValue();
+		if (documentUri.equals("") || documentUri.startsWith("#")) {
 			return false;
 		}
 		try {
 
-			if (uriNodeValue.equals(documentURI)) {
+			if (isKnown(documentUri) != null) {
 
-				LOG.debug("I state that I can resolve '" + uriNodeValue.toString() + "' (external document)");
+				LOG.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
 				return true;
 			}
 			final URI baseUri = new URI(baseUriString);
-			URI uriNew = new URI(baseUri, uriNodeValue);
+			URI uriNew = new URI(baseUri, documentUri);
 			if (uriNew.getScheme().equals("http")) {
 
 				LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
@@ -84,11 +82,11 @@ public class OfflineResolver extends ResourceResolverSpi {
 			}
 			LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
 		} catch (URI.MalformedURIException ex) {
-			if (document == null) {
+			if (documents == null || documents.size() == 0) {
 				LOG.warn("OfflineResolver: WARNING: ", ex);
 			}
 		}
-		if (document != null) {
+		if (doesContainOnlyOneDocument()) {
 
 			return true;
 		}
@@ -101,7 +99,8 @@ public class OfflineResolver extends ResourceResolverSpi {
 		final Attr uriAttr = context.attr;
 		final String baseUriString = context.baseUri;
 		String uriNodeValue = uriAttr.getNodeValue();
-		if (uriNodeValue.equals(documentURI) || document != null) {
+		final DSSDocument document = getDocument(uriNodeValue);
+		if (document != null) {
 
 			// The input stream is closed automatically by XMLSignatureInput class
 			final InputStream inputStream = document.openStream();
@@ -117,5 +116,36 @@ public class OfflineResolver extends ResourceResolverSpi {
 			Object exArgs[] = {"The uriNodeValue " + uriNodeValue + " is not configured for offline work"};
 			throw new ResourceResolverException("generic.EmptyMessage", exArgs, uriAttr, baseUriString);
 		}
+	}
+
+	private DSSDocument isKnown(final String documentUri) {
+
+		for (final DSSDocument document : documents) {
+
+			final String documentURI = document.getName();
+			if (documentUri.equals(documentURI)) {
+
+				return document;
+			}
+		}
+		return null;
+	}
+
+	private DSSDocument getDocument(final String documentUri) {
+
+		final DSSDocument document = isKnown(documentUri);
+		if (document != null) {
+			return document;
+		}
+		if (doesContainOnlyOneDocument()) {
+
+			return documents.get(0);
+		}
+		return null;
+	}
+
+	private boolean doesContainOnlyOneDocument() {
+
+		return documents != null && documents.size() == 1;
 	}
 }

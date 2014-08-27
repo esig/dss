@@ -470,10 +470,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		for (final DSSReference reference : references) {
 
 			final String dataObjectFormatObjectReference = "#" + reference.getId();
-			MimeType dataObjectFormatMimeType = reference.getContents().getMimeType();
-			if (dataObjectFormatMimeType == null) {
-				dataObjectFormatMimeType = MimeType.BINARY;
-			}
+			MimeType dataObjectFormatMimeType = getReferenceMimeType(reference);
 
 			final Element dataObjectFormatDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_DATA_OBJECT_FORMAT);
 			dataObjectFormatDom.setAttribute("ObjectReference", dataObjectFormatObjectReference);
@@ -483,6 +480,15 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		}
 
 		incorporateContentTimestamps();
+	}
+
+	protected MimeType getReferenceMimeType(final DSSReference reference) {
+
+		MimeType dataObjectFormatMimeType = reference.getContents().getMimeType();
+		if (dataObjectFormatMimeType == null) {
+			dataObjectFormatMimeType = MimeType.BINARY;
+		}
+		return dataObjectFormatMimeType;
 	}
 
 	/**

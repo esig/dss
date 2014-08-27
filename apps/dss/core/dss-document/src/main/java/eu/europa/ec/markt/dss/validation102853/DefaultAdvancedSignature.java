@@ -63,7 +63,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * In case of a detached signature this is the signed document.
 	 */
-	protected DSSDocument detachedContent;
+	protected List<DSSDocument> detachedContents;
 
 	/**
 	 * This variable contains the result of the signature mathematical validation. It is initialised when the method {@code checkSignatureIntegrity} is called.
@@ -103,13 +103,29 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	public DSSDocument getDetachedContent() {
-		return detachedContent;
+	public List<DSSDocument> getDetachedContents() {
+		return detachedContents;
 	}
 
 	@Override
-	public void setDetachedContent(final DSSDocument detachedContent) {
-		this.detachedContent = detachedContent;
+	public void setDetachedContents(final DSSDocument... detachedContents) {
+
+		for (final DSSDocument detachedContent : detachedContents) {
+
+			if (detachedContent != null) {
+
+				if (this.detachedContents == null) {
+
+					this.detachedContents = new ArrayList<DSSDocument>();
+				}
+				this.detachedContents.add(detachedContent);
+			}
+		}
+	}
+
+	@Override
+	public void setDetachedContents(final List<DSSDocument> detachedContents) {
+		this.detachedContents = detachedContents;
 	}
 
 	/**

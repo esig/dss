@@ -24,9 +24,6 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
-
 import eu.europa.ec.markt.dss.CertificateIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -175,6 +172,7 @@ public class SignatureParameters {
 
 	/**
 	 * This method returns the Id of the signature to be countersigned.
+	 *
 	 * @return
 	 */
 	public String getToCounterSignSignatureId() {
@@ -183,6 +181,7 @@ public class SignatureParameters {
 
 	/**
 	 * This method sets the Id of the signature to be countersigned.
+	 *
 	 * @param toCounterSignSignatureId
 	 */
 	public void setToCounterSignSignatureId(String toCounterSignSignatureId) {
@@ -363,13 +362,13 @@ public class SignatureParameters {
 	 */
 	public void setCertificateChain(final X509Certificate... certificateChainArray) {
 
-		if (certificateChainArray == null) {
-			return;
-		}
 		for (final X509Certificate certificate : certificateChainArray) {
 
-			if (!certificateChain.contains(certificate)) {
-				certificateChain.add(certificate);
+			if (certificate != null) {
+
+				if (!certificateChain.contains(certificate)) {
+					certificateChain.add(certificate);
+				}
 			}
 		}
 	}

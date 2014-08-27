@@ -56,8 +56,8 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
     @Override
     protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, SignatureParameters parameters)  throws DSSException {
 
-        final CAdESSignature cadesSignature = new CAdESSignature(signedData, signerInformation, parameters.getDetachedContent());
-
+        final CAdESSignature cadesSignature = new CAdESSignature(signedData, signerInformation);
+	    cadesSignature.setDetachedContents(parameters.getDetachedContent());
         assertExtendSignaturePossible(cadesSignature);
 
         AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(signerInformation);

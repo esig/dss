@@ -131,7 +131,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 			final CertificatePool certPool = new CertificatePool();
 			// TODO-Bob (13/07/2014):  The XPath query holder can be inherited from the xadesSignature: to be analysed
 			xadesSignature = new XAdESSignature(currentSignatureDom, certPool);
-			xadesSignature.setDetachedContent(params.getDetachedContent());
+			xadesSignature.setDetachedContents(params.getDetachedContent());
 			// In the cse of the extension of the signature the signing certificate must be included within the signature
 			// xadesSignature.setProvidedSigningCertificateToken(null);
 			extendSignatureTag();

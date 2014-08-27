@@ -59,79 +59,81 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
 public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLT.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLT.class);
 
-    private final CertificateVerifier certificateVerifier;
-    private final CAdESLevelBaselineT cadesProfileT;
+	private final CertificateVerifier certificateVerifier;
+	private final CAdESLevelBaselineT cadesProfileT;
 
-    public CAdESLevelBaselineLT(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
-        super(signatureTsa, onlyLastSigner);
-        this.certificateVerifier = certificateVerifier;
-        cadesProfileT = new CAdESLevelBaselineT(signatureTsa, certificateVerifier, onlyLastSigner);
-    }
+	public CAdESLevelBaselineLT(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
+		super(signatureTsa, onlyLastSigner);
+		this.certificateVerifier = certificateVerifier;
+		cadesProfileT = new CAdESLevelBaselineT(signatureTsa, certificateVerifier, onlyLastSigner);
+	}
 
-    @Override
-    protected SignerInformation extendCMSSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, SignatureParameters parameters) throws DSSException {
+	@Override
+	protected SignerInformation extendCMSSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, SignatureParameters parameters) throws DSSException {
 
-        // add a LT level or replace an existing LT level
-        CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContent());
-        assertExtendSignaturePossible(cadesSignature, parameters);
-        if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
-            signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
-        }
+		// add a LT level or replace an existing LT level
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+		cadesSignature.setDetachedContents(parameters.getDetachedContent());
+		assertExtendSignaturePossible(cadesSignature, parameters);
+		if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
+			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
+		}
 
-        return signerInformation;
-    }
+		return signerInformation;
+	}
 
-    protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, SignatureParameters parameters) {
-        CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContent());
-        final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
+	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, SignatureParameters parameters) {
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+		cadesSignature.setDetachedContents(parameters.getDetachedContent());
+		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
 
-        Store certificatesStore = cmsSignedData.getCertificates();
-        final Store attributeCertificatesStore = cmsSignedData.getAttributeCertificates();
-        Store crlsStore = cmsSignedData.getCRLs();
-        Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-        Store otherRevocationInfoFormatStoreOcsp = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
+		Store certificatesStore = cmsSignedData.getCertificates();
+		final Store attributeCertificatesStore = cmsSignedData.getAttributeCertificates();
+		Store crlsStore = cmsSignedData.getCRLs();
+		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+		Store otherRevocationInfoFormatStoreOcsp = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 
-        final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
-        final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
-        for (final CertificateToken certificateToken : certificates) {
-            final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(certificateToken);
-            newCertificateStore.add(x509CertificateHolder);
-        }
+		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
+		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
+		for (final CertificateToken certificateToken : certificates) {
+			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(certificateToken);
+			newCertificateStore.add(x509CertificateHolder);
+		}
 
-        certificatesStore = new CollectionStore(newCertificateStore);
+		certificatesStore = new CollectionStore(newCertificateStore);
 
-        final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
-        final DefaultAdvancedSignature.RevocationDataForInclusion revocationDataForInclusion = cadesSignature.getRevocationDataForInclusion(validationContext);
-        for (final CRLToken crlToken : revocationDataForInclusion.crlTokens) {
-            final X509CRLHolder x509CRLHolder = crlToken.getX509CrlHolder();
-            newCrlsStore.add(x509CRLHolder);
-        }
-        crlsStore = new CollectionStore(newCrlsStore);
+		final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
+		final DefaultAdvancedSignature.RevocationDataForInclusion revocationDataForInclusion = cadesSignature.getRevocationDataForInclusion(validationContext);
+		for (final CRLToken crlToken : revocationDataForInclusion.crlTokens) {
+			final X509CRLHolder x509CRLHolder = crlToken.getX509CrlHolder();
+			newCrlsStore.add(x509CRLHolder);
+		}
+		crlsStore = new CollectionStore(newCrlsStore);
 
-        final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));
-        for (final OCSPToken ocspToken : revocationDataForInclusion.ocspTokens) {
-            final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
-            newOtherRevocationInfoFormatStore.add(DSSASN1Utils.toASN1Primitive(DSSUtils.getEncoded(basicOCSPResp)));
-        }
-        otherRevocationInfoFormatStoreBasic = new CollectionStore(newOtherRevocationInfoFormatStore);
+		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));
+		for (final OCSPToken ocspToken : revocationDataForInclusion.ocspTokens) {
+			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
+			newOtherRevocationInfoFormatStore.add(DSSASN1Utils.toASN1Primitive(DSSUtils.getEncoded(basicOCSPResp)));
+		}
+		otherRevocationInfoFormatStoreBasic = new CollectionStore(newOtherRevocationInfoFormatStore);
 
-        final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-        cmsSignedData = cmsSignedDataBuilder
-              .regenerateCMSSignedData(cmsSignedData, parameters, certificatesStore, attributeCertificatesStore, crlsStore, otherRevocationInfoFormatStoreBasic,
-                    otherRevocationInfoFormatStoreOcsp);
-        return cmsSignedData;
-    }
+		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+		cmsSignedData = cmsSignedDataBuilder
+			  .regenerateCMSSignedData(cmsSignedData, parameters, certificatesStore, attributeCertificatesStore, crlsStore, otherRevocationInfoFormatStoreBasic,
+					otherRevocationInfoFormatStoreOcsp);
+		return cmsSignedData;
+	}
 
-    /**
-     * @param cadesSignature
-     * @param parameters
-     */
-    private void assertExtendSignaturePossible(CAdESSignature cadesSignature, SignatureParameters parameters) throws DSSException {
-        //        if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
-        //            final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
-        //            throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
-        //        }
-    }
+	/**
+	 * @param cadesSignature
+	 * @param parameters
+	 */
+	private void assertExtendSignaturePossible(CAdESSignature cadesSignature, SignatureParameters parameters) throws DSSException {
+		//        if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
+		//            final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
+		//            throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
+		//        }
+	}
 }

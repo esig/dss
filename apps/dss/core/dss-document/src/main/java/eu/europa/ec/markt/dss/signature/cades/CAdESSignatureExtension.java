@@ -138,7 +138,8 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 		final List<SignerInformation> newSignerInformationList = new ArrayList<SignerInformation>();
 		for (SignerInformation signerInformation : signerInformationCollection) {
 
-			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContent());
+			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+			cadesSignature.setDetachedContents(parameters.getDetachedContent());
 			assertSignatureValid(cadesSignature, parameters);
 			final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
 			newSignerInformationList.add(newSignerInformation);
@@ -171,7 +172,8 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 
 			if (lastSignerInformation == signerInformation) {
 
-				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContent());
+				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+				cadesSignature.setDetachedContents(parameters.getDetachedContent());
 				assertSignatureValid(cadesSignature, parameters);
 				final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
 				newSignerInformationList.add(newSignerInformation);
@@ -279,6 +281,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 
 			CMSSignedData cmsSignedDataTimeStampToken = new CMSSignedData(timeStampToken.getEncoded());
 
+			// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
 			if (attributesForTimestampToken != null) {
 				// timeStampToken contains one and only one signer
 				final SignerInformation signerInformation = (SignerInformation) cmsSignedDataTimeStampToken.getSignerInfos().getSigners().iterator().next();

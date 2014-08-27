@@ -102,7 +102,7 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 	@Override
 	protected DSSDocument canonicalizeReference(final DSSReference reference) {
 
-		return originalDocument;
+		return reference.getContents();
 	}
 
 	/**

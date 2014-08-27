@@ -42,6 +42,7 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
@@ -114,6 +115,12 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		references.add(dssReference);
 
 		return references;
+	}
+
+	@Override
+	protected MimeType getReferenceMimeType(final DSSReference reference) {
+
+		return MimeType.XML;
 	}
 
 	@Override
