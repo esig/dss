@@ -2524,9 +2524,9 @@ public final class DSSUtils {
 	/**
 	 * This method returns an UTC date base on the year, the month and the day. The year must be encoded as 1978... and not 78
 	 *
-	 * @param year  the year
+	 * @param year  the value used to set the YEAR calendar field.
 	 * @param month the month. Month value is 0-based. e.g., 0 for January.
-	 * @param day   the day
+	 * @param day   the value used to set the DAY_OF_MONTH calendar field.
 	 * @return the UTC date base on parameters
 	 */
 	public static Date getUtcDate(final int year, final int month, final int day) {
@@ -3036,6 +3036,27 @@ public final class DSSUtils {
 			message += stackTrace[ii].toString() + '\n';
 		}
 		return message;
+	}
+
+	/**
+	 * Reads maximum {@code headerLength} bytes from {@code dssDocument} to the given {@code byte} array.
+	 *
+	 * @param dssDocument          {@code DSSDocument} to read
+	 * @param headerLength         {@code int}: maximum number of bytes to read
+	 * @param destinationByteArray destination {@code byte} array
+	 * @return
+	 */
+	public static int readToArray(final DSSDocument dssDocument, final int headerLength, final byte[] destinationByteArray) {
+
+		final InputStream inputStream = dssDocument.openStream();
+		try {
+			int read = inputStream.read(destinationByteArray, 0, headerLength);
+			return read;
+		} catch (IOException e) {
+			throw new DSSException(e);
+		} finally {
+			closeQuietly(inputStream);
+		}
 	}
 }
 

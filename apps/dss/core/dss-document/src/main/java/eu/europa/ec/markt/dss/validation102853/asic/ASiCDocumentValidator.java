@@ -69,6 +69,30 @@ public abstract class ASiCDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
+	 * It can also be possible to read the mimetype from the binary file:
+	 * FROM: ETSI TS 102 918 V1.2.1
+	 * A.1 Mimetype
+	 * The "mimetype" object, when stored in a ZIP, file can be used to support operating systems that rely on some content in
+	 * specific positions in a file (the so called "magic number" as described in RFC 4288 [11] in order to select the specific
+	 * application that can load and elaborate the file content. The following restrictions apply to the mimetype to support this
+	 * feature:
+	 * • it has to be the first in the archive;
+	 * • it cannot contain "Extra fields" (i.e. extra field length at offset 28 shall be zero);
+	 * • it cannot be compressed (i.e. compression method at offset 8 shall be zero);
+	 * • the first 4 octets shall have the hex values: "50 4B 03 04".
+	 * An application can ascertain if this feature is used by checking if the string "mimetype" is found starting at offset 30. In
+	 * this case it can be assumed that a string representing the container mime type is present starting at offset 38; the length
+	 * of this string is contained in the 4 octets starting at offset 18.
+	 * All multi-octets values are little-endian.
+	 * The "mimetype" shall NOT be compressed or encrypted inside the ZIP file.
+
+	 * --> The use of two first bytes is not standard conforming.
+	 *
+	 * 5.2.1 Media type identification
+	 * 1) File extension: ".asics"|".asice" should be used (".scs"|".sce" is allowed for operating systems and/or file systems not
+	 * allowing more than 3 characters file extensions). In the case where the container content is to be handled
+	 * manually, the ".zip" extension may be used.
+
 	 * @param asicContainer The instance of {@code DSSDocument} to validate
 	 * @param preamble      contains the beginning of the file
 	 * @return

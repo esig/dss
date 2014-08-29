@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -121,6 +120,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
 
+	private static final byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
+	private static final byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
+
 	/**
 	 * This variable can hold a specific {@code ProcessExecutor}
 	 */
@@ -194,76 +196,41 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
 
-		BufferedInputStream bufferedInputStream = null;
-		try {
+		final String dssDocumentName = dssDocument.getName();
+		if (dssDocumentName != null && dssDocumentName.toLowerCase().endsWith(".xml")) {
 
-			final String dssDocumentName = dssDocument.getName();
-			if (dssDocumentName != null && dssDocumentName.toLowerCase().endsWith(".xml")) {
-
-				return new XMLDocumentValidator(dssDocument);
-			}
-
-			bufferedInputStream = new BufferedInputStream(dssDocument.openStream()); // The underlying stream is closed by the parent (bufferedInputStream).
-			/**
-			 * In case of ASiC it can be possible to read the mimetype from the binary file:
-			 * FROM: ETSI TS 102 918 V1.2.1
-			 * A.1 Mimetype
-			 * The "mimetype" object, when stored in a ZIP, file can be used to support operating systems that rely on some content in
-			 * specific positions in a file (the so called "magic number" as described in RFC 4288 [11] in order to select the specific
-			 * application that can load and elaborate the file content. The following restrictions apply to the mimetype to support this
-			 * feature:
-			 * • it has to be the first in the archive;
-			 * • it cannot contain "Extra fields" (i.e. extra field length at offset 28 shall be zero);
-			 * • it cannot be compressed (i.e. compression method at offset 8 shall be zero);
-			 * • the first 4 octets shall have the hex values: "50 4B 03 04".
-			 * An application can ascertain if this feature is used by checking if the string "mimetype" is found starting at offset 30. In
-			 * this case it can be assumed that a string representing the container mime type is present starting at offset 38; the length
-			 * of this string is contained in the 4 octets starting at offset 18.
-			 * All multi-octets values are little-endian.
-			 * The "mimetype" shall NOT be compressed or encrypted inside the ZIP file.
-			 */
-			int headerLength = 500;
-			bufferedInputStream.mark(headerLength);
-			byte[] preamble = new byte[headerLength];
-			int read = bufferedInputStream.read(preamble);
-			bufferedInputStream.reset();
-			if (read < 5) {
-
-				throw new DSSException("The signature is not found.");
-			}
-			String preambleString = new String(preamble);
-			byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
-			byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
-			if (DSSUtils.equals(preamble, xmlPreamble, 5) || DSSUtils.equals(preamble, xmlUtf8, 5)) {
-
-				return new XMLDocumentValidator(dssDocument);
-			} else if (preambleString.startsWith("%PDF-")) {
-
-				return new PDFDocumentValidator(dssDocument);
-			} else if (preamble[0] == 'P' && preamble[1] == 'K') {
-
-				/**
-				 * --> The use of two first bytes is not standard conforming.
-				 *
-				 * 5.2.1 Media type identification
-				 * 1) File extension: ".asics"|".asice" should be used (".scs"|".sce" is allowed for operating systems and/or file systems not
-				 * allowing more than 3 characters file extensions). In the case where the container content is to be handled
-				 * manually, the ".zip" extension may be used.
-				 */
-				DSSUtils.closeQuietly(bufferedInputStream);
-				bufferedInputStream = null;
-				return ASiCDocumentValidator.getInstanceForAsics(dssDocument, preamble);
-			} else if (preambleString.getBytes()[0] == 0x30) {
-
-				return new CMSDocumentValidator(dssDocument);
-			} else {
-				throw new DSSException("Document format not recognized/handled");
-			}
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} finally {
-			DSSUtils.closeQuietly(bufferedInputStream);
+			return new XMLDocumentValidator(dssDocument);
 		}
+
+		int headerLength = 500;
+		byte[] preamble = new byte[headerLength];
+		int read = DSSUtils.readToArray(dssDocument, headerLength, preamble);
+		if (read < 5) {
+
+			throw new DSSException("The signature is not found.");
+		}
+		final String preambleString = new String(preamble);
+		if (isXmlPreamble(preamble)) {
+
+			return new XMLDocumentValidator(dssDocument);
+		} else if (preambleString.startsWith("%PDF-")) {
+
+			// TODO (29/08/2014): DSS-356
+			return new PDFDocumentValidator(dssDocument);
+		} else if (preamble[0] == 'P' && preamble[1] == 'K') {
+
+			return ASiCDocumentValidator.getInstanceForAsics(dssDocument, preamble);
+		} else if (preambleString.getBytes()[0] == 0x30) {
+
+			return new CMSDocumentValidator(dssDocument);
+		} else {
+			throw new DSSException("Document format not recognized/handled");
+		}
+	}
+
+	private static boolean isXmlPreamble(byte[] preamble) {
+
+		return DSSUtils.equals(preamble, xmlPreamble, 5) || DSSUtils.equals(preamble, xmlUtf8, 5);
 	}
 
 	@Override
