@@ -90,7 +90,7 @@ public class ASiCSService extends AbstractSignatureService {
 
 	private final static String ASICS_EXTENSION = ".asics";
 	private final static String ASICS_NS = "asic:XAdESSignatures";
-	private final static String ASICS_URI = "http://uri.etsi.org/2918/v1.2.1#";
+	private final static String ASICS_URI = "http://uri.etsi.org/02918/v1.2.1#";
 
 	/**
 	 * This is the constructor to create an instance of the {@code ASiCSService}. A certificate verifier must be provided.
