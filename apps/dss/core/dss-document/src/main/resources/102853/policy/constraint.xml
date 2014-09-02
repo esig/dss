@@ -65,6 +65,7 @@
 				<AcceptableEncryptionAlgo>
 					<Algo>RSA</Algo>
 					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
 				</AcceptableEncryptionAlgo>
 				<MiniPublicKeySize>
 	                <Algo Size="128">DSA</Algo>
