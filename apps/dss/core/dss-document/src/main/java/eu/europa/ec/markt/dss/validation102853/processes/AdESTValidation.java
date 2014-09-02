@@ -356,6 +356,10 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		/**
 		 * 5) Comparing times:
 		 */
+
+		/**
+		 * NOTE 2:
+		 */
 		if (INDETERMINATE.equals(bvpIndication) && REVOKED_NO_POE.equals(bvpSubIndication)) {
 
 			if (!checkRevocationTimeConstraint(signatureConclusion)) {
@@ -363,6 +367,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			}
 		}
 
+		/**
+		 * NOTE 3:
+		 */
 		if (INDETERMINATE.equals(bvpIndication) && OUT_OF_BOUNDS_NO_POE.equals(bvpSubIndication)) {
 
 			if (!checkBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint(signatureConclusion)) {
@@ -373,6 +380,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			}
 		}
 
+		/**
+		 * NOTE 4:
+		 */
 		if (INDETERMINATE.equals(bvpIndication) && CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bvpSubIndication)) {
 
 			if (!checkAlgorithmReliableAtBestSignatureTimeConstraint(signatureConclusion)) {
@@ -771,6 +781,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		}
 		constraint.create(signatureXmlNode, TSV_ISCNVABST);
 		constraint.setIndications(INDETERMINATE, OUT_OF_BOUNDS_NO_POE, TSV_ISCNVABST_ANS);
+		// false is always returned: this corresponds to: Otherwise, terminate with INDETERMINATE/OUT_OF_BOUNDS_NO_POE.
 		constraint.setValue(false);
 		final String formatedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);

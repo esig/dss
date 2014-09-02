@@ -47,6 +47,6 @@ public class CustomDateProcessExecutor extends CustomProcessExecutor {
 	 */
 	public CustomDateProcessExecutor(int year, int month, int day) {
 
-		currentTime = DSSUtils.getUtcDate(year, month + 1, day);
+		currentTime = DSSUtils.getUtcDate(year, month - 1, day);
 	}
 }
