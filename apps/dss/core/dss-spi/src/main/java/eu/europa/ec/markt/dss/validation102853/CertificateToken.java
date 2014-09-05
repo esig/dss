@@ -155,7 +155,7 @@ public class CertificateToken extends Token {
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		final String sigAlgOID = x509Certificate.getSigAlgOID();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(sigAlgOID);
-		this.algoUsedToSignToken = signatureAlgorithm;
+		this.algorithmUsedToSignToken = signatureAlgorithm;
 
 		super.extraInfo = this.extraInfo = new CertificateTokenValidationExtraInfo();
 	}
@@ -749,7 +749,7 @@ public class CertificateToken extends Token {
 					indentStr = indentStr.substring(1);
 				}
 			}
-			out.append(indentStr).append("Signature algorithm: ").append(algoUsedToSignToken == null ? "?" : algoUsedToSignToken).append('\n');
+			out.append(indentStr).append("Signature algorithm: ").append(algorithmUsedToSignToken == null ? "?" : algorithmUsedToSignToken).append('\n');
 			if (isTrusted()) {
 
 				out.append(indentStr).append("Signature validity : Signature verification is not needed: trusted certificate\n");

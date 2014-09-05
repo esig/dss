@@ -103,7 +103,13 @@ public class OfflineResolver extends ResourceResolverSpi {
 		if (document != null) {
 
 			// The input stream is closed automatically by XMLSignatureInput class
-			final InputStream inputStream = document.openStream();
+
+			// TODO-Bob (05/09/2014):  There is an error concerning the input streams base64 encoded. Some extra bytes are added within the santuario which breaks the HASH.
+			// TODO-Vin (05/09/2014): Can you create an isolated test-case JIRA DSS-?
+			InputStream inputStream = document.openStream();
+			//			final byte[] bytes = DSSUtils.toByteArray(inputStream);
+			//			final String string = new String(bytes);
+			//			inputStream = DSSUtils.toInputStream(bytes);
 			final XMLSignatureInput result = new XMLSignatureInput(inputStream);
 			result.setSourceURI(uriNodeValue);
 			final MimeType mimeType = document.getMimeType();
@@ -114,7 +120,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 		} else {
 
 			Object exArgs[] = {"The uriNodeValue " + uriNodeValue + " is not configured for offline work"};
-			throw new ResourceResolverException("generic.EmptyMessage", exArgs, uriAttr, baseUriString);
+			throw new ResourceResolverException("generic.EmptyMessage", exArgs, uriNodeValue, baseUriString);
 		}
 	}
 

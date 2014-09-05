@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import eu.europa.ec.markt.dss.CertificateIdentifier;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSPKUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -398,7 +399,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData generateDiagnosticData() {
 
 		jaxbDiagnosticData = DIAGNOSTIC_DATA_OBJECT_FACTORY.createDiagnosticData();
-		jaxbDiagnosticData.setDocumentName(document.getAbsolutePath());
+
+		// To cope with tests it can be interesting to always keep the same file name within the reports (without the path).
+		String absolutePath = document.getAbsolutePath();
+		if (CertificateIdentifier.isUniqueIdentifier()) {
+
+			absolutePath = document.getName();
+		}
+		jaxbDiagnosticData.setDocumentName(absolutePath);
 
 		final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
 
@@ -549,7 +557,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlTimestampToken.setMessageImprintDataIntact(timestampToken.isMessageImprintDataIntact());
 		xmlTimestampToken.setCanonicalizationMethod(timestampToken.getCanonicalizationMethod());
 
-		final SignatureAlgorithm signatureAlgorithm = timestampToken.getSignatureAlgo();
+		final SignatureAlgorithm signatureAlgorithm = timestampToken.getSignatureAlgorithm();
 		final XmlBasicSignatureType xmlBasicSignatureType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
 		if (signatureAlgorithm != null) {
 
@@ -777,7 +785,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final XmlBasicSignatureType xmlBasicSignatureType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
 
-		final SignatureAlgorithm signatureAlgorithm = certToken.getSignatureAlgo();
+		final SignatureAlgorithm signatureAlgorithm = certToken.getSignatureAlgorithm();
 		xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm().getName());
 		xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm().getName());
 		final String keyLength = certToken.getKeyLength();
@@ -904,7 +912,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlRevocation.setSourceAddress(revocationToken.getSourceURL());
 
 			final XmlBasicSignatureType xmlBasicSignatureType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
-			final SignatureAlgorithm revocationSignatureAlgo = revocationToken.getSignatureAlgo();
+			final SignatureAlgorithm revocationSignatureAlgo = revocationToken.getSignatureAlgorithm();
 			final boolean unknownAlgorithm = revocationSignatureAlgo == null;
 			final String encryptionAlgorithmName = unknownAlgorithm ? "?" : revocationSignatureAlgo.getEncryptionAlgorithm().getName();
 			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmName);
