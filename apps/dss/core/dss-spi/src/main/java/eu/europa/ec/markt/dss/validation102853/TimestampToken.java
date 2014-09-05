@@ -159,12 +159,12 @@ public class TimestampToken extends Token {
 			this.issuerToken = issuerToken;
 
 			issuerX500Principal = issuerToken.getSubjectX500Principal();
-			// algoUsedToSignToken = issuerToken.getSignatureAlgo(); bad algorithm
+			// algorithmUsedToSignToken = issuerToken.getSignatureAlgorithm(); bad algorithm
 			final String algorithm = issuerToken.getPublicKey().getAlgorithm();
 			final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
 			final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
 			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm());
-			algoUsedToSignToken = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+			algorithmUsedToSignToken = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		}
 		return signatureValid;
 	}
