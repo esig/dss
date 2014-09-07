@@ -129,31 +129,4 @@ public interface TSLConstant {
 	 */
 	public static final String SERVICE_STATUS_ACCREDITED = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/Svcstatus/accredited";
 	public static final String SERVICE_STATUS_ACCREDITED_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited";
-
-	/**
-	 * These are the helpers to get all TSL's URLS.
-	 * WARNING: These URLs can change in the time.
-	 */
-	public final static String LOTL_URL = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
-	public final static String TSL_AT_URL = "https://www.signatur.rtr.at/currenttl.xml";
-	public final static String TSL_BE_URL = "http://tsl.belgium.be/tsl-be.xml";
-	public final static String TSL_CY_URL = "http://www.mcw.gov.cy/mcw/DEC/DEC.nsf/all/9BE02B75459C1ED4C22577E40025AFD4/$file/TSL-CY-003-sign.xml?openelement";
-	public final static String TSL_CZ_URL = "http://tsl.gov.cz/publ/TSL_CZ.xtsl";
-	public static final String TSL_DE_URL = "http://www.nrca-ds.de/st/TSL-XML.xml";
-	public final static String TSL_DK_URL = "http://www.digst.dk/~/media/Files/Digitale%20l%C3%B8sninger/Digital%20signatur/TLDK.xml";
-	public final static String TSL_EE_URL = "http://sr.riik.ee/tsl/estonian-tsl.xml";
-	public final static String TSL_ES_URL = "https://sede.minetur.gob.es/Prestadores/TSL/TSL.xml";
-	public final static String TSL_FR_URL = "http://references.modernisation.gouv.fr/sites/default/files/TSL-FR.xml";
-	public final static String TSL_HR_URL = "http://www.mingo.hr/userdocsimages/trgovina/TSL_HR.xml";
-	public final static String TSL_HU_URL = "http://www.nmhh.hu/tl/pub/HU_TL.xml";
-	public final static String TSL_IT_URL = "https://applicazioni.cnipa.gov.it/TSL/IT_TSL_signed.xml";
-	public final static String TSL_LT_URL = "http://www.rrt.lt/failai/LT-TSL.xml";
-	public final static String TSL_LU_URL = "http://www.ilnas.public.lu/tsl-xml";
-	public final static String TSL_MT_URL = "https://www.mca.org.mt/tsl/MT_TSL.xml";
-	public final static String TSL_PL_URL = "https://www.nccert.pl/tsl/PL_TSL.xml";
-	public final static String TSL_PT_URL = "http://www.gns.gov.pt/media/1894/TSLPT.xml";
-	public final static String TSL_RO_URL = "http://www.mcsi.ro/Minister/Domenii-de-activitate-ale-MCSI/Tehnologia-Informatiei/Servicii-electronice/Semnatura-electronica/ROMANIA_TrustedList-v6-xml.xml";
-	public final static String TSL_SE_URL = "http://www.pts.se/upload/Ovrigt/Internet/Branschinformation/Trusted-List-SE-MR.xml";
-	public final static String TSL_SI_URL = "http://www.mizks.gov.si/fileadmin/mizks.gov.si/pageuploads/Storitve/Info_druzba/Overitelji/SI_TL.xml";
-	public static final String TSL_SK_URI = "http://ep.nbusr.sk/kca/tsl/tsl.xml";
 }

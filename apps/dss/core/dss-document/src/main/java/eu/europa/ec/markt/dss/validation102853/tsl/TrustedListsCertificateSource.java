@@ -213,7 +213,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * Gets the LOTL certificate as an inputStream stream
 	 *
 	 * @return the inputStream stream
-	 * @throws java.io.IOException
+	 * @throws DSSException
 	 */
 	private InputStream getLotlCertificateInputStream() throws DSSException {
 
@@ -242,12 +242,11 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	/**
-	 * Load a trusted list for the specified URL
+	 * Load a trusted list form the specified URL. If the {@code signingCertList} contains any {@code X509Certificate} then the validation of the signature of the TSL is done.
 	 *
-	 * @param url
-	 * @param signingCertList
-	 * @return
-	 * @throws java.io.IOException
+	 * @param url             of the TSL to load
+	 * @param signingCertList the {@code List} of the possible signing certificates
+	 * @return {@code TrustStatusList}
 	 */
 	private TrustStatusList getTrustStatusList(final String url, final List<X509Certificate> signingCertList) {
 
@@ -406,9 +405,21 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	/**
+	 * This method allows to load any trusted list.
+	 *
 	 * @param url
 	 * @param territory
-	 * @param signingCertList
+	 * @param signingCertificates
+	 */
+	public void loadAdditionalList(final String url, final String territory, final List<X509Certificate> signingCertificates) {
+
+		loadTSL(url, territory, signingCertificates);
+	}
+
+	/**
+	 * @param url             of the TSL to load
+	 * @param territory       of the TSL
+	 * @param signingCertList the {@code List} of the possible signing certificates
 	 */
 	protected void loadTSL(final String url, final String territory, final List<X509Certificate> signingCertList) {
 

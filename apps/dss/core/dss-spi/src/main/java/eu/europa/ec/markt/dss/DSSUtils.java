@@ -2717,8 +2717,9 @@ public final class DSSUtils {
 
 			string = ((DERT61UTF8String) attributeValue).getString();
 		} else {
-			string = attributeValue.getClass().getSimpleName();
-			LOG.error("!!!*******!!! This encoding is unknown: " + string);
+			LOG.error("!!!*******!!! This encoding is unknown: " + attributeValue.getClass().getSimpleName());
+			string = attributeValue.toString();
+			LOG.error("!!!*******!!! value: " + string);
 		}
 		return string;
 	}
