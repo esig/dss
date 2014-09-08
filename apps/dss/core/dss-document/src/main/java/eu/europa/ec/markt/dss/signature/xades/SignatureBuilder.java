@@ -30,14 +30,9 @@ import java.util.UUID;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import eu.europa.ec.markt.dss.parameter.DSSReference;
-import eu.europa.ec.markt.dss.parameter.DSSTransform;
-import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 import org.bouncycastle.tsp.TimeStampToken;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -48,9 +43,12 @@ import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
+import eu.europa.ec.markt.dss.parameter.DSSReference;
+import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
@@ -64,12 +62,12 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  */
 public abstract class SignatureBuilder extends XAdESBuilder {
 
-	/*
+	/**
 	 * Indicates if the signature was already built. (Two steps building)
 	 */
 	protected boolean built = false;
 
-	/*
+	/**
 	 * This is the reference to the original document to sign
 	 */
 	protected DSSDocument originalDocument;
@@ -144,6 +142,15 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 		deterministicId = params.getDeterministicId();
 
+
+		final List<DSSReference> references = params.getReferences();
+		if (references == null || references.size() == 0) {
+
+			final List<DSSReference> defaultReference = createDefaultReference();
+			// The SignatureParameters object is updated with the default references.
+			params.setReferences(defaultReference);
+		}
+
 		incorporateSignatureDom();
 
 		incorporateSignedInfo();
@@ -175,20 +182,20 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 */
 	public void incorporateSignatureDom() {
 
-		signatureDom = documentDom.createElementNS(XMLSignature.XMLNS, "ds:Signature");
-		signatureDom.setAttribute("xmlns:ds", XMLSignature.XMLNS);
-		signatureDom.setAttribute("Id", deterministicId);
+		signatureDom = documentDom.createElementNS(XMLSignature.XMLNS, DS_SIGNATURE);
+		signatureDom.setAttribute(XMLNS_DS, XMLSignature.XMLNS);
+		signatureDom.setAttribute(ID, deterministicId);
 		documentDom.appendChild(signatureDom);
 	}
 
 	public void incorporateSignedInfo() {
 
 		// <ds:SignedInfo>
-		signedInfoDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, "ds:SignedInfo");
+		signedInfoDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_SIGNED_INFO);
 		incorporateCanonicalizationMethod(signedInfoDom, signedInfoCanonicalizationMethod);
 
 		//<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
-		final Element signatureMethod = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:SignatureMethod");
+		final Element signatureMethod = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, DS_SIGNATURE_METHOD);
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
 		final SignatureAlgorithm signatureAlgo = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
@@ -199,10 +206,15 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	private void incorporateCanonicalizationMethod(final Element parentDom, final String signedInfoCanonicalizationMethod) {
 
 		//<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-		final Element canonicalizationMethodDom = DSSXMLUtils.addElement(documentDom, parentDom, XMLSignature.XMLNS, "ds:CanonicalizationMethod");
+		final Element canonicalizationMethodDom = DSSXMLUtils.addElement(documentDom, parentDom, XMLSignature.XMLNS, DS_CANONICALIZATION_METHOD);
 		canonicalizationMethodDom.setAttribute("Algorithm", signedInfoCanonicalizationMethod);
 	}
 
+	/**
+	 * This method incorporates the references other than the one concerning "http://uri.etsi.org/01903#SignedProperties".
+	 *
+	 * @throws DSSException
+	 */
 	protected abstract void incorporateReference1() throws DSSException;
 
 	/**
@@ -213,16 +225,16 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	protected void incorporateKeyInfo() throws DSSException {
 
 		// <ds:KeyInfo>
-		final Element keyInfoDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, "ds:KeyInfo");
+		final Element keyInfoDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_KEY_INFO);
 		// <ds:X509Data>
-		final Element x509DataDom = DSSXMLUtils.addElement(documentDom, keyInfoDom, XMLSignature.XMLNS, "ds:X509Data");
+		final Element x509DataDom = DSSXMLUtils.addElement(documentDom, keyInfoDom, XMLSignature.XMLNS, DS_X509_DATA);
 
 		for (final X509Certificate x509Certificate : params.getCertificateChain()) {
 
 			final byte[] encoded = DSSUtils.getEncoded(x509Certificate);
 			final String base64Encoded = DSSUtils.base64Encode(encoded);
 			// <ds:X509Certificate>...</ds:X509Certificate>
-			DSSXMLUtils.addTextElement(documentDom, x509DataDom, XMLSignature.XMLNS, "ds:X509Certificate", base64Encoded);
+			DSSXMLUtils.addTextElement(documentDom, x509DataDom, XMLSignature.XMLNS, DS_X509_CERTIFICATE, base64Encoded);
 		}
 	}
 
@@ -232,12 +244,12 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	protected void incorporateObject() throws DSSException {
 
 		// <ds:Object>
-		final Element objectDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, "ds:Object");
+		final Element objectDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT);
 
 		// <QualifyingProperties xmlns="http://uri.etsi.org/01903/v1.3.2#" Target="#sigId-ide5c549340079fe19f3f90f03354a5965">
-		qualifyingPropertiesDom = DSSXMLUtils.addElement(documentDom, objectDom, XAdESNamespaces.XAdES, "xades:QualifyingProperties");
-		qualifyingPropertiesDom.setAttribute("xmlns:xades", XAdESNamespaces.XAdES);
-		qualifyingPropertiesDom.setAttribute("Target", "#" + deterministicId);
+		qualifyingPropertiesDom = DSSXMLUtils.addElement(documentDom, objectDom, XAdESNamespaces.XAdES, XADES_QUALIFYING_PROPERTIES);
+		qualifyingPropertiesDom.setAttribute(XMLNS_XADES, XAdESNamespaces.XAdES);
+		qualifyingPropertiesDom.setAttribute(TARGET, "#" + deterministicId);
 
 		incorporateSignedProperties();
 	}
@@ -248,14 +260,14 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	protected void incorporateReference2() throws DSSException {
 
 		// <ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-ide5c549340079fe19f3f90f03354a5965">
-		final Element reference = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
-		reference.setAttribute("Type", xPathQueryHolder.XADES_SIGNED_PROPERTIES);
-		reference.setAttribute("URI", "#xades-" + deterministicId);
+		final Element reference = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, DS_REFERENCE);
+		reference.setAttribute(TYPE, xPathQueryHolder.XADES_SIGNED_PROPERTIES);
+		reference.setAttribute(URI, "#xades-" + deterministicId);
 		// <ds:Transforms>
-		final Element transforms = DSSXMLUtils.addElement(documentDom, reference, XMLSignature.XMLNS, "ds:Transforms");
+		final Element transforms = DSSXMLUtils.addElement(documentDom, reference, XMLSignature.XMLNS, DS_TRANSFORMS);
 		// <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-		final Element transform = DSSXMLUtils.addElement(documentDom, transforms, XMLSignature.XMLNS, "ds:Transform");
-		transform.setAttribute("Algorithm", reference2CanonicalizationMethod);
+		final Element transform = DSSXMLUtils.addElement(documentDom, transforms, XMLSignature.XMLNS, DS_TRANSFORM);
+		transform.setAttribute(ALGORITHM, reference2CanonicalizationMethod);
 		// </ds:Transforms>
 
 		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
@@ -272,69 +284,69 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	}
 
 	/**
-	 * This method incorporates a given list of references in the DOM
-	 * @param references
-	 */
-	protected void incorporateReferences(List<DSSReference> references) {
-
-		for (DSSReference reference : references) {
-			incorporateReference(reference);
-		}
-	}
-
-	/**
-	 * This method incorporates a reference in the signedInfoDom
-	 * @param reference
+	 * This method incorporates a reference within the signedInfoDom
+	 *
+	 * @param reference {@code DSSReference}
 	 * @throws DSSException
 	 */
-	protected void incorporateReference(DSSReference reference) throws DSSException {
+	protected void incorporateReference(final DSSReference reference) throws DSSException {
 
-		final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
-		referenceDom.setAttribute("Id", reference.getId());
-		referenceDom.setAttribute("URI", reference.getUri());
-		referenceDom.setAttribute("Type", reference.getType());
-
-		final Element transformsDom = DSSXMLUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, "ds:Transforms");
+		final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, DS_REFERENCE);
+		referenceDom.setAttribute(ID, reference.getId());
+		final String uri = reference.getUri();
+		referenceDom.setAttribute(URI, uri);
+		referenceDom.setAttribute(TYPE, reference.getType());
 
 		final List<DSSTransform> transforms = reference.getTransforms();
-		for (final DSSTransform transform : transforms) {
+		if (transforms != null) { // Detached signature may not have transformations
 
-			final Element transformDom = DSSXMLUtils.addElement(documentDom, transformsDom, XMLSignature.XMLNS, "ds:Transform");
-			transformDom.setAttribute("Algorithm", transform.getAlgorithm());
-			final String elementName = transform.getElementName();
-			if (elementName != null && !elementName.isEmpty()) {
+			final Element transformsDom = DSSXMLUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, DS_TRANSFORMS);
+			for (final DSSTransform transform : transforms) {
 
-				final String namespace = transform.getNamespace();
-				final String textContent = transform.getTextContent();
-				DSSXMLUtils.addTextElement(documentDom, transformDom, namespace, elementName, textContent);
+				final Element transformDom = DSSXMLUtils.addElement(documentDom, transformsDom, XMLSignature.XMLNS, DS_TRANSFORM);
+				transformDom.setAttribute(ALGORITHM, transform.getAlgorithm());
+				final String elementName = transform.getElementName();
+				if (elementName != null && !elementName.isEmpty()) {
+
+					final String namespace = transform.getNamespace();
+					final String textContent = transform.getTextContent();
+					DSSXMLUtils.addTextElement(documentDom, transformDom, namespace, elementName, textContent);
+				}
 			}
 		}
 		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
 		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
 		incorporateDigestMethod(referenceDom, digestAlgorithm);
 
-		// We remove existing signatures
-		final Document domDoc = DSSXMLUtils.buildDOM(originalDocument);
-		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-
-			final Element signatureDOM = (Element) signatureNodeList.item(ii);
-			signatureDOM.getParentNode().removeChild(signatureDOM);
-		}
-		byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, domDoc);
+		final DSSDocument canonicalizedDocument = canonicalizeReference(reference);
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method  -->" + signedInfoCanonicalizationMethod);
-			LOG.trace("Canonicalized REF_1      --> " + new String(canonicalizedBytes));
+			LOG.trace("Canonicalized REF_1      --> " + new String(canonicalizedDocument.getBytes()));
 		}
-		incorporateDigestValue(referenceDom, digestAlgorithm, new InMemoryDocument(canonicalizedBytes));
+		incorporateDigestValue(referenceDom, digestAlgorithm, canonicalizedDocument);
 	}
+
+	/**
+	 * When the user does not want to create its own reference (only when signing one contents) the default one must be created.
+	 *
+	 * @return {@code List} of {@code DSSReference}
+	 */
+	protected abstract List<DSSReference> createDefaultReference();
+
+	/**
+	 * This method canonicalize the given reference
+	 *
+	 * @param reference {@code DSSReference} to be canonicalized
+	 * @return {@code DSSDocument}
+	 */
+	protected abstract DSSDocument canonicalizeReference(final DSSReference reference);
 
 	/**
 	 * @return
 	 */
 	protected void incorporateSignatureValue() {
 
-		signatureValueDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, "ds:SignatureValue");
+		signatureValueDom = DSSXMLUtils.addElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_SIGNATURE_VALUE);
 		signatureValueDom.setAttribute("Id", "value-" + deterministicId);
 	}
 
@@ -346,8 +358,8 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	protected void incorporateSignedProperties() throws DSSException {
 
 		// <SignedProperties Id="xades-ide5c549340079fe19f3f90f03354a5965">
-		signedPropertiesDom = DSSXMLUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XAdES, "xades:SignedProperties");
-		signedPropertiesDom.setAttribute("Id", "xades-" + deterministicId);
+		signedPropertiesDom = DSSXMLUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNED_PROPERTIES);
+		signedPropertiesDom.setAttribute(ID, "xades-" + deterministicId);
 
 		incorporateSignedSignatureProperties();
 	}
@@ -360,7 +372,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	protected void incorporateSignedSignatureProperties() throws DSSException {
 
 		// <SignedSignatureProperties>
-		signedSignaturePropertiesDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdESNamespaces.XAdES, "xades:SignedSignatureProperties");
+		signedSignaturePropertiesDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNED_SIGNATURE_PROPERTIES);
 
 		incorporateSigningTime();
 
@@ -383,21 +395,21 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		if (signaturePolicy != null && signaturePolicy.getId() != null) {
 
 			final Element signaturePolicyIdentifierDom = DSSXMLUtils
-				  .addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:SignaturePolicyIdentifier");
-			final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdESNamespaces.XAdES, "xades:SignaturePolicyId");
+				  .addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNATURE_POLICY_IDENTIFIER);
+			final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdESNamespaces.XAdES, XADES_SIGNATURE_POLICY_ID);
 			if ("".equals(signaturePolicy.getId())) { // implicit
 
-				final Element signaturePolicyImpliedDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdESNamespaces.XAdES, "xades:SignaturePolicyImplied");
+				final Element signaturePolicyImpliedDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdESNamespaces.XAdES, XADES_SIGNATURE_POLICY_IMPLIED);
 			} else { // explicit
 
-				final Element sigPolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdESNamespaces.XAdES, "xades:SigPolicyId");
+				final Element sigPolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdESNamespaces.XAdES, XADES_SIG_POLICY_ID);
 
 				final String signaturePolicyId = signaturePolicy.getId();
-				DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdESNamespaces.XAdES, "xades:Identifier", signaturePolicyId);
+				DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdESNamespaces.XAdES, XADES_IDENTIFIER, signaturePolicyId);
 
 				if (signaturePolicy.getDigestAlgorithm() != null && signaturePolicy.getDigestValue() != null) {
 
-					final Element sigPolicyHashDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdESNamespaces.XAdES, "xades:SigPolicyHash");
+					final Element sigPolicyHashDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdESNamespaces.XAdES, XADES_SIG_POLICY_HASH);
 
 					// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
 					final DigestAlgorithm digestAlgorithm = signaturePolicy.getDigestAlgorithm();
@@ -405,7 +417,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 					final byte[] hashValue = signaturePolicy.getDigestValue();
 					final String bas64EncodedHashValue = DSSUtils.base64Encode(hashValue);
-					DSSXMLUtils.addTextElement(documentDom, sigPolicyHashDom, XMLSignature.XMLNS, "ds:DigestValue", bas64EncodedHashValue);
+					DSSXMLUtils.addTextElement(documentDom, sigPolicyHashDom, XMLSignature.XMLNS, DS_DIGEST_VALUE, bas64EncodedHashValue);
 				}
 			}
 		}
@@ -421,7 +433,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final String xmlSigningTime = xmlGregorianCalendar.toXMLFormat();
 
 		// <SigningTime>2013-11-23T11:22:52Z</SigningTime>
-		final Element signingTimeDom = documentDom.createElementNS(XAdESNamespaces.XAdES, "xades:SigningTime");
+		final Element signingTimeDom = documentDom.createElementNS(XAdESNamespaces.XAdES, XADES_SIGNING_TIME);
 		signedSignaturePropertiesDom.appendChild(signingTimeDom);
 		final Text textNode = documentDom.createTextNode(xmlSigningTime);
 		signingTimeDom.appendChild(textNode);
@@ -436,7 +448,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 */
 	private void incorporateSigningCertificate() {
 
-		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:SigningCertificate");
+		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNING_CERTIFICATE);
 
 		final List<X509Certificate> certificates = new ArrayList<X509Certificate>();
 
@@ -452,18 +464,31 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 */
 	private void incorporateSignedDataObjectProperties() {
 
-		final String dataObjectFormatObjectReference = getDataObjectFormatObjectReference();
-		final String dataObjectFormatMimeType = getDataObjectFormatMimeType();
+		signedDataObjectPropertiesDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNED_DATA_OBJECT_PROPERTIES);
 
-		signedDataObjectPropertiesDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdESNamespaces.XAdES, "xades:SignedDataObjectProperties");
+		final List<DSSReference> references = params.getReferences();
+		for (final DSSReference reference : references) {
 
-		final Element dataObjectFormatDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, "xades:DataObjectFormat");
-		dataObjectFormatDom.setAttribute("ObjectReference", dataObjectFormatObjectReference);
+			final String dataObjectFormatObjectReference = "#" + reference.getId();
+			MimeType dataObjectFormatMimeType = getReferenceMimeType(reference);
 
-		final Element mimeTypeDom = DSSXMLUtils.addElement(documentDom, dataObjectFormatDom, XAdESNamespaces.XAdES, "xades:MimeType");
-		DSSXMLUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType);
+			final Element dataObjectFormatDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_DATA_OBJECT_FORMAT);
+			dataObjectFormatDom.setAttribute("ObjectReference", dataObjectFormatObjectReference);
+
+			final Element mimeTypeDom = DSSXMLUtils.addElement(documentDom, dataObjectFormatDom, XAdESNamespaces.XAdES, XADES_MIME_TYPE);
+			DSSXMLUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType.getCode());
+		}
 
 		incorporateContentTimestamps();
+	}
+
+	protected MimeType getReferenceMimeType(final DSSReference reference) {
+
+		MimeType dataObjectFormatMimeType = reference.getContents().getMimeType();
+		if (dataObjectFormatMimeType == null) {
+			dataObjectFormatMimeType = MimeType.BINARY;
+		}
+		return dataObjectFormatMimeType;
 	}
 
 	/**
@@ -484,7 +509,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 				if (allDataObjectsTimestampDom == null) {
 
-					allDataObjectsTimestampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, "xades:AllDataObjectsTimeStamp");
+					allDataObjectsTimestampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_ALL_DATA_OBJECTS_TIME_STAMP);
 				}
 				addTimestamp(allDataObjectsTimestampDom, contentTimestamp);
 
@@ -493,7 +518,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 				if (individualDataObjectsTimestampDom == null) {
 
 					individualDataObjectsTimestampDom = DSSXMLUtils
-						  .addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, "xades:IndividualDataObjectsTimeStamp");
+						  .addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP);
 				}
 				addTimestamp(individualDataObjectsTimestampDom, contentTimestamp);
 			}
@@ -509,17 +534,17 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final List<String> certifiedSignerRoles = params.bLevel().getCertifiedSignerRoles();
 		if (claimedSignerRoles != null || certifiedSignerRoles != null) {
 
-			final Element signerRoleDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:SignerRole");
+			final Element signerRoleDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNER_ROLE);
 
 			if (claimedSignerRoles != null && !claimedSignerRoles.isEmpty()) {
 
-				final Element claimedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdESNamespaces.XAdES, "xades:ClaimedRoles");
+				final Element claimedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdESNamespaces.XAdES, XADES_CLAIMED_ROLES);
 				addRoles(claimedSignerRoles, claimedRolesDom, "xades:ClaimedRole");
 			}
 
 			if (certifiedSignerRoles != null && !certifiedSignerRoles.isEmpty()) {
 
-				final Element certifiedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdESNamespaces.XAdES, "xades:CertifiedRoles");
+				final Element certifiedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdESNamespaces.XAdES, XADES_CERTIFIED_ROLES);
 				addRoles(certifiedSignerRoles, certifiedRolesDom, "xades:CertifiedRole");
 			}
 		}
@@ -540,26 +565,26 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final BLevelParameters.SignerLocation signatureProductionPlace = params.bLevel().getSignerLocation();
 		if (signatureProductionPlace != null) {
 
-			final Element signatureProductionPlaceDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:SignatureProductionPlace");
+			final Element signatureProductionPlaceDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNATURE_PRODUCTION_PLACE);
 
 			final String city = signatureProductionPlace.getCity();
 			if (city != null) {
-				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdESNamespaces.XAdES, "xades:City", city);
+				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdESNamespaces.XAdES, XADES_CITY, city);
 			}
 
 			final String postalCode = signatureProductionPlace.getPostalCode();
 			if (postalCode != null) {
-				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdESNamespaces.XAdES, "xades:PostalCode", postalCode);
+				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdESNamespaces.XAdES, XADES_POSTAL_CODE, postalCode);
 			}
 
 			final String stateOrProvince = signatureProductionPlace.getStateOrProvince();
 			if (stateOrProvince != null) {
-				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdESNamespaces.XAdES, "xades:StateOrProvince", stateOrProvince);
+				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdESNamespaces.XAdES, XADES_STATE_OR_PROVINCE, stateOrProvince);
 			}
 
 			final String country = signatureProductionPlace.getCountry();
 			if (country != null) {
-				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdESNamespaces.XAdES, "xades:CountryName", country);
+				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdESNamespaces.XAdES, XADES_COUNTRY_NAME, country);
 			}
 		}
 	}
@@ -578,17 +603,17 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final List<String> commitmentTypeIndications = params.bLevel().getCommitmentTypeIndications();
 		if (commitmentTypeIndications != null) {
 
-			final Element commitmentTypeIndicationDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, "xades:CommitmentTypeIndication");
+			final Element commitmentTypeIndicationDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_COMMITMENT_TYPE_INDICATION);
 
-			final Element commitmentTypeIdDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdESNamespaces.XAdES, "xades:CommitmentTypeId");
+			final Element commitmentTypeIdDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdESNamespaces.XAdES, XADES_COMMITMENT_TYPE_ID);
 
 			for (final String commitmentTypeIndication : commitmentTypeIndications) {
 
-				DSSXMLUtils.addTextElement(documentDom, commitmentTypeIdDom, XAdESNamespaces.XAdES, "xades:Identifier", commitmentTypeIndication);
+				DSSXMLUtils.addTextElement(documentDom, commitmentTypeIdDom, XAdESNamespaces.XAdES, XADES_IDENTIFIER, commitmentTypeIndication);
 			}
 			//final Element objectReferenceDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom, XADES, "ObjectReference");
 			// or
-			final Element allSignedDataObjectsDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdESNamespaces.XAdES, "xades:AllSignedDataObjects");
+			final Element allSignedDataObjectsDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdESNamespaces.XAdES, XADES_ALL_SIGNED_DATA_OBJECTS);
 
 			//final Element commitmentTypeQualifiersDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom, XADES, "CommitmentTypeQualifiers");
 		}
@@ -604,20 +629,6 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	public abstract DSSDocument signDocument(final byte[] signatureValue) throws DSSException;
 
 	/**
-	 * This method returns data format reference.
-	 *
-	 * @return
-	 */
-	protected abstract String getDataObjectFormatObjectReference();
-
-	/**
-	 * This method returns data format mime type.
-	 *
-	 * @return
-	 */
-	protected abstract String getDataObjectFormatMimeType();
-
-	/**
 	 * Adds the content of a timestamp into a given timestamp element
 	 *
 	 * @param timestampElement
@@ -630,30 +641,30 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		List<TimestampInclude> includes = token.getTimestampIncludes();
 		if (includes != null) {
 			for (TimestampInclude include : includes) {
-				Element timestampIncludeElement = documentDom.createElement("xades:Include");
-				timestampIncludeElement.setAttribute("URI", "#" + include.getURI());
+				Element timestampIncludeElement = documentDom.createElement(XADES_INCLUDE);
+				timestampIncludeElement.setAttribute(URI, "#" + include.getURI());
 				timestampIncludeElement.setAttribute("referencedData", "true");
 				timestampElement.appendChild((Node) timestampIncludeElement);
 			}
 		}
-		Element canonicalizationMethodElement = documentDom.createElement("ds:CanonicalizationMethod");
-		canonicalizationMethodElement.setAttribute("Algorithm", token.getCanonicalizationMethod());
+		Element canonicalizationMethodElement = documentDom.createElement(DS_CANONICALIZATION_METHOD);
+		canonicalizationMethodElement.setAttribute(ALGORITHM, token.getCanonicalizationMethod());
 
 		timestampElement.appendChild((Node) canonicalizationMethodElement);
 
-		Element encapsulatedTimestampElement = documentDom.createElement("xades:EncapsulatedTimeStamp");
+		Element encapsulatedTimestampElement = documentDom.createElement(XADES_ENCAPSULATED_TIME_STAMP);
 		encapsulatedTimestampElement.setTextContent(DSSUtils.base64Encode(token.getEncoded()));
 
 		timestampElement.appendChild((Node) encapsulatedTimestampElement);
 	}
 
 	/**
-	 * Creates XAdES TimeStamp object representation. The time stamp token is obtained from TSP source
+	 * Creates any XAdES Timestamp object representation. The timestamp token is obtained from TSP source.
 	 *
-	 * @param timestampC14nMethod
-	 * @param digestValue
-	 * @return
-	 * @throws eu.europa.ec.markt.dss.exception.DSSException
+	 * @param timestampType       {@code TimestampType}
+	 * @param timestampC14nMethod canonicalization method
+	 * @param digestValue         array of {@code byte} representing the digest to timestamp
+	 * @throws DSSException in case of any error
 	 */
 	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final byte[] digestValue) throws DSSException {
 
@@ -668,7 +679,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 			final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
 			final byte[] timeStampTokenBytes = timeStampToken.getEncoded();
 
-			final String signatureTimestampId = "time-stamp-token-" + UUID.randomUUID().toString();
+			final String timestampId = "time-stamp-token-" + UUID.randomUUID().toString();
 			final String base64EncodedTimeStampToken = DSSUtils.base64Encode(timeStampTokenBytes);
 
 			Element timeStampDom = null;
@@ -676,35 +687,35 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 				case SIGNATURE_TIMESTAMP:
 					// <xades:SignatureTimeStamp Id="time-stamp-1dee38c4-8388-40d1-8880-9eeda853fe60">
-					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:SignatureTimeStamp");
+					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNATURE_TIME_STAMP);
 					break;
 				case VALIDATION_DATA_REFSONLY_TIMESTAMP:
 					break;
 				case VALIDATION_DATA_TIMESTAMP:
 					// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:SigAndRefsTimeStamp");
+					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIG_AND_REFS_TIME_STAMP);
 					break;
 				case ARCHIVE_TIMESTAMP:
 					// <xades141:ArchiveTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:ArchiveTimeStamp");
+					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, XADES141_ARCHIVE_TIME_STAMP);
 					break;
 				case CONTENT_TIMESTAMP:
 					break;
 				case ALL_DATA_OBJECTS_TIMESTAMP:
-					timeStampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, "xades:AllDataObjectsTimeStamp");
+					timeStampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_ALL_DATA_OBJECTS_TIME_STAMP);
 					break;
 				case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-					timeStampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, "xades:IndividualDataObjectsTimeStamp");
+					timeStampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP);
 					break;
 			}
-			timeStampDom.setAttribute("Id", signatureTimestampId);
+			timeStampDom.setAttribute("Id", timestampId);
 
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
 
 			// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
-			final Element encapsulatedTimeStampDom = DSSXMLUtils.addElement(documentDom, timeStampDom, XAdESNamespaces.XAdES, "xades:EncapsulatedTimeStamp");
-			encapsulatedTimeStampDom.setAttribute("Id", signatureTimestampId);
+			final Element encapsulatedTimeStampDom = DSSXMLUtils.addElement(documentDom, timeStampDom, XAdESNamespaces.XAdES, XADES_ENCAPSULATED_TIME_STAMP);
+			encapsulatedTimeStampDom.setAttribute(ID, timestampId);
 			DSSXMLUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
 		} catch (IOException e) {
 
@@ -715,8 +726,8 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	private void incorporateC14nMethod(final Element parentDom, final String signedInfoC14nMethod) {
 
 		//<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-		final Element canonicalizationMethodDom = documentDom.createElementNS(XMLSignature.XMLNS, "ds:CanonicalizationMethod");
-		canonicalizationMethodDom.setAttribute("Algorithm", signedInfoC14nMethod);
+		final Element canonicalizationMethodDom = documentDom.createElementNS(XMLSignature.XMLNS, DS_CANONICALIZATION_METHOD);
+		canonicalizationMethodDom.setAttribute(ALGORITHM, signedInfoC14nMethod);
 		parentDom.appendChild(canonicalizationMethodDom);
 	}
 }

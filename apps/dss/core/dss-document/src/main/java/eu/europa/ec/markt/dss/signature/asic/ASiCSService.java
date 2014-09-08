@@ -31,6 +31,8 @@ package eu.europa.ec.markt.dss.signature.asic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -88,7 +90,7 @@ public class ASiCSService extends AbstractSignatureService {
 
 	private final static String ASICS_EXTENSION = ".asics";
 	private final static String ASICS_NS = "asic:XAdESSignatures";
-	private final static String ASICS_URI = "http://uri.etsi.org/2918/v1.2.1#";
+	private final static String ASICS_URI = "http://uri.etsi.org/02918/v1.2.1#";
 
 	/**
 	 * This is the constructor to create an instance of the {@code ASiCSService}. A certificate verifier must be provided.
@@ -118,7 +120,8 @@ public class ASiCSService extends AbstractSignatureService {
 		if (validator != null && (validator instanceof ASiCCMSDocumentValidator || validator instanceof ASiCXMLDocumentValidator)) {
 
 			// This is already an existing ASiC-S container; a new signature should be added.
-			contextToSignDocument = validator.getDetachedContent();
+			// TODO (22/08/2014): This is a List now!
+			contextToSignDocument = validator.getDetachedContents().get(0);
 			specificParameters.setDetachedContent(contextToSignDocument);
 			final DSSDocument contextSignature = validator.getDocument();
 			parameters.aSiC().setEnclosedSignature(contextSignature);
@@ -173,7 +176,8 @@ public class ASiCSService extends AbstractSignatureService {
 		if (validator != null && (validator instanceof ASiCCMSDocumentValidator || validator instanceof ASiCXMLDocumentValidator)) {
 
 			// This is already an existing ASiC-S container; a new signature should be added.
-			contextToSignDocument = validator.getDetachedContent();
+			// TODO (22/08/2014): This is a List now!
+			contextToSignDocument = validator.getDetachedContents().get(0);
 			specificParameters.setDetachedContent(contextToSignDocument);
 			final DSSDocument contextSignature = validator.getDocument();
 			parameters.aSiC().setEnclosedSignature(contextSignature);
@@ -273,11 +277,15 @@ public class ASiCSService extends AbstractSignatureService {
 			final SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(toExtendDocument);
 			final DSSDocument signature = validator.getDocument();
 			DSSDocument originalDocument = parameters.getDetachedContent();
-			if (validator.getDetachedContent() == null) {
+			// TODO (22/08/2014): This is a List now!
+			if (validator.getDetachedContents() == null || validator.getDetachedContents().size() == 0) {
 
-				validator.setDetachedContent(originalDocument);
+				List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+				detachedContents.add(originalDocument);
+				validator.setDetachedContents(detachedContents);
 			} else {
-				originalDocument = validator.getDetachedContent();
+				// TODO (22/08/2014): This is a List now!
+				originalDocument = validator.getDetachedContents().get(0);
 			}
 
 			final DocumentSignatureService specificService = getSpecificService(parameters);
@@ -319,7 +327,7 @@ public class ASiCSService extends AbstractSignatureService {
 	 * DETACHED
 	 *
 	 * @param parameters must provide signingToken, PrivateKeyEntry and date
-	 * @return new specific instance for XAdES
+	 * @return new specific instance for XAdES or CAdES
 	 */
 	private SignatureParameters getParameters(final SignatureParameters parameters) {
 

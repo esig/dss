@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,14 +68,14 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_I
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.EMPTY;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ASTPTCT;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ASTPTCT_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ATITRO;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ATITRO_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_IBSTAIDOSC;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_IBSTAIDOSC_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ISCNVABST;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ISCNVABST_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_WACRABST;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_WACRABST_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ATITRO;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.TSV_ATITRO_ANS;
 
 /**
  * This class implements:<br>
@@ -309,17 +308,24 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		timestamps.addAll(signatureXmlDom.getElements("./Timestamps/Timestamp[@Type='%s']", TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
 
 		boolean found = false;
+		int noContentTimestampCount = 0;
 
 		for (final XmlDom timestamp : timestamps) {
 
 			// timestampX
 			timestampId = timestamp.getValue("./@Id");
-			final String timestampType = timestamp.getValue("./@Type");
+			final String timestampTypeString = timestamp.getValue("./@Type");
+			final TimestampType timestampType = TimestampType.valueOf(timestampTypeString);
+			final boolean contentTimestamp = isContentTimestamp(timestampType);
 			final Date productionTime = timestamp.getTimeValue("./ProductionTime/text()");
+
+			if (!contentTimestamp) {
+				noContentTimestampCount++;
+			}
 
 			timestampXmlNode = signatureXmlNode.addChild(TIMESTAMP);
 			timestampXmlNode.setAttribute(ID, timestampId);
-			timestampXmlNode.setAttribute(TYPE, timestampType);
+			timestampXmlNode.setAttribute(TYPE, timestampTypeString);
 			timestampXmlNode.setAttribute(GENERATION_TIME, RuleUtils.formatDate(productionTime));
 
 			final Conclusion timestampConclusion = new Conclusion();
@@ -330,10 +336,8 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			if (!checkMessageImprintDataIntactConstraint(timestampConclusion, timestamp)) {
 				continue;
 			}
-			boolean contentTimestamp = TimestampType.valueOf(timestampType).equals(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP)
-					|| TimestampType.valueOf(timestampType).equals(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP)
-					|| TimestampType.valueOf(timestampType).equals(TimestampType.CONTENT_TIMESTAMP);
-			if( contentTimestamp) {
+			if (contentTimestamp) {
+
 				checkTimestampValidationProcessConstraint(timestamp);
 			} else {
 
@@ -344,13 +348,17 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		// -1 means that there is no timestamps within the signature
 		//  0 means that there is no valid timestamps
 		//  1 means that there is at least one valid timestamp
-		final int validTimestampCount = timestamps.size() == 0 ? -1 : (found ? 1 : 0);
+		final int validTimestampCount = noContentTimestampCount == 0 ? -1 : (found ? 1 : 0);
 		if (!checkTimestampsValidationProcessConstraint(signatureConclusion, validTimestampCount)) {
 			return signatureConclusion;
 		}
 
 		/**
 		 * 5) Comparing times:
+		 */
+
+		/**
+		 * NOTE 2:
 		 */
 		if (INDETERMINATE.equals(bvpIndication) && REVOKED_NO_POE.equals(bvpSubIndication)) {
 
@@ -359,6 +367,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			}
 		}
 
+		/**
+		 * NOTE 3:
+		 */
 		if (INDETERMINATE.equals(bvpIndication) && OUT_OF_BOUNDS_NO_POE.equals(bvpSubIndication)) {
 
 			if (!checkBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint(signatureConclusion)) {
@@ -369,6 +380,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			}
 		}
 
+		/**
+		 * NOTE 4:
+		 */
 		if (INDETERMINATE.equals(bvpIndication) && CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bvpSubIndication)) {
 
 			if (!checkAlgorithmReliableAtBestSignatureTimeConstraint(signatureConclusion)) {
@@ -398,6 +412,10 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		signatureConclusion.addInfo(EMPTY).setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 
 		return signatureConclusion;
+	}
+
+	private boolean isContentTimestamp(TimestampType timestampType) {
+		return TimestampType.ALL_DATA_OBJECTS_TIMESTAMP == timestampType || TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP == timestampType || TimestampType.CONTENT_TIMESTAMP == timestampType;
 	}
 
 	/**
@@ -434,9 +452,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	 * 􀀀 In all remaining cases, remove the time-stamp token from the set of signature time-stamp tokens and try
 	 * the next token.<br/>
 	 *
-	 * @param rightTimestamps
-	 * @param found
-	 * @param productionTime
+	 * @param rightTimestamps the {@code List} containing the id of valid valid timestamps
+	 * @param found           indicates if there is at least one valid timestamp
+	 * @param productionTime  the production {@code Date} of the current timestamp
 	 * @return
 	 */
 	private boolean checkTimestampValidationProcessConstraint(List<String> rightTimestamps, boolean found, Date productionTime) {
@@ -472,6 +490,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	/**
 	 * Same as previous method, but does not add the timestamp to the list of right timestamps, and does not return any result
 	 * -> Only performs the functional validation of the timestamp
+	 *
 	 * @param contentTimestamp
 	 * @return
 	 */
@@ -649,7 +668,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	}
 
 	/**
-	 * Check of: is the timestamp message imprint data intact
+	 * Check of: Is the result of the timestamps validation process conclusive?
 	 *
 	 * @param conclusion          the conclusion to use to add the result of the check.
 	 * @param validTimestampCount
@@ -762,6 +781,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		}
 		constraint.create(signatureXmlNode, TSV_ISCNVABST);
 		constraint.setIndications(INDETERMINATE, OUT_OF_BOUNDS_NO_POE, TSV_ISCNVABST_ANS);
+		// false is always returned: this corresponds to: Otherwise, terminate with INDETERMINATE/OUT_OF_BOUNDS_NO_POE.
 		constraint.setValue(false);
 		final String formatedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
@@ -844,7 +864,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 		final Date latestContentTimestampProductionDate = getLatestContentTimestampProductionDate();
 		final Date earliestSignatureTimestampProductionDate = getEarliestTimestampProductionTime(rightTimestamps, timestamps);
-		if(latestContentTimestampProductionDate == null || earliestSignatureTimestampProductionDate == null) {
+		if (latestContentTimestampProductionDate == null || earliestSignatureTimestampProductionDate == null) {
 			return true;
 		}
 		boolean ok = latestContentTimestampProductionDate.before(earliestSignatureTimestampProductionDate);
@@ -864,6 +884,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	 * Similarly to the checkTimestampCoherenceConstraint method, this method verifies whether the ordering of the timestamps present in the
 	 * signature actually makes sense. I.e. whether the SIGNATURE TIMESTAMPS were actually produced before the REFERENCE TIMESTAMPS, and whether
 	 * the REFERENCE TIMESTAMPS were actually produced before the ARCHIVE TIMESTAMPS.
+	 *
 	 * @param conclusion
 	 * @return
 	 */

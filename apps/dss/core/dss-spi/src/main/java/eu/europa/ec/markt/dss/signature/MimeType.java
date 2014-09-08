@@ -45,7 +45,8 @@ import eu.europa.ec.markt.dss.DSSUtils;
  */
 public enum MimeType {
 
-	BINARY("application/octet-stream"), XML("text/xml"), PDF("application/pdf"), PKCS7("application/pkcs7-signature"), ASICS("application/vnd.etsi.asic-s+zip"), TEXT("text/plain");
+	BINARY("application/octet-stream"), XML("text/xml"), PDF("application/pdf"), PKCS7("application/pkcs7-signature"), ASICS("application/vnd.etsi.asic-s+zip"), ASICE(
+		  "application/vnd.etsi.asic-e+zip"), TEXT("text/plain");
 
 	private String code;
 
@@ -54,6 +55,8 @@ public enum MimeType {
 		put("pdf", PDF);
 		put("asics", ASICS);
 		put("scs", ASICS);
+		put("asice", ASICE);
+		put("sce", ASICE);
 		put("txt", TEXT);
 	}};
 

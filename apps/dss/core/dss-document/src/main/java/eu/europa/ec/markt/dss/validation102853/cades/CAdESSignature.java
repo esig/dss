@@ -209,23 +209,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * The default constructor for CAdESSignature.
-	 *
-	 * @param cms               CMSSignedData
-	 * @param signerInformation an expanded SignerInfo block from a CMS Signed message
-	 * @param certPool          can be null
-	 */
-	public CAdESSignature(final CMSSignedData cms, final SignerInformation signerInformation, final CertificatePool certPool) {
-		this(cms, signerInformation, certPool, null);
-	}
-
-	/**
 	 * @param cmsSignedData     CMSSignedData
 	 * @param signerInformation an expanded SignerInfo block from a CMS Signed message
-	 * @param detachedContent   the external signed content if detached signature
 	 */
-	public CAdESSignature(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final DSSDocument detachedContent) {
-		this(cmsSignedData, signerInformation, new CertificatePool(), detachedContent);
+	public CAdESSignature(final CMSSignedData cmsSignedData, final SignerInformation signerInformation) {
+		this(cmsSignedData, signerInformation, new CertificatePool());
 	}
 
 	/**
@@ -234,14 +222,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @param cmsSignedData     CMSSignedData
 	 * @param signerInformation an expanded SignerInfo block from a CMS Signed message
 	 * @param certPool          can be null
-	 * @param detachedContent   the external signed content if detached signature
 	 */
-	public CAdESSignature(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool, final DSSDocument detachedContent) {
+	public CAdESSignature(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool) {
 
 		super(certPool);
 		this.cmsSignedData = cmsSignedData;
 		this.signerInformation = signerInformation;
-		this.detachedContent = detachedContent;
 	}
 
 	/**
@@ -639,7 +625,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				// must be ASN1UTCTime
 				if (!(attrValue instanceof ASN1UTCTime)) {
 					LOG.error(
-						  "RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) must be encoded as UTCTime. Any dates with year values before 1950 or after 2049 must be encoded as GeneralizedTime. Date found is %s encoded as %s",
+						  "RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) must be encoded as UTCTime. Any dates with year values before 1950 or after 2049 must be encoded as GeneralizedTime. Date found is {} encoded as {}",
 						  signingDate.toString(), attrValue.getClass());
 					return null;
 				}
@@ -1024,11 +1010,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		try {
 
 			final SignerInformation signerInformationToCheck;
-			if (detachedContent == null) {
+			if (detachedContents == null || detachedContents.size() == 0) {
 				signerInformationToCheck = signerInformation;
 			} else {
 				// Recreate a SignerInformation with the content using a CMSSignedDataParser
-				final CMSTypedStream signedContent = new CMSTypedStream(detachedContent.openStream());
+				final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
+				final CMSTypedStream signedContent = new CMSTypedStream(dssDocument.openStream());
 				final CMSSignedDataParser sp = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
 				sp.getSignedContent().drain();
 				final SignerId sid = signerInformation.getSID();
@@ -1437,8 +1424,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				throw new DSSException(e);
 			}
 		} else {
-			// TODO (14/07/2014): detachedContent can be null!
-			return detachedContent.getBytes();
+			if (detachedContents != null && detachedContents.size() > 0) {
+
+				return detachedContents.get(0).getBytes();
+			}
+			return DSSUtils.EMPTY_BYTE_ARRAY;
 		}
 	}
 

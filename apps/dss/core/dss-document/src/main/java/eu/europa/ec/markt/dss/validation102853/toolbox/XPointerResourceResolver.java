@@ -86,9 +86,7 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 		final boolean xPointerQuery = isXPointerQuery(uri, false);
 		if (LOG.isDebugEnabled()) {
 
-			LOG.debug("Decoded Uri= " + uri);
-			final String baseUri = context.baseUri;
-			LOG.debug("Base Uri= " + baseUri);
+			LOG.debug("I state that I " + (xPointerQuery ? "can" : "cannot") + " resolve Uri/Base Uri:'" + uri + "/" + context.baseUri + "'");
 		}
 		return xPointerQuery;
 	}
@@ -137,15 +135,15 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 		final Attr uriAttr = context.attr;
 		final String baseUri = context.baseUri;
 
-		String uriValue = uriAttr.getNodeValue();
+		String uriNodeValue = uriAttr.getNodeValue();
 
-		if (uriValue.charAt(0) != '#') {
+		if (uriNodeValue.charAt(0) != '#') {
 			return null;
 		}
 
 		String xpURI;
 		try {
-			xpURI = URLDecoder.decode(uriValue, "utf-8");
+			xpURI = URLDecoder.decode(uriNodeValue, "utf-8");
 		} catch (UnsupportedEncodingException e) {
 			LOG.warn("utf-8 not a valid encoding", e);
 			return null;
@@ -170,7 +168,7 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 				int pos = mapping.indexOf('=');
 
 				if (pos <= 0 || pos >= mapping.length() - 1) {
-					throw new ResourceResolverException("malformed namespace part of XPointer expression", uriAttr, baseUri);
+					throw new ResourceResolverException("malformed namespace part of XPointer expression", uriNodeValue, baseUri);
 				}
 
 				nsContext.addNamespace(mapping.substring(0, pos), mapping.substring(pos + 1));
@@ -223,12 +221,12 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 
 			result.setMIMEType("text/xml");
 			result.setExcludeComments(true);
-			result.setSourceURI((baseUri != null) ? baseUri.concat(uriValue) : uriValue);
+			result.setSourceURI((baseUri != null) ? baseUri.concat(uriNodeValue) : uriNodeValue);
 
 			return result;
 
 		} catch (XPathExpressionException e) {
-			throw new ResourceResolverException("malformed XPath inside XPointer expression", e, uriAttr, baseUri);
+			throw new ResourceResolverException("malformed XPath inside XPointer expression", e, uriNodeValue, baseUri);
 		}
 	}
 }

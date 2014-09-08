@@ -20,13 +20,9 @@
 
 package eu.europa.ec.markt.dss.parameter;
 
-import java.security.Timestamp;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
 
 import eu.europa.ec.markt.dss.CertificateIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -176,6 +172,7 @@ public class SignatureParameters {
 
 	/**
 	 * This method returns the Id of the signature to be countersigned.
+	 *
 	 * @return
 	 */
 	public String getToCounterSignSignatureId() {
@@ -184,6 +181,7 @@ public class SignatureParameters {
 
 	/**
 	 * This method sets the Id of the signature to be countersigned.
+	 *
 	 * @param toCounterSignSignatureId
 	 */
 	public void setToCounterSignSignatureId(String toCounterSignSignatureId) {
@@ -194,7 +192,7 @@ public class SignatureParameters {
 	 * This method returns the document to sign. In the case of the DETACHED signature this is the detached document.
 	 *
 	 * @return
-	 * @deprecated (4.1.0) use {@code getDetachedContent}
+	 * @deprecated (4.1.0) use {@code getContents}
 	 */
 	@Deprecated
 	public DSSDocument getOriginalDocument() {
@@ -216,7 +214,7 @@ public class SignatureParameters {
 	 * When extending this method must be invoked to indicate the {@code detachedContent}.
 	 *
 	 * @param document
-	 * @deprecated (4.1.0) use {@code setDetachedContent}
+	 * @deprecated (4.1.0) use {@code setContents}
 	 */
 	@Deprecated
 	public void setOriginalDocument(final DSSDocument document) {
@@ -364,13 +362,13 @@ public class SignatureParameters {
 	 */
 	public void setCertificateChain(final X509Certificate... certificateChainArray) {
 
-		if (certificateChainArray == null) {
-			return;
-		}
 		for (final X509Certificate certificate : certificateChainArray) {
 
-			if (!certificateChain.contains(certificate)) {
-				certificateChain.add(certificate);
+			if (certificate != null) {
+
+				if (!certificateChain.contains(certificate)) {
+					certificateChain.add(certificate);
+				}
 			}
 		}
 	}
@@ -512,37 +510,6 @@ public class SignatureParameters {
 
 	public List<DSSReference> getReferences() {
 
-		if (references == null) {
-
-			references = new ArrayList<DSSReference>();
-
-			DSSReference dssReference = new DSSReference();
-			dssReference.setId("xml_ref_id");
-			dssReference.setUri("");
-			/// dssReference.setType("");
-
-			final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
-
-			DSSTransform dssTransform = new DSSTransform();
-			dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
-			dssTransformList.add(dssTransform);
-
-			dssTransform = new DSSTransform();
-			dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
-			dssTransformList.add(dssTransform);
-
-			// For double signatures
-			dssTransform = new DSSTransform();
-			dssTransform.setAlgorithm("http://www.w3.org/TR/1999/REC-xpath-19991116");
-			dssTransform.setElementName("ds:XPath");
-			// TODO: (Bob: 2014 Feb 18) xPathQueryHolder.XMLDSIG_NAMESPACE
-			dssTransform.setNamespace(XMLSignature.XMLNS);
-			dssTransform.setTextContent("not(ancestor-or-self::ds:Signature)");
-			dssTransformList.add(dssTransform);
-			dssReference.setTransforms(dssTransformList);
-
-			references.add(dssReference);
-		}
 		return references;
 	}
 

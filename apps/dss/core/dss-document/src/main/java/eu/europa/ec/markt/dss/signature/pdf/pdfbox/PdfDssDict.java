@@ -61,6 +61,11 @@ public class PdfDssDict {
     }
 
     private PdfDssDict(PdfDict dssCatalog) throws IOException {
+	    try {
+		    readCerts(dssCatalog);
+	    } catch (Exception e) {
+		    LOG.debug(e.getMessage(), e);
+	    }
         try {
             readCrl(dssCatalog);
         } catch (Exception e) {
@@ -68,11 +73,6 @@ public class PdfDssDict {
         }
         try {
             readOcsp(dssCatalog);
-        } catch (Exception e) {
-            LOG.debug(e.getMessage(), e);
-        }
-        try {
-            readCerts(dssCatalog);
         } catch (Exception e) {
             LOG.debug(e.getMessage(), e);
         }

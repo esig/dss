@@ -19,8 +19,8 @@ public enum MessageTag {
 	ADEST_ITVPC_ANS_1("The timestamp is rejected, its generation time is before the best-signature-time!"),
 	ADEST_ITVPC_INFO_1("The best-signature-time was set to the generation time of the timestamp."),
 	ADEST_ITVPC_ANS_2("Timestamp validation is not conclusive!"),
-	ADEST_ROBVPIIC("The result of the Basic Validation Process is it conclusive?"),
-	ADEST_ROTVPIIC("The result of the timestamps validation process is it conclusive?"),
+	ADEST_ROBVPIIC("Is the result of the Basic Validation Process conclusive?"),
+	ADEST_ROTVPIIC("Is the result of the timestamps validation process conclusive?"),
 	ADEST_ROTVPIIC_ANS("The result of the timestamps validation process is not conclusive!"),
 
 	BBB_CV_IRDOF("Is the reference data object(s) found?"),
@@ -132,7 +132,7 @@ public enum MessageTag {
 	TSV_IBSTAIDOSC("Is the best-signature-time after the issuance date of the signing certificate?"),
 	TSV_IBSTAIDOSC_ANS("The best-signature-time is before the issuance date of the signing certificate!"),
 	TSV_ISCNVABST("Is the signing certificate not valid at the best-signature-time?"),
-	TSV_ISCNVABST_ANS("The signing certificate is not valid at the best-signature-time!"),
+	TSV_ISCNVABST_ANS("The past signing certificate validation must be performed!"),
 	TSV_ATITRO("Are timestamps in the right order?"),
 	TSV_ATITRO_ANS("The timestamps were not generated in the right order!"),
 

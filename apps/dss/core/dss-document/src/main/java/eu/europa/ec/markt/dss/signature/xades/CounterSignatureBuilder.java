@@ -23,32 +23,25 @@ package eu.europa.ec.markt.dss.signature.xades;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
-import javax.xml.crypto.dsig.XMLSignatureFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
-import eu.europa.ec.markt.dss.signature.ProfileParameters;
-import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
-import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
-import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
-import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 /**
  * This class provides the methods required to countersign a given signature and extend the existing signature with the generated
@@ -80,7 +73,18 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 		this.toCounterSignDocument = toCounterSignDocument;
 	}
 
-	public void incorporateReference1() {}
+	public void incorporateReference1() {
+	}
+
+	@Override
+	protected List<DSSReference> createDefaultReference() {
+		return null;
+	}
+
+	@Override
+	protected DSSDocument canonicalizeReference(DSSReference reference) {
+		return null;
+	}
 
 	@Override
 	public byte[] build() throws DSSException {
@@ -107,7 +111,7 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 		counterSignatureReference.setUri("#" + signatureValueId);
 
 		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm("http://www.w3.org/TR/1999/REC-xpath-19991116");
+		dssTransform.setAlgorithm(HTTP_WWW_W3_ORG_TR_1999_REC_XPATH_19991116);
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 		transforms.add(dssTransform);
 
@@ -124,10 +128,10 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 	}
 
 	/**
-	 * This method incorporates a given countersignature in the current signature XML DOM.
+	 * This method incorporates a given countersignature value in the current signature XML DOM.
 	 *
-	 * @param counterSignatureDocument the newly obtained signature, as a DSSDocument
-	 * @param counterSignedSignatureId the id of the signature that was countersigned
+	 * @param counterSignatureValue
+	 * @return
 	 */
 	public DSSDocument signDocument(byte[] counterSignatureValue) {
 
@@ -136,55 +140,33 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 		}
 
 		unsignedSignaturePropertiesDom = DSSXMLUtils.getElement(toCounterSignSignatureElement, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+		final Document ownerDocument = toCounterSignSignatureElement.getOwnerDocument();
 		if (unsignedSignaturePropertiesDom == null) {
+
 			Element unsignedPropertiesDom = DSSXMLUtils.getElement(toCounterSignSignatureElement, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
 			if (unsignedPropertiesDom == null) {
-				unsignedPropertiesDom = DSSXMLUtils.addElement(toCounterSignSignatureElement.getOwnerDocument(), DSSXMLUtils.getElement(toCounterSignSignatureElement, xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES), XMLSignature.XMLNS, "ds:UnsignedProperties");
+
+				final Element qualifyingPropertiesDom = DSSXMLUtils.getElement(toCounterSignSignatureElement, xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES);
+				unsignedPropertiesDom = DSSXMLUtils.addElement(ownerDocument, qualifyingPropertiesDom, XMLSignature.XMLNS, DS_UNSIGNED_PROPERTIES);
 			}
-			unsignedSignaturePropertiesDom = DSSXMLUtils.addElement(toCounterSignSignatureElement.getOwnerDocument(), unsignedPropertiesDom, XMLSignature.XMLNS, "ds:UnsignedSignatureProperties");
+			unsignedSignaturePropertiesDom = DSSXMLUtils.addElement(ownerDocument, unsignedPropertiesDom, XMLSignature.XMLNS, DS_UNSIGNED_SIGNATURE_PROPERTIES);
 		}
 
-		Element counterSignatureElement = DSSXMLUtils.addElement(toCounterSignSignatureElement.getOwnerDocument(), unsignedSignaturePropertiesDom, XMLSignature.XMLNS, "ds:CounterSignature");
+		final Element counterSignatureElement = DSSXMLUtils.addElement(ownerDocument, unsignedSignaturePropertiesDom, XMLSignature.XMLNS, DS_COUNTER_SIGNATURE);
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, counterSignatureValue);
 		final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 
-		Node importedNode = unsignedSignaturePropertiesDom.getOwnerDocument().importNode(documentDom.getFirstChild(), true);
+		final Node importedNode = unsignedSignaturePropertiesDom.getOwnerDocument().importNode(documentDom.getFirstChild(), true);
 		counterSignatureElement.appendChild(importedNode);
 
-		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(toCounterSignDocument);
+		final byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(toCounterSignDocument);
 		return new InMemoryDocument(documentBytes);
 	}
 
 	public void setParams(SignatureParameters parameters) {
 		params = parameters;
 	}
-
-	protected void incorporateSignatureValue(byte[] counterSignatureValue) {
-		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
-		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, counterSignatureValue);
-		final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);
-		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
-	}
-
-	/**
-	 * This method returns data format reference specific for enveloped signature.
-	 */
-	@Override
-	protected String getDataObjectFormatObjectReference() {
-
-		return "#xml_ref_id";
-	}
-
-	/**
-	 * This method returns data format mime type specific for enveloped signature.
-	 */
-	@Override
-	protected String getDataObjectFormatMimeType() {
-
-		return "text/xml";
-	}
-
 }

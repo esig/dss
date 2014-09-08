@@ -20,17 +20,18 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.w3c.dom.Element;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+
 import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
@@ -38,8 +39,8 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 
 /**
  * This class handles the specifics of the detached XML signature.
- *
- * <p>
+ * <p/>
+ * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
@@ -47,92 +48,84 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
  */
 class DetachedSignatureBuilder extends SignatureBuilder {
 
-    // private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DetachedSignatureBuilder.class.getName());
+	// private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DetachedSignatureBuilder.class.getName());
 
-    /**
-     * The file name of the file to sign
-     */
-    private final String fileName;
+	/**
+	 * The default constructor for DetachedSignatureBuilder.<br>
+	 * The detached signature uses by default the exclusive method of canonicalization.
+	 *
+	 * @param params  The set of parameters relating to the structure and process of the creation or extension of the
+	 *                electronic signature.
+	 * @param origDoc The original document to sign.
+	 */
+	public DetachedSignatureBuilder(SignatureParameters params, DSSDocument origDoc) {
 
-    /**
-     * The default constructor for DetachedSignatureBuilder.<br>
-     * The detached signature uses by default the exclusive method of canonicalization.
-     *
-     * @param params  The set of parameters relating to the structure and process of the creation or extension of the
-     *                electronic signature.
-     * @param origDoc The original document to sign.
-     */
-    public DetachedSignatureBuilder(SignatureParameters params, DSSDocument origDoc) {
+		super(params, origDoc);
+		signedInfoCanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+		reference2CanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+	}
 
-        super(params, origDoc);
-        signedInfoCanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
-        reference2CanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
-        this.fileName = origDoc.getName();
-    }
+	@Override
+	protected List<DSSReference> createDefaultReference() {
 
-    /**
-     * This method returns data format reference specific for detached signature.
-     */
-    @Override
-    protected String getDataObjectFormatObjectReference() {
+		final List<DSSReference> references = new ArrayList<DSSReference>();
 
-        return "#detached-ref-id";
-    }
+		//<ds:Reference Id="detached-ref-id" URI="xml_example.xml">
+		final DSSReference reference = new DSSReference();
+		reference.setId("r-id-1");
+		final String fileURI = originalDocument != null && originalDocument.getName() != null ? originalDocument.getName() : "";
+		reference.setUri(fileURI);
+		reference.setContents(originalDocument);
 
-    /**
-     * This method returns data format mime type specific for detached signature.
-     */
-    @Override
-    protected String getDataObjectFormatMimeType() {
+		references.add(reference);
 
-        return "text/plain";
-    }
+		return references;
+	}
 
-    /**
-     * This method creates the first reference (this is a reference to the file to sign) which is specific for each form
-     * of signature. Here, the value of the URI is the name of the file to sign or if the information is not available
-     * the URI will use the default value: "detached-file".
-     *
-     * @throws DSSException
-     */
-    @Override
-    protected void incorporateReference1() throws DSSException {
+	/**
+	 * This method creates the first reference (this is a reference to the file to sign) which is specific for each form
+	 * of signature. Here, the value of the URI is the name of the file to sign or if the information is not available
+	 * the URI will use the default value: "detached-file".
+	 *
+	 * @throws DSSException
+	 */
+	@Override
+	protected void incorporateReference1() throws DSSException {
 
-        //<ds:Reference Id="detached-ref-id" URI="xml_example.xml">
-        final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, "ds:Reference");
-        referenceDom.setAttribute("Id", "detached-ref-id");
-        final String fileURI = fileName != null ? fileName : "";
-        referenceDom.setAttribute("URI", fileURI);
+		final List<DSSReference> references = params.getReferences();
+		for (final DSSReference reference : references) {
 
-        // <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-        final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
-        incorporateDigestMethod(referenceDom, digestAlgorithm);
+			incorporateReference(reference);
+		}
+	}
 
-        // <ds:DigestValue>EGx5Dc+GjdzKf0Dqh9h3a+WlixaKpYkjCmXTA/3Y2J4=</ds:DigestValue>
-        incorporateDigestValue(referenceDom, digestAlgorithm, originalDocument);
-    }
+	@Override
+	protected DSSDocument canonicalizeReference(final DSSReference reference) {
 
-    /**
-     * Adds signature value to the signature and returns XML signature (InMemoryDocument)
-     *
-     * @param signatureValue
-     * @return
-     * @throws DSSException
-     */
-    @Override
-    public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
+		return reference.getContents();
+	}
 
-        if (!built) {
+	/**
+	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
+	 *
+	 * @param signatureValue
+	 * @return
+	 * @throws DSSException
+	 */
+	@Override
+	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
 
-            build();
-        }
-        final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
-        final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
-        final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);
-        final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
-        signatureValueDom.appendChild(signatureValueNode);
+		if (!built) {
 
-        byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
-        return new InMemoryDocument(documentBytes);
-    }
+			build();
+		}
+		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
+		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
+		final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);
+		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
+		signatureValueDom.appendChild(signatureValueNode);
+
+		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
+		return new InMemoryDocument(documentBytes);
+	}
 }

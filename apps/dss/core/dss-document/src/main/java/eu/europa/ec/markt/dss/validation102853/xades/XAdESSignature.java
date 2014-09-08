@@ -20,10 +20,8 @@
 
 package eu.europa.ec.markt.dss.validation102853.xades;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -38,11 +36,9 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
-import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.signature.Reference;
@@ -143,11 +139,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This variable contains all references found within the signature. They are extracted when the method {@code checkSignatureIntegrity} is called.
 	 */
 	private List<Reference> references = new ArrayList<Reference>();
-
-	/**
-	 * This attribute is used when validate the ArchiveTimeStamp (XAdES-A).
-	 */
-	private ByteArrayOutputStream referencesDigestOutputStream = new ByteArrayOutputStream();
 
 	/**
 	 * This list represents all digest algorithms used to calculate the digest values of certificates.
@@ -1226,7 +1217,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
 			santuarioSignature.addResourceResolver(new XPointerResourceResolver(signatureElement));
-			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContent));
+			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents));
 
 			boolean coreValidity = false;
 			final List<SigningCertificateValidity> signingCertificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
@@ -1254,12 +1245,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			for (int ii = 0; ii < length; ii++) {
 
 				final Reference reference = signedInfo.item(ii);
-				referenceDataHashValid = referenceDataHashValid && reference.verify();
-				final byte[] referencedBytes = reference.getReferencedBytes();
+				if (!coreValidity) {
+
+					referenceDataHashValid = referenceDataHashValid && reference.verify();
+				}
 				references.add(reference);
-				referenceDataFound = referenceDataFound && (referencedBytes != null);
-				final InputStream referencedInputStream = DSSUtils.toInputStream(referencedBytes);
-				DSSUtils.copy(referencedInputStream, referencesDigestOutputStream);
 			}
 			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataHashValid);
@@ -1345,17 +1335,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method retrieves the potential countersignatures embedded in the XAdES signature document.
 	 * From ETSI TS 101 903 v1.4.2:
-	 *
-	 *   7.2.4.1 Countersignature identifier in Type attribute of ds:Reference
-	 *
-	 *   A XAdES signature containing a ds:Reference element whose Type attribute has value "http://uri.etsi.org/01903#CountersignedSignature"
-	 *   will indicate that is is, in fact, a countersignature of the signature referenced by this element.
-	 *
-	 *	 7.2.4.2 Enveloped countersignatures: the CounterSignature element
-	 *
-	 *	 The CounterSignature is an unsigned property that qualifies the signature. A XAdES signature MAY have more
-	 *	 than one CounterSignature properties. As indicated by its name, it contains one countersignature of the qualified
-	 *	 signature.
+	 * <p/>
+	 * 7.2.4.1 Countersignature identifier in Type attribute of ds:Reference
+	 * <p/>
+	 * A XAdES signature containing a ds:Reference element whose Type attribute has value "http://uri.etsi.org/01903#CountersignedSignature"
+	 * will indicate that is is, in fact, a countersignature of the signature referenced by this element.
+	 * <p/>
+	 * 7.2.4.2 Enveloped countersignatures: the CounterSignature element
+	 * <p/>
+	 * The CounterSignature is an unsigned property that qualifies the signature. A XAdES signature MAY have more
+	 * than one CounterSignature properties. As indicated by its name, it contains one countersignature of the qualified
+	 * signature.
 	 *
 	 * @return a list containing the countersignatures embedded in the XAdES signature document
 	 */
@@ -1386,13 +1376,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * This method verifies whether a given signature is a countersignature.
-	 *
+	 * <p/>
 	 * From ETSI TS 101 903 V1.4.2:
 	 * - The signature's ds:SignedInfo element MUST contain one ds:Reference element referencing the
-	 *   ds:Signature element of the embedding and countersigned XAdES signature
+	 * ds:Signature element of the embedding and countersigned XAdES signature
 	 * - The content of the ds:DigestValue in the aforementioned ds:Reference element  of the countersignature
-	 *   MUST be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e.
-	 *   including the starting and closing tags) of the embedding and countersigned XAdES signature.
+	 * MUST be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e.
+	 * including the starting and closing tags) of the embedding and countersigned XAdES signature.
 	 *
 	 * @param xCounterSig
 	 * @return
@@ -1411,8 +1401,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				countersignedSignatureReference = reference;
 			}
 		}
-		
-		if (countersignedSignatureReference ==  null) {
+
+		if (countersignedSignatureReference == null) {
 			return false;
 		}
 
@@ -1421,10 +1411,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (subNodes.getLength() > 1 || subNodes.getLength() < 1) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public List<CertificateRef> getCertificateRefs() {
 
@@ -1658,10 +1648,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			/**
 			 * The references are already calculated {@see #checkSignatureIntegrity()}
 			 */
+			for (final Reference reference : references) {
 
-			final InputStream decodedInput = new ByteArrayInputStream((referencesDigestOutputStream).toByteArray());
+				try {
 
-			DSSUtils.copy(decodedInput, buffer);
+					final byte[] bytes = reference.getReferencedBytes();
+					DSSUtils.write(bytes, buffer);
+				} catch (XMLSignatureException e) {
+					throw new DSSException(e);
+				}
+			}
 			/**
 			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and
 			 * concatenate each resulting octet stream to the final octet stream:<br>

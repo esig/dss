@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.mina.util.ConcurrentHashSet;
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.slf4j.Logger;
@@ -83,7 +84,9 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		this.location = signature.getLocation();
 		this.signingDate = signature.getSignDate() != null ? signature.getSignDate().getTime() : null;
 		this.signatureByteRange = signature.getByteRange();
-		documentDictionary = PdfDssDict.build(new PdfBoxDict(document.getDocumentCatalog().getCOSDictionary(), document));
+		final COSDictionary cosDictionary = document.getDocumentCatalog().getCOSDictionary();
+		final PdfBoxDict documentDict = new PdfBoxDict(cosDictionary, document);
+		documentDictionary = PdfDssDict.build(documentDict);
 		try {
 			if (cms == null) {
 				// due to not very good revision extracting

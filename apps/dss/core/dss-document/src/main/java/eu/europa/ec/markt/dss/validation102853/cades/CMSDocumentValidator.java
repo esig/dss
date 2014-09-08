@@ -99,7 +99,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 				final SignerInformation signerInformation = (SignerInformation) signerInformationObject;
 				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationCertPool);
-				cadesSignature.setDetachedContent(detachedContent);
+				cadesSignature.setDetachedContents(detachedContents);
 				cadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 				signatures.add(cadesSignature);
 			}

@@ -83,7 +83,7 @@ public class OCSPToken extends RevocationToken {
         this.basicOCSPResp = basicOCSPResp;
         final ASN1ObjectIdentifier signatureAlgOID = basicOCSPResp.getSignatureAlgOID();
         final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(signatureAlgOID.getId());
-        this.algoUsedToSignToken = signatureAlgorithm;
+        this.algorithmUsedToSignToken = signatureAlgorithm;
         this.extraInfo = new TokenValidationExtraInfo();
         try {
 
@@ -207,7 +207,7 @@ public class OCSPToken extends RevocationToken {
         out.append(DSSUtils.formatInternal(basicOCSPResp.getProducedAt()));
         out.append(", signedBy=").append(issuerToken != null ? issuerToken.getDSSIdAsString() : null).append('\n');
         indentStr += "\t";
-        out.append(indentStr).append("Signature algorithm: ").append(algoUsedToSignToken == null ? "?" : algoUsedToSignToken.getJCEId()).append('\n');
+        out.append(indentStr).append("Signature algorithm: ").append(algorithmUsedToSignToken == null ? "?" : algorithmUsedToSignToken.getJCEId()).append('\n');
         out.append(issuerToken != null ? issuerToken.toString(indentStr) : null).append('\n');
         final List<String> validationExtraInfo = extraInfo.getValidationInfo();
         if (validationExtraInfo.size() > 0) {

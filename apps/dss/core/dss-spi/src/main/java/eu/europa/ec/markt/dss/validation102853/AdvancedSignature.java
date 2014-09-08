@@ -48,16 +48,24 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
 public interface AdvancedSignature {
 
 	/**
-	 * @return in the case of the detached signature this is the signed content.
+	 * @return in the case of the detached signature this is the {@code List} of signed contents.
 	 */
-	public DSSDocument getDetachedContent();
+	public List<DSSDocument> getDetachedContents();
 
 	/**
-	 * This method allows to set the signed content in the case of the detached signature.
+	 * This method allows to set the signed contents in the case of the detached signature.
 	 *
-	 * @param detachedContent {@code DSSDocument} representing the signed detached content.
+	 * @param detachedContents array of {@code DSSDocument} representing the signed detached contents.
 	 */
-	public void setDetachedContent(final DSSDocument detachedContent);
+	public void setDetachedContents(final DSSDocument... detachedContents);
+
+
+	/**
+	 * This method allows to set the signed contents in the case of the detached signature.
+	 *
+	 * @param detachedContents {@code List} of {@code DSSDocument} representing the signed detached contents.
+	 */
+	public void setDetachedContents(final List<DSSDocument> detachedContents);
 
 	/**
 	 * @return This method returns the provided signing certificate or {@code null}

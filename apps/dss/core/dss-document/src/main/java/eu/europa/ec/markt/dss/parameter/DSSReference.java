@@ -20,8 +20,9 @@
 
 package eu.europa.ec.markt.dss.parameter;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import eu.europa.ec.markt.dss.signature.DSSDocument;
 
 /**
  * TODO
@@ -38,6 +39,8 @@ public class DSSReference {
 	private String type;
 
 	private String digestMethod;
+
+	private DSSDocument contents;
 
 	private List<DSSTransform> transforms;
 
@@ -87,6 +90,15 @@ public class DSSReference {
 		this.transforms = transforms;
 	}
 
+	public DSSDocument getContents() {
+		return contents;
+	}
+
+	public void setContents(DSSDocument contents) {
+		this.contents = contents;
+	}
+
+
 	@Override
 	public String toString() {
 		return "DSSReference{" +
@@ -94,6 +106,7 @@ public class DSSReference {
 			  ", uri='" + uri + '\'' +
 			  ", type='" + type + '\'' +
 			  ", digestMethod='" + digestMethod + '\'' +
+			  ", contents=" + contents.toString() +
 			  ", transforms=" + transforms +
 			  '}';
 	}

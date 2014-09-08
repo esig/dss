@@ -8,10 +8,7 @@ import java.util.List;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
-import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
-import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
 
 /**
  * TODO
@@ -31,20 +28,11 @@ public interface DocumentValidator {
 	DSSDocument getDocument();
 
 	/**
-	 * This method returns the signed document in the case of the detached signatures.
+	 * This method returns the {@code List} of the signed documents in the case of the detached signatures.
 	 *
-	 * @return the detached document
-	 * @deprecated 4.1.0: {@code getDetachedContent} to be used
+	 * @return the {@code List} of the detached document {@code DSSDocument}
 	 */
-	@Deprecated
-	DSSDocument getExternalContent();
-
-	/**
-	 * This method returns the signed document in the case of the detached signatures.
-	 *
-	 * @return the detached document {@code DSSDocument}
-	 */
-	DSSDocument getDetachedContent();
+	List<DSSDocument> getDetachedContents();
 
 	/**
 	 * Retrieves the signatures found in the document
@@ -56,20 +44,11 @@ public interface DocumentValidator {
 	void setCertificateVerifier(final CertificateVerifier certVerifier);
 
 	/**
-	 * Sets the Document containing the original content to sign, for detached signature scenarios.
+	 * Sets the {@code List} of {@code DSSDocument} containing the original contents to sign, for detached signature scenarios.
 	 *
-	 * @param externalContent the externalContent to set
-	 * @deprecated 4.1.0: {@code setDetachedContent} to be used
+	 * @param detachedContent the {@code List} of {@code DSSDocument} to set
 	 */
-	@Deprecated
-	void setExternalContent(final DSSDocument externalContent);
-
-	/**
-	 * Sets the Document containing the original content to sign, for detached signature scenarios.
-	 *
-	 * @param detachedContent the externalContent to set
-	 */
-	void setDetachedContent(final DSSDocument detachedContent);
+	void setDetachedContents(final List<DSSDocument> detachedContent);
 
 	/**
 	 * This method allows to define the signing certificate. It is useful in the case of ,non AdES signatures.
@@ -82,25 +61,45 @@ public interface DocumentValidator {
 
 	void setPolicyFile(final String signatureId, final File policyDocument);
 
+	/**
+	 * Validates the document and all its signatures. The default constraint file is used.
+	 *
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument();
 
+	/**
+	 * Validates the document and all its signatures. If the validation policy URL is set then the policy constraints are retrieved from this location. If null or empty the
+	 * default file is used.
+	 *
+	 * @param validationPolicyURL
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument(final URL validationPolicyURL);
 
+	/**
+	 * Validates the document and all its signatures. The policyResourcePath specifies the constraint file. If null or empty the default file is used.
+	 *
+	 * @param policyResourcePath is located against the classpath (getClass().getResourceAsStream), and NOT the filesystem
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument(final String policyResourcePath);
 
+	/**
+	 * Validates the document and all its signatures. The {@code File} parameter specifies the constraint file. If null or empty the default file is used.
+	 *
+	 * @param policyFile contains the validation policy (xml) as {@code File}
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument(final File policyFile);
 
+	/**
+	 * Validates the document and all its signatures. The policyDataStream contains the constraint file. If null or empty the default file is used.
+	 *
+	 * @param policyDataStream contains the validation policy (xml) as {@code InputStream}
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
 	Reports validateDocument(final InputStream policyDataStream);
-
-	DiagnosticData getDiagnosticData();
-
-	SimpleReport getSimpleReport();
-
-	DetailedReport getDetailedReport();
-
-	Reports getReports();
-
-	void printReports();
 
 	/**
 	 * TODO (31/07/2014): to be implemented (proposal for v5)

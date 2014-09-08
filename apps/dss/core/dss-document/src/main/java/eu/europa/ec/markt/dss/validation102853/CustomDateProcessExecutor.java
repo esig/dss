@@ -41,12 +41,12 @@ public class CustomDateProcessExecutor extends CustomProcessExecutor {
 	/**
 	 * This constructor allows to instantiate the validation context with the given date expressed as year, month and day.
 	 *
-	 * @param year
-	 * @param month
-	 * @param day
+	 * @param year  the value used to set the YEAR calendar field.
+	 * @param month the month. Month value is 1-based. e.g., 1 for January.
+	 * @param day   the value used to set the DAY_OF_MONTH calendar field.
 	 */
 	public CustomDateProcessExecutor(int year, int month, int day) {
 
-		currentTime = DSSUtils.getUtcDate(year, month, day);
+		currentTime = DSSUtils.getUtcDate(year, month - 1, day);
 	}
 }

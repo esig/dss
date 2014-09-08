@@ -58,11 +58,10 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
 			final InMemoryDocument detachedContent = new InMemoryDocument(signedBytes);
-			cades.setDetachedContent(detachedContent);
+			cades.setDetachedContents(detachedContent);
 		} catch (CMSException e) {
 			throw new IOException(e);
 		}
-
 	}
 
 	@Override

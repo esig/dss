@@ -176,7 +176,7 @@ public class XmlDom {
 	 */
 	private static String format(final String xPath, final Object... params) {
 
-		String formattedXPath = null;
+		String formattedXPath;
 		if (params.length > 0) {
 
 			formattedXPath = String.format(xPath, params);

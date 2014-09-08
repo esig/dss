@@ -61,17 +61,19 @@ class PdfBoxArray implements PdfArray {
 	}
 
 	private byte[] toBytes(COSBase val) throws IOException {
-		COSStream data = null;
+		COSStream cosStream = null;
 		if(val instanceof COSObject) {
 			COSObject o = (COSObject) val;
-			if(o.getObject() instanceof COSStream) {
-				data = (COSStream) o.getObject();
+			final COSBase object = o.getObject();
+			if(object instanceof COSStream) {
+				cosStream = (COSStream) object;
 			}
 		}
-		if(data == null) {
+		if(cosStream == null) {
 			throw new RuntimeException("Cannot find value for " + val + " of class " + val.getClass());
 		}
-		return DSSUtils.toByteArray(data.getFilteredStream());
+		final byte[] bytes = DSSUtils.toByteArray(cosStream.getUnfilteredStream());
+		return bytes;
 	}
 
 	@Override
@@ -85,6 +87,4 @@ class PdfBoxArray implements PdfArray {
         wrapped.add(s.wrapped);
         wrapped.setNeedToBeUpdate(true);
     }
-
-
 }

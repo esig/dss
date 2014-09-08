@@ -828,7 +828,7 @@ public final class DSSXMLUtils {
 
 	/**
 	 * This method enables a user to add a specific namespace + corresponding prefix
-	 * @param namespace a hashmap containing the additional namespace, with the prefix as key and the namespace URI as value
+	 * @param namespace a {@code HashMap} containing the additional namespace, with the prefix as key and the namespace URI as value
 	 */
 	public static void addNamespace(HashMap<String, String> namespace) {
 		namespaces.putAll(namespace);
