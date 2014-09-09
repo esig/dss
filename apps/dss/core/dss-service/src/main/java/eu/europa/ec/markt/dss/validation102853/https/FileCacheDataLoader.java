@@ -40,6 +40,10 @@ import eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.loader.Protocol;
 
+/**
+ * This class provides some caching features to handle the resources. The default cache folder is set to {@code java.io.tmpdir}. The urls of the resources is transformed to the
+ * file name by replacing the special characters by {@code _}
+ */
 public class FileCacheDataLoader extends CommonsDataLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileCacheDataLoader.class);
@@ -50,7 +54,15 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 	private List<String> toBeLoaded;
 
-	public void setFileCacheDirectory(File fileCacheDirectory) {
+	private List<String> toIgnored;
+
+	/**
+	 * This method allows to set the file cache directory. If the cache folder does not exists then it's created.
+	 *
+	 * @param fileCacheDirectory {@code File} pointing the cache folder to be used.
+	 */
+	public void setFileCacheDirectory(final File fileCacheDirectory) {
+
 		this.fileCacheDirectory = fileCacheDirectory;
 		this.fileCacheDirectory.mkdirs();
 	}
@@ -59,6 +71,11 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		this.resourceLoader = resourceLoader;
 	}
 
+	/**
+	 * This methods allows to indicate if the resource must be obtained. If this method has been invoked then only the provided URL will be processed.
+	 *
+	 * @param url to be processed
+	 */
 	public void addToBeLoaded(final String url) {
 
 		if (toBeLoaded == null) {
@@ -68,6 +85,25 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		if (DSSUtils.isNotBlank(url)) {
 
 			toBeLoaded.add(url);
+		}
+	}
+
+	/**
+	 * This methods allows to indicate which resources must be ignored. It is useful in a test environment where some of fake sources a not available. It prevents to wait for the
+	 * timeout.
+	 *
+	 * @param urlString to be ignored. It can be the original URL or the cache file name
+	 */
+	public void addToBeIgnored(final String urlString) {
+
+		if (toIgnored == null) {
+
+			toIgnored = new ArrayList<String>();
+		}
+		if (DSSUtils.isNotBlank(urlString)) {
+
+			final String normalizedFileName = ResourceLoader.getNormalizedFileName(urlString);
+			toIgnored.add(normalizedFileName);
 		}
 	}
 
@@ -84,9 +120,13 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
 		final File file = getCacheFile(fileName);
 		if (file.exists()) {
+
 			LOG.debug("Cached file was used");
 			final byte[] bytes = DSSUtils.toByteArray(file);
 			return bytes;
+		} else {
+
+			LOG.debug("There is no cached file!");
 		}
 		final byte[] bytes;
 		if (!isNetworkProtocol(urlString)) {
@@ -115,22 +155,19 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	private File getCacheFile(final String fileName) {
 
 		final String trimmedFileName = fileName.trim();
-		// TODO (22/08/2014): This condition must be removed when publishing the source code!
-		if ("http___ev01-wpg.mdef.es_9308.EEB99CE1C64D2A898E34AB28491CCF52"
-			  .equals(trimmedFileName) || "ldap___ldappkiff.difesa.it_389_CN=crl-firmadigitale-tsa2009,O=Ministero%20della%20Difesa,C=IT"
-			  .equals(trimmedFileName) /*|| "".equals(trimmedFileName) || "".equals(trimmedFileName) || "".equals(trimmedFileName) || "".equals(trimmedFileName)*/) {
+		if (toIgnored != null && toIgnored.contains(trimmedFileName)) {
 
 			throw new DSSException("Part of urls to ignore.");
 		}
-
 		LOG.debug("Cached file: " + fileCacheDirectory + "/" + trimmedFileName);
-		return new File(fileCacheDirectory, trimmedFileName);
+		final File file = new File(fileCacheDirectory, trimmedFileName);
+		return file;
 	}
 
 	/**
-	 * // TODO: (Bob: 2014 Mar 12)
+	 * Allows to load the file for a given file name from the cache folder.
 	 *
-	 * @return
+	 * @return the content of the file or {@code null} if the file does not exist
 	 */
 	public byte[] loadFileFromCache(final String urlString) {
 
@@ -145,10 +182,10 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	}
 
 	/**
-	 * // TODO: (Bob: 2014 Mar 12)
+	 * Allows to add a given array of {@code byte} as a cache file representing by the {@code urlString}.
 	 *
-	 * @param urlString
-	 * @param bytes
+	 * @param urlString the URL to add to the cache
+	 * @param bytes     the content of the cache file
 	 */
 	public void saveBytesInCache(final String urlString, final byte[] bytes) {
 
@@ -156,39 +193,6 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		final File out = getCacheFile(fileName);
 		DSSUtils.saveToFile(bytes, out);
 	}
-
-	//    private byte[] getHttpGetResponse(final String url) throws DSSException {
-	//
-	//        HttpGet httpGet = null;
-	//        HttpEntity entity = null;
-	//        try {
-	//
-	//            final HttpClient httpClient = getHttpClient(url);
-	//            final URI uri = URI.create(url.trim());
-	//            httpGet = new HttpGet(uri);
-	//            final HttpResponse httpResponse = httpClient.execute(httpGet);
-	//            final int statusCode = httpResponse.getStatusLine().getStatusCode();
-	//            if (statusCode == HttpStatus.SC_OK) {
-	//
-	//                entity = httpResponse.getEntity();
-	//                final byte[] content = getContent(entity);
-	//                return content;
-	//            } else {
-	//
-	//                LOG.info("get '{}': status: {}", url, statusCode);
-	//                return DSSUtils.EMPTY_BYTE_ARRAY;
-	//            }
-	//        } catch (IOException e) {
-	//            throw new DSSException(e);
-	//        } finally {
-	//            if (httpGet != null) {
-	//                httpGet.releaseConnection();
-	//            }
-	//            if (entity != null) {
-	//                EntityUtils.consumeQuietly(entity);
-	//            }
-	//        }
-	//    }
 
 	@Override
 	public byte[] post(final String urlString, final byte[] content) throws DSSException {
@@ -206,9 +210,13 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		final String cacheFileName = fileName + "." + digestHexEncoded;
 		final File file = getCacheFile(cacheFileName);
 		if (file.exists()) {
+
 			LOG.debug("Cached file was used");
 			final byte[] byteArray = DSSUtils.toByteArray(file);
 			return byteArray;
+		} else {
+
+			LOG.debug("There is no cached file!");
 		}
 
 		final byte[] returnedBytes;

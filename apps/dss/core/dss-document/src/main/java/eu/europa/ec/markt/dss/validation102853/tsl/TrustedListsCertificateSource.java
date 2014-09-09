@@ -407,9 +407,9 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	/**
 	 * This method allows to load any trusted list.
 	 *
-	 * @param url
-	 * @param territory
-	 * @param signingCertificates
+	 * @param url                 of the TSL to load
+	 * @param territory           of the TSL
+	 * @param signingCertificates the {@code List} of the possible signing certificates
 	 */
 	public void loadAdditionalList(final String url, final String territory, final List<X509Certificate> signingCertificates) {
 
@@ -510,15 +510,17 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 *
 	 * @param checkSignature the checkSignature to set
 	 */
-	public void setCheckSignature(boolean checkSignature) {
+	public void setCheckSignature(final boolean checkSignature) {
 
 		this.checkSignature = checkSignature;
 	}
 
 	/**
-	 * @param lotlCertificate the lotlCertificate to set
+	 * The path to the LOTL certificate can be provided in two manners by using {@code classpath://} or {@code file://} prefixes (Spring notation).
+	 *
+	 * @param lotlCertificate the path to the LOTL signing certificate to set
 	 */
-	public void setLotlCertificate(String lotlCertificate) {
+	public void setLotlCertificate(final String lotlCertificate) {
 
 		this.lotlCertificate = lotlCertificate;
 	}
@@ -528,7 +530,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 *
 	 * @param lotlUrl the lotlUrl to set
 	 */
-	public void setLotlUrl(String lotlUrl) {
+	public void setLotlUrl(final String lotlUrl) {
 
 		this.lotlUrl = lotlUrl;
 	}
@@ -536,7 +538,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	/**
 	 * @param dataLoader the dataLoader to set
 	 */
-	public void setDataLoader(DataLoader dataLoader) {
+	public void setDataLoader(final DataLoader dataLoader) {
 
 		this.dataLoader = dataLoader;
 	}
