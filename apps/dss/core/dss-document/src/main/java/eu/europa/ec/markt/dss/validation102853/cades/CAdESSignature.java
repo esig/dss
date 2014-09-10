@@ -43,13 +43,13 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
-import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
@@ -1219,7 +1219,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				if (issuerName != null) {
 					certId.setIssuerName(issuerName.toString());
 				}
-				final DERInteger issuerSerial = issuer.getSerial();
+				final ASN1Integer issuerSerial = issuer.getSerial();
 				if (issuerSerial != null) {
 					certId.setIssuerSerial(issuerSerial.toString());
 				}

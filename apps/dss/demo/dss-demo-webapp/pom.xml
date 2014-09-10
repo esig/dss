@@ -41,18 +41,18 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.bouncycastle</groupId>
-									<artifactId>bcprov-ext-jdk15on</artifactId>
+									<artifactId>bcprov-jdk15on</artifactId>
 									<type>jar</type>
 									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/jar/bcprov-ext-jdk15on.jar</destFileName>
+									<destFileName>/jar/bcprov-jdk15on.jar</destFileName>
 								</artifactItem>
-								<artifactItem>
-									<groupId>org.bouncycastle</groupId>
-									<artifactId>bcpkix-jdk15on</artifactId>
-									<type>jar</type>
-									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/jar/bcpkix-jdk15on</destFileName>
-								</artifactItem>
+								<!--<artifactItem>-->
+								<!--<groupId>org.bouncycastle</groupId>-->
+								<!--<artifactId>bcpkix-jdk15on</artifactId>-->
+								<!--<type>jar</type>-->
+								<!--<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>-->
+								<!--<destFileName>/jar/bcpkix-jdk15on</destFileName>-->
+								<!--</artifactItem>-->
 								<artifactItem>
 									<groupId>org.bouncycastle</groupId>
 									<artifactId>bcmail-jdk15on</artifactId>

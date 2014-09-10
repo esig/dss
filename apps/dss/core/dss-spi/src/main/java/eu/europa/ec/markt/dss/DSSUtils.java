@@ -80,7 +80,6 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERT61String;
@@ -94,6 +93,7 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
@@ -852,24 +852,13 @@ public final class DSSUtils {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
-		//        try {
-		//            final byte[] extensionValue = x509Certificate.getExtensionValue("2.5.29.14");
-		//            if (extensionValue == null) {
-		//                return null;
-		//            }
-		//            ASN1OctetString str = ASN1OctetString.getInstance(new ASN1InputStream(new ByteArrayInputStream(extensionValue)).readObject());
-		//            SubjectKeyIdentifier keyId = SubjectKeyIdentifier.getInstance(new ASN1InputStream(new ByteArrayInputStream(str.getOctets())).readObject());
-		//            return keyId.getKeyIdentifier();
-		//        } catch (IOException e) {
-		//            throw new DSSException(e);
-		//        }
 	}
 
-	private static String getAccessLocation(final X509Certificate certificate, final DERObjectIdentifier accessMethod) {
+	private static String getAccessLocation(final X509Certificate certificate, final ASN1ObjectIdentifier accessMethod) {
 
 		try {
 
-			final byte[] authInfoAccessExtensionValue = certificate.getExtensionValue(X509Extension.authorityInfoAccess.getId());
+			final byte[] authInfoAccessExtensionValue = certificate.getExtensionValue(Extension.authorityInfoAccess.getId());
 			if (null == authInfoAccessExtensionValue) {
 				return null;
 			}

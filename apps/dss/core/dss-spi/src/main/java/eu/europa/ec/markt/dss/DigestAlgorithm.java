@@ -227,8 +227,10 @@ public enum DigestAlgorithm {
 		 * NULL there. Therefore we always include a NULL parameter even with SHA-1, despite the recommendation, because the RFC
 		 * states that implementations SHOULD support it as well anyway
 		 */
-		final ASN1ObjectIdentifier asn1ObjectIdentifier = this.getOid();
+		final ASN1ObjectIdentifier asn1ObjectIdentifier = oid;
 		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
 		return algorithmIdentifier;
+		//		final AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(name);
+		//		return digAlgId;
 	}
 }

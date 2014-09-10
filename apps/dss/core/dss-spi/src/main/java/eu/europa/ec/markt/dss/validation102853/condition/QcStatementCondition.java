@@ -22,9 +22,8 @@ package eu.europa.ec.markt.dss.validation102853.condition;
 
 import java.util.List;
 
-import org.bouncycastle.asn1.DERObjectIdentifier;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
@@ -54,7 +53,7 @@ public class QcStatementCondition extends Condition {
 	 *
 	 * @param qcStatementId
 	 */
-	public QcStatementCondition(final DERObjectIdentifier qcStatementId) {
+	public QcStatementCondition(final ASN1ObjectIdentifier qcStatementId) {
 
 		this(qcStatementId.getId());
 	}

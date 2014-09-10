@@ -23,7 +23,7 @@ package eu.europa.ec.markt.dss.signature.pades;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.bouncycastle.asn1.DERObjectIdentifier;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSAttributes;
@@ -50,7 +50,7 @@ class PAdESLevelBaselineB {
 
 		if (signedAttributes.get(CMSAttributes.contentType) == null) {
 
-			DERObjectIdentifier contentType = (DERObjectIdentifier) params.get(CMSAttributeTableGenerator.CONTENT_TYPE);
+			ASN1ObjectIdentifier contentType = (ASN1ObjectIdentifier) params.get(CMSAttributeTableGenerator.CONTENT_TYPE);
 
 			// contentType will be null if we're trying to generate a counter signature.
 			if (contentType != null) {
