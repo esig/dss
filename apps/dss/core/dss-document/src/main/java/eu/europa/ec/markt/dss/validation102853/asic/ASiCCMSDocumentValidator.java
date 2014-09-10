@@ -24,7 +24,8 @@ import java.util.List;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.MimeType;
+import eu.europa.ec.markt.dss.validation102853.DocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
 
 /**
@@ -38,33 +39,16 @@ import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
  */
 public class ASiCCMSDocumentValidator extends CMSDocumentValidator {
 
-	/**
-	 * This mime-type comes from the container file name: (zip, asic...).
-	 */
-	private MimeType asicContainerMimeType;
 
 	/**
-	 * This mime-type comes from the 'mimetype' file included within the container.
+	 * This variable defines the sequence of the validator related to a document to validate. It's only used with ASiC-E container
 	 */
-	private MimeType asicMimeType;
-
-	/**
-	 * This mime-type comes from the ZIP comment:<br/>
-	 * The comment field in the ZIP header may be used to identify the type of the data object within the container.
-	 * If this field is present, it should be set with "mimetype=" followed by the mime type of the data object held in
-	 * the signed data object.
-	 */
-	protected MimeType asicCommentMimeType;
-
-	/**
-	 * This mime-type comes from the "magic number".
-	 */
-	private MimeType magicNumberMimeType;
+	private DocumentValidator nextValidator;
 
 	/**
 	 * The default constructor for ASiCXMLDocumentValidator.
 	 *
-	 * @param signature      {@code DSSDocument} representing the signature to validate
+	 * @param signature        {@code DSSDocument} representing the signature to validate
 	 * @param detachedContents the {@code List} containing the potential signed documents
 	 * @throws DSSException
 	 */
@@ -74,35 +58,14 @@ public class ASiCCMSDocumentValidator extends CMSDocumentValidator {
 		this.detachedContents = detachedContents;
 	}
 
-	public MimeType getAsicContainerMimeType() {
-		return asicContainerMimeType;
+	@Override
+	public void setNextValidator(final DocumentValidator validator) {
+
+		nextValidator = validator;
 	}
 
-	public void setAsicContainerMimeType(final MimeType asicContainerMimeType) {
-		this.asicContainerMimeType = asicContainerMimeType;
-	}
-
-	public MimeType getAsicMimeType() {
-		return asicMimeType;
-	}
-
-	public void setAsicMimeType(final MimeType asicMimeType) {
-		this.asicMimeType = asicMimeType;
-	}
-
-	public MimeType getAsicCommentMimeType() {
-		return asicCommentMimeType;
-	}
-
-	public void setAsicCommentMimeType(final MimeType asicCommentMimeType) {
-		this.asicCommentMimeType = asicCommentMimeType;
-	}
-
-	public MimeType getMagicNumberMimeType() {
-		return magicNumberMimeType;
-	}
-
-	public void setMagicNumberMimeType(final MimeType magicNumberMimeType) {
-		this.magicNumberMimeType = magicNumberMimeType;
+	@Override
+	public DocumentValidator getNextValidator() {
+		return nextValidator;
 	}
 }

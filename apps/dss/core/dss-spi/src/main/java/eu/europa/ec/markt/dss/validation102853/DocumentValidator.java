@@ -6,6 +6,8 @@ import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import org.w3c.dom.Document;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
@@ -62,6 +64,14 @@ public interface DocumentValidator {
 	void setPolicyFile(final String signatureId, final File policyDocument);
 
 	/**
+	 * This method provides the possibility to set the specific {@code ProcessExecutor}
+	 *
+	 * @param processExecutor
+	 */
+	public void setProcessExecutor(final ProcessExecutor processExecutor);
+
+
+	/**
 	 * Validates the document and all its signatures. The default constraint file is used.
 	 *
 	 * @return {@code Reports}: diagnostic data, detailed report and simple report
@@ -102,7 +112,26 @@ public interface DocumentValidator {
 	Reports validateDocument(final InputStream policyDataStream);
 
 	/**
-	 * TODO (31/07/2014): to be implemented (proposal for v5)
+	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If null or empty the default file is used.
+	 *
+	 * @param validationPolicyDom {@code Document}
+	 * @return
+	 */
+	Reports validateDocument(final Document validationPolicyDom);
+
+	/**
+	 * This method returns always {@code null} in case of the no ASiC containers.
+	 *
+	 * @return {@code SignedDocumentValidator} which corresponds to the next signature found within an ASiC-E container. {@code null} if there is no more signatures.
+	 */
+	public DocumentValidator getNextValidator();
+
+	/**
+	 * @return
+	 */
+	public DocumentValidator getSubordinatedValidator();
+
+	/**
 	 * This method allows the removal of the signature from the given signed document.
 	 * - With XAdES signature this operation is only possible for ENVELOPED signatures;
 	 * - With ASiC signature this operation is only possible for XAdES kind of container;

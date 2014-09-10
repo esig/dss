@@ -54,9 +54,10 @@ import eu.europa.ec.markt.dss.OID;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
+import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.validation102853.asic.ASiCDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.asic.ASiCContainerValidator;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
 import eu.europa.ec.markt.dss.validation102853.bean.CertifiedRole;
 import eu.europa.ec.markt.dss.validation102853.bean.CommitmentType;
@@ -164,7 +165,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * The reference to the certificate verifier. The current DSS implementation proposes {@link eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier}. This verifier
 	 * encapsulates the references to different sources used in the signature validation process.
 	 */
-	private CertificateVerifier certificateVerifier;
+	protected CertificateVerifier certificateVerifier;
 
 	/**
 	 * This list contains the list of signatures
@@ -220,7 +221,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			return new PDFDocumentValidator(dssDocument);
 		} else if (preamble[0] == 'P' && preamble[1] == 'K') {
 
-			return ASiCDocumentValidator.getInstanceForAsics(dssDocument, preamble);
+			return ASiCContainerValidator.getInstanceForAsics(dssDocument, preamble);
 		} else if (preambleString.getBytes()[0] == 0x30) {
 
 			return new CMSDocumentValidator(dssDocument);
@@ -310,14 +311,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	@Override
 	public Reports validateDocument(final URL validationPolicyURL) {
+
 		if (validationPolicyURL == null) {
 			return validateDocument((InputStream) null);
-		} else {
-			try {
-				return validateDocument(validationPolicyURL.openStream());
-			} catch (IOException e) {
-				throw new DSSException(e);
-			}
+		}
+		try {
+			return validateDocument(validationPolicyURL.openStream());
+		} catch (IOException e) {
+			throw new DSSException(e);
 		}
 	}
 
@@ -326,9 +327,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		if (policyResourcePath == null) {
 			return validateDocument((InputStream) null);
-		} else {
-			return validateDocument(getClass().getResourceAsStream(policyResourcePath));
 		}
+		return validateDocument(getClass().getResourceAsStream(policyResourcePath));
 	}
 
 	@Override
@@ -336,31 +336,41 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		if (policyFile == null || !policyFile.exists()) {
 			return validateDocument((InputStream) null);
-		} else {
-			final InputStream inputStream = DSSUtils.toByteArrayInputStream(policyFile);
-			return validateDocument(inputStream);
 		}
+		final InputStream inputStream = DSSUtils.toByteArrayInputStream(policyFile);
+		return validateDocument(inputStream);
 	}
 
 	/**
 	 * Validates the document and all its signatures. The policyDataStream contains the constraint file. If null or empty the default file is used.
 	 *
-	 * @param policyDataStream
+	 * @param policyDataStream {@code InputStream}
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
+
+		final Document validationPolicyDom = ValidationResourceManager.loadPolicyData(policyDataStream);
+		return validateDocument(validationPolicyDom);
+	}
+
+	/**
+	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If null or empty the default file is used.
+	 *
+	 * @param validationPolicyDom {@code Document}
+	 * @return
+	 */
+	@Override
+	public Reports validateDocument(final Document validationPolicyDom) {
 
 		LOG.info("Document validation...");
 		if (certificateVerifier == null) {
 
 			throw new DSSNullException(CertificateVerifier.class);
 		}
-
 		final eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
 
 		final Document diagnosticDataDom = ValidationResourceManager.convert(jaxbDiagnosticData);
 
-		final Document validationPolicyDom = ValidationResourceManager.loadPolicyData(policyDataStream);
 		final ProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setDiagnosticDataDom(diagnosticDataDom);
 		executor.setValidationPolicyDom(validationPolicyDom);
@@ -369,11 +379,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return reports;
 	}
 
-	/**
-	 * This method provides the possibility to set the specific {@code ProcessExecutor}
-	 *
-	 * @param processExecutor
-	 */
+	@Override
 	public void setProcessExecutor(final ProcessExecutor processExecutor) {
 
 		this.processExecutor = processExecutor;
@@ -1387,4 +1393,23 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	protected abstract SignatureScopeFinder getSignatureScopeFinder();
+
+	/**
+	 * This method allows to define the sequence of the validator related to a document to validate. It's only used with ASiC-E container.
+	 *
+	 * @param validator {@code SignedDocumentValidator} corresponding to the next signature with in the contained.
+	 */
+	public void setNextValidator(final DocumentValidator validator) {
+		throw new DSSUnsupportedOperationException("This method is not applicable in this context!");
+	}
+
+	@Override
+	public DocumentValidator getNextValidator() {
+		return null;
+	}
+
+	@Override
+	public DocumentValidator getSubordinatedValidator() {
+		return null;
+	}
 }

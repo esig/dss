@@ -45,6 +45,11 @@ public class Reports {
 	protected SimpleReport simpleReport;
 
 	/**
+	 * This variable defines the sequence of the reports related to a document to validate. It's only used with ASiC-E container.
+	 */
+	private Reports nextReports;
+
+	/**
 	 * This is the default constructor to instantiate this container.
 	 *
 	 * @param diagnosticData {@code DiagnosticData}
@@ -58,6 +63,11 @@ public class Reports {
 		this.simpleReport = simpleReport;
 	}
 
+	/**
+	 * This method returns the reference to the diagnostic data object generated during the validation process.
+	 *
+	 * @return {@code DiagnosticData}
+	 */
 	public DiagnosticData getDiagnosticData() {
 		return diagnosticData;
 	}
@@ -68,6 +78,23 @@ public class Reports {
 
 	public SimpleReport getSimpleReport() {
 		return simpleReport;
+	}
+
+	/**
+	 * This method allows to set the sequence of the reports related to a document to validate. It's only used with ASiC-E container.
+	 *
+	 * @param nextReports
+	 */
+	public void setNextReport(final Reports nextReports) {
+
+		this.nextReports = nextReports;
+	}
+
+	/**
+	 * @return {@code Reports} which corresponds to the next signature found with in the ASiC-E container. {@code null} if there is no more signatures.
+	 */
+	public Reports getNextReports() {
+		return nextReports;
 	}
 
 	/**

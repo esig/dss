@@ -117,7 +117,7 @@ public class ASiCEService extends AbstractSignatureService {
 			// do nothing
 		}
 		specificParameters.setDetachedContent(contextToSignDocument);
-		if (validator != null && (validator instanceof ASiCCMSDocumentValidator || validator instanceof ASiCXMLDocumentValidator)) {
+		if (isAsicContainer(validator)) {
 
 			// This is already an existing ASiC-S container; a new signature should be added.
 			// TODO (22/08/2014): This is a List now!
@@ -132,6 +132,10 @@ public class ASiCEService extends AbstractSignatureService {
 		}
 		final DocumentSignatureService underlyingService = getSpecificService(specificParameters);
 		return underlyingService.getDataToSign(contextToSignDocument, specificParameters);
+	}
+
+	private boolean isAsicContainer(SignedDocumentValidator validator) {
+		return validator != null && (validator instanceof ASiCCMSDocumentValidator || validator instanceof ASiCXMLDocumentValidator);
 	}
 
 	/**
@@ -173,7 +177,7 @@ public class ASiCEService extends AbstractSignatureService {
 			// do nothing
 		}
 		specificParameters.setDetachedContent(contextToSignDocument);
-		if (validator != null && (validator instanceof ASiCCMSDocumentValidator || validator instanceof ASiCXMLDocumentValidator)) {
+		if (isAsicContainer(validator)) {
 
 			// This is already an existing ASiC-S container; a new signature should be added.
 			// TODO (22/08/2014): This is a List now!
@@ -277,8 +281,7 @@ public class ASiCEService extends AbstractSignatureService {
 			final SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(toExtendDocument);
 			final DSSDocument signature = validator.getDocument();
 			DSSDocument originalDocument = parameters.getDetachedContent();
-			// TODO (22/08/2014): This is a List now!
-			if (validator.getDetachedContents() == null||validator.getDetachedContents().size()==0) {
+			if (!hasDetachedContents(validator)) {
 
 				List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 				detachedContents.add(originalDocument);
@@ -320,6 +323,11 @@ public class ASiCEService extends AbstractSignatureService {
 
 			throw new DSSException(e);
 		}
+	}
+
+	private boolean hasDetachedContents(final SignedDocumentValidator validator) {
+
+		return validator.getDetachedContents() != null && validator.getDetachedContents().size() > 0;
 	}
 
 	/**
