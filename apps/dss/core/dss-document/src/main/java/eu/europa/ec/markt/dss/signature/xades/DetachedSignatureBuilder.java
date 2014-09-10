@@ -66,7 +66,7 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 	}
 
 	@Override
-	protected List<DSSReference> createDefaultReference() {
+	protected List<DSSReference> createDefaultReferences() {
 
 		final List<DSSReference> references = new ArrayList<DSSReference>();
 

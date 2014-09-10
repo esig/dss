@@ -77,7 +77,7 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 	}
 
 	@Override
-	protected List<DSSReference> createDefaultReference() {
+	protected List<DSSReference> createDefaultReferences() {
 		return null;
 	}
 
@@ -106,7 +106,7 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 		incorporateReference2();
 
 		DSSReference counterSignatureReference = new DSSReference();
-		counterSignatureReference.setDigestMethod(params.getDigestAlgorithm().getXmlId());
+		counterSignatureReference.setDigestMethod(params.getDigestAlgorithm());
 		counterSignatureReference.setType(xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE);
 		counterSignatureReference.setUri("#" + signatureValueId);
 

@@ -146,9 +146,9 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final List<DSSReference> references = params.getReferences();
 		if (references == null || references.size() == 0) {
 
-			final List<DSSReference> defaultReference = createDefaultReferences();
+			final List<DSSReference> defaultReferences = createDefaultReferences();
 			// The SignatureParameters object is updated with the default references.
-			params.setReferences(defaultReference);
+			params.setReferences(defaultReferences);
 		}
 
 		incorporateSignatureDom();
