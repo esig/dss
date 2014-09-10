@@ -146,7 +146,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final List<DSSReference> references = params.getReferences();
 		if (references == null || references.size() == 0) {
 
-			final List<DSSReference> defaultReference = createDefaultReference();
+			final List<DSSReference> defaultReference = createDefaultReferences();
 			// The SignatureParameters object is updated with the default references.
 			params.setReferences(defaultReference);
 		}
@@ -315,7 +315,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 			}
 		}
 		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
+		final DigestAlgorithm digestAlgorithm = reference.getDigestMethod();
 		incorporateDigestMethod(referenceDom, digestAlgorithm);
 
 		final DSSDocument canonicalizedDocument = canonicalizeReference(reference);
@@ -331,7 +331,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 *
 	 * @return {@code List} of {@code DSSReference}
 	 */
-	protected abstract List<DSSReference> createDefaultReference();
+	protected abstract List<DSSReference> createDefaultReferences();
 
 	/**
 	 * This method canonicalize the given reference

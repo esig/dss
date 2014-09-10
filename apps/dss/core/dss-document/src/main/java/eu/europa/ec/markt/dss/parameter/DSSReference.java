@@ -22,6 +22,7 @@ package eu.europa.ec.markt.dss.parameter;
 
 import java.util.List;
 
+import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 
 /**
@@ -38,7 +39,7 @@ public class DSSReference {
 	private String uri;
 	private String type;
 
-	private String digestMethod;
+	private DigestAlgorithm digestMethod;
 
 	private DSSDocument contents;
 
@@ -74,11 +75,11 @@ public class DSSReference {
 		this.type = type;
 	}
 
-	public String getDigestMethod() {
+	public DigestAlgorithm getDigestMethod() {
 		return digestMethod;
 	}
 
-	public void setDigestMethod(String digestMethod) {
+	public void setDigestMethod (DigestAlgorithm digestMethod) {
 		this.digestMethod = digestMethod;
 	}
 
@@ -105,7 +106,7 @@ public class DSSReference {
 			  "id='" + id + '\'' +
 			  ", uri='" + uri + '\'' +
 			  ", type='" + type + '\'' +
-			  ", digestMethod='" + digestMethod + '\'' +
+			  ", digestMethod='" + digestMethod.getName() + '\'' +
 			  ", contents=" + contents.toString() +
 			  ", transforms=" + transforms +
 			  '}';

@@ -26,6 +26,7 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
+import eu.europa.ec.markt.dss.DigestAlgorithm;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -84,7 +85,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	}
 
 	@Override
-	protected List<DSSReference> createDefaultReference() {
+	protected List<DSSReference> createDefaultReferences() {
 
 		final List<DSSReference> references = new ArrayList<DSSReference>();
 
@@ -92,6 +93,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		dssReference.setId("r-id-1");
 		dssReference.setUri("");
 		dssReference.setContents(originalDocument);
+		dssReference.setDigestMethod(DigestAlgorithm.SHA1);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
