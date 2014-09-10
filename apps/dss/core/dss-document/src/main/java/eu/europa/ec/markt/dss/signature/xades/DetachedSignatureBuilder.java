@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import eu.europa.ec.markt.dss.DigestAlgorithm;
 import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -76,6 +77,7 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 		final String fileURI = originalDocument != null && originalDocument.getName() != null ? originalDocument.getName() : "";
 		reference.setUri(fileURI);
 		reference.setContents(originalDocument);
+		reference.setDigestMethod(DigestAlgorithm.SHA1);
 
 		references.add(reference);
 

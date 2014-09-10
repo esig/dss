@@ -26,6 +26,7 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
+import eu.europa.ec.markt.dss.DigestAlgorithm;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
@@ -94,6 +95,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 		reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
 		reference.setUri("#o-id-1");
 		reference.setContents(originalDocument);
+		reference.setDigestMethod(DigestAlgorithm.SHA1);
 
 		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 
