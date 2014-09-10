@@ -95,7 +95,7 @@ public class SignatureParameters {
 	 * XAdES: The digest algorithm used to hash ds:SignedInfo.
 	 */
 	private DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
-	private List<DSSReference> references;
+	private List<DSSReference> dssReferences;
 
 	/**
 	 * The object representing the parameters related to B- level.
@@ -510,11 +510,11 @@ public class SignatureParameters {
 
 	public List<DSSReference> getReferences() {
 
-		return references;
+		return dssReferences;
 	}
 
 	public void setReferences(List<DSSReference> references) {
-		this.references = references;
+		this.dssReferences = references;
 	}
 
 	/**
@@ -611,7 +611,7 @@ public class SignatureParameters {
 			  ", signatureAlgorithm=" + signatureAlgorithm +
 			  ", encryptionAlgorithm=" + encryptionAlgorithm +
 			  ", digestAlgorithm=" + digestAlgorithm +
-			  ", references=" + references +
+			  ", references=" + dssReferences +
 			  ", bLevelParams=" + bLevelParams +
 			  ", aSiCParams=" + aSiCParams +
 			  ", reason='" + reason + '\'' +
