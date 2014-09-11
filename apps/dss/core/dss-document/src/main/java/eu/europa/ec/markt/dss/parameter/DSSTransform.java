@@ -39,6 +39,19 @@ public class DSSTransform {
 	public DSSTransform() {
 	}
 
+	/**
+	 * This is a copy constructor.
+	 *
+	 * @param transform
+	 */
+	public DSSTransform(final DSSTransform transform) {
+
+		algorithm = transform.algorithm;
+		elementName = transform.elementName;
+		namespace = transform.namespace;
+		textContent = transform.textContent;
+	}
+
 	public String getAlgorithm() {
 		return algorithm;
 	}

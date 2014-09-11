@@ -130,6 +130,12 @@ public class SignatureParameters {
 	 */
 	private DSSDocument detachedContent;
 
+	// TODO-Bob (11/09/2014):  More then one document
+	//	/**
+	//	 * The documents to be signed. In the case where more then one document should be signed.
+	//	 */
+	//	private List<DSSDocument> detachedContents;
+
 	/**
 	 * Copy constructor (used by ASiC)
 	 */
@@ -166,6 +172,16 @@ public class SignatureParameters {
 		archiveTimestampParameters = source.archiveTimestampParameters;
 		toCountersignXPathQueryHolder = source.toCountersignXPathQueryHolder;
 
+		final List<DSSReference> references = source.getReferences();
+		if (references != null && references.size() > 0) {
+
+			dssReferences = new ArrayList<DSSReference>();
+			for (final DSSReference reference : references) {
+
+				final DSSReference dssReference = new DSSReference(reference);
+				dssReferences.add(dssReference);
+			}
+		}
 		// This is a simple copy of reference and not of the object content!
 		context = source.context;
 	}

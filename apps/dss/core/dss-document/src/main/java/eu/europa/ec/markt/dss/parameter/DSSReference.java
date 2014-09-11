@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.parameter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -51,6 +52,24 @@ public class DSSReference {
 	public DSSReference() {
 	}
 
+	public DSSReference(final DSSReference reference) {
+
+		id = reference.id;
+		uri = reference.uri;
+		type = reference.type;
+		digestMethod = reference.digestMethod;
+		contents = reference.contents;
+		if (reference.transforms != null && reference.transforms.size() > 0) {
+
+			transforms = new ArrayList<DSSTransform>();
+			for (final DSSTransform transform : transforms) {
+
+				final DSSTransform dssTransform = new DSSTransform(transform);
+				transforms.add(dssTransform);
+			}
+		}
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -79,7 +98,7 @@ public class DSSReference {
 		return digestMethod;
 	}
 
-	public void setDigestMethod (DigestAlgorithm digestMethod) {
+	public void setDigestMethod(DigestAlgorithm digestMethod) {
 		this.digestMethod = digestMethod;
 	}
 
