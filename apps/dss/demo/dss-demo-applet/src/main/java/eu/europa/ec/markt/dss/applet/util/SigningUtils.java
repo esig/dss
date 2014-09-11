@@ -197,7 +197,7 @@ public final class SigningUtils {
 				wsDssReference.setId(dssReference.getId());
 				wsDssReference.setType(dssReference.getType());
 				wsDssReference.setUri(dssReference.getUri());
-				wsDssReference.setDigestMethod(dssReference.getDigestMethod().getName());
+				wsDssReference.setDigestMethod(dssReference.getDigestMethodAlgorithm().getName());
 
 				final List<DSSTransform> dssTransforms = dssReference.getTransforms();
 				if (dssTransforms != null) {

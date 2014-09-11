@@ -93,7 +93,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		dssReference.setId("r-id-1");
 		dssReference.setUri("");
 		dssReference.setContents(originalDocument);
-		dssReference.setDigestMethod(DigestAlgorithm.SHA1);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 

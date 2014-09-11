@@ -315,7 +315,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 			}
 		}
 		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-		final DigestAlgorithm digestAlgorithm = reference.getDigestMethod();
+		final DigestAlgorithm digestAlgorithm = reference.getDigestMethodAlgorithm();
 		incorporateDigestMethod(referenceDom, digestAlgorithm);
 
 		final DSSDocument canonicalizedDocument = canonicalizeReference(reference);

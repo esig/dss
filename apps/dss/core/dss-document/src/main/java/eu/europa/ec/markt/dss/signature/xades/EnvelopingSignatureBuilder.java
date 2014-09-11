@@ -95,7 +95,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 		reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
 		reference.setUri("#o-id-1");
 		reference.setContents(originalDocument);
-		reference.setDigestMethod(DigestAlgorithm.SHA1);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 
 		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 

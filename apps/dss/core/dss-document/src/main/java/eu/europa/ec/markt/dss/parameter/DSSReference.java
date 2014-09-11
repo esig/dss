@@ -94,11 +94,11 @@ public class DSSReference {
 		this.type = type;
 	}
 
-	public DigestAlgorithm getDigestMethod() {
+	public DigestAlgorithm getDigestMethodAlgorithm() {
 		return digestMethod;
 	}
 
-	public void setDigestMethod(DigestAlgorithm digestMethod) {
+	public void setDigestMethodAlgorithm(DigestAlgorithm digestMethod) {
 		this.digestMethod = digestMethod;
 	}
 

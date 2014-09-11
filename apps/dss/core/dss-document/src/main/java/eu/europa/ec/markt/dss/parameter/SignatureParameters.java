@@ -116,6 +116,7 @@ public class SignatureParameters {
 
 	private TimestampParameters signatureTimestampParameters;
 	private TimestampParameters archiveTimestampParameters;
+	private TimestampParameters contentTimestampParameters;
 
 	private List<TimestampToken> contentTimestamps;
 
@@ -595,6 +596,14 @@ public class SignatureParameters {
 
 	public void setArchiveTimestampParameters(TimestampParameters archiveTimestampParameters) {
 		this.archiveTimestampParameters = archiveTimestampParameters;
+	}
+
+	public TimestampParameters getContentTimestampParameters() {
+		return contentTimestampParameters;
+	}
+
+	public void setContentTimestampParameters(TimestampParameters contentTimestampParameters) {
+		this.contentTimestampParameters = contentTimestampParameters;
 	}
 
 	public String getXPathLocationString() {

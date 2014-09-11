@@ -22,6 +22,7 @@ package eu.europa.ec.markt.dss.parameter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
+import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 
 /**
@@ -30,41 +31,12 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
  */
 public class TimestampParameters {
 
-    private List<ContentTimestampReference> references;
-
-    /**
-     * The digest value for the timestamp
-     */
-    private byte[] digest;
-
 	/**
 	 * The digest algorithm to provide to the timestamping authority
 	 */
 	private DigestAlgorithm digestAlgorithm;
 	private String canonicalizationMethod;
 
-	public List<ContentTimestampReference> getReferences() {
-        return references;
-    }
-
-    public void setReferences(final List<ContentTimestampReference> references) {
-        this.references = references;
-    }
-
-    public void addReference(final ContentTimestampReference reference) {
-        if (references == null) {
-            references = new ArrayList<ContentTimestampReference>();
-        }
-        references.add(reference);
-    }
-
-	public byte[] getDigest() {
-		return digest;
-	}
-
-	public void setDigest(final byte[] digest) {
-		this.digest = digest;
-	}
 
 	public DigestAlgorithm getDigestAlgorithm() {
 
@@ -94,10 +66,8 @@ public class TimestampParameters {
 
 	public String toString() {
 		return "TimestampParameters{" +
-				"digest=" + new String(digest) +
 				", digestAlgorithm=" + digestAlgorithm.getName() +
 				", canonicalizationMethod=" + canonicalizationMethod +
-				", references= {" + references.toString() + "}" +
 				"}";
 	}
 }

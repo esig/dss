@@ -77,7 +77,7 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 		final String fileURI = originalDocument != null && originalDocument.getName() != null ? originalDocument.getName() : "";
 		reference.setUri(fileURI);
 		reference.setContents(originalDocument);
-		reference.setDigestMethod(DigestAlgorithm.SHA1);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 
 		references.add(reference);
 
