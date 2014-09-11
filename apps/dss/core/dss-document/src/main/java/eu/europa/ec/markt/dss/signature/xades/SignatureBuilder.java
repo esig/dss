@@ -453,8 +453,9 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final List<X509Certificate> certificates = new ArrayList<X509Certificate>();
 
 		final X509Certificate signingCertificate = params.getSigningCertificate();
-		certificates.add(signingCertificate);
-
+		if (signingCertificate != null) {
+			certificates.add(signingCertificate);
+		}
 		incorporateCertificateRef(signingCertificateDom, certificates);
 	}
 

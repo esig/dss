@@ -387,7 +387,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (length == 0) {
 
 			final SigningCertificateValidity theSigningCertificateValidity = candidates.getTheSigningCertificateValidity();
-			final CertificateToken certificateToken = theSigningCertificateValidity.getCertificateToken();
+			final CertificateToken certificateToken = theSigningCertificateValidity == null ? null : theSigningCertificateValidity.getCertificateToken();
 			// The check need to be done at the level of KeyInfo
 			for (final Reference reference : references) {
 
@@ -403,7 +403,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					continue;
 				}
-				if (id.equals(certificateToken.getXmlId())) {
+				if (certificateToken != null && id.equals(certificateToken.getXmlId())) {
 
 					theSigningCertificateValidity.setSigned(element.getNodeName());
 					return;
@@ -2044,6 +2044,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
+	 * // TODO (11/09/2014): to be deleted, eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature#getReferences() to be used
 	 * @return
 	 */
 	public List<Element> getSignatureReferences() {
@@ -2055,6 +2056,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Node node = list.item(ii);
 			references.add((Element) node);
 		}
+		return references;
+	}
+
+	public List<Reference> getReferences() {
 		return references;
 	}
 
