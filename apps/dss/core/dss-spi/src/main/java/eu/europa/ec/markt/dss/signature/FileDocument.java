@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.signature;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.StringWriter;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -117,15 +116,5 @@ public class FileDocument extends CommonDocument {
 		DSSUtils.closeQuietly(inputStream);
 		final String base64Encode = DSSUtils.base64Encode(digestBytes);
 		return base64Encode;
-	}
-
-	@Override
-	public String toString() {
-
-		final StringWriter stringWriter = new StringWriter();
-		final MimeType mimeType = getMimeType();
-		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : getMimeType().name()).append(" / ").append(getAbsolutePath());
-		final String string = stringWriter.toString();
-		return string;
 	}
 }

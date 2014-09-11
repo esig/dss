@@ -20,6 +20,8 @@
 
 package eu.europa.ec.markt.dss.signature;
 
+import java.io.StringWriter;
+
 /**
  * This class implements the default methods.
  * <p/>
@@ -52,5 +54,15 @@ public abstract class CommonDocument implements DSSDocument {
 	@Override
 	public void setNextDocument(final DSSDocument nextDocument) {
 		this.nextDocument = nextDocument;
+	}
+
+	@Override
+	public String toString() {
+
+		final StringWriter stringWriter = new StringWriter();
+		final MimeType mimeType = getMimeType();
+		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : getMimeType().name()).append(" / ").append(getAbsolutePath());
+		final String string = stringWriter.toString();
+		return string;
 	}
 }

@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -168,24 +167,5 @@ public class InMemoryDocument extends CommonDocument {
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
 		final String base64Encode = DSSUtils.base64Encode(digestBytes);
 		return base64Encode;
-	}
-
-	@Override
-	public String toString() {
-
-		final StringWriter stringWriter = new StringWriter();
-		final MimeType mimeType = getMimeType();
-		final String name = getName();
-		if (name != null) {
-
-			stringWriter.append("Name: ").append(name).append(" / ");
-		}
-		if (mimeType != null) {
-
-			stringWriter.append(mimeType.name()).append(" / ");
-		}
-		stringWriter.append(getAbsolutePath());
-		final String string = stringWriter.toString();
-		return string;
 	}
 }

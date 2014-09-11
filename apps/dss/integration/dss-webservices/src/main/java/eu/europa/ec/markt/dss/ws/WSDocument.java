@@ -31,6 +31,7 @@ import java.util.Arrays;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.signature.CommonDocument;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 
@@ -40,7 +41,7 @@ import eu.europa.ec.markt.dss.signature.MimeType;
  * @version $Revision$ - $Date$
  */
 
-public class WSDocument implements DSSDocument {
+public class WSDocument extends CommonDocument {
 
 	private byte[] bytes;
 
@@ -52,8 +53,6 @@ public class WSDocument implements DSSDocument {
 	private String mimeTypeString = "";
 
 	private String absolutePath = "WSDocument";
-
-	protected MimeType mimeType;
 
 	/**
 	 * This constructor is used by Spring in the web-app..
@@ -120,16 +119,6 @@ public class WSDocument implements DSSDocument {
 
 	public String getAbsolutePath() {
 		return absolutePath;
-	}
-
-	@Override
-	public MimeType getMimeType() {
-		return mimeType;
-	}
-
-	@Override
-	public void setMimeType(MimeType mimeType) {
-		this.mimeType = mimeType;
 	}
 
 	public void setAbsolutePath(String absolutePath) {

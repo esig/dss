@@ -26,7 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DEROutputStream;
@@ -37,7 +36,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.signature.CommonDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 
 /**
@@ -46,10 +45,9 @@ import eu.europa.ec.markt.dss.signature.MimeType;
  * @version $Revision$ - $Date$
  */
 
-public class CMSSignedDocument implements DSSDocument {
+public class CMSSignedDocument extends CommonDocument {
 
 	protected CMSSignedData signedData;
-	protected MimeType mimeType = MimeType.PKCS7;
 
 	/**
 	 * The default constructor for CMSSignedDocument.
@@ -64,6 +62,7 @@ public class CMSSignedDocument implements DSSDocument {
 
 			throw new DSSNullException(CMSSignedData.class);
 		}
+		mimeType = MimeType.PKCS7;
 	}
 
 	@Override
@@ -86,16 +85,6 @@ public class CMSSignedDocument implements DSSDocument {
 	public String getName() {
 
 		return "CMSSignedDocument";
-	}
-
-	@Override
-	public MimeType getMimeType() {
-		return mimeType;
-	}
-
-	@Override
-	public void setMimeType(final MimeType mimeType) {
-		this.mimeType = mimeType;
 	}
 
 	@Override
@@ -142,15 +131,5 @@ public class CMSSignedDocument implements DSSDocument {
 	@Override
 	public String getAbsolutePath() {
 		return getName();
-	}
-
-	@Override
-	public String toString() {
-
-		final StringWriter stringWriter = new StringWriter();
-		final MimeType mimeType = getMimeType();
-		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : getMimeType().name());
-		final String string = stringWriter.toString();
-		return string;
 	}
 }
