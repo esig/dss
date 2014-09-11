@@ -35,11 +35,9 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
  * @version $Revision$ - $Date$
  */
 
-public class FileDocument implements DSSDocument {
+public class FileDocument extends CommonDocument {
 
 	private final File file;
-
-	private MimeType mimeType;
 
 	/**
 	 * Create a FileDocument
@@ -92,16 +90,6 @@ public class FileDocument implements DSSDocument {
 	@Override
 	public String getAbsolutePath() {
 		return file.getAbsolutePath();
-	}
-
-	@Override
-	public MimeType getMimeType() {
-		return mimeType;
-	}
-
-	@Override
-	public void setMimeType(final MimeType mimeType) {
-		this.mimeType = mimeType;
 	}
 
 	@Override

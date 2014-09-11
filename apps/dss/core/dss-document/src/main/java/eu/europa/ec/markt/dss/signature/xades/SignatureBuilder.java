@@ -70,7 +70,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	/**
 	 * This is the reference to the original document to sign
 	 */
-	protected DSSDocument originalDocument;
+	protected DSSDocument detachedDocument;
 
 	protected String signedInfoCanonicalizationMethod;
 	protected String reference2CanonicalizationMethod;
@@ -121,12 +121,12 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 * The default constructor for SignatureBuilder.
 	 *
 	 * @param params           The set of parameters relating to the structure and process of the creation or extension of the electronic signature.
-	 * @param originalDocument The original document to sign.
+	 * @param detachedDocument The original document to sign.
 	 */
-	public SignatureBuilder(final SignatureParameters params, final DSSDocument originalDocument) {
+	public SignatureBuilder(final SignatureParameters params, final DSSDocument detachedDocument) {
 
 		this.params = params;
-		this.originalDocument = originalDocument;
+		this.detachedDocument = detachedDocument;
 	}
 
 	/**

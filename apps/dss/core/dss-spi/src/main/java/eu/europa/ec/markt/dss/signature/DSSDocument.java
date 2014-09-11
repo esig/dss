@@ -91,4 +91,13 @@ public interface DSSDocument {
 	 * @return base64 encoded {@code String}
 	 */
 	public String getDigest(final DigestAlgorithm digestAlgorithm);
+
+	/**
+	 * This method return the next {@code DSSDocument}.
+	 *
+	 * @return {@code DSSDocument}
+	 */
+	public DSSDocument getNextDocument();
+
+	public void setNextDocument(final DSSDocument nextDocument);
 }

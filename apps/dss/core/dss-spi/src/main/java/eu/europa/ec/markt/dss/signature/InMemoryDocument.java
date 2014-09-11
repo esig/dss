@@ -37,141 +37,130 @@ import eu.europa.ec.markt.dss.exception.DSSException;
  * @version $Revision$ - $Date$
  */
 
-public class InMemoryDocument implements DSSDocument {
+public class InMemoryDocument extends CommonDocument {
 
-    private byte[] bytes;
+	private byte[] bytes;
 
-    private String name;
+	private String name;
 
-    private String absolutePath;
+	private String absolutePath;
 
-    private MimeType mimeType;
+	/**
+	 * Creates dss document that retains the data in memory
+	 *
+	 * @param bytes array of bytes representing the document
+	 */
+	public InMemoryDocument(final byte[] bytes) {
+		this(bytes, null, null);
+	}
 
-    /**
-     * Creates dss document that retains the data in memory
-     *
-     * @param bytes array of bytes representing the document
-     */
-    public InMemoryDocument(final byte[] bytes) {
-        this(bytes, null, null);
-    }
+	/**
+	 * Creates dss document that retains the data in memory
+	 *
+	 * @param bytes array of bytes representing the document
+	 * @param name  the file name if the data originates from a file
+	 */
+	public InMemoryDocument(final byte[] bytes, final String name) {
 
-    /**
-     * Creates dss document that retains the data in memory
-     *
-     * @param bytes array of bytes representing the document
-     * @param name  the file name if the data originates from a file
-     */
-    public InMemoryDocument(final byte[] bytes, final String name) {
+		this.bytes = bytes;
+		this.name = name;
+		this.mimeType = MimeType.fromFileName(name);
+	}
 
-        this.bytes = bytes;
-        this.name = name;
-        this.mimeType = MimeType.fromFileName(name);
-    }
+	/**
+	 * Creates dss document that retains the data in memory
+	 *
+	 * @param bytes    array of bytes representing the document
+	 * @param name     the file name if the data originates from a file
+	 * @param mimeType the mime type of the file if the data originates from a file
+	 */
+	public InMemoryDocument(final byte[] bytes, final String name, final MimeType mimeType) {
+		this.bytes = bytes;
+		this.name = name;
+		this.mimeType = mimeType;
+	}
 
-    /**
-     * Creates dss document that retains the data in memory
-     *
-     * @param bytes    array of bytes representing the document
-     * @param name     the file name if the data originates from a file
-     * @param mimeType the mime type of the file if the data originates from a file
-     */
-    public InMemoryDocument(final byte[] bytes, final String name, final MimeType mimeType) {
-        this.bytes = bytes;
-        this.name = name;
-        this.mimeType = mimeType;
-    }
+	/**
+	 * Creates dss document that retains the data in memory
+	 *
+	 * @param inputStream input stream representing the document
+	 * @throws DSSException
+	 */
+	public InMemoryDocument(final InputStream inputStream) throws DSSException {
+		this(DSSUtils.toByteArray(inputStream), null, null);
+	}
 
-    /**
-     * Creates dss document that retains the data in memory
-     *
-     * @param inputStream input stream representing the document
-     * @throws DSSException
-     */
-    public InMemoryDocument(final InputStream inputStream) throws DSSException {
-        this(DSSUtils.toByteArray(inputStream), null, null);
-    }
+	/**
+	 * Creates dss document that retains the data in memory
+	 *
+	 * @param inputStream input stream representing the document
+	 * @param name        the file name if the data originates from a file
+	 * @throws IOException
+	 */
+	public InMemoryDocument(final InputStream inputStream, final String name) throws DSSException {
+		this(DSSUtils.toByteArray(inputStream), name);
+	}
 
-    /**
-     * Creates dss document that retains the data in memory
-     *
-     * @param inputStream input stream representing the document
-     * @param name        the file name if the data originates from a file
-     * @throws IOException
-     */
-    public InMemoryDocument(final InputStream inputStream, final String name) throws DSSException {
-        this(DSSUtils.toByteArray(inputStream), name);
-    }
+	/**
+	 * Creates dss document that retains the data in memory
+	 *
+	 * @param inputStream input stream representing the document
+	 * @param name        the file name if the data originates from a file
+	 * @param mimeType    the mime type of the file if the data originates from a file
+	 * @throws IOException
+	 */
+	public InMemoryDocument(final InputStream inputStream, final String name, final MimeType mimeType) throws DSSException {
+		this(DSSUtils.toByteArray(inputStream), name, mimeType);
+	}
 
-    /**
-     * Creates dss document that retains the data in memory
-     *
-     * @param inputStream input stream representing the document
-     * @param name        the file name if the data originates from a file
-     * @param mimeType    the mime type of the file if the data originates from a file
-     * @throws IOException
-     */
-    public InMemoryDocument(final InputStream inputStream, final String name, final MimeType mimeType) throws DSSException {
-        this(DSSUtils.toByteArray(inputStream), name, mimeType);
-    }
+	@Override
+	public InputStream openStream() throws DSSException {
 
-    @Override
-    public InputStream openStream() throws DSSException {
+		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+		return byteArrayInputStream;
+	}
 
-        final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        return byteArrayInputStream;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	@Override
+	public byte[] getBytes() throws DSSException {
 
-    @Override
-    public MimeType getMimeType() {
-        return mimeType;
-    }
+		return bytes;
+	}
 
-    @Override
-    public byte[] getBytes() throws DSSException {
+	public void setName(final String name) {
+		this.name = name;
+	}
 
-        return bytes;
-    }
+	public void setAbsolutePath(final String absolutePath) {
+		this.absolutePath = absolutePath;
+	}
 
-    public void setName(final String name) {
-        this.name = name;
-    }
+	@Override
+	public void save(final String filePath) {
 
-    public void setMimeType(final MimeType mimeType) {
-        this.mimeType = mimeType;
-    }
+		try {
 
-    public void setAbsolutePath(final String absolutePath) {
-        this.absolutePath = absolutePath;
-    }
+			final FileOutputStream fos = new FileOutputStream(filePath);
+			DSSUtils.write(getBytes(), fos);
+			fos.close();
+		} catch (FileNotFoundException e) {
+			throw new DSSException(e);
+		} catch (DSSException e) {
+			throw new DSSException(e);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
 
-    @Override
-    public void save(final String filePath) {
+	@Override
+	public String getAbsolutePath() {
 
-        try {
-
-            final FileOutputStream fos = new FileOutputStream(filePath);
-            DSSUtils.write(getBytes(), fos);
-            fos.close();
-        } catch (FileNotFoundException e) {
-            throw new DSSException(e);
-        } catch (DSSException e) {
-            throw new DSSException(e);
-        } catch (IOException e) {
-            throw new DSSException(e);
-        }
-    }
-
-    @Override
-    public String getAbsolutePath() {
-
-        return absolutePath;
-    }
+		return absolutePath;
+	}
 
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
@@ -182,21 +171,21 @@ public class InMemoryDocument implements DSSDocument {
 	}
 
 	@Override
-    public String toString() {
+	public String toString() {
 
-        final StringWriter stringWriter = new StringWriter();
-        final MimeType mimeType = getMimeType();
-        final String name = getName();
-        if (name != null) {
+		final StringWriter stringWriter = new StringWriter();
+		final MimeType mimeType = getMimeType();
+		final String name = getName();
+		if (name != null) {
 
-            stringWriter.append("Name: ").append(name).append(" / ");
-        }
-        if (mimeType != null) {
+			stringWriter.append("Name: ").append(name).append(" / ");
+		}
+		if (mimeType != null) {
 
-            stringWriter.append(mimeType.name()).append(" / ");
-        }
-        stringWriter.append(getAbsolutePath());
-        final String string = stringWriter.toString();
-        return string;
-    }
+			stringWriter.append(mimeType.name()).append(" / ");
+		}
+		stringWriter.append(getAbsolutePath());
+		final String string = stringWriter.toString();
+		return string;
+	}
 }

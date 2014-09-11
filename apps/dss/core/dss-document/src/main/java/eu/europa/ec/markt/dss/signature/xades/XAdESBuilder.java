@@ -41,7 +41,7 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
-public class XAdESBuilder {
+public abstract class XAdESBuilder {
 
 	public static final String DS_CANONICALIZATION_METHOD = "ds:CanonicalizationMethod";
 	public static final String DS_COUNTER_SIGNATURE = "ds:CounterSignature";

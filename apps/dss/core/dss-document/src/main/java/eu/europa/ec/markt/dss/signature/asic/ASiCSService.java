@@ -53,7 +53,6 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
-import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.parameter.ASiCParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
@@ -111,6 +110,7 @@ public class ASiCSService extends AbstractSignatureService {
 		// toSignDocument can be a simple file or an ASiC-S container
 		DSSDocument contextToSignDocument = toSignDocument;
 		SignedDocumentValidator validator = null;
+		// Check if this is an existing container
 		try {
 			validator = SignedDocumentValidator.fromDocument(toSignDocument);
 		} catch (Exception e) {
@@ -194,34 +194,17 @@ public class ASiCSService extends AbstractSignatureService {
 		final DSSDocument enclosedSignature = asicParameters.getEnclosedSignature();
 
 		final SignatureForm asicSignatureForm = asicParameters.getAsicSignatureForm();
-		final DSSDocument signature;
-		if (SignatureForm.XAdES.equals(asicSignatureForm)) {
 
-			signature = underlyingService.signDocument(contextToSignDocument, specificParameters, signatureValue);
-		} else if (SignatureForm.CAdES.equals(asicSignatureForm)) {
+		final DSSDocument signature = underlyingService.signDocument(contextToSignDocument, specificParameters, signatureValue);
 
-			signature = underlyingService.signDocument(contextToSignDocument, specificParameters, signatureValue);
-		} else {
-			throw new DSSUnsupportedOperationException(asicSignatureForm.name() + ": This form of the signature is not supported.");
-		}
-
-		final DSSDocument originalDocument = specificParameters.getDetachedContent();
+		final DSSDocument detachedDocument = specificParameters.getDetachedContent();
 
 		final ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
 		final ZipOutputStream outZip = new ZipOutputStream(outBytes);
 
-		final String toSignDocumentName = originalDocument.getName();
+		final String toSignDocumentName = detachedDocument.getName();
 
-		//		if (!System.getProperties().containsKey("content.types.user.table")) {
-		//			final URL contentTypeURL = this.getClass().getResource("/custom-content-types.properties");
-		//			if (contentTypeURL != null) {
-		//				System.setProperty("content.types.user.table", contentTypeURL.getPath());
-		//			}
-		//		}
-		//		final FileNameMap fileNameMap = URLConnection.getFileNameMap();
-		//		final String containedFileMimeType_ = fileNameMap.getContentTypeFor(toSignDocumentName);
-		//		System.out.println(toSignDocument.toString());
-		final MimeType signedFileMimeType = originalDocument.getMimeType();
+		final MimeType signedFileMimeType = detachedDocument.getMimeType();
 		// Zip comment
 		if (asicParameters.isZipComment() && DSSUtils.isNotEmpty(toSignDocumentName)) {
 
@@ -232,7 +215,7 @@ public class ASiCSService extends AbstractSignatureService {
 		storeMimetype(asicParameters, outZip, signedFileMimeType);
 
 		// Stores the original toSignDocument
-		storeSignedFile(originalDocument, outZip);
+		storeSignedFile(detachedDocument, outZip);
 
 		// Stores the signature
 		if (SignatureForm.XAdES.equals(asicSignatureForm)) {
@@ -399,16 +382,21 @@ public class ASiCSService extends AbstractSignatureService {
 
 	private void storeSignedFile(final DSSDocument toSignDocument, final ZipOutputStream outZip) throws DSSException {
 
-		final String toSignDocumentName = toSignDocument.getName();
-		final ZipEntry entryDocument = new ZipEntry(toSignDocumentName != null ? toSignDocumentName : ZIP_ENTRY_DETACHED_FILE);
-		outZip.setLevel(ZipEntry.DEFLATED);
+		DSSDocument currentToSignDocument = toSignDocument;
+		do {
 
-		try {
-			outZip.putNextEntry(entryDocument);
-			DSSUtils.copy(toSignDocument.openStream(), outZip);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+			final String toSignDocumentName = currentToSignDocument.getName();
+			final ZipEntry entryDocument = new ZipEntry(toSignDocumentName != null ? toSignDocumentName : ZIP_ENTRY_DETACHED_FILE);
+			outZip.setLevel(ZipEntry.DEFLATED);
+
+			try {
+				outZip.putNextEntry(entryDocument);
+				DSSUtils.copy(currentToSignDocument.openStream(), outZip);
+			} catch (IOException e) {
+				throw new DSSException(e);
+			}
+			currentToSignDocument = currentToSignDocument.getNextDocument();
+		} while (currentToSignDocument != null);
 	}
 
 	private byte[] getMimeTypeBytes(final ASiCParameters asicParameters, final MimeType containedFileMimeType) {
