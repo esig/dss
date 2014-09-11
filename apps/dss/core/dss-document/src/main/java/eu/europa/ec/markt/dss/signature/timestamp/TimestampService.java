@@ -22,12 +22,15 @@ package eu.europa.ec.markt.dss.signature.timestamp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.Signature;
 import java.util.ArrayList;
 import java.util.List;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.TimestampParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -37,6 +40,7 @@ import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
@@ -47,8 +51,12 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimestampService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TimestampService.class);
 
 	private TSPSource tspSource;
 	private CertificatePool certificatePool;
@@ -93,7 +101,7 @@ public class TimestampService {
 	 */
 	public TimestampToken generateCAdESContentTimestampAsTimestampToken( final SignatureParameters externalParameters) {
 
-		TimestampToken token = generateTimestampToken(TimestampType.CONTENT_TIMESTAMP, externalParameters.getContentTimestampParameters().getDigestAlgorithm(), externalParameters.getDetachedContent().getBytes());
+		TimestampToken token = generateTimestampToken(TimestampType.CONTENT_TIMESTAMP, externalParameters, externalParameters.getDetachedContent().getBytes());
 		return token;
 	}
 
@@ -136,27 +144,31 @@ public class TimestampService {
 		final XAdESSignature xAdESSignature = (XAdESSignature) signatures.get(0);
 		final List<Reference> references = xAdESSignature.getReferences();
 
+		LOG.debug("Building ContentTimestamp - Concatenating references...");
+
 		//4. Concatenate byte value of references, excluding references of type SignedProperties
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		for (final Reference reference : references) {
-			if (! xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType()))
-			try {
-				final byte[] referencedBytes = reference.getReferencedBytes();
-				buffer.write(referencedBytes);
-			} catch (XMLSignatureException e) {
-				throw new DSSException(e);
-			} catch (IOException e) {
-				throw new DSSException(e);
+			if (! xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
+				try {
+					final byte[] referencedBytes = reference.getReferencedBytes();
+					buffer.write(referencedBytes);
+				} catch (XMLSignatureException e) {
+					throw new DSSException(e);
+				} catch (IOException e) {
+					throw new DSSException(e);
+				}
 			}
 		}
 
-		//5. Generate ContentTimestamp using the concatenated references
-		if (timestampType != TimestampType.ALL_DATA_OBJECTS_TIMESTAMP && timestampType != TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP) {
-			throw new DSSException("Incompatible timestamp type!");
-		}
+		LOG.debug("Result: " + new String(buffer.toByteArray()));
 
-		//6. Return ContentTimestamp as timestampToken
-		return generateTimestampToken(timestampType, externalParameters.getContentTimestampParameters().getDigestAlgorithm(), buffer.toByteArray());
+		//5. Generate ContentTimestamp using the concatenated references
+		switch (timestampType) {
+			case ALL_DATA_OBJECTS_TIMESTAMP: return generateTimestampToken(timestampType, externalParameters, buffer.toByteArray());
+			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP: return generateTimestampToken(timestampType, externalParameters, buffer.toByteArray());
+			default: throw new DSSException("Incompatible timestamp type");
+		}
 	}
 
 	/**
@@ -173,11 +185,23 @@ public class TimestampService {
 	 * @param timestampType
 	 * @return
 	 */
-	public TimestampToken generateTimestampToken(final TimestampType timestampType, final DigestAlgorithm digestAlgorithm, final byte[] references) {
+	public TimestampToken generateTimestampToken(final TimestampType timestampType, final SignatureParameters signatureParameters, final byte[] references) {
 
-		byte[] digest = DSSUtils.digest(digestAlgorithm, references);
-		final TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digest);
+		byte[] digest = DSSUtils.digest(signatureParameters.getContentTimestampParameters().getDigestAlgorithm(), references);
+		final TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(signatureParameters.getContentTimestampParameters().getDigestAlgorithm(), digest);
 		TimestampToken token = new TimestampToken(timeStampResponse, timestampType, certificatePool);
+
+		token.setCanonicalizationMethod(signatureParameters.getContentTimestampParameters().getCanonicalizationMethod());
+
+		//Case of XAdES INDIVIDUAL DATA OBJECTS TIMESTAMP: Timestamp Includes must be generated for each reference
+		if (TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timestampType)) {
+			List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
+			for (DSSReference reference : signatureParameters.getReferences()) {
+				TimestampInclude include = new TimestampInclude(reference.getUri(), "true");
+				includes.add(include);
+			}
+			token.setTimestampIncludes(includes);
+		}
 		return token;
 	}
 }
