@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.signature;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.StringWriter;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -35,11 +34,9 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
  * @version $Revision$ - $Date$
  */
 
-public class FileDocument implements DSSDocument {
+public class FileDocument extends CommonDocument {
 
 	private final File file;
-
-	private MimeType mimeType;
 
 	/**
 	 * Create a FileDocument
@@ -95,16 +92,6 @@ public class FileDocument implements DSSDocument {
 	}
 
 	@Override
-	public MimeType getMimeType() {
-		return mimeType;
-	}
-
-	@Override
-	public void setMimeType(final MimeType mimeType) {
-		this.mimeType = mimeType;
-	}
-
-	@Override
 	public byte[] getBytes() throws DSSException {
 
 		final InputStream inputStream = openStream();
@@ -129,15 +116,5 @@ public class FileDocument implements DSSDocument {
 		DSSUtils.closeQuietly(inputStream);
 		final String base64Encode = DSSUtils.base64Encode(digestBytes);
 		return base64Encode;
-	}
-
-	@Override
-	public String toString() {
-
-		final StringWriter stringWriter = new StringWriter();
-		final MimeType mimeType = getMimeType();
-		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : getMimeType().name()).append(" / ").append(getAbsolutePath());
-		final String string = stringWriter.toString();
-		return string;
 	}
 }

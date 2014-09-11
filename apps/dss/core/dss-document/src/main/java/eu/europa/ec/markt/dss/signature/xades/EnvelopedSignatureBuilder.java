@@ -35,6 +35,7 @@ import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
+import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
@@ -92,7 +93,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		DSSReference dssReference = new DSSReference();
 		dssReference.setId("r-id-1");
 		dssReference.setUri("");
-		dssReference.setContents(originalDocument);
+		dssReference.setContents(detachedDocument);
 		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
@@ -128,7 +129,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	@Override
 	protected DSSDocument canonicalizeReference(final DSSReference reference) {
 
-		final Document domDoc = DSSXMLUtils.buildDOM(originalDocument);
+		final Document domDoc = DSSXMLUtils.buildDOM(reference.getContents());
 		removeExistingSignatures(domDoc);
 
 		byte[] canonicalizedBytes;
@@ -181,7 +182,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 
-		final Document originalDocumentDom = DSSXMLUtils.buildDOM(originalDocument);
+		final Document originalDocumentDom = DSSXMLUtils.buildDOM(detachedDocument);
 		final Node copiedNode = originalDocumentDom.importNode(signatureDom, true);
 
 		if (params.getXPathLocationString() != null) {
