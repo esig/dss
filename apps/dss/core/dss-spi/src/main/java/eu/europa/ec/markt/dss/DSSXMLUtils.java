@@ -802,25 +802,27 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * // TODO-Vin (18/08/2014): This method is business. Here only technical methods... Namespace and tag name must be parameters
-	 * This method retrieves a signature based on its ID
-	 * @param currentDom the DOM in which the signature has to be retrieved
+	 * This method retrieves an element based on its ID
+	 *
+	 * @param currentDom the DOM in which the element has to be retrieved
 	 * @param signatureId the specified ID
-	 * @return
+	 * @param namespace the namespace to take into account
+	 * @param tagName the tagName of the element to find
+	 * @return the
 	 * @throws DSSNullException
 	 */
-	public static Element getSignatureById (Document currentDom, String signatureId) throws DSSNullException {
+	public static Element getElementById (Document currentDom, String signatureId, String namespace, String tagName) throws DSSNullException {
 
-		Element signatureElement = null;
-		NodeList signatures = currentDom.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
+		Element element = null;
+		NodeList nodes = currentDom.getElementsByTagNameNS(namespace, tagName);
 
-		for (int i = 0; i < signatures.getLength(); i++) {
-			signatureElement = (Element) signatures.item(i);
-			if (signatureId.equals(DSSXMLUtils.getIDIdentifier(signatureElement))) {
-				return signatureElement;
+		for (int i = 0; i < nodes.getLength(); i++) {
+			element = (Element) nodes.item(i);
+			if (signatureId.equals(DSSXMLUtils.getIDIdentifier(element))) {
+				return element;
 			}
 		}
-		if (signatureElement == null) {
+		if (element == null) {
 			throw new DSSNullException(Element.class);
 		}
 		return null;
