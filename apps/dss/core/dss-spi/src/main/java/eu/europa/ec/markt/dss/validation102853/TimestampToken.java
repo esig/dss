@@ -54,7 +54,6 @@ import eu.europa.ec.markt.dss.exception.DSSException;
  *
  * @version $Revision: 1824 $ - $Date: 2013-03-28 15:57:23 +0100 (Thu, 28 Mar 2013) $
  */
-
 public class TimestampToken extends Token {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampToken.class);
@@ -138,6 +137,11 @@ public class TimestampToken extends Token {
 		return timeStampType.name() + ": " + getDSSId() + ": " + DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime());
 	}
 
+	/**
+	 * This method returns the issuing certificate's distinguished subject name.
+	 *
+	 * @return {@code X500Principal} representing the issuing certificate's distinguished subject name.
+	 */
 	public X500Principal getIssuerX500Principal() {
 
 		return issuerX500Principal;
@@ -196,10 +200,10 @@ public class TimestampToken extends Token {
 	/**
 	 * Checks if the TimeStampToken matches the signed data.
 	 *
-	 * @param data
-	 * @return true if the data are verified by the TimeStampToken
+	 * @param data the array of {@code byte} representing the timestamped data
+	 * @return true if the data is verified by the TimeStampToken
 	 */
-	public boolean matchData(byte[] data) {
+	public boolean matchData(final byte[] data) {
 
 		try {
 
@@ -229,9 +233,9 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Retrieves the type of the timestamp token. See {@link eu.europa.ec.markt.dss.validation102853.TimestampType}
+	 * Retrieves the type of the timestamp token.
 	 *
-	 * @return
+	 * @return {@code TimestampType}
 	 */
 	public TimestampType getTimeStampType() {
 
@@ -241,7 +245,7 @@ public class TimestampToken extends Token {
 	/**
 	 * Retrieves the timestamp generation time.
 	 *
-	 * @return
+	 * @return {@code Date}
 	 */
 	public Date getGenerationTime() {
 
@@ -249,9 +253,9 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Retrieves the encoded signed data digest value.
+	 * Retrieves the {@code DigestAlgorithm} used to generate the digest value to timestamp.
 	 *
-	 * @return
+	 * @return {@code DigestAlgorithm}
 	 */
 	public DigestAlgorithm getSignedDataDigestAlgo() {
 
@@ -262,21 +266,21 @@ public class TimestampToken extends Token {
 	/**
 	 * Retrieves the encoded signed data digest value.
 	 *
-	 * @return
+	 * @return base 64 encoded {@code String}
 	 */
 	public String getEncodedSignedDataDigestValue() {
 
-		return DSSUtils.base64Encode(timeStamp.getTimeStampInfo().getMessageImprintDigest());
+		final byte[] messageImprintDigest = timeStamp.getTimeStampInfo().getMessageImprintDigest();
+		return DSSUtils.base64Encode(messageImprintDigest);
 	}
 
 	/**
-	 * This method is used to set the timestamped references. The reference is the digest value of the certificate or of the revocation data. The same references can be
-	 * timestamped
-	 * by different timestamps.
+	 * This method is used to set the timestamped references. The reference can be the digest value of the certificate or of the revocation data. The same references can be
+	 * timestamped by different timestamps.
 	 *
-	 * @param timestampedReferences
+	 * @param timestampedReferences {@code List} of {@code TimestampReference}
 	 */
-	public void setTimestampedReferences(List<TimestampReference> timestampedReferences) {
+	public void setTimestampedReferences(final List<TimestampReference> timestampedReferences) {
 
 		this.timestampedReferences = timestampedReferences;
 	}
@@ -397,14 +401,21 @@ public class TimestampToken extends Token {
 		}
 	}
 
+	// TODO-Vin (12/09/2014): Comment!
 	public List<TimestampInclude> getTimestampIncludes() {
 		return timestampIncludes;
 	}
 
+	// TODO-Vin (12/09/2014): Comment!
 	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
 		this.timestampIncludes = timestampIncludes;
 	}
 
+	/**
+	 * Returns the list of wrapped certificates.
+	 *
+	 * @return {@code List} of {@code CertificateToken}
+	 */
 	public List<CertificateToken> getCertificates() {
 		return wrappedSource.getCertificates();
 	}
@@ -426,8 +437,8 @@ public class TimestampToken extends Token {
 	/**
 	 * Checks whether the timestamp token was generated before the signature
 	 *
-	 * @param signatureSigningTime
-	 * @return
+	 * @param signatureSigningTime // TODO-Vin (12/09/2014): Comment+ final+
+	 * @return // TODO-Vin (12/09/2014): comment!
 	 */
 	public boolean isBeforeSignatureSigningTime(Date signatureSigningTime) {
 
