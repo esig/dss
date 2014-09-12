@@ -811,14 +811,14 @@ public final class DSSXMLUtils {
 	 * @return the
 	 * @throws DSSNullException
 	 */
-	public static Element getElementById (Document currentDom, String signatureId, String namespace, String tagName) throws DSSNullException {
+	public static Element getElementById (Document currentDom, String elementId, String namespace, String tagName) throws DSSNullException {
 
 		Element element = null;
 		NodeList nodes = currentDom.getElementsByTagNameNS(namespace, tagName);
 
 		for (int i = 0; i < nodes.getLength(); i++) {
 			element = (Element) nodes.item(i);
-			if (signatureId.equals(DSSXMLUtils.getIDIdentifier(element))) {
+			if (elementId.equals(DSSXMLUtils.getIDIdentifier(element))) {
 				return element;
 			}
 		}
