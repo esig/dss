@@ -125,8 +125,8 @@ public class DSSReference {
 			  "id='" + id + '\'' +
 			  ", uri='" + uri + '\'' +
 			  ", type='" + type + '\'' +
-			  ", digestMethod='" + digestMethod.getName() + '\'' +
-			  ", contents=" + contents.toString() +
+			  ", digestMethod='" + (digestMethod != null ? digestMethod.getName() : digestMethod) + '\'' +
+			  ", contents=" + (contents != null ? contents.toString() : contents) +
 			  ", transforms=" + transforms +
 			  '}';
 	}

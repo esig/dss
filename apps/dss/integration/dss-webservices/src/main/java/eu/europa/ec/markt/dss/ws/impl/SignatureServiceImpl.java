@@ -315,7 +315,7 @@ public class SignatureServiceImpl implements SignatureService {
 	}
 
 	private void setAsicSignatureForm(WSParameters wsParameters, SignatureParameters params) {
-		params.aSiC().setAsicSignatureForm(wsParameters.getAsicSignatureForm());
+		params.aSiC().setUnderlyingForm(wsParameters.getAsicSignatureForm());
 	}
 
 	private void setAsicEnclosedSignature(WSParameters wsParameters, SignatureParameters params) {

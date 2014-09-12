@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.signature;
 
-import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 
 /**
@@ -31,9 +30,11 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 
 public enum SignatureLevel {
 
-	XMLDSIG(null), XAdES_C(null), XAdES_X(null), XAdES_XL(null), XAdES_A(null), XAdES_BASELINE_LTA(null), XAdES_BASELINE_LT(XAdES_BASELINE_LTA), XAdES_BASELINE_T( XAdES_BASELINE_LT), XAdES_BASELINE_B(XAdES_BASELINE_T),
+	XMLDSIG(null), XAdES_C(null), XAdES_X(null), XAdES_XL(null), XAdES_A(null), XAdES_BASELINE_LTA(null), XAdES_BASELINE_LT(XAdES_BASELINE_LTA), XAdES_BASELINE_T(
+		  XAdES_BASELINE_LT), XAdES_BASELINE_B(XAdES_BASELINE_T),
 
-	CAdES_BASELINE_LTA(null), CAdES_BASELINE_LT(CAdES_BASELINE_LTA), CAdES_BASELINE_T(CAdES_BASELINE_LT), CAdES_BASELINE_B(CAdES_BASELINE_T), CAdES_101733_C(null), CAdES_101733_X(null), CAdES_101733_A(null),
+	CAdES_BASELINE_LTA(null), CAdES_BASELINE_LT(CAdES_BASELINE_LTA), CAdES_BASELINE_T(CAdES_BASELINE_LT), CAdES_BASELINE_B(CAdES_BASELINE_T), CAdES_101733_C(null), CAdES_101733_X(
+		  null), CAdES_101733_A(null),
 
 	PAdES_BASELINE_LTA(null), PAdES_BASELINE_LT(PAdES_BASELINE_LTA), PAdES_BASELINE_T(PAdES_BASELINE_LT), PAdES_BASELINE_B(PAdES_BASELINE_T), PAdES_102778_LTV(PAdES_BASELINE_B),
 
@@ -62,6 +63,9 @@ public enum SignatureLevel {
 		return super.toString().replace("_", "-");
 	}
 
+	/**
+	 * @return the {@code SignatureForm} depending on the {@code SignatureLevel}
+	 */
 	public SignatureForm getSignatureForm() {
 
 		switch (this) {
@@ -73,28 +77,34 @@ public enum SignatureLevel {
 			case XAdES_BASELINE_LTA:
 			case XAdES_BASELINE_LT:
 			case XAdES_BASELINE_T:
-			case XAdES_BASELINE_B: return SignatureForm.XAdES;
+			case XAdES_BASELINE_B:
+				return SignatureForm.XAdES;
 			case CAdES_BASELINE_LTA:
 			case CAdES_BASELINE_LT:
 			case CAdES_BASELINE_T:
 			case CAdES_BASELINE_B:
 			case CAdES_101733_A:
 			case CAdES_101733_C:
-			case CAdES_101733_X: return SignatureForm.CAdES;
+			case CAdES_101733_X:
+				return SignatureForm.CAdES;
 			case PAdES_102778_LTV:
 			case PAdES_BASELINE_B:
 			case PAdES_BASELINE_LT:
 			case PAdES_BASELINE_LTA:
-			case PAdES_BASELINE_T: return SignatureForm.PAdES;
+			case PAdES_BASELINE_T:
+				return SignatureForm.PAdES;
 			case ASiC_S_BASELINE_B:
 			case ASiC_S_BASELINE_T:
 			case ASiC_S_BASELINE_LT:
-			case ASiC_S_BASELINE_LTA: return SignatureForm.ASiC_S;
+			case ASiC_S_BASELINE_LTA:
+				return SignatureForm.ASiC_S;
 			case ASiC_E_BASELINE_B:
 			case ASiC_E_BASELINE_T:
 			case ASiC_E_BASELINE_LT:
-			case ASiC_E_BASELINE_LTA: return SignatureForm.ASiC_E;
-			default: return null;
+			case ASiC_E_BASELINE_LTA:
+				return SignatureForm.ASiC_E;
+			default:
+				return null;
 		}
 	}
 }

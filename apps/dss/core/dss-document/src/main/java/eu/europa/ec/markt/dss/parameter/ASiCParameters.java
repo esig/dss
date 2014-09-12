@@ -27,13 +27,21 @@ public class ASiCParameters {
 	/**
 	 * The default signature form to use within the ASiC containers.
 	 */
-	private SignatureForm asicSignatureForm = SignatureForm.XAdES;
+	private SignatureForm underlyingForm = SignatureForm.XAdES;
+
+	/**
+	 * The form of the container -S or -E.
+	 */
+	SignatureForm containerForm;
 
 	/**
 	 * This variable contains already enclosed signature(s) when appending a new one.
 	 */
 	private DSSDocument enclosedSignature;
 
+	/**
+	 * Default constructor
+	 */
 	public ASiCParameters() {
 	}
 
@@ -46,7 +54,8 @@ public class ASiCParameters {
 
 		zipComment = source.zipComment;
 		mimeType = source.mimeType;
-		asicSignatureForm = source.asicSignatureForm;
+		underlyingForm = source.underlyingForm;
+		containerForm = source.containerForm;
 		enclosedSignature = source.enclosedSignature;
 	}
 
@@ -81,17 +90,24 @@ public class ASiCParameters {
 		this.mimeType = mimeType;
 	}
 
-	public SignatureForm getAsicSignatureForm() {
-		return asicSignatureForm;
+	public SignatureForm getUnderlyingForm() {
+		return underlyingForm;
 	}
 
 	/**
 	 * Sets the signature form associated with an ASiC container. Only two forms are acceptable: XAdES and CAdES.
 	 *
-	 * @param asicSignatureForm signature form to associate with the ASiC container.
+	 * @param underlyingForm signature form to associate with the ASiC container.
 	 */
-	public void setAsicSignatureForm(final SignatureForm asicSignatureForm) {
-		this.asicSignatureForm = asicSignatureForm;
+	public void setUnderlyingForm(final SignatureForm underlyingForm) {
+		this.underlyingForm = underlyingForm;
+	}
+
+	/**
+	 * @return the {@code SignatureForm} of the ASiC container
+	 */
+	public SignatureForm getContainerForm() {
+		return containerForm;
 	}
 
 	/**

@@ -36,6 +36,7 @@ import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
+import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
@@ -454,6 +455,11 @@ public class SignatureParameters {
 		if (signatureLevel == null) {
 			throw new DSSNullException(SignatureLevel.class);
 		}
+		final SignatureForm signatureForm = signatureLevel.getSignatureForm();
+		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)) {
+
+			aSiC().containerForm = signatureForm;
+		}
 		this.signatureLevel = signatureLevel;
 	}
 
@@ -471,7 +477,7 @@ public class SignatureParameters {
 	 *
 	 * @param signaturePackaging the value
 	 */
-	public void setSignaturePackaging(SignaturePackaging signaturePackaging) {
+	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
 		this.signaturePackaging = signaturePackaging;
 	}
 

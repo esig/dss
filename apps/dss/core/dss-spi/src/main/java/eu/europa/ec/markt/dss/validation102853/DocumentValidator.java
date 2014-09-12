@@ -13,7 +13,7 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
 /**
- * TODO
+ * This is the interface to be used when implementing different signature validators.
  * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
@@ -23,7 +23,7 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
 public interface DocumentValidator {
 
 	/**
-	 * The document to validate, in the case of ASiC-S container this method returns the signature.
+	 * The document to validate, in the case of ASiC container this method returns the signature.
 	 *
 	 * @return
 	 */

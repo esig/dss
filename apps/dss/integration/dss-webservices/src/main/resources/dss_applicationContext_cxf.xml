@@ -32,7 +32,7 @@
         <property name="tspSource" ref="tspSource"/>
     </bean>
 
-    <bean id="asicService" class="eu.europa.ec.markt.dss.signature.asic.ASiCSService">
+    <bean id="asicService" class="eu.europa.ec.markt.dss.signature.asic.ASiCService">
         <constructor-arg ref="certificateVerifier"/>
         <property name="tspSource" ref="tspSource"/>
     </bean>
