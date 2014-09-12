@@ -21,6 +21,7 @@
 package eu.europa.ec.markt.dss.signature.xades;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.XMLSignature;
 
 import org.apache.xml.security.Init;
 import org.slf4j.Logger;
@@ -176,7 +177,7 @@ public class XAdESService extends AbstractSignatureService {
 		}
 
 		//Retrieve signature element to countersign
-		final Element toSignSignatureElement = DSSXMLUtils.getSignatureById(toCounterSignDom, parameters.getToCounterSignSignatureId());
+		final Element toSignSignatureElement = DSSXMLUtils.getElementById(toCounterSignDom, parameters.getToCounterSignSignatureId(), XMLSignature.XMLNS, "Signature");
 		parameters.getContext().setOperationKind(Operation.COUNTERSIGNING);
 
 		final XPathQueryHolder xPathQueryHolder = toCounterSignSignature.getXPathQueryHolder();
