@@ -487,8 +487,7 @@ public final class DSSUtils {
 	 * @param input    the {@code InputStream} to read from
 	 * @param output   the {@code Writer} to write to
 	 * @param encoding the encoding to use, null means platform default
-	 * @throws NullPointerException if the input or output is null
-	 * @throws java.io.IOException  if an I/O error occurs
+	 * @throws DSSException if the input or output is null
 	 * @since Commons IO 1.1
 	 */
 	public static void copy(InputStream input, Writer output, String encoding) throws DSSException {
