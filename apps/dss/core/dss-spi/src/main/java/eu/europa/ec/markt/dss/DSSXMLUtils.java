@@ -805,7 +805,7 @@ public final class DSSXMLUtils {
 	 * This method retrieves an element based on its ID
 	 *
 	 * @param currentDom the DOM in which the element has to be retrieved
-	 * @param signatureId the specified ID
+	 * @param elementId the specified ID
 	 * @param namespace the namespace to take into account
 	 * @param tagName the tagName of the element to find
 	 * @return the

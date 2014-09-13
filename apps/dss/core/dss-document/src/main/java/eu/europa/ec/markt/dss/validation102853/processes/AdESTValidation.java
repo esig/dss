@@ -338,7 +338,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			}
 			if (contentTimestamp) {
 
-				checkTimestampValidationProcessConstraint(timestamp);
+				checkTimestampValidationProcessConstraint();
 			} else {
 
 				found = checkTimestampValidationProcessConstraint(rightTimestamps, found, productionTime);
@@ -394,9 +394,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			return signatureConclusion;
 		}
 
-		if (!checkTimestampOrderConstraint(signatureConclusion)) {
+		/*if (!checkTimestampOrderConstraint(signatureConclusion)) {
 			return signatureConclusion;
-		}
+		}*/
 
 		if (!checkSigningTimeProperty(signatureConclusion)) {
 			return signatureConclusion;
@@ -426,7 +426,6 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	 * @return {@code Date}
 	 */
 	private Date getLatestContentTimestampProductionDate() {
-
 
 		Date lastContentTimestampProductionDate = getLatestTimestampProductionTime(TimestampType.CONTENT_TIMESTAMP);
 		final Date lastAllDataObjectsTimestampProductionDate = getLatestTimestampProductionTime(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
@@ -470,6 +469,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			if (productionTime.before(bestSignatureTime)) {
 
 				constraintNode.addChild(STATUS, OK);
+
 				bestSignatureTime = productionTime;
 				constraintNode.addChild(INFO, ADEST_ITVPC_INFO_1);
 				rightTimestamps.add(timestampId);
@@ -491,10 +491,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	 * Same as previous method, but does not add the timestamp to the list of right timestamps, and does not return any result
 	 * -> Only performs the functional validation of the timestamp
 	 *
-	 * @param contentTimestamp
 	 * @return
 	 */
-	private void checkTimestampValidationProcessConstraint(XmlDom contentTimestamp) {
+	private void checkTimestampValidationProcessConstraint() {
 
 		final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signatureId, timestampId);
 		final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
@@ -880,7 +879,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		return constraint.check();
 	}
 
-	/**
+	/*/**
 	 * Similarly to the checkTimestampCoherenceConstraint method, this method verifies whether the ordering of the timestamps present in the
 	 * signature actually makes sense. I.e. whether the SIGNATURE TIMESTAMPS were actually produced before the REFERENCE TIMESTAMPS, and whether
 	 * the REFERENCE TIMESTAMPS were actually produced before the ARCHIVE TIMESTAMPS.
@@ -888,7 +887,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	 * @param conclusion
 	 * @return
 	 */
-	private boolean checkTimestampOrderConstraint(final Conclusion conclusion) {
+	/*private boolean checkTimestampOrderConstraint(final Conclusion conclusion) {
 
 		final Constraint constraint = constraintData.getTimestampOrderConstraint();
 		if (constraint == null) {
@@ -920,7 +919,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
-	}
+	}*/
 
 	private Date getLatestRefsTimestampProductionTime() {
 
