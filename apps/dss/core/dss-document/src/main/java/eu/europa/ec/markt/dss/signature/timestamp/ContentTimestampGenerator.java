@@ -20,28 +20,16 @@
 
 package eu.europa.ec.markt.dss.signature.timestamp;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.parameter.DSSReference;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
-import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
-import org.apache.xml.security.signature.Reference;
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
-import eu.europa.ec.markt.dss.parameter.ContentTimestampReference;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
-import org.w3c.dom.Element;
 
 /**
  * From RFC 3216, section 3.12.4:
