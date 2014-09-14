@@ -20,38 +20,39 @@ import javax.xml.ws.WebServiceFeature;
 public class SignatureService_Service extends Service {
 
 	private static final String METHOD_URL = "/signatureService?wsdl";
-	private static URL SERVICE_WSDL_LOCATION;
+	private static URL SIGNATURESERVICE_WSDL_LOCATION;
 	private final static Logger logger = Logger.getLogger(eu.europa.ec.markt.dss.ws.signature.SignatureService_Service.class.getName());
 
-//	static {
-//		URL url = null;
-//		try {
-//			URL baseUrl;
-//			baseUrl = eu.europa.ec.markt.dss.ws.signature.SignatureService_Service.class.getResource(".");
-//			url = new URL(baseUrl, "http://localhost:8080/dss-webapp/wservice/signatureService?wsdl");
-//		} catch (MalformedURLException e) {
-//			logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8080/dss-webapp/wservice/signatureService?wsdl', retrying as a local file");
-//			logger.warning(e.getMessage());
-//		}
-//		SIGNATURESERVICE_WSDL_LOCATION = url;
-//	}
-
-	public static void setROOT_SERVICE_URL(String ROOT_SERVICE_URL) {
-
+	/*
+	static {
+        URL url = null;
         try {
-			SERVICE_WSDL_LOCATION = new URL(ROOT_SERVICE_URL + METHOD_URL);
+            URL baseUrl;
+            baseUrl = eu.europa.ec.markt.dss.ws.signature.SignatureService_Service.class.getResource(".");
+            url = new URL(baseUrl, "http://localhost:8080/dss-webapp/wservice/signatureService?wsdl");
         } catch (MalformedURLException e) {
-			logger.warning("Failed to create URL for the wsdl Location: '" + SERVICE_WSDL_LOCATION + "', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8080/dss-webapp/wservice/signatureService?wsdl', retrying as a local file");
             logger.warning(e.getMessage());
         }
+        SIGNATURESERVICE_WSDL_LOCATION = url;
     }
+*/
+	public static void setROOT_SERVICE_URL(String ROOT_SERVICE_URL) {
+
+		try {
+			SIGNATURESERVICE_WSDL_LOCATION = new URL(ROOT_SERVICE_URL + METHOD_URL);
+		} catch (MalformedURLException e) {
+			logger.warning("Failed to create URL for the wsdl Location: '" + SIGNATURESERVICE_WSDL_LOCATION + "', retrying as a local file");
+			logger.warning(e.getMessage());
+		}
+	}
 
 	public SignatureService_Service(URL wsdlLocation, QName serviceName) {
 		super(wsdlLocation, serviceName);
 	}
 
 	public SignatureService_Service() {
-		super(SERVICE_WSDL_LOCATION, new QName("http://impl.ws.dss.markt.ec.europa.eu/", "SignatureService"));
+		super(SIGNATURESERVICE_WSDL_LOCATION, new QName("http://impl.ws.dss.markt.ec.europa.eu/", "SignatureService"));
 	}
 
 	/**

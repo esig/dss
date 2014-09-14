@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="mimeType" type="{http://ws.dss.markt.ec.europa.eu/}mimeType" minOccurs="0"/>
  *         &lt;element name="mimeTypeString" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="nextDocument" type="{http://ws.dss.markt.ec.europa.eu/}wsDocument" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,7 +36,8 @@ import javax.xml.bind.annotation.XmlType;
     "bytes",
     "mimeType",
     "mimeTypeString",
-    "name"
+    "name",
+    "nextDocument"
 })
 public class WsDocument {
 
@@ -44,6 +46,7 @@ public class WsDocument {
     protected MimeType mimeType;
     protected String mimeTypeString;
     protected String name;
+    protected WsDocument nextDocument;
 
     /**
      * Gets the value of the absolutePath property.
@@ -161,6 +164,30 @@ public class WsDocument {
      */
     public void setName(String value) {
         this.name = value;
+    }
+
+    /**
+     * Gets the value of the nextDocument property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link WsDocument }
+     *     
+     */
+    public WsDocument getNextDocument() {
+        return nextDocument;
+    }
+
+    /**
+     * Sets the value of the nextDocument property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link WsDocument }
+     *     
+     */
+    public void setNextDocument(WsDocument value) {
+        this.nextDocument = value;
     }
 
 }

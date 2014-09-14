@@ -33,7 +33,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="deterministicId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="digestAlgorithm" type="{http://ws.dss.markt.ec.europa.eu/}digestAlgorithm" minOccurs="0"/>
  *         &lt;element name="encryptionAlgorithm" type="{http://ws.dss.markt.ec.europa.eu/}encryptionAlgorithm" minOccurs="0"/>
- *         &lt;element name="references" type="{http://ws.dss.markt.ec.europa.eu/}dssReference" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="references" type="{http://ws.dss.markt.ec.europa.eu/}wsdssReference" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="signWithExpiredCertificate" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="signatureLevel" type="{http://ws.dss.markt.ec.europa.eu/}signatureLevel" minOccurs="0"/>
  *         &lt;element name="signaturePackaging" type="{http://ws.dss.markt.ec.europa.eu/}signaturePackaging" minOccurs="0"/>
@@ -95,7 +95,7 @@ public class WsParameters {
     protected DigestAlgorithm digestAlgorithm;
     protected EncryptionAlgorithm encryptionAlgorithm;
     @XmlElement(nillable = true)
-    protected List<DssReference> references;
+    protected List<WsdssReference> references;
     protected boolean signWithExpiredCertificate;
     protected SignatureLevel signatureLevel;
     protected SignaturePackaging signaturePackaging;
@@ -424,13 +424,13 @@ public class WsParameters {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link DssReference }
+     * {@link WsdssReference }
      * 
      * 
      */
-    public List<DssReference> getReferences() {
+    public List<WsdssReference> getReferences() {
         if (references == null) {
-            references = new ArrayList<DssReference>();
+            references = new ArrayList<WsdssReference>();
         }
         return this.references;
     }

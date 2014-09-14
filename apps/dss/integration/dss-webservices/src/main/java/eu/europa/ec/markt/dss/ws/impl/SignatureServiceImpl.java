@@ -41,7 +41,9 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.ws.DSSWSUtils;
 import eu.europa.ec.markt.dss.ws.SignatureService;
+import eu.europa.ec.markt.dss.ws.WSDSSReference;
 import eu.europa.ec.markt.dss.ws.WSDocument;
 import eu.europa.ec.markt.dss.ws.WSParameters;
 
@@ -121,6 +123,9 @@ public class SignatureServiceImpl implements SignatureService {
 			case ASiC_S_BASELINE_B:
 			case ASiC_S_BASELINE_T:
 			case ASiC_S_BASELINE_LT:
+			case ASiC_E_BASELINE_B:
+			case ASiC_E_BASELINE_T:
+			case ASiC_E_BASELINE_LT:
 				return asicService;
 			default:
 				throw new IllegalArgumentException("Unrecognized format " + signatureLevel);
@@ -279,51 +284,54 @@ public class SignatureServiceImpl implements SignatureService {
 		params.setSignaturePackaging(signaturePackaging);
 	}
 
-	private void setSignatureLevel(WSParameters wsParameters, SignatureParameters params) {
+	private void setSignatureLevel(final WSParameters wsParameters, final SignatureParameters params) {
 
 		final SignatureLevel signatureLevel = wsParameters.getSignatureLevel();
 		params.setSignatureLevel(signatureLevel);
 	}
 
-	private void setReferences(WSParameters wsParameters, SignatureParameters params) {
+	private void setReferences(final WSParameters wsParameters, final SignatureParameters params) {
 
-		final List<DSSReference> references = wsParameters.getReferences();
-		//		System.out.println("###WS - REFERENCES:");
-		//		if (references == null) {
-		//
-		//			System.out.println("    --> NULL");
-		//			return;
-		//		}
-		//		for (DSSReference reference : references) {
-		//			System.out.println("    --> " + reference.getId() + "/" + reference.getUri() + "/" + reference.getType());
-		//			final List<DSSTransform> transforms = reference.getTransforms();
-		//			for (DSSTransform transform : transforms) {
-		//
-		//				System.out.println("    --> ---> " + transform.getElementName() + "/" + transform.getTextContent() + "/" + transform.getAlgorithm());
-		//			}
-		//		}
-		params.setReferences(references);
+		final List<WSDSSReference> wsReferences = wsParameters.getReferences();
+		if (wsReferences == null) {
+			return;
+		}
+		final List<DSSReference> dssReferences = new ArrayList<DSSReference>();
+		for (final WSDSSReference wsDssReference : wsReferences) {
+
+			final DSSReference dssReference = new DSSReference();
+			dssReference.setId(wsDssReference.getId());
+			dssReference.setType(wsDssReference.getType());
+			dssReference.setUri(wsDssReference.getUri());
+			final DSSDocument contentsDssDocument = DSSWSUtils.createDssDocument(wsDssReference.getContents());
+			dssReference.setContents(contentsDssDocument);
+			dssReference.setTransforms(wsDssReference.getTransforms());
+			dssReferences.add(dssReference);
+		}
+		params.setReferences(dssReferences);
 	}
 
-	private void setAsicZipComment(WSParameters wsParameters, SignatureParameters params) {
+	private void setAsicZipComment(final WSParameters wsParameters, final SignatureParameters params) {
 
 		params.aSiC().setZipComment(wsParameters.getAsicZipComment());
 	}
 
-	private void setAsicMimeType(WSParameters wsParameters, SignatureParameters params) {
+	private void setAsicMimeType(final WSParameters wsParameters, final SignatureParameters params) {
 		params.aSiC().setMimeType(wsParameters.getAsicMimeType());
 	}
 
-	private void setAsicSignatureForm(WSParameters wsParameters, SignatureParameters params) {
+	private void setAsicSignatureForm(final WSParameters wsParameters, final SignatureParameters params) {
 		params.aSiC().setUnderlyingForm(wsParameters.getAsicSignatureForm());
 	}
 
-	private void setAsicEnclosedSignature(WSParameters wsParameters, SignatureParameters params) {
-		params.aSiC().setEnclosedSignature(wsParameters.getAsicEnclosedSignature());
+	private void setAsicEnclosedSignature(final WSParameters wsParameters, final SignatureParameters params) {
+
+		final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsParameters.getAsicEnclosedSignature());
+		params.aSiC().setEnclosedSignature(dssDocument);
 	}
 
 	@Override
-	public byte[] getDataToSign(final WSDocument document, final WSParameters wsParameters) throws DSSException {
+	public byte[] getDataToSign(final WSDocument wsDocument, final WSParameters wsParameters) throws DSSException {
 
 		String exceptionMessage;
 		try {
@@ -332,23 +340,25 @@ public class SignatureServiceImpl implements SignatureService {
 				LOG.info("WsGetDataToSign: begin");
 			}
 			final SignatureParameters params = createParameters(wsParameters);
+			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
+
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
-			final byte[] dataToSign = service.getDataToSign(document, params);
+			final byte[] dataToSign = service.getDataToSign(dssDocument, params);
 			if (LOG.isInfoEnabled()) {
 
 				LOG.info("WsGetDataToSign: end");
 			}
 			return dataToSign;
 		} catch (Throwable e) {
-			e.printStackTrace();
+
 			exceptionMessage = e.getMessage();
+			LOG.error("WsGetDataToSign: ended with exception", e);
+			throw new DSSException(exceptionMessage);
 		}
-		LOG.info("WsGetDataToSign: end with exception");
-		throw new DSSException(exceptionMessage);
 	}
 
 	@Override
-	public WSDocument signDocument(final WSDocument document, final WSParameters wsParameters, final byte[] signatureValue) throws DSSException {
+	public WSDocument signDocument(final WSDocument wsDocument, final WSParameters wsParameters, final byte[] signatureValue) throws DSSException {
 
 		String exceptionMessage;
 		try {
@@ -357,25 +367,26 @@ public class SignatureServiceImpl implements SignatureService {
 				LOG.info("WsSignDocument: begin");
 			}
 			final SignatureParameters params = createParameters(wsParameters);
+			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
 
-			final DSSDocument dssDocument = service.signDocument(document, params, signatureValue);
-			WSDocument wsDocument = new WSDocument(dssDocument);
+			final DSSDocument signatureDssDocument = service.signDocument(dssDocument, params, signatureValue);
+			WSDocument SignatureWsDocument = new WSDocument(signatureDssDocument);
 			if (LOG.isInfoEnabled()) {
 
 				LOG.info("WsSignDocument: end");
 			}
-			return wsDocument;
+			return SignatureWsDocument;
 		} catch (Throwable e) {
-			e.printStackTrace();
+
 			exceptionMessage = e.getMessage();
+			LOG.error("WsSignDocument: ended with exception", e);
+			throw new DSSException(exceptionMessage);
 		}
-		LOG.info("WsSignDocument: end with exception");
-		throw new DSSException(exceptionMessage);
 	}
 
 	@Override
-	public WSDocument extendSignature(final WSDocument signedDocument, final WSParameters wsParameters) throws DSSException {
+	public WSDocument extendSignature(final WSDocument wsDocument, final WSParameters wsParameters) throws DSSException {
 
 		String exceptionMessage;
 		try {
@@ -384,19 +395,20 @@ public class SignatureServiceImpl implements SignatureService {
 				LOG.info("WsExtendSignature: begin");
 			}
 			final SignatureParameters params = createParameters(wsParameters);
+			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
-			final DSSDocument dssDocument = service.extendDocument(signedDocument, params);
-			final WSDocument wsDocument = new WSDocument(dssDocument);
+			final DSSDocument signatureDssDocument = service.extendDocument(dssDocument, params);
+			final WSDocument signatureWsDocument = new WSDocument(signatureDssDocument);
 			if (LOG.isInfoEnabled()) {
 
 				LOG.info("WsExtendSignature: end");
 			}
-			return wsDocument;
+			return signatureWsDocument;
 		} catch (Throwable e) {
-			e.printStackTrace();
+
 			exceptionMessage = e.getMessage();
+			LOG.error("WsExtendSignature: end with exception", e);
+			throw new DSSException(exceptionMessage);
 		}
-		LOG.info("WsExtendSignature: end with exception");
-		throw new DSSException(exceptionMessage);
 	}
 }

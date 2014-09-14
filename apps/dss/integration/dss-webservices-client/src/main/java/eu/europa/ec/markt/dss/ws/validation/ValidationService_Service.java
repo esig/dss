@@ -1,4 +1,3 @@
-
 package eu.europa.ec.markt.dss.ws.validation;
 
 import java.net.MalformedURLException;
@@ -16,62 +15,63 @@ import javax.xml.ws.WebServiceFeature;
  * JAX-WS RI 2.1.6 in JDK 6
  * Generated source version: 2.1
  */
-@WebServiceClient(name = "ValidationService", targetNamespace = "http://impl.ws.dss.markt.ec.europa.eu/", wsdlLocation = "http://localhost:8080/dss-webapp/wservice/validationService?wsdl")
-public class ValidationService_Service
-    extends Service
-{
+@WebServiceClient(name = "ValidationService", targetNamespace = "http://impl.ws.dss.markt.ec.europa.eu/",
+	  wsdlLocation = "http://localhost:8080/dss-webapp/wservice/validationService?wsdl")
+public class ValidationService_Service extends Service {
 
-    private static final String METHOD_URL = "/validationService?wsdl";
-    private static URL SERVICE_WSDL_LOCATION;
-
-    private final static Logger logger = Logger.getLogger(eu.europa.ec.markt.dss.ws.validation.ValidationService_Service.class.getName());
+	private static final String METHOD_URL = "/validationService?wsdl";
+	private static URL VALIDATIONSERVICE_WSDL_LOCATION;
+	private final static Logger logger = Logger.getLogger(eu.europa.ec.markt.dss.ws.validation.ValidationService_Service.class.getName());
 
 /*
-    static {
-
-        try {
-            SERVICE_WSDL_LOCATION = new URL(ROOT_SERVICE_URL + METHOD_URL);
-        } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: '" + SERVICE_WSDL_LOCATION.toString() + "', retrying as a local file");
-            logger.warning(e.getMessage());
-        }
-    }
+	static {
+		URL url = null;
+		try {
+			URL baseUrl;
+			baseUrl = eu.europa.ec.markt.dss.ws.validation.ValidationService_Service.class.getResource(".");
+			url = new URL(baseUrl, "http://localhost:8080/dss-webapp/wservice/validationService?wsdl");
+		} catch (MalformedURLException e) {
+			logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8080/dss-webapp/wservice/validationService?wsdl', retrying as a local file");
+			logger.warning(e.getMessage());
+		}
+		VALIDATIONSERVICE_WSDL_LOCATION = url;
+	}
 */
 
     public static void setROOT_SERVICE_URL(String ROOT_SERVICE_URL) {
 
         try {
-            SERVICE_WSDL_LOCATION = new URL(ROOT_SERVICE_URL + METHOD_URL);
+	        VALIDATIONSERVICE_WSDL_LOCATION = new URL(ROOT_SERVICE_URL + METHOD_URL);
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: '" + SERVICE_WSDL_LOCATION + "', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: '" + VALIDATIONSERVICE_WSDL_LOCATION + "', retrying as a local file");
             logger.warning(e.getMessage());
         }
     }
 
-    public ValidationService_Service(URL wsdlLocation, QName serviceName) {
-        super(wsdlLocation, serviceName);
-    }
+	public ValidationService_Service(URL wsdlLocation, QName serviceName) {
+		super(wsdlLocation, serviceName);
+	}
 
-    public ValidationService_Service() {
-        super(SERVICE_WSDL_LOCATION, new QName("http://impl.ws.dss.markt.ec.europa.eu/", "ValidationService"));
-    }
+	public ValidationService_Service() {
+		super(VALIDATIONSERVICE_WSDL_LOCATION, new QName("http://impl.ws.dss.markt.ec.europa.eu/", "ValidationService"));
+	}
 
-    /**
-     * @return returns ValidationService
-     */
-    @WebEndpoint(name = "ValidationServiceImplPort")
-    public ValidationService getValidationServiceImplPort() {
-        return super.getPort(new QName("http://impl.ws.dss.markt.ec.europa.eu/", "ValidationServiceImplPort"), ValidationService.class);
-    }
+	/**
+	 * @return returns ValidationService
+	 */
+	@WebEndpoint(name = "ValidationServiceImplPort")
+	public ValidationService getValidationServiceImplPort() {
+		return super.getPort(new QName("http://impl.ws.dss.markt.ec.europa.eu/", "ValidationServiceImplPort"), ValidationService.class);
+	}
 
-    /**
-     * @param features A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their
-     *                 default values.
-     * @return returns ValidationService
-     */
-    @WebEndpoint(name = "ValidationServiceImplPort")
-    public ValidationService getValidationServiceImplPort(WebServiceFeature... features) {
-        return super.getPort(new QName("http://impl.ws.dss.markt.ec.europa.eu/", "ValidationServiceImplPort"), ValidationService.class, features);
-    }
+	/**
+	 * @param features A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their
+	 *                 default values.
+	 * @return returns ValidationService
+	 */
+	@WebEndpoint(name = "ValidationServiceImplPort")
+	public ValidationService getValidationServiceImplPort(WebServiceFeature... features) {
+		return super.getPort(new QName("http://impl.ws.dss.markt.ec.europa.eu/", "ValidationServiceImplPort"), ValidationService.class, features);
+	}
 
 }

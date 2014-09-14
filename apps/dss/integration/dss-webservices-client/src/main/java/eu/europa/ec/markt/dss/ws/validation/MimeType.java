@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="PDF"/>
  *     &lt;enumeration value="PKCS7"/>
  *     &lt;enumeration value="ASICS"/>
+ *     &lt;enumeration value="ASICE"/>
  *     &lt;enumeration value="TEXT"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
@@ -35,6 +36,7 @@ public enum MimeType {
     @XmlEnumValue("PKCS7")
     PKCS7("PKCS7"),
     ASICS("ASICS"),
+    ASICE("ASICE"),
     TEXT("TEXT");
     private final String value;
 

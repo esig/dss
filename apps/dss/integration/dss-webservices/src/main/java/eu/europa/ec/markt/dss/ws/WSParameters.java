@@ -27,7 +27,6 @@ import java.util.List;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
-import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
@@ -87,7 +86,7 @@ public class WSParameters {
 
 	private DigestAlgorithm timestampDigestAlgorithm; // ok
 
-	private List<DSSReference> references;
+	private List<WSDSSReference> references;
 
 	/**
 	 * The parameters related to ASiC from of the signature.
@@ -317,11 +316,11 @@ public class WSParameters {
 		this.timestampDigestAlgorithm = timestampDigestAlgorithm;
 	}
 
-	public List<DSSReference> getReferences() {
+	public List<WSDSSReference> getReferences() {
 		return references;
 	}
 
-	public void setReferences(List<DSSReference> references) {
+	public void setReferences(List<WSDSSReference> references) {
 
 		this.references = references;
 	}

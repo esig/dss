@@ -200,65 +200,74 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		}
 		if (model.isTslSignatureCheck()) {
 
-			parameters.clearCertificateChain();
-			parameters.setCertificateChain(parameters.getSigningCertificate());
-			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-
-			final List<DSSReference> references = new ArrayList<DSSReference>();
-
-			DSSReference dssReference = new DSSReference();
-			dssReference.setId("xml_ref_id");
-			dssReference.setUri("");
-
-			final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
-
-			DSSTransform dssTransform = new DSSTransform();
-			dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
-			transforms.add(dssTransform);
-
-			dssTransform = new DSSTransform();
-			dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
-			transforms.add(dssTransform);
-
-			dssReference.setTransforms(transforms);
-			references.add(dssReference);
-
-			//			System.out.println("###APPLET - REFERENCES:");
-			//			for (DSSReference reference : references) {
-			//				System.out.println("    --> " + reference.getId() + "/" + reference.getUri() + "/" + reference.getType());
-			//				final List<DSSTransform> transforms_ = reference.getTransforms();
-			//				for (DSSTransform transform : transforms_) {
-			//
-			//					System.out.println("    --> ---> " + transform.getElementName() + "/" + transform.getTextContent() + "/" + transform.getAlgorithm());
-			//				}
-			//			}
-			parameters.setReferences(references);
-
+			prepareTSLSignature(parameters);
 		} else {
 
-			final String signatureLevelString = model.getLevel();
-			final SignatureLevel signatureLevel = SignatureLevel.valueByName(signatureLevelString);
-			parameters.setSignatureLevel(signatureLevel);
-			parameters.setSignaturePackaging(model.getPackaging());
-
-			if (model.isClaimedCheck()) {
-				parameters.bLevel().addClaimedSignerRole(model.getClaimedRole());
-			}
-			if (model.isSignaturePolicyCheck()) {
-
-				final byte[] hashValue = DSSUtils.base64Decode(model.getSignaturePolicyValue());
-				final Policy policy = new Policy();
-				policy.setId(model.getSignaturePolicyId());
-				final DigestAlgorithm policyDigestAlgorithm = DigestAlgorithm.forName(model.getSignaturePolicyAlgo());
-				policy.setDigestAlgorithm(policyDigestAlgorithm);
-				policy.setDigestValue(hashValue);
-				parameters.bLevel().setSignaturePolicy(policy);
-			}
+			prepareCommonSignature(model, parameters);
 		}
 		final DSSDocument signedDocument = SigningUtils.signDocument(serviceURL, fileToSign, parameters);
 		final FileOutputStream fos = new FileOutputStream(model.getTargetFile());
 		DSSUtils.copy(signedDocument.openStream(), fos);
 		fos.close();
+	}
+
+	private void prepareCommonSignature(SignatureModel model, SignatureParameters parameters) {
+
+		final String signatureLevelString = model.getLevel();
+		final SignatureLevel signatureLevel = SignatureLevel.valueByName(signatureLevelString);
+		parameters.setSignatureLevel(signatureLevel);
+		parameters.setSignaturePackaging(model.getPackaging());
+
+		if (model.isClaimedCheck()) {
+			parameters.bLevel().addClaimedSignerRole(model.getClaimedRole());
+		}
+		if (model.isSignaturePolicyCheck()) {
+
+			final byte[] hashValue = DSSUtils.base64Decode(model.getSignaturePolicyValue());
+			final Policy policy = new Policy();
+			policy.setId(model.getSignaturePolicyId());
+			final DigestAlgorithm policyDigestAlgorithm = DigestAlgorithm.forName(model.getSignaturePolicyAlgo());
+			policy.setDigestAlgorithm(policyDigestAlgorithm);
+			policy.setDigestValue(hashValue);
+			parameters.bLevel().setSignaturePolicy(policy);
+		}
+	}
+
+	private void prepareTSLSignature(SignatureParameters parameters) {
+
+		parameters.clearCertificateChain();
+		parameters.setCertificateChain(parameters.getSigningCertificate());
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+
+		final List<DSSReference> references = new ArrayList<DSSReference>();
+
+		DSSReference dssReference = new DSSReference();
+		dssReference.setId("xml_ref_id");
+		dssReference.setUri("");
+
+		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+
+		DSSTransform dssTransform = new DSSTransform();
+		dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
+		transforms.add(dssTransform);
+
+		dssTransform = new DSSTransform();
+		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
+		transforms.add(dssTransform);
+
+		dssReference.setTransforms(transforms);
+		references.add(dssReference);
+
+		//			System.out.println("###APPLET - REFERENCES:");
+		//			for (DSSReference reference : references) {
+		//				System.out.println("    --> " + reference.getId() + "/" + reference.getUri() + "/" + reference.getType());
+		//				final List<DSSTransform> transforms_ = reference.getTransforms();
+		//				for (DSSTransform transform : transforms_) {
+		//
+		//					System.out.println("    --> ---> " + transform.getElementName() + "/" + transform.getTextContent() + "/" + transform.getAlgorithm());
+		//				}
+		//			}
+		parameters.setReferences(references);
 	}
 }

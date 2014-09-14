@@ -21,17 +21,11 @@
 package eu.europa.ec.markt.dss.ws;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.signature.CommonDocument;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 
@@ -41,11 +35,13 @@ import eu.europa.ec.markt.dss.signature.MimeType;
  * @version $Revision$ - $Date$
  */
 
-public class WSDocument extends CommonDocument {
+public class WSDocument {
 
 	private byte[] bytes;
 
 	private String name = "WSDocument";
+
+	protected MimeType mimeType;
 
 	/**
 	 * The mime-type is transported as {@code String}
@@ -53,6 +49,9 @@ public class WSDocument extends CommonDocument {
 	private String mimeTypeString = "";
 
 	private String absolutePath = "WSDocument";
+
+
+	protected WSDocument nextDocument;
 
 	/**
 	 * This constructor is used by Spring in the web-app..
@@ -64,19 +63,24 @@ public class WSDocument extends CommonDocument {
 	/**
 	 * The default constructor for WSDocument.
 	 *
-	 * @param doc
-	 * @throws IOException
+	 * @param dssDocument
+	 * @throws DSSException
 	 */
-	public WSDocument(final DSSDocument doc) throws DSSException {
+	public WSDocument(final DSSDocument dssDocument) throws DSSException {
 
-		final byte[] bytes = doc.getBytes();
+		final byte[] bytes = dssDocument.getBytes();
 		this.bytes = Arrays.copyOf(bytes, bytes.length);
-		mimeType = doc.getMimeType();
+		mimeType = dssDocument.getMimeType();
 		if (mimeType != null) {
 			mimeTypeString = mimeType.getCode();
 		}
-		name = doc.getName();
-		absolutePath = doc.getAbsolutePath();
+		name = dssDocument.getName();
+		absolutePath = dssDocument.getAbsolutePath();
+
+		final DSSDocument nextDssDocument = dssDocument.getNextDocument();
+		if (nextDssDocument != null) {
+			nextDocument = new WSDocument(nextDssDocument);
+		}
 	}
 
 	/**
@@ -84,7 +88,6 @@ public class WSDocument extends CommonDocument {
 	 *
 	 * @return the bytes
 	 */
-	@Override
 	public byte[] getBytes() {
 
 		return bytes;
@@ -100,13 +103,20 @@ public class WSDocument extends CommonDocument {
 		this.bytes = bytes;
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public MimeType getMimeType() {
+		return mimeType;
+	}
+
+	public void setMimeType(final MimeType mimeType) {
+		this.mimeType = mimeType;
 	}
 
 	public String getMimeTypeString() {
@@ -125,36 +135,18 @@ public class WSDocument extends CommonDocument {
 		this.absolutePath = absolutePath;
 	}
 
-	@Override
 	public InputStream openStream() throws DSSException {
 
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 		return byteArrayInputStream;
 	}
 
-	@Override
-	public void save(final String filePath) {
-
-		try {
-
-			final FileOutputStream fos = new FileOutputStream(filePath);
-			DSSUtils.write(getBytes(), fos);
-			fos.close();
-		} catch (FileNotFoundException e) {
-			throw new DSSException(e);
-		} catch (DSSException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+	public WSDocument getNextDocument() {
+		return nextDocument;
 	}
 
-	@Override
-	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
-		final String base64Encode = DSSUtils.base64Encode(digestBytes);
-		return base64Encode;
+	public void setNextDocument(WSDocument nextDocument) {
+		this.nextDocument = nextDocument;
 	}
 
 	@Override
@@ -163,7 +155,7 @@ public class WSDocument extends CommonDocument {
 		final StringWriter stringWriter = new StringWriter();
 		final MimeType mimeType = getMimeType();
 		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "mime-type=null" : getMimeType().name()).append(" / ").append("mime-type-string=")
-			  .append(mimeTypeString).append(" / ").append(getAbsolutePath());
+			  .append(mimeTypeString).append(" / AbsolutePath [").append(getAbsolutePath()).append("] / nextDocument [").append(nextDocument.toString()).append("]");
 		final String string = stringWriter.toString();
 		return string;
 	}

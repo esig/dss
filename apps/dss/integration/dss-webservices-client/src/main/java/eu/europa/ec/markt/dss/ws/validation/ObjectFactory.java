@@ -37,7 +37,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link WsValidationReport }
-     * 
+     *
      */
     public WsValidationReport createWsValidationReport() {
         return new WsValidationReport();
@@ -45,7 +45,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ValidateDocumentResponse }
-     * 
+     *
      */
     public ValidateDocumentResponse createValidateDocumentResponse() {
         return new ValidateDocumentResponse();
@@ -53,7 +53,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link WsDocument }
-     * 
+     *
      */
     public WsDocument createWsDocument() {
         return new WsDocument();
@@ -61,7 +61,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DSSException }
-     * 
+     *
      */
     public DSSException createDSSException() {
         return new DSSException();

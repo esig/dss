@@ -38,6 +38,7 @@ import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
+import eu.europa.ec.markt.dss.ws.DSSWSUtils;
 import eu.europa.ec.markt.dss.ws.ValidationService;
 import eu.europa.ec.markt.dss.ws.WSDocument;
 import eu.europa.ec.markt.dss.ws.report.WSValidationReport;
@@ -51,67 +52,69 @@ import eu.europa.ec.markt.dss.ws.report.WSValidationReport;
 @WebService(endpointInterface = "eu.europa.ec.markt.dss.ws.ValidationService", serviceName = "ValidationService")
 public class ValidationServiceImpl implements ValidationService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SignatureServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SignatureServiceImpl.class);
 
-    private CertificateVerifier certificateVerifier;
+	private CertificateVerifier certificateVerifier;
 
-    /**
-     * @param certificateVerifier the certificateVerifier to set
-     */
-    public void setCertificateVerifier(CertificateVerifier certificateVerifier) {
-        this.certificateVerifier = certificateVerifier;
-    }
+	/**
+	 * @param certificateVerifier the certificateVerifier to set
+	 */
+	public void setCertificateVerifier(CertificateVerifier certificateVerifier) {
+		this.certificateVerifier = certificateVerifier;
+	}
 
-    @Override
-    public WSValidationReport validateDocument(WSDocument wsDocument, WSDocument detachedContent, WSDocument policy, boolean diagnosticDataToBeReturned) throws DSSException {
+	@Override
+	public WSValidationReport validateDocument(WSDocument wsDocument, WSDocument wsDetachedContents, WSDocument policy, boolean diagnosticDataToBeReturned) throws DSSException {
 
-        String exceptionMessage;
-        try {
-            if (LOG.isInfoEnabled()) {
+		String exceptionMessage;
+		try {
+			if (LOG.isInfoEnabled()) {
 
-                LOG.info("WsValidateDocument: begin");
-            }
-            if (wsDocument == null) {
+				LOG.info("WsValidateDocument: begin");
+			}
+			if (wsDocument == null) {
 
-                throw new DSSNullException(WSDocument.class);
-            }
-            final SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(wsDocument);
-            validator.setCertificateVerifier(certificateVerifier);
-            if (detachedContent != null) {
+				throw new DSSNullException(WSDocument.class);
+			}
+			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
+			final SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+			validator.setCertificateVerifier(certificateVerifier);
+			if (wsDetachedContents != null) {
 
-	            List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-	            detachedContents.add(detachedContent);
-                validator.setDetachedContents(detachedContents);
-            }
+				List<DSSDocument> detachedContentsList = new ArrayList<DSSDocument>();
+				DSSDocument dssDetachedContents = DSSWSUtils.createDssDocument(wsDetachedContents);
+				detachedContentsList.add(dssDetachedContents);
+				validator.setDetachedContents(detachedContentsList);
+			}
 
-            final InputStream inputStream = policy == null ? null : policy.openStream();
-	        final Reports reports = validator.validateDocument(inputStream);
+			final InputStream inputStream = policy == null ? null : policy.openStream();
+			final Reports reports = validator.validateDocument(inputStream);
 
-	        final SimpleReport simpleReport = reports.getSimpleReport();
-            final String simpleReportXml = simpleReport.toString();
+			final SimpleReport simpleReport = reports.getSimpleReport();
+			final String simpleReportXml = simpleReport.toString();
 
-            final DetailedReport detailedReport = reports.getDetailedReport();
-            final String detailedReportXml = detailedReport.toString();
+			final DetailedReport detailedReport = reports.getDetailedReport();
+			final String detailedReportXml = detailedReport.toString();
 
-            final WSValidationReport wsValidationReport = new WSValidationReport();
-            wsValidationReport.setXmlSimpleReport(simpleReportXml);
-            wsValidationReport.setXmlDetailedReport(detailedReportXml);
-            if (diagnosticDataToBeReturned) {
+			final WSValidationReport wsValidationReport = new WSValidationReport();
+			wsValidationReport.setXmlSimpleReport(simpleReportXml);
+			wsValidationReport.setXmlDetailedReport(detailedReportXml);
+			if (diagnosticDataToBeReturned) {
 
-                final DiagnosticData diagnosticData = reports.getDiagnosticData();
-                final String diagnosticDataXml = diagnosticData.toString();
-                wsValidationReport.setXmlDiagnosticData(diagnosticDataXml);
-            }
-            if (LOG.isInfoEnabled()) {
+				final DiagnosticData diagnosticData = reports.getDiagnosticData();
+				final String diagnosticDataXml = diagnosticData.toString();
+				wsValidationReport.setXmlDiagnosticData(diagnosticDataXml);
+			}
+			if (LOG.isInfoEnabled()) {
 
-                LOG.info("WsValidateDocument: end");
-            }
-            return wsValidationReport;
-        } catch (Throwable e) {
-            e.printStackTrace();
-            exceptionMessage = e.getMessage();
-        }
-        LOG.info("WsValidateDocument: end with exception");
-        throw new DSSException(exceptionMessage);
-    }
+				LOG.info("WsValidateDocument: end");
+			}
+			return wsValidationReport;
+		} catch (Throwable e) {
+			e.printStackTrace();
+			exceptionMessage = e.getMessage();
+		}
+		LOG.info("WsValidateDocument: end with exception");
+		throw new DSSException(exceptionMessage);
+	}
 }
