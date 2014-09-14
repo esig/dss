@@ -131,9 +131,7 @@ public class TimestampService {
 
 	/**
 	 * Method that generates a ContentTimestamp as a DSS TimestampToken
-	 *
-	 * // TODO-Vin (12/09/2014): comment to be added that the detachedDocument parameter is used within the SignatureParameters
-	 *
+	 *	 *
 	 * @param externalParameters the original signature parameters
 	 * @return the ContentTimestamp as a DSS TimestampToken
 	 */
@@ -156,7 +154,6 @@ public class TimestampService {
 	public TimestampToken generateXAdESContentTimestampAsTimestampToken(final DSSDocument toSignDocument, final SignatureParameters externalParameters,
 	                                                                    final TimestampType timestampType) {
 
-		// TODO-Vin (12/09/2014): general add of final!
 		if (externalParameters == null) {
 			throw new DSSNullException(SignatureParameters.class);
 		}
