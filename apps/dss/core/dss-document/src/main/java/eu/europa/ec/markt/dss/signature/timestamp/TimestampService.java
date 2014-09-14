@@ -50,13 +50,14 @@ import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
-import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
-// TODO-Vin (12/09/2014): comment+
+/**
+ * Class providing (content) timestamp generating methods
+ */
 public class TimestampService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampService.class);
@@ -64,8 +65,10 @@ public class TimestampService {
 	private TSPSource tspSource;
 	private CertificatePool certificatePool;
 	private XPathQueryHolder xPathQueryHolder;
+	private final CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier(true);
 
-	// TODO (12/09/2014): To be replaced for the newt release (4.2.0)
+
+	// TODO (12/09/2014): To be replaced for the new release (4.2.0)
 	//These two variables are used as envelopes in order to create a fake, temporary signature aimed at building XAdES content timestamps
 	private final String begin = "<?xml version=\"1.0\" encoding=\"utf-8\"?><ds:Signature xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\" Id=\"Signature-51473554\">";
 	private final String end = "<ds:SignatureValue Id=\"ID_2640579564\">bUkiVxIMU1ixRho/W1gJWaPLvahcpmDMoVtNUuJLxSEvGxIfZaXzsGuZMKRLoyPVmWodivwDah5DhQ77SMolHDFbi/0nfDJ7l2h2dhQsoQNbZJODF/WAhuw0zfs8PsdGirRhIdjs/M1m8Y7DXFL4Wy84dFKDDaYRWOZby0GJ9oc=</ds:SignatureValue>" +
@@ -79,55 +82,73 @@ public class TimestampService {
 		  "</ds:KeyInfo>" +
 		  "</ds:Signature>";
 
-	// TODO-Vin (12/09/2014): new constructor without CertificatePool to be added
-	// TODO-Vin (12/09/2014): comment+, final+
-	public TimestampService(TSPSource tspSource, CertificatePool certificatePool) {
-
-		// TODO-Vin (12/09/2014): The test should have been added!
+	/**
+	 * Basic constructor, new CertificatePool created
+	 * @param tspSource The TSPSource to be used for the Timestamp generation
+	 */
+	public TimestampService(final TSPSource tspSource) {
 		if (tspSource == null) {
 			throw new DSSNullException(TSPSource.class);
 		}
 		this.tspSource = tspSource;
-		// TODO-Vin (12/09/2014): The test should have been added!
+		certificatePool = new CertificatePool();
+		xPathQueryHolder = new XPathQueryHolder();
+	}
+
+
+	/**
+	 * Alternative constructor
+	 * @param tspSource The TSPSource to be used for the Timestamp generation
+	 * @param certificatePool The CertificatePool to be used for the TimestampToken
+	 */
+	public TimestampService(final TSPSource tspSource, final CertificatePool certificatePool) {
+
+		if (tspSource == null) {
+			throw new DSSNullException(TSPSource.class);
+		}
+		this.tspSource = tspSource;
+
 		if (certificatePool == null) {
 			throw new DSSNullException(CertificatePool.class);
 		}
 		this.certificatePool = certificatePool;
+		xPathQueryHolder = new XPathQueryHolder();
 	}
 
 	/**
 	 * Method that generates a ContentTimestamp as a DSSDocument
 	 *
-	 * @param externalParameters // TODO-Vin (12/09/2014): comment+
+	 * @param externalParameters the original signature parameters
 	 * @return contentTimestamp as an InMemoryDocument
 	 */
 	public DSSDocument generateCAdESContentTimestamp(final SignatureParameters externalParameters) {
-		// TODO-Vin (12/09/2014): final+
-		TimestampToken contentTimestampToken = generateCAdESContentTimestampAsTimestampToken(externalParameters);
-		InMemoryDocument document = new InMemoryDocument(contentTimestampToken.getEncoded());
+
+		final TimestampToken contentTimestampToken = generateCAdESContentTimestampAsTimestampToken(externalParameters);
+		final InMemoryDocument document = new InMemoryDocument(contentTimestampToken.getEncoded());
 
 		return document;
 	}
 
 	/**
 	 * Method that generates a ContentTimestamp as a DSS TimestampToken
+	 *
 	 * // TODO-Vin (12/09/2014): comment to be added that the detachedDocument parameter is used within the SignatureParameters
 	 *
-	 * @param externalParameters the timestamp parameters to consider
+	 * @param externalParameters the original signature parameters
 	 * @return the ContentTimestamp as a DSS TimestampToken
 	 */
 	public TimestampToken generateCAdESContentTimestampAsTimestampToken(final SignatureParameters externalParameters) {
 
-		// TODO-Vin (12/09/2014): final+
 		final byte[] bytes = externalParameters.getDetachedContent().getBytes();
-		TimestampToken token = generateTimestampToken(TimestampType.CONTENT_TIMESTAMP, externalParameters, bytes);
+		final TimestampToken token = generateTimestampToken(TimestampType.CONTENT_TIMESTAMP, externalParameters, bytes);
 		return token;
 	}
 
-
 	/**
-	 * // TODO-Vin (12/09/2014): comment+
+	 * Method that generates a XAdES ContentTimestamp (either an ALL DATA OBJECTS TIMESTAMP or an INDIVIDUAL DATA OBJECTS TIMESTAMP) and returns
+	 * it as a TimestampToken
 	 *
+	 * @param toSignDocument
 	 * @param externalParameters
 	 * @param timestampType
 	 * @return
@@ -135,51 +156,45 @@ public class TimestampService {
 	public TimestampToken generateXAdESContentTimestampAsTimestampToken(final DSSDocument toSignDocument, final SignatureParameters externalParameters,
 	                                                                    final TimestampType timestampType) {
 
-		// TODO-Vin (12/09/2014): Why here? And what about other XPathQueryHolders ?
-		xPathQueryHolder = new XPathQueryHolder();
-
 		// TODO-Vin (12/09/2014): general add of final!
-
-		// TODO-Vin (12/09/2014): Sub-Methods+
+		if (externalParameters == null) {
+			throw new DSSNullException(SignatureParameters.class);
+		}
 		//1. Set initial parameters
-		SignatureParameters signatureParameters = new SignatureParameters();
-		signatureParameters.setReferences(externalParameters.getReferences());
-		signatureParameters.setSignatureTimestampParameters(externalParameters.getSignatureTimestampParameters());
+		final SignatureParameters signatureParameters = setSignatureParameters(externalParameters);
 
 		//2. Build temporary signature structure
-		// TODO-Vin (12/09/2014): Why here? always the same...
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier(true);
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(commonCertificateVerifier);
-		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-
 		final byte[] dataToSign = levelBaselineB.getDataToSign(toSignDocument, signatureParameters);
-		final String signatureValue = new String(dataToSign);
 
-		// TODO (12/09/2014): Method+ with String Builder or Buffer
-		final String signature = begin + signatureValue + end;
+		final byte[] signature = buildIntermediarySignature(dataToSign);
+		final List<Reference> references = getReferencesFromValidatedSignature(toSignDocument, signature);
 
-		// TODO-Vin (12/09/2014): Dedicated sub method for validation+
-		//3. Validate signature, in order to retrieve the references from the validator
-		DSSDocument toValidate = new InMemoryDocument(signature.getBytes());
-		final SignedDocumentValidator validator = XMLDocumentValidator.fromDocument(toValidate);
-		validator.setCertificateVerifier(commonCertificateVerifier);
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		detachedContents.add(toSignDocument);
-		validator.setDetachedContents(detachedContents);
-		// TODO-Vin (12/09/2014): dead variable
-		final Reports reports = validator.validateDocument();
+		//4. Concatenate byte value of references, excluding references of type SignedProperties
+		byte[] concatenatedReferences = concatenateReferencesAsByteArray(references);
 
-		final List<AdvancedSignature> signatures = validator.getSignatures();
-		final XAdESSignature xAdESSignature = (XAdESSignature) signatures.get(0);
-		final List<Reference> references = xAdESSignature.getReferences();
+		//5. Generate ContentTimestamp using the concatenated references
+		switch (timestampType) {
+			case ALL_DATA_OBJECTS_TIMESTAMP:
+			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+				return generateTimestampToken(timestampType, externalParameters, concatenatedReferences);
+			default:
+				throw new DSSException("Incompatible timestamp type");
+		}
+	}
+
+	/**
+	 * Concatenates a set of given {@code Reference} into a byte array
+	 * @param references the references to concatenate
+	 * @return the concatenated references as a byte array
+	 */
+	private byte[] concatenateReferencesAsByteArray(List<Reference> references) {
 
 		LOG.debug("Building ContentTimestamp - Concatenating references...");
-
-		// TODO-Vin (12/09/2014): Dedicated method+
-		//4. Concatenate byte value of references, excluding references of type SignedProperties
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
 		for (final Reference reference : references) {
+			//References of type "SignedProperties" are excluded
 			if (!xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
 				try {
 					final byte[] referencedBytes = reference.getReferencedBytes();
@@ -191,26 +206,18 @@ public class TimestampService {
 				}
 			}
 		}
-
 		LOG.debug("Result: " + new String(buffer.toByteArray()));
-
-		//5. Generate ContentTimestamp using the concatenated references
-		switch (timestampType) {
-			case ALL_DATA_OBJECTS_TIMESTAMP:
-				return generateTimestampToken(timestampType, externalParameters, buffer.toByteArray());
-			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-				return generateTimestampToken(timestampType, externalParameters, buffer.toByteArray());
-			default:
-				throw new DSSException("Incompatible timestamp type");
-		}
+		return buffer.toByteArray();
 	}
 
 	/**
-	 * // TODO-Vin (12/09/2014): comment++
+	 * Method that generates a XAdES ContentTimestamp (either an ALL DATA OBJECTS TIMESTAMP or an INDIVIDUAL DATA OBJECTS TIMESTAMP) and returns
+	 * it as a DSSDocument
 	 *
-	 * @param externalParameters
-	 * @param timestampType
-	 * @return
+	 * @param toSignDocument the document for which a content timestamp must be generated
+	 * @param externalParameters the original signature parameters
+	 * @param timestampType the contentTimestamp type, either ALL_DATA_OBJECTS_TIMESTAMP or INDIVIDUAL_DATA_OBJECTS_TIMESTAMP
+	 * @return a ContentTimestamp as a DSSDocument
 	 */
 	public DSSDocument generateXAdESContentTimestampAsDSSDocument(final DSSDocument toSignDocument, final SignatureParameters externalParameters,
 	                                                              final TimestampType timestampType) {
@@ -219,49 +226,124 @@ public class TimestampService {
 	}
 
 	/**
-	 * // TODO-Vin (12/09/2014): comment
-	 * // TODO-Vin (12/09/2014): Parameters are broken!
-	 * // TODO-Vin (12/09/2014): Concerning references why we do not use the same mechanism as for CAdES?!
+	 * Method that generates a TimestampToken given a TimestampType, a set of signature parameters and a byte array containing the concatenated references
 	 *
-	 * @param timestampType
+	 * @param timestampType The TimestampType for the TimestampToken
+	 * @param signatureParameters The signature parameters from which the contentTimestamp parameters must be retrieved
+	 * @param references
 	 * @return
 	 */
 	public TimestampToken generateTimestampToken(final TimestampType timestampType, final SignatureParameters signatureParameters, final byte[] references) {
 
-		// TODO-Vin (12/09/2014):  To be reproduced!
-		// TODO-Vin (12/09/2014): BEGIN
 		if (signatureParameters == null) {
+
 			throw new DSSNullException(SignatureParameters.class);
 		}
 		final TimestampParameters contentTimestampParameters = signatureParameters.getContentTimestampParameters();
+
 		if (contentTimestampParameters == null) {
 
 			throw new DSSNullException(TimestampParameters.class);
 		}
+
 		final DigestAlgorithm digestAlgorithm = contentTimestampParameters.getDigestAlgorithm();
+
 		if (digestAlgorithm == null) {
 
 			throw new DSSNullException(DigestAlgorithm.class);
 		}
-		// TODO-Vin (12/09/2014):  END
 		byte[] digest = DSSUtils.digest(digestAlgorithm, references);
 		final TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digest);
 		TimestampToken token = new TimestampToken(timeStampResponse, timestampType, certificatePool);
 
 		token.setCanonicalizationMethod(contentTimestampParameters.getCanonicalizationMethod());
 
-		// TODO-Vin (12/09/2014): Sub method+
 		//Case of XAdES INDIVIDUAL DATA OBJECTS TIMESTAMP: Timestamp Includes must be generated for each reference
 		if (TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timestampType)) {
+			addTimestampTokenIncludes(signatureParameters.getReferences(), token);
+		}
+		return token;
+	}
 
-			List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
-			for (DSSReference reference : signatureParameters.getReferences()) {
+	/**
+	 * Method setting the signature parameters used to generate the intermediary signature (XAdES-specific)
+	 * @param externalParameters the original signature parameters
+	 * @return a set of signature parameters
+	 */
+	private SignatureParameters setSignatureParameters(final SignatureParameters externalParameters) {
+
+		final SignatureParameters signatureParameters = new SignatureParameters();
+		signatureParameters.setReferences(externalParameters.getReferences());
+		signatureParameters.setSignatureTimestampParameters(externalParameters.getSignatureTimestampParameters());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		return signatureParameters;
+	}
+
+	/**
+	 *
+	 * @param toSignDocument
+	 * @param signature
+	 * @param commonCertificateVerifier
+	 * @return
+	 */
+	private SignedDocumentValidator validateTemporarySignature (final DSSDocument toSignDocument, final byte[] signature, final CommonCertificateVerifier commonCertificateVerifier) {
+
+		final DSSDocument toValidate = new InMemoryDocument(signature);
+		SignedDocumentValidator validator = XMLDocumentValidator.fromDocument(toValidate);
+		validator.setCertificateVerifier(commonCertificateVerifier);
+		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		detachedContents.add(toSignDocument);
+		validator.setDetachedContents(detachedContents);
+
+		return validator;
+	}
+
+	/**
+	 * Retrieves the references from a validated signature
+	 * @param toSignDocument the document for which a content timestamp must be generated
+	 * @param signature the signature value
+	 * @return
+	 */
+	private List<Reference> getReferencesFromValidatedSignature (final DSSDocument toSignDocument, final byte[] signature) {
+
+		SignedDocumentValidator validator = validateTemporarySignature(toSignDocument, signature, commonCertificateVerifier);
+		final List<AdvancedSignature> signatures = validator.getSignatures();
+		final XAdESSignature xAdESSignature = (XAdESSignature) signatures.get(0);
+		final List<Reference> references = xAdESSignature.getReferences();
+
+		return references;
+	}
+
+	/**
+	 * Builds an intermediary signature, in order to retrieve references from it and subsequently generate the content timestamp
+	 * @param signature the signature value to build upon
+	 * @return a signature structure containing the given signature value
+	 */
+	private byte[] buildIntermediarySignature(final byte[] signature) {
+
+		String signatureValue = new String(signature);
+		final String concatenatedSignature = begin + signatureValue + end;
+		return concatenatedSignature.getBytes();
+	}
+
+	/**
+	 * Adds a set of Timestamp Includes to a given Timestamp Token, based on the references that the Timestamp Token was built upon
+	 * @param references the references the timestamp token was built upon
+	 * @param token the timestamp token to which the includes must be added
+	 * @return the updated Timestamp token, containing the set of Includes
+	 */
+	private TimestampToken addTimestampTokenIncludes (List<DSSReference> references, TimestampToken token) {
+
+		List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
+		for (DSSReference reference : references) {
 
 				TimestampInclude include = new TimestampInclude(reference.getUri(), "true");
 				includes.add(include);
 			}
 			token.setTimestampIncludes(includes);
-		}
+
 		return token;
 	}
 }
