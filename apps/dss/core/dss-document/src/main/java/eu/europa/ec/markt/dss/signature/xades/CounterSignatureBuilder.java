@@ -38,6 +38,7 @@ import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
 /**
@@ -106,17 +107,14 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 		}
 
 		final Element counterSignatureElement = DSSXMLUtils.addElement(ownerDocument, unsignedSignaturePropertiesDom, XMLSignature.XMLNS, DS_COUNTER_SIGNATURE);
-		//final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
-		// final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, counterSignatureValue);
 		final String signatureValueBase64Encoded = DSSUtils.base64Encode(counterSignatureValue);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 
-		final Node importedNode = unsignedSignaturePropertiesDom.getOwnerDocument().importNode(documentDom.getFirstChild(), true);
+		final Node importedNode = ownerDocument.importNode(documentDom.getFirstChild(), true);
 		counterSignatureElement.appendChild(importedNode);
 
-		//		final byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(toCounterSignDocument);
-		//		return new InMemoryDocument(documentBytes);
-		return null;
+		final byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(ownerDocument);
+		return new InMemoryDocument(documentBytes);
 	}
 }

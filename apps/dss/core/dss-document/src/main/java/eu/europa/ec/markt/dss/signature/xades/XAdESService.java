@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.xml.security.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -37,7 +36,6 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
 import eu.europa.ec.markt.dss.signature.ProfileParameters.Operation;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
@@ -216,12 +214,12 @@ public class XAdESService extends AbstractSignatureService {
 
 		byte[] counterSignatureValue = signingToken.sign(dataToSign, digestAlgorithm, dssPrivateKeyEntry);
 
-		final DSSDocument countersignatureDocument = counterSignatureBuilder.signDocument(counterSignatureValue);
-		final XMLDocumentValidator xmlDocumentValidator = (XMLDocumentValidator) validator;
-		final Document rootElement = xmlDocumentValidator.getRootElement();
-		final byte[] bytes = DSSXMLUtils.transformDomToByteArray(rootElement);
-		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
-		return inMemoryDocument;
+		final DSSDocument counterSignedDocument = counterSignatureBuilder.signDocument(counterSignatureValue);
+		//		final XMLDocumentValidator xmlDocumentValidator = (XMLDocumentValidator) validator;
+		//		final Document rootElement = xmlDocumentValidator.getRootElement();
+		//		final byte[] bytes = DSSXMLUtils.transformDomToByteArray(rootElement);
+		//		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
+		return counterSignedDocument;
 	}
 
 	/**

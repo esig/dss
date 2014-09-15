@@ -32,7 +32,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.bouncycastle.tsp.TimeStampToken;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -634,29 +633,32 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 *
 	 * @param timestampElement
 	 */
-	protected void addTimestamp(Element timestampElement,
-	                            TimestampToken token) { //List<TimestampInclude> includes, String canonicalizationMethod, TimestampToken encapsulatedTimestamp) {
+	protected void addTimestamp(final Element timestampElement, final TimestampToken token) {
+
+		//List<TimestampInclude> includes, String canonicalizationMethod, TimestampToken encapsulatedTimestamp) {
 		//add includes: URI + referencedData = "true"
 		//add canonicalizationMethod: Algorithm
 		//add encapsulatedTimestamp: Encoding, Id, while its textContent is the base64 encoding of the data to digest
-		List<TimestampInclude> includes = token.getTimestampIncludes();
+		final List<TimestampInclude> includes = token.getTimestampIncludes();
 		if (includes != null) {
-			for (TimestampInclude include : includes) {
-				Element timestampIncludeElement = documentDom.createElement(XADES_INCLUDE);
+
+			for (final TimestampInclude include : includes) {
+
+				final Element timestampIncludeElement = documentDom.createElementNS(XAdESNamespaces.XAdES, XADES_INCLUDE);
 				timestampIncludeElement.setAttribute(URI, "#" + include.getURI());
 				timestampIncludeElement.setAttribute("referencedData", "true");
-				timestampElement.appendChild((Node) timestampIncludeElement);
+				timestampElement.appendChild(timestampIncludeElement);
 			}
 		}
-		Element canonicalizationMethodElement = documentDom.createElement(DS_CANONICALIZATION_METHOD);
+		final Element canonicalizationMethodElement = documentDom.createElementNS(XMLSignature.XMLNS, DS_CANONICALIZATION_METHOD);
 		canonicalizationMethodElement.setAttribute(ALGORITHM, token.getCanonicalizationMethod());
 
-		timestampElement.appendChild((Node) canonicalizationMethodElement);
+		timestampElement.appendChild(canonicalizationMethodElement);
 
-		Element encapsulatedTimestampElement = documentDom.createElement(XADES_ENCAPSULATED_TIME_STAMP);
+		Element encapsulatedTimestampElement = documentDom.createElementNS(XAdESNamespaces.XAdES, XADES_ENCAPSULATED_TIME_STAMP);
 		encapsulatedTimestampElement.setTextContent(DSSUtils.base64Encode(token.getEncoded()));
 
-		timestampElement.appendChild((Node) encapsulatedTimestampElement);
+		timestampElement.appendChild(encapsulatedTimestampElement);
 	}
 
 	/**
