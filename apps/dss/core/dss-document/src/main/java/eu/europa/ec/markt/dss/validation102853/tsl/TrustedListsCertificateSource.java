@@ -296,7 +296,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 				if (!coreValidity) {
 
 					LOG.info("The TSL signature validity details:\n" + simpleReport);
-					System.out.println(reports.getDiagnosticData());
+					//					System.out.println(reports.getDiagnosticData());
 					throw new DSSException("Not ETSI compliant signature. The signature is not valid.");
 				}
 			}

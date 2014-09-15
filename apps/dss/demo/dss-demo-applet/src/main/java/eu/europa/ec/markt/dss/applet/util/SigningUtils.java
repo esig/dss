@@ -191,7 +191,7 @@ public final class SigningUtils {
 		final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.fromValue(encryptionAlgorithmString);
 		wsParameters.setEncryptionAlgorithm(encryptionAlgorithm);
 
-		System.out.println("####>: " + parameters.getDigestAlgorithm());
+		//		System.out.println("####>: " + parameters.getDigestAlgorithm());
 		final String digestAlgorithmString = parameters.getDigestAlgorithm().name();
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.fromValue(digestAlgorithmString);
 		wsParameters.setDigestAlgorithm(digestAlgorithm);

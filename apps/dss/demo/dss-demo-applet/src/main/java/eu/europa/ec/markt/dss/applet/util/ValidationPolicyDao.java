@@ -21,12 +21,10 @@ package eu.europa.ec.markt.dss.applet.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
-import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -247,7 +245,7 @@ public class ValidationPolicyDao {
 		XSOMParser parser = new XSOMParser();
 		XSSchemaSet xsSchemaSet = null;
 		try {
-			System.out.println("##########" + xsdUrl.toString());
+			//			System.out.println("##########" + xsdUrl.toString());
 			parser.parse(xsdUrl.openStream());
 			xsSchemaSet = parser.getResult();
 

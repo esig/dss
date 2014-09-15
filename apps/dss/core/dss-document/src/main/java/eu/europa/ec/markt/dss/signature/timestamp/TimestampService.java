@@ -69,18 +69,6 @@ public class TimestampService {
 
 
 	// TODO (12/09/2014): To be replaced for the new release (4.2.0)
-	//These two variables are used as envelopes in order to create a fake, temporary signature aimed at building XAdES content timestamps
-	private final String begin = "<?xml version=\"1.0\" encoding=\"utf-8\"?><ds:Signature xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">";
-	private final String end = "<ds:SignatureValue>bUkiVxIMU1ixRho/W1gJWaPLvahcpmDMoVtNUuJLxSEvGxIfZaXzsGuZMKRLoyPVmWodivwDah5DhQ77SMolHDFbi/0nfDJ7l2h2dhQsoQNbZJODF/WAhuw0zfs8PsdGirRhIdjs/M1m8Y7DXFL4Wy84dFKDDaYRWOZby0GJ9oc=</ds:SignatureValue>" +
-		  "<ds:KeyInfo>" +
-		  "<ds:KeyValue>" +
-		  "<ds:RSAKeyValue>" +
-		  "<ds:Modulus>kKk8sPvKC4RN1/W8Uqan2zgqNCH2Uh6I4/uQPha25W6Lz6poWuxmi9y8/iCR2anbFb1k4n3d0eJxzWzdD4ubz478it9J0jhFi/4ANFJG+FVrWqH9gw/nXnfy2nULQOY466HE172mIAjKjWdPrpo6z1IRWHYbzNbL4iSO8BxqMx0=</ds:Modulus>" +
-		  "<ds:Exponent>AQAB</ds:Exponent>" +
-		  "</ds:RSAKeyValue>" +
-		  "</ds:KeyValue>" +
-		  "</ds:KeyInfo>" +
-		  "</ds:Signature>";
 	private final String fakeSignatureValue = "kKk8sPvKC4RN1/W8Uqan2zgqNCH2Uh6I4/uQPha25W6Lz6poWuxmi9y8/iCR2anbFb1k4n3d0eJxzWzdD4ubz478it9J0jhFi/4ANFJG+FVrWqH9gw/nXnfy2nULQOY466HE172mIAjKjWdPrpo6z1IRWHYbzNbL4iSO8BxqMx0=";
 
 	/**
@@ -166,16 +154,13 @@ public class TimestampService {
 
 		//2. Build temporary signature structure
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(commonCertificateVerifier);
-		//final byte[] dataToSign = levelBaselineB.getDataToSign(toSignDocument, signatureParameters);
 
 
 		byte[] signatureValueBytes = DSSUtils.base64Decode(fakeSignatureValue);
 		final DSSDocument fullSignature = levelBaselineB.signDocument(toSignDocument, signatureParameters, signatureValueBytes);
 
-		System.out.println("##########");
-		System.out.println(new String(fullSignature.getBytes()));
+		//		System.out.println(new String(fullSignature.getBytes()));
 
-		//final byte[] signature = buildIntermediarySignature(dataToSign);
 		final List<Reference> references = getReferencesFromValidatedSignature(toSignDocument, fullSignature);
 
 		//4. Concatenate byte value of references, excluding references of type SignedProperties
@@ -331,20 +316,6 @@ public class TimestampService {
 		final List<Reference> references = xAdESSignature.getReferences();
 
 		return references;
-	}
-
-	/**
-	 * Builds an intermediary signature, in order to retrieve references from it and subsequently generate the content timestamp
-	 *
-	 * @param signature the signature value to build upon
-	 * @return a signature structure containing the given signature value
-	 */
-	private byte[] buildIntermediarySignature(final byte[] signature) {
-
-		String signatureValue = new String(signature);
-		final String concatenatedSignature = begin + signatureValue + end;
-		LOG.trace("CONCATENATED SIGNATURE: " + concatenatedSignature);
-		return concatenatedSignature.getBytes();
 	}
 
 	/**

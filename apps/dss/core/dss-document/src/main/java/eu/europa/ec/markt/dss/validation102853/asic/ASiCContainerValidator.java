@@ -241,7 +241,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			getEntryElement(entryName, detachedContents, asicsInputStream);
 		} else {
 
-			System.out.println("unknown entry: " + entryName);
+			LOG.error("unknown entry: " + entryName);
 		}
 	}
 

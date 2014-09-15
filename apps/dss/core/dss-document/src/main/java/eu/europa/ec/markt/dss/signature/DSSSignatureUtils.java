@@ -92,7 +92,7 @@ public final class DSSSignatureUtils {
 		int ii = rLength;
 		for (; (ii > 0) && (asn1Bytes[(4 + rLength) - ii] == 0); ii--) {
 
-			System.out.println((4 + rLength) - ii + ": " + asn1Bytes[(4 + rLength) - ii]);
+//			System.out.println((4 + rLength) - ii + ": " + asn1Bytes[(4 + rLength) - ii]);
 		}
 
 		final byte sLength = asn1Bytes[5 + rLength];
