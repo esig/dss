@@ -26,7 +26,6 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,7 +34,6 @@ import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
@@ -94,7 +92,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		dssReference.setId("r-id-1");
 		dssReference.setUri("");
 		dssReference.setContents(detachedDocument);
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
+		dssReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
@@ -130,7 +128,9 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	protected DSSDocument canonicalizeReference(final DSSReference reference) {
 
 		final Document domDoc = DSSXMLUtils.buildDOM(reference.getContents());
-		removeExistingSignatures(domDoc);
+		if (!(this instanceof CounterSignatureBuilder)) {
+			removeExistingSignatures(domDoc);
+		}
 
 		byte[] canonicalizedBytes;
 		final String uri = reference.getUri();

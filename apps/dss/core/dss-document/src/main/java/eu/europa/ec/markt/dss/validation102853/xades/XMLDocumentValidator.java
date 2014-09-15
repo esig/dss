@@ -156,4 +156,10 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		return xadesSignatureScopeFinder;
 	}
 
+	/**
+	 * @return
+	 */
+	public Document getRootElement() {
+		return rootElement;
+	}
 }

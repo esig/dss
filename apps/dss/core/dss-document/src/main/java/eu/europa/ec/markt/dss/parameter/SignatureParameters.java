@@ -121,7 +121,7 @@ public class SignatureParameters {
 
 	private List<TimestampToken> contentTimestamps;
 
-	private XPathQueryHolder toCountersignXPathQueryHolder;
+	private XPathQueryHolder toCountersignXPathQueryHolder = new XPathQueryHolder();
 
 	public SignatureParameters() {
 

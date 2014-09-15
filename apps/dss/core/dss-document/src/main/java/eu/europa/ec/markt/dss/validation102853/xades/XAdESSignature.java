@@ -2045,6 +2045,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * // TODO (11/09/2014): to be deleted, eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature#getReferences() to be used
+	 *
 	 * @return
 	 */
 	public List<Element> getSignatureReferences() {
@@ -2085,5 +2086,23 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	public void addXPathQueryHolder(XPathQueryHolder xPathQueryHolder) {
 		xPathQueryHolders.add(xPathQueryHolder);
+	}
+
+	public Element getUnsignedSignaturePropertiesDom() {
+
+		final Element unsignedSignaturePropertiesDom = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+		return unsignedSignaturePropertiesDom;
+	}
+
+	public Element getUnsignedPropertiesDom() {
+
+		final Element unsignedPropertiesDom = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
+		return unsignedPropertiesDom;
+	}
+
+	public Element getQualifyingPropertiesDom() {
+
+		final Element qualifyingPropertiesDom = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES);
+		return qualifyingPropertiesDom;
 	}
 }
