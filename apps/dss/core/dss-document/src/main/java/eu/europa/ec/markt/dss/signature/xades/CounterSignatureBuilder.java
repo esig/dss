@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
+import eu.europa.ec.markt.dss.signature.FileDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -50,11 +51,20 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 public class CounterSignatureBuilder extends SignatureBuilder {
 
 	private Element toCounterSignSignatureElement;
+	private Element toCounterSignSignatureValueElement;
 	private Document toCounterSignDocument;
 	private String signatureValueId;
 
 	public CounterSignatureBuilder(final SignatureParameters parameters, final DSSDocument toCounterSignDocument) {
 		super(parameters, toCounterSignDocument);
+	}
+
+	public Element getToCounterSignSignatureValueElement() {
+		return toCounterSignSignatureValueElement;
+	}
+
+	public void setToCounterSignSignatureValueElement(Element toCounterSignSignatureValueElement) {
+		this.toCounterSignSignatureValueElement = toCounterSignSignatureValueElement;
 	}
 
 	public void setSignatureValueId(String signatureValueId) {
@@ -83,7 +93,9 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 
 	@Override
 	protected DSSDocument canonicalizeReference(DSSReference reference) {
-		return null;
+
+		byte[] toDigest = DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.INCLUSIVE, toCounterSignSignatureValueElement);
+		return new InMemoryDocument(toDigest);
 	}
 
 	@Override
@@ -93,6 +105,17 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 		deterministicId = params.getDeterministicId();
 		reference2CanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
 		signedInfoCanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+
+		DSSReference counterSignatureReference = new DSSReference();
+		counterSignatureReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
+		counterSignatureReference.setType(xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE);
+		counterSignatureReference.setUri("#" + signatureValueId);
+
+		DSSTransform dssTransform1 = new DSSTransform();
+		dssTransform1.setAlgorithm(HTTP_WWW_W3_ORG_TR_1999_REC_XPATH_19991116);
+		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		transforms.add(dssTransform1);
+		counterSignatureReference.setTransforms(transforms);
 
 		incorporateSignatureDom();
 		incorporateSignedInfo();
@@ -104,18 +127,6 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 
 		incorporateReference1();
 		incorporateReference2();
-
-		DSSReference counterSignatureReference = new DSSReference();
-		counterSignatureReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
-		counterSignatureReference.setType(xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE);
-		counterSignatureReference.setUri("#" + signatureValueId);
-
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(HTTP_WWW_W3_ORG_TR_1999_REC_XPATH_19991116);
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
-		transforms.add(dssTransform);
-
-		counterSignatureReference.setTransforms(transforms);
 
 		incorporateReference(counterSignatureReference);
 
@@ -147,12 +158,12 @@ public class CounterSignatureBuilder extends SignatureBuilder {
 			if (unsignedPropertiesDom == null) {
 
 				final Element qualifyingPropertiesDom = DSSXMLUtils.getElement(toCounterSignSignatureElement, xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES);
-				unsignedPropertiesDom = DSSXMLUtils.addElement(ownerDocument, qualifyingPropertiesDom, XMLSignature.XMLNS, DS_UNSIGNED_PROPERTIES);
+				unsignedPropertiesDom = DSSXMLUtils.addElement(ownerDocument, qualifyingPropertiesDom, XMLSignature.XMLNS, XADES_UNSIGNED_PROPERTIES);
 			}
-			unsignedSignaturePropertiesDom = DSSXMLUtils.addElement(ownerDocument, unsignedPropertiesDom, XMLSignature.XMLNS, DS_UNSIGNED_SIGNATURE_PROPERTIES);
+			unsignedSignaturePropertiesDom = DSSXMLUtils.addElement(ownerDocument, unsignedPropertiesDom, XMLSignature.XMLNS, XADES_UNSIGNED_SIGNATURE_PROPERTIES);
 		}
 
-		final Element counterSignatureElement = DSSXMLUtils.addElement(ownerDocument, unsignedSignaturePropertiesDom, XMLSignature.XMLNS, DS_COUNTER_SIGNATURE);
+		final Element counterSignatureElement = DSSXMLUtils.addElement(ownerDocument, unsignedSignaturePropertiesDom, XMLSignature.XMLNS, XADES_COUNTER_SIGNATURE);
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, counterSignatureValue);
 		final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);

@@ -66,6 +66,7 @@ public abstract class XAdESBuilder {
 
 	public static final String XADES_ALL_DATA_OBJECTS_TIME_STAMP = "xades:AllDataObjectsTimeStamp";
 	public static final String XADES_ALL_SIGNED_DATA_OBJECTS = "xades:AllSignedDataObjects";
+	public static final String XADES_COUNTER_SIGNATURE = "xades:CounterSignature";
 	public static final String XADES_CERT = "xades:Cert";
 	public static final String XADES_CERT_DIGEST = "xades:CertDigest";
 	public static final String XADES_CERTIFIED_ROLES = "xades:CertifiedRoles";
@@ -94,6 +95,8 @@ public abstract class XAdESBuilder {
 	public static final String XADES_SIGNED_DATA_OBJECT_PROPERTIES = "xades:SignedDataObjectProperties";
 	public static final String XADES_SIGNED_PROPERTIES = "xades:SignedProperties";
 	public static final String XADES_SIGNED_SIGNATURE_PROPERTIES = "xades:SignedSignatureProperties";
+	public static final String XADES_UNSIGNED_PROPERTIES = "xades:UnsignedProperties";
+	public static final String XADES_UNSIGNED_SIGNATURE_PROPERTIES = "xades:UnsignedSignatureProperties";
 	public static final String XADES_SIGNER_ROLE = "xades:SignerRole";
 	public static final String XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";
 	public static final String XADES_SIGNING_TIME = "xades:SigningTime";

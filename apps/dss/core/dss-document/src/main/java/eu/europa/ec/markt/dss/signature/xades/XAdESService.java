@@ -195,6 +195,7 @@ public class XAdESService extends AbstractSignatureService {
 
 		final CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(parameters, toCounterSignDocument);
 		counterSignatureBuilder.setToCounterSignSignatureElement(toSignSignatureElement);
+		counterSignatureBuilder.setToCounterSignSignatureValueElement(signatureValueElement);
 		counterSignatureBuilder.setParams(parameters);
 		counterSignatureBuilder.setToCounterSignDocument(toCounterSignDom);
 		counterSignatureBuilder.setSignatureValueId(signatureValueElement.getAttribute("Id"));
