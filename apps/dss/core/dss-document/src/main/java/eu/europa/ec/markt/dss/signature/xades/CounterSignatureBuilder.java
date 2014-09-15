@@ -61,7 +61,7 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 
 		DSSReference dssReference = new DSSReference();
 		dssReference.setId("cs-r-id-1");
-		dssReference.setUri("#" + params.getToCounterSignSignatureId());
+		dssReference.setUri("#" + params.getToCounterSignSignatureValueId());
 		dssReference.setType(xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE);
 		dssReference.setContents(detachedDocument);
 		dssReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());

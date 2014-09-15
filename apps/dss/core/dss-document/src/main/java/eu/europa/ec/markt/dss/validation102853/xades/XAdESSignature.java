@@ -153,14 +153,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT.
 		 * The BC provider must be previously added.
 		 */
-		final JCEMapper.Algorithm algorithm = new JCEMapper.Algorithm("", SignatureAlgorithm.ECDSA_RIPEMD160.getJCEId(), "Signature");
-		final String xmlId = SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
-		JCEMapper.register(xmlId, algorithm);
-		try {
-			org.apache.xml.security.algorithms.SignatureAlgorithm.register(xmlId, SignatureECDSARIPEMD160.class);
-		} catch (Exception e) {
-			LOG.error("ECDSA_RIPEMD160 algorithm initialisation failed.", e);
-		}
+//		final JCEMapper.Algorithm algorithm = new JCEMapper.Algorithm("", SignatureAlgorithm.ECDSA_RIPEMD160.getJCEId(), "Signature");
+//		final String xmlId = SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
+//		JCEMapper.register(xmlId, algorithm);
+//		try {
+//			org.apache.xml.security.algorithms.SignatureAlgorithm.register(xmlId, SignatureECDSARIPEMD160.class);
+//		} catch (Exception e) {
+//			LOG.error("ECDSA_RIPEMD160 algorithm initialisation failed.", e);
+//		}
 
 		/**
 		 * Adds the support of not standard algorithm name: http://www.w3.org/2001/04/xmldsig-more/rsa-ripemd160. Used by some AT signature providers.

@@ -35,91 +35,91 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
  */
 public class ProfileParameters {
 
-    private XAdESLevelBaselineB profile;
+	private XAdESLevelBaselineB profile;
 
-    /**
-     * Returns the current Profile used to generate the signature or its extension
-     *
-     * @return
-     */
-    public XAdESLevelBaselineB getProfile() {
+	/**
+	 * Returns the current Profile used to generate the signature or its extension
+	 *
+	 * @return
+	 */
+	public XAdESLevelBaselineB getProfile() {
 
-        return profile;
-    }
+		return profile;
+	}
 
-    /**
-     * Sets the current Profile used to generate the signature or its extension
-     *
-     * @return
-     */
-    public void setProfile(XAdESLevelBaselineB profile) {
+	/**
+	 * Sets the current Profile used to generate the signature or its extension
+	 *
+	 * @return
+	 */
+	public void setProfile(XAdESLevelBaselineB profile) {
 
-        this.profile = profile;
-    }
+		this.profile = profile;
+	}
 
-    /*
-     * The builder used to create the signature structure. Currently used only for XAdES.
-     */
-    private SignatureBuilder builder;
+	/*
+	 * The builder used to create the signature structure. Currently used only for XAdES.
+	 */
+	private SignatureBuilder builder;
 
-    public SignatureBuilder getBuilder() {
+	public SignatureBuilder getBuilder() {
 
-        return builder;
-    }
+		return builder;
+	}
 
-    public void setBuilder(SignatureBuilder builder) {
+	public void setBuilder(SignatureBuilder builder) {
 
-        this.builder = builder;
-    }
+		this.builder = builder;
+	}
 
-    /*
-     * The type of operation to perform.
-     */
-    public static enum Operation {
+	/*
+	 * The type of operation to perform.
+	 */
+	public static enum Operation {
 
-        SIGNING, EXTENDING, COUNTERSIGNING
-    }
+		SIGNING, EXTENDING
+	}
 
-    /*
-     * Indicates the type of the operation to be done
-     */ Operation operationKind;
+	/*
+	 * Indicates the type of the operation to be done
+	 */ Operation operationKind;
 
-    public Operation getOperationKind() {
+	public Operation getOperationKind() {
 
-        return operationKind;
-    }
+		return operationKind;
+	}
 
-    public void setOperationKind(Operation operationKind) {
+	public void setOperationKind(Operation operationKind) {
 
-        this.operationKind = operationKind;
-    }
+		this.operationKind = operationKind;
+	}
 
-    /*
-     * This is the underlying service used within the ASiC signature generation process.
-     */
-    private DocumentSignatureService underlyingASiCService;
+	/*
+	 * This is the underlying service used within the ASiC signature generation process.
+	 */
+	private DocumentSignatureService underlyingASiCService;
 
-    /**
-     * Returns the underlying {@code DocumentSignatureService} to use within the ASiC signature process.
-     *
-     * @param certificateVerifier the certificate verifier to use with the signature service.
-     * @param signatureForm       This is the form of the underlying ASiC signature. Only XAdES ans CAdES forms are acceptable.
-     * @return the underlying ASiC signature service.
-     */
-    public DocumentSignatureService getUnderlyingASiCService(final CertificateVerifier certificateVerifier, final SignatureForm signatureForm) {
+	/**
+	 * Returns the underlying {@code DocumentSignatureService} to use within the ASiC signature process.
+	 *
+	 * @param certificateVerifier the certificate verifier to use with the signature service.
+	 * @param signatureForm       This is the form of the underlying ASiC signature. Only XAdES ans CAdES forms are acceptable.
+	 * @return the underlying ASiC signature service.
+	 */
+	public DocumentSignatureService getUnderlyingASiCService(final CertificateVerifier certificateVerifier, final SignatureForm signatureForm) {
 
-        if (underlyingASiCService == null) {
+		if (underlyingASiCService == null) {
 
-            if (signatureForm == SignatureForm.XAdES) {
+			if (signatureForm == SignatureForm.XAdES) {
 
-                underlyingASiCService = new XAdESService(certificateVerifier);
-            } else if (signatureForm == SignatureForm.CAdES) {
+				underlyingASiCService = new XAdESService(certificateVerifier);
+			} else if (signatureForm == SignatureForm.CAdES) {
 
-                underlyingASiCService = new CAdESService(certificateVerifier);
-            } else {
-                throw new DSSException("Unsupported parameter value: only XAdES and CAdES forms are acceptable!");
-            }
-        }
-        return underlyingASiCService;
-    }
+				underlyingASiCService = new CAdESService(certificateVerifier);
+			} else {
+				throw new DSSException("Unsupported parameter value: only XAdES and CAdES forms are acceptable!");
+			}
+		}
+		return underlyingASiCService;
+	}
 }

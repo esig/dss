@@ -22,12 +22,11 @@ package eu.europa.ec.markt.dss.signature.xades;
 
 import java.util.List;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
 import org.apache.xml.security.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -199,20 +198,24 @@ public class XAdESService extends AbstractSignatureService {
 		if (xadesSignature == null) {
 			throw new DSSException("The signature to countersign not found!");
 		}
-		parameters.getContext().setOperationKind(Operation.COUNTERSIGNING);
-
 		final Node signatureValueNode = xadesSignature.getSignatureValue();
 		if (signatureValueNode == null) {
 			throw new DSSNullException(Node.class, "signature-value");
 		}
+		final String signatureValueId = DSSXMLUtils.getIDIdentifier((Element) signatureValueNode);
+		if (DSSUtils.isBlank(toCounterSignSignatureId)) {
+			throw new DSSException("There is no signature-value id to countersign!");
+		}
+		parameters.setToCounterSignSignatureValueId(signatureValueId);
+
+		final CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(toCounterSignDocument, xadesSignature, parameters);
+		final byte[] dataToSign = counterSignatureBuilder.build();
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		final DSSPrivateKeyEntry dssPrivateKeyEntry = parameters.getPrivateKeyEntry();
 
-		byte[] dataToSign = DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.INCLUSIVE, signatureValueNode);
 		byte[] counterSignatureValue = signingToken.sign(dataToSign, digestAlgorithm, dssPrivateKeyEntry);
 
-		final CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(toCounterSignDocument, xadesSignature, parameters);
 		final DSSDocument countersignatureDocument = counterSignatureBuilder.signDocument(counterSignatureValue);
 		final XMLDocumentValidator xmlDocumentValidator = (XMLDocumentValidator) validator;
 		final Document rootElement = xmlDocumentValidator.getRootElement();

@@ -122,6 +122,7 @@ public class SignatureParameters {
 	private List<TimestampToken> contentTimestamps;
 
 	private XPathQueryHolder toCountersignXPathQueryHolder = new XPathQueryHolder();
+	private String toCounterSignSignatureValueId;
 
 	public SignatureParameters() {
 
@@ -628,6 +629,14 @@ public class SignatureParameters {
 		this.toCountersignXPathQueryHolder = toCountersignXPathQueryHolder;
 	}
 
+	public String getToCounterSignSignatureValueId() {
+		return toCounterSignSignatureValueId;
+	}
+
+	public void setToCounterSignSignatureValueId(String toCounterSignSignatureValueId) {
+		this.toCounterSignSignatureValueId = toCounterSignSignatureValueId;
+	}
+
 	@Override
 	public String toString() {
 		return "SignatureParameters{" +
@@ -656,6 +665,4 @@ public class SignatureParameters {
 			  ", toCountersignXPathQueryHolder=" + toCountersignXPathQueryHolder.toString() +
 			  '}';
 	}
-
-
 }

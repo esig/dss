@@ -198,9 +198,9 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final Element signatureMethod = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, DS_SIGNATURE_METHOD);
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
-		final SignatureAlgorithm signatureAlgo = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
-		final String signatureAlgoXMLId = signatureAlgo.getXMLId();
-		signatureMethod.setAttribute("Algorithm", signatureAlgoXMLId);
+		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		final String signatureAlgorithmXMLId = signatureAlgorithm.getXMLId();
+		signatureMethod.setAttribute("Algorithm", signatureAlgorithmXMLId);
 	}
 
 	private void incorporateCanonicalizationMethod(final Element parentDom, final String signedInfoCanonicalizationMethod) {
