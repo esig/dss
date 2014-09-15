@@ -117,7 +117,8 @@ public class ASiCService extends AbstractSignatureService {
 
 		// toSignDocument can be a simple file or an ASiC container
 		final DSSDocument contextToSignDocument = prepare(toSignDocument, underlyingParameters);
-		parameters.aSiC().setEnclosedSignature(underlyingParameters.aSiC().getEnclosedSignature());
+		final ASiCParameters asicParameters = underlyingParameters.aSiC();
+		parameters.aSiC().setEnclosedSignature(asicParameters.getEnclosedSignature());
 		final DocumentSignatureService underlyingService = getSpecificService(underlyingParameters);
 		return underlyingService.getDataToSign(contextToSignDocument, underlyingParameters);
 	}
@@ -283,17 +284,16 @@ public class ASiCService extends AbstractSignatureService {
 
 	private void storeAsicManifest(final SignatureParameters underlyingParameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
 
-		final ASiCParameters asicParameters = underlyingParameters.aSiC();
-
 		final String asicManifestZipEntryName = "ASiCManifest001.xml";
 		final ZipEntry entrySignature = new ZipEntry(asicManifestZipEntryName);
 		createZipEntry(outZip, entrySignature);
 
-		buildAsicManifest(underlyingParameters, detachedDocument, outZip, asicParameters);
+		buildAsicManifest(underlyingParameters, detachedDocument, outZip);
 	}
 
-	private void buildAsicManifest(final SignatureParameters underlyingParameters, final DSSDocument detachedDocument, final OutputStream outputStream,
-	                               final ASiCParameters asicParameters) {
+	private void buildAsicManifest(final SignatureParameters underlyingParameters, final DSSDocument detachedDocument, final OutputStream outputStream) {
+
+		final ASiCParameters asicParameters = underlyingParameters.aSiC();
 
 		final Document documentDom = DSSXMLUtils.buildDOM();
 		final Element asicManifestDom = documentDom.createElementNS(ASICS_URI, "asic:ASiCManifest");
@@ -313,10 +313,13 @@ public class ASiCService extends AbstractSignatureService {
 			dataObjectReferenceDom.setAttribute("URI", detachedDocumentName);
 
 			final Element digestMethodDom = DSSXMLUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestMethod");
-			digestMethodDom.setAttribute("Algorithm", underlyingParameters.getDigestAlgorithm().getXmlId());
+			final DigestAlgorithm digestAlgorithm = underlyingParameters.getDigestAlgorithm();
+			digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getXmlId());
 
 			final Element digestValueDom = DSSXMLUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
-			final Text textNode = documentDom.createTextNode("XXX");
+			final byte[] digest = DSSUtils.digest(digestAlgorithm, currentDetachedDocument.getBytes());
+			final String base64Encoded = DSSUtils.base64Encode(digest);
+			final Text textNode = documentDom.createTextNode(base64Encoded);
 			digestValueDom.appendChild(textNode);
 
 			currentDetachedDocument = currentDetachedDocument.getNextDocument();
@@ -393,6 +396,15 @@ public class ASiCService extends AbstractSignatureService {
 			if (subordinatedValidator instanceof ASiCCMSDocumentValidator) {
 
 				contextToSignDocument = contextSignature;
+			}
+		} else {
+
+			final ASiCParameters asicParameters = underlyingParameters.aSiC();
+			if (isAsice(asicParameters) && isCAdESForm(asicParameters) && detachedDocument.getNextDocument() != null) {
+
+				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				buildAsicManifest(underlyingParameters, detachedDocument, outputStream);
+				contextToSignDocument = new InMemoryDocument(outputStream.toByteArray());
 			}
 		}
 		return contextToSignDocument;

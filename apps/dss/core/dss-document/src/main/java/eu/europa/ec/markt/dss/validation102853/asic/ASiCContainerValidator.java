@@ -358,7 +358,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	private static boolean isXAdES(final String entryName) {
 
-		final boolean signature = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signatures");
+		final boolean signature = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature");
 		return signature;
 	}
 
