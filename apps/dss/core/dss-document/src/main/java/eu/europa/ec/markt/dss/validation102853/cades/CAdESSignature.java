@@ -843,7 +843,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 						final ASN1Encodable objectAt = attributes.getObjectAt(ii);
 						final org.bouncycastle.asn1.x509.Attribute attribute = org.bouncycastle.asn1.x509.Attribute.getInstance(objectAt);
-						// System.out.println(attribute.getAttrType().getId());
 						final ASN1Set attrValues1 = attribute.getAttrValues();
 						DERSequence derSequence = (DERSequence) attrValues1.getObjectAt(0);
 						RoleSyntax roleSyntax = RoleSyntax.getInstance(derSequence);
