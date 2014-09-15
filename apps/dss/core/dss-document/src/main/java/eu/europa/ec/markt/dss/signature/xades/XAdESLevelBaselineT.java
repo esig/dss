@@ -250,17 +250,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:ArchiveTimeStamp");
 					timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
 					break;
-				case CONTENT_TIMESTAMP:
-					timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
-					break;
-				case ALL_DATA_OBJECTS_TIMESTAMP:
-					timeStampDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdESNamespaces.XAdES, "xades:AllDataObjectsTimeStamp");
-					timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
-					break;
-				case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-					timeStampDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdESNamespaces.XAdES, "xades:IndividualDataObjectsTimeStamp");
-					timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
-					break;
 			}
 
 			if (LOG.isInfoEnabled()) {
