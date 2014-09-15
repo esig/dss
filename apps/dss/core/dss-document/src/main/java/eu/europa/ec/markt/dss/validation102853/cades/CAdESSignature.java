@@ -843,7 +843,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 						final ASN1Encodable objectAt = attributes.getObjectAt(ii);
 						final org.bouncycastle.asn1.x509.Attribute attribute = org.bouncycastle.asn1.x509.Attribute.getInstance(objectAt);
-						// System.out.println(attribute.getAttrType().getId());
 						final ASN1Set attrValues1 = attribute.getAttrValues();
 						DERSequence derSequence = (DERSequence) attrValues1.getObjectAt(0);
 						RoleSyntax roleSyntax = RoleSyntax.getInstance(derSequence);
@@ -1021,6 +1020,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				final SignerId sid = signerInformation.getSID();
 				signerInformationToCheck = sp.getSignerInfos().get(sid);
 			}
+
 			final List<SigningCertificateValidity> signingCertificateValidityList;
 			if (providedSigningCertificateToken == null) {
 
@@ -1056,7 +1056,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					// TODO: (Bob: 2013 Dec 06) The BC does not implement if way indicated in ETSI 102853 the validation of the signature. Each time a problem is encountered an exception
 					// TODO: (Bob: 2013 Dec 06) is raised. Solution extract the BC method and adapt.
 					LOG.debug(" - WITH SIGNING CERTIFICATE: " + certificateToken.getAbbreviation());
-
 					boolean signatureIntact = signerInformationToCheck.verify(signerInformationVerifier);
 					signatureCryptographicVerification.setReferenceDataFound(signatureIntact);
 					signatureCryptographicVerification.setReferenceDataIntact(signatureIntact);
