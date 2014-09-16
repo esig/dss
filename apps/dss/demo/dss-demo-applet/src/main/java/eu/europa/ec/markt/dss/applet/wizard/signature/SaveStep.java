@@ -135,9 +135,12 @@ public class SaveStep extends WizardStep<SignatureModel, SignatureWizardControll
             return new File(parentDir, originalName + originalExtension + ".p7m");
         }
 
-        if (level.startsWith("ASIC")) {
-            return new File(parentDir, originalName + originalExtension + ".asics");
-        }
+	    if (level.startsWith("ASIC-S")) {
+		    return new File(parentDir, originalName + originalExtension + ".asics");
+	    }
+	    if (level.startsWith("ASIC-E")) {
+		    return new File(parentDir, originalName + originalExtension + ".asice");
+	    }
 
         return new File(parentDir, originalName + "-signed" + originalExtension);
 

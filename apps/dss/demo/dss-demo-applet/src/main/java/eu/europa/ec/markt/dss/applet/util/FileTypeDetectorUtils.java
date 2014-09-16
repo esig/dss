@@ -32,125 +32,126 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.applet.main.FileType;
 
 /**
- * 
  * TODO
- * 
- * <p>
+ * <p/>
+ * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
- * 
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
+ *
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
+ * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
  */
 public final class FileTypeDetectorUtils {
-   /**
-    * 
-    * @param file
-    * @return
-    * @throws IOException
-    */
-   private static String extractPreambleString(final File file) throws IOException {
+	/**
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private static String extractPreambleString(final File file) throws IOException {
 
-      FileInputStream inputStream = null;
+		FileInputStream inputStream = null;
 
-      try {
-         inputStream = new FileInputStream(file);
+		try {
+			inputStream = new FileInputStream(file);
 
-         final byte[] preamble = new byte[5];
-         final int read = inputStream.read(preamble);
-         if (read < 5) {
-            throw new RuntimeException();
-         }
+			final byte[] preamble = new byte[5];
+			final int read = inputStream.read(preamble);
+			if (read < 5) {
+				throw new RuntimeException();
+			}
 
-         return new String(preamble);
-      } finally {
-          DSSUtils.closeQuietly(inputStream);
-      }
-   }
+			return new String(preamble);
+		} finally {
+			DSSUtils.closeQuietly(inputStream);
+		}
+	}
 
-   private static boolean isASiC(final File file) {
-      return file.getName().toLowerCase().endsWith(".asics");
-   }
+	private static boolean isASiCS(final File file) {
+		return file.getName().toLowerCase().endsWith(".asics");
+	}
 
-   /**
-    * 
-    * @param file
-    * @return
-    * @throws FileNotFoundException
-    */
-   private static boolean isCMS(final File file) throws FileNotFoundException {
-      FileInputStream inputStream = null;
+	private static boolean isASiCE(final File file) {
+		return file.getName().toLowerCase().endsWith(".asice");
+	}
 
-      try {
-         inputStream = new FileInputStream(file);
-         new CMSSignedData(inputStream);
-         return true;
-      } catch (final CMSException e) {
-         return false;
-      } finally {
-          DSSUtils.closeQuietly(inputStream);
-      }
-   }
+	/**
+	 * @param file
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	private static boolean isCMS(final File file) throws FileNotFoundException {
+		FileInputStream inputStream = null;
 
-   /**
-    * 
-    * @param preamble
-    * @return
-    */
-   private static boolean isPDF(final String preamble) {
-      return preamble.equals("%PDF-");
-   }
+		try {
+			inputStream = new FileInputStream(file);
+			new CMSSignedData(inputStream);
+			return true;
+		} catch (final CMSException e) {
+			return false;
+		} finally {
+			DSSUtils.closeQuietly(inputStream);
+		}
+	}
 
-   /**
-    * 
-    * @param preamble
-    * @return
-    */
-   private static boolean isXML(final String preamble) {
-      return preamble.equals("<?xml");
-   }
+	/**
+	 * @param preamble
+	 * @return
+	 */
+	private static boolean isPDF(final String preamble) {
+		return preamble.equals("%PDF-");
+	}
 
-   /**
-    * 
-    * @param file
-    * @return
-    */
-   public static FileType resolveFiletype(final File file) {
+	/**
+	 * @param preamble
+	 * @return
+	 */
+	private static boolean isXML(final String preamble) {
+		return preamble.equals("<?xml");
+	}
 
-      try {
-         final String preamble = extractPreambleString(file);
+	/**
+	 * @param file
+	 * @return
+	 */
+	public static FileType resolveFiletype(final File file) {
 
-         // XML
-         if (isXML(preamble)) {
-            return FileType.XML;
-         }
-         // PDF
-         if (isPDF(preamble)) {
-            return FileType.PDF;
-         }
+		try {
+			final String preamble = extractPreambleString(file);
 
-         if (isASiC(file)) {
-            return FileType.ASiCS;
-         }
+			// XML
+			if (isXML(preamble)) {
+				return FileType.XML;
+			}
+			// PDF
+			if (isPDF(preamble)) {
+				return FileType.PDF;
+			}
 
-         try {
-            if (isCMS(file)) {
-               return FileType.CMS;
-            }
-            return FileType.BINARY;
-         } catch (final Exception e) {
-            return FileType.BINARY;
-         }
+			if (isASiCS(file)) {
+				return FileType.ASiCS;
+			}
 
-      } catch (final IOException e) {
-         throw new RuntimeException("Cannot determine the mime/type", e);
-      }
-   }
+			if (isASiCE(file)) {
+				return FileType.ASiCE;
+			}
 
-   /**
-    * 
-    * The default constructor for FileTypeDetectorUtils.
-    */
-   private FileTypeDetectorUtils() {
+			try {
+				if (isCMS(file)) {
+					return FileType.CMS;
+				}
+				return FileType.BINARY;
+			} catch (final Exception e) {
+				return FileType.BINARY;
+			}
 
-   }
+		} catch (final IOException e) {
+			throw new RuntimeException("Cannot determine the mime/type", e);
+		}
+	}
+
+	/**
+	 * The default constructor for FileTypeDetectorUtils.
+	 */
+	private FileTypeDetectorUtils() {
+
+	}
 }

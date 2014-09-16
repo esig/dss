@@ -29,6 +29,6 @@ package eu.europa.ec.markt.dss.applet.main;
 
 public enum FileType {
 
-    XML, PDF, CMS, BINARY, ASiCS;
+    XML, PDF, CMS, BINARY, ASiCS, ASiCE;
 
 }

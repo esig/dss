@@ -24,6 +24,6 @@ public interface FormatType {
     public static final String CADES = "CAdES";
     public static final String XADES = "XAdES";
     public static final String PADES = "PAdES";
-    public static final String ASICS = "ASiC-S";
-
+	public static final String ASICS = "ASiC-S";
+	public static final String ASICE = "ASiC-E";
 }
