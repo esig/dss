@@ -41,7 +41,7 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.bouncycastle</groupId>
-									<artifactId>bcprov-debug-jdk15on</artifactId>
+									<artifactId>bcprov-jdk15on</artifactId>
 									<type>jar</type>
 									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
 									<destFileName>/jar/bcprov-jdk15on.jar</destFileName>
@@ -165,7 +165,6 @@
 			<artifactId>dss-demo-applet-package</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
