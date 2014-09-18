@@ -62,9 +62,9 @@ public class TimestampService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampService.class);
 
-	private TSPSource tspSource;
-	private CertificatePool certificatePool;
-	private XPathQueryHolder xPathQueryHolder;
+	private final TSPSource tspSource;
+	private final CertificatePool certificatePool;
+	private final XPathQueryHolder xPathQueryHolder;
 	private final CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier(true);
 
 
@@ -155,11 +155,8 @@ public class TimestampService {
 		//2. Build temporary signature structure
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(commonCertificateVerifier);
 
-
 		byte[] signatureValueBytes = DSSUtils.base64Decode(fakeSignatureValue);
 		final DSSDocument fullSignature = levelBaselineB.signDocument(toSignDocument, signatureParameters, signatureValueBytes);
-
-		//		System.out.println(new String(fullSignature.getBytes()));
 
 		final List<Reference> references = getReferencesFromValidatedSignature(toSignDocument, fullSignature);
 
@@ -185,7 +182,7 @@ public class TimestampService {
 	private byte[] concatenateReferencesAsByteArray(final List<Reference> references) {
 
 		LOG.debug("Building ContentTimestamp - Concatenating references...");
-		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
 		for (final Reference reference : references) {
 			//References of type "SignedProperties" are excluded
@@ -252,7 +249,7 @@ public class TimestampService {
 			LOG.trace("Digest to timestamp: " + DSSUtils.base64Encode(digest));
 		}
 		final TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digest);
-		TimestampToken token = new TimestampToken(timeStampResponse, timestampType, certificatePool);
+		final TimestampToken token = new TimestampToken(timeStampResponse, timestampType, certificatePool);
 
 		token.setCanonicalizationMethod(contentTimestampParameters.getCanonicalizationMethod());
 
@@ -288,9 +285,9 @@ public class TimestampService {
 	 */
 	private SignedDocumentValidator validateTemporarySignature(final DSSDocument toSignDocument, final DSSDocument signature) {
 
-		SignedDocumentValidator validator = XMLDocumentValidator.fromDocument(signature);
+		final SignedDocumentValidator validator = XMLDocumentValidator.fromDocument(signature);
 		validator.setCertificateVerifier(commonCertificateVerifier);
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		final List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(toSignDocument);
 		validator.setDetachedContents(detachedContents);
 
