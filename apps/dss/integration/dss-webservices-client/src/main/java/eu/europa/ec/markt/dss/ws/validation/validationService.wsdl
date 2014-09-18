@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="ValidationService" targetNamespace="http://impl.ws.dss.markt.ec.europa.eu/" xmlns:ns1="http://ws.dss.markt.ec.europa.eu/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://impl.ws.dss.markt.ec.europa.eu/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://impl.ws.dss.markt.ec.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://ws.dss.markt.ec.europa.eu/" name="ValidationService" targetNamespace="http://impl.ws.dss.markt.ec.europa.eu/">
   <wsdl:import location="http://localhost:8080/dss-webapp/wservice/validationService?wsdl=ValidationService.wsdl" namespace="http://ws.dss.markt.ec.europa.eu/">
     </wsdl:import>
   <wsdl:binding name="ValidationServiceSoapBinding" type="ns1:ValidationService">
