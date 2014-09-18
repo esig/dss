@@ -284,11 +284,9 @@ public class TimestampService {
 	/**
 	 * @param toSignDocument
 	 * @param signature
-	 * @param commonCertificateVerifier
 	 * @return
 	 */
-	private SignedDocumentValidator validateTemporarySignature(final DSSDocument toSignDocument, final DSSDocument signature,
-	                                                           final CommonCertificateVerifier commonCertificateVerifier) {
+	private SignedDocumentValidator validateTemporarySignature(final DSSDocument toSignDocument, final DSSDocument signature) {
 
 		SignedDocumentValidator validator = XMLDocumentValidator.fromDocument(signature);
 		validator.setCertificateVerifier(commonCertificateVerifier);
@@ -308,7 +306,7 @@ public class TimestampService {
 	 */
 	private List<Reference> getReferencesFromValidatedSignature(final DSSDocument toSignDocument, final DSSDocument signature) {
 
-		final SignedDocumentValidator validator = validateTemporarySignature(toSignDocument, signature, commonCertificateVerifier);
+		final SignedDocumentValidator validator = validateTemporarySignature(toSignDocument, signature);
 		// validator.validateDocument();
 		final List<AdvancedSignature> signatures = validator.getSignatures();
 		final XAdESSignature xAdESSignature = (XAdESSignature) signatures.get(0);
@@ -325,9 +323,9 @@ public class TimestampService {
 	 * @param token      the timestamp token to which the includes must be added
 	 * @return the updated Timestamp token, containing the set of Includes
 	 */
-	private TimestampToken addTimestampTokenIncludes(List<DSSReference> references, TimestampToken token) {
+	private TimestampToken addTimestampTokenIncludes(final List<DSSReference> references, final TimestampToken token) {
 
-		List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
+		final List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
 		for (DSSReference reference : references) {
 
 			TimestampInclude include = new TimestampInclude(reference.getUri(), "true");
