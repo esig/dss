@@ -677,6 +677,7 @@ public final class DSSXMLUtils {
 
 			final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			final Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.ENCODING, documentDom.getXmlEncoding());
 			final DOMSource source = new DOMSource(documentDom);
 
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -805,13 +806,13 @@ public final class DSSXMLUtils {
 	 * This method retrieves an element based on its ID
 	 *
 	 * @param currentDom the DOM in which the element has to be retrieved
-	 * @param elementId the specified ID
-	 * @param namespace the namespace to take into account
-	 * @param tagName the tagName of the element to find
+	 * @param elementId  the specified ID
+	 * @param namespace  the namespace to take into account
+	 * @param tagName    the tagName of the element to find
 	 * @return the
 	 * @throws DSSNullException
 	 */
-	public static Element getElementById (Document currentDom, String elementId, String namespace, String tagName) throws DSSNullException {
+	public static Element getElementById(Document currentDom, String elementId, String namespace, String tagName) throws DSSNullException {
 
 		Element element = null;
 		NodeList nodes = currentDom.getElementsByTagNameNS(namespace, tagName);
@@ -830,6 +831,7 @@ public final class DSSXMLUtils {
 
 	/**
 	 * This method enables a user to add a specific namespace + corresponding prefix
+	 *
 	 * @param namespace a {@code HashMap} containing the additional namespace, with the prefix as key and the namespace URI as value
 	 */
 	public static void addNamespace(HashMap<String, String> namespace) {
