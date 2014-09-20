@@ -91,7 +91,7 @@ public class TimestampToken extends Token {
 	private int hashCode;
 
 	/**
-	 * Constructor with an indication of the time-stamp type The default constructor for TimestampToken.
+	 * Constructor with an indication of the time-stamp type. The default constructor for TimestampToken.
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
 
