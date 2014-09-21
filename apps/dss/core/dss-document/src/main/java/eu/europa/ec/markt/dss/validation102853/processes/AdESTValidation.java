@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.validation102853.TimestampToken;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -824,7 +822,6 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 				timestamps.remove(index);
 			}
 		}
-
 		Date latestContent = getLatestTimestampProductionDate(timestamps, TimestampType.CONTENT_TIMESTAMP);
 		Date latestContent_ = getLatestTimestampProductionDate(timestamps, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 		latestContent = getLatestDate(latestContent, latestContent_);
@@ -834,43 +831,43 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		final Date earliestSignature = getEarliestTimestampProductionTime(timestamps, TimestampType.SIGNATURE_TIMESTAMP);
 		final Date latestSignature = getLatestTimestampProductionDate(timestamps, TimestampType.SIGNATURE_TIMESTAMP);
 
-//		Date earliestValidationData = getEarliestTimestampProductionTime(timestamps, TimestampType.VALIDATION_DATA_TIMESTAMP);
-//		final Date earliestValidationData_ = getEarliestTimestampProductionTime(timestamps, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
-//		earliestValidationData = getEarliestDate(earliestValidationData, earliestValidationData_);
+		Date earliestValidationData = getEarliestTimestampProductionTime(timestamps, TimestampType.VALIDATION_DATA_TIMESTAMP);
+		final Date earliestValidationData_ = getEarliestTimestampProductionTime(timestamps, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+		earliestValidationData = getEarliestDate(earliestValidationData, earliestValidationData_);
 
-//		final Date earliestArchive = getEarliestTimestampProductionTime(timestamps, TimestampType.ARCHIVE_TIMESTAMP);
+		final Date earliestArchive = getEarliestTimestampProductionTime(timestamps, TimestampType.ARCHIVE_TIMESTAMP);
 
-//		Date latestValidationData = getLatestTimestampProductionDate(timestamps, TimestampType.VALIDATION_DATA_TIMESTAMP);
-//		final Date latestValidationData_ = getLatestTimestampProductionDate(timestamps, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
-//		latestValidationData = getLatestDate(latestValidationData, latestValidationData_);
+		Date latestValidationData = getLatestTimestampProductionDate(timestamps, TimestampType.VALIDATION_DATA_TIMESTAMP);
+		final Date latestValidationData_ = getLatestTimestampProductionDate(timestamps, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+		latestValidationData = getLatestDate(latestValidationData, latestValidationData_);
 
-//		if (latestContent == null && earliestSignature == null && earliestValidationData == null && earliestArchive == null) {
-//			return true;
-//		}
+		if (latestContent == null && earliestSignature == null && earliestValidationData == null && earliestArchive == null) {
+			return true;
+		}
 		boolean ok = true;
 
-//		if (earliestSignature == null && (earliestValidationData != null || earliestArchive != null)) {
-//			ok = false;
-//		}
+		if (earliestSignature == null && (earliestValidationData != null || earliestArchive != null)) {
+			ok = false;
+		}
 
 		// Check content-timestamp against-signature timestamp
 		if (latestContent != null && earliestSignature != null) {
-			ok = ok && (latestContent.compareTo(earliestSignature) <= 0);
+			ok = ok && latestContent.before(earliestSignature);
 		}
 
-//		// Check signature-timestamp against validation-data and validation-data-refs-only timestamp
-//		if (latestSignature != null && earliestValidationData != null) {
-//			ok = ok && (latestSignature.compareTo(earliestValidationData) <= 0);
-//		}
+		// Check signature-timestamp against validation-data and validation-data-refs-only timestamp
+		if (latestSignature != null && earliestValidationData != null) {
+			ok = ok && latestSignature.before(earliestValidationData);
+		}
 
-//		// Check archive-timestamp
-//		if (latestSignature != null && earliestArchive != null) {
-//			ok = ok && (earliestArchive.compareTo(latestSignature) <= 0);
-//		}
-//
-//		if (latestValidationData != null && earliestArchive != null) {
-//			ok = ok && (earliestArchive.compareTo(latestValidationData) <= 0);
-//		}
+		// Check archive-timestamp
+		if (latestSignature != null && earliestArchive != null) {
+			ok = ok && earliestArchive.after(latestSignature);
+		}
+
+		if (latestValidationData != null && earliestArchive != null) {
+			ok = ok && earliestArchive.after(latestValidationData);
+		}
 
 		constraint.create(signatureXmlNode, TSV_ASTPTCT);
 		constraint.setIndications(INVALID, TIMESTAMP_ORDER_FAILURE, TSV_ASTPTCT_ANS);
