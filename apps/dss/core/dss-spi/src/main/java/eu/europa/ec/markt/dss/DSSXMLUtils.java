@@ -677,7 +677,10 @@ public final class DSSXMLUtils {
 
 			final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			final Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.ENCODING, documentDom.getXmlEncoding());
+			final String xmlEncoding = documentDom.getXmlEncoding();
+			if (DSSUtils.isNotBlank(xmlEncoding)) {
+				transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
+			}
 			final DOMSource source = new DOMSource(documentDom);
 
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
