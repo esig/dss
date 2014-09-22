@@ -262,7 +262,7 @@ public class ASiCService extends AbstractSignatureService {
 
 		final ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
 		ZipOutputStream zipOutputStream = new ZipOutputStream(outBytes);
-		if (isAsice(asicParameters) && asicParameters.getEnclosedSignature() != null) {
+		if (isXAdESForm(asicParameters) && isAsice(asicParameters) && asicParameters.getEnclosedSignature() != null) {
 
 			copyZipContent(toSignAsicContainer, zipOutputStream);
 		} else {
