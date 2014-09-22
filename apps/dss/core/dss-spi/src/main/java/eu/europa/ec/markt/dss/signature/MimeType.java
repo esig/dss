@@ -56,6 +56,7 @@ public enum MimeType {
 		put("asics", ASICS);
 		put("scs", ASICS);
 		put("asice", ASICE);
+		put("bdoc", ASICE);
 		put("sce", ASICE);
 		put("txt", TEXT);
 	}};
