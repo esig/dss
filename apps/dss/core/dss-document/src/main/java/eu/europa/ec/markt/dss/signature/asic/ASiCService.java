@@ -96,8 +96,8 @@ public class ASiCService extends AbstractSignatureService {
 
 	private final static String ASICS_EXTENSION = ".asics"; // can be ".scs"
 	private final static String ASICE_EXTENSION = ".asice"; // can be ".sce"
-	private final static String ASICS_NS = "asic:XAdESSignatures";
-	private final static String ASICS_URI = "http://uri.etsi.org/02918/v1.2.1#";
+	public final static String ASICS_NS = "asic:XAdESSignatures";
+	public final static String ASICS_URI = "http://uri.etsi.org/02918/v1.2.1#";
 
 	/**
 	 * This is the constructor to create an instance of the {@code ASiCService}. A certificate verifier must be provided.
@@ -177,8 +177,7 @@ public class ASiCService extends AbstractSignatureService {
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		final DSSPrivateKeyEntry privateKeyEntry = parameters.getPrivateKeyEntry();
 		final byte[] signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKeyEntry);
-		final DSSDocument dssDocument = signDocument(toSignDocument, parameters, signatureValue);
-		return dssDocument;
+    return signDocument(toSignDocument, parameters, signatureValue);
 	}
 
 	@Override
@@ -251,7 +250,7 @@ public class ASiCService extends AbstractSignatureService {
 		return null;
 	}
 
-	private InMemoryDocument buildASiCContainer(final SignatureParameters underlyingParameters, final DSSDocument signature) {
+	public InMemoryDocument buildASiCContainer(final SignatureParameters underlyingParameters, final DSSDocument signature) {
 
 		final DSSDocument detachedDocument = underlyingParameters.getDetachedContent();
 
@@ -260,7 +259,9 @@ public class ASiCService extends AbstractSignatureService {
 		final ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
 		final ZipOutputStream outZip = new ZipOutputStream(outBytes);
 
-		final MimeType signedFileMimeType = detachedDocument.getMimeType();
+    //TODO find by container type
+    final MimeType signedFileMimeType = MimeType.ASICE;
+    //final MimeType signedFileMimeType = detachedDocument.getMimeType();
 
 		final String toSignDocumentName = detachedDocument.getName();
 
@@ -275,14 +276,32 @@ public class ASiCService extends AbstractSignatureService {
 		if (isAsics(asicParameters) && isCAdESForm(asicParameters)) {
 			storeAsicManifest(underlyingParameters, detachedDocument, outZip);
 		}
+    else if(isAsice(asicParameters) && isXAdESForm(asicParameters)) {
+      storeManifest(detachedDocument, outZip);
+    }
+
 		DSSUtils.close(outZip);
 
 		// return the new toSignDocument = ASiC-S
-		final InMemoryDocument asicContainer = createASiCContainer(asicParameters, outBytes, toSignDocumentName);
-		return asicContainer;
+    return createASiCContainer(asicParameters, outBytes, toSignDocumentName);
 	}
 
-	private void storeAsicManifest(final SignatureParameters underlyingParameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
+  private void storeManifest(DSSDocument document, ZipOutputStream outZip) {
+    Manifest manifest = new Manifest();
+    manifest.addFileEntry(document);
+    try {
+      outZip.putNextEntry(new ZipEntry("META-INF/manifest.xml"));
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      manifest.save(out);
+      outZip.write(out.toByteArray());
+    } catch (IOException e) {
+      LOG.error(e.getMessage());
+      throw new DSSException(e);
+    }
+  }
+
+
+  private void storeAsicManifest(final SignatureParameters underlyingParameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
 
 		final String asicManifestZipEntryName = "ASiCManifest001.xml";
 		final ZipEntry entrySignature = new ZipEntry(asicManifestZipEntryName);
@@ -411,9 +430,7 @@ public class ASiCService extends AbstractSignatureService {
 	}
 
 	private boolean isAsicValidator(final DocumentValidator asicValidator) {
-
-		final boolean result = asicValidator != null && (asicValidator instanceof ASiCContainerValidator);
-		return result;
+    return asicValidator != null && (asicValidator instanceof ASiCContainerValidator);
 	}
 
 	private static ZipEntry getNextZipEntry(final ZipInputStream zipInputStream) throws DSSException {
@@ -651,7 +668,7 @@ public class ASiCService extends AbstractSignatureService {
 	 * This method returns the specific service associated with the container: XAdES or CAdES.
 	 *
 	 * @param specificParameters {@code DocumentSignatureService}
-	 * @return
+	 * @return service
 	 */
 	protected DocumentSignatureService getSpecificService(final SignatureParameters specificParameters) {
 
