@@ -434,7 +434,8 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	@Override
 	public Reports validateDocument(final Document validationPolicyDom) {
 
-		Reports reports = null;
+		Reports lastReports = null;
+		Reports firstReport = null;
 		DocumentValidator currentSubordinatedValidator = subordinatedValidator;
 		do {
 
@@ -442,14 +443,15 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			currentSubordinatedValidator.setDetachedContents(detachedContents);
 			currentSubordinatedValidator.setCertificateVerifier(certificateVerifier);
 			final Reports currentReports = currentSubordinatedValidator.validateDocument(validationPolicyDom);
-			if (reports == null) {
-				reports = currentReports;
+			if (lastReports == null) {
+				firstReport = currentReports;
 			} else {
-				reports.setNextReport(currentReports);
+				lastReports.setNextReport(currentReports);
 			}
+			lastReports = currentReports;
 			currentSubordinatedValidator = currentSubordinatedValidator.getNextValidator();
 		} while (currentSubordinatedValidator != null);
-		return reports;
+		return firstReport;
 	}
 
 	@Override
