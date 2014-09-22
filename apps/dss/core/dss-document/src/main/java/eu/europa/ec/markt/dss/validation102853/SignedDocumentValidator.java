@@ -157,7 +157,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * In case of a detached signature this {@code List} contains the signed documents.
 	 */
-	protected List<DSSDocument> detachedContents;
+	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();;
 
 	protected CertificateToken providedSigningCertificateToken = null;
 
@@ -220,7 +220,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			// TODO (29/08/2014): DSS-356
 			return new PDFDocumentValidator(dssDocument);
 		} else if (preamble[0] == 'P' && preamble[1] == 'K') {
-
 			return ASiCContainerValidator.getInstanceForAsics(dssDocument, preamble);
 		} else if (preambleString.getBytes()[0] == 0x30) {
 
