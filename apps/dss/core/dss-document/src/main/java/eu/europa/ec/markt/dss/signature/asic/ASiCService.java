@@ -399,23 +399,30 @@ public class ASiCService extends AbstractSignatureService {
 
 		// detachedDocument can be a simple file or an ASiC container
 		DSSDocument contextToSignDocument = detachedDocument;
+		final ASiCParameters asicParameters = underlyingParameters.aSiC();
+		final boolean asice = isAsice(asicParameters);
 		final DocumentValidator validator = getAsicValidator(detachedDocument);
-		underlyingParameters.setDetachedContent(contextToSignDocument);
 		if (isAsicValidator(validator)) {
 
 			// This is already an existing ASiC container; a new signature should be added.
 			final DocumentValidator subordinatedValidator = validator.getSubordinatedValidator();
-			contextToSignDocument = copyDetachedContent(underlyingParameters, subordinatedValidator);
+			if (asice) {
+
+				contextToSignDocument = underlyingParameters.getDetachedContent();
+			} else {
+
+				contextToSignDocument = copyDetachedContent(underlyingParameters, subordinatedValidator);
+			}
 			final DSSDocument contextSignature = subordinatedValidator.getDocument();
 			underlyingParameters.aSiC().setEnclosedSignature(contextSignature);
-			if (subordinatedValidator instanceof ASiCCMSDocumentValidator) {
+			if (!asice && subordinatedValidator instanceof ASiCCMSDocumentValidator) {
 
 				contextToSignDocument = contextSignature;
 			}
 		} else {
 
-			final ASiCParameters asicParameters = underlyingParameters.aSiC();
-			if (isAsice(asicParameters) && isCAdESForm(asicParameters) && detachedDocument.getNextDocument() != null) {
+			underlyingParameters.setDetachedContent(contextToSignDocument);
+			if (asice && isCAdESForm(asicParameters) && detachedDocument.getNextDocument() != null) {
 
 				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				buildAsicManifest(underlyingParameters, detachedDocument, outputStream);
