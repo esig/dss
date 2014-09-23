@@ -262,7 +262,7 @@ public class ASiCService extends AbstractSignatureService {
 
 		final ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
 		ZipOutputStream zipOutputStream = new ZipOutputStream(outBytes);
-		if (isXAdESForm(asicParameters) && isAsice(asicParameters) && asicParameters.getEnclosedSignature() != null) {
+		if (isAsice(asicParameters) && asicParameters.getEnclosedSignature() != null) {
 
 			copyZipContent(toSignAsicContainer, zipOutputStream);
 		} else {
@@ -536,9 +536,9 @@ public class ASiCService extends AbstractSignatureService {
 	private String getSignatureFileName(final ASiCParameters asicParameters) {
 
 		final boolean asics = isAsics(asicParameters);
+		final DSSDocument enclosedSignature = asicParameters.getEnclosedSignature();
 		if (isXAdESForm(asicParameters)) {
 
-			final DSSDocument enclosedSignature = asicParameters.getEnclosedSignature();
 			if (!asics && enclosedSignature != null) {
 
 				return META_INF + asicParameters.getSignatureFileName();
@@ -548,7 +548,13 @@ public class ASiCService extends AbstractSignatureService {
 			}
 		} else if (isCAdESForm(asicParameters)) {
 
-			return asics ? ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE : ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE;
+			if (!asics && enclosedSignature != null) {
+
+				return META_INF + asicParameters.getSignatureFileName();
+			} else {
+
+				return asics ? ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE : ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE;
+			}
 		} else {
 
 			throw new DSSException("ASiC signature form must be XAdES or CAdES!");
