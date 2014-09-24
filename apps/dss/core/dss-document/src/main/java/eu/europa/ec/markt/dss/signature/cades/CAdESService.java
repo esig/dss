@@ -21,7 +21,7 @@
 package eu.europa.ec.markt.dss.signature.cades;
 
 import java.io.InputStream;
-import org.bouncycastle.asn1.cms.SignerInfo;
+
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -31,7 +31,6 @@ import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.operator.ContentSigner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,6 @@ import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import org.w3c.dom.css.Counter;
 
 /**
  * CAdES implementation of DocumentSignatureService
@@ -218,9 +216,10 @@ public class CAdESService extends AbstractSignatureService {
 	 */
 	private DSSDocument getToSignData(final DSSDocument toSignDocument, final SignatureParameters parameters, final CMSSignedData originalCmsSignedData) {
 
-		if (parameters.getDetachedContent() != null) {
+		final DSSDocument detachedContent = parameters.getDetachedContent();
+		if (detachedContent != null) {
 
-			return parameters.getDetachedContent();
+			return detachedContent;
 		} else {
 
 			if (originalCmsSignedData == null) {

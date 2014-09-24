@@ -56,6 +56,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.validation102853.asic.ASiCContainerValidator;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
@@ -199,7 +200,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
 
 		final String dssDocumentName = dssDocument.getName();
-		if (dssDocumentName != null && dssDocumentName.toLowerCase().endsWith(".xml")) {
+		if (dssDocumentName != null && MimeType.XML.equals(MimeType.fromFileName(dssDocumentName))) {
 
 			return new XMLDocumentValidator(dssDocument);
 		}
