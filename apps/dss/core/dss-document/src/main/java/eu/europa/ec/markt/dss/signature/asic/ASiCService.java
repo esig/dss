@@ -253,7 +253,7 @@ public class ASiCService extends AbstractSignatureService {
 		return null;
 	}
 
-	private InMemoryDocument buildASiCContainer(final DSSDocument toSignAsicContainer, final SignatureParameters underlyingParameters, final DSSDocument signature) {
+	public InMemoryDocument buildASiCContainer(final DSSDocument toSignAsicContainer, final SignatureParameters underlyingParameters, final DSSDocument signature) {
 
 		final DSSDocument detachedDocument = underlyingParameters.getDetachedContent();
 		final String toSignDocumentName = detachedDocument.getName();
@@ -262,8 +262,8 @@ public class ASiCService extends AbstractSignatureService {
 
 		final ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
 		ZipOutputStream zipOutputStream = new ZipOutputStream(outBytes);
-		if (isXAdESForm(asicParameters) && isAsice(asicParameters) && asicParameters.getEnclosedSignature() != null) {
 
+    if (isXAdESForm(asicParameters) && isAsice(asicParameters) && asicParameters.getEnclosedSignature() != null) {
 			copyZipContent(toSignAsicContainer, zipOutputStream);
 		} else {
       //TODO find by container type
@@ -292,12 +292,15 @@ public class ASiCService extends AbstractSignatureService {
 
 	private void copyZipContent(DSSDocument toSignAsicContainer, ZipOutputStream zipOutputStream) {
 		final ZipInputStream zipInputStream = new ZipInputStream(toSignAsicContainer.openStream());
-		for (ZipEntry entry = getNextZipEntry(zipInputStream); entry != null; entry = getNextZipEntry(zipInputStream)) {
 
-			createZipEntry(zipOutputStream, entry);
-			DSSUtils.copy(zipInputStream, zipOutputStream);
+    for (ZipEntry entry = getNextZipEntry(zipInputStream); entry != null; entry = getNextZipEntry(zipInputStream)) {
+      if(entry.getName().equals("META-INF/manifest.xml"))
+        continue;
+      createZipEntry(zipOutputStream, entry);
+      DSSUtils.copy(zipInputStream, zipOutputStream);
 		}
-		DSSUtils.closeQuietly(zipInputStream);
+
+    DSSUtils.closeQuietly(zipInputStream);
 	}
 
   private void storeManifest(DSSDocument document, ZipOutputStream outZip) {
@@ -361,7 +364,6 @@ public class ASiCService extends AbstractSignatureService {
 	}
 
 	private static void createZipEntry(final ZipOutputStream outZip, final ZipEntry entrySignature) throws DSSException {
-
 		try {
 			outZip.putNextEntry(entrySignature);
 		} catch (IOException e) {
