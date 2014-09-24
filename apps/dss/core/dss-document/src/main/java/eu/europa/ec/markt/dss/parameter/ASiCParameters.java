@@ -40,6 +40,11 @@ public class ASiCParameters {
 	private DSSDocument enclosedSignature;
 
 	/**
+	 * This property allows to provide a specific signature file name in the case of an ASiC-E container.
+	 */
+	private String signatureFileName;
+
+	/**
 	 * Default constructor
 	 */
 	public ASiCParameters() {
@@ -57,6 +62,7 @@ public class ASiCParameters {
 		underlyingForm = source.underlyingForm;
 		containerForm = source.containerForm;
 		enclosedSignature = source.enclosedSignature;
+		signatureFileName = source.signatureFileName;
 	}
 
 	/**
@@ -126,5 +132,23 @@ public class ASiCParameters {
 	 */
 	public DSSDocument getEnclosedSignature() {
 		return enclosedSignature;
+	}
+
+	/**
+	 * This method returns the name of the signature file to use with ASiC-E container.
+	 *
+	 * @return signature file name
+	 */
+	public String getSignatureFileName() {
+		return signatureFileName;
+	}
+
+	/**
+	 * This method allows to set the signature file name to use with ASiC-E container.
+	 *
+	 * @param signatureFileName signature file name
+	 */
+	public void setSignatureFileName(final String signatureFileName) {
+		this.signatureFileName = signatureFileName;
 	}
 }
