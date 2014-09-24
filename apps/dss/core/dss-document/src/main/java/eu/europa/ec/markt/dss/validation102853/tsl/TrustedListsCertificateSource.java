@@ -468,11 +468,10 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			for (final AbstractTrustService trustService : trustServiceProvider.getTrustServiceList()) {
 
 				if (LOG.isTraceEnabled()) {
-					LOG.trace("### " + trustService.getServiceName());
-					LOG.trace("------> " + trustService.getType());
-					LOG.trace("------> " + trustService.getStatus());
+					LOG.trace("#Service Name: " + trustService.getServiceName());
+					LOG.trace("      ------> " + trustService.getType());
+					LOG.trace("      ------> " + trustService.getStatus());
 				}
-
 				for (final Object digitalIdentity : trustService.getDigitalIdentity()) {
 
 					try {

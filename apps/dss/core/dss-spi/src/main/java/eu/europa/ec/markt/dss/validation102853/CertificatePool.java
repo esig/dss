@@ -120,7 +120,9 @@ public class CertificatePool {
 
 			throw new DSSException("The certificate source type must be set.");
 		}
-
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal().toString() + "|" + certificateToAdd.getSerialNumber());
+		}
 		final int id = CertificateIdentifier.getId(certificateToAdd);
 		synchronized (certById) {
 
@@ -144,6 +146,7 @@ public class CertificatePool {
 				final byte[] certificateToAddSignature = certificateToAdd.getSignature();
 				if (!Arrays.equals(foundCertificateSignature, certificateToAddSignature)) {
 
+					LOG.warn(" Found certificate: " + certToken.getIssuerX500Principal().toString() + "|" + certToken.getSerialNumber());
 					LOG.warn("More than one certificate for the same issuer subject name and serial number! The standard is not met by the certificate issuer!");
 				}
 			}
