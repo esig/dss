@@ -29,7 +29,6 @@ import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
@@ -80,7 +79,7 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 			final String fileURI = currentDetachedDocument.getName() != null ? currentDetachedDocument.getName() : "";
 			reference.setUri(fileURI);
 			reference.setContents(currentDetachedDocument);
-			reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
+			reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
 
 			references.add(reference);
 			currentDetachedDocument = currentDetachedDocument.getNextDocument();
