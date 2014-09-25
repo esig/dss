@@ -105,6 +105,7 @@ public final class DSSXMLUtils {
 		namespaces.put("xades141", XAdESNamespaces.XAdES141);
 		namespaces.put("xades122", XAdESNamespaces.XAdES122);
 		namespaces.put("xades111", XAdESNamespaces.XAdES111);
+		namespaces.put("asic", ASiCNamespaces.ASiC);
 
 		namespacePrefixMapper = new NamespaceContextMap(namespaces);
 	}

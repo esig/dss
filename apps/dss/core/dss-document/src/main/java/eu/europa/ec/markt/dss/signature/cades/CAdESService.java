@@ -35,6 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSASN1Utils;
+import eu.europa.ec.markt.dss.DSSUtils;
+import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
@@ -88,10 +90,18 @@ public class CAdESService extends AbstractSignatureService {
 			  .createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
+
+		System.out.println("==========================================");
+		System.out.println(new String(toSignData.getBytes()));
+		System.out.println("==========================================");
+
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(toSignData.getBytes());
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		DSSASN1Utils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
+		System.out.println("==========================================");
+		System.out.println(DSSUtils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, bytes)));
+		System.out.println("==========================================");
 		return bytes;
 	}
 
@@ -150,9 +160,10 @@ public class CAdESService extends AbstractSignatureService {
 
 	/**
 	 * This method countersigns a signature identified through its SignerId
+	 *
 	 * @param toCounterSignDocument the original signature document containing the signature to countersign
-	 * @param parameters the signature parameters
-	 * @param selector the SignerId identifying the signature to countersign
+	 * @param parameters            the signature parameters
+	 * @param selector              the SignerId identifying the signature to countersign
 	 * @return the updated signature document, in which the countersignature has been embedded
 	 */
 	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final SignatureParameters parameters, SignerId selector) {

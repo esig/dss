@@ -23,7 +23,6 @@ package eu.europa.ec.markt.dss.validation102853.asic;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -35,6 +34,7 @@ import org.w3c.dom.Document;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
+import eu.europa.ec.markt.dss.signature.AsicManifestDocument;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
@@ -83,6 +83,8 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	private static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 	private static final String META_INF_FOLDER = "META-INF/";
 
+	private final DSSDocument asicContainer;
+
 	private SignedDocumentValidator subordinatedValidator;
 
 	/**
@@ -98,7 +100,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	/**
 	 * This mime-type comes from the container file name: (zip, asic...).
 	 */
-	private MimeType asicContainerMimeType;
+	//	private MimeType asicContainerMimeType;
 
 	/**
 	 * This mime-type comes from the 'mimetype' file included within the container.
@@ -111,62 +113,76 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	 * If this field is present, it should be set with "mimetype=" followed by the mime type of the data object held in
 	 * the signed data object.
 	 */
-	protected MimeType asicCommentMimeType;
-
-	/**
-	 * This mime-type comes from the "magic number".
-	 */
-	private MimeType magicNumberMimeType;
+	//	protected MimeType asicCommentMimeType;
 
 	private boolean cadesSigned = false;
 	private boolean xadesSigned = false;
 	private boolean timestamped = false;
 
+	public ASiCContainerValidator(final DSSDocument asicContainer) {
+
+		this.asicContainer = asicContainer;
+	}
+
 	/**
 	 * This method creates a dedicated {@code SignedDocumentValidator} based on the given container type: XAdES or CAdES.
 	 *
 	 * @param asicContainer The instance of {@code DSSDocument} to validate
-	 * @param preamble      contains the beginning of the file
 	 * @return {@code SignedDocumentValidator}
 	 * @throws DSSException
 	 */
-	public static SignedDocumentValidator getInstanceForAsics(final DSSDocument asicContainer, final byte[] preamble) throws DSSException {
+	public static SignedDocumentValidator getInstanceForAsics(final DSSDocument asicContainer) throws DSSException {
 
-		ZipInputStream asicsInputStream = null;
-		try {
 
-			final ASiCContainerValidator asicContainerValidator = new ASiCContainerValidator();
+		final ASiCContainerValidator asicContainerValidator = new ASiCContainerValidator(asicContainer);
+		asicContainerValidator.analyseEntries();
 
-			asicsInputStream = new ZipInputStream(asicContainer.openStream()); // The underlying stream is closed by the parent (asicsInputStream).
+		// ASiC-S:
+		// - throw new DSSException("ASiC-S profile support only one data file");
+		// - DSSNotETSICompliantException.MSG.MORE_THAN_ONE_SIGNATURE
 
-			for (ZipEntry entry = asicsInputStream.getNextEntry(); entry != null; entry = asicsInputStream.getNextEntry()) {
+		asicContainerValidator.createSubordinatedContainerValidators();
+		return asicContainerValidator;
+	}
 
-				final String entryName = entry.getName();
-				asicContainerValidator.analyseEntries(asicsInputStream, entryName);
-			}
+	private MimeType determinateAsicMimeType(final MimeType asicContainerMimetype, final MimeType asicEntryMimetype) {
 
-			final MimeType asicCommentString = getZipComment(asicContainer.getBytes());
-			asicContainerValidator.setAsicCommentMimeType(asicCommentString);
+		if (isASiCMimeType(asicContainerMimetype)) {
 
-			final MimeType magicNumberMimeType = getMagicNumberMimeType(preamble);
-			asicContainerValidator.setMagicNumberMimeType(magicNumberMimeType);
-
-			asicContainerValidator.setAsicContainerMimeType(asicContainer.getMimeType());
-
-			// ASiC-S:
-			// - throw new DSSException("ASiC-S profile support only one data file");
-			// - DSSNotETSICompliantException.MSG.MORE_THAN_ONE_SIGNATURE
-
-			asicContainerValidator.createSubordinatedContainerValidators();
-			return asicContainerValidator;
-		} catch (Exception e) {
-			if (e instanceof DSSException) {
-				throw (DSSException) e;
-			}
-			throw new DSSException(e);
-		} finally {
-			DSSUtils.closeQuietly(asicsInputStream);
+			return asicContainerMimetype;
 		}
+		if (isASiCMimeType(asicEntryMimetype)) {
+
+			return asicEntryMimetype;
+		}
+		final MimeType asicCommentString = getZipComment(asicContainer.getBytes());
+		if (isASiCMimeType(asicCommentString)) {
+
+			return asicCommentString;
+		}
+		return null;
+	}
+
+	private static boolean isASiCMimeType(final MimeType asicMimeType) {
+		return MimeType.ASICS.equals(asicMimeType) || MimeType.ASICE.equals(asicMimeType);
+	}
+
+	private AsicManifestDocument getRelatedAsicManifest(final DSSDocument signature) {
+
+		for (final DSSDocument detachedContent : detachedContents) {
+
+			if (!(detachedContent instanceof AsicManifestDocument)) {
+
+				continue;
+			}
+			final AsicManifestDocument asicManifestDocument = (AsicManifestDocument) detachedContent;
+			final String signatureUri = asicManifestDocument.getSignatureUri();
+			if (signatureUri.equals(signature.getName())) {
+
+				return asicManifestDocument;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -201,47 +217,66 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		}
 	}
 
-	private void analyseEntries(final ZipInputStream asicsInputStream, final String entryName) throws DSSException {
+	private void analyseEntries() throws DSSException {
 
-		if (isCAdES(entryName)) {
+		ZipInputStream asicsInputStream = null;
+		try {
 
-			if (xadesSigned) {
-				throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.DIFFERENT_SIGNATURE_FORMATS);
+			MimeType asicEntryMimeType = null;
+			asicsInputStream = new ZipInputStream(asicContainer.openStream()); // The underlying stream is closed by the parent (asicsInputStream).
+
+			for (ZipEntry entry = asicsInputStream.getNextEntry(); entry != null; entry = asicsInputStream.getNextEntry()) {
+
+				String entryName = entry.getName();
+				if (isCAdES(entryName)) {
+
+					if (xadesSigned) {
+						throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.DIFFERENT_SIGNATURE_FORMATS);
+					}
+					addEntryElement(entryName, signatures, asicsInputStream);
+					cadesSigned = true;
+				} else if (isXAdES(entryName)) {
+
+					if (cadesSigned) {
+						throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.DIFFERENT_SIGNATURE_FORMATS);
+					}
+					addEntryElement(entryName, signatures, asicsInputStream);
+					xadesSigned = true;
+				} else if (isTimestamp(entryName)) {
+
+					addEntryElement(entryName, signatures, asicsInputStream);
+					timestamped = true;
+				} else if (isASiCManifest(entryName)) {
+
+					addAsicManifestEntryElement(entryName, detachedContents, asicsInputStream);
+				} else if (isManifest(entryName)) {
+
+					addEntryElement(entryName, detachedContents, asicsInputStream);
+				} else if (isContainer(entryName)) {
+
+					addEntryElement(entryName, detachedContents, asicsInputStream);
+				} else if (isMetadata(entryName)) {
+
+					addEntryElement(entryName, detachedContents, asicsInputStream);
+				} else if (MIME_TYPE.equalsIgnoreCase(entryName)) {
+
+					asicEntryMimeType = getMimeType(asicsInputStream);
+				} else if (entryName.indexOf("/") == -1) {
+
+					addEntryElement(entryName, detachedContents, asicsInputStream);
+				} else {
+
+					LOG.error("unknown entry: " + entryName);
+				}
 			}
-			getEntryElement(entryName, signatures, asicsInputStream);
-			cadesSigned = true;
-		} else if (isXAdES(entryName)) {
-
-			if (cadesSigned) {
-				throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.DIFFERENT_SIGNATURE_FORMATS);
+			asicMimeType = determinateAsicMimeType(asicContainer.getMimeType(), asicEntryMimeType);
+		} catch (Exception e) {
+			if (e instanceof DSSException) {
+				throw (DSSException) e;
 			}
-			getEntryElement(entryName, signatures, asicsInputStream);
-			xadesSigned = true;
-		} else if (isTimestamp(entryName)) {
-
-			getEntryElement(entryName, signatures, asicsInputStream);
-			timestamped = true;
-		} else if (isASiCManifest(entryName)) {
-
-			getEntryElement(entryName, detachedContents, asicsInputStream);
-		} else if (isManifest(entryName)) {
-
-			getEntryElement(entryName, detachedContents, asicsInputStream);
-		} else if (isContainer(entryName)) {
-
-			getEntryElement(entryName, detachedContents, asicsInputStream);
-		} else if (isMetadata(entryName)) {
-
-			getEntryElement(entryName, detachedContents, asicsInputStream);
-		} else if (MIME_TYPE.equalsIgnoreCase(entryName)) {
-
-			asicMimeType = getMimeType(asicsInputStream);
-		} else if (entryName.indexOf("/") == -1) {
-
-			getEntryElement(entryName, detachedContents, asicsInputStream);
-		} else {
-
-			LOG.error("unknown entry: " + entryName);
+			throw new DSSException(e);
+		} finally {
+			DSSUtils.closeQuietly(asicsInputStream);
 		}
 	}
 
@@ -251,30 +286,6 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	public void setAsicMimeType(final MimeType asicMimeType) {
 		this.asicMimeType = asicMimeType;
-	}
-
-	public MimeType getAsicCommentMimeType() {
-		return asicCommentMimeType;
-	}
-
-	public void setAsicCommentMimeType(final MimeType asicCommentMimeType) {
-		this.asicCommentMimeType = asicCommentMimeType;
-	}
-
-	public MimeType getMagicNumberMimeType() {
-		return magicNumberMimeType;
-	}
-
-	public void setMagicNumberMimeType(final MimeType magicNumberMimeType) {
-		this.magicNumberMimeType = magicNumberMimeType;
-	}
-
-	public MimeType getAsicContainerMimeType() {
-		return asicContainerMimeType;
-	}
-
-	public void setAsicContainerMimeType(final MimeType asicContainerMimeType) {
-		this.asicContainerMimeType = asicContainerMimeType;
 	}
 
 	private static MimeType getMimeType(final ZipInputStream asicsInputStream) throws DSSException {
@@ -291,12 +302,20 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		}
 	}
 
-	private static void getEntryElement(final String entryName, final List<DSSDocument> signatures, final ZipInputStream asicsInputStream) {
+	private static void addEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) {
 
 		final ByteArrayOutputStream signature = new ByteArrayOutputStream();
 		DSSUtils.copy(asicsInputStream, signature);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(signature.toByteArray(), entryName);
-		signatures.add(inMemoryDocument);
+		list.add(inMemoryDocument);
+	}
+
+	private static void addAsicManifestEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) {
+
+		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		DSSUtils.copy(asicsInputStream, byteArrayOutputStream);
+		final AsicManifestDocument inMemoryDocument = new AsicManifestDocument(byteArrayOutputStream.toByteArray(), entryName);
+		list.add(inMemoryDocument);
 	}
 
 	/**
@@ -408,29 +427,6 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return null;
 	}
 
-	private static MimeType getMagicNumberMimeType(final byte[] preamble) {
-
-		if (preamble[28] == 0 && preamble[8] == 0) {
-
-			final byte[] lengthBytes = Arrays.copyOfRange(preamble, 18, 18 + 4);
-			final int length = java.nio.ByteBuffer.wrap(lengthBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN).getInt();
-
-			final byte[] mimeTypeTagBytes = Arrays.copyOfRange(preamble, 30, 30 + 8);
-			final String mimeTypeTagString = DSSUtils.getUtf8String(mimeTypeTagBytes);
-			if (MIME_TYPE.equals(mimeTypeTagString)) {
-
-				final byte[] mimeTypeBytes = Arrays.copyOfRange(preamble, 30 + 8, 30 + 8 + length);
-				String magicNumberMimeType = DSSUtils.getUtf8String(mimeTypeBytes);
-				if (DSSUtils.isNotBlank(magicNumberMimeType)) {
-
-					MimeType mimeType = MimeType.fromCode(magicNumberMimeType);
-					return mimeType;
-				}
-			}
-		}
-		return null;
-	}
-
 	@Override
 	public Reports validateDocument(final Document validationPolicyDom) {
 
@@ -440,7 +436,16 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		do {
 
 			currentSubordinatedValidator.setProcessExecutor(processExecutor);
-			currentSubordinatedValidator.setDetachedContents(detachedContents);
+			if (MimeType.ASICE.equals(asicMimeType) && currentSubordinatedValidator instanceof ASiCCMSDocumentValidator) {
+
+				final DSSDocument signature = currentSubordinatedValidator.getDocument();
+				final AsicManifestDocument relatedAsicManifest = getRelatedAsicManifest(signature);
+				final ArrayList<DSSDocument> relatedAsicManifests = new ArrayList<DSSDocument>();
+				relatedAsicManifests.add(relatedAsicManifest);
+				currentSubordinatedValidator.setDetachedContents(relatedAsicManifests);
+			} else {
+				currentSubordinatedValidator.setDetachedContents(detachedContents);
+			}
 			currentSubordinatedValidator.setCertificateVerifier(certificateVerifier);
 			final Reports currentReports = currentSubordinatedValidator.validateDocument(validationPolicyDom);
 			if (lastReports == null) {
