@@ -53,7 +53,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
  * @version $Revision: 672 $ - $Date: 2011-05-12 11:59:21 +0200 (Thu, 12 May 2011) $
  */
-class EnvelopedSignatureBuilder extends SignatureBuilder {
+	class EnvelopedSignatureBuilder extends SignatureBuilder {
 
 	/**
 	 * The default constructor for EnvelopedSignatureBuilder. The enveloped signature uses by default the exclusive method of canonicalization.
@@ -155,7 +155,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	protected void removeExistingSignatures(final Document domDoc) {
 
 		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+		for (int ii = signatureNodeList.getLength() - 1; ii >= 0; ii--) {
 
 			final Element signatureDOM = (Element) signatureNodeList.item(ii);
 			signatureDOM.getParentNode().removeChild(signatureDOM);
