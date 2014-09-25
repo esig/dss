@@ -99,6 +99,31 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		return signatures;
 	}
 
+	/**
+	 * Retrieves a signature based on its Id
+	 * @param signatureId the given Id
+	 * @return the corresponding {@code XAdESSignature}
+	 * @throws DSSException in case no Id is provided, or in case no signature was found for the given Id
+	 */
+	public AdvancedSignature getSignature(final String signatureId) throws DSSException {
+
+		if (DSSUtils.isBlank(signatureId)) {
+			throw new DSSNullException(String.class, "signatureId");
+		}
+
+		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+
+			final Element signatureEl = (Element) signatureNodeList.item(ii);
+			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
+			if (signatureId.equals(idIdentifier)) {
+				final XAdESSignature xAdESSignature = new XAdESSignature(signatureEl, xPathQueryHolders, validationCertPool);
+				return xAdESSignature;
+			}
+		}
+		throw new DSSException("The signature with the given id was not found!");
+	}
+
 	@Override
 	public DSSDocument removeSignature(final String signatureId) throws DSSException {
 
