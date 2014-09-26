@@ -36,8 +36,8 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 
 /**
  * This class uses a property file to read the proxy preferences.
- *
- * <p>
+ * <p/>
+ * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
@@ -45,52 +45,52 @@ import eu.europa.ec.markt.dss.exception.DSSException;
  */
 public class ProxyFileDao implements ProxyDao {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProxyFileDao.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProxyFileDao.class);
 
-    protected Map<ProxyKey, ProxyPreference> proxyPreferences = new HashMap<ProxyKey, ProxyPreference>();
+	protected Map<ProxyKey, ProxyPreference> proxyPreferences = new HashMap<ProxyKey, ProxyPreference>();
 
-    public ProxyFileDao(final String proxyPreferencesResourcePath) {
+	public ProxyFileDao(final String proxyPreferencesResourcePath) {
 
-        LOG.info(">>> ProxyFileDao: " + proxyPreferencesResourcePath);
-        try {
+		LOG.info(">>> ProxyFileDao: " + proxyPreferencesResourcePath);
+		try {
 
-            final InputStream propertyInputStream = DSSUtils.getResource(proxyPreferencesResourcePath);
-            final Properties properties = new Properties();
-            properties.load(propertyInputStream);
-            for (final Map.Entry keySet : properties.entrySet()) {
+			final InputStream propertyInputStream = DSSUtils.getResource(proxyPreferencesResourcePath);
+			final Properties properties = new Properties();
+			properties.load(propertyInputStream);
+			for (final Map.Entry keySet : properties.entrySet()) {
 
-                final String key = (String) keySet.getKey();
-                final String value = (String) keySet.getValue();
-                System.out.println(key + "=" + value);
-                final ProxyKey proxyKey = ProxyKey.fromKey(key);
-                if (proxyKey == null) {
-                    continue;
-                }
-                final ProxyPreference proxyPreference = new ProxyPreference(proxyKey, value);
-                proxyPreferences.put(proxyKey, proxyPreference);
-            }
-        } catch (IOException e) {
-            throw new DSSException("Error when initialising ProxyFileDao", e);
-        }
-    }
+				final String key = (String) keySet.getKey();
+				final String value = (String) keySet.getValue();
+				//                System.out.println(key + "=" + value);
+				final ProxyKey proxyKey = ProxyKey.fromKey(key);
+				if (proxyKey == null) {
+					continue;
+				}
+				final ProxyPreference proxyPreference = new ProxyPreference(proxyKey, value);
+				proxyPreferences.put(proxyKey, proxyPreference);
+			}
+		} catch (IOException e) {
+			throw new DSSException("Error when initialising ProxyFileDao", e);
+		}
+	}
 
-    @Override
-    public ProxyPreference get(final ProxyKey proxyKey) {
+	@Override
+	public ProxyPreference get(final ProxyKey proxyKey) {
 
-        final ProxyPreference proxyPreference = proxyPreferences.get(proxyKey);
-        return proxyPreference;
-    }
+		final ProxyPreference proxyPreference = proxyPreferences.get(proxyKey);
+		return proxyPreference;
+	}
 
-    @Override
-    public Collection<ProxyPreference> getAll() {
+	@Override
+	public Collection<ProxyPreference> getAll() {
 
-        List<ProxyPreference> proxyPreferenceList = new ArrayList<ProxyPreference>(proxyPreferences.values());
-        return proxyPreferenceList;
-    }
+		List<ProxyPreference> proxyPreferenceList = new ArrayList<ProxyPreference>(proxyPreferences.values());
+		return proxyPreferenceList;
+	}
 
-    @Override
-    public void update(final ProxyPreference proxyPreference) {
+	@Override
+	public void update(final ProxyPreference proxyPreference) {
 
-        proxyPreferences.put(proxyPreference.getProxyKey(), proxyPreference);
-    }
+		proxyPreferences.put(proxyPreference.getProxyKey(), proxyPreference);
+	}
 }

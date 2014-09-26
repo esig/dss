@@ -35,8 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSASN1Utils;
-import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
@@ -91,17 +89,10 @@ public class CAdESService extends AbstractSignatureService {
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
 
-		System.out.println("==========================================");
-		System.out.println(new String(toSignData.getBytes()));
-		System.out.println("==========================================");
-
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(toSignData.getBytes());
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		DSSASN1Utils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
-		System.out.println("==========================================");
-		System.out.println(DSSUtils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, bytes)));
-		System.out.println("==========================================");
 		return bytes;
 	}
 
