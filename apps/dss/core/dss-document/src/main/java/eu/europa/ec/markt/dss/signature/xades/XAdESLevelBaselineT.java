@@ -41,6 +41,7 @@ import eu.europa.ec.markt.dss.exception.DSSConfigurationException.MSG;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.TimestampParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
@@ -81,8 +82,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 	private void incorporateC14nMethod(final Element parentDom, final String signedInfoC14nMethod) {
 
 		//<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-		final Element canonicalizationMethodDom = documentDom.createElementNS(XMLSignature.XMLNS, "ds:CanonicalizationMethod");
-		canonicalizationMethodDom.setAttribute("Algorithm", signedInfoC14nMethod);
+		final Element canonicalizationMethodDom = documentDom.createElementNS(XMLSignature.XMLNS, DS_CANONICALIZATION_METHOD);
+		canonicalizationMethodDom.setAttribute(ALGORITHM, signedInfoC14nMethod);
 		parentDom.appendChild(canonicalizationMethodDom);
 	}
 
@@ -157,6 +158,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 		// If a segment does not exist then it is created.
 		ensureUnsignedProperties();
 		ensureUnsignedSignatureProperties();
+		ensureSignedDataObjectProperties();
 
 		// The timestamp must be added only if there is no one or the extension -T is being created
 		if (!xadesSignature.hasTProfile() || SignatureLevel.XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
@@ -217,64 +219,68 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 	}
 
 	/**
-	 * Creates XAdES TimeStamp object representation. The time stamp token is obtained from TSP source
+	 * Creates any XAdES TimeStamp object representation. The timestamp token is obtained from TSP source
 	 *
-	 * @param timestampC14nMethod
-	 * @param digestValue
-	 * @return
-	 * @throws eu.europa.ec.markt.dss.exception.DSSException
+	 * @param timestampType       {@code TimestampType}
+	 * @param timestampC14nMethod canonicalization method
+	 * @param digestValue         array of {@code byte} representing the digest to timestamp
+	 * @throws DSSException in case of any error
 	 */
 	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final byte[] digestValue) throws DSSException {
 
 		try {
 
 			Element timeStampDom = null;
-			DigestAlgorithm timestampDigestAlgorithm = null;
+			final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			switch (timestampType) {
 
 				case SIGNATURE_TIMESTAMP:
 					// <xades:SignatureTimeStamp Id="time-stamp-1dee38c4-8388-40d1-8880-9eeda853fe60">
-					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:SignatureTimeStamp");
-					timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
+					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNATURE_TIME_STAMP);
 					break;
 				case VALIDATION_DATA_REFSONLY_TIMESTAMP:
-					timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
+					// timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_);
 					break;
 				case VALIDATION_DATA_TIMESTAMP:
 					// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:SigAndRefsTimeStamp");
-					timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
+					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIG_AND_REFS_TIME_STAMP);
 					break;
 				case ARCHIVE_TIMESTAMP:
 					// <xades141:ArchiveTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:ArchiveTimeStamp");
+					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, XADES141_ARCHIVE_TIME_STAMP);
 					timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
+					break;
+				case ALL_DATA_OBJECTS_TIMESTAMP:
+					timeStampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_ALL_DATA_OBJECTS_TIME_STAMP);
+					break;
+				case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+					timeStampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdESNamespaces.XAdES, XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP);
 					break;
 			}
 
-			if (LOG.isInfoEnabled()) {
+			if (LOG.isDebugEnabled()) {
 
 				final String encodedDigestValue = DSSUtils.base64Encode(digestValue);
-				LOG.info("Timestamp generation: " + timestampDigestAlgorithm.getName() + " / " + timestampC14nMethod + " / " + encodedDigestValue);
+				LOG.debug("Timestamp generation: " + timestampDigestAlgorithm.getName() + " / " + timestampC14nMethod + " / " + encodedDigestValue);
 			}
 			final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
 			final byte[] timeStampTokenBytes = timeStampToken.getEncoded();
-
-			final String signatureTimestampId = "time-stamp-token-" + UUID.randomUUID().toString();
 			final String base64EncodedTimeStampToken = DSSUtils.base64Encode(timeStampTokenBytes);
-			timeStampDom.setAttribute("Id", signatureTimestampId);
+
+			final String signatureTimestampId = UUID.randomUUID().toString();
+			timeStampDom.setAttribute("Id", "TS-" + signatureTimestampId);
 
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
 
 			// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
-			final Element encapsulatedTimeStampDom = DSSXMLUtils.addElement(documentDom, timeStampDom, XAdESNamespaces.XAdES, "xades:EncapsulatedTimeStamp");
-			encapsulatedTimeStampDom.setAttribute("Id", signatureTimestampId);
+			final Element encapsulatedTimeStampDom = DSSXMLUtils.addElement(documentDom, timeStampDom, XAdESNamespaces.XAdES, XADES_ENCAPSULATED_TIME_STAMP);
+			encapsulatedTimeStampDom.setAttribute("Id", "ETS-" + signatureTimestampId);
 			DSSXMLUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
 		} catch (IOException e) {
 
 			throw new DSSException("Error during the creation of the XAdES timestamp!", e);
 		}
 	}
-
 }
