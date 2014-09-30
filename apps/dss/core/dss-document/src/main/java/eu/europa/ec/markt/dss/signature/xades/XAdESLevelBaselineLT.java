@@ -52,7 +52,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
     /**
      * The default constructor for XAdESLevelBaselineLT.
      */
-    public XAdESLevelBaselineLT(CertificateVerifier certificateVerifier) {
+    public XAdESLevelBaselineLT(final CertificateVerifier certificateVerifier) {
 
         super(certificateVerifier);
     }
@@ -123,7 +123,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
     }
 
     /**
-     * This method removes old certificate values from the unsigned signature properties element.
+     * This method removes old certificates values from the unsigned signature properties element.
      */
     private void removeOldCertificateValues() {
 
@@ -150,8 +150,8 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
             final Element revocationValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
 
-            incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
-            incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
+	        incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
+	        incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
         }
     }
 
