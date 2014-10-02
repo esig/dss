@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.exceptions.SignatureException;
@@ -53,7 +54,6 @@ import eu.europa.ec.markt.dss.DSSPDFUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
 import eu.europa.ec.markt.dss.signature.pdf.PdfDict;
@@ -71,44 +71,29 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	public byte[] digest(final InputStream toSignDocument, final SignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
 	                     final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
 
-		final byte[] signatureBytes = DSSUtils.EMPTY_BYTE_ARRAY;
-		File file = null;
-		File signed = null;
-		PDDocument doc = null;
+		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
+		File toSignFile = null;
+		File signedFile = null;
+		PDDocument pdDocument = null;
 		try {
 
-			file = DSSPDFUtils.getFileFromPdfData(toSignDocument);
+			toSignFile = DSSPDFUtils.getFileFromPdfData(toSignDocument);
 
-			// TODO: (Bob: 2014 Jan 22) There is no guarantee that there will be no duplicates
-			signed = File.createTempFile("raw", "-signed.pdf");
-			final FileOutputStream output = get(file, signed);
+			pdDocument = PDDocument.load(toSignFile);
+			addExtraDictionaries(pdDocument, extraDictionariesToAddBeforeSign);
+			PDSignature pdSignature = createSignatureDictionary(parameters);
 
-			doc = PDDocument.load(file);
-			addExtraDicts(doc, extraDictionariesToAddBeforeSign);
-			PDSignature signature = createSignatureDictionary(parameters);
+			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
+			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
 
-			final byte[] digestValue = signDocumentAndReturnDigest(parameters, signatureBytes, signed, output, doc, signature, digestAlgorithm);
+			final byte[] digestValue = signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature, digestAlgorithm);
 			return digestValue;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			DSSUtils.delete(file);
-			DSSUtils.delete(signed);
-			DSSPDFUtils.close(doc);
-		}
-	}
-
-	public static FileOutputStream get(final File file, final File signed) {
-
-		try {
-
-			FileInputStream in2 = new FileInputStream(file);
-			FileOutputStream output = new FileOutputStream(signed);
-			DSSUtils.copy(in2, output);
-			in2.close();
-			return output;
-		} catch (IOException e) {
-			throw new DSSException(e);
+			DSSUtils.delete(toSignFile);
+			DSSUtils.delete(signedFile);
+			DSSPDFUtils.close(pdDocument);
 		}
 	}
 
@@ -116,63 +101,65 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	public void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final SignatureParameters parameters,
 	                 final DigestAlgorithm digestAlgorithm, final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
 
-		File file = null;
-		File signed = null;
-		PDDocument doc = null;
+		File toSignFile = null;
+		File signedFile = null;
+		FileInputStream fileInputStream = null;
+		FileInputStream finalFileInputStream = null;
+		PDDocument pdDocument = null;
 		try {
 
-			file = DSSPDFUtils.getFileFromPdfData(pdfData);
+			toSignFile = DSSPDFUtils.getFileFromPdfData(pdfData);
 
-			// TODO: (Bob: 2014 Jan 22) There is no guarantee that there will be no duplicates
-			signed = File.createTempFile("raw", "-signed.pdf");
-			final FileOutputStream output = get(file, signed);
+			pdDocument = PDDocument.load(toSignFile);
+			addExtraDictionaries(pdDocument, extraDictionariesToAddBeforeSign);
+			final PDSignature pdSignature = createSignatureDictionary(parameters);
 
-			doc = PDDocument.load(file);
-			addExtraDicts(doc, extraDictionariesToAddBeforeSign);
-			final PDSignature signature = createSignatureDictionary(parameters);
+			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
+			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
 
-			signDocumentAndReturnDigest(parameters, signatureValue, signed, output, doc, signature, digestAlgorithm);
+			signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature, digestAlgorithm);
 
-			final FileInputStream in3 = new FileInputStream(signed);
-			DSSUtils.copy(in3, signedStream);
-			in3.close();
-
-		} catch (Exception e) {
+			finalFileInputStream = new FileInputStream(signedFile);
+			DSSUtils.copy(finalFileInputStream, signedStream);
+		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			DSSUtils.delete(file);
-			DSSUtils.delete(signed);
-			DSSPDFUtils.close(doc);
+			DSSUtils.closeQuietly(fileInputStream);
+			DSSUtils.closeQuietly(finalFileInputStream);
+			DSSUtils.delete(toSignFile);
+			DSSUtils.delete(signedFile);
+			DSSPDFUtils.close(pdDocument);
 		}
 	}
 
-	private byte[] signDocumentAndReturnDigest(final SignatureParameters parameters, final byte[] signatureBytes, final File signed, final FileOutputStream output,
-	                                           final PDDocument doc, final PDSignature signature, final DigestAlgorithm digestAlgorithm) throws DSSException {
+	private byte[] signDocumentAndReturnDigest(final SignatureParameters parameters, final byte[] signatureBytes, final File signedFile, final FileOutputStream fileOutputStream,
+	                                           final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm) throws DSSException {
 
 		try {
 
 			final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
 			// register signature dictionary and sign interface
-			SignatureInterface si = new SignatureInterface() {
+			SignatureInterface signatureInterface = new SignatureInterface() {
 
 				@Override
 				public byte[] sign(InputStream content) throws SignatureException, IOException {
+
 					byte[] b = new byte[4096];
-					int count = -1;
+					int count;
 					while ((count = content.read(b)) > 0) {
 						digest.update(b, 0, count);
 					}
 					return signatureBytes;
 				}
 			};
-			doc.addSignature(signature, si);
+			pdDocument.addSignature(pdSignature, signatureInterface);
 
-			saveDocumentIncrementally(parameters, signed, output, doc);
+			saveDocumentIncrementally(parameters, signedFile, fileOutputStream, pdDocument);
 			final byte[] digestValue = digest.digest();
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Digest to be signed: " + DSSUtils.encodeHexString(digestValue));
 			}
-			output.close();
+			fileOutputStream.close();
 			return digestValue;
 		} catch (NoSuchAlgorithmException e) {
 			throw new DSSException(e);
@@ -183,49 +170,54 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	private void addExtraDicts(PDDocument doc, Map.Entry<String, PdfDict>[] extraDictionariesToAddBeforeSign) {
+	private void addExtraDictionaries(final PDDocument doc, final Map.Entry<String, PdfDict>[] extraDictionariesToAddBeforeSign) {
+
+		final COSDictionary cosDictionary = doc.getDocumentCatalog().getCOSDictionary();
 		for (final Map.Entry<String, PdfDict> pdfDictEntry : extraDictionariesToAddBeforeSign) {
-			doc.getDocumentCatalog().getCOSDictionary().setItem(pdfDictEntry.getKey(), ((PdfBoxDict) pdfDictEntry.getValue()).getWrapped());
+
+			final String key = pdfDictEntry.getKey();
+			final PdfBoxDict value = (PdfBoxDict) pdfDictEntry.getValue();
+			final COSDictionary wrapped = value.getWrapped();
+			cosDictionary.setItem(key, wrapped);
 		}
 	}
 
 	private PDSignature createSignatureDictionary(final SignatureParameters parameters) {
 
-		PDSignature signature = new PDSignature();
+		final PDSignature signature = new PDSignature();
 		signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
 		signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE); // default filter
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(getSubFilter());
 
 		// the signing date, needed for valid signature
-		Calendar cal = Calendar.getInstance();
-		// TODO: (Bob: 2014 Jan 22) To check if it makes sense.
-		final BLevelParameters bLevelParameters = parameters.bLevel();
-		Date signingDate = bLevelParameters.getSigningDate();
-		if (signingDate == null) {
-
-			signingDate = new Date();
-			bLevelParameters.setSigningDate(signingDate);
-		}
+		final Calendar cal = Calendar.getInstance();
+		final Date signingDate = parameters.bLevel().getSigningDate();
 		cal.setTime(signingDate);
 		signature.setSignDate(cal);
 		return signature;
 	}
 
-	public static void saveDocumentIncrementally(SignatureParameters parameters, File signed, FileOutputStream output, PDDocument doc) throws DSSException {
+	public static void saveDocumentIncrementally(SignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream, PDDocument pdDocument) throws DSSException {
+
+		FileInputStream signedFileInputStream = null;
 		try {
-			FileInputStream in3 = new FileInputStream(signed);
+
+			signedFileInputStream = new FileInputStream(signedFile);
 			// the document needs to have an ID, if not a ID based on the current system time is used, and then the digest of the signed data is different
-			if (doc.getDocumentId() == null) {
+			if (pdDocument.getDocumentId() == null) {
+
 				final byte[] documentIdBytes = DSSUtils.digest(DigestAlgorithm.MD5, parameters.bLevel().getSigningDate().toString().getBytes());
-				doc.setDocumentId(DSSUtils.toLong(documentIdBytes));
+				pdDocument.setDocumentId(DSSUtils.toLong(documentIdBytes));
+				pdDocument.setDocumentId(0L);
 			}
-			doc.saveIncremental(in3, output);
-			in3.close();
+			pdDocument.saveIncremental(signedFileInputStream, fileOutputStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} catch (COSVisitorException e) {
 			throw new DSSException(e);
+		} finally {
+			DSSUtils.closeQuietly(signedFileInputStream);
 		}
 	}
 
@@ -365,5 +357,4 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 		return pdfSignatureOrDocTimestampInfo;
 	}
-
 }

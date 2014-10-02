@@ -31,26 +31,27 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 
 /**
- * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
+ * The usage of this interface permits the user to choose the underlying PDF library use to created PDF signatures.
  *
  * @version $Revision$ - $Date$
  */
 public interface PDFSignatureService {
 
 	/**
-	 * Return the digest value of a PDF document
+	 * Returns the digest value of a PDF document
 	 *
 	 * @param toSignDocument
 	 * @param parameters
 	 * @param digestAlgorithm
-	 * @param extraDictionariesToAddBeforeSign @return
+	 * @param extraDictionariesToAddBeforeSign only in the case of timestamp
+	 * @return
 	 * @throws DSSException
 	 */
 	byte[] digest(final InputStream toSignDocument, final SignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
 	              final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
 
 	/**
-	 * Sign a PDF document
+	 * Signs a PDF document
 	 *
 	 * @param pdfData
 	 * @param signatureValue
@@ -64,7 +65,7 @@ public interface PDFSignatureService {
 	          final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
 
 	/**
-	 * Retrieve and trigger validation of the signatures from a PDF document
+	 * Retrieves and triggers validation of the signatures from a PDF document
 	 *
 	 * @param validationCertPool
 	 * @param input

@@ -138,15 +138,15 @@ public class PAdESService extends AbstractSignatureService {
 				data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
 			}
 
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			final byte[] encodedData = DSSASN1Utils.getEncoded(data);
-			pdfSignatureService.sign(toSignDocument.openStream(), encodedData, output, parameters, parameters.getDigestAlgorithm());
+			pdfSignatureService.sign(toSignDocument.openStream(), encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
 
 			final DSSDocument signature;
 			if (DSSUtils.isEmpty(toSignDocument.getName())) {
-				signature = new InMemoryDocument(output.toByteArray(), null, MimeType.PDF);
+				signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), null, MimeType.PDF);
 			} else {
-				signature = new InMemoryDocument(output.toByteArray(), toSignDocument.getName(), MimeType.PDF);
+				signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), toSignDocument.getName(), MimeType.PDF);
 			}
 
 			final SignatureExtension extension = getExtensionProfile(parameters);
