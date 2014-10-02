@@ -369,19 +369,19 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return manifest;
 	}
 
-	private static boolean isTimestamp(String entryName) {
+	public static boolean isTimestamp(String entryName) {
 
 		final boolean timestamp = entryName.endsWith(".tst") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("timestamp");
 		return timestamp;
 	}
 
-	private static boolean isXAdES(final String entryName) {
+	public static boolean isXAdES(final String entryName) {
 
 		final boolean signature = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature");
 		return signature;
 	}
 
-	private static boolean isCAdES(final String entryName) {
+	public static boolean isCAdES(final String entryName) {
 
 		final boolean signature = entryName.endsWith(".p7s") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature");
 		return signature;

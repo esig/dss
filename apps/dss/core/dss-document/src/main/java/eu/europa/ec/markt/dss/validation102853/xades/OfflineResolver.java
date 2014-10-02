@@ -126,15 +126,32 @@ public class OfflineResolver extends ResourceResolverSpi {
 
 	private DSSDocument isKnown(final String documentUri) {
 
-		for (final DSSDocument document : documents) {
+		for (final DSSDocument dssDocument : documents) {
 
-			final String documentURI = document.getName();
-			if (documentUri.equals(documentURI)) {
+			if (isRightDocument(documentUri, dssDocument)) {
 
-				return document;
+				return dssDocument;
+			}
+			DSSDocument nextDssDocument = dssDocument.getNextDocument();
+			while (nextDssDocument != null) {
+
+				if (isRightDocument(documentUri, nextDssDocument)) {
+					return nextDssDocument;
+				}
+				nextDssDocument = nextDssDocument.getNextDocument();
 			}
 		}
 		return null;
+	}
+
+	private static boolean isRightDocument(final String documentUri, final DSSDocument document) {
+
+		final String documentUri_ = document.getName();
+		if (documentUri.equals(documentUri_)) {
+
+			return true;
+		}
+		return false;
 	}
 
 	private DSSDocument getDocument(final String documentUri) {

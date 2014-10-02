@@ -203,24 +203,25 @@ public class ASiCService extends AbstractSignatureService {
 
 		final DocumentValidator validator = SignedDocumentValidator.fromDocument(toExtendDocument);
 		final DocumentValidator subordinatedValidator = validator.getSubordinatedValidator();
-		final DSSDocument signature = subordinatedValidator.getDocument();
-		final DSSDocument detachedContents = getDetachedContents(subordinatedValidator, parameters.getDetachedContent());
 		final DocumentSignatureService specificService = getSpecificService(parameters);
 		specificService.setTspSource(tspSource);
 
 		final SignatureParameters xadesParameters = getParameters(parameters);
+		final DSSDocument detachedContent = parameters.getDetachedContent();
+		final DSSDocument detachedContents = getDetachedContents(subordinatedValidator, detachedContent);
 		xadesParameters.setDetachedContent(detachedContents);
+		final DSSDocument signature = subordinatedValidator.getDocument();
 		final DSSDocument signedDocument = specificService.extendDocument(signature, xadesParameters);
 
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final ZipOutputStream zip = new ZipOutputStream(output);
-
 		final ZipInputStream input = new ZipInputStream(toExtendDocument.openStream());
 		ZipEntry entry;
 		while ((entry = getNextZipEntry(input)) != null) {
 
-			ZipEntry newEntry = new ZipEntry(entry.getName());
-			if (ZIP_ENTRY_ASICS_METAINF_XADES_SIGNATURE.equals(entry.getName())) {
+			final String name = entry.getName();
+			final ZipEntry newEntry = new ZipEntry(name);
+			if (ASiCContainerValidator.isXAdES(name) || ASiCContainerValidator.isCAdES(name)) {
 
 				createZipEntry(zip, newEntry);
 				DSSUtils.copy(signedDocument.openStream(), zip);
