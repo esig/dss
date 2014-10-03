@@ -102,22 +102,15 @@ public class Reports {
 	 */
 	public void print() {
 
-		String reportDeep = "#";
-		Reports currentReports = this;
-		do {
+		System.out.println("----------------Diagnostic data-----------------");
+		System.out.println(diagnosticData);
 
-			System.out.println("[" + reportDeep + "] ----------------Diagnostic data-----------------");
-			System.out.println(currentReports.diagnosticData);
+		System.out.println("----------------Validation report---------------");
+		System.out.println(detailedReport);
 
-			System.out.println("[" + reportDeep + "] ----------------Validation report---------------");
-			System.out.println(currentReports.detailedReport);
+		System.out.println("----------------Simple report-------------------");
+		System.out.println(simpleReport);
 
-			System.out.println("[" + reportDeep + "] ----------------Simple report-------------------");
-			System.out.println(currentReports.simpleReport);
-
-			System.out.println("[" + reportDeep + "] END ------------------------------------------------");
-			reportDeep += "#";
-			currentReports = currentReports.getNextReports();
-		} while (currentReports != null);
+		System.out.println("------------------------------------------------");
 	}
 }

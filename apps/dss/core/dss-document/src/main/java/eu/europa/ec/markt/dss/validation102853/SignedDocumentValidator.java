@@ -158,7 +158,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * In case of a detached signature this {@code List} contains the signed documents.
 	 */
-	protected List<DSSDocument> detachedContents;
+	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();;
 
 	protected CertificateToken providedSigningCertificateToken = null;
 

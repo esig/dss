@@ -314,12 +314,7 @@ public class ASiCService extends AbstractSignatureService {
 
 	private void storeAsicManifest(final SignatureParameters underlyingParameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
 
-		final String signatureName = getSignatureFileName(underlyingParameters.aSiC());
-		final int indexOfSignature = signatureName.indexOf("signature");
-		String suffix = signatureName.substring(indexOfSignature + "signature".length());
-		final int lastIndexOf = suffix.lastIndexOf(".");
-		suffix = suffix.substring(0, lastIndexOf);
-		final String asicManifestZipEntryName = META_INF + "ASiCManifest" + suffix + ".xml";
+		final String asicManifestZipEntryName = "ASiCManifest001.xml";
 		final ZipEntry entrySignature = new ZipEntry(asicManifestZipEntryName);
 		createZipEntry(outZip, entrySignature);
 

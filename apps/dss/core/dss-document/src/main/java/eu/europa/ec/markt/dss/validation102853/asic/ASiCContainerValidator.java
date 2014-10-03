@@ -27,9 +27,14 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import eu.europa.ec.markt.dss.DSSXMLUtils;
+import eu.europa.ec.markt.dss.exception.DSSNullException;
+import eu.europa.ec.markt.dss.signature.asic.ASiCService;
+import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
+import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
+import org.w3c.dom.*;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -43,6 +48,10 @@ import eu.europa.ec.markt.dss.validation102853.DocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinder;
+
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * This class is the base class for ASiC containers.
@@ -90,7 +99,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	/**
 	 * The list of the signed documents within the container.
 	 */
-	private final List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+	//private final List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 
 	/**
 	 * The list of the signatures contained within the container.
@@ -430,8 +439,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	@Override
 	public Reports validateDocument(final Document validationPolicyDom) {
 
-		Reports lastReports = null;
-		Reports firstReport = null;
+		Reports reports = null;
 		DocumentValidator currentSubordinatedValidator = subordinatedValidator;
 		do {
 
@@ -448,15 +456,14 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			}
 			currentSubordinatedValidator.setCertificateVerifier(certificateVerifier);
 			final Reports currentReports = currentSubordinatedValidator.validateDocument(validationPolicyDom);
-			if (lastReports == null) {
-				firstReport = currentReports;
+			if (reports == null) {
+				reports = currentReports;
 			} else {
-				lastReports.setNextReport(currentReports);
+				reports.setNextReport(currentReports);
 			}
-			lastReports = currentReports;
 			currentSubordinatedValidator = currentSubordinatedValidator.getNextValidator();
 		} while (currentSubordinatedValidator != null);
-		return firstReport;
+		return reports;
 	}
 
 	@Override
@@ -466,11 +473,53 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-		return null;
+    if (signatures == null)
+      return null;
+
+    List<AdvancedSignature> signatureList = new ArrayList<AdvancedSignature>();
+
+    //TODO cache signatureList
+    for(DSSDocument signature : signatures) {
+      Document rootElement = DSSXMLUtils.buildDOM(signature);
+      final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+      for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+
+        final Element signatureEl = (Element) signatureNodeList.item(ii);
+        final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, validationCertPool);
+        xadesSignature.setDetachedContents(detachedContents);
+        signatureList.add(xadesSignature);
+      }
+    }
+
+		return signatureList;
 	}
 
 	@Override
 	public DSSDocument removeSignature(String signatureId) throws DSSException {
-		return null;
+    if (DSSUtils.isBlank(signatureId)) {
+      throw new DSSNullException(String.class, "signatureId");
+    }
+
+    for (int i = 0; i < signatures.size(); i++) {
+      DSSDocument signature = signatures.get(i);
+      Document root = DSSXMLUtils.buildDOM(signature);
+      final Element signatureEl = (Element)root.getDocumentElement().getFirstChild();
+      final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
+      if (signatureId.equals(idIdentifier)) {
+        signatures.remove(i);
+        Document signatureDOM = DSSXMLUtils.createDocument(ASiCService.ASICS_URI, ASiCService.ASICS_NS);
+        for (int j = 0; j < signatures.size(); j++) {
+          Document doc = DSSXMLUtils.buildDOM(signature);
+          Node signatureElement = doc.getDocumentElement().getFirstChild();
+
+          final Element newElement = signatureDOM.getDocumentElement();
+          signatureDOM.adoptNode(signatureElement);
+          newElement.appendChild(signatureElement);
+        }
+        return new InMemoryDocument(DSSXMLUtils.serializeNode(signatureDOM));
+      }
+    }
+    throw new DSSException("The signature with the given id was not found!");
 	}
+
 }

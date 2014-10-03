@@ -732,6 +732,18 @@ public final class DSSXMLUtils {
 		return newDocument;
 	}
 
+	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
+
+		DOMImplementation domImpl;
+		try {
+			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
+		} catch (ParserConfigurationException e) {
+			throw new DSSException(e);
+		}
+
+    return domImpl.createDocument(namespaceURI, qualifiedName, null);
+	}
+
 
 	/**
 	 * Creates a DOM Document object of the specified type with its document elements.
