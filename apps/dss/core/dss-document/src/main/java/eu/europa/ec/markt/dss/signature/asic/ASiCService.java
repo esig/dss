@@ -99,7 +99,7 @@ public class ASiCService extends AbstractSignatureService {
 
 	private final static String ASICS_EXTENSION = ".asics"; // can be ".scs"
 	private final static String ASICE_EXTENSION = ".asice"; // can be ".sce"
-	private final static String ASICS_NS = "asic:XAdESSignatures";
+	public final static String ASICS_NS = "asic:XAdESSignatures";
 
 	/**
 	 * This is the constructor to create an instance of the {@code ASiCService}. A certificate verifier must be provided.
@@ -314,7 +314,12 @@ public class ASiCService extends AbstractSignatureService {
 
 	private void storeAsicManifest(final SignatureParameters underlyingParameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
 
-		final String asicManifestZipEntryName = "ASiCManifest001.xml";
+		final String signatureName = getSignatureFileName(underlyingParameters.aSiC());
+		final int indexOfSignature = signatureName.indexOf("signature");
+		String suffix = signatureName.substring(indexOfSignature + "signature".length());
+		final int lastIndexOf = suffix.lastIndexOf(".");
+		suffix = suffix.substring(0, lastIndexOf);
+		final String asicManifestZipEntryName = META_INF + "ASiCManifest" + suffix + ".xml";
 		final ZipEntry entrySignature = new ZipEntry(asicManifestZipEntryName);
 		createZipEntry(outZip, entrySignature);
 

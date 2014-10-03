@@ -21,7 +21,7 @@
 package eu.europa.ec.markt.dss;
 
 /**
- * This enum contains all known XAdES version with their namespace.
+ * This enum contains all known ASiC version with their namespace.
  * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *

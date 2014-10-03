@@ -25,7 +25,7 @@ public interface DocumentValidator {
 	/**
 	 * The document to validate, in the case of ASiC container this method returns the signature.
 	 *
-	 * @return
+	 * @return {@code DSSDocument}
 	 */
 	DSSDocument getDocument();
 
@@ -43,6 +43,11 @@ public interface DocumentValidator {
 	 */
 	List<AdvancedSignature> getSignatures();
 
+	/**
+	 * Provides a {@code CertificateVerifier} to be used during the validation process.
+	 *
+	 * @param certVerifier {@code CertificateVerifier}
+	 */
 	void setCertificateVerifier(final CertificateVerifier certVerifier);
 
 	/**
