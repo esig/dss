@@ -30,14 +30,20 @@ import java.util.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
+import eu.europa.ec.markt.dss.ASiCNamespaces;
 import eu.europa.ec.markt.dss.DSSUtils;
+import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
+import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.AsicManifestDocument;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
+import eu.europa.ec.markt.dss.signature.asic.ASiCService;
 import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.DocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
@@ -85,17 +91,20 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	private final DSSDocument asicContainer;
 
-	private SignedDocumentValidator subordinatedValidator;
-
 	/**
-	 * The list of the signed documents within the container.
+	 * This is the subordinated validator: can be XML or CMS
 	 */
-	private final List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+	private SignedDocumentValidator subordinatedValidator;
 
 	/**
 	 * The list of the signatures contained within the container.
 	 */
 	private final List<DSSDocument> signatures = new ArrayList<DSSDocument>();
+
+	/**
+	 * This list caches the validated signatures.
+	 */
+	private List<AdvancedSignature> validatedSignatures;
 
 	/**
 	 * This mime-type comes from the container file name: (zip, asic...).
@@ -464,13 +473,70 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return null;
 	}
 
+	/**
+	 * This is an experimental implementation for Aho's contribution. It is likely to be changed.
+	 *
+	 * @return {@code List} of {@code AdvancedSignature} within the container
+	 */
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-		return null;
+
+		if (signatures == null) {
+			return null;
+		}
+		if (validatedSignatures != null) {
+			return validatedSignatures;
+		}
+		validatedSignatures = new ArrayList<AdvancedSignature>();
+		DocumentValidator currentSubordinatedValidator = subordinatedValidator;
+		do {
+
+			final List<AdvancedSignature> signatures = currentSubordinatedValidator.getSignatures();
+			for (final AdvancedSignature signature : signatures) {
+
+				validatedSignatures.add(signature);
+			}
+			currentSubordinatedValidator = currentSubordinatedValidator.getNextValidator();
+		} while (currentSubordinatedValidator != null);
+		return validatedSignatures;
 	}
 
+	/**
+	 * This is an experimental implementation for Aho's contribution. It is likely to be changed. The current implementation does not work with CAdES signatures.
+	 *
+	 * @param signatureId the id of the signature to be removed.
+	 * @return the {@code DSSDocument} with removed given signature
+	 * @throws DSSException
+	 */
 	@Override
-	public DSSDocument removeSignature(String signatureId) throws DSSException {
-		return null;
+	public DSSDocument removeSignature(final String signatureId) throws DSSException {
+
+		if (DSSUtils.isBlank(signatureId)) {
+			throw new DSSNullException(String.class, "signatureId");
+		}
+
+		for (int i = 0; i < signatures.size(); i++) {
+
+			final DSSDocument signature = signatures.get(i);
+			final Document root = DSSXMLUtils.buildDOM(signature);
+			final Element signatureEl = (Element) root.getDocumentElement().getFirstChild();
+			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
+			if (signatureId.equals(idIdentifier)) {
+
+				signatures.remove(i);
+				final Document signatureDOM = DSSXMLUtils.createDocument(ASiCNamespaces.ASiC, ASiCService.ASICS_NS);
+				for (int j = 0; j < signatures.size(); j++) {
+
+					final Document doc = DSSXMLUtils.buildDOM(signature);
+					final Node signatureElement = doc.getDocumentElement().getFirstChild();
+
+					final Element newElement = signatureDOM.getDocumentElement();
+					signatureDOM.adoptNode(signatureElement);
+					newElement.appendChild(signatureElement);
+				}
+				return new InMemoryDocument(DSSXMLUtils.serializeNode(signatureDOM));
+			}
+		}
+		throw new DSSException("The signature with the given id was not found!");
 	}
 }

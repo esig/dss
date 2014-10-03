@@ -99,7 +99,7 @@ public class ASiCService extends AbstractSignatureService {
 
 	private final static String ASICS_EXTENSION = ".asics"; // can be ".scs"
 	private final static String ASICE_EXTENSION = ".asice"; // can be ".sce"
-	private final static String ASICS_NS = "asic:XAdESSignatures";
+	public final static String ASICS_NS = "asic:XAdESSignatures";
 
 	/**
 	 * This is the constructor to create an instance of the {@code ASiCService}. A certificate verifier must be provided.

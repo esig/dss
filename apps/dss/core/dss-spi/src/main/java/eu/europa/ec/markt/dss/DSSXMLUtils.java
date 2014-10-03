@@ -705,16 +705,15 @@ public final class DSSXMLUtils {
 
 		final Text textNode = document.createTextNode(text);
 		parentDom.appendChild(textNode);
-
 	}
 
 	/**
 	 * Creates a DOM Document object of the specified type with its document element.
 	 *
-	 * @param namespaceURI
-	 * @param qualifiedName
-	 * @param element
-	 * @return
+	 * @param namespaceURI  the namespace URI of the document element to create or null
+	 * @param qualifiedName the qualified name of the document element to be created or null
+	 * @param element       document {@code Element}
+	 * @return {@code Document}
 	 */
 	public static Document createDocument(final String namespaceURI, final String qualifiedName, final Element element) {
 
@@ -732,6 +731,25 @@ public final class DSSXMLUtils {
 		return newDocument;
 	}
 
+	/**
+	 * Creates a DOM document without document element.
+	 *
+	 * @param namespaceURI  the namespace URI of the document element to create or null
+	 * @param qualifiedName the qualified name of the document element to be created or null
+	 * @return {@code Document}
+	 */
+	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
+
+		DOMImplementation domImpl;
+		try {
+			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
+		} catch (ParserConfigurationException e) {
+			throw new DSSException(e);
+		}
+
+		return domImpl.createDocument(namespaceURI, qualifiedName, null);
+	}
+
 
 	/**
 	 * Creates a DOM Document object of the specified type with its document elements.
@@ -740,7 +758,7 @@ public final class DSSXMLUtils {
 	 * @param qualifiedName
 	 * @param element1
 	 * @param element2
-	 * @return
+	 * @return {@code Document}
 	 */
 	public static Document createDocument(final String namespaceURI, final String qualifiedName, final Element element1, final Element element2) {
 
