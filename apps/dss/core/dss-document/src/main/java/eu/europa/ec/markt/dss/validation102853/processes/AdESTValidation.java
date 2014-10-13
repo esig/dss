@@ -268,12 +268,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	}
 
 	/**
-	 * 2) Signature validation: Perform the validation process for BES signatures (see clause 6) with all the inputs,
-	 * including the processing of any signed attributes/properties as specified. If this validation outputs VALID,
-	 * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE or
-	 * INDETERMINATE/OUT_OF_BOUNDS_NO_POE, go to the next step. Otherwise, terminate with the returned status and
-	 * information.<br>
-	 * TODO: 20130702 by bielecro: To notify ETSI --> There is twice CRYPTO_CONSTRAINTS_FAILURE_NO_POE instead of REVOKED_NO_POE.
+	 * 2)	Signature validation: Perform the validation process for BES signatures (see clause 6) with all the inputs, including the processing of any signed attributes/properties
+	 * as specified. If this validation outputs VALID, INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, INDETERMINATE/REVOKED_NO_POE or INDETERMINATE/OUT_OF_BOUNDS_NO_POE, go to
+	 * the next step. Otherwise, terminate with the returned status and information.	 *
 	 *
 	 * @return the {@code Conclusion} which indicates the result of the process
 	 */

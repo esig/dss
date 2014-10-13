@@ -222,7 +222,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		 * provided in the inputs:
 		 */
 
-		final boolean trustedProspectiveCertificateChain = Boolean.valueOf(isTrustedProspectiveCertificateChain(params));
+		final boolean trustedProspectiveCertificateChain = isTrustedProspectiveCertificateChain(params);
 		if (!checkProspectiveCertificateChainConstraint(conclusion, trustedProspectiveCertificateChain)) {
 			return conclusion;
 		}
@@ -520,13 +520,13 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 	}
 
 	/**
-	 * This method checks if the signature of the given certificate.
+	 * This method checks the signature of the given certificate.
 	 *
 	 * @param conclusion        the conclusion to use to add the result of the check.
 	 * @param certificateId
 	 * @param certificateXmlDom
 	 * @param subContext
-	 * @return
+	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkCertificateSignatureConstraint(final Conclusion conclusion, final String certificateId, final XmlDom certificateXmlDom, final String subContext) {
 
@@ -537,13 +537,14 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		constraint.create(validationDataXmlNode, BBB_XCV_ICSI);
 		constraint.setValue(certificateXmlDom.getBoolValue(XP_SIGNATURE_VALID));
 		constraint.setIndications(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND, BBB_XCV_ICSI_ANS);
+		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
 	}
 
 	/**
-	 * This method checks if the revocation data is available for the given certificate.
+	 * This method checks the revocation data is available for the given certificate.
 	 *
 	 * @param conclusion        the conclusion to use to add the result of the check.
 	 * @param certificateId
