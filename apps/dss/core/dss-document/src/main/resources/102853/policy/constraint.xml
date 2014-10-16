@@ -26,6 +26,7 @@
 			<RevocationDataIsTrusted Level="FAIL"/>
 			<RevocationDataFreshness Level="WARN"/>
 			<ProspectiveCertificateChain Level="FAIL"/>
+			<KeyUsage Level="WARN">nonRepudiation</KeyUsage>
 			<Revoked Level="FAIL"/>
 			<OnHold Level="FAIL"/>
 			<TSLValidity Level="WARN"/>

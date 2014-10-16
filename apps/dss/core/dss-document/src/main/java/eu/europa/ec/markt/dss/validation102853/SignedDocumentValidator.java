@@ -777,6 +777,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
 		xmlCert.setPublicKeyEncryptionAlgo(DSSPKUtils.getPublicKeyEncryptionAlgo(publicKey));
 
+		xmlCert.setKeyUsage(certToken.getKeyUsage());
+
 		if (certToken.isOCSPSigning()) {
 
 			xmlCert.setIdKpOCSPSigning(true);

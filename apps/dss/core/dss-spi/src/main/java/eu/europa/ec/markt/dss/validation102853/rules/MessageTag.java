@@ -99,6 +99,8 @@ public enum MessageTag {
 	BBB_XCV_ISCOH_ANS("The certificate is on hold!"),
 	BBB_XCV_ISCR("Is the signer's certificate not revoked?"),
 	BBB_XCV_ISCR_ANS("The certificate is revoked!"),
+	BBB_XCV_ISCGKU("Has the signer's certificate given key-usage?"),
+	BBB_XCV_ISCGKU_ANS("The signer's certificate has not expected key-usage!"),
 	BBB_XCV_ICSI("Is the certificate's signature intact?"),
 	BBB_XCV_ICSI_ANS("The signature of the certificate is spoiled or it is not possible to validate it!"),
 

@@ -424,6 +424,16 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 
 	/**
 	 * @param context
+	 * @return {@code Constraint} if key-usage for a given context element is present in the constraint file, null otherwise.
+	 */
+	public Constraint getSigningCertificateKeyUsageConstraint(final String context) {
+
+		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/KeyUsage", context);
+		return getBasicConstraint(XP_ROOT, true);
+	}
+
+	/**
+	 * @param context
 	 * @param subContext
 	 * @return {@code Constraint} if Expiration for a given context element is present in the constraint file, null otherwise.
 	 */

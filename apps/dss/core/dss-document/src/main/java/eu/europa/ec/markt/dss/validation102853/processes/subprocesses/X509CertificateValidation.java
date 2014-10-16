@@ -71,6 +71,8 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_I
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRDTFC_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRIF;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRIF_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCGKU;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCGKU_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCOH;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCOH_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCR;
@@ -240,9 +242,6 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		 * The validation shall include revocation checking for each certificate in the chain:
 		 */
 
-		// boolean signingCertRevocationStatus = true;
-		// boolean intermediateCARevocationStatus = true;
-
 		final List<XmlDom> certificateChainXmlDom = contextElement.getElements("./CertificateChain/ChainCertificate");
 		for (final XmlDom chainCertificateXmlDom : certificateChainXmlDom) {
 
@@ -255,7 +254,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 				continue;
 			}
 
-			String subContext = SIGNING_CERTIFICATE;
+			final String subContext;
 			// The case of other certificates then the signing certificate:
 			if (!signingCertificateId.equals(certificateId)) {
 
@@ -265,7 +264,14 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 				if (!checkCertificateExpirationConstraint(conclusion, contextName, subContext)) {
 					return conclusion;
 				}
+			} else {
+
+				subContext = SIGNING_CERTIFICATE;
+				if (!checkKeyUsageConstraint(conclusion, certificateId, certificateXmlDom)) {
+					return conclusion;
+				}
 			}
+
 
 			if (!checkCertificateSignatureConstraint(conclusion, certificateId, certificateXmlDom, subContext)) {
 				return conclusion;
@@ -287,22 +293,10 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 			//
 			//            }
 
-			// Preparation of information about revocation data and their freshness.
-			boolean revocationFreshnessToBeChecked = constraintData.isRevocationFreshnessToBeChecked();
-			boolean revocationFresh = !revocationFreshnessToBeChecked;
-
 			final XmlDom revocation = certificateXmlDom.getElement("./Revocation");
 			final String revocationIssuingTimeString = getValue(revocation, "./IssuingTime/text()");
-			if (revocationFreshnessToBeChecked && !revocationIssuingTimeString.isEmpty()) {
 
-				final Date revocationIssuingTime = RuleUtils.parseDate(revocationIssuingTimeString);
-				final long revocationDeltaTime = currentTime.getTime() - revocationIssuingTime.getTime();
-
-				if (revocationDeltaTime <= constraintData.getMaxRevocationFreshness()) {
-
-					revocationFresh = true;
-				}
-			}
+			boolean revocationFresh = prepareRevocationFreshnessCheck(revocationIssuingTimeString);
 
 			/**
 			 * a) If the certificate path validation returns a success indication and the revocation information used is
@@ -432,6 +426,30 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		// This validation process returns VALID
 		conclusion.setIndication(VALID);
 		return conclusion;
+	}
+
+	/**
+	 * Preparation of information about revocation data and their freshness.
+	 *
+	 * @param revocationIssuingTimeString
+	 * @return
+	 */
+	private boolean prepareRevocationFreshnessCheck(String revocationIssuingTimeString) {
+
+		boolean revocationFreshnessToBeChecked = constraintData.isRevocationFreshnessToBeChecked();
+		boolean revocationFresh = !revocationFreshnessToBeChecked;
+
+		if (revocationFreshnessToBeChecked && !revocationIssuingTimeString.isEmpty()) {
+
+			final Date revocationIssuingTime = RuleUtils.parseDate(revocationIssuingTimeString);
+			final long revocationDeltaTime = currentTime.getTime() - revocationIssuingTime.getTime();
+
+			if (revocationDeltaTime <= constraintData.getMaxRevocationFreshness()) {
+
+				revocationFresh = true;
+			}
+		}
+		return revocationFresh;
 	}
 
 	private boolean getBoolValue(final XmlDom xmlDom, final String xPath) {
@@ -636,6 +654,33 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		constraint.setAttribute(REVOCATION_NEXT_UPDATE, revocationNextUpdate);
 		constraint.setAttribute(REVOCATION_ISSUING_TIME, revocationIssuingTimeString);
 		constraint.setAttribute(MAXIMUM_REVOCATION_FRESHNESS, constraintData.getFormatedMaxRevocationFreshness());
+		constraint.setConclusionReceiver(conclusion);
+
+		return constraint.check();
+	}
+
+	/**
+	 * This method checks if the signing certificate has an appropriate key usage.
+	 *
+	 * @param conclusion        the conclusion to use to add the result of the check.
+	 * @param certificateId
+	 * @param certificateXmlDom
+	 * @return
+	 */
+	private boolean checkKeyUsageConstraint(Conclusion conclusion, String certificateId, XmlDom certificateXmlDom) {
+
+		final Constraint constraint = constraintData.getSigningCertificateKeyUsageConstraint(contextName);
+		if (constraint == null) {
+			return true;
+		}
+
+		final String keyUsage = certificateXmlDom.getValue("./KeyUsage/text()");
+		final String expectedKeyUsage = constraint.getExpectedValue();
+		final boolean contains = keyUsage.contains(expectedKeyUsage);
+		constraint.create(validationDataXmlNode, BBB_XCV_ISCGKU);
+		constraint.setValue(contains);
+		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_XCV_ISCGKU_ANS);
+		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
