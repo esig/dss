@@ -101,6 +101,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	/**
 	 * Retrieves a signature based on its Id
+	 *
 	 * @param signatureId the given Id
 	 * @return the corresponding {@code XAdESSignature}
 	 * @throws DSSException in case no Id is provided, or in case no signature was found for the given Id
@@ -110,24 +111,12 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		if (DSSUtils.isBlank(signatureId)) {
 			throw new DSSNullException(String.class, "signatureId");
 		}
+		final List<AdvancedSignature> advancedSignatures = getSignatures();
+		for (final AdvancedSignature advancedSignature : advancedSignatures) {
 
-		NodeList signatureNodeList = null;
-		for (XPathQueryHolder xpqh : xPathQueryHolders) {
-			if (signatureNodeList == null) {
-				signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, xpqh.XMLE_SIGNATURE);
-			} else {
-				final NodeList tempSignatureList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, xpqh.XMLE_SIGNATURE);
-				signatureNodeList.item(signatureNodeList.getLength()).appendChild(tempSignatureList.item(0));
-			}
-		}
-
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-
-			final Element signatureEl = (Element) signatureNodeList.item(ii);
-			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
-			if (signatureId.equals(idIdentifier)) {
-				final XAdESSignature xAdESSignature = new XAdESSignature(signatureEl, xPathQueryHolders, validationCertPool);
-				return xAdESSignature;
+			final String advancedSignatureId = advancedSignature.getId();
+			if (signatureId.equals(advancedSignatureId)) {
+				return advancedSignature;
 			}
 		}
 		throw new DSSException("The signature with the given id was not found!");
