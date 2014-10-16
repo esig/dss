@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -35,6 +33,8 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1UTCTime;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
@@ -47,7 +47,6 @@ import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.validation102853.TimestampReference;
 
 /**
  * Utility class that contains some XML related method.
@@ -67,18 +66,31 @@ public final class DSSASN1Utils {
 	/**
 	 * This method returns {@code T extends ASN1Primitive} created from array of bytes. The {@code IOException} is transformed in {@code DSSException}.
 	 *
-	 * @param bytes array of bytes to be transformed to {@code ASN1Sequence}
+	 * @param bytes array of bytes to be transformed to {@code ASN1Primitive}
 	 * @return new {@code T extends ASN1Primitive}
 	 */
 	public static <T extends ASN1Primitive> T toASN1Primitive(final byte[] bytes) throws DSSException {
 
 		try {
 			@SuppressWarnings("unchecked")
-			final T asn1Sequence = (T) ASN1Primitive.fromByteArray(bytes);
-			return asn1Sequence;
+			final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
+			return asn1Primitive;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * This method checks if a given {@code DEROctetString} is null.
+	 *
+	 * @param derOctetString
+	 * @return
+	 */
+	public static boolean isDEROctetStringNull(final DEROctetString derOctetString) {
+
+		final byte[] derOctetStringBytes = derOctetString.getOctets();
+		final ASN1Primitive asn1Null = DSSASN1Utils.toASN1Primitive(derOctetStringBytes);
+		return DERNull.INSTANCE.equals(asn1Null);
 	}
 
 	/**
@@ -272,17 +284,5 @@ public final class DSSASN1Utils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * // TODO-Vin (07/07/2014): TO BE COMPLETED. I think that IT should be in XAdESSignature
-	 * @param timeStampToken
-	 * @return
-	 */
-	public List<TimestampReference> getTimestampReferencesFromTimeStampToken(TimeStampToken timeStampToken) {
-		List<TimestampReference> references = new ArrayList<TimestampReference>();
-
-		//need signatureId, digestAlgo, digestValue, timestampRef category (SIGNATURE/ REFERENCE/ REVOCATION)
-		return references;
 	}
 }

@@ -20,8 +20,6 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -43,13 +41,13 @@ import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x509.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSPKUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -536,21 +534,20 @@ public class CertificateToken extends Token {
 	 */
 	public boolean hasIdPkixOcspNoCheckExtension() {
 
-		byte[] extensionValue = x509Certificate.getExtensionValue(OID.id_pkix_ocsp_no_check.getId());
-		try {
+		final byte[] extensionValue = x509Certificate.getExtensionValue(OID.id_pkix_ocsp_no_check.getId());
+		if (extensionValue != null) {
 
-			if (extensionValue != null) {
+			try {
 
-				ASN1Primitive derObject = toDERObject(extensionValue);
+				final ASN1Primitive derObject = DSSASN1Utils.toASN1Primitive(extensionValue);
 				if (derObject instanceof DEROctetString) {
 
-					DEROctetString derOctetString = (DEROctetString) derObject;
-					byte[] data = derOctetString.getOctets();
-					return data.length == 0;
+					final boolean derOctetStringNull = DSSASN1Utils.isDEROctetStringNull((DEROctetString) derObject);
+					return derOctetStringNull;
 				}
+			} catch (Exception e) {
+				LOG.debug("Exception when processing 'id_pkix_ocsp_no_check'", e);
 			}
-		} catch (Exception e) {
-
 		}
 		return false;
 	}
@@ -562,32 +559,22 @@ public class CertificateToken extends Token {
 	 */
 	public boolean hasExpiredCertOnCRLExtension() {
 
-		byte[] extensionValue = x509Certificate.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
-		try {
+		final byte[] extensionValue = x509Certificate.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
+		if (extensionValue != null) {
 
-			if (extensionValue != null) {
+			try {
 
-				ASN1Primitive derObject = toDERObject(extensionValue);
+				final ASN1Primitive derObject = DSSASN1Utils.toASN1Primitive(extensionValue);
 				if (derObject instanceof DEROctetString) {
 
-					DEROctetString derOctetString = (DEROctetString) derObject;
-					byte[] data = derOctetString.getOctets();
-					return data.length == 0;
+					final boolean derOctetStringNull = DSSASN1Utils.isDEROctetStringNull((DEROctetString) derObject);
+					return derOctetStringNull;
 				}
+			} catch (Exception e) {
+				LOG.debug("Exception when processing 'id_ce_expiredCertsOnCRL'", e);
 			}
-		} catch (Exception e) {
-
 		}
 		return false;
-	}
-
-	private ASN1Primitive toDERObject(final byte[] data) throws IOException {
-
-		ByteArrayInputStream inStream = new ByteArrayInputStream(data);
-		ASN1InputStream asnInputStream = new ASN1InputStream(inStream);
-		ASN1Primitive object = asnInputStream.readObject();
-		asnInputStream.close();
-		return object;
 	}
 
 	/**
