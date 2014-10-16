@@ -105,13 +105,22 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 * @return the corresponding {@code XAdESSignature}
 	 * @throws DSSException in case no Id is provided, or in case no signature was found for the given Id
 	 */
-	public AdvancedSignature getSignature(final String signatureId) throws DSSException {
+	public AdvancedSignature getSignatureById(final String signatureId) throws DSSException {
 
 		if (DSSUtils.isBlank(signatureId)) {
 			throw new DSSNullException(String.class, "signatureId");
 		}
 
-		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		NodeList signatureNodeList = null;
+		for (XPathQueryHolder xpqh : xPathQueryHolders) {
+			if (signatureNodeList == null) {
+				signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, xpqh.XMLE_SIGNATURE);
+			} else {
+				final NodeList tempSignatureList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, xpqh.XMLE_SIGNATURE);
+				signatureNodeList.item(signatureNodeList.getLength()).appendChild(tempSignatureList.item(0));
+			}
+		}
+
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
