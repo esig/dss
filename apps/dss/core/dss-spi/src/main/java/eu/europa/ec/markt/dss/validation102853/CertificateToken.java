@@ -870,6 +870,9 @@ public class CertificateToken extends Token {
 
 		boolean[] keyUsageArray = x509Certificate.getKeyUsage();
 		String keyUsageString = "";
+		if (keyUsageArray == null) {
+			return null;
+		}
 		if (keyUsageArray[0]) {
 			keyUsageString += DIGITAL_SIGNATURE;
 		}

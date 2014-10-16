@@ -94,7 +94,7 @@
 										<xs:element type="xs:int" name="PublicKeySize"/>
 										<xs:element type="xs:string" name="PublicKeyEncryptionAlgo"/>
 
-										<xs:element type="xs:string" name="KeyUsage"/>
+										<xs:element type="xs:string" name="KeyUsage" minOccurs="0"/>
 										<xs:element type="xs:boolean" name="IdKpOCSPSigning" minOccurs="0"/>
 										<xs:element type="xs:boolean" name="IdPkixOcspNoCheck" minOccurs="0"/>
 										<xs:element type="xs:boolean" name="ExpiredCertOnCRL" minOccurs="0"/>
