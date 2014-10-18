@@ -233,10 +233,10 @@ public class CommonsDataLoader implements DataLoader {
 					proxyHost = proxyPreferenceManager.getHttpHost();
 					proxyUser = proxyPreferenceManager.getHttpUser();
 					proxyPassword = proxyPreferenceManager.getHttpPassword();
-
 				}
 
 			if (DSSUtils.isNotEmpty(proxyUser) && DSSUtils.isNotEmpty(proxyPassword)) {
+
 				LOG.debug("proxy user: " + proxyUser + ":" + proxyPassword);
 				AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
 				UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);

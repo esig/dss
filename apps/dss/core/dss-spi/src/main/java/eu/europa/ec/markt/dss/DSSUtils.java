@@ -828,6 +828,8 @@ public final class DSSUtils {
 		}
 		if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal())) {
 			LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
+			LOG.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
+			LOG.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
 			return null;
 		}
 		return issuerCert;
