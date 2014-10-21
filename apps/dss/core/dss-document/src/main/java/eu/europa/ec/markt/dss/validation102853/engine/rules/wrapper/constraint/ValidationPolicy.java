@@ -22,14 +22,7 @@ package eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import org.w3c.dom.Document;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.transform.sax.SAXSource;
 import java.net.URL;
-import java.util.HashMap;
 
 /**
  * In memory representation on the XML Validation Policy Constraint document and XSD
@@ -44,12 +37,10 @@ import java.util.HashMap;
 public class ValidationPolicy {
     private Document document;
     XmlDom xmlDom;
-    HashMap<String, Object> treeResult;
     private final URL sourceXSD;
 
-    public ValidationPolicy(XmlDom xmlDom, URL sourceXSD, HashMap<String, Object> treeResult, Document document) {
+    public ValidationPolicy(XmlDom xmlDom, URL sourceXSD, Document document) {
         this.xmlDom = xmlDom;
-        this.treeResult = treeResult;
         this.document = document;
         this.sourceXSD = sourceXSD;
     }
@@ -64,10 +55,6 @@ public class ValidationPolicy {
 
     public void setXmlDom(XmlDom xmlDom) {
         this.xmlDom = xmlDom;
-    }
-
-    public HashMap<String, Object> getTreeResult() {
-        return treeResult;
     }
 
     public URL getSourceXSD() {

@@ -1,19 +1,19 @@
 package eu.europa.ec.markt.dss.applet.component.model;
 
-import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
+import com.sun.xml.xsom.*;
+import com.sun.xml.xsom.impl.ComplexTypeImpl;
+import com.sun.xml.xsom.parser.XSOMParser;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.math.BigInteger;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Created by kaczmani on 10/04/2014.
@@ -22,7 +22,7 @@ public abstract class XmlDomTreeModelAdapter implements TreeModel {
     protected List<TreeModelListener> listeners = new ArrayList<TreeModelListener>();
     //XmlDom doc to view as a tree
     private Document document;
-    private HashMap<String, Object> xsdTree;
+    private final Map<XsdNode, Object> xsdTree;
 
     public Document getDocument() {
         return document;
@@ -33,15 +33,154 @@ public abstract class XmlDomTreeModelAdapter implements TreeModel {
     }
 
     //constructor used to set the document to view
-    public XmlDomTreeModelAdapter(Document doc, HashMap<String, Object> xsdTree) {
+    public XmlDomTreeModelAdapter(Document doc, URL xsdTree) {
         document = doc;
-        this.xsdTree = xsdTree;
+        this.xsdTree = getXsdElements(xsdTree);
     }
+
+    public Map<XsdNode, Object> getXsdTree() {
+        return xsdTree;
+    }
+
+    /**
+     * Get XSD schema in hashMap tree
+     *
+     * @return HashMap<String, Object>
+     * @param xsdUrl
+     */
+    private Map<XsdNode, Object> getXsdElements(URL xsdUrl) {
+        XSSchema xsSchema = loadXsd(xsdUrl);
+        //---
+        Map<XsdNode, Object> result = new LinkedHashMap<XsdNode, Object>();
+        Map<XsdNode, Object> hashMap = new LinkedHashMap<XsdNode, Object>();
+        Iterator<XSElementDecl> itre = xsSchema.iterateElementDecls();
+        //---
+        String path = "";
+        while (itre.hasNext()) {
+            XSElementDecl xsElementDecl = itre.next();
+
+            final XsdNode xsdNode = new XsdNode(xsElementDecl.getName(), XsdNodeType.ELEMENT, XsdNodeCardinality.ONCE_EXACTLY);
+            result.put(xsdNode, hashMap);
+            path = xsElementDecl.getName();
+            XSComplexType xsComplexType = xsElementDecl.getType().asComplexType();
+            if (xsComplexType != null) {
+                XSContentType xsContentType = xsComplexType.getContentType();
+                XSParticle xsParticle = xsContentType.asParticle();
+                getElementsRecursively(path, hashMap, xsParticle);
+            }
+        }
+        return result;
+    }
+
+    /*
+     * recursive helper method of getXmlElements
+     * note that since we don't know the "deepness" of the
+     * schema a recursive way of implementation was necessary
+     */
+    private void getElementsRecursively(String path, Map<XsdNode, Object> hm, XSParticle xsParticle) {
+        if (xsParticle != null) {
+            XSTerm term = xsParticle.getTerm();
+            if (term.isElementDecl()) {
+                final XSElementDecl xsElementDecl = term.asElementDecl();
+                final String xsElementDeclName = xsElementDecl.getName();
+                path = path + "/" + xsElementDeclName;
+                XSComplexType xsComplexType = xsElementDecl.getType().asComplexType();
+                //---
+                if (xsComplexType == null) {
+                    XsdNodeCardinality xsdNodeCardinality = getXmlItemCardinality(xsParticle);
+
+                    // subchild has a text node
+                    final XsdNode childNode = new XsdNode(path, XsdNodeType.ELEMENT, xsdNodeCardinality);
+                    if (xsElementDecl.getType().isSimpleType()) {
+                        final Map<XsdNode, Object> subMap = new LinkedHashMap<XsdNode, Object>(1);
+                        subMap.put(new XsdNode(path, XsdNodeType.TEXT, XsdNodeCardinality.ONCE_EXACTLY), null);
+                        hm.put(childNode, subMap);
+                    } else {
+                        hm.put(childNode, null);
+                    }
+
+
+                } else {
+                    XSContentType xscont = xsComplexType.getContentType();
+                    XSParticle particle = xscont.asParticle();
+                    Map<XsdNode, Object> newHm = new LinkedHashMap<XsdNode, Object>();
+
+
+                    final XsdNode childNode = new XsdNode(path, XsdNodeType.ELEMENT, getXmlItemCardinality(xsParticle));
+                    //Attributes
+                    Collection<? extends XSAttributeUse> attributeList = xsComplexType.getAttributeUses();
+                    for (XSAttributeUse attr : attributeList) {
+                        XSAttributeDecl attrInfo = attr.getDecl();
+                        final XsdNode grandChildNode = new XsdNode(path + "/" + attrInfo.getName(), XsdNodeType.ATTRIBUTE, XsdNodeCardinality.ONCE_OPTIONALY);
+                        newHm.put(grandChildNode, null);
+                    }
+
+                    getElementsRecursively(path, newHm, particle);
+
+                    if (((ComplexTypeImpl) xsComplexType).getType().getBaseType().getName().equalsIgnoreCase("string")) {
+                        newHm.put(new XsdNode(path, XsdNodeType.TEXT, XsdNodeCardinality.ONCE_EXACTLY), null);
+                    }
+
+                    hm.put(childNode, newHm);
+
+
+                }
+                //---
+            } else if (term.isModelGroup()) {
+                XSModelGroup model = term.asModelGroup();
+                XSParticle[] parr = model.getChildren();
+                for (XSParticle partemp : parr) {
+                    getElementsRecursively(path, hm, partemp);
+                }
+            }
+        }
+    }
+
+    private XsdNodeCardinality getXmlItemCardinality(XSParticle xsParticle) {
+        if (xsParticle.getMinOccurs().compareTo(BigInteger.valueOf(0)) == 0) {
+            // minOccurs == 0
+            if (xsParticle.getMaxOccurs().compareTo(BigInteger.valueOf(XSParticle.UNBOUNDED)) != 0) {
+                // maxOccurs != UNBOUNDED
+                return XsdNodeCardinality.ONCE_OPTIONALY;
+            } else {
+                // maxOccurs == UNBOUNDED
+                return XsdNodeCardinality.ZERO_OR_MORE;
+            }
+        } else {
+            return XsdNodeCardinality.ONCE_EXACTLY;
+        }
+    }
+
+    /**
+     * Load xsd from file .xsd
+     *
+     * @return XSOM.XSSchema
+     * @param xsdUrl
+     */
+    private XSSchema loadXsd(URL xsdUrl) {
+        XSOMParser parser = new XSOMParser();
+        XSSchemaSet xsSchemaSet = null;
+        try {
+            //			System.out.println("##########" + xsdUrl.toString());
+            parser.parse(xsdUrl.openStream());
+            xsSchemaSet = parser.getResult();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Object[] schemaArray = xsSchemaSet.getSchemas().toArray();
+        XSSchema s = null;
+        if (schemaArray.length > 1) {
+            s = (XSSchema) xsSchemaSet.getSchemas().toArray()[1];
+        }
+        return s;
+    }
+
 
     //override from TreeModel
     public Object getRoot() {
         if(document == null) return null;
-        return new XmlDomAdapterNode(document.getDocumentElement(),false);
+        return new XmlDomAdapterNode(null, document.getDocumentElement(),false);
     }
 
     //override from TreeModel

@@ -20,20 +20,14 @@
 
 package eu.europa.ec.markt.dss.applet.component.model;
 
-import java.util.Vector;
+import eu.europa.ec.markt.dss.DSSUtils;
+import org.w3c.dom.*;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-
-import eu.europa.ec.markt.dss.DSSUtils;
+import java.util.Vector;
 
 /**
  * TODO

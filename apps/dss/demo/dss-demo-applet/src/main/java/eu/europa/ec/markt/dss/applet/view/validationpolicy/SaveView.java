@@ -19,7 +19,6 @@
  */
 package eu.europa.ec.markt.dss.applet.view.validationpolicy;
 
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -38,7 +37,6 @@ import javax.swing.*;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -46,7 +44,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,6 +86,7 @@ public class SaveView extends WizardView<ValidationPolicyModel, ValidationPolicy
         validationArea.setRows(10);
         scrollPane = new JScrollPane(validationArea);
         validationArea.setForeground(Color.ORANGE);
+        validationArea.setFont(new Font(validationArea.getFont().getName(), Font.BOLD, validationArea.getFont().getSize()));
         validationArea.setEditable(false);
         fileTargetLabel = ComponentFactory.createLabel(I18N_NO_FILE_SELECTED);
         selectFileTarget = ComponentFactory.createFileChooser(I18N_BROWSE, true, new SelectFileAEventListener());
