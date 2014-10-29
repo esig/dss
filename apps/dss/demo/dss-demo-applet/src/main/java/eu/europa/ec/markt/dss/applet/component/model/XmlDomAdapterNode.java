@@ -1,11 +1,12 @@
 package eu.europa.ec.markt.dss.applet.component.model;
-import org.w3c.dom.Element;
+
 import org.w3c.dom.Node;
 
 /**
  * Created by kaczmani on 10/04/2014.
  */
 public class XmlDomAdapterNode {
+    private final XmlDomAdapterNode parent;
     private boolean attribute;
     private boolean leaf;
     /** the Element encapsulated by this node */
@@ -22,9 +23,11 @@ public class XmlDomAdapterNode {
 
     /**
      * Creates a new instance of the XmlDomAdapterNode class
+     * @param parent
      * @param node
      */
-    public XmlDomAdapterNode(Node node, boolean attribute) {
+    public XmlDomAdapterNode(XmlDomAdapterNode parent, Node node, boolean attribute) {
+        this.parent = parent;
         this.node = node;
         this.attribute = attribute;
     }
@@ -72,7 +75,7 @@ public class XmlDomAdapterNode {
             }
         }
 
-        return new XmlDomAdapterNode(child, isAttribute);
+        return new XmlDomAdapterNode(this, child, isAttribute);
     }
 
     /**
@@ -94,5 +97,9 @@ public class XmlDomAdapterNode {
             count = node.getChildNodes().getLength() + attributes;
         }
         return count;
+    }
+
+    public XmlDomAdapterNode getParent() {
+        return parent;
     }
 }
