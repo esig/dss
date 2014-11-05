@@ -22,6 +22,7 @@ package eu.europa.ec.markt.dss.validation102853.cades;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -1008,19 +1009,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
 		try {
 
-			final SignerInformation signerInformationToCheck;
-			if (detachedContents == null || detachedContents.size() == 0) {
-				signerInformationToCheck = signerInformation;
-			} else {
-				// Recreate a SignerInformation with the content using a CMSSignedDataParser
-				final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
-				final CMSTypedStream signedContent = new CMSTypedStream(dssDocument.openStream());
-				final CMSSignedDataParser sp = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
-				sp.getSignedContent().drain();
-				final SignerId sid = signerInformation.getSID();
-				signerInformationToCheck = sp.getSignerInfos().get(sid);
-			}
-
 			final List<SigningCertificateValidity> signingCertificateValidityList;
 			if (providedSigningCertificateToken == null) {
 
@@ -1040,6 +1028,31 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				signingCertificateValidityList = candidatesForSigningCertificate.getSigningCertificateValidityList();
 
 			}
+			boolean detached = cmsSignedData.getSignedContent() == null || cmsSignedData.getSignedContent().getContent() == null ? true : false;
+			final SignerInformation signerInformationToCheck;
+			if (detached) {
+
+				if (detachedContents == null || detachedContents.size() == 0) {
+
+					if (signingCertificateValidityList.size() > 0) {
+
+						candidatesForSigningCertificate.setTheSigningCertificateValidity(signingCertificateValidityList.get(0));
+					}
+					signatureCryptographicVerification.setErrorMessage("Detached file not found!");
+					return signatureCryptographicVerification;
+				}
+				// Recreate a SignerInformation with the content using a CMSSignedDataParser
+				final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
+				final InputStream inputStream = dssDocument.openStream();
+				final CMSTypedStream signedContent = new CMSTypedStream(inputStream);
+				final CMSSignedDataParser sp = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
+				sp.getSignedContent().drain(); // Closes the stream
+				final SignerId sid = signerInformation.getSID();
+				signerInformationToCheck = sp.getSignerInfos().get(sid);
+			} else { //			if (detachedContents == null || detachedContents.size() == 0) {
+
+				signerInformationToCheck = signerInformation;
+			}
 			LOG.debug("CHECK SIGNATURE VALIDITY: ");
 			for (final SigningCertificateValidity signingCertificateValidity : signingCertificateValidityList) {
 
@@ -1053,8 +1066,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					final CertificateToken certificateToken = signingCertificateValidity.getCertificateToken();
 					final X509Certificate certificate = certificateToken.getCertificate();
 					final SignerInformationVerifier signerInformationVerifier = verifier.build(certificate);
-					// TODO: (Bob: 2013 Dec 06) The BC does not implement if way indicated in ETSI 102853 the validation of the signature. Each time a problem is encountered an exception
-					// TODO: (Bob: 2013 Dec 06) is raised. Solution extract the BC method and adapt.
 					LOG.debug(" - WITH SIGNING CERTIFICATE: " + certificateToken.getAbbreviation());
 					boolean signatureIntact = signerInformationToCheck.verify(signerInformationVerifier);
 					signatureCryptographicVerification.setReferenceDataFound(signatureIntact);
@@ -1678,7 +1689,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	public boolean isDataForSignatureLevelPresent(SignatureLevel signatureLevel) {
+	public boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel) {
 
 		/**
 		 * This list contains the detail information collected during the check. It is reset for each call.
@@ -1731,6 +1742,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				dataForProfilePresent &= ((signedAttributes.get(PKCSObjectIdentifiers.id_aa_signingCertificate) != null) || (signedAttributes
 					  .get(PKCSObjectIdentifiers.id_aa_signingCertificateV2) != null));
 				break; // break placed purposely
+			case CMS:
+				dataForProfilePresent = true;
+				break;
 			default:
 				throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
@@ -1739,6 +1753,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[]{SignatureLevel.CAdES_BASELINE_B, SignatureLevel.CAdES_BASELINE_T, SignatureLevel.CAdES_101733_C, SignatureLevel.CAdES_101733_X, SignatureLevel.CAdES_BASELINE_LT, SignatureLevel.CAdES_101733_A, SignatureLevel.CAdES_BASELINE_LTA};
+		return new SignatureLevel[]{SignatureLevel.CMS, SignatureLevel.CAdES_BASELINE_B, SignatureLevel.CAdES_BASELINE_T, SignatureLevel.CAdES_101733_C, SignatureLevel.CAdES_101733_X, SignatureLevel.CAdES_BASELINE_LT, SignatureLevel.CAdES_101733_A, SignatureLevel.CAdES_BASELINE_LTA};
 	}
 }
