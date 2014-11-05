@@ -104,6 +104,8 @@ import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 import eu.europa.ec.markt.dss.validation102853.ocsp.ListOCSPSource;
 import eu.europa.ec.markt.dss.validation102853.pades.PAdESSignature;
 import eu.europa.ec.markt.dss.validation102853.pades.PDFDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScope;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinder;
@@ -158,7 +160,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * In case of a detached signature this {@code List} contains the signed documents.
 	 */
-	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();;
+	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 
 	protected CertificateToken providedSigningCertificateToken = null;
 
@@ -363,6 +365,19 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public Reports validateDocument(final Document validationPolicyDom) {
 
+		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyDom);
+		return validateDocument(validationPolicy);
+	}
+
+	/**
+	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If null or empty the default file is used.
+	 *
+	 * @param validationPolicy {@code ValidationPolicy}
+	 * @return
+	 */
+	@Override
+	public Reports validateDocument(final ValidationPolicy validationPolicy) {
+
 		LOG.info("Document validation...");
 		if (certificateVerifier == null) {
 
@@ -374,7 +389,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final ProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setDiagnosticDataDom(diagnosticDataDom);
-		executor.setValidationPolicyDom(validationPolicyDom);
+		executor.setValidationPolicy(validationPolicy);
 
 		final Reports reports = executor.execute();
 		return reports;

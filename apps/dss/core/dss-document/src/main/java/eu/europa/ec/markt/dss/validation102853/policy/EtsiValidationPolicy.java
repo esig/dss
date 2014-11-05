@@ -766,13 +766,6 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/*public Constraint getTimestampOrderConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/Timestamp/RightOrder";
-		return getBasicConstraint(XP_ROOT, true);
-	}*/
-
-
 	/**
 	 * This constraint has only two levels: FAIL, or NOTHING
 	 *

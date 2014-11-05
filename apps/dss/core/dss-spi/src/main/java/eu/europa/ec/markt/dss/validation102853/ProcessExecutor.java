@@ -23,6 +23,7 @@ import java.util.Date;
 
 import org.w3c.dom.Document;
 
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
 /**
@@ -53,8 +54,17 @@ public interface ProcessExecutor {
 	 * This method allows to set the validation policy that is used during the validation process execution.
 	 *
 	 * @param validationPolicyDom DOM {@code Document} representation of the validation policy.
+	 * @deprecated use eu.europa.ec.markt.dss.validation102853.ProcessExecutor#setValidationPolicyDom(eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy)
 	 */
+	@Deprecated
 	void setValidationPolicyDom(final Document validationPolicyDom);
+
+	/**
+	 * This method allows to set the validation policy that is used during the validation process execution.
+	 *
+	 * @param validationPolicy DOM {@code Document} representation of the validation policy.
+	 */
+	void setValidationPolicy(final ValidationPolicy validationPolicy);
 
 	/**
 	 * This method allows to run the validation process.

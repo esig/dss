@@ -55,11 +55,6 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	protected DiagnosticData diagnosticData;
 
 	/**
-	 * Validation policy constraint data DOM representation
-	 */
-	protected Document validationPolicyDom;
-
-	/**
 	 * Wrapper for the validation policy constraints
 	 */
 	protected ValidationPolicy validationPolicy;
@@ -96,7 +91,13 @@ public class CustomProcessExecutor implements ProcessExecutor {
 
 	@Override
 	public void setValidationPolicyDom(final Document validationPolicyDom) {
-		this.validationPolicyDom = validationPolicyDom;
+
+		validationPolicy = new EtsiValidationPolicy(validationPolicyDom);
+	}
+
+	@Override
+	public void setValidationPolicy(final ValidationPolicy validationPolicy) {
+		this.validationPolicy = validationPolicy;
 	}
 
 	/**
@@ -108,7 +109,6 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		processParams = new ProcessParameters();
 		diagnosticData = new DiagnosticData(diagnosticDataDom);
 		processParams.setDiagnosticData(diagnosticData);
-		validationPolicy = new EtsiValidationPolicy(validationPolicyDom);
 		processParams.setValidationPolicy(validationPolicy);
 		processParams.setCurrentTime(currentTime);
 		final XmlDom usedCertificates = diagnosticData.getElement("/DiagnosticData/UsedCertificates");

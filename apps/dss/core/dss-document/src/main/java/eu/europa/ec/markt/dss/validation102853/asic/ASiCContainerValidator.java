@@ -47,6 +47,7 @@ import eu.europa.ec.markt.dss.signature.asic.ASiCService;
 import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.DocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinder;
 
@@ -223,6 +224,9 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 				subordinatedValidator = currentSubordinatedValidator;
 			}
 			previousValidator = currentSubordinatedValidator;
+		}
+		if (subordinatedValidator == null) {
+			throw new DSSException("This is not an ASiC container. The signature cannot be found!");
 		}
 	}
 
@@ -436,8 +440,14 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return null;
 	}
 
+	/**
+	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If null or empty the default file is used.
+	 *
+	 * @param validationPolicy {@code ValidationPolicy}
+	 * @return
+	 */
 	@Override
-	public Reports validateDocument(final Document validationPolicyDom) {
+	public Reports validateDocument(final ValidationPolicy validationPolicy) {
 
 		Reports lastReports = null;
 		Reports firstReport = null;
@@ -456,7 +466,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 				currentSubordinatedValidator.setDetachedContents(detachedContents);
 			}
 			currentSubordinatedValidator.setCertificateVerifier(certificateVerifier);
-			final Reports currentReports = currentSubordinatedValidator.validateDocument(validationPolicyDom);
+			final Reports currentReports = currentSubordinatedValidator.validateDocument(validationPolicy);
 			if (lastReports == null) {
 				firstReport = currentReports;
 			} else {
