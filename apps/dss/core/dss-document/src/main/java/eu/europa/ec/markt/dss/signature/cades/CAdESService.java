@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSASN1Utils;
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
@@ -142,7 +143,6 @@ public class CAdESService extends AbstractSignatureService {
 
 			throw new DSSNullException(SignatureTokenConnection.class, "", "The connection through available API to the SSCD must be set.");
 		}
-		// final DSSDocument toSignDocument = getSignedContent(toSignDocument);
 		final byte[] dataToSign = getDataToSign(toSignDocument, parameters);
 		byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), parameters.getPrivateKeyEntry());
 		final DSSDocument document = signDocument(toSignDocument, parameters, signatureValue);
@@ -167,8 +167,9 @@ public class CAdESService extends AbstractSignatureService {
 
 		try {
 			//Retrieve the original signature
-			final InputStream input = toCounterSignDocument.openStream();
-			final CMSSignedData cmsSignedData = new CMSSignedData(input);
+			final InputStream inputStream = toCounterSignDocument.openStream();
+			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
+			DSSUtils.closeQuietly(inputStream);
 
 			SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
 			SignerInformation signerInformation = signerInfos.get(selector);

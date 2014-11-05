@@ -18,7 +18,7 @@
             };
             var parameters = {
                 service_url : '<c:out value="${prefUrlService.value}"/>',
-                default_policy_url : '<c:out value="${prefDefaultPolicyUrl}"/>',
+                default_policy_url : '<c:out value="${prefDefaultPolicyUrl}"/>'
             };
             var version = '1.6';
 

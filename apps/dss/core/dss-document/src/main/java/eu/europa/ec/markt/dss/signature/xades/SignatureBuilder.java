@@ -168,6 +168,8 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		byte[] canonicalizedSignedInfo = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, signedInfoDom);
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalized SignedInfo         --> {}", new String(canonicalizedSignedInfo));
+			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedSignedInfo);
+			LOG.trace("Canonicalized SignedInfo SHA256  --> {}", DSSUtils.base64Encode(digest));
 		}
 		built = true;
 		return canonicalizedSignedInfo;

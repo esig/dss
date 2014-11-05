@@ -151,6 +151,11 @@ public class OfflineResolver extends ResourceResolverSpi {
 
 			return true;
 		}
+		// For the file name as "/toto.txt"
+		if (documentUri.endsWith(documentUri_) && documentUri.startsWith("/") && documentUri.length() - 1 == documentUri_.length()) {
+
+			return true;
+		}
 		return false;
 	}
 

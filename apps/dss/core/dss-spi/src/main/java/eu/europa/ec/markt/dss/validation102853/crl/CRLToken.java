@@ -115,6 +115,10 @@ public class CRLToken extends RevocationToken {
 		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (!issuerToken.equals(crlValidity.issuerToken)) {
 
+			if (!crlValidity.signatureIntact) {
+
+				throw new DSSException(crlValidity.signatureInvalidityReason);
+			}
 			throw new DSSException("The CRLToken is not signed by the same issuer as the CertificateToken to be verified!");
 		}
 
