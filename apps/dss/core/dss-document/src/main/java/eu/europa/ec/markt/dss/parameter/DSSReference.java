@@ -62,7 +62,7 @@ public class DSSReference {
 		if (reference.transforms != null && reference.transforms.size() > 0) {
 
 			transforms = new ArrayList<DSSTransform>();
-			for (final DSSTransform transform : transforms) {
+			for (final DSSTransform transform : reference.transforms) {
 
 				final DSSTransform dssTransform = new DSSTransform(transform);
 				transforms.add(dssTransform);
