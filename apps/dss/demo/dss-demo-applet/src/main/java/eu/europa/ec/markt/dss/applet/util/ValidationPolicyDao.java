@@ -19,51 +19,24 @@
  */
 package eu.europa.ec.markt.dss.applet.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.net.URL;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
+import eu.europa.ec.markt.dss.DSSXMLUtils;
+import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
+import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import com.sun.xml.xsom.XSAttributeDecl;
-import com.sun.xml.xsom.XSAttributeUse;
-import com.sun.xml.xsom.XSComplexType;
-import com.sun.xml.xsom.XSContentType;
-import com.sun.xml.xsom.XSElementDecl;
-import com.sun.xml.xsom.XSModelGroup;
-import com.sun.xml.xsom.XSParticle;
-import com.sun.xml.xsom.XSSchema;
-import com.sun.xml.xsom.XSSchemaSet;
-import com.sun.xml.xsom.XSTerm;
-import com.sun.xml.xsom.impl.ComplexTypeImpl;
-import com.sun.xml.xsom.parser.XSOMParser;
-import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
-import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
+import java.io.*;
+import java.net.URL;
 
 /**
  * TODO
@@ -106,8 +79,6 @@ public class ValidationPolicyDao {
 		InputStream xsdStream1 = new ByteArrayInputStream(fileInputStreamXsd);
 		InputSource sourceentree = new InputSource(xsdStream1);
 
-		HashMap<String, Object> xsdTree = getXsdElements();
-
 		final Document document = DSSXMLUtils.buildDOM(inputStreamClone2);
 
 		//Clean XML
@@ -126,7 +97,7 @@ public class ValidationPolicyDao {
 		document.normalize();
 
 		final XmlDom xmlDom = new XmlDom(document);
-		final ValidationPolicy validationPolicy = new ValidationPolicy(xmlDom, xsdUrl, xsdTree, document);
+		final ValidationPolicy validationPolicy = new ValidationPolicy(xmlDom, xsdUrl, document);
 
 		return validationPolicy;
 	}
@@ -145,119 +116,6 @@ public class ValidationPolicyDao {
 		}
 		byte[] content = baos.toByteArray();
 		return baos.toByteArray();
-	}
-
-	/**
-	 * Get XSD schema in hashMap tree
-	 *
-	 * @return HashMap<String, Object>
-	 */
-	public HashMap<String, Object> getXsdElements() {
-		XSSchema schemaSet = loadXsd();
-		//---
-		HashMap<String, Object> hmReturned = new HashMap<String, Object>();
-		HashMap<String, Object> hm = new HashMap<String, Object>();
-		Iterator<XSElementDecl> itre = schemaSet.iterateElementDecls();
-		//---
-		while (itre.hasNext()) {
-			XSElementDecl xse = (XSElementDecl) itre.next();
-
-			hmReturned.put(xse.getName(), hm);
-			XSComplexType xscomp = xse.getType().asComplexType();
-			if (xscomp != null) {
-				XSContentType xscont = xscomp.getContentType();
-				XSParticle particle = xscont.asParticle();
-				getElementsRecursively(hm, particle);
-			}
-		}
-		return hmReturned;
-	}
-
-	/*
-	 * recursive helper method of getXmlElements
-	 * note that since we don't know the "deepness" of the
-	 * schema a recursive way of implementation was necessary
-	 */
-	private void getElementsRecursively(HashMap<String, Object> hm, XSParticle xsp) {
-		if (xsp != null) {
-			XSTerm term = xsp.getTerm();
-			if (term.isElementDecl()) {
-				XSComplexType xscmp = (term.asElementDecl()).getType().asComplexType();
-				//---
-				if (xscmp == null) {
-					if (xsp.getMinOccurs() == BigInteger.valueOf(0)) {
-						if (xsp.getMaxOccurs() != BigInteger.valueOf(-1)) {
-							hm.put(term.asElementDecl().getName(), "|");
-						} else {
-							hm.put(term.asElementDecl().getName(), "|n");
-						}
-					} else {
-						hm.put(term.asElementDecl().getName(), "=");
-					}
-				} else {
-					XSContentType xscont = xscmp.getContentType();
-					XSParticle particle = xscont.asParticle();
-					HashMap<String, Object> newHm = new HashMap<String, Object>();
-
-					//Attributes
-					Collection<? extends XSAttributeUse> attributeList = xscmp.getAttributeUses();
-					Iterator<? extends XSAttributeUse> itAttr = attributeList.iterator();
-					while (itAttr.hasNext()) {
-						XSAttributeUse attr = itAttr.next();
-						XSAttributeDecl attrInfo = attr.getDecl();
-						newHm.put(attrInfo.getName(), null);
-					}
-
-					getElementsRecursively(newHm, particle);
-
-					//TODO do better
-					if (((ComplexTypeImpl) xscmp).getType().getBaseType().getName().equalsIgnoreCase("string")) {
-						//Can element appears several times?
-						if (xsp.getMaxOccurs() != BigInteger.valueOf(-1)) {
-							//Text node : no children
-							newHm.put(term.asElementDecl().getName(), "TEXT");
-						} else {
-							newHm.put(term.asElementDecl().getName(), "NTEXT");
-						}
-
-					}
-					hm.put(term.asElementDecl().getName(), newHm);
-
-
-				}
-				//---
-			} else if (term.isModelGroup()) {
-				XSModelGroup model = term.asModelGroup();
-				XSParticle[] parr = model.getChildren();
-				for (XSParticle partemp : parr) {
-					getElementsRecursively(hm, partemp);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Load xsd from file .xsd
-	 *
-	 * @return XSOM.XSSchema
-	 */
-	private XSSchema loadXsd() {
-		XSOMParser parser = new XSOMParser();
-		XSSchemaSet xsSchemaSet = null;
-		try {
-			//			System.out.println("##########" + xsdUrl.toString());
-			parser.parse(xsdUrl.openStream());
-			xsSchemaSet = parser.getResult();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Object[] schemaArray = xsSchemaSet.getSchemas().toArray();
-		XSSchema s = null;
-		if (schemaArray.length > 1) {
-			s = (XSSchema) xsSchemaSet.getSchemas().toArray()[1];
-		}
-		return s;
 	}
 
 	public void save(ValidationPolicy validationPolicy, OutputStream outputStream) {

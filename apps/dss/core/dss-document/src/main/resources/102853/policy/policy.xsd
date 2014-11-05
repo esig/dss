@@ -8,7 +8,7 @@
                 <xs:element type="xs:string" name="Description" />
                 <xs:element name="MainSignature">
                     <xs:complexType>
-                        <xs:sequence>
+                        <xs:sequence >
                             <xs:element name="AcceptablePolicies" minOccurs="0" maxOccurs="1">
                                 <xs:complexType>
                                     <xs:sequence>
@@ -17,7 +17,7 @@
                                     <xs:attribute type="tns:level" name="Level"/>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="ReferenceDataExistence" maxOccurs="unbounded">
+                            <xs:element name="ReferenceDataExistence" minOccurs="0" maxOccurs="1">
                                 <xs:complexType>
                                     <xs:simpleContent>
                                         <xs:extension base="xs:string">
@@ -26,7 +26,7 @@
                                     </xs:simpleContent>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="ReferenceDataIntact">
+                            <xs:element name="ReferenceDataIntact" minOccurs="0" maxOccurs="1">
                                 <xs:complexType>
                                     <xs:simpleContent>
                                         <xs:extension base="xs:string">
@@ -35,7 +35,7 @@
                                     </xs:simpleContent>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="SignatureIntact">
+                            <xs:element name="SignatureIntact" minOccurs="0" maxOccurs="1">
                                 <xs:complexType>
                                     <xs:simpleContent>
                                         <xs:extension base="xs:string">
@@ -47,7 +47,7 @@
                             <xs:element name="SigningCertificate" type="tns:CertificateType"></xs:element>
                             <xs:element name="CACertificate" type="tns:CertificateType"></xs:element>
                             <xs:element name="Cryptographic" type="tns:CryptographicType"></xs:element>
-                            <xs:element name="MandatedSignedQProperties">
+                            <xs:element name="MandatedSignedQProperties" minOccurs="0" maxOccurs="1">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="SigningTime">
@@ -63,7 +63,7 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="MandatedUnsignedQProperties">
+                            <xs:element name="MandatedUnsignedQProperties" minOccurs="0" maxOccurs="1">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="CounterSignature" type="tns:CounterSignatureType">

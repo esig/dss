@@ -19,17 +19,12 @@
  */
 package eu.europa.ec.markt.dss.applet.component.model.validation;
 
-import java.util.List;
+import eu.europa.ec.markt.dss.applet.component.model.XmlDomTreeModelAdapter;
+import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
-
-import eu.europa.ec.markt.dss.applet.component.model.AbstractTreeModel;
-import eu.europa.ec.markt.dss.applet.component.model.XmlDomAdapterNode;
-import eu.europa.ec.markt.dss.applet.component.model.XmlDomTreeModelAdapter;
-import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
-import org.w3c.dom.Element;
 
 /**
  * Build the tree model of the validation policy
@@ -50,7 +45,7 @@ public class ValidationPolicyTreeModel extends XmlDomTreeModelAdapter {
      * @param validationPolicy
      */
     public ValidationPolicyTreeModel(final ValidationPolicy validationPolicy) {
-        super(validationPolicy.getDocument(),validationPolicy.getTreeResult());
+        super(validationPolicy.getDocument(), validationPolicy.getSourceXSD());
     }
 
     public void fireTreeNodesRemoved(TreePath parentPath, int childIndex, Object child) {
