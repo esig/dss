@@ -100,8 +100,9 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 
 		LOG.info("EXTEND SIGNATURES.");
 		try {
-			final InputStream input = signatureToExtend.openStream();
-			final CMSSignedData cmsSignedData = new CMSSignedData(input);
+			final InputStream inputStream = signatureToExtend.openStream();
+			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
+			DSSUtils.closeQuietly(inputStream);
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
 			final CMSSignedDocument cmsSignedDocument = new CMSSignedDocument(extendCMSSignedData);
 			return cmsSignedDocument;

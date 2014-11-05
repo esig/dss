@@ -31,6 +31,7 @@ package eu.europa.ec.markt.dss.signature.asic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -214,24 +215,27 @@ public class ASiCService extends AbstractSignatureService {
 		final DSSDocument signedDocument = specificService.extendDocument(signature, xadesParameters);
 
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final ZipOutputStream zip = new ZipOutputStream(output);
-		final ZipInputStream input = new ZipInputStream(toExtendDocument.openStream());
+		final ZipOutputStream zipOutputStream = new ZipOutputStream(output);
+		final ZipInputStream zipInputStream = new ZipInputStream(toExtendDocument.openStream());
 		ZipEntry entry;
-		while ((entry = getNextZipEntry(input)) != null) {
+		while ((entry = getNextZipEntry(zipInputStream)) != null) {
 
 			final String name = entry.getName();
 			final ZipEntry newEntry = new ZipEntry(name);
 			if (ASiCContainerValidator.isXAdES(name) || ASiCContainerValidator.isCAdES(name)) {
 
-				createZipEntry(zip, newEntry);
-				DSSUtils.copy(signedDocument.openStream(), zip);
+				createZipEntry(zipOutputStream, newEntry);
+				final InputStream inputStream = signedDocument.openStream();
+				DSSUtils.copy(inputStream, zipOutputStream);
+				DSSUtils.closeQuietly(inputStream);
 			} else {
 
-				createZipEntry(zip, newEntry);
-				DSSUtils.copy(input, zip);
+				createZipEntry(zipOutputStream, newEntry);
+				DSSUtils.copy(zipInputStream, zipOutputStream);
 			}
 		}
-		DSSUtils.close(zip);
+		DSSUtils.closeQuietly(zipInputStream);
+		DSSUtils.closeQuietly(zipOutputStream);
 		return new InMemoryDocument(output.toByteArray());
 	}
 
@@ -303,7 +307,9 @@ public class ASiCService extends AbstractSignatureService {
 	}
 
 	private void copyZipContent(DSSDocument toSignAsicContainer, ZipOutputStream zipOutputStream) {
-		final ZipInputStream zipInputStream = new ZipInputStream(toSignAsicContainer.openStream());
+
+		final InputStream inputStream = toSignAsicContainer.openStream();
+		final ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 		for (ZipEntry entry = getNextZipEntry(zipInputStream); entry != null; entry = getNextZipEntry(zipInputStream)) {
 
 			createZipEntry(zipOutputStream, entry);
@@ -630,7 +636,9 @@ public class ASiCService extends AbstractSignatureService {
 			try {
 
 				createZipEntry(outZip, entryDocument);
-				DSSUtils.copy(currentDetachedDocument.openStream(), outZip);
+				final InputStream inputStream = currentDetachedDocument.openStream();
+				DSSUtils.copy(inputStream, outZip);
+				DSSUtils.closeQuietly(inputStream);
 			} catch (DSSException e) {
 				if (!(e.getCause() instanceof ZipException && e.getCause().getMessage().startsWith("duplicate entry:"))) {
 					throw e;

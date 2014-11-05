@@ -830,7 +830,7 @@ public final class DSSUtils {
 			LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
 			LOG.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
 			LOG.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
-			return null;
+			// return null;
 		}
 		return issuerCert;
 	}
@@ -1948,7 +1948,7 @@ public final class DSSUtils {
 	 *
 	 * @param input the InputStream to close, may be null or already closed
 	 */
-	public static void closeQuietly(InputStream input) {
+	public static void closeQuietly(final InputStream input) {
 		try {
 			if (input != null) {
 				input.close();

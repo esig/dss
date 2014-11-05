@@ -23,6 +23,7 @@ package eu.europa.ec.markt.dss.applet.wizard.signature;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -206,9 +207,11 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 			prepareCommonSignature(model, parameters);
 		}
 		final DSSDocument signedDocument = SigningUtils.signDocument(serviceURL, fileToSign, parameters);
-		final FileOutputStream fos = new FileOutputStream(model.getTargetFile());
-		DSSUtils.copy(signedDocument.openStream(), fos);
-		fos.close();
+		final FileOutputStream fileOutputStream = new FileOutputStream(model.getTargetFile());
+		final InputStream inputStream = signedDocument.openStream();
+		DSSUtils.copy(inputStream, fileOutputStream);
+		DSSUtils.closeQuietly(inputStream);
+		DSSUtils.closeQuietly(fileOutputStream);
 	}
 
 	private void prepareCommonSignature(SignatureModel model, SignatureParameters parameters) {

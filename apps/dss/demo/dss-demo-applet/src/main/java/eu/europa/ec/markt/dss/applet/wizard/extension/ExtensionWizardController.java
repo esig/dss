@@ -23,6 +23,7 @@ package eu.europa.ec.markt.dss.applet.wizard.extension;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +44,8 @@ import eu.europa.ec.markt.dss.signature.SignatureLevel;
 
 /**
  * TODO
- *
- * <p>
+ * <p/>
+ * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
@@ -52,86 +53,89 @@ import eu.europa.ec.markt.dss.signature.SignatureLevel;
  */
 public class ExtensionWizardController extends WizardController<ExtendSignatureModel> {
 
-    private FileView fileView;
-    private SignatureView signatureView;
-    private SaveView saveView;
-    private FinishView finishView;
+	private FileView fileView;
+	private SignatureView signatureView;
+	private SaveView saveView;
+	private FinishView finishView;
 
-    /**
-     * The default constructor for ExtendsWizardController.
-     *
-     * @param core
-     * @param model
-     */
-    public ExtensionWizardController(final DSSAppletCore core, final ExtendSignatureModel model) {
-        super(core, model);
-    }
+	/**
+	 * The default constructor for ExtendsWizardController.
+	 *
+	 * @param core
+	 * @param model
+	 */
+	public ExtensionWizardController(final DSSAppletCore core, final ExtendSignatureModel model) {
+		super(core, model);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController#doCancel()
-     */
-    @Override
-    protected void doCancel() {
-        getCore().getController(ActivityController.class).display();
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController#doCancel()
+	 */
+	@Override
+	protected void doCancel() {
+		getCore().getController(ActivityController.class).display();
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController#doStart()
-     */
-    @Override
-    protected Class<? extends WizardStep<ExtendSignatureModel, ? extends WizardController<ExtendSignatureModel>>> doStart() {
-        return FileStep.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController#doStart()
+	 */
+	@Override
+	protected Class<? extends WizardStep<ExtendSignatureModel, ? extends WizardController<ExtendSignatureModel>>> doStart() {
+		return FileStep.class;
+	}
 
-    /**
-     * @throws IOException
-     */
-    public void extendAndSave() throws IOException {
+	/**
+	 * @throws IOException
+	 */
+	public void extendAndSave() throws IOException {
 
-        final ExtendSignatureModel model = getModel();
-        final File signedFile = getModel().getSelectedFile();
-        final File originalFile = getModel().getOriginalFile();
+		final ExtendSignatureModel model = getModel();
+		final File signedFile = getModel().getSelectedFile();
+		final File originalFile = getModel().getOriginalFile();
 
-        final SignatureParameters parameters = new SignatureParameters();
-        parameters.setSignatureLevel(SignatureLevel.valueByName(model.getLevel()));
-        parameters.setSignaturePackaging(model.getPackaging());
+		final SignatureParameters parameters = new SignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.valueByName(model.getLevel()));
+		parameters.setSignaturePackaging(model.getPackaging());
 
-        final DSSDocument signedDocument = SigningUtils.extendDocument(serviceURL, signedFile, originalFile, parameters);
+		final DSSDocument signedDocument = SigningUtils.extendDocument(serviceURL, signedFile, originalFile, parameters);
 
-        DSSUtils.copy(signedDocument.openStream(), new FileOutputStream(model.getTargetFile()));
+		final InputStream inputStream = signedDocument.openStream();
+		final FileOutputStream fileOutputStream = new FileOutputStream(model.getTargetFile());
+		DSSUtils.copy(inputStream, fileOutputStream);
+		DSSUtils.closeQuietly(inputStream);
+		DSSUtils.closeQuietly(fileOutputStream);
+	}
 
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController#registerViews()
+	 */
+	@Override
+	protected void registerViews() {
+		this.fileView = new FileView(getCore(), this, getModel());
+		this.signatureView = new SignatureView(getCore(), this, getModel());
+		this.saveView = new SaveView(getCore(), this, getModel());
+		this.finishView = new FinishView(getCore(), this, getModel());
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController#registerViews()
-     */
-    @Override
-    protected void registerViews() {
-        this.fileView = new FileView(getCore(), this, getModel());
-        this.signatureView = new SignatureView(getCore(), this, getModel());
-        this.saveView = new SaveView(getCore(), this, getModel());
-        this.finishView = new FinishView(getCore(), this, getModel());
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController#registerWizardStep()
-     */
-    @Override
-    protected Map<Class<? extends WizardStep<ExtendSignatureModel, ? extends WizardController<ExtendSignatureModel>>>, ? extends WizardStep<ExtendSignatureModel, ? extends WizardController<ExtendSignatureModel>>> registerWizardStep() {
-        final Map steps = new HashMap();
-        steps.put(FileStep.class, new FileStep(getModel(), fileView, this));
-        steps.put(SignatureStep.class, new SignatureStep(getModel(), signatureView, this));
-        steps.put(SaveStep.class, new SaveStep(getModel(), saveView, this));
-        steps.put(FinishStep.class, new FinishStep(getModel(), finishView, this));
-        return steps;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController#registerWizardStep()
+	 */
+	@Override
+	protected Map<Class<? extends WizardStep<ExtendSignatureModel, ? extends WizardController<ExtendSignatureModel>>>, ? extends WizardStep<ExtendSignatureModel, ? extends WizardController<ExtendSignatureModel>>> registerWizardStep() {
+		final Map steps = new HashMap();
+		steps.put(FileStep.class, new FileStep(getModel(), fileView, this));
+		steps.put(SignatureStep.class, new SignatureStep(getModel(), signatureView, this));
+		steps.put(SaveStep.class, new SaveStep(getModel(), saveView, this));
+		steps.put(FinishStep.class, new FinishStep(getModel(), finishView, this));
+		return steps;
+	}
 
 }

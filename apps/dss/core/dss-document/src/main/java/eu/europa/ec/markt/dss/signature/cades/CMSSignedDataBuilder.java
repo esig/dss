@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.signature.cades;
 
+import java.io.InputStream;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -241,7 +242,9 @@ public class CMSSignedDataBuilder {
 			cmsSignedDataGenerator.addOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response, otherRevocationInfoFormatStoreOcsp);
 			final boolean encapsulate = cmsSignedData.getSignedContent() != null;
 			if (!encapsulate) {
-				final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(parameters.getDetachedContent().openStream()));
+				final InputStream inputStream = parameters.getDetachedContent().openStream();
+				final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(inputStream));
+				DSSUtils.closeQuietly(inputStream);
 				cmsSignedData = cmsSignedDataGenerator.generate(content, encapsulate);
 			} else {
 				cmsSignedData = cmsSignedDataGenerator.generate(cmsSignedData.getSignedContent(), encapsulate);

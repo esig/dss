@@ -20,9 +20,11 @@
 
 package eu.europa.ec.markt.dss.validation102853.pades;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -65,7 +67,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		}
 		signatures = new ArrayList<AdvancedSignature>();
 		// TODO: (Bob: 2014 Feb 27) to be replaced document.openStream() by document
-		pdfSignatureService.validateSignatures(validationCertPool, document.openStream(), new PdfSignatureValidationCallback() {
+		final InputStream inputStream = document.openStream();
+		pdfSignatureService.validateSignatures(validationCertPool, inputStream, new PdfSignatureValidationCallback() {
 
 			@Override
 			public void validate(final PdfSignatureInfo pdfSignatureInfo) {
@@ -81,6 +84,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 				}
 			}
 		});
+		DSSUtils.closeQuietly(inputStream);
 		return signatures;
 	}
 
