@@ -128,8 +128,7 @@
 		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL"/>
 		<SigningCertificateValidityAtBestSignatureTime Level="FAIL"/>
 		<AlgorithmReliableAtBestSignatureTime Level="FAIL"/>
-		<Coherence Level="FAIL"/>
-        <RightOrder Level="FAIL" />
+		<Coherence Level="WARN"/>
 		<SigningCertificate>
 			<Recognition Level="FAIL"/>
 			<Signature Level="FAIL"/>
@@ -262,6 +261,7 @@
 			<Algo Date="2015-02-24">RSA1024</Algo>
 			<Algo Date="2015-02-24">RSA1536</Algo>
 			<Algo Date="2020-02-24">RSA2048</Algo>
+			<Algo Date="2020-02-24">RSA3072</Algo>
 			<Algo Date="2035-02-24">RSA4096</Algo>
 			<Algo Date="2035-02-24">ECDSA192</Algo>
 			<Algo Date="2035-02-24">ECDSA256</Algo>
