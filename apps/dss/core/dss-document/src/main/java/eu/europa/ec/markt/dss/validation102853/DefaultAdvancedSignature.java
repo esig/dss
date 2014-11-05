@@ -173,7 +173,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		prepareTimestamps(validationContext);
 		certificateVerifier.setSignatureCRLSource(new ListCRLSource(getCRLSource()));
 		certificateVerifier.setSignatureOCSPSource(new ListOCSPSource(getOCSPSource()));
-		certificateVerifier.setAdjunctCertSource(getCertificateSource());
+		// certificateVerifier.setAdjunctCertSource(getCertificateSource());
 		validationContext.initialize(certificateVerifier);
 		validationContext.validate();
 		return validationContext;
