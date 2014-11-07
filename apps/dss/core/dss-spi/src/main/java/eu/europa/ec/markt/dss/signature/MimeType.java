@@ -47,6 +47,8 @@ import eu.europa.ec.markt.dss.exception.DSSException;
  */
 public class MimeType {
 
+	private static Map<String, MimeType> mimeTypes = new HashMap<String, MimeType>();
+
 	public static final MimeType BINARY = new MimeType("application/octet-stream");
 	public static final MimeType XML = new MimeType("text/xml");
 	public static final MimeType PDF = new MimeType("application/pdf");
@@ -56,8 +58,6 @@ public class MimeType {
 	public static final MimeType TEXT = new MimeType("text/plain");
 
 	private String mimeTypeString;
-
-	private static Map<String, MimeType> mimeTypes = new HashMap<String, MimeType>();
 
 	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>() {{
 
