@@ -297,7 +297,7 @@ public final class SigningUtils {
 		inMemoryDocument.setName(wsSignedDocument.getName());
 		inMemoryDocument.setAbsolutePath(wsSignedDocument.getAbsolutePath());
 		final String mimeTypeString = wsSignedDocument.getMimeTypeString();
-		final MimeType mimeType = MimeType.fromCode(mimeTypeString);
+		final MimeType mimeType = MimeType.fromMimeTypeString(mimeTypeString);
 		inMemoryDocument.setMimeType(mimeType);
 		return inMemoryDocument;
 	}

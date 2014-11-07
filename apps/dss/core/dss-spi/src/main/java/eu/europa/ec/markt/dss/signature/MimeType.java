@@ -57,6 +57,8 @@ public class MimeType {
 
 	private String mimeTypeString;
 
+	private static Map<String, MimeType> mimeTypes = new HashMap<String, MimeType>();
+
 	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>() {{
 
 		put("xml", XML);
@@ -79,7 +81,11 @@ public class MimeType {
 		if (!mimeTypeString.matches("([\\w])*/([\\w\\-\\+\\.])*")) {
 			throw new DSSException("'" + mimeTypeString + "' is not conformant mime-type string!");
 		}
+		if (mimeTypes.get(mimeTypeString) != null) {
+			throw new DSSException("'" + mimeTypeString + "' corresponding MimeType exists already! Use #fromMimeTypeString method to obtain the corresponding object.");
+		}
 		this.mimeTypeString = mimeTypeString;
+		mimeTypes.put(mimeTypeString, this);
 	}
 
 	/**
@@ -100,6 +106,15 @@ public class MimeType {
 	 */
 	public String getCode() {
 		return mimeTypeString;
+	}
+
+	/**
+	 * This method returns the internal name of the mime-type
+	 *
+	 * @return
+	 */
+	public String name() {
+		return this.name();
 	}
 
 	/**
@@ -133,6 +148,21 @@ public class MimeType {
 	}
 
 	/**
+	 * This method returns the first representation of the {@code MimeType} corresponding to the given mime-type string.
+	 *
+	 * @param mimeTypeString is a string identifier composed of two parts: a "type" and a "subtype"
+	 * @return the extrapolated mime-type from the {@code String}
+	 */
+	public static MimeType fromMimeTypeString(final String mimeTypeString) {
+
+		MimeType mimeType = mimeTypes.get(mimeTypeString);
+		if (mimeType == null) {
+			mimeType = new MimeType(mimeTypeString);
+		}
+		return mimeType;
+	}
+
+	/**
 	 * This method allows to define a new relationship between a file extension and a {@code MimeType}.
 	 *
 	 * @param extension to be defined. Example: "txt", note that there is no point before the extension name.
@@ -141,12 +171,9 @@ public class MimeType {
 		fileExtensions.put(extension, this);
 	}
 
-	public String name() {
-		return this.name();
-	}
-
 	@Override
 	public boolean equals(Object obj) {
+
 		return obj instanceof MimeType && mimeTypeString.equals(((MimeType) obj).mimeTypeString);
 	}
 }

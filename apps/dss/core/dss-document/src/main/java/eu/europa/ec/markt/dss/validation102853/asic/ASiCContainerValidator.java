@@ -307,7 +307,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			DSSUtils.copy(asicsInputStream, byteArrayOutputStream);
 			final String mimeTypeString = byteArrayOutputStream.toString("UTF-8");
-			final MimeType asicMimeType = MimeType.fromCode(mimeTypeString);
+			final MimeType asicMimeType = MimeType.fromMimeTypeString(mimeTypeString);
 			return asicMimeType;
 		} catch (UnsupportedEncodingException e) {
 
@@ -431,7 +431,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 				if (indexOf > -1) {
 
 					final String asicCommentMimeTypeString = comment.substring(MIME_TYPE_COMMENT.length() + indexOf);
-					final MimeType mimeType = MimeType.fromCode(asicCommentMimeTypeString);
+					final MimeType mimeType = MimeType.fromMimeTypeString(asicCommentMimeTypeString);
 					return mimeType;
 				}
 			}
