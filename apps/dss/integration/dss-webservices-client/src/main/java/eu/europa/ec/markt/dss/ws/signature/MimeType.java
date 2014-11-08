@@ -1,60 +1,60 @@
 
 package eu.europa.ec.markt.dss.ws.signature;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for mimeType.
+ * <p>Java class for mimeType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
+ * 
  * <pre>
- * &lt;simpleType name="mimeType">
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="BINARY"/>
- *     &lt;enumeration value="XML"/>
- *     &lt;enumeration value="PDF"/>
- *     &lt;enumeration value="PKCS7"/>
- *     &lt;enumeration value="ASICS"/>
- *     &lt;enumeration value="ASICE"/>
- *     &lt;enumeration value="TEXT"/>
- *   &lt;/restriction>
- * &lt;/simpleType>
+ * &lt;complexType name="mimeType">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="mimeTypeString" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
+ * 
  */
-@XmlType(name = "mimeType")
-@XmlEnum
-public enum MimeType {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "mimeType", propOrder = {
+    "mimeTypeString"
+})
+public class MimeType {
 
-    BINARY("BINARY"),
-    XML("XML"),
-    PDF("PDF"),
-    @XmlEnumValue("PKCS7")
-    PKCS7("PKCS7"),
-    ASICS("ASICS"),
-    ASICE("ASICE"),
-    TEXT("TEXT");
-    private final String value;
+    protected String mimeTypeString;
 
-    MimeType(String v) {
-        value = v;
+    /**
+     * Gets the value of the mimeTypeString property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getMimeTypeString() {
+        return mimeTypeString;
     }
 
-    public String value() {
-        return value;
-    }
-
-    public static MimeType fromValue(String v) {
-        for (MimeType c: MimeType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
+    /**
+     * Sets the value of the mimeTypeString property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setMimeTypeString(String value) {
+        this.mimeTypeString = value;
     }
 
 }

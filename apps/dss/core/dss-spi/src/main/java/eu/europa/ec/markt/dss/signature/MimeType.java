@@ -69,7 +69,14 @@ public class MimeType {
 		put("bdoc", ASICE); // estonian bdoc file type is handled as asic-e document
 		put("sce", ASICE);
 		put("txt", TEXT);
+		put("zip", ASICE); // plugtest and CZ
 	}};
+
+	/**
+	 * This constructor is used only by the web-services.
+	 */
+	public MimeType() {
+	}
 
 	/**
 	 * The default constructor for MimeType.
@@ -104,17 +111,17 @@ public class MimeType {
 	/**
 	 * @return the mimeTypeString
 	 */
-	public String getCode() {
+	public String getMimeTypeString() {
 		return mimeTypeString;
 	}
 
 	/**
-	 * This method returns the internal name of the mime-type
+	 * This setter is used by the web-services.
 	 *
-	 * @return
+	 * @param mimeTypeString is a string identifier composed of two parts: a "type" and a "subtype"
 	 */
-	public String name() {
-		return this.name();
+	public void setMimeTypeString(String mimeTypeString) {
+		this.mimeTypeString = mimeTypeString;
 	}
 
 	/**

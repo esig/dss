@@ -600,10 +600,10 @@ public class ASiCService extends AbstractSignatureService {
 
 		if (isXAdESForm(asicParameters)) {
 
-			return MimeType.PKCS7.getCode();
+			return MimeType.PKCS7.getMimeTypeString();
 		} else if (isCAdESForm(asicParameters)) {
 
-			return MimeType.PKCS7.getCode();
+			return MimeType.PKCS7.getMimeTypeString();
 		} else {
 
 			throw new DSSException("ASiC signature form must be XAdES or CAdES!");
@@ -655,9 +655,9 @@ public class ASiCService extends AbstractSignatureService {
 		if (DSSUtils.isBlank(asicParameterMimeType)) {
 
 			if (isAsice(asicParameters)) {
-				mimeTypeBytes = MimeType.ASICE.getCode();
+				mimeTypeBytes = MimeType.ASICE.getMimeTypeString();
 			} else {
-				mimeTypeBytes = MimeType.ASICS.getCode();
+				mimeTypeBytes = MimeType.ASICS.getMimeTypeString();
 			}
 		} else {
 			mimeTypeBytes = asicParameterMimeType;

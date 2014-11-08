@@ -1,7 +1,11 @@
 package eu.europa.ec.markt.dss.signature.asic;
 
-import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
+import java.io.OutputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -10,10 +14,8 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.OutputStream;
+import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.signature.DSSDocument;
 
 /**
  * Represents the META-INF/manifest.xml subdocument
@@ -60,7 +62,7 @@ public class Manifest {
     DSSDocument entry = document;
     do  {
       childElement = dom.createElement("manifest:file-entry");
-      childElement.setAttribute("manifest:media-type", entry.getMimeType().getCode());
+      childElement.setAttribute("manifest:media-type", entry.getMimeType().getMimeTypeString());
       childElement.setAttribute("manifest:full-path", entry.getName());
       rootElement.appendChild(childElement);
       logger.debug("adds " + entry.getName() + " to manifest");

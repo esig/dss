@@ -160,10 +160,10 @@ public class CAdESLevelBaselineB {
 
 		if (!padesUsage) {
 			final MimeType mimeType = document.getMimeType();
-			if (mimeType != null && DSSUtils.isNotBlank(mimeType.getCode())) {
+			if (mimeType != null && DSSUtils.isNotBlank(mimeType.getMimeTypeString())) {
 
 				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_mimeType,
-					  new DERSet(new DERUTF8String(mimeType.getCode())));
+					  new DERSet(new DERUTF8String(mimeType.getMimeTypeString())));
 				signedAttributes.add(attribute);
 			}
 		}

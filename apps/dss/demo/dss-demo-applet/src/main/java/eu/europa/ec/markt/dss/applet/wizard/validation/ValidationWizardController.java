@@ -216,7 +216,7 @@ public class ValidationWizardController extends DSSWizardController<ValidationMo
 		final MimeType mimeType = dssDocument.getMimeType();
 		if (mimeType != null) {
 
-			wsDocument.setMimeTypeString(mimeType.getCode());
+			wsDocument.setMimeTypeString(mimeType.getMimeTypeString());
 		}
 		return wsDocument;
 	}

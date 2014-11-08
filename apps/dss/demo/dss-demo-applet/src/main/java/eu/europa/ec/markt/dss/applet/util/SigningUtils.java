@@ -283,11 +283,9 @@ public final class SigningUtils {
 		wsDocument.setName(dssDocument.getName());
 		wsDocument.setAbsolutePath(dssDocument.getAbsolutePath());
 		final MimeType mimeType = dssDocument.getMimeType();
-		if (mimeType != null) {
-
-			wsDocument.setMimeTypeString(mimeType.getCode());
-			wsDocument.setMimeType(eu.europa.ec.markt.dss.ws.signature.MimeType.fromValue(mimeType.name()));
-		}
+		final eu.europa.ec.markt.dss.ws.signature.MimeType wsMimeType = FACTORY.createMimeType();
+		wsMimeType.setMimeTypeString(mimeType.getMimeTypeString());
+		wsDocument.setMimeType(wsMimeType);
 		return wsDocument;
 	}
 
@@ -296,8 +294,8 @@ public final class SigningUtils {
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(wsSignedDocument.getBytes());
 		inMemoryDocument.setName(wsSignedDocument.getName());
 		inMemoryDocument.setAbsolutePath(wsSignedDocument.getAbsolutePath());
-		final String mimeTypeString = wsSignedDocument.getMimeTypeString();
-		final MimeType mimeType = MimeType.fromMimeTypeString(mimeTypeString);
+		final eu.europa.ec.markt.dss.ws.signature.MimeType wsMimeType = wsSignedDocument.getMimeType();
+		final MimeType mimeType = MimeType.fromMimeTypeString(wsMimeType.getMimeTypeString());
 		inMemoryDocument.setMimeType(mimeType);
 		return inMemoryDocument;
 	}

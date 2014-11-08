@@ -114,7 +114,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 			result.setSourceURI(uriNodeValue);
 			final MimeType mimeType = document.getMimeType();
 			if (mimeType != null) {
-				result.setMIMEType(mimeType.getCode());
+				result.setMIMEType(mimeType.getMimeTypeString());
 			}
 			return result;
 		} else {

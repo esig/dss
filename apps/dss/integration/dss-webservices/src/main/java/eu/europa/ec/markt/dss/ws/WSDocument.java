@@ -43,13 +43,12 @@ public class WSDocument {
 
 	protected MimeType mimeType;
 
-	/**
-	 * The mime-type is transported as {@code String}
-	 */
-	private String mimeTypeString = "";
+	//	/**
+	//	 * The mime-type is transported as {@code String}
+	//	 */
+	//	private String mimeTypeString = "";
 
 	private String absolutePath = "WSDocument";
-
 
 	protected WSDocument nextDocument;
 
@@ -71,9 +70,6 @@ public class WSDocument {
 		final byte[] bytes = dssDocument.getBytes();
 		this.bytes = Arrays.copyOf(bytes, bytes.length);
 		mimeType = dssDocument.getMimeType();
-		if (mimeType != null) {
-			mimeTypeString = mimeType.getCode();
-		}
 		name = dssDocument.getName();
 		absolutePath = dssDocument.getAbsolutePath();
 
@@ -119,14 +115,6 @@ public class WSDocument {
 		this.mimeType = mimeType;
 	}
 
-	public String getMimeTypeString() {
-		return mimeTypeString;
-	}
-
-	public void setMimeTypeString(String mimeTypeString) {
-		this.mimeTypeString = mimeTypeString;
-	}
-
 	public String getAbsolutePath() {
 		return absolutePath;
 	}
@@ -153,9 +141,8 @@ public class WSDocument {
 	public String toString() {
 
 		final StringWriter stringWriter = new StringWriter();
-		final MimeType mimeType = getMimeType();
-		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "mime-type=null" : getMimeType().name()).append(" / ").append("mime-type-string=")
-			  .append(mimeTypeString).append(" / AbsolutePath [").append(getAbsolutePath()).append("] / nextDocument [").append(nextDocument.toString()).append("]");
+		stringWriter.append("Name: " + getName()).append(" / ").append("mime-type=" + (mimeType == null ? "null" : mimeType.getMimeTypeString())).append(" / ")
+			  .append(" / AbsolutePath [").append(getAbsolutePath()).append("] / nextDocument [").append(nextDocument.toString()).append("]");
 		final String string = stringWriter.toString();
 		return string;
 	}
