@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="XAdES_BASELINE_LT"/>
  *     &lt;enumeration value="XAdES_BASELINE_T"/>
  *     &lt;enumeration value="XAdES_BASELINE_B"/>
+ *     &lt;enumeration value="CMS"/>
  *     &lt;enumeration value="CAdES_BASELINE_LTA"/>
  *     &lt;enumeration value="CAdES_BASELINE_LT"/>
  *     &lt;enumeration value="CAdES_BASELINE_T"/>
@@ -30,6 +31,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="CAdES_101733_C"/>
  *     &lt;enumeration value="CAdES_101733_X"/>
  *     &lt;enumeration value="CAdES_101733_A"/>
+ *     &lt;enumeration value="PDF"/>
  *     &lt;enumeration value="PAdES_BASELINE_LTA"/>
  *     &lt;enumeration value="PAdES_BASELINE_LT"/>
  *     &lt;enumeration value="PAdES_BASELINE_T"/>
@@ -69,6 +71,7 @@ public enum SignatureLevel {
     XAdES_BASELINE_T("XAdES_BASELINE_T"),
     @XmlEnumValue("XAdES_BASELINE_B")
     XAdES_BASELINE_B("XAdES_BASELINE_B"),
+    CMS("CMS"),
     @XmlEnumValue("CAdES_BASELINE_LTA")
     CAdES_BASELINE_LTA("CAdES_BASELINE_LTA"),
     @XmlEnumValue("CAdES_BASELINE_LT")
@@ -83,6 +86,7 @@ public enum SignatureLevel {
     CAdES_101733_X("CAdES_101733_X"),
     @XmlEnumValue("CAdES_101733_A")
     CAdES_101733_A("CAdES_101733_A"),
+    PDF("PDF"),
     @XmlEnumValue("PAdES_BASELINE_LTA")
     PAdES_BASELINE_LTA("PAdES_BASELINE_LTA"),
     @XmlEnumValue("PAdES_BASELINE_LT")
