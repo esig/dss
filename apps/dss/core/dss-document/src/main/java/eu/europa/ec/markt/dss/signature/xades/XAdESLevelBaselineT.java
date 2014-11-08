@@ -44,6 +44,7 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
 import eu.europa.ec.markt.dss.signature.ProfileParameters.Operation;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -139,6 +140,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 		}
 		final byte[] documentBytes = DSSXMLUtils.serializeNode(documentDom);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+		inMemoryDocument.setMimeType(MimeType.XML);
 		return inMemoryDocument;
 	}
 

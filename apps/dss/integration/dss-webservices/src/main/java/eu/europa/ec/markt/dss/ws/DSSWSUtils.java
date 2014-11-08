@@ -21,6 +21,7 @@ package eu.europa.ec.markt.dss.ws;
 
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 
 /**
  * This is the utility class to handle web services.
@@ -43,7 +44,8 @@ public final class DSSWSUtils {
 		final InMemoryDocument dssDocument = new InMemoryDocument(wsDocument.getBytes());
 		dssDocument.setName(wsDocument.getName());
 		dssDocument.setAbsolutePath(wsDocument.getAbsolutePath());
-		dssDocument.setMimeType(wsDocument.getMimeType());
+		final MimeType mimeType = wsDocument.getMimeType();
+		dssDocument.setMimeType(mimeType);
 		final WSDocument nextWsDocument = wsDocument.getNextDocument();
 		if (nextWsDocument != null) {
 

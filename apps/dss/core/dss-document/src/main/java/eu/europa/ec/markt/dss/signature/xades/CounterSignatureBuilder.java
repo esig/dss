@@ -39,6 +39,7 @@ import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
 /**
@@ -115,6 +116,8 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 		counterSignatureElement.appendChild(importedNode);
 
 		final byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(ownerDocument);
-		return new InMemoryDocument(documentBytes);
+		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+		inMemoryDocument.setMimeType(MimeType.XML);
+		return inMemoryDocument;
 	}
 }

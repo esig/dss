@@ -37,6 +37,7 @@ import eu.europa.ec.markt.dss.applet.main.DSSAppletCore;
 import eu.europa.ec.markt.dss.applet.main.Parameters;
 import eu.europa.ec.markt.dss.applet.model.ValidationModel;
 import eu.europa.ec.markt.dss.applet.util.SimpleReportConverter;
+import eu.europa.ec.markt.dss.applet.util.ValidationPolicyDao;
 import eu.europa.ec.markt.dss.applet.util.ValidationReportConverter;
 import eu.europa.ec.markt.dss.applet.view.validation.ReportView;
 import eu.europa.ec.markt.dss.applet.view.validation.ValidationView;
@@ -45,9 +46,9 @@ import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
-import eu.europa.ec.markt.dss.applet.util.ValidationPolicyDao;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.ws.validation.DSSException_Exception;
+import eu.europa.ec.markt.dss.ws.validation.ObjectFactory;
 import eu.europa.ec.markt.dss.ws.validation.ValidationService;
 import eu.europa.ec.markt.dss.ws.validation.ValidationService_Service;
 import eu.europa.ec.markt.dss.ws.validation.WsDocument;
@@ -64,6 +65,15 @@ import eu.europa.ec.markt.dss.ws.validation.WsValidationReport;
  */
 
 public class ValidationWizardController extends DSSWizardController<ValidationModel> {
+
+	private static ObjectFactory FACTORY;
+
+	static {
+
+		System.setProperty("javax.xml.bind.JAXBContext", "com.sun.xml.internal.bind.v2.ContextFactory");
+		FACTORY = new ObjectFactory();
+
+	}
 
 	private ReportView reportView;
 
@@ -139,8 +149,6 @@ public class ValidationWizardController extends DSSWizardController<ValidationMo
 	 */
 	public void validateDocument() throws DSSException {
 
-		System.setProperty("javax.xml.bind.JAXBContext", "com.sun.xml.internal.bind.v2.ContextFactory");
-
 		final ValidationModel model = getModel();
 
 		final File signedFile = model.getSignedFile();
@@ -214,10 +222,10 @@ public class ValidationWizardController extends DSSWizardController<ValidationMo
 		wsDocument.setName(dssDocument.getName());
 		wsDocument.setAbsolutePath(dssDocument.getAbsolutePath());
 		final MimeType mimeType = dssDocument.getMimeType();
-		if (mimeType != null) {
-
-			wsDocument.setMimeTypeString(mimeType.getMimeTypeString());
-		}
+		final eu.europa.ec.markt.dss.ws.validation.MimeType wsMimeType = FACTORY.createMimeType();
+		final String mimeTypeString = mimeType.getMimeTypeString();
+		wsMimeType.setMimeTypeString(mimeTypeString);
+		wsDocument.setMimeType(wsMimeType);
 		return wsDocument;
 	}
 

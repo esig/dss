@@ -192,6 +192,8 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 		}
 
 		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(originalDocumentDom);
-		return new InMemoryDocument(documentBytes);
+		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+		inMemoryDocument.setMimeType(MimeType.XML);
+		return inMemoryDocument;
 	}
 }

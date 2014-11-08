@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="absolutePath" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="bytes" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
  *         &lt;element name="mimeType" type="{http://ws.dss.markt.ec.europa.eu/}mimeType" minOccurs="0"/>
- *         &lt;element name="mimeTypeString" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="nextDocument" type="{http://ws.dss.markt.ec.europa.eu/}wsDocument" minOccurs="0"/>
  *       &lt;/sequence>
@@ -35,7 +34,6 @@ import javax.xml.bind.annotation.XmlType;
     "absolutePath",
     "bytes",
     "mimeType",
-    "mimeTypeString",
     "name",
     "nextDocument"
 })
@@ -44,7 +42,6 @@ public class WsDocument {
     protected String absolutePath;
     protected byte[] bytes;
     protected MimeType mimeType;
-    protected String mimeTypeString;
     protected String name;
     protected WsDocument nextDocument;
 
@@ -116,30 +113,6 @@ public class WsDocument {
      */
     public void setMimeType(MimeType value) {
         this.mimeType = value;
-    }
-
-    /**
-     * Gets the value of the mimeTypeString property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMimeTypeString() {
-        return mimeTypeString;
-    }
-
-    /**
-     * Sets the value of the mimeTypeString property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMimeTypeString(String value) {
-        this.mimeTypeString = value;
     }
 
     /**

@@ -73,7 +73,6 @@ public final class SigningUtils {
 
 		System.setProperty("javax.xml.bind.JAXBContext", "com.sun.xml.internal.bind.v2.ContextFactory");
 		FACTORY = new ObjectFactory();
-
 	}
 
 	private SigningUtils() {
@@ -284,7 +283,8 @@ public final class SigningUtils {
 		wsDocument.setAbsolutePath(dssDocument.getAbsolutePath());
 		final MimeType mimeType = dssDocument.getMimeType();
 		final eu.europa.ec.markt.dss.ws.signature.MimeType wsMimeType = FACTORY.createMimeType();
-		wsMimeType.setMimeTypeString(mimeType.getMimeTypeString());
+		final String mimeTypeString = mimeType.getMimeTypeString();
+		wsMimeType.setMimeTypeString(mimeTypeString);
 		wsDocument.setMimeType(wsMimeType);
 		return wsDocument;
 	}

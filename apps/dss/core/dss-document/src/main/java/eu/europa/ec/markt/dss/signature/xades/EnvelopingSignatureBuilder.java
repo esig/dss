@@ -39,6 +39,7 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 
 /**
  * This class handles the specifics of the enveloping XML signature
@@ -147,6 +148,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 
 		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+		inMemoryDocument.setMimeType(MimeType.XML);
 		return inMemoryDocument;
 	}
 }

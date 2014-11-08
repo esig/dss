@@ -36,6 +36,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.pdf.PDFTimestampService;
@@ -163,7 +164,9 @@ class PAdESLevelBaselineLT implements SignatureExtension {
 			final PDFTimestampService timestampService = factory.newTimestampSignatureService();
 			Map.Entry<String, PdfDict> dictToAdd = new AbstractMap.SimpleEntry<String, PdfDict>("DSS", dssDictionary);
 			timestampService.timestamp(document, tDoc, parameters, tspSource, dictToAdd);
-			return new InMemoryDocument(tDoc.toByteArray());
+			final InMemoryDocument inMemoryDocument = new InMemoryDocument(tDoc.toByteArray());
+			inMemoryDocument.setMimeType(MimeType.PDF);
+			return inMemoryDocument;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
