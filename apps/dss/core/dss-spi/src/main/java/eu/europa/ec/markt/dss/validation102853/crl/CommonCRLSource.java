@@ -32,7 +32,7 @@ public abstract class CommonCRLSource implements CRLSource {
 	 * @param issuerToken CRL signing certificate (can be null)
 	 * @return CRL list or null
 	 */
-	protected CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
+	protected synchronized CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
 
 		final CRLValidity crlValidity = new CRLValidity();
 		crlValidity.x509CRL = x509CRL;
