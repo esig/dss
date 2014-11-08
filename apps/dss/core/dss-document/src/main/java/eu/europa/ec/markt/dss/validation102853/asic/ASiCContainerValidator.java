@@ -21,6 +21,7 @@
 package eu.europa.ec.markt.dss.validation102853.asic;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -273,13 +274,15 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 					addEntryElement(entryName, detachedContents, asicsInputStream);
 				} else if (MIME_TYPE.equalsIgnoreCase(entryName)) {
 
-					asicEntryMimeType = getMimeType(asicsInputStream);
+					final DSSDocument mimeType = addEntryElement(entryName, detachedContents, asicsInputStream);
+					asicEntryMimeType = getMimeType(mimeType);
 				} else if (entryName.indexOf("/") == -1) {
 
 					addEntryElement(entryName, detachedContents, asicsInputStream);
 				} else {
 
 					LOG.error("unknown entry: " + entryName);
+					addEntryElement(entryName, detachedContents, asicsInputStream);
 				}
 			}
 			asicMimeType = determinateAsicMimeType(asicContainer.getMimeType(), asicEntryMimeType);
@@ -301,11 +304,12 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		this.asicMimeType = asicMimeType;
 	}
 
-	private static MimeType getMimeType(final ZipInputStream asicsInputStream) throws DSSException {
+	private static MimeType getMimeType(final DSSDocument mimeType) throws DSSException {
 
 		try {
+			final InputStream inputStream = mimeType.openStream();
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			DSSUtils.copy(asicsInputStream, byteArrayOutputStream);
+			DSSUtils.copy(inputStream, byteArrayOutputStream);
 			final String mimeTypeString = byteArrayOutputStream.toString("UTF-8");
 			final MimeType asicMimeType = MimeType.fromMimeTypeString(mimeTypeString);
 			return asicMimeType;
@@ -315,12 +319,13 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		}
 	}
 
-	private static void addEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) {
+	private static DSSDocument addEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) {
 
 		final ByteArrayOutputStream signature = new ByteArrayOutputStream();
 		DSSUtils.copy(asicsInputStream, signature);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(signature.toByteArray(), entryName);
 		list.add(inMemoryDocument);
+		return inMemoryDocument;
 	}
 
 	private static void addAsicManifestEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) {
