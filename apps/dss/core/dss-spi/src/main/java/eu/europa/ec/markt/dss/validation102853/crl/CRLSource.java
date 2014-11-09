@@ -29,19 +29,18 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
  *
  * @version $Revision$ - $Date$
  */
-
 public interface CRLSource {
 
-    /**
-     * Finds the CRL(s) for the requested certificate. If found:<br />
-     * - the CRL's signature is checked;<br />
-     * - the key usage of the CRL's signing certificate is verified;<br />
-     *
-     * The most recent CRL is returned. If the parameter is <code>null</code> than <code>null</code> is returned.
-     *
-     * @param certificateToken the certificate token for which the CRL need to be find.
-     * @return {@code CRLToken}, null if not found.
-     * @throws DSSException
-     */
-    CRLToken findCrl(final CertificateToken certificateToken) throws DSSException;
+	/**
+	 * Finds the CRL(s) for the requested certificate. If found:<br />
+	 * - the CRL's signature is checked;<br />
+	 * - the key usage of the CRL's signing certificate is verified;<br />
+	 * <p/>
+	 * The most recent CRL is returned. If the parameter is <code>null</code> than <code>null</code> is returned.
+	 *
+	 * @param certificateToken the certificate token for which the CRL need to be found.
+	 * @return {@code CRLToken}, null if not found.
+	 * @throws DSSException
+	 */
+	CRLToken findCrl(final CertificateToken certificateToken) throws DSSException;
 }

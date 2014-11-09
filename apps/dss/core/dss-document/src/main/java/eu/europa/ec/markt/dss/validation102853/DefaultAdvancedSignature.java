@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
+import java.security.cert.X509CRL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -94,6 +95,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	// This variable contains the list of enclosed archive signature timestamps.
 	protected List<TimestampToken> archiveTimestamps;
+
+	// Cached {@code OfflineCRLSource}
+	protected OfflineCRLSource offlineCRLSource;
+
+	// Cached {@code OfflineOCSPSource}
+	protected OfflineOCSPSource offlineOCSPSource;
 
 	/**
 	 * @param certPool can be null
@@ -221,17 +228,17 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
-	 * This method returns revocation values (ocsp and crl) that will be included in the LT profile
+	 * This method returns revocation values (ocsp and crl) that will be included in the LT profile.
 	 *
-	 * @param validationContext
+	 * @param validationContext {@code ValidationContext} contains all the revocation data retrieved during the validation process.
 	 * @return {@code RevocationDataForInclusion}
 	 */
 	public RevocationDataForInclusion getRevocationDataForInclusion(final ValidationContext validationContext) {
 
-		//TODO: there can be also CRL and OCSP in TimestampToken CMS data
+		//TODO: to be checked: there can be also CRL and OCSP in TimestampToken CMS data
 		final Set<RevocationToken> revocationTokens = validationContext.getProcessedRevocations();
 		final OfflineCRLSource crlSource = getCRLSource();
-		final List<CRLToken> containedCRLs = crlSource.getContainedCRLTokens();
+		final List<X509CRL> containedX509CRLs = crlSource.getContainedX509CRLs();
 		final OfflineOCSPSource ocspSource = getOCSPSource();
 		final List<BasicOCSPResp> containedBasicOCSPResponses = ocspSource.getContainedOCSPResponses();
 		final List<CRLToken> crlTokens = new ArrayList<CRLToken>();
@@ -240,10 +247,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 			if (revocationToken instanceof CRLToken) {
 
-				final boolean tokenIn = containedCRLs.contains(revocationToken);
+				final CRLToken crlToken = (CRLToken) revocationToken;
+				final X509CRL x509crl = crlToken.getX509crl();
+				final boolean tokenIn = containedX509CRLs.contains(x509crl);
 				if (!tokenIn) {
 
-					final CRLToken crlToken = (CRLToken) revocationToken;
 					crlTokens.add(crlToken);
 				}
 			} else if (revocationToken instanceof OCSPToken) {

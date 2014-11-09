@@ -40,48 +40,48 @@ import eu.europa.ec.markt.dss.DSSRevocationUtils;
 
 public abstract class OfflineOCSPSource implements OCSPSource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
-    @Override
-    final public BasicOCSPResp getOCSPResponse(final X509Certificate x509Certificate, final X509Certificate issuerX509Certificate) {
+	@Override
+	final public BasicOCSPResp getOCSPResponse(final X509Certificate x509Certificate, final X509Certificate issuerX509Certificate) {
 
-        /**
-         * TODO: (Bob 2013.05.08) Does the OCSP responses always use SHA1?<br>
-         * RFC 2560:<br>
-         * CertID ::= SEQUENCE {<br>
-         * hashAlgorithm AlgorithmIdentifier,<br>
-         * issuerNameHash OCTET STRING, -- Hash of Issuer's DN<br>
-         * issuerKeyHash OCTET STRING, -- Hash of Issuer's public key<br>
-         * serialNumber CertificateSerialNumber }<br>
-         *
-         * ... The hash algorithm used for both these hashes, is identified in hashAlgorithm. serialNumber is the
-         * serial number of the cert for which status is being requested.
-         */
-        Date bestUpdate = null;
-        BasicOCSPResp bestBasicOCSPResp = null;
-        final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(x509Certificate, issuerX509Certificate);
-        for (final BasicOCSPResp basicOCSPResp : getContainedOCSPResponses()) {
+		/**
+		 * TODO: (Bob 2013.05.08) Does the OCSP responses always use SHA1?<br>
+		 * RFC 2560:<br>
+		 * CertID ::= SEQUENCE {<br>
+		 * hashAlgorithm AlgorithmIdentifier,<br>
+		 * issuerNameHash OCTET STRING, -- Hash of Issuer's DN<br>
+		 * issuerKeyHash OCTET STRING, -- Hash of Issuer's public key<br>
+		 * serialNumber CertificateSerialNumber }<br>
+		 *
+		 * ... The hash algorithm used for both these hashes, is identified in hashAlgorithm. serialNumber is the
+		 * serial number of the cert for which status is being requested.
+		 */
+		Date bestUpdate = null;
+		BasicOCSPResp bestBasicOCSPResp = null;
+		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(x509Certificate, issuerX509Certificate);
+		for (final BasicOCSPResp basicOCSPResp : getContainedOCSPResponses()) {
 
-            for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
+			for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
 
-                if (DSSRevocationUtils.matches(certId, singleResp)) {
+				if (DSSRevocationUtils.matches(certId, singleResp)) {
 
-                    final Date thisUpdate = singleResp.getThisUpdate();
-                    if (bestUpdate == null || thisUpdate.after(bestUpdate)) {
+					final Date thisUpdate = singleResp.getThisUpdate();
+					if (bestUpdate == null || thisUpdate.after(bestUpdate)) {
 
-                        bestBasicOCSPResp = basicOCSPResp;
-                        bestUpdate = thisUpdate;
-                    }
-                }
-            }
-        }
-        return bestBasicOCSPResp;
-    }
+						bestBasicOCSPResp = basicOCSPResp;
+						bestUpdate = thisUpdate;
+					}
+				}
+			}
+		}
+		return bestBasicOCSPResp;
+	}
 
-    /**
-     * Retrieves the list of BasicOCSPResp contained in the source.
-     *
-     * @return
-     */
-    public abstract List<BasicOCSPResp> getContainedOCSPResponses();
+	/**
+	 * Retrieves the list of {@code BasicOCSPResp} contained in the source.
+	 *
+	 * @return {@code List} of {@code BasicOCSPResp}s
+	 */
+	public abstract List<BasicOCSPResp> getContainedOCSPResponses();
 }

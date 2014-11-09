@@ -70,7 +70,7 @@ public interface ValidationContext {
 	public abstract void validate() throws DSSException;
 
 	/**
-	 * Returns a read only list of all certificates used in the process of the validation of the signature. This list
+	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the given document. This list
 	 * includes the certificate to check, certification chain certificates, OCSP response certificate...
 	 *
 	 * @return The list of CertificateToken(s)
@@ -78,14 +78,14 @@ public interface ValidationContext {
 	public abstract Set<CertificateToken> getProcessedCertificates();
 
 	/**
-	 * Returns a read only list of all revocations used in the process of the validation of the signature.
+	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the given document.
 	 *
 	 * @return The list of CertificateToken(s)
 	 */
 	public abstract Set<RevocationToken> getProcessedRevocations();
 
 	/**
-	 * Returns a read only list of all timestamps processed during the validation of the signature.
+	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given document.
 	 *
 	 * @return The list of CertificateToken(s)
 	 */

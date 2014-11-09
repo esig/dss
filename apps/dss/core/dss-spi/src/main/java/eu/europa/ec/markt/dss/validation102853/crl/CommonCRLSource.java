@@ -25,14 +25,14 @@ public abstract class CommonCRLSource implements CRLSource {
 
 	/**
 	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence between the subject names of the CRL signing certificate and the
-	 * issuer name of the certificate for which the verification of the revocation data is carried out. If one of the tests fails {@code null} is returned. If CRL or signing
-	 * certificate are {@code null} than {@code null} is returned.
+	 * issuer name of the certificate for which the verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created and accordingly
+	 * updated.
 	 *
-	 * @param x509CRL     CRL to be verified (can be null)
-	 * @param issuerToken CRL signing certificate (can be null)
-	 * @return CRL list or null
+	 * @param x509CRL     {@code X509CRL} to be verified (cannot be null)
+	 * @param issuerToken {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
+	 * @return {@code CRLValidity}
 	 */
-	protected synchronized CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
+	protected CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
 
 		final CRLValidity crlValidity = new CRLValidity();
 		crlValidity.x509CRL = x509CRL;

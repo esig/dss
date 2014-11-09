@@ -323,7 +323,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public XAdESCertificateSource getCertificateSource() {
 
 		if (certificatesSource == null) {
-
 			certificatesSource = new XAdESCertificateSource(signatureElement, xPathQueryHolder, certPool);
 		}
 		return certificatesSource;
@@ -340,15 +339,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public OfflineCRLSource getCRLSource() {
 
-		final XAdESCRLSource xadesCRLSource = new XAdESCRLSource(signatureElement, xPathQueryHolder);
-		return xadesCRLSource;
+		if (offlineCRLSource == null) {
+			offlineCRLSource = new XAdESCRLSource(signatureElement, xPathQueryHolder);
+		}
+		return offlineCRLSource;
 	}
 
 	@Override
 	public OfflineOCSPSource getOCSPSource() {
 
-		final XAdESOCSPSource xadesOCSPSource = new XAdESOCSPSource(signatureElement, xPathQueryHolder);
-		return xadesOCSPSource;
+		if (offlineOCSPSource == null) {
+			offlineOCSPSource = new XAdESOCSPSource(signatureElement, xPathQueryHolder);
+		}
+		return offlineOCSPSource;
 	}
 
 	@Override
@@ -554,10 +557,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		final Element policyIdentifier = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_POLICY_IDENTIFIER);
 		if (policyIdentifier != null) {
 
-         /* There is a policy */
+			// There is a policy
 			final Element policyId = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_ID);
 			if (policyId != null) {
-			/* Explicit policy */
+				// Explicit policy
 				final String policyIdString = policyId.getTextContent();
 				final SignaturePolicy signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DSSXMLUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
@@ -569,7 +572,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				signaturePolicy.setDigestValue(digestValue);
 				return signaturePolicy;
 			} else {
-			    /* Implicit policy */
+				// Implicit policy
 				final Element signaturePolicyImplied = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__SIGNATURE_POLICY_IMPLIED);
 				if (signaturePolicyImplied != null) {
 					return new SignaturePolicy();
@@ -577,7 +580,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return null;
-
 	}
 
 	@Override
@@ -691,6 +693,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private TimestampToken makeTimestampToken(int id, Element element, TimestampType timestampType) throws DSSException {
 
 		final Element timestampTokenNode = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__ENCAPSULATED_TIMESTAMP);
+		if (timestampTokenNode == null) {
+
+			// TODO (09/11/2014): The error message must be propagated to the validation report
+			LOG.warn("The timestamp (" + timestampType.name() + ") cannot be extracted from the signature!");
+			return null;
+
+		}
 		final String base64EncodedTimestamp = timestampTokenNode.getTextContent();
 		final TimeStampToken timeStampToken = DSSASN1Utils.createTimeStampToken(base64EncodedTimestamp);
 		final TimestampToken timestampToken = new TimestampToken(timeStampToken, timestampType, certPool);

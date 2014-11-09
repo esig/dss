@@ -268,25 +268,27 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return certSource;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public OfflineCRLSource getCRLSource() {
 
-		CAdESCRLSource crlSource = null;
-		try {
-			crlSource = new CAdESCRLSource(cmsSignedData, signerInformation);
-		} catch (Exception e) {
-			// When error in computing or in format the algorithm: just continues (will try to get online information)
-			LOG.warn("When error in computing or in format the algorithm just continue...", e);
+		if (offlineCRLSource == null) {
+			try {
+				offlineCRLSource = new CAdESCRLSource(cmsSignedData, signerInformation);
+			} catch (Exception e) {
+				// When error in computing or in format of the algorithm: just continues (will try to get online information)
+				LOG.warn("Error in computing or in format of the algorithm: just continue...", e);
+			}
 		}
-		return crlSource;
+		return offlineCRLSource;
 	}
 
 	@Override
 	public OfflineOCSPSource getOCSPSource() {
 
-		final CAdESOCSPSource cadesOCSPSource = new CAdESOCSPSource(cmsSignedData, signerInformation);
-		return cadesOCSPSource;
+		if (offlineOCSPSource == null) {
+			offlineOCSPSource = new CAdESOCSPSource(cmsSignedData, signerInformation);
+		}
+		return offlineOCSPSource;
 	}
 
 	/**

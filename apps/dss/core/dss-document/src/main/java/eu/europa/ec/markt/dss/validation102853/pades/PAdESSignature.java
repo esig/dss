@@ -147,17 +147,23 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public OfflineCRLSource getCRLSource() {
 
-		final PdfDssDict dssDictionary = getDSSDictionary();
-		final PAdESCRLSource padesCRLSource = new PAdESCRLSource(cadesSignature, dssDictionary);
-		return padesCRLSource;
+		if (offlineCRLSource == null) {
+
+			final PdfDssDict dssDictionary = getDSSDictionary();
+			offlineCRLSource = new PAdESCRLSource(cadesSignature, dssDictionary);
+		}
+		return offlineCRLSource;
 	}
 
 	@Override
 	public OfflineOCSPSource getOCSPSource() {
 
-		final PdfDssDict dssDictionary = getDSSDictionary();
-		final PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(cadesSignature, dssDictionary);
-		return padesOCSPSource;
+		if (offlineOCSPSource == null) {
+
+			final PdfDssDict dssDictionary = getDSSDictionary();
+			offlineOCSPSource = new PAdESOCSPSource(cadesSignature, dssDictionary);
+		}
+		return offlineOCSPSource;
 	}
 
 	@Override

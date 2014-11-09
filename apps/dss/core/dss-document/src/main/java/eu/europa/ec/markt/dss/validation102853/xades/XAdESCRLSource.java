@@ -40,11 +40,6 @@ import eu.europa.ec.markt.dss.validation102853.crl.OfflineCRLSource;
 public class XAdESCRLSource extends OfflineCRLSource {
 
     /**
-     * The element of the XML tree that contains the signature. All CRL(s) are extracted during the instantiation.
-     */
-    private Element signatureElement;
-
-    /**
      * The default constructor for XAdESCRLSource.
      *
      * @param signatureElement {@code Element} that contains an XML signature
@@ -60,13 +55,12 @@ public class XAdESCRLSource extends OfflineCRLSource {
 
             throw new DSSNullException(XPathQueryHolder.class, "xPathQueryHolder");
         }
-        this.signatureElement = signatureElement;
-        x509CRLList = new ArrayList<X509CRL>();
-        addCRLs(xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUE);
-        addCRLs(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUE);
+	    x509CRLList = new ArrayList<X509CRL>();
+        addCRLs(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUE);
+        addCRLs(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUE);
     }
 
-    private void addCRLs(final String xPathQuery) {
+    private void addCRLs(Element signatureElement, final String xPathQuery) {
 
         final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQuery);
         for (int ii = 0; ii < nodeList.getLength(); ii++) {
