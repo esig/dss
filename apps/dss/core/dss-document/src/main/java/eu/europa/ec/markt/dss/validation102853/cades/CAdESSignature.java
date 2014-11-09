@@ -1182,15 +1182,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
 
-		final List<AdvancedSignature> list = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> cadesList = new ArrayList<AdvancedSignature>();
+		for (final Object signer : signerInformation.getCounterSignatures().getSigners()) {
 
-		for (Object o : this.signerInformation.getCounterSignatures().getSigners()) {
-			SignerInformation signerInformation = (SignerInformation) o;
-			CAdESSignature info = new CAdESSignature(this.cmsSignedData, signerInformation, certPool);
-			list.add(info);
+			final SignerInformation signerInformation = (SignerInformation) signer;
+			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certPool);
+			cadesSignature.setMasterSignature(this);
+			cadesList.add(cadesSignature);
 		}
-
-		return list;
+		return cadesList;
 	}
 
 	@Override

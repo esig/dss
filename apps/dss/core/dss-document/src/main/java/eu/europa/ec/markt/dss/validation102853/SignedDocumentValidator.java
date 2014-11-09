@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -107,6 +108,7 @@ import eu.europa.ec.markt.dss.validation102853.pades.PDFDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScope;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
@@ -163,6 +165,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 
 	protected CertificateToken providedSigningCertificateToken = null;
+
+	private ValidationPolicy countersignatureValidationPolicy;
 
 	/**
 	 * The reference to the certificate verifier. The current DSS implementation proposes {@link eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier}. This verifier
@@ -306,6 +310,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		policyDocuments.put(signatureId, policyDocument);
 	}
 
+	/**
+	 * This setter allows to indicate the countersignature {@code ValidationPolicy} to be used.
+	 *
+	 * @param countersignatureValidationPolicy {@code ValidationPolicy} to be used
+	 */
+	public void setCountersignatureValidationPolicy(final ValidationPolicy countersignatureValidationPolicy) {
+		this.countersignatureValidationPolicy = countersignatureValidationPolicy;
+	}
+
 	@Override
 	public Reports validateDocument() {
 
@@ -383,15 +396,38 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			throw new DSSNullException(CertificateVerifier.class);
 		}
+		Date date1 = null;
+		if (LOG.isInfoEnabled()) {
+			date1 = new Date();
+		}
 		final eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
 
 		final Document diagnosticDataDom = ValidationResourceManager.convert(jaxbDiagnosticData);
+		Date date2 = null;
+		if (LOG.isInfoEnabled()) {
+
+			date2 = new Date();
+			final long dateDiff = DSSUtils.getDateDiff(date1, date2, TimeUnit.MILLISECONDS);
+			LOG.info("diff 1: " + dateDiff + " ms.");
+		}
 
 		final ProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setDiagnosticDataDom(diagnosticDataDom);
 		executor.setValidationPolicy(validationPolicy);
+		if (countersignatureValidationPolicy == null) {
+
+			final Document countersignaturePolicyData = ValidationResourceManager.loadCountersignaturePolicyData(null);
+			countersignatureValidationPolicy = new EtsiValidationPolicy(countersignaturePolicyData);
+		}
+		executor.setCountersignatureValidationPolicy(countersignatureValidationPolicy);
 
 		final Reports reports = executor.execute();
+		if (LOG.isInfoEnabled()) {
+
+			Date date3 = new Date();
+			final long dateDiff = DSSUtils.getDateDiff(date2, date3, TimeUnit.MILLISECONDS);
+			LOG.info("diff 2: " + dateDiff + " ms.");
+		}
 		return reports;
 	}
 
@@ -420,6 +456,45 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData generateDiagnosticData() {
 
+		prepareDiagnosticData();
+
+		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
+
+		final List<AdvancedSignature> allSignatureList = getAllSignatures();
+
+		// The list of all signing certificates is created to allow a parallel validation.
+		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
+
+		final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
+		certificateVerifier.setSignatureCRLSource(signatureCRLSource);
+
+		final ListOCSPSource signatureOCSPSource = getSignatureOcspSource(allSignatureList);
+		certificateVerifier.setSignatureOCSPSource(signatureOCSPSource);
+
+		validationContext.initialize(certificateVerifier);
+
+		validationContext.setCurrentTime(provideProcessExecutorInstance().getCurrentTime());
+		validationContext.validate();
+
+		// For each validated signature present in the document to be validated the extraction of diagnostic data is launched.
+		final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
+		for (final AdvancedSignature signature : allSignatureList) {
+
+			final XmlSignature xmlSignature = validateSignature(signature);
+			usedCertificatesDigestAlgorithms.addAll(signature.getUsedCertificatesDigestAlgorithms());
+			jaxbDiagnosticData.getSignature().add(xmlSignature);
+		}
+		final Set<CertificateToken> processedCertificates = validationContext.getProcessedCertificates();
+		dealUsedCertificates(usedCertificatesDigestAlgorithms, processedCertificates);
+
+		return jaxbDiagnosticData;
+	}
+
+	/**
+	 * This method prepares the {@code DiagnosticData} object to store all static information about the signatures being validated.
+	 */
+	private void prepareDiagnosticData() {
+
 		jaxbDiagnosticData = DIAGNOSTIC_DATA_OBJECT_FACTORY.createDiagnosticData();
 
 		// To cope with tests it can be interesting to always keep the same file name within the reports (without the path).
@@ -429,56 +504,71 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			absolutePath = document.getName();
 		}
 		jaxbDiagnosticData.setDocumentName(absolutePath);
+	}
 
-		final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
+	/**
+	 * This method returns the list of all signatures including the countersignatures.
+	 *
+	 * @return {@code List} of {@code AdvancedSignature} to validate
+	 */
+	private List<AdvancedSignature> getAllSignatures() {
 
-		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
-
-		final ListCRLSource signatureCRLSource = new ListCRLSource();
-		final ListOCSPSource signatureOCSPSource = new ListOCSPSource();
-		/*
-		 * The list of all signing certificates is created to allow a parallel validation.
-         */
+		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
 		for (final AdvancedSignature signature : getSignatures()) {
+
+			allSignatureList.add(signature);
+			final List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
+			allSignatureList.addAll(counterSignatures);
+		}
+		return allSignatureList;
+	}
+
+	/**
+	 * For all signatures to be validated this method merges the OCSP sources.
+	 *
+	 * @param allSignatureList {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 * @return {@code ListCRLSource}
+	 */
+	private ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
+
+		final ListCRLSource signatureCrlSource = new ListCRLSource();
+		for (final AdvancedSignature signature : allSignatureList) {
+
+			signatureCrlSource.addAll(signature.getCRLSource());
+		}
+		return signatureCrlSource;
+	}
+
+	/**
+	 * For all signatures to be validated this method merges the OCSP sources.
+	 *
+	 * @param allSignatureList {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 * @return {@code ListOCSPSource}
+	 */
+	private ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
+
+		final ListOCSPSource signatureOcspSource = new ListOCSPSource();
+		for (final AdvancedSignature signature : allSignatureList) {
+
+			signatureOcspSource.addAll(signature.getOCSPSource());
+		}
+		return signatureOcspSource;
+	}
+
+	/**
+	 * @param allSignatureList  {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 * @param validationContext
+	 */
+	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
+
+		for (final AdvancedSignature signature : allSignatureList) {
 
 			final List<CertificateToken> candidates = signature.getCertificateSource().getCertificates();
 			for (final CertificateToken certificateToken : candidates) {
-
 				validationContext.addCertificateTokenForVerification(certificateToken);
 			}
 			signature.prepareTimestamps(validationContext);
-
-			// --> Signature OCSP and CRL sources can be merged.
-			signatureCRLSource.addAll(signature.getCRLSource());
-			signatureOCSPSource.addAll(signature.getOCSPSource());
 		}
-
-		certificateVerifier.setSignatureCRLSource(signatureCRLSource);
-		certificateVerifier.setSignatureOCSPSource(signatureOCSPSource);
-		validationContext.initialize(certificateVerifier);
-
-		validationContext.setCurrentTime(provideProcessExecutorInstance().getCurrentTime());
-		validationContext.validate();
-	  /*
-	   * For each signature present in the file to be validated the extraction of diagnostic data is launched.
-       */
-		for (final AdvancedSignature signature : getSignatures()) {
-
-			final XmlSignature xmlSignature = validateSignature(signature);
-			usedCertificatesDigestAlgorithms.addAll(signature.getUsedCertificatesDigestAlgorithms());
-			jaxbDiagnosticData.getSignature().add(xmlSignature);
-			final List<SignatureCryptographicVerification> counterSignaturesVerifications = verifyCounterSignatures(signature, validationContext);
-			if (counterSignaturesVerifications.size() > 0) {
-				for (AdvancedSignature countersignature : signature.getCounterSignatures()) {
-					final XmlSignature xmlCounterSignature = validateSignature(countersignature);
-					jaxbDiagnosticData.getSignature().add(xmlCounterSignature);
-				}
-			}
-		}
-		final Set<CertificateToken> processedCertificates = validationContext.getProcessedCertificates();
-		dealUsedCertificates(usedCertificatesDigestAlgorithms, processedCertificates);
-
-		return jaxbDiagnosticData;
 	}
 
 	/**
@@ -1145,12 +1235,57 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private CertificateToken dealSignature(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
+		final AdvancedSignature masterSignature = signature.getMasterSignature();
+		if (masterSignature != null) {
+
+			xmlSignature.setType(AttributeValue.COUNTERSIGNATURE);
+			xmlSignature.setParentId(masterSignature.getId());
+		}
+
 		dealSignatureCryptographicIntegrity(signature, xmlSignature);
 		xmlSignature.setId(signature.getId());
 		xmlSignature.setDateTime(DSSXMLUtils.createXMLGregorianCalendar(signature.getSigningTime()));
 		final SignatureLevel dataFoundUpToLevel = signature.getDataFoundUpToLevel();
 		final String value = dataFoundUpToLevel == null ? "UNKNOWN" : dataFoundUpToLevel.name();
 		xmlSignature.setSignatureFormat(value);
+
+		dealWithSignatureProductionPlace(signature, xmlSignature);
+
+		dealWithCommitmentTypeIndication(signature, xmlSignature);
+
+		dealWithClaimedRole(signature, xmlSignature);
+
+		final String contentType = signature.getContentType();
+		xmlSignature.setContentType(contentType);
+
+		final String contentIdentifier = signature.getContentIdentifier();
+		xmlSignature.setContentIdentifier(contentIdentifier);
+
+		final String contentHints = signature.getContentHints();
+		xmlSignature.setContentHints(contentHints);
+
+		dealWithCertifiedRole(signature, xmlSignature);
+
+		final SigningCertificateValidity signingCertificateValidity = dealSigningCertificate(signature, xmlSignature);
+
+		final XmlBasicSignatureType xmlBasicSignature = getXmlBasicSignatureType(xmlSignature);
+		final EncryptionAlgorithm encryptionAlgorithm = signature.getEncryptionAlgorithm();
+		final String encryptionAlgorithmString = encryptionAlgorithm == null ? "?" : encryptionAlgorithm.getName();
+		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmString);
+		// signingCertificateValidity can be null in case of a non AdES signature.
+		final CertificateToken signingCertificateToken = signingCertificateValidity == null ? null : signingCertificateValidity.getCertificateToken();
+		final int keyLength = signingCertificateToken == null ? 0 : signingCertificateToken.getPublicKeyLength();
+		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
+		final DigestAlgorithm digestAlgorithm = signature.getDigestAlgorithm();
+		final String digestAlgorithmString = digestAlgorithm == null ? "?" : digestAlgorithm.getName();
+		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(digestAlgorithmString);
+		xmlSignature.setBasicSignature(xmlBasicSignature);
+		dealSignatureScope(xmlSignature, signature);
+
+		return signingCertificateToken;
+	}
+
+	private void dealWithSignatureProductionPlace(AdvancedSignature signature, XmlSignature xmlSignature) {
 		final SignatureProductionPlace signatureProductionPlace = signature.getSignatureProductionPlace();
 		if (signatureProductionPlace != null) {
 
@@ -1162,55 +1297,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlSignatureProductionPlace.setCity(signatureProductionPlace.getCity());
 			xmlSignature.setSignatureProductionPlace(xmlSignatureProductionPlace);
 		}
+	}
 
-		CommitmentType commitmentTypeIndication = null;
-		try {
-			commitmentTypeIndication = signature.getCommitmentTypeIndication();
-		} catch (Exception e) {
-
-			LOG.warn("Exception: ", e);
-			addErrorMessage(xmlSignature, e);
-		}
-		if (commitmentTypeIndication != null) {
-
-			final XmlCommitmentTypeIndication xmlCommitmentTypeIndication = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlCommitmentTypeIndication();
-			final List<String> xmlIdentifiers = xmlCommitmentTypeIndication.getIdentifier();
-
-			final List<String> identifiers = commitmentTypeIndication.getIdentifiers();
-			for (final String identifier : identifiers) {
-
-				xmlIdentifiers.add(identifier);
-			}
-			xmlSignature.setCommitmentTypeIndication(xmlCommitmentTypeIndication);
-		}
-
-		String[] claimedRoles = null;
-		try {
-			claimedRoles = signature.getClaimedSignerRoles();
-		} catch (DSSException e) {
-
-			LOG.warn("Exception: ", e);
-			addErrorMessage(xmlSignature, e);
-		}
-		if (claimedRoles != null && claimedRoles.length > 0) {
-
-			final XmlClaimedRoles xmlClaimedRoles = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlClaimedRoles();
-			for (final String claimedRole : claimedRoles) {
-
-				xmlClaimedRoles.getClaimedRole().add(claimedRole);
-			}
-			xmlSignature.setClaimedRoles(xmlClaimedRoles);
-		}
-
-		final String contentType = signature.getContentType();
-		xmlSignature.setContentType(contentType);
-
-		final String contentIdentifier = signature.getContentIdentifier();
-		xmlSignature.setContentIdentifier(contentIdentifier);
-
-		final String contentHints = signature.getContentHints();
-		xmlSignature.setContentHints(contentHints);
-
+	private void dealWithCertifiedRole(AdvancedSignature signature, XmlSignature xmlSignature) {
 		List<CertifiedRole> certifiedRoles = null;
 		try {
 			certifiedRoles = signature.getCertifiedSignerRoles();
@@ -1231,24 +1320,49 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlSignature.getCertifiedRoles().add(xmlCertifiedRolesType);
 			}
 		}
+	}
 
-		final SigningCertificateValidity signingCertificateValidity = dealSigningCertificate(signature, xmlSignature);
+	private void dealWithClaimedRole(AdvancedSignature signature, XmlSignature xmlSignature) {
+		String[] claimedRoles = null;
+		try {
+			claimedRoles = signature.getClaimedSignerRoles();
+		} catch (DSSException e) {
 
-		final XmlBasicSignatureType xmlBasicSignature = getXmlBasicSignatureType(xmlSignature);
-		final EncryptionAlgorithm encryptionAlgorithm = signature.getEncryptionAlgorithm();
-		final String encryptionAlgorithmString = encryptionAlgorithm == null ? "?" : encryptionAlgorithm.getName();
-		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmString);
-		// signingCertificateValidity can be null in case of a non AdES signature.
-		final CertificateToken signingCertificateToken = signingCertificateValidity == null ? null : signingCertificateValidity.getCertificateToken();
-		final int keyLength = signingCertificateToken == null ? 0 : signingCertificateToken.getPublicKeyLength();
-		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
-		final DigestAlgorithm digestAlgorithm = signature.getDigestAlgorithm();
-		final String digestAlgorithmString = digestAlgorithm == null ? "?" : digestAlgorithm.getName();
-		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(digestAlgorithmString);
-		xmlSignature.setBasicSignature(xmlBasicSignature);
-		dealSignatureScope(xmlSignature, signature);
+			LOG.warn("Exception: ", e);
+			addErrorMessage(xmlSignature, e);
+		}
+		if (claimedRoles != null && claimedRoles.length > 0) {
 
-		return signingCertificateToken;
+			final XmlClaimedRoles xmlClaimedRoles = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlClaimedRoles();
+			for (final String claimedRole : claimedRoles) {
+
+				xmlClaimedRoles.getClaimedRole().add(claimedRole);
+			}
+			xmlSignature.setClaimedRoles(xmlClaimedRoles);
+		}
+	}
+
+	private void dealWithCommitmentTypeIndication(AdvancedSignature signature, XmlSignature xmlSignature) {
+		CommitmentType commitmentTypeIndication = null;
+		try {
+			commitmentTypeIndication = signature.getCommitmentTypeIndication();
+		} catch (Exception e) {
+
+			LOG.warn("Exception: ", e);
+			addErrorMessage(xmlSignature, e);
+		}
+		if (commitmentTypeIndication != null) {
+
+			final XmlCommitmentTypeIndication xmlCommitmentTypeIndication = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlCommitmentTypeIndication();
+			final List<String> xmlIdentifiers = xmlCommitmentTypeIndication.getIdentifier();
+
+			final List<String> identifiers = commitmentTypeIndication.getIdentifiers();
+			for (final String identifier : identifiers) {
+
+				xmlIdentifiers.add(identifier);
+			}
+			xmlSignature.setCommitmentTypeIndication(xmlCommitmentTypeIndication);
+		}
 	}
 
 	protected void dealSignatureScope(XmlSignature xmlSignature, AdvancedSignature signature) {
@@ -1329,31 +1443,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method performs a global check on all countersignatures present in a given signature
-	 *
-	 * @param signature
-	 * @param ctx
-	 * @return a list of SignatureCryptographicVerification objects
-	 */
-	protected List<SignatureCryptographicVerification> verifyCounterSignatures(final AdvancedSignature signature, final ValidationContext ctx) {
-
-		final List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
-
-		if (counterSignatures == null) {
-			return null;
-		}
-
-		List<SignatureCryptographicVerification> verifications = new ArrayList<SignatureCryptographicVerification>();
-
-		for (final AdvancedSignature counterSignature : counterSignatures) {
-			final SignatureCryptographicVerification scv = counterSignature.checkSignatureIntegrity();
-			verifications.add(scv);
-		}
-
-		return verifications;
-	}
-
-	/**
 	 * This method creates the SigningCertificate element for the current token.
 	 *
 	 * @param issuerCertificateToken the issuer certificate of the current token
@@ -1371,6 +1460,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return null;
 	}
 
+	/**
+	 * @return {@code SignatureScopeFinder<XAdESSignature>}
+	 */
 	public SignatureScopeFinder<XAdESSignature> getXadesSignatureScopeFinder() {
 		return xadesSignatureScopeFinder;
 	}

@@ -22,11 +22,11 @@ package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
-import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 import eu.europa.ec.markt.dss.validation102853.policy.SignaturePolicyConstraint;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
+import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
@@ -78,9 +78,9 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
     private XmlDom diagnosticData;
 
     /**
-     * See {@link ProcessParameters#getValidationPolicy()}
+     * See {@link ProcessParameters#getCurrentValidationPolicy()}
      */
-    private EtsiValidationPolicy constraintData;
+    private ValidationPolicy constraintData;
 
     /**
      * See {@link ProcessParameters#getSignatureContext()}
@@ -95,7 +95,7 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
     private void prepareParameters(final ProcessParameters params) {
 
         this.diagnosticData = params.getDiagnosticData();
-        this.constraintData = (EtsiValidationPolicy)params.getValidationPolicy();
+        this.constraintData = params.getCurrentValidationPolicy();
         this.signatureContext = params.getSignatureContext();
 
         isInitialised();

@@ -23,9 +23,10 @@ package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.processes.ValidationXPathQueryHolder;
 import eu.europa.ec.markt.dss.validation102853.processes.dss.InvolvedServiceInfo;
 import eu.europa.ec.markt.dss.validation102853.processes.subprocesses.EtsiPOEExtraction;
@@ -73,7 +74,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(PastCertificateValidation.class);
 
-	private EtsiValidationPolicy constraintData;
+	private ValidationPolicy constraintData;
 
 	private Date controlTime;
 
@@ -84,7 +85,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 
 	private void prepareParameters(final ProcessParameters params) {
 
-		this.constraintData = (EtsiValidationPolicy) params.getValidationPolicy();
+		this.constraintData = params.getCurrentValidationPolicy();
 		this.poe = (EtsiPOEExtraction) params.getPOE();
 		isInitialised(params);
 	}
@@ -147,8 +148,8 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 		for (final XmlDom chainCertificate : reversed(chainCertificates)) {
 
 			final int certificateId = getCertificateId(chainCertificate);
-			final XmlNode certificateNode = controlTimeSlidingData.addChild(CERTIFICATE, String.valueOf(certificateId));
-			certificateNode.setAttribute(FIELD, CERTIFICATE_ID);
+			final XmlNode certificateNode = controlTimeSlidingData.addChild(CERTIFICATE, DSSUtils.EMPTY);
+			certificateNode.setAttribute(CERTIFICATE_ID, String.valueOf(certificateId));
 
 			final XmlDom certificate = params.getCertificate(certificateId);
 

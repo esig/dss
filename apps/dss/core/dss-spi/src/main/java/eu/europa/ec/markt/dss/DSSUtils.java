@@ -68,6 +68,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -3049,5 +3050,18 @@ public final class DSSUtils {
 			closeQuietly(inputStream);
 		}
 	}
-}
 
+	/**
+	 * Get a difference between two dates
+	 *
+	 * @param date1    the oldest date
+	 * @param date2    the newest date
+	 * @param timeUnit the unit in which you want the diff
+	 * @return the difference value, in the provided unit
+	 */
+	public static long getDateDiff(final Date date1, final Date date2, final TimeUnit timeUnit) {
+
+		long diff = date2.getTime() - date1.getTime();
+		return timeUnit.convert(diff, TimeUnit.MILLISECONDS);
+	}
+}

@@ -66,6 +66,8 @@ public interface ProcessExecutor {
 	 */
 	void setValidationPolicy(final ValidationPolicy validationPolicy);
 
+	void setCountersignatureValidationPolicy(ValidationPolicy validationPolicy);
+
 	/**
 	 * This method allows to run the validation process.
 	 *

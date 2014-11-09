@@ -21,9 +21,9 @@
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.processes.ValidationXPathQueryHolder;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
@@ -85,9 +85,9 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IS
 public class CryptographicVerification implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
 
 	/**
-	 * See {@link ProcessParameters#getValidationPolicy()}
+	 * See {@link ProcessParameters#getCurrentValidationPolicy()}
 	 */
-	private EtsiValidationPolicy constraintData;
+	private ValidationPolicy constraintData;
 
 	private XmlDom contextElement;
 
@@ -98,7 +98,7 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 
 	private void prepareParameters(final ProcessParameters params) {
 
-		this.constraintData = (EtsiValidationPolicy) params.getValidationPolicy();
+		this.constraintData = params.getCurrentValidationPolicy();
 		this.contextElement = params.getContextElement();
 
 		isInitialised();

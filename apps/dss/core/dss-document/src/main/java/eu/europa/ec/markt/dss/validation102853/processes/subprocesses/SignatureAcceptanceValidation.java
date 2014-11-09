@@ -25,12 +25,12 @@ import java.util.List;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
-import eu.europa.ec.markt.dss.validation102853.policy.SignatureCryptographicConstraint;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
+import eu.europa.ec.markt.dss.validation102853.policy.SignatureCryptographicConstraint;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.processes.ValidationXPathQueryHolder;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
@@ -44,6 +44,10 @@ import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIDF;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIDF_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ICERRM;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ICERRM_ANS;
@@ -63,12 +67,7 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_I
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPSTP_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPXTIP;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPXTIP_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIDF;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_ITVPC;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.EMPTY;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIDF_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC_ANS;
 
 
 /**
@@ -113,9 +112,9 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 	 */
 
 	/**
-	 * See {@link ProcessParameters#getValidationPolicy()}
+	 * See {@link ProcessParameters#getCurrentValidationPolicy()}
 	 */
-	private EtsiValidationPolicy constraintData;
+	private ValidationPolicy constraintData;
 
 	/**
 	 * See {@link ProcessParameters#getCurrentTime()}
@@ -134,7 +133,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 
 	private void prepareParameters(final ProcessParameters params) {
 
-		this.constraintData = (EtsiValidationPolicy) params.getValidationPolicy();
+		this.constraintData = params.getCurrentValidationPolicy();
 		this.signatureContext = params.getSignatureContext();
 		this.currentTime = params.getCurrentTime();
 

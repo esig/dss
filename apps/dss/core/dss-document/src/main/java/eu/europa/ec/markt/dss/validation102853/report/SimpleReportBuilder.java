@@ -39,11 +39,11 @@ import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.SignatureQualification;
 import eu.europa.ec.markt.dss.validation102853.SignatureType;
 import eu.europa.ec.markt.dss.validation102853.TLQualification;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.processes.dss.InvolvedServiceInfo;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
@@ -65,7 +65,7 @@ public class SimpleReportBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SimpleReportBuilder.class);
 
-	private final EtsiValidationPolicy constraintData;
+	private final ValidationPolicy constraintData;
 	private final DiagnosticData diagnosticData;
 
 	private int totalSignatureCount = 0;
@@ -73,7 +73,7 @@ public class SimpleReportBuilder {
 
 	public SimpleReportBuilder(final ValidationPolicy constraintData, final DiagnosticData diagnosticData) {
 
-		this.constraintData = (EtsiValidationPolicy) constraintData;
+		this.constraintData = constraintData;
 		this.diagnosticData = diagnosticData;
 	}
 
@@ -132,8 +132,8 @@ public class SimpleReportBuilder {
 	}
 
 	private void addSignatures(final ProcessParameters params, final XmlNode simpleReport) throws DSSException {
-		final List<XmlDom> signatures = diagnosticData.getElements("/DiagnosticData/Signature");
 
+		final List<XmlDom> signatures = diagnosticData.getElements("/DiagnosticData/Signature");
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
 		for (final XmlDom signature : signatures) {
@@ -162,6 +162,14 @@ public class SimpleReportBuilder {
 
 		final String signatureId = diagnosticSignature.getValue("./@Id");
 		signatureNode.setAttribute(AttributeName.ID, signatureId);
+
+		final String type = diagnosticSignature.getValue("./@Type");
+		if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
+
+			signatureNode.setAttribute(AttributeName.TYPE, AttributeValue.COUNTERSIGNATURE);
+			final String parentId = diagnosticSignature.getValue("./ParentId/text()");
+			signatureNode.setAttribute(AttributeName.PARENT_ID, parentId);
+		}
 		try {
 
 			addSigningTime(diagnosticSignature, signatureNode);

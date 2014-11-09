@@ -57,14 +57,13 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		super(document);
 	}
 
-	/**
-	 * @return
-	 */
+	@Override
 	public boolean isRevocationFreshnessToBeChecked() {
 
 		return null != getElement("/ConstraintsParameters/Revocation/RevocationFreshness/");
 	}
 
+	@Override
 	public String getFormatedMaxRevocationFreshness() {
 
 		if (maxRevocationFreshness == null) {
@@ -74,11 +73,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return maxRevocationFreshnessString + " " + maxRevocationFreshnessUnit;
 	}
 
-	/**
-	 * This function returns the maximum duration in milliseconds for which the revocation data are considered fresh.
-	 *
-	 * @return
-	 */
+	@Override
 	public Long getMaxRevocationFreshness() {
 
 		if (maxRevocationFreshness == null) {
@@ -100,13 +95,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return maxRevocationFreshness;
 	}
 
-	/**
-	 * This function returns the algorithm expiration date extracted from the 'constraint.xml' file. If the TAG AlgoExpirationDate is not present within the
-	 * constraints {@code null} is returned.
-	 *
-	 * @param algorithm algorithm (SHA1, SHA256, RSA2048...) to be checked
-	 * @return expiration date or null
-	 */
+	@Override
 	public Date getAlgorithmExpirationDate(final String algorithm) {
 
 		Date date = algorithmExpirationDate.get(algorithm);
@@ -134,12 +123,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return date;
 	}
 
-	/**
-	 * Indicates if the signature policy should be checked. If AcceptablePolicies element is absent within the constraint file then null is returned,
-	 * otherwise the list of identifiers is initialised.
-	 *
-	 * @return {@code Constraint} if SigningTime element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public SignaturePolicyConstraint getSignaturePolicyConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/AcceptablePolicies/@Level");
@@ -156,22 +140,14 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
-	/**
-	 * Indicates if the signed property: signing-time should be checked. If SigningTime element is absent within the constraint file then null is returned.
-	 *
-	 * @return {@code Constraint} if SigningTime element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningTimeConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/SigningTime";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * Indicates if the signed property: content-type should be checked. If ContentType element is absent within the constraint file then null is returned.
-	 *
-	 * @return {@code Constraint} if ContentType element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getContentTypeConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentType";
@@ -179,34 +155,21 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	}
 
 
-	/**
-	 * Indicates if the signed property: content-hints should be checked. If ContentHints element is absent within the constraint file then null is returned.
-	 *
-	 * @return {@code Constraint} if ContentHints element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getContentHintsConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentHints";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * Indicates if the signed property: content-identifier should be checked. If ContentIdentifier element is absent within the constraint file then null is returned.
-	 *
-	 * @return {@code Constraint} if ContentIdentifier element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getContentIdentifierConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentIdentifier";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * Indicates if the signed property: commitment-type-indication should be checked. If CommitmentTypeIndication element is absent within the constraint file then null is
-	 * returned, otherwise the list of identifiers is initialised.
-	 *
-	 * @return {@code Constraint} if CommitmentTypeIndication element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getCommitmentTypeIndicationConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/@Level");
@@ -222,11 +185,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
-	/**
-	 * Indicates if the signed property: signer-location should be checked. If SignerLocation element is absent within the constraint file then null is returned.
-	 *
-	 * @return {@code Constraint} if SignerLocation element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSignerLocationConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/SignerLocation/@Level");
@@ -238,11 +197,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
-	/**
-	 * Indicates if the signed property: content-time-stamp should be checked. If ContentTimeStamp element is absent within the constraint file then null is returned.
-	 *
-	 * @return {@code Constraint} if ContentTimeStamp element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getContentTimestampPresenceConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/@Level");
@@ -254,11 +209,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
-	/**
-	 * Indicates if the signed property: content-time-stamp should be checked. If ClaimedRoles element is absent within the constraint file then null is returned.
-	 *
-	 * @return {@code Constraint} if ClaimedRoles element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getClaimedRoleConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/@Level");
@@ -274,11 +225,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
-	/**
-	 * Return the mandated signer role.
-	 *
-	 * @return
-	 */
+	@Override
 	public List<String> getClaimedRoles() {
 
 		final List<XmlDom> list = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/Role");
@@ -286,22 +233,14 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return claimedRoles;
 	}
 
-	/**
-	 * Indicates if the presence of the Signer Role is mandatory.
-	 *
-	 * @return
-	 */
+	@Override
 	public boolean shouldCheckIfCertifiedRoleIsPresent() {
 
 		final long count = getCountValue("count(/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CertifiedRoles/Role)");
 		return count > 0;
 	}
 
-	/**
-	 * Return the mandated signer role.
-	 *
-	 * @return
-	 */
+	@Override
 	public List<String> getCertifiedRoles() {
 
 		final List<XmlDom> list = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CertifiedRoles/Role");
@@ -309,33 +248,21 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return claimedRoles;
 	}
 
-	/**
-	 * Returns the name of the policy.
-	 *
-	 * @return
-	 */
+	@Override
 	public String getPolicyName() {
 
 		final String policy = getValue("/ConstraintsParameters/@Name");
 		return policy;
 	}
 
-	/**
-	 * Returns the policy description.
-	 *
-	 * @return
-	 */
+	@Override
 	public String getPolicyDescription() {
 
 		final String description = getValue("/ConstraintsParameters/Description/text()");
 		return description;
 	}
 
-	/**
-	 * Returns the timestamp delay in milliseconds.
-	 *
-	 * @return
-	 */
+	@Override
 	public Long getTimestampDelayTime() {
 
 		if (timestampDelayTime == null) {
@@ -352,49 +279,29 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return timestampDelayTime;
 	}
 
+	@Override
 	public String getCertifiedRolesAttendance() {
 
 		String attendance = getValue("ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/@Attendance");
 		return attendance;
 	}
 
-	/**
-	 * This method creates the {@code SignatureCryptographicConstraint} corresponding to the context parameter. If AcceptableEncryptionAlgo is not present in the constraint file
-	 * the null is returned.
-	 *
-	 * @param context The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
-	 * @return {@code SignatureCryptographicConstraint} if AcceptableEncryptionAlgo for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public SignatureCryptographicConstraint getSignatureCryptographicConstraint(final String context) {
 
 		final String rootXPathQuery = String.format("/ConstraintsParameters/%s/Cryptographic", context);
 		return getSignatureCryptographicConstraint_(rootXPathQuery, context, null);
 	}
 
-	/**
-	 * This method creates the {@code SignatureCryptographicConstraint} corresponding to the context parameter. If AcceptableEncryptionAlgo is not present in the constraint file
-	 * the null is returned.
-	 *
-	 * @param context    The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
-	 * @param subContext the sub context of the signature cryptographic constraints: EMPTY (signature itself), SigningCertificate, CACertificate
-	 * @return {@code SignatureCryptographicConstraint} if AcceptableEncryptionAlgo for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public SignatureCryptographicConstraint getSignatureCryptographicConstraint(final String context, final String subContext) {
 
 		final String rootXPathQuery = String.format("/ConstraintsParameters/%s/%s/Cryptographic", context, subContext);
 		return getSignatureCryptographicConstraint_(rootXPathQuery, context, subContext);
 	}
 
-	/**
-	 * This method creates the {@code SignatureCryptographicConstraint} corresponding to the context parameter. If AcceptableEncryptionAlgo is not present in the constraint file
-	 * the null is returned.
-	 *
-	 * @param rootXPathQuery The context of the signature cryptographic constraints is included within the XPath query.
-	 * @param context        The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
-	 * @param subContext     the sub context of the signature cryptographic constraints: EMPTY (signature itself), SigningCertificate, CACertificate
-	 * @return {@code SignatureCryptographicConstraint} if AcceptableEncryptionAlgo for a given context element is present in the constraint file, null otherwise.
-	 */
-	private SignatureCryptographicConstraint getSignatureCryptographicConstraint_(final String rootXPathQuery, final String context, final String subContext) {
+	@Override
+	protected SignatureCryptographicConstraint getSignatureCryptographicConstraint_(final String rootXPathQuery, final String context, final String subContext) {
 
 		final String level = getValue(rootXPathQuery + "/@Level");
 		if (DSSUtils.isNotBlank(level)) {
@@ -422,21 +329,14 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
-	/**
-	 * @param context
-	 * @return {@code Constraint} if key-usage for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateKeyUsageConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/KeyUsage", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @param context
-	 * @param subContext
-	 * @return {@code Constraint} if Expiration for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public CertificateExpirationConstraint getSigningCertificateExpirationConstraint(final String context, final String subContext) {
 
 		final String level = getValue(String.format("/ConstraintsParameters/%s/%s/Expiration/@Level", context, subContext));
@@ -448,117 +348,84 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
-	/**
-	 * This constraint requests the presence of the trust anchor in the certificate chain.
-	 *
-	 * @param context
-	 * @return {@code Constraint} if ProspectiveCertificateChain element for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getProspectiveCertificateChainConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/ProspectiveCertificateChain", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @param context
-	 * @param subContext
-	 * @return {@code Constraint} if Signature for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getCertificateSignatureConstraint(final String context, final String subContext) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/Signature", context, subContext);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @param context
-	 * @return {@code Constraint} if RevocationDataAvailable for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getRevocationDataAvailableConstraint(final String context, final String subContext) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/RevocationDataAvailable", context, subContext);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @param context
-	 * @return {@code Constraint} if RevocationDataIsTrusted for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getRevocationDataIsTrustedConstraint(final String context, final String subContext) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/RevocationDataIsTrusted", context, subContext);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @param context
-	 * @return {@code Constraint} if RevocationDataFreshness for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getRevocationDataFreshnessConstraint(final String context, final String subContext) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/RevocationDataFreshness", context, subContext);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if Revoked for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateRevokedConstraint(final String context, final String subContext) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/Revoked", context, subContext);
 		return getBasicConstraint(XP_ROOT, false);
 	}
 
-	/**
-	 * @return {@code Constraint} if OnHold for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateOnHoldConstraint(final String context, final String subContext) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/OnHold", context, subContext);
 		return getBasicConstraint(XP_ROOT, false);
 	}
 
-	/**
-	 * @return {@code Constraint} if the TSLValidity for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateTSLValidityConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/TSLValidity", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if TSLStatus for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateTSLStatusConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/TSLStatus", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if the TSLValidity for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateTSLStatusAndValidityConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/TSLStatusAndValidity", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @param context of the certificate: main signature, timestamp, revocation data
-	 * @return {@code Constraint} if Revoked for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getIntermediateCertificateRevokedConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/CACertificate/Revoked", context);
 		return getBasicConstraint(XP_ROOT, false);
 	}
 
-	/**
-	 * @return {@code Constraint} if CertificateChain for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getChainConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/CertificateChain/@Level");
@@ -570,125 +437,92 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
-	/**
-	 * @return {@code Constraint} if Qualification for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateQualificationConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/SigningCertificate/Qualification";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * Indicates if the end user certificate used in validating the signature is mandated to be supported by a secure
-	 * signature creation device (SSCD) as defined in Directive 1999/93/EC [9].
-	 *
-	 * @return {@code Constraint} if SupportedBySSCD for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateSupportedBySSCDConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/SigningCertificate/SupportedBySSCD";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if IssuedToLegalPerson for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateIssuedToLegalPersonConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/SigningCertificate/IssuedToLegalPerson";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if Recognition for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateRecognitionConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/Recognition", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if Signed for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateSignedConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/Signed", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if SigningCertificateAttribute for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateAttributePresentConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/AttributePresent", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if DigestValuePresent for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateDigestValuePresentConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/DigestValuePresent", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if DigestValueMatch for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateDigestValueMatchConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/DigestValueMatch", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if IssuerSerialMatch for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSigningCertificateIssuerSerialMatchConstraint(final String context) {
 
 		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/IssuerSerialMatch", context);
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code Constraint} if ReferenceDataExistence for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getReferenceDataExistenceConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/ReferenceDataExistence";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code ReferenceDataIntact} if ReferenceDataIntact for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getReferenceDataIntactConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/ReferenceDataIntact";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * @return {@code ReferenceDataIntact} if SignatureIntact for a given context element is present in the constraint file, null otherwise.
-	 */
+	@Override
 	public Constraint getSignatureIntactConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/SignatureIntact";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * This method returns the "basic" constraint able to handle simple (empty/not empty), boolean value and identifiers list.
-	 *
-	 * @param XP_ROOT              is the root part of the XPath query use to retrieve the constraint description.
-	 * @param defaultExpectedValue true or false
-	 * @return
-	 */
-	private Constraint getBasicConstraint(final String XP_ROOT, final boolean defaultExpectedValue) {
+	@Override
+	protected Constraint getBasicConstraint(final String XP_ROOT, final boolean defaultExpectedValue) {
 
 		final String level = getValue(XP_ROOT + "/@Level");
 		if (DSSUtils.isNotBlank(level)) {
@@ -704,6 +538,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
+	@Override
 	public BasicValidationProcessValidConstraint getBasicValidationProcessConclusionConstraint() {
 
 		final BasicValidationProcessValidConstraint constraint = new BasicValidationProcessValidConstraint("FAIL");
@@ -711,23 +546,21 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return constraint;
 	}
 
+	@Override
 	public Constraint getMessageImprintDataFoundConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/Timestamp/MessageImprintDataFound";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	@Override
 	public Constraint getMessageImprintDataIntactConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/Timestamp/MessageImprintDataIntact";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * This constraint is always executed!
-	 *
-	 * @return
-	 */
+	@Override
 	public TimestampValidationProcessValidConstraint getTimestampValidationProcessConstraint() {
 
 		final TimestampValidationProcessValidConstraint constraint = new TimestampValidationProcessValidConstraint("FAIL");
@@ -735,24 +568,28 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return constraint;
 	}
 
+	@Override
 	public Constraint getRevocationTimeConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/Timestamp/RevocationTimeAgainstBestSignatureTime";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	@Override
 	public Constraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/Timestamp/BestSignatureTimeBeforeIssuanceDateOfSigningCertificate";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	@Override
 	public Constraint getSigningCertificateValidityAtBestSignatureTimeConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/Timestamp/SigningCertificateValidityAtBestSignatureTime";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	@Override
 	public Constraint getAlgorithmReliableAtBestSignatureTimeConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/Timestamp/AlgorithmReliableAtBestSignatureTime";
@@ -760,17 +597,14 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	}
 
 
+	@Override
 	public Constraint getTimestampCoherenceConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/Timestamp/Coherence";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
-	/**
-	 * This constraint has only two levels: FAIL, or NOTHING
-	 *
-	 * @return
-	 */
+	@Override
 	public Constraint getTimestampDelaySigningTimePropertyConstraint() {
 
 		final Long timestampDelay = getTimestampDelayTime();
@@ -783,29 +617,34 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		return null;
 	}
 
+	@Override
 	public Constraint getContentTimestampImprintIntactConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/MessageImprintDataIntact";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	@Override
 	public Constraint getContentTimestampImprintFoundConstraint() {
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/MessageImprintDataFound";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	@Override
 	public Constraint getCounterSignatureReferenceDataExistenceConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataExistence";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	@Override
 	public Constraint getCounterSignatureReferenceDataIntactConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataIntact";
 		return getBasicConstraint(XP_ROOT, true);
 	}
 
+	@Override
 	public Constraint getCounterSignatureIntactConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/SignatureIntact";

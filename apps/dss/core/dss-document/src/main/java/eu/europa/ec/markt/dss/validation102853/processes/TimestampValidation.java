@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
 import eu.europa.ec.markt.dss.validation102853.policy.SignatureCryptographicConstraint;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.processes.subprocesses.CryptographicVerification;
 import eu.europa.ec.markt.dss.validation102853.processes.subprocesses.IdentificationOfTheSignersCertificate;
 import eu.europa.ec.markt.dss.validation102853.processes.subprocesses.X509CertificateValidation;
@@ -65,7 +65,7 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampValidation.class);
 
 	private XmlDom diagnosticData;
-	private EtsiValidationPolicy constraintData;
+	private ValidationPolicy constraintData;
 
 	/**
 	 * See {@link ProcessParameters#getCurrentTime()}
@@ -75,20 +75,16 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 	private void prepareParameters(final ProcessParameters params) {
 
 		this.diagnosticData = params.getDiagnosticData();
-		if (constraintData == null) {
-
-			this.constraintData = (EtsiValidationPolicy) params.getValidationPolicy();
-		}
 		this.currentTime = params.getCurrentTime();
-		isInitialised();
+		isInitialised(params);
 	}
 
-	private void isInitialised() {
+	private void isInitialised(final ProcessParameters params) {
 
 		if (diagnosticData == null) {
 			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
 		}
-		if (constraintData == null) {
+		if (params.getValidationPolicy() == null) {
 			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 		if (currentTime == null) {
@@ -123,6 +119,16 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 		final XmlNode timestampValidationDataNode = mainNode.addChild(TIMESTAMP_VALIDATION_DATA);
 
 		for (final XmlDom signature : signatures) {
+
+			final String type = signature.getValue("./@Type");
+			if (COUNTERSIGNATURE.equals(type)) {
+
+				params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
+			} else {
+
+				params.setCurrentValidationPolicy(params.getValidationPolicy());
+			}
+			constraintData = params.getCurrentValidationPolicy();
 
 			final List<XmlDom> timestamps = new ArrayList<XmlDom>();
 			final TimestampType[] timestampTypes = TimestampType.values();

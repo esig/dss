@@ -59,6 +59,11 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	 */
 	protected ValidationPolicy validationPolicy;
 
+	/**
+	 * Wrapper for the countersignature validation policy constraints
+	 */
+	protected ValidationPolicy countersignatureValidationPolicy;
+
 	protected ProcessParameters processParams;
 
 	/**
@@ -100,6 +105,11 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		this.validationPolicy = validationPolicy;
 	}
 
+	@Override
+	public void setCountersignatureValidationPolicy(ValidationPolicy validationPolicy) {
+		this.countersignatureValidationPolicy = validationPolicy;
+	}
+
 	/**
 	 * This method executes the long term validation processes. The underlying processes are automatically executed.
 	 */
@@ -110,6 +120,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		diagnosticData = new DiagnosticData(diagnosticDataDom);
 		processParams.setDiagnosticData(diagnosticData);
 		processParams.setValidationPolicy(validationPolicy);
+		processParams.setCountersignatureValidationPolicy(countersignatureValidationPolicy);
 		processParams.setCurrentTime(currentTime);
 		final XmlDom usedCertificates = diagnosticData.getElement("/DiagnosticData/UsedCertificates");
 		processParams.setCertPool(usedCertificates);

@@ -36,113 +36,134 @@ import eu.europa.ec.markt.dss.validation102853.data.diagnostic.ObjectFactory;
 
 public class ValidationResourceManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ValidationResourceManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ValidationResourceManager.class);
 
-    public static String defaultPolicyConstraintsLocation = "/102853/policy/constraint.xml";
-    public static String defaultPolicyXsdLocation = "/102853/policy/policy.xsd";
+	public static String defaultPolicyConstraintsLocation = "/102853/policy/constraint.xml";
+	public static String defaultCountersignaturePolicyConstraintsLocation = "/102853/policy/countersignature-constraint.xml";
+	public static String defaultPolicyXsdLocation = "/102853/policy/policy.xsd";
 
-    private static JAXBContext jaxbContext;
+	private static JAXBContext jaxbContext;
 
-    static {
+	static {
 
-        try {
-        	  jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
-        } catch (JAXBException e) {
-            throw new DSSException(e);
-        }
-    }
+		try {
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+		} catch (JAXBException e) {
+			throw new DSSException(e);
+		}
+	}
 
-    /**
-     * This method loads the policy constraint file. If the validationPolicy is not specified then the default policy file is
-     * loaded.
-     *
-     * @param policyDataStream
-     * @return
-     */
-    public static Document loadPolicyData(InputStream policyDataStream) {
+	/**
+	 * This method loads the policy constraint file. If the validationPolicy is not specified then the default policy file is
+	 * loaded.
+	 *
+	 * @param policyDataStream
+	 * @return
+	 */
+	public static Document loadPolicyData(InputStream policyDataStream) {
 
-        if (policyDataStream != null) {
+		if (policyDataStream != null) {
 
-            return load(policyDataStream);
-        }
-        if (defaultPolicyConstraintsLocation != null && !defaultPolicyConstraintsLocation.isEmpty()) {
+			return load(policyDataStream);
+		}
+		if (defaultPolicyConstraintsLocation != null && !defaultPolicyConstraintsLocation.isEmpty()) {
 
-            return load(defaultPolicyConstraintsLocation);
-        }
-        return null;
-    }
+			return load(defaultPolicyConstraintsLocation);
+		}
+		return null;
+	}
 
-    /**
-     * This method loads the data from the resource file into an {@link java.io.InputStream}.
-     *
-     * @param dataFileName
-     * @return
-     */
-    public static InputStream getResourceInputStream(final String dataFileName) {
+	/**
+	 * This method loads the policy constraint file. If the validationPolicy is not specified then the default policy file is
+	 * loaded.
+	 *
+	 * @param policyDataStream
+	 * @return
+	 */
+	public static Document loadCountersignaturePolicyData(InputStream policyDataStream) {
 
-        try {
-            // final URL resource = ValidationResourceManager.class.getResource("/");
-            // System.out.println(resource.getPath());
-            InputStream inputStream = ValidationResourceManager.class.getResourceAsStream(dataFileName);
-            // DSSUtils.copy(inputStream, System.out);
-            return inputStream;
-        } catch (Exception e) {
-            throw new DSSException(e);
-        }
-    }
+		if (policyDataStream != null) {
 
-    /**
-     * This is the utility method that loads the data from the file determined by the path parameter into a
-     * {@link org.w3c.dom.Document}.
-     *
-     * @param path
-     * @return
-     */
-    public static Document load(final String path) {
+			return load(policyDataStream);
+		}
+		if (defaultCountersignaturePolicyConstraintsLocation != null && !defaultCountersignaturePolicyConstraintsLocation.isEmpty()) {
 
-        if (path == null || path.isEmpty()) {
+			return load(defaultCountersignaturePolicyConstraintsLocation);
+		}
+		return null;
+	}
 
-            return null;
-        }
-        final InputStream fileInputStream = getResourceInputStream(path);
-        if (fileInputStream == null) {
-            LOG.warn("path: '{}'", path);
-        }
-        final Document document = load(fileInputStream);
-        // DSSXMLUtils.printDocument(document, System.out);
-        return document;
-    }
+	/**
+	 * This method loads the data from the resource file into an {@link java.io.InputStream}.
+	 *
+	 * @param dataFileName
+	 * @return
+	 */
+	public static InputStream getResourceInputStream(final String dataFileName) {
 
-    /**
-     * This is the utility method that loads the data from the inputstream determined by the inputstream parameter into a
-     * {@link org.w3c.dom.Document}.
-     *
-     * @param inputStream
-     * @return
-     */
-    public static Document load(final InputStream inputStream) throws DSSException {
+		try {
+			// final URL resource = ValidationResourceManager.class.getResource("/");
+			// System.out.println(resource.getPath());
+			InputStream inputStream = ValidationResourceManager.class.getResourceAsStream(dataFileName);
+			// DSSUtils.copy(inputStream, System.out);
+			return inputStream;
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+	}
 
-        final Document document = DSSXMLUtils.buildDOM(inputStream);
-        return document;
-    }
+	/**
+	 * This is the utility method that loads the data from the file determined by the path parameter into a
+	 * {@link org.w3c.dom.Document}.
+	 *
+	 * @param path
+	 * @return
+	 */
+	public static Document load(final String path) {
 
-    /**
-     * This is the utility method that marshals the JAXB object into a {@link org.w3c.dom.Document}.
-     *
-     * @param diagnosticDataJB The JAXB object representing the diagnostic data.
-     * @return
-     */
-    public static Document convert(final DiagnosticData diagnosticDataJB) {
+		if (path == null || path.isEmpty()) {
 
-        try {
+			return null;
+		}
+		final InputStream fileInputStream = getResourceInputStream(path);
+		if (fileInputStream == null) {
+			LOG.warn("path: '{}'", path);
+		}
+		final Document document = load(fileInputStream);
+		// DSSXMLUtils.printDocument(document, System.out);
+		return document;
+	}
 
-            final Document diagnosticData = DSSXMLUtils.buildDOM();
-            Marshaller marshaller = jaxbContext.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(diagnosticDataJB, diagnosticData);
-            return diagnosticData;
-        } catch (JAXBException e) {
-            throw new DSSException(e);
-        }
-    }
+	/**
+	 * This is the utility method that loads the data from the inputstream determined by the inputstream parameter into a
+	 * {@link org.w3c.dom.Document}.
+	 *
+	 * @param inputStream
+	 * @return
+	 */
+	public static Document load(final InputStream inputStream) throws DSSException {
+
+		final Document document = DSSXMLUtils.buildDOM(inputStream);
+		return document;
+	}
+
+	/**
+	 * This is the utility method that marshals the JAXB object into a {@link org.w3c.dom.Document}.
+	 *
+	 * @param diagnosticDataJB The JAXB object representing the diagnostic data.
+	 * @return
+	 */
+	public static Document convert(final DiagnosticData diagnosticDataJB) {
+
+		try {
+
+			final Document diagnosticData = DSSXMLUtils.buildDOM();
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.marshal(diagnosticDataJB, diagnosticData);
+			return diagnosticData;
+		} catch (JAXBException e) {
+			throw new DSSException(e);
+		}
+	}
 }

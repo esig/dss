@@ -1362,22 +1362,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public List<AdvancedSignature> getCounterSignatures() {
 
 		// see ETSI TS 101 903 V1.4.2 (2010-12) pp. 38/39/40
-		NodeList counterSigs = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_COUNTER_SIGNATURE);
-		if (counterSigs == null) {
+		final NodeList counterSignatures = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_COUNTER_SIGNATURE);
+		if (counterSignatures == null) {
 			return null;
 		}
+		final List<AdvancedSignature> xadesList = new ArrayList<AdvancedSignature>();
+		for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
 
-		List<AdvancedSignature> xadesList = new ArrayList<AdvancedSignature>();
-
-		for (int i = 0; i < counterSigs.getLength(); i++) {
-			Element counterSigEl = (Element) counterSigs.item(i);
-			Element signatureEl = DSSXMLUtils.getElement(counterSigEl, xPathQueryHolder.XPATH__SIGNATURE);
+			final Element counterSignatureElement = (Element) counterSignatures.item(ii);
+			final Element signatureElement = DSSXMLUtils.getElement(counterSignatureElement, xPathQueryHolder.XPATH__SIGNATURE);
 
 			// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
-			XAdESSignature xCounterSig = new XAdESSignature(signatureEl, xPathQueryHolders, certPool);
-
-			if (isCounterSignature(xCounterSig)) {
-				xadesList.add(xCounterSig);
+			final XAdESSignature xadesCounterSignature = new XAdESSignature(signatureElement, xPathQueryHolders, certPool);
+			if (isCounterSignature(xadesCounterSignature)) {
+				xadesCounterSignature.setMasterSignature(this);
+				xadesList.add(xadesCounterSignature);
 			}
 		}
 		return xadesList;
@@ -1393,35 +1392,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * MUST be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e.
 	 * including the starting and closing tags) of the embedding and countersigned XAdES signature.
 	 *
-	 * @param xCounterSig
+	 * @param xadesCounterSignature
 	 * @return
 	 */
-	private boolean isCounterSignature(XAdESSignature xCounterSig) {
+	private boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
 
-		List<Element> signatureReferences = xCounterSig.getSignatureReferences();
-		if (signatureReferences.size() < 1) {
-			return false;
-		}
-
-		Element countersignedSignatureReference = null;
+		final List<Element> signatureReferences = xadesCounterSignature.getSignatureReferences();
 		//gets Element with Type="http://uri.etsi.org/01903#CountersignedSignature"
-		for (Element reference : signatureReferences) {
-			if (xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(reference.getAttribute("Type"))) {
-				countersignedSignatureReference = reference;
+		for (final Element reference : signatureReferences) {
+
+			final String type = reference.getAttribute("Type");
+			if (xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(type)) {
+				return true;
 			}
 		}
-
-		if (countersignedSignatureReference == null) {
-			return false;
-		}
-
-		//checks whether the countersignature has a DigestValue element
-		NodeList subNodes = countersignedSignatureReference.getElementsByTagName(xPathQueryHolder.XPATH__DIGEST_VALUE);
-		if (subNodes.getLength() > 1 || subNodes.getLength() < 1) {
-			return false;
-		}
-
-		return true;
+		return false;
 	}
 
 	@Override

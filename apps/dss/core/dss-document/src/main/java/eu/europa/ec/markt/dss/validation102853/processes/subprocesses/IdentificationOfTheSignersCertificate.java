@@ -23,7 +23,6 @@ package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
@@ -76,10 +75,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 	 * The following variables are used only in order to simplify the writing of the rules!
 	 */
 
-	/**
-	 * See {@link ProcessParameters#getValidationPolicy()}
-	 */
-	private EtsiValidationPolicy constraintData;
+	private ProcessParameters params = null;
 
 	/**
 	 * See {@link ProcessParameters#getDiagnosticData()}
@@ -101,9 +97,8 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 	 */
 	private XmlNode validationDataXmlNode;
 
-	private void prepareParameters(final ProcessParameters params) {
+	private void prepareParameters() {
 
-		this.constraintData = (EtsiValidationPolicy) params.getValidationPolicy();
 		this.diagnosticData = params.getDiagnosticData();
 		this.contextElement = params.getContextElement();
 		isInitialised();
@@ -111,7 +106,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 
 	private void isInitialised() {
 
-		if (constraintData == null) {
+		if (params.getCurrentValidationPolicy() == null) {
 			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 		if (diagnosticData == null) {
@@ -130,8 +125,9 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 	 */
 	public Conclusion run(final ProcessParameters params, final String contextName) {
 
+		this.params = params;
 		this.contextName = contextName;
-		prepareParameters(params);
+		prepareParameters();
 
 		/**
 		 * 5.1 Identification of the signer's certificate (ISC)
@@ -184,7 +180,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		final String signedElement = contextElement.getValue("./SigningCertificate/Signed/text()");
 		if (DSSUtils.isNotEmpty(signedElement)) {
 
-			constraint = constraintData.getSigningCertificateSignedConstraint(contextName);
+			constraint = params.getCurrentValidationPolicy().getSigningCertificateSignedConstraint(contextName);
 			if (constraint != null) {
 				if (!checkSignedSigningCertificateConstraint(constraint, conclusion, signedElement)) {
 					return conclusion;
@@ -223,7 +219,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 
 	private boolean checkRecognitionConstraint(final Conclusion conclusion, final boolean signingCertificateRecognised, String signingCertificateId) {
 
-		final Constraint constraint = constraintData.getSigningCertificateRecognitionConstraint(contextName);
+		final Constraint constraint = params.getCurrentValidationPolicy().getSigningCertificateRecognitionConstraint(contextName);
 		if (constraint == null) {
 			return true;
 		}
@@ -253,7 +249,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 
 	private boolean checkSigningCertificateAttributePresentConstraint(final Conclusion conclusion) {
 
-		final Constraint constraint = constraintData.getSigningCertificateAttributePresentConstraint(contextName);
+		final Constraint constraint = params.getCurrentValidationPolicy().getSigningCertificateAttributePresentConstraint(contextName);
 		if (constraint == null) {
 			return true;
 		}
@@ -274,7 +270,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 	 */
 	private boolean checkDigestValuePresentConstraint(final Conclusion conclusion) {
 
-		final Constraint constraint = constraintData.getSigningCertificateDigestValuePresentConstraint(contextName);
+		final Constraint constraint = params.getCurrentValidationPolicy().getSigningCertificateDigestValuePresentConstraint(contextName);
 		if (constraint == null) {
 			return true;
 		}
@@ -321,7 +317,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 	 */
 	private boolean checkDigestValueMatchConstraint(final Conclusion conclusion) {
 
-		final Constraint constraint = constraintData.getSigningCertificateDigestValueMatchConstraint(contextName);
+		final Constraint constraint = params.getCurrentValidationPolicy().getSigningCertificateDigestValueMatchConstraint(contextName);
 		if (constraint == null) {
 			return true;
 		}
@@ -357,7 +353,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 	 */
 	private boolean checkIssuerSerialMatchConstraint(final Conclusion conclusion) {
 
-		final Constraint constraint = constraintData.getSigningCertificateIssuerSerialMatchConstraint(contextName);
+		final Constraint constraint = params.getCurrentValidationPolicy().getSigningCertificateIssuerSerialMatchConstraint(contextName);
 		if (constraint == null) {
 			return true;
 		}

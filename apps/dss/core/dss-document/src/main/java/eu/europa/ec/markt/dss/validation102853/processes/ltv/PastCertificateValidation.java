@@ -107,7 +107,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 	 */
 	private void prepareParameters(final ProcessParameters params) {
 
-		this.constraintData = (EtsiValidationPolicy)params.getValidationPolicy();
+		this.constraintData = params.getCurrentValidationPolicy();
 		isInitialised();
 	}
 

@@ -35,383 +35,420 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
  */
 public class ProcessParameters implements ExceptionMessage {
 
-    /**
-     * This variable contains the diagnostic data which is used to carry out all validation processes. It is extracted
-     * from the signature(s) being validated. This data is independent of the form of source signature (PDF, XAdES,
-     * PAdES, ASiC).
-     */
-    protected DiagnosticData diagnosticData;
+	/**
+	 * This variable contains the diagnostic data which is used to carry out all validation processes. It is extracted
+	 * from the signature(s) being validated. This data is independent of the form of source signature (PDF, XAdES,
+	 * PAdES, ASiC).
+	 */
+	protected DiagnosticData diagnosticData;
 
-    /**
-     * This is the policy data to be used by the validation process. This data are not mandatory but in this case the
-     * ValidationContextInitialisation sub process will fail.
-     */
-    protected ValidationPolicy validationPolicy;
+	/**
+	 * This is the policy data to be used by the validation process. This data are not mandatory but in this case the
+	 * ValidationContextInitialisation sub process will fail.
+	 */
+	protected ValidationPolicy validationPolicy;
 
-    /**
-     * This is the current time against which the validation process is carried out.
-     */
-    protected Date currentTime;
+	/**
+	 * This is the countersignature policy data to be used by the validation process. This data are not mandatory but in this case the
+	 * ValidationContextInitialisation sub process will fail.
+	 */
+	private ValidationPolicy countersignatureValidationPolicy;
 
-    /**
-     * This variable contains the Signing Certificate Id. It is initialised by
-     * IdentificationOfTheSignersCertificate sub process.
-     * This variable is different for each context.
-     */
-    private String signingCertificateId;
+	/**
+	 * This is the current validation policy (either signature or countersignature).
+	 */
+	protected ValidationPolicy currentValidationPolicy;
 
-    /**
-     * This variable contains the Signing Certificate Node from diagnostic data. It is initialised by
-     * IdentificationOfTheSignersCertificate sub process.
-     * This variable is different for each context.
-     */
-    private XmlDom signingCertificate;
+	/**
+	 * This is the current time against which the validation process is carried out.
+	 */
+	protected Date currentTime;
 
-    /**
-     * Represents the current main signature DOM element being validated. This element provides general information used
-     * in validation process like the list of used certificates.
-     */
-    protected XmlDom signatureContext;
+	/**
+	 * This variable contains the Signing Certificate Id. It is initialised by
+	 * IdentificationOfTheSignersCertificate sub process.
+	 * This variable is different for each context.
+	 */
+	private String signingCertificateId;
 
-    /**
-     * Represents the current signature DOM element being validated:<br>
-     * in the case of main signature validation {@code contextElement} is the signature element being validated;<br>
-     * in case of Timestamp signature validation {@code contextElement} is the timestamp element being validated.
-     */
-    protected XmlDom contextElement;
+	/**
+	 * This variable contains the Signing Certificate Node from diagnostic data. It is initialised by
+	 * IdentificationOfTheSignersCertificate sub process.
+	 * This variable is different for each context.
+	 */
+	private XmlDom signingCertificate;
 
-    /**
-     * Indicates the current validation element like: MainSignature, SigningCertificate...
-     */
-    protected String contextName;
+	/**
+	 * Represents the current main signature DOM element being validated. This element provides general information used
+	 * in validation process like the list of used certificates.
+	 */
+	protected XmlDom signatureContext;
 
-    /**
-     * This {@code XmlDom} is returned by the Basic Building Blocks process (see {@link eu.europa.ec.markt.dss.validation102853.engine.rules.processes.BasicBuildingBlocks}) and
-     * it depicts the validation detailed report.
-     */
-    private XmlDom basicBuildingBlocksReport;
+	/**
+	 * Represents the current signature DOM element being validated:<br>
+	 * in the case of main signature validation {@code contextElement} is the signature element being validated;<br>
+	 * in case of Timestamp signature validation {@code contextElement} is the timestamp element being validated.
+	 */
+	protected XmlDom contextElement;
 
-    /**
-     * This {@code XmlDom} is returned by the Basic Validation process (see {@link eu.europa.ec.markt.dss.validation102853.engine.rules.processes.BasicValidation}) and
-     * it depicts the validation detailed report.
-     */
-    private XmlDom bvData;
+	/**
+	 * Indicates the current validation element like: MainSignature, SigningCertificate...
+	 */
+	protected String contextName;
 
-    /**
-     * This {@code XmlDom} is returned by the Basic Timestamp Validation process (see {@link eu.europa.ec.markt.dss.validation102853.engine.rules.processes.TimestampValidation})
-     * and it depicts the validation detailed report.
-     */
-    private XmlDom tsData;
+	/**
+	 * This {@code XmlDom} is returned by the Basic Building Blocks process (see BasicBuildingBlocks) and
+	 * it depicts the validation detailed report.
+	 */
+	private XmlDom basicBuildingBlocksReport;
 
-    /**
-     * This {@code XmlDom} is returned by the AdEST Validation process (see {@link eu.europa.ec.markt.dss.validation102853.engine.rules.processes.AdESTValidation}) and
-     * it depicts the validation detailed report.
-     */
-    private XmlDom adestData;
+	/**
+	 * This {@code XmlDom} is returned by the Basic Validation process (see BasicValidation) and
+	 * it depicts the validation detailed report.
+	 */
+	private XmlDom bvData;
 
-    /**
-     * This {@code XmlDom} is returned by the Long Term Validation process (see {@link eu.europa.ec.markt.dss.validation102853.engine.rules.processes.LongTermValidation}) and
-     * it depicts the validation detailed report.
-     */
-    private XmlDom ltvData;
+	/**
+	 * This {@code XmlDom} is returned by the Basic Timestamp Validation process (see TimestampValidation)
+	 * and it depicts the validation detailed report.
+	 */
+	private XmlDom tsData;
 
-    private XmlDom certPool;
+	/**
+	 * This {@code XmlDom} is returned by the AdEST Validation process (see AdESTValidation) and
+	 * it depicts the validation detailed report.
+	 */
+	private XmlDom adestData;
 
-    private POEExtraction poe;
+	/**
+	 * This {@code XmlDom} is returned by the Long Term Validation process (see LongTermValidation) and
+	 * it depicts the validation detailed report.
+	 */
+	private XmlDom ltvData;
 
-    /**
-     * See {@link #diagnosticData}
-     *
-     * @return
-     */
-    public XmlDom getDiagnosticData() {
-        return diagnosticData;
-    }
+	private XmlDom certPool;
 
-    /**
-     * See {@link #diagnosticData}
-     *
-     * @return
-     */
-    public void setDiagnosticData(final DiagnosticData diagnosticData) {
-        this.diagnosticData = diagnosticData;
-    }
+	private POEExtraction poe;
 
-    /**
-     * See {@link #validationPolicy}
-     *
-     * @return
-     */
-    public ValidationPolicy getValidationPolicy() {
-        return validationPolicy;
-    }
+	/**
+	 * See {@link #diagnosticData}
+	 *
+	 * @return
+	 */
+	public XmlDom getDiagnosticData() {
+		return diagnosticData;
+	}
 
-    /**
-     * See {@link #validationPolicy}
-     *
-     * @return
-     */
-    public void setValidationPolicy(final ValidationPolicy validationPolicy) {
-        this.validationPolicy = validationPolicy;
-    }
+	/**
+	 * See {@link #diagnosticData}
+	 *
+	 * @return
+	 */
+	public void setDiagnosticData(final DiagnosticData diagnosticData) {
+		this.diagnosticData = diagnosticData;
+	}
 
-    /**
-     * See {@link #signingCertificateId}
-     *
-     * @return
-     */
-    public String getSigningCertificateId() {
-        return signingCertificateId;
-    }
+	/**
+	 * See {@link #validationPolicy}
+	 *
+	 * @return
+	 */
+	public ValidationPolicy getValidationPolicy() {
+		return validationPolicy;
+	}
 
-    /**
-     * See {@link #signingCertificateId}
-     *
-     * @return
-     */
-    public void setSigningCertificateId(final String signingCertificateId) {
-        this.signingCertificateId = signingCertificateId;
-    }
+	/**
+	 * See {@link #validationPolicy}
+	 *
+	 * @return
+	 */
+	public void setValidationPolicy(final ValidationPolicy validationPolicy) {
+		this.validationPolicy = validationPolicy;
+	}
 
-    /**
-     * See {@link #signingCertificate}
-     *
-     * @return
-     */
-    public XmlDom getSigningCertificate() {
-        return signingCertificate;
-    }
+	public void setCountersignatureValidationPolicy(final ValidationPolicy countersignatureValidationPolicy) {
+		this.countersignatureValidationPolicy = countersignatureValidationPolicy;
+	}
 
-    /**
-     * See {@link #signingCertificate}
-     *
-     * @return
-     */
-    public void setSigningCertificate(final XmlDom signingCertificate) {
-        this.signingCertificate = signingCertificate;
-    }
+	public ValidationPolicy getCountersignatureValidationPolicy() {
+		return countersignatureValidationPolicy;
+	}
 
-    /**
-     * See {@link #basicBuildingBlocksReport}
-     *
-     * @return
-     */
-    public XmlDom getBasicBuildingBlocksReport() {
-        return basicBuildingBlocksReport;
-    }
+	/**
+	 * See {@link #currentValidationPolicy}
+	 *
+	 * @return
+	 */
+	public ValidationPolicy getCurrentValidationPolicy() {
+		return currentValidationPolicy;
+	}
 
-    /**
-     * See {@link #basicBuildingBlocksReport}
-     *
-     * @return
-     */
-    public void setBBBData(final XmlDom bbbData) {
-        this.basicBuildingBlocksReport = bbbData;
-    }
+	/**
+	 * See {@link #currentValidationPolicy}
+	 *
+	 * @return
+	 */
+	public void setCurrentValidationPolicy(final ValidationPolicy currentValidationPolicy) {
+		this.currentValidationPolicy = currentValidationPolicy;
+	}
 
-    /**
-     * See {@link #bvData}
-     *
-     * @return
-     */
-    public XmlDom getBvData() {
-        return bvData;
-    }
+	/**
+	 * See {@link #signingCertificateId}
+	 *
+	 * @return
+	 */
+	public String getSigningCertificateId() {
+		return signingCertificateId;
+	}
 
-    /**
-     * See {@link #bvData}
-     *
-     * @return
-     */
-    public void setBvData(XmlDom bvData) {
-        this.bvData = bvData;
-    }
+	/**
+	 * See {@link #signingCertificateId}
+	 *
+	 * @return
+	 */
+	public void setSigningCertificateId(final String signingCertificateId) {
+		this.signingCertificateId = signingCertificateId;
+	}
 
-    /**
-     * See {@link #tsData}
-     *
-     * @return
-     */
-    public XmlDom getTsData() {
-        return tsData;
-    }
+	/**
+	 * See {@link #signingCertificate}
+	 *
+	 * @return
+	 */
+	public XmlDom getSigningCertificate() {
+		return signingCertificate;
+	}
 
-    /**
-     * See {@link #tsData}
-     *
-     * @return
-     */
-    public void setTsData(XmlDom tsData) {
-        this.tsData = tsData;
-    }
+	/**
+	 * See {@link #signingCertificate}
+	 *
+	 * @return
+	 */
+	public void setSigningCertificate(final XmlDom signingCertificate) {
+		this.signingCertificate = signingCertificate;
+	}
 
-    /**
-     * See {@link #adestData}
-     *
-     * @return
-     */
+	/**
+	 * See {@link #basicBuildingBlocksReport}
+	 *
+	 * @return
+	 */
+	public XmlDom getBasicBuildingBlocksReport() {
+		return basicBuildingBlocksReport;
+	}
 
-    public XmlDom getAdestData() {
-        return adestData;
-    }
+	/**
+	 * See {@link #basicBuildingBlocksReport}
+	 *
+	 * @return
+	 */
+	public void setBBBData(final XmlDom bbbData) {
+		this.basicBuildingBlocksReport = bbbData;
+	}
 
-    /**
-     * See {@link #adestData}
-     *
-     * @return
-     */
-    public void setAdestData(XmlDom adestData) {
-        this.adestData = adestData;
-    }
+	/**
+	 * See {@link #bvData}
+	 *
+	 * @return
+	 */
+	public XmlDom getBvData() {
+		return bvData;
+	}
 
-    /**
-     * See {@link #ltvData}
-     *
-     * @return
-     */
+	/**
+	 * See {@link #bvData}
+	 *
+	 * @return
+	 */
+	public void setBvData(XmlDom bvData) {
+		this.bvData = bvData;
+	}
 
-    public XmlDom getLtvData() {
-        return ltvData;
-    }
+	/**
+	 * See {@link #tsData}
+	 *
+	 * @return
+	 */
+	public XmlDom getTsData() {
+		return tsData;
+	}
 
-    /**
-     * See {@link #ltvData}
-     *
-     * @return
-     */
-    public void setLtvData(XmlDom ltvData) {
-        this.ltvData = ltvData;
-    }
+	/**
+	 * See {@link #tsData}
+	 *
+	 * @return
+	 */
+	public void setTsData(XmlDom tsData) {
+		this.tsData = tsData;
+	}
 
-    /**
-     * See {@link #currentTime}
-     *
-     * @return
-     */
-    public Date getCurrentTime() {
-        return currentTime;
-    }
+	/**
+	 * See {@link #adestData}
+	 *
+	 * @return
+	 */
 
-    /**
-     * See {@link #currentTime}
-     *
-     * @return
-     */
-    public void setCurrentTime(final Date currentTime) {
-        if (this.currentTime != null) {
+	public XmlDom getAdestData() {
+		return adestData;
+	}
 
-            throw new DSSException(EXCEPTION_CTVSBIOO);
-        }
-        this.currentTime = currentTime;
-    }
+	/**
+	 * See {@link #adestData}
+	 *
+	 * @return
+	 */
+	public void setAdestData(XmlDom adestData) {
+		this.adestData = adestData;
+	}
 
-    /**
-     * See {@link #signatureContext}
-     *
-     * @return
-     */
-    public XmlDom getSignatureContext() {
-        return signatureContext;
-    }
+	/**
+	 * See {@link #ltvData}
+	 *
+	 * @return
+	 */
 
-    /**
-     * See {@link #signatureContext}
-     *
-     * @param signature
-     */
-    public void setSignatureContext(final XmlDom signature) {
-        this.signatureContext = signature;
-    }
+	public XmlDom getLtvData() {
+		return ltvData;
+	}
 
-    /**
-     * See {@link #contextElement}
-     *
-     * @return
-     */
-    public XmlDom getContextElement() {
-        return contextElement;
-    }
+	/**
+	 * See {@link #ltvData}
+	 *
+	 * @return
+	 */
+	public void setLtvData(XmlDom ltvData) {
+		this.ltvData = ltvData;
+	}
 
-    /**
-     * See {@link #contextElement}
-     *
-     * @param contextElement
-     */
-    public void setContextElement(final XmlDom contextElement) {
-        this.contextElement = contextElement;
-    }
+	/**
+	 * See {@link #currentTime}
+	 *
+	 * @return
+	 */
+	public Date getCurrentTime() {
+		return currentTime;
+	}
 
-    /**
-     * See {@link #contextElement}
-     *
-     * @return
-     */
-    public String getContextName() {
-        return contextName;
-    }
+	/**
+	 * See {@link #currentTime}
+	 *
+	 * @return
+	 */
+	public void setCurrentTime(final Date currentTime) {
+		if (this.currentTime != null) {
 
-    /**
-     * See {@link #contextElement}
-     *
-     * @param contextElement
-     */
-    public void setContextName(final String contextElement) {
-        this.contextName = contextElement;
-    }
+			throw new DSSException(EXCEPTION_CTVSBIOO);
+		}
+		this.currentTime = currentTime;
+	}
 
-    /**
-     * @return the {@code XmlDom} object representing the pool of the certificates used in the validation process.
-     */
-    public XmlDom getCertPool() {
-        return certPool;
-    }
+	/**
+	 * See {@link #signatureContext}
+	 *
+	 * @return
+	 */
+	public XmlDom getSignatureContext() {
+		return signatureContext;
+	}
 
-    public void setCertPool(final XmlDom certPool) {
-        this.certPool = certPool;
-    }
+	/**
+	 * See {@link #signatureContext}
+	 *
+	 * @param signature
+	 */
+	public void setSignatureContext(final XmlDom signature) {
+		this.signatureContext = signature;
+	}
 
-    /**
-     * @param id the {@code int} SD-DSS certificate unique identifier
-     * @return the {@code XmlDom} representing the corresponding certificate or null.
-     */
+	/**
+	 * See {@link #contextElement}
+	 *
+	 * @return
+	 */
+	public XmlDom getContextElement() {
+		return contextElement;
+	}
 
-    public XmlDom getCertificate(int id) {
+	/**
+	 * See {@link #contextElement}
+	 *
+	 * @param contextElement
+	 */
+	public void setContextElement(final XmlDom contextElement) {
+		this.contextElement = contextElement;
+	}
 
-        return getCertificate(String.valueOf(id));
-    }
+	/**
+	 * See {@link #contextElement}
+	 *
+	 * @return
+	 */
+	public String getContextName() {
+		return contextName;
+	}
 
-    /**
-     * @param id the {@code String} SD-DSS certificate unique identifier
-     * @return Returns the {@code XmlDom} representing the corresponding certificate or null.
-     */
+	/**
+	 * See {@link #contextElement}
+	 *
+	 * @param contextElement
+	 */
+	public void setContextName(final String contextElement) {
+		this.contextName = contextElement;
+	}
 
-    public XmlDom getCertificate(final String id) {
+	/**
+	 * @return the {@code XmlDom} object representing the pool of the certificates used in the validation process.
+	 */
+	public XmlDom getCertPool() {
+		return certPool;
+	}
 
-        return certPool == null ? certPool : certPool.getElement("./Certificate[@Id='%s']", id);
-    }
+	public void setCertPool(final XmlDom certPool) {
+		this.certPool = certPool;
+	}
 
-    public POEExtraction getPOE() {
-        return poe;
-    }
+	/**
+	 * @param id the {@code int} SD-DSS certificate unique identifier
+	 * @return the {@code XmlDom} representing the corresponding certificate or null.
+	 */
 
-    public void setPOE(POEExtraction poe) {
-        this.poe = poe;
-    }
+	public XmlDom getCertificate(int id) {
 
-    @Override
-    public String toString() {
+		return getCertificate(String.valueOf(id));
+	}
 
-        try {
+	/**
+	 * @param id the {@code String} SD-DSS certificate unique identifier
+	 * @return Returns the {@code XmlDom} representing the corresponding certificate or null.
+	 */
 
-            StringBuilder builder = new StringBuilder();
-            builder.append("currentTime: ").append(currentTime).append("\n");
-            builder.append("signingCertificateId: ").append(signingCertificateId).append("\n");
-            builder.append("contextName: ").append(contextName).append("\n");
+	public XmlDom getCertificate(final String id) {
 
-            return builder.toString();
-        } catch (Exception e) {
+		return certPool == null ? certPool : certPool.getElement("./Certificate[@Id='%s']", id);
+	}
 
-            return super.toString();
-        }
-    }
+	public POEExtraction getPOE() {
+		return poe;
+	}
+
+	public void setPOE(final POEExtraction poe) {
+		this.poe = poe;
+	}
+
+	@Override
+	public String toString() {
+
+		try {
+
+			StringBuilder builder = new StringBuilder();
+			builder.append("currentTime: ").append(currentTime).append("\n");
+			builder.append("signingCertificateId: ").append(signingCertificateId).append("\n");
+			builder.append("contextName: ").append(contextName).append("\n");
+
+			return builder.toString();
+		} catch (Exception e) {
+
+			return super.toString();
+		}
+	}
 }

@@ -26,13 +26,13 @@ import java.util.List;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.TSLConstant;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.policy.CertificateExpirationConstraint;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
-import eu.europa.ec.markt.dss.validation102853.policy.SignatureCryptographicConstraint;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
+import eu.europa.ec.markt.dss.validation102853.policy.CertificateExpirationConstraint;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
+import eu.europa.ec.markt.dss.validation102853.policy.SignatureCryptographicConstraint;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.processes.ValidationXPathQueryHolder;
 import eu.europa.ec.markt.dss.validation102853.processes.dss.ForLegalPerson;
 import eu.europa.ec.markt.dss.validation102853.processes.dss.QualifiedCertificate;
@@ -97,9 +97,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 	private XmlDom diagnosticData;
 
 	/**
-	 * See {@link ProcessParameters#getValidationPolicy()}
+	 * See {@link ProcessParameters#getCurrentValidationPolicy()}
 	 */
-	protected EtsiValidationPolicy constraintData;
+	protected ValidationPolicy constraintData;
 
 	/**
 	 * See {@link ProcessParameters#getCurrentTime()}
@@ -139,7 +139,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 	private void prepareParameters(final ProcessParameters params) {
 
 		this.diagnosticData = params.getDiagnosticData();
-		this.constraintData = (EtsiValidationPolicy) params.getValidationPolicy();
+		this.constraintData = params.getCurrentValidationPolicy();
 
 		this.signatureContext = params.getSignatureContext();
 		this.contextElement = params.getContextElement();
@@ -675,10 +675,10 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		}
 
 		final String keyUsage = certificateXmlDom.getValue("./KeyUsage/text()");
-		final String expectedKeyUsage = constraint.getExpectedValue();
-		final boolean contains = keyUsage.contains(expectedKeyUsage);
+		final String expectedValue = constraint.getExpectedValue();
 		constraint.create(validationDataXmlNode, BBB_XCV_ISCGKU);
-		constraint.setValue(contains);
+		constraint.setExpectedValue(expectedValue);
+		constraint.setValue(keyUsage);
 		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_XCV_ISCGKU_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);

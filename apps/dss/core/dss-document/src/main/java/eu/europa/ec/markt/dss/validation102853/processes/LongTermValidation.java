@@ -28,8 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
-import eu.europa.ec.markt.dss.validation102853.process.POEExtraction;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
@@ -99,13 +97,6 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 	 */
 	private XmlDom diagnosticData;
 
-	/**
-	 * See {@link eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters#getValidationPolicy()}
-	 *
-	 * @return
-	 */
-	private EtsiValidationPolicy constraintData;
-
 	private XmlDom timestampValidationData; // Basic Building Blocks for timestamps
 
 	private XmlDom adestValidationData;
@@ -120,7 +111,6 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 	private void prepareParameters(final XmlNode mainNode) {
 
 		this.diagnosticData = params.getDiagnosticData();
-		this.constraintData = (EtsiValidationPolicy) params.getValidationPolicy();
 		isInitialised(mainNode);
 	}
 
@@ -129,7 +119,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		if (diagnosticData == null) {
 			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
 		}
-		if (constraintData == null) {
+		if (params.getValidationPolicy() == null) {
 			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 		if (adestValidationData == null) {
@@ -185,6 +175,14 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		for (final XmlDom signature : signatures) {
 
 			final String signatureId = signature.getValue("./@Id");
+			final String type = signature.getValue("./@Type");
+			if (COUNTERSIGNATURE.equals(type)) {
+
+				params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
+			} else {
+
+				params.setCurrentValidationPolicy(params.getValidationPolicy());
+			}
 			final XmlDom signatureTimestampValidationData = timestampValidationData.getElement("./Signature[@Id='%s']", signatureId);
 			final XmlDom adestSignatureValidationData = adestValidationData.getElement("/AdESTValidationData/Signature[@Id='%s']", signatureId);
 
@@ -192,7 +190,6 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 			signatureNode.setAttribute(ID, signatureId);
 
 			conclusionNode = new XmlNode(CONCLUSION);
-
 			try {
 
 				final boolean valid = process(params, signature, signatureTimestampValidationData, adestSignatureValidationData);
@@ -525,10 +522,10 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 	 */
 	private boolean extractPOEs(final XmlDom timestamp) throws DSSException {
 
-		final String digestAlgo = RuleUtils.canonicalizeDigestAlgo(timestamp.getValue("./SignedDataDigestAlgo/text()"));
-		final Date algoExpirationDate = constraintData.getAlgorithmExpirationDate(digestAlgo);
+		final String digestAlgorithm = RuleUtils.canonicalizeDigestAlgo(timestamp.getValue("./SignedDataDigestAlgo/text()"));
+		final Date algorithmExpirationDate = params.getCurrentValidationPolicy().getAlgorithmExpirationDate(digestAlgorithm);
 		final Date timestampProductionTime = timestamp.getTimeValue("./ProductionTime/text()");
-		if (algoExpirationDate == null || timestampProductionTime.before(algoExpirationDate)) {
+		if (algorithmExpirationDate == null || timestampProductionTime.before(algorithmExpirationDate)) {
 
 			poe.addPOE(timestamp, params.getCertPool());
 			return true;

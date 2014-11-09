@@ -141,6 +141,18 @@ public interface AdvancedSignature {
 	public List<String> getInfo();
 
 	/**
+	 * This setter allows to indicate the master signature. It means that this is a countersignature.
+	 *
+	 * @param masterSignature {@code AdvancedSignature}
+	 */
+	public void setMasterSignature(final AdvancedSignature masterSignature);
+
+	/**
+	 * @return {@code AdvancedSignature}
+	 */
+	public AdvancedSignature getMasterSignature();
+
+	/**
 	 * This method returns the signing certificate token or null if there is no valid signing certificate. Note that to determinate the signing certificate the signature must be
 	 * validated: the method {@code checkSignatureIntegrity} must be called.
 	 *

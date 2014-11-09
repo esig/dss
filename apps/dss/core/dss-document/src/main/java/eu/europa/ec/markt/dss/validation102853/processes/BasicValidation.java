@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -115,6 +114,14 @@ public class BasicValidation implements Indication, SubIndication, NodeName, Nod
         for (final XmlDom signature : signatures) {
 
             final String signatureId = signature.getValue("./@Id");
+	        final String type = signature.getValue("./@Type");
+	        if (COUNTERSIGNATURE.equals(type)) {
+
+		        params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
+	        } else {
+
+		        params.setCurrentValidationPolicy(params.getValidationPolicy());
+	        }
 
             final XmlNode signatureNode = basicValidationData.addChild(SIGNATURE);
             signatureNode.setAttribute(ID, signatureId);

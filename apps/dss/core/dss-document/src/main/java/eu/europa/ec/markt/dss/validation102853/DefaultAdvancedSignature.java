@@ -101,6 +101,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	// Cached {@code OfflineOCSPSource}
 	protected OfflineOCSPSource offlineOCSPSource;
+	private AdvancedSignature masterSignature;
 
 	/**
 	 * @param certPool can be null
@@ -278,6 +279,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public List<String> getInfo() {
 
 		return Collections.unmodifiableList(info);
+	}
+
+	@Override
+	public void setMasterSignature(final AdvancedSignature masterSignature) {
+		this.masterSignature = masterSignature;
+	}
+
+	@Override
+	public AdvancedSignature getMasterSignature() {
+		return masterSignature;
 	}
 
 	public static class RevocationDataForInclusion {
