@@ -109,8 +109,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 	/**
 	 * A unique thread can be used to disable the parallel fetching:
-	 * final ExecutorService executorService = Executors.newFixedThreadPool(1);
 	 */
+	//	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 	private final ExecutorService executorService = Executors.newCachedThreadPool();
 
 	/**
