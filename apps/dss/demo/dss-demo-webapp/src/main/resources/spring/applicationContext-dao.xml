@@ -5,22 +5,22 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <import resource="classpath:spring/applicationContext-datasource.xml"/>
+	<import resource="classpath:spring/applicationContext-datasource.xml"/>
 
-    <context:annotation-config/>
-    <context:component-scan base-package="eu.europa.ec.markt.dss"/>
+	<context:annotation-config/>
+	<context:component-scan base-package="eu.europa.ec.markt.dss"/>
 
-    <bean id="proxyDao" class="eu.europa.ec.markt.dss.dao.ProxyJdbcDao">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+	<bean id="proxyDao" class="eu.europa.ec.markt.dss.dao.ProxyJdbcDao">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
 
-    <!--Property file implementation of proxy preferences-->
-    <!--<bean id="proxyFile" class="eu.europa.ec.markt.dss.dao.ProxyFileDao">-->
-    <!--<constructor-arg value="/proxy.properties"/>-->
-    <!--</bean>-->
+	<!--Property file implementation of proxy preferences-->
+	<bean id="proxyFile" class="eu.europa.ec.markt.dss.dao.ProxyFileDao">
+		<constructor-arg value="/proxy.properties"/>
+	</bean>
 
-    <bean id="preferencesDao" class="eu.europa.ec.markt.dss.dao.PreferencesJdbcDao">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+	<bean id="preferencesDao" class="eu.europa.ec.markt.dss.dao.PreferencesJdbcDao">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
 
 </beans>
