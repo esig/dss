@@ -21,6 +21,7 @@ package eu.europa.ec.markt.dss.validation102853.https;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -237,7 +239,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 			final ByteArrayInputStream bis = new ByteArrayInputStream(content);
 
-			final HttpEntity requestEntity = new InputStreamEntity(bis, content.length);
+			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length);
+			final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity);
 			httpRequest.setEntity(requestEntity);
 			if (contentType != null) {
 				httpRequest.setHeader(CONTENT_TYPE, contentType);
@@ -251,6 +254,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 				final File cacheFile = getCacheFile(cacheFileName);
 				DSSUtils.saveToFile(returnedBytes, cacheFile);
 			}
+		} catch (IOException e) {
+			throw new DSSException(e);
 		} finally {
 			if (httpRequest != null) {
 				httpRequest.releaseConnection();

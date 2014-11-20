@@ -54,6 +54,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
@@ -219,25 +220,24 @@ public class CommonsDataLoader implements DataLoader {
 			String proxyPassword = null;
 
 			if (proxyHTTPS) {
+
 				LOG.debug("Use proxy https parameters");
 				final Long port = proxyPreferenceManager.getHttpsPort();
 				proxyPort = port != null ? port.intValue() : 0;
 				proxyHost = proxyPreferenceManager.getHttpsHost();
 				proxyUser = proxyPreferenceManager.getHttpsUser();
 				proxyPassword = proxyPreferenceManager.getHttpsPassword();
-			} else // noinspection ConstantConditions
-				if (proxyHTTP) {
-					LOG.debug("Use proxy http parameters");
-					final Long port = proxyPreferenceManager.getHttpPort();
-					proxyPort = port != null ? port.intValue() : 0;
-					proxyHost = proxyPreferenceManager.getHttpHost();
-					proxyUser = proxyPreferenceManager.getHttpUser();
-					proxyPassword = proxyPreferenceManager.getHttpPassword();
-				}
+			} else if (proxyHTTP) { // noinspection ConstantConditions
 
+				LOG.debug("Use proxy http parameters");
+				final Long port = proxyPreferenceManager.getHttpPort();
+				proxyPort = port != null ? port.intValue() : 0;
+				proxyHost = proxyPreferenceManager.getHttpHost();
+				proxyUser = proxyPreferenceManager.getHttpUser();
+				proxyPassword = proxyPreferenceManager.getHttpPassword();
+			}
 			if (DSSUtils.isNotEmpty(proxyUser) && DSSUtils.isNotEmpty(proxyPassword)) {
 
-				//				LOG.debug("proxy user: " + proxyUser + ":" + proxyPassword);
 				AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
 				UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
 				credsProvider.setCredentials(proxyAuth, proxyCredentials);
@@ -414,7 +414,8 @@ public class CommonsDataLoader implements DataLoader {
 			// So, the solution is to cache temporarily the complete content data (as we do not expect much here) in a byte-array.
 			final ByteArrayInputStream bis = new ByteArrayInputStream(content);
 
-			final HttpEntity requestEntity = new InputStreamEntity(bis, content.length);
+			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length);
+			final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity);
 			httpRequest.setEntity(requestEntity);
 			if (contentType != null) {
 				httpRequest.setHeader(CONTENT_TYPE, contentType);
@@ -424,6 +425,8 @@ public class CommonsDataLoader implements DataLoader {
 
 			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
 			return returnedBytes;
+		} catch (IOException e) {
+			throw new DSSException(e);
 		} finally {
 			if (httpRequest != null) {
 				httpRequest.releaseConnection();
@@ -558,6 +561,9 @@ public class CommonsDataLoader implements DataLoader {
 	public void setProxyPreferenceManager(final ProxyPreferenceManager proxyPreferenceManager) {
 		httpClient = null;
 		this.proxyPreferenceManager = proxyPreferenceManager;
+		if(LOG.isTraceEnabled()) {
+			LOG.trace(proxyPreferenceManager.toString());
+		}
 	}
 
 	/**

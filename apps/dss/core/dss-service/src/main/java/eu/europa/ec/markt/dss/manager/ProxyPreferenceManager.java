@@ -339,4 +339,11 @@ public class ProxyPreferenceManager {
     public void update(String key, String value) {
         update(ProxyKey.fromKey(key), value);
     }
+
+	@Override
+	public String toString() {
+		return "ProxyPreferenceManager{" +
+			  "proxyDao=" + proxyDao +
+			  '}';
+	}
 }
