@@ -880,13 +880,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return list;
 		}
 		final ASN1EncodableVector archiveList = attributes.getAll(attrType);
-		for (int i = 0; i < archiveList.size(); i++) {
-			final Attribute attribute = (Attribute) archiveList.get(i);
+		for (int ii = 0; ii < archiveList.size(); ii++) {
 
+			final Attribute attribute = (Attribute) archiveList.get(ii);
 			final ASN1Set attrValues = attribute.getAttrValues();
 			for (final ASN1Encodable value : attrValues.toArray()) {
+
 				try {
-					TimeStampToken token = new TimeStampToken(new CMSSignedData(value.toASN1Primitive().getEncoded(ASN1Encoding.DER)));
+
+					final byte[] encoded = value.toASN1Primitive().getEncoded(ASN1Encoding.DER);
+					final CMSSignedData signedData = new CMSSignedData(encoded);
+					final TimeStampToken token = new TimeStampToken(signedData);
 					final TimestampToken timestampToken = new TimestampToken(token, timestampType, certPool);
 					timestampToken.setArchiveTimestampType(archiveTimestampType);
 					list.add(timestampToken);

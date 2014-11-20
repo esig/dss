@@ -49,35 +49,35 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
     }
 
     @Override
-    public RevocationToken check(final CertificateToken toCheckToken) {
+    public RevocationToken check(final CertificateToken certificateToken) {
 
         try {
 
             if (crlSource == null) {
 
-                toCheckToken.extraInfo().infoCRLSourceIsNull();
+                certificateToken.extraInfo().infoCRLSourceIsNull();
                 return null;
             }
-            final CRLToken crlToken = crlSource.findCrl(toCheckToken);
+            final CRLToken crlToken = crlSource.findCrl(certificateToken);
             if (crlToken == null) {
 
                 if (LOG.isInfoEnabled()) {
-                    LOG.info("No CRL found for: " + toCheckToken.getDSSIdAsString());
+                    LOG.info("No CRL found for: " + certificateToken.getDSSIdAsString());
                 }
                 return null;
             }
             if (!crlToken.isValid()) {
 
                 LOG.warn("The CRL is not valid !");
-                toCheckToken.extraInfo().infoCRLIsNotValid();
+                certificateToken.extraInfo().infoCRLIsNotValid();
                 return null;
             }
-            toCheckToken.setRevocationToken(crlToken);
+            certificateToken.setRevocationToken(crlToken);
             return crlToken;
         } catch (final Exception e) {
 
-            LOG.error("Exception when accessing CRL for " + toCheckToken.getDSSIdAsString(), e);
-            toCheckToken.extraInfo().infoCRLException(e);
+            LOG.error("Exception when accessing CRL for " + certificateToken.getDSSIdAsString(), e);
+            certificateToken.extraInfo().infoCRLException(e);
             return null;
         }
     }
