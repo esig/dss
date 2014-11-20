@@ -515,7 +515,7 @@
 					  mvn install:install-file -Dfile=iaik_jce_me4se-3.04.jar -DpomFile=iaik_jce_me4se-3.04.pom
 					  mvn install:install-file -Dfile=iaik_jce_full_signed-3.16.jar -DpomFile=iaik_jce_full_signed-3.16.pom
 				-->
-				<module>apps/sscd-mocca-adapter</module>
+				<!--<module>apps/sscd-mocca-adapter</module>-->
 			</modules>
 			<id>default</id>
 		</profile>
