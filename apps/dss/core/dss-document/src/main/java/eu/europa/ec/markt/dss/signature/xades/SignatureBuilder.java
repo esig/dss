@@ -28,6 +28,7 @@ import java.util.List;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
@@ -303,12 +304,19 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 				final Element transformDom = DSSXMLUtils.addElement(documentDom, transformsDom, XMLSignature.XMLNS, DS_TRANSFORM);
 				transformDom.setAttribute(ALGORITHM, transform.getAlgorithm());
+
 				final String elementName = transform.getElementName();
-				if (elementName != null && !elementName.isEmpty()) {
+				final String textContent = transform.getTextContent();
+				if (DSSUtils.isNotBlank(elementName)) {
 
 					final String namespace = transform.getNamespace();
-					final String textContent = transform.getTextContent();
 					DSSXMLUtils.addTextElement(documentDom, transformDom, namespace, elementName, textContent);
+				} else if (DSSUtils.isNotBlank(textContent)) {
+
+					final Document transformContentDoc = DSSXMLUtils.buildDOM(textContent);
+					final Element contextDocumentElement = transformContentDoc.getDocumentElement();
+					documentDom.adoptNode(contextDocumentElement);
+					transformDom.appendChild(contextDocumentElement);
 				}
 			}
 		}
