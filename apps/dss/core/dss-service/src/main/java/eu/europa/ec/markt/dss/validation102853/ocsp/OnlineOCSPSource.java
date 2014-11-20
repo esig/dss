@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.util.Date;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -44,6 +45,7 @@ import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPReqBuilder;
 import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,9 @@ import eu.europa.ec.markt.dss.DSSRevocationUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
+import eu.europa.ec.markt.dss.validation102853.CertificatePool;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
+import eu.europa.ec.markt.dss.validation102853.OCSPToken;
 import eu.europa.ec.markt.dss.validation102853.https.OCSPDataLoader;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 
@@ -106,7 +111,7 @@ public class OnlineOCSPSource implements OCSPSource {
 	}
 
 	@Override
-	public BasicOCSPResp getOCSPResponse(final X509Certificate x509Certificate, final X509Certificate issuerX509Certificate) {
+	public OCSPToken getOCSPToken(final CertificateToken certificateToken, final CertificatePool certificatePool) {
 
 		if (dataLoader == null) {
 
@@ -114,47 +119,64 @@ public class OnlineOCSPSource implements OCSPSource {
 		}
 		try {
 
-			final String ocspUri = getAccessLocation(x509Certificate);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("OCSP URI: " + ocspUri);
+			final String dssIdAsString = certificateToken.getDSSIdAsString();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("--> OnlineOCSPSource queried for " + dssIdAsString);
 			}
-			if (ocspUri == null) {
+			final X509Certificate x509Certificate = certificateToken.getCertificate();
+			final X509Certificate issuerX509Certificate = certificateToken.getIssuerToken().getCertificate();
+			final String ocspAccessLocation = getAccessLocation(x509Certificate);
+			if (ocspAccessLocation == null) {
 
+				if (LOG.isDebugEnabled()) {
+					LOG.info("OCSP response not found for " + dssIdAsString + " AccessLocation[" + ocspAccessLocation + "]");
+				}
+				certificateToken.extraInfo().infoNoOCSPResponse(ocspAccessLocation);
 				return null;
 			}
 			final byte[] content = buildOCSPRequest(x509Certificate, issuerX509Certificate);
 
-			final byte[] ocspRespBytes = dataLoader.post(ocspUri, content);
+			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
 
 			final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
-/*
-            final int status = ocspResp.getStatus();
-            System.out.println(status);
-*/
-			try {
 
-				final BasicOCSPResp responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
-				if (ADD_NONCE) {
+			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
+			if (ADD_NONCE) {
 
-					final Extension extension = responseObject.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
-					final DEROctetString receivedNonce = (DEROctetString) extension.getExtnValue();
-					if (!receivedNonce.equals(nonce)) {
+				final Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+				final DEROctetString receivedNonce = (DEROctetString) extension.getExtnValue();
+				if (!receivedNonce.equals(nonce)) {
 
-						throw new DSSException("The OCSP request was the victim of replay attack: nonce[sent:" + nonce + ", received:" + receivedNonce);
+					throw new DSSException("The OCSP request for " + dssIdAsString + " was the victim of replay attack: nonce[sent:" + nonce + ", received:" + receivedNonce);
+				}
+			}
+			Date bestUpdate = null;
+			SingleResp bestSingleResp = null;
+			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(x509Certificate, issuerX509Certificate);
+			for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
+
+				if (DSSRevocationUtils.matches(certId, singleResp)) {
+
+					final Date thisUpdate = singleResp.getThisUpdate();
+					if (bestUpdate == null || thisUpdate.after(bestUpdate)) {
+
+						bestSingleResp = singleResp;
+						bestUpdate = thisUpdate;
 					}
 				}
-				return responseObject;
-			} catch (NullPointerException e) {
-
-				LOG.error(
-					  "OCSP error: Encountered a case when the OCSPResp is initialised with a null OCSP response... (and there are no nullity checks in the OCSPResp implementation)",
-					  e);
 			}
+			if (bestSingleResp != null) {
+
+				final OCSPToken ocspToken = new OCSPToken(basicOCSPResp, bestSingleResp, certificatePool);
+				ocspToken.setSourceURI(ocspAccessLocation);
+				certificateToken.setRevocationToken(ocspToken);
+				return ocspToken;
+			}
+		} catch (NullPointerException e) {
+			throw new DSSException("OCSPResp is initialised with a null OCSP response... (and there is no nullity check in the OCSPResp implementation)", e);
 		} catch (OCSPException e) {
-
-			LOG.error("OCSP error: " + e.getMessage(), e);
+			throw new DSSException(e);
 		} catch (IOException e) {
-
 			throw new DSSException(e);
 		}
 		return null;

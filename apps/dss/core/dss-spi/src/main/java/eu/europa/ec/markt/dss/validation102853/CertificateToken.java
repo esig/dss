@@ -582,7 +582,7 @@ public class CertificateToken extends Token {
 	 *
 	 * @return
 	 */
-	CertificateTokenValidationExtraInfo extraInfo() {
+	public CertificateTokenValidationExtraInfo extraInfo() {
 
 		return extraInfo;
 	}

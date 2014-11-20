@@ -20,9 +20,9 @@
 
 package eu.europa.ec.markt.dss.validation102853.ocsp;
 
-import java.security.cert.X509Certificate;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import eu.europa.ec.markt.dss.validation102853.CertificatePool;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
+import eu.europa.ec.markt.dss.validation102853.OCSPToken;
 
 /**
  * The validation of a certificate may require the use of OCSP information. Theses information can be provided by multiple sources
@@ -33,12 +33,12 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 public interface OCSPSource {
 
-    /**
-     * Gets an OCSPResp for the given certificate / issuer's certificate couple.
-     *
-     * @param x509Certificate       The certificate for which the request is made
-     * @param issuerX509Certificate The issuer's certificate of the certificate
-     * @return An OCSPResp containing information about the validity of the cert
-     */
-    BasicOCSPResp getOCSPResponse(final X509Certificate x509Certificate, final X509Certificate issuerX509Certificate);
+	/**
+	 * Gets an {@code OCSPToken} for the given certificate / issuer's certificate couple. The coherence between the response and the request is checked.
+	 *
+	 * @param certificateToken The {@code CertificateToken} for which the request is made
+	 * @param certificatePool  The {@code CertificatePool} used to obtain the issuer of the OCSP
+	 * @return {@code OCSPToken} containing information about the validity of the cert
+	 */
+	OCSPToken getOCSPToken(final CertificateToken certificateToken, final CertificatePool certificatePool);
 }

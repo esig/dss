@@ -3064,4 +3064,19 @@ public final class DSSUtils {
 		long diff = date2.getTime() - date1.getTime();
 		return timeUnit.convert(diff, TimeUnit.MILLISECONDS);
 	}
+
+	/**
+	 * This method returns an encoded representation of the {@code X509CertificateHolder}.
+	 *
+	 * @param x509CertificateHolder {@code X509CertificateHolder} to be encoded
+	 * @return array of {@code byte}s
+	 */
+	public static byte[] getEncoded(final X509CertificateHolder x509CertificateHolder) {
+
+		try {
+			return x509CertificateHolder.getEncoded();
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
 }
