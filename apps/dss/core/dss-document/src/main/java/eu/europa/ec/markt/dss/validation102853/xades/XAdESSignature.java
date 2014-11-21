@@ -60,7 +60,6 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
@@ -1699,8 +1698,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (localName == null) {
 					continue;
 				}
+				canonicalizedValue = null;
 				// System.out.println("###: " + localName);
-				// In the SD-DSS implementation when validating the signature the framework will not add missing data. To do so you the signature must be extended.
+				// In the SD-DSS implementation when validating the signature the framework will not add missing data. To do so the signature must be extended.
 				// if (localName.equals("CertificateValues")) {
 
 				/**
@@ -1762,22 +1762,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					 * This is the work around for the name space problem: The issue was reported on: https://issues.apache.org/jira/browse/SANTUARIO-139 and considered as close.
 					 * But for me (Bob) it still does not work!
 					 */
+					if (timestampToken == null) { // Creation of the timestamp
 
-					final Document document = DSSXMLUtils.buildDOM();
-					final Element rootElement = document.createElementNS(XAdESNamespaces.XAdES141, "xades141:toto");
-					document.appendChild(rootElement);
-
-					final Node node1 = node.cloneNode(true);
-					document.adoptNode(node1);
-					rootElement.appendChild(node1);
-					node = node1;
-
-					if (LOG.isTraceEnabled()) {
-						DSSXMLUtils.printDocument(node, System.out);
+						final byte[] bytesToCanonicalize = DSSXMLUtils.serializeNode(node);
+						canonicalizedValue = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
 					}
 				}
 
-				canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
+				if (canonicalizedValue == null) {
+					canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
+				}
 				if (LOG.isTraceEnabled()) {
 					LOG.trace(localName + ": Canonicalization: " + canonicalizationMethod);
 					LOG.trace(new String(canonicalizedValue) + "\n");
@@ -1816,7 +1810,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final byte[] bytes = buffer.toByteArray();
 			return bytes;
 		} catch (IOException e) {
-
 			throw new DSSException("Error when computing the archive data", e);
 		}
 	}
