@@ -286,6 +286,15 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 				}
 			}
 			asicMimeType = determinateAsicMimeType(asicContainer.getMimeType(), asicEntryMimeType);
+			if (MimeType.ASICS == asicEntryMimeType) {
+
+				for (final DSSDocument detachedContent : detachedContents) {
+					if ("mimetype".equals(detachedContent.getName())) {
+						detachedContents.remove(detachedContent);
+						break;
+					}
+				}
+			}
 		} catch (Exception e) {
 			if (e instanceof DSSException) {
 				throw (DSSException) e;
