@@ -396,6 +396,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
 			final SigningCertificateV2 signingCertificateAttribute = SigningCertificateV2.getInstance(asn1Encodable);
+			if (signingCertificateAttribute == null) {
+				LOG.warn("SigningCertificateV2 attribute is not well defined!");
+				continue;
+			}
 			final ESSCertIDv2[] essCertIDv2s = signingCertificateAttribute.getCerts();
 			for (final ESSCertIDv2 essCertIDv2 : essCertIDv2s) {
 
@@ -895,7 +899,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					timestampToken.setArchiveTimestampType(archiveTimestampType);
 					list.add(timestampToken);
 				} catch (Exception e) {
-					throw new RuntimeException("Parsing error", e);
+					throw new DSSException(e);
 				}
 			}
 		}
