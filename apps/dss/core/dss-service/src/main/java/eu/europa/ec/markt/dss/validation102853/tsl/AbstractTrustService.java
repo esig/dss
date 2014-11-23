@@ -29,9 +29,12 @@ import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.ec.markt.dss.DSSUtils;
+import eu.europa.ec.markt.dss.TSLConstant;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
 import eu.europa.ec.markt.dss.validation102853.condition.CompositeCondition;
@@ -65,11 +68,12 @@ import eu.europa.ec.markt.tsl.jaxb.xades.ObjectIdentifierType;
 
 abstract class AbstractTrustService {
 
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(AbstractTrustService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractTrustService.class);
 
-	private static final String TSL = "http://uri.etsi.org/02231/v2#";
-
-	private static final String TSLX = "http://uri.etsi.org/02231/v2/additionaltypes#";
+	public static final String TSLX = "TSLX";
+	public static final String TSL = "TSL";
+	public static final String ADDITIONAL_SERVICE_INFORMATION = "AdditionalServiceInformation";
+	public static final String TAKEN_OVER_BY = "TakenOverBy";
 
 	private Date expiredCertsRevocationInfo;
 
@@ -121,6 +125,7 @@ abstract class AbstractTrustService {
 		for (final DigitalIdentityType digitalIdentity : getServiceDigitalIdentity().getDigitalId()) {
 
 			try {
+
 				final byte[] x509CertificateBytes = digitalIdentity.getX509Certificate();
 				if (x509CertificateBytes != null) {
 
@@ -206,25 +211,25 @@ abstract class AbstractTrustService {
 					final Element element = (Element) object;
 					final String localName = element.getLocalName();
 					String namespaceUri = element.getNamespaceURI();
-					if ("AdditionalServiceInformation".equals(localName) && TSL.equals(namespaceUri)) {
+					if (ADDITIONAL_SERVICE_INFORMATION.equals(localName) && TSLConstant.TSL.equals(namespaceUri)) {
 
 						// Do nothing
-					} else if ("TakenOverBy".equals(localName) && TSLX.equals(namespaceUri)) {
+					} else if (TAKEN_OVER_BY.equals(localName) && TSLConstant.TSLX.equals(namespaceUri)) {
 
 						// Do nothing
 					} else {
 
-						if (TSLX.equals(namespaceUri)) {
+						if (TSLConstant.TSLX.equals(namespaceUri)) {
 
-							namespaceUri = "TSLX";
-						} else if (TSL.equals(namespaceUri)) {
+							namespaceUri = TSLX;
+						} else if (TSLConstant.TSL.equals(namespaceUri)) {
 
-							namespaceUri = "TSL";
+							namespaceUri = TSL;
 						}
 						throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.UNRECOGNIZED_TAG, namespaceUri + ":" + localName);
 					}
 				} else {
-					throw new RuntimeException("Unknown extension " + object.getClass());
+					throw new DSSException("Unknown extension " + object.getClass());
 				}
 			}
 		}
@@ -244,7 +249,7 @@ abstract class AbstractTrustService {
 
 				if (criteriaList.getKeyUsage().isEmpty() && criteriaList.getPolicySet().isEmpty() && criteriaList.getCriteriaList().isEmpty()) {
 
-					LOG.debug("CriteriaList for service is empty, the QualificationElement is skipped.");
+					LOG.trace("CriteriaList for service is empty, the QualificationElement is skipped.");
 					return;
 				}
 				final Condition compositeCondition = parseCriteriaList(criteriaList);
@@ -267,7 +272,10 @@ abstract class AbstractTrustService {
 			LOG.info("CriteriaList assert=null!");
 			return null;
 		}
-		// System.out.println("--- > assert: " + assertValue);
+		final boolean traceEnabled = LOG.isTraceEnabled();
+		if (traceEnabled) {
+			LOG.trace("--- > CriteriaList: assert: " + assertValue);
+		}
 		final MatchingCriteriaIndicator matchingCriteriaIndicator = MatchingCriteriaIndicator.valueOf(assertValue);
 
 		final CompositeCondition condition = new CriteriaListCondition(matchingCriteriaIndicator);
@@ -279,7 +287,9 @@ abstract class AbstractTrustService {
 				final IdentifierType identifier = objectIdentifier.getIdentifier();
 				if (identifier.getQualifier() == null) {
 
-					// System.out.println("--- > id1: " + identifier.getValue());
+					if (traceEnabled) {
+						LOG.trace("--- > CriteriaList: id1: " + identifier.getValue());
+					}
 					compositeCondition.addChild(new PolicyIdCondition(identifier.getValue()));
 				} else {
 
@@ -290,7 +300,9 @@ abstract class AbstractTrustService {
 
 						id = id.substring(id.lastIndexOf(':') + 1);
 					}
-					// System.out.println("--- > id2: " + id);
+					if (traceEnabled) {
+						LOG.trace("--- > CriteriaList: id2: " + id);
+					}
 					compositeCondition.addChild(new PolicyIdCondition(id));
 				}
 			}
@@ -301,12 +313,19 @@ abstract class AbstractTrustService {
 			final CompositeCondition compositeCondition = new CompositeCondition();
 			for (final KeyUsageBitType keyUsageBit : keyUsage.getKeyUsageBit()) {
 
-				compositeCondition.addChild(new KeyUsageCondition(keyUsageBit.getName(), keyUsageBit.isValue()));
+				if (traceEnabled) {
+					LOG.trace("--- > CriteriaList: kub: " + keyUsageBit.getName() + " [" + keyUsageBit.isValue() + "]");
+				}
+				final KeyUsageCondition keyUsageCondition = new KeyUsageCondition(keyUsageBit.getName(), keyUsageBit.isValue());
+				compositeCondition.addChild(keyUsageCondition);
 			}
 			condition.addChild(compositeCondition);
 		}
 		for (final CriteriaListType criteria : criteriaList.getCriteriaList()) {
 
+			if (traceEnabled) {
+				LOG.trace("--- > CriteriaList: Composite Criteria List:");
+			}
 			final Condition compositeCondition = parseCriteriaList(criteria);
 			condition.addChild(compositeCondition);
 		}

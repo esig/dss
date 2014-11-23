@@ -129,4 +129,9 @@ public interface TSLConstant {
 	 */
 	public static final String SERVICE_STATUS_ACCREDITED = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/Svcstatus/accredited";
 	public static final String SERVICE_STATUS_ACCREDITED_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited";
+
+
+	public static final String TSL = "http://uri.etsi.org/02231/v2#";
+
+	public static final String TSLX = "http://uri.etsi.org/02231/v2/additionaltypes#";
 }
