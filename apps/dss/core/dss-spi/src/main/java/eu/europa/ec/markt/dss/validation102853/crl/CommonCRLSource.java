@@ -1,17 +1,27 @@
 package eu.europa.ec.markt.dss.validation102853.crl;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
+import sun.security.x509.DistributionPointName;
+import sun.security.x509.GeneralName;
+import sun.security.x509.GeneralNames;
+import sun.security.x509.IssuingDistributionPointExtension;
+import sun.security.x509.PKIXExtensions;
+import sun.security.x509.URIName;
 
 /**
  * This is the representation of simple (common) CRL source, this is the base class for all real implementations.
@@ -43,6 +53,17 @@ public abstract class CommonCRLSource implements CRLSource {
 
 			crlValidity.issuerX509PrincipalMatches = true;
 		}
+		checkCriticalExtensions(x509CRL, crlValidity);
+		checkSignatureValue(x509CRL, issuerToken, crlValidity);
+		if (crlValidity.signatureIntact) {
+
+			crlValidity.crlSignKeyUsage = issuerToken.hasCRLSignKeyUsage();
+		}
+		return crlValidity;
+	}
+
+	private void checkSignatureValue(final X509CRL x509CRL, final CertificateToken issuerToken, final CRLValidity crlValidity) {
+
 		try {
 
 			x509CRL.verify(issuerToken.getPublicKey());
@@ -59,10 +80,47 @@ public abstract class CommonCRLSource implements CRLSource {
 		} catch (NoSuchProviderException e) {
 			throw new DSSException(e);
 		}
-		if (crlValidity.signatureIntact) {
+	}
 
-			crlValidity.hasCRLSignKeyUsage = issuerToken.hasCRLSignKeyUsage();
+	private void checkCriticalExtensions(final X509CRL x509CRL, final CRLValidity crlValidity) {
+
+		try {
+
+			final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
+			if (criticalExtensionOIDs.size() == 0) {
+				crlValidity.unknownCriticalExtension = false;
+			} else {
+
+				for (final String criticalExtensionOID : criticalExtensionOIDs) {
+
+					final String oid = PKIXExtensions.IssuingDistributionPoint_Id.toString();
+					if (criticalExtensionOID.equals(oid)) {
+
+						final byte[] extensionValue_ = x509CRL.getExtensionValue(oid);
+						final byte[] extensionValue = Arrays.copyOfRange(extensionValue_, 2, extensionValue_.length);
+						final IssuingDistributionPointExtension issuingDistributionPointExtension = new IssuingDistributionPointExtension(true, extensionValue);
+						final Boolean onlyAttributeCerts = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.ONLY_ATTRIBUTE_CERTS);
+						final Boolean onlyCaCerts = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.ONLY_CA_CERTS);
+						final Boolean onlyUserCerts = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.ONLY_USER_CERTS);
+						final Boolean indirectCrl = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.INDIRECT_CRL);
+						final String reasons = (String) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.REASONS);
+						final DistributionPointName distributionPointName = (DistributionPointName) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.POINT);
+						final GeneralNames fullName = distributionPointName.getFullName();
+						final List<GeneralName> names = fullName.names();
+						if (names.size() > 0) {
+							final URIName name = (URIName) names.get(0).getName();
+							System.out.println("--> CRL IssuingDistributionPoint Extension: URI: " + name.getURI());
+						}
+						if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && reasons == null) {
+							crlValidity.unknownCriticalExtension = false;
+						}
+					} else {
+						break;
+					}
+				}
+			}
+		} catch (IOException e) {
+			throw new DSSException(e);
 		}
-		return crlValidity;
 	}
 }
