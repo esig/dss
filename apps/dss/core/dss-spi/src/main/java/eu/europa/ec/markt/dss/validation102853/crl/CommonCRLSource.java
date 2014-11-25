@@ -87,7 +87,7 @@ public abstract class CommonCRLSource implements CRLSource {
 		try {
 
 			final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
-			if (criticalExtensionOIDs.size() == 0) {
+			if (criticalExtensionOIDs == null || criticalExtensionOIDs.size() == 0) {
 				crlValidity.unknownCriticalExtension = false;
 			} else {
 
