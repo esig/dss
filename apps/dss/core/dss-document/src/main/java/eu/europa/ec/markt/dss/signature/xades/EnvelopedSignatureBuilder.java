@@ -53,7 +53,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
  * @version $Revision: 672 $ - $Date: 2011-05-12 11:59:21 +0200 (Thu, 12 May 2011) $
  */
-	class EnvelopedSignatureBuilder extends SignatureBuilder {
+class EnvelopedSignatureBuilder extends SignatureBuilder {
 
 	/**
 	 * The default constructor for EnvelopedSignatureBuilder. The enveloped signature uses by default the exclusive method of canonicalization.
@@ -134,7 +134,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 		byte[] canonicalizedBytes;
 		final String uri = reference.getUri();
-		if (DSSUtils.isNotBlank(uri) && uri.startsWith("#")) {
+		if (DSSUtils.isNotBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
 
 			final String uri_id = uri.substring(1);
 			DSSXMLUtils.recursiveIdBrowse(domDoc.getDocumentElement());
@@ -145,6 +145,12 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 			canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, domDoc);
 		}
 		return new InMemoryDocument(canonicalizedBytes);
+	}
+
+	private static boolean isXPointer(final String uri) {
+
+		final boolean xPointer = uri.startsWith("#xpointer(") || uri.startsWith("#xmlns(");
+		return xPointer;
 	}
 
 	/**
