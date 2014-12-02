@@ -487,7 +487,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 							if (certificateTokens.size() > 0) {
 								x509Certificate = certificateTokens.get(0).getCertificate();
 							} else {
-								LOG.warn("There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
+								LOG.debug("WARNING: There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
 							}
 						}
 						if (x509Certificate != null) {

@@ -2925,10 +2925,15 @@ public final class DSSUtils {
 		return String.valueOf(longValue).getBytes();
 	}
 
+	/**
+	 *
+	 * @param x509Certificate
+	 * @return
+	 */
 	public static List<String> getQCStatementsIdList(final X509Certificate x509Certificate) {
 
 		final List<String> extensionIdList = new ArrayList<String>();
-		final byte[] qcStatement = x509Certificate.getExtensionValue(X509Extension.qCStatements.getId());
+		final byte[] qcStatement = x509Certificate.getExtensionValue(Extension.qCStatements.getId());
 		if (qcStatement != null) {
 
 			ASN1InputStream input = null;

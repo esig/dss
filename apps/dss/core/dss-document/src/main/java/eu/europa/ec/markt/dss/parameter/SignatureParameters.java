@@ -168,7 +168,6 @@ public class SignatureParameters {
 		signingToken = source.signingToken;
 		signingCertificate = source.signingCertificate;
 		signWithExpiredCertificate = source.signWithExpiredCertificate;
-		signingToken = source.signingToken;
 		contentTimestamps = source.getContentTimestamps();
 		toCounterSignSignatureId = source.getToCounterSignSignatureId();
 		signatureTimestampParameters = source.signatureTimestampParameters;

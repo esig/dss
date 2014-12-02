@@ -120,9 +120,10 @@ public class CertificatePool {
 
 			throw new DSSException("The certificate source type must be set.");
 		}
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal().toString() + "|" + certificateToAdd.getSerialNumber());
-		}
+		// TRACE ++
+		//		if (LOG.isTraceEnabled()) {
+		//			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal().toString() + "|" + certificateToAdd.getSerialNumber());
+		//		}
 		final int id = CertificateIdentifier.getId(certificateToAdd);
 		synchronized (certById) {
 
