@@ -34,6 +34,7 @@ import javax.naming.Context;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -53,7 +54,8 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.auth.BasicScheme;
@@ -80,7 +82,7 @@ import eu.europa.ec.markt.dss.validation102853.loader.Protocol;
  *
  * @version $Revision$ - $Date$
  */
-public class CommonsDataLoader implements DataLoader {
+public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
@@ -104,6 +106,8 @@ public class CommonsDataLoader implements DataLoader {
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
 
 	private HttpClient httpClient;
+
+	private boolean updated;
 
 	/**
 	 * The default constructor for CommonsDataLoader.
@@ -139,9 +143,10 @@ public class CommonsDataLoader implements DataLoader {
 	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) throws DSSException {
 
 		try {
-			// TODO: (Bob: 2013 Dec 03) To be replaced: SSLSocketFactory deprecated!!!
-			SSLSocketFactory sslSocketFactory = new SSLSocketFactory(new OptimistTrustStrategy(), new OptimistX509HostnameVerifier());
-			return socketFactoryRegistryBuilder.register("https", sslSocketFactory);
+
+			final SSLContext sslContext = SSLContexts.createSystemDefault();
+			final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, new OptimistX509HostnameVerifier());
+			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
@@ -149,16 +154,22 @@ public class CommonsDataLoader implements DataLoader {
 
 	protected synchronized HttpClient getHttpClient(final String url) throws DSSException {
 
-		if (httpClient != null) {
+		if (httpClient != null && !updated) {
 
 			return httpClient;
 		} else {
 
+			if (LOG.isTraceEnabled() && updated) {
+				LOG.trace(">>> Proxy preferences updated");
+			}
 			HttpClientBuilder httpClientBuilder = HttpClients.custom();
 
 			httpClientBuilder = configCredentials(httpClientBuilder, url);
 
-			final RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeoutSocket).setConnectionRequestTimeout(timeoutConnection).build();
+			final RequestConfig.Builder custom = RequestConfig.custom();
+			custom.setSocketTimeout(timeoutSocket);
+			custom.setConnectionRequestTimeout(timeoutConnection);
+			final RequestConfig requestConfig = custom.build();
 			httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
 			httpClientBuilder.setConnectionManager(getConnectionManager());
 
@@ -177,15 +188,16 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	private HttpClientBuilder configCredentials(HttpClientBuilder httpClientBuilder, final String url) throws DSSException {
 
-		final CredentialsProvider credsProvider = new BasicCredentialsProvider();
+		final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> entry : authenticationMap.entrySet()) {
 
 			final HttpHost httpHost = entry.getKey();
 			final UsernamePasswordCredentials usernamePasswordCredentials = entry.getValue();
-			credsProvider.setCredentials(new AuthScope(httpHost.getHostName(), httpHost.getPort()), usernamePasswordCredentials);
+			final AuthScope authscope = new AuthScope(httpHost.getHostName(), httpHost.getPort());
+			credentialsProvider.setCredentials(authscope, usernamePasswordCredentials);
 		}
-		httpClientBuilder = httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-		httpClientBuilder = configureProxy(httpClientBuilder, credsProvider, url);
+		httpClientBuilder = httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+		httpClientBuilder = configureProxy(httpClientBuilder, credentialsProvider, url);
 		return httpClientBuilder;
 	}
 
@@ -193,12 +205,12 @@ public class CommonsDataLoader implements DataLoader {
 	 * Configure the proxy with the required credential if needed
 	 *
 	 * @param httpClientBuilder
-	 * @param credsProvider
+	 * @param credentialsProvider
 	 * @param url
 	 * @return
 	 * @throws java.net.MalformedURLException
 	 */
-	private HttpClientBuilder configureProxy(HttpClientBuilder httpClientBuilder, CredentialsProvider credsProvider, String url) throws DSSException {
+	private HttpClientBuilder configureProxy(HttpClientBuilder httpClientBuilder, CredentialsProvider credentialsProvider, String url) throws DSSException {
 
 		try {
 
@@ -206,7 +218,6 @@ public class CommonsDataLoader implements DataLoader {
 				return httpClientBuilder;
 			}
 			final String protocol = new URL(url).getProtocol();
-
 			final boolean proxyHTTPS = Protocol.isHttps(protocol) && proxyPreferenceManager.isHttpsEnabled();
 			final boolean proxyHTTP = Protocol.isHttp(protocol) && proxyPreferenceManager.isHttpEnabled();
 
@@ -240,13 +251,15 @@ public class CommonsDataLoader implements DataLoader {
 
 				AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
 				UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
-				credsProvider.setCredentials(proxyAuth, proxyCredentials);
+				credentialsProvider.setCredentials(proxyAuth, proxyCredentials);
 			}
 
 			LOG.debug("proxy host/port: " + proxyHost + ":" + proxyPort);
 			// TODO SSL peer shut down incorrectly when protocol is https
-			HttpHost proxy = new HttpHost(proxyHost, proxyPort, Protocol.HTTP.getName());
-			return httpClientBuilder.setProxy(proxy);
+			final HttpHost proxy = new HttpHost(proxyHost, proxyPort, Protocol.HTTP.getName());
+			final HttpClientBuilder httpClientBuilder1 = httpClientBuilder.setProxy(proxy);
+			updated = false;
+			return httpClientBuilder1;
 		} catch (MalformedURLException e) {
 			throw new DSSException(e);
 		}
@@ -561,8 +574,9 @@ public class CommonsDataLoader implements DataLoader {
 	public void setProxyPreferenceManager(final ProxyPreferenceManager proxyPreferenceManager) {
 		httpClient = null;
 		this.proxyPreferenceManager = proxyPreferenceManager;
-		if(LOG.isTraceEnabled()) {
-			LOG.trace(proxyPreferenceManager.toString());
+		proxyPreferenceManager.addNotifier(this);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace(">>> SET: " + proxyPreferenceManager);
 		}
 	}
 
@@ -581,5 +595,11 @@ public class CommonsDataLoader implements DataLoader {
 		authenticationMap.put(httpHost, credentials);
 		httpClient = null;
 		return this;
+	}
+
+	@Override
+	public void update() {
+
+		updated = true;
 	}
 }
