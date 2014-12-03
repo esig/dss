@@ -404,11 +404,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final Document diagnosticDataDom = ValidationResourceManager.convert(jaxbDiagnosticData);
 		Date date2 = null;
-		if (LOG.isInfoEnabled()) {
+		if (LOG.isTraceEnabled()) {
 
 			date2 = new Date();
 			final long dateDiff = DSSUtils.getDateDiff(date1, date2, TimeUnit.MILLISECONDS);
-			LOG.info("diff 1: " + dateDiff + " ms.");
+			LOG.trace("diff 1: " + dateDiff + " ms.");
 		}
 
 		final ProcessExecutor executor = provideProcessExecutorInstance();
@@ -422,11 +422,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		executor.setCountersignatureValidationPolicy(countersignatureValidationPolicy);
 
 		final Reports reports = executor.execute();
-		if (LOG.isInfoEnabled()) {
+		if (LOG.isTraceEnabled()) {
 
 			Date date3 = new Date();
 			final long dateDiff = DSSUtils.getDateDiff(date2, date3, TimeUnit.MILLISECONDS);
-			LOG.info("diff 2: " + dateDiff + " ms.");
+			LOG.trace("diff 2: " + dateDiff + " ms.");
 		}
 		return reports;
 	}
