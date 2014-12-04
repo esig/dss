@@ -83,6 +83,11 @@ public class SignatureParameters {
 	private SignaturePackaging signaturePackaging;
 
 	/**
+	 * XAdES: ds:CanonicalizationMethod indicate the canonicalization algorithm: Algorithm="...".
+	 */
+	private String signedInfoCanonicalizationMethod;
+
+	/**
 	 * XAdES: The ds:SignatureMethod indicates the algorithms used to sign ds:SignedInfo.
 	 */
 	private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
@@ -162,6 +167,7 @@ public class SignatureParameters {
 		detachedContent = source.detachedContent;
 		privateKeyEntry = source.privateKeyEntry;
 		reason = source.reason;
+		signedInfoCanonicalizationMethod = source.signedInfoCanonicalizationMethod;
 		signatureAlgorithm = source.signatureAlgorithm;
 		signaturePackaging = source.signaturePackaging;
 		signatureLevel = source.signatureLevel;
@@ -479,6 +485,23 @@ public class SignatureParameters {
 	 */
 	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
 		this.signaturePackaging = signaturePackaging;
+	}
+
+
+	/**
+	 * @return the canonicalization algorithm to be used when dealing with SignedInfo.
+	 */
+	public String getSignedInfoCanonicalizationMethod() {
+		return signedInfoCanonicalizationMethod;
+	}
+
+	/**
+	 * Set the canonicalization algorithm to be used when dealing with SignedInfo.
+	 *
+	 * @param signedInfoCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
+	 */
+	public void setSignedInfoCanonicalizationMethod(final String signedInfoCanonicalizationMethod) {
+		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
 	}
 
 	/**

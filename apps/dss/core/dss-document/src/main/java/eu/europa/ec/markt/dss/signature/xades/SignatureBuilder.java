@@ -126,6 +126,16 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		this.detachedDocument = detachedDocument;
 	}
 
+	protected void setSignedInfoCanonicalizationMethod(final SignatureParameters params, final String canonicalizationMethod) {
+
+		final String signedInfoCanonicalizationMethod_ = params.getSignedInfoCanonicalizationMethod();
+		if (DSSUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
+			signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod_;
+		} else {
+			signedInfoCanonicalizationMethod = canonicalizationMethod;
+		}
+	}
+
 	/**
 	 * This is the main method which is called to build the XML signature
 	 *

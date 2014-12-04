@@ -62,7 +62,7 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 	public DetachedSignatureBuilder(SignatureParameters params, DSSDocument origDoc) {
 
 		super(params, origDoc);
-		signedInfoCanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.EXCLUSIVE);
 		reference2CanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
 	}
 

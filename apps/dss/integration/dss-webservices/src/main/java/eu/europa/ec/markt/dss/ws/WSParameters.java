@@ -48,6 +48,11 @@ public class WSParameters {
 	private SignaturePackaging signaturePackaging; // ok
 
 	/**
+	 * XAdES: ds:CanonicalizationMethod indicate the canonicalization algorithm: Algorithm="...".
+	 */
+	private String signedInfoCanonicalizationMethod; // ok
+
+	/**
 	 * The encryption algorithm shall be automatically extracted from the signing token.
 	 */
 	private EncryptionAlgorithm encryptionAlgorithm; // ok
@@ -138,6 +143,22 @@ public class WSParameters {
 	 */
 	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
 		this.signaturePackaging = signaturePackaging;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public String getSignedInfoCanonicalizationMethod() {
+		return signedInfoCanonicalizationMethod;
+	}
+
+	/**
+	 *
+	 * @param signedInfoCanonicalizationMethod
+	 */
+	public void setSignedInfoCanonicalizationMethod(String signedInfoCanonicalizationMethod) {
+		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
 	}
 
 	/**

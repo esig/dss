@@ -144,6 +144,8 @@ public class SignatureServiceImpl implements SignatureService {
 
 		setSignaturePackaging(wsParameters, params);
 
+		setSignedInfoCanonicalizationMethod(wsParameters, params);
+
 		setEncryptionAlgorithm(wsParameters, params);
 
 		setDigestAlgorithm(wsParameters, params);
@@ -204,6 +206,12 @@ public class SignatureServiceImpl implements SignatureService {
 
 		final String contentIdentifierPrefix = wsParameters.getContentIdentifierPrefix();
 		params.bLevel().setContentIdentifierPrefix(contentIdentifierPrefix);
+	}
+
+	private void setSignedInfoCanonicalizationMethod(WSParameters wsParameters, SignatureParameters params) {
+
+		final String signedInfoCanonicalizationMethod = wsParameters.getSignedInfoCanonicalizationMethod();
+		params.setSignedInfoCanonicalizationMethod(signedInfoCanonicalizationMethod );
 	}
 
 	private void setEncryptionAlgorithm(WSParameters wsParameters, SignatureParameters params) {

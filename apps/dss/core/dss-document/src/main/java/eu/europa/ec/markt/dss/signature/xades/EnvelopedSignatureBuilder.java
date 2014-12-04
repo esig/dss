@@ -61,10 +61,10 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	 * @param params  The set of parameters relating to the structure and process of the creation or extension of the electronic signature.
 	 * @param origDoc The original document to sign.
 	 */
-	public EnvelopedSignatureBuilder(SignatureParameters params, DSSDocument origDoc) {
+	public EnvelopedSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc) {
 
 		super(params, origDoc);
-		signedInfoCanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.EXCLUSIVE);
 		reference2CanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
 	}
 
