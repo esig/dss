@@ -172,8 +172,8 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		 * We create <ds:Reference> segment only now, because we need first to define the SignedProperties segment to
 		 * calculate the digest of references.
 		 */
-		incorporateReference1();
-		incorporateReference2();
+		incorporateReferences();
+		incorporateReferenceSignedProperties();
 
 		// Preparation of SignedInfo
 		byte[] canonicalizedSignedInfo = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, signedInfoDom);
@@ -224,7 +224,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 *
 	 * @throws DSSException
 	 */
-	protected abstract void incorporateReference1() throws DSSException;
+	protected abstract void incorporateReferences() throws DSSException;
 
 	/**
 	 * Creates KeyInfoType JAXB object
@@ -266,7 +266,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	/**
 	 * @throws DSSException
 	 */
-	protected void incorporateReference2() throws DSSException {
+	protected void incorporateReferenceSignedProperties() throws DSSException {
 
 		// <ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-ide5c549340079fe19f3f90f03354a5965">
 		final Element reference = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, DS_REFERENCE);
@@ -295,46 +295,32 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	/**
 	 * This method incorporates a reference within the signedInfoDom
 	 *
-	 * @param reference {@code DSSReference}
+	 * @param dssReference {@code DSSReference}
 	 * @throws DSSException
 	 */
-	protected void incorporateReference(final DSSReference reference) throws DSSException {
+	protected void incorporateReference(final DSSReference dssReference) throws DSSException {
 
 		final Element referenceDom = DSSXMLUtils.addElement(documentDom, signedInfoDom, XMLSignature.XMLNS, DS_REFERENCE);
-		referenceDom.setAttribute(ID, reference.getId());
-		final String uri = reference.getUri();
+		referenceDom.setAttribute(ID, dssReference.getId());
+		final String uri = dssReference.getUri();
 		referenceDom.setAttribute(URI, uri);
-		referenceDom.setAttribute(TYPE, reference.getType());
+		referenceDom.setAttribute(TYPE, dssReference.getType());
 
-		final List<DSSTransform> transforms = reference.getTransforms();
-		if (transforms != null) { // Detached signature may not have transformations
+		final List<DSSTransform> dssTransforms = dssReference.getTransforms();
+		if (dssTransforms != null) { // Detached signature may not have transformations
 
 			final Element transformsDom = DSSXMLUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, DS_TRANSFORMS);
-			for (final DSSTransform transform : transforms) {
+			for (final DSSTransform dssTransform : dssTransforms) {
 
 				final Element transformDom = DSSXMLUtils.addElement(documentDom, transformsDom, XMLSignature.XMLNS, DS_TRANSFORM);
-				transformDom.setAttribute(ALGORITHM, transform.getAlgorithm());
-
-				final String elementName = transform.getElementName();
-				final String textContent = transform.getTextContent();
-				if (DSSUtils.isNotBlank(elementName)) {
-
-					final String namespace = transform.getNamespace();
-					DSSXMLUtils.addTextElement(documentDom, transformDom, namespace, elementName, textContent);
-				} else if (DSSUtils.isNotBlank(textContent)) {
-
-					final Document transformContentDoc = DSSXMLUtils.buildDOM(textContent);
-					final Element contextDocumentElement = transformContentDoc.getDocumentElement();
-					documentDom.adoptNode(contextDocumentElement);
-					transformDom.appendChild(contextDocumentElement);
-				}
+				createTransform(documentDom, dssTransform, transformDom);
 			}
 		}
 		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-		final DigestAlgorithm digestAlgorithm = reference.getDigestMethodAlgorithm();
+		final DigestAlgorithm digestAlgorithm = dssReference.getDigestMethodAlgorithm();
 		incorporateDigestMethod(referenceDom, digestAlgorithm);
 
-		final DSSDocument canonicalizedDocument = canonicalizeReference(reference);
+		final DSSDocument canonicalizedDocument = transformReference(dssReference);
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method  -->" + signedInfoCanonicalizationMethod);
 			LOG.trace("Canonicalized REF_1      --> " + new String(canonicalizedDocument.getBytes()));
@@ -342,23 +328,43 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		incorporateDigestValue(referenceDom, digestAlgorithm, canonicalizedDocument);
 	}
 
+	static void createTransform(final Document document, final DSSTransform dssTransform, final Element transformDom) {
+
+		transformDom.setAttribute(ALGORITHM, dssTransform.getAlgorithm());
+
+		final String elementName = dssTransform.getElementName();
+		final String textContent = dssTransform.getTextContent();
+		if (DSSUtils.isNotBlank(elementName)) {
+
+			final String namespace = dssTransform.getNamespace();
+			DSSXMLUtils.addTextElement(document, transformDom, namespace, elementName, textContent);
+		} else if (DSSUtils.isNotBlank(textContent)) {
+
+			final Document transformContentDoc = DSSXMLUtils.buildDOM(textContent);
+			final Element contextDocumentElement = transformContentDoc.getDocumentElement();
+			document.adoptNode(contextDocumentElement);
+			transformDom.appendChild(contextDocumentElement);
+		}
+	}
+
 	/**
-	 * When the user does not want to create its own reference (only when signing one contents) the default one must be created.
+	 * When the user does not want to create its own references (only when signing one contents) the default one are created.
 	 *
 	 * @return {@code List} of {@code DSSReference}
 	 */
 	protected abstract List<DSSReference> createDefaultReferences();
 
 	/**
-	 * This method canonicalize the given reference
+	 * This method performs the reference transformation. Note that for the time being (4.3.0-RC) only two types of transformation are implemented: canonicalization & {@code
+	 * Transforms.TRANSFORM_XPATH} and can be applied only for {@code SignaturePackaging.ENVELOPED}.
 	 *
-	 * @param reference {@code DSSReference} to be canonicalized
-	 * @return {@code DSSDocument}
+	 * @param reference {@code DSSReference} to be transformed
+	 * @return {@code DSSDocument} containing transformed reference's data
 	 */
-	protected abstract DSSDocument canonicalizeReference(final DSSReference reference);
+	protected abstract DSSDocument transformReference(final DSSReference reference);
 
 	/**
-	 * @return
+	 * This method incorporates the signature value.
 	 */
 	protected void incorporateSignatureValue() {
 
@@ -499,6 +505,10 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		incorporateContentTimestamps();
 	}
 
+	/**
+	 * @param reference the reference to compute
+	 * @return the {@code MimeType} of the reference or the default value {@code MimeType.BINARY}
+	 */
 	protected MimeType getReferenceMimeType(final DSSReference reference) {
 
 		MimeType dataObjectFormatMimeType = reference.getContents().getMimeType();

@@ -114,7 +114,10 @@ public abstract class XAdESBuilder {
 	public static final String XMLNS_XADES = "xmlns:xades";
 
 	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
-	public static final String HTTP_WWW_W3_ORG_TR_1999_REC_XPATH_19991116 = "http://www.w3.org/TR/1999/REC-xpath-19991116";
+	/**
+	 * This XPath filter allows to remove all ds:Signature elements from the XML
+	 */
+	public static final String NOT_ANCESTOR_OR_SELF_DS_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 
 	/**
 	 * This variable holds the {@code XPathQueryHolder} which contains all constants and queries needed to cope with the default signature schema.

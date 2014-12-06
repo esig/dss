@@ -75,7 +75,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 	 * @throws DSSException
 	 */
 	@Override
-	protected void incorporateReference1() throws DSSException {
+	protected void incorporateReferences() throws DSSException {
 
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
@@ -110,7 +110,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 	}
 
 	@Override
-	protected DSSDocument canonicalizeReference(final DSSReference reference) {
+	protected DSSDocument transformReference(final DSSReference reference) {
 
 		return reference.getContents();
 	}
