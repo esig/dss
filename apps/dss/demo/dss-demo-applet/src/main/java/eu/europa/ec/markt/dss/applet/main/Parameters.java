@@ -175,7 +175,7 @@ public class Parameters {
      */
     public byte[] getSignaturePolicyValue() {
         if (signaturePolicyValue == null) {
-            signaturePolicyValue = new byte[0];
+            signaturePolicyValue = DSSUtils.EMPTY_BYTE_ARRAY;
         }
         return signaturePolicyValue;
     }
