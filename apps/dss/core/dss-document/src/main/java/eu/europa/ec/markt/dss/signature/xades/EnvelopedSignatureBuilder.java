@@ -183,9 +183,11 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 
 	private boolean shouldPerformTransformations(final List<DSSTransform> transforms) {
 
-		for (final DSSTransform transform : transforms) {
-			if (!transform.isPerform()) {
-				return true;
+		if (transforms != null) {
+			for (final DSSTransform transform : transforms) {
+				if (!transform.isPerform()) {
+					return true;
+				}
 			}
 		}
 		return false;
