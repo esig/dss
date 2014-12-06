@@ -44,7 +44,6 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 public abstract class XAdESBuilder {
 
 	public static final String DS_CANONICALIZATION_METHOD = "ds:CanonicalizationMethod";
-	public static final String DS_COUNTER_SIGNATURE = "ds:CounterSignature";
 	public static final String DS_DIGEST_METHOD = "ds:DigestMethod";
 	public static final String DS_DIGEST_VALUE = "ds:DigestValue";
 	public static final String DS_KEY_INFO = "ds:KeyInfo";
@@ -56,8 +55,6 @@ public abstract class XAdESBuilder {
 	public static final String DS_SIGNED_INFO = "ds:SignedInfo";
 	public static final String DS_TRANSFORM = "ds:Transform";
 	public static final String DS_TRANSFORMS = "ds:Transforms";
-	public static final String DS_UNSIGNED_PROPERTIES = "ds:UnsignedProperties";
-	public static final String DS_UNSIGNED_SIGNATURE_PROPERTIES = "ds:UnsignedSignatureProperties";
 	public static final String DS_X509_CERTIFICATE = "ds:X509Certificate";
 	public static final String DS_X509_DATA = "ds:X509Data";
 	public static final String DS_X509_ISSUER_NAME = "ds:X509IssuerName";
