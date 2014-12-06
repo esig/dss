@@ -68,7 +68,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		// Inclusive method does not work with the enveloped signature. This limitation comes from the mechanism used by the framework to build the signature.
 		// Ditto: "http://www.w3.org/2006/12/xml-c14n11"
 		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.EXCLUSIVE);
-		reference2CanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+		signedPropertiesCanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
 	}
 
 	/**
@@ -143,18 +143,28 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 			return dssDocument;
 		}
 		// In the case of ENVELOPED signature the document to sign is an XML. However one of the references can point to another document this test case is not taken into account!
-		Document document = DSSXMLUtils.buildDOM(dssDocument);
 
-		Element nodeToTransform = null;
-		byte[] canonicalizedBytes = null;
+		Node nodeToTransform = null;
 		final String uri = reference.getUri();
 		// Check if the reference is related to the whole document
 		if (DSSUtils.isNotBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
 
+			final Document document = DSSXMLUtils.buildDOM(dssDocument);
 			DSSXMLUtils.recursiveIdBrowse(document.getDocumentElement());
 			final String uri_id = uri.substring(1);
 			nodeToTransform = document.getElementById(uri_id);
 		}
+		byte[] transformedReferenceBytes = null;
+		if (DSSUtils.isEmpty(transforms)) {
+			transformedReferenceBytes = DSSXMLUtils.serializeNode(nodeToTransform);
+		} else {
+			transformedReferenceBytes = applyTransformations(dssDocument, transforms, nodeToTransform, transformedReferenceBytes);
+		}
+		return new InMemoryDocument(transformedReferenceBytes);
+	}
+
+	private byte[] applyTransformations(DSSDocument dssDocument, final List<DSSTransform> transforms, Node nodeToTransform, byte[] transformedReferenceBytes) {
+
 		for (final DSSTransform transform : transforms) {
 
 			final String transformAlgorithm = transform.getAlgorithm();
@@ -164,10 +174,13 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 				// At the moment it is impossible to go through a medium other than byte array (Set<Node>, octet stream, Node). Further investigation is needed.
 				final byte[] transformedBytes = nodeToTransform == null ? transformXPath.transform(dssDocument) : transformXPath.transform(nodeToTransform);
 				dssDocument = new InMemoryDocument(transformedBytes);
-				document = DSSXMLUtils.buildDOM(dssDocument);
+				nodeToTransform = DSSXMLUtils.buildDOM(dssDocument);
 			} else if (DSSXMLUtils.canCanonicalize(transformAlgorithm)) {
 
-				canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(transformAlgorithm, document);
+				if (nodeToTransform == null) {
+					nodeToTransform = DSSXMLUtils.buildDOM(dssDocument);
+				}
+				transformedReferenceBytes = DSSXMLUtils.canonicalizeSubtree(transformAlgorithm, nodeToTransform);
 				// The supposition is made that the last transformation is the canonicalization
 				break;
 			} else if (CanonicalizationMethod.ENVELOPED.equals(transformAlgorithm)) {
@@ -178,7 +191,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 				throw new DSSException("The transformation is not implemented yet, please transform the reference before signing!");
 			}
 		}
-		return new InMemoryDocument(canonicalizedBytes);
+		return transformedReferenceBytes;
 	}
 
 	private boolean shouldPerformTransformations(final List<DSSTransform> transforms) {

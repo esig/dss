@@ -63,7 +63,7 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 
 		super(params, origDoc);
 		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.EXCLUSIVE);
-		reference2CanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+		signedPropertiesCanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
 	}
 
 	@Override

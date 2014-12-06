@@ -2926,7 +2926,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 *
 	 * @param x509Certificate
 	 * @return
 	 */
@@ -3083,5 +3082,17 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * Null-safe check if the specified collection is empty.
+	 * <p/>
+	 * Null returns true.
+	 *
+	 * @param collection the collection to check, may be null
+	 * @return true if empty or null
+	 */
+	public static boolean isEmpty(final Collection collection) {
+		return collection == null || collection.isEmpty();
 	}
 }

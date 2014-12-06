@@ -64,7 +64,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 
 		super(params, origDoc);
 		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.INCLUSIVE);
-		reference2CanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
+		signedPropertiesCanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
 	}
 
 	/**
