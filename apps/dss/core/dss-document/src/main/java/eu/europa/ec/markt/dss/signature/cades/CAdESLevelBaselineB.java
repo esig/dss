@@ -22,6 +22,7 @@ package eu.europa.ec.markt.dss.signature.cades;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -49,7 +50,6 @@ import org.bouncycastle.asn1.ess.ESSCertID;
 import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.Time;
@@ -64,10 +64,23 @@ import eu.europa.ec.markt.dss.OID;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters.Policy;
+import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
+
+import static eu.europa.ec.markt.dss.DigestAlgorithm.SHA1;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentHint;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentIdentifier;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_commitmentType;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_sigPolicyId;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerAttr;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerLocation;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.pkcs_9_at_signingTime;
 
 /**
  * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed
@@ -201,7 +214,7 @@ public class CAdESLevelBaselineB {
 					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name, new DERSet(roles));
 					claimedAttributes.add(id_aa_ets_signerAttr);
 				}
-				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr,
+				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
 					  new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
 				signedAttributes.add(attribute);
 			}
@@ -221,7 +234,7 @@ public class CAdESLevelBaselineB {
 			if (signingDate != null) {
 
 				final DERSet attrValues = new DERSet(new Time(signingDate));
-				final Attribute attribute = new Attribute(PKCSObjectIdentifiers.pkcs_9_at_signingTime, attrValues);
+				final Attribute attribute = new Attribute(pkcs_9_at_signingTime, attrValues);
 				signedAttributes.add(attribute);
 			}
 		}
@@ -262,7 +275,7 @@ public class CAdESLevelBaselineB {
 				final DERSequence derSequencePostalAddress = new DERSequence(postalAddress);
 				final SignerLocation signerLocation = new SignerLocation(country, locality, derSequencePostalAddress);
 				final DERSet attrValues = new DERSet(signerLocation);
-				final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_ets_signerLocation, attrValues);
+				final Attribute attribute = new Attribute(id_aa_ets_signerLocation, attrValues);
 				signedAttributes.add(attribute);
 			}
 		}
@@ -298,7 +311,7 @@ public class CAdESLevelBaselineB {
 				asn1Encodables[ii] = new DERSequence(objectIdentifier);
 			}
 			final DERSet attrValues = new DERSet(asn1Encodables);
-			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_ets_commitmentType, attrValues);
+			final Attribute attribute = new Attribute(id_aa_ets_commitmentType, attrValues);
 			signedAttributes.add(attribute);
 		}
 	}
@@ -336,7 +349,7 @@ public class CAdESLevelBaselineB {
 
 				final ASN1Object asn1Object = DSSASN1Utils.toASN1Primitive(contentTimestamp.getEncoded());
 				final DERSet attrValues = new DERSet(asn1Object);
-				final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_ets_contentTimestamp, attrValues);
+				final Attribute attribute = new Attribute(id_aa_ets_contentTimestamp, attrValues);
 				signedAttributes.add(attribute);
 			}
 		}
@@ -379,7 +392,7 @@ public class CAdESLevelBaselineB {
 
 			final ContentHints contentHints = new ContentHints(contentHintsType, contentHintsDescription);
 			final DERSet attrValues = new DERSet(contentHints);
-			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_contentHint, attrValues);
+			final Attribute attribute = new Attribute(id_aa_contentHint, attrValues);
 			signedAttributes.add(attribute);
 		}
 	}
@@ -423,7 +436,7 @@ public class CAdESLevelBaselineB {
 				final String contentIdentifierString = contentIdentifierPrefix + contentIdentifierSuffix;
 				final ContentIdentifier contentIdentifier = new ContentIdentifier(contentIdentifierString.getBytes());
 				final DERSet attrValues = new DERSet(contentIdentifier);
-				final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_contentIdentifier, attrValues);
+				final Attribute attribute = new Attribute(id_aa_contentIdentifier, attrValues);
 				signedAttributes.add(attribute);
 			}
 		}
@@ -447,7 +460,7 @@ public class CAdESLevelBaselineB {
 				sigPolicy = new SignaturePolicyIdentifier();
 			}
 			final DERSet attrValues = new DERSet(sigPolicy);
-			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId, attrValues);
+			final Attribute attribute = new Attribute(id_aa_ets_sigPolicyId, attrValues);
 			signedAttributes.add(attribute);
 		}
 	}
@@ -455,28 +468,51 @@ public class CAdESLevelBaselineB {
 	private void addSigningCertificateAttribute(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		final X509Certificate signingCertificate = parameters.getSigningCertificate();
-		final byte[] encoded = DSSUtils.getEncoded(signingCertificate);
-		final byte[] certHash = DSSUtils.digest(digestAlgorithm, encoded);
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Adding Certificate Hash {} with algorithm {}", DSSUtils.encodeHexString(certHash), digestAlgorithm.getName());
-		}
-		final IssuerSerial issuerSerial = DSSUtils.getIssuerSerial(signingCertificate);
-		if (digestAlgorithm == DigestAlgorithm.SHA1) {
+		final List<ChainCertificate> chainCertificateList = parameters.getCertificateChain();
+		final ASN1Encodable[] signingCertificates = new ASN1Encodable[chainCertificateList.size()];
+		int ii = 0;
+		for (final ChainCertificate chainCertificate : chainCertificateList) {
 
-			final ESSCertID essCertId = new ESSCertID(certHash, issuerSerial);
-			final SigningCertificate cadesSigningCertificate = new SigningCertificate(essCertId);
-			final DERSet attrValues = new DERSet(cadesSigningCertificate);
-			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_signingCertificate, attrValues);
-			signedAttributes.add(attribute);
+			if (!chainCertificate.isSignedAttribute()) {
+				continue;
+			}
+			final X509Certificate signingCertificate = chainCertificate.getX509Certificate();
+			final byte[] encoded = DSSUtils.getEncoded(signingCertificate);
+			final byte[] certHash = DSSUtils.digest(digestAlgorithm, encoded);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Adding Certificate Hash {} with algorithm {}", DSSUtils.encodeHexString(certHash), digestAlgorithm.getName());
+			}
+			final IssuerSerial issuerSerial = DSSUtils.getIssuerSerial(signingCertificate);
+
+			ASN1Encodable asn1Encodable;
+			if (digestAlgorithm == SHA1) {
+
+				final ESSCertID essCertID = new ESSCertID(certHash, issuerSerial);
+				asn1Encodable = new SigningCertificate(essCertID);
+			} else {
+
+				asn1Encodable = new ESSCertIDv2(digestAlgorithm.getAlgorithmIdentifier(), certHash, issuerSerial);
+			}
+			signingCertificates[ii++] = asn1Encodable;
+		}
+		final Attribute attribute = createSigningCertificateAttributes(digestAlgorithm, signingCertificates);
+		signedAttributes.add(attribute);
+	}
+
+	private Attribute createSigningCertificateAttributes(final DigestAlgorithm digestAlgorithm, final ASN1Encodable[] signingCertificates) {
+
+		final Attribute attribute;
+		if (digestAlgorithm == SHA1) {
+
+			final DERSet derSet = new DERSet(signingCertificates);
+			attribute = new Attribute(id_aa_signingCertificate, derSet);
 		} else {
 
-			final ESSCertIDv2 essCertIDv2 = new ESSCertIDv2(digestAlgorithm.getAlgorithmIdentifier(), certHash, issuerSerial);
-			final ESSCertIDv2[] essCertIDv2Array = new ESSCertIDv2[]{essCertIDv2};
-			final SigningCertificateV2 cadesSigningCertificateV2 = new SigningCertificateV2(essCertIDv2Array);
-			final DERSet attrValues = new DERSet(cadesSigningCertificateV2);
-			final Attribute attribute = new Attribute(PKCSObjectIdentifiers.id_aa_signingCertificateV2, attrValues);
-			signedAttributes.add(attribute);
+			final ESSCertIDv2[] essCertIDv2s = Arrays.copyOf(signingCertificates, signingCertificates.length, ESSCertIDv2[].class);
+			final SigningCertificateV2 signingCertificateV2 = new SigningCertificateV2(essCertIDv2s);
+			final DERSet derSet = new DERSet(signingCertificateV2);
+			attribute = new Attribute(id_aa_signingCertificateV2, derSet);
 		}
+		return attribute;
 	}
 }

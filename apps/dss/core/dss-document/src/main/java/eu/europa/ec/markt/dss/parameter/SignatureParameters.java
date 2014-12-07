@@ -328,9 +328,10 @@ public class SignatureParameters {
 	public void setSigningCertificate(final X509Certificate signingCertificate) {
 
 		this.signingCertificate = signingCertificate;
-		if (!this.certificateChain.contains(signingCertificate)) {
+		final ChainCertificate chainCertificate = new ChainCertificate(signingCertificate, true);
+		if (!this.certificateChain.contains(chainCertificate)) {
 
-			this.certificateChain.add(0, new ChainCertificate(signingCertificate, true));
+			this.certificateChain.add(0, chainCertificate);
 		}
 	}
 
@@ -390,8 +391,9 @@ public class SignatureParameters {
 
 			if (certificate != null) {
 
-				if (!certificateChain.contains(certificate)) {
-					certificateChain.add(new ChainCertificate(certificate, false));
+				final ChainCertificate chainCertificate = new ChainCertificate(certificate, false);
+				if (!certificateChain.contains(chainCertificate)) {
+					certificateChain.add(chainCertificate);
 				}
 			}
 		}

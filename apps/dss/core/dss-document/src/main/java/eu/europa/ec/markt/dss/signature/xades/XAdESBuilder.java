@@ -178,14 +178,14 @@ public abstract class XAdESBuilder {
 	 */
 	protected void incorporateCertificateRef(final Element signingCertificateDom, final List<X509Certificate> certificates) {
 
-		final Element certDom = DSSXMLUtils.addElement(documentDom, signingCertificateDom, XAdESNamespaces.XAdES, XADES_CERT);
-
-		final Element certDigestDom = DSSXMLUtils.addElement(documentDom, certDom, XAdESNamespaces.XAdES, XADES_CERT_DIGEST);
-
-		final DigestAlgorithm signingCertificateDigestMethod = params.bLevel().getSigningCertificateDigestMethod();
-		incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
-
 		for (final X509Certificate certificate : certificates) {
+
+			final Element certDom = DSSXMLUtils.addElement(documentDom, signingCertificateDom, XAdESNamespaces.XAdES, XADES_CERT);
+
+			final Element certDigestDom = DSSXMLUtils.addElement(documentDom, certDom, XAdESNamespaces.XAdES, XADES_CERT_DIGEST);
+
+			final DigestAlgorithm signingCertificateDigestMethod = params.bLevel().getSigningCertificateDigestMethod();
+			incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
 
 			final InMemoryDocument inMemoryCertificate = new InMemoryDocument(DSSUtils.getEncoded(certificate));
 			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, inMemoryCertificate);

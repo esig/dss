@@ -382,13 +382,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				final byte[] certHash = essCertID.getCertHash();
 				signingCertificateValidity.setDigestPresent(true);
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}", DSSUtils.encodeHexString(signingTokenCertHash),
-						  digestAlgorithm.getName());
+					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}", DSSUtils.encodeHexString(certHash), digestAlgorithm.getName());
 				}
 				final IssuerSerial issuerSerial = essCertID.getIssuerSerial();
 				final boolean match = verifySigningCertificateReferences(signingTokenSerialNumber, signingTokenIssuerName, signingTokenCertHash, certHash, issuerSerial);
 				if (match) {
-					break;
+					return;
 				}
 				LOG.warn("RFC 2634: The first certificate identified in the sequence of certificate identifiers MUST be the certificate used to verify the signature.");
 			}
@@ -426,12 +425,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				final byte[] certHash = essCertIDv2.getCertHash();
 				signingCertificateValidity.setDigestPresent(true);
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", DSSUtils.encodeHexString(signingTokenCertHash), digestAlgorithm.getName());
+					LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", DSSUtils.encodeHexString(certHash), digestAlgorithm.getName());
 				}
 				final IssuerSerial issuerSerial = essCertIDv2.getIssuerSerial();
 				final boolean match = verifySigningCertificateReferences(signingTokenSerialNumber, signingTokenIssuerName, signingTokenCertHash, certHash, issuerSerial);
 				if (match) {
-					break;
+					return;
 				}
 				LOG.warn("RFC 5035: The first certificate identified in the sequence of certificate identifiers MUST be the certificate used to verify the signature.");
 			}
