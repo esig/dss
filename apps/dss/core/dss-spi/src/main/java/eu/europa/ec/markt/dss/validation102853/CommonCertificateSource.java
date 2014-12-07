@@ -93,13 +93,13 @@ public class CommonCertificateSource implements CertificateSource {
      * This method adds an external certificate to the encapsulated pool and to the source. If the certificate is already present in the pool its
      * source type is associated to the token.
      *
-     * @param certificate the certificate to add
+     * @param x509Certificate the certificate to add
      * @return the corresponding certificate token
      */
     @Override
-    public CertificateToken addCertificate(final X509Certificate certificate) {
+    public CertificateToken addCertificate(final X509Certificate x509Certificate) {
 
-        final CertificateToken certToken = certPool.getInstance(certificate, getCertificateSourceType());
+        final CertificateToken certToken = certPool.getInstance(x509Certificate, getCertificateSourceType());
         if (certificateTokens != null) {
 
             if (!certificateTokens.contains(certToken)) {

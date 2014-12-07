@@ -61,11 +61,11 @@ import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.validation102853.asic.ASiCContainerValidator;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
+import eu.europa.ec.markt.dss.validation102853.bean.CertificateValidity;
 import eu.europa.ec.markt.dss.validation102853.bean.CertifiedRole;
 import eu.europa.ec.markt.dss.validation102853.bean.CommitmentType;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureProductionPlace;
-import eu.europa.ec.markt.dss.validation102853.bean.SigningCertificateValidity;
 import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
 import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
@@ -1266,14 +1266,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		dealWithCertifiedRole(signature, xmlSignature);
 
-		final SigningCertificateValidity signingCertificateValidity = dealSigningCertificate(signature, xmlSignature);
+		final CertificateValidity certificateValidity = dealSigningCertificate(signature, xmlSignature);
 
 		final XmlBasicSignatureType xmlBasicSignature = getXmlBasicSignatureType(xmlSignature);
 		final EncryptionAlgorithm encryptionAlgorithm = signature.getEncryptionAlgorithm();
 		final String encryptionAlgorithmString = encryptionAlgorithm == null ? "?" : encryptionAlgorithm.getName();
 		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmString);
 		// signingCertificateValidity can be null in case of a non AdES signature.
-		final CertificateToken signingCertificateToken = signingCertificateValidity == null ? null : signingCertificateValidity.getCertificateToken();
+		final CertificateToken signingCertificateToken = certificateValidity == null ? null : certificateValidity.getCertificateToken();
 		final int keyLength = signingCertificateToken == null ? 0 : signingCertificateToken.getPublicKeyLength();
 		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
 		final DigestAlgorithm digestAlgorithm = signature.getDigestAlgorithm();
@@ -1418,28 +1418,28 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param xmlSignature The JAXB object containing all diagnostic data pertaining to the signature
 	 * @return
 	 */
-	private SigningCertificateValidity dealSigningCertificate(final AdvancedSignature signature, final XmlSignature xmlSignature) {
+	private CertificateValidity dealSigningCertificate(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
 		final XmlSigningCertificateType xmlSignCertType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSigningCertificateType();
 		signature.checkSigningCertificate();
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
-		final SigningCertificateValidity theSigningCertificateValidity = candidatesForSigningCertificate.getTheSigningCertificateValidity();
-		if (theSigningCertificateValidity != null) {
+		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+		if (theCertificateValidity != null) {
 
-			final CertificateToken signingCertificateToken = theSigningCertificateValidity.getCertificateToken();
+			final CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
 			if (signingCertificateToken != null) {
 
 				xmlSignCertType.setId(signingCertificateToken.getDSSId());
 			}
-			xmlSignCertType.setAttributePresent(theSigningCertificateValidity.isAttributePresent());
-			xmlSignCertType.setDigestValuePresent(theSigningCertificateValidity.isDigestPresent());
-			xmlSignCertType.setDigestValueMatch(theSigningCertificateValidity.isDigestEqual());
-			final boolean issuerSerialMatch = theSigningCertificateValidity.isSerialNumberEqual() && theSigningCertificateValidity.isDistinguishedNameEqual();
+			xmlSignCertType.setAttributePresent(theCertificateValidity.isAttributePresent());
+			xmlSignCertType.setDigestValuePresent(theCertificateValidity.isDigestPresent());
+			xmlSignCertType.setDigestValueMatch(theCertificateValidity.isDigestEqual());
+			final boolean issuerSerialMatch = theCertificateValidity.isSerialNumberEqual() && theCertificateValidity.isDistinguishedNameEqual();
 			xmlSignCertType.setIssuerSerialMatch(issuerSerialMatch);
-			xmlSignCertType.setSigned(theSigningCertificateValidity.getSigned());
+			xmlSignCertType.setSigned(theCertificateValidity.getSigned());
 			xmlSignature.setSigningCertificate(xmlSignCertType);
 		}
-		return theSigningCertificateValidity;
+		return theCertificateValidity;
 	}
 
 	/**
