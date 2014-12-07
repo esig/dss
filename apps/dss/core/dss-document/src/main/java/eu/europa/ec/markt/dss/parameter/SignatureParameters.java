@@ -74,9 +74,9 @@ public class SignatureParameters {
 	private boolean signWithExpiredCertificate = false;
 
 	/**
-	 * This field contains the chain of certificates. It includes the signing certificate.
+	 * This field contains the {@code List} of chain of certificates. It includes the signing certificate.
 	 */
-	private List<X509Certificate> certificateChain = new ArrayList<X509Certificate>();
+	private List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
 
 	ProfileParameters context;
 	private SignatureLevel signatureLevel;
@@ -158,7 +158,7 @@ public class SignatureParameters {
 
 		if (certificateChain != null) {
 
-			certificateChain = new ArrayList<X509Certificate>(source.certificateChain);
+			certificateChain = new ArrayList<ChainCertificate>(source.certificateChain);
 		}
 		contactInfo = source.contactInfo;
 		deterministicId = source.getDeterministicId();
@@ -330,7 +330,7 @@ public class SignatureParameters {
 		this.signingCertificate = signingCertificate;
 		if (!this.certificateChain.contains(signingCertificate)) {
 
-			this.certificateChain.add(0, signingCertificate);
+			this.certificateChain.add(0, new ChainCertificate(signingCertificate, true));
 		}
 	}
 
@@ -357,7 +357,7 @@ public class SignatureParameters {
 	 *
 	 * @return the value
 	 */
-	public List<X509Certificate> getCertificateChain() {
+	public List<ChainCertificate> getCertificateChain() {
 		return certificateChain;
 	}
 
@@ -373,9 +373,9 @@ public class SignatureParameters {
 	/**
 	 * Set the certificate chain
 	 *
-	 * @param certificateChain the value
+	 * @param certificateChain the {@code List} of {@code ChainCertificate}s
 	 */
-	public void setCertificateChain(final List<X509Certificate> certificateChain) {
+	public void setCertificateChain(final List<ChainCertificate> certificateChain) {
 		this.certificateChain = certificateChain;
 	}
 
@@ -391,7 +391,7 @@ public class SignatureParameters {
 			if (certificate != null) {
 
 				if (!certificateChain.contains(certificate)) {
-					certificateChain.add(certificate);
+					certificateChain.add(new ChainCertificate(certificate, false));
 				}
 			}
 		}
@@ -666,7 +666,7 @@ public class SignatureParameters {
 			  ", privateKeyEntry=" + privateKeyEntry +
 			  ", signingCertificate=" + signingCertificate +
 			  ", signWithExpiredCertificate=" + signWithExpiredCertificate +
-			  ", certificateChain=" + certificateChain +
+			  ", certificateChain_=" + certificateChain +
 			  ", context=" + context +
 			  ", signatureLevel=" + signatureLevel +
 			  ", signaturePackaging=" + signaturePackaging +

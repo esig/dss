@@ -36,6 +36,27 @@ public class ObjectFactory {
 	}
 
 	/**
+	 * Create an instance of {@link SignDocument }
+	 */
+	public SignDocument createSignDocument() {
+		return new SignDocument();
+	}
+
+	/**
+	 * Create an instance of {@link DSSException }
+	 */
+	public DSSException createDSSException() {
+		return new DSSException();
+	}
+
+	/**
+	 * Create an instance of {@link ExtendSignature }
+	 */
+	public ExtendSignature createExtendSignature() {
+		return new ExtendSignature();
+	}
+
+	/**
 	 * Create an instance of {@link SignDocumentResponse }
 	 */
 	public SignDocumentResponse createSignDocumentResponse() {
@@ -50,17 +71,10 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link WsdssReference }
+	 * Create an instance of {@link GetDataToSign }
 	 */
-	public WsdssReference createWsdssReference() {
-		return new WsdssReference();
-	}
-
-	/**
-	 * Create an instance of {@link ExtendSignature }
-	 */
-	public ExtendSignature createExtendSignature() {
-		return new ExtendSignature();
+	public GetDataToSign createGetDataToSign() {
+		return new GetDataToSign();
 	}
 
 	/**
@@ -71,31 +85,10 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link DssTransform }
-	 */
-	public DssTransform createDssTransform() {
-		return new DssTransform();
-	}
-
-	/**
 	 * Create an instance of {@link SignerLocation }
 	 */
 	public SignerLocation createSignerLocation() {
 		return new SignerLocation();
-	}
-
-	/**
-	 * Create an instance of {@link Policy }
-	 */
-	public Policy createPolicy() {
-		return new Policy();
-	}
-
-	/**
-	 * Create an instance of {@link SignDocument }
-	 */
-	public SignDocument createSignDocument() {
-		return new SignDocument();
 	}
 
 	/**
@@ -106,10 +99,10 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link MimeType }
+	 * Create an instance of {@link DssTransform }
 	 */
-	public MimeType createMimeType() {
-		return new MimeType();
+	public DssTransform createDssTransform() {
+		return new DssTransform();
 	}
 
 	/**
@@ -120,17 +113,31 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link GetDataToSign }
+	 * Create an instance of {@link Policy }
 	 */
-	public GetDataToSign createGetDataToSign() {
-		return new GetDataToSign();
+	public Policy createPolicy() {
+		return new Policy();
 	}
 
 	/**
-	 * Create an instance of {@link DSSException }
+	 * Create an instance of {@link WsChainCertificate }
 	 */
-	public DSSException createDSSException() {
-		return new DSSException();
+	public WsChainCertificate createWsChainCertificate() {
+		return new WsChainCertificate();
+	}
+
+	/**
+	 * Create an instance of {@link MimeType }
+	 */
+	public MimeType createMimeType() {
+		return new MimeType();
+	}
+
+	/**
+	 * Create an instance of {@link WsdssReference }
+	 */
+	public WsdssReference createWsdssReference() {
+		return new WsdssReference();
 	}
 
 	/**

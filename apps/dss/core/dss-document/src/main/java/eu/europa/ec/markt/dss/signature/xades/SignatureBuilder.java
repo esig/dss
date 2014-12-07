@@ -40,6 +40,7 @@ import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
+import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
@@ -238,9 +239,9 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		// <ds:X509Data>
 		final Element x509DataDom = DSSXMLUtils.addElement(documentDom, keyInfoDom, XMLSignature.XMLNS, DS_X509_DATA);
 
-		for (final X509Certificate x509Certificate : params.getCertificateChain()) {
+		for (final ChainCertificate chainCertificate : params.getCertificateChain()) {
 
-			final byte[] encoded = DSSUtils.getEncoded(x509Certificate);
+			final byte[] encoded = DSSUtils.getEncoded(chainCertificate.getX509Certificate());
 			final String base64Encoded = DSSUtils.base64Encode(encoded);
 			// <ds:X509Certificate>...</ds:X509Certificate>
 			DSSXMLUtils.addTextElement(documentDom, x509DataDom, XMLSignature.XMLNS, DS_X509_CERTIFICATE, base64Encoded);
@@ -473,10 +474,11 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdESNamespaces.XAdES, XADES_SIGNING_CERTIFICATE);
 
 		final List<X509Certificate> certificates = new ArrayList<X509Certificate>();
-
-		final X509Certificate signingCertificate = params.getSigningCertificate();
-		if (signingCertificate != null) {
-			certificates.add(signingCertificate);
+		final List<ChainCertificate> certificateChain = params.getCertificateChain();
+		for (final ChainCertificate chainCertificate : certificateChain) {
+			if (chainCertificate.isSignedAttribute()) {
+				certificates.add(chainCertificate.getX509Certificate());
+			}
 		}
 		incorporateCertificateRef(signingCertificateDom, certificates);
 	}

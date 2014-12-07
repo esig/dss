@@ -52,6 +52,7 @@ import org.bouncycastle.util.Store;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TrustedCertificateSource;
@@ -124,12 +125,13 @@ public class CMSSignedDataBuilder {
 					newCertificateChain.add(DSSUtils.getCertificate(certificatesMatch));
 				}
 			}
-			final List<X509Certificate> certificateChain = parameters.getCertificateChain();
-			newCertificateChain.addAll(certificateChain);
+			final List<ChainCertificate> certificateChain = parameters.getCertificateChain();
+			for (final ChainCertificate chainCertificate : certificateChain) {
+				newCertificateChain.add(chainCertificate.getX509Certificate());
+			}
 			final Store jcaCertStore = getJcaCertStore(signingCertificate, newCertificateChain);
 			generator.addCertificates(jcaCertStore);
 			return generator;
-
 		} catch (CMSException e) {
 			throw new DSSException(e);
 		} catch (OperatorCreationException e) {

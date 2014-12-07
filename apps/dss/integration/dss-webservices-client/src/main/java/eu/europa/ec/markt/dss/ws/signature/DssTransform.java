@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="algorithm" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="elementName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="namespace" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="perform" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="textContent" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -33,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
     "algorithm",
     "elementName",
     "namespace",
+    "perform",
     "textContent"
 })
 public class DssTransform {
@@ -40,6 +42,7 @@ public class DssTransform {
     protected String algorithm;
     protected String elementName;
     protected String namespace;
+    protected boolean perform;
     protected String textContent;
 
     /**
@@ -112,6 +115,22 @@ public class DssTransform {
      */
     public void setNamespace(String value) {
         this.namespace = value;
+    }
+
+    /**
+     * Gets the value of the perform property.
+     * 
+     */
+    public boolean isPerform() {
+        return perform;
+    }
+
+    /**
+     * Sets the value of the perform property.
+     * 
+     */
+    public void setPerform(boolean value) {
+        this.perform = value;
     }
 
     /**

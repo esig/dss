@@ -170,10 +170,11 @@ public abstract class XAdESBuilder {
 	}
 
 	/**
-	 * Incorporates the certificate's reference as a child of the given parent node.
+	 * Incorporates the certificate's references as a child of the given parent node. The first element of the {@code X509Certificate} {@code List} MUST be the signing
+	 * certificate.
 	 *
-	 * @param signingCertificateDom
-	 * @param certificates
+	 * @param signingCertificateDom DOM parent element
+	 * @param certificates          {@code List} of the certificates to be incorporated
 	 */
 	protected void incorporateCertificateRef(final Element signingCertificateDom, final List<X509Certificate> certificates) {
 

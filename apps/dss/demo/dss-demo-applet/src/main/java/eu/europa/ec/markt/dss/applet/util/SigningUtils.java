@@ -33,6 +33,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
+import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
@@ -52,6 +53,7 @@ import eu.europa.ec.markt.dss.ws.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.ws.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.ws.signature.SignatureService;
 import eu.europa.ec.markt.dss.ws.signature.SignatureService_Service;
+import eu.europa.ec.markt.dss.ws.signature.WsChainCertificate;
 import eu.europa.ec.markt.dss.ws.signature.WsDocument;
 import eu.europa.ec.markt.dss.ws.signature.WsParameters;
 import eu.europa.ec.markt.dss.ws.signature.WsdssReference;
@@ -202,13 +204,17 @@ public final class SigningUtils {
 	}
 
 	private static void prepareCertificateChain(SignatureParameters parameters, WsParameters wsParameters) {
-		final List<X509Certificate> certificateChain = parameters.getCertificateChain();
-		if (certificateChain.size() > 0) {
+		final List<ChainCertificate> certificateChain = parameters.getCertificateChain();
+		if (!DSSUtils.isEmpty(certificateChain)) {
 
-			final List<byte[]> certificateChainByteArrayList = wsParameters.getCertificateChainByteArrayList();
-			for (final X509Certificate x509Certificate : certificateChain) {
+			final List<WsChainCertificate> wsChainCertificateList = wsParameters.getChainCertificateList();
+			for (final ChainCertificate chainCertificate : certificateChain) {
 
-				certificateChainByteArrayList.add(DSSUtils.getEncoded(x509Certificate));
+				final WsChainCertificate wsChainCertificate = new WsChainCertificate();
+				final X509Certificate x509Certificate = chainCertificate.getX509Certificate();
+				wsChainCertificate.setX509Certificate(DSSUtils.getEncoded(x509Certificate));
+				wsChainCertificate.setSignedAttribute(chainCertificate.isSignedAttribute());
+				wsChainCertificateList.add(wsChainCertificate);
 			}
 		}
 	}
