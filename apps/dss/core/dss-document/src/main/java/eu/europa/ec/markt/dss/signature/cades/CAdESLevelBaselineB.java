@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.signature.cades;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -469,7 +468,7 @@ public class CAdESLevelBaselineB {
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		final List<ChainCertificate> chainCertificateList = parameters.getCertificateChain();
-		final ASN1Encodable[] signingCertificates = new ASN1Encodable[chainCertificateList.size()];
+		final List<ASN1Encodable> signingCertificates = new ArrayList<ASN1Encodable>();
 		int ii = 0;
 		for (final ChainCertificate chainCertificate : chainCertificateList) {
 
@@ -493,22 +492,23 @@ public class CAdESLevelBaselineB {
 
 				asn1Encodable = new ESSCertIDv2(digestAlgorithm.getAlgorithmIdentifier(), certHash, issuerSerial);
 			}
-			signingCertificates[ii++] = asn1Encodable;
+			signingCertificates.add(asn1Encodable);
 		}
 		final Attribute attribute = createSigningCertificateAttributes(digestAlgorithm, signingCertificates);
 		signedAttributes.add(attribute);
 	}
 
-	private Attribute createSigningCertificateAttributes(final DigestAlgorithm digestAlgorithm, final ASN1Encodable[] signingCertificates) {
+	private Attribute createSigningCertificateAttributes(final DigestAlgorithm digestAlgorithm, final List<ASN1Encodable> signingCertificates) {
 
 		final Attribute attribute;
 		if (digestAlgorithm == SHA1) {
 
-			final DERSet derSet = new DERSet(signingCertificates);
+			final SigningCertificate[] signingCertificatesV1s = signingCertificates.toArray(new SigningCertificate[0]);
+			final DERSet derSet = new DERSet(signingCertificatesV1s);
 			attribute = new Attribute(id_aa_signingCertificate, derSet);
 		} else {
 
-			final ESSCertIDv2[] essCertIDv2s = Arrays.copyOf(signingCertificates, signingCertificates.length, ESSCertIDv2[].class);
+			final ESSCertIDv2[] essCertIDv2s = signingCertificates.toArray(new ESSCertIDv2[0]);
 			final SigningCertificateV2 signingCertificateV2 = new SigningCertificateV2(essCertIDv2s);
 			final DERSet derSet = new DERSet(signingCertificateV2);
 			attribute = new Attribute(id_aa_signingCertificateV2, derSet);
