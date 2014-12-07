@@ -35,8 +35,14 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
+import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPException;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -44,6 +50,8 @@ import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -55,6 +63,8 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
  */
 
 public final class DSSASN1Utils {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -284,5 +294,64 @@ public final class DSSASN1Utils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * This method allows to create a {@code BasicOCSPResp} from a {@code DERSequence}.
+	 *
+	 * @param otherRevocationInfoMatch {@code DERSequence} to convert to {@code BasicOCSPResp}
+	 * @return {@code BasicOCSPResp}
+	 */
+	public static BasicOCSPResp getBasicOcspResp(final DERSequence otherRevocationInfoMatch) {
+
+		BasicOCSPResp basicOCSPResp = null;
+		try {
+			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(otherRevocationInfoMatch);
+			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
+		} catch (Exception e) {
+			LOG.error("Impossible to create BasicOCSPResp from DERSequence!", e);
+		}
+		return basicOCSPResp;
+	}
+
+	/**
+	 * This method allows to create a {@code OCSPResp} from a {@code DERSequence}.
+	 *
+	 * @param otherRevocationInfoMatch {@code DERSequence} to convert to {@code OCSPResp}
+	 * @return {@code OCSPResp}
+	 */
+	public static OCSPResp getOcspResp(final DERSequence otherRevocationInfoMatch) {
+
+		OCSPResp ocspResp = null;
+		try {
+			final OCSPResponse ocspResponse = OCSPResponse.getInstance(otherRevocationInfoMatch);
+			ocspResp = new OCSPResp(ocspResponse);
+		} catch (Exception e) {
+			LOG.error("Impossible to create OCSPResp from DERSequence!", e);
+		}
+		return ocspResp;
+	}
+
+	/**
+	 * This method returns the {@code BasicOCSPResp} from a {@code OCSPResp}.
+	 *
+	 * @param ocspResp {@code OCSPResp} to analysed
+	 * @return
+	 */
+	public static BasicOCSPResp getBasicOCSPResp(final OCSPResp ocspResp) {
+
+		BasicOCSPResp basicOCSPResp = null;
+		try {
+			final Object responseObject = ocspResp.getResponseObject();
+			if (responseObject instanceof BasicOCSPResp) {
+
+				basicOCSPResp = (BasicOCSPResp) responseObject;
+			} else {
+				LOG.warn("Unknown OCSP response type: {}", responseObject.getClass());
+			}
+		} catch (OCSPException e) {
+			LOG.error("Impossible to process OCSPResp!", e);
+		}
+		return basicOCSPResp;
 	}
 }
