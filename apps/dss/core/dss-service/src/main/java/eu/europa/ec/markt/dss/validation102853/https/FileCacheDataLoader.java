@@ -110,35 +110,35 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	}
 
 	@Override
-	public byte[] get(final String urlString) throws DSSCannotFetchDataException {
+	public byte[] get(final String url, final boolean refresh) throws DSSCannotFetchDataException {
 
-		if (toBeLoaded != null) {
-
-			if (!toBeLoaded.contains(urlString)) {
-
-				return null;
-			}
+		if (toBeLoaded != null && !toBeLoaded.contains(url)) {
+			return null;
 		}
-		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
+		final String fileName = ResourceLoader.getNormalizedFileName(url);
 		final File file = getCacheFile(fileName);
-		if (file.exists()) {
+		final boolean fileExists = file.exists();
+		if (fileExists && !refresh) {
 
 			LOG.debug("Cached file was used");
 			final byte[] bytes = DSSUtils.toByteArray(file);
 			return bytes;
 		} else {
-
-			LOG.debug("There is no cached file!");
+			if(!fileExists) {
+				LOG.debug("There is no cached file!");
+			} else {
+				LOG.debug("The refresh is forced!");
+			}
 		}
 		final byte[] bytes;
-		if (!isNetworkProtocol(urlString)) {
+		if (!isNetworkProtocol(url)) {
 
-			final String resourcePath = resourceLoader.getAbsoluteResourceFolder(urlString.trim());
+			final String resourcePath = resourceLoader.getAbsoluteResourceFolder(url.trim());
 			final File fileResource = new File(resourcePath);
 			bytes = DSSUtils.toByteArray(fileResource);
 		} else {
 
-			bytes = super.get(urlString);
+			bytes = super.get(url);
 		}
 		if (bytes != null && bytes.length != 0) {
 
@@ -146,6 +146,12 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 			DSSUtils.saveToFile(bytes, out);
 		}
 		return bytes;
+	}
+
+	@Override
+	public byte[] get(final String url) throws DSSCannotFetchDataException {
+
+		return get(url, false);
 	}
 
 	protected boolean isNetworkProtocol(final String urlString) {

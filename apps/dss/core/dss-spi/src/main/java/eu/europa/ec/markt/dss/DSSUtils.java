@@ -56,6 +56,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -173,6 +174,8 @@ public final class DSSUtils {
 	 */
 	private static final Date deterministicDate = DSSUtils.getUtcDate(1970, 04, 23);
 
+	public static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
 	private static MessageDigest sha1Digester;
 
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
@@ -224,8 +227,45 @@ public final class DSSUtils {
 	 */
 	public static String formatInternal(final Date date) {
 
-		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date);
+		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN).format(date);
 		return formatedDate;
+	}
+
+	/**
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_FORMAT_PATTERN}.
+	 *
+	 * @param dateString the date string representation
+	 * @return the {@code Date}
+	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
+	 */
+	public static Date parseDate(final String dateString) throws DSSException {
+
+		try {
+
+			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN);
+			final Date date = sdf.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_FORMAT_PATTERN}. If an exception is frown durring the prsing then null is returned.
+	 *
+	 * @param dateString the date string representation
+	 * @return the {@code Date} or null if the parsing is not possible
+	 */
+	public static Date quietlyParseDate(final String dateString) throws DSSException {
+
+		try {
+
+			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN);
+			final Date date = sdf.parse(dateString);
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**

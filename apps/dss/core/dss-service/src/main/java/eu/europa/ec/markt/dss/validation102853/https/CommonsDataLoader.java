@@ -283,6 +283,19 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		return httpGet(urlString);
 	}
 
+	/**
+	 * This method is useful only with the cache handling implementation of the {@code DataLoader}.
+	 *
+	 * @param url     to access
+	 * @param refresh if true indicates that the cached data should be refreshed
+	 * @return {@code byte} array of obtained data
+	 * @throws DSSCannotFetchDataException
+	 */
+	@Override
+	public byte[] get(final String url, final boolean refresh) throws DSSCannotFetchDataException {
+		return get(url);
+	}
+
 	private byte[] fileGet(String urlString) {
 		try {
 			return DSSUtils.toByteArray(new URL(urlString).openStream());
@@ -569,23 +582,33 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
+	 * @return associated {@code ProxyPreferenceManager}
+	 */
+	public ProxyPreferenceManager getProxyPreferenceManager() {
+		return proxyPreferenceManager;
+	}
+
+	/**
 	 * @param proxyPreferenceManager the proxyPreferenceManager to set
 	 */
 	public void setProxyPreferenceManager(final ProxyPreferenceManager proxyPreferenceManager) {
+
 		httpClient = null;
 		this.proxyPreferenceManager = proxyPreferenceManager;
-		proxyPreferenceManager.addNotifier(this);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace(">>> SET: " + proxyPreferenceManager);
+		if (proxyPreferenceManager != null) {
+			proxyPreferenceManager.addNotifier(this);
+			if (LOG.isTraceEnabled()) {
+				LOG.trace(">>> SET: " + proxyPreferenceManager);
+			}
 		}
 	}
 
 	/**
-	 * @param host
-	 * @param port
-	 * @param scheme
-	 * @param login
-	 * @param password
+	 * @param host     host
+	 * @param port     port
+	 * @param scheme   scheme
+	 * @param login    login
+	 * @param password password
 	 * @return this for fluent addAuthentication
 	 */
 	public CommonsDataLoader addAuthentication(final String host, final int port, final String scheme, final String login, final String password) {
@@ -595,6 +618,21 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		authenticationMap.put(httpHost, credentials);
 		httpClient = null;
 		return this;
+	}
+
+	/**
+	 * This method allows to propgate the authentication information from the current object.
+	 *
+	 * @param commonsDataLoader {@code CommonsDataLoader} to be initialised with authentication information
+	 */
+	public void propagateAuthentication(final CommonsDataLoader commonsDataLoader) {
+
+		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> credentialsEntry : authenticationMap.entrySet()) {
+
+			final HttpHost httpHost = credentialsEntry.getKey();
+			final UsernamePasswordCredentials credentials = credentialsEntry.getValue();
+			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(), credentials.getPassword());
+		}
 	}
 
 	@Override

@@ -35,18 +35,28 @@ public interface DataLoader extends Serializable {
     /**
      * Execute a HTTP GET operation
      *
-     * @param url
-     * @return
+     * @param url to access
+     * @return {@code byte} array of obtained data
      * @throws eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException
      */
     byte[] get(final String url) throws DSSCannotFetchDataException;
 
-    /**
+	/**
+	 * Execute a HTTP GET operation with indication concerning the mandatory character of the operation.
+	 *
+	 * @param url to access
+	 * @param refresh if true indicates that the cached data should be refreshed
+	 * @return {@code byte} array of obtained data
+	 * @throws eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException
+	 */
+	byte[] get(String url, boolean refresh) throws DSSCannotFetchDataException;
+
+	/**
      * Executes a HTTP POST operation
      *
-     * @param url
+     * @param url to access
      * @param content
-     * @return
+     * @return {@code byte} array of obtained data
      * @throws eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException
      */
     byte[] post(final String url, final byte[] content) throws DSSCannotFetchDataException;
@@ -54,7 +64,7 @@ public interface DataLoader extends Serializable {
     /**
      * This allows to set the content type. Example: Content-Type "application/ocsp-request"
      *
-     * @param contentType
+     * @param contentType to set
      */
     public void setContentType(final String contentType);
 }
