@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
+import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +49,7 @@ import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
  *
  * @author bielecro
  */
-public class CertificatePool {
+public class CertificatePool implements Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificatePool.class);
 
