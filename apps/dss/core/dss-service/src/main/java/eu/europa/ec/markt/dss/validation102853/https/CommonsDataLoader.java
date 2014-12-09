@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -34,7 +35,9 @@ import javax.naming.Context;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -55,7 +58,6 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.auth.BasicScheme;
@@ -144,8 +146,11 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 		try {
 
-			final SSLContext sslContext = SSLContexts.createSystemDefault();
-			final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, new OptimistX509HostnameVerifier());
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
+			SSLContext.setDefault(sslContext);
+
+			final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
 		} catch (Exception e) {
 			throw new DSSException(e);
