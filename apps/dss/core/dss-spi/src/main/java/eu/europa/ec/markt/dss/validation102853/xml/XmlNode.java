@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -322,7 +323,10 @@ public class XmlNode {
 		final StringBuilder attributeString = new StringBuilder();
 		final Set<Map.Entry<String, String>> entries = attributes.entrySet();
 		for (final Entry<String, String> entry : entries) {
-			attributeString.append(" ").append(entry.getKey()).append("='").append(entry.getValue()).append("'");
+
+			String entryValue = entry.getValue();
+			entryValue = StringEscapeUtils.escapeXml(entryValue);
+			attributeString.append(" ").append(entry.getKey()).append("='").append(entryValue).append("'");
 		}
 		return attributeString.toString();
 	}

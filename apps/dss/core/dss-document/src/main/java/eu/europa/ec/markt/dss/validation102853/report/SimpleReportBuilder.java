@@ -164,12 +164,7 @@ public class SimpleReportBuilder {
 		signatureNode.setAttribute(AttributeName.ID, signatureId);
 
 		final String type = diagnosticSignature.getValue("./@Type");
-		if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
-
-			signatureNode.setAttribute(AttributeName.TYPE, AttributeValue.COUNTERSIGNATURE);
-			final String parentId = diagnosticSignature.getValue("./ParentId/text()");
-			signatureNode.setAttribute(AttributeName.PARENT_ID, parentId);
-		}
+		addCounterSignature(diagnosticSignature, signatureNode, type);
 		try {
 
 			addSigningTime(diagnosticSignature, signatureNode);
@@ -261,6 +256,15 @@ public class SimpleReportBuilder {
 
 			notifyException(signatureNode, e);
 			throw new DSSException("WAS TREATED", e);
+		}
+	}
+
+	private void addCounterSignature(XmlDom diagnosticSignature, XmlNode signatureNode, String type) {
+		if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
+
+			signatureNode.setAttribute(AttributeName.TYPE, AttributeValue.COUNTERSIGNATURE);
+			final String parentId = diagnosticSignature.getValue("./ParentId/text()");
+			signatureNode.setAttribute(AttributeName.PARENT_ID, parentId);
 		}
 	}
 

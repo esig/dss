@@ -66,6 +66,16 @@ public interface ProcessExecutor {
 	 */
 	void setValidationPolicy(final ValidationPolicy validationPolicy);
 
+	/**
+	 * @return {@code ValidationPolicy} which is used to validate the signatures
+	 */
+	ValidationPolicy  getValidationPolicy();
+
+	/**
+	 * This method allows to set the validation policy that is used during the validation process execution to validate the countersignatures.
+	 *
+	 * @param validationPolicy DOM {@code Document} representation of the validation policy.
+	 */
 	void setCountersignatureValidationPolicy(ValidationPolicy validationPolicy);
 
 	/**

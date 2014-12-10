@@ -141,6 +141,13 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	}
 
 	@Override
+	public Constraint getStructuralValidationConstraint() {
+
+		final String XP_ROOT = "/ConstraintsParameters/MainSignature/StructuralValidation";
+		return getBasicConstraint(XP_ROOT, true);
+	}
+
+	@Override
 	public Constraint getSigningTimeConstraint() {
 
 		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/SigningTime";

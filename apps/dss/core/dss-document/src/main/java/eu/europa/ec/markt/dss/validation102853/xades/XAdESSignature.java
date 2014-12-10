@@ -22,6 +22,7 @@ package eu.europa.ec.markt.dss.validation102853.xades;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -36,6 +37,7 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
@@ -1970,6 +1972,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public SignatureLevel[] getSignatureLevels() {
 
 		return signatureLevels;
+	}
+
+	@Override
+	public String validateStructure() {
+
+		final String string = DSSXMLUtils.xmlToString(signatureElement);
+		StringReader stringReader = new StringReader(string);
+		final String validated = DSSXMLUtils.validateAgainstXSD(new StreamSource(stringReader));
+		return  validated;
 	}
 
 	/**

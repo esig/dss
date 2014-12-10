@@ -9,6 +9,15 @@
                 <xs:element name="MainSignature">
                     <xs:complexType>
                         <xs:sequence >
+                            <xs:element name="StructuralValidation" minOccurs="0" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute type="tns:level" name="Level"/>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
                             <xs:element name="AcceptablePolicies" minOccurs="0" maxOccurs="1">
                                 <xs:complexType>
                                     <xs:sequence>

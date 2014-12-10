@@ -71,6 +71,20 @@ public class DiagnosticData extends XmlDom {
 		return signatureIdList;
 	}
 
+	/**
+	 * This method returns the first signature id.
+	 *
+	 * @return
+	 */
+	public String getFirstSignatureId() {
+
+		getSignatureIdList();
+		if (signatureIdList.size() > 0) {
+			return signatureIdList.get(0);
+		}
+		return null;
+	}
+
 	public Date getSignatureDate() {
 
 		final Date signatureDate = getTimeValue("/DiagnosticData/Signature[1]/DateTime/text()");

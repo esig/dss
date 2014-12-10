@@ -28,6 +28,10 @@
 			<artifactId>xmlsec</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 		</dependency>
@@ -35,14 +39,6 @@
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcmail-jdk15on</artifactId>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>org.bouncycastle</groupId>-->
-			<!--<artifactId>bcpkix-jdk15on</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.slf4j</groupId>-->
-			<!--<artifactId>slf4j-api</artifactId>-->
-		<!--</dependency>-->
 	</dependencies>
 
 	<profiles>
@@ -61,19 +57,19 @@
 				</plugins>
 			</build>
 		</profile>
-      <profile>
-        <id>jdk7-64-windows</id>
-        <activation>
-          <activeByDefault>false</activeByDefault>
-        </activation>
-        <dependencies>
-          <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>pkcs11</artifactId>
-            <version>1.7.0.40</version>
-          </dependency>
-        </dependencies>
-      </profile>
+		<profile>
+			<id>jdk7-64-windows</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>oracle</groupId>
+					<artifactId>pkcs11</artifactId>
+					<version>1.7.0.40</version>
+				</dependency>
+			</dependencies>
+		</profile>
 	</profiles>
 
 </project>

@@ -437,5 +437,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			timestampToken.matchData(timestampData);
 		}
 	}
+
+	@Override
+	public String validateStructure() {
+		return null;
+	}
 }
 

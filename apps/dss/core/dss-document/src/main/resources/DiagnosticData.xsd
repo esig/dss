@@ -14,6 +14,7 @@
 							<xs:element type="xs:dateTime" name="DateTime"/>
 							<xs:element type="xs:string" name="SignatureFormat"/>
 
+							<xs:element type="StructuralValidationType" name="StructuralValidation"/>
 							<xs:element type="BasicSignatureType" name="BasicSignature"/>
 							<xs:element type="SigningCertificateType" name="SigningCertificate"/>
 							<xs:element type="CertificateChainType" name="CertificateChain"/>
@@ -144,6 +145,12 @@
 				<xs:attribute type="xs:string" name="scope" use="required"/>
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="StructuralValidationType">
+		<xs:sequence>
+			<xs:element type="xs:boolean" name="Valid"/>
+			<xs:element type="xs:string" name="Message"/>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="BasicSignatureType">
 		<xs:sequence>

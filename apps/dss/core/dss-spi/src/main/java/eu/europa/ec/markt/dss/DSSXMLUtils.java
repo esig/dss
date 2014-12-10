@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -43,11 +45,18 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -59,6 +68,8 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.transforms.Transforms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -85,7 +96,10 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 
 public final class DSSXMLUtils {
 
+	private static final Logger LOG = LoggerFactory.getLogger(DSSXMLUtils.class);
+
 	public static final String ID_ATTRIBUTE_NAME = "id";
+	public static final String XAD_ESV141_XSD = "/XAdESv141.xsd";
 
 	private static DocumentBuilderFactory dbFactory;
 
@@ -114,6 +128,8 @@ public final class DSSXMLUtils {
 		canonicalizers = new HashSet<String>();
 		registerDefaultCanonicalizers();
 	}
+
+	private static Schema schema = null;
 
 	/**
 	 * This method registers the default namespaces.
@@ -981,6 +997,60 @@ public final class DSSXMLUtils {
 		for (final Map.Entry<String, String> entry : namespace.entrySet()) {
 
 			namespacePrefixMapper.registerNamespace(entry.getKey(), entry.getValue());
+		}
+	}
+
+	/**
+	 * This method allows to validate an XML against the XAdES XSD schema.
+	 *
+	 * @param streamSource {@code InputStream} XML to validate
+	 * @return null if the XSD validates the XML, error message otherwise
+	 */
+	public static String validateAgainstXSD(final StreamSource streamSource) {
+
+		try {
+
+			if (schema == null) {
+				schema = getSchema();
+			}
+			final Validator validator = schema.newValidator();
+			validator.validate(streamSource);
+			return DSSUtils.EMPTY;
+		} catch (Exception e) {
+			LOG.warn("Error during the XML schema validation!", e);
+			return e.getMessage();
+		}
+	}
+
+	private static Schema getSchema() throws SAXException {
+
+		final ResourceLoader resourceLoader = new ResourceLoader();
+		final InputStream xadesXsd = resourceLoader.getResource(XAD_ESV141_XSD);
+		final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		return factory.newSchema(new StreamSource(xadesXsd));
+	}
+
+	/**
+	 * This method allows to convert an XML {@code Node} to a {@code String}.
+	 *
+	 * @param node {@code Node} to be converted
+	 * @return {@code String} representation of the node
+	 */
+	public static String xmlToString(final Node node) {
+
+		try {
+
+			final Source source = new DOMSource(node);
+			final StringWriter stringWriter = new StringWriter();
+			final Result result = new StreamResult(stringWriter);
+			final TransformerFactory factory = TransformerFactory.newInstance();
+			final Transformer transformer = factory.newTransformer();
+			transformer.transform(source, result);
+			return stringWriter.getBuffer().toString();
+		} catch (TransformerConfigurationException e) {
+			throw new DSSException(e);
+		} catch (TransformerException e) {
+			throw new DSSException(e);
 		}
 	}
 }

@@ -38,6 +38,7 @@ import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
+import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 /**
@@ -51,6 +52,11 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 public class Constraint implements NodeName, NodeValue, AttributeName, AttributeValue, Indication, SubIndication {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Constraint.class);
+
+	/**
+	 * Diagnostic data containing all static information
+	 */
+	protected XmlDom diagnosticData;
 
 	/**
 	 * This field represents the {@code XmlNode} of the constraint
@@ -108,6 +114,22 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 		final String message = String.format(messageTag.getMessage(), parameters);
 		this.node.addChild(NAME, message).setAttribute(NAME_ID, messageTag.name());
 		return this.node;
+	}
+
+	/**
+	 * @return {@code XmlDom} representing encapsulated diagnostic data
+	 */
+	public XmlDom getDiagnosticData() {
+		return diagnosticData;
+	}
+
+	/**
+	 * Allows to link the diagnostic data to the {@code Constraint}
+	 *
+	 * @param diagnosticData {@code XmlDom} representing diagnostic data
+	 */
+	public void setDiagnosticData(final XmlDom diagnosticData) {
+		this.diagnosticData = diagnosticData;
 	}
 
 	/**

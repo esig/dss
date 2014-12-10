@@ -97,6 +97,7 @@ import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignatureScope
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignedObjectsType;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignedSignature;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSigningCertificateType;
+import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlStructuralValidationType;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTimestampType;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTimestamps;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTrustedServiceProviderType;
@@ -400,19 +401,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (LOG.isInfoEnabled()) {
 			date1 = new Date();
 		}
-		final eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
-
-		final Document diagnosticDataDom = ValidationResourceManager.convert(jaxbDiagnosticData);
-		Date date2 = null;
-		if (LOG.isTraceEnabled()) {
-
-			date2 = new Date();
-			final long dateDiff = DSSUtils.getDateDiff(date1, date2, TimeUnit.MILLISECONDS);
-			LOG.trace("diff 1: " + dateDiff + " ms.");
-		}
-
 		final ProcessExecutor executor = provideProcessExecutorInstance();
-		executor.setDiagnosticDataDom(diagnosticDataDom);
 		executor.setValidationPolicy(validationPolicy);
 		if (countersignatureValidationPolicy == null) {
 
@@ -421,6 +410,17 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 		executor.setCountersignatureValidationPolicy(countersignatureValidationPolicy);
 
+		final eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
+
+		final Document diagnosticDataDom = ValidationResourceManager.convert(jaxbDiagnosticData);
+		executor.setDiagnosticDataDom(diagnosticDataDom);
+		Date date2 = null;
+		if (LOG.isTraceEnabled()) {
+
+			date2 = new Date();
+			final long dateDiff = DSSUtils.getDateDiff(date1, date2, TimeUnit.MILLISECONDS);
+			LOG.trace("diff 1: " + dateDiff + " ms.");
+		}
 		final Reports reports = executor.execute();
 		if (LOG.isTraceEnabled()) {
 
@@ -1241,8 +1241,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlSignature.setType(AttributeValue.COUNTERSIGNATURE);
 			xmlSignature.setParentId(masterSignature.getId());
 		}
-
-		dealSignatureCryptographicIntegrity(signature, xmlSignature);
+		performStructuralValidation(signature, xmlSignature);
+		performSignatureCryptographicValidation(signature, xmlSignature);
 		xmlSignature.setId(signature.getId());
 		xmlSignature.setDateTime(DSSXMLUtils.createXMLGregorianCalendar(signature.getSigningTime()));
 		final SignatureLevel dataFoundUpToLevel = signature.getDataFoundUpToLevel();
@@ -1283,6 +1283,24 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		dealSignatureScope(xmlSignature, signature);
 
 		return signingCertificateToken;
+	}
+
+	private void performStructuralValidation(final AdvancedSignature signature, final XmlSignature xmlSignature) {
+
+		final ValidationPolicy validationPolicy = processExecutor.getValidationPolicy();
+		if (validationPolicy == null || validationPolicy.getStructuralValidationConstraint() == null) {
+			return;
+		}
+		final String structureValid = signature.validateStructure();
+		if (structureValid != null) {
+
+			final XmlStructuralValidationType xmlStructuralValidationType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlStructuralValidationType();
+			xmlStructuralValidationType.setValid(DSSUtils.EMPTY.equals(structureValid));
+			if (!DSSUtils.EMPTY.equals(structureValid)) {
+				xmlStructuralValidationType.setMessage(structureValid);
+			}
+			xmlSignature.setStructuralValidation(xmlStructuralValidationType);
+		}
 	}
 
 	private void dealWithSignatureProductionPlace(AdvancedSignature signature, XmlSignature xmlSignature) {
@@ -1395,7 +1413,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param signature    Signature to be validated (can be XAdES, CAdES, PAdES).
 	 * @param xmlSignature The JAXB object containing all diagnostic data pertaining to the signature
 	 */
-	private void dealSignatureCryptographicIntegrity(final AdvancedSignature signature, final XmlSignature xmlSignature) {
+	private void performSignatureCryptographicValidation(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
 		final SignatureCryptographicVerification scv = signature.checkSignatureIntegrity();
 		final XmlBasicSignatureType xmlBasicSignature = getXmlBasicSignatureType(xmlSignature);

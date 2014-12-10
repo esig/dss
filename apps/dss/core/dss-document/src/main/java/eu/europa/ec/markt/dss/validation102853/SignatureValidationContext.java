@@ -66,7 +66,7 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * Each unit is approximately 5 seconds
 	 */
-	public static int MAX_TIMEOUT = 4;
+	public static int MAX_TIMEOUT = 5;
 
 	private final Set<CertificateToken> processedCertificates = new HashSet<CertificateToken>();
 	private final Set<RevocationToken> processedRevocations = new HashSet<RevocationToken>();
