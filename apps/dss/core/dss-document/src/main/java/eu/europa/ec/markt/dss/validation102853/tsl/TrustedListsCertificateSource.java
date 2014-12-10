@@ -138,20 +138,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	/**
-	 * This method allows to define (to add) any certificate as trusted. Thz service information ({@code ServiceInfo}) is associated to this certificate. The
-	 * source of the certificate is set to {@code CertificateSourceType.TRUSTED_LIST}
-	 *
-	 * @param x509Certificate the certificate you have to trust
-	 * @param serviceInfo     the service information associated to the service
-	 * @return the corresponding certificate token
-	 */
-	public CertificateToken addCertificate(final X509Certificate x509Certificate, final ServiceInfo serviceInfo) {
-
-		final CertificateToken certToken = certPool.getInstance(x509Certificate, getCertificateSourceType(), serviceInfo);
-		return certToken;
-	}
-
-	/**
 	 * This method is not applicable for this kind of certificate source. You should use {@link
 	 * #addCertificate(java.security.cert.X509Certificate, eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo)}
 	 *
@@ -406,6 +392,11 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * Load the certificates (trust anchors) contained in all the TSL referenced by the LOTL
 	 */
 	public void init() {
+
+		if (LOG.isInfoEnabled()) {
+			LOG.info("TSL refresh policy: ", tslRefreshPolicy.name());
+			LOG.info("TSL property cache folder: ", tslPropertyCacheFolder.getAbsolutePath());
+		}
 
 		diagnosticInfo.clear();
 
