@@ -97,7 +97,14 @@ public abstract class CommonCRLSource implements CRLSource {
 					if (criticalExtensionOID.equals(oid)) {
 
 						final byte[] extensionValue_ = x509CRL.getExtensionValue(oid);
-						final byte[] extensionValue = Arrays.copyOfRange(extensionValue_, 2, extensionValue_.length);
+						int firstIndex = 0;
+						for (; firstIndex < extensionValue_.length; firstIndex++) {
+
+							if (extensionValue_[firstIndex] == 0x30) {
+								break;
+							}
+						}
+						final byte[] extensionValue = Arrays.copyOfRange(extensionValue_, firstIndex, extensionValue_.length);
 						final IssuingDistributionPointExtension issuingDistributionPointExtension = new IssuingDistributionPointExtension(true, extensionValue);
 						final Boolean onlyAttributeCerts = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.ONLY_ATTRIBUTE_CERTS);
 						final Boolean onlyCaCerts = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.ONLY_CA_CERTS);
@@ -107,11 +114,14 @@ public abstract class CommonCRLSource implements CRLSource {
 						final DistributionPointName distributionPointName = (DistributionPointName) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.POINT);
 						final GeneralNames fullName = distributionPointName.getFullName();
 						final List<GeneralName> names = fullName.names();
+						boolean urlFound = false;
 						if (names.size() > 0) {
 							final URIName name = (URIName) names.get(0).getName();
-							System.out.println("--> CRL IssuingDistributionPoint Extension: URI: " + name.getURI());
+							//LOG.trace("--> CRL IssuingDistributionPoint Extension: URI: " + name.getURI());
+							// TODO (25/11/2014): The check with the CDP must be done.
+							urlFound = true;
 						}
-						if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && reasons == null) {
+						if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && reasons == null && urlFound) {
 							crlValidity.unknownCriticalExtension = false;
 						}
 					} else {

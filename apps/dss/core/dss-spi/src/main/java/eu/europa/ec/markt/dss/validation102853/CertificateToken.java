@@ -647,9 +647,7 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * This method returns the CRL distribution point of the wrapped certificate.
-	 *
-	 * @return {@code byte[]}
+	 * @return array of {@code byte}s representing the CRL distribution point of the wrapped certificate
 	 */
 	public byte[] getCRLDistributionPoints() {
 
@@ -659,9 +657,7 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Indicates if the wrapped certificate has cRLSign key usage bit set.
-	 *
-	 * @return
+	 * @return true if the wrapped certificate has cRLSign key usage bit set
 	 */
 	public boolean hasCRLSignKeyUsage() {
 
@@ -671,9 +667,7 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * This method returns the size of the public key of the certificate.
-	 *
-	 * @return
+	 * @return the size of the public key of the certificate
 	 */
 	public int getPublicKeyLength() {
 

@@ -25,10 +25,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -71,7 +73,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.manager.ProxyPreferenceManager;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
@@ -147,7 +148,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		try {
 
 			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
+			sslContext.init(new KeyManager[0], new TrustManager[]{new DefaultTrustManager()}, new SecureRandom());
 			SSLContext.setDefault(sslContext);
 
 			final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
@@ -160,27 +161,24 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	protected synchronized HttpClient getHttpClient(final String url) throws DSSException {
 
 		if (httpClient != null && !updated) {
-
-			return httpClient;
-		} else {
-
-			if (LOG.isTraceEnabled() && updated) {
-				LOG.trace(">>> Proxy preferences updated");
-			}
-			HttpClientBuilder httpClientBuilder = HttpClients.custom();
-
-			httpClientBuilder = configCredentials(httpClientBuilder, url);
-
-			final RequestConfig.Builder custom = RequestConfig.custom();
-			custom.setSocketTimeout(timeoutSocket);
-			custom.setConnectionRequestTimeout(timeoutConnection);
-			final RequestConfig requestConfig = custom.build();
-			httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
-			httpClientBuilder.setConnectionManager(getConnectionManager());
-
-			httpClient = httpClientBuilder.build();
 			return httpClient;
 		}
+		if (LOG.isTraceEnabled() && updated) {
+			LOG.trace(">>> Proxy preferences updated");
+		}
+		HttpClientBuilder httpClientBuilder = HttpClients.custom();
+
+		httpClientBuilder = configCredentials(httpClientBuilder, url);
+
+		final RequestConfig.Builder custom = RequestConfig.custom();
+		custom.setSocketTimeout(timeoutSocket);
+		custom.setConnectionRequestTimeout(timeoutConnection);
+		final RequestConfig requestConfig = custom.build();
+		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
+		httpClientBuilder.setConnectionManager(getConnectionManager());
+
+		httpClient = httpClientBuilder.build();
+		return httpClient;
 	}
 
 	/**
@@ -189,7 +187,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 * @param httpClientBuilder
 	 * @param url
 	 * @return
-	 * @throws java.net.MalformedURLException
 	 */
 	private HttpClientBuilder configCredentials(HttpClientBuilder httpClientBuilder, final String url) throws DSSException {
 
@@ -213,15 +210,14 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 * @param credentialsProvider
 	 * @param url
 	 * @return
-	 * @throws java.net.MalformedURLException
 	 */
 	private HttpClientBuilder configureProxy(HttpClientBuilder httpClientBuilder, CredentialsProvider credentialsProvider, String url) throws DSSException {
 
+		if (proxyPreferenceManager == null) {
+			return httpClientBuilder;
+		}
 		try {
 
-			if (proxyPreferenceManager == null) {
-				return httpClientBuilder;
-			}
 			final String protocol = new URL(url).getProtocol();
 			final boolean proxyHTTPS = Protocol.isHttps(protocol) && proxyPreferenceManager.isHttpsEnabled();
 			final boolean proxyHTTP = Protocol.isHttp(protocol) && proxyPreferenceManager.isHttpEnabled();
@@ -271,7 +267,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	@Override
-	public byte[] get(final String urlString) throws DSSCannotFetchDataException {
+	public byte[] get(final String urlString) {
 
 		if (Protocol.isFileUrl(urlString)) {
 			return fileGet(urlString);
@@ -284,8 +280,34 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		} else {
 			LOG.warn("DSS framework only supports HTTP, HTTPS, FTP and LDAP CRL's urlString.");
 		}
-
 		return httpGet(urlString);
+	}
+
+	@Override
+	public DataAndUrl get(final List<String> urlStrings) {
+
+		final int numberOfUrls = urlStrings.size();
+		int ii = 0;
+		for (final String urlString : urlStrings) {
+			try {
+
+				ii++;
+				final byte[] bytes = get(urlString);
+				if (bytes == null) {
+					continue;
+				}
+				return new DataAndUrl(bytes, urlString);
+			} catch (Exception e) {
+				if (ii == numberOfUrls) {
+					if (e instanceof DSSException) {
+						throw (DSSException) e;
+					}
+					throw new DSSException(e);
+				}
+				LOG.warn("Impossible to obtain data using {}", urlString, e);
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -294,10 +316,9 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 * @param url     to access
 	 * @param refresh if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data
-	 * @throws DSSCannotFetchDataException
 	 */
 	@Override
-	public byte[] get(final String url, final boolean refresh) throws DSSCannotFetchDataException {
+	public byte[] get(final String url, final boolean refresh) {
 		return get(url);
 	}
 
@@ -398,16 +419,16 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * This method retrieves data using HTTP or HTTPS protocol and 'get' method.
 	 *
-	 * @param url
-	 * @return
+	 * @param url to access
+	 * @return {@code byte} array of obtained data or null
 	 */
-	protected byte[] httpGet(String url) {
+	protected byte[] httpGet(final String url) {
 
 		HttpGet httpRequest = null;
 		HttpResponse httpResponse = null;
 		try {
 
-			final URI uri = URI.create(url.trim());
+			final URI uri = new URI(url.trim());
 			httpRequest = new HttpGet(uri);
 			if (contentType != null) {
 				httpRequest.setHeader(CONTENT_TYPE, contentType);
@@ -417,11 +438,12 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
 			return returnedBytes;
+		} catch (URISyntaxException e) {
+			throw new DSSException(e);
 		} finally {
 			if (httpRequest != null) {
+
 				httpRequest.releaseConnection();
-			}
-			if (httpResponse != null) {
 				EntityUtils.consumeQuietly(httpResponse.getEntity());
 			}
 		}
@@ -499,18 +521,19 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	protected byte[] readHttpResponse(final String url, final HttpResponse httpResponse) throws DSSException {
 
 		final int statusCode = httpResponse.getStatusLine().getStatusCode();
-		final boolean statusOk = statusCode == HttpStatus.SC_OK;
-		LOG.debug("status code is " + statusCode + " - " + (statusOk ? "OK" : "NOK"));
-		if (!statusOk) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
+		}
+		if (statusCode != HttpStatus.SC_OK) {
 
 			LOG.warn("No content available via url: " + url + " - will use nothing: " + url);
-			return DSSUtils.EMPTY_BYTE_ARRAY;
+			return null;
 		}
 
 		final HttpEntity responseEntity = httpResponse.getEntity();
 		if (responseEntity == null) {
 			LOG.warn("No message entity for this response - will use nothing: " + url);
-			return DSSUtils.EMPTY_BYTE_ARRAY;
+			return null;
 		}
 
 		final byte[] content = getContent(responseEntity);
@@ -519,14 +542,16 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	protected byte[] getContent(final HttpEntity responseEntity) throws DSSException {
 
+		InputStream content = null;
 		try {
 
-			final InputStream content = responseEntity.getContent();
+			content = responseEntity.getContent();
 			final byte[] bytes = DSSUtils.toByteArray(content);
-			content.close();
 			return bytes;
 		} catch (IOException e) {
 			throw new DSSException(e);
+		} finally {
+			DSSUtils.closeQuietly(content);
 		}
 	}
 

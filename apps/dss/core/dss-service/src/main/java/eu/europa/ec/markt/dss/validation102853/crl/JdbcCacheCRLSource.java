@@ -27,8 +27,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.List;
 
 import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -42,7 +46,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 public class JdbcCacheCRLSource extends CommonCRLSource {
 
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(JdbcCacheCRLSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheCRLSource.class);
 
 	/**
 	 * used in the init method to check if the table exists
@@ -108,19 +112,17 @@ public class JdbcCacheCRLSource extends CommonCRLSource {
 	public CRLToken findCrl(final CertificateToken certificateToken) throws DSSException {
 
 		if (certificateToken == null) {
-
 			return null;
 		}
 		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
-
 			return null;
 		}
-		final String crlUrl = cachedSource.getCrlUrl(certificateToken);
-		if (crlUrl == null) {
-
+		final List<String> crlUrls = cachedSource.getCrlUrl(certificateToken);
+		if (DSSUtils.isEmpty(crlUrls)) {
 			return null;
 		}
+		final String crlUrl = crlUrls.get(0);
 		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrl);
 		try {
 

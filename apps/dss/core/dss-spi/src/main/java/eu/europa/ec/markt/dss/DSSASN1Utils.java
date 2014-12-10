@@ -29,6 +29,7 @@ import java.util.Date;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -82,8 +83,7 @@ public final class DSSASN1Utils {
 	public static <T extends ASN1Primitive> T toASN1Primitive(final byte[] bytes) throws DSSException {
 
 		try {
-			@SuppressWarnings("unchecked")
-			final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
+			@SuppressWarnings("unchecked") final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
 			return asn1Primitive;
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -353,5 +353,31 @@ public final class DSSASN1Utils {
 			LOG.error("Impossible to process OCSPResp!", e);
 		}
 		return basicOCSPResp;
+	}
+
+	/**
+	 * This method returns the {@code ASN1Sequence} encapsulated in {@code DEROctetString}. The {@code DEROctetString} is represented as {@code byte} array.
+	 *
+	 * @param bytes {@code byte} representation of {@code DEROctetString}
+	 * @return encapsulated {@code ASN1Sequence}
+	 * @throws DSSException in case of a decoding problem
+	 */
+	public static ASN1Sequence getAsn1SequenceFromDerOctetString(byte[] bytes) throws DSSException {
+
+		ASN1InputStream input = null;
+		try {
+
+			input = new ASN1InputStream(bytes);
+			final DEROctetString s = (DEROctetString) input.readObject();
+			final byte[] content = s.getOctets();
+			input.close();
+			input = new ASN1InputStream(content);
+			final ASN1Sequence seq = (ASN1Sequence) input.readObject();
+			return seq;
+		} catch (IOException e) {
+			throw new DSSException("Error when computing certificate's extensions.", e);
+		} finally {
+			DSSUtils.closeQuietly(input);
+		}
 	}
 }
