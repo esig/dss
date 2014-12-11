@@ -659,7 +659,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		constraint.setValue(claimedRole);
 		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_SAV_ICRM_ANS);
 		constraint.setConclusionReceiver(conclusion);
-		boolean check = check = constraint.checkInList();
+		boolean check = constraint.checkInList();
 		return check;
 	}
 

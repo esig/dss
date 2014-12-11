@@ -339,8 +339,17 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	@Override
 	public Constraint getSigningCertificateKeyUsageConstraint(final String context) {
 
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/KeyUsage", context);
-		return getBasicConstraint(XP_ROOT, true);
+		final String level = getValue("/ConstraintsParameters/%s/SigningCertificate/KeyUsage/@Level", context);
+		if (DSSUtils.isNotBlank(level)) {
+
+			final Constraint constraint = new Constraint(level);
+			final List<XmlDom> keyUsages = getElements("/ConstraintsParameters/%s/SigningCertificate/KeyUsage/Identifier", context);
+			final List<String> identifierList = XmlDom.convertToStringList(keyUsages);
+			constraint.setExpectedValue(identifierList.toString());
+			constraint.setIdentifiers(identifierList);
+			return constraint;
+		}
+		return null;
 	}
 
 	@Override

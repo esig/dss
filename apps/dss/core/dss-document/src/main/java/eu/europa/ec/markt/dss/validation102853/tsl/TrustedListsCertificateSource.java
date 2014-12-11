@@ -276,7 +276,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			}
 			final Reports reports = xmlDocumentValidator.validateDocument();
 			final SimpleReport simpleReport = reports.getSimpleReport();
-			final List<String> signatureIdList = simpleReport.getSignatureIds();
+			final List<String> signatureIdList = simpleReport.getSignatureIdList();
 			final String signatureId = signatureIdList.get(0);
 			final String indication = simpleReport.getIndication(signatureId);
 			coreValidity = Indication.VALID.equals(indication);

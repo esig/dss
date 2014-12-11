@@ -673,17 +673,15 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-
-		final String keyUsage = certificateXmlDom.getValue("./KeyUsage/text()");
-		final String expectedValue = constraint.getExpectedValue();
 		constraint.create(validationDataXmlNode, BBB_XCV_ISCGKU);
-		constraint.setExpectedValue(expectedValue);
-		constraint.setValue(keyUsage);
+		final List<XmlDom> keyUsageBits = certificateXmlDom.getElements("./KeyUsageBits/KeyUsage");
+		final List<String> stringList = XmlDom.convertToStringList(keyUsageBits);
+		constraint.setValue(stringList);
 		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_XCV_ISCGKU_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);
 
-		return constraint.check();
+		return constraint.checkInList();
 	}
 
 	/**

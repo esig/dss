@@ -32,277 +32,272 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 public final class RuleUtils {
 
-    private RuleUtils() {
-    }
+	private RuleUtils() {
+	}
 
-    /**
-     * The default date-time format: "yyyy-MM-dd'T'HH:mm:ss'Z'"
-     */
-    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	/**
+	 * The default date-time format: "yyyy-MM-dd'T'HH:mm:ss'Z'"
+	 */
+	public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-    /**
-     * The default date pattern: "yyyy-MM-dd"
-     */
-    public static final SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
+	/**
+	 * The default date pattern: "yyyy-MM-dd"
+	 */
+	public static final SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
-    /**
-     * Converts the given time duration (value) in the given unit (fromUnit) to given unit (toUnit).
-     *
-     * @param fromUnit
-     * @param toUnit
-     * @param value
-     * @return
-     */
-    public static long convertDuration(final String fromUnit, final String toUnit, long value) {
+	/**
+	 * Converts the given time duration (value) in the given unit (fromUnit) to given unit (toUnit).
+	 *
+	 * @param fromUnit
+	 * @param toUnit
+	 * @param value
+	 * @return
+	 */
+	public static long convertDuration(final String fromUnit, final String toUnit, long value) {
 
-        TimeUnit fromTimeUnit = null;
-        if (fromUnit.equals("DAYS")) {
+		TimeUnit fromTimeUnit = null;
+		if (fromUnit.equals("DAYS")) {
 
-            fromTimeUnit = TimeUnit.DAYS;
-        } else if (fromUnit.equals("HOURS")) {
+			fromTimeUnit = TimeUnit.DAYS;
+		} else if (fromUnit.equals("HOURS")) {
 
-            fromTimeUnit = TimeUnit.HOURS;
-        } else if (fromUnit.equals("MINUTES")) {
+			fromTimeUnit = TimeUnit.HOURS;
+		} else if (fromUnit.equals("MINUTES")) {
 
-            fromTimeUnit = TimeUnit.MINUTES;
-        } else if (fromUnit.equals("SECONDS")) {
+			fromTimeUnit = TimeUnit.MINUTES;
+		} else if (fromUnit.equals("SECONDS")) {
 
-            fromTimeUnit = TimeUnit.SECONDS;
-        } else if (fromUnit.equals("MILLISECONDS")) {
+			fromTimeUnit = TimeUnit.SECONDS;
+		} else if (fromUnit.equals("MILLISECONDS")) {
 
-            fromTimeUnit = TimeUnit.MILLISECONDS;
-        }
-        try {
+			fromTimeUnit = TimeUnit.MILLISECONDS;
+		}
+		try {
 
-            if (toUnit.equals("MILLISECONDS")) {
+			if (toUnit.equals("MILLISECONDS")) {
 
-                return TimeUnit.MILLISECONDS.convert(value, fromTimeUnit);
-            } else if (toUnit.equals("DAYS")) {
+				return TimeUnit.MILLISECONDS.convert(value, fromTimeUnit);
+			} else if (toUnit.equals("DAYS")) {
 
-                return TimeUnit.DAYS.convert(value, fromTimeUnit);
-            } else if (toUnit.equals("HOURS")) {
+				return TimeUnit.DAYS.convert(value, fromTimeUnit);
+			} else if (toUnit.equals("HOURS")) {
 
-                return TimeUnit.HOURS.convert(value, fromTimeUnit);
-            } else if (toUnit.equals("MINUTES")) {
+				return TimeUnit.HOURS.convert(value, fromTimeUnit);
+			} else if (toUnit.equals("MINUTES")) {
 
-                return TimeUnit.MINUTES.convert(value, fromTimeUnit);
-            } else if (toUnit.equals("SECONDS")) {
+				return TimeUnit.MINUTES.convert(value, fromTimeUnit);
+			} else if (toUnit.equals("SECONDS")) {
 
-                return TimeUnit.SECONDS.convert(value, fromTimeUnit);
-            }
-            throw new DSSException("Unknown time unit: " + toUnit + ".");
-        } catch (Exception e) {
+				return TimeUnit.SECONDS.convert(value, fromTimeUnit);
+			}
+			throw new DSSException("Unknown time unit: " + toUnit + ".");
+		} catch (Exception e) {
 
-            throw new DSSException("Error during the duration conversion: " + e.getMessage(), e);
-        }
-    }
+			throw new DSSException("Error during the duration conversion: " + e.getMessage(), e);
+		}
+	}
 
-    /**
-     * Formats the given date-time using the SimpleDateFormat object.
-     *
-     * @param sdf
-     * @param date
-     * @return
-     */
-    public static String formatDate(final SimpleDateFormat sdf, final Date date) {
+	/**
+	 * Formats the given date-time using the SimpleDateFormat object.
+	 *
+	 * @param sdf
+	 * @param date
+	 * @return
+	 */
+	public static String formatDate(final SimpleDateFormat sdf, final Date date) {
 
-        final String stringDate = sdf.format(date);
-        return stringDate;
-    }
+		final String stringDate = sdf.format(date);
+		return stringDate;
+	}
 
-    /**
-     * Formats the given date-time using the default pattern: {@link #SDF}
-     *
-     * @param date
-     * @return
-     */
-    public static String formatDate(final Date date) {
+	/**
+	 * Formats the given date-time using the default pattern: {@link #SDF}
+	 *
+	 * @param date
+	 * @return
+	 */
+	public static String formatDate(final Date date) {
 
 		if (date != null) {
 			final String stringDate = SDF.format(date);
 			return stringDate;
 		}
 		return "";
-    }
+	}
 
-    /**
-     * Parses the given string date-time. The date-time must be defined using the default pattern: {@link #SDF}
-     *
-     * @param dateString formated date
-     * @return computed {@code Date}
-     * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
-     */
-    public static Date parseDate(final String dateString) throws DSSException {
+	/**
+	 * Parses the given string date-time. The date-time must be defined using the default pattern: {@link #SDF}
+	 *
+	 * @param dateString formated date
+	 * @return computed {@code Date}
+	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
+	 */
+	public static Date parseDate(final String dateString) throws DSSException {
 
-        try {
+		try {
 
-            final Date date = SDF.parse(dateString);
-            return date;
-        } catch (ParseException e) {
-            throw new DSSException(e);
-        }
-    }
+			final Date date = SDF.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			throw new DSSException(e);
+		}
+	}
 
-    /**
-     * Parses the given string date-time. The date-time must be defined using the default pattern: {@link #SDF}
-     *
-     * @param dateString formated date
-     * @return computed {@code Date} or null if the operation is not possible
-     */
-    public static Date parseSecureDate(final String dateString) {
+	/**
+	 * Parses the given string date-time. The date-time must be defined using the default pattern: {@link #SDF}
+	 *
+	 * @param dateString formated date
+	 * @return computed {@code Date} or null if the operation is not possible
+	 */
+	public static Date parseSecureDate(final String dateString) {
 
-        try {
+		try {
 
-            final Date date = SDF.parse(dateString);
-            return date;
-        } catch (ParseException e) {
-            return null;
-        }
-    }
+			final Date date = SDF.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			return null;
+		}
+	}
 
-    /**
-     * Converts the given string representation of the date using the SimpleDateFormat object.
-     *
-     * @param format
-     * @param dateString
-     * @return
-     */
-    public static Date parseDate(final SimpleDateFormat format, final String dateString) {
+	/**
+	 * Converts the given string representation of the date using the SimpleDateFormat object.
+	 *
+	 * @param format
+	 * @param dateString
+	 * @return
+	 */
+	public static Date parseDate(final SimpleDateFormat format, final String dateString) {
 
-        try {
+		try {
 
-            final Date date = format.parse(dateString);
-            return date;
-        } catch (ParseException e) {
-            throw new DSSException(e);
-        }
-    }
+			final Date date = format.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			throw new DSSException(e);
+		}
+	}
 
-    /**
-     * Converts the given string representation of the date using the format pattern.
-     *
-     * @param format     the format to use
-     * @param dateString the date string representation
-     * @return the {@code Date}
-     * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
-     */
-    public static Date parseDate(final String format, final String dateString) throws DSSException {
+	/**
+	 * Converts the given string representation of the date using the format pattern.
+	 *
+	 * @param format     the format to use
+	 * @param dateString the date string representation
+	 * @return the {@code Date}
+	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
+	 */
+	public static Date parseDate(final String format, final String dateString) throws DSSException {
 
-        try {
+		try {
 
-            final SimpleDateFormat sdf = new SimpleDateFormat(format);
-            final Date date = sdf.parse(dateString);
-            return date;
-        } catch (ParseException e) {
-            throw new DSSException(e);
-        }
-    }
+			final SimpleDateFormat sdf = new SimpleDateFormat(format);
+			final Date date = sdf.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			throw new DSSException(e);
+		}
+	}
 
-    /**
-     * @param id
-     * @param idList
-     * @return
-     */
-    public static boolean contains(final String id, final List<XmlDom> idList) {
+	/**
+	 * @param id
+	 * @param idList
+	 * @return
+	 */
+	public static boolean contains(final String id, final List<XmlDom> idList) {
 
-        boolean found = false;
-        for (XmlDom xmlDom : idList) {
+		boolean found = false;
+		for (XmlDom xmlDom : idList) {
 
-            String value = xmlDom.getValue("./text()");
-            if (value.equals(id)) {
+			String value = xmlDom.getValue("./text()");
+			if (value.equals(id)) {
 
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
 
-    /**
-     * This method checks if the given string is present in the list of {@code String}(s).
-     *
-     * @param id     {@code String} to check
-     * @param idList the list of {@code String}(s)
-     * @return tru if the {@code id} is present in the {@code idList}, false otherwise
-     */
-    public static boolean contains1(final String id, final List<String> idList) {
+	/**
+	 * This method checks if the given string is present in the list of {@code String}(s).
+	 *
+	 * @param id     {@code String} to check
+	 * @param idList the list of {@code String}(s)
+	 * @return tru if the {@code id} is present in the {@code idList}, false otherwise
+	 */
+	public static boolean contains1(final String id, final List<String> idList) {
 
-        boolean found = false;
-        if (id != null && idList != null) {
+		if (id != null && idList != null) {
+			for (final String idFromList : idList) {
+				if (idFromList.equals(id)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-            for (final String idFromList : idList) {
+	public static long convertToLong(final String value) {
 
-                if (idFromList.equals(id)) {
+		try {
 
-                    found = true;
-                    break;
-                }
-            }
-        }
-        return found;
-    }
+			return Long.parseLong(value);
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+	}
 
-    public static long convertToLong(final String value) {
+	public static String canonicalizeDigestAlgo(final String algo) {
 
-        try {
+		String digestAlgo = algo.trim().replace("-", "").toUpperCase();
+		return digestAlgo;
+	}
 
-            return Long.parseLong(value);
-        } catch (Exception e) {
-            throw new DSSException(e);
-        }
-    }
+	public static String canonicalizeEncryptionAlgo(final String algo) {
 
-    public static String canonicalizeDigestAlgo(final String algo) {
+		String digestAlgo = algo.trim().replace("-", "").toUpperCase();
+		return digestAlgo;
+	}
 
-        String digestAlgo = algo.trim().replace("-", "").toUpperCase();
-        return digestAlgo;
-    }
+	public static String canonicalizeSignatureAlgo(final String algo) {
 
-    public static String canonicalizeEncryptionAlgo(final String algo) {
+		String signatureAlgo = algo.trim().replace("-", "").replace("Encryption", "").toUpperCase().replace("WITH", "with");
+		return signatureAlgo;
+	}
 
-        String digestAlgo = algo.trim().replace("-", "").toUpperCase();
-        return digestAlgo;
-    }
+	public static boolean in(final String value, final String... values) {
 
-    public static String canonicalizeSignatureAlgo(final String algo) {
+		final boolean contains = Arrays.asList(values).contains(value);
+		return contains;
 
-        String signatureAlgo = algo.trim().replace("-", "").replace("Encryption", "").toUpperCase().replace("WITH", "with");
-        return signatureAlgo;
-    }
+	}
 
-    public static boolean in(final String value, final String... values) {
+	public static String toString(List<String> strings) {
 
-        final boolean contains = Arrays.asList(values).contains(value);
-        return contains;
+		final String SEPARATOR = ",";
+		final StringBuilder stringBuilder = new StringBuilder();
+		for (final String string : strings) {
 
-    }
+			if (stringBuilder.length() != 0) {
 
-    public static String toString(List<String> strings) {
+				stringBuilder.append(SEPARATOR).append(' ');
+			}
+			stringBuilder.append(string);
+		}
+		return stringBuilder.toString();
+	}
 
-        final String SEPARATOR = ",";
-        final StringBuilder stringBuilder = new StringBuilder();
-        for (final String string : strings) {
+	public static boolean contains(final List<String> requested, final List<String> claimed) {
 
-            if (stringBuilder.length() != 0) {
+		boolean found = false;
+		for (final String element : requested) {
 
-                stringBuilder.append(SEPARATOR).append(' ');
-            }
-            stringBuilder.append(string);
-        }
-        return stringBuilder.toString();
-    }
-
-    public static boolean contains(final List<String> requested, final List<String> claimed) {
-
-        boolean found = false;
-        for (final String element : requested) {
-
-            if (!claimed.contains(element)) {
-                found = false;
-                break;
-            }
-            found = true;
-        }
-        return found;
-    }
+			if (!claimed.contains(element)) {
+				found = false;
+				break;
+			}
+			found = true;
+		}
+		return found;
+	}
 }

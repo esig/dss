@@ -85,6 +85,7 @@ import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlCommitmentType
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlDistinguishedName;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlInfoType;
+import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlKeyUsageBits;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlMessage;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlPolicy;
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlQCStatement;
@@ -882,7 +883,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
 		xmlCert.setPublicKeyEncryptionAlgo(DSSPKUtils.getPublicKeyEncryptionAlgo(publicKey));
 
-		xmlCert.setKeyUsage(certToken.getKeyUsage());
+		xmlForKeyUsageBits(certToken, xmlCert);
 
 		if (certToken.isOCSPSigning()) {
 
@@ -922,6 +923,20 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlCert.setTrusted(certToken.isTrusted());
 
 		return xmlCert;
+	}
+
+	private void xmlForKeyUsageBits(CertificateToken certToken, XmlCertificate xmlCert) {
+
+		final List<String> keyUsageBits = certToken.getKeyUsageBits();
+		if (DSSUtils.isEmpty(keyUsageBits)) {
+			return;
+		}
+		final XmlKeyUsageBits xmlKeyUsageBits = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlKeyUsageBits();
+		final List<String> xmlKeyUsageBitItems = xmlKeyUsageBits.getKeyUsage();
+		for (final String keyUsageBit : keyUsageBits) {
+			xmlKeyUsageBitItems.add(keyUsageBit);
+		}
+		xmlCert.setKeyUsageBits(xmlKeyUsageBits);
 	}
 
 	private XmlDistinguishedName xmlForDistinguishedName(final String x500PrincipalFormat, final X500Principal X500PrincipalName) {

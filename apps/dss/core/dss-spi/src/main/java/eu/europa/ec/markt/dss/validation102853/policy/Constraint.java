@@ -69,6 +69,11 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 	protected String value;
 
 	/**
+	 * This field represent the {@code List} of {@code String} values of the constraint
+	 */
+	private List<String> valueList;
+
+	/**
 	 * This field represents the simple {@code String} expected value of the constraint
 	 */
 	protected String expectedValue;
@@ -77,14 +82,33 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 	 * This field represents the list of acceptable identifiers
 	 */
 	protected List<String> identifiers;
-
 	protected String indication;
+
 	protected String subIndication;
 
 	protected MessageTag failureMessageTag;
-
 	protected Map<String, String> messageAttributes = new HashMap<String, String>();
 	protected Conclusion conclusion;
+
+	public static enum Level {IGNORE, INFORM, WARN, FAIL}
+
+	private Level level;
+
+	/**
+	 * This is the default constructor. It takes a level of the constraint as parameter. The string representing the level is trimmed and capitalized. If there is no corresponding
+	 * {@code Level} then the {@code DSSException} is raised.
+	 *
+	 * @param level the constraint level string.
+	 */
+	public Constraint(final String level) throws DSSException {
+
+		try {
+			this.level = Level.valueOf(level.trim().toUpperCase());
+		} catch (IllegalArgumentException e) {
+
+			throw new DSSException("The validation policy configuration file should be checked: " + e.getMessage(), e);
+		}
+	}
 
 	/**
 	 * This method creates the constraint {@code XmlNode}.
@@ -144,6 +168,16 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 	 */
 	public void setValue(final boolean booleanValue) {
 		this.value = String.valueOf(booleanValue);
+	}
+
+	/**
+	 * Sets the list of real values.
+	 *
+	 * @param stringList {@code List} of {@code String}s
+	 */
+	public void setValue(final List<String> stringList) {
+
+		this.valueList = stringList;
 	}
 
 	/**
@@ -221,7 +255,7 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 	}
 
 	/**
-	 * This method carry out the validation of the constraint.
+	 * This method carries out the validation of the constraint.
 	 *
 	 * @return true if the constraint is met, false otherwise.
 	 */
@@ -240,8 +274,10 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 		}
 		final boolean contains;
 		if (value != null && "*".equals(expectedValue)) {
-
 			contains = true;
+		} else if (!DSSUtils.isEmpty(valueList)) {
+			contains = valueList.containsAll(identifiers);
+			value = valueList.toString();
 		} else {
 			contains = RuleUtils.contains1(value, identifiers);
 		}
@@ -250,7 +286,7 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 			if (warn()) {
 
 				node.addChild(STATUS, WARN);
-				node.addChild(WARNING, failureMessageTag, messageAttributes).setAttribute("ExpectedValue", expectedValue).setAttribute("ConstraintValue", value);
+				node.addChild(WARNING, failureMessageTag, messageAttributes).setAttribute(EXPECTED_VALUE, expectedValue).setAttribute(CONSTRAINT_VALUE, value);
 				conclusion.addWarning(failureMessageTag, messageAttributes);
 				return true;
 			}
@@ -312,26 +348,6 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 
 		messageAttributes.put(attributeName, attributeValue);
 		return this;
-	}
-
-	public static enum Level {IGNORE, INFORM, WARN, FAIL}
-
-	private Level level;
-
-	/**
-	 * This is the default constructor. It takes a level of the constraint as parameter. The string representing the level is trimmed and capitalized. If there is no corresponding
-	 * {@code Level} then the {@code DSSException} is raised.
-	 *
-	 * @param level the constraint level string.
-	 */
-	public Constraint(final String level) throws DSSException {
-
-		try {
-			this.level = Level.valueOf(level.trim().toUpperCase());
-		} catch (IllegalArgumentException e) {
-
-			throw new DSSException("The validation policy configuration file should be checked: " + e.getMessage(), e);
-		}
 	}
 
 	/**
