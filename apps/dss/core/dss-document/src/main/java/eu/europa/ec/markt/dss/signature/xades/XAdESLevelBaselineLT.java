@@ -72,7 +72,6 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
         super.extendSignatureTag();
 
         if (xadesSignature.hasLTAProfile()) {
-
             return;
         }
 

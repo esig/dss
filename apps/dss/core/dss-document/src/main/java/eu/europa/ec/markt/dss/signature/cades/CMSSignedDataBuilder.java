@@ -32,8 +32,6 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
-import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSException;
@@ -56,6 +54,9 @@ import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TrustedCertificateSource;
+
+import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
+import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
 
 /**
  * <p/>
@@ -116,20 +117,25 @@ public class CMSSignedDataBuilder {
 				generator.addSigners(originalSignedData.getSignerInfos());
 				generator.addAttributeCertificates(originalSignedData.getAttributeCertificates());
 				generator.addCRLs(originalSignedData.getCRLs());
-				generator.addOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic, originalSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic));
-				generator.addOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response, originalSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response));
+				generator.addOtherRevocationInfo(id_pkix_ocsp_basic, originalSignedData.getOtherRevocationInfo(id_pkix_ocsp_basic));
+				generator.addOtherRevocationInfo(id_ri_ocsp_response, originalSignedData.getOtherRevocationInfo(id_ri_ocsp_response));
 
 				final Store certificates = originalSignedData.getCertificates();
 				final Collection<X509CertificateHolder> certificatesMatches = certificates.getMatches(null);
 				for (final X509CertificateHolder certificatesMatch : certificatesMatches) {
-					newCertificateChain.add(DSSUtils.getCertificate(certificatesMatch));
+
+					final X509Certificate x509Certificate = DSSUtils.getCertificate(certificatesMatch);
+					newCertificateChain.add(x509Certificate);
 				}
 			}
 			final List<ChainCertificate> certificateChain = parameters.getCertificateChain();
 			for (final ChainCertificate chainCertificate : certificateChain) {
-				newCertificateChain.add(chainCertificate.getX509Certificate());
+
+				final X509Certificate x509Certificate = chainCertificate.getX509Certificate();
+				newCertificateChain.add(x509Certificate);
 			}
-			final Store jcaCertStore = getJcaCertStore(signingCertificate, newCertificateChain);
+			final boolean trustAnchorBPPolicy = parameters.bLevel().isTrustAnchorBPPolicy();
+			final Store jcaCertStore = getJcaCertStore(newCertificateChain, trustAnchorBPPolicy);
 			generator.addCertificates(jcaCertStore);
 			return generator;
 		} catch (CMSException e) {
@@ -191,39 +197,30 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
-	 * TODO (Bob 28.05.2014) The position of the signing certificate must be clarified
 	 * The order of the certificates is important, the fist one must be the signing certificate.
 	 *
-	 * @return a store with the certificate chain of the signing certificate
+	 * @return a store with the certificate chain of the signing certificate. The {@code Collection} is unique.
 	 * @throws CertificateEncodingException
 	 */
-	private JcaCertStore getJcaCertStore(final X509Certificate signingCertificate, final Collection<X509Certificate> certificateChain) {
+	private JcaCertStore getJcaCertStore(final Collection<X509Certificate> certificateChain, boolean trustAnchorBPPolicy) {
 
 		try {
+
 			final Collection<X509Certificate> certs = new ArrayList<X509Certificate>();
-			certs.add(signingCertificate);
+			for (final X509Certificate certificateInChain : certificateChain) {
 
-			if (certificateChain != null) {
-
-				final X500Principal signingCertificateSubjectX500Principal = signingCertificate.getSubjectX500Principal();
-				for (X509Certificate certificateInChain : certificateChain) {
+				// CAdES-Baseline-B: do not include certificates found in the trusted list
+				if (trustAnchorBPPolicy) {
 
 					final X500Principal subjectX500Principal = certificateInChain.getSubjectX500Principal();
-					if (subjectX500Principal.equals(signingCertificateSubjectX500Principal)) {
-						continue;
-					}
-					// CAdES-Baseline-B: do not include certificates found in the trusted list
 					final TrustedCertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
 					if (trustedCertSource != null) {
-
 						if (!trustedCertSource.get(subjectX500Principal).isEmpty()) {
 							continue;
 						}
 					}
-					if (!certs.contains(certificateInChain)) {
-						certs.add(certificateInChain);
-					}
 				}
+				certs.add(certificateInChain);
 			}
 			return new JcaCertStore(certs);
 		} catch (CertificateEncodingException e) {
@@ -240,8 +237,8 @@ public class CMSSignedDataBuilder {
 			cmsSignedDataGenerator.addAttributeCertificates(attributeCertificatesStore);
 			cmsSignedDataGenerator.addCertificates(certificatesStore);
 			cmsSignedDataGenerator.addCRLs(crlsStore);
-			cmsSignedDataGenerator.addOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic, otherRevocationInfoFormatStoreBasic);
-			cmsSignedDataGenerator.addOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response, otherRevocationInfoFormatStoreOcsp);
+			cmsSignedDataGenerator.addOtherRevocationInfo(id_pkix_ocsp_basic, otherRevocationInfoFormatStoreBasic);
+			cmsSignedDataGenerator.addOtherRevocationInfo(id_ri_ocsp_response, otherRevocationInfoFormatStoreOcsp);
 			final boolean encapsulate = cmsSignedData.getSignedContent() != null;
 			if (!encapsulate) {
 				final InputStream inputStream = parameters.getDetachedContent().openStream();

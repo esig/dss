@@ -155,11 +155,7 @@ public class SignatureParameters {
 		}
 		bLevelParams = new BLevelParameters(source.bLevelParams);
 		aSiCParams = new ASiCParameters(source.aSiCParams);
-
-		if (certificateChain != null) {
-
-			certificateChain = new ArrayList<ChainCertificate>(source.certificateChain);
-		}
+		certificateChain = new ArrayList<ChainCertificate>(source.certificateChain);
 		contactInfo = source.contactInfo;
 		deterministicId = source.getDeterministicId();
 		digestAlgorithm = source.digestAlgorithm;
@@ -377,7 +373,12 @@ public class SignatureParameters {
 	 * @param certificateChain the {@code List} of {@code ChainCertificate}s
 	 */
 	public void setCertificateChain(final List<ChainCertificate> certificateChain) {
-		this.certificateChain = certificateChain;
+
+		if (certificateChain != null) {
+			this.certificateChain = certificateChain;
+		} else {
+			this.certificateChain.clear();
+		}
 	}
 
 	/**
@@ -387,6 +388,9 @@ public class SignatureParameters {
 	 */
 	public void setCertificateChain(final X509Certificate... certificateChainArray) {
 
+		if (certificateChainArray == null || certificateChainArray.length == 0) {
+			certificateChain.clear();
+		}
 		for (final X509Certificate certificate : certificateChainArray) {
 
 			if (certificate != null) {

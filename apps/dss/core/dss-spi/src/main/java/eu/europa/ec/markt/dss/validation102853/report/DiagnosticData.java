@@ -218,10 +218,11 @@ public class DiagnosticData extends XmlDom {
 	public List<Integer> getSignatureCertificateChain(final String signatureId) {
 
 		final ArrayList<Integer> certificateChain = new ArrayList<Integer>();
-		final List<XmlDom> certificateId = getElements("/DiagnosticData/Signature[@Id='%s']/CertificateChain/ChainCertificate/@Id", signatureId);
-		for (XmlDom xmlDom : certificateId) {
-			final String text = xmlDom.getText();
-			certificateChain.add(Integer.valueOf(text));
+		final List<XmlDom> certificateId = getElements("/DiagnosticData/Signature[@Id='%s']/CertificateChain/ChainCertificate", signatureId);
+		for (final XmlDom xmlDom : certificateId) {
+
+			final String id = xmlDom.getAttribute("Id");
+			certificateChain.add(Integer.valueOf(id));
 		}
 		return certificateChain;
 	}

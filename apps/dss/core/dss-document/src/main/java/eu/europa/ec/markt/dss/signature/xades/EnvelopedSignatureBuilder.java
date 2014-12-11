@@ -44,6 +44,7 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
+import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
@@ -58,13 +59,13 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 
 	/**
 	 * The default constructor for EnvelopedSignatureBuilder. The enveloped signature uses by default the exclusive method of canonicalization.
-	 *
-	 * @param params  The set of parameters relating to the structure and process of the creation or extension of the electronic signature.
+	 *  @param params  The set of parameters relating to the structure and process of the creation or extension of the electronic signature.
 	 * @param origDoc The original document to sign.
+	 * @param certificateVerifier
 	 */
-	public EnvelopedSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc) {
+	public EnvelopedSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 
-		super(params, origDoc);
+		super(params, origDoc, certificateVerifier);
 		// Inclusive method does not work with the enveloped signature. This limitation comes from the mechanism used by the framework to build the signature.
 		// Ditto: "http://www.w3.org/2006/12/xml-c14n11"
 		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.EXCLUSIVE);

@@ -31,11 +31,6 @@ import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
 public abstract class ExtensionBuilder extends XAdESBuilder {
 
-	/**
-	 * Reference to the object in charge of certificates validation
-	 */
-	protected CertificateVerifier certificateVerifier;
-
 	/*
 	 * This object allows to access DOM signature representation using XPATH
 	 */
@@ -71,9 +66,8 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 */
 	protected Element signedDataObjectPropertiesDom;
 
-	protected ExtensionBuilder(CertificateVerifier certificateVerifier) {
-
-		this.certificateVerifier = certificateVerifier;
+	protected ExtensionBuilder(final CertificateVerifier certificateVerifier) {
+		super(certificateVerifier);
 	}
 
 	/**

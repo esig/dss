@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +38,7 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
+import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
 import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
@@ -51,9 +51,10 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 
 	private XAdESSignature toCounterSignXadesSignature;
 
-	public CounterSignatureBuilder(final DSSDocument toCounterSignDocument, final XAdESSignature toCounterSignXadesSignature, final SignatureParameters parameters) {
+	public CounterSignatureBuilder(final DSSDocument toCounterSignDocument, final XAdESSignature toCounterSignXadesSignature, final SignatureParameters parameters,
+	                               final CertificateVerifier certificateVerifier) {
 
-		super(parameters, toCounterSignDocument);
+		super(parameters, toCounterSignDocument, certificateVerifier);
 		this.toCounterSignXadesSignature = toCounterSignXadesSignature;
 	}
 
@@ -103,7 +104,7 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 			if (unsignedPropertiesDom == null) {
 
 				final Element qualifyingPropertiesDom = toCounterSignXadesSignature.getQualifyingPropertiesDom();
-				// TODO-Vin (15/09/2014): add null chzck
+				// TODO-Vin (15/09/2014): add null check
 				unsignedPropertiesDom = DSSXMLUtils.addElement(ownerDocument, qualifyingPropertiesDom, XAdES, XADES_UNSIGNED_PROPERTIES);
 			}
 			unsignedSignaturePropertiesDom = DSSXMLUtils.addElement(ownerDocument, unsignedPropertiesDom, XAdES, XADES_UNSIGNED_SIGNATURE_PROPERTIES);
