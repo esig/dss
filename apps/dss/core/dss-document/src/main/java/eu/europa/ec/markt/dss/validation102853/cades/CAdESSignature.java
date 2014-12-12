@@ -1766,7 +1766,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				dataForProfilePresent &= ((signedAttributes.get(PKCSObjectIdentifiers.id_aa_signingCertificate) != null) || (signedAttributes
 					  .get(PKCSObjectIdentifiers.id_aa_signingCertificateV2) != null));
 				break; // break placed purposely
-			case CMS:
+			case CMS_NOT_ETSI:
 				dataForProfilePresent = true;
 				break;
 			default:
@@ -1777,6 +1777,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[]{SignatureLevel.CMS, SignatureLevel.CAdES_BASELINE_B, SignatureLevel.CAdES_BASELINE_T, SignatureLevel.CAdES_101733_C, SignatureLevel.CAdES_101733_X, SignatureLevel.CAdES_BASELINE_LT, SignatureLevel.CAdES_101733_A, SignatureLevel.CAdES_BASELINE_LTA};
+		return new SignatureLevel[]{SignatureLevel.CMS_NOT_ETSI, SignatureLevel.CAdES_BASELINE_B, SignatureLevel.CAdES_BASELINE_T, SignatureLevel.CAdES_101733_C, SignatureLevel.CAdES_101733_X, SignatureLevel.CAdES_BASELINE_LT, SignatureLevel.CAdES_101733_A, SignatureLevel.CAdES_BASELINE_LTA};
 	}
 }

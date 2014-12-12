@@ -106,7 +106,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This array contains all the XAdES signatures levels
 	 * TODO: do not return redundant levels.
 	 */
-	private static SignatureLevel[] signatureLevels = new SignatureLevel[]{SignatureLevel.XMLDSIG, SignatureLevel.XAdES_BASELINE_B, SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL, SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A};
+	private static SignatureLevel[] signatureLevels = new SignatureLevel[]{SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B, SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL, SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A};
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -1938,7 +1938,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		boolean dataForLevelPresent = true;
 		switch (signatureLevel) {
-			case XMLDSIG:
+			case XML_NOT_ETSI:
 				break;
 			case XAdES_BASELINE_LTA:
 			case XAdES_A:
