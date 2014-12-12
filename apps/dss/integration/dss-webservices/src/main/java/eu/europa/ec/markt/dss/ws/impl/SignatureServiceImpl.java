@@ -313,6 +313,7 @@ public class SignatureServiceImpl implements SignatureService {
 			dssReference.setId(wsDssReference.getId());
 			dssReference.setType(wsDssReference.getType());
 			dssReference.setUri(wsDssReference.getUri());
+			dssReference.setDigestMethodAlgorithm(wsDssReference.getDigestMethodAlgorithm());
 			final DSSDocument contentsDssDocument = DSSWSUtils.createDssDocument(wsDssReference.getContents());
 			dssReference.setContents(contentsDssDocument);
 			dssReference.setTransforms(wsDssReference.getTransforms());

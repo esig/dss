@@ -245,6 +245,10 @@ public final class SigningUtils {
 		}
 	}
 
+	/**
+	 * @param parameters
+	 * @param wsParameters
+	 */
 	private static void prepareReferences(final SignatureParameters parameters, final WsParameters wsParameters) {
 
 		final List<WsdssReference> wsDssReferences = wsParameters.getReferences();
@@ -261,6 +265,8 @@ public final class SigningUtils {
 			final String name = dssReference.getDigestMethodAlgorithm().getName();
 			final DigestAlgorithm value = DigestAlgorithm.fromValue(name);
 			wsDssReference.setDigestMethodAlgorithm(value);
+			final DSSDocument contents = dssReference.getContents();
+			wsDssReference.setContents(toWsDocument(contents));
 
 			final List<DSSTransform> dssTransforms = dssReference.getTransforms();
 			if (dssTransforms != null) {
@@ -278,6 +284,20 @@ public final class SigningUtils {
 			}
 			wsDssReferences.add(wsDssReference);
 		}
+	}
+
+	public static WsDocument toWsDocument(final DSSDocument dssDocument) {
+
+		final WsDocument wsDocument = new WsDocument();
+		wsDocument.setBytes(dssDocument.getBytes());
+		wsDocument.setName(dssDocument.getName());
+		wsDocument.setAbsolutePath(dssDocument.getAbsolutePath());
+		final MimeType mimeType = dssDocument.getMimeType();
+		final eu.europa.ec.markt.dss.ws.signature.MimeType wsMimeType = FACTORY.createMimeType();
+		final String mimeTypeString = mimeType.getMimeTypeString();
+		wsMimeType.setMimeTypeString(mimeTypeString);
+		wsDocument.setMimeType(wsMimeType);
+		return wsDocument;
 	}
 
 	public static WsDocument toWsDocument(final File file) {
