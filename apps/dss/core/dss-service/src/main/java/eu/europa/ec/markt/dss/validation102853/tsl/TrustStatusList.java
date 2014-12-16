@@ -22,8 +22,12 @@ package eu.europa.ec.markt.dss.validation102853.tsl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import eu.europa.ec.markt.tsl.jaxb.tsl.NextUpdateType;
 import eu.europa.ec.markt.tsl.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.ec.markt.tsl.jaxb.tsl.OtherTSLPointersType;
 import eu.europa.ec.markt.tsl.jaxb.tsl.TSLSchemeInformationType;
@@ -38,94 +42,108 @@ import eu.europa.ec.markt.tsl.jaxb.tsl.TrustStatusListType;
  */
 class TrustStatusList {
 
-    private TrustStatusListType trustStatusListType;
+	private TrustStatusListType trustStatusListType;
 
-    private boolean wellSigned = false;
+	private boolean wellSigned = false;
 
-    /**
-     * The default constructor for TrustStatusList.
-     *
-     * @param trustStatusListType
-     */
-    public TrustStatusList(TrustStatusListType trustStatusListType) {
+	/**
+	 * The default constructor for TrustStatusList.
+	 *
+	 * @param trustStatusListType
+	 */
+	public TrustStatusList(TrustStatusListType trustStatusListType) {
 
-        this.trustStatusListType = trustStatusListType;
-    }
+		this.trustStatusListType = trustStatusListType;
+	}
 
-    /**
-     * @param wellSigned the wellSigned to set
-     */
-    public void setWellSigned(boolean wellSigned) {
+	/**
+	 * @param wellSigned the wellSigned to set
+	 */
+	public void setWellSigned(boolean wellSigned) {
 
-        this.wellSigned = wellSigned;
-    }
+		this.wellSigned = wellSigned;
+	}
 
-    /**
-     * @return the wellSigned
-     */
-    public boolean isWellSigned() {
+	/**
+	 * @return the wellSigned
+	 */
+	public boolean isWellSigned() {
 
-        return wellSigned;
-    }
+		return wellSigned;
+	}
 
-    /**
-     * Returns the list of encapsulated providers.
-     *
-     * @return
-     */
-    public List<TrustServiceProvider> getTrustServicesProvider() {
+	/**
+	 * Returns the list of encapsulated providers.
+	 *
+	 * @return
+	 */
+	public List<TrustServiceProvider> getTrustServicesProvider() {
 
-        final List<TrustServiceProvider> list = new ArrayList<TrustServiceProvider>();
-        final TrustServiceProviderListType tspListType = trustStatusListType.getTrustServiceProviderList();
-        if (tspListType != null) {
+		final List<TrustServiceProvider> list = new ArrayList<TrustServiceProvider>();
+		final TrustServiceProviderListType tspListType = trustStatusListType.getTrustServiceProviderList();
+		if (tspListType != null) {
 
-            final List<TSPType> tspTypes = tspListType.getTrustServiceProvider();
-            for (final TSPType tsp : tspTypes) {
+			final List<TSPType> tspTypes = tspListType.getTrustServiceProvider();
+			for (final TSPType tsp : tspTypes) {
 
-                list.add(new TrustServiceProvider(tsp));
-            }
-        }
-        return list;
-    }
+				list.add(new TrustServiceProvider(tsp));
+			}
+		}
+		return list;
+	}
 
-    /**
-     * Returns the list of pointers to other TSL (with mime/type = application/vnd.etsi.tsl+xml)
-     *
-     * @return
-     */
-    public List<PointerToOtherTSL> getOtherTSLPointers() {
+	/**
+	 * Returns the list of pointers to other TSL (with mime/type = application/vnd.etsi.tsl+xml)
+	 *
+	 * @return
+	 */
+	public List<PointerToOtherTSL> getOtherTSLPointers() {
 
-        final List<PointerToOtherTSL> list = new ArrayList<PointerToOtherTSL>();
+		final List<PointerToOtherTSL> list = new ArrayList<PointerToOtherTSL>();
 
-        final TSLSchemeInformationType tsiType = trustStatusListType.getSchemeInformation();
-        if (tsiType != null) {
+		final TSLSchemeInformationType tsiType = trustStatusListType.getSchemeInformation();
+		if (tsiType != null) {
 
-            final OtherTSLPointersType pointerListType = tsiType.getPointersToOtherTSL();
-            if (pointerListType != null) {
+			final OtherTSLPointersType pointerListType = tsiType.getPointersToOtherTSL();
+			if (pointerListType != null) {
 
-                final List<OtherTSLPointerType> pointerTypes = pointerListType.getOtherTSLPointer();
+				final List<OtherTSLPointerType> pointerTypes = pointerListType.getOtherTSLPointer();
 
-                for (OtherTSLPointerType p : pointerTypes) {
+				for (OtherTSLPointerType p : pointerTypes) {
 
-                    final PointerToOtherTSL pointer = new PointerToOtherTSL(p);
-                    if ("application/vnd.etsi.tsl+xml".equals(pointer.getMimeType())) {
+					final PointerToOtherTSL pointer = new PointerToOtherTSL(p);
+					if ("application/vnd.etsi.tsl+xml".equals(pointer.getMimeType())) {
 
-                        list.add(pointer);
-                    }
-                }
-            }
-        }
-        return list;
-    }
+						list.add(pointer);
+					}
+				}
+			}
+		}
+		return list;
+	}
 
-    /**
-     * Returns the next update of the trusted list. This information can be used to implement an automatic TSL
-     * certificates reloader (based on {@link eu.europa.ec.markt.dss.validation102853.CertificateSource}).
-     *
-     * @return
-     */
-    public Date getNextUpdate() {
+	/**
+	 * Returns the next update of the trusted list. This information can be used to implement an automatic TSL
+	 * certificates reloader (based on {@link eu.europa.ec.markt.dss.validation102853.CertificateSource}).
+	 *
+	 * @return
+	 */
+	public Date getNextUpdate() {
 
-        return trustStatusListType.getSchemeInformation().getNextUpdate().getDateTime().toGregorianCalendar().getTime();
-    }
+		final TSLSchemeInformationType schemeInformation = trustStatusListType.getSchemeInformation();
+		if (schemeInformation != null) {
+
+			final NextUpdateType nextUpdate = schemeInformation.getNextUpdate();
+			if (nextUpdate != null) {
+				final XMLGregorianCalendar gregorianCalendar = nextUpdate.getDateTime();
+				if (gregorianCalendar != null) {
+					final GregorianCalendar toGregorianCalendar = gregorianCalendar.toGregorianCalendar();
+					if (toGregorianCalendar != null) {
+						return toGregorianCalendar.getTime();
+					}
+				}
+			}
+		}
+		return null;
+	}
 }

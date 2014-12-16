@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
+import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +49,7 @@ import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
  *
  * @author bielecro
  */
-public class CertificatePool {
+public class CertificatePool implements Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificatePool.class);
 
@@ -120,9 +121,10 @@ public class CertificatePool {
 
 			throw new DSSException("The certificate source type must be set.");
 		}
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal().toString() + "|" + certificateToAdd.getSerialNumber());
-		}
+		// TRACE ++
+		//		if (LOG.isTraceEnabled()) {
+		//			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal().toString() + "|" + certificateToAdd.getSerialNumber());
+		//		}
 		final int id = CertificateIdentifier.getId(certificateToAdd);
 		synchronized (certById) {
 

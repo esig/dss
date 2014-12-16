@@ -73,7 +73,7 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 
 			throw new DSSNullException(CertificateToken.class, "issuerToken");
 		}
-		final CRLValidity bestCRLValidity = getBestCrlValidity(issuerToken);
+		final CRLValidity bestCRLValidity = getBestCrlValidity(certificateToken, issuerToken);
 		if (bestCRLValidity == null) {
 			return null;
 		}
@@ -85,10 +85,11 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 	/**
 	 * This method returns the best {@code CRLValidity} containing the most recent {@code X509CRL}.
 	 *
-	 * @param issuerToken {@code CertificateToken} representing the signing certificate of the CRL
+	 * @param certificateToken {@code CertificateToken} for with the CRL is issued
+	 * @param issuerToken      {@code CertificateToken} representing the signing certificate of the CRL
 	 * @return {@code CRLValidity}
 	 */
-	private CRLValidity getBestCrlValidity(final CertificateToken issuerToken) {
+	private CRLValidity getBestCrlValidity(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
@@ -102,6 +103,14 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 			if (issuerToken.equals(crlValidity.issuerToken) && crlValidity.isValid()) {
 
 				final Date thisUpdate = x509CRL.getThisUpdate();
+				if (!certificateToken.hasExpiredCertOnCRLExtension()) {
+
+					if (thisUpdate.before(certificateToken.getNotBefore()) || thisUpdate.after(certificateToken.getNotAfter())) {
+
+						LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: " + certificateToken.getDSSIdAsString());
+						continue;
+					}
+				}
 				if (bestX509UpdateDate == null || thisUpdate.after(bestX509UpdateDate)) {
 
 					bestCRLValidity = crlValidity;

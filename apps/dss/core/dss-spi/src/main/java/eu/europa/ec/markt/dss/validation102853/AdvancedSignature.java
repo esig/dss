@@ -376,4 +376,11 @@ public interface AdvancedSignature {
 	void prepareTimestamps(ValidationContext validationContext);
 
 	void validateTimestamps();
+
+	/**
+	 * This method allows the structure validation of the signature. In the case of an XML signature a validation against XSD schema is performed.
+	 *
+	 * @return null if the validation does not apply, true if the structure is valid otherwise false
+	 */
+	String validateStructure();
 }

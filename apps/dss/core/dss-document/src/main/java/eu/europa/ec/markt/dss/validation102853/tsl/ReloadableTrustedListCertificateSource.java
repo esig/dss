@@ -63,8 +63,6 @@ public class ReloadableTrustedListCertificateSource extends TrustedListsCertific
 
             try {
 
-                LOG.info("Reload Trusted List");
-                // Asynchronous loading of all the data in the TSLs
                 LOG.info("--> run(): START LOADING");
                 underlyingSource.init();
                 LOG.info("--> run(): END LOADING");
@@ -83,10 +81,11 @@ public class ReloadableTrustedListCertificateSource extends TrustedListsCertific
     public synchronized void refresh() {
 
         final TrustedListsCertificateSource newSource = new TrustedListsCertificateSource(this);
-        final Thread reloader = new Thread(new Reloader(newSource));
-        LOG.info("--> refresh(): START");
+	    final Reloader target = new Reloader(newSource);
+	    final Thread reloader = new Thread(target);
+        LOG.debug("--> refresh(): START");
         reloader.start();
-        LOG.info("--> refresh(): END");
+        LOG.debug("--> refresh(): END");
 
         currentSource = newSource;
     }

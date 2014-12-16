@@ -106,6 +106,11 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	}
 
 	@Override
+	public ValidationPolicy getValidationPolicy() {
+		return validationPolicy;
+	}
+
+	@Override
 	public void setCountersignatureValidationPolicy(ValidationPolicy validationPolicy) {
 		this.countersignatureValidationPolicy = validationPolicy;
 	}

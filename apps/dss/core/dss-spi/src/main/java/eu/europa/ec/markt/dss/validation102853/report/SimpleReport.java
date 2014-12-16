@@ -111,17 +111,44 @@ public class SimpleReport extends XmlDom {
 
 	/**
 	 * @return the list of signature id contained in the simpleReport
+	 * @deprecated FROM 4.3.0-RC, use getSignatureIdList()
 	 */
+	@Deprecated
 	public List<String> getSignatureIds() {
 
 		final List<String> signatureIdList = new ArrayList<String>();
-
 		final List<XmlDom> signatures = getElements("/SimpleReport/Signature");
 		for (final XmlDom signature : signatures) {
-
 			signatureIdList.add(signature.getAttribute("Id"));
 		}
 		return signatureIdList;
+	}
+
+	/**
+	 * @return the {@code List} of signature id(s) contained in the simpleReport
+	 */
+	public List<String> getSignatureIdList() {
+
+		final List<String> signatureIdList = new ArrayList<String>();
+		final List<XmlDom> signatures = getElements("/SimpleReport/Signature");
+		for (final XmlDom signature : signatures) {
+			signatureIdList.add(signature.getAttribute("Id"));
+		}
+		return signatureIdList;
+	}
+
+	/**
+	 * This method returns the first signature id.
+	 *
+	 * @return
+	 */
+	public String getFirstSignatureId() {
+
+		final List<String> signatureIdList = getSignatureIdList();
+		if (signatureIdList.size() > 0) {
+			return signatureIdList.get(0);
+		}
+		return null;
 	}
 
 	public List<Conclusion.BasicInfo> getInfo(final String signatureId) {

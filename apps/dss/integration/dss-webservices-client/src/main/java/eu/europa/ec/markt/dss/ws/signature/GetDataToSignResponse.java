@@ -52,7 +52,7 @@ public class GetDataToSignResponse {
      *     byte[]
      */
     public void setResponse(byte[] value) {
-        this.response = ((byte[]) value);
+        this.response = value;
     }
 
 }

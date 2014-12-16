@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -61,17 +60,20 @@ public class XmlDom {
 
 	public static final String NAMESPACE = "http://dss.markt.ec.europa.eu/validation/diagnostic";
 
+	private static final String NS_PREFIX = "dss";
+
 	private static final XPathFactory factory = XPathFactory.newInstance();
 
-	private static final NamespaceContext nsContext;
+	private static final NamespaceContextMap nsContext;
 
 	private static final Map<String, String> namespaces;
 
 	static {
 
 		namespaces = new HashMap<String, String>();
-		namespaces.put("dss", NAMESPACE);
-		nsContext = new NamespaceContextMap(namespaces);
+		namespaces.put(NS_PREFIX, NAMESPACE);
+		nsContext = new NamespaceContextMap();
+		nsContext.registerNamespace(NS_PREFIX, NAMESPACE);
 	}
 
 	final Element rootElement;

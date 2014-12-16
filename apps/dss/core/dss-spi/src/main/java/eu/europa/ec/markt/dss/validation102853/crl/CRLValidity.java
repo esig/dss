@@ -38,7 +38,8 @@ public class CRLValidity {
 
 	boolean issuerX509PrincipalMatches = false;
 	boolean signatureIntact = false;
-	boolean hasCRLSignKeyUsage = false;
+	boolean crlSignKeyUsage = false;
+	boolean unknownCriticalExtension = true;
 
 	CertificateToken issuerToken = null;
 
@@ -54,7 +55,7 @@ public class CRLValidity {
 	 */
 	boolean isValid() {
 
-		return issuerX509PrincipalMatches && signatureIntact && hasCRLSignKeyUsage;
+		return issuerX509PrincipalMatches && signatureIntact && crlSignKeyUsage && !unknownCriticalExtension;
 	}
 
 	@Override
@@ -62,7 +63,8 @@ public class CRLValidity {
 		return "CRLValidity{" +
 			  "issuerX509PrincipalMatches=" + issuerX509PrincipalMatches +
 			  ", signatureIntact=" + signatureIntact +
-			  ", hasCRLSignKeyUsage=" + hasCRLSignKeyUsage +
+			  ", crlSignKeyUsage=" + crlSignKeyUsage +
+			  ", unknownCriticalExtension=" + unknownCriticalExtension +
 			  ", issuerToken=" + issuerToken +
 			  ", signatureInvalidityReason='" + signatureInvalidityReason + '\'' +
 			  '}';

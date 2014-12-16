@@ -30,13 +30,13 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 
 public enum SignatureLevel {
 
-	XMLDSIG(null), XAdES_C(null), XAdES_X(null), XAdES_XL(null), XAdES_A(null), XAdES_BASELINE_LTA(null), XAdES_BASELINE_LT(XAdES_BASELINE_LTA), XAdES_BASELINE_T(
+	XML_NOT_ETSI(null), XAdES_C(null), XAdES_X(null), XAdES_XL(null), XAdES_A(null), XAdES_BASELINE_LTA(null), XAdES_BASELINE_LT(XAdES_BASELINE_LTA), XAdES_BASELINE_T(
 		  XAdES_BASELINE_LT), XAdES_BASELINE_B(XAdES_BASELINE_T),
 
-	CMS(null), CAdES_BASELINE_LTA(null), CAdES_BASELINE_LT(CAdES_BASELINE_LTA), CAdES_BASELINE_T(CAdES_BASELINE_LT), CAdES_BASELINE_B(CAdES_BASELINE_T), CAdES_101733_C(
+	CMS_NOT_ETSI(null), CAdES_BASELINE_LTA(null), CAdES_BASELINE_LT(CAdES_BASELINE_LTA), CAdES_BASELINE_T(CAdES_BASELINE_LT), CAdES_BASELINE_B(CAdES_BASELINE_T), CAdES_101733_C(
 		  null), CAdES_101733_X(null), CAdES_101733_A(null),
 
-	PDF(null), PAdES_BASELINE_LTA(null), PAdES_BASELINE_LT(PAdES_BASELINE_LTA), PAdES_BASELINE_T(PAdES_BASELINE_LT), PAdES_BASELINE_B(PAdES_BASELINE_T), PAdES_102778_LTV(
+	PDF_NOT_ETSI(null), PAdES_BASELINE_LTA(null), PAdES_BASELINE_LT(PAdES_BASELINE_LTA), PAdES_BASELINE_T(PAdES_BASELINE_LT), PAdES_BASELINE_B(PAdES_BASELINE_T), PAdES_102778_LTV(
 		  PAdES_BASELINE_B),
 
 	ASiC_S_BASELINE_LTA(null), ASiC_S_BASELINE_LT(ASiC_S_BASELINE_LTA), ASiC_S_BASELINE_T(ASiC_S_BASELINE_LT), ASiC_S_BASELINE_B(ASiC_S_BASELINE_T),
@@ -70,7 +70,7 @@ public enum SignatureLevel {
 	public SignatureForm getSignatureForm() {
 
 		switch (this) {
-			case XMLDSIG:
+			case XML_NOT_ETSI:
 			case XAdES_C:
 			case XAdES_X:
 			case XAdES_XL:
@@ -80,6 +80,7 @@ public enum SignatureLevel {
 			case XAdES_BASELINE_T:
 			case XAdES_BASELINE_B:
 				return SignatureForm.XAdES;
+			case CMS_NOT_ETSI:
 			case CAdES_BASELINE_LTA:
 			case CAdES_BASELINE_LT:
 			case CAdES_BASELINE_T:
@@ -88,6 +89,7 @@ public enum SignatureLevel {
 			case CAdES_101733_C:
 			case CAdES_101733_X:
 				return SignatureForm.CAdES;
+			case PDF_NOT_ETSI:
 			case PAdES_102778_LTV:
 			case PAdES_BASELINE_B:
 			case PAdES_BASELINE_LT:

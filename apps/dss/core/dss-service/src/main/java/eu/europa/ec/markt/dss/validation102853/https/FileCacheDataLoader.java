@@ -21,6 +21,7 @@ package eu.europa.ec.markt.dss.validation102853.https;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -108,35 +110,35 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	}
 
 	@Override
-	public byte[] get(final String urlString) throws DSSCannotFetchDataException {
+	public byte[] get(final String url, final boolean refresh) throws DSSCannotFetchDataException {
 
-		if (toBeLoaded != null) {
-
-			if (!toBeLoaded.contains(urlString)) {
-
-				return null;
-			}
+		if (toBeLoaded != null && !toBeLoaded.contains(url)) {
+			return null;
 		}
-		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
+		final String fileName = ResourceLoader.getNormalizedFileName(url);
 		final File file = getCacheFile(fileName);
-		if (file.exists()) {
+		final boolean fileExists = file.exists();
+		if (fileExists && !refresh) {
 
 			LOG.debug("Cached file was used");
 			final byte[] bytes = DSSUtils.toByteArray(file);
 			return bytes;
 		} else {
-
-			LOG.debug("There is no cached file!");
+			if(!fileExists) {
+				LOG.debug("There is no cached file!");
+			} else {
+				LOG.debug("The refresh is forced!");
+			}
 		}
 		final byte[] bytes;
-		if (!isNetworkProtocol(urlString)) {
+		if (!isNetworkProtocol(url)) {
 
-			final String resourcePath = resourceLoader.getAbsoluteResourceFolder(urlString.trim());
+			final String resourcePath = resourceLoader.getAbsoluteResourceFolder(url.trim());
 			final File fileResource = new File(resourcePath);
 			bytes = DSSUtils.toByteArray(fileResource);
 		} else {
 
-			bytes = super.get(urlString);
+			bytes = super.get(url);
 		}
 		if (bytes != null && bytes.length != 0) {
 
@@ -144,6 +146,12 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 			DSSUtils.saveToFile(bytes, out);
 		}
 		return bytes;
+	}
+
+	@Override
+	public byte[] get(final String url) throws DSSCannotFetchDataException {
+
+		return get(url, false);
 	}
 
 	protected boolean isNetworkProtocol(final String urlString) {
@@ -237,7 +245,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 			final ByteArrayInputStream bis = new ByteArrayInputStream(content);
 
-			final HttpEntity requestEntity = new InputStreamEntity(bis, content.length);
+			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length);
+			final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity);
 			httpRequest.setEntity(requestEntity);
 			if (contentType != null) {
 				httpRequest.setHeader(CONTENT_TYPE, contentType);
@@ -251,6 +260,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 				final File cacheFile = getCacheFile(cacheFileName);
 				DSSUtils.saveToFile(returnedBytes, cacheFile);
 			}
+		} catch (IOException e) {
+			throw new DSSException(e);
 		} finally {
 			if (httpRequest != null) {
 				httpRequest.releaseConnection();

@@ -21,8 +21,7 @@
 package eu.europa.ec.markt.dss.validation102853.loader;
 
 import java.io.Serializable;
-
-import eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException;
+import java.util.List;
 
 /**
  * Component that allows to retrieve the data using any protocol: HTTP, HTTPS, FTP, LDAP.
@@ -32,29 +31,65 @@ import eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException;
 
 public interface DataLoader extends Serializable {
 
-    /**
-     * Execute a HTTP GET operation
-     *
-     * @param url
-     * @return
-     * @throws eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException
-     */
-    byte[] get(final String url) throws DSSCannotFetchDataException;
+	/**
+	 * This is an internal class used to model the couple data and url used to obtain this data.
+	 */
+	public static class DataAndUrl {
 
-    /**
-     * Executes a HTTP POST operation
-     *
-     * @param url
-     * @param content
-     * @return
-     * @throws eu.europa.ec.markt.dss.exception.DSSCannotFetchDataException
-     */
-    byte[] post(final String url, final byte[] content) throws DSSCannotFetchDataException;
+		/**
+		 * Url used to obtain data.
+		 */
+		public String urlString;
 
-    /**
-     * This allows to set the content type. Example: Content-Type "application/ocsp-request"
-     *
-     * @param contentType
-     */
-    public void setContentType(final String contentType);
+		/**
+		 * Obtained data.
+		 */
+		public byte[] data;
+
+		public DataAndUrl(final byte[] data, final String urlString) {
+
+			this.data = data;
+			this.urlString = urlString;
+		}
+	}
+	/**
+	 * Execute a HTTP GET operation.
+	 *
+	 * @param url to access
+	 * @return {@code byte} array of obtained data or null
+	 */
+	byte[] get(final String url);
+
+	/**
+	 * Execute a HTTP GET operation. This method is used when many URls are available to access the same resource. The operation stops after the first successful download.
+	 *
+	 * @param urlStrings {@code List} of {@code String}s representing the URLs to be used in sequential way to obtain the data.
+	 * @return {@code DataAndUrl} representing the array of obtained data and used url, or null
+	 */
+	DataAndUrl get(final List<String> urlStrings);
+
+	/**
+	 * Execute a HTTP GET operation with indication concerning the mandatory character of the operation.
+	 *
+	 * @param url     to access
+	 * @param refresh if true indicates that the cached data should be refreshed
+	 * @return {@code byte} array of obtained data or null
+	 */
+	byte[] get(String url, boolean refresh);
+
+	/**
+	 * Executes a HTTP POST operation
+	 *
+	 * @param url     to access
+	 * @param content
+	 * @return {@code byte} array of obtained data
+	 */
+	byte[] post(final String url, final byte[] content);
+
+	/**
+	 * This allows to set the content type. Example: Content-Type "application/ocsp-request"
+	 *
+	 * @param contentType to set
+	 */
+	public void setContentType(final String contentType);
 }

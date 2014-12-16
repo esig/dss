@@ -40,6 +40,7 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
+import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 /**
  * This class handles the specifics of the enveloping XML signature
@@ -55,16 +56,16 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 	/**
 	 * The default constructor for EnvelopingSignatureBuilder. The enveloped signature uses by default the inclusive
 	 * method of canonicalization.
-	 *
-	 * @param params  The set of parameters relating to the structure and process of the creation or extension of the
+	 *  @param params  The set of parameters relating to the structure and process of the creation or extension of the
 	 *                electronic signature.
 	 * @param origDoc The original document to sign.
+	 * @param certificateVerifier
 	 */
-	public EnvelopingSignatureBuilder(SignatureParameters params, DSSDocument origDoc) {
+	public EnvelopingSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 
-		super(params, origDoc);
-		signedInfoCanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
-		reference2CanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
+		super(params, origDoc, certificateVerifier);
+		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.INCLUSIVE);
+		signedPropertiesCanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
 	}
 
 	/**
@@ -75,7 +76,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 	 * @throws DSSException
 	 */
 	@Override
-	protected void incorporateReference1() throws DSSException {
+	protected void incorporateReferences() throws DSSException {
 
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
@@ -110,7 +111,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 	}
 
 	@Override
-	protected DSSDocument canonicalizeReference(final DSSReference reference) {
+	protected DSSDocument transformReference(final DSSReference reference) {
 
 		return reference.getContents();
 	}

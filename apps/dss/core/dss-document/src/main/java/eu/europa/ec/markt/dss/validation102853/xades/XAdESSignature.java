@@ -22,6 +22,7 @@ package eu.europa.ec.markt.dss.validation102853.xades;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -36,6 +37,7 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
@@ -60,7 +62,6 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
@@ -79,11 +80,11 @@ import eu.europa.ec.markt.dss.validation102853.TimestampReferenceCategory;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
+import eu.europa.ec.markt.dss.validation102853.bean.CertificateValidity;
 import eu.europa.ec.markt.dss.validation102853.bean.CertifiedRole;
 import eu.europa.ec.markt.dss.validation102853.bean.CommitmentType;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureProductionPlace;
-import eu.europa.ec.markt.dss.validation102853.bean.SigningCertificateValidity;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateRef;
 import eu.europa.ec.markt.dss.validation102853.crl.CRLRef;
 import eu.europa.ec.markt.dss.validation102853.crl.OfflineCRLSource;
@@ -105,7 +106,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This array contains all the XAdES signatures levels
 	 * TODO: do not return redundant levels.
 	 */
-	private static SignatureLevel[] signatureLevels = new SignatureLevel[]{SignatureLevel.XMLDSIG, SignatureLevel.XAdES_BASELINE_B, SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL, SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A};
+	private static SignatureLevel[] signatureLevels = new SignatureLevel[]{SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B, SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL, SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A};
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -370,8 +371,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		final XAdESCertificateSource certSource = getCertificateSource();
 		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
 
-			final SigningCertificateValidity signingCertificateValidity = new SigningCertificateValidity(certificateToken);
-			candidatesForSigningCertificate.add(signingCertificateValidity);
+			final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
+			candidatesForSigningCertificate.add(certificateValidity);
 		}
 		return candidatesForSigningCertificate;
 	}
@@ -389,8 +390,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		final int length = list.getLength();
 		if (length == 0) {
 
-			final SigningCertificateValidity theSigningCertificateValidity = candidates.getTheSigningCertificateValidity();
-			final CertificateToken certificateToken = theSigningCertificateValidity == null ? null : theSigningCertificateValidity.getCertificateToken();
+			final CertificateValidity theCertificateValidity = candidates.getTheCertificateValidity();
+			final CertificateToken certificateToken = theCertificateValidity == null ? null : theCertificateValidity.getCertificateToken();
 			// The check need to be done at the level of KeyInfo
 			for (final Reference reference : references) {
 
@@ -408,7 +409,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 				if (certificateToken != null && id.equals(certificateToken.getXmlId())) {
 
-					theSigningCertificateValidity.setSigned(element.getNodeName());
+					theCertificateValidity.setSigned(element.getNodeName());
 					return;
 				}
 			}
@@ -416,19 +417,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// This Map contains the list of the references to the certificate which were already checked and which correspond to a certificate.
 		Map<Element, Boolean> alreadyProcessedElements = new HashMap<Element, Boolean>();
 
-		final List<SigningCertificateValidity> signingCertificateValidityList = candidates.getSigningCertificateValidityList();
-		for (final SigningCertificateValidity signingCertificateValidity : signingCertificateValidityList) {
+		final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
+		for (final CertificateValidity certificateValidity : certificateValidityList) {
 
-			final CertificateToken certificateToken = signingCertificateValidity.getCertificateToken();
+			final CertificateToken certificateToken = certificateValidity.getCertificateToken();
 			for (int ii = 0; ii < length; ii++) {
 
-				signingCertificateValidity.setAttributePresent(true);
+				certificateValidity.setAttributePresent(true);
 				final Element element = (Element) list.item(ii);
 				if (alreadyProcessedElements.containsKey(element)) {
 					continue;
 				}
 				final Element certDigestElement = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
-				signingCertificateValidity.setDigestPresent(certDigestElement != null);
+				certificateValidity.setDigestPresent(certDigestElement != null);
 
 				final Element digestMethodElement = DSSXMLUtils.getElement(certDigestElement, xPathQueryHolder.XPATH__DIGEST_METHOD);
 				if (digestMethodElement == null) {
@@ -456,7 +457,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 */
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
 				final byte[] recalculatedBase64DigestValue = DSSUtils.base64BinaryEncode(digest);
-				signingCertificateValidity.setDigestEqual(false);
+				certificateValidity.setDigestEqual(false);
 				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
 
 					final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
@@ -481,15 +482,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
 					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
 
-					signingCertificateValidity.setDigestEqual(true);
-					signingCertificateValidity.setSerialNumberEqual(serialNumberMatches);
-					signingCertificateValidity.setDistinguishedNameEqual(issuerNameMatches);
+					certificateValidity.setDigestEqual(true);
+					certificateValidity.setSerialNumberEqual(serialNumberMatches);
+					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
 					// The certificate was identified
 					alreadyProcessedElements.put(element, true);
 					// If the signing certificate is not set yet then it must be done now. Actually if the signature is tempered then the method checkSignatureIntegrity cannot set the signing certificate.
-					if (candidates.getTheSigningCertificateValidity() == null) {
+					if (candidates.getTheCertificateValidity() == null) {
 
-						candidates.setTheSigningCertificateValidity(signingCertificateValidity);
+						candidates.setTheCertificateValidity(certificateValidity);
 					}
 					break;
 				}
@@ -926,11 +927,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		//TODO: check whether a warning would be more appropriate
 		if (!checkTimestampTokenIncludes(timestampToken)) {
-			throw new DSSException("Exception: the Include's referencedData attribute is either not present or set to false");
+			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
 		}
-
-		String canonicalizationMethod = timestampToken.getCanonicalizationMethod();
-
+		if (references.size() == 0) {
+			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
+		}
 		//get first include element
 		//check coherence of the value of the not-fragment part of the URI within its URI attribute according to the rules stated in 7.1.4.3.1
 		//de-reference the URI according to the rules in 7.1.4.3.1
@@ -939,10 +940,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		//concatenate the resulting bytes in an octet stream
 		//repeat for all subsequent include elements, in order of appearance, within the time-stamp container
 		//return digest of resulting byte stream using the algorithm indicated in the time-stamp token
-
-		if (canonicalizationMethod == null) {
-			canonicalizationMethod = DEFAULT_TIMESTAMP_CREATION_CANONICALIZATION_METHOD;
-		}
 
 		//get include elements from signature
 		List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
@@ -956,10 +953,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				String id = include.getURI();
 
 				if (reference.getId().equals(id)) {
-					//byte[] canonicalizedElement = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, reference);
 					try {
 						final byte[] referencedBytes = reference.getReferencedBytes();
-						//					byte[] canonicalizedElement = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, referenceElement);
 						outputStream.write(referencedBytes);
 					} catch (IOException e) {
 						throw new DSSException(e);
@@ -972,15 +967,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		byte[] octetStream = outputStream.toByteArray();
-
 		return octetStream;
 	}
 
 	/**
 	 * See ETSI TS 101 903 v1.4.1, clause G.2.2.16.1.1
 	 * <p/>
-	 * Retrieves the data from timestamptoken of type AllDataObjectsTimestampData
-	 * <p/>
+	 * Retrieves the data from {@code TimeStampToken} of type AllDataObjectsTimestampData
 	 *
 	 * @param timestampToken
 	 * @return a {@code byte} array containing the concatenated data from all reference elements of type differing from SignedProperties
@@ -989,26 +982,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		//TODO: check whether a warning would be more appropriate
 		if (!checkTimestampTokenIncludes(timestampToken)) {
-			throw new DSSException("Exception: the Included referencedData attribute is either not present or set to false");
+			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
 		}
-		final String canonicalizationMethod = getCanonicalizationMethod(timestampToken);
-
 		if (references.size() == 0) {
 			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		for (final Reference reference : references) {
 
-			//Take, the first ds:Reference element within ds:SignedInfo if and only if the Type attribute does not
-			//have the value "http://uri.etsi.org/01903#SignedProperties".
+			// Take, the first ds:Reference element within ds:SignedInfo if and only if the Type attribute does not
+			// have the value "http://uri.etsi.org/01903#SignedProperties".
 			if (!xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
 
-				//				//if reference element is a nodeset, canonicalize it using the algorithm mentioned in canonicalizationMethod
 				try {
 
 					final byte[] referencedBytes = reference.getReferencedBytes();
-					//					byte[] canonicalizedElement = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, referenceElement);
 					outputStream.write(referencedBytes);
 				} catch (IOException e) {
 					throw new DSSException(e);
@@ -1019,15 +1007,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}
-
-		//compute digest of resulting octet stream using algorithm indicated in the time-stamp token
-		//-> digest is computed in TimestampToken verification/match
-		//return the computed digest
-		byte[] timestampedBytes = outputStream.toByteArray();
+		// compute digest of resulting octet stream using algorithm indicated in the time-stamp token
+		// -> digest is computed in TimestampToken verification/match
+		// return the computed digest
+		byte[] toTimestampBytes = outputStream.toByteArray();
 		if (LOG.isTraceEnabled()) {
-			LOG.trace(new String(timestampedBytes));
+			LOG.trace("AllDataObjectsTimestampData bytes: " + new String(toTimestampBytes));
 		}
-		return timestampedBytes;
+		return toTimestampBytes;
 	}
 
 	@Override
@@ -1057,7 +1044,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						final TimestampReference signingCertReference = createCertificateTimestampReference(element);
 						references.add(signingCertReference);
 					}
-
 					timestampToken.setTimestampedReferences(references);
 					signatureTimestamps.add(timestampToken);
 				}
@@ -1074,9 +1060,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @param timestampToken
 	 * @retun
 	 */
-	public boolean checkTimestampTokenIncludes(TimestampToken timestampToken) {
-		List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();
-		for (TimestampInclude timestampInclude : timestampIncludes) {
+	public boolean checkTimestampTokenIncludes(final TimestampToken timestampToken) {
+
+		final List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();
+		for (final TimestampInclude timestampInclude : timestampIncludes) {
 			if (!timestampInclude.isReferencedData()) {
 				return false;
 			}
@@ -1229,17 +1216,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents));
 
 			boolean coreValidity = false;
-			final List<SigningCertificateValidity> signingCertificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
+			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
 				  providedSigningCertificateToken);
-			for (final SigningCertificateValidity signingCertificateValidity : signingCertificateValidityList) {
+			for (final CertificateValidity certificateValidity : certificateValidityList) {
 
 				try {
 
-					final PublicKey publicKey = signingCertificateValidity.getPublicKey();
+					final PublicKey publicKey = certificateValidity.getPublicKey();
 					coreValidity = santuarioSignature.checkSignatureValue(publicKey);
 					if (coreValidity) {
 
-						candidatesForSigningCertificate.setTheSigningCertificateValidity(signingCertificateValidity);
+						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
 						break;
 					}
 				} catch (XMLSignatureException e) {
@@ -1294,16 +1281,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return the {@code List} of the {@code SigningCertificateValidity}
 	 * @throws KeyResolverException
 	 */
-	private List<SigningCertificateValidity> getSigningCertificateValidityList(final XMLSignature santuarioSignature, SignatureCryptographicVerification scv,
+	private List<CertificateValidity> getSigningCertificateValidityList(final XMLSignature santuarioSignature, SignatureCryptographicVerification scv,
 	                                                                           final CertificateToken providedSigningCertificate) throws KeyResolverException {
 
-		List<SigningCertificateValidity> signingCertificateValidityList;
+		List<CertificateValidity> certificateValidityList;
 		if (providedSigningCertificate == null) {
 
 			// To determine the signing certificate it is necessary to browse through all candidates extracted from the signature.
 			final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
-			signingCertificateValidityList = candidates.getSigningCertificateValidityList();
-			if (signingCertificateValidityList.size() == 0) {
+			certificateValidityList = candidates.getCertificateValidityList();
+			if (certificateValidityList.size() == 0) {
 
 				// The public key can also be extracted from the signature.
 				final KeyInfo extractedKeyInfo = santuarioSignature.getKeyInfo();
@@ -1311,18 +1298,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (extractedKeyInfo == null || (publicKey = extractedKeyInfo.getPublicKey()) == null) {
 
 					scv.setErrorMessage("There is no signing certificate within the signature.");
-					return signingCertificateValidityList;
+					return certificateValidityList;
 				}
-				signingCertificateValidityList = getSigningCertificateValidityList(publicKey);
+				certificateValidityList = getSigningCertificateValidityList(publicKey);
 			}
 		} else {
 
 			candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-			final SigningCertificateValidity signingCertificateValidity = new SigningCertificateValidity(providedSigningCertificate);
-			candidatesForSigningCertificate.add(signingCertificateValidity);
-			signingCertificateValidityList = candidatesForSigningCertificate.getSigningCertificateValidityList();
+			final CertificateValidity certificateValidity = new CertificateValidity(providedSigningCertificate);
+			candidatesForSigningCertificate.add(certificateValidity);
+			certificateValidityList = candidatesForSigningCertificate.getCertificateValidityList();
 		}
-		return signingCertificateValidityList;
+		return certificateValidityList;
 	}
 
 	/**
@@ -1332,13 +1319,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @param extractedPublicKey provided public key: {@code PublicKey}
 	 * @return
 	 */
-	protected List<SigningCertificateValidity> getSigningCertificateValidityList(final PublicKey extractedPublicKey) {
+	protected List<CertificateValidity> getSigningCertificateValidityList(final PublicKey extractedPublicKey) {
 
 		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-		final SigningCertificateValidity signingCertificateValidity = new SigningCertificateValidity(extractedPublicKey);
-		candidatesForSigningCertificate.add(signingCertificateValidity);
-		final List<SigningCertificateValidity> signingCertificateValidityList = candidatesForSigningCertificate.getSigningCertificateValidityList();
-		return signingCertificateValidityList;
+		final CertificateValidity certificateValidity = new CertificateValidity(extractedPublicKey);
+		candidatesForSigningCertificate.add(certificateValidity);
+		final List<CertificateValidity> certificateValidityList = candidatesForSigningCertificate.getCertificateValidityList();
+		return certificateValidityList;
 	}
 
 	/**
@@ -1699,8 +1686,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (localName == null) {
 					continue;
 				}
+				canonicalizedValue = null;
 				// System.out.println("###: " + localName);
-				// In the SD-DSS implementation when validating the signature the framework will not add missing data. To do so you the signature must be extended.
+				// In the SD-DSS implementation when validating the signature the framework will not add missing data. To do so the signature must be extended.
 				// if (localName.equals("CertificateValues")) {
 
 				/**
@@ -1762,22 +1750,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					 * This is the work around for the name space problem: The issue was reported on: https://issues.apache.org/jira/browse/SANTUARIO-139 and considered as close.
 					 * But for me (Bob) it still does not work!
 					 */
+					if (timestampToken == null) { // Creation of the timestamp
 
-					final Document document = DSSXMLUtils.buildDOM();
-					final Element rootElement = document.createElementNS(XAdESNamespaces.XAdES141, "xades141:toto");
-					document.appendChild(rootElement);
-
-					final Node node1 = node.cloneNode(true);
-					document.adoptNode(node1);
-					rootElement.appendChild(node1);
-					node = node1;
-
-					if (LOG.isTraceEnabled()) {
-						DSSXMLUtils.printDocument(node, System.out);
+						final byte[] bytesToCanonicalize = DSSXMLUtils.serializeNode(node);
+						canonicalizedValue = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
 					}
 				}
 
-				canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
+				if (canonicalizedValue == null) {
+					canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
+				}
 				if (LOG.isTraceEnabled()) {
 					LOG.trace(localName + ": Canonicalization: " + canonicalizationMethod);
 					LOG.trace(new String(canonicalizedValue) + "\n");
@@ -1816,7 +1798,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final byte[] bytes = buffer.toByteArray();
 			return bytes;
 		} catch (IOException e) {
-
 			throw new DSSException("Error when computing the archive data", e);
 		}
 	}
@@ -1957,7 +1938,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		boolean dataForLevelPresent = true;
 		switch (signatureLevel) {
-			case XMLDSIG:
+			case XML_NOT_ETSI:
 				break;
 			case XAdES_BASELINE_LTA:
 			case XAdES_A:
@@ -1991,6 +1972,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public SignatureLevel[] getSignatureLevels() {
 
 		return signatureLevels;
+	}
+
+	@Override
+	public String validateStructure() {
+
+		final String string = DSSXMLUtils.xmlToString(signatureElement);
+		StringReader stringReader = new StringReader(string);
+		final String validated = DSSXMLUtils.validateAgainstXSD(new StreamSource(stringReader));
+		return  validated;
 	}
 
 	/**

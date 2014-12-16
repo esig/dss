@@ -56,6 +56,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,12 +77,10 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERT61String;
 import org.bouncycastle.asn1.DERT61UTF8String;
@@ -173,6 +172,8 @@ public final class DSSUtils {
 	 */
 	private static final Date deterministicDate = DSSUtils.getUtcDate(1970, 04, 23);
 
+	public static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
 	private static MessageDigest sha1Digester;
 
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
@@ -224,8 +225,45 @@ public final class DSSUtils {
 	 */
 	public static String formatInternal(final Date date) {
 
-		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date);
+		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN).format(date);
 		return formatedDate;
+	}
+
+	/**
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_FORMAT_PATTERN}.
+	 *
+	 * @param dateString the date string representation
+	 * @return the {@code Date}
+	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
+	 */
+	public static Date parseDate(final String dateString) throws DSSException {
+
+		try {
+
+			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN);
+			final Date date = sdf.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_FORMAT_PATTERN}. If an exception is frown durring the prsing then null is returned.
+	 *
+	 * @param dateString the date string representation
+	 * @return the {@code Date} or null if the parsing is not possible
+	 */
+	public static Date quietlyParseDate(final String dateString) throws DSSException {
+
+		try {
+
+			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN);
+			final Date date = sdf.parse(dateString);
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -858,50 +896,43 @@ public final class DSSUtils {
 
 	private static String getAccessLocation(final X509Certificate certificate, final ASN1ObjectIdentifier accessMethod) {
 
-		try {
-
-			final byte[] authInfoAccessExtensionValue = certificate.getExtensionValue(Extension.authorityInfoAccess.getId());
-			if (null == authInfoAccessExtensionValue) {
-				return null;
-			}
-		 /* Parse the extension */
-			final ASN1InputStream asn1InputStream = new ASN1InputStream(new ByteArrayInputStream(authInfoAccessExtensionValue));
-			final DEROctetString oct = (DEROctetString) (asn1InputStream.readObject());
-			asn1InputStream.close();
-			final ASN1InputStream asn1InputStream2 = new ASN1InputStream(oct.getOctets());
-			final AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1InputStream2.readObject());
-			asn1InputStream2.close();
-
-			String accessLocation = null;
-			final AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
-			for (final AccessDescription accessDescription : accessDescriptions) {
-
-				// LOG.debug("access method: " + accessDescription.getAccessMethod());
-				final boolean correctAccessMethod = accessDescription.getAccessMethod().equals(accessMethod);
-				if (!correctAccessMethod) {
-					continue;
-				}
-				GeneralName gn = accessDescription.getAccessLocation();
-				if (gn.getTagNo() != GeneralName.uniformResourceIdentifier) {
-
-					// LOG.debug("not a uniform resource identifier");
-					continue;
-				}
-				final DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
-				accessLocation = str.getString();
-				// The HTTP protocol is preferred.
-				if (Protocol.isHttpUrl(accessLocation)) {
-					// LOG.debug("access location: " + accessLocation);
-					break;
-				}
-			}
-			return accessLocation;
-		} catch (final IOException e) {
-
-			// we do nothing
-			// LOG.("IO error: " + e.getMessage(), e);
+		final byte[] authInfoAccessExtensionValue = certificate.getExtensionValue(Extension.authorityInfoAccess.getId());
+		if (null == authInfoAccessExtensionValue) {
+			return null;
 		}
-		return null;
+		// Parse the extension
+		ASN1Sequence asn1Sequence = null;
+		try {
+			asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(authInfoAccessExtensionValue);
+		} catch (DSSException e) {
+			return null;
+		}
+		final AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1Sequence);
+
+		String accessLocation = null;
+		final AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
+		for (final AccessDescription accessDescription : accessDescriptions) {
+
+			// LOG.debug("access method: " + accessDescription.getAccessMethod());
+			final boolean correctAccessMethod = accessDescription.getAccessMethod().equals(accessMethod);
+			if (!correctAccessMethod) {
+				continue;
+			}
+			GeneralName gn = accessDescription.getAccessLocation();
+			if (gn.getTagNo() != GeneralName.uniformResourceIdentifier) {
+
+				// LOG.debug("not a uniform resource identifier");
+				continue;
+			}
+			final DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
+			accessLocation = str.getString();
+			// The HTTP protocol is preferred.
+			if (Protocol.isHttpUrl(accessLocation)) {
+				// LOG.debug("access location: " + accessLocation);
+				break;
+			}
+		}
+		return accessLocation;
 	}
 
 	/**
@@ -943,7 +974,6 @@ public final class DSSUtils {
 			final X509CRL crl = (X509CRL) certificateFactory.generateCRL(inputStream);
 			return crl;
 		} catch (CRLException e) {
-
 			throw new DSSException(e);
 		}
 	}
@@ -978,23 +1008,7 @@ public final class DSSUtils {
 
 			return Collections.emptyList();
 		}
-		ASN1InputStream input = null;
-		ASN1Sequence seq = null;
-		try {
-
-			input = new ASN1InputStream(certificatePolicies);
-			final DEROctetString s = (DEROctetString) input.readObject();
-			final byte[] content = s.getOctets();
-			input.close();
-			input = new ASN1InputStream(content);
-			seq = (ASN1Sequence) input.readObject();
-		} catch (IOException e) {
-
-			throw new DSSException("Error when computing certificate's extensions.", e);
-		} finally {
-
-			closeQuietly(input);
-		}
+		ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(certificatePolicies);
 		final List<String> policyIdentifiers = new ArrayList<String>();
 		for (int ii = 0; ii < seq.size(); ii++) {
 
@@ -1540,7 +1554,6 @@ public final class DSSUtils {
 	public static byte[] toByteArray(final InputStream inputStream) {
 
 		if (inputStream == null) {
-
 			throw new DSSNullException(InputStream.class);
 		}
 		try {
@@ -2925,33 +2938,22 @@ public final class DSSUtils {
 		return String.valueOf(longValue).getBytes();
 	}
 
+	/**
+	 * @param x509Certificate
+	 * @return
+	 */
 	public static List<String> getQCStatementsIdList(final X509Certificate x509Certificate) {
 
 		final List<String> extensionIdList = new ArrayList<String>();
-		final byte[] qcStatement = x509Certificate.getExtensionValue(X509Extension.qCStatements.getId());
+		final byte[] qcStatement = x509Certificate.getExtensionValue(Extension.qCStatements.getId());
 		if (qcStatement != null) {
 
-			ASN1InputStream input = null;
-			try {
+			final ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatement);
+			// Sequence of QCStatement
+			for (int ii = 0; ii < seq.size(); ii++) {
 
-				input = new ASN1InputStream(qcStatement);
-				final DEROctetString s = (DEROctetString) input.readObject();
-				final byte[] content = s.getOctets();
-				input.close();
-				input = new ASN1InputStream(content);
-				final ASN1Sequence seq = (ASN1Sequence) input.readObject();
-				/* Sequence of QCStatement */
-				for (int ii = 0; ii < seq.size(); ii++) {
-
-					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
-					extensionIdList.add(statement.getStatementId().getId());
-				}
-			} catch (IOException e) {
-
-				throw new DSSException(e);
-			} finally {
-
-				DSSUtils.closeQuietly(input);
+				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
+				extensionIdList.add(statement.getStatementId().getId());
 			}
 		}
 		return extensionIdList;
@@ -3063,5 +3065,32 @@ public final class DSSUtils {
 
 		long diff = date2.getTime() - date1.getTime();
 		return timeUnit.convert(diff, TimeUnit.MILLISECONDS);
+	}
+
+	/**
+	 * This method returns an encoded representation of the {@code X509CertificateHolder}.
+	 *
+	 * @param x509CertificateHolder {@code X509CertificateHolder} to be encoded
+	 * @return array of {@code byte}s
+	 */
+	public static byte[] getEncoded(final X509CertificateHolder x509CertificateHolder) {
+
+		try {
+			return x509CertificateHolder.getEncoded();
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * Null-safe check if the specified collection is empty.
+	 * <p/>
+	 * Null returns true.
+	 *
+	 * @param collection the collection to check, may be null
+	 * @return true if empty or null
+	 */
+	public static boolean isEmpty(final Collection collection) {
+		return collection == null || collection.isEmpty();
 	}
 }

@@ -69,15 +69,15 @@ public class CertificateToken extends Token {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateToken.class);
 
-	public static final String DIGITAL_SIGNATURE = "digitalSignature;";
-	public static final String NON_REPUDIATION = "nonRepudiation;";
-	public static final String KEY_ENCIPHERMENT = "keyEncipherment;";
-	public static final String DATA_ENCIPHERMENT = "dataEncipherment;";
-	public static final String KEY_AGREEMENT = "keyAgreement;";
-	public static final String KEY_CERT_SIGN = "keyCertSign;";
-	public static final String CRL_SIGN = "cRLSign;";
-	public static final String ENCIPHER_ONLY = "encipherOnly;";
-	public static final String DECIPHER_ONLY = "decipherOnly;";
+	public static final String DIGITAL_SIGNATURE = "digitalSignature";
+	public static final String NON_REPUDIATION = "nonRepudiation";
+	public static final String KEY_ENCIPHERMENT = "keyEncipherment";
+	public static final String DATA_ENCIPHERMENT = "dataEncipherment";
+	public static final String KEY_AGREEMENT = "keyAgreement";
+	public static final String KEY_CERT_SIGN = "keyCertSign";
+	public static final String CRL_SIGN = "cRLSign";
+	public static final String ENCIPHER_ONLY = "encipherOnly";
+	public static final String DECIPHER_ONLY = "decipherOnly";
 
 	/**
 	 * Encapsulated X509 certificate.
@@ -582,7 +582,7 @@ public class CertificateToken extends Token {
 	 *
 	 * @return
 	 */
-	CertificateTokenValidationExtraInfo extraInfo() {
+	public CertificateTokenValidationExtraInfo extraInfo() {
 
 		return extraInfo;
 	}
@@ -647,9 +647,7 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * This method returns the CRL distribution point of the wrapped certificate.
-	 *
-	 * @return {@code byte[]}
+	 * @return array of {@code byte}s representing the CRL distribution point of the wrapped certificate
 	 */
 	public byte[] getCRLDistributionPoints() {
 
@@ -659,9 +657,7 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Indicates if the wrapped certificate has cRLSign key usage bit set.
-	 *
-	 * @return
+	 * @return true if the wrapped certificate has cRLSign key usage bit set
 	 */
 	public boolean hasCRLSignKeyUsage() {
 
@@ -671,9 +667,7 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * This method returns the size of the public key of the certificate.
-	 *
-	 * @return
+	 * @return the size of the public key of the certificate
 	 */
 	public int getPublicKeyLength() {
 
@@ -767,8 +761,9 @@ public class CertificateToken extends Token {
 
 				out.append(indentStr).append("Revocation data[\n");
 				indentStr += "\t";
+				final CertificateToken revocationTokenIssuerToken = revocationToken.getIssuerToken();
 				out.append(indentStr).append("Status: ").append(revocationToken.getStatus()).append(" / ").append(revocationToken.getIssuingTime())
-					  .append(" / issuer's certificate ").append(revocationToken.getIssuerToken().getDSSIdAsString()).append('\n');
+					  .append(" / issuer's certificate ").append(revocationTokenIssuerToken != null ? revocationTokenIssuerToken.getDSSIdAsString() : "null").append('\n');
 				indentStr = indentStr.substring(1);
 				out.append(indentStr).append("]\n");
 			} else {
@@ -851,42 +846,42 @@ public class CertificateToken extends Token {
 	/**
 	 * This method returns a {@code String} representing the key usages of the certificate.
 	 *
-	 * @return concatenated {@code String} of different certificate's key usages
+	 * @return {@code List} of {@code String}s of different certificate's key usages
 	 */
-	public String getKeyUsage() {
+	public List<String> getKeyUsageBits() {
 
 		boolean[] keyUsageArray = x509Certificate.getKeyUsage();
-		String keyUsageString = "";
 		if (keyUsageArray == null) {
 			return null;
 		}
+		final List<String> keyUsageBits = new ArrayList<String>();
 		if (keyUsageArray[0]) {
-			keyUsageString += DIGITAL_SIGNATURE;
+			keyUsageBits.add(DIGITAL_SIGNATURE);
 		}
 		if (keyUsageArray[1]) {
-			keyUsageString += NON_REPUDIATION;
+			keyUsageBits.add(NON_REPUDIATION);
 		}
 		if (keyUsageArray[2]) {
-			keyUsageString += KEY_ENCIPHERMENT;
+			keyUsageBits.add(KEY_ENCIPHERMENT);
 		}
 		if (keyUsageArray[3]) {
-			keyUsageString += DATA_ENCIPHERMENT;
+			keyUsageBits.add(DATA_ENCIPHERMENT);
 		}
 		if (keyUsageArray[4]) {
-			keyUsageString += KEY_AGREEMENT;
+			keyUsageBits.add(KEY_AGREEMENT);
 		}
 		if (keyUsageArray[5]) {
-			keyUsageString += KEY_CERT_SIGN;
+			keyUsageBits.add(KEY_CERT_SIGN);
 		}
 		if (keyUsageArray[6]) {
-			keyUsageString += CRL_SIGN;
+			keyUsageBits.add(CRL_SIGN);
 		}
 		if (keyUsageArray[7]) {
-			keyUsageString += ENCIPHER_ONLY;
+			keyUsageBits.add(ENCIPHER_ONLY);
 		}
 		if (keyUsageArray[8]) {
-			keyUsageString += DECIPHER_ONLY;
+			keyUsageBits.add(DECIPHER_ONLY);
 		}
-		return keyUsageString;
+		return keyUsageBits;
 	}
 }

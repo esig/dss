@@ -57,24 +57,10 @@ public abstract class RevocationToken extends Token {
 	}
 
 	/**
-	 * @param status
-	 */
-	protected void setStatus(final Boolean status) {
-		this.status = status;
-	}
-
-	/**
 	 * @return
 	 */
 	public Date getIssuingTime() {
 		return issuingTime;
-	}
-
-	/**
-	 * @param issuingTime
-	 */
-	protected void setIssuingTime(final Date issuingTime) {
-		this.issuingTime = issuingTime;
 	}
 
 	/**
@@ -85,13 +71,6 @@ public abstract class RevocationToken extends Token {
 	}
 
 	/**
-	 * @param nextUpdate
-	 */
-	protected void setNextUpdate(final Date nextUpdate) {
-		this.nextUpdate = nextUpdate;
-	}
-
-	/**
 	 * @return
 	 */
 	public Date getRevocationDate() {
@@ -99,24 +78,10 @@ public abstract class RevocationToken extends Token {
 	}
 
 	/**
-	 * @param revocationDate
-	 */
-	protected void setRevocationDate(final Date revocationDate) {
-		this.revocationDate = revocationDate;
-	}
-
-	/**
 	 * @return
 	 */
 	public String getReason() {
 		return reason;
-	}
-
-	/**
-	 * @param reason
-	 */
-	protected void setReason(final String reason) {
-		this.reason = reason;
 	}
 
 	/**

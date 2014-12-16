@@ -447,17 +447,23 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @param timestampToken
 	 * @return
 	 */
-	private AlgorithmIdentifier getAlgorithmIdentifier(TimestampToken timestampToken) {
+	private AlgorithmIdentifier getAlgorithmIdentifier(final TimestampToken timestampToken) {
+
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
 		if (timestampAttributeAtsHashIndexValue.size() > 3) {
+
 			final int ALGO_INDEX = 0;
-			final ASN1Encodable derEncodable = timestampAttributeAtsHashIndexValue.getObjectAt(ALGO_INDEX);
-			if (derEncodable instanceof ASN1Sequence) {
-				final ASN1Sequence derSequence = (ASN1Sequence) derEncodable;
-				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(((DERObjectIdentifier) derSequence.getObjectAt(0)).getId());
-				return AlgorithmIdentifier.getInstance(derSequence);
-			} else if (derEncodable instanceof DERObjectIdentifier) {
-				ASN1ObjectIdentifier derObjectIdentifier = ASN1ObjectIdentifier.getInstance(derEncodable);
+			final ASN1Encodable asn1Encodable = timestampAttributeAtsHashIndexValue.getObjectAt(ALGO_INDEX);
+			if (asn1Encodable instanceof ASN1Sequence) {
+
+				final ASN1Sequence asn1Sequence = (ASN1Sequence) asn1Encodable;
+				final ASN1ObjectIdentifier asn1ObjectIdentifier = (ASN1ObjectIdentifier) asn1Sequence.getObjectAt(0);
+				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(asn1ObjectIdentifier);
+				return AlgorithmIdentifier.getInstance(asn1Sequence);
+			} else if (asn1Encodable instanceof DERObjectIdentifier) {
+
+				// TODO (16/11/2014): The relevance and usefulness of the test case must be checked (do the signatures like this exist?)
+				ASN1ObjectIdentifier derObjectIdentifier = ASN1ObjectIdentifier.getInstance(asn1Encodable);
 				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(derObjectIdentifier.getId());
 				return new AlgorithmIdentifier(derObjectIdentifier);
 			}

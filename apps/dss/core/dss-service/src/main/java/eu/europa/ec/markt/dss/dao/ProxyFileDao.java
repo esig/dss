@@ -61,7 +61,7 @@ public class ProxyFileDao implements ProxyDao {
 
 				final String key = (String) keySet.getKey();
 				final String value = (String) keySet.getValue();
-				//                System.out.println(key + "=" + value);
+				LOG.trace(key + "=" + (key.contains("password") ? "******" : value));
 				final ProxyKey proxyKey = ProxyKey.fromKey(key);
 				if (proxyKey == null) {
 					continue;
@@ -92,5 +92,12 @@ public class ProxyFileDao implements ProxyDao {
 	public void update(final ProxyPreference proxyPreference) {
 
 		proxyPreferences.put(proxyPreference.getProxyKey(), proxyPreference);
+	}
+
+	@Override
+	public String toString() {
+		return "ProxyFileDao{" +
+			  "proxyPreferences=" + proxyPreferences +
+			  '}';
 	}
 }

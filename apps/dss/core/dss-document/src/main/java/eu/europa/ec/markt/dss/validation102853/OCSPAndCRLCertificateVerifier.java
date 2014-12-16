@@ -58,23 +58,24 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 	}
 
 	@Override
-	public RevocationToken check(final CertificateToken token) {
+	public RevocationToken check(final CertificateToken certificateToken) {
 
 		if (LOG.isTraceEnabled()) {
-			LOG.trace(token.toString());
+			LOG.trace(certificateToken.toString());
 		}
 		final boolean debugEnabled = LOG.isDebugEnabled();
+		final String dssIdAsString = certificateToken.getDSSIdAsString();
 		if (ocspSource != null) {
 
 			final OCSPCertificateVerifier ocspVerifier = new OCSPCertificateVerifier(ocspSource, validationCertPool);
 			if (debugEnabled) {
-				LOG.debug("OCSP request for: " + token.getDSSIdAsString() + " using: " + ocspSource.getClass().getSimpleName());
+				LOG.debug("OCSP request for: " + dssIdAsString + " using: " + ocspSource.getClass().getSimpleName());
 			}
-			final RevocationToken revocation = ocspVerifier.check(token);
+			final RevocationToken revocation = ocspVerifier.check(certificateToken);
 			if (revocation != null && revocation.getStatus() != null) {
 
 				if (debugEnabled) {
-					LOG.debug("OCSP response retrieved: " + revocation.getAbbreviation());
+					LOG.debug("OCSP response for " + dssIdAsString + " retrieved: " + revocation.getAbbreviation());
 				}
 				return revocation;
 			}
@@ -82,7 +83,7 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 		if (crlSource != null) {
 
 			if (debugEnabled) {
-				LOG.debug("CRL request for: " + token.getDSSIdAsString() + "using: " + crlSource.getClass().getSimpleName());
+				LOG.debug("CRL request for: " + dssIdAsString + "using: " + crlSource.getClass().getSimpleName());
 			}
 			/**
 			 * The validationPool is not needed for the CRLCertificateVerifier because it should be signed by the same certificate as the
@@ -93,17 +94,17 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 
 			 */
 			final CRLCertificateVerifier crlVerifier = new CRLCertificateVerifier(crlSource);
-			final RevocationToken revocation = crlVerifier.check(token);
-			if (revocation != null && revocation.getStatus() != null) {
+			final RevocationToken revocationToken = crlVerifier.check(certificateToken);
+			if (revocationToken != null && revocationToken.getStatus() != null) {
 
 				if (debugEnabled) {
-					LOG.debug("CRL retrieved: " + revocation.getAbbreviation());
+					LOG.debug("CRL for " + dssIdAsString + " retrieved: " + revocationToken.getAbbreviation());
 				}
-				return revocation;
+				return revocationToken;
 			}
 		}
 		if (debugEnabled) {
-			LOG.debug("There is no response neither from OCSP nor from CRL!");
+			LOG.debug("There is no response for " + dssIdAsString + " neither from OCSP nor from CRL!");
 		}
 		return null;
 	}

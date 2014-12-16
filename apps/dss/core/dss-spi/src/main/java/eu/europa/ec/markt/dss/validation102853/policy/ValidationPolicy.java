@@ -73,6 +73,13 @@ public abstract class ValidationPolicy extends XmlDom implements RuleConstant, A
 	public abstract SignaturePolicyConstraint getSignaturePolicyConstraint();
 
 	/**
+	 * Indicates if the structural validation should be checked. If StructuralValidation element is absent within the constraint file then null is returned.
+	 *
+	 * @return {@code Constraint} if StructuralValidation element is present in the constraint file, null otherwise.
+	 */
+	public abstract Constraint getStructuralValidationConstraint();
+
+	/**
 	 * Indicates if the signed property: signing-time should be checked. If SigningTime element is absent within the constraint file then null is returned.
 	 *
 	 * @return {@code Constraint} if SigningTime element is present in the constraint file, null otherwise.

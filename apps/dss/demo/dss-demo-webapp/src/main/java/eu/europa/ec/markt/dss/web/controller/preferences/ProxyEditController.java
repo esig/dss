@@ -19,6 +19,8 @@
  */
 package eu.europa.ec.markt.dss.web.controller.preferences;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +45,8 @@ import eu.europa.ec.markt.dss.web.model.PreferenceForm;
 @Controller
 @RequestMapping(value = "/admin/proxy")
 public class ProxyEditController {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ProxyEditController.class);
 
 	@Autowired
 	private ProxyPreferenceManager proxyPreferenceManager;
@@ -85,7 +89,9 @@ public class ProxyEditController {
 	public String updatePreferences(@ModelAttribute("preferenceForm") final PreferenceForm form) {
 
 		final String proxyKeyString = form.getKey();
-		proxyPreferenceManager.update(proxyKeyString, form.getValue());
+		final String proxyValueString = form.getValue();
+		proxyPreferenceManager.update(proxyKeyString, proxyValueString);
+		LOG.trace(">>> Proxy preference updated: " + proxyKeyString + "(" + proxyValueString + ")/" + proxyPreferenceManager);
 		return "redirect:/admin/proxy";
 	}
 }

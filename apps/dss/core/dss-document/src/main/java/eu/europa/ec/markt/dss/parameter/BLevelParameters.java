@@ -32,6 +32,18 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
 
 public class BLevelParameters {
 
+	/**
+	 * This variable indicates if the Baseline profile's trust anchor policy shall be followed:
+	 * ETSI TS 103 171 V2.1.1 (2012-03)
+	 * 6.2.1 Placement of the signing certificate
+	 * ../..
+	 * it is advised to include at least the unavailable intermediary certificates up to but not including the CAs present in the TSLs,
+	 * ../..
+	 * This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is constructed the trust anchor is included.
+	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
+	 */
+	private boolean trustAnchorBPPolicy = true;
+
 	private Date signingDate = new Date();
 
 	/**
@@ -53,28 +65,32 @@ public class BLevelParameters {
 	private String contentHintsType;
 	private String contentHintsDescription;
 
-	public BLevelParameters() {
-
+	/**
+	 * Default constructor
+	 */
+	BLevelParameters() {
 	}
 
+	/**
+	 * Copy constructor.
+	 *
+	 * @param source {@code BLevelParameters} source parameters
+	 */
 	BLevelParameters(final BLevelParameters source) {
 
 		if (source == null) {
-
 			throw new DSSNullException(BLevelParameters.class);
 		}
-		if (source.signaturePolicy != null) {
 
+		this.trustAnchorBPPolicy = source.trustAnchorBPPolicy;
+		if (source.signaturePolicy != null) {
 			this.signaturePolicy = new Policy(source.signaturePolicy);
 		}
 		this.signingDate = source.signingDate;
-
 		if (source.claimedSignerRoles != null) {
-
 			this.claimedSignerRoles = new ArrayList<String>(source.claimedSignerRoles);
 		}
 		if (source.certifiedSignerRoles != null) {
-
 			this.certifiedSignerRoles = new ArrayList<String>(source.certifiedSignerRoles);
 		}
 
@@ -85,15 +101,43 @@ public class BLevelParameters {
 		this.contentIdentifierSuffix = source.contentIdentifierSuffix;
 
 		if (source.commitmentTypeIndication != null) {
-
 			this.commitmentTypeIndication = new ArrayList<String>(source.commitmentTypeIndication);
 		}
 		if (source.signerLocation != null) {
-
 			this.signerLocation = new SignerLocation(source.signerLocation);
 		}
 	}
 
+	/**
+	 * @return indicates the trust anchor policy shall be used when creating -B and -LT levels
+	 */
+	public boolean isTrustAnchorBPPolicy() {
+		return trustAnchorBPPolicy;
+	}
+
+	/**
+	 * Allows to set the trust anchor policy to use when creating -B and -LT levels.
+	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when building -B level.
+	 *
+	 * @param trustAnchorBPPolicy {@code boolean}
+	 */
+	public void setTrustAnchorBPPolicy(boolean trustAnchorBPPolicy) {
+		this.trustAnchorBPPolicy = trustAnchorBPPolicy;
+	}
+
+	/**
+	 * @return the signature policy to use during the signature creation process
+	 */
+	public Policy getSignaturePolicy() {
+
+		return signaturePolicy;
+	}
+
+	/**
+	 * This setter allows to indicate the signature policy to use.
+	 *
+	 * @param signaturePolicy signature policy to use
+	 */
 	public void setSignaturePolicy(final Policy signaturePolicy) {
 
 		this.signaturePolicy = signaturePolicy;
@@ -249,6 +293,9 @@ public class BLevelParameters {
 		}
 	}
 
+	/**
+	 * This inner class allows to define the signature policy.
+	 */
 	public static class Policy {
 
 		private String id;
@@ -321,11 +368,6 @@ public class BLevelParameters {
 			this.digestValue = digestValue;
 		}
 
-	}
-
-	public Policy getSignaturePolicy() {
-
-		return signaturePolicy;
 	}
 
 	/**

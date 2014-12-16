@@ -136,9 +136,9 @@ public class SimpleReportBuilder {
 		final List<XmlDom> signatures = diagnosticData.getElements("/DiagnosticData/Signature");
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
-		for (final XmlDom signature : signatures) {
+		for (final XmlDom signatureXmlDom : signatures) {
 
-			addSignature(params, simpleReport, signature);
+			addSignature(params, simpleReport, signatureXmlDom);
 		}
 	}
 
@@ -164,12 +164,7 @@ public class SimpleReportBuilder {
 		signatureNode.setAttribute(AttributeName.ID, signatureId);
 
 		final String type = diagnosticSignature.getValue("./@Type");
-		if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
-
-			signatureNode.setAttribute(AttributeName.TYPE, AttributeValue.COUNTERSIGNATURE);
-			final String parentId = diagnosticSignature.getValue("./ParentId/text()");
-			signatureNode.setAttribute(AttributeName.PARENT_ID, parentId);
-		}
+		addCounterSignature(diagnosticSignature, signatureNode, type);
 		try {
 
 			addSigningTime(diagnosticSignature, signatureNode);
@@ -254,7 +249,9 @@ public class SimpleReportBuilder {
 			addBasicInfo(signatureNode, infoList);
 			//}
 			addSignatureProfile(signatureNode, signCert);
-			addSignatureScope(signatureNode, diagnosticSignature.getElement("./SignatureScopes"));
+
+			final XmlDom signatureScopes = diagnosticSignature.getElement("./SignatureScopes");
+			addSignatureScope(signatureNode, signatureScopes);
 		} catch (Exception e) {
 
 			notifyException(signatureNode, e);
@@ -262,11 +259,22 @@ public class SimpleReportBuilder {
 		}
 	}
 
-	private void addSignatureScope(XmlNode signatureNode, XmlDom signatureSoopes) {
-		signatureNode.addChild(signatureSoopes);
+	private void addCounterSignature(XmlDom diagnosticSignature, XmlNode signatureNode, String type) {
+		if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
+
+			signatureNode.setAttribute(AttributeName.TYPE, AttributeValue.COUNTERSIGNATURE);
+			final String parentId = diagnosticSignature.getValue("./ParentId/text()");
+			signatureNode.setAttribute(AttributeName.PARENT_ID, parentId);
+		}
 	}
 
-	private void addBasicInfo(XmlNode signatureNode, List<XmlDom> basicValidationErrorList) {
+	private void addSignatureScope(final XmlNode signatureNode, final XmlDom signatureScopes) {
+		if (signatureScopes != null) {
+			signatureNode.addChild(signatureScopes);
+		}
+	}
+
+	private void addBasicInfo(final XmlNode signatureNode, final List<XmlDom> basicValidationErrorList) {
 		for (final XmlDom error : basicValidationErrorList) {
 
 			signatureNode.addChild(error);

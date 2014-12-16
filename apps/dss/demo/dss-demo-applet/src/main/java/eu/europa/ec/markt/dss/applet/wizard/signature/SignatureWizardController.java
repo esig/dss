@@ -57,6 +57,7 @@ import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
@@ -201,7 +202,7 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		}
 		if (model.isTslSignatureCheck()) {
 
-			prepareTSLSignature(parameters);
+			prepareTSLSignature(parameters, fileToSign);
 		} else {
 
 			prepareCommonSignature(model, parameters);
@@ -236,7 +237,7 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		}
 	}
 
-	private void prepareTSLSignature(SignatureParameters parameters) {
+	private void prepareTSLSignature(SignatureParameters parameters, File fileToSign) {
 
 		parameters.clearCertificateChain();
 		parameters.setCertificateChain(parameters.getSigningCertificate());
@@ -248,6 +249,8 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		DSSReference dssReference = new DSSReference();
 		dssReference.setId("xml_ref_id");
 		dssReference.setUri("");
+		dssReference.setContents(new FileDocument(fileToSign));
+		dssReference.setDigestMethodAlgorithm(parameters.getDigestAlgorithm());
 
 		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 

@@ -24,8 +24,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="asicMimeType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="asicSignatureForm" type="{http://ws.dss.markt.ec.europa.eu/}signatureForm" minOccurs="0"/>
  *         &lt;element name="asicZipComment" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="certificateChainByteArrayList" type="{http://www.w3.org/2001/XMLSchema}base64Binary" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="certifiedSignerRoles" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="chainCertificateList" type="{http://ws.dss.markt.ec.europa.eu/}wsChainCertificate" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="claimedSignerRole" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="commitmentTypeIndication" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="contentIdentifierPrefix" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -38,6 +38,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="signatureLevel" type="{http://ws.dss.markt.ec.europa.eu/}signatureLevel" minOccurs="0"/>
  *         &lt;element name="signaturePackaging" type="{http://ws.dss.markt.ec.europa.eu/}signaturePackaging" minOccurs="0"/>
  *         &lt;element name="signaturePolicy" type="{http://ws.dss.markt.ec.europa.eu/}policy" minOccurs="0"/>
+ *         &lt;element name="signedInfoCanonicalizationMethod" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="signerLocation" type="{http://ws.dss.markt.ec.europa.eu/}signerLocation" minOccurs="0"/>
  *         &lt;element name="signingCertificateBytes" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
  *         &lt;element name="signingCertificateDigestAlgorithm" type="{http://ws.dss.markt.ec.europa.eu/}digestAlgorithm" minOccurs="0"/>
@@ -56,8 +57,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "asicMimeType",
     "asicSignatureForm",
     "asicZipComment",
-    "certificateChainByteArrayList",
     "certifiedSignerRoles",
+    "chainCertificateList",
     "claimedSignerRole",
     "commitmentTypeIndication",
     "contentIdentifierPrefix",
@@ -70,6 +71,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "signatureLevel",
     "signaturePackaging",
     "signaturePolicy",
+    "signedInfoCanonicalizationMethod",
     "signerLocation",
     "signingCertificateBytes",
     "signingCertificateDigestAlgorithm",
@@ -82,9 +84,9 @@ public class WsParameters {
     protected SignatureForm asicSignatureForm;
     protected boolean asicZipComment;
     @XmlElement(nillable = true)
-    protected List<byte[]> certificateChainByteArrayList;
-    @XmlElement(nillable = true)
     protected List<String> certifiedSignerRoles;
+    @XmlElement(nillable = true)
+    protected List<WsChainCertificate> chainCertificateList;
     @XmlElement(nillable = true)
     protected List<String> claimedSignerRole;
     @XmlElement(nillable = true)
@@ -100,6 +102,7 @@ public class WsParameters {
     protected SignatureLevel signatureLevel;
     protected SignaturePackaging signaturePackaging;
     protected Policy signaturePolicy;
+    protected String signedInfoCanonicalizationMethod;
     protected SignerLocation signerLocation;
     protected byte[] signingCertificateBytes;
     protected DigestAlgorithm signingCertificateDigestAlgorithm;
@@ -172,34 +175,6 @@ public class WsParameters {
     }
 
     /**
-     * Gets the value of the certificateChainByteArrayList property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the certificateChainByteArrayList property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getCertificateChainByteArrayList().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * byte[]
-     * 
-     */
-    public List<byte[]> getCertificateChainByteArrayList() {
-        if (certificateChainByteArrayList == null) {
-            certificateChainByteArrayList = new ArrayList<byte[]>();
-        }
-        return this.certificateChainByteArrayList;
-    }
-
-    /**
      * Gets the value of the certifiedSignerRoles property.
      * 
      * <p>
@@ -226,6 +201,35 @@ public class WsParameters {
             certifiedSignerRoles = new ArrayList<String>();
         }
         return this.certifiedSignerRoles;
+    }
+
+    /**
+     * Gets the value of the chainCertificateList property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the chainCertificateList property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getChainCertificateList().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link WsChainCertificate }
+     * 
+     * 
+     */
+    public List<WsChainCertificate> getChainCertificateList() {
+        if (chainCertificateList == null) {
+            chainCertificateList = new ArrayList<WsChainCertificate>();
+        }
+        return this.chainCertificateList;
     }
 
     /**
@@ -524,6 +528,30 @@ public class WsParameters {
     }
 
     /**
+     * Gets the value of the signedInfoCanonicalizationMethod property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSignedInfoCanonicalizationMethod() {
+        return signedInfoCanonicalizationMethod;
+    }
+
+    /**
+     * Sets the value of the signedInfoCanonicalizationMethod property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSignedInfoCanonicalizationMethod(String value) {
+        this.signedInfoCanonicalizationMethod = value;
+    }
+
+    /**
      * Gets the value of the signerLocation property.
      * 
      * @return
@@ -566,7 +594,7 @@ public class WsParameters {
      *     byte[]
      */
     public void setSigningCertificateBytes(byte[] value) {
-        this.signingCertificateBytes = ((byte[]) value);
+        this.signingCertificateBytes = value;
     }
 
     /**

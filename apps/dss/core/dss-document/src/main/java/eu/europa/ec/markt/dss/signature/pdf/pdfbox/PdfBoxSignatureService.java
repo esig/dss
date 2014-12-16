@@ -261,6 +261,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				LOG.debug("Found {} signatures in PDF dictionary of PDF sized {} bytes", signatureDictionaries.size(), buffer.size());
 			}
 			for (int i = 0; i < signatureDictionaries.size(); i++) {
+
 				final PDSignature signature = signatureDictionaries.get(i);
 				/**
 				 * SubFilter Name (Required) The value of SubFilter identifies the format of the data contained in the stream.
@@ -268,7 +269,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				 * When the value of Type is DocTimestamp, the value of SubFilter shall be ETSI.RFC3161.
 				 */
 				final String subFilter = signature.getSubFilter();
+				if(DSSUtils.isBlank(subFilter)) {
 
+					LOG.warn("No signature found in signature Dictionary:Content, SUB_FILTER is empty!");
+					continue;
+				}
 				byte[] cms = new PdfBoxDict(signature.getDictionary(), doc).get("Contents");
 
 				PdfSignatureOrDocTimestampInfo signatureInfo;

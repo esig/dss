@@ -455,10 +455,16 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signatureId, timestampId);
 		final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
 		final String tsvpIndication = tsvpConclusion.getValue("./Indication/text()");
+		final String tsvpSubIndication = tsvpConclusion.getValue("./SubIndication/text()");
 
 		final XmlNode constraintNode = addConstraint(timestampXmlNode, ADEST_ITVPC);
 
-		if (VALID.equals(tsvpIndication)) {
+		boolean valid = VALID.equals(tsvpIndication);
+		boolean cryptoConstraintsFailureNoPoe = CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(tsvpSubIndication);
+		boolean revokedNoPoe = REVOKED_NO_POE.equals(tsvpSubIndication);
+		boolean outOfBoundsNoPoe = OUT_OF_BOUNDS_NO_POE.equals(tsvpSubIndication);
+
+		if (valid || cryptoConstraintsFailureNoPoe || revokedNoPoe || outOfBoundsNoPoe) {
 
 			if (productionTime.before(bestSignatureTime)) {
 
@@ -482,7 +488,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	}
 
 	/**
-	 * Same as previous method, but does not add the timestamp to the list of right timestamps, and does not return any result
+	 * Same as previous method ({@code #checkTimestampValidationProcessConstraint}), but does not add the timestamp to the list of right timestamps, and does not return any result
 	 * -> Only performs the functional validation of the timestamp
 	 *
 	 * @return

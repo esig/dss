@@ -35,6 +35,7 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
+import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -43,6 +44,7 @@ import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.ws.DSSWSUtils;
 import eu.europa.ec.markt.dss.ws.SignatureService;
+import eu.europa.ec.markt.dss.ws.WSChainCertificate;
 import eu.europa.ec.markt.dss.ws.WSDSSReference;
 import eu.europa.ec.markt.dss.ws.WSDocument;
 import eu.europa.ec.markt.dss.ws.WSParameters;
@@ -144,6 +146,8 @@ public class SignatureServiceImpl implements SignatureService {
 
 		setSignaturePackaging(wsParameters, params);
 
+		setSignedInfoCanonicalizationMethod(wsParameters, params);
+
 		setEncryptionAlgorithm(wsParameters, params);
 
 		setDigestAlgorithm(wsParameters, params);
@@ -206,6 +210,12 @@ public class SignatureServiceImpl implements SignatureService {
 		params.bLevel().setContentIdentifierPrefix(contentIdentifierPrefix);
 	}
 
+	private void setSignedInfoCanonicalizationMethod(WSParameters wsParameters, SignatureParameters params) {
+
+		final String signedInfoCanonicalizationMethod = wsParameters.getSignedInfoCanonicalizationMethod();
+		params.setSignedInfoCanonicalizationMethod(signedInfoCanonicalizationMethod);
+	}
+
 	private void setEncryptionAlgorithm(WSParameters wsParameters, SignatureParameters params) {
 
 		final EncryptionAlgorithm encryptionAlgorithm = wsParameters.getEncryptionAlgorithm();
@@ -243,21 +253,21 @@ public class SignatureServiceImpl implements SignatureService {
 		final X509Certificate x509SigningCertificate = DSSUtils.loadCertificate(signingCertBytes);
 		params.setSigningCertificate(x509SigningCertificate);
 
-		final List<X509Certificate> chain = new ArrayList<X509Certificate>();
-		chain.add(x509SigningCertificate);
-		final List<byte[]> certificateChainByteArrayList = wsParameters.getCertificateChainByteArrayList();
-		if (certificateChainByteArrayList != null) {
+		final List<ChainCertificate> chainCertificates = new ArrayList<ChainCertificate>();
+		chainCertificates.add(new ChainCertificate(x509SigningCertificate, true));
+		final List<WSChainCertificate> wsChainCertificateList = wsParameters.getChainCertificateList();
+		if (!DSSUtils.isEmpty(wsChainCertificateList)) {
 
-			for (final byte[] x509CertificateBytes : certificateChainByteArrayList) {
+			for (final WSChainCertificate wsChainCertificate : wsChainCertificateList) {
 
-				final X509Certificate x509Certificate = DSSUtils.loadCertificate(x509CertificateBytes);
-				if (!chain.contains(x509Certificate)) {
-
-					chain.add(x509Certificate);
+				final X509Certificate x509Certificate = DSSUtils.loadCertificate(wsChainCertificate.getX509Certificate());
+				final ChainCertificate chainCertificate = new ChainCertificate(x509Certificate, wsChainCertificate.isSignedAttribute());
+				if (!chainCertificates.contains(chainCertificate)) {
+					chainCertificates.add(chainCertificate);
 				}
 			}
 		}
-		params.setCertificateChain(chain);
+		params.setCertificateChain(chainCertificates);
 	}
 
 	/**
@@ -303,6 +313,7 @@ public class SignatureServiceImpl implements SignatureService {
 			dssReference.setId(wsDssReference.getId());
 			dssReference.setType(wsDssReference.getType());
 			dssReference.setUri(wsDssReference.getUri());
+			dssReference.setDigestMethodAlgorithm(wsDssReference.getDigestMethodAlgorithm());
 			final DSSDocument contentsDssDocument = DSSWSUtils.createDssDocument(wsDssReference.getContents());
 			dssReference.setContents(contentsDssDocument);
 			dssReference.setTransforms(wsDssReference.getTransforms());

@@ -106,7 +106,7 @@ public class SignDocument {
      *     byte[]
      */
     public void setSignatureValue(byte[] value) {
-        this.signatureValue = ((byte[]) value);
+        this.signatureValue = value;
     }
 
 }

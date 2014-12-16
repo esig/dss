@@ -21,6 +21,7 @@
 package eu.europa.ec.markt.dss.validation102853.tsl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -33,6 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -56,6 +58,7 @@ import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonTrustedCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
+import eu.europa.ec.markt.dss.validation102853.https.CommonsDataLoader;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
@@ -64,7 +67,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
- * Certificate coming from the Trusted List
+ * This class allows to extract all the trust anchors defined by the trusted lists. The LOTL is used as the entry point of the process.
  *
  * @version $Revision: 1845 $ - $Date: 2013-04-04 17:46:25 +0200 (Thu, 04 Apr 2013) $
  */
@@ -76,6 +79,17 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	// prefix of a resource to be found on the classpath - Spring notation
 	private static final String CP = "classpath://";
 	private static final String FILE = "file://";
+
+	public static final String TSL_HASH_PROPERTIES = "tsl_hash.properties";
+	public static final String TSL_NEXT_UPDATE_PROPERTIES = "tsl_next_update.properties";
+
+	private File tslPropertyCacheFolder = new File(System.getProperty("java.io.tmpdir"));
+	private Properties tslHashes = null;
+	private Properties tslNextUpdates = null;
+
+	protected TSLRefreshPolicy tslRefreshPolicy = TSLRefreshPolicy.ALWAYS;
+
+	private CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
 
 	protected String lotlUrl;
 
@@ -113,7 +127,8 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		this.setCheckSignature(trustedListsCertificateSource.checkSignature);
 		this.setLotlCertificate(trustedListsCertificateSource.lotlCertificate);
 		this.setLotlUrl(trustedListsCertificateSource.lotlUrl);
-
+		this.setTslPropertyCacheFolder(trustedListsCertificateSource.tslPropertyCacheFolder);
+		this.setTslRefreshPolicy(trustedListsCertificateSource.tslRefreshPolicy);
 	}
 
 	@Override
@@ -123,28 +138,14 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	/**
-	 * This method allows to define (to add) any certificate as trusted. A service information is associated to this certificate. The
-	 * source of the certificate is set to {@code CertificateSourceType.TRUSTED_LIST}
-	 *
-	 * @param cert        the certificate you have to trust
-	 * @param serviceInfo the service information associated to the service
-	 * @return the corresponding certificate token
-	 */
-	public CertificateToken addCertificate(final X509Certificate cert, final ServiceInfo serviceInfo) {
-
-		final CertificateToken certToken = super.addCertificate(cert, serviceInfo);
-		return certToken;
-	}
-
-	/**
 	 * This method is not applicable for this kind of certificate source. You should use {@link
 	 * #addCertificate(java.security.cert.X509Certificate, eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo)}
 	 *
-	 * @param cert the certificate you have to trust
+	 * @param x509Certificate the certificate you have to trust
 	 * @return the corresponding certificate token
 	 */
 	@Override
-	public CertificateToken addCertificate(final X509Certificate cert) {
+	public CertificateToken addCertificate(final X509Certificate x509Certificate) {
 
 		throw new DSSNotApplicableMethodException(getClass());
 	}
@@ -152,17 +153,17 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	/**
 	 * Adds a service entry (current or history) to the list of certificate tokens.
 	 *
-	 * @param cert           the certificate which identifies the trusted service
-	 * @param trustedService Object defining the trusted service
-	 * @param tsProvider     Object defining the trusted service provider, must be the parent of the trusted service
-	 * @param tlWellSigned   Indicates if the signature of trusted list is valid
+	 * @param x509Certificate the certificate which identifies the trusted service
+	 * @param trustedService  Object defining the trusted service
+	 * @param tsProvider      Object defining the trusted service provider, must be the parent of the trusted service
+	 * @param tlWellSigned    Indicates if the signature of trusted list is valid
 	 */
-	private synchronized void addCertificate(final X509Certificate cert, final AbstractTrustService trustedService, final TrustServiceProvider tsProvider,
+	private synchronized void addCertificate(final X509Certificate x509Certificate, final AbstractTrustService trustedService, final TrustServiceProvider tsProvider,
 	                                         final boolean tlWellSigned) {
 
 		try {
 			final ServiceInfo serviceInfo = getServiceInfo(trustedService, tsProvider, tlWellSigned);
-			super.addCertificate(cert, serviceInfo);
+			addCertificate(x509Certificate, serviceInfo);
 		} catch (DSSNotETSICompliantException ex) {
 
 			LOG.error("The entry for " + trustedService.getServiceName() + " doesn't respect ETSI specification " + ex.getLocalizedMessage());
@@ -250,87 +251,156 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 */
 	private TrustStatusList getTrustStatusList(final String url, final List<X509Certificate> signingCertList) {
 
-		byte[] bytes = dataLoader.get(url);
+		boolean refresh = shouldRefresh(url);
+		final byte[] bytes = dataLoader.get(url, refresh);
 		if (bytes == null) {
-
 			throw new DSSNullReturnedException(url);
 		}
+		boolean coreValidity = checkSignature ? validateTslSignature(signingCertList, bytes) : true;
 		final Document doc = DSSXMLUtils.buildDOM(bytes);
+		final TrustStatusList trustStatusList = TrustServiceListFactory.newInstance(doc);
+		trustStatusList.setWellSigned(coreValidity);
+		updateTslNextUpdateDate(url, trustStatusList);
+		return trustStatusList;
+	}
 
-		boolean coreValidity = true;
-		if (checkSignature) {
+	private boolean validateTslSignature(final List<X509Certificate> signingCertList, final byte[] bytes) {
 
-			coreValidity = false;
-			if (signingCertList != null) {
+		boolean coreValidity = false;
+		if (signingCertList != null) {
 
-				final CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
-				for (final X509Certificate x509Certificate : signingCertList) {
+			final XMLDocumentValidator xmlDocumentValidator = prepareSignatureValidation(signingCertList, bytes);
+			final List<AdvancedSignature> signatures = xmlDocumentValidator.getSignatures();
+			if (signatures.size() == 0) {
+				throw new DSSException("Not ETSI compliant signature. The Xml is not signed.");
+			}
+			final Reports reports = xmlDocumentValidator.validateDocument();
+			final SimpleReport simpleReport = reports.getSimpleReport();
+			final List<String> signatureIdList = simpleReport.getSignatureIdList();
+			final String signatureId = signatureIdList.get(0);
+			final String indication = simpleReport.getIndication(signatureId);
+			coreValidity = Indication.VALID.equals(indication);
+			LOG.info("The TSL signature validity: " + coreValidity);
+			if (!coreValidity) {
 
-					commonTrustedCertificateSource.addCertificate(x509Certificate);
-				}
-				final CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
-				certificateVerifier.setTrustedCertSource(commonTrustedCertificateSource);
-
-				final DSSDocument dssDocument = new InMemoryDocument(bytes);
-				final XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(dssDocument);
-				xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
-				// To increase the security: the default {@code XPathQueryHolder} is used.
-				final List<XPathQueryHolder> xPathQueryHolders = xmlDocumentValidator.getXPathQueryHolder();
-				xPathQueryHolders.clear();
-				final XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
-				xPathQueryHolders.add(xPathQueryHolder);
-
-				final List<AdvancedSignature> signatures = xmlDocumentValidator.getSignatures();
-				if (signatures.size() == 0) {
-
-					throw new DSSException("Not ETSI compliant signature. The Xml is not signed.");
-				}
-
-				final Reports reports = xmlDocumentValidator.validateDocument();
-				final SimpleReport simpleReport = reports.getSimpleReport();
-				final List<String> signatureIdList = simpleReport.getSignatureIds();
-				final String signatureId = signatureIdList.get(0);
-				final String indication = simpleReport.getIndication(signatureId);
-				coreValidity = Indication.VALID.equals(indication);
-				LOG.info("The TSL signature validity: " + coreValidity);
-				if (!coreValidity) {
-
-					LOG.info("The TSL signature validity details:\n" + simpleReport);
-					//					System.out.println(reports.getDiagnosticData());
-					throw new DSSException("Not ETSI compliant signature. The signature is not valid.");
-				}
+				LOG.info("The TSL signature validity details:\n" + simpleReport);
+				throw new DSSException("Not ETSI compliant signature. The signature is not valid.");
 			}
 		}
-		final TrustStatusList tsl = TrustServiceListFactory.newInstance(doc);
-		tsl.setWellSigned(coreValidity);
-		return tsl;
+		return coreValidity;
+	}
+
+	protected void updateTSLHashCode(final String url, final String currentHashValue) {
+
+		ensureTSLHashCodePropertyFileLoaded();
+		tslHashes.setProperty(url, currentHashValue);
+		saveProperties(tslHashes, TSL_HASH_PROPERTIES);
+	}
+
+	protected String getTSLHashCode(final String url) {
+
+		ensureTSLHashCodePropertyFileLoaded();
+		return tslHashes.getProperty(url);
+	}
+
+	private void ensureTSLHashCodePropertyFileLoaded() {
+		if (tslHashes == null) {
+			tslHashes = loadProperties(TSL_HASH_PROPERTIES);
+		}
+	}
+
+	protected String getTSLNextUpdateDate(final String url) {
+
+		ensureTSLNextUpdatePropertyFileLoaded();
+		return tslNextUpdates.getProperty(url);
+	}
+
+	protected void updateTslNextUpdateDate(final String url, final TrustStatusList tsl) {
+
+		ensureTSLNextUpdatePropertyFileLoaded();
+		final Date nextUpdate = tsl.getNextUpdate();
+		tslNextUpdates.setProperty(url, DSSUtils.formatInternal(nextUpdate));
+		saveProperties(tslNextUpdates, TSL_NEXT_UPDATE_PROPERTIES);
+	}
+
+	private void ensureTSLNextUpdatePropertyFileLoaded() {
+		if (tslNextUpdates == null) {
+			tslNextUpdates = loadProperties(TSL_NEXT_UPDATE_PROPERTIES);
+		}
+	}
+
+	private boolean shouldRefresh(final String url) {
+
+		if (tslRefreshPolicy == TSLRefreshPolicy.ALWAYS) {
+			return true;
+		}
+		if (tslRefreshPolicy == TSLRefreshPolicy.NEVER) {
+			return false;
+		}
+		// ETSI TS 119 612 V1.1.1 (2013-06)
+		// 6.1 TL publication
+		final String urlSha2 = url.substring(0, url.lastIndexOf(".")) + ".sha2";
+		boolean refresh = false;
+		try {
+			final byte[] sha2Bytes = commonsDataLoader.get(urlSha2);
+			final String currentHashValue = new String(sha2Bytes).trim();
+			if (DSSUtils.isBlank(currentHashValue)) {
+				throw new DSSException("SHA256 does not exist!");
+			}
+			final String hashValue = getTSLHashCode(url);
+			refresh = hashValue == null || !currentHashValue.equals(hashValue);
+			if (refresh) {
+
+				updateTSLHashCode(url, currentHashValue);
+			}
+		} catch (Exception e) {
+			if (tslRefreshPolicy == TSLRefreshPolicy.WHEN_NECESSARY_OR_INDETERMINATE) {
+				return true;
+			}
+		}
+		// if the current date is after the last known nextUpdate then the refresh is forced.
+		final String tslNextUpdateProperty = getTSLNextUpdateDate(url);
+		final Date tslNextUpdateDate = DSSUtils.quietlyParseDate(tslNextUpdateProperty);
+		if (tslNextUpdateDate != null && new Date().after(tslNextUpdateDate)) {
+			refresh = true;
+		}
+		return refresh;
+	}
+
+	private XMLDocumentValidator prepareSignatureValidation(final List<X509Certificate> signingCertList, final byte[] bytes) {
+
+		final CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
+		for (final X509Certificate x509Certificate : signingCertList) {
+
+			commonTrustedCertificateSource.addCertificate(x509Certificate);
+		}
+		final CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
+		certificateVerifier.setTrustedCertSource(commonTrustedCertificateSource);
+
+		final DSSDocument dssDocument = new InMemoryDocument(bytes);
+		final XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(dssDocument);
+		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
+		// To increase the security: the default {@code XPathQueryHolder} is used.
+		final List<XPathQueryHolder> xPathQueryHolders = xmlDocumentValidator.getXPathQueryHolder();
+		xPathQueryHolders.clear();
+		final XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+		xPathQueryHolders.add(xPathQueryHolder);
+		return xmlDocumentValidator;
 	}
 
 	/**
-	 * Load the certificates contained in all the TSL referenced by the LOTL
+	 * Load the certificates (trust anchors) contained in all the TSL referenced by the LOTL
 	 */
 	public void init() {
 
+		if (LOG.isInfoEnabled()) {
+			LOG.info("TSL refresh policy: ", tslRefreshPolicy.name());
+			LOG.info("TSL property cache folder: ", tslPropertyCacheFolder.getAbsolutePath());
+		}
+
 		diagnosticInfo.clear();
 
-		X509Certificate lotlCert = null;
-		if (checkSignature) {
-
-			lotlCert = readLOTLCertificate();
-		}
-		TrustStatusList lotl;
-		try {
-
-			LOG.info("Downloading LOTL from url= {}", lotlUrl);
-			final ArrayList<X509Certificate> x509CertificateList = new ArrayList<X509Certificate>();
-			x509CertificateList.add(lotlCert);
-			lotl = getTrustStatusList(lotlUrl, x509CertificateList);
-		} catch (DSSException e) {
-
-			LOG.error("The LOTL cannot be loaded: " + e.getMessage(), e);
-			throw e;
-		}
-		diagnosticInfo.put(lotlUrl, "Loaded " + new Date().toString());
+		final TrustStatusList lotl = loadLotl();
 		final int size = lotl.getOtherTSLPointers().size();
 		//        final ExecutorService executorService = Executors.newFixedThreadPool(size);
 		//        List<Future> futures = new ArrayList<Future>(size);
@@ -367,6 +437,29 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		loadAdditionalLists();
 		LOG.info("Loading completed: {} trusted lists", size);
 		LOG.info("                 : {} certificates", certPool.getNumberOfCertificates());
+	}
+
+	private TrustStatusList loadLotl() {
+
+		X509Certificate lotlCert = null;
+		if (checkSignature) {
+
+			lotlCert = readLOTLCertificate();
+		}
+		TrustStatusList lotl;
+		try {
+
+			LOG.info("Downloading LOTL from url= {}", lotlUrl);
+			final ArrayList<X509Certificate> x509CertificateList = new ArrayList<X509Certificate>();
+			x509CertificateList.add(lotlCert);
+			lotl = getTrustStatusList(lotlUrl, x509CertificateList);
+		} catch (DSSException e) {
+
+			LOG.error("The LOTL cannot be loaded: " + e.getMessage(), e);
+			throw e;
+		}
+		diagnosticInfo.put(lotlUrl, "Loaded " + new Date().toString());
+		return lotl;
 	}
 
 	private X509Certificate readLOTLCertificate() throws DSSException {
@@ -487,7 +580,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 							if (certificateTokens.size() > 0) {
 								x509Certificate = certificateTokens.get(0).getCertificate();
 							} else {
-								LOG.warn("There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
+								LOG.debug("WARNING: There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
 							}
 						}
 						if (x509Certificate != null) {
@@ -505,12 +598,20 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	/**
+	 * This method allows to set the {@code RefreshPolicy} to be used when loading or re-loading the trusted lists.
+	 *
+	 * @param tslRefreshPolicy {@code RefreshPolicy} to use
+	 */
+	public void setTslRefreshPolicy(final TSLRefreshPolicy tslRefreshPolicy) {
+		this.tslRefreshPolicy = tslRefreshPolicy;
+	}
+
+	/**
 	 * Defines if the TL signature must be checked.
 	 *
 	 * @param checkSignature the checkSignature to set
 	 */
 	public void setCheckSignature(final boolean checkSignature) {
-
 		this.checkSignature = checkSignature;
 	}
 
@@ -520,7 +621,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param lotlCertificate the path to the LOTL signing certificate to set
 	 */
 	public void setLotlCertificate(final String lotlCertificate) {
-
 		this.lotlCertificate = lotlCertificate;
 	}
 
@@ -530,7 +630,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param lotlUrl the lotlUrl to set
 	 */
 	public void setLotlUrl(final String lotlUrl) {
-
 		this.lotlUrl = lotlUrl;
 	}
 
@@ -540,5 +639,53 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	public void setDataLoader(final DataLoader dataLoader) {
 
 		this.dataLoader = dataLoader;
+		if (dataLoader instanceof CommonsDataLoader) {
+
+			CommonsDataLoader commonsDataLoader1 = (CommonsDataLoader) dataLoader;
+			commonsDataLoader.setProxyPreferenceManager(commonsDataLoader1.getProxyPreferenceManager());
+			commonsDataLoader1.propagateAuthentication(commonsDataLoader);
+		}
+	}
+
+	/**
+	 * @param tslPropertyCacheFolder
+	 */
+	public void setTslPropertyCacheFolder(final File tslPropertyCacheFolder) {
+		this.tslPropertyCacheFolder = tslPropertyCacheFolder;
+	}
+
+	/**
+	 * @param propertiesFileName
+	 * @return
+	 */
+	public Properties loadProperties(final String propertiesFileName) {
+
+		final Properties properties = new Properties();
+		final File file = new File(tslPropertyCacheFolder, propertiesFileName);
+		if (file.exists()) {
+			try {
+				final InputStream inputStream = DSSUtils.toInputStream(file);
+				properties.load(inputStream);
+			} catch (Exception e) {
+				LOG.error("Impossible to load: '{}'", file.getAbsolutePath(), e);
+			}
+		}
+		return properties;
+	}
+
+	/**
+	 * @param properties
+	 * @param propertiesFileName
+	 */
+	public void saveProperties(final Properties properties, final String propertiesFileName) {
+
+		final File file = new File(tslPropertyCacheFolder, propertiesFileName);
+		try {
+
+			final FileOutputStream fileOutputStream = new FileOutputStream(file);
+			properties.store(fileOutputStream, null);
+		} catch (Exception e) {
+			LOG.error("Impossible to save: '{}'", file.getAbsolutePath(), e);
+		}
 	}
 }

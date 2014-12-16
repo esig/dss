@@ -67,6 +67,8 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_I
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPSTP_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPXTIP;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISQPXTIP_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISSV;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_SAV_ISSV_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.EMPTY;
 
 
@@ -204,6 +206,12 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 	private Conclusion process(final ProcessParameters params) {
 
 		final Conclusion conclusion = new Conclusion();
+
+		// structural validation (only for XAdES)
+		if (!checkStructuralValidationConstraint(conclusion)) {
+			return conclusion;
+		}
+
 		/**
 		 * 5.5.4.1 Processing AdES properties/attributes
 		 * This clause describes the application of Signature Constraints on the content of the signature including the processing
@@ -372,6 +380,31 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		final XmlNode constraintNode = subProcessNode.addChild(CONSTRAINT);
 		constraintNode.addChild(NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
 		return constraintNode;
+	}
+
+	/**
+	 * Check of structural validation (only for XAdES signature: XSD schema validation)
+	 *
+	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @return false if the check failed and the process should stop, true otherwise.
+	 */
+	private boolean checkStructuralValidationConstraint(final Conclusion conclusion) {
+
+		final Constraint constraint = constraintData.getStructuralValidationConstraint();
+		if (constraint == null) {
+			return true;
+		}
+		constraint.create(subProcessNode, BBB_SAV_ISSV);
+		final boolean structureValid = signatureContext.getBoolValue("./StructuralValidation/Valid/text()");
+		constraint.setValue(structureValid);
+		final String message = signatureContext.getValue("./StructuralValidation/Message/text()");
+		if (DSSUtils.isNotBlank(message)) {
+			constraint.setAttribute("Log", message);
+		}
+		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_SAV_ISSV_ANS);
+		constraint.setConclusionReceiver(conclusion);
+
+		return constraint.check();
 	}
 
 	/**
@@ -573,7 +606,6 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 	}
 
 	/**
-	 *
 	 * @param conclusion
 	 * @return
 	 */
@@ -627,7 +659,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		constraint.setValue(claimedRole);
 		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_SAV_ICRM_ANS);
 		constraint.setConclusionReceiver(conclusion);
-		boolean check = check = constraint.checkInList();
+		boolean check = constraint.checkInList();
 		return check;
 	}
 

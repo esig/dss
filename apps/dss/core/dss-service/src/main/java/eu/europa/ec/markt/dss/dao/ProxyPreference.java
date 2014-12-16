@@ -21,8 +21,8 @@ package eu.europa.ec.markt.dss.dao;
 
 /**
  * Preference information for Proxy
- *
- * <p>
+ * <p/>
+ * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
@@ -30,48 +30,56 @@ package eu.europa.ec.markt.dss.dao;
  */
 public class ProxyPreference {
 
-    private ProxyKey proxyKey;
+	private ProxyKey proxyKey;
 
-    private String value;
+	private String value;
 
-    public ProxyPreference() {
-    }
+	public ProxyPreference() {
+	}
 
-    public ProxyPreference(final ProxyKey proxyKey, final String value) {
-        this.proxyKey = proxyKey;
-        this.value = value;
-    }
+	public ProxyPreference(final ProxyKey proxyKey, final String value) {
+		this.proxyKey = proxyKey;
+		this.value = value;
+	}
 
-    /**
-     * @return the key
-     */
-    public ProxyKey getProxyKey() {
-        return proxyKey;
-    }
+	/**
+	 * @return the key
+	 */
+	public ProxyKey getProxyKey() {
+		return proxyKey;
+	}
 
-    /**
-     * @return the value
-     */
-    public String getValue() {
-        return value;
-    }
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+		return value;
+	}
 
-    /**
-     * @param proxyKey the key to set
-     */
-    public void setProxyKey(final ProxyKey proxyKey) {
-        this.proxyKey = proxyKey;
-    }
+	/**
+	 * @param proxyKey the key to set
+	 */
+	public void setProxyKey(final ProxyKey proxyKey) {
+		this.proxyKey = proxyKey;
+	}
 
-    /**
-     * @param value the value to set
-     */
-    public void setValue(final String value) {
-        this.value = value;
-    }
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(final String value) {
+		this.value = value;
+	}
 
-    public void setProxyKey(final String proxyKeyString) {
+	public void setProxyKey(final String proxyKeyString) {
 
-        proxyKey = ProxyKey.fromKey(proxyKeyString);
-    }
+		proxyKey = ProxyKey.fromKey(proxyKeyString);
+	}
+
+	@Override
+	public String toString() {
+		return "ProxyPreference{" +
+			  "proxyKey=" + proxyKey +
+			  ", value='" + (proxyKey.getKeyName().contains("password") ? "******" : value) + '\'' +
+			  '}';
+	}
 }

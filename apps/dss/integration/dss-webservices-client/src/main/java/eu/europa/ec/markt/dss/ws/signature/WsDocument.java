@@ -88,7 +88,7 @@ public class WsDocument {
      *     byte[]
      */
     public void setBytes(byte[] value) {
-        this.bytes = ((byte[]) value);
+        this.bytes = value;
     }
 
     /**

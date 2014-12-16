@@ -19,7 +19,6 @@
  */
 package eu.europa.ec.markt.dss;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,71 +33,71 @@ import javax.xml.namespace.NamespaceContext;
  */
 public final class NamespaceContextMap implements NamespaceContext {
 
-    private final Map<String, String> prefixMap;
-    private final Map<String, Set<String>> namespaceMap;
+	private final Map<String, String> prefixMap;
+	private final Map<String, Set<String>> namespaceMap;
 
-    /**
-     * This constructor takes a map of prefixes and their associated namespace URI values. A copy of this map is made and an inverse map is
-     * created.
-     *
-     * @param prefixMap a map of prefix/namespace URI values
-     */
-    public NamespaceContextMap(final Map<String, String> prefixMap) {
+	/**
+	 * This is the default constructor
+	 */
+	public NamespaceContextMap() {
 
-        this.prefixMap = Collections.unmodifiableMap(prefixMap);
-        namespaceMap = createNamespaceMap(this.prefixMap);
-    }
+		prefixMap = new HashMap<String, String>();
+		namespaceMap = new HashMap<String, Set<String>>();
+	}
 
-    private Map<String, Set<String>> createNamespaceMap(Map<String, String> prefixMap) {
+	/**
+	 * This method allows to register a namespace and associated prefix. If the prefix exists already it is replaced.
+	 *
+	 * @param prefix    namespace prefix
+	 * @param namespace namespace
+	 * @return true if this map did not already contain the specified element
+	 */
+	public boolean registerNamespace(final String prefix, final String namespace) {
 
-        Map<String, Set<String>> nsMap = new HashMap<String, Set<String>>();
-        for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
+		final String put = prefixMap.put(prefix, namespace);
+		createNamespace(prefix, namespace);
+		return put == null;
+	}
 
-            String nsURI = entry.getValue();
-            Set<String> prefixes = nsMap.get(nsURI);
-            if (prefixes == null) {
+	private void createNamespace(final String prefix, final String namespace) {
 
-                prefixes = new HashSet<String>();
-                nsMap.put(nsURI, prefixes);
-            }
-            prefixes.add(entry.getKey());
-        }
-        for (Map.Entry<String, Set<String>> entry : nsMap.entrySet()) {
+		Set<String> prefixes = namespaceMap.get(namespace);
+		if (prefixes == null) {
 
-            Set<String> readOnly = Collections.unmodifiableSet(entry.getValue());
-            entry.setValue(readOnly);
-        }
-        return nsMap;
-    }
+			prefixes = new HashSet<String>();
+			namespaceMap.put(namespace, prefixes);
+		}
+		prefixes.add(prefix);
+	}
 
-    @Override
-    public String getNamespaceURI(String prefix) {
+	@Override
+	public String getNamespaceURI(String prefix) {
 
-        checkNotNull(prefix);
-        String nsURI = prefixMap.get(prefix);
-        return nsURI == null ? XMLConstants.NULL_NS_URI : nsURI;
-    }
+		checkNotNull(prefix);
+		String nsURI = prefixMap.get(prefix);
+		return nsURI == null ? XMLConstants.NULL_NS_URI : nsURI;
+	}
 
-    @Override
-    public String getPrefix(String namespaceURI) {
+	@Override
+	public String getPrefix(String namespaceURI) {
 
-        checkNotNull(namespaceURI);
-        Set<String> set = namespaceMap.get(namespaceURI);
-        return set == null ? null : set.iterator().next();
-    }
+		checkNotNull(namespaceURI);
+		Set<String> set = namespaceMap.get(namespaceURI);
+		return set == null ? null : set.iterator().next();
+	}
 
-    @Override
-    public Iterator<String> getPrefixes(String namespaceURI) {
+	@Override
+	public Iterator<String> getPrefixes(String namespaceURI) {
 
-        checkNotNull(namespaceURI);
-        Set<String> set = namespaceMap.get(namespaceURI);
-        return set.iterator();
-    }
+		checkNotNull(namespaceURI);
+		Set<String> set = namespaceMap.get(namespaceURI);
+		return set.iterator();
+	}
 
-    private void checkNotNull(String value) {
+	private void checkNotNull(String value) {
 
-        if (value == null) {
-            throw new IllegalArgumentException("null");
-        }
-    }
+		if (value == null) {
+			throw new IllegalArgumentException("null");
+		}
+	}
 }

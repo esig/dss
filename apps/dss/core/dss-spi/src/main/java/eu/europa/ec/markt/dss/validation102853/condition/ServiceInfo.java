@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
@@ -40,6 +43,8 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 public class ServiceInfo implements Serializable {
 
 	private static final long serialVersionUID = 4903410679096343832L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(ServiceInfo.class);
 
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPName>
@@ -126,17 +131,17 @@ public class ServiceInfo implements Serializable {
 	 */
 	public List<String> getQualifiers(CertificateToken certificateToken) {
 
-		// System.out.println("--> GET_QUALIFIERS()");
+		LOG.trace("--> GET_QUALIFIERS()");
 		List<String> list = new ArrayList<String>();
 		for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
 
 			List<Condition> conditions = conditionEntry.getValue();
-			// System.out.println("--> " + conditions);
+			LOG.trace("  --> " + conditions);
 			for (final Condition condition : conditions) {
 
 				if (condition.check(certificateToken)) {
 
-					// System.out.println("--> CONDITION TRUE / " + conditionEntry.getKey());
+					LOG.trace("    --> CONDITION TRUE / " + conditionEntry.getKey());
 					list.add(conditionEntry.getKey());
 					break;
 				}

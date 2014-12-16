@@ -34,8 +34,8 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
+import eu.europa.ec.markt.dss.validation102853.bean.CertificateValidity;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
-import eu.europa.ec.markt.dss.validation102853.bean.SigningCertificateValidity;
 import eu.europa.ec.markt.dss.validation102853.crl.CRLToken;
 import eu.europa.ec.markt.dss.validation102853.crl.ListCRLSource;
 import eu.europa.ec.markt.dss.validation102853.crl.OfflineCRLSource;
@@ -321,21 +321,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public CertificateToken getSigningCertificateToken() {
 
+		// This ensures that the variable candidatesForSigningCertificate has been initialized
 		candidatesForSigningCertificate = getCandidatesForSigningCertificate();
-		if (signatureCryptographicVerification == null) {
+		// This ensures that the variable signatureCryptographicVerification has been initialized
+		signatureCryptographicVerification = checkSignatureIntegrity();
+		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+		if (theCertificateValidity != null) {
 
-			checkSignatureIntegrity();
-		}
-		final SigningCertificateValidity theSigningCertificateValidity = candidatesForSigningCertificate.getTheSigningCertificateValidity();
-		if (theSigningCertificateValidity != null) {
+			if (theCertificateValidity.isValid()) {
 
-			if (theSigningCertificateValidity.isValid()) {
-
-				final CertificateToken signingCertificateToken = theSigningCertificateValidity.getCertificateToken();
+				final CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
 				return signingCertificateToken;
 			}
 		}
-		final SigningCertificateValidity theBestCandidate = candidatesForSigningCertificate.getTheBestCandidate();
+		final CertificateValidity theBestCandidate = candidatesForSigningCertificate.getTheBestCandidate();
 		return theBestCandidate == null ? null : theBestCandidate.getCertificateToken();
 	}
 
@@ -437,6 +436,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			final byte[] timestampData = getArchiveTimestampData(timestampToken);
 			timestampToken.matchData(timestampData);
 		}
+	}
+
+	@Override
+	public String validateStructure() {
+		return null;
 	}
 }
 

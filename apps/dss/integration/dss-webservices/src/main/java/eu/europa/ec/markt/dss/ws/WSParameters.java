@@ -48,6 +48,11 @@ public class WSParameters {
 	private SignaturePackaging signaturePackaging; // ok
 
 	/**
+	 * XAdES: ds:CanonicalizationMethod indicate the canonicalization algorithm: Algorithm="...".
+	 */
+	private String signedInfoCanonicalizationMethod; // ok
+
+	/**
 	 * The encryption algorithm shall be automatically extracted from the signing token.
 	 */
 	private EncryptionAlgorithm encryptionAlgorithm; // ok
@@ -68,7 +73,7 @@ public class WSParameters {
 	 */
 	private boolean signWithExpiredCertificate = false;
 
-	private List<byte[]> certificateChainByteArrayList = new ArrayList<byte[]>(); // ok
+	private List<WSChainCertificate> chainCertificateList = new ArrayList<WSChainCertificate>(); // ok
 
 	private BLevelParameters.Policy signaturePolicy; // ok
 
@@ -138,6 +143,20 @@ public class WSParameters {
 	 */
 	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
 		this.signaturePackaging = signaturePackaging;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSignedInfoCanonicalizationMethod() {
+		return signedInfoCanonicalizationMethod;
+	}
+
+	/**
+	 * @param signedInfoCanonicalizationMethod
+	 */
+	public void setSignedInfoCanonicalizationMethod(String signedInfoCanonicalizationMethod) {
+		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
 	}
 
 	/**
@@ -227,15 +246,15 @@ public class WSParameters {
 	/**
 	 * @return
 	 */
-	public List<byte[]> getCertificateChainByteArrayList() {
-		return certificateChainByteArrayList;
+	public List<WSChainCertificate> getChainCertificateList() {
+		return chainCertificateList;
 	}
 
 	/**
-	 * @param certificateChainByteArrayList
+	 * @param chainCertificateList
 	 */
-	public void setCertificateChainByteArrayList(final List<byte[]> certificateChainByteArrayList) {
-		this.certificateChainByteArrayList = certificateChainByteArrayList;
+	public void setChainCertificateList(final List<WSChainCertificate> chainCertificateList) {
+		this.chainCertificateList = chainCertificateList;
 	}
 
 	/**

@@ -20,12 +20,10 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,7 +38,10 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
+import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
+
+import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
 
 /**
  * This class provides the methods required to countersign a given signature and extend the existing signature with the generated
@@ -50,9 +51,10 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 
 	private XAdESSignature toCounterSignXadesSignature;
 
-	public CounterSignatureBuilder(final DSSDocument toCounterSignDocument, final XAdESSignature toCounterSignXadesSignature, final SignatureParameters parameters) {
+	public CounterSignatureBuilder(final DSSDocument toCounterSignDocument, final XAdESSignature toCounterSignXadesSignature, final SignatureParameters parameters,
+	                               final CertificateVerifier certificateVerifier) {
 
-		super(parameters, toCounterSignDocument);
+		super(parameters, toCounterSignDocument, certificateVerifier);
 		this.toCounterSignXadesSignature = toCounterSignXadesSignature;
 	}
 
@@ -61,7 +63,7 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 
 		final List<DSSReference> references = new ArrayList<DSSReference>();
 
-		DSSReference dssReference = new DSSReference();
+		final DSSReference dssReference = new DSSReference();
 		dssReference.setId("cs-r-id-1");
 		dssReference.setUri("#" + params.getToCounterSignSignatureValueId());
 		dssReference.setType(xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE);
@@ -71,7 +73,8 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
 		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(CanonicalizationMethod.INCLUSIVE);
+		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
+		dssTransform.setPerform(true);
 		dssTransformList.add(dssTransform);
 
 		dssReference.setTransforms(dssTransformList);
@@ -87,7 +90,7 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 	 * @param counterSignatureValue
 	 * @return
 	 */
-	public DSSDocument signDocument(byte[] counterSignatureValue) {
+	public DSSDocument signDocument(final byte[] counterSignatureValue) {
 
 		if (!built) {
 			build();
@@ -101,13 +104,13 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 			if (unsignedPropertiesDom == null) {
 
 				final Element qualifyingPropertiesDom = toCounterSignXadesSignature.getQualifyingPropertiesDom();
-				// TODO-Vin (15/09/2014): add null chzck
-				unsignedPropertiesDom = DSSXMLUtils.addElement(ownerDocument, qualifyingPropertiesDom, XMLSignature.XMLNS, DS_UNSIGNED_PROPERTIES);
+				// TODO-Vin (15/09/2014): add null check
+				unsignedPropertiesDom = DSSXMLUtils.addElement(ownerDocument, qualifyingPropertiesDom, XAdES, XADES_UNSIGNED_PROPERTIES);
 			}
-			unsignedSignaturePropertiesDom = DSSXMLUtils.addElement(ownerDocument, unsignedPropertiesDom, XMLSignature.XMLNS, DS_UNSIGNED_SIGNATURE_PROPERTIES);
+			unsignedSignaturePropertiesDom = DSSXMLUtils.addElement(ownerDocument, unsignedPropertiesDom, XAdES, XADES_UNSIGNED_SIGNATURE_PROPERTIES);
 		}
 
-		final Element counterSignatureElement = DSSXMLUtils.addElement(ownerDocument, unsignedSignaturePropertiesDom, XMLSignature.XMLNS, DS_COUNTER_SIGNATURE);
+		final Element counterSignatureElement = DSSXMLUtils.addElement(ownerDocument, unsignedSignaturePropertiesDom, XAdES, XADES_COUNTER_SIGNATURE);
 		final String signatureValueBase64Encoded = DSSUtils.base64Encode(counterSignatureValue);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);

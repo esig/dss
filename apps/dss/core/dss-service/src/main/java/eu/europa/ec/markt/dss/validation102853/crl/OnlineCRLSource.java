@@ -20,16 +20,13 @@
 
 package eu.europa.ec.markt.dss.validation102853.crl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.security.cert.X509CRL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
 import org.bouncycastle.asn1.x509.DistributionPoint;
@@ -39,6 +36,7 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -74,7 +72,7 @@ public class OnlineCRLSource extends CommonCRLSource {
 	public OnlineCRLSource() {
 
 		dataLoader = new CommonsDataLoader();
-		LOG.debug("+OnlineCRLSource with the default data loader.");
+		LOG.trace("+OnlineCRLSource with the default data loader.");
 	}
 
 	/**
@@ -85,7 +83,7 @@ public class OnlineCRLSource extends CommonCRLSource {
 	public OnlineCRLSource(final DataLoader dataLoader) {
 
 		this.dataLoader = dataLoader;
-		LOG.debug("+OnlineCRLSource with the specific data loader.");
+		LOG.trace("+OnlineCRLSource with the specific data loader.");
 	}
 
 	/**
@@ -113,85 +111,79 @@ public class OnlineCRLSource extends CommonCRLSource {
 	public CRLToken findCrl(final CertificateToken certificateToken) throws DSSException {
 
 		if (certificateToken == null) {
-
 			return null;
 		}
 		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
-
 			return null;
 		}
-		final String crlUrl = getCrlUrl(certificateToken);
-		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrl);
-		if (crlUrl == null) {
-
+		final List<String> crlUrls = getCrlUrl(certificateToken);
+		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrls);
+		if (DSSUtils.isEmpty(crlUrls)) {
 			return null;
 		}
-		final X509CRL x509CRL = downloadCrl(crlUrl);
-		if (x509CRL == null) {
+		final DataLoader.DataAndUrl dataAndUrl = downloadCrl(crlUrls);
+		if (dataAndUrl == null) {
 			return null;
 		}
-		final CRLValidity crlValidity = isValidCRL(x509CRL, issuerToken);
+		final X509CRL crl;
+		try {
+			crl = DSSUtils.loadCRL(dataAndUrl.data);
+		} catch (Exception e) {
+			LOG.warn("", e);
+			return null;
+		}
+		final CRLValidity crlValidity = isValidCRL(crl, issuerToken);
 		final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
-		crlToken.setSourceURL(crlUrl);
+		crlToken.setSourceURL(dataAndUrl.urlString);
 		return crlToken;
 	}
 
 	/**
 	 * Download a CRL from any location with any protocol.
 	 *
-	 * @param downloadUrl The string representation on an URL to be used to obtain the revocation data through the CRL canal.
-	 * @return {@code X509CRL}
+	 * @param downloadUrls the {@code List} of urls to be used to obtain the revocation data through the CRL canal.
+	 * @return {@code X509CRL} or null if it was not possible to download the CRL
 	 */
-	private X509CRL downloadCrl(final String downloadUrl) {
+	private DataLoader.DataAndUrl downloadCrl(final List<String> downloadUrls) {
 
-		if (downloadUrl != null) {
-			try {
+		if (DSSUtils.isEmpty(downloadUrls)) {
+			return null;
+		}
+		try {
 
-				final byte[] bytes = dataLoader.get(downloadUrl);
-				if (bytes != null && bytes.length > 0) {
-
-					final X509CRL crl = DSSUtils.loadCRL(bytes);
-					return crl;
-				}
-			} catch (DSSException e) {
-				LOG.warn(e.getMessage());
-			}
+			final DataLoader.DataAndUrl dataAndUrl = dataLoader.get(downloadUrls);
+			return dataAndUrl;
+		} catch (DSSException e) {
+			LOG.warn("", e);
 		}
 		return null;
 	}
 
 	/**
-	 * Gives back the CRL URI meta-data found within the given X509 certificate.
+	 * Gives back the {@code List} of CRL URI meta-data found within the given X509 certificate.
 	 *
-	 * @param certificateToken the X509 certificate.
-	 * @return the CRL URI, or {@code null} if the extension is not present.
+	 * @param certificateToken the X509 certificate
+	 * @return the {@code List} of CRL URI, or {@code null} if the extension is not present
 	 * @throws DSSException
 	 */
-	public String getCrlUrl(final CertificateToken certificateToken) throws DSSException {
+	public List<String> getCrlUrl(final CertificateToken certificateToken) throws DSSException {
 
-		final byte[] crlDistributionPointsValue = certificateToken.getCRLDistributionPoints();
-		if (null == crlDistributionPointsValue) {
+		final byte[] crlDistributionPointsBytes = certificateToken.getCRLDistributionPoints();
+		if (null == crlDistributionPointsBytes) {
 
 			return null;
 		}
-		ASN1InputStream ais1 = null;
-		ASN1InputStream ais2 = null;
 		try {
 
-			List<String> urls = new ArrayList<String>();
-			final ByteArrayInputStream bais = new ByteArrayInputStream(crlDistributionPointsValue);
-			ais1 = new ASN1InputStream(bais);
-			final DEROctetString oct = (DEROctetString) (ais1.readObject());
-			ais2 = new ASN1InputStream(oct.getOctets());
-			final ASN1Sequence seq = (ASN1Sequence) ais2.readObject();
-			final CRLDistPoint distPoint = CRLDistPoint.getInstance(seq);
+			final List<String> urls = new ArrayList<String>();
+			final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
+			final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
 			final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
 			for (final DistributionPoint distributionPoint : distributionPoints) {
 
 				final DistributionPointName distributionPointName = distributionPoint.getDistributionPoint();
 				if (DistributionPointName.FULL_NAME != distributionPointName.getType()) {
-
 					continue;
 				}
 				final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
@@ -203,42 +195,47 @@ public class OnlineCRLSource extends CommonCRLSource {
 						LOG.debug("Not a uniform resource identifier");
 						continue;
 					}
-					final String urlStr;
-					if (name.toASN1Primitive() instanceof DERTaggedObject) {
+					ASN1Primitive asn1Primitive = name.toASN1Primitive();
+					if (asn1Primitive instanceof DERTaggedObject) {
 
-						final DERTaggedObject taggedObject = (DERTaggedObject) name.toASN1Primitive();
-						final DERIA5String derStr = DERIA5String.getInstance(taggedObject.getObject());
-						urlStr = derStr.getString();
-					} else {
-
-						final DERIA5String derStr = DERIA5String.getInstance(name.toASN1Primitive());
-						urlStr = derStr.getString();
+						final DERTaggedObject taggedObject = (DERTaggedObject) asn1Primitive;
+						asn1Primitive = taggedObject.getObject();
 					}
+					final DERIA5String derStr = DERIA5String.getInstance(asn1Primitive);
+					final String urlStr = derStr.getString();
 					urls.add(urlStr);
 				}
 			}
-			if (preferredProtocol != null) {
+			prioritize(urls);
+			return urls;
+		} catch (Exception e) {
+			if (e instanceof DSSException) {
+				throw (DSSException) e;
+			}
+			throw new DSSException(e);
+		}
+	}
 
-				for (final String url : urls) {
+	/**
+	 * if {@code preferredProtocol} is set then the list of urls is prioritize.
+	 * NOTE: This is not standard conformant! However in the major number of cases LDAP is much slower then HTTP!
+	 *
+	 * @param urls {@code List} of urls to prioritize
+	 */
+	private void prioritize(final List<String> urls) {
 
-					if (preferredProtocol.isTheSame(url)) {
-						return url;
-					}
+		if (preferredProtocol != null) {
+
+			final List<String> priorityUrls = new ArrayList<String>();
+			for (final String url : urls) {
+				if (preferredProtocol.isTheSame(url)) {
+					priorityUrls.add(url);
 				}
 			}
-			if (urls.size() > 0) {
-
-				final String url = urls.get(0);
-				return url;
+			urls.removeAll(priorityUrls);
+			for (int ii = priorityUrls.size() - 1; ii >= 0; ii--) {
+				urls.add(0, priorityUrls.get(ii));
 			}
-			return null;
-		} catch (IOException e) {
-
-			throw new DSSException(e);
-		} finally {
-
-			DSSUtils.closeQuietly(ais1);
-			DSSUtils.closeQuietly(ais2);
 		}
 	}
 }

@@ -26,7 +26,7 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>sd-dss-app</artifactId>
-        <version>4.2.0-RC</version>
+        <version>4.3.0-RC</version>
         <relativePath>../apps/dss</relativePath>
     </parent>
 
@@ -114,11 +114,12 @@
 
                                 <!--web-app: create java-->
                                 <mkdir dir="target/dss-webapp-full/java/"/>
-                                <get src="http://10.2.0.78:8080/dss-resources/java.zip" dest="target/java.zip" />
+                                <!--<get src="http://10.2.0.78:8080/dss-resources/java.zip" dest="target/java.zip" />-->
+	                            <get src="file:///C:/svn/trunk/dss-package-ootb-webapp/src/main/resources/java.zip" dest="target/java.zip"/>
                                 <unzip src="target/java.zip" dest="target/dss-webapp-full/java"/>
 
-	                            <!--<get src="file:///C:/svn/trunk/dss-package-ootb-webapp/src/main/resources/tomcat.zip" dest="target/tomcat.zip"/>-->
-                                <get src="http://10.2.0.78:8080/dss-resources/tomcat.zip" dest="target/tomcat.zip"/>
+	                            <get src="file:///C:/svn/trunk/dss-package-ootb-webapp/src/main/resources/tomcat.zip" dest="target/tomcat.zip"/>
+                                <!--<get src="http://10.2.0.78:8080/dss-resources/tomcat.zip" dest="target/tomcat.zip"/>-->
                                 <!--web-app: create tomcat-->
                                 <unzip src="target/tomcat.zip" dest="target/dss-webapp-full"/>
                                 <copy todir="target/dss-webapp-full/tomcat/conf">

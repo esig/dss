@@ -26,23 +26,24 @@ import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
-import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
 
 /**
@@ -53,66 +54,39 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
 
 public class CAdESOCSPSource extends OfflineOCSPSource {
 
-    private CMSSignedData cmsSignedData;
-    private SignerInformation signerInformation;
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESOCSPSource.class);
 
-    /**
-     * The default constructor for CAdESOCSPSource.
-     *
-     * @param cms
-     * @throws CMSException
-     */
-    public CAdESOCSPSource(final CMSSignedData cms, final SignerInformation signerInformation) {
+	private CMSSignedData cmsSignedData;
+	private SignerInformation signerInformation;
 
-        this.cmsSignedData = cms;
-        this.signerInformation = signerInformation;
-    }
+	/**
+	 * The default constructor for CAdESOCSPSource.
+	 *
+	 * @param cms
+	 * @throws CMSException
+	 */
+	public CAdESOCSPSource(final CMSSignedData cms, final SignerInformation signerInformation) {
 
-    @Override
-    public List<BasicOCSPResp> getContainedOCSPResponses() {
+		this.cmsSignedData = cms;
+		this.signerInformation = signerInformation;
+	}
 
-        final List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
+	@Override
+	public List<BasicOCSPResp> getContainedOCSPResponses() {
 
-        // Add OCSPs from SignedData
-        {
-            final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-            final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
-            final ASN1Encodable[] matches = (ASN1Encodable[]) otherRevocationInfoMatches.toArray(new ASN1Encodable[otherRevocationInfoMatches.size()]);
-            for (final ASN1Encodable asn1Encodable : matches) {
-                final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(asn1Encodable);
-                final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
-                list.add(basicOCSPResp);
-            }
-        }
-        {
-            final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
-            final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
-            final ASN1Encodable[] matches = (ASN1Encodable[]) otherRevocationInfoMatches.toArray(new ASN1Encodable[otherRevocationInfoMatches.size()]);
-            for (final ASN1Encodable asn1Encodable : matches) {
-                final OCSPResponse ocspResponse = OCSPResponse.getInstance(asn1Encodable);
-                final OCSPResp ocspResp = new OCSPResp(ocspResponse);
-                try {
-                    final Object responseObject = ocspResp.getResponseObject();
-                    if (responseObject instanceof BasicOCSPResp) {
-                        BasicOCSPResp basicOCSPResp = (BasicOCSPResp) responseObject;
-                        list.add(basicOCSPResp);
-                    }
-                } catch (OCSPException e) {
-                    throw new DSSException(e);
-                }
-            }
-        }
+		final List<BasicOCSPResp> basicOCSPResps = new ArrayList<BasicOCSPResp>();
+		// Add OCSPs from SignedData
+		addBasicOcspRespFrom_id_pkix_ocsp_basic(basicOCSPResps);
+		addBasicOcspRespFrom_id_ri_ocsp_response(basicOCSPResps);
+		// Adds OCSP responses in -XL id_aa_ets_revocationValues inside SignerInfo attribute if present
+		if (signerInformation != null) {
 
+			final AttributeTable attributes = signerInformation.getUnsignedAttributes();
+			if (attributes != null) {
 
-        // Adds OCSP responses in -XL id_aa_ets_revocationValues inside SignerInfo attribute if present
-        if (signerInformation != null) {
-
-            final AttributeTable attributes = signerInformation.getUnsignedAttributes();
-            if (attributes != null) {
-
-                final Attribute attribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationValues);
-                /*
-                ETSI TS 101 733 V2.2.1 (2013-04) page 43
+				final Attribute attribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationValues);
+				/*
+				ETSI TS 101 733 V2.2.1 (2013-04) page 43
                 6.3.4 revocation-values Attribute Definition
                 This attribute is used to contain the revocation information required for the following forms of extended electronic
                 signature: CAdES-X Long, ES X-Long Type 1, and CAdES-X Long Type 2, see clause B.1.1 for an illustration of
@@ -126,25 +100,25 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
                 ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
                 otherRevVals [2] OtherRevVals OPTIONAL}
                 */
-                if (attribute != null) {
+				if (attribute != null) {
 
-                    final ASN1Set attrValues = attribute.getAttrValues();
-                    final ASN1Encodable attValue = attrValues.getObjectAt(0);
-                    final RevocationValues revValues = RevocationValues.getInstance(attValue);
+					final ASN1Set attrValues = attribute.getAttrValues();
+					final ASN1Encodable attValue = attrValues.getObjectAt(0);
+					final RevocationValues revocationValues = RevocationValues.getInstance(attValue);
+					for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
 
-                    for (final BasicOCSPResponse revValue : revValues.getOcspVals()) {
-                        final BasicOCSPResp ocspResp = new BasicOCSPResp(revValue);
-                        list.add(ocspResp);
-                    }
-                    /* TODO: should add also OtherRevVals, but:
-                     "The syntax and semantics of the other revocation values (OtherRevVals) are outside the scope of the present
+						final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
+						addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+					}
+					/* TODO: should add also OtherRevVals, but:
+					 "The syntax and semantics of the other revocation values (OtherRevVals) are outside the scope of the present
                     document. The definition of the syntax of the other form of revocation information is as identified by
                     OtherRevRefType."
                     */
-                }
+				}
 
-            }
-        }
+			}
+		}
 
         /* TODO (pades): Read revocation data from from unsigned attribute  1.2.840.113583.1.1.8
           In the PKCS #7 object of a digital signature in a PDF file, identifies a signed attribute
@@ -163,9 +137,45 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
             Value OCTET STRING
           }
         */
+		return basicOCSPResps;
+	}
 
+	private void addBasicOcspRespFrom_id_ri_ocsp_response(final List<BasicOCSPResp> basicOCSPResps) {
 
-        // TODO: (Bob: 2013 Dec 03) --> NICOLAS: Is there any other container within the CAdES signature with revocation data? (ie: timestamp)
-        return list;
-    }
+		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
+		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
+		for (final Object object : otherRevocationInfoMatches) {
+
+			final BasicOCSPResp basicOCSPResp;
+			final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+			if (otherRevocationInfoMatch.size() == 4) {
+
+				basicOCSPResp = DSSASN1Utils.getBasicOcspResp(otherRevocationInfoMatch);
+			} else {
+
+				final OCSPResp ocspResp = DSSASN1Utils.getOcspResp(otherRevocationInfoMatch);
+				basicOCSPResp = DSSASN1Utils.getBasicOCSPResp(ocspResp);
+			}
+			addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+		}
+	}
+
+	private void addBasicOcspRespFrom_id_pkix_ocsp_basic(final List<BasicOCSPResp> basicOCSPResps) {
+
+		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
+		for (final Object object : otherRevocationInfoMatches) {
+
+			final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+			final BasicOCSPResp basicOCSPResp = DSSASN1Utils.getBasicOcspResp(otherRevocationInfoMatch);
+			addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+		}
+	}
+
+	private void addBasicOcspResp(final List<BasicOCSPResp> basicOCSPResps, final BasicOCSPResp basicOCSPResp) {
+
+		if (basicOCSPResp != null) {
+			basicOCSPResps.add(basicOCSPResp);
+		}
+	}
 }

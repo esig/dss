@@ -49,6 +49,7 @@
 		<property name="checkSignature" value="false"/>
 		<property name="lotlCertificate" value="classpath://ec.europa.eu.crt"/>
 		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"/>
+		<property name="tslRefreshPolicy" value="WHEN_NECESSARY_OR_INDETERMINATE"/>
 	</bean>
 
 	<bean id="tspSource" class="eu.europa.ec.markt.dss.validation102853.tsp.OnlineTSPSource">

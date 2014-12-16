@@ -50,132 +50,130 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 
 public class CAdESCertificateSource extends SignatureCertificateSource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CAdESCertificateSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESCertificateSource.class);
 
-    final private CMSSignedData cmsSignedData;
-    final SignerInformation signerInformation;
+	final private CMSSignedData cmsSignedData;
+	final SignerInformation signerInformation;
 
-    private List<CertificateToken> keyInfoCerts;
-    private List<CertificateToken> encapsulatedCerts;
+	private List<CertificateToken> keyInfoCerts;
+	private List<CertificateToken> encapsulatedCerts;
 
-    public CAdESCertificateSource(final TimeStampToken timeStamp, final CertificatePool certPool) {
-        this(timeStamp.toCMSSignedData(), ((SignerInformation) timeStamp.toCMSSignedData().getSignerInfos().getSigners().iterator().next()), certPool);
-    }
+	public CAdESCertificateSource(final TimeStampToken timeStamp, final CertificatePool certPool) {
+		this(timeStamp.toCMSSignedData(), ((SignerInformation) timeStamp.toCMSSignedData().getSignerInfos().getSigners().iterator().next()), certPool);
+	}
 
-    /**
-     * The constructor with additional signer id parameter. All certificates are extracted during instantiation.
-     *
-     * @param cmsSignedData
-     * @param signerInformation
-     * @param certPool
-     */
-    public CAdESCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool) {
+	/**
+	 * The constructor with additional signer id parameter. All certificates are extracted during instantiation.
+	 *
+	 * @param cmsSignedData
+	 * @param signerInformation
+	 * @param certPool
+	 */
+	public CAdESCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool) {
 
-        super(certPool);
-        if (cmsSignedData == null) {
+		super(certPool);
+		if (cmsSignedData == null) {
 
-            throw new DSSException("cmsSignedData is null, it must be provided!");
-        }
-        this.cmsSignedData = cmsSignedData;
-        this.signerInformation = signerInformation;
-        extract();
-    }
+			throw new DSSException("cmsSignedData is null, it must be provided!");
+		}
+		this.cmsSignedData = cmsSignedData;
+		this.signerInformation = signerInformation;
+		extract();
+	}
 
-    @Override
-    protected void extract() throws DSSException {
+	@Override
+	protected void extract() throws DSSException {
 
-        if (certificateTokens == null) {
+		if (certificateTokens == null) {
 
-            certificateTokens = new ArrayList<CertificateToken>();
-            keyInfoCerts = extractKeyInfoCertificates();
-            encapsulatedCerts = extractEncapsulatedCertificates();
-            /**
-             * TODO: (Bob) New source of certificates was added with new timestamp?
-             */
-        }
-    }
+			certificateTokens = new ArrayList<CertificateToken>();
+			keyInfoCerts = extractIdSignedDataCertificates();
+			encapsulatedCerts = extractEncapsulatedCertificates();
+		}
+	}
 
-    /**
-     * Returns the list of certificates included in (XAdES equivalent)
-     * ".../xades:UnsignedSignatureProperties/xades:CertificateValues/xades:EncapsulatedX509Certificate" node
-     *
-     * @return list of X509Certificate(s)
-     */
-    public List<CertificateToken> getEncapsulatedCertificates() throws DSSException {
+	/**
+	 * Returns the list of certificates included in (XAdES equivalent)
+	 * ".../xades:UnsignedSignatureProperties/xades:CertificateValues/xades:EncapsulatedX509Certificate" node
+	 *
+	 * @return list of X509Certificate(s)
+	 */
+	public List<CertificateToken> getEncapsulatedCertificates() throws DSSException {
 
-        return encapsulatedCerts;
-    }
+		return encapsulatedCerts;
+	}
 
-    /**
-     * @throws eu.europa.ec.markt.dss.exception.DSSException
-     *
-     */
-    private ArrayList<CertificateToken> extractEncapsulatedCertificates() throws DSSException {
+	/**
+	 * @throws eu.europa.ec.markt.dss.exception.DSSException
+	 */
+	private ArrayList<CertificateToken> extractEncapsulatedCertificates() throws DSSException {
 
-        final ArrayList<CertificateToken> encapsulatedCerts = new ArrayList<CertificateToken>();
-        try {
+		final ArrayList<CertificateToken> encapsulatedCerts = new ArrayList<CertificateToken>();
+		try {
 
-            // Gets certificates from CAdES-XL certificate-values inside SignerInfo attribute if present
-            if (signerInformation != null && signerInformation.getUnsignedAttributes() != null) {
+			// Gets certificates from CAdES-XL certificate-values inside SignerInfo attribute if present
+			if (signerInformation != null && signerInformation.getUnsignedAttributes() != null) {
 
-                final Attribute attr = signerInformation.getUnsignedAttributes().get(PKCSObjectIdentifiers.id_aa_ets_certValues);
-                if (attr != null) {
+				final Attribute attr = signerInformation.getUnsignedAttributes().get(PKCSObjectIdentifiers.id_aa_ets_certValues);
+				if (attr != null) {
 
-                    final ASN1Sequence seq = (ASN1Sequence) attr.getAttrValues().getObjectAt(0);
-                    for (int ii = 0; ii < seq.size(); ii++) {
+					final ASN1Sequence seq = (ASN1Sequence) attr.getAttrValues().getObjectAt(0);
+					for (int ii = 0; ii < seq.size(); ii++) {
 
-                        final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
-                        final X509Certificate cert = new X509CertificateObject(cs);
-                        final CertificateToken certToken = addCertificate(cert);
-                        if (!encapsulatedCerts.contains(certToken)) {
+						final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
+						final X509Certificate cert = new X509CertificateObject(cs);
+						final CertificateToken certToken = addCertificate(cert);
+						if (!encapsulatedCerts.contains(certToken)) {
 
-                            encapsulatedCerts.add(certToken);
-                        }
-                    }
-                }
-            }
+							encapsulatedCerts.add(certToken);
+						}
+					}
+				}
+			}
+			//TODO (cades): Read UnsignedAttribute: S/MIME Authenticated Attributes {iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) aa(2) id-aa-ets-CertificateRefs(21)}
+		} catch (CertificateParsingException e) {
+			throw new DSSException(e);
+		}
+		return encapsulatedCerts;
+	}
 
-            //TODO (cades): Read UnsignedAttribute: S/MIME Authenticated Attributes {iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) aa(2) id-aa-ets-CertificateRefs(21)}
+	/**
+	 * Returns the list of certificates included in CAdES equivalent of XAdES "ds:KeyInfo/ds:X509Data/ds:X509Certificate" node.<p/>
+	 * They are extracted from id-signedData OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs7(7) 2 }<p/>
+	 * SignedData ::= SEQUENCE {<br>
+	 * - version CMSVersion,<br>
+	 * - digestAlgorithms DigestAlgorithmIdentifiers,<br>
+	 * - encapContentInfo EncapsulatedContentInfo,<br>
+	 * - {@code certificates} [0] IMPLICIT CertificateSet OPTIONAL,<br>
+	 * - crls [1] IMPLICIT RevocationInfoChoices OPTIONAL,<br>
+	 * - signerInfos SignerInfos<br>
+	 * }<br>
+	 *
+	 * @return list of X509Certificate(s)
+	 */
+	@Override
+	public List<CertificateToken> getKeyInfoCertificates() throws DSSException {
 
-            //TODO (cades): Read certificates from inner timestamps (signature timestamps and archive timestamps) ?
+		return keyInfoCerts;
+	}
 
-        } catch (CertificateParsingException e) {
+	/**
+	 * @throws org.bouncycastle.util.StoreException
+	 * @throws eu.europa.ec.markt.dss.exception.DSSException
+	 */
+	@SuppressWarnings("unchecked")
+	private ArrayList<CertificateToken> extractIdSignedDataCertificates() throws StoreException, DSSException {
 
-            throw new DSSException(e);
-        }
-        return encapsulatedCerts;
-    }
+		final ArrayList<CertificateToken> essCertIDCerts = new ArrayList<CertificateToken>();
+		final Collection<X509CertificateHolder> x509CertificateHolders = (Collection<X509CertificateHolder>) cmsSignedData.getCertificates().getMatches(null);
+		for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
 
-    /**
-     * Returns the list of certificates included in (XAdES equivalent) "ds:KeyInfo/ds:X509Data/ds:X509Certificate" node
-     *
-     * @return list of X509Certificate(s)
-     */
-    public List<CertificateToken> getKeyInfoCertificates() throws DSSException {
-
-        return keyInfoCerts;
-    }
-
-    /**
-     * @throws org.bouncycastle.util.StoreException
-     *
-     * @throws eu.europa.ec.markt.dss.exception.DSSException
-     *
-     */
-    @SuppressWarnings("unchecked")
-    private ArrayList<CertificateToken> extractKeyInfoCertificates() throws StoreException, DSSException {
-
-        final ArrayList<CertificateToken> keyInfoCerts = new ArrayList<CertificateToken>();
-        final Collection<X509CertificateHolder> collection = (Collection<X509CertificateHolder>) cmsSignedData.getCertificates().getMatches(null);
-        for (final X509CertificateHolder certificateHolder : collection) {
-
-            final X509Certificate certificate = DSSUtils.getCertificate(certificateHolder);
-            final CertificateToken certToken = addCertificate(certificate);
-            if (!keyInfoCerts.contains(certToken)) {
-
-                keyInfoCerts.add(certToken);
-            }
-        }
-        return keyInfoCerts;
-    }
+			final X509Certificate x509Certificate = DSSUtils.getCertificate(x509CertificateHolder);
+			final CertificateToken certificateToken = addCertificate(x509Certificate);
+			if (!essCertIDCerts.contains(certificateToken)) {
+				essCertIDCerts.add(certificateToken);
+			}
+		}
+		return essCertIDCerts;
+	}
 }
