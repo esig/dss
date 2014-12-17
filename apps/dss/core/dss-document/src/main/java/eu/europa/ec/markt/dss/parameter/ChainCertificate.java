@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.parameter;
 
+import java.io.Serializable;
 import java.security.cert.X509Certificate;
 
 import eu.europa.ec.markt.dss.exception.DSSNullException;
@@ -33,7 +34,7 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
  * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
  */
-public class ChainCertificate {
+public class ChainCertificate implements Serializable {
 
 	private X509Certificate x509Certificate;
 	private boolean signedAttribute;

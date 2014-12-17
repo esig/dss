@@ -20,6 +20,8 @@
 
 package eu.europa.ec.markt.dss.validation102853.tsp;
 
+import java.io.Serializable;
+
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -32,21 +34,20 @@ import eu.europa.ec.markt.dss.exception.DSSException;
  * @version $Revision$ - $Date$
  */
 
-public interface TSPSource {
+public interface TSPSource extends Serializable {
 
-    /**
-     * Gets a TimeStampResponse relevant to the provided digest
-     *
-     *
-     * @param digestAlgorithm
-     * @param digest
-     * @return
-     * @throws DSSException
-     */
-    public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException;
+	/**
+	 * Gets a TimeStampResponse relevant to the provided digest
+	 *
+	 * @param digestAlgorithm
+	 * @param digest
+	 * @return
+	 * @throws DSSException
+	 */
+	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException;
 
-    /**
-     * @param policyOid
-     */
-    public void setPolicyOid(final String policyOid);
+	/**
+	 * @param policyOid
+	 */
+	public void setPolicyOid(final String policyOid);
 }

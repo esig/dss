@@ -21,6 +21,7 @@
 package eu.europa.ec.markt.dss.signature;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -31,7 +32,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
  * @version $Revision: 2150 $ - $Date: 2013-05-29 21:01:18 +0200 (Wed, 29 May 2013) $
  */
 
-public interface DSSDocument {
+public interface DSSDocument extends Serializable {
 
 	/**
 	 * Opens a {@code InputStream} on the {@code DSSDocument} contents. The type of the {@code InputStream} depends on the type of the {@code DSSDocument}. The stream must be

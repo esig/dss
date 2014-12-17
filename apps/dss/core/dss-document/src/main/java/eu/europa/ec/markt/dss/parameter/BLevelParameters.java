@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.parameter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -30,7 +31,7 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSNotYetImplementedMethodException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 
-public class BLevelParameters {
+public class BLevelParameters implements Serializable {
 
 	/**
 	 * This variable indicates if the Baseline profile's trust anchor policy shall be followed:
@@ -198,7 +199,7 @@ public class BLevelParameters {
 	 * postalAdddress [2] PostalAddress OPTIONAL }
 	 * PostalAddress ::= SEQUENCE SIZE(1..6) OF DirectoryString
 	 */
-	public static class SignerLocation {
+	public static class SignerLocation implements Serializable {
 
 		private String country;
 
@@ -296,7 +297,7 @@ public class BLevelParameters {
 	/**
 	 * This inner class allows to define the signature policy.
 	 */
-	public static class Policy {
+	public static class Policy implements Serializable {
 
 		private String id;
 

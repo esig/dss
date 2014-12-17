@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,7 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
  *
  * @version $Revision: 1820 $ - $Date: 2013-03-28 15:55:47 +0100 (Thu, 28 Mar 2013) $
  */
-public interface AdvancedSignature {
+public interface AdvancedSignature extends Serializable {
 
 	/**
 	 * @return in the case of the detached signature this is the {@code List} of signed contents.

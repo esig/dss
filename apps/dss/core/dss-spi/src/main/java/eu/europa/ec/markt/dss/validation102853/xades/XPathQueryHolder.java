@@ -1,5 +1,7 @@
 package eu.europa.ec.markt.dss.validation102853.xades;
 
+import java.io.Serializable;
+
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 
 /**
@@ -10,7 +12,7 @@ import eu.europa.ec.markt.dss.XAdESNamespaces;
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
  * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
  */
-public class XPathQueryHolder {
+public class XPathQueryHolder implements Serializable {
 
 	public static final String XMLE_SIGNATURE = "Signature";
 	public static final String XMLE_ALGORITHM = "Algorithm";
