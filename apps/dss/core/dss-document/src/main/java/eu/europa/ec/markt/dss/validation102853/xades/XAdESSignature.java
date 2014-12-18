@@ -139,7 +139,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This variable contains all references found within the signature. They are extracted when the method {@code checkSignatureIntegrity} is called.
 	 */
-	private List<Reference> references = new ArrayList<Reference>();
+	private transient List<Reference> references = new ArrayList<Reference>();
 
 	/**
 	 * This list represents all digest algorithms used to calculate the digest values of certificates.

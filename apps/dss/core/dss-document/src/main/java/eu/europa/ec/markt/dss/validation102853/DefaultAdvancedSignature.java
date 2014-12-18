@@ -85,7 +85,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected List<TimestampToken> contentTimestamps;
 
 	// Enclosed signature timestamps.
-	protected List<TimestampToken> signatureTimestamps;
+	protected transient List<TimestampToken> signatureTimestamps;
 
 	// Enclosed SignAndRefs timestamps.
 	protected List<TimestampToken> sigAndRefsTimestamps;
