@@ -478,7 +478,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					}
 
 					final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
-					final BigInteger serialNumber = new BigInteger(serialNumberEl.getTextContent());
+					final String serialNumberText = serialNumberEl.getTextContent(); // serial number can contain leading and trailing whitespace.
+					final BigInteger serialNumber = new BigInteger(serialNumberText.trim());
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
 					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
 
