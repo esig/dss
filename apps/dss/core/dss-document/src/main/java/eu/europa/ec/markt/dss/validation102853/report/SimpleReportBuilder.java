@@ -191,11 +191,6 @@ public class SimpleReportBuilder {
 			final List<XmlDom> basicValidationInfoList = basicValidationConclusion.getElements("./Info");
 			final List<XmlDom> basicValidationWarningList = basicValidationConclusion.getElements("./Warning");
 			final List<XmlDom> basicValidationErrorList = basicValidationConclusion.getElements("./Error");
-			// boolean bvOk = Indication.VALID.equals(basicValidationConclusionIndication)
-			// || Indication.INDETERMINATE.equals(basicValidationConclusionIndication)
-			// && (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(basicValidationConclusionSubIndication) ||
-			// SubIndication.OUT_OF_BOUNDS_NO_POE.equals(basicValidationConclusionSubIndication) || SubIndication.REVOKED_NO_POE
-			// .equals(basicValidationConclusionSubIndication));
 
 			final boolean noTimestamp = Indication.INDETERMINATE.equals(ltvIndication) && SubIndication.NO_TIMESTAMP.equals(ltvSubIndication);
 			final boolean noValidTimestamp = Indication.INDETERMINATE.equals(ltvIndication) && SubIndication.NO_VALID_TIMESTAMP.equals(ltvSubIndication);
@@ -242,12 +237,13 @@ public class SimpleReportBuilder {
 					infoList.add(xmlDom);
 				}
 			}
-			//if (!Indication.VALID.equals(ltvIndication)) {
+			if (!Indication.VALID.equals(ltvIndication)) {
 
-			addBasicInfo(signatureNode, basicValidationErrorList);
+				addBasicInfo(signatureNode, basicValidationErrorList);
+			}
 			addBasicInfo(signatureNode, basicValidationWarningList);
 			addBasicInfo(signatureNode, infoList);
-			//}
+
 			addSignatureProfile(signatureNode, signCert);
 
 			final XmlDom signatureScopes = diagnosticSignature.getElement("./SignatureScopes");
