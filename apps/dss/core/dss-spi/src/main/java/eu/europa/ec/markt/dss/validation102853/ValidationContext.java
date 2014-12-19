@@ -26,7 +26,7 @@ import java.util.Set;
 import eu.europa.ec.markt.dss.exception.DSSException;
 
 /**
- * This interface allows the implementation of the validators for: certificates,  timestamps and revocation data.
+ * This interface allows the implementation of the validators for: certificates, timestamps and revocation data.
  */
 public interface ValidationContext {
 

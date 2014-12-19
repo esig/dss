@@ -558,7 +558,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * @param allSignatureList  {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
-	 * @param validationContext
+	 * @param validationContext {@code ValidationContext} is the implementation of the validators for: certificates, timestamps and revocation data.
 	 */
 	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
 

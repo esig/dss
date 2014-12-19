@@ -339,9 +339,9 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
-	 * This method adds all timestamps to be validated.
+	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
 	 *
-	 * @param validationContext validationContext to which the timestamps must be added
+	 * @param validationContext {@code ValidationContext} to which the timestamps must be added
 	 */
 	@Override
 	public void prepareTimestamps(final ValidationContext validationContext) {
@@ -353,7 +353,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	     * This validates the signature timestamp tokensToProcess present in the signature.
          */
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
-
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
 

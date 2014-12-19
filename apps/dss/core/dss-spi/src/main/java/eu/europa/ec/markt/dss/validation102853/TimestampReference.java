@@ -21,8 +21,11 @@
 package eu.europa.ec.markt.dss.validation102853;
 
 /**
- * This class stocks the timestamp reference, which is composed of digest algorithm used to calculate the digest value
- * on the timestamp, the digest value and the timestamp category.
+ * This class stocks the timestamp reference, which is composed of:
+ * - digest algorithm used to calculate the digest value of the reference;
+ * - digest value of the reference;
+ * - the timestamp reference category {@code TimestampReferenceCategory};
+ * - signature id in the case where the reference apply to the signature.
  *
  * @author bielecro
  */
