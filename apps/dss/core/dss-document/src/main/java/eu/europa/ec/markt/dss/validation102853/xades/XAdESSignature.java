@@ -53,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -91,6 +92,10 @@ import eu.europa.ec.markt.dss.validation102853.crl.OfflineCRLSource;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OCSPRef;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
 import eu.europa.ec.markt.dss.validation102853.toolbox.XPointerResourceResolver;
+
+import static eu.europa.ec.markt.dss.validation102853.TimestampReferenceCategory.SIGNATURE;
+import static eu.europa.ec.markt.dss.validation102853.TimestampType.ARCHIVE_TIMESTAMP;
+import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_ALGORITHM;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must be created.
@@ -301,7 +306,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 
-		final String xmlName = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+		final String xmlName = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forXML(xmlName, null);
 		if (signatureAlgorithm == null) {
 			return null;
@@ -312,7 +317,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
 
-		final String xmlName = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+		final String xmlName = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forXML(xmlName, null);
 		if (signatureAlgorithm == null) {
 			return null;
@@ -435,7 +440,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (digestMethodElement == null) {
 					continue;
 				}
-				final String xmlAlgorithmName = digestMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+				final String xmlAlgorithmName = digestMethodElement.getAttribute(XMLE_ALGORITHM);
 				// The default algorithm is used in case of bad encoded algorithm name
 				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName, DigestAlgorithm.SHA1);
 
@@ -1032,25 +1037,29 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (timestampToken != null) {
 
 					setTimestampCanonicalizationMethod(timestampElement, timestampToken);
-
-					final List<TimestampReference> references = new ArrayList<TimestampReference>();
-					final TimestampReference signatureReference = new TimestampReference();
-					signatureReference.setCategory(TimestampReferenceCategory.SIGNATURE);
-					signatureReference.setSignatureId(getId());
-					references.add(signatureReference);
-					final NodeList list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERT_DIGEST);
-					for (int jj = 0; jj < list.getLength(); jj++) {
-
-						final Element element = (Element) list.item(jj);
-						final TimestampReference signingCertReference = createCertificateTimestampReference(element);
-						references.add(signingCertReference);
-					}
-					timestampToken.setTimestampedReferences(references);
+					createSignatureTimestampReferences(timestampToken);
 					signatureTimestamps.add(timestampToken);
 				}
 			}
 		}
 		return signatureTimestamps;
+	}
+
+	private void createSignatureTimestampReferences(final TimestampToken timestampToken) {
+
+		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+		final TimestampReference signatureReference = new TimestampReference();
+		signatureReference.setCategory(SIGNATURE);
+		signatureReference.setSignatureId(getId());
+		references.add(signatureReference);
+		final NodeList list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERT_DIGEST);
+		for (int jj = 0; jj < list.getLength(); jj++) {
+
+			final Element element = (Element) list.item(jj);
+			final TimestampReference signingCertReference = createCertificateTimestampReference(element);
+			references.add(signingCertReference);
+		}
+		timestampToken.setTimestampedReferences(references);
 	}
 
 	/**
@@ -1089,7 +1098,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					final List<TimestampReference> references = getTimestampedReferences();
 					final TimestampReference signatureReference = new TimestampReference();
-					signatureReference.setCategory(TimestampReferenceCategory.SIGNATURE);
+					signatureReference.setCategory(SIGNATURE);
 					signatureReference.setSignatureId(getId());
 					references.add(0, signatureReference);
 					timestampToken.setTimestampedReferences(references);
@@ -1144,7 +1153,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		for (int ii = 0; ii < timestampsNodes.getLength(); ii++) {
 
 			final Element timestampElement = (Element) timestampsNodes.item(ii);
-			final TimestampToken timestampToken = makeTimestampToken(ii, timestampElement, TimestampType.ARCHIVE_TIMESTAMP);
+			final TimestampToken timestampToken = makeTimestampToken(ii, timestampElement, ARCHIVE_TIMESTAMP);
 			if (timestampToken != null) {
 
 				timestampToken.setArchiveTimestampType(archiveTimestampType);
@@ -1152,7 +1161,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final List<TimestampReference> references = getTimestampedReferences();
 				final TimestampReference signatureReference = new TimestampReference();
-				signatureReference.setCategory(TimestampReferenceCategory.SIGNATURE);
+				signatureReference.setCategory(SIGNATURE);
 				signatureReference.setSignatureId(getId());
 				references.add(0, signatureReference);
 				timestampToken.setTimestampedReferences(references);
@@ -1161,12 +1170,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	private void setTimestampCanonicalizationMethod(Element timestampElement, TimestampToken timestampToken) {
+	private void setTimestampCanonicalizationMethod(final Element timestampElement, final TimestampToken timestampToken) {
+
 		final Element canonicalizationMethodElement = DSSXMLUtils.getElement(timestampElement, xPathQueryHolder.XPATH__CANONICALIZATION_METHOD);
 		String canonicalizationMethod = DEFAULT_TIMESTAMP_VALIDATION_CANONICALIZATION_METHOD;
 		if (canonicalizationMethodElement != null) {
-
-			canonicalizationMethod = canonicalizationMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			canonicalizationMethod = canonicalizationMethodElement.getAttribute(XMLE_ALGORITHM);
 		}
 		timestampToken.setCanonicalizationMethod(canonicalizationMethod);
 	}
@@ -1283,7 +1292,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @throws KeyResolverException
 	 */
 	private List<CertificateValidity> getSigningCertificateValidityList(final XMLSignature santuarioSignature, SignatureCryptographicVerification scv,
-	                                                                           final CertificateToken providedSigningCertificate) throws KeyResolverException {
+	                                                                    final CertificateToken providedSigningCertificate) throws KeyResolverException {
 
 		List<CertificateValidity> certificateValidityList;
 		if (providedSigningCertificate == null) {
@@ -1421,7 +1430,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				genericCertId.setIssuerSerial(issuerSerialEl.getTextContent());
 			}
 
-			String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 			genericCertId.setDigestAlgorithm(DigestAlgorithm.forXML(xmlName).getName());
 
 			genericCertId.setDigestValue(DSSUtils.base64Decode(digestValueEl.getTextContent()));
@@ -1446,7 +1455,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element digestAlgorithmEl = DSSXMLUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
 				final Element digestValueEl = DSSXMLUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
 
-				final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+				final String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 
 				final CRLRef ref = new CRLRef();
@@ -1476,7 +1485,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.XADES_DIGEST_ALG_AND_VALUE_ENCODING);
 				}
 
-				final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+				final String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 
 				final String digestValue = digestValueEl.getTextContent();
@@ -1603,6 +1612,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			LOG.trace("--->Get archive timestamp data:" + (timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
 		}
 		final String canonicalizationMethod = getCanonicalizationMethod(timestampToken);
+		final Set<String> referenceURIs = new HashSet<String>();
 		/**
 		 * 8.2.1 Not distributed case<br>
 		 *
@@ -1634,6 +1644,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				try {
 
+					String uri = reference.getURI();
+					if (uri.startsWith("#")) {
+						uri = uri.substring(1);
+					}
+					referenceURIs.add(uri);
 					final byte[] bytes = reference.getReferencedBytes();
 					DSSUtils.write(bytes, buffer);
 				} catch (XMLSignatureException e) {
@@ -1688,7 +1703,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					continue;
 				}
 				canonicalizedValue = null;
-				// System.out.println("###: " + localName);
 				// In the SD-DSS implementation when validating the signature the framework will not add missing data. To do so the signature must be extended.
 				// if (localName.equals("CertificateValues")) {
 
@@ -1773,25 +1787,43 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			 * ds:Canonicalization is present, the algorithm indicated by this element is used. If not, the standard
 			 * canonicalization method specified by XMLDSIG is used.
 			 */
-			boolean xades141 = true;
-			if (timestampToken != null && ArchiveTimestampType.XAdES.equals(timestampToken.getArchiveTimestampType())) {
+			boolean xades141 = timestampToken == null || !ArchiveTimestampType.XAdES.equals(timestampToken.getArchiveTimestampType());
 
-				xades141 = false;
-			}
-			if (xades141) {
+			final NodeList objects = getObjects();
+			for (int ii = 0; ii < objects.getLength(); ii++) {
 
-				NodeList objects = getObjects();
-				for (int ii = 0; ii < objects.getLength(); ii++) {
-
-					Node node = objects.item(ii);
-					Node qualifyingProperties = DSSXMLUtils.getElement(node, xPathQueryHolder.XPATH__QUALIFYING_PROPERTIES);
-					if (qualifyingProperties != null) {
-
+				final Node node = objects.item(ii);
+				final Node qualifyingProperties = DSSXMLUtils.getElement(node, xPathQueryHolder.XPATH__QUALIFYING_PROPERTIES);
+				if (qualifyingProperties != null) {
+					continue;
+				}
+				if (!xades141) {
+					/**
+					 * !!! ETSI TS 101 903 V1.3.2 (2006-03)
+					 * 5) Take any ds:Object element in the signature that is not referenced by any ds:Reference within
+					 * ds:SignedInfo, except that one containing the QualifyingProperties element. Canonicalize each
+					 * one and concatenate each resulting octet stream to the final octet stream. If ds:Canonicalization is
+					 * present, the algorithm indicated by this element is used. If not, the standard canonicalization method specified
+					 * by XMLDSIG is used.
+					 */
+					final NamedNodeMap attributes = node.getAttributes();
+					final int length = attributes.getLength();
+					String id = "";
+					for (int jj = 0; jj < length; jj++) {
+						final Node item = attributes.item(jj);
+						final String nodeName = item.getNodeName();
+						if ("ID".equals(nodeName.toUpperCase())) {
+							id = item.getNodeValue();
+							break;
+						}
+					}
+					final boolean contains = referenceURIs.contains(id);
+					if(contains) {
 						continue;
 					}
-					canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
-					buffer.write(canonicalizedValue);
 				}
+				canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
+				buffer.write(canonicalizedValue);
 			}
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("ArchiveTimestamp canonicalised string:\n" + buffer.toString());
@@ -1981,7 +2013,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		final String string = DSSXMLUtils.xmlToString(signatureElement);
 		StringReader stringReader = new StringReader(string);
 		final String validated = DSSXMLUtils.validateAgainstXSD(new StreamSource(stringReader));
-		return  validated;
+		return validated;
 	}
 
 	/**
