@@ -269,7 +269,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				 * When the value of Type is DocTimestamp, the value of SubFilter shall be ETSI.RFC3161.
 				 */
 				final String subFilter = signature.getSubFilter();
-				if(DSSUtils.isBlank(subFilter)) {
+				if (DSSUtils.isBlank(subFilter)) {
 
 					LOG.warn("No signature found in signature Dictionary:Content, SUB_FILTER is empty!");
 					continue;
@@ -312,16 +312,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 				signaturesFound.add(signatureInfo);
 			}
-			return signaturesFound;
 		} catch (IOException up) {
 			LOG.error("Error loading buffer of size {}", buffer.size(), up);
 			// ignore error when loading signatures
-			return signaturesFound;
 		} finally {
 			DSSPDFUtils.close(doc);
 		}
+		return signaturesFound;
 	}
-
 
     /*
         This method is needed because we will encounter many times the same signature during our document analysis.

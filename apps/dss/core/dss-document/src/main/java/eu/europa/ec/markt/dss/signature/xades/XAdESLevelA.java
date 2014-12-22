@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.TimestampParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
-import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
 /**
  * Holds level A aspects of XAdES
@@ -38,35 +38,37 @@ import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
 public class XAdESLevelA extends XAdESLevelXL {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelA.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelA.class);
 
-    /**
-     * The default constructor for XAdESLevelA.
-     */
-    public XAdESLevelA(CertificateVerifier certificateVerifier) {
+	/**
+	 * The default constructor for XAdESLevelA.
+	 */
+	public XAdESLevelA(CertificateVerifier certificateVerifier) {
 
-        super(certificateVerifier);
-    }
+		super(certificateVerifier);
+	}
 
-    /**
-     * Adds the ArchiveTimeStamp element which is an unsigned property qualifying the signature. The hash sent to the TSA
-     * (messageImprint) is computed on the XAdES-X-L form of the electronic signature and the signed data objects.<br>
-     * <p/>
-     * A XAdES-A form MAY contain several ArchiveTimeStamp elements.
-     *
-     * @see XAdESLevelXL#extendSignatureTag()
-     */
-    @Override
-    protected void extendSignatureTag() throws DSSException {
+	/**
+	 * Adds the ArchiveTimeStamp element which is an unsigned property qualifying the signature. The hash sent to the TSA
+	 * (messageImprint) is computed on the XAdES-X-L form of the electronic signature and the signed data objects.<br>
+	 * <p/>
+	 * A XAdES-A form MAY contain several ArchiveTimeStamp elements.
+	 *
+	 * @see XAdESLevelXL#extendSignatureTag()
+	 */
+	@Override
+	protected void extendSignatureTag() throws DSSException {
 
         /* Up to -XL */
-        super.extendSignatureTag();
+		super.extendSignatureTag();
 
-        xadesSignature.checkSignatureIntegrity();
+		xadesSignature.checkSignatureIntegrity();
 
-        final byte[] data = xadesSignature.getArchiveTimestampData(null);
-        final DigestAlgorithm timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
-        final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, data);
-        createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, XAdESSignature.DEFAULT_TIMESTAMP_CREATION_CANONICALIZATION_METHOD, digestBytes);
-    }
+		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
+		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
+		final byte[] data = xadesSignature.getArchiveTimestampData(null, canonicalizationMethod);
+		final DigestAlgorithm timestampDigestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();
+		final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, data);
+		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, digestBytes);
+	}
 }

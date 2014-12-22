@@ -2,12 +2,11 @@ package eu.europa.ec.markt.dss.validation102853;
 
 /**
  * This class holds the result of the timestamp's signature validation.
- *
+ * <p/>
  * To be valid the timestamp must be signed by the given certificate and the certificate must be the one referred to by the SigningCertificate attribute included in the hashed
  * attributes of the timestamp's signature. The certificate must also have the ExtendedKeyUsageExtension with only KeyPurposeId.id_kp_timeStamping and have been valid at the time
  * the timestamp was created.
- *
- * <p>
+ * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
@@ -15,18 +14,18 @@ package eu.europa.ec.markt.dss.validation102853;
  */
 public class TimestampValidation {
 
-    private TimestampValidity timestampValidity = TimestampValidity.NOT_YET_VERIFIED;
+	private TimestampValidity timestampValidity;
 
-    public TimestampValidation(final TimestampValidity timestampValidity) {
+	public TimestampValidation(final TimestampValidity timestampValidity) {
 
-        this.timestampValidity = timestampValidity;
-    }
+		this.timestampValidity = timestampValidity;
+	}
 
-    public boolean isValid() {
-        return TimestampValidity.VALID.equals(timestampValidity);
-    }
+	public boolean isValid() {
+		return TimestampValidity.VALID.equals(timestampValidity);
+	}
 
-    public TimestampValidity getValidity() {
-        return timestampValidity;
-    }
+	public TimestampValidity getValidity() {
+		return timestampValidity;
+	}
 }

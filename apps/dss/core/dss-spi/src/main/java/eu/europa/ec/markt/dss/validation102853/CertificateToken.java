@@ -22,12 +22,10 @@ package eu.europa.ec.markt.dss.validation102853;
 
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.SignatureException;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -600,27 +598,17 @@ public class CertificateToken extends Token {
 	 */
 	public String getDigestValue(final DigestAlgorithm digestAlgorithm) {
 
-		String encoded = null;
 		if (digests == null) {
-
 			digests = new HashMap<DigestAlgorithm, String>();
-			encoded = digests.get(digestAlgorithm);
-			if (encoded == null) {
-
-				try {
-
-					final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
-					digest.update(x509Certificate.getEncoded());
-					encoded = DSSUtils.base64Encode(digest.digest());
-					digests.put(digestAlgorithm, encoded);
-				} catch (CertificateEncodingException e) {
-					throw new DSSException("Error when computing the digest of the certificate.", e);
-				} catch (NoSuchAlgorithmException e) {
-					throw new DSSException("Error when computing the digest of the certificate.", e);
-				}
-			}
 		}
-		return encoded;
+		String encodedDigest = digests.get(digestAlgorithm);
+		if (encodedDigest == null) {
+
+			final byte[] digest = DSSUtils.digest(digestAlgorithm, DSSUtils.getEncoded(x509Certificate));
+			encodedDigest = DSSUtils.base64Encode(digest);
+			digests.put(digestAlgorithm, encodedDigest);
+		}
+		return encodedDigest;
 	}
 
 	/**

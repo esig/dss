@@ -163,10 +163,11 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 		// The timestamp must be added only if there is no one or the extension -T level is being created
 		if (!xadesSignature.hasTProfile() || XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
 
-			final byte[] canonicalisedValue = xadesSignature.getSignatureTimestampData(null);
-			final DigestAlgorithm timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
+			final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
+			final byte[] canonicalisedValue = xadesSignature.getSignatureTimestampData(null, canonicalizationMethod);
+			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalisedValue);
-			final String canonicalizationMethod = params.getSignatureTimestampParameters().getCanonicalizationMethod();
 			createXAdESTimeStampType(SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
 		}
 	}

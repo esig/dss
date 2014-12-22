@@ -260,9 +260,10 @@ public interface AdvancedSignature extends Serializable {
 	 * Returns the data (signature value) that was timestamped by the SignatureTimeStamp for the given timestamp.
 	 *
 	 * @param timestampToken
+	 * @param canonicalizationMethod
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
-	public byte[] getSignatureTimestampData(final TimestampToken timestampToken);
+	public byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the time-stamp which is placed on the digital signature (XAdES example: ds:SignatureValue element), the
@@ -278,9 +279,11 @@ public interface AdvancedSignature extends Serializable {
 	 * element), the signature time-stamp(s) present in the AdES-T form, the certification path references and the
 	 * revocation status references.
 	 *
+	 * @param timestampToken {@code TimestampToken} or null during the creation process
+	 * @param canonicalizationMethod canonicalization method
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
-	public byte[] getTimestampX1Data(final TimestampToken timestampToken);
+	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the time-stamp which is computed over the concatenation of CompleteCertificateRefs and
@@ -296,7 +299,7 @@ public interface AdvancedSignature extends Serializable {
 	 *
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken);
+	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the archive Timestamps
@@ -310,9 +313,10 @@ public interface AdvancedSignature extends Serializable {
 	 * timestamp.
 	 *
 	 * @param timestampToken null when adding a new archive timestamp
+	 * @param canonicalizationMethod
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
-	public byte[] getArchiveTimestampData(final TimestampToken timestampToken);
+	public byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns a list of counter signatures applied to this signature

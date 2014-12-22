@@ -11,7 +11,6 @@ package eu.europa.ec.markt.dss.validation102853;
  */
 public enum TimestampValidity {
 
-    NOT_YET_VERIFIED, // if the timestamp token is mathematically and structurally valid.
     VALID, // if the timestamp token is mathematically and structurally valid.
     NOT_VALID_STRUCTURE, // if an exception occurs in processing the token.
     NOT_VALID_SIGNATURE, // if the certificate or signature fail to be valid.

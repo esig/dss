@@ -232,7 +232,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		// code.
 
 		final List<XmlDom> certificates = params.getCertPool().getElements("./Certificate");
-		poe.initialisePOE(signature, certificates, params.getCurrentTime());
+		//!! poe.initialisePOE(signature, certificates, params.getCurrentTime());
 
 		/**
 		 * 2) Basic signature validation: Perform the validation process for AdES-T signatures (see clause 8) with all the
@@ -375,7 +375,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 
 		final PastSignatureValidation pastSignatureValidation = new PastSignatureValidation();
 
-		final PastSignatureValidationConclusion psvConclusion = pastSignatureValidation.run(params, signature, adestSignatureConclusion, TIMESTAMP);
+		final PastSignatureValidationConclusion psvConclusion = pastSignatureValidation.run(params, signature, adestSignatureConclusion, MAIN_SIGNATURE);
 
 		signatureNode.addChild(psvConclusion.getValidationData());
 		/**
@@ -432,13 +432,14 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 				 */
 
 				XmlNode constraintNode = addConstraint(processNode, ADEST_IMIVC);
+				// constraintNode.setAttribute("Id", timestampId);
 
 				final boolean messageImprintDataIntact = timestamp.getBoolValue(XP_MESSAGE_IMPRINT_DATA_INTACT);
 				if (!messageImprintDataIntact) {
 
 					constraintNode.addChild(STATUS, KO);
-					constraintNode.addChild(INFO, ADEST_IMIVC_ANS.getMessage());
-					conclusionNode.addChild(INFO, ADEST_IMIVC_ANS.getMessage());
+					XmlNode xmlNode = conclusionNode.addChild(INFO, ADEST_IMIVC_ANS.getMessage());
+					xmlNode.setAttribute("Id", timestampId);
 					continue;
 				}
 				constraintNode.addChild(STATUS, OK);

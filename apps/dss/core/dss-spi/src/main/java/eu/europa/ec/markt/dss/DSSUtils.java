@@ -59,6 +59,7 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -114,6 +115,7 @@ import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,10 +287,25 @@ public final class DSSUtils {
 	 *
 	 * @param data a byte[] to convert to Hex characters
 	 * @return A String containing hexadecimal characters
-	 * @since 1.4
 	 */
-	public static String encodeHexString(byte[] data) {
+	public static String encodeHexString(final byte[] data) {
 		return new String(encodeHex(data));
+	}
+
+	/**
+	 * Converts an array of bytes into a String representing the hexadecimal values of each byte in order. The maximum length of the returned
+	 * String is limited by {@code maxLength} parameter.
+	 *
+	 * @param data      a byte[] to convert to Hex characters
+	 * @param maxLength the maximum length of the returned string
+	 * @return A String containing hexadecimal characters
+	 */
+	public static String encodeHexString(final byte[] data, int maxLength) {
+
+		byte[] data_ = data.length > maxLength ? Arrays.copyOf(data, maxLength) : data;
+		final String encoded = new String(encodeHex(data_)) + (data.length > maxLength ? "...(" + (data.length - maxLength) + " more)" : "");
+		return encoded;
+
 	}
 
 	/**
@@ -1339,6 +1356,21 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Returns the encoded (as ASN.1 DER) form of this {@code TimeStampToken}.
+	 *
+	 * @param timeStamp {@code TimeStampToken}
+	 * @return encoded array of bytes
+	 */
+	public static byte[] getEncoded(final TimeStampToken timeStamp) {
+
+		try {
+			return timeStamp.getEncoded();
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
 	 * This method opens the {@code URLConnection} using the given URL.
 	 *
 	 * @param url URL to be accessed
@@ -1715,7 +1747,6 @@ public final class DSSUtils {
 		calendar.setTimeZone(TimeZone.getTimeZone("Z"));
 		Date signingTime_ = signingTime;
 		if (signingTime_ == null) {
-
 			signingTime_ = deterministicDate;
 		}
 		calendar.setTime(signingTime_);

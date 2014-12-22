@@ -19,11 +19,11 @@
  */
 package eu.europa.ec.markt.dss.parameter;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import eu.europa.ec.markt.dss.DSSXMLUtils;
+
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.exception.DSSNullException;
 
 /**
  * This class represents the parameters provided when generating specific timestamps in a signature, such as an AllDataObjectsTimestamp or an
@@ -34,40 +34,45 @@ public class TimestampParameters {
 	/**
 	 * The digest algorithm to provide to the timestamping authority
 	 */
-	private DigestAlgorithm digestAlgorithm;
-	private String canonicalizationMethod;
+	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
+
+	/**
+	 * This is the default canonicalization method for XMLDSIG used for timestamps. Another complication arises because of the way that the default canonicalization algorithm
+	 * handles namespace declarations; frequently a signed XML document needs to be embedded in another document; in this case the original canonicalization algorithm will not
+	 * yield the same result as if the document is treated alone. For this reason, the so-called Exclusive Canonicalization, which serializes XML namespace declarations
+	 * independently of the surrounding XML, was created.
+	 */
+	private String canonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
 
 
 	public DigestAlgorithm getDigestAlgorithm() {
-
-		//TODO-Vincent (7/8/2014): This is a temporary measure, returning the previous default value in case the digest algorithm was not specified by the user.
-		if (digestAlgorithm == null) {
-			return DigestAlgorithm.SHA256;
-		}
 		return digestAlgorithm;
 	}
 
-	public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
+
+		if (digestAlgorithm == null) {
+			throw new DSSNullException(DigestAlgorithm.class);
+		}
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
 	public String getCanonicalizationMethod() {
-
-		//TODO-Vincent (7/8/2014): This is a temporary measure, returning the previous default value in case the digest algorithm was not specified by the user.
-		if (canonicalizationMethod == null) {
-			return CanonicalizationMethod.EXCLUSIVE;
-		}
 		return canonicalizationMethod;
 	}
 
-	public void setCanonicalizationMethod(String canonicalizationMethod) {
+	public void setCanonicalizationMethod(final String canonicalizationMethod) {
+
+		if (DSSUtils.isBlank(canonicalizationMethod)) {
+			throw new DSSNullException(String.class, "canonicalizationMethod");
+		}
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
 	public String toString() {
 		return "TimestampParameters{" +
-				", digestAlgorithm=" + digestAlgorithm.getName() +
-				", canonicalizationMethod=" + canonicalizationMethod +
-				"}";
+			  ", digestAlgorithm=" + digestAlgorithm.getName() +
+			  ", canonicalizationMethod=" + canonicalizationMethod +
+			  "}";
 	}
 }

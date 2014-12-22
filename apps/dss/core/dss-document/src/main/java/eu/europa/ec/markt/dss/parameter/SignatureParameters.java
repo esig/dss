@@ -614,7 +614,7 @@ public class SignatureParameters implements Serializable {
 
 	public TimestampParameters getSignatureTimestampParameters() {
 		if (signatureTimestampParameters == null) {
-			return new TimestampParameters();
+			signatureTimestampParameters = new TimestampParameters();
 		}
 		return signatureTimestampParameters;
 	}
@@ -625,7 +625,7 @@ public class SignatureParameters implements Serializable {
 
 	public TimestampParameters getArchiveTimestampParameters() {
 		if (archiveTimestampParameters == null) {
-			return new TimestampParameters();
+			archiveTimestampParameters = new TimestampParameters();
 		}
 		return archiveTimestampParameters;
 	}
@@ -635,6 +635,9 @@ public class SignatureParameters implements Serializable {
 	}
 
 	public TimestampParameters getContentTimestampParameters() {
+		if (contentTimestampParameters == null) {
+			contentTimestampParameters = new TimestampParameters();
+		}
 		return contentTimestampParameters;
 	}
 
