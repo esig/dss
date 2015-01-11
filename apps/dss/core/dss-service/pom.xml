@@ -27,11 +27,11 @@
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.directory.api</groupId>
-            <artifactId>api-ldap-client-all</artifactId>
-	        <version>1.0.0-M22</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.directory.api</groupId>-->
+            <!--<artifactId>api-ldap-client-all</artifactId>-->
+	        <!--<version>1.0.0-M22</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.bouncycastle</groupId>
 	        <artifactId>bcprov-jdk15on</artifactId>

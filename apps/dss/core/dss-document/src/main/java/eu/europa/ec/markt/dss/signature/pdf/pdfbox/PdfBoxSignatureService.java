@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -251,6 +250,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		PDDocument doc = null;
 		try {
+
 			DSSUtils.copy(input, buffer);
 
 			doc = PDDocument.load(new ByteArrayInputStream(buffer.toByteArray()));
@@ -321,23 +321,29 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		return signaturesFound;
 	}
 
-    /*
-        This method is needed because we will encounter many times the same signature during our document analysis.
-        We make sure that we always add it only once.
-     */
-
+	/**
+	 * This method is needed because we will encounter many times the same signature during our document analysis.
+	 * We make sure that we always add it only once.
+	 *
+	 * @param signaturesFound
+	 * @param pdfSignatureOrDocTimestampInfo
+	 * @return
+	 */
 	public static PdfSignatureOrDocTimestampInfo signatureAlreadyInListOrSelf(Set<PdfSignatureOrDocTimestampInfo> signaturesFound,
-	                                                                          PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo) {
-		final int infoId = pdfSignatureOrDocTimestampInfo.uniqueId();
-		for (Iterator<PdfSignatureOrDocTimestampInfo> iterator = signaturesFound.iterator(); iterator.hasNext(); ) {
-			PdfSignatureOrDocTimestampInfo existingSignature = iterator.next();
-			if (existingSignature.uniqueId() == infoId) {
+	                                                                          final PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo) {
+		final int uniqueId = pdfSignatureOrDocTimestampInfo.uniqueId();
+		for (final PdfSignatureOrDocTimestampInfo existingSignature : signaturesFound) {
+
+			if (existingSignature.uniqueId() == uniqueId) {
+
 				if (existingSignature instanceof PdfDocTimestampInfo) {
-					PdfDocTimestampInfo existingSignatureDocTimestamp = (PdfDocTimestampInfo) existingSignature;
+
+					final PdfDocTimestampInfo existingSignatureDocTimestamp = (PdfDocTimestampInfo) existingSignature;
 					if (existingSignatureDocTimestamp.getTimestampToken().getTimeStampType() == TimestampType.SIGNATURE_TIMESTAMP) {
+
 						if (LOG.isDebugEnabled()) {
 							LOG.debug("Signature was already found in the external doc. Returning newly (inner) found signature {} {}",
-								  existingSignature.getClass().getSimpleName(), existingSignature.uniqueId());
+								  existingSignature.getClass().getSimpleName(), uniqueId);
 						}
 						return existingSignatureDocTimestamp;
 					}
@@ -345,18 +351,17 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				for (final PdfSignatureOrDocTimestampInfo outerSignature : existingSignature.getOuterSignatures()) {
 					pdfSignatureOrDocTimestampInfo.addOuterSignature(outerSignature);
 				}
-				iterator.remove();
+				signaturesFound.remove(existingSignature);
 				signaturesFound.add(pdfSignatureOrDocTimestampInfo);
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("Signature was already found in the external doc. Returning newly (inner) found signature {} {}",
-						  pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), pdfSignatureOrDocTimestampInfo.uniqueId());
+						  pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), uniqueId);
 				}
-
 				return pdfSignatureOrDocTimestampInfo;
 			}
 		}
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Signature newly found {} {}", pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), pdfSignatureOrDocTimestampInfo.uniqueId());
+			LOG.debug("Signature newly found {} {}", pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), uniqueId);
 		}
 		return pdfSignatureOrDocTimestampInfo;
 	}
