@@ -91,9 +91,8 @@ public class CMSSignedDataBuilder {
 	 * @param parameters                 set of the driving signing parameters
 	 * @param contentSigner              the contentSigned to get the hash of the data to be signed
 	 * @param signerInfoGeneratorBuilder true if the unsigned attributes must be included
-	 * @param originalSignedData         the original signed data if extending an existing signature. null otherwise.  @return the bouncycastle signed data generator which will
-	 *                                   sign
-	 *                                   the document and add the required signed and unsigned CMS attributes
+	 * @param originalSignedData         the original signed data if extending an existing signature. null otherwise.
+	 * @return the bouncycastle signed data generator which signs the document and adds the required signed and unsigned CMS attributes
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
 	protected CMSSignedDataGenerator createCMSSignedDataGenerator(final SignatureParameters parameters, final ContentSigner contentSigner,
