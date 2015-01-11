@@ -29,7 +29,7 @@
         <property name="concurrent" value="false"/>
     </bean>
 
-    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
         <property name="jobDetail" ref="tlReload"/>
         <property name="startDelay" value="6000"/>
         <property name="repeatInterval" value="3600000"/>

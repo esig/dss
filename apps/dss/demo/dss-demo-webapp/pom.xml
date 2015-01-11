@@ -148,12 +148,6 @@
 			<artifactId>dss-service</artifactId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>jaxb-impl</artifactId>
-					<groupId>com.sun.xml.bind</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
