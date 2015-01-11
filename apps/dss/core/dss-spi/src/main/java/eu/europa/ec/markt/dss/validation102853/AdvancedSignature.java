@@ -139,8 +139,6 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate();
 
-	public List<String> getInfo();
-
 	/**
 	 * This setter allows to indicate the master signature. It means that this is a countersignature.
 	 *

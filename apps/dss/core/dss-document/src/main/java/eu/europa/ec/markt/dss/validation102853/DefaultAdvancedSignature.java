@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.validation102853;
 
 import java.security.cert.X509CRL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,11 +74,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * The reference to the object containing all candidates to the signing certificate.
 	 */
 	protected CandidatesForSigningCertificate candidatesForSigningCertificate;
-
-	/**
-	 * This list contains the detail information collected during the check. It is reset for each call of {@code isDataForSignatureLevelPresent}
-	 */
-	protected List<String> info;
 
 	// Enclosed content timestamps.
 	protected List<TimestampToken> contentTimestamps;
@@ -268,17 +262,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			}
 		}
 		return new RevocationDataForInclusion(crlTokens, ocspTokens);
-	}
-
-	/**
-	 * This list contains the detail information collected during the check. It is reset for each call.
-	 *
-	 * @return
-	 */
-	@Override
-	public List<String> getInfo() {
-
-		return Collections.unmodifiableList(info);
 	}
 
 	@Override
