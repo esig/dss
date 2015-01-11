@@ -143,7 +143,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 			signedInfoCanonicalizationMethod = canonicalizationMethod;
 		}
 		final String signedPropertiesCanonicalizationMethod_ = params.getSignedPropertiesCanonicalizationMethod();
-		if (DSSUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
+		if (DSSUtils.isNotBlank(signedPropertiesCanonicalizationMethod_)) {
 			signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod_;
 		} else {
 			signedPropertiesCanonicalizationMethod = canonicalizationMethod;
