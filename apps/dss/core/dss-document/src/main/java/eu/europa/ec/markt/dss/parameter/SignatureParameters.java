@@ -84,9 +84,14 @@ public class SignatureParameters implements Serializable {
 	private SignaturePackaging signaturePackaging;
 
 	/**
-	 * XAdES: ds:CanonicalizationMethod indicate the canonicalization algorithm: Algorithm="...".
+	 * XAdES: ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
 	 */
 	private String signedInfoCanonicalizationMethod;
+
+	/**
+	 * XAdES: ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
+	 */
+	private String signedPropertiesCanonicalizationMethod;
 
 	/**
 	 * XAdES: The ds:SignatureMethod indicates the algorithms used to sign ds:SignedInfo.
@@ -165,6 +170,7 @@ public class SignatureParameters implements Serializable {
 		privateKeyEntry = source.privateKeyEntry;
 		reason = source.reason;
 		signedInfoCanonicalizationMethod = source.signedInfoCanonicalizationMethod;
+		signedPropertiesCanonicalizationMethod = source.signedPropertiesCanonicalizationMethod;
 		signatureAlgorithm = source.signatureAlgorithm;
 		signaturePackaging = source.signaturePackaging;
 		signatureLevel = source.signatureLevel;
@@ -496,19 +502,35 @@ public class SignatureParameters implements Serializable {
 
 
 	/**
-	 * @return the canonicalization algorithm to be used when dealing with SignedInfo.
+	 * @return (XAdES) the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public String getSignedInfoCanonicalizationMethod() {
 		return signedInfoCanonicalizationMethod;
 	}
 
 	/**
-	 * Set the canonicalization algorithm to be used when dealing with SignedInfo.
+	 * Set the canonicalization algorithm to be used when dealing with SignedInfo (XAdES).
 	 *
 	 * @param signedInfoCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedInfoCanonicalizationMethod(final String signedInfoCanonicalizationMethod) {
 		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
+	}
+
+	/**
+	 * @return (XAdES) the canonicalization algorithm to be used when dealing with SignedProperties.
+	 */
+	public String getSignedPropertiesCanonicalizationMethod() {
+		return signedPropertiesCanonicalizationMethod;
+	}
+
+	/**
+	 * Set the canonicalization algorithm to be used when dealing with SignedProperties (XAdES).
+	 *
+	 * @param signedPropertiesCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
+	 */
+	public void setSignedPropertiesCanonicalizationMethod(final String signedPropertiesCanonicalizationMethod) {
+		this.signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod;
 	}
 
 	/**

@@ -64,8 +64,7 @@ class EnvelopingSignatureBuilder extends SignatureBuilder {
 	public EnvelopingSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 
 		super(params, origDoc, certificateVerifier);
-		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.INCLUSIVE);
-		signedPropertiesCanonicalizationMethod = CanonicalizationMethod.INCLUSIVE;
+		setCanonicalizationMethods(params, CanonicalizationMethod.INCLUSIVE);
 	}
 
 	/**

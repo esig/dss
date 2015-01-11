@@ -134,13 +134,19 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		this.detachedDocument = detachedDocument;
 	}
 
-	protected void setSignedInfoCanonicalizationMethod(final SignatureParameters params, final String canonicalizationMethod) {
+	protected void setCanonicalizationMethods(final SignatureParameters params, final String canonicalizationMethod) {
 
 		final String signedInfoCanonicalizationMethod_ = params.getSignedInfoCanonicalizationMethod();
 		if (DSSUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
 			signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod_;
 		} else {
 			signedInfoCanonicalizationMethod = canonicalizationMethod;
+		}
+		final String signedPropertiesCanonicalizationMethod_ = params.getSignedPropertiesCanonicalizationMethod();
+		if (DSSUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
+			signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod_;
+		} else {
+			signedPropertiesCanonicalizationMethod = canonicalizationMethod;
 		}
 	}
 
@@ -313,7 +319,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
 		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedPropertiesCanonicalizationMethod, signedPropertiesDom);
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Canonicalization method  --> {}", signedInfoCanonicalizationMethod);
+			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
 			LOG.trace("Canonicalised REF_2      --> {}", new String(canonicalizedBytes));
 		}
 		incorporateDigestValue(reference, digestAlgorithm, new InMemoryDocument(canonicalizedBytes));
