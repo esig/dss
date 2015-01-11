@@ -534,13 +534,12 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 			LOG.info("Download skipped.");
 			// do nothing: it can happened when a mock data loader is used.
-		} catch (final RuntimeException e) {
-
+		} catch (final Throwable e) {
 			makeATrace(trimmedUrl, "Other problem: " + e.toString(), e);
 		}
 	}
 
-	private void makeATrace(final String url, final String message, final Exception e) {
+	private void makeATrace(final String url, final String message, final Throwable e) {
 
 		LOG.error(message, e);
 		StringWriter w = new StringWriter();
