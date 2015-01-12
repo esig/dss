@@ -82,7 +82,7 @@ public class BLevelParameters implements Serializable {
 		if (source == null) {
 			throw new DSSNullException(BLevelParameters.class);
 		}
-
+		signingCertificateDigestMethod = source.signingCertificateDigestMethod;
 		this.trustAnchorBPPolicy = source.trustAnchorBPPolicy;
 		if (source.signaturePolicy != null) {
 			this.signaturePolicy = new Policy(source.signaturePolicy);
