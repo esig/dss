@@ -181,7 +181,7 @@
 		<flying-saucer.version>9.0.4</flying-saucer.version>
 		<beansbinding.version>1.2.1</beansbinding.version>
 		<xmlsec.version>2.0.2</xmlsec.version>
-		<pdfbox.version>1.8.7</pdfbox.version>
+		<pdfbox.version>1.8.8</pdfbox.version>
 	</properties>
 
 	<dependencyManagement>
