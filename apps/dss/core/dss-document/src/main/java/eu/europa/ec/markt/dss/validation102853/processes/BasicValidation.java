@@ -26,8 +26,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
@@ -275,7 +275,7 @@ public class BasicValidation implements Indication, SubIndication, NodeName, Nod
                         // TODO: to be adapted to "./Info[@Field='TimestampProductionTime']/text()"
                         final Date bestSignatureTime = adestConclusion.getTimeValue("./Info/@BestSignatureTime");
 
-                        final Date expirationDate = RuleUtils.parseDate(RuleUtils.SDF_DATE, expirationDateString);
+                        final Date expirationDate = DSSUtils.parseDate(DSSUtils.DEFAULT_DATE_FORMAT, expirationDateString);
                         if (expirationDate.before(bestSignatureTime)) {
 
                             ok = false;

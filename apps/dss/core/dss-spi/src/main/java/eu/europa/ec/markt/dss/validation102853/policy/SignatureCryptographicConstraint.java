@@ -310,7 +310,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 		final Pair[] pairs = new Pair[subContextPresent ? 4 : 3];
 		pairs[0] = new Pair(ALGORITHM, algorithm);
 		pairs[1] = new Pair(CONTEXT, context);
-		pairs[2] = new Pair(ALGORITHM_EXPIRATION_DATE, algorithmExpirationDate == null ? "?" : RuleUtils.formatDate(algorithmExpirationDate));
+		pairs[2] = new Pair(ALGORITHM_EXPIRATION_DATE, algorithmExpirationDate == null ? "?" : DSSUtils.formatDate(algorithmExpirationDate));
 		if (subContextPresent) {
 			pairs[3] = new Pair(SUB_CONTEXT, subContext);
 		}

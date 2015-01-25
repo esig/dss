@@ -174,7 +174,12 @@ public final class DSSUtils {
 	 */
 	private static final Date deterministicDate = DSSUtils.getUtcDate(1970, 04, 23);
 
-	public static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+	/**
+	 * The default date pattern: "yyyy-MM-dd"
+	 */
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	private static MessageDigest sha1Digester;
 
@@ -227,12 +232,27 @@ public final class DSSUtils {
 	 */
 	public static String formatInternal(final Date date) {
 
-		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN).format(date);
+		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT).format(date);
 		return formatedDate;
 	}
 
 	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_FORMAT_PATTERN}.
+	 * Formats the given date-time using the default pattern: {@code DSSUtils.DEFAULT_DATE_TIME_FORMAT}
+	 *
+	 * @param date
+	 * @return
+	 */
+	public static String formatDate(final Date date) {
+
+		if (date != null) {
+			final String stringDate = new SimpleDateFormat(DSSUtils.DEFAULT_DATE_TIME_FORMAT).format(date);
+			return stringDate;
+		}
+		return EMPTY;
+	}
+
+	/**
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}.
 	 *
 	 * @param dateString the date string representation
 	 * @return the {@code Date}
@@ -242,7 +262,7 @@ public final class DSSUtils {
 
 		try {
 
-			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN);
+			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT);
 			final Date date = sdf.parse(dateString);
 			return date;
 		} catch (ParseException e) {
@@ -251,7 +271,27 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_FORMAT_PATTERN}. If an exception is frown durring the prsing then null is returned.
+	 * Converts the given string representation of the date using the format pattern.
+	 *
+	 * @param format     the format to use
+	 * @param dateString the date string representation
+	 * @return the {@code Date}
+	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
+	 */
+	public static Date parseDate(final String format, final String dateString) throws DSSException {
+
+		try {
+
+			final SimpleDateFormat sdf = new SimpleDateFormat(format);
+			final Date date = sdf.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}. If an exception is frown durring the prsing then null is returned.
 	 *
 	 * @param dateString the date string representation
 	 * @return the {@code Date} or null if the parsing is not possible
@@ -260,7 +300,7 @@ public final class DSSUtils {
 
 		try {
 
-			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN);
+			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT);
 			final Date date = sdf.parse(dateString);
 			return date;
 		} catch (Exception e) {

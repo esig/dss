@@ -26,7 +26,6 @@ import java.util.List;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.TSLConstant;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 import eu.europa.ec.markt.dss.validation102853.policy.CertificateExpirationConstraint;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
@@ -441,7 +440,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 
 		if (revocationFreshnessToBeChecked && !revocationIssuingTimeString.isEmpty()) {
 
-			final Date revocationIssuingTime = RuleUtils.parseDate(revocationIssuingTimeString);
+			final Date revocationIssuingTime = DSSUtils.parseDate(revocationIssuingTimeString);
 			final long revocationDeltaTime = currentTime.getTime() - revocationIssuingTime.getTime();
 
 			if (revocationDeltaTime <= constraintData.getMaxRevocationFreshness()) {
@@ -531,7 +530,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 
 		final String formatedDate = xmlDom.getValue(xPathQuery + "/text()");
 		try {
-			return RuleUtils.parseDate(formatedDate);
+			return DSSUtils.parseDate(formatedDate);
 		} catch (DSSException e) {
 			return null;
 		}

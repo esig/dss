@@ -328,7 +328,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			timestampXmlNode = signatureXmlNode.addChild(TIMESTAMP);
 			timestampXmlNode.setAttribute(ID, timestampId);
 			timestampXmlNode.setAttribute(TYPE, timestampTypeString);
-			timestampXmlNode.setAttribute(GENERATION_TIME, RuleUtils.formatDate(productionTime));
+			timestampXmlNode.setAttribute(GENERATION_TIME, DSSUtils.formatDate(productionTime));
 
 			final Conclusion timestampConclusion = new Conclusion();
 
@@ -406,7 +406,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 		// This validation process returns VALID
 		signatureConclusion.setIndication(VALID);
-		final String formatedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
 		signatureConclusion.addInfo(EMPTY).setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 
 		return signatureConclusion;
@@ -645,7 +645,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		constraint.setIndications(INDETERMINATE, null, ADEST_ROTVPIIC_ANS);
 		constraint.setSubIndication1(NO_VALID_TIMESTAMP);
 		constraint.setSubIndication2(NO_TIMESTAMP);
-		final String formattedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
+		final String formattedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(BEST_SIGNATURE_TIME, formattedBestSignatureTime);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -673,7 +673,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		final Date revocationDate = bvpConclusion.getTimeValue("./Error/@RevocationTime");
 		final boolean before = bestSignatureTime.before(revocationDate);
 		constraint.setValue(before);
-		final String formatedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
@@ -705,10 +705,10 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		constraint.create(signatureXmlNode, TSV_IBSTAIDOSC);
 		constraint.setIndications(INVALID, NOT_YET_VALID, TSV_IBSTAIDOSC_ANS);
 		final String formatedNotBefore = bvpConclusion.getValue("./Error/@NotBefore");
-		final Date notBeforeTime = RuleUtils.parseDate(formatedNotBefore);
+		final Date notBeforeTime = DSSUtils.parseDate(formatedNotBefore);
 		final boolean notBefore = !bestSignatureTime.before(notBeforeTime);
 		constraint.setValue(notBefore);
-		final String formatedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		constraint.setAttribute(NOT_BEFORE, formatedNotBefore);
 		// TODO: (Bob: 2014 Mar 16)
@@ -743,7 +743,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		constraint.setIndications(INDETERMINATE, OUT_OF_BOUNDS_NO_POE, TSV_ISCNVABST_ANS);
 		// false is always returned: this corresponds to: Otherwise, terminate with INDETERMINATE/OUT_OF_BOUNDS_NO_POE.
 		constraint.setValue(false);
-		final String formatedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
@@ -780,7 +780,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			final String algorithmExpirationDateString = error.getAttribute("AlgorithmExpirationDate");
 			if (DSSUtils.isNotBlank(algorithmExpirationDateString)) {
 
-				final Date algorithmExpirationDate = RuleUtils.parseDate(RuleUtils.SDF_DATE, algorithmExpirationDateString);
+				final Date algorithmExpirationDate = DSSUtils.parseDate(DSSUtils.DEFAULT_DATE_FORMAT, algorithmExpirationDateString);
 				if (!algorithmExpirationDate.before(bestSignatureTime)) {
 
 					ok = true;
@@ -788,7 +788,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 			}
 		}
 		constraint.setValue(ok);
-		final String formatedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
@@ -884,8 +884,8 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 		constraint.setValue(ok);
 
-		final String formattedLatestContentTimestampProductionDate = RuleUtils.formatDate(latestContent);
-		final String formattedEarliestSignatureTimestampProductionDate = RuleUtils.formatDate(earliestSignature);
+		final String formattedLatestContentTimestampProductionDate = DSSUtils.formatDate(latestContent);
+		final String formattedEarliestSignatureTimestampProductionDate = DSSUtils.formatDate(earliestSignature);
 		constraint.setAttribute(LATEST_CONTENT_TIMESTAMP_PRODUCTION_TIME, formattedLatestContentTimestampProductionDate);
 		constraint.setAttribute(EARLIEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME, formattedEarliestSignatureTimestampProductionDate);
 
@@ -965,7 +965,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, ADEST_ISTPTDABST_ANS);
 		final Long timestampDelay = constraintData.getTimestampDelayTime();
 		final String signingTime = signatureXmlDom.getValue("./DateTime/text()");
-		final Date date = RuleUtils.parseSecureDate(signingTime);
+		final Date date = DSSUtils.quietlyParseDate(signingTime);
 		constraint.setValue((date.getTime() + timestampDelay) > bestSignatureTime.getTime());
 		constraint.setConclusionReceiver(conclusion);
 

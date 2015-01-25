@@ -25,6 +25,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 
@@ -128,8 +129,8 @@ public class CertificateExpirationConstraint extends Constraint {
 		final boolean certValidity = currentTime.compareTo(notBefore) >= 0 && currentTime.compareTo(notAfter) <= 0;
 		if (expiredCertsRevocationInfo == null && !certValidity) {
 
-			final String formatedNotBefore = RuleUtils.formatDate(notBefore);
-			final String formatedNotAfter = RuleUtils.formatDate(notAfter);
+			final String formatedNotBefore = DSSUtils.formatDate(notBefore);
+			final String formatedNotAfter = DSSUtils.formatDate(notAfter);
 			if (warn()) {
 
 				node.addChild(STATUS, WARN);
@@ -153,7 +154,7 @@ public class CertificateExpirationConstraint extends Constraint {
 		}
 		if (expiredCertsRevocationInfo != null) {
 
-			final String formatedExpiredCertsRevocationInfo = RuleUtils.formatDate(expiredCertsRevocationInfo);
+			final String formatedExpiredCertsRevocationInfo = DSSUtils.formatDate(expiredCertsRevocationInfo);
 			node.addChild(INFO).setAttribute(EXPIRED_CERTS_REVOCATION_INFO, formatedExpiredCertsRevocationInfo);
 		}
 		return true;

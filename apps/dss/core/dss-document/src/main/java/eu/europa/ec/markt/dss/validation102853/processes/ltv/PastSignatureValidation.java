@@ -26,7 +26,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.validation102853.RuleUtils;
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
 import eu.europa.ec.markt.dss.validation102853.processes.subprocesses.EtsiPOEExtraction;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
@@ -169,7 +169,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 		}
 		if (controlTime != null) {
 
-			final String formatedControlTime = RuleUtils.formatDate(controlTime);
+			final String formatedControlTime = DSSUtils.formatDate(controlTime);
 			returnedPcvIndication.setAttribute(CONTROL_TIME, formatedControlTime);
 		}
 
@@ -198,7 +198,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 
 		if (ok) {
 
-			final String formatedBestSignatureTime = RuleUtils.formatDate(bestSignatureTime);
+			final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
 			constraintNode.addChild(INFO).setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 
 			/**
@@ -267,7 +267,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 						poeExists = false;
 						continue;
 					}
-					final Date expirationDate = RuleUtils.parseDate(RuleUtils.SDF_DATE, expirationDateString);
+					final Date expirationDate = DSSUtils.parseDate(DSSUtils.DEFAULT_DATE_FORMAT, expirationDateString);
 					final String context = info.getValue("./@Context");
 					if (SIGNATURE.equals(context)) {
 
