@@ -121,11 +121,6 @@ public class OCSPToken extends RevocationToken {
 		final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
 		if (2 == derTaggedObject.getTagNo()) {
 
-			// TODO (20/11/2014): To be implemented Key Hash management
-			//				final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
-			//				final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-			//				final String base65EncodedKeyHashOctetStringBytes = DSSUtils.base64Encode(keyHashOctetStringBytes);
-			//				System.out.println(base65EncodedKeyHashOctetStringBytes);
 			throw new DSSException("Certificate's key hash management not implemented yet!");
 		}
 		final ASN1Primitive derObject = derTaggedObject.getObject();
@@ -158,13 +153,6 @@ public class OCSPToken extends RevocationToken {
 	private void setStatus(final CertificateStatus certStatus) {
 
 		if (certStatus == null) {
-
-			//			if (LOG.isInfoEnabled()) {
-			//				LOG.info("OCSP OK for: " + toCheckToken.getDSSIdAsString());
-			//				if (LOG.isTraceEnabled()) {
-			//					LOG.trace("CertificateToken:\n{}", toCheckToken.toString());
-			//				}
-			//			}
 			status = true;
 			return;
 		}

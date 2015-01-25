@@ -82,11 +82,9 @@ public class CRLToken extends RevocationToken {
 	private void ensureNotNull(final CRLValidity crlValidity) {
 
 		if (crlValidity == null) {
-
 			throw new DSSNullException(CRLValidity.class);
 		}
 		if (crlValidity.x509CRL == null) {
-
 			throw new DSSNullException(X509CRL.class);
 		}
 	}
@@ -149,11 +147,15 @@ public class CRLToken extends RevocationToken {
 	public X509CRLHolder getX509CrlHolder() {
 
 		try {
+
 			final X509CRL x509crl = getX509crl();
 			final TBSCertList tbsCertList = TBSCertList.getInstance(x509crl.getTBSCertList());
 			final AlgorithmIdentifier sigAlgOID = new AlgorithmIdentifier(new ASN1ObjectIdentifier(x509crl.getSigAlgOID()));
 			final byte[] signature = x509crl.getSignature();
-			final X509CRLHolder x509crlHolder = new X509CRLHolder(new CertificateList(new DERSequence(new ASN1Encodable[]{tbsCertList, sigAlgOID, new DERBitString(signature)})));
+			final DERSequence seq = new DERSequence(new ASN1Encodable[]{tbsCertList, sigAlgOID, new DERBitString(signature)});
+			final CertificateList x509CRL = new CertificateList(seq);
+			// final CertificateList x509CRL = new CertificateList.getInstance((Object)seq);
+			final X509CRLHolder x509crlHolder = new X509CRLHolder(x509CRL);
 			return x509crlHolder;
 		} catch (CRLException e) {
 			throw new DSSException(e);
