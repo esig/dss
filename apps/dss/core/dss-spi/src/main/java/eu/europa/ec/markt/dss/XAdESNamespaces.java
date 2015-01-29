@@ -37,6 +37,8 @@ public final class XAdESNamespaces {
 
 	public static String XAdES = XAdES132;
 
+	protected static String XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";
+
 	private XAdESNamespaces() {
 	}
 
@@ -47,7 +49,13 @@ public final class XAdESNamespaces {
 	 * @param XAdES new default namespace
 	 */
 	public static void setXAdESDefaultNamespace(final String XAdES) {
+
 		XAdESNamespaces.XAdES = XAdES;
+		if (XAdES132.equals(XAdES)) {
+			XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";
+		} else if (XAdES111.equals(XAdES)) {
+			XADES_SIGNING_CERTIFICATE = "xades111:SigningCertificate";
+		}
 	}
 
 	/**
@@ -59,5 +67,9 @@ public final class XAdESNamespaces {
 	public static boolean exists(final String url) {
 
 		return XAdES132.equals(url) || XAdES111.equals(url) || XAdES122.equals(url) || XAdES.equals(url);
+	}
+
+	public static String getXADES_SIGNING_CERTIFICATE() {
+		return XADES_SIGNING_CERTIFICATE;
 	}
 }
