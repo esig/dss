@@ -381,7 +381,7 @@ public class DiagnosticData extends XmlDom {
 	}
 
 	/**
-	 * Indicates if the -A level is technically valid. It means that the signature and the digest are valid.
+	 * Indicates if the -A (-LTA) level is technically valid. It means that the signature of the archive timestamps are valid and their imprint is valid too.
 	 *
 	 * @param signatureId The identifier of the signature.
 	 * @return true if the signature and digest are valid

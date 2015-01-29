@@ -36,6 +36,7 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
@@ -502,7 +503,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 */
 	private void incorporateSigningCertificate() {
 
-		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNING_CERTIFICATE);
+		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XAdESNamespaces.getXADES_SIGNING_CERTIFICATE());
 
 		final List<X509Certificate> certificates = new ArrayList<X509Certificate>();
 		final List<ChainCertificate> certificateChain = params.getCertificateChain();
