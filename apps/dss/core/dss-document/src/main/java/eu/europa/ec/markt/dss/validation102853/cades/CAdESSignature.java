@@ -1907,13 +1907,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				}
 				// break omitted purposely
 			case CAdES_BASELINE_LT:
-				final Store certificateStore = cmsSignedData.getCertificates();
-				final int certificateStoreSize = certificateStore.getMatches(null).size();
+				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
+				final int certificateStoreSize = encapsulatedCertificates.size();
 				final Store crlStore = cmsSignedData.getCRLs();
-				final Store ocspStore = cmsSignedData.getOtherRevocationInfo(id_ri_ocsp_response);
-				final Store ocspBasicStore = cmsSignedData.getOtherRevocationInfo(id_pkix_ocsp_basic);
 				final int crlStoreSize = crlStore.getMatches(null).size();
+				final Store ocspStore = cmsSignedData.getOtherRevocationInfo(id_ri_ocsp_response);
 				final int ocspStoreSize = ocspStore.getMatches(null).size();
+				final Store ocspBasicStore = cmsSignedData.getOtherRevocationInfo(id_pkix_ocsp_basic);
 				final int basicOcspStoreSize = ocspBasicStore.getMatches(null).size();
 				final int ltInfoSize = certificateStoreSize + crlStoreSize + ocspStoreSize + basicOcspStoreSize;
 				dataForProfilePresent &= (ltInfoSize > 0);
