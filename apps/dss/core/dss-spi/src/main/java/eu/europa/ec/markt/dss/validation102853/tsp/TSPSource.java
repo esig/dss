@@ -50,4 +50,10 @@ public interface TSPSource extends Serializable {
 	 * @param policyOid
 	 */
 	public void setPolicyOid(final String policyOid);
+
+	/**
+	 * @return this method returns the unique id associated with the timestamp
+	 * @param digestValue
+	 */
+	public String getUniqueId(byte[] digestValue);
 }

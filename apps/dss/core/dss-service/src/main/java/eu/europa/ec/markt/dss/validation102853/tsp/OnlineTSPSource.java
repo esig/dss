@@ -47,147 +47,166 @@ import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 
 public class OnlineTSPSource implements TSPSource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSource.class);
 
-    private String tspServer;
+	private String tspServer;
 
-    private ASN1ObjectIdentifier policyOid;
+	private ASN1ObjectIdentifier policyOid;
 
-    private DataLoader dataLoader;
+	private DataLoader dataLoader;
 
-    /**
-     * The default constructor for OnlineTSPSource.
-     */
-    public OnlineTSPSource() {
+	private TSPNonceSource tspNonceSource;
 
-        this(null);
-    }
+	/**
+	 * The default constructor for OnlineTSPSource.
+	 */
+	public OnlineTSPSource() {
 
-    /**
-     * Build a OnlineTSPSource that will query the specified URL
-     *
-     * @param tspServer
-     */
-    public OnlineTSPSource(final String tspServer) {
+		this(null);
+	}
 
-        this.tspServer = tspServer;
-    }
+	/**
+	 * Build a OnlineTSPSource that will query the specified URL
+	 *
+	 * @param tspServer
+	 */
+	public OnlineTSPSource(final String tspServer) {
 
-    /**
-     * Set the URL of the TSA
-     *
-     * @param tspServer
-     */
-    public void setTspServer(final String tspServer) {
+		this.tspServer = tspServer;
+	}
 
-        this.tspServer = tspServer;
-    }
+	/**
+	 * Set the URL of the TSA
+	 *
+	 * @param tspServer
+	 */
+	public void setTspServer(final String tspServer) {
 
-    /**
-     * Set the request policy
-     *
-     * @param policyOid
-     */
-    public void setPolicyOid(final String policyOid) {
+		this.tspServer = tspServer;
+	}
 
-        this.policyOid = new ASN1ObjectIdentifier(policyOid);
+	/**
+	 * Set the request policy
+	 *
+	 * @param policyOid
+	 */
+	public void setPolicyOid(final String policyOid) {
 
-    }
+		this.policyOid = new ASN1ObjectIdentifier(policyOid);
 
-    public DataLoader getDataLoader() {
-        return dataLoader;
-    }
+	}
 
-    public void setDataLoader(final DataLoader dataLoader) {
-        this.dataLoader = dataLoader;
-    }
+	@Override
+	public String getUniqueId(final byte[] digestValue) {
 
-    @Override
-    public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
+		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue, tspNonceSource.getNonce().toByteArray());
+		return DSSUtils.encodeHexString(digest);
+	}
 
-        try {
+	public DataLoader getDataLoader() {
+		return dataLoader;
+	}
 
-			if(LOG.isTraceEnabled()) {
+	public void setDataLoader(final DataLoader dataLoader) {
+		this.dataLoader = dataLoader;
+	}
+
+	public TSPNonceSource getTspNonceSource() {
+		return tspNonceSource;
+	}
+
+	public void setTspNonceSource(final TSPNonceSource tspNonceSource) {
+		this.tspNonceSource = tspNonceSource;
+	}
+
+	@Override
+	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
+
+		try {
+
+			if (LOG.isTraceEnabled()) {
 
 				LOG.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
 				LOG.trace("Timestamp digest value    : " + DSSUtils.toHex(digest));
 			}
 
-            // Setup the time stamp request
-            final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
-            tsqGenerator.setCertReq(true);
-            if (policyOid != null) {
-                tsqGenerator.setReqPolicy(policyOid);
-            }
-            final long val = System.currentTimeMillis();
-            final BigInteger nonce = BigInteger.valueOf(val);
-            final ASN1ObjectIdentifier asn1ObjectIdentifier = digestAlgorithm.getOid();
-            final TimeStampRequest request = tsqGenerator.generate(asn1ObjectIdentifier, digest, nonce);
-            final byte[] requestBytes = request.getEncoded();
+			// Setup the time stamp request
+			final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
+			tsqGenerator.setCertReq(true);
+			if (policyOid != null) {
+				tsqGenerator.setReqPolicy(policyOid);
+			}
+			final ASN1ObjectIdentifier asn1ObjectIdentifier = digestAlgorithm.getOid();
+			if (tspNonceSource == null) {
+				tspNonceSource = new TSPNonceSource();
+			}
+			final BigInteger nonce = tspNonceSource.getNonce();
+			final TimeStampRequest request = tsqGenerator.generate(asn1ObjectIdentifier, digest, nonce);
+			final byte[] requestBytes = request.getEncoded();
 
-            // Call the communications layer
-            byte[] respBytes;
-            if (dataLoader != null) {
+			// Call the communications layer
+			byte[] respBytes;
+			if (dataLoader != null) {
 
-                respBytes = dataLoader.post(tspServer, requestBytes);
-                //if ("base64".equalsIgnoreCase(encoding)) {
-                //respBytes = DSSUtils.base64Decode(respBytes);
-                //}
-            } else {
+				respBytes = dataLoader.post(tspServer, requestBytes);
+				//if ("base64".equalsIgnoreCase(encoding)) {
+				//respBytes = DSSUtils.base64Decode(respBytes);
+				//}
+			} else {
 
-                respBytes = getTSAResponse(requestBytes);
-            }
-            // Handle the TSA response
-            final TimeStampResponse timeStampResponse = new TimeStampResponse(respBytes);
-            LOG.info("Status: " + timeStampResponse.getStatusString());
-            final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
-            if (timeStampToken != null) {
+				respBytes = getTSAResponse(requestBytes);
+			}
+			// Handle the TSA response
+			final TimeStampResponse timeStampResponse = new TimeStampResponse(respBytes);
+			LOG.info("Status: " + timeStampResponse.getStatusString());
+			final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
+			if (timeStampToken != null) {
 
-                LOG.info("SID: " + timeStampToken.getSID());
-            }
-            return timeStampToken;
-        } catch (TSPException e) {
-            throw new DSSException("Invalid TSP response", e);
-        } catch (IOException e) {
-            throw new DSSException(e);
-        }
-    }
+				LOG.info("SID: " + timeStampToken.getSID());
+			}
+			return timeStampToken;
+		} catch (TSPException e) {
+			throw new DSSException("Invalid TSP response", e);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
 
-    /**
-     * Get timestamp token - communications layer
-     *
-     * @return - byte[] - TSA response, raw bytes (RFC 3161 encoded)
-     */
-    protected byte[] getTSAResponse(final byte[] requestBytes) throws DSSException {
+	/**
+	 * Get timestamp token - communications layer
+	 *
+	 * @return - byte[] - TSA response, raw bytes (RFC 3161 encoded)
+	 */
+	protected byte[] getTSAResponse(final byte[] requestBytes) throws DSSException {
 
-        // Setup the TSA connection
-        final URLConnection tsaConnection = DSSUtils.openURLConnection(tspServer);
+		// Setup the TSA connection
+		final URLConnection tsaConnection = DSSUtils.openURLConnection(tspServer);
 
-        tsaConnection.setDoInput(true);
-        tsaConnection.setDoOutput(true);
-        tsaConnection.setUseCaches(false);
-        tsaConnection.setRequestProperty("Content-Type", "application/timestamp-query");
-        tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
+		tsaConnection.setDoInput(true);
+		tsaConnection.setDoOutput(true);
+		tsaConnection.setUseCaches(false);
+		tsaConnection.setRequestProperty("Content-Type", "application/timestamp-query");
+		tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
 
-        DSSUtils.writeToURLConnection(tsaConnection, requestBytes);
+		DSSUtils.writeToURLConnection(tsaConnection, requestBytes);
 
-        // Get TSA response as a byte array
-        byte[] respBytes = getReadFromURLConnection(tsaConnection);
-        final String encoding = tsaConnection.getContentEncoding();
-        if ("base64".equalsIgnoreCase(encoding)) {
+		// Get TSA response as a byte array
+		byte[] respBytes = getReadFromURLConnection(tsaConnection);
+		final String encoding = tsaConnection.getContentEncoding();
+		if ("base64".equalsIgnoreCase(encoding)) {
 
-            respBytes = DSSUtils.base64Decode(respBytes);
-        }
-        return respBytes;
-    }
+			respBytes = DSSUtils.base64Decode(respBytes);
+		}
+		return respBytes;
+	}
 
-    private byte[] getReadFromURLConnection(final URLConnection tsaConnection) throws DSSException {
+	private byte[] getReadFromURLConnection(final URLConnection tsaConnection) throws DSSException {
 
-        try {
-            final InputStream inputStream = tsaConnection.getInputStream();
-            return DSSUtils.toByteArray(inputStream);
-        } catch (IOException e) {
-            throw new DSSException(e);
-        }
-    }
+		try {
+			final InputStream inputStream = tsaConnection.getInputStream();
+			return DSSUtils.toByteArray(inputStream);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
 }
