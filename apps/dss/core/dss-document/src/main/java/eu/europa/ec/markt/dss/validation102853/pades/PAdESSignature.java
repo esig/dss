@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -248,8 +249,8 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 
 		final List<TimestampToken> result = new ArrayList<TimestampToken>();
 		result.addAll(cadesTimestamps);
-		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
+		final Map<PdfSignatureOrDocTimestampInfo, Boolean> outerSignatures = pdfSignatureInfo.getOuterSignatures();
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures.keySet()) {
 
 			if (outerSignature.isTimestamp() && (outerSignature instanceof PdfDocTimestampInfo)) {
 
@@ -286,9 +287,9 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		final List<TimestampToken> archiveTimestampTokenList = new ArrayList<TimestampToken>();
 		archiveTimestampTokenList.addAll(cadesArchiveTimestamps); // (Bob) ???
 		final List<String> timestampedTimestamps = new ArrayList<String>();
-		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
+		final Map<PdfSignatureOrDocTimestampInfo, Boolean> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures.keySet()) {
 
 			if (!outerSignature.isTimestamp()) {
 				continue;
@@ -374,7 +375,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		if (cadesTimestamps.contains(timestampToken)) {
 			return cadesSignature.getSignatureTimestampData(timestampToken, null);
 		} else {
-			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
+			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures().keySet()) {
 				if (signatureInfo instanceof PdfDocTimestampInfo) {
 					PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
 					if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
@@ -414,7 +415,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		if (cadesArchiveTimestamps.contains(timestampToken)) {
 			return cadesSignature.getArchiveTimestampData(timestampToken, null);
 		} else {
-			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
+			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures().keySet()) {
 				if (signatureInfo instanceof PdfDocTimestampInfo) {
 					PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
 					if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
@@ -479,7 +480,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean hasDSSDictionary() {
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : pdfSignatureInfo.getOuterSignatures()) {
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : pdfSignatureInfo.getOuterSignatures().keySet()) {
 			if (outerSignature.getDocumentDictionary() != null) {
 				return true;
 			}
@@ -488,7 +489,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean hasDocumentTimestampOnTopOfDSSDict() {
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : pdfSignatureInfo.getOuterSignatures()) {
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : pdfSignatureInfo.getOuterSignatures().keySet()) {
 			if (outerSignature.getDocumentDictionary() != null) {
 				if (outerSignature.isTimestamp()) {
 					return true;

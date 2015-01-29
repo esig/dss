@@ -22,7 +22,7 @@ package eu.europa.ec.markt.dss.signature.pdf;
 
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.Set;
+import java.util.Map;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.pdf.pdfbox.PdfDssDict;
@@ -75,7 +75,7 @@ public interface PdfSignatureOrDocTimestampInfo {
 	/**
 	 * @return signatures that covers a document that contains this signature
 	 */
-	Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures();
+	Map<PdfSignatureOrDocTimestampInfo, Boolean> getOuterSignatures();
 
 	boolean isTimestamp();
 }
