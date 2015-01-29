@@ -22,6 +22,8 @@ package eu.europa.ec.markt.dss.signature.xades;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -29,6 +31,7 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.DefaultAdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
@@ -44,125 +47,129 @@ import eu.europa.ec.markt.dss.validation102853.crl.CRLToken;
 
 public class XAdESLevelXL extends XAdESLevelX {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(XAdESLevelXL.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelXL.class);
 
-    /**
-     * The default constructor for XAdESLevelXL.
-     */
-    public XAdESLevelXL(final CertificateVerifier certificateVerifier) {
+	/**
+	 * The default constructor for XAdESLevelXL.
+	 */
+	public XAdESLevelXL(final CertificateVerifier certificateVerifier) {
 
-        super(certificateVerifier);
-    }
+		super(certificateVerifier);
+	}
 
-    /**
-     * Adds <CertificateValues> and <RevocationValues> segments to <UnsignedSignatureProperties>.<br>
-     * An XML electronic signature MAY contain at most one:<br>
-     * - CertificateValues element and<br>
-     * - RevocationValues element.
-     *
-     * @see XAdESLevelX#extendSignatureTag()
-     */
-    @Override
-    protected void extendSignatureTag() throws DSSException {
+	/**
+	 * Adds <CertificateValues> and <RevocationValues> segments to <UnsignedSignatureProperties>.<br>
+	 * An XML electronic signature MAY contain at most one:<br>
+	 * - CertificateValues element and<br>
+	 * - RevocationValues element.
+	 *
+	 * @see XAdESLevelX#extendSignatureTag()
+	 */
+	@Override
+	protected void extendSignatureTag() throws DSSException {
 
         /* Go up to -X */
-        super.extendSignatureTag();
+		super.extendSignatureTag();
 
-        if (!xadesSignature.hasXLProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
+		if (!xadesSignature.hasXLProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
 
-            final ValidationContext valContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+			final ValidationContext valContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
-            removeOldCertificateValues();
-            removeOldRevocationValues();
+			removeOldCertificateValues();
+			removeOldRevocationValues();
 
-            incorporateCertificateValues(unsignedSignaturePropertiesDom, valContext);
-            incorporateRevocationValues(unsignedSignaturePropertiesDom, valContext);
+			final List<CertificateToken> toIncludeCertificateTokens = getToIncludeCertificateTokens(valContext);
+			incorporateCertificateValues(unsignedSignaturePropertiesDom, toIncludeCertificateTokens);
+			incorporateRevocationValues(unsignedSignaturePropertiesDom, valContext);
 
-            /**
-             * Certificate(s), revocation data where added, XAdES signature certificate source must be reset.
-             */
-            xadesSignature.resetSources();
-        }
-    }
+			/**
+			 * Certificate(s), revocation data where added, XAdES signature certificate source must be reset.
+			 */
+			xadesSignature.resetCertificateSource();
+			xadesSignature.resetRevocationSources();
+		}
+	}
 
-    /**
-     * This method removes old revocation values from the unsigned signature properties element.
-     */
-    private void removeOldRevocationValues() {
+	/**
+	 * This method removes old revocation values from the unsigned signature properties element.
+	 */
+	private void removeOldRevocationValues() {
 
-        final Element toRemove = xadesSignature.getRevocationValues();
-        if (toRemove != null) {
+		final Element toRemove = xadesSignature.getRevocationValues();
+		if (toRemove != null) {
 
-            unsignedSignaturePropertiesDom.removeChild(toRemove);
-        }
-    }
+			unsignedSignaturePropertiesDom.removeChild(toRemove);
+			xadesSignature.resetRevocationSources();
+		}
+	}
 
-    /**
-     * This method removes old certificate values from the unsigned signature properties element.
-     */
-    private void removeOldCertificateValues() {
+	/**
+	 * This method removes old certificate values from the unsigned signature properties element.
+	 */
+	private void removeOldCertificateValues() {
 
-        final Element toRemove = xadesSignature.getCertificateValues();
-        if (toRemove != null) {
+		final Element toRemove = xadesSignature.getCertificateValues();
+		if (toRemove != null) {
 
-            unsignedSignaturePropertiesDom.removeChild(toRemove);
-        }
-    }
+			unsignedSignaturePropertiesDom.removeChild(toRemove);
+			xadesSignature.resetCertificateSource();
+		}
+	}
 
-    /**
-     * This method incorporates revocation values.
-     *
-     * @param parentDom
-     * @param validationContext
-     */
-    protected void incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext) {
+	/**
+	 * This method incorporates revocation values.
+	 *
+	 * @param parentDom
+	 * @param validationContext
+	 */
+	protected void incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext) {
 
-        // <xades:RevocationValues>
+		// <xades:RevocationValues>
 
-        final DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusion = xadesSignature.getRevocationDataForInclusion(validationContext);
+		final DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusion = xadesSignature.getRevocationDataForInclusion(validationContext);
 
-        if (!revocationsForInclusion.isEmpty()) {
+		if (!revocationsForInclusion.isEmpty()) {
 
-            final Element revocationValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
+			final Element revocationValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
 
-            incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
-            incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
-        }
-    }
+			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
+			incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
+		}
+	}
 
-    private void incorporateCrlTokens(final Element parentDom, final List<CRLToken> crlTokens) {
+	private void incorporateCrlTokens(final Element parentDom, final List<CRLToken> crlTokens) {
 
-        if (crlTokens.isEmpty()) {
+		if (crlTokens.isEmpty()) {
 
-            return;
-        }
-        // ...<xades:CRLValues/>
-        final Element crlValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
+			return;
+		}
+		// ...<xades:CRLValues/>
+		final Element crlValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
 
-        for (final RevocationToken revocationToken : crlTokens) {
+		for (final RevocationToken revocationToken : crlTokens) {
 
-            final byte[] encodedCRL = revocationToken.getEncoded();
-            final String base64EncodedCRL = DSSUtils.base64Encode(encodedCRL);
-            DSSXMLUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
-        }
-    }
+			final byte[] encodedCRL = revocationToken.getEncoded();
+			final String base64EncodedCRL = DSSUtils.base64Encode(encodedCRL);
+			DSSXMLUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
+		}
+	}
 
-    private void incorporateOcspTokens(Element parentDom, final List<OCSPToken> ocspTokens) {
+	private void incorporateOcspTokens(Element parentDom, final List<OCSPToken> ocspTokens) {
 
-        if (ocspTokens.isEmpty()) {
+		if (ocspTokens.isEmpty()) {
 
-            return;
-        }
+			return;
+		}
 
-        // ...<xades:OCSPValues>
-        // .........<xades:EncapsulatedOCSPValue>MIIERw...
-        final Element ocspValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
+		// ...<xades:OCSPValues>
+		// .........<xades:EncapsulatedOCSPValue>MIIERw...
+		final Element ocspValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
 
-        for (final RevocationToken revocationToken : ocspTokens) {
+		for (final RevocationToken revocationToken : ocspTokens) {
 
-            final byte[] encodedOCSP = revocationToken.getEncoded();
-            final String base64EncodedOCSP = DSSUtils.base64Encode(encodedOCSP);
-            DSSXMLUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
-        }
-    }
+			final byte[] encodedOCSP = revocationToken.getEncoded();
+			final String base64EncodedOCSP = DSSUtils.base64Encode(encodedOCSP);
+			DSSXMLUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
+		}
+	}
 }

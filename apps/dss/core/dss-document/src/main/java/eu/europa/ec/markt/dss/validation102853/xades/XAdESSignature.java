@@ -21,6 +21,8 @@
 package eu.europa.ec.markt.dss.validation102853.xades;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigInteger;
@@ -336,7 +338,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method resets the source of certificates. It must be called when any certificate is added to the KeyInfo or CertificateValues.
 	 */
-	public void resetSources() {
+	public void resetCertificateSource() {
 
 		certificatesSource = null;
 	}
@@ -357,6 +359,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			offlineOCSPSource = new XAdESOCSPSource(signatureElement, xPathQueryHolder);
 		}
 		return offlineOCSPSource;
+	}
+
+	/**
+	 * This method resets the sources of the revocation data. It must be called when -LT level is created.
+	 */
+	public void resetRevocationSources() {
+
+		offlineCRLSource = null;
+		offlineOCSPSource = null;
 	}
 
 	@Override

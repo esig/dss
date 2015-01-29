@@ -20,8 +20,12 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -30,6 +34,7 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
@@ -43,7 +48,7 @@ import eu.europa.ec.markt.dss.validation102853.ValidationContext;
 
 public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(XAdESLevelBaselineLTA.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineLTA.class);
 
 	/**
 	 * The default constructor for XAdESLevelBaselineLTA.
@@ -99,7 +104,10 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 		final Element timeStampValidationDataDom = DSSXMLUtils
 			  .addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:TimeStampValidationData");
 
-		incorporateCertificateValues(timeStampValidationDataDom, validationContext);
+		final Set<CertificateToken> toIncludeSetOfCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
+		final List toIncludeCertificates = new ArrayList();
+		toIncludeCertificates.addAll(toIncludeSetOfCertificates);
+		incorporateCertificateValues(timeStampValidationDataDom, toIncludeCertificates);
 
 		incorporateRevocationValues(timeStampValidationDataDom, validationContext);
 		String id = "1";
