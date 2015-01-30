@@ -7,29 +7,33 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>4.3.0</version>
+	<version>4.3.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
 	<modules>
 		<module>apps/dss</module>
+		<module>apps/sscd-mocca-adapter</module>
 	</modules>
 
 	<developers>
 		<developer>
-			<id>bob</id>
-			<name>Robert</name>
-			<email>Robert.Bielecki@arhs-spikeseed.com</email>
-			<organization>ARhS</organization>
+			<id>naramski</id>
+			<name>David Naramski</name>
 			<roles>
 				<role>developer</role>
 			</roles>
 		</developer>
 		<developer>
-			<id>bouckavi</id>
-			<name>Vincent Bouckaert</name>
-			<email>Vincent.Bouckaert@arhs-spikeseed.com</email>
-			<organization>ARhS</organization>
+			<id>vandenbroucke</id>
+			<name>Pierrick Vandenbroucke</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>bob</id>
+			<name>Robert</name>
 			<roles>
 				<role>developer</role>
 			</roles>
@@ -457,24 +461,20 @@
 	</dependencyManagement>
 	<repositories>
 		<repository>
-			<id>central</id>
-			<name>Maven Central</name>
-			<url>http://repo.maven.apache.org/maven2/</url>
-		</repository>
-		<repository>
 			<id>jboss-public</id>
-			<name>JBoss Public Maven repository</name>
 			<url>https://repository.jboss.org/nexus/</url>
 		</repository>
 		<repository>
 			<id>netbeans</id>
-			<name>Maven Repository for org.openide</name>
 			<url>http://bits.netbeans.org/maven2/</url>
 		</repository>
 		<repository>
 			<id>java.net</id>
-			<name>Maven Repository of java.net</name>
 			<url>http://download.java.net/maven/2/</url>
+		</repository>
+		<repository>
+			<id>mocca</id>
+			<url>http://joinup.ec.europa.eu/site/mocca/m2/repository/</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
@@ -489,35 +489,12 @@
 
 	<distributionManagement>
 		<repository>
-			<id>deployment</id>
-			<name>4.1.0</name>
+			<id>joinup-nexus</id>
 			<url>https://joinup.ec.europa.eu/nexus/content/repositories/releases/</url>
-			<!-- bad URL <url>https://joinup.ec.europa.eu/nexus/content/repositories/releases/eu/europa/ec/joinup/sd-dss/</url>-->
 		</repository>
 	</distributionManagement>
 
 	<profiles>
-		<profile>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<modules>
-				<!--The sscd-mocca-adapter is not delivered within this release because its usage requires some additional commercial libraries.-->
-				<!--
-					To use this module, you need mocca-1.3.16
-					 see joinup URL: https://joinup.ec.europa.eu/asset/mocca/asset_release/mocca-1316
-
-					This requires additional commercial libraries:
-					  iaik_jce_full_signed-3.16 and iaik_jce_me4se-3.04 as jar and pom
-
-					You can install these via:
-					  mvn install:install-file -Dfile=iaik_jce_me4se-3.04.jar -DpomFile=iaik_jce_me4se-3.04.pom
-					  mvn install:install-file -Dfile=iaik_jce_full_signed-3.16.jar -DpomFile=iaik_jce_full_signed-3.16.pom
-				-->
-				<!--<module>apps/sscd-mocca-adapter</module>-->
-			</modules>
-			<id>default</id>
-		</profile>
 		<profile>
 			<id>delivery</id>
 			<build>
