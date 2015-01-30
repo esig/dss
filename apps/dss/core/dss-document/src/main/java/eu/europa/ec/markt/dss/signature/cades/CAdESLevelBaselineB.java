@@ -469,7 +469,6 @@ public class CAdESLevelBaselineB {
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		final List<ChainCertificate> chainCertificateList = parameters.getCertificateChain();
 		final List<ASN1Encodable> signingCertificates = new ArrayList<ASN1Encodable>();
-		int ii = 0;
 		for (final ChainCertificate chainCertificate : chainCertificateList) {
 
 			if (!chainCertificate.isSignedAttribute()) {

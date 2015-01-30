@@ -229,7 +229,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
      *
      * @param pObject Object to encode
      * @return An object (of type byte[]) containing the Base-N encoded data which corresponds to the byte[] supplied.
-     * @throws org.apache.commons.codec.EncoderException if the parameter supplied is not of type byte[]
+     * @throws DSSException if the parameter supplied is not of type byte[]
      */
     public Object encode(Object pObject) throws DSSException {
         if (!(pObject instanceof byte[])) {
@@ -244,7 +244,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
      *
      * @param pObject Object to decode
      * @return An object (of type byte[]) containing the binary data which corresponds to the byte[] or String supplied.
-     * @throws org.apache.commons.codec.DecoderException if the parameter supplied is not of type byte[]
+     * @throws DSSException if the parameter supplied is not of type byte[]
      */
     public Object decode(Object pObject) throws DSSException {
         if (pObject instanceof byte[]) {

@@ -43,12 +43,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -62,7 +62,7 @@ import org.w3c.dom.NodeList;
  */
 public class XPointerResourceResolver extends ResourceResolverSpi {
 
-	private static Log LOG = LogFactory.getLog(XPointerResourceResolver.class);
+	private static Logger LOG = LoggerFactory.getLogger(XPointerResourceResolver.class);
 
 	private static final String XP_OPEN = "xpointer(";
 

@@ -20,9 +20,16 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
+import eu.europa.ec.markt.dss.DSSUtils;
+import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.exception.DSSNullException;
+
 /**
- * This class stocks the timestamp reference, which is composed of digest algorithm used to calculate the digest value
- * on the timestamp, the digest value and the timestamp category.
+ * This class stocks the timestamp reference, which is composed of:
+ * - digest algorithm used to calculate the digest value of the reference;
+ * - digest value of the reference;
+ * - the timestamp reference category {@code TimestampReferenceCategory};
+ * - signature id in the case where the reference apply to the signature.
  *
  * @author bielecro
  */
@@ -34,35 +41,72 @@ public class TimestampReference {
 	private String digestValue;
 	private TimestampReferenceCategory category;
 
-	public String getDigestAlgorithm() {
-		return digestAlgorithm;
+	public TimestampReference(final String signatureId) {
+
+		if (signatureId == null) {
+			throw new DSSNullException(String.class, "signatureId");
+		}
+		this.signatureId = signatureId;
+		this.digestAlgorithm = DigestAlgorithm.SHA1.name();
+		this.digestValue = DSSUtils.base64Encode(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
+		this.category = TimestampReferenceCategory.SIGNATURE;
 	}
 
-	public void setDigestAlgorithm(String digestAlgorithm) {
+	public TimestampReference(final String digestAlgorithm, final String digestValue) {
+
+		if (digestAlgorithm == null) {
+			throw new DSSNullException(String.class, "digestAlgorithm");
+		}
 		this.digestAlgorithm = digestAlgorithm;
+		if (digestValue == null) {
+			throw new DSSNullException(String.class, "digestValue");
+		}
+		this.digestValue = digestValue;
+		this.category = TimestampReferenceCategory.CERTIFICATE;
+	}
+
+	public TimestampReference(final String digestAlgorithm, final String digestValue, final TimestampReferenceCategory category) {
+
+		this(digestAlgorithm, digestValue);
+		this.category = category;
+	}
+
+	public String getDigestAlgorithm() {
+		return digestAlgorithm;
 	}
 
 	public String getDigestValue() {
 		return digestValue;
 	}
 
-	public void setDigestValue(String digestValue) {
-		this.digestValue = digestValue;
-	}
-
 	public TimestampReferenceCategory getCategory() {
 		return category;
-	}
-
-	public void setCategory(TimestampReferenceCategory category) {
-		this.category = category;
 	}
 
 	public String getSignatureId() {
 		return signatureId;
 	}
 
-	public void setSignatureId(String signatureId) {
-		this.signatureId = signatureId;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		TimestampReference that = (TimestampReference) o;
+
+		if (!digestValue.equals(that.digestValue)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return digestValue.hashCode();
 	}
 }

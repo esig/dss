@@ -117,7 +117,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 
 				throw new DSSException(String.format("The the expiration date is not defined for '%s' algorithm!", algorithm));
 			}
-			date = RuleUtils.parseDate(expirationDateFormat, expirationDateString);
+			date = DSSUtils.parseDate(expirationDateFormat, expirationDateString);
 			algorithmExpirationDate.put(algorithm, date);
 		}
 		return date;

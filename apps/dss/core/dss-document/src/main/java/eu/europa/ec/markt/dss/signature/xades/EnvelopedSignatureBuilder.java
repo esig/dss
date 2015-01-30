@@ -68,8 +68,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		super(params, origDoc, certificateVerifier);
 		// Inclusive method does not work with the enveloped signature. This limitation comes from the mechanism used by the framework to build the signature.
 		// Ditto: "http://www.w3.org/2006/12/xml-c14n11"
-		setSignedInfoCanonicalizationMethod(params, CanonicalizationMethod.EXCLUSIVE);
-		signedPropertiesCanonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+		setCanonicalizationMethods(params, CanonicalizationMethod.EXCLUSIVE);
 	}
 
 	/**

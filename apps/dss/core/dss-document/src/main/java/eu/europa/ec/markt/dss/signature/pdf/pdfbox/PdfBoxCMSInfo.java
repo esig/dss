@@ -27,9 +27,9 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.mina.util.ConcurrentHashSet;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
@@ -66,7 +66,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private boolean verified;
 	private SignatureCryptographicVerification verifyResult;
 
-	private Set<PdfSignatureOrDocTimestampInfo> outerSignatures = new ConcurrentHashSet<PdfSignatureOrDocTimestampInfo>();
+	private Map<PdfSignatureOrDocTimestampInfo, Boolean> outerSignatures = new ConcurrentHashMap<PdfSignatureOrDocTimestampInfo, Boolean>();
 
 	/**
 	 * @param validationCertPool
@@ -171,13 +171,14 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
 	@Override
 	public void addOuterSignature(PdfSignatureOrDocTimestampInfo signatureInfo) {
+
 		signatureInfo = PdfBoxSignatureService.signatureAlreadyInListOrSelf(outerSignatures, signatureInfo);
-		outerSignatures.add(signatureInfo);
+		outerSignatures.put(signatureInfo, false);
 	}
 
 	@Override
-	public Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
-		return Collections.unmodifiableSet(outerSignatures);
+	public Map<PdfSignatureOrDocTimestampInfo,Boolean> getOuterSignatures() {
+		return Collections.unmodifiableMap(outerSignatures);
 	}
 
 	@Override

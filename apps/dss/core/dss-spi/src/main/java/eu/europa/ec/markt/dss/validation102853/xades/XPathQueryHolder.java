@@ -1,5 +1,7 @@
 package eu.europa.ec.markt.dss.validation102853.xades;
 
+import java.io.Serializable;
+
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 
 /**
@@ -10,7 +12,7 @@ import eu.europa.ec.markt.dss.XAdESNamespaces;
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
  * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
  */
-public class XPathQueryHolder {
+public class XPathQueryHolder implements Serializable {
 
 	public static final String XMLE_SIGNATURE = "Signature";
 	public static final String XMLE_ALGORITHM = "Algorithm";
@@ -31,6 +33,9 @@ public class XPathQueryHolder {
 	public static final String XMLE_UNSIGNED_SIGNATURE_PROPERTIES = "UnsignedSignatureProperties";
 	public static final String XMLE_ARCHIVE_TIME_STAMP = "ArchiveTimeStamp";
 	public static final String XMLE_ARCHIVE_TIME_STAMP_V2 = "ArchiveTimeStampV2";
+	public static final String XMLE_SIGNATURE_TIME_STAMP = "SignatureTimeStamp";
+	public static final String XMLE_REFS_ONLY_TIME_STAMP = "RefsOnlyTimeStamp";
+	public static final String XMLE_SIG_AND_REFS_TIME_STAMP = "SigAndRefsTimeStamp";
 
 	public String XADES_SIGNED_PROPERTIES = "http://uri.etsi.org/01903#SignedProperties";
 
@@ -48,14 +53,12 @@ public class XPathQueryHolder {
 	public final String XPATH_SIGNATURE_METHOD = XPATH_SIGNED_INFO + "/ds:SignatureMethod";
 	public final String XPATH_SIGNATURE_VALUE = "./ds:SignatureValue";
 	public final String XPATH_REFERENCE = XPATH_SIGNED_INFO + "/ds:Reference";
-	public final String XPATH_REFERENCE_TRANSFORM = XPATH_REFERENCE + "/ds:Transforms/ds:Transform";
 	public final String XPATH_KEY_INFO = "./ds:KeyInfo";
 	public final String XPATH_X509_DATA = XPATH_KEY_INFO + "/ds:X509Data";
 	public final String XPATH__ALL_DATA_OBJECTS_TIMESTAMP = "xades:AllDataObjectsTimeStamp";
 	public final String XPATH__INDIVIDUAL_DATA_OBJECTS_TIMESTAMP = "xades:IndividualDataObjectsTimeStamp";
 
 	public final String XPATH_KEY_INFO_X509_CERTIFICATE = XPATH_X509_DATA + "/ds:X509Certificate";
-	public final String XPATH_X509_ISSUER_SERIAL = XPATH_X509_DATA + "/ds:X509IssuerSerial";
 
 	public final static String XPATH_OBJECT = "./ds:Object";
 	public String XPATH_QUALIFYING_PROPERTIES = XPATH_OBJECT + "/xades:QualifyingProperties";
@@ -96,15 +99,11 @@ public class XPathQueryHolder {
 
 	public String XPATH_UNSIGNED_PROPERTIES = XPATH_QUALIFYING_PROPERTIES + "/xades:UnsignedProperties";
 	public String XPATH_UNSIGNED_SIGNATURE_PROPERTIES = XPATH_UNSIGNED_PROPERTIES + "/xades:UnsignedSignatureProperties";
-	public String XPATH_SIGNATURE_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:SignatureTimeStamp";
-	public String XPATH_SIGNATURE_TIMESTAMP_CANON = XPATH_SIGNATURE_TIMESTAMP + "/ds:CanonicalizationMethod";
+	public String XPATH_SIGNATURE_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_SIGNATURE_TIME_STAMP;
 	public String XPATH_COMPLETE_CERTIFICATE_REFS = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CompleteCertificateRefs";
 	public String XPATH_COMPLETE_REVOCATION_REFS = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CompleteRevocationRefs";
 	public String XPATH_OCSP_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:OCSPRefs";
-	public String XPATH_SIG_AND_REFS_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:SigAndRefsTimeStamp";
-	public String XPATH_SIG_AND_REFS_TIMESTAMP_CANON = XPATH_SIG_AND_REFS_TIMESTAMP + "/ds:CanonicalizationMethod";
-	public String XPATH_REFS_ONLY_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:RefsOnlyTimeStamp";
-	public String XPATH_REFS_ONLY_TIMESTAMP_CANON = XPATH_REFS_ONLY_TIMESTAMP + "/ds:CanonicalizationMethod";
+	public String XPATH_SIG_AND_REFS_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_SIG_AND_REFS_TIME_STAMP;
 	public String XPATH_CERTIFICATE_VALUES = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + XPATH_CV;
 	public String XPATH_REVOCATION_VALUES = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:RevocationValues";
 	public String XPATH_TIME_STAMP_VALIDATION_DATA = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:TimeStampValidationData";

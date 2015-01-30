@@ -20,6 +20,8 @@
 
 package eu.europa.ec.markt.dss.signature;
 
+import java.io.Serializable;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
@@ -29,10 +31,11 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  *
  * @version $Revision$ - $Date$
  */
-public interface DocumentSignatureService {
+public interface DocumentSignatureService extends Serializable {
 
 	/**
-	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}. (Added in version 4) When {@code toSignDocument} contains an
+	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}. (Added in version 4) When {@code toSignDocument} contains
+	 * an
 	 * already existing signature the returned bytes are related to a new parallel signature.<p/>
 	 * - Enveloped signature (XML): a new signature is added and the signed data corresponds to that pointed by the first signature;<p/>
 	 * - Enveloping signature:<p/>

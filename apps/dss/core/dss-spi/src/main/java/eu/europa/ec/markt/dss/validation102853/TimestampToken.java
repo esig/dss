@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
-import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,6 +39,7 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TSPValidationException;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.tsp.TimeStampTokenInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,10 +88,18 @@ public class TimestampToken extends Token {
 	 */
 	private String canonicalizationMethod;
 
+	/**
+	 * This attribute is used only with XAdES timestamps. It represents the hash code of the DOM element containing the timestamp. It's an internal attribute which allows to
+	 * unambiguously identify a timestamp.
+	 */
 	private int hashCode;
 
 	/**
-	 * Constructor with an indication of the time-stamp type. The default constructor for TimestampToken.
+	 * Constructor with an indication of the timestamp type. The default constructor for {@code TimestampToken}.
+	 *
+	 * @param timeStamp {@code TimeStampToken}
+	 * @param type      {@code TimestampType}
+	 * @param certPool  {@code CertificatePool} which is used to identify the signing certificate of the timestamp
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
 
@@ -105,8 +113,6 @@ public class TimestampToken extends Token {
 			final byte[] encoded = certificateToken.getEncoded();
 			final Certificate certificate = Certificate.getInstance(encoded);
 			final X509CertificateHolder x509CertificateHolder = new X509CertificateHolder(certificate);
-			//TODO(2013-11-29 Nicolas BC149): check that the matching is correct
-			// if (timeStamp.getSID().match(cert.getCertificate())) {
 			if (timeStamp.getSID().match(x509CertificateHolder)) {
 
 				boolean valid = isSignedBy(certificateToken);
@@ -115,20 +121,14 @@ public class TimestampToken extends Token {
 				}
 			}
 		}
+		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, DSSUtils.getEncoded(timeStamp));
+		final String base64Encoded = DSSUtils.base64Encode(digest);
+		dssId = base64Encoded.hashCode();
 	}
 
 	@Override
 	public int getDSSId() {
 		return dssId;
-	}
-
-	/**
-	 * Lets to set the DSS id of this token. It is use when checking the digest of covered data (archive timestamp).
-	 *
-	 * @param dssId
-	 */
-	public void setDSSId(final int dssId) {
-		this.dssId = dssId;
 	}
 
 	@Override
@@ -163,7 +163,6 @@ public class TimestampToken extends Token {
 			this.issuerToken = issuerToken;
 
 			issuerX500Principal = issuerToken.getSubjectX500Principal();
-			// algorithmUsedToSignToken = issuerToken.getSignatureAlgorithm(); bad algorithm
 			final String algorithm = issuerToken.getPublicKey().getAlgorithm();
 			final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
 			final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
@@ -175,7 +174,7 @@ public class TimestampToken extends Token {
 
 	private TimestampValidation validateTimestampToken(final TimeStampToken timeStampToken, final CertificateToken issuerToken) {
 
-		TimestampValidity timestampValidity = TimestampValidity.NOT_YET_VERIFIED;
+		TimestampValidity timestampValidity;
 		try {
 
 			final JcaSimpleSignerInfoVerifierBuilder verifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
@@ -198,7 +197,7 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Checks if the TimeStampToken matches the signed data.
+	 * Checks if the {@code TimeStampToken} matches the signed data.
 	 *
 	 * @param data the array of {@code byte} representing the timestamped data
 	 * @return true if the data is verified by the TimeStampToken
@@ -208,19 +207,17 @@ public class TimestampToken extends Token {
 		try {
 
 			messageImprintData = data != null;
-			final ASN1ObjectIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm().getAlgorithm();
+			final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
+			final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getHashAlgorithm().getAlgorithm();
 			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm);
 
 			final byte[] computedDigest = DSSUtils.digest(digestAlgorithm, data);
-			final byte[] timestampDigest = timeStamp.getTimeStampInfo().getMessageImprintDigest();
+			final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
 			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
 			if (!messageImprintIntact) {
 
-				String encodedHexString = DSSUtils.encodeHexString(data);
-				int maxLength = encodedHexString.length() <= 200 ? encodedHexString.length() : 200;
-				// Produces very big output
-				LOG.error("Extracted data from the document: {} truncated", DSSUtils.encodeHexString(data).substring(0, maxLength));
-				LOG.error("Computed digest ({}) on the extracted data from the document : {}", new Object[]{digestAlgorithm, DSSUtils.encodeHexString(computedDigest)});
+				LOG.error("Extracted data from the document: {}", DSSUtils.encodeHexString(data, 200));
+				LOG.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, DSSUtils.encodeHexString(computedDigest));
 				LOG.error("Digest present in TimestampToken: {}", DSSUtils.encodeHexString(timestampDigest));
 				LOG.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 			}
@@ -275,6 +272,35 @@ public class TimestampToken extends Token {
 	}
 
 	/**
+	 * @return true if the message imprint data was found, false otherwise
+	 */
+	public Boolean isMessageImprintDataFound() {
+
+		return messageImprintData;
+	}
+
+	/**
+	 * The method {@code matchData} must be invoked previously.
+	 *
+	 * @return true if the message imprint data is intact, false otherwise
+	 */
+	public Boolean isMessageImprintDataIntact() {
+
+		if (messageImprintIntact == null) {
+			throw new DSSException("Invoke matchData(byte[] data) method before!");
+		}
+		return messageImprintIntact;
+	}
+
+	/**
+	 * @return {@code List} of {@code TimestampReference}s
+	 */
+	public List<TimestampReference> getTimestampedReferences() {
+
+		return timestampedReferences;
+	}
+
+	/**
 	 * This method is used to set the timestamped references. The reference can be the digest value of the certificate or of the revocation data. The same references can be
 	 * timestamped by different timestamps.
 	 *
@@ -286,53 +312,83 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * This method either dictates that the data is intact or not intact.
-	 *
-	 * @return
+	 * @return {@code ArchiveTimestampType} in the case of an archive timestamp, {@code null} otherwise
 	 */
-	public Boolean isMessageImprintDataIntact() {
-
-		if (messageImprintIntact == null) {
-
-			throw new DSSException("Invoke matchData(byte[] data) method before!");
-		}
-		return messageImprintIntact;
-	}
-
-	/**
-	 * This method either dictates that the data is found or not found.
-	 *
-	 * @return
-	 */
-	public Boolean isMessageImprintDataFound() {
-
-		return messageImprintData;
-	}
-
-	/**
-	 * This method returns the digest value of timestamped references.
-	 *
-	 * @return
-	 */
-	public List<TimestampReference> getTimestampedReferences() {
-
-		return timestampedReferences;
-	}
-
 	public ArchiveTimestampType getArchiveTimestampType() {
 		return archiveTimestampType;
 	}
 
-	public void setArchiveTimestampType(ArchiveTimestampType archiveTimestampType) {
+	/**
+	 * Archive timestamps can be of different sub type.
+	 *
+	 * @param archiveTimestampType {@code ArchiveTimestampType}
+	 */
+	public void setArchiveTimestampType(final ArchiveTimestampType archiveTimestampType) {
 		this.archiveTimestampType = archiveTimestampType;
 	}
 
+	/**
+	 * Applies only fro XAdES timestamps
+	 *
+	 * @return {@code String} representing the canonicalization method used by the timestamp
+	 */
 	public String getCanonicalizationMethod() {
 		return canonicalizationMethod;
 	}
 
-	public void setCanonicalizationMethod(String canonicalizationMethod) {
+	/**
+	 * Allows to set the canonicalization method used by the timestamp. Applies only with XAdES timestamps.
+	 *
+	 * @param canonicalizationMethod {@code String} representing the canonicalization method
+	 */
+	public void setCanonicalizationMethod(final String canonicalizationMethod) {
 		this.canonicalizationMethod = canonicalizationMethod;
+	}
+
+	@Override
+	public byte[] getEncoded() {
+		return DSSUtils.getEncoded(timeStamp);
+	}
+
+	// TODO-Vin (12/09/2014): Comment!
+	public List<TimestampInclude> getTimestampIncludes() {
+		return timestampIncludes;
+	}
+
+	// TODO-Vin (12/09/2014): Comment!
+	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
+		this.timestampIncludes = timestampIncludes;
+	}
+
+	/**
+	 * Returns the list of wrapped certificates.
+	 *
+	 * @return {@code List} of {@code CertificateToken}
+	 */
+	public List<CertificateToken> getCertificates() {
+		return wrappedSource.getCertificates();
+	}
+
+	public AttributeTable getUnsignedAttributes() {
+		return timeStamp.getUnsignedAttributes();
+	}
+
+	/**
+	 * Used only with XAdES timestamps.
+	 *
+	 * @param hashCode the hash code of the DOM element containing the timestamp
+	 */
+	public void setHashCode(final int hashCode) {
+		this.hashCode = hashCode;
+	}
+
+	/**
+	 * Used only with XAdES timestamps.
+	 *
+	 * @return the hash code of the DOM element containing the timestamp
+	 */
+	public int getHashCode() {
+		return hashCode;
 	}
 
 	@Override
@@ -384,64 +440,7 @@ public class TimestampToken extends Token {
 			out.append("]");
 			return out.toString();
 		} catch (Exception e) {
-
 			return getClass().getName();
 		}
-	}
-
-	@Override
-	public byte[] getEncoded() {
-
-		try {
-
-			final byte[] encoded = timeStamp.getEncoded();
-			return encoded;
-		} catch (IOException e) {
-			throw new DSSException("CRL encoding error: " + e.getMessage(), e);
-		}
-	}
-
-	// TODO-Vin (12/09/2014): Comment!
-	public List<TimestampInclude> getTimestampIncludes() {
-		return timestampIncludes;
-	}
-
-	// TODO-Vin (12/09/2014): Comment!
-	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
-		this.timestampIncludes = timestampIncludes;
-	}
-
-	/**
-	 * Returns the list of wrapped certificates.
-	 *
-	 * @return {@code List} of {@code CertificateToken}
-	 */
-	public List<CertificateToken> getCertificates() {
-		return wrappedSource.getCertificates();
-	}
-
-	public AttributeTable getUnsignedAttributes() {
-
-		return timeStamp.getUnsignedAttributes();
-	}
-
-	public void setHashCode(int hashCode) {
-
-		this.hashCode = hashCode;
-	}
-
-	public int getHashCode() {
-		return hashCode;
-	}
-
-	/**
-	 * Checks whether the timestamp token was generated before the signature
-	 *
-	 * @param signatureSigningTime // TODO-Vin (12/09/2014): Comment+ final+
-	 * @return // TODO-Vin (12/09/2014): comment!
-	 */
-	public boolean isBeforeSignatureSigningTime(Date signatureSigningTime) {
-
-		return this.getGenerationTime().before(signatureSigningTime);
 	}
 }

@@ -26,9 +26,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
-import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
 import eu.europa.ec.markt.dss.validation102853.processes.dss.ForLegalPerson;
 import eu.europa.ec.markt.dss.validation102853.processes.dss.QualifiedCertificate;
@@ -44,7 +43,6 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_I
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_ICTSC;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_ICTSC_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_TINTA_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_TIOOCIC_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.XCV_IFCCIIPC_ANS;
 
 /**
@@ -226,14 +224,6 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		 * <b>The validation shall not include revocation checking</b>:<br>
 		 */
 		final List<XmlDom> certChain = certificateChainXmlDom.getElements("./ChainCertificate");
-		if (certChain.size() < 2) {
-
-			constraintNode.addChild(STATUS, KO);
-			conclusion.setIndication(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND);
-			final Info info = conclusion.addInfo(PCV_TIOOCIC_ANS);
-			info.addTo(constraintNode);
-			return conclusion;
-		}
 		Date intersectionNotBefore = null;
 		Date intersectionNotAfter = null;
 		for (XmlDom certToken : certChain) {
@@ -386,7 +376,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		}
 		constraintNode.addChild(STATUS, OK);
 		final Date controlTime = ctsConclusion.getControlTime();
-		final String formatedControlTime = RuleUtils.formatDate(controlTime);
+		final String formatedControlTime = DSSUtils.formatDate(controlTime);
 		constraintNode.addChild(INFO).setAttribute(CONTROL_TIME, formatedControlTime);
 		/**
 		 * 4) Apply the Chain Constraints to the chain. Certificate meta-data has to be taken into account when checking

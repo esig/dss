@@ -33,9 +33,7 @@ public interface BinaryEncoder extends Encoder {
      *
      * @param source Data to be encoded
      * @return A byte array containing the encoded data
-     * @throws org.apache.commons.codec.EncoderException thrown if the Encoder
-     *                                                   encounters a failure condition during the
-     *                                                   encoding process.
+     * @throws DSSException thrown if the Encoder encounters a failure condition during the encoding process.
      */
     byte[] encode(byte[] source) throws DSSException;
 }  

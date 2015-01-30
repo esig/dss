@@ -20,9 +20,12 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -30,11 +33,12 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.TimestampParameters;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.ValidationContext;
-import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
 /**
  * Holds level A aspects of XAdES
@@ -44,84 +48,89 @@ import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
 public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(XAdESLevelBaselineLTA.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineLTA.class);
 
-    /**
-     * The default constructor for XAdESLevelBaselineLTA.
-     */
-    public XAdESLevelBaselineLTA(final CertificateVerifier certVerifier) {
+	/**
+	 * The default constructor for XAdESLevelBaselineLTA.
+	 */
+	public XAdESLevelBaselineLTA(final CertificateVerifier certVerifier) {
 
-        super(certVerifier);
-    }
+		super(certVerifier);
+	}
 
-    /**
-     * Adds the ArchiveTimeStamp element which is an unsigned property qualifying the signature. The hash sent to the TSA
-     * (messageImprint) is computed on the XAdES-LT form of the electronic signature and the signed data objects.<br>
-     * <p/>
-     * A XAdES-LTA form MAY contain several ArchiveTimeStamp elements.
-     */
-    @Override
-    protected void extendSignatureTag() throws DSSException {
+	/**
+	 * Adds the ArchiveTimeStamp element which is an unsigned property qualifying the signature. The hash sent to the TSA
+	 * (messageImprint) is computed on the XAdES-LT form of the electronic signature and the signed data objects.<br>
+	 * <p/>
+	 * A XAdES-LTA form MAY contain several ArchiveTimeStamp elements.
+	 */
+	@Override
+	protected void extendSignatureTag() throws DSSException {
 
-        // check if -LT is present
-        super.extendSignatureTag();
-        if (xadesSignature.hasLTAProfile()) {
+		// check if -LT is present
+		super.extendSignatureTag();
+		if (xadesSignature.hasLTAProfile()) {
 
-            checkSignatureIntegrity();
+			checkSignatureIntegrity();
 
-            final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+			final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
-            removeLastTimestampValidationData();
-            incorporateTimestampValidationData(validationContext);
-        }
+			removeLastTimestampValidationData();
+			incorporateTimestampValidationData(validationContext);
+		}
 
-        incorporateArchiveTimestamp();
-    }
+		incorporateArchiveTimestamp();
+	}
 
-    /**
-     * This method removes the timestamp validation data of the las archive timestamp.
-     */
-    private void removeLastTimestampValidationData() {
+	/**
+	 * This method removes the timestamp validation data of the las archive timestamp.
+	 */
+	private void removeLastTimestampValidationData() {
 
-        final Element toRemove = xadesSignature.getLastTimestampValidationData();
-        if (toRemove != null) {
+		final Element toRemove = xadesSignature.getLastTimestampValidationData();
+		if (toRemove != null) {
 
-            unsignedSignaturePropertiesDom.removeChild(toRemove);
-        }
-    }
+			unsignedSignaturePropertiesDom.removeChild(toRemove);
+		}
+	}
 
-    /**
-     * This method incorporates the timestamp validation data in the signature
-     *
-     * @param validationContext
-     */
-    private void incorporateTimestampValidationData(final ValidationContext validationContext) {
+	/**
+	 * This method incorporates the timestamp validation data in the signature
+	 *
+	 * @param validationContext
+	 */
+	private void incorporateTimestampValidationData(final ValidationContext validationContext) {
 
-        final Element timeStampValidationDataDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:TimeStampValidationData");
+		final Element timeStampValidationDataDom = DSSXMLUtils
+			  .addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:TimeStampValidationData");
 
-        incorporateCertificateValues(timeStampValidationDataDom, validationContext);
+		final Set<CertificateToken> toIncludeSetOfCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
+		final List toIncludeCertificates = new ArrayList();
+		toIncludeCertificates.addAll(toIncludeSetOfCertificates);
+		incorporateCertificateValues(timeStampValidationDataDom, toIncludeCertificates);
 
-        incorporateRevocationValues(timeStampValidationDataDom, validationContext);
-        String id = "1";
-        final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
-        if (archiveTimestamps.size() > 0) {
+		incorporateRevocationValues(timeStampValidationDataDom, validationContext);
+		String id = "1";
+		final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
+		if (archiveTimestamps.size() > 0) {
 
-            final TimestampToken timestampToken = archiveTimestamps.get(archiveTimestamps.size() - 1);
-            id = "" + timestampToken.getDSSId();
-        }
+			final TimestampToken timestampToken = archiveTimestamps.get(archiveTimestamps.size() - 1);
+			id = "" + timestampToken.getDSSId();
+		}
 
-        timeStampValidationDataDom.setAttribute("Id", "id-" + id);
-    }
+		timeStampValidationDataDom.setAttribute("Id", "id-" + id);
+	}
 
-    /**
-     * This method incorporate timestamp type object.
-     */
-    private void incorporateArchiveTimestamp() {
+	/**
+	 * This method incorporate timestamp type object.
+	 */
+	private void incorporateArchiveTimestamp() {
 
-        final byte[] archiveTimestampData = xadesSignature.getArchiveTimestampData(null);
-        final DigestAlgorithm timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
-        final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, archiveTimestampData);
-		String archiveTimestampCanonicalizationMethod = params.getArchiveTimestampParameters().getCanonicalizationMethod();
-        createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP,archiveTimestampCanonicalizationMethod, digestBytes);
-    }
+		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
+		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
+		final byte[] archiveTimestampData = xadesSignature.getArchiveTimestampData(null, canonicalizationMethod);
+		final DigestAlgorithm timestampDigestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();
+		final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, archiveTimestampData);
+		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, digestBytes);
+	}
 }

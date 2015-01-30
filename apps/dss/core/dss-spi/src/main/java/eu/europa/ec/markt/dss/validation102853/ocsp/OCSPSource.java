@@ -20,6 +20,8 @@
 
 package eu.europa.ec.markt.dss.validation102853.ocsp;
 
+import java.io.Serializable;
+
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
@@ -31,7 +33,7 @@ import eu.europa.ec.markt.dss.validation102853.OCSPToken;
  * @version $Revision$ - $Date$
  */
 
-public interface OCSPSource {
+public interface OCSPSource extends Serializable {
 
 	/**
 	 * Gets an {@code OCSPToken} for the given certificate / issuer's certificate couple. The coherence between the response and the request is checked.

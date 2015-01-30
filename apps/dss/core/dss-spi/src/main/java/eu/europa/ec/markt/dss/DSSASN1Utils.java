@@ -33,10 +33,12 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -48,6 +50,7 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -378,6 +381,25 @@ public final class DSSASN1Utils {
 			throw new DSSException("Error when computing certificate's extensions.", e);
 		} finally {
 			DSSUtils.closeQuietly(input);
+		}
+	}
+
+	/**
+	 * @param signerInformation {@code SignerInformation}
+	 * @return {@code DERTaggedObject} representing the signed attributes
+	 * @throws DSSException in case of a decoding problem
+	 */
+	public static DERTaggedObject getSignedAttributes(final SignerInformation signerInformation) throws DSSException {
+
+		try {
+			final byte[] encodedSignedAttributes = signerInformation.getEncodedSignedAttributes();
+			if (encodedSignedAttributes == null) {
+				return null;
+			}
+			final ASN1Set asn1Set = DSSASN1Utils.toASN1Primitive(encodedSignedAttributes);
+			return new DERTaggedObject(false, 0, asn1Set);
+		} catch (IOException e) {
+			throw new DSSException(e);
 		}
 	}
 }

@@ -55,7 +55,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 
 	private List<CertificateToken> encapsulatedCerts;
 
-	private List<CertificateToken> timestampValidationData;
+	private List<CertificateToken> timestampValidationDataCerts;
 
 	/**
 	 * The default constructor for XAdESCertificateSource. All certificates are extracted during instantiation.
@@ -96,7 +96,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			certificateTokens = new ArrayList<CertificateToken>();
 			encapsulatedCerts = getCertificates(xPathQueryHolder.XPATH_ENCAPSULATED_X509_CERTIFICATE);
 			keyInfoCerts = getCertificates(xPathQueryHolder.XPATH_KEY_INFO_X509_CERTIFICATE);
-			timestampValidationData = getCertificates(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE);
+			timestampValidationDataCerts = getCertificates(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE);
 		}
 	}
 
@@ -154,6 +154,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 */
 	public List<CertificateToken> getTimestampCertificates() throws DSSException {
 
-		return timestampValidationData;
+		return timestampValidationDataCerts;
 	}
 }

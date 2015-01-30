@@ -21,6 +21,8 @@
 package eu.europa.ec.markt.dss.signature.xades;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -31,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import eu.europa.ec.markt.dss.CertificateIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -53,6 +56,7 @@ import eu.europa.ec.markt.dss.validation102853.ValidationContext;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 
+import static eu.europa.ec.markt.dss.DigestAlgorithm.MD5;
 import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
 import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES141;
 import static eu.europa.ec.markt.dss.signature.ProfileParameters.Operation.SIGNING;
@@ -163,10 +167,11 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 		// The timestamp must be added only if there is no one or the extension -T level is being created
 		if (!xadesSignature.hasTProfile() || XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
 
-			final byte[] canonicalisedValue = xadesSignature.getSignatureTimestampData(null);
-			final DigestAlgorithm timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
+			final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
+			final byte[] canonicalisedValue = xadesSignature.getSignatureTimestampData(null, canonicalizationMethod);
+			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalisedValue);
-			final String canonicalizationMethod = params.getSignatureTimestampParameters().getCanonicalizationMethod();
 			createXAdESTimeStampType(SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
 		}
 	}
@@ -195,40 +200,52 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 	}
 
 	/**
-	 * This method incorporates all certificates used during the validation process. if any certificate is already present within the KeyInfo then it is
-	 * ignored.
+	 * * This method incorporates all certificates passed as parameter.
 	 *
 	 * @param parentDom
-	 * @param valContext
+	 * @param toIncludeCertificates
 	 */
-	protected void incorporateCertificateValues(final Element parentDom, final ValidationContext valContext) {
+	protected void incorporateCertificateValues(final Element parentDom, final List<CertificateToken> toIncludeCertificates) {
 
 		// <xades:CertificateValues>
 		// ...<xades:EncapsulatedX509Certificate>MIIC9TC...
+		if (!toIncludeCertificates.isEmpty()) {
 
-		final Element certificateValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdES, XADES_CERTIFICATE_VALUES);
+			final Element certificateValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdES, XADES_CERTIFICATE_VALUES);
 
-		final Set<CertificateToken> certificatesForInclusionInProfileLT = xadesSignature.getCertificatesForInclusion(valContext);
+			final CertificatePool certificatePool = getCertificatePool();
+			final boolean trustAnchorBPPolicy = params.bLevel().isTrustAnchorBPPolicy();
+			boolean trustAnchorIncluded = false;
+			for (final CertificateToken certificateToken : toIncludeCertificates) {
 
-		final CertificatePool certificatePool = getCertificatePool();
-		final boolean trustAnchorBPPolicy = params.bLevel().isTrustAnchorBPPolicy();
-		boolean trustAnchorIncluded = false;
-		for (final CertificateToken certificateToken : certificatesForInclusionInProfileLT) {
+				if (trustAnchorBPPolicy && certificatePool != null) {
 
-			if (trustAnchorBPPolicy && certificatePool != null) {
-
-				final List<CertificateToken> certificateTokens = certificatePool.get(certificateToken.getSubjectX500Principal());
-				if (certificateTokens.size() > 0) {
-					trustAnchorIncluded = true;
+					final List<CertificateToken> certificateTokens = certificatePool.get(certificateToken.getSubjectX500Principal());
+					if (certificateTokens.size() > 0) {
+						trustAnchorIncluded = true;
+					}
 				}
+				final byte[] bytes = certificateToken.getEncoded();
+				final String base64EncodeCertificate = DSSUtils.base64Encode(bytes);
+				DSSXMLUtils.addTextElement(documentDom, certificateValuesDom, XAdES, XADES_ENCAPSULATED_X509_CERTIFICATE, base64EncodeCertificate);
 			}
-			final byte[] bytes = certificateToken.getEncoded();
-			final String base64EncodeCertificate = DSSUtils.base64Encode(bytes);
-			DSSXMLUtils.addTextElement(documentDom, certificateValuesDom, XAdES, XADES_ENCAPSULATED_X509_CERTIFICATE, base64EncodeCertificate);
+			if (trustAnchorBPPolicy && !trustAnchorIncluded) {
+				LOG.warn("The trust anchor is missing but its inclusion is required by the signature policy!");
+			}
 		}
-		if (trustAnchorBPPolicy && !trustAnchorIncluded) {
-			LOG.warn("The trust anchor is missing but its inclusion is required by the signature policy!");
+	}
+
+	public Set<CertificateToken> getCertificatesForInclusion(final ValidationContext validationContext) {
+
+		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
+		final List<CertificateToken> certWithinSignatures = xadesSignature.getCertificates();
+		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
+			if (certWithinSignatures.contains(certificateToken)) {
+				continue;
+			}
+			certificates.add(certificateToken);
 		}
+		return certificates;
 	}
 
 	/**
@@ -281,18 +298,34 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 			final byte[] timeStampTokenBytes = timeStampToken.getEncoded();
 			final String base64EncodedTimeStampToken = DSSUtils.base64Encode(timeStampTokenBytes);
 
-			final String signatureTimestampId = UUID.randomUUID().toString();
-			timeStampDom.setAttribute(ID, "TS-" + signatureTimestampId);
+			final String timestampId = CertificateIdentifier.isUniqueIdentifier() ? tspSource.getUniqueId(digestValue) : UUID.randomUUID().toString();
+			timeStampDom.setAttribute(ID, "TS-" + timestampId);
 
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
 
 			// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
 			final Element encapsulatedTimeStampDom = DSSXMLUtils.addElement(documentDom, timeStampDom, XAdES, XADES_ENCAPSULATED_TIME_STAMP);
-			encapsulatedTimeStampDom.setAttribute(ID, "ETS-" + signatureTimestampId);
+			encapsulatedTimeStampDom.setAttribute(ID, "ETS-" + timestampId);
 			DSSXMLUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
 		} catch (IOException e) {
 			throw new DSSException("Error during the creation of the XAdES timestamp!", e);
 		}
 	}
+
+	protected List<CertificateToken> getToIncludeCertificateTokens(final ValidationContext valContext) {
+
+		// if the certificate is already present within the KeyInfo then it is ignored.
+		final Set<CertificateToken> processedCertificates = valContext.getProcessedCertificates();
+		final List<CertificateToken> keyInfoCertificates = xadesSignature.getKeyInfoCertificates();
+		final List<CertificateToken> toIncludeCertificates = new ArrayList<CertificateToken>();
+		for (final CertificateToken processedCertificate : processedCertificates) {
+
+			if (!keyInfoCertificates.contains(processedCertificate)) {
+				toIncludeCertificates.add(processedCertificate);
+			}
+		}
+		return toIncludeCertificates;
+	}
+
 }

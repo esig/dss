@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss-app</artifactId>
-		<version>4.3.0-RC</version>
+		<version>4.3.0</version>
 		<relativePath>../..</relativePath>
 	</parent>
 
@@ -72,11 +72,6 @@
 					<artifactId>bctsp-jdk14</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xsom</groupId>

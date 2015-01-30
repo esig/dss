@@ -1,5 +1,7 @@
 package eu.europa.ec.markt.dss.parameter;
 
+import java.io.Serializable;
+
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 
@@ -12,7 +14,7 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
  * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
  * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
  */
-public class ASiCParameters {
+public class ASiCParameters implements Serializable {
 
 	/**
 	 * Indicates if the ZIP comment should be used to store the signed content mime-type.

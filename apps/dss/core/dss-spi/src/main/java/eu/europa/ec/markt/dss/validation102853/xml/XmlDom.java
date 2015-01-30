@@ -46,7 +46,6 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.NamespaceContextMap;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 
 /**
  * This class encapsulates an org.w3c.dom.Document. Its integrates the ability to execute XPath queries on XML
@@ -319,7 +318,7 @@ public class XmlDom {
 	public Date getTimeValue(final String xPath, final Object... params) {
 
 		String value = getValue(xPath, params);
-		return RuleUtils.parseDate(value);
+		return DSSUtils.parseDate(value);
 	}
 
 	public Date getTimeValueOrNull(final String xPath, final Object... params) {
@@ -328,7 +327,7 @@ public class XmlDom {
 		if (value.isEmpty()) {
 			return null;
 		}
-		return RuleUtils.parseDate(value);
+		return DSSUtils.parseDate(value);
 	}
 
 	public String getText() {
@@ -437,7 +436,7 @@ public class XmlDom {
 			}
 			final Date date;
 			try {
-				date = RuleUtils.parseDate(format, dateString);
+				date = DSSUtils.parseDate(format, dateString);
 			} catch (DSSException e) {
 
 				LOG.warn("The date conversion is not possible.", e);

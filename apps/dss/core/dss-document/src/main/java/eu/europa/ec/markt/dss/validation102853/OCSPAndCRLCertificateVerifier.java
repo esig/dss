@@ -83,7 +83,7 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 		if (crlSource != null) {
 
 			if (debugEnabled) {
-				LOG.debug("CRL request for: " + dssIdAsString + "using: " + crlSource.getClass().getSimpleName());
+				LOG.debug("CRL request for: " + dssIdAsString + " using: " + crlSource.getClass().getSimpleName());
 			}
 			/**
 			 * The validationPool is not needed for the CRLCertificateVerifier because it should be signed by the same certificate as the

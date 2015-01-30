@@ -25,13 +25,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import org.bouncycastle.asn1.esf.OcspResponsesID;
 import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSRevocationUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.exception.DSSException;
 
 /**
  * Reference an OCSPResponse
@@ -41,71 +43,72 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 
 public class OCSPRef {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(OCSPRef.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OCSPRef.class);
 
-    private final DigestAlgorithm digestAlgorithm;
+	private DigestAlgorithm digestAlgorithm = null;
 
-    private final byte[] digestValue;
+	private byte[] digestValue = DSSUtils.EMPTY_BYTE_ARRAY;
 
-    private final boolean matchOnlyBasicOCSPResponse;
+	private final boolean matchOnlyBasicOCSPResponse;
 
-    /**
-     * The default constructor for OCSPRef.
-     */
-    public OCSPRef(OcspResponsesID ocsp, boolean matchOnlyBasicOCSPResponse) {
+	/**
+	 * The default constructor for OCSPRef.
+	 */
+	public OCSPRef(final OtherHash otherHash, final boolean matchOnlyBasicOCSPResponse) {
 
-        final OtherHash otherHash = ocsp.getOcspRepHash();
-        this.digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm());
-        this.digestValue = ocsp.getOcspRepHash().getHashValue();
-        this.matchOnlyBasicOCSPResponse = matchOnlyBasicOCSPResponse;
-    }
+		if (otherHash != null) { // -444
 
-    /**
-     * The default constructor for OCSPRef.
-     */
-    public OCSPRef(DigestAlgorithm algorithm, byte[] digestValue, boolean matchOnlyBasicOCSPResponse) {
+			this.digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm());
+			this.digestValue = otherHash.getHashValue();
+		}
+		this.matchOnlyBasicOCSPResponse = matchOnlyBasicOCSPResponse;
+	}
 
-        this.digestAlgorithm = algorithm;
-        this.digestValue = digestValue;
-        this.matchOnlyBasicOCSPResponse = matchOnlyBasicOCSPResponse;
-    }
+	/**
+	 * The default constructor for OCSPRef.
+	 */
+	public OCSPRef(DigestAlgorithm algorithm, byte[] digestValue, boolean matchOnlyBasicOCSPResponse) {
 
-    /**
-     * @param ocspResp
-     * @return
-     */
-    public boolean match(BasicOCSPResp ocspResp) {
+		this.digestAlgorithm = algorithm;
+		this.digestValue = digestValue;
+		this.matchOnlyBasicOCSPResponse = matchOnlyBasicOCSPResponse;
+	}
 
-        try {
+	/**
+	 * @param ocspResp
+	 * @return
+	 */
+	public boolean match(final BasicOCSPResp ocspResp) {
 
-            MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
-            if (matchOnlyBasicOCSPResponse) {
+		if (digestAlgorithm == null) { // -444
+			return false;
+		}
+		try {
 
-                digest.update(ocspResp.getEncoded());
-            } else {
+			MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
+			if (matchOnlyBasicOCSPResponse) {
+				digest.update(ocspResp.getEncoded());
+			} else {
+				digest.update(DSSRevocationUtils.fromBasicToResp(ocspResp).getEncoded());
+			}
+			byte[] computedValue = digest.digest();
+			if (LOG.isInfoEnabled()) {
+				LOG.info("Compare " + DSSUtils.encodeHexString(digestValue) + " to computed value " + DSSUtils.encodeHexString(computedValue) + " of " +
+					  "BasicOCSPResp produced at " + ocspResp.getProducedAt());
+			}
+			return Arrays.equals(digestValue, computedValue);
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException(e);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
 
-                digest.update(DSSRevocationUtils.fromBasicToResp(ocspResp).getEncoded());
-            }
-            byte[] computedValue = digest.digest();
-            if (LOG.isInfoEnabled()) LOG.info("Compare " + DSSUtils.encodeHexString(digestValue) + " to computed value " + DSSUtils.encodeHexString(computedValue) + " of " +
-                  "BasicOCSPResp produced at " + ocspResp
-                  .getProducedAt());
+	public DigestAlgorithm getDigestAlgorithm() {
+		return digestAlgorithm;
+	}
 
-            return Arrays.equals(digestValue, computedValue);
-        } catch (NoSuchAlgorithmException ex) {
-
-            throw new RuntimeException("Maybe BouncyCastle provider is not installed ?", ex);
-        } catch (IOException ex) {
-
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public DigestAlgorithm getDigestAlgorithm() {
-        return digestAlgorithm;
-    }
-
-    public byte[] getDigestValue() {
-        return digestValue;
-    }
+	public byte[] getDigestValue() {
+		return digestValue;
+	}
 }

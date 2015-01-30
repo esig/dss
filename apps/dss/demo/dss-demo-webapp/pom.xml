@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss-app</artifactId>
-		<version>4.3.0-RC</version>
+		<version>4.3.0</version>
 		<relativePath>../..</relativePath>
 	</parent>
 
@@ -46,13 +46,6 @@
 									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
 									<destFileName>/jar/bcprov-jdk15on.jar</destFileName>
 								</artifactItem>
-								<!--<artifactItem>-->
-								<!--<groupId>org.bouncycastle</groupId>-->
-								<!--<artifactId>bcpkix-jdk15on</artifactId>-->
-								<!--<type>jar</type>-->
-								<!--<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>-->
-								<!--<destFileName>/jar/bcpkix-jdk15on</destFileName>-->
-								<!--</artifactItem>-->
 								<artifactItem>
 									<groupId>org.bouncycastle</groupId>
 									<artifactId>bcmail-jdk15on</artifactId>
@@ -148,12 +141,6 @@
 			<artifactId>dss-service</artifactId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>jaxb-impl</artifactId>
-					<groupId>com.sun.xml.bind</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
@@ -228,6 +215,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>

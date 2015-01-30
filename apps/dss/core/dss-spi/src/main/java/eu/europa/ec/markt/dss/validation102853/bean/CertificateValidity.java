@@ -19,9 +19,11 @@
  */
 package eu.europa.ec.markt.dss.validation102853.bean;
 
+import java.io.Serializable;
 import java.security.PublicKey;
 
 import eu.europa.ec.markt.dss.DSSUtils;
+import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
@@ -29,7 +31,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 /**
  * This class stores the information about the validity of the signing certificate.
  */
-public class CertificateValidity {
+public class CertificateValidity implements Serializable {
 
 	/**
 	 * This field is used when only the public key is available (non AdES signature)
@@ -46,6 +48,8 @@ public class CertificateValidity {
 	 * Indicates what element encapsulating the signed certificate has been signed.
 	 */
 	private String signed;
+	private String digest;
+	private DigestAlgorithm digestAlgorithm;
 
 	/**
 	 * This constructor create an object containing all information concerning the validity of a candidate for the signing certificate.
@@ -157,5 +161,21 @@ public class CertificateValidity {
 
 		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual()) || DSSUtils.isNotEmpty(getSigned());
 		return valid;
+	}
+
+	public void setDigest(final String digest) {
+		this.digest = digest;
+	}
+
+	public String getDigest() {
+		return digest;
+	}
+
+	public DigestAlgorithm getDigestAlgorithm() {
+		return digestAlgorithm;
+	}
+
+	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
+		this.digestAlgorithm = digestAlgorithm;
 	}
 }

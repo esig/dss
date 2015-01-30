@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,7 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
  *
  * @version $Revision: 1820 $ - $Date: 2013-03-28 15:55:47 +0100 (Thu, 28 Mar 2013) $
  */
-public interface AdvancedSignature {
+public interface AdvancedSignature extends Serializable {
 
 	/**
 	 * @return in the case of the detached signature this is the {@code List} of signed contents.
@@ -137,8 +138,6 @@ public interface AdvancedSignature {
 	 * @return
 	 */
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate();
-
-	public List<String> getInfo();
 
 	/**
 	 * This setter allows to indicate the master signature. It means that this is a countersignature.
@@ -259,9 +258,10 @@ public interface AdvancedSignature {
 	 * Returns the data (signature value) that was timestamped by the SignatureTimeStamp for the given timestamp.
 	 *
 	 * @param timestampToken
+	 * @param canonicalizationMethod
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
-	public byte[] getSignatureTimestampData(final TimestampToken timestampToken);
+	public byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the time-stamp which is placed on the digital signature (XAdES example: ds:SignatureValue element), the
@@ -277,9 +277,11 @@ public interface AdvancedSignature {
 	 * element), the signature time-stamp(s) present in the AdES-T form, the certification path references and the
 	 * revocation status references.
 	 *
+	 * @param timestampToken {@code TimestampToken} or null during the creation process
+	 * @param canonicalizationMethod canonicalization method
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
-	public byte[] getTimestampX1Data(final TimestampToken timestampToken);
+	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the time-stamp which is computed over the concatenation of CompleteCertificateRefs and
@@ -295,7 +297,7 @@ public interface AdvancedSignature {
 	 *
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken);
+	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the archive Timestamps
@@ -309,9 +311,10 @@ public interface AdvancedSignature {
 	 * timestamp.
 	 *
 	 * @param timestampToken null when adding a new archive timestamp
+	 * @param canonicalizationMethod
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
-	public byte[] getArchiveTimestampData(final TimestampToken timestampToken);
+	public byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns a list of counter signatures applied to this signature

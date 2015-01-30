@@ -214,7 +214,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 			}
 
 			final Date revocationIssuingTime = certificate.getTimeValue("./Revocation/IssuingTime/text()");
-			final String formatedRevocationIssuingTime = RuleUtils.formatDate(revocationIssuingTime);
+			final String formatedRevocationIssuingTime = DSSUtils.formatDate(revocationIssuingTime);
 
 			constraintNode.addChild(STATUS, OK);
 			constraintNode.addChild(INFO).setAttribute(REVOCATION_ISSUING_TIME, formatedRevocationIssuingTime);
@@ -292,7 +292,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 				final Date revocationDate = certificate.getTimeValue("./Revocation/DateTime/text()");
 				controlTime = revocationDate;
 
-				final String formatedRevocationDate = RuleUtils.formatDate(revocationDate);
+				final String formatedRevocationDate = DSSUtils.formatDate(revocationDate);
 				constraintNode.addChild(INFO, CTS_CTSTRT_LABEL);
 				constraintNode.addChild(INFO).setAttribute(REVOCATION_TIME, formatedRevocationDate);
 			} else {
@@ -360,7 +360,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 		 */
 
 		conclusion.setIndication(VALID);
-		conclusion.addInfo().setAttribute(CONTROL_TIME, RuleUtils.formatDate(controlTime));
+		conclusion.addInfo().setAttribute(CONTROL_TIME, DSSUtils.formatDate(controlTime));
 
 		return conclusion;
 	}
@@ -371,7 +371,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 
 	private void addControlTime(XmlNode constraintNode) {
 
-		String formatedControlTime = RuleUtils.formatDate(controlTime);
+		String formatedControlTime = DSSUtils.formatDate(controlTime);
 		constraintNode.addChild(INFO).setAttribute(CONTROL_TIME, formatedControlTime);
 	}
 
@@ -397,7 +397,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 		if (algoExpirationDate != null && controlTime.after(algoExpirationDate)) {
 
 			controlTime = algoExpirationDate;
-			final String formatedCertAlgoExpirationDate = RuleUtils.formatDate(algoExpirationDate);
+			final String formatedCertAlgoExpirationDate = DSSUtils.formatDate(algoExpirationDate);
 			infoContainerNode.addChild(INFO, message);
 			infoContainerNode.addChild(INFO).setAttribute(ALGORITHM_EXPIRATION_DATE, formatedCertAlgoExpirationDate);
 		}
@@ -411,7 +411,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 		if (algoExpirationDate != null && controlTime.after(algoExpirationDate)) {
 
 			controlTime = algoExpirationDate;
-			final String formatedCertAlgoExpirationDate = RuleUtils.formatDate(algoExpirationDate);
+			final String formatedCertAlgoExpirationDate = DSSUtils.formatDate(algoExpirationDate);
 			infoContainerNode.addChild(INFO, message);
 			infoContainerNode.addChild(INFO).setAttribute(ALGORITHM_EXPIRATION_DATE, formatedCertAlgoExpirationDate);
 		}

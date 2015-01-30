@@ -185,38 +185,37 @@ public class EtsiPOEExtraction extends POEExtraction {
 
 		final Date date = timestamp.getTimeValue("./ProductionTime/text()");
 		if (date == null) {
-
 			throw new DSSException(EXCEPTION_TPTCBN);
 		}
 		LOG.debug("Extraction of POE from the timestamp at: " + date);
 		final List<XmlDom> nodes = timestamp.getElements("./SignedObjects/*");
-		for (XmlDom xmlDom : nodes) {
+		for (final XmlDom xmlDom : nodes) {
 
 			final String nodeName = xmlDom.getName();
 			if (SIGNED_SIGNATURE.equals(nodeName)) {
 
 				final String signatureId = xmlDom.getAttribute(ID);
 				addSignaturePoe(signatureId, date);
+				continue;
+			}
+			final String category = xmlDom.getAttribute(CATEGORY);
+			final String digestValue = xmlDom.getValue("./DigestValue/text()");
+			if (CERTIFICATE.toUpperCase().equals(category)) {
+
+				try {
+
+					final Integer certificateId = certPool.getIntValue("./dss:Certificate/dss:DigestAlgAndValue[dss:DigestValue='%s']/../@Id", digestValue);
+					addCertificatePoe(certificateId, date);
+				} catch (Exception e) {
+
+					LOG.error(String.format("The certificate with digest value:%S is not found.", digestValue));
+					// The algorithm continue, this is not blocking issue.
+				}
 			} else {
 
-				final String category = xmlDom.getAttribute(CATEGORY);
-				final String digestValue = xmlDom.getValue("./DigestValue/text()");
-				if (CERTIFICATE.toUpperCase().equals(category)) {
-
-					try {
-
-						Integer certificateId = certPool.getIntValue("./dss:Certificate/dss:DigestAlgAndValue[dss:DigestValue='%s']/../@Id", digestValue);
-						addCertificatePoe(certificateId, date);
-					} catch (Exception e) {
-
-						LOG.error(String.format("The certificate with digest value:%S is not found.", digestValue));
-						// The algorithm continue, this is not blocking issue.
-					}
-				} else {
-
-					// Revocations
-				}
+				// Revocations
 			}
+
 		}
 	}
 
@@ -248,7 +247,7 @@ public class EtsiPOEExtraction extends POEExtraction {
 	 */
 	private void addCertificatePoe(final Integer id, final Date date) {
 
-		List<Date> dates = signaturePOEList.get(Integer.toString(id));
+		List<Date> dates = certificatePOEList.get(Integer.toString(id));
 		if (dates == null) {
 
 			dates = new ArrayList<Date>();

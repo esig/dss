@@ -104,7 +104,6 @@ public abstract class XAdESBuilder {
 	public static final String XADES_UNSIGNED_PROPERTIES = "xades:UnsignedProperties";
 	public static final String XADES_UNSIGNED_SIGNATURE_PROPERTIES = "xades:UnsignedSignatureProperties";
 	public static final String XADES_SIGNER_ROLE = "xades:SignerRole";
-	public static final String XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";
 	public static final String XADES_SIGNING_TIME = "xades:SigningTime";
 	public static final String XADES_STATE_OR_PROVINCE = "xades:StateOrProvince";
 

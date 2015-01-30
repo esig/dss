@@ -20,10 +20,7 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,16 +31,6 @@ public final class RuleUtils {
 
 	private RuleUtils() {
 	}
-
-	/**
-	 * The default date-time format: "yyyy-MM-dd'T'HH:mm:ss'Z'"
-	 */
-	public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-	/**
-	 * The default date pattern: "yyyy-MM-dd"
-	 */
-	public static final SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
 	 * Converts the given time duration (value) in the given unit (fromUnit) to given unit (toUnit).
@@ -94,107 +81,6 @@ public final class RuleUtils {
 		} catch (Exception e) {
 
 			throw new DSSException("Error during the duration conversion: " + e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * Formats the given date-time using the SimpleDateFormat object.
-	 *
-	 * @param sdf
-	 * @param date
-	 * @return
-	 */
-	public static String formatDate(final SimpleDateFormat sdf, final Date date) {
-
-		final String stringDate = sdf.format(date);
-		return stringDate;
-	}
-
-	/**
-	 * Formats the given date-time using the default pattern: {@link #SDF}
-	 *
-	 * @param date
-	 * @return
-	 */
-	public static String formatDate(final Date date) {
-
-		if (date != null) {
-			final String stringDate = SDF.format(date);
-			return stringDate;
-		}
-		return "";
-	}
-
-	/**
-	 * Parses the given string date-time. The date-time must be defined using the default pattern: {@link #SDF}
-	 *
-	 * @param dateString formated date
-	 * @return computed {@code Date}
-	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
-	 */
-	public static Date parseDate(final String dateString) throws DSSException {
-
-		try {
-
-			final Date date = SDF.parse(dateString);
-			return date;
-		} catch (ParseException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * Parses the given string date-time. The date-time must be defined using the default pattern: {@link #SDF}
-	 *
-	 * @param dateString formated date
-	 * @return computed {@code Date} or null if the operation is not possible
-	 */
-	public static Date parseSecureDate(final String dateString) {
-
-		try {
-
-			final Date date = SDF.parse(dateString);
-			return date;
-		} catch (ParseException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Converts the given string representation of the date using the SimpleDateFormat object.
-	 *
-	 * @param format
-	 * @param dateString
-	 * @return
-	 */
-	public static Date parseDate(final SimpleDateFormat format, final String dateString) {
-
-		try {
-
-			final Date date = format.parse(dateString);
-			return date;
-		} catch (ParseException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * Converts the given string representation of the date using the format pattern.
-	 *
-	 * @param format     the format to use
-	 * @param dateString the date string representation
-	 * @return the {@code Date}
-	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
-	 */
-	public static Date parseDate(final String format, final String dateString) throws DSSException {
-
-		try {
-
-			final SimpleDateFormat sdf = new SimpleDateFormat(format);
-			final Date date = sdf.parse(dateString);
-			return date;
-		} catch (ParseException e) {
-			throw new DSSException(e);
 		}
 	}
 

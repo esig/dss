@@ -49,8 +49,8 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	final public OCSPToken getOCSPToken(final CertificateToken certificateToken, final CertificatePool certificatePool) {
 
 		final List<BasicOCSPResp> containedOCSPResponses = getContainedOCSPResponses();
-		final String dssIdAsString = certificateToken.getDSSIdAsString();
 		if (LOG.isTraceEnabled()) {
+			final String dssIdAsString = certificateToken.getDSSIdAsString();
 			LOG.trace("--> OfflineOCSPSource queried for " + dssIdAsString + " contains: " + containedOCSPResponses.size() + " element(s).");
 		}
 		final X509Certificate x509Certificate = certificateToken.getCertificate();

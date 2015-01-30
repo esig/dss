@@ -57,12 +57,9 @@ public class PAdESCertificateSource extends SignatureCertificateSource {
         this.dssCatalog = dssCatalog;
         extract();
         if (cadesCertSource != null) {
-
             // We add the CAdES specific certificates to this source.
             for (final CertificateToken certToken : cadesCertSource.getCertificates()) {
-
                 if (!certificateTokens.contains(certToken)) {
-
                     certificateTokens.add(certToken);
                 }
             }

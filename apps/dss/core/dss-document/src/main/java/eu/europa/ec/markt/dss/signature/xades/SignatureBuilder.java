@@ -36,6 +36,7 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
@@ -134,13 +135,19 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		this.detachedDocument = detachedDocument;
 	}
 
-	protected void setSignedInfoCanonicalizationMethod(final SignatureParameters params, final String canonicalizationMethod) {
+	protected void setCanonicalizationMethods(final SignatureParameters params, final String canonicalizationMethod) {
 
 		final String signedInfoCanonicalizationMethod_ = params.getSignedInfoCanonicalizationMethod();
 		if (DSSUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
 			signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod_;
 		} else {
 			signedInfoCanonicalizationMethod = canonicalizationMethod;
+		}
+		final String signedPropertiesCanonicalizationMethod_ = params.getSignedPropertiesCanonicalizationMethod();
+		if (DSSUtils.isNotBlank(signedPropertiesCanonicalizationMethod_)) {
+			signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod_;
+		} else {
+			signedPropertiesCanonicalizationMethod = canonicalizationMethod;
 		}
 	}
 
@@ -313,7 +320,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
 		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedPropertiesCanonicalizationMethod, signedPropertiesDom);
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Canonicalization method  --> {}", signedInfoCanonicalizationMethod);
+			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
 			LOG.trace("Canonicalised REF_2      --> {}", new String(canonicalizedBytes));
 		}
 		incorporateDigestValue(reference, digestAlgorithm, new InMemoryDocument(canonicalizedBytes));
@@ -496,7 +503,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 */
 	private void incorporateSigningCertificate() {
 
-		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNING_CERTIFICATE);
+		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XAdESNamespaces.getXADES_SIGNING_CERTIFICATE());
 
 		final List<X509Certificate> certificates = new ArrayList<X509Certificate>();
 		final List<ChainCertificate> certificateChain = params.getCertificateChain();

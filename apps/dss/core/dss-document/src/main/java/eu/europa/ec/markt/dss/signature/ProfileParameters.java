@@ -20,6 +20,8 @@
 
 package eu.europa.ec.markt.dss.signature;
 
+import java.io.Serializable;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.cades.CAdESService;
 import eu.europa.ec.markt.dss.signature.xades.SignatureBuilder;
@@ -33,7 +35,7 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
  * accelerate the generation.<br>
  * ! This class must be derived to  take also into account other formats then XAdES
  */
-public class ProfileParameters {
+public class ProfileParameters implements Serializable {
 
 	private XAdESLevelBaselineB profile;
 

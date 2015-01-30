@@ -30,12 +30,32 @@ package eu.europa.ec.markt.dss;
  */
 public final class XAdESNamespaces {
 
-	public static final String XAdES = "http://uri.etsi.org/01903/v1.3.2#";
 	public static final String XAdES141 = "http://uri.etsi.org/01903/v1.4.1#";
+	public static final String XAdES132 = "http://uri.etsi.org/01903/v1.3.2#";
 	public static final String XAdES122 = "http://uri.etsi.org/01903/v1.2.2#";
 	public static final String XAdES111 = "http://uri.etsi.org/01903/v1.1.1#";
 
+	public static String XAdES = XAdES132;
+
+	protected static String XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";
+
 	private XAdESNamespaces() {
+	}
+
+	/**
+	 * This setter allows to change the default XAdES namespace. It can be useful when dealing with old applications.
+	 * Note that there is no check on the value of the namespace. It's calling method responsibility.
+	 *
+	 * @param XAdES new default namespace
+	 */
+	public static void setXAdESDefaultNamespace(final String XAdES) {
+
+		XAdESNamespaces.XAdES = XAdES;
+		if (XAdES132.equals(XAdES)) {
+			XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";
+		} else if (XAdES111.equals(XAdES)) {
+			XADES_SIGNING_CERTIFICATE = "xades111:SigningCertificate";
+		}
 	}
 
 	/**
@@ -46,6 +66,10 @@ public final class XAdESNamespaces {
 	 */
 	public static boolean exists(final String url) {
 
-		return XAdES.equals(url) || XAdES111.equals(url) || XAdES122.equals(url);
+		return XAdES132.equals(url) || XAdES111.equals(url) || XAdES122.equals(url) || XAdES.equals(url);
+	}
+
+	public static String getXADES_SIGNING_CERTIFICATE() {
+		return XADES_SIGNING_CERTIFICATE;
 	}
 }

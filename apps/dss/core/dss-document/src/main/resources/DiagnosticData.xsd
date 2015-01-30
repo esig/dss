@@ -194,7 +194,7 @@
 	</xs:complexType>
 	<xs:complexType name="SignedObjectsType">
 		<xs:sequence>
-			<xs:element name="SignedSignature" minOccurs="0">
+			<xs:element name="SignedSignature" minOccurs="0" maxOccurs="unbounded">
 				<xs:complexType>
 					<xs:simpleContent>
 						<xs:extension base="xs:string">

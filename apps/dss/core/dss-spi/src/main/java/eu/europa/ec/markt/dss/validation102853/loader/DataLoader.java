@@ -69,7 +69,7 @@ public interface DataLoader extends Serializable {
 	DataAndUrl get(final List<String> urlStrings);
 
 	/**
-	 * Execute a HTTP GET operation with indication concerning the mandatory character of the operation.
+	 * Execute a HTTP GET operation with indication concerning the mandatory nature of the operation.
 	 *
 	 * @param url     to access
 	 * @param refresh if true indicates that the cached data should be refreshed

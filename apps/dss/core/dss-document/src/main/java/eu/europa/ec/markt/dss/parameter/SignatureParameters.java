@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.parameter;
 
+import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
  * @version $Revision: 2686 $ - $Date: 2013-10-02 14:02:33 +0200 (Wed, 02 Oct 2013) $
  */
 
-public class SignatureParameters {
+public class SignatureParameters implements Serializable {
 
 	/**
 	 * This variable is used to ensure the uniqueness of the signature in the same document.
@@ -83,9 +84,14 @@ public class SignatureParameters {
 	private SignaturePackaging signaturePackaging;
 
 	/**
-	 * XAdES: ds:CanonicalizationMethod indicate the canonicalization algorithm: Algorithm="...".
+	 * XAdES: ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
 	 */
 	private String signedInfoCanonicalizationMethod;
+
+	/**
+	 * XAdES: ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
+	 */
+	private String signedPropertiesCanonicalizationMethod;
 
 	/**
 	 * XAdES: The ds:SignatureMethod indicates the algorithms used to sign ds:SignedInfo.
@@ -164,6 +170,7 @@ public class SignatureParameters {
 		privateKeyEntry = source.privateKeyEntry;
 		reason = source.reason;
 		signedInfoCanonicalizationMethod = source.signedInfoCanonicalizationMethod;
+		signedPropertiesCanonicalizationMethod = source.signedPropertiesCanonicalizationMethod;
 		signatureAlgorithm = source.signatureAlgorithm;
 		signaturePackaging = source.signaturePackaging;
 		signatureLevel = source.signatureLevel;
@@ -495,19 +502,35 @@ public class SignatureParameters {
 
 
 	/**
-	 * @return the canonicalization algorithm to be used when dealing with SignedInfo.
+	 * @return (XAdES) the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public String getSignedInfoCanonicalizationMethod() {
 		return signedInfoCanonicalizationMethod;
 	}
 
 	/**
-	 * Set the canonicalization algorithm to be used when dealing with SignedInfo.
+	 * Set the canonicalization algorithm to be used when dealing with SignedInfo (XAdES).
 	 *
 	 * @param signedInfoCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedInfoCanonicalizationMethod(final String signedInfoCanonicalizationMethod) {
 		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
+	}
+
+	/**
+	 * @return (XAdES) the canonicalization algorithm to be used when dealing with SignedProperties.
+	 */
+	public String getSignedPropertiesCanonicalizationMethod() {
+		return signedPropertiesCanonicalizationMethod;
+	}
+
+	/**
+	 * Set the canonicalization algorithm to be used when dealing with SignedProperties (XAdES).
+	 *
+	 * @param signedPropertiesCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
+	 */
+	public void setSignedPropertiesCanonicalizationMethod(final String signedPropertiesCanonicalizationMethod) {
+		this.signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod;
 	}
 
 	/**
@@ -613,7 +636,7 @@ public class SignatureParameters {
 
 	public TimestampParameters getSignatureTimestampParameters() {
 		if (signatureTimestampParameters == null) {
-			return new TimestampParameters();
+			signatureTimestampParameters = new TimestampParameters();
 		}
 		return signatureTimestampParameters;
 	}
@@ -624,7 +647,7 @@ public class SignatureParameters {
 
 	public TimestampParameters getArchiveTimestampParameters() {
 		if (archiveTimestampParameters == null) {
-			return new TimestampParameters();
+			archiveTimestampParameters = new TimestampParameters();
 		}
 		return archiveTimestampParameters;
 	}
@@ -634,6 +657,9 @@ public class SignatureParameters {
 	}
 
 	public TimestampParameters getContentTimestampParameters() {
+		if (contentTimestampParameters == null) {
+			contentTimestampParameters = new TimestampParameters();
+		}
 		return contentTimestampParameters;
 	}
 

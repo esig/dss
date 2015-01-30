@@ -1,0 +1,32 @@
+﻿The dss-package version 4.3.0.
+
+This version includes :
+Task
+[DSS-272] - CRL: more than one urls can be used
+[DSS-274] - Lower log level in library modules
+[DSS-275] - Dependency optimization
+[DSS-276] - Handling of NextUpdate for TSL & CRL (cache system)
+[DSS-277] - Signature creation: inclusion/exclusion of the trust anchor
+[DSS-278] - XAdES: Schema validation
+
+Bug
+[DSS-381] - Signing a PDF document with SD-DSS changes the ID string
+[DSS-447] - XAdES: Certificate's ds:X509SerialNumber can contain whitespace
+[DSS-449] - PastCertificateValidation: Signing certificate can be the trust anchor
+[DSS-454] - XAdES: SignedProperties: Canonicalization Method
+[DSS-456] - TSL: Handling of lower exceptions (Throwable)
+[DSS-458] - SignatureParameters: missing parameter in copy constructor
+[DSS-460] - NullPointerException for unreachable TSLs
+[DSS-462] - ASiC: NOT_ETSI warning to be added in the case of non-conformant container
+[DSS-463] - SimpleDateFormat is not thread safe
+[DSS-465] - XAdES extension -LT to -LTA
+[DSS-467] - CAdES_BASELINE_LT: determining the level
+
+Improvement
+[DSS-439] - Serializable interface implemented in some classes
+[DSS-448] - ASiC-S: limit files in the case of non-conformant container
+[DSS-451] - XAdESSignature#getArchiveTimestampData: ETSI TS 101 903 V1.3.2 (2006-03)
+New Feature
+
+[DSS-445] - XAdES: creation: use of schema v1.1.1 (beginning)
+[DSS-466] - TSPNonceSource added

@@ -59,6 +59,7 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -114,6 +115,7 @@ import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -172,7 +174,12 @@ public final class DSSUtils {
 	 */
 	private static final Date deterministicDate = DSSUtils.getUtcDate(1970, 04, 23);
 
-	public static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+	/**
+	 * The default date pattern: "yyyy-MM-dd"
+	 */
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	private static MessageDigest sha1Digester;
 
@@ -225,12 +232,27 @@ public final class DSSUtils {
 	 */
 	public static String formatInternal(final Date date) {
 
-		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN).format(date);
+		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT).format(date);
 		return formatedDate;
 	}
 
 	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_FORMAT_PATTERN}.
+	 * Formats the given date-time using the default pattern: {@code DSSUtils.DEFAULT_DATE_TIME_FORMAT}
+	 *
+	 * @param date
+	 * @return
+	 */
+	public static String formatDate(final Date date) {
+
+		if (date != null) {
+			final String stringDate = new SimpleDateFormat(DSSUtils.DEFAULT_DATE_TIME_FORMAT).format(date);
+			return stringDate;
+		}
+		return EMPTY;
+	}
+
+	/**
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}.
 	 *
 	 * @param dateString the date string representation
 	 * @return the {@code Date}
@@ -240,7 +262,7 @@ public final class DSSUtils {
 
 		try {
 
-			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN);
+			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT);
 			final Date date = sdf.parse(dateString);
 			return date;
 		} catch (ParseException e) {
@@ -249,7 +271,27 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_FORMAT_PATTERN}. If an exception is frown durring the prsing then null is returned.
+	 * Converts the given string representation of the date using the format pattern.
+	 *
+	 * @param format     the format to use
+	 * @param dateString the date string representation
+	 * @return the {@code Date}
+	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
+	 */
+	public static Date parseDate(final String format, final String dateString) throws DSSException {
+
+		try {
+
+			final SimpleDateFormat sdf = new SimpleDateFormat(format);
+			final Date date = sdf.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}. If an exception is frown durring the prsing then null is returned.
 	 *
 	 * @param dateString the date string representation
 	 * @return the {@code Date} or null if the parsing is not possible
@@ -258,7 +300,7 @@ public final class DSSUtils {
 
 		try {
 
-			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT_PATTERN);
+			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT);
 			final Date date = sdf.parse(dateString);
 			return date;
 		} catch (Exception e) {
@@ -285,10 +327,25 @@ public final class DSSUtils {
 	 *
 	 * @param data a byte[] to convert to Hex characters
 	 * @return A String containing hexadecimal characters
-	 * @since 1.4
 	 */
-	public static String encodeHexString(byte[] data) {
+	public static String encodeHexString(final byte[] data) {
 		return new String(encodeHex(data));
+	}
+
+	/**
+	 * Converts an array of bytes into a String representing the hexadecimal values of each byte in order. The maximum length of the returned
+	 * String is limited by {@code maxLength} parameter.
+	 *
+	 * @param data      a byte[] to convert to Hex characters
+	 * @param maxLength the maximum length of the returned string
+	 * @return A String containing hexadecimal characters
+	 */
+	public static String encodeHexString(final byte[] data, int maxLength) {
+
+		byte[] data_ = data.length > maxLength ? Arrays.copyOf(data, maxLength) : data;
+		final String encoded = new String(encodeHex(data_)) + (data.length > maxLength ? "...(" + (data.length - maxLength) + " more)" : "");
+		return encoded;
+
 	}
 
 	/**
@@ -1339,6 +1396,21 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Returns the encoded (as ASN.1 DER) form of this {@code TimeStampToken}.
+	 *
+	 * @param timeStamp {@code TimeStampToken}
+	 * @return encoded array of bytes
+	 */
+	public static byte[] getEncoded(final TimeStampToken timeStamp) {
+
+		try {
+			return timeStamp.getEncoded();
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
 	 * This method opens the {@code URLConnection} using the given URL.
 	 *
 	 * @param url URL to be accessed
@@ -1715,7 +1787,6 @@ public final class DSSUtils {
 		calendar.setTimeZone(TimeZone.getTimeZone("Z"));
 		Date signingTime_ = signingTime;
 		if (signingTime_ == null) {
-
 			signingTime_ = deterministicDate;
 		}
 		calendar.setTime(signingTime_);
@@ -3007,7 +3078,7 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method return the summary of the given exception. The analysis of the stack trace stops when the provided class is found.
+	 * This method returns the summary of the given exception. The analysis of the stack trace stops when the provided class is found.
 	 *
 	 * @param exception {@code Exception} to summarize
 	 * @param javaClass {@code Class}
@@ -3054,7 +3125,7 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Get a difference between two dates
+	 * Gets a difference between two dates
 	 *
 	 * @param date1    the oldest date
 	 * @param date2    the newest date
@@ -3092,5 +3163,38 @@ public final class DSSUtils {
 	 */
 	public static boolean isEmpty(final Collection collection) {
 		return collection == null || collection.isEmpty();
+	}
+
+	/**
+	 * Concatenates all the arrays into a new array. The new array contains all of the element of each array followed by all of the elements of the next array. When an array is
+	 * returned, it is always a new array.
+	 *
+	 * @param arrays {@code byte} arrays to concatenate
+	 * @return the new {@code byte} array
+	 */
+	public static byte[] concatenate(byte[]... arrays) {
+
+		if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
+			return null;
+		}
+		if (arrays.length == 1) {
+			return arrays[0].clone();
+		}
+		int joinedLength = 0;
+		for (final byte[] array : arrays) {
+			if (array != null) {
+				joinedLength += array.length;
+			}
+		}
+		byte[] joinedArray = new byte[joinedLength];
+		int destinationIndex = 0;
+		for (final byte[] array : arrays) {
+			if (array != null) {
+
+				System.arraycopy(array, 0, joinedArray, destinationIndex, array.length);
+				destinationIndex += array.length;
+			}
+		}
+		return joinedArray;
 	}
 }

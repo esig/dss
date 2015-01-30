@@ -19,7 +19,9 @@
  */
 package eu.europa.ec.markt.dss.validation102853.bean;
 
-public class SignatureCryptographicVerification {
+import java.io.Serializable;
+
+public class SignatureCryptographicVerification implements Serializable {
 
 	private boolean referenceDataFound;
 

@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.validation102853;
 
 import java.security.cert.X509CRL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,16 +75,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	protected CandidatesForSigningCertificate candidatesForSigningCertificate;
 
-	/**
-	 * This list contains the detail information collected during the check. It is reset for each call of {@code isDataForSignatureLevelPresent}
-	 */
-	protected List<String> info;
-
 	// Enclosed content timestamps.
 	protected List<TimestampToken> contentTimestamps;
 
 	// Enclosed signature timestamps.
-	protected List<TimestampToken> signatureTimestamps;
+	protected transient List<TimestampToken> signatureTimestamps;
 
 	// Enclosed SignAndRefs timestamps.
 	protected List<TimestampToken> sigAndRefsTimestamps;
@@ -270,17 +264,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return new RevocationDataForInclusion(crlTokens, ocspTokens);
 	}
 
-	/**
-	 * This list contains the detail information collected during the check. It is reset for each call.
-	 *
-	 * @return
-	 */
-	@Override
-	public List<String> getInfo() {
-
-		return Collections.unmodifiableList(info);
-	}
-
 	@Override
 	public void setMasterSignature(final AdvancedSignature masterSignature) {
 		this.masterSignature = masterSignature;
@@ -339,47 +322,43 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
-	 * This method adds all timestamps to be validated.
+	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
 	 *
-	 * @param validationContext validationContext to which the timestamps must be added
+	 * @param validationContext {@code ValidationContext} to which the timestamps must be added
 	 */
 	@Override
 	public void prepareTimestamps(final ValidationContext validationContext) {
 
-		// TODO: to be restored
-		// this.timestampedReferences = getTimestampedReferences();
-
         /*
-	     * This validates the signature timestamp tokensToProcess present in the signature.
+	     * This validates the signature timestamp tokens present in the signature.
          */
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
-
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
 
         /*
-         * This validates the signature timestamp tokensToProcess present in the signature.
+         * This validates the signature timestamp tokens present in the signature.
          */
 		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
 
         /*
-         * This validates the SigAndRefs timestamp tokensToProcess present in the signature.
+         * This validates the SigAndRefs timestamp tokens present in the signature.
          */
 		for (final TimestampToken timestampToken : getTimestampsX1()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
 
         /*
-         * This validates the RefsOnly timestamp tokensToProcess present in the signature.
+         * This validates the RefsOnly timestamp tokens present in the signature.
          */
 		for (final TimestampToken timestampToken : getTimestampsX2()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
 
         /*
-         * This validates the archive timestamp tokensToProcess present in the signature.
+         * This validates the archive timestamp tokens present in the signature.
          */
 		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
@@ -406,7 +385,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
          */
 		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
 
-			final byte[] timestampBytes = getSignatureTimestampData(timestampToken);
+			final byte[] timestampBytes = getSignatureTimestampData(timestampToken, null);
 			timestampToken.matchData(timestampBytes);
 		}
 
@@ -415,7 +394,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
          */
 		for (final TimestampToken timestampToken : getTimestampsX1()) {
 
-			final byte[] timestampBytes = getTimestampX1Data(timestampToken);
+			final byte[] timestampBytes = getTimestampX1Data(timestampToken, null);
 			timestampToken.matchData(timestampBytes);
 		}
 
@@ -424,7 +403,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
          */
 		for (final TimestampToken timestampToken : getTimestampsX2()) {
 
-			final byte[] timestampBytes = getTimestampX2Data(timestampToken);
+			final byte[] timestampBytes = getTimestampX2Data(timestampToken, null);
 			timestampToken.matchData(timestampBytes);
 		}
 
@@ -433,7 +412,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
          */
 		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
 
-			final byte[] timestampData = getArchiveTimestampData(timestampToken);
+			final byte[] timestampData = getArchiveTimestampData(timestampToken, null);
 			timestampToken.matchData(timestampData);
 		}
 	}
