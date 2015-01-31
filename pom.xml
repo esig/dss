@@ -109,6 +109,10 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.3.2</version>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<tagNameFormat>@{project.version}</tagNameFormat>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.cargo</groupId>
@@ -170,8 +174,8 @@
 	</build>
 
 	<scm>
-		<connection>scm:svn:http://forge.arhs-lux.lan/svn/dss/trunk</connection>
-		<developerConnection>scm:svn:http://forge.arhs-lux.lan/svn/dss/trunk</developerConnection>
+		<connection>svm:git:https://github.com/esig/dss.git</connection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
@@ -473,8 +477,12 @@
 			<url>http://download.java.net/maven/2/</url>
 		</repository>
 		<repository>
-			<id>mocca</id>
+			<id>joinup-mocca-thirparty</id>
 			<url>http://joinup.ec.europa.eu/site/mocca/m2/repository/</url>
+		</repository>
+		<repository>
+			<id>joinup-dss-thirdparty</id>
+			<url>http://joinup.ec.europa.eu/site/sd-dss/maven2</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
@@ -492,6 +500,10 @@
 			<id>joinup-nexus</id>
 			<url>https://joinup.ec.europa.eu/nexus/content/repositories/releases/</url>
 		</repository>
+		<site>
+			<id>joinup-site</id>
+			<url>dav:https://joinup.ec.europa.eu/webdav/sd-dss/www</url>
+		</site>
 	</distributionManagement>
 
 	<profiles>

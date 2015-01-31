@@ -3,36 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!--
-    Execute with
-      mvn package
-    or (in case you have properly built DSS before)
-      mvn -o package -Dmaven.test.skip=true
-
-    It creates several items:
-      - dss-history
-      - dss-licences
-      - dss-src (including mocca)
-      - dss-webapp-full
-
-    These items are then zipped separately (in zips/) and then
-    finally aggregated in DSS-<version>-package-<timestamp>.zip.
-
-    Note: That in dss-src/pom.xml some modules are deactivated: sscd-mocca-adapter
-    -->
-
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-        <artifactId>sd-dss-app</artifactId>
-        <version>4.3.0</version>
-        <relativePath>../apps/dss</relativePath>
+		<artifactId>sd-dss</artifactId>
+        <version>4.3.1-SNAPSHOT</version>
     </parent>
 
     <name>DSS Package: OOTB Web-Application</name>
     <description>The out-of-the-box demo including history, licenses, sources and tomcat-based web-application (to manage digital signatures and Trusted Lists)</description>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+
     <artifactId>dss-package-ootb-webapp</artifactId>
     <packaging>pom</packaging>
 
@@ -75,7 +56,7 @@
                                 <!--licenses: -->
                                 <mkdir dir="target/dss-licences"/>
                                 <copy todir="target/dss-licences">
-					<fileset dir="src/main/resources/license">
+										<fileset dir="src/main/resources/license">
                                         <include name="*"/>
                                         <exclude name="classheader.txt"/>
                                         <exclude name="fileheader.txt"/>
