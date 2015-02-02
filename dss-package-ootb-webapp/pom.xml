@@ -17,21 +17,22 @@
     <artifactId>dss-package-ootb-webapp</artifactId>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>..</module>
-    </modules>
-
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-demo-webapp</artifactId>
-            <type>war</type>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-demo-webapp</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>sscd-mocca-adapter</artifactId>
+			<version>4.3.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 
     <build>
         <plugins>
@@ -56,7 +57,7 @@
                                 <!--licenses: -->
                                 <mkdir dir="target/dss-licences"/>
                                 <copy todir="target/dss-licences">
-										<fileset dir="src/main/resources/license">
+    				<fileset dir="src/main/resources/license">
                                         <include name="*"/>
                                         <exclude name="classheader.txt"/>
                                         <exclude name="fileheader.txt"/>
@@ -95,12 +96,10 @@
 
                                 <!--web-app: create java-->
                                 <mkdir dir="target/dss-webapp-full/java/"/>
-                                <!--<get src="http://10.2.0.78:8080/dss-resources/java.zip" dest="target/java.zip" />-->
-	                            <get src="file:///C:/Users/bielecro/Downloads/java.zip" dest="target/java.zip"/>
+                                <get src="http://joinup.ec.europa.eu/site/sd-dss/package/java.zip" dest="target/java.zip" />-->
                                 <unzip src="target/java.zip" dest="target/dss-webapp-full/java"/>
 
-	                            <get src="file:///C:/Users/bielecro/Downloads/tomcat.zip" dest="target/tomcat.zip"/>
-                                <!--<get src="http://10.2.0.78:8080/dss-resources/tomcat.zip" dest="target/tomcat.zip"/>-->
+	                            <get src="http://joinup.ec.europa.eu/site/sd-dss/package/tomcat.zip" dest="target/tomcat.zip"/>
                                 <!--web-app: create tomcat-->
                                 <unzip src="target/tomcat.zip" dest="target/dss-webapp-full"/>
                                 <copy todir="target/dss-webapp-full/tomcat/conf">
