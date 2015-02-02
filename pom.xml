@@ -14,6 +14,7 @@
 	<modules>
 		<module>apps/dss</module>
 		<module>apps/sscd-mocca-adapter</module>
+		<module>dss-package-ootb-webapp</module>
 	</modules>
 
 	<developers>
@@ -33,7 +34,7 @@
 		</developer>
 		<developer>
 			<id>bob</id>
-			<name>Robert</name>
+			<name>Robert Bielecki</name>
 			<roles>
 				<role>developer</role>
 			</roles>
@@ -507,6 +508,10 @@
 			<id>joinup-nexus</id>
 			<url>https://joinup.ec.europa.eu/nexus/content/repositories/releases/</url>
 		</repository>
+		<snapshotRepository>
+			<id>joinup-nexus</id>
+			<url>https://joinup.ec.europa.eu/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
 		<site>
 			<id>joinup-site</id>
 			<url>dav:https://joinup.ec.europa.eu/webdav/sd-dss/www</url>
