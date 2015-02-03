@@ -6,7 +6,6 @@
 <tiles-definitions>
 
     <definition name="main" template="/WEB-INF/templates/mainTemplate.jsp">
-        <put-attribute name="header" value="/WEB-INF/templates/header.jsp" />
         <put-attribute name="jsFile" value="app.jsFiles" />
         <put-attribute name="menu" value="app.menu" />
     </definition>

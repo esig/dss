@@ -170,7 +170,7 @@
 	</build>
 
 	<scm>
-		<connection>svm:git:https://github.com/esig/dss.git</connection>
+		<connection>scm:git:https://github.com/esig/dss.git</connection>
 		<tag>HEAD</tag>
 	</scm>
 
