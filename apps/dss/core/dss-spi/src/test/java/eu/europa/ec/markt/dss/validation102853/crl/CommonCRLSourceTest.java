@@ -52,7 +52,7 @@ public class CommonCRLSourceTest {
 		CRLValidity validCRL = mockCRLSource.isValidCRL(x509CRL, issuerToken);
 		assertNotNull(validCRL);
 		assertTrue(validCRL.isValid());
-		assertTrue(validCRL.issuerX509PrincipalMatches);
+		assertTrue(validCRL.isIssuerX509PrincipalMatches());
 	}
 
 	@Test
@@ -65,8 +65,8 @@ public class CommonCRLSourceTest {
 
 		CRLValidity validCRL = mockCRLSource.isValidCRL(x509CRL, issuerToken);
 		assertNotNull(validCRL);
-		assertFalse(validCRL.unknownCriticalExtension);
-		assertFalse(validCRL.issuerX509PrincipalMatches);
+		assertFalse(validCRL.isUnknownCriticalExtension());
+		assertFalse(validCRL.isIssuerX509PrincipalMatches());
 		assertFalse(validCRL.isValid());
 	}
 

@@ -52,19 +52,18 @@ public abstract class CommonCRLSource implements CRLSource {
 	protected CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
 
 		final CRLValidity crlValidity = new CRLValidity();
-		crlValidity.x509CRL = x509CRL;
+		crlValidity.setX509CRL(x509CRL);
 
 		final X500Principal x509CRLIssuerX500Principal = DSSUtils.getX500Principal(x509CRL.getIssuerX500Principal());
 		final X500Principal issuerTokenSubjectX500Principal = DSSUtils.getX500Principal(issuerToken.getSubjectX500Principal());
 		if (x509CRLIssuerX500Principal.equals(issuerTokenSubjectX500Principal)) {
 
-			crlValidity.issuerX509PrincipalMatches = true;
+			crlValidity.setIssuerX509PrincipalMatches(true);
 		}
 		checkCriticalExtensions(x509CRL, crlValidity);
 		checkSignatureValue(x509CRL, issuerToken, crlValidity);
-		if (crlValidity.signatureIntact) {
-
-			crlValidity.crlSignKeyUsage = issuerToken.hasCRLSignKeyUsage();
+		if (crlValidity.isSignatureIntact()) {
+			crlValidity.setCrlSignKeyUsage(issuerToken.hasCRLSignKeyUsage());
 		}
 		return crlValidity;
 	}
@@ -74,16 +73,16 @@ public abstract class CommonCRLSource implements CRLSource {
 		try {
 
 			x509CRL.verify(issuerToken.getPublicKey());
-			crlValidity.signatureIntact = true;
-			crlValidity.issuerToken = issuerToken;
+			crlValidity.setSignatureIntact(true);
+			crlValidity.setIssuerToken(issuerToken);
 		} catch (InvalidKeyException e) {
-			crlValidity.signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
+			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
 		} catch (CRLException e) {
-			crlValidity.signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
+			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
 		} catch (NoSuchAlgorithmException e) {
-			crlValidity.signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
+			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
 		} catch (SignatureException e) {
-			crlValidity.signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
+			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
 		} catch (NoSuchProviderException e) {
 			throw new DSSException(e);
 		}
@@ -93,7 +92,7 @@ public abstract class CommonCRLSource implements CRLSource {
 
 		final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
 		if (criticalExtensionOIDs == null || criticalExtensionOIDs.size() == 0) {
-			crlValidity.unknownCriticalExtension = false;
+			crlValidity.setUnknownCriticalExtension(false);
 		} else {
 
 			byte[] extensionValue = x509CRL.getExtensionValue(Extension.issuingDistributionPoint.getId());
@@ -118,7 +117,7 @@ public abstract class CommonCRLSource implements CRLSource {
 			}
 
 			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && onlySomeReasons == null && urlFound) {
-				crlValidity.unknownCriticalExtension = false;
+				crlValidity.setUnknownCriticalExtension(false);
 			}
 		}
 	}
