@@ -34,8 +34,8 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
- * This class if a basic skeleton that is able to retrieve needed CRL data from the contained list. The child need to retrieve
- * the list of wrapped CRLs.
+ * This class if a basic skeleton that is able to retrieve needed CRL data from
+ * the contained list. The child need to retrieve the list of wrapped CRLs.
  *
  * @version $Revision$ - $Date$
  */
@@ -45,14 +45,16 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
 	/**
-	 * List of contained {@code X509CRL}s. One CRL list contains many CRLToken(s).
+	 * List of contained {@code X509CRL}s. One CRL list contains many
+	 * CRLToken(s).
 	 */
 	protected List<X509CRL> x509CRLList;
 
 	protected HashMap<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
 
 	/**
-	 * This {@code HashMap} contains the {@code CRLValidity} object for each {@code X509CRL}. It is used for performance reasons.
+	 * This {@code HashMap} contains the {@code CRLValidity} object for each
+	 * {@code X509CRL}. It is used for performance reasons.
 	 */
 	protected Map<X509CRL, CRLValidity> crlValidityMap = new HashMap<X509CRL, CRLValidity>();
 
@@ -83,10 +85,14 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 	}
 
 	/**
-	 * This method returns the best {@code CRLValidity} containing the most recent {@code X509CRL}.
+	 * This method returns the best {@code CRLValidity} containing the most
+	 * recent {@code X509CRL}.
 	 *
-	 * @param certificateToken {@code CertificateToken} for with the CRL is issued
-	 * @param issuerToken      {@code CertificateToken} representing the signing certificate of the CRL
+	 * @param certificateToken
+	 *            {@code CertificateToken} for with the CRL is issued
+	 * @param issuerToken
+	 *            {@code CertificateToken} representing the signing certificate
+	 *            of the CRL
 	 * @return {@code CRLValidity}
 	 */
 	private CRLValidity getBestCrlValidity(final CertificateToken certificateToken, final CertificateToken issuerToken) {
@@ -100,14 +106,15 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 			if (crlValidity == null) {
 				continue;
 			}
-			if (issuerToken.equals(crlValidity.issuerToken) && crlValidity.isValid()) {
+			if (issuerToken.equals(crlValidity.getIssuerToken()) && crlValidity.isValid()) {
 
 				final Date thisUpdate = x509CRL.getThisUpdate();
 				if (!certificateToken.hasExpiredCertOnCRLExtension()) {
 
 					if (thisUpdate.before(certificateToken.getNotBefore()) || thisUpdate.after(certificateToken.getNotAfter())) {
 
-						LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: " + certificateToken.getDSSIdAsString());
+						LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: "
+								+ certificateToken.getDSSIdAsString());
 						continue;
 					}
 				}
@@ -122,10 +129,13 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 	}
 
 	/**
-	 * This method returns {@code CRLValidity} object based on the given {@code X509CRL}. The check of the validity of the CRL is performed.
+	 * This method returns {@code CRLValidity} object based on the given
+	 * {@code X509CRL}. The check of the validity of the CRL is performed.
 	 *
-	 * @param issuerToken {@code CertificateToken} issuer of the CRL
-	 * @param x509CRL     {@code X509CRL} the validity to be checked
+	 * @param issuerToken
+	 *            {@code CertificateToken} issuer of the CRL
+	 * @param x509CRL
+	 *            {@code X509CRL} the validity to be checked
 	 * @return returns updated {@code CRLValidity} object
 	 */
 	private synchronized CRLValidity getCrlValidity(final CertificateToken issuerToken, final X509CRL x509CRL) {

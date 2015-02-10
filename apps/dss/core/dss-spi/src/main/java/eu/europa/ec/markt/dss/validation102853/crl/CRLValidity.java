@@ -24,32 +24,90 @@ import java.security.cert.X509CRL;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
- * This class encapsulates all information related to the validity of a CRL. It exposes the method {@code isValid} to check the validity.
+ * This class encapsulates all information related to the validity of a CRL. It
+ * exposes the method {@code isValid} to check the validity.
  * <p/>
  * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
+ * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS
+ *         Developments</a>
+ * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun
+ *          2011) $
  */
 public class CRLValidity {
 
-	X509CRL x509CRL = null;
+	private X509CRL x509CRL = null;
+	private boolean issuerX509PrincipalMatches = false;
+	private boolean signatureIntact = false;
+	private boolean crlSignKeyUsage = false;
+	private boolean unknownCriticalExtension = true;
+	private CertificateToken issuerToken = null;
+	private String signatureInvalidityReason = "";
 
-	boolean issuerX509PrincipalMatches = false;
-	boolean signatureIntact = false;
-	boolean crlSignKeyUsage = false;
-	boolean unknownCriticalExtension = true;
+	public X509CRL getX509CRL() {
+		return x509CRL;
+	}
 
-	CertificateToken issuerToken = null;
+	public void setX509CRL(X509CRL x509crl) {
+		x509CRL = x509crl;
+	}
 
-	String signatureInvalidityReason = "";
+	public boolean isIssuerX509PrincipalMatches() {
+		return issuerX509PrincipalMatches;
+	}
+
+	public void setIssuerX509PrincipalMatches(boolean issuerX509PrincipalMatches) {
+		this.issuerX509PrincipalMatches = issuerX509PrincipalMatches;
+	}
+
+	public boolean isSignatureIntact() {
+		return signatureIntact;
+	}
+
+	public void setSignatureIntact(boolean signatureIntact) {
+		this.signatureIntact = signatureIntact;
+	}
+
+	public boolean isCrlSignKeyUsage() {
+		return crlSignKeyUsage;
+	}
+
+	public void setCrlSignKeyUsage(boolean crlSignKeyUsage) {
+		this.crlSignKeyUsage = crlSignKeyUsage;
+	}
+
+	public boolean isUnknownCriticalExtension() {
+		return unknownCriticalExtension;
+	}
+
+	public void setUnknownCriticalExtension(boolean unknownCriticalExtension) {
+		this.unknownCriticalExtension = unknownCriticalExtension;
+	}
+
+	public CertificateToken getIssuerToken() {
+		return issuerToken;
+	}
+
+	public void setIssuerToken(CertificateToken issuerToken) {
+		this.issuerToken = issuerToken;
+	}
+
+	public String getSignatureInvalidityReason() {
+		return signatureInvalidityReason;
+	}
+
+	public void setSignatureInvalidityReason(String signatureInvalidityReason) {
+		this.signatureInvalidityReason = signatureInvalidityReason;
+	}
 
 	/**
-	 * This method indicates if the CRL is valid. To be valid the CRL must full fill the following requirements:<p/>
-	 * - its signature must be valid,
-	 * - the issuer of the certificate for which the CRL is used must match the CRL signing certificate and
-	 * - the mandatory key usage must be present.
+	 * This method indicates if the CRL is valid. To be valid the CRL must full
+	 * fill the following requirements:
+	 * <p/>
+	 * - its signature must be valid, - the issuer of the certificate for which
+	 * the CRL is used must match the CRL signing certificate and - the
+	 * mandatory key usage must be present.
 	 *
 	 * @return {@code true} if the CRL is valid {@code false} otherwise.
 	 */
@@ -60,13 +118,8 @@ public class CRLValidity {
 
 	@Override
 	public String toString() {
-		return "CRLValidity{" +
-			  "issuerX509PrincipalMatches=" + issuerX509PrincipalMatches +
-			  ", signatureIntact=" + signatureIntact +
-			  ", crlSignKeyUsage=" + crlSignKeyUsage +
-			  ", unknownCriticalExtension=" + unknownCriticalExtension +
-			  ", issuerToken=" + issuerToken +
-			  ", signatureInvalidityReason='" + signatureInvalidityReason + '\'' +
-			  '}';
+		return "CRLValidity{" + "issuerX509PrincipalMatches=" + issuerX509PrincipalMatches + ", signatureIntact=" + signatureIntact
+				+ ", crlSignKeyUsage=" + crlSignKeyUsage + ", unknownCriticalExtension=" + unknownCriticalExtension + ", issuerToken=" + issuerToken
+				+ ", signatureInvalidityReason='" + signatureInvalidityReason + '\'' + '}';
 	}
 }

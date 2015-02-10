@@ -1,45 +1,52 @@
 package eu.europa.ec.markt.dss.validation102853.crl;
 
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
+import org.bouncycastle.asn1.x509.ReasonFlags;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
-import sun.security.x509.DistributionPointName;
-import sun.security.x509.GeneralName;
-import sun.security.x509.GeneralNames;
-import sun.security.x509.IssuingDistributionPointExtension;
-import sun.security.x509.PKIXExtensions;
-import sun.security.x509.URIName;
 
 /**
- * This is the representation of simple (common) CRL source, this is the base class for all real implementations.
+ * This is the representation of simple (common) CRL source, this is the base
+ * class for all real implementations.
  * <p/>
  * DISCLAIMER: Project owner DG-MARKT.
  *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
+ * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS
+ *         Developments</a>
+ * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun
+ *          2011) $
  */
 public abstract class CommonCRLSource implements CRLSource {
 
 	/**
-	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence between the subject names of the CRL signing certificate and the
-	 * issuer name of the certificate for which the verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created and accordingly
-	 * updated.
+	 * This method verifies: the signature of the CRL, the key usage of its
+	 * signing certificate and the coherence between the subject names of the
+	 * CRL signing certificate and the issuer name of the certificate for which
+	 * the verification of the revocation data is carried out. A dedicated
+	 * object based on {@code CRLValidity} is created and accordingly updated.
 	 *
-	 * @param x509CRL     {@code X509CRL} to be verified (cannot be null)
-	 * @param issuerToken {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
+	 * @param x509CRL
+	 *            {@code X509CRL} to be verified (cannot be null)
+	 * @param issuerToken
+	 *            {@code CertificateToken} used to sign the {@code X509CRL}
+	 *            (cannot be null)
 	 * @return {@code CRLValidity}
 	 */
 	protected CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
@@ -84,53 +91,35 @@ public abstract class CommonCRLSource implements CRLSource {
 
 	private void checkCriticalExtensions(final X509CRL x509CRL, final CRLValidity crlValidity) {
 
-		try {
+		final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
+		if (criticalExtensionOIDs == null || criticalExtensionOIDs.size() == 0) {
+			crlValidity.unknownCriticalExtension = false;
+		} else {
 
-			final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
-			if (criticalExtensionOIDs == null || criticalExtensionOIDs.size() == 0) {
-				crlValidity.unknownCriticalExtension = false;
-			} else {
-
-				for (final String criticalExtensionOID : criticalExtensionOIDs) {
-
-					final String oid = PKIXExtensions.IssuingDistributionPoint_Id.toString();
-					if (criticalExtensionOID.equals(oid)) {
-
-						final byte[] extensionValue_ = x509CRL.getExtensionValue(oid);
-						int firstIndex = 0;
-						for (; firstIndex < extensionValue_.length; firstIndex++) {
-
-							if (extensionValue_[firstIndex] == 0x30) {
-								break;
-							}
-						}
-						final byte[] extensionValue = Arrays.copyOfRange(extensionValue_, firstIndex, extensionValue_.length);
-						final IssuingDistributionPointExtension issuingDistributionPointExtension = new IssuingDistributionPointExtension(true, extensionValue);
-						final Boolean onlyAttributeCerts = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.ONLY_ATTRIBUTE_CERTS);
-						final Boolean onlyCaCerts = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.ONLY_CA_CERTS);
-						final Boolean onlyUserCerts = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.ONLY_USER_CERTS);
-						final Boolean indirectCrl = (Boolean) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.INDIRECT_CRL);
-						final String reasons = (String) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.REASONS);
-						final DistributionPointName distributionPointName = (DistributionPointName) issuingDistributionPointExtension.get(IssuingDistributionPointExtension.POINT);
-						final GeneralNames fullName = distributionPointName.getFullName();
-						final List<GeneralName> names = fullName.names();
-						boolean urlFound = false;
-						if (names.size() > 0) {
-							final URIName name = (URIName) names.get(0).getName();
-							//LOG.trace("--> CRL IssuingDistributionPoint Extension: URI: " + name.getURI());
-							// TODO (25/11/2014): The check with the CDP must be done.
+			byte[] extensionValue = x509CRL.getExtensionValue(Extension.issuingDistributionPoint.getId());
+			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint.getInstance(ASN1OctetString.getInstance(extensionValue)
+					.getOctets());
+			final boolean onlyAttributeCerts = issuingDistributionPoint.onlyContainsAttributeCerts();
+			final boolean onlyCaCerts = issuingDistributionPoint.onlyContainsCACerts();
+			final boolean onlyUserCerts = issuingDistributionPoint.onlyContainsUserCerts();
+			final boolean indirectCrl = issuingDistributionPoint.isIndirectCRL();
+			ReasonFlags onlySomeReasons = issuingDistributionPoint.getOnlySomeReasons();
+			DistributionPointName distributionPoint = issuingDistributionPoint.getDistributionPoint();
+			boolean urlFound = false;
+			if (DistributionPointName.FULL_NAME == distributionPoint.getType()) {
+				final GeneralNames generalNames = (GeneralNames) distributionPoint.getName();
+				if (generalNames != null && generalNames.getNames() != null && generalNames.getNames().length > 0) {
+					for (GeneralName generalName : generalNames.getNames()) {
+						if (GeneralName.uniformResourceIdentifier == generalName.getTagNo()) {
 							urlFound = true;
 						}
-						if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && reasons == null && urlFound) {
-							crlValidity.unknownCriticalExtension = false;
-						}
-					} else {
-						break;
 					}
 				}
 			}
-		} catch (IOException e) {
-			throw new DSSException(e);
+
+			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && onlySomeReasons == null && urlFound) {
+				crlValidity.unknownCriticalExtension = false;
+			}
 		}
 	}
 }
