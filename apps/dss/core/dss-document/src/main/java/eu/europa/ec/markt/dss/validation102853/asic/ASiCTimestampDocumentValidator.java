@@ -29,7 +29,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.validation102853.DocumentValidator;
+import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
 
 /**

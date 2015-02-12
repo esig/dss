@@ -14,13 +14,7 @@
 
 	<name>DSS Service Provider Interface</name>
 	<description>DSS Service Provider Interface contains the contract interface shared between the applet and the server-side of DSS.</description>
-	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>dss-spi</artifactId>
-	<packaging>jar</packaging>
-
-	<build>
-
-	</build>
 
 	<dependencies>
 		<dependency>
@@ -30,6 +24,10 @@
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
@@ -48,21 +46,6 @@
 	</dependencies>
 
 	<profiles>
-		<profile>
-			<id>hudson</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.5</version>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
 			<id>jdk7-64-windows</id>
 			<activation>

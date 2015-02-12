@@ -20,9 +20,12 @@
 
 package eu.europa.ec.markt.dss.validation102853.xades;
 
+import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_ALGORITHM;
+import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP;
+import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_SIGNATURE_TIME_STAMP;
+import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP;
+
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigInteger;
@@ -71,7 +74,9 @@ import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.exception.DSSNullReturnedException;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
+import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
+import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
+import eu.europa.ec.markt.dss.signature.validation.xades.XAdESCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.ArchiveTimestampType;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -80,7 +85,6 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
 import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
 import eu.europa.ec.markt.dss.validation102853.TimestampReference;
-import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
 import eu.europa.ec.markt.dss.validation102853.bean.CertificateValidity;
@@ -94,11 +98,6 @@ import eu.europa.ec.markt.dss.validation102853.crl.OfflineCRLSource;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OCSPRef;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
 import eu.europa.ec.markt.dss.validation102853.toolbox.XPointerResourceResolver;
-
-import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_ALGORITHM;
-import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP;
-import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_SIGNATURE_TIME_STAMP;
-import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must be created.

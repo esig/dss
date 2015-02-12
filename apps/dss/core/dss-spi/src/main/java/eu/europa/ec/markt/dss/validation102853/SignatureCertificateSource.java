@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.validation102853;
 
 import java.util.List;
 
-import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 
 /**
@@ -44,13 +43,6 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 
         super(certPool);
     }
-
-    /**
-     * This method extracts all certificates from encapsulated signature.
-     *
-     * @throws DSSException
-     */
-    protected abstract void extract() throws DSSException;
 
     /**
      * Retrieves the list of all encapsulated certificates (-XL extension) from this source.
@@ -75,4 +67,5 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 
         return CertificateSourceType.SIGNATURE;
     }
+    
 }

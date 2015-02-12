@@ -38,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -155,12 +156,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			saveDocumentIncrementally(parameters, signedFile, fileOutputStream, pdDocument);
 			final byte[] digestValue = digest.digest();
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Digest to be signed: " + DSSUtils.encodeHexString(digestValue));
+				LOG.debug("Digest to be signed: " + Hex.encodeHexString(digestValue));
 			}
 			fileOutputStream.close();
 			return digestValue;
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException(e);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} catch (SignatureException e) {

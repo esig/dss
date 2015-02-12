@@ -20,6 +20,16 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
+import static eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.XPathSignature.getCertificateId;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRIF_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_DRIE;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_DSOPCPOEOC;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_ICNEAIDORSI;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_IIDORSIBCT;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_SCT;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_WITSS;
+import static eu.europa.ec.markt.dss.validation102853.toolbox.Reversed.reversed;
+
 import java.util.Date;
 import java.util.List;
 
@@ -41,16 +51,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.XPathSignature.getCertificateId;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRIF_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_DRIE;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_DSOPCPOEOC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_ICNEAIDORSI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_IIDORSIBCT;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_SCT;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_WITSS;
-import static eu.europa.ec.markt.dss.validation102853.toolbox.Reversed.reversed;
 
 /**
  * 9.2.2 Control-time sliding process<br>

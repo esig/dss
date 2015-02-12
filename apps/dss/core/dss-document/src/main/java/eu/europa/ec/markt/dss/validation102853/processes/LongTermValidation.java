@@ -20,6 +20,11 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IATVC;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPSVC;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -44,11 +49,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IATVC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPSVC;
 
 /**
  * 9.3 Long Term Validation Process<br>

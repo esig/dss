@@ -20,6 +20,25 @@
 
 package eu.europa.ec.markt.dss.validation102853.cades;
 
+import static eu.europa.ec.markt.dss.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.ec.markt.dss.OID.id_aa_ets_archiveTimestampV3;
+import static eu.europa.ec.markt.dss.validation102853.ArchiveTimestampType.CAdES_V2;
+import static eu.europa.ec.markt.dss.validation102853.ArchiveTimestampType.CAdES_v3;
+import static eu.europa.ec.markt.dss.validation102853.TimestampType.ARCHIVE_TIMESTAMP;
+import static eu.europa.ec.markt.dss.validation102853.TimestampType.CONTENT_TIMESTAMP;
+import static eu.europa.ec.markt.dss.validation102853.TimestampType.SIGNATURE_TIMESTAMP;
+import static eu.europa.ec.markt.dss.validation102853.TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP;
+import static eu.europa.ec.markt.dss.validation102853.TimestampType.VALIDATION_DATA_TIMESTAMP;
+import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
+import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +59,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -118,9 +138,10 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.cades.CadesLevelBaselineLTATimestampExtractor;
-import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
+import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
+import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
+import eu.europa.ec.markt.dss.signature.validation.cades.CAdESCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.ArchiveTimestampType;
-import eu.europa.ec.markt.dss.validation102853.CAdESCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.DefaultAdvancedSignature;
@@ -128,7 +149,6 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
 import eu.europa.ec.markt.dss.validation102853.TimestampReference;
 import eu.europa.ec.markt.dss.validation102853.TimestampReferenceCategory;
-import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
 import eu.europa.ec.markt.dss.validation102853.bean.CertificateValidity;
@@ -141,25 +161,6 @@ import eu.europa.ec.markt.dss.validation102853.crl.CRLRef;
 import eu.europa.ec.markt.dss.validation102853.crl.OfflineCRLSource;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OCSPRef;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
-
-import static eu.europa.ec.markt.dss.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.ec.markt.dss.OID.id_aa_ets_archiveTimestampV3;
-import static eu.europa.ec.markt.dss.validation102853.ArchiveTimestampType.CAdES_V2;
-import static eu.europa.ec.markt.dss.validation102853.ArchiveTimestampType.CAdES_v3;
-import static eu.europa.ec.markt.dss.validation102853.TimestampType.ARCHIVE_TIMESTAMP;
-import static eu.europa.ec.markt.dss.validation102853.TimestampType.CONTENT_TIMESTAMP;
-import static eu.europa.ec.markt.dss.validation102853.TimestampType.SIGNATURE_TIMESTAMP;
-import static eu.europa.ec.markt.dss.validation102853.TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP;
-import static eu.europa.ec.markt.dss.validation102853.TimestampType.VALIDATION_DATA_TIMESTAMP;
-import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
-import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
 /**
  * CAdES Signature class helper
@@ -404,7 +405,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 		final byte[] signingTokenCertHash = DSSUtils.digest(digestAlgorithm, signingCertificateValidity.getCertificateToken().getEncoded());
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Candidate Certificate Hash {} with algorithm {}", DSSUtils.encodeHexString(signingTokenCertHash), digestAlgorithm.getName());
+			LOG.debug("Candidate Certificate Hash {} with algorithm {}", Hex.encodeHexString(signingTokenCertHash), digestAlgorithm.getName());
 		}
 
 		final ASN1Set attrValues = signingCertificateAttributeV1.getAttrValues();
@@ -418,7 +419,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				final byte[] certHash = essCertID.getCertHash();
 				signingCertificateValidity.setDigestPresent(true);
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}", DSSUtils.encodeHexString(certHash), digestAlgorithm.getName());
+					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}", Hex.encodeHexString(certHash), digestAlgorithm.getName());
 				}
 				final IssuerSerial issuerSerial = essCertID.getIssuerSerial();
 				final boolean match = verifySigningCertificateReferences(signingTokenSerialNumber, signingTokenIssuerName, signingTokenCertHash, certHash, issuerSerial);
@@ -455,14 +456,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 					signingTokenCertHash = DSSUtils.digest(digestAlgorithm, signingCertificateValidity.getCertificateToken().getEncoded());
 					if (LOG.isDebugEnabled()) {
-						LOG.debug("Candidate Certificate Hash {} with algorithm {}", DSSUtils.encodeHexString(signingTokenCertHash), digestAlgorithm.getName());
+						LOG.debug("Candidate Certificate Hash {} with algorithm {}", Hex.encodeHexString(signingTokenCertHash), digestAlgorithm.getName());
 					}
 					lastDigestAlgorithm = digestAlgorithm;
 				}
 				final byte[] certHash = essCertIDv2.getCertHash();
 				signingCertificateValidity.setDigestPresent(true);
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", DSSUtils.encodeHexString(certHash), digestAlgorithm.getName());
+					LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", Hex.encodeHexString(certHash), digestAlgorithm.getName());
 				}
 				final IssuerSerial issuerSerial = essCertIDv2.getIssuerSerial();
 				final boolean match = verifySigningCertificateReferences(signingTokenSerialNumber, signingTokenIssuerName, signingTokenCertHash, certHash, issuerSerial);

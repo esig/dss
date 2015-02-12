@@ -18,7 +18,7 @@
  * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.markt.dss.validation102853;
+package eu.europa.ec.markt.dss.signature.validation.cades;
 
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
@@ -41,13 +41,14 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.CertificatePool;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
+import eu.europa.ec.markt.dss.validation102853.SignatureCertificateSource;
 
 /**
  * CertificateSource that retrieves items from a CAdES Signature
  *
- * @version $Revision: 1821 $ - $Date: 2013-03-28 15:56:00 +0100 (Thu, 28 Mar 2013) $
  */
-
 public class CAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESCertificateSource.class);
@@ -78,11 +79,6 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 		}
 		this.cmsSignedData = cmsSignedData;
 		this.signerInformation = signerInformation;
-		extract();
-	}
-
-	@Override
-	protected void extract() throws DSSException {
 
 		if (certificateTokens == null) {
 

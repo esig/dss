@@ -91,8 +91,6 @@ public class CRLRef {
             MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
             byte[] computedValue = digest.digest(crl.getEncoded());
             return Arrays.equals(digestValue, computedValue);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new DSSException("Maybe BouncyCastle provider is not installed ?", ex);
         } catch (CRLException ex) {
             throw new DSSException(ex);
         }

@@ -18,12 +18,15 @@
  * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.markt.dss.validation102853;
+package eu.europa.ec.markt.dss.signature.validation;
 
 import java.util.Date;
 import java.util.Set;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
+import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
+import eu.europa.ec.markt.dss.validation102853.RevocationToken;
 
 /**
  * This interface allows the implementation of the validators for: certificates, timestamps and revocation data.

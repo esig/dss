@@ -20,6 +20,13 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CCCBB;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ICSI_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_ICTSC;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_ICTSC_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_TINTA_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.XCV_IFCCIIPC_ANS;
+
 import java.util.Date;
 import java.util.List;
 
@@ -37,13 +44,6 @@ import eu.europa.ec.markt.dss.validation102853.report.Conclusion.Info;
 import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CCCBB;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ICSI_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_ICTSC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_ICTSC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_TINTA_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.XCV_IFCCIIPC_ANS;
 
 /**
  * 9.2 Additional Building blocks<br>

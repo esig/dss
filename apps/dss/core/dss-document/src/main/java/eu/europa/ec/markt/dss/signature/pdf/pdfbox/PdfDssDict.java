@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
@@ -101,7 +102,7 @@ public class PdfDssDict {
             for (int ii = 0; ii < ocspArray.size(); ii++) {
                 final byte[] stream = ocspArray.getBytes(ii);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("OSCP {} data = {}", ii, DSSUtils.encodeHexString(stream));
+                    LOG.debug("OSCP {} data = {}", ii, Hex.encodeHexString(stream));
                 }
                 final OCSPResp ocspResp = new OCSPResp(stream);
                 final BasicOCSPResp responseObject;

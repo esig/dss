@@ -25,12 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.validation102853.crl.CRLSource;
 import eu.europa.ec.markt.dss.validation102853.crl.ListCRLSource;
+import eu.europa.ec.markt.dss.validation102853.crl.OnlineCRLSource;
 import eu.europa.ec.markt.dss.validation102853.https.CommonsDataLoader;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 import eu.europa.ec.markt.dss.validation102853.ocsp.ListOCSPSource;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OCSPSource;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OnlineOCSPSource;
-import eu.europa.ec.markt.dss.validation102853.crl.OnlineCRLSource;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are four different types of sources to be defined:<br /> -

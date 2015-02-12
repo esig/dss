@@ -30,8 +30,8 @@ import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
 import eu.europa.ec.markt.dss.signature.pdf.PDFTimestampService;
 import eu.europa.ec.markt.dss.signature.pdf.PdfObjFactory;
-import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
+import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
 /**
  * TODO

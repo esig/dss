@@ -19,9 +19,10 @@
  */
 package eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  *

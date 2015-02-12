@@ -34,11 +34,11 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
+import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
+import eu.europa.ec.markt.dss.signature.validation.ValidationContext;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
-import eu.europa.ec.markt.dss.validation102853.ValidationContext;
 
 /**
  * Holds level A aspects of XAdES

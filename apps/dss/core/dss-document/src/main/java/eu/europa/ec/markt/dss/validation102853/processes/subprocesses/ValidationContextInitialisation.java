@@ -20,6 +20,8 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
@@ -37,9 +39,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK;
 
 /**
  * 5.2 Validation Context Initialization (VCI)<br/>

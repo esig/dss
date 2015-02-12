@@ -20,9 +20,9 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
-import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
-
 import java.util.Date;
+
+import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 
 /**
  * 

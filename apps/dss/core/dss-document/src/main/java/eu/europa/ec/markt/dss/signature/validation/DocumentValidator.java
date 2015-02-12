@@ -1,4 +1,4 @@
-package eu.europa.ec.markt.dss.validation102853;
+package eu.europa.ec.markt.dss.signature.validation;
 
 import java.io.File;
 import java.io.InputStream;
@@ -10,6 +10,8 @@ import org.w3c.dom.Document;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
+import eu.europa.ec.markt.dss.validation102853.ProcessExecutor;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 

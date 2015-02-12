@@ -20,34 +20,17 @@
 
 package eu.europa.ec.markt.dss.signature.cades;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.OID;
-import eu.europa.ec.markt.dss.exception.DSSConfigurationException;
-import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1Object;
+
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DEREncodableVector;
-import org.bouncycastle.asn1.DERSet;
-import org.bouncycastle.asn1.DERUTF8String;
-import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
+
+import eu.europa.ec.markt.dss.OID;
+import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 
 public class CounterSignatureBuilder extends CMSSignedDataBuilder {

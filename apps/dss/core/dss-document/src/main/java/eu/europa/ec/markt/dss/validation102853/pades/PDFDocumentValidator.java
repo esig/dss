@@ -32,9 +32,9 @@ import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
 import eu.europa.ec.markt.dss.signature.pdf.PdfObjFactory;
 import eu.europa.ec.markt.dss.signature.pdf.PdfSignatureInfo;
 import eu.europa.ec.markt.dss.signature.pdf.PdfSignatureValidationCallback;
-import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
+import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
+import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinderFactory;
 
 /**

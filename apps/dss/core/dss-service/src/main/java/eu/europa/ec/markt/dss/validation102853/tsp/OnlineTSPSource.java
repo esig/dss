@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URLConnection;
 
+import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampRequest;
@@ -100,7 +101,7 @@ public class OnlineTSPSource implements TSPSource {
 	public String getUniqueId(final byte[] digestValue) {
 
 		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue, tspNonceSource.getNonce().toByteArray());
-		return DSSUtils.encodeHexString(digest);
+		return Hex.encodeHexString(digest);
 	}
 
 	public DataLoader getDataLoader() {

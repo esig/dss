@@ -18,7 +18,7 @@
  * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.markt.dss.validation102853.xades;
+package eu.europa.ec.markt.dss.signature.validation.xades;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -36,13 +36,12 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.SignatureCertificateSource;
+import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
  * This class provides the mechanism to retrieve certificates contained in a XAdES signature.
  *
- * @version $Revision: 1758 $ - $Date: 2013-03-14 20:35:36 +0100 (Thu, 14 Mar 2013) $
  */
-
 public class XAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESCertificateSource.class);
@@ -77,19 +76,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		}
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
-		extract();
-		if (LOG.isInfoEnabled()) {
-			LOG.info("+XAdESCertificateSource");
-		}
-	}
-
-	/**
-	 * This method extracts all encapsulated certificates from the signature and adds them to validationCertPool.
-	 *
-	 * @throws eu.europa.ec.markt.dss.exception.DSSException
-	 */
-	@Override
-	protected void extract() throws DSSException {
 
 		if (certificateTokens == null) {
 
@@ -97,6 +83,10 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			encapsulatedCerts = getCertificates(xPathQueryHolder.XPATH_ENCAPSULATED_X509_CERTIFICATE);
 			keyInfoCerts = getCertificates(xPathQueryHolder.XPATH_KEY_INFO_X509_CERTIFICATE);
 			timestampValidationDataCerts = getCertificates(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE);
+		}
+
+		if (LOG.isInfoEnabled()) {
+			LOG.info("+XAdESCertificateSource");
 		}
 	}
 

@@ -20,6 +20,14 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
+import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES141;
+import static eu.europa.ec.markt.dss.signature.ProfileParameters.Operation.SIGNING;
+import static eu.europa.ec.markt.dss.signature.SignatureLevel.XAdES_BASELINE_T;
+import static eu.europa.ec.markt.dss.signature.SignaturePackaging.ENVELOPED;
+import static eu.europa.ec.markt.dss.validation102853.TimestampType.SIGNATURE_TIMESTAMP;
+import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,22 +56,13 @@ import eu.europa.ec.markt.dss.signature.ProfileParameters;
 import eu.europa.ec.markt.dss.signature.ProfileParameters.Operation;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.signature.validation.ValidationContext;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
-import eu.europa.ec.markt.dss.validation102853.ValidationContext;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
-
-import static eu.europa.ec.markt.dss.DigestAlgorithm.MD5;
-import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
-import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES141;
-import static eu.europa.ec.markt.dss.signature.ProfileParameters.Operation.SIGNING;
-import static eu.europa.ec.markt.dss.signature.SignatureLevel.XAdES_BASELINE_T;
-import static eu.europa.ec.markt.dss.signature.SignaturePackaging.ENVELOPED;
-import static eu.europa.ec.markt.dss.validation102853.TimestampType.SIGNATURE_TIMESTAMP;
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 /**
  * -T profile of XAdES signature

@@ -21,7 +21,6 @@
 package eu.europa.ec.markt.dss.signature.pdf;
 
 import java.io.IOException;
-import java.util.Calendar;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF

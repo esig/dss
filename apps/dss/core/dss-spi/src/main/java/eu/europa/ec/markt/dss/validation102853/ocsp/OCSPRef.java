@@ -25,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
@@ -93,12 +94,10 @@ public class OCSPRef {
 			}
 			byte[] computedValue = digest.digest();
 			if (LOG.isInfoEnabled()) {
-				LOG.info("Compare " + DSSUtils.encodeHexString(digestValue) + " to computed value " + DSSUtils.encodeHexString(computedValue) + " of " +
+				LOG.info("Compare " + Hex.encodeHexString(digestValue) + " to computed value " + Hex.encodeHexString(computedValue) + " of " +
 					  "BasicOCSPResp produced at " + ocspResp.getProducedAt());
 			}
 			return Arrays.equals(digestValue, computedValue);
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException(e);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

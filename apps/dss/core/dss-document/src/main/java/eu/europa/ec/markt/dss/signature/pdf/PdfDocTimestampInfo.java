@@ -20,7 +20,7 @@
 
 package eu.europa.ec.markt.dss.signature.pdf;
 
-import eu.europa.ec.markt.dss.validation102853.TimestampToken;
+import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 
 /**
  * TODO

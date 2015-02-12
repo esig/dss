@@ -20,34 +20,6 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
-import java.util.Date;
-import java.util.List;
-
-import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.TSLConstant;
-import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
-import eu.europa.ec.markt.dss.validation102853.policy.CertificateExpirationConstraint;
-import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
-import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
-import eu.europa.ec.markt.dss.validation102853.policy.SignatureCryptographicConstraint;
-import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
-import eu.europa.ec.markt.dss.validation102853.processes.ValidationXPathQueryHolder;
-import eu.europa.ec.markt.dss.validation102853.processes.dss.ForLegalPerson;
-import eu.europa.ec.markt.dss.validation102853.processes.dss.QualifiedCertificate;
-import eu.europa.ec.markt.dss.validation102853.processes.dss.SSCD;
-import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
-import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
-import eu.europa.ec.markt.dss.validation102853.rules.Indication;
-import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
-import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
-import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
-import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
-import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
-import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ACCM;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CCCBB;
@@ -83,6 +55,34 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_ITACB
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_WITSS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_WITSS_ANS;
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.EMPTY;
+
+import java.util.Date;
+import java.util.List;
+
+import eu.europa.ec.markt.dss.DSSUtils;
+import eu.europa.ec.markt.dss.TSLConstant;
+import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
+import eu.europa.ec.markt.dss.validation102853.policy.CertificateExpirationConstraint;
+import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
+import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
+import eu.europa.ec.markt.dss.validation102853.policy.SignatureCryptographicConstraint;
+import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
+import eu.europa.ec.markt.dss.validation102853.processes.ValidationXPathQueryHolder;
+import eu.europa.ec.markt.dss.validation102853.processes.dss.ForLegalPerson;
+import eu.europa.ec.markt.dss.validation102853.processes.dss.QualifiedCertificate;
+import eu.europa.ec.markt.dss.validation102853.processes.dss.SSCD;
+import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
+import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
+import eu.europa.ec.markt.dss.validation102853.rules.Indication;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
+import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
+import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
+import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
+import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 public class X509CertificateValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, RuleConstant, ValidationXPathQueryHolder {
 

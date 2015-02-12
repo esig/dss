@@ -19,11 +19,12 @@
  */
 package eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
-import java.util.concurrent.TimeUnit;
 
 /**
  *

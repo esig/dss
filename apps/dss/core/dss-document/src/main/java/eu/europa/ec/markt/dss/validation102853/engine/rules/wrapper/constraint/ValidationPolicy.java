@@ -19,10 +19,11 @@
  */
 package eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint;
 
-import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
+import java.net.URL;
+
 import org.w3c.dom.Document;
 
-import java.net.URL;
+import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 /**
  * In memory representation on the XML Validation Policy Constraint document and XSD

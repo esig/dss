@@ -19,11 +19,11 @@
  */
 package eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint;
 
+import static java.lang.annotation.ElementType.FIELD;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.FIELD;
 
 /**
  * TODO

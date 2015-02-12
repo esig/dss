@@ -19,6 +19,9 @@
  */
 package eu.europa.ec.markt.dss.validation102853.report;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.LABEL_TINTWS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.LABEL_TINVTWS;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,9 +51,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.LABEL_TINTWS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.LABEL_TINVTWS;
 
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.

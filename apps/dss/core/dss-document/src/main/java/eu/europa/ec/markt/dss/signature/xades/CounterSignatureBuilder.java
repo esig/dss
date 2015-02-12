@@ -20,6 +20,8 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +42,6 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
-
-import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
 
 /**
  * This class provides the methods required to countersign a given signature and extend the existing signature with the generated

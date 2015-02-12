@@ -18,11 +18,12 @@
  * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.markt.dss.validation102853.scope;
+package eu.europa.ec.markt.dss.signature.validation.scope;
 
 import java.util.List;
 
-import eu.europa.ec.markt.dss.validation102853.AdvancedSignature;
+import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
+import eu.europa.ec.markt.dss.validation102853.scope.SignatureScope;
 
 public interface SignatureScopeFinder<T extends AdvancedSignature> {
 

@@ -20,6 +20,18 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ICDVV;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ICDVV_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISACDP;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISACDP_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISASCP;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISASCP_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCI;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCI_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCS_ANS;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
@@ -35,19 +47,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ICDVV;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ICDVV_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISACDP;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISACDP_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISASCP;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISASCP_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCI_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCS_ANS;
 
 /**
  * 5.1 Identification of the Signer's Certificate (ISC)

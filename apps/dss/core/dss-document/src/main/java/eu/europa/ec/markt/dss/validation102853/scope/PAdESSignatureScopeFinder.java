@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.signature.pdf.PdfSignatureInfo;
+import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.pades.PAdESSignature;
 
 /**

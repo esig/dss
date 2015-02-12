@@ -20,6 +20,11 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
+import static eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.XPathSignature.getSigningCertificateId;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPCVC;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPCVC_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_ITPOSVAOBCT;
+
 import java.util.Date;
 import java.util.List;
 
@@ -39,11 +44,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.XPathSignature.getSigningCertificateId;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPCVC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPCVC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_ITPOSVAOBCT;
 
 /**
  * 9.2.4 Past signature validation process<br>

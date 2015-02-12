@@ -20,8 +20,6 @@
 
 package eu.europa.ec.markt.dss.validation102853;
 
-import java.io.Serializable;
-
 import eu.europa.ec.markt.dss.validation102853.crl.CRLSource;
 import eu.europa.ec.markt.dss.validation102853.crl.ListCRLSource;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
@@ -29,109 +27,119 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.ListOCSPSource;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OCSPSource;
 
 /**
- * Provides information on the sources to be used in the validation process in the context of a signature.
+ * Provides information on the sources to be used in the validation process in
+ * the context of a signature.
  *
- * @version $Revision: 946 $ - $Date: 2011-06-06 17:15:14 +0200 (Mon, 06 Jun 2011) $
  */
-
-public interface CertificateVerifier extends Serializable {
+public interface CertificateVerifier {
 
 	/**
 	 * Returns the OCSP source associated with this verifier.
 	 *
 	 * @return
 	 */
-	public OCSPSource getOcspSource();
+	OCSPSource getOcspSource();
 
 	/**
 	 * Returns the CRL source associated with this verifier.
 	 *
 	 * @return
 	 */
-	public CRLSource getCrlSource();
+	CRLSource getCrlSource();
 
 	/**
 	 * Defines the source of CRL used by this class
 	 *
-	 * @param crlSource the crlSource to set
+	 * @param crlSource
+	 *            the crlSource to set
 	 */
-	public void setCrlSource(final CRLSource crlSource);
+	void setCrlSource(final CRLSource crlSource);
 
 	/**
 	 * Defines the source of OCSP used by this class
 	 *
-	 * @param ocspSource the ocspSource to set
+	 * @param ocspSource
+	 *            the ocspSource to set
 	 */
-	public void setOcspSource(final OCSPSource ocspSource);
+	void setOcspSource(final OCSPSource ocspSource);
 
 	/**
-	 * Returns the trusted certificates source associated with this verifier. This source is used to identify the trusted anchor.
+	 * Returns the trusted certificates source associated with this verifier.
+	 * This source is used to identify the trusted anchor.
 	 *
 	 * @return
 	 */
-	public TrustedCertificateSource getTrustedCertSource();
+	TrustedCertificateSource getTrustedCertSource();
 
 	/**
 	 * Sets the trusted certificates source.
 	 *
-	 * @param certSource The certificates source to set
+	 * @param certSource
+	 *            The certificates source to set
 	 */
-	public void setTrustedCertSource(final TrustedCertificateSource certSource);
+	void setTrustedCertSource(final TrustedCertificateSource certSource);
 
 	/**
 	 * Returns the adjunct certificates source associated with this verifier.
 	 *
 	 * @return
 	 */
-	public CertificateSource getAdjunctCertSource();
+	CertificateSource getAdjunctCertSource();
 
 	/**
 	 * Associates an adjunct certificates source to this verifier.
 	 *
 	 * @param adjunctCertSource
 	 */
-	public void setAdjunctCertSource(final CertificateSource adjunctCertSource);
+	void setAdjunctCertSource(final CertificateSource adjunctCertSource);
 
 	/**
 	 * The data loader used to access AIA certificate source.
 	 *
 	 * @return
 	 */
-	public DataLoader getDataLoader();
+	DataLoader getDataLoader();
 
 	/**
-	 * The data loader used to access AIA certificate source. If this property is not set the default {@code CommonsHttpDataLoader} is created.
+	 * The data loader used to access AIA certificate source. If this property
+	 * is not set the default {@code CommonsHttpDataLoader} is created.
 	 *
 	 * @param dataLoader
 	 */
-	public void setDataLoader(final DataLoader dataLoader);
+	void setDataLoader(final DataLoader dataLoader);
 
 	/**
-	 * This method returns the CRL source (information extracted from signatures).
+	 * This method returns the CRL source (information extracted from
+	 * signatures).
 	 */
-	public ListCRLSource getSignatureCRLSource();
+	ListCRLSource getSignatureCRLSource();
 
 	/**
-	 * This method allows to set the CRL source (information extracted from signatures).
+	 * This method allows to set the CRL source (information extracted from
+	 * signatures).
 	 *
 	 * @param signatureCRLSource
 	 */
-	public void setSignatureCRLSource(final ListCRLSource signatureCRLSource);
+	void setSignatureCRLSource(final ListCRLSource signatureCRLSource);
 
 	/**
-	 * This method returns the OCSP source (information extracted from signatures).
+	 * This method returns the OCSP source (information extracted from
+	 * signatures).
 	 */
-	public ListOCSPSource getSignatureOCSPSource();
+	ListOCSPSource getSignatureOCSPSource();
 
 	/**
-	 * This method allows to set the OCSP source (information extracted from signatures).
+	 * This method allows to set the OCSP source (information extracted from
+	 * signatures).
 	 *
 	 * @param signatureOCSPSource
 	 */
-	public void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource);
+	void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource);
 
 	/**
-	 * This method creates the validation pool of certificates which is used during the validation process.
+	 * This method creates the validation pool of certificates which is used
+	 * during the validation process.
 	 */
-	public CertificatePool createValidationPool();
+	CertificatePool createValidationPool();
+
 }

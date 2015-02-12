@@ -20,9 +20,9 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes;
 
-import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
-
 import java.util.Comparator;
+
+import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 public class TimestampComparator implements Comparator<XmlDom> {
 

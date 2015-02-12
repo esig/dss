@@ -20,6 +20,10 @@
 
 package eu.europa.ec.markt.dss.signature.cades;
 
+import static eu.europa.ec.markt.dss.OID.id_aa_ATSHashIndex;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -57,13 +62,9 @@ import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
-import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
-
-import static eu.europa.ec.markt.dss.OID.id_aa_ATSHashIndex;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
 /**
  * Extracts the necessary information to compute the CAdES Archive Timestamp V3.
@@ -178,7 +179,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			final byte[] encodedCertificate = certificateToken.getEncoded();
 			final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, encodedCertificate);
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Adding to CertificatesHashIndex DSS-Identifier: {} with hash {}", certificateToken.getDSSId(), DSSUtils.encodeHexString(digest));
+				LOG.debug("Adding to CertificatesHashIndex DSS-Identifier: {} with hash {}", certificateToken.getDSSId(), Hex.encodeHexString(digest));
 			}
 			final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 			certificatesHashIndexVector.add(derOctetStringDigest);
@@ -254,7 +255,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private void digestAndAddToList(ASN1EncodableVector crlsHashIndex, byte[] encoded) {
 		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, encoded);
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Adding to crlsHashIndex with hash {}", DSSUtils.encodeHexString(digest));
+			LOG.debug("Adding to crlsHashIndex with hash {}", Hex.encodeHexString(digest));
 		}
 		final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 		crlsHashIndex.add(derOctetStringDigest);
@@ -509,11 +510,11 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		 */
 		final byte[] dataToTimestamp = DSSUtils.concatenate(encodedContentType, signedDataDigest, encodedFields, encodedAtsHashIndex);
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("eContentType={}", DSSUtils.encodeHexString(encodedContentType));
-			LOG.debug("signedDataDigest={}", DSSUtils.encodeHexString(signedDataDigest));
+			LOG.debug("eContentType={}", Hex.encodeHexString(encodedContentType));
+			LOG.debug("signedDataDigest={}", Hex.encodeHexString(signedDataDigest));
 			LOG.debug("encodedFields=see above");
-			LOG.debug("encodedAtsHashIndex={}", DSSUtils.encodeHexString(encodedAtsHashIndex));
-			// LOG.debug("Archive Timestamp Data v3 is: {}", DSSUtils.encodeHexString(dataToTimestamp));
+			LOG.debug("encodedAtsHashIndex={}", Hex.encodeHexString(encodedAtsHashIndex));
+			// LOG.debug("Archive Timestamp Data v3 is: {}", Hex.encodeHexString(dataToTimestamp));
 		}
 		return dataToTimestamp;
 	}
@@ -564,7 +565,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("getSignedFields Version={}", DSSUtils.base64Decode(derEncodedVersion));
 			LOG.debug("getSignedFields Sid={}", DSSUtils.base64Decode(derEncodedSid));
 			LOG.debug("getSignedFields DigestAlgorithm={}", DSSUtils.base64Decode(derEncodedDigestAlgorithm));
-			LOG.debug("getSignedFields SignedAttributes={}", DSSUtils.encodeHexString(derEncodedSignedAttributes));
+			LOG.debug("getSignedFields SignedAttributes={}", Hex.encodeHexString(derEncodedSignedAttributes));
 			LOG.debug("getSignedFields DigestEncryptionAlgorithm={}", DSSUtils.base64Decode(derEncodedDigestEncryptionAlgorithm));
 			LOG.debug("getSignedFields EncryptedDigest={}", DSSUtils.base64Decode(derEncodedEncryptedDigest));
 		}

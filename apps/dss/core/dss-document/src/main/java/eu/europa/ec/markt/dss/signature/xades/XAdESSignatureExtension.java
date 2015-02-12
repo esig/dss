@@ -20,7 +20,6 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
 
 /**

@@ -1,6 +1,5 @@
 package eu.europa.ec.markt.dss.parameter;
 
-import eu.europa.ec.markt.dss.exception.DSSException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;

@@ -18,7 +18,7 @@
  * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.markt.dss.validation102853;
+package eu.europa.ec.markt.dss.signature.validation;
 
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -48,6 +49,17 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.signature.validation.cades.CAdESCertificateSource;
+import eu.europa.ec.markt.dss.validation102853.ArchiveTimestampType;
+import eu.europa.ec.markt.dss.validation102853.CertificatePool;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
+import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
+import eu.europa.ec.markt.dss.validation102853.TimestampReference;
+import eu.europa.ec.markt.dss.validation102853.TimestampType;
+import eu.europa.ec.markt.dss.validation102853.TimestampValidation;
+import eu.europa.ec.markt.dss.validation102853.TimestampValidity;
+import eu.europa.ec.markt.dss.validation102853.Token;
+import eu.europa.ec.markt.dss.validation102853.TokenValidationExtraInfo;
 
 /**
  * SignedToken containing a TimeStamp.
@@ -216,9 +228,9 @@ public class TimestampToken extends Token {
 			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
 			if (!messageImprintIntact) {
 
-				LOG.error("Extracted data from the document: {}", DSSUtils.encodeHexString(data, 200));
-				LOG.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, DSSUtils.encodeHexString(computedDigest));
-				LOG.error("Digest present in TimestampToken: {}", DSSUtils.encodeHexString(timestampDigest));
+				LOG.error("Extracted data from the document: {}", Hex.encodeHexString(data));
+				LOG.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Hex.encodeHexString(computedDigest));
+				LOG.error("Digest present in TimestampToken: {}", Hex.encodeHexString(timestampDigest));
 				LOG.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 			}
 		} catch (DSSException e) {

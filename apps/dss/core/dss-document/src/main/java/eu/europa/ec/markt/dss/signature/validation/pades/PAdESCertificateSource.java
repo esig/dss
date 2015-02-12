@@ -18,16 +18,15 @@
  * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.markt.dss.validation102853.pades;
+package eu.europa.ec.markt.dss.signature.validation.pades;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.pdf.pdfbox.PdfDssDict;
-import eu.europa.ec.markt.dss.validation102853.CAdESCertificateSource;
+import eu.europa.ec.markt.dss.signature.validation.cades.CAdESCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.SignatureCertificateSource;
@@ -55,23 +54,6 @@ public class PAdESCertificateSource extends SignatureCertificateSource {
 
         super(certPool);
         this.dssCatalog = dssCatalog;
-        extract();
-        if (cadesCertSource != null) {
-            // We add the CAdES specific certificates to this source.
-            for (final CertificateToken certToken : cadesCertSource.getCertificates()) {
-                if (!certificateTokens.contains(certToken)) {
-                    certificateTokens.add(certToken);
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void extract() throws DSSException {
-
-        /**
-         * TODO: (Bob) Is there any other container within the PAdES signature with embedded certificate? (ie: timestamp)
-         */
 
         certificateTokens = new ArrayList<CertificateToken>();
         if (dssCatalog != null) {
@@ -79,6 +61,15 @@ public class PAdESCertificateSource extends SignatureCertificateSource {
             final Set<X509Certificate> certList = dssCatalog.getCertList();
             for (final X509Certificate x509Certificate : certList) {
                 addCertificate(x509Certificate);
+            }
+        }
+
+        if (cadesCertSource != null) {
+            // We add the CAdES specific certificates to this source.
+            for (final CertificateToken certToken : cadesCertSource.getCertificates()) {
+                if (!certificateTokens.contains(certToken)) {
+                    certificateTokens.add(certToken);
+                }
             }
         }
     }

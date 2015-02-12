@@ -20,6 +20,12 @@
 
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOF;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOF_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOI;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOI_ANS;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_ISI;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_ISI_ANS;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
@@ -35,13 +41,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOF;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOF_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOI_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_ISI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_ISI_ANS;
 
 /**
  * This class executes the cryptographic signature verification. It can be for the document signatures or timestamp

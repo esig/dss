@@ -20,6 +20,9 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
+import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
+
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -40,9 +43,6 @@ import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TrustedCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
-
-import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 public abstract class XAdESBuilder {
 

@@ -74,6 +74,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -122,7 +124,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.utils.Base64;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 import eu.europa.ec.markt.dss.validation102853.loader.Protocol;
@@ -135,16 +136,6 @@ public final class DSSUtils {
 	public static final String CERT_END = "-----END CERTIFICATE-----";
 
 	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
-
-	/**
-	 * Used to build output as Hex
-	 */
-	private static final char[] DIGITS_LOWER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
-	/**
-	 * Used to build output as Hex
-	 */
-	private static final char[] DIGITS_UPPER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 	/**
 	 * FROM: Apache
@@ -181,8 +172,6 @@ public final class DSSUtils {
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
-	private static MessageDigest sha1Digester;
-
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
 
 	static {
@@ -192,8 +181,6 @@ public final class DSSUtils {
 			Security.addProvider(securityProvider);
 
 			certificateFactory = CertificateFactory.getInstance("X.509", "BC");
-
-			sha1Digester = getMessageDigest(DigestAlgorithm.SHA1);
 
 			jcaDigestCalculatorProviderBuilder = new JcaDigestCalculatorProviderBuilder();
 			jcaDigestCalculatorProviderBuilder.setProvider("BC");
@@ -206,10 +193,6 @@ public final class DSSUtils {
 
 			LOG.error(e.toString());
 			throw new DSSException("Platform does not support BouncyCastle", e);
-		} catch (NoSuchAlgorithmException e) {
-
-			LOG.error(e.toString());
-			throw new DSSException("The digest algorithm is not supported", e);
 		}
 	}
 
@@ -318,112 +301,7 @@ public final class DSSUtils {
 	 */
 	public static String toHex(final byte[] value) {
 
-		return (value != null) ? new String(encodeHex(value, false)) : null;
-	}
-
-	/**
-	 * Converts an array of bytes into a String representing the hexadecimal values of each byte in order. The returned
-	 * String will be double the length of the passed array, as it takes two characters to represent any given byte.
-	 *
-	 * @param data a byte[] to convert to Hex characters
-	 * @return A String containing hexadecimal characters
-	 */
-	public static String encodeHexString(final byte[] data) {
-		return new String(encodeHex(data));
-	}
-
-	/**
-	 * Converts an array of bytes into a String representing the hexadecimal values of each byte in order. The maximum length of the returned
-	 * String is limited by {@code maxLength} parameter.
-	 *
-	 * @param data      a byte[] to convert to Hex characters
-	 * @param maxLength the maximum length of the returned string
-	 * @return A String containing hexadecimal characters
-	 */
-	public static String encodeHexString(final byte[] data, int maxLength) {
-
-		byte[] data_ = data.length > maxLength ? Arrays.copyOf(data, maxLength) : data;
-		final String encoded = new String(encodeHex(data_)) + (data.length > maxLength ? "...(" + (data.length - maxLength) + " more)" : "");
-		return encoded;
-
-	}
-
-	/**
-	 * Converts an array of bytes into an array of characters representing the hexadecimal values of each byte in order.
-	 * The returned array will be double the length of the passed array, as it takes two characters to represent any
-	 * given byte.
-	 *
-	 * @param data a byte[] to convert to Hex characters
-	 * @return A char[] containing hexadecimal characters
-	 */
-	public static char[] encodeHex(byte[] data) {
-		return encodeHex(data, true);
-	}
-
-	/**
-	 * Converts an array of bytes into an array of characters representing the hexadecimal values of each byte in order.
-	 * The returned array will be double the length of the passed array, as it takes two characters to represent any
-	 * given byte.
-	 *
-	 * @param data        a byte[] to convert to Hex characters
-	 * @param toLowerCase <code>true</code> converts to lowercase, <code>false</code> to uppercase
-	 * @return A char[] containing hexadecimal characters
-	 * @since 1.4
-	 */
-	public static char[] encodeHex(byte[] data, boolean toLowerCase) {
-		return encodeHex(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
-	}
-
-	/**
-	 * Converts an array of bytes into an array of characters representing the hexadecimal values of each byte in order.
-	 * The returned array will be double the length of the passed array, as it takes two characters to represent any
-	 * given byte.
-	 *
-	 * @param data     a byte[] to convert to Hex characters
-	 * @param toDigits the output alphabet
-	 * @return A char[] containing hexadecimal characters
-	 * @since 1.4
-	 */
-	protected static char[] encodeHex(byte[] data, char[] toDigits) {
-		int l = data.length;
-		char[] out = new char[l << 1];
-		// two characters form the hex value.
-		for (int i = 0, j = 0; i < l; i++) {
-			out[j++] = toDigits[(0xF0 & data[i]) >>> 4];
-			out[j++] = toDigits[0x0F & data[i]];
-		}
-		return out;
-	}
-
-	/**
-	 * Converts an array of characters representing hexadecimal values into an array of bytes of those same values. The
-	 * returned array will be half the length of the passed array, as it takes two characters to represent any given
-	 * byte. An exception is thrown if the passed char array has an odd number of elements.
-	 *
-	 * @param data An array of characters containing hexadecimal digits
-	 * @return A byte array containing binary data decoded from the supplied char array.
-	 * @throws DSSException Thrown if an odd number or illegal of characters is supplied
-	 */
-	public static byte[] decodeHex(char[] data) throws DSSException {
-
-		int len = data.length;
-
-		if ((len & 0x01) != 0) {
-			throw new DSSException("Odd number of characters.");
-		}
-
-		byte[] out = new byte[len >> 1];
-
-		// two characters form the hex value.
-		for (int i = 0, j = 0; j < len; i++) {
-			int f = toDigit(data[j], j) << 4;
-			j++;
-			f = f | toDigit(data[j], j);
-			j++;
-			out[i] = (byte) (f & 0xFF);
-		}
-
-		return out;
+		return (value != null) ? new String(Hex.encodeHex(value, false)) : null;
 	}
 
 	/**
@@ -1102,8 +980,8 @@ public final class DSSUtils {
 	 */
 	public static String getSHA1Digest(final String stringToDigest) {
 
-		final byte[] digest = sha1Digester.digest(stringToDigest.getBytes());
-		return encodeHexString(digest);
+		final byte[] digest = getMessageDigest(DigestAlgorithm.SHA1).digest(stringToDigest.getBytes());
+		return Hex.encodeHexString(digest);
 	}
 
 	/**
@@ -1115,8 +993,8 @@ public final class DSSUtils {
 	public static String getSHA1Digest(final InputStream inputStream) {
 
 		final byte[] bytes = DSSUtils.toByteArray(inputStream);
-		final byte[] digest = sha1Digester.digest(bytes);
-		return encodeHexString(digest);
+		final byte[] digest = getMessageDigest(DigestAlgorithm.SHA1).digest(bytes);
+		return Hex.encodeHexString(digest);
 	}
 
 	/**
@@ -1161,16 +1039,9 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) throws DSSException {
-
-		try {
-
-			final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
-			final byte[] digestValue = messageDigest.digest(data);
-			return digestValue;
-		} catch (NoSuchAlgorithmException e) {
-
-			throw new DSSException("Digest algorithm error: " + e.getMessage(), e);
-		}
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
+		final byte[] digestValue = messageDigest.digest(data);
+		return digestValue;
 	}
 
 	/**
@@ -1178,24 +1049,14 @@ public final class DSSUtils {
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) throws NoSuchAlgorithmException {
-
-		// TODO-Bob (13/07/2014):  To be checked if the default implementation copes with RIPEMD160
-		//		if (digestAlgorithm.equals(DigestAlgorithm.RIPEMD160)) {
-		//
-		//			final RIPEMD160Digest digest = new RIPEMD160Digest();
-		//			final byte[] message = certificateToken.getEncoded();
-		//			digest.update(message, 0, message.length);
-		//			final byte[] digestValue = new byte[digest.getDigestSize()];
-		//			digest.doFinal(digestValue, 0);
-		//			recalculatedBase64DigestValue = DSSUtils.base64BinaryEncode(digestValue);
-		//		} else {
-
-		final String digestAlgorithmOid = digestAlgorithm.getOid().getId();
-		// System.out.println(">>> " + digestAlgorithmOid);
-		final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid);
-		// System.out.println(">>> " + messageDigest.getProvider() + "/" + messageDigest.getClass().getName());
-		return messageDigest;
+	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
+		try {
+			final String digestAlgorithmOid = digestAlgorithm.getOid().getId();
+			final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid);
+			return messageDigest;
+		} catch(NoSuchAlgorithmException e) {
+			throw new DSSException("Digest algorithm error: " + e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -1206,40 +1067,29 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) throws DSSException {
-
 		try {
 
 			final MessageDigest messageDigest = getMessageDigest(digestAlgo);
 			final byte[] buffer = new byte[4096];
 			int count = 0;
 			while ((count = inputStream.read(buffer)) > 0) {
-
 				messageDigest.update(buffer, 0, count);
 			}
 			final byte[] digestValue = messageDigest.digest();
 			return digestValue;
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException("Digest algorithm error: " + e.getMessage(), e);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
 
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
+		for (final byte[] bytes : data) {
 
-		try {
-
-			final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
-			for (final byte[] bytes : data) {
-
-				messageDigest.update(bytes);
-			}
-			final byte[] digestValue = messageDigest.digest();
-			return digestValue;
-		} catch (NoSuchAlgorithmException e) {
-
-			throw new DSSException("Digest algorithm error: " + e.getMessage(), e);
+			messageDigest.update(bytes);
 		}
+		final byte[] digestValue = messageDigest.digest();
+		return digestValue;
 	}
 
 	/**

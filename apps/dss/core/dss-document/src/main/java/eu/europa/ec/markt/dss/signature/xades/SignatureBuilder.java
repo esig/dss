@@ -20,6 +20,9 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
+import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
+import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
+
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,15 +49,12 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
+import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
-import eu.europa.ec.markt.dss.validation102853.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
-
-import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 /**
  * This class implements all the necessary mechanisms to build each form of the XML signature.
