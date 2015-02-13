@@ -63,6 +63,8 @@ import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.tools.CertificateService;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
+import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
 /**
  * @version $Revision$ - $Date$
@@ -81,7 +83,7 @@ public class XAdESLevelBaselineBESTest {
 	public static void setUp() throws Exception {
 		toBeSigned = new InMemoryDocument("<?xml version=\"1.0\"?><root><bonjour/></root>".getBytes());
 		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificate(signatureAlgorithm);
+		privateKeyEntry = certificateService.generateCertificateChain(signatureAlgorithm);
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
@@ -107,9 +109,14 @@ public class XAdESLevelBaselineBESTest {
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
 		AdvancedSignature s = validator.getSignatures().get(0);
 		assertEquals(signingDate, s.getSigningTime());
 
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Test
