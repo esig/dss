@@ -1,4 +1,4 @@
-package eu.europa.ec.markt.dss.tools;
+package eu.europa.ec.markt.dss.mock;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;

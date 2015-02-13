@@ -14,18 +14,17 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
-import eu.europa.ec.markt.dss.tools.CertificateService;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
-import eu.europa.ec.markt.dss.validation102853.tsl.MockEmptyTSLCertificateSource;
 
 public class CAdESProfileEPESTest {
 
@@ -70,7 +69,6 @@ public class CAdESProfileEPESTest {
 	public void testCAdESProfile() throws Exception {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setTrustedCertSource(new MockEmptyTSLCertificateSource());
 		CAdESService service = new CAdESService(certificateVerifier);
 
 		SignatureParameters parameters = buildParameters();

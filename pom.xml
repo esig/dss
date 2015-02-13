@@ -238,6 +238,12 @@
 				<artifactId>dss-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-test</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+			</dependency>
 			<!-- Public Dependencies -->
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>

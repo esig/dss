@@ -1,4 +1,4 @@
-package eu.europa.ec.markt.dss.tools;
+package eu.europa.ec.markt.dss.service;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
@@ -28,6 +28,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.mock.MockPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 
 public class CertificateService {

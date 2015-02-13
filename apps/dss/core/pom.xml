@@ -22,6 +22,7 @@
         <module>dss-common</module>
         <module>dss-service</module>
         <module>dss-spi</module>
+        <module>dss-test</module>
     </modules>
 
     <profiles>

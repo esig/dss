@@ -1,4 +1,4 @@
-package eu.europa.ec.markt.dss.tools;
+package eu.europa.ec.markt.dss.service;
 
 import java.security.SignatureException;
 import java.security.cert.X509Certificate;
