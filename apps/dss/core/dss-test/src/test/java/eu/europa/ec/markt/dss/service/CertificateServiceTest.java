@@ -1,8 +1,12 @@
 package eu.europa.ec.markt.dss.service;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.security.SignatureException;
 import java.security.cert.X509Certificate;
 
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.tsp.TSPUtil;
 import org.junit.Test;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
@@ -27,5 +31,13 @@ public class CertificateServiceTest {
 		// Child certificate is signed with the issuer's private key
 		X509Certificate childCertificate = entryChain.getCertificate();
 		childCertificate.verify(childCertificate.getPublicKey());
+	}
+
+	@Test
+	public void generateTspCertificate() throws Exception {
+		DSSPrivateKeyEntry keyEntry = service.generateTspCertificate(SignatureAlgorithm.RSA_SHA256);
+		assertNotNull(keyEntry);
+		X509Certificate certificate = keyEntry.getCertificate();
+		TSPUtil.validateCertificate(new X509CertificateHolder(certificate.getEncoded()));
 	}
 }

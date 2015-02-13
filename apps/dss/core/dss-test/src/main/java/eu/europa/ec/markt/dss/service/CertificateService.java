@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Random;
 
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -65,6 +67,32 @@ public class CertificateService {
 		X509Certificate certificate = generateCertificate(algorithm, subject, issuer, keyPair.getPrivate(), keyPair.getPublic());
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), certificate, keyPair.getPrivate());
+	}
+
+	public DSSPrivateKeyEntry generateTspCertificate(final SignatureAlgorithm algorithm) throws Exception {
+		KeyPair keyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
+		X500Name issuer = new X500Name("CN=RootIssuerTSPFake,O=DSS-test");
+		X500Name subject = new X500Name("CN=RootSubjectTSP,O=DSS-test");
+
+		final Date notBefore = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000); // yesterday
+		final Date notAfter = new Date(System.currentTimeMillis() + 10 * 24 * 60 * 60 * 1000); // 10d
+
+		// generate certificate
+		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
+
+		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer, new BigInteger("" + new Random().nextInt(10)
+				+ System.currentTimeMillis()), notBefore, notAfter, subject, keyInfo);
+
+		certBuilder.addExtension(Extension.extendedKeyUsage, true, new ExtendedKeyUsage(KeyPurposeId.id_kp_timeStamping));
+
+		final ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(
+				keyPair.getPrivate());
+		final X509CertificateHolder holder = certBuilder.build(signer);
+
+		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(
+				new ByteArrayInputStream(holder.getEncoded()));
+
+		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), cert, keyPair.getPrivate());
 	}
 
 	public X509Certificate generateCertificate(final SignatureAlgorithm algorithm, final X500Name subject, final X500Name issuer,

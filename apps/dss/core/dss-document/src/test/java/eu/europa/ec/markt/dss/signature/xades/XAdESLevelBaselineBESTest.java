@@ -57,6 +57,7 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
@@ -107,6 +108,8 @@ public class XAdESLevelBaselineBESTest {
 		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
 		byte[] signatureValue = DSSUtils.encrypt(signatureAlgorithm.getJCEId(), privateKeyEntry.getPrivateKey(), dataToSign);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
+
+		assertTrue(MimeType.XML.equals(signedDocument.getMimeType()));
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
