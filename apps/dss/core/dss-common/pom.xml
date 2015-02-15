@@ -55,6 +55,7 @@
                                 <include>bindings.xjb.xml</include>
                             </bindingIncludes>
                             <specVersion>2.1</specVersion>
+                            <encoding>UTF-8</encoding>
                         </configuration>
                     </execution>
                 </executions>
