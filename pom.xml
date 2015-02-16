@@ -15,6 +15,7 @@
 		<module>apps/dss/core/dss-common</module>
 		<module>apps/dss/core/dss-service</module>
 		<module>apps/dss/core/dss-spi</module>
+		<module>apps/dss/core/dss-test</module>
 		<module>sscd-mocca-adapter</module>
 		<module>dss-webservices</module>
 		<module>dss-webservices-client</module>
