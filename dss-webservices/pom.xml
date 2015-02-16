@@ -6,10 +6,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-        <artifactId>sd-dss-app</artifactId>
-	    <version>4.3.1-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>4.3.1-SNAPSHOT</version>
     </parent>
 
     <name>DSS Web Services</name>

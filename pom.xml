@@ -12,8 +12,16 @@
 	<name>Digital Signature Services</name>
 
 	<modules>
-		<module>apps/dss</module>
-		<module>apps/sscd-mocca-adapter</module>
+        <module>apps/dss/core/dss-document</module>
+        <module>apps/dss/core/dss-common</module>
+        <module>apps/dss/core/dss-service</module>
+        <module>apps/dss/core/dss-spi</module>
+		<module>sscd-mocca-adapter</module>
+        <module>dss-webservices</module>
+        <module>dss-webservices-client</module>
+        <module>dss-demo-applet</module>
+        <module>dss-demo-applet-package</module>
+        <module>dss-demo-webapp</module>
 		<module>dss-package-ootb-webapp</module>
 	</modules>
 

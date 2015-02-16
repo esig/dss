@@ -7,9 +7,9 @@
 
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-		<artifactId>sd-dss-app</artifactId>
+		<artifactId>sd-dss</artifactId>
 		<version>4.3.1-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
+        <relativePath>../../../..</relativePath>
 	</parent>
 
 	<artifactId>dss-document</artifactId>

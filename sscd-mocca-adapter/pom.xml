@@ -5,10 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>sd-dss</artifactId>
-        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-	    <version>4.3.1-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>4.3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>sscd-mocca-adapter</artifactId>
