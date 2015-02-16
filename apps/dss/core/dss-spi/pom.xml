@@ -12,9 +12,9 @@
 		<relativePath>../..</relativePath>
 	</parent>
 
+	<artifactId>dss-spi</artifactId>
 	<name>DSS Service Provider Interface</name>
 	<description>DSS Service Provider Interface contains the contract interface shared between the applet and the server-side of DSS.</description>
-	<artifactId>dss-spi</artifactId>
 
 	<dependencies>
 		<dependency>

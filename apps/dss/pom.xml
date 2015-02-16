@@ -13,7 +13,6 @@
     </parent>
 
     <name>Organisational pom for the DSS application modules (core, webservices, demo)</name>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
     <artifactId>sd-dss-app</artifactId>
     <packaging>pom</packaging>
 

@@ -12,11 +12,10 @@
 		<relativePath>../..</relativePath>
 	</parent>
 
-	<name>DSS Demo: Web Application</name>
-	<description>DSS Demo: Web Application</description>
-	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>dss-demo-webapp</artifactId>
 	<packaging>war</packaging>
+	<name>DSS Demo: Web Application</name>
+	<description>DSS Demo: Web Application</description>
 
 	<build>
 		<plugins>

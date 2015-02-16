@@ -14,9 +14,7 @@
 
     <name>DSS Web Services</name>
     <description>DSS Web Services</description>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
     <artifactId>dss-webservices</artifactId>
-    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -49,4 +47,5 @@
             <version>2.7.12</version>
         </dependency>
     </dependencies>
+    
 </project>

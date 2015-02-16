@@ -13,10 +13,7 @@
     </parent>
 
     <name>DSS Common</name>
-    <description>DSS Common contains the code used in all other modules.</description>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
     <artifactId>dss-common</artifactId>
-    <packaging>jar</packaging>
 
     <build>
         <plugins>

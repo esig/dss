@@ -12,9 +12,8 @@
         <relativePath>../</relativePath>
     </parent>
 
-    <name>Organisational pom for the DSS demo web application</name>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
     <artifactId>dss-demo</artifactId>
+    <name>Organisational pom for the DSS demo web application</name>
     <packaging>pom</packaging>
 
     <modules>

@@ -1,11 +1,5 @@
-atlassian-ide-plugin.xml
-target
 .*
-.idea
-pom.xml.versionsBackup
-target
-.*
-*.log
 *.iml
-overlays
-
+.idea
+.svn
+target

@@ -13,7 +13,6 @@
     </parent>
 
     <name>Organisational pom for the DSS core components</name>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
     <artifactId>dss-core</artifactId>
     <packaging>pom</packaging>
 

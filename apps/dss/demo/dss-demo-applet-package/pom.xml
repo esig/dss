@@ -12,11 +12,9 @@
         <relativePath>../..</relativePath>
     </parent>
 
+    <artifactId>dss-demo-applet-package</artifactId>
     <name>DSS Demo: Applet Packaging</name>
     <description>DSS Demo: Applet Packaging</description>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-    <artifactId>dss-demo-applet-package</artifactId>
-    <packaging>jar</packaging>
 
     <build>
         <plugins>

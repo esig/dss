@@ -14,7 +14,6 @@
 
 	<name>DSS Web Services Client</name>
 	<description>DSS Web Services Client</description>
-	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>dss-webservices-client</artifactId>
-	<packaging>jar</packaging>
+
 </project>
