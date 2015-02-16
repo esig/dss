@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>4.3.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>dss-tsl-jaxb</artifactId>
+	<name>JAXB TSL Model</name>
+	<description>Generated source from XSD for TSL and XAdES.</description>
+
+	<profiles>
+		<profile>
+			<id>jaxb</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jvnet.jaxb2.maven2</groupId>
+						<artifactId>maven-jaxb2-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<schemaDirectory>src/main/xsd</schemaDirectory>
+									<schemaIncludes>
+										<schemaInclude>ts_sie_xsd.xsd</schemaInclude>
+										<schemaInclude>ts_additionaltypes_xsd.xsd</schemaInclude>
+										<schemaInclude>XAdESv141.xsd</schemaInclude>
+									</schemaIncludes>
+									<catalog>src/main/xsd/catalog.cat</catalog>
+									<bindingIncludes>
+										<include>bindings.xjb.xml</include>
+									</bindingIncludes>
+									<specVersion>2.1</specVersion>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

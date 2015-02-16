@@ -33,29 +33,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <schemaIncludes>
-                                <schemaInclude>ts_sie_xsd.xsd</schemaInclude>
-                                <schemaInclude>ts_additionaltypes_xsd.xsd</schemaInclude>
-                                <schemaInclude>XAdESv141.xsd</schemaInclude>
-                            </schemaIncludes>
-                            <catalog>src/main/resources/catalog.cat</catalog>
-                            <bindingIncludes>
-                                <include>bindings.xjb.xml</include>
-                            </bindingIncludes>
-                            <specVersion>2.1</specVersion>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
         <pluginManagement>
             <plugins>
@@ -103,6 +81,11 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
         </dependency>
-
+        <dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-tsl-jaxb</artifactId>
+			<version>4.3.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
+
 </project>

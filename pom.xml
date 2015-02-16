@@ -23,6 +23,7 @@
         <module>dss-demo-applet-package</module>
         <module>dss-demo-webapp</module>
 		<module>dss-package-ootb-webapp</module>
+		<module>dss-tsl-jaxb</module>
 	</modules>
 
 	<developers>
