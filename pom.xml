@@ -164,6 +164,9 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.12</version>
+					<configuration>
+						<testFailureIgnore>true</testFailureIgnore>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -178,7 +181,7 @@
 				<plugin>
 					<groupId>org.jvnet.jaxb2.maven2</groupId>
 					<artifactId>maven-jaxb2-plugin</artifactId>
-					<version>0.8.3</version>
+					<version>0.10.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -253,6 +256,12 @@
 				<artifactId>dss-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-test</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+			</dependency>
 			<!-- Public Dependencies -->
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
@@ -292,7 +301,7 @@
 			<dependency>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
 				<artifactId>maven-jaxb2-plugin</artifactId>
-				<version>0.7.5</version>
+				<version>0.10.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.swinglabs</groupId>
