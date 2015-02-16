@@ -1,8 +1,10 @@
-package eu.europa.ec.markt.dss.signature.asics;
+package eu.europa.ec.markt.dss.signature.asice;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import org.junit.Before;
 
@@ -23,7 +25,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 
-public class ASiCSLevelBTest extends AbstractTestSignature {
+public class ASiCELevelBInclusiveCanonicalizationTest extends AbstractTestSignature {
 
 	private DocumentSignatureService service;
 	private SignatureParameters signatureParameters;
@@ -42,7 +44,9 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
+		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
+		signatureParameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -66,7 +70,7 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
+		return MimeType.ASICE;
 	}
 
 	@Override

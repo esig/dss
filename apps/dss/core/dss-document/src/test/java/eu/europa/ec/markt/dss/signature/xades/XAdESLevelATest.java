@@ -1,29 +1,27 @@
-package eu.europa.ec.markt.dss.signature.asics;
+package eu.europa.ec.markt.dss.signature.xades;
 
-import static org.junit.Assert.assertEquals;
-
+import java.io.File;
 import java.util.Date;
 
 import org.junit.Before;
 
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
-import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
-import eu.europa.ec.markt.dss.signature.asic.ASiCService;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 
-public class ASiCSLevelBTest extends AbstractTestSignature {
+public class XAdESLevelATest extends AbstractTestSignature {
 
 	private DocumentSignatureService service;
 	private SignatureParameters signatureParameters;
@@ -32,26 +30,23 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
 
 		signatureParameters = new SignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_A);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new ASiCService(certificateVerifier);
-	}
+		service = new XAdESService(certificateVerifier);
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
 
-	@Override
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.XAdES_BASELINE_B.name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override
@@ -66,17 +61,17 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
+		return MimeType.XML;
 	}
 
 	@Override
 	protected boolean isBaselineT() {
-		return false;
+		return true;
 	}
 
 	@Override
 	protected boolean isBaselineLTA() {
-		return false;
+		return true;
 	}
 
 	@Override

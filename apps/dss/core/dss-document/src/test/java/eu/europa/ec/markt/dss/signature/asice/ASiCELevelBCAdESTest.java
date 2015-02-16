@@ -1,4 +1,4 @@
-package eu.europa.ec.markt.dss.signature.asics;
+package eu.europa.ec.markt.dss.signature.asice;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,9 +21,10 @@ import eu.europa.ec.markt.dss.signature.asic.ASiCService;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
+import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 
-public class ASiCSLevelBTest extends AbstractTestSignature {
+public class ASiCELevelBCAdESTest extends AbstractTestSignature {
 
 	private DocumentSignatureService service;
 	private SignatureParameters signatureParameters;
@@ -42,8 +43,9 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
@@ -51,7 +53,7 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.XAdES_BASELINE_B.name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_BASELINE_B.name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override
@@ -66,7 +68,7 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
+		return MimeType.ASICE;
 	}
 
 	@Override

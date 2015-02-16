@@ -1,3 +1,6 @@
-<root>
-	<hello />
-</root>
+<h:table xmlns:h="http://www.w3.org/TR/html4/">
+	<h:tr>
+		<h:td>Hello</h:td>
+		<h:td>World</h:td>
+	</h:tr>
+</h:table>

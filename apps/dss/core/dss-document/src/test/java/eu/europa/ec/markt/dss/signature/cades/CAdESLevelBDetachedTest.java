@@ -1,8 +1,8 @@
-package eu.europa.ec.markt.dss.signature.asics;
+package eu.europa.ec.markt.dss.signature.cades;
 
-import static org.junit.Assert.assertEquals;
-
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 
@@ -17,13 +17,13 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
-import eu.europa.ec.markt.dss.signature.asic.ASiCService;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
+import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
-public class ASiCSLevelBTest extends AbstractTestSignature {
+public class CAdESLevelBDetachedTest extends AbstractTestSignature {
 
 	private DocumentSignatureService service;
 	private SignatureParameters signatureParameters;
@@ -32,26 +32,33 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
 
 		signatureParameters = new SignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new ASiCService(certificateVerifier);
+		service = new CAdESService(certificateVerifier);
+
 	}
 
 	@Override
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.XAdES_BASELINE_B.name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	protected Reports getValidationReport(final DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		detachedContents.add(documentToSign);
+		validator.setDetachedContents(detachedContents);
+		Reports reports = validator.validateDocument();
+		return reports;
 	}
 
 	@Override
@@ -66,7 +73,7 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
+		return MimeType.PKCS7;
 	}
 
 	@Override

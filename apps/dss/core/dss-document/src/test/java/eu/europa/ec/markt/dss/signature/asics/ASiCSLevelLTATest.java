@@ -52,7 +52,7 @@ public class ASiCSLevelLTATest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected void checkSignatureLevel(SignatureLevel expectedSignatureLevel, DiagnosticData diagnosticData) {
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertEquals(SignatureLevel.XAdES_BASELINE_LTA.name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
