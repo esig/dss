@@ -11,11 +11,11 @@
 	<name>Digital Signature Services</name>
 
 	<modules>
-		<module>apps/dss/core/dss-document</module>
-		<module>apps/dss/core/dss-common</module>
-		<module>apps/dss/core/dss-service</module>
-		<module>apps/dss/core/dss-spi</module>
-		<module>apps/dss/core/dss-test</module>
+		<module>dss-document</module>
+		<module>dss-common</module>
+		<module>dss-service</module>
+		<module>dss-spi</module>
+		<module>dss-test</module>
 		<module>sscd-mocca-adapter</module>
 		<module>dss-webservices</module>
 		<module>dss-webservices-client</module>

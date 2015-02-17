@@ -9,7 +9,6 @@
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
 		<version>4.3.1-SNAPSHOT</version>
-        <relativePath>../../../..</relativePath>
     </parent>
 
     <artifactId>dss-service</artifactId>
