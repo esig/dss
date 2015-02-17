@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.mocca;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -43,7 +44,6 @@ import at.gv.egiz.smcc.SignatureCardException;
 import at.gv.egiz.smcc.SignatureCardFactory;
 import at.gv.egiz.smcc.util.SmartCardIO;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
@@ -53,7 +53,7 @@ import eu.europa.ec.markt.dss.signature.token.PasswordInputCallback;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 
 /**
- * @author bielecro
+ * 
  */
 @SuppressWarnings("restriction")
 public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
@@ -157,7 +157,7 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 	@Override
 	public byte[] sign(byte[] bytes, DigestAlgorithm digestAlgo, DSSPrivateKeyEntry keyEntry) throws DSSException {
 
-		final InputStream inputStream = DSSUtils.toInputStream(bytes);
+		final InputStream inputStream = new ByteArrayInputStream(bytes);
 		if (!(keyEntry instanceof MOCCAPrivateKeyEntry)) {
 
 			throw new DSSException("Unsupported DSSPrivateKeyEntry instance " + keyEntry.getClass() + " / Must be MOCCAPrivateKeyEntry.");

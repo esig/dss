@@ -21,14 +21,16 @@
 package eu.europa.ec.markt.dss.validation102853.asic;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -36,7 +38,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import eu.europa.ec.markt.dss.ASiCNamespaces;
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
@@ -79,10 +80,6 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
  * allowing more than 3 characters file extensions). In the case where the container content is to be handled
  * manually, the ".zip" extension may be used.
  * <p/>
- * DISCLAIMER: Project owner DG-MARKT.
- *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
  */
 public class ASiCContainerValidator extends SignedDocumentValidator {
 
@@ -308,7 +305,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			}
 			throw new DSSException(e);
 		} finally {
-			DSSUtils.closeQuietly(asicsInputStream);
+			IOUtils.closeQuietly(asicsInputStream);
 		}
 	}
 
@@ -325,29 +322,28 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		try {
 			final InputStream inputStream = mimeType.openStream();
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			DSSUtils.copy(inputStream, byteArrayOutputStream);
+			IOUtils.copy(inputStream, byteArrayOutputStream);
 			final String mimeTypeString = byteArrayOutputStream.toString("UTF-8");
 			final MimeType asicMimeType = MimeType.fromMimeTypeString(mimeTypeString);
 			return asicMimeType;
-		} catch (UnsupportedEncodingException e) {
-
+		} catch(IOException e) {
 			throw new DSSException(e);
 		}
 	}
 
-	private static DSSDocument addEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) {
+	private static DSSDocument addEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) throws IOException {
 
 		final ByteArrayOutputStream signature = new ByteArrayOutputStream();
-		DSSUtils.copy(asicsInputStream, signature);
+		IOUtils.copy(asicsInputStream, signature);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(signature.toByteArray(), entryName);
 		list.add(inMemoryDocument);
 		return inMemoryDocument;
 	}
 
-	private static void addAsicManifestEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) {
+	private static void addAsicManifestEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) throws IOException {
 
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		DSSUtils.copy(asicsInputStream, byteArrayOutputStream);
+		IOUtils.copy(asicsInputStream, byteArrayOutputStream);
 		final AsicManifestDocument inMemoryDocument = new AsicManifestDocument(byteArrayOutputStream.toByteArray(), entryName);
 		list.add(inMemoryDocument);
 	}
@@ -542,7 +538,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	@Override
 	public DSSDocument removeSignature(final String signatureId) throws DSSException {
 
-		if (DSSUtils.isBlank(signatureId)) {
+		if (StringUtils.isBlank(signatureId)) {
 			throw new DSSNullException(String.class, "signatureId");
 		}
 

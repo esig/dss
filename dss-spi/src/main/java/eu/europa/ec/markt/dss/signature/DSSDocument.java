@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.signature;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -29,9 +30,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * Interface representing a DSS document.
  *
- * @version $Revision: 2150 $ - $Date: 2013-05-29 21:01:18 +0200 (Wed, 29 May 2013) $
  */
-
 public interface DSSDocument extends Serializable {
 
 	/**
@@ -83,7 +82,7 @@ public interface DSSDocument extends Serializable {
 	 *
 	 * @param filePath the path to the file to be created
 	 */
-	public void save(final String filePath);
+	public void save(final String filePath) throws IOException;
 
 	/**
 	 * This method returns the encoded digest value of the current {@code DSSDocument} using the base64 algorithm.

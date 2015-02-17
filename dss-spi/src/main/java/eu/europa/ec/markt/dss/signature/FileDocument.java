@@ -21,6 +21,7 @@
 package eu.europa.ec.markt.dss.signature;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -31,9 +32,7 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
 /**
  * Document implementation stored on file-system.
  *
- * @version $Revision$ - $Date$
  */
-
 public class FileDocument extends CommonDocument {
 
 	private final File file;
@@ -101,7 +100,7 @@ public class FileDocument extends CommonDocument {
 	}
 
 	@Override
-	public void save(final String path) throws DSSException {
+	public void save(final String path) throws IOException {
 
 		final InputStream inputStream = openStream();
 		DSSUtils.saveToFile(inputStream, path);

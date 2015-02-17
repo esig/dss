@@ -19,16 +19,13 @@
  */
 package eu.europa.ec.markt.dss;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -59,7 +56,6 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,6 +72,8 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -320,48 +318,23 @@ public final class DSSUtils {
 		return digit;
 	}
 
-	/**
-	 * Decodes a Base64 String into bytes.
-	 *
-	 * @param base64String
-	 * @return
-	 */
+	@Deprecated
 	public static byte[] base64Decode(final String base64String) throws DSSException {
-
 		return Base64.decodeBase64(base64String);
 	}
 
-	/**
-	 * Decodes a Base64 String into bytes.
-	 *
-	 * @param binaryData
-	 * @return
-	 */
+	@Deprecated
 	public static byte[] base64Decode(final byte[] binaryData) {
-
 		return Base64.decodeBase64(binaryData);
 	}
 
-	/**
-	 * Encodes binary data using the base64 algorithm but does not chunk the output. NOTE: We changed the behaviour of
-	 * this method from multi-line chunking (commons-codec-1.4) to single-line non-chunking (commons-codec-1.5).
-	 *
-	 * @param binaryData
-	 * @return
-	 */
+	@Deprecated
 	public static String base64Encode(final byte[] binaryData) {
-
 		return Base64.encodeBase64String(binaryData);
 	}
 
-	/**
-	 * Encodes binary data using the base64 algorithm but does not chunk the output.
-	 *
-	 * @param binaryData
-	 * @return
-	 */
+	@Deprecated
 	public static byte[] base64BinaryEncode(final byte[] binaryData) {
-
 		return Base64.encodeBase64(binaryData);
 	}
 
@@ -372,7 +345,6 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static byte[] base64StringToBase64Binary(final String base64String) {
-
 		final byte[] decodedBase64 = Base64.decodeBase64(base64String);
 		final byte[] encodeBase64 = Base64.encodeBase64(decodedBase64);
 		return encodeBase64;
@@ -406,196 +378,34 @@ public final class DSSUtils {
 		}
 	}
 
-	/**
-	 * FROM: Apache IOUtils
-	 * Get the contents of an {@code InputStream} as a String
-	 * using the default character encoding of the platform.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a
-	 * {@code BufferedInputStream}.
-	 *
-	 * @param input the {@code InputStream} to read from
-	 * @return the requested String
-	 * @throws NullPointerException if the input is null
-	 * @throws DSSException         if an I/O error occurs
-	 */
-	public static String toString(InputStream input) throws DSSException {
-
-		StringWriter sw = new StringWriter();
-		copy(input, sw);
-		return sw.toString();
+	@Deprecated
+	public static String toString(InputStream input) throws IOException {
+		return IOUtils.toString(input);
 	}
 
-	/**
-	 * FROM: Apache IOUtils
-	 * Get the contents of an {@code InputStream} as a String using the specified character encoding.
-	 * <p/>
-	 * Character encoding names can be found at <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a {@code BufferedInputStream}.
-	 *
-	 * @param input    the {@code InputStream} to read from
-	 * @param encoding the encoding to use, null means platform default
-	 * @return the requested String
-	 * @throws NullPointerException if the input is null
-	 * @throws java.io.IOException  if an I/O error occurs
-	 */
-	public static String toString(InputStream input, String encoding) throws DSSException {
-
-		StringWriter sw = new StringWriter();
-		copy(input, sw, encoding);
-		return sw.toString();
+	@Deprecated
+	public static String toString(InputStream input, String encoding) throws IOException {
+		return IOUtils.toString(input, encoding);
 	}
 
-	/**
-	 * FROM: Apache IOUtils
-	 * Copy bytes from an {@code InputStream} to chars on a {@code Writer} using the specified character
-	 * encoding.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a {@code BufferedInputStream}.
-	 * <p/>
-	 * Character encoding names can be found at <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
-	 * <p/>
-	 * This method uses {@link java.io.InputStreamReader}.
-	 *
-	 * @param input    the {@code InputStream} to read from
-	 * @param output   the {@code Writer} to write to
-	 * @param encoding the encoding to use, null means platform default
-	 * @throws DSSException if the input or output is null
-	 * @since Commons IO 1.1
-	 */
-	public static void copy(InputStream input, Writer output, String encoding) throws DSSException {
-		try {
-			if (encoding == null) {
-				copy(input, output);
-			} else {
-				InputStreamReader in = new InputStreamReader(input, encoding);
-				copy(in, output);
-			}
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+	@Deprecated
+	public static void copy(InputStream input, Writer output, String encoding) throws IOException {
+		IOUtils.copy(input, output, encoding);
 	}
 
-	public static void copy(InputStream input, Writer output) throws DSSException {
-
-		InputStreamReader in = new InputStreamReader(input);
-		copy(in, output);
+	@Deprecated
+	public static void copy(InputStream input, Writer output) throws IOException {
+		IOUtils.copy(input, output);
 	}
 
-	/**
-	 * FROM: Apache IOUtils
-	 * Copy chars from a {@code Reader} to a {@code Writer}.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a {@code BufferedReader}.
-	 * <p/>
-	 * Large streams (over 2GB) will return a chars copied value of {@code -1} after the copy has completed since
-	 * the correct number of chars cannot be returned as an int. For large streams use the
-	 * {@code copyLarge(Reader, Writer)} method.
-	 *
-	 * @param input  the {@code Reader} to read from
-	 * @param output the {@code Writer} to write to
-	 * @return the number of characters copied
-	 * @throws NullPointerException if the input or output is null
-	 * @throws java.io.IOException  if an I/O error occurs
-	 * @throws ArithmeticException  if the character count is too large
-	 * @since Commons IO 1.1
-	 */
-	public static int copy(Reader input, Writer output) throws DSSException {
-
-		long count = copyLarge(input, output);
-		if (count > Integer.MAX_VALUE) {
-			return -1;
-		}
-		return (int) count;
+	@Deprecated
+	public static int copy(Reader input, Writer output) throws IOException {
+		return IOUtils.copy(input, output);
 	}
 
-	/**
-	 * FROM: Apache IOUtils
-	 * Copy chars from a large (over 2GB) {@code Reader} to a {@code Writer}.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a {@code BufferedReader}.
-	 *
-	 * @param input  the {@code Reader} to read from
-	 * @param output the {@code Writer} to write to
-	 * @return the number of characters copied
-	 * @throws NullPointerException if the input or output is null
-	 * @throws java.io.IOException  if an I/O error occurs
-	 * @since Commons IO 1.3
-	 */
-	private static long copyLarge(Reader input, Writer output) throws DSSException {
-		try {
-			char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-			long count = 0;
-			int n = 0;
-			while (-1 != (n = input.read(buffer))) {
-				output.write(buffer, 0, n);
-				count += n;
-			}
-			return count;
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * FROM: Apache IOUtils
-	 * Copy bytes from an {@code InputStream} to an
-	 * {@code OutputStream}.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a
-	 * {@code BufferedInputStream}.
-	 * <p/>
-	 * Large streams (over 2GB) will return a bytes copied value of
-	 * {@code -1} after the copy has completed since the correct
-	 * number of bytes cannot be returned as an int. For large streams
-	 * use the {@code copyLarge(InputStream, OutputStream)} method.
-	 *
-	 * @param input  the {@code InputStream} to read from
-	 * @param output the {@code OutputStream} to write to
-	 * @return the number of bytes copied
-	 * @throws NullPointerException if the input or output is null
-	 * @throws DSSException         if an I/O error occurs
-	 * @throws ArithmeticException  if the byte count is too large
-	 * @since Commons IO 1.1
-	 */
-	public static int copy(final InputStream input, final OutputStream output) throws DSSException {
-		long count = copyLarge(input, output);
-		if (count > Integer.MAX_VALUE) {
-			return -1;
-		}
-		return (int) count;
-	}
-
-	/**
-	 * FROM: Apache IOUtils
-	 * Copy bytes from a large (over 2GB) {@code InputStream} to an
-	 * {@code OutputStream}.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a
-	 * {@code BufferedInputStream}.
-	 *
-	 * @param input  the {@code InputStream} to read from
-	 * @param output the {@code OutputStream} to write to
-	 * @return the number of bytes copied
-	 * @throws NullPointerException if the input or output is null
-	 * @throws DSSException         if an I/O error occurs
-	 * @since Commons IO 1.3
-	 */
-	private static long copyLarge(InputStream input, OutputStream output) throws DSSException {
-
-		try {
-			byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-			long count = 0;
-			int n = 0;
-			while (-1 != (n = input.read(buffer))) {
-				output.write(buffer, 0, n);
-				count += n;
-			}
-			return count;
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+	@Deprecated
+	public static int copy(final InputStream input, final OutputStream output) throws IOException {
+		return IOUtils.copy(input, output);
 	}
 
 	/**
@@ -990,9 +800,9 @@ public final class DSSUtils {
 	 * @param inputStream
 	 * @return
 	 */
-	public static String getSHA1Digest(final InputStream inputStream) {
+	public static String getSHA1Digest(final InputStream inputStream) throws IOException {
 
-		final byte[] bytes = DSSUtils.toByteArray(inputStream);
+		final byte[] bytes = IOUtils.toByteArray(inputStream);
 		final byte[] digest = getMessageDigest(DigestAlgorithm.SHA1).digest(bytes);
 		return Hex.encodeHexString(digest);
 	}
@@ -1105,6 +915,7 @@ public final class DSSUtils {
 	 * @param stream                 the data to digest
 	 * @return digested and encrypted array of bytes
 	 */
+	@Deprecated
 	public static byte[] encrypt(final String javaSignatureAlgorithm, final PrivateKey privateKey, final InputStream stream) {
 
 		try {
@@ -1145,6 +956,7 @@ public final class DSSUtils {
 	 * @param bytes                  the data to digest
 	 * @return digested and encrypted array of bytes
 	 */
+	@Deprecated
 	public static byte[] encrypt(final String javaSignatureAlgorithm, final PrivateKey privateKey, final byte[] bytes) {
 
 		try {
@@ -1218,9 +1030,6 @@ public final class DSSUtils {
 	public static DigestCalculator getSHA1DigestCalculator() throws DSSException {
 
 		try {
-			// final ASN1ObjectIdentifier oid = DigestAlgorithm.SHA1.getOid();
-			// final DigestCalculator digestCalculator = digestCalculatorProvider.get(new AlgorithmIdentifier(oid));
-
 			final DigestCalculatorProvider digestCalculatorProvider = jcaDigestCalculatorProviderBuilder.build();
 			final DigestCalculator digestCalculator = digestCalculatorProvider.get(CertificateID.HASH_SHA1);
 			return digestCalculator;
@@ -1235,6 +1044,7 @@ public final class DSSUtils {
 	 * @param cert certificate
 	 * @return encoded array of bytes
 	 */
+	@Deprecated
 	public static byte[] getEncoded(final X509Certificate cert) {
 
 		try {
@@ -1251,6 +1061,7 @@ public final class DSSUtils {
 	 * @param timeStamp {@code TimeStampToken}
 	 * @return encoded array of bytes
 	 */
+	@Deprecated
 	public static byte[] getEncoded(final TimeStampToken timeStamp) {
 
 		try {
@@ -1322,18 +1133,6 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * This method returns the {@code InputStream} which does not need to be closed, based on {@code ByteArrayInputStream}.
-	 *
-	 * @param bytes An array of {@code byte} to convert to {@code InputStream}
-	 * @return the {@code InputStream} based on {@code ByteArrayInputStream}
-	 */
-	public static InputStream toInputStream(byte[] bytes) {
-
-		final InputStream inputStream = new ByteArrayInputStream(bytes);
-		return inputStream;
 	}
 
 	/**
@@ -1427,7 +1226,7 @@ public final class DSSUtils {
 		InputStream in = null;
 		try {
 			in = openInputStream(file);
-			return toByteArray_(in);
+			return IOUtils.toByteArray(in);
 		} finally {
 			closeQuietly(in);
 		}
@@ -1479,35 +1278,11 @@ public final class DSSUtils {
 			throw new DSSNullException(InputStream.class);
 		}
 		try {
-			final byte[] bytes = toByteArray_(inputStream);
+			final byte[] bytes = IOUtils.toByteArray(inputStream);
 			return bytes;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * FROM: Apache
-	 * Get the contents of an {@code InputStream} as a {@code byte[]}.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a
-	 * {@code BufferedInputStream}.
-	 *
-	 * @param input the {@code InputStream} to read from
-	 * @return the requested byte array
-	 * @throws NullPointerException if the input is null
-	 * @throws IOException          if an I/O error occurs
-	 */
-	private static byte[] toByteArray_(InputStream input) throws IOException {
-
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		copy(input, output);
-		return output.toByteArray();
-	}
-
-	public static byte[] toByteArray(final String string) {
-
-		return string.getBytes();
 	}
 
 	public static String toString(final byte[] bytes) {
@@ -1548,11 +1323,11 @@ public final class DSSUtils {
 	 * @param inputStream {@code InputStream} to save
 	 * @param path        the path to the file to be created
 	 */
-	public static void saveToFile(final InputStream inputStream, final String path) {
+	public static void saveToFile(final InputStream inputStream, final String path) throws IOException {
 
 		final FileOutputStream fileOutputStream = toFileOutputStream(path);
-		copy(inputStream, fileOutputStream);
-		closeQuietly(fileOutputStream);
+		IOUtils.copy(inputStream, fileOutputStream);
+		IOUtils.closeQuietly(fileOutputStream);
 	}
 
 	/**
@@ -1677,118 +1452,30 @@ public final class DSSUtils {
 			file.delete();
 		}
 	}
-	// Apache String Utils
 
-	/**
-	 * <p>Checks if a String is empty ("") or null.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.isEmpty(null)      = true
-	 * DSSUtils.isEmpty("")        = true
-	 * DSSUtils.isEmpty(" ")       = false
-	 * DSSUtils.isEmpty("bob")     = false
-	 * DSSUtils.isEmpty("  bob  ") = false
-	 * </pre>
-	 * <p/>
-	 * <p>NOTE: This method changed in Lang version 2.0.
-	 * It no longer trims the String.
-	 * That functionality is available in isBlank().</p>
-	 *
-	 * @param str the String to check, may be null
-	 * @return {@code true} if the String is empty or null
-	 */
+	@Deprecated
 	public static boolean isEmpty(String str) {
-		return str == null || str.length() == 0;
+		return StringUtils.isEmpty(str);
 	}
 
-	/**
-	 * <p>Checks if a String is not empty ("") and not null.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.isNotEmpty(null)      = false
-	 * DSSUtils.isNotEmpty("")        = false
-	 * DSSUtils.isNotEmpty(" ")       = true
-	 * DSSUtils.isNotEmpty("bob")     = true
-	 * DSSUtils.isNotEmpty("  bob  ") = true
-	 * </pre>
-	 *
-	 * @param str the String to check, may be null
-	 * @return {@code true} if the String is not empty and not null
-	 */
+	@Deprecated
 	public static boolean isNotEmpty(String str) {
-		return !isEmpty(str);
+		return StringUtils.isNotEmpty(str);
 	}
 
-	/**
-	 * <p>Compares two Strings, returning {@code true} if they are equal.</p>
-	 * <p/>
-	 * <p>{@code null}s are handled without exceptions. Two {@code null}
-	 * references are considered to be equal. The comparison is case sensitive.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.equals(null, null)   = true
-	 * DSSUtils.equals(null, "abc")  = false
-	 * DSSUtils.equals("abc", null)  = false
-	 * DSSUtils.equals("abc", "abc") = true
-	 * DSSUtils.equals("abc", "ABC") = false
-	 * </pre>
-	 *
-	 * @param str1 the first String, may be null
-	 * @param str2 the second String, may be null
-	 * @return {@code true} if the Strings are equal, case sensitive, or
-	 * both {@code null}
-	 * @see java.lang.String#equals(Object)
-	 */
+	@Deprecated
 	public static boolean equals(String str1, String str2) {
-		return str1 == null ? str2 == null : str1.equals(str2);
+		return StringUtils.equals(str1, str2);
 	}
 
-	/**
-	 * <p>Checks if a String is whitespace, empty ("") or null.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.isBlank(null)      = true
-	 * DSSUtils.isBlank("")        = true
-	 * DSSUtils.isBlank(" ")       = true
-	 * DSSUtils.isBlank("bob")     = false
-	 * DSSUtils.isBlank("  bob  ") = false
-	 * </pre>
-	 *
-	 * @param str the String to check, may be null
-	 * @return {@code true} if the String is null, empty or whitespace
-	 * @since 2.0
-	 */
+	@Deprecated
 	public static boolean isBlank(String str) {
-		int strLen;
-		if (str == null || (strLen = str.length()) == 0) {
-			return true;
-		}
-		for (int i = 0; i < strLen; i++) {
-			if ((Character.isWhitespace(str.charAt(i)) == false)) {
-				return false;
-			}
-		}
-		return true;
+		return StringUtils.isBlank(str);
 	}
 
-	/**
-	 * <p>Checks if a String is not empty (""), not null and not whitespace only.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.isNotBlank(null)      = false
-	 * DSSUtils.isNotBlank("")        = false
-	 * DSSUtils.isNotBlank(" ")       = false
-	 * DSSUtils.isNotBlank("bob")     = true
-	 * DSSUtils.isNotBlank("  bob  ") = true
-	 * </pre>
-	 *
-	 * @param str the String to check, may be null
-	 * @return {@code true} if the String is
-	 * not empty and not null and not whitespace
-	 * @since 2.0
-	 */
+	@Deprecated
 	public static boolean isNotBlank(String str) {
-		return !isBlank(str);
+		return StringUtils.isNotBlank(str);
 	}
 
 	// Apache Collection Utils
@@ -1857,453 +1544,69 @@ public final class DSSUtils {
 		return INDEX_NOT_FOUND;
 	}
 
-	/**
-	 * Unconditionally close an {@code OutputStream}.
-	 * <p/>
-	 * Equivalent to {@link OutputStream#close()}, except any exceptions will be ignored.
-	 * This is typically used in finally blocks.
-	 *
-	 * @param output the OutputStream to close, may be null or already closed
-	 */
+	@Deprecated
 	public static void closeQuietly(OutputStream output) {
-		try {
-			if (output != null) {
-				output.close();
-			}
-		} catch (IOException ioe) {
-			// ignore
-		}
+		IOUtils.closeQuietly(output);
 	}
 
-	/**
-	 * Unconditionally close an {@code InputStream}.
-	 * <p/>
-	 * Equivalent to {@link InputStream#close()}, except any exceptions will be ignored.
-	 * This is typically used in finally blocks.
-	 *
-	 * @param input the InputStream to close, may be null or already closed
-	 */
+	@Deprecated
 	public static void closeQuietly(final InputStream input) {
-		try {
-			if (input != null) {
-				input.close();
-			}
-		} catch (IOException ioe) {
-			// ignore
-		}
+		IOUtils.closeQuietly(input);
 	}
 
-	/**
-	 * Unconditionally close an {@code Reader}.
-	 * <p/>
-	 * Equivalent to {@link Reader#close()}, except any exceptions will be ignored.
-	 * This is typically used in finally blocks.
-	 *
-	 * @param input the Reader to close, may be null or already closed
-	 */
+	@Deprecated
 	public static void closeQuietly(Reader input) {
-		try {
-			if (input != null) {
-				input.close();
-			}
-		} catch (IOException ioe) {
-			// ignore
-		}
+		IOUtils.closeQuietly(input);
 	}
 
-	/**
-	 * Unconditionally close a {@code Writer}.
-	 * <p/>
-	 * Equivalent to {@link Writer#close()}, except any exceptions will be ignored.
-	 * This is typically used in finally blocks.
-	 *
-	 * @param output the Writer to close, may be null or already closed
-	 */
+	@Deprecated
 	public static void closeQuietly(Writer output) {
-		try {
-			if (output != null) {
-				output.close();
-			}
-		} catch (IOException ioe) {
-			// ignore
-		}
+		IOUtils.closeQuietly(output);
 	}
 
-	/**
-	 * Get the contents of an {@code InputStream} as a list of Strings,
-	 * one entry per line, using the default character encoding of the platform.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a
-	 * {@code BufferedInputStream}.
-	 *
-	 * @param input the {@code InputStream} to read from, not null
-	 * @return the list of Strings, never null
-	 * @throws NullPointerException if the input is null
-	 * @throws DSSException         if an I/O error occurs
-	 * @since Commons IO 1.1
-	 */
-	public static List readLines(InputStream input) throws DSSException {
-		InputStreamReader reader = new InputStreamReader(input);
-		return readLines(reader);
+	@Deprecated
+	public static List readLines(InputStream input) throws IOException {
+		return IOUtils.readLines(input);
 	}
 
-	/**
-	 * Get the contents of a {@code Reader} as a list of Strings,
-	 * one entry per line.
-	 * <p/>
-	 * This method buffers the input internally, so there is no need to use a
-	 * {@code BufferedReader}.
-	 *
-	 * @param input the {@code Reader} to read from, not null
-	 * @return the list of Strings, never null
-	 * @throws NullPointerException if the input is null
-	 * @throws DSSException         if an I/O error occurs
-	 * @since Commons IO 1.1
-	 */
-	public static List readLines(Reader input) throws DSSException {
-
-		try {
-			BufferedReader reader = new BufferedReader(input);
-			List list = new ArrayList();
-			String line = reader.readLine();
-			while (line != null) {
-				list.add(line);
-				line = reader.readLine();
-			}
-			return list;
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+	@Deprecated
+	public static List readLines(Reader input) throws IOException {
+		return IOUtils.readLines(input);
 	}
 
-	/**
-	 * <p>Joins the elements of the provided array into a single String
-	 * containing the provided list of elements.</p>
-	 * <p/>
-	 * <p>No delimiter is added before or after the list.
-	 * A {@code null} separator is the same as an empty String ("").
-	 * Null objects or empty strings within the array are represented by
-	 * empty strings.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.join(null, *)                = null
-	 * DSSUtils.join([], *)                  = ""
-	 * DSSUtils.join([null], *)              = ""
-	 * DSSUtils.join(["a", "b", "c"], "--")  = "a--b--c"
-	 * DSSUtils.join(["a", "b", "c"], null)  = "abc"
-	 * DSSUtils.join(["a", "b", "c"], "")    = "abc"
-	 * DSSUtils.join([null, "", "a"], ',')   = ",,a"
-	 * </pre>
-	 *
-	 * @param array     the array of values to join together, may be null
-	 * @param separator the separator character to use, null treated as ""
-	 * @return the joined String, {@code null} if null array input
-	 */
+	@Deprecated
 	public static String join(Object[] array, String separator) {
-		if (array == null) {
-			return null;
-		}
-		return join(array, separator, 0, array.length);
+		return StringUtils.join(array, separator);
 	}
 
-	/**
-	 * <p>Joins the elements of the provided {@code Collection} into
-	 * a single String containing the provided elements.</p>
-	 * <p/>
-	 * <p>No delimiter is added before or after the list.
-	 * A {@code null} separator is the same as an empty String ("").</p>
-	 * <p/>
-	 * <p>See the examples here: {@link #join(Object[], String)}. </p>
-	 *
-	 * @param collection the {@code Collection} of values to join together, may be null
-	 * @param separator  the separator character to use, null treated as ""
-	 * @return the joined String, {@code null} if null iterator input
-	 * @since 2.3
-	 */
+	@Deprecated
 	public static String join(Collection collection, String separator) {
-		if (collection == null) {
-			return null;
-		}
-		return join(collection.iterator(), separator);
+		return StringUtils.join(collection, separator);
 	}
 
-	/**
-	 * <p>Joins the elements of the provided {@code Iterator} into
-	 * a single String containing the provided elements.</p>
-	 * <p/>
-	 * <p>No delimiter is added before or after the list.
-	 * A {@code null} separator is the same as an empty String ("").</p>
-	 * <p/>
-	 * <p>See the examples here: {@link #join(Object[], String)}. </p>
-	 *
-	 * @param iterator  the {@code Iterator} of values to join together, may be null
-	 * @param separator the separator character to use, null treated as ""
-	 * @return the joined String, {@code null} if null iterator input
-	 */
+	@Deprecated
 	public static String join(Iterator iterator, String separator) {
-
-		// handle null, zero and one elements before building a buffer
-		if (iterator == null) {
-			return null;
-		}
-		if (!iterator.hasNext()) {
-			return EMPTY;
-		}
-		Object first = iterator.next();
-		if (!iterator.hasNext()) {
-			return toString(first);
-		}
-
-		// two or more elements
-		StringBuilder buf = new StringBuilder(256); // Java default is 16, probably too small
-		if (first != null) {
-			buf.append(first);
-		}
-
-		while (iterator.hasNext()) {
-			if (separator != null) {
-				buf.append(separator);
-			}
-			Object obj = iterator.next();
-			if (obj != null) {
-				buf.append(obj);
-			}
-		}
-		return buf.toString();
+		return StringUtils.join(iterator, separator);
 	}
 
-	/**
-	 * <p>Joins the elements of the provided array into a single String
-	 * containing the provided list of elements.</p>
-	 * <p/>
-	 * <p>No delimiter is added before or after the list.
-	 * A {@code null} separator is the same as an empty String ("").
-	 * Null objects or empty strings within the array are represented by
-	 * empty strings.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.join(null, *)                = null
-	 * DSSUtils.join([], *)                  = ""
-	 * DSSUtils.join([null], *)              = ""
-	 * DSSUtils.join(["a", "b", "c"], "--")  = "a--b--c"
-	 * DSSUtils.join(["a", "b", "c"], null)  = "abc"
-	 * DSSUtils.join(["a", "b", "c"], "")    = "abc"
-	 * DSSUtils.join([null, "", "a"], ',')   = ",,a"
-	 * </pre>
-	 *
-	 * @param array      the array of values to join together, may be null
-	 * @param separator  the separator character to use, null treated as ""
-	 * @param startIndex the first index to start joining from.  It is
-	 *                   an error to pass in an end index past the end of the array
-	 * @param endIndex   the index to stop joining from (exclusive). It is
-	 *                   an error to pass in an end index past the end of the array
-	 * @return the joined String, {@code null} if null array input
-	 */
+	@Deprecated
 	public static String join(Object[] array, String separator, int startIndex, int endIndex) {
-		if (array == null) {
-			return null;
-		}
-		if (separator == null) {
-			separator = EMPTY;
-		}
-
-		// endIndex - startIndex > 0:   Len = NofStrings *(len(firstString) + len(separator))
-		//           (Assuming that all Strings are roughly equally long)
-		int bufSize = (endIndex - startIndex);
-		if (bufSize <= 0) {
-			return EMPTY;
-		}
-
-		bufSize *= ((array[startIndex] == null ? 16 : array[startIndex].toString().length()) + separator.length());
-
-		StringBuilder buf = new StringBuilder(bufSize);
-
-		for (int ii = startIndex; ii < endIndex; ii++) {
-			if (ii > startIndex) {
-				buf.append(separator);
-			}
-			if (array[ii] != null) {
-				buf.append(array[ii]);
-			}
-		}
-		return buf.toString();
+		return StringUtils.join(array, separator, startIndex, endIndex);
 	}
 
-	/**
-	 * <p>Gets the substring before the last occurrence of a separator.
-	 * The separator is not returned.</p>
-	 * <p/>
-	 * <p>A {@code null} string input will return {@code null}.
-	 * An empty ("") string input will return the empty string.
-	 * An empty or {@code null} separator will return the input string.</p>
-	 * <p/>
-	 * <p>If nothing is found, the string input is returned.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.substringBeforeLast(null, *)      = null
-	 * DSSUtils.substringBeforeLast("", *)        = ""
-	 * DSSUtils.substringBeforeLast("abcba", "b") = "abc"
-	 * DSSUtils.substringBeforeLast("abc", "c")   = "ab"
-	 * DSSUtils.substringBeforeLast("a", "a")     = ""
-	 * DSSUtils.substringBeforeLast("a", "z")     = "a"
-	 * DSSUtils.substringBeforeLast("a", null)    = "a"
-	 * DSSUtils.substringBeforeLast("a", "")      = "a"
-	 * </pre>
-	 *
-	 * @param str       the String to get a substring from, may be null
-	 * @param separator the String to search for, may be null
-	 * @return the substring before the last occurrence of the separator,
-	 * {@code null} if null String input
-	 * @since 2.0
-	 */
+	@Deprecated
 	public static String substringBeforeLast(String str, String separator) {
-		if (isEmpty(str) || isEmpty(separator)) {
-			return str;
-		}
-		int pos = str.lastIndexOf(separator);
-		if (pos == INDEX_NOT_FOUND) {
-			return str;
-		}
-		return str.substring(0, pos);
+		return StringUtils.substringBeforeLast(str, separator);
 	}
 
-	/**
-	 * <p>Gets the substring after the last occurrence of a separator.
-	 * The separator is not returned.</p>
-	 * <p/>
-	 * <p>A {@code null} string input will return {@code null}.
-	 * An empty ("") string input will return the empty string.
-	 * An empty or {@code null} separator will return the empty string if
-	 * the input string is not {@code null}.</p>
-	 * <p/>
-	 * <p>If nothing is found, the empty string is returned.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.substringAfterLast(null, *)      = null
-	 * DSSUtils.substringAfterLast("", *)        = ""
-	 * DSSUtils.substringAfterLast(*, "")        = ""
-	 * DSSUtils.substringAfterLast(*, null)      = ""
-	 * DSSUtils.substringAfterLast("abc", "a")   = "bc"
-	 * DSSUtils.substringAfterLast("abcba", "b") = "a"
-	 * DSSUtils.substringAfterLast("abc", "c")   = ""
-	 * DSSUtils.substringAfterLast("a", "a")     = ""
-	 * DSSUtils.substringAfterLast("a", "z")     = ""
-	 * </pre>
-	 *
-	 * @param str       the String to get a substring from, may be null
-	 * @param separator the String to search for, may be null
-	 * @return the substring after the last occurrence of the separator,
-	 * {@code null} if null String input
-	 * @since 2.0
-	 */
+	@Deprecated
 	public static String substringAfterLast(String str, String separator) {
-		if (isEmpty(str)) {
-			return str;
-		}
-		if (isEmpty(separator)) {
-			return EMPTY;
-		}
-		int pos = str.lastIndexOf(separator);
-		if (pos == INDEX_NOT_FOUND || pos == (str.length() - separator.length())) {
-			return EMPTY;
-		}
-		return str.substring(pos + separator.length());
+		return StringUtils.substringAfterLast(str, separator);
 	}
 
-	/**
-	 * <p>Repeat a String {@code repeat} times to form a
-	 * new String.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.repeat(null, 2) = null
-	 * DSSUtils.repeat("", 0)   = ""
-	 * DSSUtils.repeat("", 2)   = ""
-	 * DSSUtils.repeat("a", 3)  = "aaa"
-	 * DSSUtils.repeat("ab", 2) = "abab"
-	 * DSSUtils.repeat("a", -2) = ""
-	 * </pre>
-	 *
-	 * @param str    the String to repeat, may be null
-	 * @param repeat number of times to repeat str, negative treated as zero
-	 * @return a new String consisting of the original String repeated,
-	 * {@code null} if null String input
-	 */
+	@Deprecated
 	public static String repeat(String str, int repeat) {
-		// Performance tuned for 2.0 (JDK1.4)
-
-		if (str == null) {
-			return null;
-		}
-		if (repeat <= 0) {
-			return EMPTY;
-		}
-		int inputLength = str.length();
-		if (repeat == 1 || inputLength == 0) {
-			return str;
-		}
-		if (inputLength == 1 && repeat <= PAD_LIMIT) {
-			return padding(repeat, str.charAt(0));
-		}
-
-		int outputLength = inputLength * repeat;
-		switch (inputLength) {
-			case 1:
-				char ch = str.charAt(0);
-				char[] output1 = new char[outputLength];
-				for (int i = repeat - 1; i >= 0; i--) {
-					output1[i] = ch;
-				}
-				return new String(output1);
-			case 2:
-				char ch0 = str.charAt(0);
-				char ch1 = str.charAt(1);
-				char[] output2 = new char[outputLength];
-				for (int i = repeat * 2 - 2; i >= 0; i--, i--) {
-					output2[i] = ch0;
-					output2[i + 1] = ch1;
-				}
-				return new String(output2);
-			default:
-				StringBuilder buf = new StringBuilder(outputLength);
-				for (int i = 0; i < repeat; i++) {
-					buf.append(str);
-				}
-				return buf.toString();
-		}
-	}
-
-	/**
-	 * <p>Returns padding using the specified delimiter repeated
-	 * to a given length.</p>
-	 * <p/>
-	 * <pre>
-	 * DSSUtils.padding(0, 'e')  = ""
-	 * DSSUtils.padding(3, 'e')  = "eee"
-	 * DSSUtils.padding(-2, 'e') = IndexOutOfBoundsException
-	 * </pre>
-	 * <p/>
-	 * <p>Note: this method doesn't not support padding with
-	 * <a href="http://www.unicode.org/glossary/#supplementary_character">Unicode Supplementary Characters</a>
-	 * as they require a pair of {@code char}s to be represented.
-	 * If you are needing to support full I18N of your applications
-	 * consider using {@link #repeat(String, int)} instead.
-	 * </p>
-	 *
-	 * @param repeat  number of times to repeat delim
-	 * @param padChar character to repeat
-	 * @return String with repeated character
-	 * @throws DSSException if {@code repeat &lt; 0}
-	 * @see #repeat(String, int)
-	 */
-	private static String padding(int repeat, char padChar) throws DSSException {
-		if (repeat < 0) {
-			throw new DSSException("Cannot pad a negative amount: " + repeat);
-		}
-		final char[] buf = new char[repeat];
-		for (int i = 0; i < buf.length; i++) {
-			buf[i] = padChar;
-		}
-		return new String(buf);
+		return StringUtils.repeat(str, repeat);
 	}
 
 	/**
@@ -2323,7 +1626,6 @@ public final class DSSUtils {
 	 * @since 2.0
 	 */
 	public static String toString(Object obj) {
-
 		return obj == null ? "" : obj.toString();
 	}
 
@@ -3023,7 +2325,6 @@ public final class DSSUtils {
 	 * @return the new {@code byte} array
 	 */
 	public static byte[] concatenate(byte[]... arrays) {
-
 		if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
 			return null;
 		}

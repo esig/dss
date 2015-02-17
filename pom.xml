@@ -281,6 +281,11 @@
 				<version>2.6</version>
 			</dependency>
 			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>3.1</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>
@@ -489,6 +494,13 @@
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.4</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
