@@ -402,11 +402,8 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 		final TrustStatusList lotl = loadLotl();
 		final int size = lotl.getOtherTSLPointers().size();
-		//        final ExecutorService executorService = Executors.newFixedThreadPool(size);
-		//        List<Future> futures = new ArrayList<Future>(size);
+
 		for (final PointerToOtherTSL pointerToTSL : lotl.getOtherTSLPointers()) {
-			//            Runnable runnable = new Runnable() {
-			//                public void run() {
 
 			final String url = pointerToTSL.getTslLocation();
 			final String territory = pointerToTSL.getTerritory();
@@ -416,24 +413,10 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 				loadTSL(url, territory, signingCertList);
 			} catch (DSSException e) {
 				LOG.error("Error loading trusted list for {} at {}", new Object[]{territory, url, e});
-				// do nothing continue with the next trusted list.
 			}
 
-			//                }
-			//            };
-			//            final Future submit = executorService.submit(runnable);
-			//            futures.add(submit);
 		}
 
-		//        executorService.shutdown();
-		//        while (!executorService.isTerminated()){
-		//            try {
-		//                Thread.sleep(100);
-		//            } catch (InterruptedException e) {
-		//                throw new RuntimeException(e);
-		//            }
-		//        }
-		//        LOG.info("Parallel download of Trusted list done");
 		loadAdditionalLists();
 		LOG.info("Loading completed: {} trusted lists", size);
 		LOG.info("                 : {} certificates", certPool.getNumberOfCertificates());

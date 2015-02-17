@@ -29,11 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -54,13 +50,8 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OCSPSource;
 /**
  * During the validation of a signature, the software retrieves different X509 artifacts like Certificate, CRL and OCSP Response. The SignatureValidationContext is a "cache" for
  * one validation request that contains every object retrieved so far.
- * <p/>
- * The validate method is multi-threaded, using an CachedThreadPool from ExecutorService, to parallelize fetching of the certificates from AIA and of the revocation information
- * from online sources.
  *
- * @version $Revision: 1839 $ - $Date: 2013-04-04 17:40:51 +0200 (Thu, 04 Apr 2013) $
  */
-
 public class SignatureValidationContext implements ValidationContext {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureValidationContext.class);
@@ -74,8 +65,6 @@ public class SignatureValidationContext implements ValidationContext {
 	private final Set<RevocationToken> processedRevocations = new HashSet<RevocationToken>();
 
 	private final Set<TimestampToken> processedTimestamps = new HashSet<TimestampToken>();
-
-	static int threadCount = 0;
 
 	/**
 	 * The data loader used to access AIA certificate source.
@@ -108,12 +97,6 @@ public class SignatureValidationContext implements ValidationContext {
 	 * This is the time at what the validation is carried out. It is used only for test purpose.
 	 */
 	protected Date currentTime = new Date();
-
-	/**
-	 * A unique thread can be used to disable the parallel fetching:
-	 */
-	//	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
-	private final ExecutorService executorService = Executors.newCachedThreadPool();
 
 	/**
 	 * This constructor is used during the signature creation process. The certificate pool is created within initialize method.
@@ -376,104 +359,47 @@ public class SignatureValidationContext implements ValidationContext {
 	public void validate() throws DSSException {
 
 		validateLoop();
-		try {
 
-			LOG.debug(">>> MT ***DONE***");
-			executorService.shutdown();
-			executorService.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	private void validateLoop() {
 
-		int threshold = 0;
-		int max_timeout = 0;
-		final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
-		boolean exit = false;
-		boolean checkAgain = true;
+		Token token = null;
 		do {
 
-			final Token token = getNotYetVerifiedToken();
+			token = getNotYetVerifiedToken();
 			if (token != null) {
 
-				checkAgain = true;
 				try {
 
-					//					System.out.println("----------------------------------------------------");
-					//					System.out.println(" DSS_ID: " + token.getDSSId());
-					//					System.out.println("----------------------------------------------------");
-					final Task task = new Task(token);
-					executorService.submit(task);
+					/**
+					 * Gets the issuer certificate of the Token and checks its signature
+					 */
+					final CertificateToken issuerCertToken = getIssuerCertificate(token);
+					if (issuerCertToken != null) {
+
+						addCertificateTokenForVerification(issuerCertToken);
+					}
+					if (token instanceof CertificateToken) {
+
+						final RevocationToken revocationToken = getRevocationData((CertificateToken) token);
+						addRevocationTokenForVerification(revocationToken);
+					}
+
 				} catch (RejectedExecutionException e) {
 					LOG.error(e.getMessage(), e);
 					throw new DSSException(e);
 				}
-			} else {
 
-				try {
-
-					Thread.sleep(5);
-					threshold++;
-					if (threshold > 1000) {
-
-						LOG.warn("{} active threads", threadPoolExecutor.getActiveCount());
-						LOG.warn("{} completed tasks", threadPoolExecutor.getCompletedTaskCount());
-						LOG.warn("{} waiting tasks", threadPoolExecutor.getQueue());
-						max_timeout++;
-						if (max_timeout == MAX_TIMEOUT) {
-							throw new DSSException("Operation aborted, the retrieval of the validation data takes too long.");
-						}
-						threshold = 0;
-					}
-				} catch (InterruptedException e) {
-					throw new DSSException(e);
-				}
-				final boolean threadPoolExecutorEmpty = !(threadPoolExecutor.getActiveCount() > 0 || threadPoolExecutor.getQueue().size() > 0);
-				exit = threadPoolExecutorEmpty && !checkAgain;
-				if (threadPoolExecutorEmpty) {
-					checkAgain = false;
-				}
 			}
-		} while (!exit);
+			
+		} while (token != null);
 
-	}
-
-	class Task implements Runnable {
-
-		private final Token token;
-
-		public Task(final Token token) {
-
-			this.token = token;
-		}
-
-		@Override
-		public void run() {
-
-			final int threadCount_ = threadCount++;
-			LOG.debug(">>> MT IN  [" + threadCount_ + "] DSS_ID: " + token.getDSSId());
-			/**
-			 * Gets the issuer certificate of the Token and checks its signature
-			 */
-			final CertificateToken issuerCertToken = getIssuerCertificate(token);
-			if (issuerCertToken != null) {
-
-				addCertificateTokenForVerification(issuerCertToken);
-			}
-			if (token instanceof CertificateToken) {
-
-				final RevocationToken revocationToken = getRevocationData((CertificateToken) token);
-				addRevocationTokenForVerification(revocationToken);
-			}
-			LOG.debug(">>> MT END [" + threadCount_ + "] DSS_ID: " + token.getDSSId());
-		}
 	}
 
 	/**
 	 * Retrieves the revocation data from signature (if exists) or from the online sources. The issuer certificate must be provided, the underlining library (bouncy castle) needs
-	 * it to build the request. This feature has an impact on the multi-threaded data retrieval.
+	 * it to build the request. 
 	 *
 	 * @param certToken
 	 * @return
