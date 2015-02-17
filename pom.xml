@@ -22,7 +22,7 @@
 		<module>dss-demo-applet</module>
 		<module>dss-demo-applet-package</module>
 		<module>dss-demo-webapp</module>
-		<module>dss-package-ootb-webapp</module>
+		<module>dss-demo-bundle</module>
 		<module>dss-tsl-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
 	</modules>
@@ -212,6 +212,11 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal Dependencies -->
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>sscd-mocca-adapter</artifactId>
+				<version>4.3.1-SNAPSHOT</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-demo-applet</artifactId>
