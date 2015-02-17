@@ -24,6 +24,7 @@
 		<module>dss-demo-webapp</module>
 		<module>dss-package-ootb-webapp</module>
 		<module>dss-tsl-jaxb</module>
+		<module>dss-diagnostic-jaxb</module>
 	</modules>
 
 	<developers>

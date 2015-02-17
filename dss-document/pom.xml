@@ -32,30 +32,6 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<generatePackage>eu.europa.ec.markt.dss.validation102853.data.diagnostic</generatePackage>
-							<schemaIncludes>
-								<schemaInclude>DiagnosticData.xsd</schemaInclude>
-							</schemaIncludes>
-							<catalog>src/main/resources/catalog.cat</catalog>
-							<verbose>true</verbose>
-							<bindingIncludes>
-								<include>binding.xml</include>
-							</bindingIncludes>
-							<specVersion>2.1</specVersion>
-							<encoding>UTF-8</encoding>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -101,6 +77,11 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
+        <dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-diagnostic-jaxb</artifactId>
+			<version>4.3.1-SNAPSHOT</version>
+        </dependency>
 		
 		<dependency>
 			<groupId>junit</groupId>
