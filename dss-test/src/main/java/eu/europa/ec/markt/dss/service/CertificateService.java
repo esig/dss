@@ -47,16 +47,19 @@ public class CertificateService {
 		return keyGenerator.generateKeyPair();
 	}
 
-	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
-		DSSPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
+	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final DSSPrivateKeyEntry rootEntry) throws Exception {
 		X500Name rootName = new JcaX509CertificateHolder(rootEntry.getCertificate()).getSubject();
-
 		KeyPair childKeyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 		X500Name childSubject = new X500Name("CN=SignerChildOfRootFake,O=DSS-test");
 		X509Certificate child = generateCertificate(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic());
 		X509Certificate[] chain = createChildCertificateChain(rootEntry);
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), child, chain, childKeyPair.getPrivate());
+	}
+
+	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
+		DSSPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
+		return generateCertificateChain(algorithm, rootEntry);
 	}
 
 	public DSSPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm) throws Exception {

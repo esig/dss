@@ -44,6 +44,20 @@ public class MockCRLSource extends OfflineCRLSource {
 		}
 	}
 
+	/**
+	 * This constructor allows to build a mock CRL source from a list of
+	 * <code>X509CRL</code>.
+	 *
+	 * @param crls
+	 *            the list of <code>X509CRL</code>
+	 */
+	public MockCRLSource(final X509CRL... crls) {
+		x509CRLList = new ArrayList<X509CRL>();
+		for (X509CRL x509crl : crls) {
+			x509CRLList.add(x509crl);
+		}
+	}
+
 	private void addCRLToken(final InputStream inputStream) {
 		final X509CRL x509CRL = DSSUtils.loadCRL(inputStream);
 		if (!x509CRLList.contains(x509CRL)) {

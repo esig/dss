@@ -48,6 +48,7 @@ import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
 import eu.europa.ec.markt.dss.validation102853.RevocationToken;
+import eu.europa.ec.markt.dss.validation102853.crl.CRLReasonEnum;
 
 /**
  * Utility class used to convert OCSPResp to BasicOCSPResp
@@ -151,7 +152,8 @@ public final class DSSRevocationUtils {
 		try {
 			final ASN1Enumerated reasonCodeExtension = ASN1Enumerated.getInstance(X509ExtensionUtil.fromExtensionValue(extensionBytes));
 			final CRLReason reason = CRLReason.getInstance(reasonCodeExtension);
-			return reason.toString();
+			int intValue = reason.getValue().intValue();
+			return CRLReasonEnum.fromInt(intValue).name();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

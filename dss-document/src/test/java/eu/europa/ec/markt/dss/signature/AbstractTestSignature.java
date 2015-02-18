@@ -47,19 +47,28 @@ public abstract class AbstractTestSignature {
 	public void signAndVerify() {
 		final DSSDocument signedDocument = sign();
 
-		try {
-			IOUtils.copy(signedDocument.openStream(), System.out);
-		} catch (Exception e) {
-			LOGGER.error("Cannot display file content", e);
+		if (LOGGER.isDebugEnabled()) {
+			try {
+				byte[] byteArray = IOUtils.toByteArray(signedDocument.openStream());
+				LOGGER.debug(new String(byteArray));
+			} catch (Exception e) {
+				LOGGER.error("Cannot display file content", e);
+			}
 		}
 
 		checkMimeType(signedDocument);
 
 		Reports reports = getValidationReport(signedDocument);
 
-		reports.print();
+		if (LOGGER.isDebugEnabled()) {
+			reports.print();
+		}
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		verify(diagnosticData);
+	}
+
+	protected void verify(DiagnosticData diagnosticData) {
 		checkNumberOfSignatures(diagnosticData);
 		checkDigestAlgorithm(diagnosticData);
 		checkEncryptionAlgorithm(diagnosticData);
