@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,8 +45,10 @@ public abstract class AbstractTestSignature {
 	protected abstract boolean isBaselineLTA();
 
 	@Test
-	public void signAndVerify() {
+	public void signAndVerify() throws IOException {
 		final DSSDocument signedDocument = sign();
+
+		// signedDocument.save("src/test/resources/validation/dss-signed.xml");
 
 		if (LOGGER.isDebugEnabled()) {
 			try {

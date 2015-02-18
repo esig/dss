@@ -102,18 +102,17 @@ import eu.europa.ec.markt.dss.validation102853.toolbox.XPointerResourceResolver;
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must be created.
  *
- * @version $Revision: 1825 $ - $Date: 2013-03-28 15:57:37 +0100 (Thu, 28 Mar 2013) $
  */
-
 public class XAdESSignature extends DefaultAdvancedSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignature.class);
 
 	/**
-	 * This array contains all the XAdES signatures levels
-	 * TODO: do not return redundant levels.
+	 * This array contains all the XAdES signatures levels TODO: do not return redundant levels.
 	 */
-	private static SignatureLevel[] signatureLevels = new SignatureLevel[]{SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B, SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL, SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A};
+	private static SignatureLevel[] signatureLevels = new SignatureLevel[] { SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B,
+			SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL,
+			SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A };
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -156,17 +155,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		Init.init();
 
 		/**
-		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT.
-		 * The BC provider must be previously added.
+		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
 		 */
-		//		final JCEMapper.Algorithm algorithm = new JCEMapper.Algorithm("", SignatureAlgorithm.ECDSA_RIPEMD160.getJCEId(), "Signature");
-		//		final String xmlId = SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
-		//		JCEMapper.register(xmlId, algorithm);
-		//		try {
-		//			org.apache.xml.security.algorithms.SignatureAlgorithm.register(xmlId, SignatureECDSARIPEMD160.class);
-		//		} catch (Exception e) {
-		//			LOG.error("ECDSA_RIPEMD160 algorithm initialisation failed.", e);
-		//		}
+		// final JCEMapper.Algorithm algorithm = new JCEMapper.Algorithm("",
+		// SignatureAlgorithm.ECDSA_RIPEMD160.getJCEId(), "Signature");
+		// final String xmlId = SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
+		// JCEMapper.register(xmlId, algorithm);
+		// try {
+		// org.apache.xml.security.algorithms.SignatureAlgorithm.register(xmlId,
+		// SignatureECDSARIPEMD160.class);
+		// } catch (Exception e) {
+		// LOG.error("ECDSA_RIPEMD160 algorithm initialisation failed.", e);
+		// }
 
 		/**
 		 * Adds the support of not standard algorithm name: http://www.w3.org/2001/04/xmldsig-more/rsa-ripemd160. Used by some AT signature providers.
@@ -185,24 +185,32 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This constructor is used when creating the signature. The default {@code XPathQueryHolder} is set.
 	 *
-	 * @param signatureElement w3c.dom <ds:Signature> element
-	 * @param certPool         can be null
+	 * @param signatureElement
+	 *            w3c.dom <ds:Signature> element
+	 * @param certPool
+	 *            can be null
 	 */
 	public XAdESSignature(final Element signatureElement, final CertificatePool certPool) {
 
-		this(signatureElement, (new ArrayList<XPathQueryHolder>() {{
-			add(new XPathQueryHolder());
-		}}), certPool);
+		this(signatureElement, (new ArrayList<XPathQueryHolder>() {
+			{
+				add(new XPathQueryHolder());
+			}
+		}), certPool);
 	}
 
 	/**
 	 * The default constructor for XAdESSignature.
 	 *
-	 * @param signatureElement  w3c.dom <ds:Signature> element
-	 * @param xPathQueryHolders List of {@code XPathQueryHolder} to use when handling signature
-	 * @param certPool          can be null
+	 * @param signatureElement
+	 *            w3c.dom <ds:Signature> element
+	 * @param xPathQueryHolders
+	 *            List of {@code XPathQueryHolder} to use when handling signature
+	 * @param certPool
+	 *            can be null
 	 */
-	public XAdESSignature(final Element signatureElement, final List<XPathQueryHolder> xPathQueryHolders, final CertificatePool certPool) throws DSSNullException {
+	public XAdESSignature(final Element signatureElement, final List<XPathQueryHolder> xPathQueryHolders, final CertificatePool certPool)
+			throws DSSNullException {
 
 		super(certPool);
 		if (signatureElement == null) {
@@ -378,9 +386,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
 		/**
 		 * 5.1.4.1 XAdES processing<br>
-		 * <i>Candidates for the signing certificate extracted from ds:KeyInfo element</i> shall be checked
-		 * against all references present in the ds:SigningCertificate property, if present, since one of these
-		 * references shall be a reference to the signing certificate.
+		 * <i>Candidates for the signing certificate extracted from ds:KeyInfo element</i> shall be checked against all references present in the
+		 * ds:SigningCertificate property, if present, since one of these references shall be a reference to the signing certificate.
 		 */
 		final XAdESCertificateSource certSource = getCertificateSource();
 		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
@@ -396,8 +403,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
 		/**
-		 * The ../SignedProperties/SignedSignatureProperties/SigningCertificate element MAY contain references and
-		 * digests values of other certificates (that MAY form a chain up to the point of trust).
+		 * The ../SignedProperties/SignedSignatureProperties/SigningCertificate element MAY contain references and digests values of other
+		 * certificates (that MAY form a chain up to the point of trust).
 		 */
 
 		final NodeList list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT);
@@ -416,7 +423,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final String id = uri.substring(1);
 				final Element element = signatureElement.getOwnerDocument().getElementById(id);
-				// final Element element = DSSXMLUtils.getElement(signatureElement, "");
+				// final Element element =
+				// DSSXMLUtils.getElement(signatureElement, "");
 				if (!hasSignatureAsParent(element)) {
 
 					continue;
@@ -428,7 +436,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}
-		// This Map contains the list of the references to the certificate which were already checked and which correspond to a certificate.
+		// This Map contains the list of the references to the certificate which
+		// were already checked and which correspond to a certificate.
 		Map<Element, Boolean> alreadyProcessedElements = new HashMap<Element, Boolean>();
 
 		final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
@@ -450,7 +459,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					continue;
 				}
 				final String xmlAlgorithmName = digestMethodElement.getAttribute(XMLE_ALGORITHM);
-				// The default algorithm is used in case of bad encoded algorithm name
+				// The default algorithm is used in case of bad encoded
+				// algorithm name
 				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName, DigestAlgorithm.SHA1);
 
 				final Element digestValueElement = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
@@ -462,12 +472,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				/**
 				 * Step 1:<br>
-				 * Take the first child of the property and check that the content of ds:DigestValue matches the
-				 * result of digesting <i>the candidate for</i> the signing certificate with the algorithm indicated
-				 * in ds:DigestMethod. If they do not match, take the next child and repeat this step until a matching
-				 * child element has been found or all children of the element have been checked. If they do match,
-				 * continue with step 2. If the last element is reached without finding any match, the validation of
-				 * this property shall be taken as failed and INVALID/FORMAT_FAILURE is returned.
+				 * Take the first child of the property and check that the content of ds:DigestValue matches the result of digesting <i>the candidate
+				 * for</i> the signing certificate with the algorithm indicated in ds:DigestMethod. If they do not match, take the next child and
+				 * repeat this step until a matching child element has been found or all children of the element have been checked. If they do match,
+				 * continue with step 2. If the last element is reached without finding any match, the validation of this property shall be taken as
+				 * failed and INVALID/FORMAT_FAILURE is returned.
 				 */
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
 				final byte[] recalculatedBase64DigestValue = DSSUtils.base64BinaryEncode(digest);
@@ -475,13 +484,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
 
 					final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
-					// This can be allayed when the distinguished name is not correctly encoded
-					// final String textContent = DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());
+					// This can be allayed when the distinguished name is not
+					// correctly encoded
+					// final String textContent =
+					// DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());
 					final String textContent = issuerNameEl.getTextContent();
 					final X500Principal issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
 					final X500Principal candidateIssuerName = certificateToken.getIssuerX500Principal();
 
-					// final boolean issuerNameMatches = candidateIssuerName.equals(issuerName);
+					// final boolean issuerNameMatches =
+					// candidateIssuerName.equals(issuerName);
 					final boolean issuerNameMatches = DSSUtils.equals(candidateIssuerName, issuerName);
 					if (!issuerNameMatches) {
 
@@ -492,7 +504,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					}
 
 					final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
-					final String serialNumberText = serialNumberEl.getTextContent(); // serial number can contain leading and trailing whitespace.
+					final String serialNumberText = serialNumberEl.getTextContent();
+					// serial number can contain leading and trailing whitespace.
 					final BigInteger serialNumber = new BigInteger(serialNumberText.trim());
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
 					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
@@ -502,7 +515,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
 					// The certificate was identified
 					alreadyProcessedElements.put(element, true);
-					// If the signing certificate is not set yet then it must be done now. Actually if the signature is tempered then the method checkSignatureIntegrity cannot set the signing certificate.
+					// If the signing certificate is not set yet then it must be
+					// done now. Actually if the signature is tempered then the
+					// method checkSignatureIntegrity cannot set the signing
+					// certificate.
 					if (candidates.getTheCertificateValidity() == null) {
 
 						candidates.setTheCertificateValidity(certificateValidity);
@@ -516,7 +532,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * Checks if the given {@code Element} has as parent the current signature. This is the security check.
 	 *
-	 * @param element the element to be checked (can be null)
+	 * @param element
+	 *            the element to be checked (can be null)
 	 * @return true if the given element has as parent the current signature element, false otherwise
 	 */
 	private boolean hasSignatureAsParent(final Element element) {
@@ -650,16 +667,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public List<CertifiedRole> getCertifiedSignerRoles() {
 
 		/**
-		 * <!-- Start EncapsulatedPKIDataType-->
-		 * <xsd:element name="EncapsulatedPKIData" type="EncapsulatedPKIDataType"/>
-		 * <xsd:complexType name="EncapsulatedPKIDataType">
-		 * <xsd:simpleContent>
-		 * <xsd:extension base="xsd:base-64Binary">
-		 * <xsd:attribute name="Id" type="xsd:ID" use="optional"/>
-		 * <xsd:attribute name="Encoding" type="xsd:anyURI" use="optional"/>
-		 * </xsd:extension>
-		 * </xsd:simpleContent>
-		 * </xsd:complexType>
+		 * <!-- Start EncapsulatedPKIDataType--> <xsd:element name="EncapsulatedPKIData" type="EncapsulatedPKIDataType"/> <xsd:complexType
+		 * name="EncapsulatedPKIDataType"> <xsd:simpleContent> <xsd:extension base="xsd:base-64Binary"> <xsd:attribute name="Id" type="xsd:ID"
+		 * use="optional"/> <xsd:attribute name="Encoding" type="xsd:anyURI" use="optional"/> </xsd:extension> </xsd:simpleContent> </xsd:complexType>
 		 * <!-- End EncapsulatedPKIDataType -->
 		 */
 		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERTIFIED_ROLE);
@@ -700,8 +710,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method creates {@code TimestampToken} based on provided parameters.
 	 *
-	 * @param timestampElement contains the encapsulated timestamp
-	 * @param timestampType    {@code TimestampType}
+	 * @param timestampElement
+	 *            contains the encapsulated timestamp
+	 * @param timestampType
+	 *            {@code TimestampType}
 	 * @return {@code TimestampToken} of the given type
 	 * @throws DSSException
 	 */
@@ -710,7 +722,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		final Element timestampTokenNode = DSSXMLUtils.getElement(timestampElement, xPathQueryHolder.XPATH__ENCAPSULATED_TIMESTAMP);
 		if (timestampTokenNode == null) {
 
-			// TODO (09/11/2014): The error message must be propagated to the validation report
+			// TODO (09/11/2014): The error message must be propagated to the
+			// validation report
 			LOG.warn("The timestamp (" + timestampType.name() + ") cannot be extracted from the signature!");
 			return null;
 
@@ -722,10 +735,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		setTimestampCanonicalizationMethod(timestampElement, timestampToken);
 
 		// TODO: timestampToken.setIncludes(element.getIncludes)...
-		//		final NodeList includes = timestampTokenNode.getElementsByTagName("Include");
-		//		for (int i = 0; i < includes.getLength(); ++i) {
-		//			timestampToken.getTimestampIncludes().add(new TimestampInclude(includes.item(i).getBaseURI(), includes.item(i).getAttributes()));
-		//		}
+		// final NodeList includes =
+		// timestampTokenNode.getElementsByTagName("Include");
+		// for (int i = 0; i < includes.getLength(); ++i) {
+		// timestampToken.getTimestampIncludes().add(new
+		// TimestampInclude(includes.item(i).getBaseURI(),
+		// includes.item(i).getAttributes()));
+		// }
 		return timestampToken;
 	}
 
@@ -861,7 +877,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *
 	 * @param timestampTokens
 	 * @param nodes
-	 * @param timestampType   {@code TimestampType}
+	 * @param timestampType
+	 *            {@code TimestampType}
 	 */
 	public void addContentTimestamps(final List<TimestampToken> timestampTokens, final NodeList nodes, TimestampType timestampType) {
 
@@ -883,7 +900,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			for (int jj = 0; jj < timestampIncludes.getLength(); jj++) {
 
 				final Element include = (Element) timestampIncludes.item(jj);
-				final String uri = include.getAttribute("URI").substring(1); // '#' is removed
+				final String uri = include.getAttribute("URI").substring(1); // '#'
+																				// is
+																				// removed
 				timestampToken.getTimestampIncludes().add(new TimestampInclude(uri, include.getAttribute("referencedData")));
 			}
 			timestampTokens.add(timestampToken);
@@ -894,12 +913,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
 
 		switch (timestampToken.getTimeStampType()) {
-			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-				return getIndividualDataObjectsTimestampData(timestampToken);
-			case ALL_DATA_OBJECTS_TIMESTAMP:
-				return getAllDataObjectsTimestampData(timestampToken);
-			default:
-				return null;
+		case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+			return getIndividualDataObjectsTimestampData(timestampToken);
+		case ALL_DATA_OBJECTS_TIMESTAMP:
+			return getAllDataObjectsTimestampData(timestampToken);
+		default:
+			return null;
 		}
 	}
 
@@ -911,30 +930,38 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public byte[] getIndividualDataObjectsTimestampData(final TimestampToken timestampToken) {
 
-		//TODO: check whether a warning would be more appropriate
+		// TODO: check whether a warning would be more appropriate
 		if (!checkTimestampTokenIncludes(timestampToken)) {
 			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
 		}
 		if (references.size() == 0) {
 			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
-		//get first include element
-		//check coherence of the value of the not-fragment part of the URI within its URI attribute according to the rules stated in 7.1.4.3.1
-		//de-reference the URI according to the rules in 7.1.4.3.1
-		//check that retrieved element is actually a ds:Reference element of the ds:SignedInfo of the qualified signature and that its Type attribute is not SignedProperties
-		//if result is node-set, canonicalize it using the indicated canonicalizationMethod element of the property || use standard canon. method
-		//concatenate the resulting bytes in an octet stream
-		//repeat for all subsequent include elements, in order of appearance, within the time-stamp container
-		//return digest of resulting byte stream using the algorithm indicated in the time-stamp token
+		// get first include element
+		// check coherence of the value of the not-fragment part of the URI
+		// within its URI attribute according to the rules stated in 7.1.4.3.1
+		// de-reference the URI according to the rules in 7.1.4.3.1
+		// check that retrieved element is actually a ds:Reference element of
+		// the ds:SignedInfo of the qualified signature and that its Type
+		// attribute is not SignedProperties
+		// if result is node-set, canonicalize it using the indicated
+		// canonicalizationMethod element of the property || use standard canon.
+		// method
+		// concatenate the resulting bytes in an octet stream
+		// repeat for all subsequent include elements, in order of appearance,
+		// within the time-stamp container
+		// return digest of resulting byte stream using the algorithm indicated
+		// in the time-stamp token
 
-		//get include elements from signature
+		// get include elements from signature
 		List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 		for (TimestampInclude include : includes) {
-			//retrieve reference element
-			//-> go through references and check for one whose URI matches the URI of include
+			// retrieve reference element
+			// -> go through references and check for one whose URI matches the
+			// URI of include
 			for (final Reference reference : references) {
 				String id = include.getURI();
 
@@ -966,7 +993,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public byte[] getAllDataObjectsTimestampData(final TimestampToken timestampToken) {
 
-		//TODO: check whether a warning would be more appropriate
+		// TODO: check whether a warning would be more appropriate
 		if (!checkTimestampTokenIncludes(timestampToken)) {
 			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
 		}
@@ -976,7 +1003,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		for (final Reference reference : references) {
 
-			// Take, the first ds:Reference element within ds:SignedInfo if and only if the Type attribute does not
+			// Take, the first ds:Reference element within ds:SignedInfo if and
+			// only if the Type attribute does not
 			// have the value "http://uri.etsi.org/01903#SignedProperties".
 			if (!xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
 
@@ -993,7 +1021,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}
-		// compute digest of resulting octet stream using algorithm indicated in the time-stamp token
+		// compute digest of resulting octet stream using algorithm indicated in
+		// the time-stamp token
 		// -> digest is computed in TimestampToken verification/match
 		// return the computed digest
 		byte[] toTimestampBytes = outputStream.toByteArray();
@@ -1030,9 +1059,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * This method ensures that all Include elements referring to the Reference elements have a referencedData attribute,
-	 * which is set to "true".
-	 * In case one of these Include elements has its referenceData set to false, the method returns false
+	 * This method ensures that all Include elements referring to the Reference elements have a referencedData attribute, which is set to "true". In
+	 * case one of these Include elements has its referenceData set to false, the method returns false
 	 *
 	 * @param timestampToken
 	 * @retun
@@ -1106,7 +1134,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// TODO (20/12/2014): Browse in the physical order
 		final NodeList allDataObjectsTimestamps = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ALL_DATA_OBJECTS_TIMESTAMP);
 		addContentTimestamps(contentTimestamps, allDataObjectsTimestamps, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
-		final NodeList individualDataObjectsTimestampsNodes = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		final NodeList individualDataObjectsTimestampsNodes = DSSXMLUtils.getNodeList(signatureElement,
+				xPathQueryHolder.XPATH_INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		addContentTimestamps(contentTimestamps, individualDataObjectsTimestampsNodes, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 
 		final Element unsignedSignaturePropertiesDom = getUnsignedSignaturePropertiesDom();
@@ -1118,7 +1147,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 
 			final Node node = unsignedProperties.item(ii);
-			if (node.getNodeType() != Node.ELEMENT_NODE) { // This can happened when there is a blank line between tags.
+			if (node.getNodeType() != Node.ELEMENT_NODE) { // This can happened
+															// when there is a
+															// blank line
+															// between tags.
 				continue;
 			}
 			TimestampToken timestampToken;
@@ -1215,7 +1247,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/*
 	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
-	 *
+	 * 
 	 * @see eu.europa.ec.markt.dss.validation.AdvancedSignature#getCertificates()
 	 */
 	@Override
@@ -1259,8 +1291,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents));
 
 			boolean coreValidity = false;
-			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
-				  providedSigningCertificateToken);
+			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature,
+					signatureCryptographicVerification, providedSigningCertificateToken);
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
 
 				try {
@@ -1279,17 +1311,25 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
 			final int length = signedInfo.getLength();
+
 			boolean referenceDataFound = length > 0;
 			boolean referenceDataHashValid = length > 0;
+
+			boolean foundSignedProperties = false;
 			for (int ii = 0; ii < length; ii++) {
-
 				final Reference reference = signedInfo.item(ii);
+				if (xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
+					foundSignedProperties = true;
+				}
 				if (!coreValidity) {
-
 					referenceDataHashValid = referenceDataHashValid && reference.verify();
 				}
 				references.add(reference);
 			}
+
+			// 1 reference for SignedProperties + 1 reference / signed object
+			referenceDataFound = referenceDataFound && foundSignedProperties;
+
 			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataHashValid);
 			signatureCryptographicVerification.setSignatureIntact(coreValidity);
@@ -1314,23 +1354,27 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * This method returns a {@code List} of {@code SigningCertificateValidity} base on the certificates extracted from the signature or on the {@code
-	 * providedSigningCertificateToken}.
-	 * The field {@code candidatesForSigningCertificate} is instantiated in case where the signing certificated is provided.
+	 * This method returns a {@code List} of {@code SigningCertificateValidity} base on the certificates extracted from the signature or on the
+	 * {@code providedSigningCertificateToken}. The field {@code candidatesForSigningCertificate} is instantiated in case where the signing
+	 * certificated is provided.
 	 *
-	 * @param santuarioSignature         The object created tro validate the signature
-	 * @param scv                        {@code SignatureCryptographicVerification} containing information on the signature validation
-	 * @param providedSigningCertificate provided signing certificate: {@code CertificateToken}  @return
+	 * @param santuarioSignature
+	 *            The object created tro validate the signature
+	 * @param scv
+	 *            {@code SignatureCryptographicVerification} containing information on the signature validation
+	 * @param providedSigningCertificate
+	 *            provided signing certificate: {@code CertificateToken} @return
 	 * @return the {@code List} of the {@code SigningCertificateValidity}
 	 * @throws KeyResolverException
 	 */
-	private List<CertificateValidity> getSigningCertificateValidityList(final XMLSignature santuarioSignature, SignatureCryptographicVerification scv,
-	                                                                    final CertificateToken providedSigningCertificate) throws KeyResolverException {
+	private List<CertificateValidity> getSigningCertificateValidityList(final XMLSignature santuarioSignature,
+			SignatureCryptographicVerification scv, final CertificateToken providedSigningCertificate) throws KeyResolverException {
 
 		List<CertificateValidity> certificateValidityList;
 		if (providedSigningCertificate == null) {
 
-			// To determine the signing certificate it is necessary to browse through all candidates extracted from the signature.
+			// To determine the signing certificate it is necessary to browse
+			// through all candidates extracted from the signature.
 			final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
 			certificateValidityList = candidates.getCertificateValidityList();
 			if (certificateValidityList.size() == 0) {
@@ -1356,10 +1400,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * This method returns a {@code List} of {@code SigningCertificateValidity} base on the provided {@code providedSigningCertificateToken}. The field {@code
-	 * candidatesForSigningCertificate} is instantiated.
+	 * This method returns a {@code List} of {@code SigningCertificateValidity} base on the provided {@code providedSigningCertificateToken}. The
+	 * field {@code candidatesForSigningCertificate} is instantiated.
 	 *
-	 * @param extractedPublicKey provided public key: {@code PublicKey}
+	 * @param extractedPublicKey
+	 *            provided public key: {@code PublicKey}
 	 * @return
 	 */
 	protected List<CertificateValidity> getSigningCertificateValidityList(final PublicKey extractedPublicKey) {
@@ -1372,19 +1417,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * This method retrieves the potential countersignatures embedded in the XAdES signature document.
-	 * From ETSI TS 101 903 v1.4.2:
+	 * This method retrieves the potential countersignatures embedded in the XAdES signature document. From ETSI TS 101 903 v1.4.2:
 	 * <p/>
 	 * 7.2.4.1 Countersignature identifier in Type attribute of ds:Reference
 	 * <p/>
-	 * A XAdES signature containing a ds:Reference element whose Type attribute has value "http://uri.etsi.org/01903#CountersignedSignature"
-	 * will indicate that is is, in fact, a countersignature of the signature referenced by this element.
+	 * A XAdES signature containing a ds:Reference element whose Type attribute has value "http://uri.etsi.org/01903#CountersignedSignature" will
+	 * indicate that is is, in fact, a countersignature of the signature referenced by this element.
 	 * <p/>
 	 * 7.2.4.2 Enveloped countersignatures: the CounterSignature element
 	 * <p/>
-	 * The CounterSignature is an unsigned property that qualifies the signature. A XAdES signature MAY have more
-	 * than one CounterSignature properties. As indicated by its name, it contains one countersignature of the qualified
-	 * signature.
+	 * The CounterSignature is an unsigned property that qualifies the signature. A XAdES signature MAY have more than one CounterSignature
+	 * properties. As indicated by its name, it contains one countersignature of the qualified signature.
 	 *
 	 * @return a list containing the countersignatures embedded in the XAdES signature document
 	 */
@@ -1402,7 +1445,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Element counterSignatureElement = (Element) counterSignatures.item(ii);
 			final Element signatureElement = DSSXMLUtils.getElement(counterSignatureElement, xPathQueryHolder.XPATH__SIGNATURE);
 
-			// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
+			// Verify that the element is a proper signature by trying to build
+			// a XAdESSignature out of it
 			final XAdESSignature xadesCounterSignature = new XAdESSignature(signatureElement, xPathQueryHolders, certPool);
 			if (isCounterSignature(xadesCounterSignature)) {
 				xadesCounterSignature.setMasterSignature(this);
@@ -1415,12 +1459,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method verifies whether a given signature is a countersignature.
 	 * <p/>
-	 * From ETSI TS 101 903 V1.4.2:
-	 * - The signature's ds:SignedInfo element MUST contain one ds:Reference element referencing the
-	 * ds:Signature element of the embedding and countersigned XAdES signature
-	 * - The content of the ds:DigestValue in the aforementioned ds:Reference element  of the countersignature
-	 * MUST be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e.
-	 * including the starting and closing tags) of the embedding and countersigned XAdES signature.
+	 * From ETSI TS 101 903 V1.4.2: - The signature's ds:SignedInfo element MUST contain one ds:Reference element referencing the ds:Signature element
+	 * of the embedding and countersigned XAdES signature - The content of the ds:DigestValue in the aforementioned ds:Reference element of the
+	 * countersignature MUST be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e. including the starting
+	 * and closing tags) of the embedding and countersigned XAdES signature.
 	 *
 	 * @param xadesCounterSignature
 	 * @return
@@ -1428,7 +1470,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
 
 		final List<Element> signatureReferences = xadesCounterSignature.getSignatureReferences();
-		//gets Element with Type="http://uri.etsi.org/01903#CountersignedSignature"
+		// gets Element with
+		// Type="http://uri.etsi.org/01903#CountersignedSignature"
 		for (final Element reference : signatureReferences) {
 
 			final String type = reference.getAttribute("Type");
@@ -1599,7 +1642,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * Gathers the data to be used to calculate the hash value sent to the TSA (messageImprint).
 	 *
-	 * @param timestampToken         {@code TimestampToken} to validate, or {@code null} when adding a new archive timestamp
+	 * @param timestampToken
+	 *            {@code TimestampToken} to validate, or {@code null} when adding a new archive timestamp
 	 * @param canonicalizationMethod
 	 * @return {@code byte} array containing the canonicalized and concatenated timestamped data
 	 */
@@ -1613,9 +1657,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		/**
 		 * 8.2.1 Not distributed case<br>
 		 *
-		 * When xadesv141:ArchiveTimeStamp and all the unsigned properties covered by its time-stamp certificateToken have the same
-		 * parent, this property uses the Implicit mechanism for all the time-stamped data objects. The input to the
-		 * computation of the digest value MUST be built as follows:
+		 * When xadesv141:ArchiveTimeStamp and all the unsigned properties covered by its time-stamp certificateToken have the same parent, this
+		 * property uses the Implicit mechanism for all the time-stamped data objects. The input to the computation of the digest value MUST be built
+		 * as follows:
 		 */
 		try {
 
@@ -1625,12 +1669,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
 			/**
-			 * 2) Take all the ds:Reference elements in their order of appearance within ds:SignedInfo referencing whatever
-			 * the signer wants to sign including the SignedProperties element. Process each one as indicated below:<br>
+			 * 2) Take all the ds:Reference elements in their order of appearance within ds:SignedInfo referencing whatever the signer wants to sign
+			 * including the SignedProperties element. Process each one as indicated below:<br>
 			 * - Process the retrieved ds:Reference element according to the reference processing model of XMLDSIG.<br>
-			 * - If the result is a XML node set, canonicalize it. If ds:Canonicalization is present, the algorithm
-			 * indicated by this element is used. If not, the standard canonicalization method specified by XMLDSIG is
-			 * used.<br>
+			 * - If the result is a XML node set, canonicalize it. If ds:Canonicalization is present, the algorithm indicated by this element is used.
+			 * If not, the standard canonicalization method specified by XMLDSIG is used.<br>
 			 * - Concatenate the resulting octets to the final octet stream.
 			 */
 
@@ -1654,8 +1697,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 			/**
-			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and
-			 * concatenate each resulting octet stream to the final octet stream:<br>
+			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and concatenate each resulting octet
+			 * stream to the final octet stream:<br>
 			 * - The ds:SignedInfo element.<br>
 			 * - The ds:SignatureValue element.<br>
 			 * - The ds:KeyInfo element, if present.
@@ -1664,9 +1707,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_KEY_INFO, canonicalizationMethod, buffer);
 			/**
-			 * 4) Take the unsigned signature properties that appear before the current xadesv141:ArchiveTimeStamp in the
-			 * order they appear within the xades:UnsignedSignatureProperties, canonicalize each one and concatenate each
-			 * resulting octet stream to the final octet stream. While concatenating the following rules apply:
+			 * 4) Take the unsigned signature properties that appear before the current xadesv141:ArchiveTimeStamp in the order they appear within the
+			 * xades:UnsignedSignatureProperties, canonicalize each one and concatenate each resulting octet stream to the final octet stream. While
+			 * concatenating the following rules apply:
 			 */
 			final Element unsignedSignaturePropertiesDom = getUnsignedSignaturePropertiesDom();
 			if (unsignedSignaturePropertiesDom == null) {
@@ -1676,36 +1719,39 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 
 				final Node node = unsignedProperties.item(ii);
-				if (node.getNodeType() != Node.ELEMENT_NODE) { // This can happened when there is a blank line between tags.
+				if (node.getNodeType() != Node.ELEMENT_NODE) { // This can
+																// happened when
+																// there is a
+																// blank line
+																// between tags.
 					continue;
 				}
 				final String localName = node.getLocalName();
-				// In the SD-DSS implementation when validating the signature the framework will not add missing data. To do so the signature must be extended.
+				// In the SD-DSS implementation when validating the signature
+				// the framework will not add missing data. To do so the
+				// signature must be extended.
 				// if (localName.equals("CertificateValues")) {
-					/*
-					 * - The xades:CertificateValues property MUST be added if it is not already present and the ds:KeyInfo
-					 * element does not contain the full set of certificates used to validate the electronic signature.
-					 */
+				/*
+				 * - The xades:CertificateValues property MUST be added if it is not already present and the ds:KeyInfo element does not contain the
+				 * full set of certificates used to validate the electronic signature.
+				 */
 				// } else if (localName.equals("RevocationValues")) {
-					/*
-					 * - The xades:RevocationValues property MUST be added if it is not already present and the ds:KeyInfo
-					 * element does not contain the revocation information that has to be shipped with the electronic
-					 * signature
-					 */
+				/*
+				 * - The xades:RevocationValues property MUST be added if it is not already present and the ds:KeyInfo element does not contain the
+				 * revocation information that has to be shipped with the electronic signature
+				 */
 				// } else if (localName.equals("AttrAuthoritiesCertValues")) {
-					/*
-					 * - The xades:AttrAuthoritiesCertValues property MUST be added if not already present and the following
-					 * conditions are true: there exist an attribute certificate in the signature AND a number of
-					 * certificates that have been used in its validation do not appear in CertificateValues. Its content
-					 * will satisfy with the rules specified in clause 7.6.3.
-					 */
+				/*
+				 * - The xades:AttrAuthoritiesCertValues property MUST be added if not already present and the following conditions are true: there
+				 * exist an attribute certificate in the signature AND a number of certificates that have been used in its validation do not appear in
+				 * CertificateValues. Its content will satisfy with the rules specified in clause 7.6.3.
+				 */
 				// } else if (localName.equals("AttributeRevocationValues")) {
-					/*
-					 * - The xades:AttributeRevocationValues property MUST be added if not already present and there the
-					 * following conditions are true: there exist an attribute certificate AND some revocation data that have
-					 * been used in its validation do not appear in RevocationValues. Its content will satisfy with the rules
-					 * specified in clause 7.6.4.
-					 */
+				/*
+				 * - The xades:AttributeRevocationValues property MUST be added if not already present and there the following conditions are true:
+				 * there exist an attribute certificate AND some revocation data that have been used in its validation do not appear in
+				 * RevocationValues. Its content will satisfy with the rules specified in clause 7.6.4.
+				 */
 				// } else
 				if (isArchiveTimestamp(localName)) {
 
@@ -1715,25 +1761,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				} else if ("TimeStampValidationData".equals(localName)) {
 
 					/**
-					 * ETSI TS 101 903 V1.4.2 (2010-12)
-					 * 8.1 The new XAdESv141:TimeStampValidationData element
-					 * ../..
-					 * This element is specified to serve as an optional container for validation data required for carrying a full verification of
-					 * time-stamp tokens embedded within any of the different time-stamp containers defined in the present document.
-					 * ../..
-					 * 8.1.1 Use of URI attribute
-					 * ../..
-					 * a new xadesv141:TimeStampValidationData element SHALL be created containing the missing
-					 validation data information and it SHALL be added as a child of UnsignedSignatureProperties elements
-					 immediately after the respective time-stamp certificateToken container element.
+					 * ETSI TS 101 903 V1.4.2 (2010-12) 8.1 The new XAdESv141:TimeStampValidationData element ../.. This element is specified to serve
+					 * as an optional container for validation data required for carrying a full verification of time-stamp tokens embedded within any
+					 * of the different time-stamp containers defined in the present document. ../.. 8.1.1 Use of URI attribute ../.. a new
+					 * xadesv141:TimeStampValidationData element SHALL be created containing the missing validation data information and it SHALL be
+					 * added as a child of UnsignedSignatureProperties elements immediately after the respective time-stamp certificateToken container
+					 * element.
 					 */
 				}
 				byte[] canonicalizedValue;
 				if (timestampToken == null) { // Creation of the timestamp
 
 					/**
-					 * This is the work around for the name space problem: The issue was reported on: https://issues.apache.org/jira/browse/SANTUARIO-139 and considered as close.
-					 * But for me (Bob) it still does not work!
+					 * This is the work around for the name space problem: The issue was reported on:
+					 * https://issues.apache.org/jira/browse/SANTUARIO-139 and considered as close. But for me (Bob) it still does not work!
 					 */
 					final byte[] bytesToCanonicalize = DSSXMLUtils.serializeNode(node);
 					canonicalizedValue = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
@@ -1747,10 +1788,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				buffer.write(canonicalizedValue);
 			}
 			/**
-			 * 5) Take all the ds:Object elements except the one containing xades:QualifyingProperties element.
-			 * Canonicalize each one and concatenate each resulting octet stream to the final octet stream. If
-			 * ds:Canonicalization is present, the algorithm indicated by this element is used. If not, the standard
-			 * canonicalization method specified by XMLDSIG is used.
+			 * 5) Take all the ds:Object elements except the one containing xades:QualifyingProperties element. Canonicalize each one and concatenate
+			 * each resulting octet stream to the final octet stream. If ds:Canonicalization is present, the algorithm indicated by this element is
+			 * used. If not, the standard canonicalization method specified by XMLDSIG is used.
 			 */
 			boolean xades141 = timestampToken == null || !ArchiveTimestampType.XAdES.equals(timestampToken.getArchiveTimestampType());
 
@@ -1764,12 +1804,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 				if (!xades141) {
 					/**
-					 * !!! ETSI TS 101 903 V1.3.2 (2006-03)
-					 * 5) Take any ds:Object element in the signature that is not referenced by any ds:Reference within
-					 * ds:SignedInfo, except that one containing the QualifyingProperties element. Canonicalize each
-					 * one and concatenate each resulting octet stream to the final octet stream. If ds:Canonicalization is
-					 * present, the algorithm indicated by this element is used. If not, the standard canonicalization method specified
-					 * by XMLDSIG is used.
+					 * !!! ETSI TS 101 903 V1.3.2 (2006-03) 5) Take any ds:Object element in the signature that is not referenced by any ds:Reference
+					 * within ds:SignedInfo, except that one containing the QualifyingProperties element. Canonicalize each one and concatenate each
+					 * resulting octet stream to the final octet stream. If ds:Canonicalization is present, the algorithm indicated by this element is
+					 * used. If not, the standard canonicalization method specified by XMLDSIG is used.
 					 */
 					final NamedNodeMap attributes = node.getAttributes();
 					final int length = attributes.getLength();
@@ -1797,7 +1835,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	private void writeCanonicalizedValue(final String xPathString, final String canonicalizationMethod, final ByteArrayOutputStream buffer) throws IOException {
+	private void writeCanonicalizedValue(final String xPathString, final String canonicalizationMethod, final ByteArrayOutputStream buffer)
+			throws IOException {
 
 		final Element element = DSSXMLUtils.getElement(signatureElement, xPathString);
 		if (element != null) {
@@ -1838,7 +1877,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		final Node completeCertificateRefsNode = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS);
 		if (completeCertificateRefsNode != null) {
 
-			final NodeList nodes = DSSXMLUtils.getNodeList(completeCertificateRefsNode, xPathQueryHolder.XPATH__COMPLETE_CERTIFICATE_REFS__CERT_DIGEST);
+			final NodeList nodes = DSSXMLUtils.getNodeList(completeCertificateRefsNode,
+					xPathQueryHolder.XPATH__COMPLETE_CERTIFICATE_REFS__CERT_DIGEST);
 			for (int ii = 0; ii < nodes.getLength(); ii++) {
 
 				final Element certDigestElement = (Element) nodes.item(ii);
@@ -1926,7 +1966,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
-		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1.name(), certificateToken.getDigestValue(DigestAlgorithm.SHA1));
+		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1.name(),
+				certificateToken.getDigestValue(DigestAlgorithm.SHA1));
 		return reference;
 	}
 
@@ -1941,32 +1982,32 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		boolean dataForLevelPresent = true;
 		switch (signatureLevel) {
-			case XML_NOT_ETSI:
-				break;
-			case XAdES_BASELINE_LTA:
-			case XAdES_A:
-				dataForLevelPresent = hasLTAProfile();
-				break;
-			case XAdES_BASELINE_LT:
-				dataForLevelPresent &= hasLTProfile();
-				break;
-			case XAdES_BASELINE_T:
-				dataForLevelPresent &= hasTProfile();
-				break;
-			case XAdES_BASELINE_B:
-				dataForLevelPresent &= hasBProfile();
-				break;
-			case XAdES_XL:
-				dataForLevelPresent &= hasXLProfile();
-				break;
-			case XAdES_X:
-				dataForLevelPresent &= hasXProfile();
-				break;
-			case XAdES_C:
-				dataForLevelPresent &= hasCProfile();
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown level " + signatureLevel);
+		case XML_NOT_ETSI:
+			break;
+		case XAdES_BASELINE_LTA:
+		case XAdES_A:
+			dataForLevelPresent = hasLTAProfile();
+			break;
+		case XAdES_BASELINE_LT:
+			dataForLevelPresent &= hasLTProfile();
+			break;
+		case XAdES_BASELINE_T:
+			dataForLevelPresent &= hasTProfile();
+			break;
+		case XAdES_BASELINE_B:
+			dataForLevelPresent &= hasBProfile();
+			break;
+		case XAdES_XL:
+			dataForLevelPresent &= hasXLProfile();
+			break;
+		case XAdES_X:
+			dataForLevelPresent &= hasXProfile();
+			break;
+		case XAdES_C:
+			dataForLevelPresent &= hasCProfile();
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
 		return dataForLevelPresent;
 	}
@@ -2037,7 +2078,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * // TODO (11/09/2014): to be deleted, eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature#getReferences() to be used
+	 * // TODO (11/09/2014): to be deleted, eu.europa.ec.markt.dss.validation102853 .xades.XAdESSignature#getReferences() to be used
 	 *
 	 * @return
 	 */
@@ -2080,7 +2121,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method allows to register a new {@code XPathQueryHolder}.
 	 *
-	 * @param xPathQueryHolder {@code XPathQueryHolder} to register
+	 * @param xPathQueryHolder
+	 *            {@code XPathQueryHolder} to register
 	 */
 	public void registerXPathQueryHolder(final XPathQueryHolder xPathQueryHolder) {
 		xPathQueryHolders.add(xPathQueryHolder);
