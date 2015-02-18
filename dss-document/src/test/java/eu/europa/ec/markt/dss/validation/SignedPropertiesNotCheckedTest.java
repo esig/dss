@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -26,14 +25,12 @@ public class SignedPropertiesNotCheckedTest {
 
 	private static final String REFERENCE_DATA_FOUND_PATH = "/DiagnosticData/Signature[@Id='%s']/BasicSignature/ReferenceDataFound/text()";
 
-	@Ignore
+	@Test
 	public void testNoSignedProperties() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/join-up/xades_no-signedpropref.asice_.zip");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
-
-		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertFalse(diagnosticData.getBoolValue(REFERENCE_DATA_FOUND_PATH, diagnosticData.getFirstSignatureId()));
