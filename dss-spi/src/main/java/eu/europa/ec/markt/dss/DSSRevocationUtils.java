@@ -27,7 +27,6 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Enumerated;
-import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -44,6 +43,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.util.Arrays;
+import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
@@ -75,7 +75,8 @@ public final class DSSRevocationUtils {
 	}
 
 	/**
-	 * Convert a BasicOCSPResp in OCSPResp (connection status is set to SUCCESSFUL).
+	 * Convert a BasicOCSPResp in OCSPResp (connection status is set to
+	 * SUCCESSFUL).
 	 *
 	 * @param basicOCSPResp
 	 * @return
@@ -94,7 +95,8 @@ public final class DSSRevocationUtils {
 	}
 
 	/**
-	 * Convert a BasicOCSPResp in OCSPResp (connection status is set to SUCCESSFUL).
+	 * Convert a BasicOCSPResp in OCSPResp (connection status is set to
+	 * SUCCESSFUL).
 	 *
 	 * @param basicOCSPResp
 	 * @return
@@ -106,15 +108,19 @@ public final class DSSRevocationUtils {
 		final ResponseBytes responseBytes = new ResponseBytes(OCSPObjectIdentifiers.id_pkix_ocsp_basic, derBasicOCSPResp);
 		final OCSPResponse ocspResponse = new OCSPResponse(responseStatus, responseBytes);
 		final OCSPResp ocspResp = new OCSPResp(ocspResponse);
-		//!!! todo to be checked: System.out.println("===> RECREATED: " + ocspResp.hashCode());
+		// !!! todo to be checked: System.out.println("===> RECREATED: " +
+		// ocspResp.hashCode());
 		return ocspResp;
 	}
 
 	/**
-	 * This method indicates if the given revocation token is present in the CRL or OCSP response list.
+	 * This method indicates if the given revocation token is present in the CRL
+	 * or OCSP response list.
 	 *
-	 * @param revocationToken    revocation token to be checked
-	 * @param basicOCSPResponses list of basic OCSP responses
+	 * @param revocationToken
+	 *            revocation token to be checked
+	 * @param basicOCSPResponses
+	 *            list of basic OCSP responses
 	 * @return true if revocation token is present in one of the lists
 	 */
 	public static boolean isTokenIn(final RevocationToken revocationToken, final List<BasicOCSPResp> basicOCSPResponses) {
@@ -129,42 +135,37 @@ public final class DSSRevocationUtils {
 	}
 
 	/**
-	 * This method returns the reason of the revocation of the certificate extracted from the given CRL.
+	 * This method returns the reason of the revocation of the certificate
+	 * extracted from the given CRL.
 	 *
-	 * @param crlEntry An object for a revoked certificate in a CRL (Certificate Revocation List).
+	 * @param crlEntry
+	 *            An object for a revoked certificate in a CRL (Certificate
+	 *            Revocation List).
 	 * @return
 	 * @throws DSSException
 	 */
 	public static String getRevocationReason(final X509CRLEntry crlEntry) throws DSSException {
-
 		final String reasonId = Extension.reasonCode.getId();
 		final byte[] extensionBytes = crlEntry.getExtensionValue(reasonId);
-		ASN1InputStream asn1InputStream = null;
-		try {
 
-			asn1InputStream = new ASN1InputStream(extensionBytes);
-			final ASN1Enumerated asn1Enumerated = ASN1Enumerated.getInstance(asn1InputStream.readObject());
-			final CRLReason reason = CRLReason.getInstance(asn1Enumerated);
+		try {
+			final ASN1Enumerated reasonCodeExtension = ASN1Enumerated.getInstance(X509ExtensionUtil.fromExtensionValue(extensionBytes));
+			final CRLReason reason = CRLReason.getInstance(reasonCodeExtension);
 			return reason.toString();
-		} catch (IllegalArgumentException e) {
-			// In the test case XAdESTest003 testTRevoked() there is an error in the revocation reason.
-			//LOG.warn("Error when revocation reason decoding from CRL: " + e.toString());
-			final CRLReason reason = CRLReason.lookup(7); // 7 -> unknown
-			return reason.toString(); // unknown
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-
-			DSSUtils.closeQuietly(asn1InputStream);
 		}
 	}
 
 	/**
 	 * fix for certId.equals methods that doesn't work very well.
 	 *
-	 * @param certId     {@code CertificateID}
-	 * @param singleResp {@code SingleResp}
-	 * @return true if the certificate matches this included in {@code SingleResp}
+	 * @param certId
+	 *            {@code CertificateID}
+	 * @param singleResp
+	 *            {@code SingleResp}
+	 * @return true if the certificate matches this included in
+	 *         {@code SingleResp}
 	 */
 	public static boolean matches(final CertificateID certId, final SingleResp singleResp) {
 
@@ -179,17 +180,20 @@ public final class DSSRevocationUtils {
 		final byte[] certIdIssuerNameHash = certId.getIssuerNameHash();
 		final BigInteger certIdSerialNumber = certId.getSerialNumber();
 
-		// certId.equals fails in comparing the algoIdentifier because AlgoIdentifier params in null in one case and DERNull in another case
-		return singleRespCertIDHashAlgOID.equals(certIdHashAlgOID) && Arrays.areEqual(singleRespCertIDIssuerKeyHash, certIdIssuerKeyHash) && Arrays
-			  .areEqual(singleRespCertIDIssuerNameHash, certIdIssuerNameHash) &&
-			  singleRespCertIDSerialNumber.equals(certIdSerialNumber);
+		// certId.equals fails in comparing the algoIdentifier because
+		// AlgoIdentifier params in null in one case and DERNull in another case
+		return singleRespCertIDHashAlgOID.equals(certIdHashAlgOID) && Arrays.areEqual(singleRespCertIDIssuerKeyHash, certIdIssuerKeyHash)
+				&& Arrays.areEqual(singleRespCertIDIssuerNameHash, certIdIssuerNameHash) && singleRespCertIDSerialNumber.equals(certIdSerialNumber);
 	}
 
 	/**
-	 * Returns the {@code CertificateID} for the given certificate and its issuer's certificate.
+	 * Returns the {@code CertificateID} for the given certificate and its
+	 * issuer's certificate.
 	 *
-	 * @param cert       {@code X509Certificate} for which the id is created
-	 * @param issuerCert {@code X509Certificate} issuer certificate of the {@code cert}
+	 * @param cert
+	 *            {@code X509Certificate} for which the id is created
+	 * @param issuerCert
+	 *            {@code X509Certificate} issuer certificate of the {@code cert}
 	 * @return {@code CertificateID}
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
