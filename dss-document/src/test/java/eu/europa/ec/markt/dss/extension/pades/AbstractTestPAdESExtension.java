@@ -35,6 +35,7 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(certificateVerifier);
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
 		byte[] dataToSign = service.getDataToSign(document, signatureParameters);
 		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA.getPrivateKey(), dataToSign);
