@@ -25,6 +25,7 @@
 		<module>dss-demo-bundle</module>
 		<module>dss-tsl-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
+		<module>dss-cookbook</module>
 	</modules>
 
 	<developers>
