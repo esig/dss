@@ -22,13 +22,13 @@ package eu.europa.ec.markt.dss.signature.xades;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -67,7 +67,8 @@ public class XAdESService extends AbstractSignatureService {
 	/**
 	 * This is the constructor to create an instance of the {@code XAdESService}. A certificate verifier must be provided.
 	 *
-	 * @param certificateVerifier {@code CertificateVerifier} provides information on the sources to be used in the validation process in the context of a signature.
+	 * @param certificateVerifier
+	 *            {@code CertificateVerifier} provides information on the sources to be used in the validation process in the context of a signature.
 	 */
 	public XAdESService(final CertificateVerifier certificateVerifier) {
 
@@ -87,7 +88,8 @@ public class XAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters, final byte[] signatureValue) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters, final byte[] signatureValue)
+			throws DSSException {
 
 		if (parameters.getSignatureLevel() == null) {
 			throw new DSSNullException(SignatureLevel.class);
@@ -112,7 +114,8 @@ public class XAdESService extends AbstractSignatureService {
 				parameters.setDetachedContent(toSignDocument);
 			}
 			final DSSDocument dssExtendedDocument = extension.extendSignatures(signedDoc, parameters);
-			// The deterministic id is reset between two consecutive signing operations. It prevents having two signatures with the same Id within the same document.
+			// The deterministic id is reset between two consecutive signing operations. It prevents having two signatures with the same Id within the
+			// same document.
 			parameters.setDeterministicId(null);
 			return dssExtendedDocument;
 		}
@@ -173,7 +176,7 @@ public class XAdESService extends AbstractSignatureService {
 			throw new DSSNullException(SignatureTokenConnection.class);
 		}
 		final String toCounterSignSignatureId = parameters.getToCounterSignSignatureId();
-		if (DSSUtils.isBlank(toCounterSignSignatureId)) {
+		if (StringUtils.isBlank(toCounterSignSignatureId)) {
 			throw new DSSException("There is no provided signature id to countersign!");
 		}
 		final XAdESSignature xadesSignature = getToCountersignSignature(toCounterSignDocument, toCounterSignSignatureId);
@@ -185,12 +188,13 @@ public class XAdESService extends AbstractSignatureService {
 			throw new DSSNullException(Node.class, "signature-value");
 		}
 		final String signatureValueId = DSSXMLUtils.getIDIdentifier((Element) signatureValueNode);
-		if (DSSUtils.isBlank(toCounterSignSignatureId)) {
+		if (StringUtils.isBlank(toCounterSignSignatureId)) {
 			throw new DSSException("There is no signature-value id to countersign!");
 		}
 		parameters.setToCounterSignSignatureValueId(signatureValueId);
 
-		final CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(toCounterSignDocument, xadesSignature, parameters, certificateVerifier);
+		final CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(toCounterSignDocument, xadesSignature, parameters,
+				certificateVerifier);
 		final byte[] dataToSign = counterSignatureBuilder.build();
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
@@ -199,10 +203,10 @@ public class XAdESService extends AbstractSignatureService {
 		byte[] counterSignatureValue = signingToken.sign(dataToSign, digestAlgorithm, dssPrivateKeyEntry);
 
 		final DSSDocument counterSignedDocument = counterSignatureBuilder.signDocument(counterSignatureValue);
-		//		final XMLDocumentValidator xmlDocumentValidator = (XMLDocumentValidator) validator;
-		//		final Document rootElement = xmlDocumentValidator.getRootElement();
-		//		final byte[] bytes = DSSXMLUtils.transformDomToByteArray(rootElement);
-		//		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
+		// final XMLDocumentValidator xmlDocumentValidator = (XMLDocumentValidator) validator;
+		// final Document rootElement = xmlDocumentValidator.getRootElement();
+		// final byte[] bytes = DSSXMLUtils.transformDomToByteArray(rootElement);
+		// final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
 		return counterSignedDocument;
 	}
 
@@ -235,47 +239,47 @@ public class XAdESService extends AbstractSignatureService {
 	private SignatureExtension getExtensionProfile(final SignatureParameters parameters) {
 
 		switch (parameters.getSignatureLevel()) {
-			case XAdES_BASELINE_B:
+		case XAdES_BASELINE_B:
 
-				return null;
-			case XAdES_BASELINE_T:
+			return null;
+		case XAdES_BASELINE_T:
 
-				final XAdESLevelBaselineT extensionT = new XAdESLevelBaselineT(certificateVerifier);
-				extensionT.setTspSource(tspSource);
-				return extensionT;
-			case XAdES_C:
+			final XAdESLevelBaselineT extensionT = new XAdESLevelBaselineT(certificateVerifier);
+			extensionT.setTspSource(tspSource);
+			return extensionT;
+		case XAdES_C:
 
-				final XAdESLevelC extensionC = new XAdESLevelC(certificateVerifier);
-				extensionC.setTspSource(tspSource);
-				return extensionC;
-			case XAdES_X:
+			final XAdESLevelC extensionC = new XAdESLevelC(certificateVerifier);
+			extensionC.setTspSource(tspSource);
+			return extensionC;
+		case XAdES_X:
 
-				final XAdESLevelX extensionX = new XAdESLevelX(certificateVerifier);
-				extensionX.setTspSource(tspSource);
-				return extensionX;
-			case XAdES_XL:
+			final XAdESLevelX extensionX = new XAdESLevelX(certificateVerifier);
+			extensionX.setTspSource(tspSource);
+			return extensionX;
+		case XAdES_XL:
 
-				final XAdESLevelXL extensionXL = new XAdESLevelXL(certificateVerifier);
-				extensionXL.setTspSource(tspSource);
-				return extensionXL;
-			case XAdES_A:
+			final XAdESLevelXL extensionXL = new XAdESLevelXL(certificateVerifier);
+			extensionXL.setTspSource(tspSource);
+			return extensionXL;
+		case XAdES_A:
 
-				final XAdESLevelA extensionA = new XAdESLevelA(certificateVerifier);
-				extensionA.setTspSource(tspSource);
-				return extensionA;
-			case XAdES_BASELINE_LT:
+			final XAdESLevelA extensionA = new XAdESLevelA(certificateVerifier);
+			extensionA.setTspSource(tspSource);
+			return extensionA;
+		case XAdES_BASELINE_LT:
 
-				final XAdESLevelBaselineLT extensionLT = new XAdESLevelBaselineLT(certificateVerifier);
-				extensionLT.setTspSource(tspSource);
-				return extensionLT;
-			case XAdES_BASELINE_LTA:
+			final XAdESLevelBaselineLT extensionLT = new XAdESLevelBaselineLT(certificateVerifier);
+			extensionLT.setTspSource(tspSource);
+			return extensionLT;
+		case XAdES_BASELINE_LTA:
 
-				final XAdESLevelBaselineLTA extensionLTA = new XAdESLevelBaselineLTA(certificateVerifier);
-				extensionLTA.setTspSource(tspSource);
-				return extensionLTA;
-			default:
+			final XAdESLevelBaselineLTA extensionLTA = new XAdESLevelBaselineLTA(certificateVerifier);
+			extensionLTA.setTspSource(tspSource);
+			return extensionLTA;
+		default:
 
-				throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
+			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
 		}
 	}
 }

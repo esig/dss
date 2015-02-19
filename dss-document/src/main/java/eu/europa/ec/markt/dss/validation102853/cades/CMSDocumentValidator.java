@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -57,7 +58,8 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	/**
 	 * The default constructor for {@code CMSDocumentValidator}.
 	 *
-	 * @param cmsSignedData pkcs7-signature(s)
+	 * @param cmsSignedData
+	 *            pkcs7-signature(s)
 	 */
 	public CMSDocumentValidator(final CMSSignedData cmsSignedData) {
 
@@ -68,7 +70,8 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	/**
 	 * The default constructor for {@code CMSDocumentValidator}.
 	 *
-	 * @param document document to validate (with the signature(s))
+	 * @param document
+	 *            document to validate (with the signature(s))
 	 * @throws DSSException
 	 */
 	public CMSDocumentValidator(final DSSDocument document) throws DSSException {
@@ -85,7 +88,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		} catch (CMSException e) {
 			throw new DSSException("Not a valid CAdES file", e);
 		} finally {
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 		}
 	}
 
