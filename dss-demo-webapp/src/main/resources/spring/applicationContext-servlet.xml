@@ -11,6 +11,8 @@
 
     <mvc:annotation-driven/>
 
+    <mvc:resources mapping="/applet.jnlp" location="/applet.jnlp"/>
+    <mvc:resources mapping="/index.jsp" location="/index.jsp"/>
     <mvc:resources mapping="/css/**" location="/css/"/>
     <mvc:resources mapping="/images/**" location="/images/"/>
     <mvc:resources mapping="/scripts/**" location="/scripts/**"/>

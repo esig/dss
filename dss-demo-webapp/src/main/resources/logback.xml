@@ -13,7 +13,7 @@
 	</appender>
 
 	<appender name="debug" class="ch.qos.logback.core.FileAppender">
-		<file>/dss-debug.log</file>
+		<file>dss-debug.log</file>
 		<!-- rewrite file each time -->
 		<append>false</append>
 		<!-- encoders are assigned the type

@@ -11,17 +11,15 @@
 		<script src="//www.java.com/js/deployJava.js"></script>
         <script type="text/javascript">
             var attributes = {
-                code : 'eu.europa.ec.markt.dss.applet.main.DSSAppletCore.class',
-                archive : 'jar/signature-applet-r5.jar',
-                width : 800,
-                height : 600
+            	width: 800,
+            	height :600
             };
             var parameters = {
                 service_url : '<c:out value="${prefUrlService.value}"/>',
-                default_policy_url : '<c:out value="${prefDefaultPolicyUrl}"/>'
+                default_policy_url : '<c:out value="${prefDefaultPolicyUrl}"/>',
+                jnlp_href: 'applet.jnlp'
             };
             var version = '1.6';
-
             deployJava.runApplet(attributes, parameters, version);
         </script>
     </div>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -17,6 +16,12 @@
 	<description>DSS Demo: Web Application</description>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -37,77 +42,20 @@
 									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
 									<destFileName>/jar/signature-applet-r5.jar</destFileName>
 								</artifactItem>
-								<artifactItem>
-									<groupId>org.bouncycastle</groupId>
-									<artifactId>bcprov-jdk15on</artifactId>
-									<type>jar</type>
-									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/jar/bcprov-jdk15on.jar</destFileName>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.bouncycastle</groupId>
-									<artifactId>bcmail-jdk15on</artifactId>
-									<type>jar</type>
-									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/jar/bcmail-jdk15on.jar</destFileName>
-								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>tomcat-maven-plugin</artifactId>
-				<version>1.1</version>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat6-maven-plugin</artifactId>
 				<configuration>
-					<url>http://dgmarkt-dss:8080/manager</url>
-					<path>/dss-webapp</path>
+					<path>/</path>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<excludes>
-						<!-- Do not run Application Context tests in the maven test phase -->
-						<exclude>**/hudson/*</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
 		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-
 	</build>
-
-	<profiles>
-		<profile>
-			<id>hudson</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.5</version>
-						<configuration>
-							<excludes>
-								                   
-								<exclude>none</exclude>
-
-							</excludes>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -240,6 +188,8 @@
 			<artifactId>hibernate-validator</artifactId>
 			<version>5.0.1.Final</version>
 		</dependency>
+
+
 	</dependencies>
 
 </project>
