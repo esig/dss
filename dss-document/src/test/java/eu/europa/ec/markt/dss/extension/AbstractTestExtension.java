@@ -28,6 +28,24 @@ public abstract class AbstractTestExtension {
 
 	protected abstract SignatureLevel getFinalSignatureLevel();
 
+	/**
+	 * This method is used in case of ASiC signatures
+	 * 
+	 * @return
+	 */
+	protected SignatureLevel getOriginalUnderlyingSignatureLevel() {
+		return getOriginalSignatureLevel();
+	}
+
+	/**
+	 * This method is used in case of ASiC signatures
+	 * 
+	 * @return
+	 */
+	protected SignatureLevel getFinalUnderlyingSignatureLevel() {
+		return getFinalSignatureLevel();
+	}
+
 	protected abstract DocumentSignatureService getSignatureServiceToExtend() throws Exception;
 
 	protected byte[] sign(SignatureAlgorithm algo, PrivateKey privateKey, byte[] bytesToSign) throws GeneralSecurityException {
@@ -60,8 +78,7 @@ public abstract class AbstractTestExtension {
 	}
 
 	private DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
-		SignatureParameters extensionParameters = new SignatureParameters();
-		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
+		SignatureParameters extensionParameters = getExtensionParameters();
 		DocumentSignatureService service = getSignatureServiceToExtend();
 
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extensionParameters);
@@ -69,12 +86,18 @@ public abstract class AbstractTestExtension {
 		return extendedDocument;
 	}
 
+	protected SignatureParameters getExtensionParameters() {
+		SignatureParameters extensionParameters = new SignatureParameters();
+		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
+		return extensionParameters;
+	}
+
 	private void checkOriginalLevel(DiagnosticData diagnosticData) {
-		assertEquals(getOriginalSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(getOriginalUnderlyingSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	private void checkFinalLevel(DiagnosticData diagnosticData) {
-		assertEquals(getFinalSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(getFinalUnderlyingSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	private void checkBLevelValid(DiagnosticData diagnosticData) {
