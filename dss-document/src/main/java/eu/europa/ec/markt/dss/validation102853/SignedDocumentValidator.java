@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import eu.europa.ec.markt.dss.CertificateIdentifier;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSPKUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -497,12 +497,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		jaxbDiagnosticData = DIAGNOSTIC_DATA_OBJECT_FACTORY.createDiagnosticData();
 
-		// To cope with tests it can be interesting to always keep the same file name within the reports (without the path).
 		String absolutePath = document.getAbsolutePath();
-		if (CertificateIdentifier.isUniqueIdentifier()) {
-
-			absolutePath = document.getName();
-		}
 		jaxbDiagnosticData.setDocumentName(absolutePath);
 	}
 
@@ -658,7 +653,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private XmlTimestampType xmlForTimestamp(final TimestampToken timestampToken) {
 
 		final XmlTimestampType xmlTimestampToken = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlTimestampType();
-		xmlTimestampToken.setId(timestampToken.getDSSId());
+		xmlTimestampToken.setId(timestampToken.getDSSId().asXmlId());
 		final TimestampType timestampType = timestampToken.getTimeStampType();
 		xmlTimestampToken.setType(timestampType.name());
 		xmlTimestampToken.setProductionTime(DSSXMLUtils.createXMLGregorianCalendar(timestampToken.getGenerationTime()));
@@ -736,7 +731,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			do {
 
 				final XmlChainCertificate xmlCertToken = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlChainCertificate();
-				xmlCertToken.setId(issuerToken_.getDSSId());
+				xmlCertToken.setId(issuerToken_.getDSSId().asXmlId());
 				final CertificateSourceType mainSource = getCertificateMainSourceType(issuerToken_);
 				xmlCertToken.setSource(mainSource.name());
 				certChainTokens.add(xmlCertToken);
@@ -854,7 +849,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final XmlCertificate xmlCert = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlCertificate();
 
-		xmlCert.setId(certToken.getDSSId());
+		xmlCert.setId(certToken.getDSSId().asXmlId());
 
 		XmlDistinguishedName xmlDistinguishedName = xmlForDistinguishedName(X500Principal.CANONICAL, certToken.getSubjectX500Principal());
 		xmlCert.getSubjectDistinguishedName().add(xmlDistinguishedName);
@@ -875,7 +870,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlDigestAlgAndValue.setDigestValue(certToken.getDigestValue(digestAlgorithm));
 			xmlCert.getDigestAlgAndValue().add(xmlDigestAlgAndValue);
 		}
-		xmlCert.setIssuerCertificate(certToken.getIssuerTokenDSSId());
+		xmlCert.setIssuerCertificate(certToken.getIssuerTokenDSSId().asXmlId());
 		xmlCert.setNotAfter(DSSXMLUtils.createXMLGregorianCalendar(certToken.getNotAfter()));
 		xmlCert.setNotBefore(DSSXMLUtils.createXMLGregorianCalendar(certToken.getNotBefore()));
 		final PublicKey publicKey = certToken.getPublicKey();
@@ -1461,7 +1456,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
 			if (signingCertificateToken != null) {
 
-				xmlSignCertType.setId(signingCertificateToken.getDSSId());
+				xmlSignCertType.setId(signingCertificateToken.getDSSId().asXmlId());
 			}
 			xmlSignCertType.setAttributePresent(theCertificateValidity.isAttributePresent());
 			xmlSignCertType.setDigestValuePresent(theCertificateValidity.isDigestPresent());
@@ -1486,7 +1481,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			final XmlSigningCertificateType xmlSignCertType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSigningCertificateType();
 
-			xmlSignCertType.setId(issuerCertificateToken.getDSSId());
+			xmlSignCertType.setId(issuerCertificateToken.getDSSId().asXmlId());
 			return xmlSignCertType;
 		}
 		return null;

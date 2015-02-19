@@ -1406,7 +1406,7 @@ public final class DSSUtils {
 	 * @param id
 	 * @return
 	 */
-	public static String getDeterministicId(final Date signingTime, final int id) {
+	public static String getDeterministicId(final Date signingTime, final String id) {
 
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTimeZone(TimeZone.getTimeZone("Z"));
@@ -1423,7 +1423,7 @@ public final class DSSUtils {
 		final byte[] timeBytes = Long.toString(droppedMillis).getBytes();
 
 		final ByteBuffer byteBuffer = ByteBuffer.allocate(4);
-		byteBuffer.putInt(id);
+		byteBuffer.put(id.getBytes());
 		final byte[] certificateBytes = byteBuffer.array();
 
 		final byte[] digestValue = DSSUtils.digest(DigestAlgorithm.MD5, timeBytes, certificateBytes);

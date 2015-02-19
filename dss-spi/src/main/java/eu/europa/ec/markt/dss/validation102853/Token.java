@@ -28,6 +28,7 @@ import javax.security.auth.x500.X500Principal;
 
 import eu.europa.ec.markt.dss.DSSPKUtils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 
 /**
  * This is the base class for the different types of tokens (certificate, OCSP, CRL, Timestamp) used in the process of
@@ -94,9 +95,8 @@ public abstract class Token implements Serializable {
 	/**
 	 * Returns a DSS unique token identifier. Used by CertificateToken & TimestampToken.
 	 */
-	public int getDSSId() {
-
-		return 0;
+	public TokenIdentifier getDSSId() {
+		return new TokenIdentifier(this);
 	}
 
 	/**
@@ -126,9 +126,12 @@ public abstract class Token implements Serializable {
 	 *
 	 * @return
 	 */
-	public int getIssuerTokenDSSId() {
-
-		return issuerToken == null ? 0 : issuerToken.getDSSId();
+	public TokenIdentifier getIssuerTokenDSSId() {
+		if(issuerToken == null) {
+			return null;
+		} else {
+			return issuerToken.getDSSId();
+		}
 	}
 
 	/**

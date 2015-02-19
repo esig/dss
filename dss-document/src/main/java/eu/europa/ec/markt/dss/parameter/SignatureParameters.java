@@ -25,7 +25,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.CertificateIdentifier;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
@@ -290,7 +290,7 @@ public class SignatureParameters implements Serializable {
 
 			return deterministicId;
 		}
-		final int dssId = (signingCertificate == null ? 0 : CertificateIdentifier.getId(signingCertificate)) + signatureCounter++;
+		final String dssId = (signingCertificate == null ? "" : TokenIdentifier.getId(signingCertificate).asXmlId()) + signatureCounter++;
 		deterministicId = DSSUtils.getDeterministicId(bLevelParams.getSigningDate(), dssId);
 		return deterministicId;
 	}

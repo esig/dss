@@ -92,7 +92,7 @@ public class XmlTimestampType {
     @XmlElement(name = "SignedObjects")
     protected XmlSignedObjectsType signedObjects;
     @XmlAttribute(name = "Id", required = true)
-    protected int id;
+    protected String id;
     @XmlAttribute(name = "Type", required = true)
     protected String type;
 
@@ -372,7 +372,7 @@ public class XmlTimestampType {
      * Gets the value of the id property.
      * 
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -380,7 +380,7 @@ public class XmlTimestampType {
      * Sets the value of the id property.
      * 
      */
-    public void setId(int value) {
+    public void setId(String value) {
         this.id = value;
     }
 

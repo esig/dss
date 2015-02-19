@@ -1862,7 +1862,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			} else {
 
 				final CertificateToken certificateToken = getSigningCertificateToken();
-				final int dssId = (certificateToken == null ? 0 : certificateToken.getDSSId());
+				final String dssId = (certificateToken == null ? "" : certificateToken.getDSSId().asXmlId());
 				signatureId = DSSUtils.getDeterministicId(getSigningTime(), dssId);
 			}
 		}
