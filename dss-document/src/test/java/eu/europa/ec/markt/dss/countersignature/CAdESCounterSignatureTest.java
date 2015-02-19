@@ -17,8 +17,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockPrivateKeyEntry;
@@ -40,8 +38,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 public class CAdESCounterSignatureTest {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CAdESCounterSignatureTest.class);
 
 	@Test
 	public void test() throws Exception {
