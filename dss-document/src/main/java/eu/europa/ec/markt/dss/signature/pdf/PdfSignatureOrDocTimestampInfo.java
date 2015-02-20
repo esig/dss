@@ -22,7 +22,7 @@ package eu.europa.ec.markt.dss.signature.pdf;
 
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.Map;
+import java.util.Set;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.pdf.pdfbox.PdfDssDict;
@@ -31,7 +31,6 @@ import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerifi
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  *
- * @version $Revision: 1653 $ - $Date: 2013-02-01 11:48:52 +0100 (Fri, 01 Feb 2013) $
  */
 public interface PdfSignatureOrDocTimestampInfo {
 
@@ -39,10 +38,11 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	public static class DSSPadesNoSignatureFound extends DSSException {
 
+		private static final long serialVersionUID = 1L;
+
 	}
 
 	SignatureCryptographicVerification checkIntegrity();
-
 
 	X509Certificate[] getCertificates();
 
@@ -75,7 +75,7 @@ public interface PdfSignatureOrDocTimestampInfo {
 	/**
 	 * @return signatures that covers a document that contains this signature
 	 */
-	Map<PdfSignatureOrDocTimestampInfo, Boolean> getOuterSignatures();
+	Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures();
 
 	boolean isTimestamp();
 }

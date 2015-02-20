@@ -24,7 +24,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.io.IOUtils;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -40,12 +41,8 @@ import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinderFactory
 /**
  * Validation of PDF document.
  *
- * @version $Revision: 889 $ - $Date: 2011-05-31 17:29:35 +0200 (Tue, 31 May 2011) $
  */
-
 public class PDFDocumentValidator extends SignedDocumentValidator {
-
-	// private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(PDFDocumentValidator.class.getName());
 
 	final PDFSignatureService pdfSignatureService;
 
@@ -84,7 +81,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 				}
 			}
 		});
-		DSSUtils.closeQuietly(inputStream);
+		IOUtils.closeQuietly(inputStream);
 		return signatures;
 	}
 

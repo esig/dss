@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +67,6 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
 /**
  * Implementation of AdvancedSignature for PAdES
  *
- * @version $Revision: 1849 $ - $Date: 2013-04-04 17:51:32 +0200 (Thu, 04 Apr 2013) $
  */
 public class PAdESSignature extends DefaultAdvancedSignature {
 
@@ -250,8 +249,8 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 
 		final List<TimestampToken> result = new ArrayList<TimestampToken>();
 		result.addAll(cadesTimestamps);
-		final Map<PdfSignatureOrDocTimestampInfo, Boolean> outerSignatures = pdfSignatureInfo.getOuterSignatures();
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures.keySet()) {
+		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
 
 			if (outerSignature.isTimestamp() && (outerSignature instanceof PdfDocTimestampInfo)) {
 
@@ -271,14 +270,14 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<TimestampToken> getTimestampsX1() {
 
-      /* Not applicable for PAdES */
+		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
 
 	@Override
 	public List<TimestampToken> getTimestampsX2() {
 
-      /* Not applicable for PAdES */
+		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
 
@@ -288,9 +287,9 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		final List<TimestampToken> archiveTimestampTokenList = new ArrayList<TimestampToken>();
 		archiveTimestampTokenList.addAll(cadesArchiveTimestamps); // (Bob) ???
 		final List<String> timestampedTimestamps = new ArrayList<String>();
-		final Map<PdfSignatureOrDocTimestampInfo, Boolean> outerSignatures = pdfSignatureInfo.getOuterSignatures();
+		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures.keySet()) {
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
 
 			if (!outerSignature.isTimestamp()) {
 				continue;
@@ -311,7 +310,8 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 
 					final byte[] encodedCertificate = certificate.getEncoded();
 					final byte[] certificateDigest = DSSUtils.digest(DigestAlgorithm.SHA1, encodedCertificate);
-					final TimestampReference certificateTimestampReference = createCertificateTimestampReference(DigestAlgorithm.SHA1, certificateDigest);
+					final TimestampReference certificateTimestampReference = createCertificateTimestampReference(DigestAlgorithm.SHA1,
+							certificateDigest);
 					references.add(certificateTimestampReference);
 				}
 				timestampToken.setTimestampedReferences(references);
@@ -323,8 +323,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private TimestampReference createCertificateTimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] certHash) {
-
-		final TimestampReference reference = new TimestampReference(digestAlgorithm.name(), DSSUtils.base64Encode(certHash));
+		final TimestampReference reference = new TimestampReference(digestAlgorithm.name(), Base64.encodeBase64String(certHash));
 		return reference;
 	}
 
@@ -352,7 +351,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
 
-      /* Not applicable for PAdES */
+		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
 
@@ -376,7 +375,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		if (cadesTimestamps.contains(timestampToken)) {
 			return cadesSignature.getSignatureTimestampData(timestampToken, null);
 		} else {
-			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures().keySet()) {
+			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
 				if (signatureInfo instanceof PdfDocTimestampInfo) {
 					PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
 					if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
@@ -392,14 +391,14 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
 
-      /* Not applicable for PAdES */
+		/* Not applicable for PAdES */
 		return null;
 	}
 
 	@Override
 	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
 
-      /* Not applicable for PAdES */
+		/* Not applicable for PAdES */
 		return null;
 	}
 
@@ -416,7 +415,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		if (cadesArchiveTimestamps.contains(timestampToken)) {
 			return cadesSignature.getArchiveTimestampData(timestampToken, null);
 		} else {
-			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures().keySet()) {
+			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
 				if (signatureInfo instanceof PdfDocTimestampInfo) {
 					PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
 					if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
@@ -438,7 +437,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<TimestampReference> getTimestampedReferences() {
 
-      /* Not applicable for PAdES */
+		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
 
@@ -448,40 +447,42 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		return usedCertificatesDigestAlgorithms;
 	}
 
+	@Override
 	public boolean isDataForSignatureLevelPresent(SignatureLevel signatureLevel) {
 		boolean dataForLevelPresent = true;
 		final List<TimestampToken> signatureTimestamps = getSignatureTimestamps();
 		switch (signatureLevel) {
-			case PAdES_BASELINE_LTA:
-				dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
-				dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
-				break;
-			case PAdES_102778_LTV:
-				dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
-				break;
-			case PAdES_BASELINE_LT:
-				dataForLevelPresent &= hasDSSDictionary();
-				// break omitted purposely
-			case PAdES_BASELINE_T:
-				dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
-				// break omitted purposely
-			case PAdES_BASELINE_B:
-				dataForLevelPresent &= (pdfSignatureInfo != null);
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown level " + signatureLevel);
+		case PAdES_BASELINE_LTA:
+			dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
+			dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
+			break;
+		case PAdES_102778_LTV:
+			dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
+			break;
+		case PAdES_BASELINE_LT:
+			dataForLevelPresent &= hasDSSDictionary();
+			// break omitted purposely
+		case PAdES_BASELINE_T:
+			dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
+			// break omitted purposely
+		case PAdES_BASELINE_B:
+			dataForLevelPresent &= (pdfSignatureInfo != null);
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
-		LOG.debug("Level {} found on document {} = {}", new Object[]{signatureLevel, document.getName(), dataForLevelPresent});
+		LOG.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
 		return dataForLevelPresent;
 	}
 
 	@Override
 	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[]{SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PAdES_BASELINE_T, SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PAdES_102778_LTV, SignatureLevel.PAdES_BASELINE_LTA};
+		return new SignatureLevel[] { SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PAdES_BASELINE_T, SignatureLevel.PAdES_BASELINE_LT,
+				SignatureLevel.PAdES_102778_LTV, SignatureLevel.PAdES_BASELINE_LTA };
 	}
 
 	private boolean hasDSSDictionary() {
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : pdfSignatureInfo.getOuterSignatures().keySet()) {
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : pdfSignatureInfo.getOuterSignatures()) {
 			if (outerSignature.getDocumentDictionary() != null) {
 				return true;
 			}
@@ -490,7 +491,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean hasDocumentTimestampOnTopOfDSSDict() {
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : pdfSignatureInfo.getOuterSignatures().keySet()) {
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : pdfSignatureInfo.getOuterSignatures()) {
 			if (outerSignature.getDocumentDictionary() != null) {
 				if (outerSignature.isTimestamp()) {
 					return true;
