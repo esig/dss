@@ -178,9 +178,9 @@ public class DiagnosticData extends XmlDom {
 	 *
 	 * @return signing certificate dss id.
 	 */
-	public int getSigningCertificateId() {
+	public String getSigningCertificateId() {
 
-		final int signingCertificateId = getIntValue("/DiagnosticData/Signature[1]/SigningCertificate/@Id");
+		final String signingCertificateId = getValue("/DiagnosticData/Signature[1]/SigningCertificate/@Id");
 		return signingCertificateId;
 	}
 
@@ -190,9 +190,9 @@ public class DiagnosticData extends XmlDom {
 	 * @param signatureId The identifier of the signature, for which the signing certificate is sought.
 	 * @return signing certificate dss id for the given signature.
 	 */
-	public int getSigningCertificateId(final String signatureId) {
+	public String getSigningCertificateId(final String signatureId) {
 
-		final int signingCertificateId = getIntValue("/DiagnosticData/Signature[@Id='%s']/SigningCertificate/@Id", signatureId);
+		final String signingCertificateId = getValue("/DiagnosticData/Signature[@Id='%s']/SigningCertificate/@Id", signatureId);
 		return signingCertificateId;
 	}
 
@@ -215,14 +215,14 @@ public class DiagnosticData extends XmlDom {
 	 * @param signatureId The identifier of the signature.
 	 * @return list of certificate's dss id for the given signature.
 	 */
-	public List<Integer> getSignatureCertificateChain(final String signatureId) {
+	public List<String> getSignatureCertificateChain(final String signatureId) {
 
-		final ArrayList<Integer> certificateChain = new ArrayList<Integer>();
+		final ArrayList<String> certificateChain = new ArrayList<String>();
 		final List<XmlDom> certificateId = getElements("/DiagnosticData/Signature[@Id='%s']/CertificateChain/ChainCertificate", signatureId);
 		for (final XmlDom xmlDom : certificateId) {
 
 			final String id = xmlDom.getAttribute("Id");
-			certificateChain.add(Integer.valueOf(id));
+			certificateChain.add(id);
 		}
 		return certificateChain;
 	}
@@ -501,7 +501,7 @@ public class DiagnosticData extends XmlDom {
 	 * @param dssCertificateId DSS certificate identifier to be checked
 	 * @return subject distinguished name
 	 */
-	public String getCertificateDN(final int dssCertificateId) {
+	public String getCertificateDN(final String dssCertificateId) {
 
 		final String subjectDistinguishedName = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/SubjectDistinguishedName[@Format='RFC2253']/text()",
 			  dssCertificateId);
@@ -514,7 +514,7 @@ public class DiagnosticData extends XmlDom {
 	 * @param dssCertificateId DSS certificate identifier to be checked
 	 * @return issuer distinguished name
 	 */
-	public String getCertificateIssuerDN(final int dssCertificateId) {
+	public String getCertificateIssuerDN(final String dssCertificateId) {
 
 		final String issuerDistinguishedName = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/IssuerDistinguishedName[@Format='RFC2253']/text()",
 			  dssCertificateId);
@@ -527,7 +527,7 @@ public class DiagnosticData extends XmlDom {
 	 * @param dssCertificateId DSS certificate identifier to be checked
 	 * @return serial number
 	 */
-	public String getCertificateSerialNumber(final int dssCertificateId) {
+	public String getCertificateSerialNumber(final String dssCertificateId) {
 
 		final String serialNumber = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/SerialNumber/text()", dssCertificateId);
 		return serialNumber;
@@ -539,7 +539,7 @@ public class DiagnosticData extends XmlDom {
 	 * @param dssCertificateId DSS certificate identifier to be checked
 	 * @return serial number
 	 */
-	public boolean isCertificateValidAtValidationTime(final int dssCertificateId) {
+	public boolean isCertificateValidAtValidationTime(final String dssCertificateId) {
 
 		final boolean validityAtValidationTime = getBoolValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/ValidityAtValidationTime/text()", dssCertificateId);
 		return validityAtValidationTime;
@@ -704,7 +704,7 @@ public class DiagnosticData extends XmlDom {
 	 * @param dssCertificateId DSS certificate identifier to be checked
 	 * @return revocation source
 	 */
-	public String getCertificateRevocationSource(final int dssCertificateId) {
+	public String getCertificateRevocationSource(final String dssCertificateId) {
 
 		final String certificateRevocationSource = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/Revocation/Source/text()", dssCertificateId);
 		return certificateRevocationSource;
@@ -716,7 +716,7 @@ public class DiagnosticData extends XmlDom {
 	 * @param dssCertificateId DSS certificate identifier to be checked
 	 * @return revocation status
 	 */
-	public boolean getCertificateRevocationStatus(final int dssCertificateId) {
+	public boolean getCertificateRevocationStatus(final String dssCertificateId) {
 
 		final boolean certificateRevocationStatus = getBoolValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/Revocation/Status/text()", dssCertificateId);
 		return certificateRevocationStatus;
@@ -728,7 +728,7 @@ public class DiagnosticData extends XmlDom {
 	 * @param dssCertificateId DSS certificate identifier to be checked
 	 * @return revocation reason
 	 */
-	public String getCertificateRevocationReason(int dssCertificateId) {
+	public String getCertificateRevocationReason(String dssCertificateId) {
 
 		final String revocationReason = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/Revocation/Reason/text()", dssCertificateId);
 		return revocationReason;

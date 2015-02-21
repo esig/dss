@@ -158,11 +158,6 @@ public final class DSSUtils {
 	private static final CertificateFactory certificateFactory;
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-	/**
-	 * This date is used in the deterministic identifier computation when the signing time is unknown.
-	 */
-	private static final Date deterministicDate = DSSUtils.getUtcDate(1970, 04, 23);
-
 	public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
 	/**
@@ -1408,27 +1403,21 @@ public final class DSSUtils {
 	 */
 	public static String getDeterministicId(final Date signingTime, final String id) {
 
-		final Calendar calendar = Calendar.getInstance();
-		calendar.setTimeZone(TimeZone.getTimeZone("Z"));
-		Date signingTime_ = signingTime;
-		if (signingTime_ == null) {
-			signingTime_ = deterministicDate;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			if(signingTime != null) {
+				digest.update(Long.toString(signingTime.getTime()).getBytes());
+			}
+			digest.update(id.getBytes());
+			
+			byte[] digestValue = digest.digest();
+			
+			final String deterministicId = "id-" + Hex.encodeHexString(digestValue);
+			return deterministicId;
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException(e);
 		}
-		calendar.setTime(signingTime_);
 
-		final Date time = calendar.getTime();
-		final long milliseconds = time.getTime();
-		final long droppedMillis = 1000 * (milliseconds / 1000);
-
-		final byte[] timeBytes = Long.toString(droppedMillis).getBytes();
-
-		final ByteBuffer byteBuffer = ByteBuffer.allocate(4);
-		byteBuffer.put(id.getBytes());
-		final byte[] certificateBytes = byteBuffer.array();
-
-		final byte[] digestValue = DSSUtils.digest(DigestAlgorithm.MD5, timeBytes, certificateBytes);
-		final String deterministicId = "id-" + toHex(digestValue);
-		return deterministicId;
 	}
 
 	public static Date getLocalDate(final Date gtmDate, final Date localDate) {

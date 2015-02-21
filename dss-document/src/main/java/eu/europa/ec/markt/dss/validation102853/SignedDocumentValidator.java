@@ -870,7 +870,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlDigestAlgAndValue.setDigestValue(certToken.getDigestValue(digestAlgorithm));
 			xmlCert.getDigestAlgAndValue().add(xmlDigestAlgAndValue);
 		}
-		xmlCert.setIssuerCertificate(certToken.getIssuerTokenDSSId().asXmlId());
+		TokenIdentifier issuerTokenDSSId = certToken.getIssuerTokenDSSId();
+		if(issuerTokenDSSId != null) {
+			xmlCert.setIssuerCertificate(issuerTokenDSSId.asXmlId());
+		}
 		xmlCert.setNotAfter(DSSXMLUtils.createXMLGregorianCalendar(certToken.getNotAfter()));
 		xmlCert.setNotBefore(DSSXMLUtils.createXMLGregorianCalendar(certToken.getNotBefore()));
 		final PublicKey publicKey = certToken.getPublicKey();
