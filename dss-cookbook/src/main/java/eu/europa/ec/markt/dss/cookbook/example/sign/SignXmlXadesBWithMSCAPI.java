@@ -1,10 +1,11 @@
-package eu.europa.ec.markt.dss.cookbook.example;
+package eu.europa.ec.markt.dss.cookbook.example.sign;
 
 import java.io.IOException;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -21,22 +22,17 @@ import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 public class SignXmlXadesBWithMSCAPI extends Cookbook {
 
 	public static void main(String[] args) throws DSSException, IOException {
-		// GET document to be signed - 
+		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		prepareXmlDoc();
-		
-		//preparePKCS12TokenAndKey();
-		
+
 		// Creation of MS-CAPI signature token
 		signingToken = new MSCAPISignatureToken();
-		
-		System.out.println(signingToken.toString());
 		List<DSSPrivateKeyEntry> list = signingToken.getKeys();
-		System.out.println(list.size());
-		
 		// Chose the right private key entry from store. The index will depend of the number of the certificates on your card.
+		System.out.println(signingToken.getKeys().size());
 		privateKey = signingToken.getKeys().get(0);
-		
+
 		// Preparing parameters for the PAdES signature
 		SignatureParameters parameters = new SignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, -LTA).
@@ -44,12 +40,12 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		// We choose the type of the signature packaging (ENVELOPING, DETACHED).
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		// We set the digest algorithm to use with the signature algorithm. You must use the
-		// same parameter when you invoke the method sign on the token. 
+		// same parameter when you invoke the method sign on the token.
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		// We choose the private key with the certificate and corresponding certificate
 		// chain.
 		parameters.setPrivateKeyEntry(privateKey);
-		
+
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		// Create CAdES xadesService for signature
@@ -60,15 +56,14 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 
 		// This function obtains the signature value for signed information using the
 		// private key and specified algorithm
-		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+		DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		byte[] signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
 
 		// We invoke the xadesService to sign the document with the signature value obtained in
 		// the previous step.
 		DSSDocument signedDocument = xadesService.signDocument(toSignDocument, parameters, signatureValue);
-		
 
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(),"signedXmlXadesMSCapi.xml");
+		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesMSCapi.xml");
 	}
 }

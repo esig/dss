@@ -198,9 +198,7 @@ public class MockTSPSource implements TSPSource {
 	public String getUniqueId(byte[] digestValue) {
 
 		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue, DSSUtils.toByteArray(timestampDate.getTime()));
-		//MODIFICATION BY NIP
 		return DSSUtils.toHex(digest);
-		//return DSSUtils.encodeHexString(digest);
 	}
 
 	private String getSignatureAlgorithm(DigestAlgorithm algorithm, byte[] digest) {
