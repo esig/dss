@@ -81,7 +81,7 @@ public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 
 		// TODO improve if not revocation info found, that returns false (add a
 		// method hasRevocationInfo)
-		int signingCertificateId = diagnosticData.getSigningCertificateId();
+		String signingCertificateId = diagnosticData.getSigningCertificateId();
 		assertFalse(diagnosticData.getCertificateRevocationStatus(signingCertificateId));
 		assertEquals(CRLReasonEnum.privilegeWithdrawn.name(), diagnosticData.getCertificateRevocationReason(signingCertificateId));
 		assertEquals("CRLToken", diagnosticData.getCertificateRevocationSource(signingCertificateId));

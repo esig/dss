@@ -138,24 +138,20 @@ public class CertificateToken extends Token {
 	 * This method returns an instance of {@link eu.europa.ec.markt.dss.validation102853.CertificateToken}.
 	 *
 	 * @param cert <code>X509Certificate</code>
-	 * @param id   DSS unique certificate identifier
 	 * @return
 	 */
-	static CertificateToken newInstance(X509Certificate cert, int id) {
+	static CertificateToken newInstance(X509Certificate cert) {
 
-		return new CertificateToken(cert, id);
+		return new CertificateToken(cert);
 	}
 
 	/**
-	 * Creates a CertificateToken wrapping the provided X509Certificate. A certificate must come from a source like:
-	 * trusted store, trusted list, signature...
+	 * Creates a CertificateToken wrapping the provided X509Certificate. 
 	 *
 	 * @param x509Certificate X509Certificate
-	 * @param id              DSS internal id (unique certificate's identifier)
 	 */
-	protected CertificateToken(X509Certificate x509Certificate, int id) {
+	protected CertificateToken(X509Certificate x509Certificate) {
 
-		this.dssId = id;
 		this.x509Certificate = x509Certificate;
 		this.issuerX500Principal = DSSUtils.getIssuerX500Principal(x509Certificate);
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
@@ -196,14 +192,6 @@ public class CertificateToken extends Token {
 				associatedTSPS.add(serviceInfo);
 			}
 		}
-	}
-
-	/**
-	 * Returns a DSS unique certificate token identifier based on the issuer distinguish name and serial number.
-	 */
-	public int getDSSId() {
-
-		return dssId;
 	}
 
 	/**

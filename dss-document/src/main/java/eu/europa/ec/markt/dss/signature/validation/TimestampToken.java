@@ -139,11 +139,6 @@ public class TimestampToken extends Token {
 	}
 
 	@Override
-	public int getDSSId() {
-		return dssId;
-	}
-
-	@Override
 	public String getAbbreviation() {
 
 		return timeStampType.name() + ": " + getDSSId() + ": " + DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime());

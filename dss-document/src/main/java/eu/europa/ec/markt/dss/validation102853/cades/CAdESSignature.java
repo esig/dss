@@ -1823,7 +1823,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (signatureId == null) {
 
 			final CertificateToken certificateToken = getSigningCertificateToken();
-			final int dssId = certificateToken == null ? 0 : certificateToken.getDSSId();
+			final String dssId = certificateToken == null ? "" : certificateToken.getDSSId().asXmlId();
 			// Only used to keep the same signature id between CAdES and PAdES signature!
 			final Date signingTime = padesSigningTime != null ? padesSigningTime : getSigningTime();
 			signatureId = DSSUtils.getDeterministicId(signingTime, dssId);
