@@ -103,7 +103,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			final Element certificateElement = (Element) nodeList.item(ii);
 
 			final byte[] derEncoded = DSSUtils.base64Decode(certificateElement.getTextContent());
-			final X509Certificate cert = DSSUtils.loadCertificate(derEncoded);
+			final CertificateToken cert = DSSUtils.loadCertificate(derEncoded);
 			final CertificateToken certToken = addCertificate(cert);
 			if (!list.contains(certToken)) {
 

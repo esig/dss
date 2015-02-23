@@ -1,6 +1,5 @@
 package eu.europa.ec.markt.dss.mock;
 
-import java.security.cert.X509Certificate;
 import java.util.Calendar;
 
 import eu.europa.ec.markt.dss.TSLConstant;
@@ -25,7 +24,7 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 	 * @return the corresponding certificate token
 	 */
 	@Override
-	public CertificateToken addCertificate(X509Certificate cert) {
+	public CertificateToken addCertificate(CertificateToken cert) {
 
 		final ServiceInfo serviceInfo = getMockServiceInfo();
 		final CertificateToken certToken = addCertificate(cert, serviceInfo);

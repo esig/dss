@@ -81,6 +81,7 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed
@@ -475,8 +476,8 @@ public class CAdESLevelBaselineB {
 			if (!chainCertificate.isSignedAttribute()) {
 				continue;
 			}
-			final X509Certificate signingCertificate = chainCertificate.getX509Certificate();
-			final byte[] encoded = DSSUtils.getEncoded(signingCertificate);
+			final CertificateToken signingCertificate = chainCertificate.getX509Certificate();
+			final byte[] encoded = signingCertificate.getEncoded();
 			final byte[] certHash = DSSUtils.digest(digestAlgorithm, encoded);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Adding Certificate Hash {} with algorithm {}", Hex.encodeHexString(certHash), digestAlgorithm.getName());

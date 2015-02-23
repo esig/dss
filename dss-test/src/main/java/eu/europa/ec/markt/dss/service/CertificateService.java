@@ -32,6 +32,7 @@ import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 public class CertificateService {
 
@@ -48,11 +49,11 @@ public class CertificateService {
 	}
 
 	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final DSSPrivateKeyEntry rootEntry) throws Exception {
-		X500Name rootName = new JcaX509CertificateHolder(rootEntry.getCertificate()).getSubject();
+		X500Name rootName = new JcaX509CertificateHolder(rootEntry.getCertificate().getCertificate()).getSubject();
 		KeyPair childKeyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 		X500Name childSubject = new X500Name("CN=SignerChildOfRootFake,O=DSS-test");
-		X509Certificate child = generateCertificate(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic());
-		X509Certificate[] chain = createChildCertificateChain(rootEntry);
+		CertificateToken child = generateCertificate(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic());
+		CertificateToken[] chain = createChildCertificateChain(rootEntry);
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), child, chain, childKeyPair.getPrivate());
 	}
@@ -67,7 +68,7 @@ public class CertificateService {
 		X500Name issuer = new X500Name("CN=RootIssuerSelfSignedFake,O=DSS-test");
 		X500Name subject = new X500Name("CN=RootSubjectSelfSignedFake,O=DSS-test");
 
-		X509Certificate certificate = generateCertificate(algorithm, subject, issuer, keyPair.getPrivate(), keyPair.getPublic());
+		CertificateToken certificate = generateCertificate(algorithm, subject, issuer, keyPair.getPrivate(), keyPair.getPublic());
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), certificate, keyPair.getPrivate());
 	}
@@ -95,10 +96,10 @@ public class CertificateService {
 		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(
 				new ByteArrayInputStream(holder.getEncoded()));
 
-		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), cert, keyPair.getPrivate());
+		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), new CertificateToken(cert), keyPair.getPrivate());
 	}
 
-	public X509Certificate generateCertificate(final SignatureAlgorithm algorithm, final X500Name subject, final X500Name issuer,
+	public CertificateToken generateCertificate(final SignatureAlgorithm algorithm, final X500Name subject, final X500Name issuer,
 			final PrivateKey issuerPrivateKey, final PublicKey publicKey) throws Exception {
 
 		final Date notBefore = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000); // yesterday
@@ -121,20 +122,20 @@ public class CertificateService {
 		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(
 				new ByteArrayInputStream(holder.getEncoded()));
 
-		return cert;
+		return new CertificateToken(cert);
 	}
 
-	private X509Certificate[] createChildCertificateChain(DSSPrivateKeyEntry rootEntry) {
-		List<X509Certificate> chainList = new ArrayList<X509Certificate>();
+	private CertificateToken[] createChildCertificateChain(DSSPrivateKeyEntry rootEntry) {
+		List<CertificateToken> chainList = new ArrayList<CertificateToken>();
 		chainList.add(rootEntry.getCertificate());
-		X509Certificate[] rootChain = rootEntry.getCertificateChain();
+		CertificateToken[] rootChain = rootEntry.getCertificateChain();
 		if (rootChain != null && rootChain.length > 0) {
-			for (X509Certificate certChainItem : rootChain) {
+			for (CertificateToken certChainItem : rootChain) {
 				chainList.add(certChainItem);
 			}
 		}
 
-		X509Certificate[] chain = chainList.toArray(new X509Certificate[chainList.size()]);
+		CertificateToken[] chain = chainList.toArray(new CertificateToken[chainList.size()]);
 		return chain;
 	}
 

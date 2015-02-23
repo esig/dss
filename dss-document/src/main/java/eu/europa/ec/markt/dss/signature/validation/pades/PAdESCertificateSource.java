@@ -58,8 +58,8 @@ public class PAdESCertificateSource extends SignatureCertificateSource {
         certificateTokens = new ArrayList<CertificateToken>();
         if (dssCatalog != null) {
 
-            final Set<X509Certificate> certList = dssCatalog.getCertList();
-            for (final X509Certificate x509Certificate : certList) {
+            final Set<CertificateToken> certList = dssCatalog.getCertList();
+            for (final CertificateToken x509Certificate : certList) {
                 addCertificate(x509Certificate);
             }
         }

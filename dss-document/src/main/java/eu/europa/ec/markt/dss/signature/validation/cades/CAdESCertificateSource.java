@@ -118,7 +118,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 
 						final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
 						final X509Certificate cert = new X509CertificateObject(cs);
-						final CertificateToken certToken = addCertificate(cert);
+						final CertificateToken certToken = addCertificate(new CertificateToken(cert));
 						if (!encapsulatedCerts.contains(certToken)) {
 
 							encapsulatedCerts.add(certToken);
@@ -164,7 +164,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 		final Collection<X509CertificateHolder> x509CertificateHolders = (Collection<X509CertificateHolder>) cmsSignedData.getCertificates().getMatches(null);
 		for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
 
-			final X509Certificate x509Certificate = DSSUtils.getCertificate(x509CertificateHolder);
+			final CertificateToken x509Certificate = DSSUtils.getCertificate(x509CertificateHolder);
 			final CertificateToken certificateToken = addCertificate(x509Certificate);
 			if (!essCertIDCerts.contains(certificateToken)) {
 				essCertIDCerts.add(certificateToken);

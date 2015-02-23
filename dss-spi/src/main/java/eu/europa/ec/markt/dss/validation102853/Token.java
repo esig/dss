@@ -33,8 +33,6 @@ import eu.europa.ec.markt.dss.TokenIdentifier;
 /**
  * This is the base class for the different types of tokens (certificate, OCSP, CRL, Timestamp) used in the process of
  * signature validation.
- *
- * @author bielecro
  */
 public abstract class Token implements Serializable {
 
@@ -69,6 +67,25 @@ public abstract class Token implements Serializable {
 	 */
 	protected TokenValidationExtraInfo extraInfo;
 
+	@Override
+	public final boolean equals(Object obj) {
+
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || !(obj instanceof Token)) {
+			return false;
+		}
+
+		Token o2 = (Token) obj;
+		return getDSSId().equals(o2.getDSSId());
+	}
+	
+	@Override
+	public final int hashCode() {
+		return getDSSId().hashCode();
+	}
+	
 	/**
 	 * Checks if the certificate is provided by the trusted list. For all tokens different from CertificateToken this
 	 * method always returns false. This method was introduced in order to manage in a uniform manner the different

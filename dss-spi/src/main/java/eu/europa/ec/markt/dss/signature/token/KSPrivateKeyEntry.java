@@ -32,6 +32,7 @@ import java.util.List;
 
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * Wrapper of a PrivateKeyEntry coming from a KeyStore.
@@ -40,9 +41,9 @@ import eu.europa.ec.markt.dss.exception.DSSException;
  */
 public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 
-    private final X509Certificate certificate;
+    private final CertificateToken certificate;
 
-    private final X509Certificate[] certificateChain;
+    private final CertificateToken[] certificateChain;
 
     private final PrivateKey privateKey;
 
@@ -51,25 +52,25 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
      */
     public KSPrivateKeyEntry(final PrivateKeyEntry privateKeyEntry) {
 
-        certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        final List<X509Certificate> x509CertificateList = new ArrayList<X509Certificate>();
+        certificate = new CertificateToken((X509Certificate) privateKeyEntry.getCertificate());
+        final List<CertificateToken> x509CertificateList = new ArrayList<CertificateToken>();
         final Certificate[] simpleCertificateChain = privateKeyEntry.getCertificateChain();
         for (final Certificate certificate : simpleCertificateChain) {
 
-            x509CertificateList.add((X509Certificate) certificate);
+            x509CertificateList.add(new CertificateToken((X509Certificate) certificate));
         }
-        final X509Certificate[] certificateChain_ = new X509Certificate[x509CertificateList.size()];
+        final CertificateToken[] certificateChain_ = new CertificateToken[x509CertificateList.size()];
         certificateChain = x509CertificateList.toArray(certificateChain_);
         privateKey = privateKeyEntry.getPrivateKey();
     }
 
     @Override
-    public X509Certificate getCertificate() {
+    public CertificateToken getCertificate() {
         return certificate;
     }
 
     @Override
-    public X509Certificate[] getCertificateChain() {
+    public CertificateToken[] getCertificateChain() {
         return certificateChain;
     }
 

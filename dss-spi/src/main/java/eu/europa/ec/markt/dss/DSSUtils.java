@@ -503,7 +503,7 @@ public final class DSSUtils {
 	 * @param path resource location.
 	 * @return
 	 */
-	public static X509Certificate loadCertificate(final String path) throws DSSException {
+	public static CertificateToken loadCertificate(final String path) throws DSSException {
 
 		final InputStream inputStream = DSSUtils.class.getResourceAsStream(path);
 		return loadCertificate(inputStream);
@@ -518,10 +518,10 @@ public final class DSSUtils {
 	 * @param file
 	 * @return
 	 */
-	public static X509Certificate loadCertificate(final File file) throws DSSException {
+	public static CertificateToken loadCertificate(final File file) throws DSSException {
 
 		final InputStream inputStream = DSSUtils.toByteArrayInputStream(file);
-		final X509Certificate x509Certificate = loadCertificate(inputStream);
+		final CertificateToken x509Certificate = loadCertificate(inputStream);
 		return x509Certificate;
 	}
 
@@ -533,12 +533,12 @@ public final class DSSUtils {
 	 * @param inputStream input stream containing the certificate
 	 * @return
 	 */
-	public static X509Certificate loadCertificate(final InputStream inputStream) throws DSSException {
+	public static CertificateToken loadCertificate(final InputStream inputStream) throws DSSException {
 
 		try {
 
 			final X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(inputStream);
-			return cert;
+			return new CertificateToken(cert);
 		} catch (CertificateException e) {
 			throw new DSSException(e);
 		}
@@ -553,7 +553,7 @@ public final class DSSUtils {
 	 * @param input array of bytes containing the certificate
 	 * @return
 	 */
-	public static X509Certificate loadCertificate(final byte[] input) throws DSSException {
+	public static CertificateToken loadCertificate(final byte[] input) throws DSSException {
 
 		if (input == null) {
 			throw new DSSNullException(byte[].class, "X5009 certificate");
@@ -568,7 +568,7 @@ public final class DSSUtils {
 	 * @param base64Encoded
 	 * @return
 	 */
-	public static X509Certificate loadCertificateFromBase64EncodedString(final String base64Encoded) {
+	public static CertificateToken loadCertificateFromBase64EncodedString(final String base64Encoded) {
 
 		final byte[] bytes = DSSUtils.base64Decode(base64Encoded);
 		return loadCertificate(bytes);
@@ -584,7 +584,7 @@ public final class DSSUtils {
 	 * @param loader the loader to use
 	 * @return
 	 */
-	public static X509Certificate loadIssuerCertificate(final X509Certificate cert, final DataLoader loader) {
+	public static CertificateToken loadIssuerCertificate(final CertificateToken cert, final DataLoader loader) {
 
 		final String url = getAccessLocation(cert, X509ObjectIdentifiers.id_ad_caIssuers);
 		if (url == null) {
@@ -600,7 +600,7 @@ public final class DSSUtils {
 			LOG.error("Unable to read data from {}.", url);
 			return null;
 		}
-		final X509Certificate issuerCert = loadCertificate(bytes);
+		final CertificateToken issuerCert = loadCertificate(bytes);
 		if (issuerCert == null) {
 			LOG.error("Unable to read data from {}.", url);
 			return null;
@@ -634,9 +634,9 @@ public final class DSSUtils {
 		}
 	}
 
-	private static String getAccessLocation(final X509Certificate certificate, final ASN1ObjectIdentifier accessMethod) {
+	private static String getAccessLocation(final CertificateToken certificate, final ASN1ObjectIdentifier accessMethod) {
 
-		final byte[] authInfoAccessExtensionValue = certificate.getExtensionValue(Extension.authorityInfoAccess.getId());
+		final byte[] authInfoAccessExtensionValue = certificate.getCertificate().getExtensionValue(Extension.authorityInfoAccess.getId());
 		if (null == authInfoAccessExtensionValue) {
 			return null;
 		}
@@ -1349,13 +1349,13 @@ public final class DSSUtils {
 		return issuerSerial;
 	}
 
-	public static X509Certificate getCertificate(final X509CertificateHolder x509CertificateHolder) {
+	public static CertificateToken getCertificate(final X509CertificateHolder x509CertificateHolder) {
 
 		try {
 
 			final Certificate certificate = x509CertificateHolder.toASN1Structure();
 			final X509CertificateObject x509CertificateObject = new X509CertificateObject(certificate);
-			return x509CertificateObject;
+			return new CertificateToken(x509CertificateObject);
 		} catch (CertificateParsingException e) {
 			throw new DSSException(e);
 		}

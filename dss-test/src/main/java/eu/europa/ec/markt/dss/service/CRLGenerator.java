@@ -28,7 +28,7 @@ public class CRLGenerator {
 	public X509CRL generateCRL(X509Certificate certToRevoke, DSSPrivateKeyEntry issuerEntry, Date dateOfRevoke, int reason) throws Exception {
 
 		Date now = new Date();
-		X500Name x500nameIssuer = new JcaX509CertificateHolder(issuerEntry.getCertificate()).getSubject();
+		X500Name x500nameIssuer = new JcaX509CertificateHolder(issuerEntry.getCertificate().getCertificate()).getSubject();
 		X509v2CRLBuilder crlGen = new X509v2CRLBuilder(x500nameIssuer, now);
 
 		crlGen.setNextUpdate(new Date(now.getTime() + (60 * 60 * 1000)));
@@ -40,7 +40,7 @@ public class CRLGenerator {
 		crlGen.addExtension(Extension.authorityKeyIdentifier, false,
 				extUtils.createAuthorityKeyIdentifier(issuerEntry.getCertificate().getPublicKey()));
 
-		X509CRLHolder crlHolder = crlGen.build(new JcaContentSignerBuilder(issuerEntry.getCertificate().getSigAlgName()).setProvider(
+		X509CRLHolder crlHolder = crlGen.build(new JcaContentSignerBuilder(issuerEntry.getCertificate().getCertificate().getSigAlgName()).setProvider(
 				BouncyCastleProvider.PROVIDER_NAME).build(issuerEntry.getPrivateKey()));
 
 		JcaX509CRLConverter converter = new JcaX509CRLConverter();

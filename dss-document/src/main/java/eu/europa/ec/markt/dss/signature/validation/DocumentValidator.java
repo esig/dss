@@ -10,6 +10,7 @@ import org.w3c.dom.Document;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.ProcessExecutor;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
@@ -65,7 +66,7 @@ public interface DocumentValidator {
 	 *
 	 * @param x509Certificate
 	 */
-	void defineSigningCertificate(final X509Certificate x509Certificate);
+	void defineSigningCertificate(final CertificateToken x509Certificate);
 
 	void setPolicyFile(final File policyDocument);
 

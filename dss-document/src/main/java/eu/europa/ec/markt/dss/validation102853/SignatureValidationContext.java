@@ -222,11 +222,11 @@ public class SignatureValidationContext implements ValidationContext {
 	 */
 	private CertificateToken getIssuerFromAIA(final CertificateToken token) {
 
-		final X509Certificate issuerCert;
+		final CertificateToken issuerCert;
 		try {
 
 			LOG.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
-			issuerCert = DSSUtils.loadIssuerCertificate(token.getCertificate(), dataLoader);
+			issuerCert = DSSUtils.loadIssuerCertificate(token, dataLoader);
 			if (issuerCert != null) {
 
 				final CertificateToken issuerCertToken = validationCertificatePool.getInstance(issuerCert, CertificateSourceType.AIA);

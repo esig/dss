@@ -43,6 +43,7 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.ws.signature.DSSException_Exception;
 import eu.europa.ec.markt.dss.ws.signature.DigestAlgorithm;
 import eu.europa.ec.markt.dss.ws.signature.DssTransform;
@@ -199,7 +200,7 @@ public final class SigningUtils {
 
 		final XMLGregorianCalendar xmlGregorianCalendar = DSSXMLUtils.createXMLGregorianCalendar(new Date());
 		wsParameters.setSigningDate(xmlGregorianCalendar);
-		final byte[] encoded = DSSUtils.getEncoded(parameters.getSigningCertificate());
+		final byte[] encoded = parameters.getSigningCertificate().getEncoded();
 		wsParameters.setSigningCertificateBytes(encoded);
 	}
 
@@ -211,8 +212,8 @@ public final class SigningUtils {
 			for (final ChainCertificate chainCertificate : certificateChain) {
 
 				final WsChainCertificate wsChainCertificate = new WsChainCertificate();
-				final X509Certificate x509Certificate = chainCertificate.getX509Certificate();
-				wsChainCertificate.setX509Certificate(DSSUtils.getEncoded(x509Certificate));
+				final CertificateToken x509Certificate = chainCertificate.getX509Certificate();
+				wsChainCertificate.setX509Certificate(x509Certificate.getEncoded());
 				wsChainCertificate.setSignedAttribute(chainCertificate.isSignedAttribute());
 				wsChainCertificateList.add(wsChainCertificate);
 			}

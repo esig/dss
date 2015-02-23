@@ -97,7 +97,7 @@ public class CommonCertificateSource implements CertificateSource {
      * @return the corresponding certificate token
      */
     @Override
-    public CertificateToken addCertificate(final X509Certificate x509Certificate) {
+    public CertificateToken addCertificate(final CertificateToken x509Certificate) {
 
         final CertificateToken certToken = certPool.getInstance(x509Certificate, getCertificateSourceType());
         if (certificateTokens != null) {
@@ -160,7 +160,7 @@ public class CommonCertificateSource implements CertificateSource {
      * @param serviceInfo
      * @return
      */
-    protected CertificateToken addCertificate(final X509Certificate certificate, final ServiceInfo serviceInfo) {
+    protected CertificateToken addCertificate(final CertificateToken certificate, final ServiceInfo serviceInfo) {
 
         final CertificateToken certToken = certPool.getInstance(certificate, getCertificateSourceType(), serviceInfo);
         if (certificateTokens != null) {

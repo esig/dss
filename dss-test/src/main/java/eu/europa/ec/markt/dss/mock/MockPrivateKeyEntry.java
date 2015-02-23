@@ -1,27 +1,27 @@
 package eu.europa.ec.markt.dss.mock;
 
 import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 public class MockPrivateKeyEntry implements DSSPrivateKeyEntry {
 
 	private final EncryptionAlgorithm encryptionAlgo;
-	private final X509Certificate certificate;
-	private final X509Certificate[] certificateChain;
+	private final CertificateToken certificate;
+	private final CertificateToken[] certificateChain;
 	private final PrivateKey privateKey;
 
-	public MockPrivateKeyEntry(EncryptionAlgorithm encryptionAlgo, X509Certificate certificate, PrivateKey privateKey) {
+	public MockPrivateKeyEntry(EncryptionAlgorithm encryptionAlgo, CertificateToken certificate, PrivateKey privateKey) {
 		this.encryptionAlgo = encryptionAlgo;
 		this.certificate = certificate;
 		this.privateKey = privateKey;
 		this.certificateChain = null;
 	}
 
-	public MockPrivateKeyEntry(EncryptionAlgorithm encryptionAlgo, X509Certificate certificate, X509Certificate[] certificateChain,
+	public MockPrivateKeyEntry(EncryptionAlgorithm encryptionAlgo, CertificateToken certificate, CertificateToken[] certificateChain,
 			PrivateKey privateKey) {
 		this.encryptionAlgo = encryptionAlgo;
 		this.certificate = certificate;
@@ -30,12 +30,12 @@ public class MockPrivateKeyEntry implements DSSPrivateKeyEntry {
 	}
 
 	@Override
-	public X509Certificate getCertificate() {
+	public CertificateToken getCertificate() {
 		return certificate;
 	}
 
 	@Override
-	public X509Certificate[] getCertificateChain() {
+	public CertificateToken[] getCertificateChain() {
 		return certificateChain;
 	}
 

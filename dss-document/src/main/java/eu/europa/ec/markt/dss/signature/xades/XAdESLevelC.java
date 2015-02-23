@@ -232,7 +232,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			final List<CertificateToken> processedCertificateTokenList = new ArrayList<CertificateToken>();
 			processedCertificateTokenList.addAll(processedCertificateTokens);
 			processedCertificateTokenList.remove(certificateToken);
-			final List<X509Certificate> x509CertificateProcessedList = DSSUtils.getX509Certificates(processedCertificateTokenList);
+			final List<CertificateToken> x509CertificateProcessedList = processedCertificateTokenList;
 			incorporateCertificateRef(certRefsDom, x509CertificateProcessedList);
 
 			// XAdES-C: complete revocation references

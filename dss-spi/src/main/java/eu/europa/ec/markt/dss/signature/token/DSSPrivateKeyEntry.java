@@ -21,27 +21,26 @@
 package eu.europa.ec.markt.dss.signature.token;
 
 import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * Interface for a PrivateKey.
  *
- * @version $Revision$ - $Date$
  */
 public interface DSSPrivateKeyEntry {
 
     /**
      * @return the certificate
      */
-    X509Certificate getCertificate();
+	CertificateToken getCertificate();
 
     /**
      * @return the certificateChain
      */
-    X509Certificate[] getCertificateChain();
+	CertificateToken[] getCertificateChain();
 
     /**
      * Get the SignatureAlgorithm corresponding to the PrivateKey

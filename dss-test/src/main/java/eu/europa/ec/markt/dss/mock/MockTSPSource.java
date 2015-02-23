@@ -5,8 +5,8 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -39,11 +39,11 @@ import org.bouncycastle.tsp.TimeStampTokenGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
 public class MockTSPSource implements TSPSource {
@@ -62,7 +62,7 @@ public class MockTSPSource implements TSPSource {
 
 	private final PrivateKey key;
 
-	private final X509Certificate cert;
+	private final CertificateToken cert;
 
 	private final Date timestampDate;
 
@@ -78,7 +78,7 @@ public class MockTSPSource implements TSPSource {
 
 		this.setPolicyOid("1.234.567.890");
 
-		LOG.debug("TSP mockup with certificate {}", TokenIdentifier.getId(cert));
+		LOG.debug("TSP mockup with certificate {}", cert.getDSSId());
 
 	}
 
@@ -112,7 +112,7 @@ public class MockTSPSource implements TSPSource {
 
 		try {
 			final ContentSigner sigGen = new JcaContentSignerBuilder(signatureAlgorithm).build(key);
-			final JcaX509CertificateHolder certHolder = new JcaX509CertificateHolder(cert);
+			final JcaX509CertificateHolder certHolder = new JcaX509CertificateHolder(cert.getCertificate());
 
 			// that to make sure we generate the same timestamp data for the
 			// same timestamp date
@@ -131,7 +131,8 @@ public class MockTSPSource implements TSPSource {
 			final DigestCalculator sha1DigestCalculator = DSSUtils.getSHA1DigestCalculator();
 
 			final TimeStampTokenGenerator tokenGenerator = new TimeStampTokenGenerator(sig, sha1DigestCalculator, policyOid);
-			final Set<X509Certificate> singleton = Collections.singleton(cert);
+			final Set<X509Certificate> singleton = new HashSet<X509Certificate>();
+			singleton.add(cert.getCertificate());
 			tokenGenerator.addCertificates(new JcaCertStore(singleton));
 			final TimeStampResponseGenerator generator = new TimeStampResponseGenerator(tokenGenerator, TSPAlgorithms.ALLOWED);
 

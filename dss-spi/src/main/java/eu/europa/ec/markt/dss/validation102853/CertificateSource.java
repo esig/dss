@@ -48,7 +48,7 @@ public interface CertificateSource extends Serializable {
      * @param certificate the certificate you have to trust
      * @return the corresponding certificate token
      */
-    public CertificateToken addCertificate(final X509Certificate certificate);
+    public CertificateToken addCertificate(final CertificateToken certificate);
 
     /**
      * This method returns the <code>List</code> of <code>CertificateToken</code>(s) corresponding to the given subject distinguished name.

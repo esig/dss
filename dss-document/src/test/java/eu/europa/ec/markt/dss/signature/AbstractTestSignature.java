@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
@@ -126,7 +127,7 @@ public abstract class AbstractTestSignature {
 		String signingCertificateId = diagnosticData.getSigningCertificateId();
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
-		X509Certificate certificate = getPrivateKeyEntry().getCertificate();
+		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
 		// Remove space, normal ?
 		assertEquals(certificate.getSubjectDN().getName().replace(" ", ""), certificateDN.replace(" ", ""));
 		assertEquals(certificate.getSerialNumber().toString(), certificateSerialNumber);
@@ -135,7 +136,7 @@ public abstract class AbstractTestSignature {
 	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
 		String signingCertificateId = diagnosticData.getSigningCertificateId();
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
-		X509Certificate certificate = getPrivateKeyEntry().getCertificate();
+		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
 		// Remove space, normal ?
 		assertEquals(certificate.getIssuerDN().getName().replace(" ", ""), issuerDN.replace(" ", ""));
 	}

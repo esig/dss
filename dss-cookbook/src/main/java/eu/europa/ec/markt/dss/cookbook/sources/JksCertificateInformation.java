@@ -11,6 +11,7 @@ import java.util.List;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.JKSSignatureToken;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * TODO
@@ -39,10 +40,10 @@ public class JksCertificateInformation {
 		List<DSSPrivateKeyEntry> keys = jksSignatureToken.getKeys();
 		for (DSSPrivateKeyEntry key : keys) {
 
-			X509Certificate certificate = key.getCertificate();
+			CertificateToken certificate = key.getCertificate();
 			System.out.println(dateFormat.format(certificate.getNotAfter()) + ": " + certificate.getSubjectX500Principal());
-			X509Certificate[] certificateChain = key.getCertificateChain();
-			for (X509Certificate x509Certificate : certificateChain) {
+			CertificateToken[] certificateChain = key.getCertificateChain();
+			for (CertificateToken x509Certificate : certificateChain) {
 
 				System.out.println("/t" + dateFormat.format(x509Certificate.getNotAfter()) + ": " + x509Certificate.getSubjectX500Principal());
 
