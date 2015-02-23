@@ -33,7 +33,7 @@ public class ValidateSignedXmlCadesB extends Cookbook {
 
 		DSSDocument document = new FileDocument("signedXmlCadesBEnvelopping");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		System.out.println(validator.getClass().toGenericString());
+		System.out.println(validator.getClass());
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		AlwaysValidOCSPSource ocspSource = new AlwaysValidOCSPSource();

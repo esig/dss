@@ -37,6 +37,7 @@ import org.apache.commons.codec.binary.Base64;
 /**
  * Container for a Digest and his algorithm
  */
+@SuppressWarnings("serial")
 public final class Digest implements Serializable {
 
 	private DigestAlgorithm algorithm;

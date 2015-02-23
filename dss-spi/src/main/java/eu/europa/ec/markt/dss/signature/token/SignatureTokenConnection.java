@@ -28,9 +28,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * Connection through available API to the SSCD (SmartCard, MSCAPI, PKCS#12)
  *
- * @version $Revision$ - $Date$
  */
-
 public interface SignatureTokenConnection {
 
 	/**
@@ -54,4 +52,5 @@ public interface SignatureTokenConnection {
 	 * @throws DSSException If there is any problem during the signature process
 	 */
 	byte[] sign(final byte[] bytes, final DigestAlgorithm digestAlgorithm, final DSSPrivateKeyEntry keyEntry) throws DSSException;
+
 }

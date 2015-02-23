@@ -44,6 +44,7 @@ import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.keys.KeyInfo;
@@ -1534,9 +1535,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 
-				final CRLRef ref = new CRLRef();
-				ref.setDigestAlgorithm(digestAlgo);
-				ref.setDigestValue(DSSUtils.base64Decode(digestValueEl.getTextContent()));
+				final CRLRef ref = new CRLRef(digestAlgo, Base64.decodeBase64(digestValueEl.getTextContent()));
 				certIds.add(ref);
 			}
 		}

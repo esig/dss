@@ -20,30 +20,23 @@
 
 package eu.europa.ec.markt.dss.signature.token;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.io.IOUtils;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 
 /**
  * Class holding all Java KeyStore file access logic.
  *
- * @version $Revision: 980 $ - $Date: 2011-06-16 14:17:13 +0200 (jeu., 16 juin 2011) $
  */
-
 public class JKSSignatureToken extends AbstractSignatureTokenConnection {
 
 	private char[] password;
@@ -66,25 +59,15 @@ public class JKSSignatureToken extends AbstractSignatureTokenConnection {
 			ksStream = ksLocation.openStream();
 			password = (ksPassword == null) ? null : ksPassword.toCharArray();
 			keyStore.load(ksStream, password);
-		} catch (CertificateException e) {
-			throw new DSSException(e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException(e);
-		} catch (KeyStoreException e) {
-			throw new DSSException(e);
-		} catch (MalformedURLException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
-
-			DSSUtils.closeQuietly(ksStream);
+			IOUtils.closeQuietly(ksStream);
 		}
 	}
 
 	@Override
 	public void close() {
-
 		for (int ii = 0; ii < password.length; ii++) {
 			password[ii] = 0;
 		}
@@ -113,11 +96,7 @@ public class JKSSignatureToken extends AbstractSignatureTokenConnection {
 					list.add(new KSPrivateKeyEntry(entry));
 				}
 			}
-		} catch (UnrecoverableEntryException e) {
-			throw new DSSException(e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException(e);
-		} catch (KeyStoreException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 		return list;

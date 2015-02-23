@@ -53,19 +53,13 @@ public enum CRLReasonEnum {
 		this.value = value;
 	}
 
-	private static final Map<Integer, CRLReasonEnum> intToReasonMap = new HashMap<Integer, CRLReasonEnum>();
-
-	static {
-		for (CRLReasonEnum reason : CRLReasonEnum.values()) {
-			intToReasonMap.put(reason.value, reason);
-		}
-	}
-
 	public static CRLReasonEnum fromInt(final int value) {
-		CRLReasonEnum reason = intToReasonMap.get(value);
-		if (reason == null) {
-			return CRLReasonEnum.unknow;
+		for (CRLReasonEnum reason : CRLReasonEnum.values()) {
+			if(reason.value == value) {
+				return reason;
+			}
 		}
-		return reason;
+		return CRLReasonEnum.unknow;
 	}
+
 }

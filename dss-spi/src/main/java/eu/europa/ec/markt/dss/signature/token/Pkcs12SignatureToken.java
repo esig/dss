@@ -33,6 +33,8 @@ import java.util.List;
 
 import javax.crypto.BadPaddingException;
 
+import org.apache.commons.io.IOUtils;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSBadPasswordException;
 import eu.europa.ec.markt.dss.exception.DSSBadPasswordException.MSG;
@@ -41,9 +43,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * Class holding all PKCS#12 file access logic.
  *
- * @version $Revision: 980 $ - $Date: 2011-06-16 14:17:13 +0200 (jeu., 16 juin 2011) $
  */
-
 public class Pkcs12SignatureToken extends AbstractSignatureTokenConnection {
 
     private char[] password;
@@ -165,9 +165,9 @@ public class Pkcs12SignatureToken extends AbstractSignatureTokenConnection {
             if (e.getCause() instanceof BadPaddingException) {
                 throw new DSSBadPasswordException(MSG.PKCS12_BAD_PASSWORD);
             }
-            throw new DSSException("Can't initialize Sun PKCS#12 security provider. Reason: " + getCauseMessage(e), e);
+            throw new DSSException("Can't initialize Sun PKCS#12 security provider. Reason: " + e.getMessage(), e);
         } finally {
-            DSSUtils.closeQuietly(input);
+            IOUtils.closeQuietly(input);
         }
         return list;
     }
