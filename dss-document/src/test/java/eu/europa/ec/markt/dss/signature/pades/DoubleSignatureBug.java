@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.junit.BeforeClass;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
@@ -16,6 +15,7 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.utils.TestUtils;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
@@ -47,7 +47,7 @@ public class DoubleSignatureBug {
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
 		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
-		byte[] signatureValue = DSSUtils.encrypt(signatureAlgorithm.getJCEId(), privateKeyEntry.getPrivateKey(), dataToSign);
+		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new SignatureParameters();
@@ -57,7 +57,7 @@ public class DoubleSignatureBug {
 		Thread.sleep(2000);
 
 		dataToSign = service.getDataToSign(signedDocument, params);
-		signatureValue = DSSUtils.encrypt(signatureAlgorithm.getJCEId(), privateKeyEntry.getPrivateKey(), dataToSign);
+		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);

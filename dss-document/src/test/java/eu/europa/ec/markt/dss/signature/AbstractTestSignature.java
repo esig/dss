@@ -17,9 +17,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.utils.TestUtils;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
@@ -93,7 +93,7 @@ public abstract class AbstractTestSignature {
 		DSSPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
 
 		final byte[] dataToSign = service.getDataToSign(toBeSigned, params);
-		final byte[] signatureValue = DSSUtils.encrypt(params.getSignatureAlgorithm().getJCEId(), privateKeyEntry.getPrivateKey(), dataToSign);
+		final byte[] signatureValue = TestUtils.sign(params.getSignatureAlgorithm(), privateKeyEntry.getPrivateKey(), dataToSign);
 		final DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 		return signedDocument;
 	}
@@ -172,19 +172,19 @@ public abstract class AbstractTestSignature {
 		boolean foundSignatureTimeStamp = false;
 		boolean foundArchiveTimeStamp = false;
 
-		if (timestampIdList != null && timestampIdList.size() > 0) {
+		if ((timestampIdList != null) && (timestampIdList.size() > 0)) {
 			for (String timestampId : timestampIdList) {
 				String timestampType = diagnosticData.getTimestampType(timestampId);
 				TimestampType type = TimestampType.valueOf(timestampType);
 				switch (type) {
-				case SIGNATURE_TIMESTAMP:
-					foundSignatureTimeStamp = true;
-					break;
-				case ARCHIVE_TIMESTAMP:
-					foundArchiveTimeStamp = true;
-					break;
-				default:
-					break;
+					case SIGNATURE_TIMESTAMP:
+						foundSignatureTimeStamp = true;
+						break;
+					case ARCHIVE_TIMESTAMP:
+						foundArchiveTimeStamp = true;
+						break;
+					default:
+						break;
 				}
 
 			}

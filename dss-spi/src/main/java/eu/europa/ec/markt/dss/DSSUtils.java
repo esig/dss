@@ -37,6 +37,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -937,21 +938,15 @@ public final class DSSUtils {
 	 * @param bytes                  the data to digest
 	 * @return digested and encrypted array of bytes
 	 */
+	@Deprecated
 	public static byte[] encrypt(final String javaSignatureAlgorithm, final PrivateKey privateKey, final byte[] bytes) {
-
 		try {
-
 			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
-
 			signature.initSign(privateKey);
 			signature.update(bytes);
 			final byte[] signatureValue = signature.sign();
 			return signatureValue;
-		} catch (SignatureException e) {
-			throw new DSSException(e);
-		} catch (InvalidKeyException e) {
-			throw new DSSException(e);
-		} catch (NoSuchAlgorithmException e) {
+		} catch (GeneralSecurityException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -1394,9 +1389,9 @@ public final class DSSUtils {
 				digest.update(Long.toString(signingTime.getTime()).getBytes());
 			}
 			digest.update(id.getBytes());
-			
+
 			byte[] digestValue = digest.digest();
-			
+
 			final String deterministicId = "id-" + Hex.encodeHexString(digestValue);
 			return deterministicId;
 		} catch (NoSuchAlgorithmException e) {
