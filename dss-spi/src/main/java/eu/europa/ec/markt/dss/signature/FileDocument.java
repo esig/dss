@@ -24,6 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -67,7 +70,6 @@ public class FileDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() throws DSSException {
-
 		final InputStream inputStream = DSSUtils.toInputStream(file);
 		return inputStream;
 	}
@@ -92,28 +94,25 @@ public class FileDocument extends CommonDocument {
 
 	@Override
 	public byte[] getBytes() throws DSSException {
-
 		final InputStream inputStream = openStream();
 		final byte[] bytes = DSSUtils.toByteArray(inputStream);
-		DSSUtils.closeQuietly(inputStream);
+		IOUtils.closeQuietly(inputStream);
 		return bytes;
 	}
 
 	@Override
 	public void save(final String path) throws IOException {
-
 		final InputStream inputStream = openStream();
 		DSSUtils.saveToFile(inputStream, path);
-		DSSUtils.closeQuietly(inputStream);
+		IOUtils.closeQuietly(inputStream);
 	}
 
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-
 		final InputStream inputStream = openStream();
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, inputStream);
-		DSSUtils.closeQuietly(inputStream);
-		final String base64Encode = DSSUtils.base64Encode(digestBytes);
+		IOUtils.closeQuietly(inputStream);
+		final String base64Encode = Base64.encodeBase64String(digestBytes);
 		return base64Encode;
 	}
 }

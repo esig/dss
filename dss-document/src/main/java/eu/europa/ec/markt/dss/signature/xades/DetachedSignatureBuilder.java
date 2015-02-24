@@ -25,9 +25,9 @@ import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Text;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -41,16 +41,9 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 /**
  * This class handles the specifics of the detached XML signature.
- * <p/>
- * <p/>
- * DISCLAIMER: Project owner DG-MARKT.
- *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 672 $ - $Date: 2011-05-12 11:59:21 +0200 (Thu, 12 May 2011) $
  */
 class DetachedSignatureBuilder extends SignatureBuilder {
 
-	// private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DetachedSignatureBuilder.class.getName());
 
 	/**
 	 * The default constructor for DetachedSignatureBuilder.<br>
@@ -120,14 +113,13 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 	 */
 	@Override
 	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
-
 		if (!built) {
-
 			build();
 		}
+
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
-		final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);
+		final String signatureValueBase64Encoded = Base64.encodeBase64String(signatureValueBytes);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 

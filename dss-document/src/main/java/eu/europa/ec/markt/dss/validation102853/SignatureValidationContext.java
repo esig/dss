@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.RejectedExecutionException;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -138,10 +137,12 @@ public class SignatureValidationContext implements ValidationContext {
 		this.signatureOCSPSource = certificateVerifier.getSignatureOCSPSource();
 	}
 
+	@Override
 	public Date getCurrentTime() {
 		return currentTime;
 	}
 
+	@Override
 	public void setCurrentTime(final Date currentTime) throws DSSException {
 
 		if (currentTime == null) {
@@ -198,7 +199,7 @@ public class SignatureValidationContext implements ValidationContext {
 		final X500Principal issuerX500Principal = token.getIssuerX500Principal();
 		CertificateToken issuerCertificateToken = getIssuerFromPool(token, issuerX500Principal);
 
-		if (issuerCertificateToken == null && token instanceof CertificateToken) {
+		if ((issuerCertificateToken == null) && (token instanceof CertificateToken)) {
 
 			issuerCertificateToken = getIssuerFromAIA((CertificateToken) token);
 		}
@@ -206,7 +207,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 			token.extraInfo().infoTheSigningCertNotFound();
 		}
-		if (issuerCertificateToken != null && !issuerCertificateToken.isTrusted() && !issuerCertificateToken.isSelfSigned()) {
+		if ((issuerCertificateToken != null) && !issuerCertificateToken.isTrusted() && !issuerCertificateToken.isSelfSigned()) {
 
 			// The full chain is retrieved for each certificate
 			getIssuerCertificate(issuerCertificateToken);
@@ -363,43 +364,31 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private void validateLoop() {
-
 		Token token = null;
 		do {
-
 			token = getNotYetVerifiedToken();
 			if (token != null) {
 
-				try {
+				/**
+				 * Gets the issuer certificate of the Token and checks its signature
+				 */
+				final CertificateToken issuerCertToken = getIssuerCertificate(token);
+				if (issuerCertToken != null) {
+					addCertificateTokenForVerification(issuerCertToken);
+				}
 
-					/**
-					 * Gets the issuer certificate of the Token and checks its signature
-					 */
-					final CertificateToken issuerCertToken = getIssuerCertificate(token);
-					if (issuerCertToken != null) {
-
-						addCertificateTokenForVerification(issuerCertToken);
-					}
-					if (token instanceof CertificateToken) {
-
-						final RevocationToken revocationToken = getRevocationData((CertificateToken) token);
-						addRevocationTokenForVerification(revocationToken);
-					}
-
-				} catch (RejectedExecutionException e) {
-					LOG.error(e.getMessage(), e);
-					throw new DSSException(e);
+				if (token instanceof CertificateToken) {
+					final RevocationToken revocationToken = getRevocationData((CertificateToken) token);
+					addRevocationTokenForVerification(revocationToken);
 				}
 
 			}
-			
 		} while (token != null);
-
 	}
 
 	/**
 	 * Retrieves the revocation data from signature (if exists) or from the online sources. The issuer certificate must be provided, the underlining library (bouncy castle) needs
-	 * it to build the request. 
+	 * it to build the request.
 	 *
 	 * @param certToken
 	 * @return
@@ -409,7 +398,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Checking revocation data for: " + certToken.getDSSIdAsString());
 		}
-		if (certToken.isSelfSigned() || certToken.isTrusted() || certToken.getIssuerToken() == null) {
+		if (certToken.isSelfSigned() || certToken.isTrusted() || (certToken.getIssuerToken() == null)) {
 
 			// It is not possible to check the revocation data without its signing certificate;
 			// This check is not needed for the trust anchor.
@@ -473,7 +462,7 @@ public class SignatureValidationContext implements ValidationContext {
 				for (final ServiceInfo serviceInfo : serviceInfoList) {
 
 					final Date date = serviceInfo.getExpiredCertsRevocationInfo();
-					if (date != null && date.before(notAfter)) {
+					if ((date != null) && date.before(notAfter)) {
 
 						if (serviceInfo.getStatusEndDate() == null) {
 

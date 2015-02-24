@@ -72,6 +72,7 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -99,7 +100,6 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.PolicyInformation;
-import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CRLHolder;
@@ -150,10 +150,6 @@ public final class DSSUtils {
 	 */
 	public static final String EMPTY = "";
 
-	/**
-	 * <p>The maximum size to which the padding constant(s) can expand.</p>
-	 */
-	private static final int PAD_LIMIT = 8192;
 
 	private static final CertificateFactory certificateFactory;
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
@@ -184,20 +180,13 @@ public final class DSSUtils {
 			jcaDigestCalculatorProviderBuilder.setProvider("BC");
 
 		} catch (CertificateException e) {
-
-			LOG.error(e.toString());
+			LOG.error(e.getMessage(), e);
 			throw new DSSException("Platform does not support X509 certificate", e);
 		} catch (NoSuchProviderException e) {
-
-			LOG.error(e.toString());
+			LOG.error(e.getMessage(), e);
 			throw new DSSException("Platform does not support BouncyCastle", e);
 		}
 	}
-
-	/**
-	 * The default buffer size to use.
-	 */
-	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -357,9 +346,8 @@ public final class DSSUtils {
 	 * @return encoded base64 string
 	 */
 	public static String base64Encode(DSSDocument dssDocument) {
-
 		final byte[] bytes = dssDocument.getBytes();
-		final String base64EncodedBytes = base64Encode(bytes);
+		final String base64EncodedBytes = Base64.encodeBase64String(bytes);
 		return base64EncodedBytes;
 	}
 
@@ -371,7 +359,7 @@ public final class DSSUtils {
 
 		try {
 			final byte[] bytes = certificate.getEncoded();
-			final String base64EncodedBytes = base64Encode(bytes);
+			final String base64EncodedBytes = Base64.encodeBase64String(bytes);
 			return base64EncodedBytes;
 		} catch (CertificateEncodingException e) {
 			throw new DSSException(e);
@@ -574,8 +562,7 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static X509Certificate loadCertificateFromBase64EncodedString(final String base64Encoded) {
-
-		final byte[] bytes = DSSUtils.base64Decode(base64Encoded);
+		final byte[] bytes = Base64.decodeBase64(base64Encoded);
 		return loadCertificate(bytes);
 	}
 
@@ -601,7 +588,7 @@ public final class DSSUtils {
 			throw new DSSNullException(DataLoader.class);
 		}
 		byte[] bytes = loader.get(url);
-		if (bytes == null || bytes.length <= 0) {
+		if ((bytes == null) || (bytes.length <= 0)) {
 			LOG.error("Unable to read data from {}.", url);
 			return null;
 		}
@@ -688,7 +675,7 @@ public final class DSSUtils {
 	 */
 	public static X509CRL loadCRLBase64Encoded(final String base64Encoded) {
 
-		final byte[] derEncoded = DSSUtils.base64Decode(base64Encoded);
+		final byte[] derEncoded = Base64.decodeBase64(base64Encoded);
 		final X509CRL crl = loadCRL(new ByteArrayInputStream(derEncoded));
 		return crl;
 	}
@@ -731,7 +718,7 @@ public final class DSSUtils {
 	 */
 	public static BasicOCSPResp loadOCSPBase64Encoded(final String base64Encoded) {
 
-		final byte[] derEncoded = DSSUtils.base64Decode(base64Encoded);
+		final byte[] derEncoded = Base64.decodeBase64(base64Encoded);
 		try {
 
 			final OCSPResp ocspResp = new OCSPResp(derEncoded);
@@ -747,8 +734,7 @@ public final class DSSUtils {
 	}
 
 	public static List<String> getPolicyIdentifiers(final X509Certificate cert) {
-
-		final byte[] certificatePolicies = cert.getExtensionValue(X509Extension.certificatePolicies.getId());
+		final byte[] certificatePolicies = cert.getExtensionValue(Extension.certificatePolicies.getId());
 		if (certificatePolicies == null) {
 
 			return Collections.emptyList();
@@ -817,7 +803,7 @@ public final class DSSUtils {
 	 */
 	public static StringBuffer replaceStrStr(final StringBuffer string, final String oldPattern, final String newPattern) {
 
-		if (string == null || oldPattern == null || oldPattern.equals("") || newPattern == null) {
+		if ((string == null) || (oldPattern == null) || oldPattern.equals("") || (newPattern == null)) {
 
 			return string;
 		}
@@ -956,7 +942,6 @@ public final class DSSUtils {
 	 * @param bytes                  the data to digest
 	 * @return digested and encrypted array of bytes
 	 */
-	@Deprecated
 	public static byte[] encrypt(final String javaSignatureAlgorithm, final PrivateKey privateKey, final byte[] bytes) {
 
 		try {
@@ -1310,8 +1295,8 @@ public final class DSSUtils {
 			final FileOutputStream fileOutputStream = new FileOutputStream(file);
 			final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 			copy(inputStream, fileOutputStream);
-			closeQuietly(inputStream);
-			closeQuietly(fileOutputStream);
+			IOUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(fileOutputStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -1656,7 +1641,7 @@ public final class DSSUtils {
 	 */
 	public static boolean equals(final X500Principal firstX500Principal, final X500Principal secondX500Principal) {
 
-		if (firstX500Principal == null || secondX500Principal == null) {
+		if ((firstX500Principal == null) || (secondX500Principal == null)) {
 			return false;
 		}
 		if (firstX500Principal.equals(secondX500Principal)) {
@@ -2035,10 +2020,10 @@ public final class DSSUtils {
 		if (leftArray == rightArray) {
 			return true;
 		}
-		if (leftArray == null || rightArray == null) {
+		if ((leftArray == null) || (rightArray == null)) {
 			return false;
 		}
-		if (leftArray == null && rightArray == null) {
+		if ((leftArray == null) && (rightArray == null)) {
 			return true;
 		}
 		for (int ii = 0; ii < elementNumber; ii++) {
@@ -2086,13 +2071,13 @@ public final class DSSUtils {
 				continue;
 			}
 			// if there is no next byte, throw incorrect encoding error
-			if (posSource + 1 >= escaped.length) {
+			if ((posSource + 1) >= escaped.length) {
 				throw new Exception("String incorrectly escaped, ends with escape character.");
 			}
 			// deal with hex first
 			if (escaped[posSource + 1] == 'x') {
 				// if there's no next byte, throw incorrect encoding error
-				if (posSource + 3 >= escaped.length) {
+				if ((posSource + 3) >= escaped.length) {
 					throw new Exception("String incorrectly escaped, ends early with incorrect hex encoding.");
 				}
 				unescaped[posTarget] = (byte) ((Character.digit(escaped[posSource + 2], 16) << 4) + Character.digit(escaped[posSource + 3], 16));
@@ -2242,15 +2227,15 @@ public final class DSSUtils {
 		final StackTraceElement[] stackTrace = exception.getStackTrace();
 		String message = "See log file for full stack trace.\n";
 		message += exception.toString() + '\n';
-		for (int ii = 0; ii < stackTrace.length; ii++) {
+		for (StackTraceElement element : stackTrace) {
 
-			final String className = stackTrace[ii].getClassName();
+			final String className = element.getClassName();
 			if (className.equals(javaClassName)) {
 
-				message += stackTrace[ii].toString() + '\n';
+				message += element.toString() + '\n';
 				break;
 			}
-			message += stackTrace[ii].toString() + '\n';
+			message += element.toString() + '\n';
 		}
 		return message;
 	}
@@ -2272,7 +2257,7 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 		}
 	}
 
@@ -2313,8 +2298,9 @@ public final class DSSUtils {
 	 * @param collection the collection to check, may be null
 	 * @return true if empty or null
 	 */
+	@Deprecated
 	public static boolean isEmpty(final Collection collection) {
-		return collection == null || collection.isEmpty();
+		return CollectionUtils.isEmpty(collection);
 	}
 
 	/**
@@ -2325,7 +2311,7 @@ public final class DSSUtils {
 	 * @return the new {@code byte} array
 	 */
 	public static byte[] concatenate(byte[]... arrays) {
-		if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
+		if ((arrays == null) || (arrays.length == 0) || ((arrays.length == 1) && (arrays[0] == null))) {
 			return null;
 		}
 		if (arrays.length == 1) {

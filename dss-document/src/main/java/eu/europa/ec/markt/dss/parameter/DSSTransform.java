@@ -32,9 +32,9 @@ public class DSSTransform {
 
 	private String algorithm;
 
-	String elementName;
-	String namespace;
-	String textContent;
+	private String elementName;
+	private String namespace;
+	private String textContent;
 	private boolean perform = false;
 
 	public DSSTransform() {
@@ -104,11 +104,11 @@ public class DSSTransform {
 	@Override
 	public String toString() {
 		return "DSSTransform{" +
-			  "algorithm='" + algorithm + '\'' +
-			  ", elementName='" + elementName + '\'' +
-			  ", namespace='" + namespace + '\'' +
-			  ", textContent='" + textContent + '\'' +
-			  ", perform=" + perform +
-			  '}';
+				"algorithm='" + algorithm + '\'' +
+				", elementName='" + elementName + '\'' +
+				", namespace='" + namespace + '\'' +
+				", textContent='" + textContent + '\'' +
+				", perform=" + perform +
+				'}';
 	}
 }

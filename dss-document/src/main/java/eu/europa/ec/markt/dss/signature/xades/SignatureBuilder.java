@@ -30,6 +30,9 @@ import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -58,11 +61,7 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
 /**
  * This class implements all the necessary mechanisms to build each form of the XML signature.
- * <p/>
- * DISCLAIMER: Project owner DG-MARKT.
  *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 672 $ - $Date: 2011-05-12 11:59:21 +0200 (Thu, 12 May 2011) $
  */
 public abstract class SignatureBuilder extends XAdESBuilder {
 
@@ -96,7 +95,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 	/*
 	 * The object encapsulating the Time Stamp Protocol needed to create the level -T, of the signature
-     */
+	 */
 	protected TSPSource tspSource;
 
 	/**
@@ -138,13 +137,13 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	protected void setCanonicalizationMethods(final SignatureParameters params, final String canonicalizationMethod) {
 
 		final String signedInfoCanonicalizationMethod_ = params.getSignedInfoCanonicalizationMethod();
-		if (DSSUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
+		if (StringUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
 			signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod_;
 		} else {
 			signedInfoCanonicalizationMethod = canonicalizationMethod;
 		}
 		final String signedPropertiesCanonicalizationMethod_ = params.getSignedPropertiesCanonicalizationMethod();
-		if (DSSUtils.isNotBlank(signedPropertiesCanonicalizationMethod_)) {
+		if (StringUtils.isNotBlank(signedPropertiesCanonicalizationMethod_)) {
 			signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod_;
 		} else {
 			signedPropertiesCanonicalizationMethod = canonicalizationMethod;
@@ -164,10 +163,8 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 		deterministicId = params.getDeterministicId();
 
-
 		final List<DSSReference> references = params.getReferences();
-		if (references == null || references.size() == 0) {
-
+		if (CollectionUtils.isEmpty(references)) {
 			final List<DSSReference> defaultReferences = createDefaultReferences();
 			// The SignatureParameters object is updated with the default references.
 			params.setReferences(defaultReferences);
@@ -195,7 +192,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalized SignedInfo         --> {}", new String(canonicalizedSignedInfo));
 			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedSignedInfo);
-			LOG.trace("Canonicalized SignedInfo SHA256  --> {}", DSSUtils.base64Encode(digest));
+			LOG.trace("Canonicalized SignedInfo SHA256  --> {}", Base64.encodeBase64String(digest));
 		}
 		built = true;
 		return canonicalizedSignedInfo;
@@ -259,7 +256,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		for (final ChainCertificate chainCertificate : params.getCertificateChain()) {
 
 			final X509Certificate x509Certificate = chainCertificate.getX509Certificate();
-			if (trustAnchorBPPolicy && certificatePool != null) {
+			if (trustAnchorBPPolicy && (certificatePool != null)) {
 
 				if (!certificatePool.get(x509Certificate.getSubjectX500Principal()).isEmpty()) {
 					if (firstCertificate) {
@@ -276,7 +273,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	private void addCertificate(final Element x509DataDom, final X509Certificate x509Certificate) {
 
 		final byte[] encoded = DSSUtils.getEncoded(x509Certificate);
-		final String base64Encoded = DSSUtils.base64Encode(encoded);
+		final String base64Encoded = Base64.encodeBase64String(encoded);
 		// <ds:X509Certificate>...</ds:X509Certificate>
 		DSSXMLUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_CERTIFICATE, base64Encoded);
 	}
@@ -368,11 +365,11 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 		final String elementName = dssTransform.getElementName();
 		final String textContent = dssTransform.getTextContent();
-		if (DSSUtils.isNotBlank(elementName)) {
+		if (StringUtils.isNotBlank(elementName)) {
 
 			final String namespace = dssTransform.getNamespace();
 			DSSXMLUtils.addTextElement(document, transformDom, namespace, elementName, textContent);
-		} else if (DSSUtils.isNotBlank(textContent)) {
+		} else if (StringUtils.isNotBlank(textContent)) {
 
 			final Document transformContentDoc = DSSXMLUtils.buildDOM(textContent);
 			final Element contextDocumentElement = transformContentDoc.getDocumentElement();
@@ -448,7 +445,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	private void incorporatePolicy() {
 
 		final BLevelParameters.Policy signaturePolicy = params.bLevel().getSignaturePolicy();
-		if (signaturePolicy != null && signaturePolicy.getId() != null) {
+		if ((signaturePolicy != null) && (signaturePolicy.getId() != null)) {
 
 			final Element signaturePolicyIdentifierDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_POLICY_IDENTIFIER);
 			final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
@@ -462,7 +459,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 				final String signaturePolicyId = signaturePolicy.getId();
 				DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);
 
-				if (signaturePolicy.getDigestAlgorithm() != null && signaturePolicy.getDigestValue() != null) {
+				if ((signaturePolicy.getDigestAlgorithm() != null) && (signaturePolicy.getDigestValue() != null)) {
 
 					final Element sigPolicyHashDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIG_POLICY_HASH);
 
@@ -471,7 +468,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 					incorporateDigestMethod(sigPolicyHashDom, digestAlgorithm);
 
 					final byte[] hashValue = signaturePolicy.getDigestValue();
-					final String bas64EncodedHashValue = DSSUtils.base64Encode(hashValue);
+					final String bas64EncodedHashValue = Base64.encodeBase64String(hashValue);
 					DSSXMLUtils.addTextElement(documentDom, sigPolicyHashDom, XMLNS, DS_DIGEST_VALUE, bas64EncodedHashValue);
 				}
 			}
@@ -592,18 +589,16 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 		final List<String> claimedSignerRoles = params.bLevel().getClaimedSignerRoles();
 		final List<String> certifiedSignerRoles = params.bLevel().getCertifiedSignerRoles();
-		if (claimedSignerRoles != null || certifiedSignerRoles != null) {
+		if ((claimedSignerRoles != null) || (certifiedSignerRoles != null)) {
 
 			final Element signerRoleDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNER_ROLE);
 
-			if (claimedSignerRoles != null && !claimedSignerRoles.isEmpty()) {
-
+			if (CollectionUtils.isNotEmpty(claimedSignerRoles)) {
 				final Element claimedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CLAIMED_ROLES);
 				addRoles(claimedSignerRoles, claimedRolesDom, XADES_CLAIMED_ROLE);
 			}
 
-			if (certifiedSignerRoles != null && !certifiedSignerRoles.isEmpty()) {
-
+			if (CollectionUtils.isNotEmpty(certifiedSignerRoles)) {
 				final Element certifiedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CERTIFIED_ROLES);
 				addRoles(certifiedSignerRoles, certifiedRolesDom, XADES_CERTIFIED_ROLE);
 			}
@@ -716,7 +711,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		timestampElement.appendChild(canonicalizationMethodElement);
 
 		Element encapsulatedTimestampElement = documentDom.createElementNS(XAdES, XADES_ENCAPSULATED_TIME_STAMP);
-		encapsulatedTimestampElement.setTextContent(DSSUtils.base64Encode(token.getEncoded()));
+		encapsulatedTimestampElement.setTextContent(Base64.encodeBase64String(token.getEncoded()));
 
 		timestampElement.appendChild(encapsulatedTimestampElement);
 	}

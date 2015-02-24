@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +68,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 /**
  * -T profile of XAdES signature
  *
- * @version $Revision$ - $Date$
  */
-
 public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignatureExtension {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineT.class);
@@ -129,7 +128,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 
 			currentSignatureDom = (Element) signatureNodeList.item(ii);
 			final String currentSignatureId = currentSignatureDom.getAttribute(ID);
-			if (signatureId != null && !signatureId.equals(currentSignatureId)) {
+			if ((signatureId != null) && !signatureId.equals(currentSignatureId)) {
 
 				continue;
 			}
@@ -217,7 +216,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 			boolean trustAnchorIncluded = false;
 			for (final CertificateToken certificateToken : toIncludeCertificates) {
 
-				if (trustAnchorBPPolicy && certificatePool != null) {
+				if (trustAnchorBPPolicy && (certificatePool != null)) {
 
 					final List<CertificateToken> certificateTokens = certificatePool.get(certificateToken.getSubjectX500Principal());
 					if (certificateTokens.size() > 0) {
@@ -225,7 +224,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 					}
 				}
 				final byte[] bytes = certificateToken.getEncoded();
-				final String base64EncodeCertificate = DSSUtils.base64Encode(bytes);
+				final String base64EncodeCertificate = Base64.encodeBase64String(bytes);
 				DSSXMLUtils.addTextElement(documentDom, certificateValuesDom, XAdES, XADES_ENCAPSULATED_X509_CERTIFICATE, base64EncodeCertificate);
 			}
 			if (trustAnchorBPPolicy && !trustAnchorIncluded) {
@@ -290,12 +289,12 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 
 			if (LOG.isDebugEnabled()) {
 
-				final String encodedDigestValue = DSSUtils.base64Encode(digestValue);
+				final String encodedDigestValue = Base64.encodeBase64String(digestValue);
 				LOG.debug("Timestamp generation: " + timestampDigestAlgorithm.getName() + " / " + timestampC14nMethod + " / " + encodedDigestValue);
 			}
 			final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
 			final byte[] timeStampTokenBytes = timeStampToken.getEncoded();
-			final String base64EncodedTimeStampToken = DSSUtils.base64Encode(timeStampTokenBytes);
+			final String base64EncodedTimeStampToken = Base64.encodeBase64String(timeStampTokenBytes);
 
 			final String timestampId = CertificateIdentifier.isUniqueIdentifier() ? tspSource.getUniqueId(digestValue) : UUID.randomUUID().toString();
 			timeStampDom.setAttribute(ID, "TS-" + timestampId);

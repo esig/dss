@@ -17,11 +17,7 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
 /**
  * This is the interface to be used when implementing different signature validators.
- * <p/>
- * DISCLAIMER: Project owner DG-MARKT.
  *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
  */
 public interface DocumentValidator {
 
@@ -76,7 +72,7 @@ public interface DocumentValidator {
 	 *
 	 * @param processExecutor
 	 */
-	public void setProcessExecutor(final ProcessExecutor processExecutor);
+	void setProcessExecutor(final ProcessExecutor processExecutor);
 
 
 	/**
@@ -140,12 +136,12 @@ public interface DocumentValidator {
 	 *
 	 * @return {@code SignedDocumentValidator} which corresponds to the next signature found within an ASiC-E container. {@code null} if there is no more signatures.
 	 */
-	public DocumentValidator getNextValidator();
+	DocumentValidator getNextValidator();
 
 	/**
 	 * @return
 	 */
-	public DocumentValidator getSubordinatedValidator();
+	DocumentValidator getSubordinatedValidator();
 
 	/**
 	 * This method allows the removal of the signature from the given signed document.

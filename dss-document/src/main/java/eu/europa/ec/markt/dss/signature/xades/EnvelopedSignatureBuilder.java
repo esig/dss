@@ -26,6 +26,9 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,7 +36,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -49,11 +51,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
  * This class handles the specifics of the enveloped XML signature
- * <p/>
- * <p> DISCLAIMER: Project owner DG-MARKT.
  *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 672 $ - $Date: 2011-05-12 11:59:21 +0200 (Thu, 12 May 2011) $
  */
 class EnvelopedSignatureBuilder extends SignatureBuilder {
 
@@ -122,7 +120,6 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 
 	@Override
 	protected MimeType getReferenceMimeType(final DSSReference reference) {
-
 		return MimeType.XML;
 	}
 
@@ -147,7 +144,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		Node nodeToTransform = null;
 		final String uri = reference.getUri();
 		// Check if the reference is related to the whole document
-		if (DSSUtils.isNotBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
+		if (StringUtils.isNotBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
 
 			final Document document = DSSXMLUtils.buildDOM(dssDocument);
 			DSSXMLUtils.recursiveIdBrowse(document.getDocumentElement());
@@ -155,7 +152,7 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 			nodeToTransform = document.getElementById(uri_id);
 		}
 		byte[] transformedReferenceBytes = null;
-		if (DSSUtils.isEmpty(transforms)) {
+		if (CollectionUtils.isEmpty(transforms)) {
 			transformedReferenceBytes = DSSXMLUtils.serializeNode(nodeToTransform);
 		} else {
 			transformedReferenceBytes = applyTransformations(dssDocument, transforms, nodeToTransform, transformedReferenceBytes);
@@ -222,7 +219,6 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 
 		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
 		for (int ii = signatureNodeList.getLength() - 1; ii >= 0; ii--) {
-
 			final Element signatureDOM = (Element) signatureNodeList.item(ii);
 			signatureDOM.getParentNode().removeChild(signatureDOM);
 		}
@@ -237,14 +233,13 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	 */
 	@Override
 	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
-
 		if (!built) {
-
 			build();
 		}
+
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
-		final String signatureValueBase64Encoded = DSSUtils.base64Encode(signatureValueBytes);
+		final String signatureValueBase64Encoded = Base64.encodeBase64String(signatureValueBytes);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 

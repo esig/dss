@@ -22,11 +22,9 @@ package eu.europa.ec.markt.dss.signature.xades;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -42,18 +40,14 @@ import eu.europa.ec.markt.dss.validation102853.crl.CRLToken;
 /**
  * XL profile of XAdES signature
  *
- * @version $Revision$ - $Date$
  */
-
 public class XAdESLevelXL extends XAdESLevelX {
 
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelXL.class);
 
 	/**
 	 * The default constructor for XAdESLevelXL.
 	 */
 	public XAdESLevelXL(final CertificateVerifier certificateVerifier) {
-
 		super(certificateVerifier);
 	}
 
@@ -68,7 +62,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 	@Override
 	protected void extendSignatureTag() throws DSSException {
 
-        /* Go up to -X */
+		/* Go up to -X */
 		super.extendSignatureTag();
 
 		if (!xadesSignature.hasXLProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
@@ -149,7 +143,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		for (final RevocationToken revocationToken : crlTokens) {
 
 			final byte[] encodedCRL = revocationToken.getEncoded();
-			final String base64EncodedCRL = DSSUtils.base64Encode(encodedCRL);
+			final String base64EncodedCRL = Base64.encodeBase64String(encodedCRL);
 			DSSXMLUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
 		}
 	}
@@ -168,7 +162,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		for (final RevocationToken revocationToken : ocspTokens) {
 
 			final byte[] encodedOCSP = revocationToken.getEncoded();
-			final String base64EncodedOCSP = DSSUtils.base64Encode(encodedOCSP);
+			final String base64EncodedOCSP = Base64.encodeBase64String(encodedOCSP);
 			DSSXMLUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
 		}
 	}

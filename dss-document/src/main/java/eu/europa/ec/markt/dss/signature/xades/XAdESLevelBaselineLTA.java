@@ -24,9 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
+import org.w3c.dom.Element; 
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
@@ -41,14 +39,10 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 
 /**
- * Holds level A aspects of XAdES
+ * Holds level LTA aspects of XAdES
  *
- * @version $Revision$ - $Date$
  */
-
 public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineLTA.class);
 
 	/**
 	 * The default constructor for XAdESLevelBaselineLTA.
@@ -102,10 +96,10 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	private void incorporateTimestampValidationData(final ValidationContext validationContext) {
 
 		final Element timeStampValidationDataDom = DSSXMLUtils
-			  .addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:TimeStampValidationData");
+				.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:TimeStampValidationData");
 
 		final Set<CertificateToken> toIncludeSetOfCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
-		final List toIncludeCertificates = new ArrayList();
+		final List<CertificateToken> toIncludeCertificates = new ArrayList<CertificateToken>();
 		toIncludeCertificates.addAll(toIncludeSetOfCertificates);
 		incorporateCertificateValues(timeStampValidationDataDom, toIncludeCertificates);
 
