@@ -1,9 +1,10 @@
-package eu.europa.ec.markt.dss.cookbook.example;
+package eu.europa.ec.markt.dss.cookbook.example.sign;
 
 import java.io.IOException;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -17,18 +18,17 @@ import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
  */
 public class SignXmlXadesB extends Cookbook {
 
-	public static void main(String[] args) throws DSSException, IOException {
-		// GET document to be signed - 
+	public static void main(final String[] args) throws DSSException, IOException {
+		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		prepareXmlDoc();
-		
+
 		// Get a token connection based on a pkcs12 file commonly used to store private
 		// keys with accompanying public key certificates, protected with a password-based
-		// symmetric key - 
-		// Return AbstractSignatureTokenConnection signingToken 
-		
-		// and he first private key entry from the PKCS12 store
-		// Return DSSPrivateKeyEntry privateKey *****
+		// symmetric key -
+		// Return AbstractSignatureTokenConnection signingToken
+		// and it's first private key entry from the PKCS12 store
+		// Return DSSPrivateKeyEntry privateKey
 		preparePKCS12TokenAndKey();
 
 		// Preparing parameters for the XAdES signature
@@ -42,6 +42,7 @@ public class SignXmlXadesB extends Cookbook {
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		// We choose the private key with the certificate and corresponding certificate chain.
 		parameters.setPrivateKeyEntry(privateKey);
+
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		// Create XAdES service for signature
@@ -57,8 +58,8 @@ public class SignXmlXadesB extends Cookbook {
 		// We invoke the service to sign the document with the signature value obtained in
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		
 		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesB.xml");
 	}
 }

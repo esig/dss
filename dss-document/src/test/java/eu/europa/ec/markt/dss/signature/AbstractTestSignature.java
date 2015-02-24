@@ -123,7 +123,7 @@ public abstract class AbstractTestSignature {
 	}
 
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		int signingCertificateId = diagnosticData.getSigningCertificateId();
+		String signingCertificateId = diagnosticData.getSigningCertificateId();
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
 		X509Certificate certificate = getPrivateKeyEntry().getCertificate();
@@ -133,7 +133,7 @@ public abstract class AbstractTestSignature {
 	}
 
 	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
-		int signingCertificateId = diagnosticData.getSigningCertificateId();
+		String signingCertificateId = diagnosticData.getSigningCertificateId();
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
 		X509Certificate certificate = getPrivateKeyEntry().getCertificate();
 		// Remove space, normal ?
@@ -142,7 +142,7 @@ public abstract class AbstractTestSignature {
 
 	private void checkCertificateChain(DiagnosticData diagnosticData) {
 		DSSPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
-		List<Integer> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		// TODO what is correct ? signing certificate is in the chain or only
 		// parents ?
 		assertEquals(privateKeyEntry.getCertificateChain().length, signatureCertificateChain.size() - 1);

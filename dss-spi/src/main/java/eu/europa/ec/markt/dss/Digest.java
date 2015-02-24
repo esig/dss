@@ -30,31 +30,57 @@
 package eu.europa.ec.markt.dss;
 
 import java.io.Serializable;
+import java.util.Arrays;
+
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Container for a Digest and his algorithm
- * <p/>
- * <p>DISCLAIMER: Project owner DG-MARKT.
- *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 672 $ - $Date: 2011-05-12 11:59:21 +0200 (Thu, 12 May 2011) $
  */
-public class Digest implements Serializable {
+@SuppressWarnings("serial")
+public final class Digest implements Serializable {
 
 	private DigestAlgorithm algorithm;
 
 	private byte[] value;
 
-	/**
-	 * The default constructor for Digest.
-	 */
 	public Digest() {
 	}
-
+	
 	public Digest(DigestAlgorithm algorithm, byte[] value) {
-		super();
 		this.algorithm = algorithm;
 		this.value = value;
+	}
+	
+	@Override
+	public String toString() {
+		return algorithm.getName() + ":" + Base64.encodeBase64String(value);
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((algorithm == null) ? 0 : algorithm.hashCode());
+		result = prime * result + Arrays.hashCode(value);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Digest other = (Digest) obj;
+		if (algorithm != other.algorithm)
+			return false;
+		if (!Arrays.equals(value, other.value))
+			return false;
+		return true;
 	}
 
 	/**

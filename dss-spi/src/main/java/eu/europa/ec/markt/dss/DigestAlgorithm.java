@@ -33,7 +33,6 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * Supported Algorithms
  *
- * @version $Revision$ - $Date$
  */
 public enum DigestAlgorithm {
 

@@ -116,7 +116,7 @@ public class XmlCertificate {
     @XmlElement(name = "IssuerDistinguishedName", required = true)
     protected List<XmlDistinguishedName> issuerDistinguishedName;
     @XmlElement(name = "IssuerCertificate")
-    protected int issuerCertificate;
+    protected String issuerCertificate;
     @XmlElement(name = "SerialNumber", required = true)
     protected BigInteger serialNumber;
     @XmlElement(name = "DigestAlgAndValue")
@@ -158,7 +158,7 @@ public class XmlCertificate {
     @XmlElement(name = "Info")
     protected XmlInfoType info;
     @XmlAttribute(name = "Id", required = true)
-    protected int id;
+    protected String id;
 
     /**
      * Gets the value of the subjectDistinguishedName property.
@@ -222,7 +222,7 @@ public class XmlCertificate {
      * Gets the value of the issuerCertificate property.
      * 
      */
-    public int getIssuerCertificate() {
+    public String getIssuerCertificate() {
         return issuerCertificate;
     }
 
@@ -230,7 +230,7 @@ public class XmlCertificate {
      * Sets the value of the issuerCertificate property.
      * 
      */
-    public void setIssuerCertificate(int value) {
+    public void setIssuerCertificate(String value) {
         this.issuerCertificate = value;
     }
 
@@ -680,7 +680,7 @@ public class XmlCertificate {
      * Gets the value of the id property.
      * 
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -688,7 +688,7 @@ public class XmlCertificate {
      * Sets the value of the id property.
      * 
      */
-    public void setId(int value) {
+    public void setId(String value) {
         this.id = value;
     }
 

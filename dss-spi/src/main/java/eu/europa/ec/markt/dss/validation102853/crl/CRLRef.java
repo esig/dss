@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.validation102853.crl;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
 import java.text.ParseException;
@@ -41,10 +40,8 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * Reference to a X509CRL
  *
- * @version $Revision$ - $Date$
  */
-
-public class CRLRef {
+public final class CRLRef {
 
     private X500Name crlIssuer;
     private Date crlIssuedTime;
@@ -55,7 +52,9 @@ public class CRLRef {
     /**
      * The default constructor for CRLRef.
      */
-    public CRLRef() {
+    public CRLRef(DigestAlgorithm digestAlgorithm, byte[] digestValue) {
+    	this.digestAlgorithm = digestAlgorithm;
+    	this.digestValue = digestValue;
     }
 
     /**
@@ -104,24 +103,10 @@ public class CRLRef {
     }
 
     /**
-     * @param crlIssuer
-     */
-    public void setCrlIssuer(X500Name crlIssuer) {
-        this.crlIssuer = crlIssuer;
-    }
-
-    /**
      * @return
      */
     public Date getCrlIssuedTime() {
         return crlIssuedTime;
-    }
-
-    /**
-     * @param crlIssuedTime
-     */
-    public void setCrlIssuedTime(Date crlIssuedTime) {
-        this.crlIssuedTime = crlIssuedTime;
     }
 
     /**
@@ -132,13 +117,6 @@ public class CRLRef {
     }
 
     /**
-     * @param crlNumber
-     */
-    public void setCrlNumber(BigInteger crlNumber) {
-        this.crlNumber = crlNumber;
-    }
-
-    /**
      * @return
      */
     public DigestAlgorithm getDigestAlgorithm() {
@@ -146,24 +124,10 @@ public class CRLRef {
     }
 
     /**
-     * @param digestAlgorithm
-     */
-    public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
-        this.digestAlgorithm = digestAlgorithm;
-    }
-
-    /**
      * @return
      */
     public byte[] getDigestValue() {
         return digestValue;
-    }
-
-    /**
-     * @param digestValue
-     */
-    public void setDigestValue(byte[] digestValue) {
-        this.digestValue = digestValue;
     }
 
 }

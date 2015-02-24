@@ -1,42 +1,40 @@
-package eu.europa.ec.markt.dss.cookbook.example;
+package eu.europa.ec.markt.dss.cookbook.example.sign;
 
 import java.io.IOException;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
-import eu.europa.ec.markt.dss.signature.cades.CAdESService;
+import eu.europa.ec.markt.dss.signature.token.Pkcs12SignatureToken;
+import eu.europa.ec.markt.dss.signature.xades.XAdESService;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 
 /**
- * How to sign with CAdES-BASELINE-B enveloping signature.
+ * How to sign with XAdES-BASELINE-B
  */
-public class SignXmlCadesB extends Cookbook {
+public class SignXmlXadesBWithSelfSignedCertificate extends Cookbook {
 
 	public static void main(String[] args) throws IOException {
 
-		// GET document to be signed - 
+		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		prepareXmlDoc();
-		
-		// Get a token connection based on a pkcs12 file commonly used to store private
-		// keys with accompanying public key certificates, protected with a password-based
-		// symmetric key - 
-		// Return AbstractSignatureTokenConnection signingToken 
-		
-		// and he first private key entry from the PKCS12 store
-		// Return DSSPrivateKeyEntry privateKey *****
-		preparePKCS12TokenAndKey();
 
-		// Preparing parameters for the CAdES signature
+		// Create token connection base on a self sign certificate
+		String pkcs12TokenFile = getPathFromResource("/rca.p12");
+		signingToken = new Pkcs12SignatureToken("password", pkcs12TokenFile);
+		privateKey = signingToken.getKeys().get(0);
+
+		// Preparing parameters for the XAdES signature
 		SignatureParameters parameters = new SignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, -LTA).
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		// We choose the type of the signature packaging (ENVELOPING, DETACHED).
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
+		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		// We set the digest algorithm to use with the signature algorithm. You must use the
 		// same parameter when you invoke the method sign on the token. The default value is
 		// SHA256
@@ -46,21 +44,23 @@ public class SignXmlCadesB extends Cookbook {
 		parameters.setPrivateKeyEntry(privateKey);
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		// Create CAdES xadesService for signature
-		CAdESService service = new CAdESService(commonCertificateVerifier);
+		// Create XAdES xadesService for signature
+		XAdESService service = new XAdESService(commonCertificateVerifier);
 
-		// Get the SignedInfo segment that need to be signed.
+		// Get the SignedInfo XML segment that need to be signed.
 		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);
 
 		// This function obtains the signature value for signed information using the
 		// private key and specified algorithm
-		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+		DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		byte[] signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
 
 		// We invoke the xadesService to sign the document with the signature value obtained in
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
-		//signedDocument.save("c:/xml_example-cades-enveloping-b-signed.xml");
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlCadesBEnvelopping.xml");
+		//DSSUtils.copy(signedDocument.openStream(), System.out);
+		//signedDocument.save("c:/xml_example-xades-enveloped-b-signed-with-self-signed-certificate.xml");
+
+		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesB_WithSelfSignedCertificate.xml");
 	}
 }

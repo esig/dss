@@ -35,7 +35,7 @@ import javax.security.auth.x500.X500Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.CertificateIdentifier;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
@@ -57,7 +57,7 @@ public class CertificatePool implements Serializable {
 	 * Map of encapsulated certificates with unique DSS identifier as key (hash code calculated on issuer distinguished name and serial
 	 * number)
 	 */
-	private Map<Integer, CertificateToken> certById = new HashMap<Integer, CertificateToken>();
+	private Map<TokenIdentifier, CertificateToken> certById = new HashMap<TokenIdentifier, CertificateToken>();
 
 	/**
 	 * Map f encapsulated certificates with subject distinguished name as key.
@@ -125,13 +125,13 @@ public class CertificatePool implements Serializable {
 		//		if (LOG.isTraceEnabled()) {
 		//			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal().toString() + "|" + certificateToAdd.getSerialNumber());
 		//		}
-		final int id = CertificateIdentifier.getId(certificateToAdd);
+		final TokenIdentifier id = TokenIdentifier.getId(certificateToAdd);
 		synchronized (certById) {
 
 			CertificateToken certToken = certById.get(id);
 			if (certToken == null) {
 
-				certToken = CertificateToken.newInstance(certificateToAdd, id);
+				certToken = CertificateToken.newInstance(certificateToAdd);
 				certById.put(id, certToken);
 				final String subjectName = certificateToAdd.getSubjectX500Principal().getName(X500Principal.CANONICAL);
 				List<CertificateToken> list = certBySubject.get(subjectName);

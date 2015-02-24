@@ -1,9 +1,10 @@
-package eu.europa.ec.markt.dss.cookbook.example;
+package eu.europa.ec.markt.dss.cookbook.example.sign;
 
 import java.io.IOException;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -24,16 +25,15 @@ public class SignXmlXadesLT extends Cookbook {
 
 	public static void main(String[] args) throws DSSException, IOException {
 
-		// GET document to be signed - 
+		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		prepareXmlDoc();
-		
+
 		// Get a token connection based on a pkcs12 file commonly used to store private
 		// keys with accompanying public key certificates, protected with a password-based
-		// symmetric key - 
-		// Return AbstractSignatureTokenConnection signingToken 
-		
-		// and he first private key entry from the PKCS12 store
+		// symmetric key -
+		// Return AbstractSignatureTokenConnection signingToken
+		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
 		preparePKCS12TokenAndKey();
 
@@ -48,13 +48,13 @@ public class SignXmlXadesLT extends Cookbook {
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		// We choose the private key with the certificate and corresponding certificate chain.
 		parameters.setPrivateKeyEntry(privateKey);
-				
+
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		
+
 		CommonsDataLoader commonsHttpDataLoader = new CommonsDataLoader();
 
-		final String lotlUrl = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
+		String lotlUrl = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
 		TrustedListsCertificateSource tslCertificateSource = new TrustedListsCertificateSource();
 		tslCertificateSource.setLotlUrl(lotlUrl);
 		tslCertificateSource.setCheckSignature(false);
@@ -74,7 +74,7 @@ public class SignXmlXadesLT extends Cookbook {
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
 		service.setTspSource(getMockTSPSource());
-		
+
 		// Get the SignedInfo XML segment that need to be signed.
 		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);
 

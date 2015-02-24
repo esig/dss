@@ -1,9 +1,10 @@
-package eu.europa.ec.markt.dss.cookbook.example;
+package eu.europa.ec.markt.dss.cookbook.example.sign;
 
 import java.io.IOException;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -17,16 +18,15 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 
 	public static void main(String[] args) throws DSSException, IOException {
 
-		// GET document to be signed - 
+		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		prepareXmlDoc();
-		
+
 		// Get a token connection based on a pkcs12 file commonly used to store private
 		// keys with accompanying public key certificates, protected with a password-based
-		// symmetric key - 
-		// Return AbstractSignatureTokenConnection signingToken 
-		
-		// and he first private key entry from the PKCS12 store
+		// symmetric key -
+		// Return AbstractSignatureTokenConnection signingToken
+		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
 		preparePKCS12TokenAndKey();
 
@@ -46,10 +46,10 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
-		
+
 		//Set the Timestamp source
-		final String tspServer = "http://services.globaltrustfinder.com/adss/tsa";
-		final OnlineTSPSource onlineTSPSource = new OnlineTSPSource(tspServer);
+		String tspServer = "http://services.globaltrustfinder.com/adss/tsa";
+		OnlineTSPSource onlineTSPSource = new OnlineTSPSource(tspServer);
 		service.setTspSource(onlineTSPSource);
 
 		// Get the SignedInfo XML segment that need to be signed.
@@ -64,6 +64,6 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesTOnline.xml");	
+		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesTOnline.xml");
 	}
 }

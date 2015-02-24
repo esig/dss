@@ -89,7 +89,7 @@
 									<xs:sequence>
 										<xs:element type="DistinguishedName" name="SubjectDistinguishedName" maxOccurs="unbounded"/>
 										<xs:element type="DistinguishedName" name="IssuerDistinguishedName" maxOccurs="unbounded"/>
-										<xs:element type="xs:int" name="IssuerCertificate"/>
+										<xs:element type="xs:string" name="IssuerCertificate"/>
 										<xs:element type="xs:integer" name="SerialNumber"/>
 										<xs:element type="DigestAlgAndValueType" name="DigestAlgAndValue" minOccurs="0" maxOccurs="unbounded"/>
 										<xs:element type="xs:dateTime" name="NotAfter"/>
@@ -128,7 +128,7 @@
 										<xs:element type="RevocationType" name="Revocation"/>
 										<xs:element type="InfoType" name="Info" minOccurs="0"/>
 									</xs:sequence>
-									<xs:attribute type="xs:int" name="Id" use="required"/>
+									<xs:attribute type="xs:string" name="Id" use="required"/>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
@@ -177,7 +177,7 @@
 			<xs:element type="xs:boolean" name="IssuerSerialMatch" minOccurs="0"/>
 			<xs:element type="xs:string" name="Signed" minOccurs="0"/>
 		</xs:sequence>
-		<xs:attribute type="xs:int" name="Id" use="required"/>
+		<xs:attribute type="xs:string" name="Id" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="InfoType">
 		<xs:sequence>
@@ -213,7 +213,7 @@
 					<xs:sequence>
 						<xs:element type="xs:string" name="Source"/>
 					</xs:sequence>
-					<xs:attribute type="xs:int" name="Id" use="required"/>
+					<xs:attribute type="xs:string" name="Id" use="required"/>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
@@ -252,7 +252,7 @@
 			<xs:element type="InfoType" name="Info" minOccurs="0"/>
 			<xs:element type="SignedObjectsType" name="SignedObjects" minOccurs="0"/>
 		</xs:sequence>
-		<xs:attribute type="xs:int" name="Id" use="required"/>
+		<xs:attribute type="xs:string" name="Id" use="required"/>
 		<xs:attribute type="xs:string" name="Type" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="TrustedServiceProviderType">

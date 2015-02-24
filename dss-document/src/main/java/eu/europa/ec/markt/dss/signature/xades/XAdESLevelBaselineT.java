@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.ec.markt.dss.CertificateIdentifier;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
@@ -296,7 +296,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 			final byte[] timeStampTokenBytes = timeStampToken.getEncoded();
 			final String base64EncodedTimeStampToken = Base64.encodeBase64String(timeStampTokenBytes);
 
-			final String timestampId = CertificateIdentifier.isUniqueIdentifier() ? tspSource.getUniqueId(digestValue) : UUID.randomUUID().toString();
+			final String timestampId = UUID.randomUUID().toString();
 			timeStampDom.setAttribute(ID, "TS-" + timestampId);
 
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>

@@ -20,10 +20,11 @@
 
 package eu.europa.ec.markt.dss.signature.token;
 
+import java.security.Signature;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
@@ -31,16 +32,10 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 
 /**
  *
- * @version $Revision: 1835 $ - $Date: 2013-03-12 09:54:17 +0100 (Tue, 12 Mar 2013) $
  */
-
 public abstract class AbstractSignatureTokenConnection implements SignatureTokenConnection {
 
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
-
-    protected static String getCauseMessage(final Exception e) {
-        return (e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
-    }
 
     @Override
     public byte[] sign(final byte[] bytes, final DigestAlgorithm digestAlgorithm, final DSSPrivateKeyEntry keyEntry) throws DSSException {
@@ -49,7 +44,17 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
         LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
         final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
         final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
-        final byte[] encryptedBytes = DSSUtils.encrypt(javaSignatureAlgorithm, keyEntry.getPrivateKey(), bytes);
-        return encryptedBytes;
+        
+        try {
+			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
+			signature.initSign(keyEntry.getPrivateKey());
+			signature.update(bytes);
+			final byte[] signatureValue = signature.sign();
+			return signatureValue;
+        } catch(Exception e) {
+        	throw new DSSException(e);
+        }
+
     }
+
 }

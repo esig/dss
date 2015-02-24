@@ -39,9 +39,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * Class holding all MS CAPI API access logic.
  *
- * @version $Revision$ - $Date$
  */
-
 public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(MSCAPISignatureToken.class);

@@ -39,7 +39,7 @@ import org.bouncycastle.tsp.TimeStampTokenGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.CertificateIdentifier;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -78,7 +78,7 @@ public class MockTSPSource implements TSPSource {
 
 		this.setPolicyOid("1.234.567.890");
 
-		LOG.debug("TSP mockup with certificate {}", CertificateIdentifier.getId(cert));
+		LOG.debug("TSP mockup with certificate {}", TokenIdentifier.getId(cert));
 
 	}
 

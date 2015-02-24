@@ -45,9 +45,9 @@ import org.bouncycastle.tsp.TimeStampTokenGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.CertificateIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
@@ -106,7 +106,7 @@ public class MockTSPSource implements TSPSource {
 
 			trustedAnchor = (X509Certificate) ks.getCertificateChain(alias)[1];
 
-			LOG.debug("TSP mockup with certificate {}", CertificateIdentifier.getId(cert));
+			LOG.debug("TSP mockup with certificate {}", TokenIdentifier.getId(cert));
 		} catch (KeyStoreException e) {
 			throw new DSSException(e);
 		} catch (IOException e) {
@@ -198,9 +198,7 @@ public class MockTSPSource implements TSPSource {
 	public String getUniqueId(byte[] digestValue) {
 
 		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue, DSSUtils.toByteArray(timestampDate.getTime()));
-		//MODIFICATION BY NIP
 		return DSSUtils.toHex(digest);
-		//return DSSUtils.encodeHexString(digest);
 	}
 
 	private String getSignatureAlgorithm(DigestAlgorithm algorithm, byte[] digest) {

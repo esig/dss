@@ -36,7 +36,6 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * Wrapper of a PrivateKeyEntry coming from a KeyStore.
  *
- * @version $Revision$ - $Date$
  */
 public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 
@@ -99,4 +98,5 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
             throw new DSSException("Don't find algorithm for PrivateKey of type " + privateKey.getClass());
         }
     }
+    
 }

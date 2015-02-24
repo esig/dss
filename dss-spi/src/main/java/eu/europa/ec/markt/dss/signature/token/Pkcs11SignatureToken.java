@@ -32,7 +32,6 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Random;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -47,9 +46,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * PKCS11 token with callback
  *
- * @version $Revision: 968 $ - $Date: 2011-06-14 16:34:14 +0200 (mar., 14 juin 2011) $
  */
-
 public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 
     private Provider _pkcs11Provider;
@@ -200,7 +197,7 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
                         throw new DSSBadPasswordException(MSG.PKCS11_BAD_PASSWORD, e);
                     }
                 }
-                throw new KeyStoreException("Can't initialize Sun PKCS#11 security provider. Reason: " + getCauseMessage(e), e);
+                throw new KeyStoreException("Can't initialize Sun PKCS#11 security provider. Reason: " + e.getMessage(), e);
             }
         }
         return _keyStore;
@@ -240,8 +237,9 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
             }
 
         } catch (Exception e) {
-            throw new DSSException("Can't initialize Sun PKCS#11 security " + "provider. Reason: " + getCauseMessage(e), e);
+            throw new DSSException("Can't initialize Sun PKCS#11 security " + "provider. Reason: " + e.getMessage(), e);
         }
         return list;
     }
+    
 }
