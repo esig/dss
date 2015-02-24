@@ -59,13 +59,10 @@ import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.EMPTY;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.TSLConstant;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
-import eu.europa.ec.markt.dss.validation102853.crl.CRLReasonEnum;
 import eu.europa.ec.markt.dss.validation102853.policy.CertificateExpirationConstraint;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
@@ -178,7 +175,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
             if (signingCertificate == null) {
                 throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "signCert"));
             }
-		 */
+        */
 	}
 
 	/**
@@ -305,9 +302,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 			 * considered fresh, go to the next step.
 			 */
 
-			/*
-			 * --> This is done when other conditions are not met
-			 */
+            /*
+             * --> This is done when other conditions are not met
+             */
 
 			/**
 			 * b) If the certificate path validation returns a success indication and the revocation information used is
@@ -610,7 +607,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		}
 		constraint.create(validationDataXmlNode, BBB_XCV_IRDTFC);
 		final String anchorSource = certificateXmlDom.getValue("./Revocation/CertificateChain/ChainCertificate[last()]/Source/text()");
-		final CertificateSourceType anchorSourceType = StringUtils.isBlank(anchorSource) ? CertificateSourceType.UNKNOWN : CertificateSourceType.valueOf(anchorSource);
+		final CertificateSourceType anchorSourceType = DSSUtils.isBlank(anchorSource) ? CertificateSourceType.UNKNOWN : CertificateSourceType.valueOf(anchorSource);
 		constraint.setValue(isRevocationDataTrusted(anchorSourceType));
 		constraint.setIndications(INDETERMINATE, TRY_LATER, BBB_XCV_IRDTFC_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
@@ -638,10 +635,10 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkRevocationFreshnessConstraint(final Conclusion conclusion, final String certificateId, final boolean revocationFresh, final String revocationNextUpdate,
-			final String revocationIssuingTimeString, String subContext) {
+	                                                   final String revocationIssuingTimeString, String subContext) {
 
 		// If the revocation data does not exist then this check is ignored.
-		if (StringUtils.isBlank(revocationIssuingTimeString)) {
+		if (DSSUtils.isBlank(revocationIssuingTimeString)) {
 			return true;
 		}
 
@@ -701,21 +698,21 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 	 * @param subContext
 	 */
 	private boolean checkSigningCertificateRevokedConstraint(final Conclusion conclusion, final String certificateId, boolean revocationStatus, final String revocationReason,
-			final String revocationDatetime, String subContext) {
+	                                                         final String revocationDatetime, String subContext) {
 
 		final Constraint constraint = constraintData.getSigningCertificateRevokedConstraint(contextName, subContext);
 		if (constraint == null) {
 			return true;
 		}
 		constraint.create(validationDataXmlNode, BBB_XCV_ISCR);
-		final boolean revoked = !revocationStatus && !CRLReasonEnum.certificateHold.name().equals(revocationReason);
+		final boolean revoked = !revocationStatus && !revocationReason.equals(CRL_REASON_CERTIFICATE_HOLD);
 		constraint.setValue(String.valueOf(revoked));
 		constraint.setIndications(INDETERMINATE, REVOKED_NO_POE, BBB_XCV_ISCR_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
-		if (StringUtils.isNotBlank(revocationDatetime)) {
+		if (DSSUtils.isNotBlank(revocationDatetime)) {
 			constraint.setAttribute(REVOCATION_TIME, revocationDatetime);
 		}
-		if (StringUtils.isNotBlank(revocationReason)) {
+		if (DSSUtils.isNotBlank(revocationReason)) {
 			constraint.setAttribute(REVOCATION_REASON, revocationReason);
 		}
 		constraint.setConclusionReceiver(conclusion);
@@ -741,21 +738,21 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 	 * @return
 	 */
 	private boolean checkSigningCertificateOnHoldConstraint(final Conclusion conclusion, final String certificateId, final boolean revocationStatus, final String revocationReason,
-			final String revocationDatetime, final String revocationNextUpdate, String subContext) {
+	                                                        final String revocationDatetime, final String revocationNextUpdate, String subContext) {
 
 		final Constraint constraint = constraintData.getSigningCertificateOnHoldConstraint(contextName, subContext);
 		if (constraint == null) {
 			return true;
 		}
 		constraint.create(validationDataXmlNode, BBB_XCV_ISCOH);
-		final boolean onHold = !revocationStatus && CRLReasonEnum.certificateHold.name().equals(revocationReason);
+		final boolean onHold = !revocationStatus && revocationReason.equals(CRL_REASON_CERTIFICATE_HOLD);
 		constraint.setValue(String.valueOf(onHold));
 		constraint.setIndications(INDETERMINATE, TRY_LATER, BBB_XCV_ISCOH_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
-		if (StringUtils.isNotBlank(revocationDatetime)) {
+		if (DSSUtils.isNotBlank(revocationDatetime)) {
 			constraint.setAttribute(REVOCATION_TIME, revocationDatetime);
 		}
-		if (StringUtils.isNotBlank(revocationReason)) {
+		if (DSSUtils.isNotBlank(revocationReason)) {
 			constraint.setAttribute(REVOCATION_NEXT_UPDATE, revocationNextUpdate);
 		}
 		constraint.setConclusionReceiver(conclusion);
@@ -796,7 +793,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 			final Date statusStartDate = trustedServiceProviderXmlDom.getTimeValueOrNull("./StartDate/text()");
 			final Date statusEndDate = trustedServiceProviderXmlDom.getTimeValueOrNull("./EndDate/text()");
 			// The issuing time of the certificate should be into the validity period of the associated service
-			if (certificateValidFrom.after(statusStartDate) && ((statusEndDate == null) || certificateValidFrom.before(statusEndDate))) {
+			if (certificateValidFrom.after(statusStartDate) && (statusEndDate == null || certificateValidFrom.before(statusEndDate))) {
 
 				found = true;
 			}
@@ -836,8 +833,8 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 
 			status = trustedServiceProviderXmlDom == null ? "" : trustedServiceProviderXmlDom.getValue("./Status/text()");
 			acceptableStatus = SERVICE_STATUS_UNDERSUPERVISION.equals(status) || SERVICE_STATUS_SUPERVISIONINCESSATION.equals(status) || SERVICE_STATUS_ACCREDITED
-					.equals(status) || SERVICE_STATUS_UNDERSUPERVISION_119612.equals(status) || SERVICE_STATUS_SUPERVISIONINCESSATION_119612
-					.equals(status) || SERVICE_STATUS_ACCREDITED_119612.equals(status);
+				  .equals(status) || SERVICE_STATUS_UNDERSUPERVISION_119612.equals(status) || SERVICE_STATUS_SUPERVISIONINCESSATION_119612
+				  .equals(status) || SERVICE_STATUS_ACCREDITED_119612.equals(status);
 			if (acceptableStatus) {
 				break;
 			}
@@ -885,12 +882,12 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 			}
 			final Date statusStartDate = trustedServiceProviderXmlDom.getTimeValueOrNull("./StartDate/text()");
 			final Date statusEndDate = trustedServiceProviderXmlDom.getTimeValueOrNull("./EndDate/text()");
-			if (certificateValidFrom.after(statusStartDate) && ((statusEndDate == null) || certificateValidFrom.before(statusEndDate))) {
+			if (certificateValidFrom.after(statusStartDate) && (statusEndDate == null || certificateValidFrom.before(statusEndDate))) {
 
 				final String status = trustedServiceProviderXmlDom == null ? "" : trustedServiceProviderXmlDom.getValue("./Status/text()");
 				found = SERVICE_STATUS_UNDERSUPERVISION.equals(status) || SERVICE_STATUS_SUPERVISIONINCESSATION.equals(status) || SERVICE_STATUS_ACCREDITED
-						.equals(status) || SERVICE_STATUS_UNDERSUPERVISION_119612.equals(status) || SERVICE_STATUS_SUPERVISIONINCESSATION_119612
-						.equals(status) || SERVICE_STATUS_ACCREDITED_119612.equals(status);
+					  .equals(status) || SERVICE_STATUS_UNDERSUPERVISION_119612.equals(status) || SERVICE_STATUS_SUPERVISIONINCESSATION_119612
+					  .equals(status) || SERVICE_STATUS_ACCREDITED_119612.equals(status);
 				if (found) {
 					break;
 				}
@@ -919,7 +916,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 	 * @param subContext
 	 */
 	private boolean checkIntermediateCertificateRevokedConstraint(final Conclusion conclusion, final String certificateId, final boolean revocationStatus,
-			final String revocationReason, final String revocationDatetime, String subContext) {
+	                                                              final String revocationReason, final String revocationDatetime, String subContext) {
 
 		final Constraint constraint = constraintData.getIntermediateCertificateRevokedConstraint(contextName);
 		if (constraint == null) {
@@ -930,10 +927,10 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		constraint.setValue(String.valueOf(revoked));
 		constraint.setIndications(INDETERMINATE, REVOKED_CA_NO_POE, BBB_XCV_IICR_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
-		if (StringUtils.isNotBlank(revocationDatetime)) {
+		if (DSSUtils.isNotBlank(revocationDatetime)) {
 			constraint.setAttribute(REVOCATION_TIME, revocationDatetime);
 		}
-		if (StringUtils.isNotBlank(revocationReason)) {
+		if (DSSUtils.isNotBlank(revocationReason)) {
 			constraint.setAttribute(REVOCATION_REASON, revocationReason);
 		}
 		constraint.setConclusionReceiver(conclusion);
