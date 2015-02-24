@@ -27,7 +27,7 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.pdfbox.cos.COSDictionary;
@@ -66,18 +66,24 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private boolean verified;
 	private SignatureCryptographicVerification verifyResult;
 
-	private Map<PdfSignatureOrDocTimestampInfo, Boolean> outerSignatures = new ConcurrentHashMap<PdfSignatureOrDocTimestampInfo, Boolean>();
+	// Replace ConcurrentHashSet
+	private Set<PdfSignatureOrDocTimestampInfo> outerSignatures = Collections
+			.newSetFromMap(new ConcurrentHashMap<PdfSignatureOrDocTimestampInfo, Boolean>());
 
 	/**
 	 * @param validationCertPool
-	 * @param outerCatalog       the PDF Dict of the outer document, if the PDFDocument in a enclosed revision. Can be null.
-	 * @param document           the signed PDFDocument
-	 * @param cms                the CMS bytes (CAdES signature)
-	 * @param inputStream        the stream of the whole signed document
+	 * @param outerCatalog
+	 *            the PDF Dict of the outer document, if the PDFDocument in a enclosed revision. Can be null.
+	 * @param document
+	 *            the signed PDFDocument
+	 * @param cms
+	 *            the CMS bytes (CAdES signature)
+	 * @param inputStream
+	 *            the stream of the whole signed document
 	 * @throws IOException
 	 */
 	PdfBoxCMSInfo(CertificatePool validationCertPool, PdfDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms,
-	              InputStream inputStream) throws DSSException, IOException {
+			InputStream inputStream) throws DSSException, IOException {
 		this.validationCertPool = validationCertPool;
 		this.outerCatalog = PdfDssDict.build(outerCatalog);
 		this.cms = cms;
@@ -125,6 +131,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	/**
 	 * @return the byte of the originally signed document
 	 */
+	@Override
 	public byte[] getSignedDocumentBytes() {
 		return signedBytes;
 	}
@@ -165,20 +172,18 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private int bytesToInt(byte[] bytes) {
 		ByteBuffer buffer = ByteBuffer.allocate(8);
 		buffer.put(bytes, 0, Integer.SIZE / 8);
-		buffer.flip();//need flip
+		buffer.flip();// need flip
 		return buffer.getInt();
 	}
 
 	@Override
 	public void addOuterSignature(PdfSignatureOrDocTimestampInfo signatureInfo) {
-
-		signatureInfo = PdfBoxSignatureService.signatureAlreadyInListOrSelf(outerSignatures, signatureInfo);
-		outerSignatures.put(signatureInfo, false);
+		outerSignatures.add(signatureInfo);
 	}
 
 	@Override
-	public Map<PdfSignatureOrDocTimestampInfo,Boolean> getOuterSignatures() {
-		return Collections.unmodifiableMap(outerSignatures);
+	public Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
+		return Collections.unmodifiableSet(outerSignatures);
 	}
 
 	@Override
