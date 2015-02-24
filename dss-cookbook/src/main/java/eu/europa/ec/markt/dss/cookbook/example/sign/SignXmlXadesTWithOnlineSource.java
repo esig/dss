@@ -14,6 +14,9 @@ import eu.europa.ec.markt.dss.signature.xades.XAdESService;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.tsp.OnlineTSPSource;
 
+/**
+ * How to sign with XAdES-BASELINE-T
+ */
 public class SignXmlXadesTWithOnlineSource extends Cookbook {
 
 	public static void main(String[] args) throws DSSException, IOException {

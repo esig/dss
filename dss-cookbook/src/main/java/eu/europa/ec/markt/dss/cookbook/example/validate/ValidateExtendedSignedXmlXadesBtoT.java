@@ -20,7 +20,7 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
 
 /**
- * How to validate a XAdES-BASELINE-B enveloped signature.
+ * How to validate a XAdES-BASELINE-B EXTENDED signature.
  */
 public class ValidateExtendedSignedXmlXadesBtoT extends Cookbook {
 

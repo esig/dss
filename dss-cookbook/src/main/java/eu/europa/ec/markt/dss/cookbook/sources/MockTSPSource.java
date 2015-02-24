@@ -51,10 +51,6 @@ import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
-/**
- * @version $Revision$ - $Date$
- */
-
 public class MockTSPSource implements TSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MockTSPSource.class);

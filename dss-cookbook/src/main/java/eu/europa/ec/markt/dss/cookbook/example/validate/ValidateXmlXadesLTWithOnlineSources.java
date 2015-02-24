@@ -24,7 +24,7 @@ import eu.europa.ec.markt.dss.validation102853.tsl.TSLRefreshPolicy;
 import eu.europa.ec.markt.dss.validation102853.tsl.TrustedListsCertificateSource;
 
 /**
- * How to validate a XAdES-BASELINE-B enveloped signature with online sources.
+ * How to validate a XAdES-BASELINE-LT enveloped signature with online sources.
  */
 public class ValidateXmlXadesLTWithOnlineSources extends Cookbook {
 

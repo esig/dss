@@ -12,15 +12,6 @@ import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.JKSSignatureToken;
 
-/**
- * TODO
- * <p/>
- * <p/>
- * DISCLAIMER: Project owner DG-MARKT.
- *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
- */
 public class JksCertificateInformation {
 
 	public static void main(final String[] args) {

@@ -45,13 +45,6 @@ import eu.europa.ec.markt.dss.validation102853.CommonCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
 import eu.europa.ec.markt.dss.validation102853.ocsp.OCSPSource;
 
-/**
- * This class simulates the behaviour of an OCSP responder. The kind of answer can be set by one of the setters: {@link #setGoodStatus()}, {@link #setRevokedStatus(java.util.Date, int)}, {@link #setUnknownStatus()}. The default answer is
- * GOOD.
- *
- * @version $Revision: 2198 $ - $Date: 2013-06-04 20:21:12 +0200 (Tue, 04 Jun 2013) $
- */
-
 public class AlwaysValidOCSPSource implements OCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AlwaysValidOCSPSource.class);
@@ -162,7 +155,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			if (extension != null) {
 
 				basicOCSPRespBuilder.setResponseExtensions(new Extensions(new Extension[] {
-					extension
+						extension
 				}));
 			}
 			final Req[] requests = ocspReq.getRequestList();
@@ -186,7 +179,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			final ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(privateKey);
 			final X509CertificateHolder x509CertificateHolder = new X509CertificateHolder(issuerCert.getEncoded());
 			final X509CertificateHolder[] chain = {
-				x509CertificateHolder
+					x509CertificateHolder
 			};
 			BasicOCSPResp basicResp = basicOCSPRespBuilder.build(contentSigner, chain, ocspDate);
 			final SingleResp[] responses = basicResp.getResponses();
@@ -223,7 +216,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 
 			Extension ext = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, true, new DEROctetString(nonce.toByteArray()));
 			ocspGen.setRequestExtensions(new Extensions(new Extension[] {
-				ext
+					ext
 			}));
 
 			return ocspGen.build();
