@@ -24,13 +24,9 @@ import eu.europa.ec.markt.dss.TSLConstant;
 
 public interface RuleConstant extends TSLConstant {
 
-    /**
-     * The validation process accepts any policy. The used policy is only showed, no particular treatment is done.
-     */
-    public static final String ANY_POLICY = "ANY_POLICY";
+	/**
+	 * The validation process accepts any policy. The used policy is only showed, no particular treatment is done.
+	 */
+	String ANY_POLICY = "ANY_POLICY";
 
-    /**
-     * This is the value returned by BouncyCastle when the certificate is revoked and on hold.
-     */
-    public static final String CRL_REASON_CERTIFICATE_HOLD = "CRLReason: certificateHold";
 }
