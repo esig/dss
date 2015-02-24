@@ -8,7 +8,7 @@
 	</appender>
 	
 	<logger name="eu.europa.ec.markt.dss" level="TRACE"/>
-	<logger name="org.apache.pdfbox" level="INFO"/>
+	<logger name="org.apache.pdfbox" level="ERROR"/>
 
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
