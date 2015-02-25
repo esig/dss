@@ -27,12 +27,12 @@ import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
@@ -52,7 +52,7 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 	private XAdESSignature toCounterSignXadesSignature;
 
 	public CounterSignatureBuilder(final DSSDocument toCounterSignDocument, final XAdESSignature toCounterSignXadesSignature, final SignatureParameters parameters,
-	                               final CertificateVerifier certificateVerifier) {
+			final CertificateVerifier certificateVerifier) {
 
 		super(parameters, toCounterSignDocument, certificateVerifier);
 		this.toCounterSignXadesSignature = toCounterSignXadesSignature;
@@ -84,12 +84,23 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 		return references;
 	}
 
+	@Override
+	protected Document buildRootDocumentDom() {
+		return DSSXMLUtils.buildDOM();
+	}
+
+	@Override
+	protected Node getParentNodeOfSignature() {
+		return documentDom;
+	}
+
 	/**
 	 * This method incorporates a given countersignature value in the current signature XML DOM.
 	 *
 	 * @param counterSignatureValue
 	 * @return
 	 */
+	@Override
 	public DSSDocument signDocument(final byte[] counterSignatureValue) {
 
 		if (!built) {
@@ -111,7 +122,7 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 		}
 
 		final Element counterSignatureElement = DSSXMLUtils.addElement(ownerDocument, unsignedSignaturePropertiesDom, XAdES, XADES_COUNTER_SIGNATURE);
-		final String signatureValueBase64Encoded = DSSUtils.base64Encode(counterSignatureValue);
+		final String signatureValueBase64Encoded = Base64.encodeBase64String(counterSignatureValue);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 
