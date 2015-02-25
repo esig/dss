@@ -43,7 +43,7 @@ public class XAdESLevelBaselineB {
 	/**
 	 * the reference to the {@code CertificateVerifier} which provides information on the sources to be used in the validation process in the context of a signature.
 	 */
-	CertificateVerifier certificateVerifier;
+	private CertificateVerifier certificateVerifier;
 
 	/**
 	 * The default constructor for XAdESLevelBaselineB.

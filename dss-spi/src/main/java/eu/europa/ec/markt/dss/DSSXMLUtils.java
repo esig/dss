@@ -63,6 +63,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -91,9 +92,7 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 /**
  * Utility class that contains some XML related method.
  *
- * @version $Revision: 2221 $ - $Date: 2013-06-11 11:53:27 +0200 (Tue, 11 Jun 2013) $
  */
-
 public final class DSSXMLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSXMLUtils.class);
@@ -222,7 +221,7 @@ public final class DSSXMLUtils {
 	 */
 	private static XPathExpression createXPathExpression(final String xpathString) {
 
-      /* XPath */
+		/* XPath */
 		final XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(namespacePrefixMapper);
 		try {
@@ -576,7 +575,7 @@ public final class DSSXMLUtils {
 		} catch (ParserConfigurationException e) {
 			throw new DSSException(e);
 		} finally {
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 		}
 	}
 
@@ -595,8 +594,7 @@ public final class DSSXMLUtils {
 			final Document doc = buildDOM(input);
 			return doc;
 		} finally {
-
-			DSSUtils.closeQuietly(input);
+			IOUtils.closeQuietly(input);
 		}
 	}
 
@@ -991,6 +989,7 @@ public final class DSSXMLUtils {
 	 * @param namespace a {@code HashMap} containing the additional namespace, with the prefix as key and the namespace URI as value
 	 * @deprecated From 4.3.0-RC use eu.europa.ec.markt.dss.DSSXMLUtils#registerNamespace(java.lang.String, java.lang.String)
 	 */
+	@Deprecated
 	public static void addNamespace(HashMap<String, String> namespace) {
 
 		namespaces.putAll(namespace);

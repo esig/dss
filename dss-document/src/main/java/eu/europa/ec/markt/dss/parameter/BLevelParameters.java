@@ -26,7 +26,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSNotYetImplementedMethodException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
@@ -426,14 +427,10 @@ public class BLevelParameters implements Serializable {
 	 * @param claimedSignerRole the value
 	 */
 	public void addClaimedSignerRole(final String claimedSignerRole) {
-
-		final boolean empty = DSSUtils.isEmpty(claimedSignerRole);
-		if (empty) {
-
+		if (StringUtils.isEmpty(claimedSignerRole)) {
 			throw new DSSNullException(String.class, "claimedSignerRole");
 		}
 		if (claimedSignerRoles == null) {
-
 			claimedSignerRoles = new ArrayList<String>();
 		}
 		claimedSignerRoles.add(claimedSignerRole);
@@ -451,13 +448,13 @@ public class BLevelParameters implements Serializable {
 	public void addCertifiedSignerRole(final String certifiedSignerRole) {
 
 		throw new DSSNotYetImplementedMethodException("eu.europa.ec.markt.dss.parameter.BLevelParameters.addCertifiedSignerRole");
-/*
+		/*
         if (certifiedSignerRoles == null) {
 
             certifiedSignerRoles = new ArrayList<String>();
         }
         certifiedSignerRoles.add(certifiedSignerRole);
-*/
+		 */
 	}
 
 	/**

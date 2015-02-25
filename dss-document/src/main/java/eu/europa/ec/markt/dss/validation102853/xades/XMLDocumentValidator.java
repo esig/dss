@@ -25,12 +25,12 @@ import java.util.List;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
@@ -109,7 +109,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 */
 	public AdvancedSignature getSignatureById(final String signatureId) throws DSSException {
 
-		if (DSSUtils.isBlank(signatureId)) {
+		if (StringUtils.isBlank(signatureId)) {
 			throw new DSSNullException(String.class, "signatureId");
 		}
 		final List<AdvancedSignature> advancedSignatures = getSignatures();
@@ -126,7 +126,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public DSSDocument removeSignature(final String signatureId) throws DSSException {
 
-		if (DSSUtils.isBlank(signatureId)) {
+		if (StringUtils.isBlank(signatureId)) {
 			throw new DSSNullException(String.class, "signatureId");
 		}
 		// TODO (31/07/2014): Checks on signature packaging to be added

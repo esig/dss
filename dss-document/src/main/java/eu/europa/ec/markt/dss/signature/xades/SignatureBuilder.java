@@ -431,9 +431,8 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	/**
 	 * Creates the SignedSignatureProperties DOM object element.
 	 *
-	 * @throws DSSException
 	 */
-	protected void incorporateSignedSignatureProperties() throws DSSException {
+	protected void incorporateSignedSignatureProperties()  {
 
 		// <SignedSignatureProperties>
 		signedSignaturePropertiesDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdES, XADES_SIGNED_SIGNATURE_PROPERTIES);

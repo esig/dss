@@ -78,21 +78,19 @@ public class ProfileParameters implements Serializable {
 	 * The type of operation to perform.
 	 */
 	public static enum Operation {
-
 		SIGNING, EXTENDING
 	}
 
 	/*
 	 * Indicates the type of the operation to be done
-	 */ Operation operationKind;
+	 */
+	private Operation operationKind;
 
 	public Operation getOperationKind() {
-
 		return operationKind;
 	}
 
 	public void setOperationKind(Operation operationKind) {
-
 		this.operationKind = operationKind;
 	}
 

@@ -20,10 +20,6 @@
 
 package eu.europa.ec.markt.dss.signature;
 
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
-
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 
@@ -31,20 +27,17 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
  * Extends the level of AdES signature of a document. After level -B, going upper in the signature format level
  * consists of adding unsigned properties to the signature. It can be done without breaking the signature.
  *
- * @version $Revision$ - $Date$
  */
-
 public interface SignatureExtension {
 
-    /**
-     * Extends the level of the signatures contained in a document.
-     *
-     * @param document The signed document to be signed
-     * @param params
-     * @return
-     * @throws IOException
-     * @throws JAXBException
-     */
-    DSSDocument extendSignatures(DSSDocument document, SignatureParameters params) throws DSSException;
+	/**
+	 * Extends the level of the signatures contained in a document.
+	 *
+	 * @param document The signed document to be signed
+	 * @param params
+	 * @return
+	 * @throws DSSException
+	 */
+	DSSDocument extendSignatures(DSSDocument document, SignatureParameters params) throws DSSException;
 
 }

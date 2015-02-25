@@ -20,9 +20,6 @@
 
 package eu.europa.ec.markt.dss.signature.xades;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -33,18 +30,13 @@ import eu.europa.ec.markt.dss.validation102853.TimestampType;
 /**
  * Holds level A aspects of XAdES
  *
- * @version $Revision$ - $Date$
  */
-
 public class XAdESLevelA extends XAdESLevelXL {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelA.class);
 
 	/**
 	 * The default constructor for XAdESLevelA.
 	 */
 	public XAdESLevelA(CertificateVerifier certificateVerifier) {
-
 		super(certificateVerifier);
 	}
 
@@ -59,7 +51,7 @@ public class XAdESLevelA extends XAdESLevelXL {
 	@Override
 	protected void extendSignatureTag() throws DSSException {
 
-        /* Up to -XL */
+		/* Up to -XL */
 		super.extendSignatureTag();
 
 		xadesSignature.checkSignatureIntegrity();
