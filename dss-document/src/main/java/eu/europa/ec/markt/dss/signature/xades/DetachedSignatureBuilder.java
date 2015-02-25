@@ -25,25 +25,16 @@ import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import org.apache.commons.codec.binary.Base64;
-import org.w3c.dom.Text;
-
-import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
-import eu.europa.ec.markt.dss.signature.InMemoryDocument;
-import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 /**
  * This class handles the specifics of the detached XML signature.
  */
 class DetachedSignatureBuilder extends SignatureBuilder {
-
 
 	/**
 	 * The default constructor for DetachedSignatureBuilder.<br>
@@ -90,42 +81,15 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 	 */
 	@Override
 	protected void incorporateReferences() throws DSSException {
-
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
-
 			incorporateReference(reference);
 		}
 	}
 
 	@Override
 	protected DSSDocument transformReference(final DSSReference reference) {
-
 		return reference.getContents();
 	}
 
-	/**
-	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
-	 *
-	 * @param signatureValue
-	 * @return
-	 * @throws DSSException
-	 */
-	@Override
-	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
-		if (!built) {
-			build();
-		}
-
-		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
-		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
-		final String signatureValueBase64Encoded = Base64.encodeBase64String(signatureValueBytes);
-		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
-		signatureValueDom.appendChild(signatureValueNode);
-
-		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
-		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-		inMemoryDocument.setMimeType(MimeType.XML);
-		return inMemoryDocument;
-	}
 }

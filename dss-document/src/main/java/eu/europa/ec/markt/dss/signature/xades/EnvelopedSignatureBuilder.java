@@ -26,7 +26,6 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.transforms.Transforms;
@@ -34,16 +33,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
@@ -62,11 +58,25 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	 * @param certificateVerifier
 	 */
 	public EnvelopedSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
-
 		super(params, origDoc, certificateVerifier);
-		// Inclusive method does not work with the enveloped signature. This limitation comes from the mechanism used by the framework to build the signature.
-		// Ditto: "http://www.w3.org/2006/12/xml-c14n11"
 		setCanonicalizationMethods(params, CanonicalizationMethod.EXCLUSIVE);
+	}
+
+	/**
+	 * In case of enveloped signature, the document should be the original file. Important for inclusive canonicalization and namespaces
+	 */
+	@Override
+	protected Document buildRootDocumentDom() {
+		return DSSXMLUtils.buildDOM(detachedDocument);
+	}
+
+	@Override
+	protected Node getParentNodeOfSignature() {
+		final String xPathLocationString = params.getXPathLocationString();
+		if (StringUtils.isNotEmpty(xPathLocationString)) {
+			return DSSXMLUtils.getElement(documentDom, xPathLocationString);
+		}
+		return documentDom.getDocumentElement();
 	}
 
 	/**
@@ -76,10 +86,8 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	 */
 	@Override
 	protected void incorporateReferences() throws DSSException {
-
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
-
 			incorporateReference(reference);
 		}
 	}
@@ -204,7 +212,6 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 	}
 
 	private static boolean isXPointer(final String uri) {
-
 		final boolean xPointer = uri.startsWith("#xpointer(") || uri.startsWith("#xmlns(");
 		return xPointer;
 	}
@@ -224,37 +231,6 @@ class EnvelopedSignatureBuilder extends SignatureBuilder {
 		}
 	}
 
-	/**
-	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
-	 *
-	 * @param signatureValue
-	 * @return
-	 * @throws DSSException
-	 */
-	@Override
-	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
-		if (!built) {
-			build();
-		}
 
-		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
-		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
-		final String signatureValueBase64Encoded = Base64.encodeBase64String(signatureValueBytes);
-		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
-		signatureValueDom.appendChild(signatureValueNode);
 
-		final Document originalDocumentDom = DSSXMLUtils.buildDOM(detachedDocument);
-		final Node copiedNode = originalDocumentDom.importNode(signatureDom, true);
-
-		if (params.getXPathLocationString() != null) {
-			DSSXMLUtils.getElement(originalDocumentDom, params.getXPathLocationString()).appendChild(copiedNode);
-		} else {
-			originalDocumentDom.getDocumentElement().appendChild(copiedNode);
-		}
-
-		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(originalDocumentDom);
-		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-		inMemoryDocument.setMimeType(MimeType.XML);
-		return inMemoryDocument;
-	}
 }

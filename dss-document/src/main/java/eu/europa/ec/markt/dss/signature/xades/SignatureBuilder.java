@@ -35,6 +35,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -50,6 +51,7 @@ import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
@@ -159,7 +161,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 */
 	public byte[] build() throws DSSException {
 
-		documentDom = DSSXMLUtils.buildDOM();
+		documentDom = buildRootDocumentDom();
 
 		deterministicId = params.getDeterministicId();
 
@@ -198,15 +200,24 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		return canonicalizedSignedInfo;
 	}
 
+	protected Document buildRootDocumentDom() {
+		return DSSXMLUtils.buildDOM();
+	}
+
 	/**
 	 * This method creates a new instance of Signature element.
 	 */
 	public void incorporateSignatureDom() {
-
 		signatureDom = documentDom.createElementNS(XMLNS, DS_SIGNATURE);
 		signatureDom.setAttribute(XMLNS_DS, XMLNS);
 		signatureDom.setAttribute(ID, deterministicId);
-		documentDom.appendChild(signatureDom);
+
+		final Node parentNodeOfSignature = getParentNodeOfSignature();
+		parentNodeOfSignature.appendChild(signatureDom);
+	}
+
+	protected Node getParentNodeOfSignature() {
+		return documentDom;
 	}
 
 	public void incorporateSignedInfo() {
@@ -677,11 +688,26 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	/**
 	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
 	 *
-	 * @param signatureValue - Encoded value of the signature
+	 * @param signatureValue
 	 * @return
 	 * @throws DSSException
 	 */
-	public abstract DSSDocument signDocument(final byte[] signatureValue) throws DSSException;
+	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
+		if (!built) {
+			build();
+		}
+
+		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
+		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
+		final String signatureValueBase64Encoded = Base64.encodeBase64String(signatureValueBytes);
+		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
+		signatureValueDom.appendChild(signatureValueNode);
+
+		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
+		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+		inMemoryDocument.setMimeType(MimeType.XML);
+		return inMemoryDocument;
+	}
 
 	/**
 	 * Adds the content of a timestamp into a given timestamp element

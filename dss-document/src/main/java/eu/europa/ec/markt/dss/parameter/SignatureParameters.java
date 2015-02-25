@@ -25,11 +25,11 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
@@ -44,9 +44,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 /**
  * Parameters for a Signature creation/extension
  *
- * @version $Revision: 2686 $ - $Date: 2013-10-02 14:02:33 +0200 (Wed, 02 Oct 2013) $
  */
-
 public class SignatureParameters implements Serializable {
 
 	/**
@@ -184,7 +182,7 @@ public class SignatureParameters implements Serializable {
 		toCountersignXPathQueryHolder = source.toCountersignXPathQueryHolder;
 
 		final List<DSSReference> references = source.getReferences();
-		if (references != null && references.size() > 0) {
+		if ((references != null) && (references.size() > 0)) {
 
 			dssReferences = new ArrayList<DSSReference>();
 			for (final DSSReference reference : references) {
@@ -395,7 +393,7 @@ public class SignatureParameters implements Serializable {
 	 */
 	public void setCertificateChain(final X509Certificate... certificateChainArray) {
 
-		if (certificateChainArray == null || certificateChainArray.length == 0) {
+		if ((certificateChainArray == null) || (certificateChainArray.length == 0)) {
 			certificateChain.clear();
 		}
 		for (final X509Certificate certificate : certificateChainArray) {
@@ -500,7 +498,6 @@ public class SignatureParameters implements Serializable {
 		this.signaturePackaging = signaturePackaging;
 	}
 
-
 	/**
 	 * @return (XAdES) the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
@@ -546,7 +543,7 @@ public class SignatureParameters implements Serializable {
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 
 		this.digestAlgorithm = digestAlgorithm;
-		if (this.digestAlgorithm != null && this.encryptionAlgorithm != null) {
+		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
 
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
 		}
@@ -561,7 +558,7 @@ public class SignatureParameters implements Serializable {
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 
 		this.encryptionAlgorithm = encryptionAlgorithm;
-		if (this.digestAlgorithm != null && this.encryptionAlgorithm != null) {
+		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
 
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
 		}
@@ -671,6 +668,10 @@ public class SignatureParameters implements Serializable {
 		return xPathLocationString;
 	}
 
+	/**
+	 * Defines the area where the signature will be added (XAdES Enveloped)
+	 * @param xPathLocationString the xpath location of the signature
+	 */
 	public void setXPathLocationString(String xPathLocationString) {
 		this.xPathLocationString = xPathLocationString;
 	}
@@ -694,29 +695,29 @@ public class SignatureParameters implements Serializable {
 	@Override
 	public String toString() {
 		return "SignatureParameters{" +
-			  "signingToken=" + signingToken +
-			  ", privateKeyEntry=" + privateKeyEntry +
-			  ", signingCertificate=" + signingCertificate +
-			  ", signWithExpiredCertificate=" + signWithExpiredCertificate +
-			  ", certificateChain_=" + certificateChain +
-			  ", context=" + context +
-			  ", signatureLevel=" + signatureLevel +
-			  ", signaturePackaging=" + signaturePackaging +
-			  ", signatureAlgorithm=" + signatureAlgorithm +
-			  ", encryptionAlgorithm=" + encryptionAlgorithm +
-			  ", digestAlgorithm=" + digestAlgorithm +
-			  ", references=" + dssReferences +
-			  ", bLevelParams=" + bLevelParams +
-			  ", aSiCParams=" + aSiCParams +
-			  ", reason='" + reason + '\'' +
-			  ", contactInfo='" + contactInfo + '\'' +
-			  ", deterministicId='" + deterministicId + '\'' +
-			  ", signatureTimestampParameters=" + signatureTimestampParameters.toString() +
-			  ", archiveTimestampParameters=" + archiveTimestampParameters.toString() +
-			  ", contentTimestamps=" + contentTimestamps +
-			  ", detachedContent=" + detachedContent +
-			  ", toCountersignSignatureId=" + toCounterSignSignatureId +
-			  ", toCountersignXPathQueryHolder=" + toCountersignXPathQueryHolder.toString() +
-			  '}';
+				"signingToken=" + signingToken +
+				", privateKeyEntry=" + privateKeyEntry +
+				", signingCertificate=" + signingCertificate +
+				", signWithExpiredCertificate=" + signWithExpiredCertificate +
+				", certificateChain_=" + certificateChain +
+				", context=" + context +
+				", signatureLevel=" + signatureLevel +
+				", signaturePackaging=" + signaturePackaging +
+				", signatureAlgorithm=" + signatureAlgorithm +
+				", encryptionAlgorithm=" + encryptionAlgorithm +
+				", digestAlgorithm=" + digestAlgorithm +
+				", references=" + dssReferences +
+				", bLevelParams=" + bLevelParams +
+				", aSiCParams=" + aSiCParams +
+				", reason='" + reason + '\'' +
+				", contactInfo='" + contactInfo + '\'' +
+				", deterministicId='" + deterministicId + '\'' +
+				", signatureTimestampParameters=" + signatureTimestampParameters.toString() +
+				", archiveTimestampParameters=" + archiveTimestampParameters.toString() +
+				", contentTimestamps=" + contentTimestamps +
+				", detachedContent=" + detachedContent +
+				", toCountersignSignatureId=" + toCounterSignSignatureId +
+				", toCountersignXPathQueryHolder=" + toCountersignXPathQueryHolder.toString() +
+				'}';
 	}
 }
