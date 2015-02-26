@@ -25,6 +25,10 @@ import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
@@ -45,9 +49,25 @@ class DetachedSignatureBuilder extends SignatureBuilder {
 	 * @param certificateVerifier
 	 */
 	public DetachedSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
-
 		super(params, origDoc, certificateVerifier);
 		setCanonicalizationMethods(params, CanonicalizationMethod.EXCLUSIVE);
+	}
+
+
+	@Override
+	protected Document buildRootDocumentDom() {
+		if (params.getRootDocumentXAdES() != null){
+			return params.getRootDocumentXAdES();
+		}
+		return DSSXMLUtils.buildDOM();
+	}
+
+	@Override
+	protected Node getParentNodeOfSignature() {
+		if (params.getRootDocumentXAdES() != null){
+			return documentDom.getDocumentElement();
+		}
+		return documentDom;
 	}
 
 	@Override

@@ -64,6 +64,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -101,7 +102,6 @@ public final class DSSXMLUtils {
 	public static final String XAD_ESV141_XSD = "/XAdESv141.xsd";
 
 	private static DocumentBuilderFactory dbFactory;
-
 
 	private static final XPathFactory factory = XPathFactory.newInstance();
 
@@ -811,7 +811,7 @@ public final class DSSXMLUtils {
 			final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			final Transformer transformer = transformerFactory.newTransformer();
 			final String xmlEncoding = documentDom.getXmlEncoding();
-			if (DSSUtils.isNotBlank(xmlEncoding)) {
+			if (StringUtils.isNotBlank(xmlEncoding)) {
 				transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
 			}
 			final DOMSource source = new DOMSource(documentDom);
@@ -848,6 +848,7 @@ public final class DSSXMLUtils {
 	 * @return {@code Document}
 	 */
 	public static Document createDocument(final String namespaceURI, final String qualifiedName, final Element element) {
+		ensureDocumentBuilder();
 
 		DOMImplementation domImpl;
 		try {
@@ -871,6 +872,7 @@ public final class DSSXMLUtils {
 	 * @return {@code Document}
 	 */
 	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
+		ensureDocumentBuilder();
 
 		DOMImplementation domImpl;
 		try {
@@ -893,6 +895,7 @@ public final class DSSXMLUtils {
 	 * @return {@code Document}
 	 */
 	public static Document createDocument(final String namespaceURI, final String qualifiedName, final Element element1, final Element element2) {
+		ensureDocumentBuilder();
 
 		DOMImplementation domImpl;
 		try {

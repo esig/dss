@@ -25,6 +25,8 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
@@ -132,6 +134,11 @@ public class SignatureParameters implements Serializable {
 
 	private XPathQueryHolder toCountersignXPathQueryHolder = new XPathQueryHolder();
 	private String toCounterSignSignatureValueId;
+
+	/**
+	 *	This attribute is used to inject ASiC root (inclusive canonicalization)
+	 */
+	private Document rootDocumentXAdES;
 
 	public SignatureParameters() {
 
@@ -690,6 +697,14 @@ public class SignatureParameters implements Serializable {
 
 	public void setToCounterSignSignatureValueId(String toCounterSignSignatureValueId) {
 		this.toCounterSignSignatureValueId = toCounterSignSignatureValueId;
+	}
+
+	public Document getRootDocumentXAdES() {
+		return rootDocumentXAdES;
+	}
+
+	public void setRootDocumentXAdES(Document rootDocumentXAdES) {
+		this.rootDocumentXAdES = rootDocumentXAdES;
 	}
 
 	@Override
