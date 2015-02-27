@@ -53,6 +53,7 @@ public abstract class AbstractTestSignature {
 		if (LOGGER.isDebugEnabled()) {
 			try {
 				byte[] byteArray = IOUtils.toByteArray(signedDocument.openStream());
+				onDocumentSigned(byteArray);
 				LOGGER.debug(new String(byteArray));
 			} catch (Exception e) {
 				LOGGER.error("Cannot display file content", e);
@@ -69,6 +70,9 @@ public abstract class AbstractTestSignature {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		verify(diagnosticData);
+	}
+	
+	protected void onDocumentSigned(byte[] byteArray) {
 	}
 
 	protected void verify(DiagnosticData diagnosticData) {
