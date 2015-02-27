@@ -36,14 +36,12 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinderFactory;
+import eu.europa.ec.markt.dss.validation102853.scope.CAdESSignatureScopeFinder;
 
 /**
  * Validation of CMS document
  *
- * @version $Revision: 889 $ - $Date: 2011-05-31 17:29:35 +0200 (Tue, 31 May 2011) $
  */
-
 public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	protected CMSSignedData cmsSignedData;
@@ -52,7 +50,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 * This constructor is used with {@code TimeStampToken}.
 	 */
 	public CMSDocumentValidator() {
-		cadesSignatureScopeFinder = SignatureScopeFinderFactory.geInstance(CAdESSignature.class);
+		cadesSignatureScopeFinder = new CAdESSignatureScopeFinder();
 	}
 
 	/**

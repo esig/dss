@@ -39,14 +39,12 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinderFactory;
+import eu.europa.ec.markt.dss.validation102853.scope.XAdESSignatureScopeFinder;
 
 /**
  * Validator of XML Signed document
  *
- * @version $Revision: 889 $ - $Date: 2011-05-31 17:29:35 +0200 (Tue, 31 May 2011) $
  */
-
 public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	/**
@@ -64,7 +62,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 */
 	public XMLDocumentValidator(final DSSDocument dssDocument) throws DSSException {
 
-		xadesSignatureScopeFinder = SignatureScopeFinderFactory.geInstance(XAdESSignature.class);
+		xadesSignatureScopeFinder = new XAdESSignatureScopeFinder();
 		this.document = dssDocument;
 		this.rootElement = DSSXMLUtils.buildDOM(dssDocument);
 

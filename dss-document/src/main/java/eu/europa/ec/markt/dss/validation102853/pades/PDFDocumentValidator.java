@@ -36,7 +36,7 @@ import eu.europa.ec.markt.dss.signature.pdf.PdfSignatureValidationCallback;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinderFactory;
+import eu.europa.ec.markt.dss.validation102853.scope.PAdESSignatureScopeFinder;
 
 /**
  * Validation of PDF document.
@@ -51,7 +51,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	 */
 	public PDFDocumentValidator(final DSSDocument document) {
 
-		padesSignatureScopeFinder = SignatureScopeFinderFactory.geInstance(PAdESSignature.class);
+		padesSignatureScopeFinder = new PAdESSignatureScopeFinder();
 		this.document = document;
 		pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 	}
