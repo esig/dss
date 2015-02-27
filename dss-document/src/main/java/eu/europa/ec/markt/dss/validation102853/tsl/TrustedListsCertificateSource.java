@@ -145,7 +145,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @return the corresponding certificate token
 	 */
 	@Override
-	public CertificateToken addCertificate(final X509Certificate x509Certificate) {
+	public CertificateToken addCertificate(final CertificateToken x509Certificate) {
 
 		throw new DSSNotApplicableMethodException(getClass());
 	}
@@ -158,7 +158,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param tsProvider      Object defining the trusted service provider, must be the parent of the trusted service
 	 * @param tlWellSigned    Indicates if the signature of trusted list is valid
 	 */
-	private synchronized void addCertificate(final X509Certificate x509Certificate, final AbstractTrustService trustedService, final TrustServiceProvider tsProvider,
+	private synchronized void addCertificate(final CertificateToken x509Certificate, final AbstractTrustService trustedService, final TrustServiceProvider tsProvider,
 	                                         final boolean tlWellSigned) {
 
 		try {
@@ -249,7 +249,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param signingCertList the {@code List} of the possible signing certificates
 	 * @return {@code TrustStatusList}
 	 */
-	private TrustStatusList getTrustStatusList(final String url, final List<X509Certificate> signingCertList) {
+	private TrustStatusList getTrustStatusList(final String url, final List<CertificateToken> signingCertList) {
 
 		boolean refresh = shouldRefresh(url);
 		final byte[] bytes = dataLoader.get(url, refresh);
@@ -264,7 +264,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return trustStatusList;
 	}
 
-	private boolean validateTslSignature(final List<X509Certificate> signingCertList, final byte[] bytes) {
+	private boolean validateTslSignature(final List<CertificateToken> signingCertList, final byte[] bytes) {
 
 		boolean coreValidity = false;
 		if (signingCertList != null) {
@@ -367,10 +367,10 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return refresh;
 	}
 
-	private XMLDocumentValidator prepareSignatureValidation(final List<X509Certificate> signingCertList, final byte[] bytes) {
+	private XMLDocumentValidator prepareSignatureValidation(final List<CertificateToken> signingCertList, final byte[] bytes) {
 
 		final CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
-		for (final X509Certificate x509Certificate : signingCertList) {
+		for (final CertificateToken x509Certificate : signingCertList) {
 
 			commonTrustedCertificateSource.addCertificate(x509Certificate);
 		}
@@ -407,7 +407,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 			final String url = pointerToTSL.getTslLocation();
 			final String territory = pointerToTSL.getTerritory();
-			final List<X509Certificate> signingCertList = pointerToTSL.getDigitalIdentity();
+			final List<CertificateToken> signingCertList = pointerToTSL.getDigitalIdentity();
 			try {
 
 				loadTSL(url, territory, signingCertList);
@@ -424,7 +424,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private TrustStatusList loadLotl() {
 
-		X509Certificate lotlCert = null;
+		CertificateToken lotlCert = null;
 		if (checkSignature) {
 
 			lotlCert = readLOTLCertificate();
@@ -433,7 +433,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		try {
 
 			LOG.info("Downloading LOTL from url= {}", lotlUrl);
-			final ArrayList<X509Certificate> x509CertificateList = new ArrayList<X509Certificate>();
+			final ArrayList<CertificateToken> x509CertificateList = new ArrayList<CertificateToken>();
 			x509CertificateList.add(lotlCert);
 			lotl = getTrustStatusList(lotlUrl, x509CertificateList);
 		} catch (DSSException e) {
@@ -445,9 +445,9 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return lotl;
 	}
 
-	private X509Certificate readLOTLCertificate() throws DSSException {
+	private CertificateToken readLOTLCertificate() throws DSSException {
 
-		X509Certificate lotlCert;
+		CertificateToken lotlCert;
 		if (lotlCertificate == null) {
 
 			final String msg = "The LOTL signing certificate property must contain a reference to a certificate.";
@@ -487,7 +487,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param territory           of the TSL
 	 * @param signingCertificates the {@code List} of the possible signing certificates
 	 */
-	public void loadAdditionalList(final String url, final String territory, final List<X509Certificate> signingCertificates) {
+	public void loadAdditionalList(final String url, final String territory, final List<CertificateToken> signingCertificates) {
 
 		loadTSL(url, territory, signingCertificates);
 	}
@@ -497,7 +497,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param territory       of the TSL
 	 * @param signingCertList the {@code List} of the possible signing certificates
 	 */
-	protected void loadTSL(final String url, final String territory, final List<X509Certificate> signingCertList) {
+	protected void loadTSL(final String url, final String territory, final List<CertificateToken> signingCertList) {
 
 		if (DSSUtils.isBlank(url)) {
 
@@ -567,7 +567,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 						}
 						if (x509Certificate != null) {
 
-							addCertificate(x509Certificate, trustService, trustServiceProvider, trustStatusList.isWellSigned());
+							addCertificate(new CertificateToken(x509Certificate), trustService, trustServiceProvider, trustStatusList.isWellSigned());
 						}
 					} catch (DSSException e) {
 

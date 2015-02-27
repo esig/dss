@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Principal;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
@@ -94,11 +95,6 @@ public class CertificateToken extends Token {
 	private List<ServiceInfo> associatedTSPS = new ArrayList<ServiceInfo>();
 
 	/**
-	 * DSS unique id based on the issuer distinguish name and serial number of encapsulated X509Certificate.
-	 */
-	private int dssId;
-
-	/**
 	 * The default algorithm used to compute the digest value of this certificate
 	 */
 	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
@@ -150,7 +146,7 @@ public class CertificateToken extends Token {
 	 *
 	 * @param x509Certificate X509Certificate
 	 */
-	protected CertificateToken(X509Certificate x509Certificate) {
+	public CertificateToken(X509Certificate x509Certificate) {
 
 		this.x509Certificate = x509Certificate;
 		this.issuerX500Principal = DSSUtils.getIssuerX500Principal(x509Certificate);
@@ -198,12 +194,7 @@ public class CertificateToken extends Token {
 	 * Returns a string representation of the unique DSS certificate token identifier.
 	 */
 	public String getDSSIdAsString() {
-
-		if (dssId == 0) {
-
-			return "[" + x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL) + "]";
-		}
-		return "[" + dssId + "]";
+		return getDSSId().asXmlId();
 	}
 
 	@Override
@@ -348,32 +339,6 @@ public class CertificateToken extends Token {
 			selfSigned = n1.equals(n2);
 		}
 		return selfSigned;
-	}
-
-	/**
-	 * Compares a given one-off id with this of the wrapped certificate.
-	 *
-	 * @param id The DSS validation process one-off certificate's id
-	 * @return
-	 */
-	public boolean equals(final int id) {
-
-		return this.dssId == id;
-	}
-
-	@Override
-	public int hashCode() {
-
-		return dssId;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-
-		if (obj == null || this.getClass() != obj.getClass()) {
-			return false;
-		}
-		return dssId == ((CertificateToken) obj).dssId;
 	}
 
 	/**
@@ -860,4 +825,17 @@ public class CertificateToken extends Token {
 		}
 		return keyUsageBits;
 	}
+
+	public byte[] getSignature() {
+		return x509Certificate.getSignature();
+	}
+
+	public Principal getIssuerDN() {
+		return x509Certificate.getIssuerDN();
+	}
+
+	public Principal getSubjectDN() {
+		return x509Certificate.getSubjectDN();
+	}
+
 }

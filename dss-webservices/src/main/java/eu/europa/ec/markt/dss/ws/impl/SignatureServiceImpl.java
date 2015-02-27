@@ -42,6 +42,7 @@ import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.ws.DSSWSUtils;
 import eu.europa.ec.markt.dss.ws.SignatureService;
 import eu.europa.ec.markt.dss.ws.WSChainCertificate;
@@ -250,7 +251,7 @@ public class SignatureServiceImpl implements SignatureService {
 		if (signingCertBytes == null) {
 			return;
 		}
-		final X509Certificate x509SigningCertificate = DSSUtils.loadCertificate(signingCertBytes);
+		final CertificateToken x509SigningCertificate = DSSUtils.loadCertificate(signingCertBytes);
 		params.setSigningCertificate(x509SigningCertificate);
 
 		final List<ChainCertificate> chainCertificates = new ArrayList<ChainCertificate>();
@@ -260,7 +261,7 @@ public class SignatureServiceImpl implements SignatureService {
 
 			for (final WSChainCertificate wsChainCertificate : wsChainCertificateList) {
 
-				final X509Certificate x509Certificate = DSSUtils.loadCertificate(wsChainCertificate.getX509Certificate());
+				final CertificateToken x509Certificate = DSSUtils.loadCertificate(wsChainCertificate.getX509Certificate());
 				final ChainCertificate chainCertificate = new ChainCertificate(x509Certificate, wsChainCertificate.isSignedAttribute());
 				if (!chainCertificates.contains(chainCertificate)) {
 					chainCertificates.add(chainCertificate);

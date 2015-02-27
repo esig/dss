@@ -256,7 +256,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void defineSigningCertificate(final X509Certificate x509Certificate) {
+	public void defineSigningCertificate(final CertificateToken x509Certificate) {
 
 		if (x509Certificate == null) {
 			throw new DSSNullException(X509Certificate.class);

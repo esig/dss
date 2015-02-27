@@ -56,6 +56,7 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TimestampInclude;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
@@ -266,7 +267,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		boolean firstCertificate = true; // The signing certificate can be directly in the TSL
 		for (final ChainCertificate chainCertificate : params.getCertificateChain()) {
 
-			final X509Certificate x509Certificate = chainCertificate.getX509Certificate();
+			final CertificateToken x509Certificate = chainCertificate.getX509Certificate();
 			if (trustAnchorBPPolicy && (certificatePool != null)) {
 
 				if (!certificatePool.get(x509Certificate.getSubjectX500Principal()).isEmpty()) {
@@ -281,10 +282,11 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 		}
 	}
 
-	private void addCertificate(final Element x509DataDom, final X509Certificate x509Certificate) {
+	private void addCertificate(final Element x509DataDom, final CertificateToken x509Certificate) {
 
-		final byte[] encoded = DSSUtils.getEncoded(x509Certificate);
+		final byte[] encoded = x509Certificate.getEncoded();
 		final String base64Encoded = Base64.encodeBase64String(encoded);
+
 		// <ds:X509Certificate>...</ds:X509Certificate>
 		DSSXMLUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_CERTIFICATE, base64Encoded);
 	}
@@ -512,7 +514,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 
 		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XAdESNamespaces.getXADES_SIGNING_CERTIFICATE());
 
-		final List<X509Certificate> certificates = new ArrayList<X509Certificate>();
+		final List<CertificateToken> certificates = new ArrayList<CertificateToken>();
 		final List<ChainCertificate> certificateChain = params.getCertificateChain();
 		for (final ChainCertificate chainCertificate : certificateChain) {
 			if (chainCertificate.isSignedAttribute()) {

@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 public class CertificateServiceTest {
 
@@ -20,8 +21,8 @@ public class CertificateServiceTest {
 	public void isSelfSigned() throws Exception {
 		DSSPrivateKeyEntry entry = service.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
 
-		X509Certificate certificate = entry.getCertificate();
-		certificate.verify(certificate.getPublicKey());
+		CertificateToken certificate = entry.getCertificate();
+		certificate.isSignedBy(certificate);
 	}
 
 	@Test(expected = SignatureException.class)
@@ -29,15 +30,15 @@ public class CertificateServiceTest {
 		DSSPrivateKeyEntry entryChain = service.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		// Child certificate is signed with the issuer's private key
-		X509Certificate childCertificate = entryChain.getCertificate();
-		childCertificate.verify(childCertificate.getPublicKey());
+		CertificateToken childCertificate = entryChain.getCertificate();
+		childCertificate.isSignedBy(childCertificate);
 	}
 
 	@Test
 	public void generateTspCertificate() throws Exception {
 		DSSPrivateKeyEntry keyEntry = service.generateTspCertificate(SignatureAlgorithm.RSA_SHA256);
 		assertNotNull(keyEntry);
-		X509Certificate certificate = keyEntry.getCertificate();
+		CertificateToken certificate = keyEntry.getCertificate();
 		TSPUtil.validateCertificate(new X509CertificateHolder(certificate.getEncoded()));
 	}
 }

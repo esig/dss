@@ -71,7 +71,7 @@ public class CertificatePool implements Serializable {
 	 * @param cert
 	 * @return
 	 */
-	public CertificateToken getInstance(final X509Certificate cert, final CertificateSourceType certSource) {
+	public CertificateToken getInstance(final CertificateToken cert, final CertificateSourceType certSource) {
 
 		return getInstance(cert, certSource, (ServiceInfo) null);
 	}
@@ -86,7 +86,7 @@ public class CertificatePool implements Serializable {
 	 * @param serviceInfo
 	 * @return
 	 */
-	public CertificateToken getInstance(final X509Certificate cert, final CertificateSourceType certSource, final ServiceInfo serviceInfo) {
+	public CertificateToken getInstance(final CertificateToken cert, final CertificateSourceType certSource, final ServiceInfo serviceInfo) {
 
 		final List<ServiceInfo> services = new ArrayList<ServiceInfo>();
 		if (serviceInfo != null) {
@@ -111,7 +111,7 @@ public class CertificatePool implements Serializable {
 	 * @param services
 	 * @return
 	 */
-	public CertificateToken getInstance(final X509Certificate certificateToAdd, final List<CertificateSourceType> sources, final List<ServiceInfo> services) {
+	public CertificateToken getInstance(final CertificateToken certificateToAdd, final List<CertificateSourceType> sources, final List<ServiceInfo> services) {
 
 		if (certificateToAdd == null) {
 
@@ -125,13 +125,13 @@ public class CertificatePool implements Serializable {
 		//		if (LOG.isTraceEnabled()) {
 		//			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal().toString() + "|" + certificateToAdd.getSerialNumber());
 		//		}
-		final TokenIdentifier id = TokenIdentifier.getId(certificateToAdd);
+		final TokenIdentifier id = certificateToAdd.getDSSId();
 		synchronized (certById) {
 
 			CertificateToken certToken = certById.get(id);
 			if (certToken == null) {
 
-				certToken = CertificateToken.newInstance(certificateToAdd);
+				certToken = certificateToAdd;
 				certById.put(id, certToken);
 				final String subjectName = certificateToAdd.getSubjectX500Principal().getName(X500Principal.CANONICAL);
 				List<CertificateToken> list = certBySubject.get(subjectName);
@@ -200,7 +200,7 @@ public class CertificatePool implements Serializable {
 		Collection<CertificateToken> certTokens = certPool.getCertificateTokens();
 		for (CertificateToken certificateToken : certTokens) {
 
-			X509Certificate cert = certificateToken.getCertificate();
+			CertificateToken cert = certificateToken;
 			List<CertificateSourceType> sources = certificateToken.getSources();
 			List<ServiceInfo> services = certificateToken.getAssociatedTSPS();
 			getInstance(cert, sources, services);

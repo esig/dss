@@ -12,6 +12,7 @@ import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.cookbook.sources.MockServiceInfo;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonTrustedCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
@@ -29,8 +30,8 @@ public class ValidateDetached extends Cookbook {
 
 		preparePKCS12TokenAndKey();
 
-		final X509Certificate[] certificateChain = privateKey.getCertificateChain();
-		final X509Certificate trustedCertificate = certificateChain[0];
+		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
+		final CertificateToken trustedCertificate = certificateChain[0];
 
 		// Already signed document
 		DSSDocument document = new FileDocument("signedPdfPadesBDetached.pdf");

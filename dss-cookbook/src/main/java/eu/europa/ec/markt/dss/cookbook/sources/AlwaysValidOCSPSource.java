@@ -95,7 +95,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			if (LOG.isTraceEnabled()) {
 
 				final CommonCertificateSource certificateSource = new CommonCertificateSource();
-				final CertificateToken certificateToken = certificateSource.addCertificate(signingCert);
+				final CertificateToken certificateToken = certificateSource.addCertificate(new CertificateToken(signingCert));
 				LOG.trace("OCSP mockup with signing certificate:\n" + certificateToken);
 			}
 		} catch (Exception e) {

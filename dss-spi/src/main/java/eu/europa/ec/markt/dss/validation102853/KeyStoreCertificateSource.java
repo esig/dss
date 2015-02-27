@@ -151,7 +151,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
                     X509Certificate x509Certificate = (X509Certificate) certificate;
                     LOG.debug("Alias " + alias + " Cert " + x509Certificate.getSubjectDN());
 
-                    CertificateToken certToken = certPool.getInstance(x509Certificate, CertificateSourceType.OTHER);
+                    CertificateToken certToken = certPool.getInstance(new CertificateToken(x509Certificate), CertificateSourceType.OTHER);
                     list.add(certToken);
                 }
                 if (keyStore.getCertificateChain(alias) != null) {
@@ -159,7 +159,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
                     for (Certificate chainCert : keyStore.getCertificateChain(alias)) {
 
                         LOG.debug("Alias " + alias + " Cert " + ((X509Certificate) chainCert).getSubjectDN());
-                        CertificateToken certToken = certPool.getInstance((X509Certificate) chainCert, CertificateSourceType.OCSP_RESPONSE);
+                        CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert), CertificateSourceType.OCSP_RESPONSE);
                         if (!list.contains(certToken)) {
 
                             list.add(certToken);

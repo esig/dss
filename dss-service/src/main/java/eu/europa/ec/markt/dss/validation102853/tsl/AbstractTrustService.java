@@ -37,6 +37,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.TSLConstant;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.condition.CompositeCondition;
 import eu.europa.ec.markt.dss.validation102853.condition.Condition;
 import eu.europa.ec.markt.dss.validation102853.condition.CriteriaListCondition;
@@ -129,7 +130,7 @@ abstract class AbstractTrustService {
 				final byte[] x509CertificateBytes = digitalIdentity.getX509Certificate();
 				if (x509CertificateBytes != null) {
 
-					final X509Certificate x509Certificate = DSSUtils.loadCertificate(x509CertificateBytes);
+					final CertificateToken x509Certificate = DSSUtils.loadCertificate(x509CertificateBytes);
 					// System.out.println(" ----- > " + x509Certificate.getSubjectX500Principal());
 					certs.add(x509Certificate);
 				} else {

@@ -40,6 +40,7 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TrustedCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
@@ -213,9 +214,9 @@ public abstract class XAdESBuilder {
 	 * @param signingCertificateDom DOM parent element
 	 * @param certificates          {@code List} of the certificates to be incorporated
 	 */
-	protected void incorporateCertificateRef(final Element signingCertificateDom, final List<X509Certificate> certificates) {
+	protected void incorporateCertificateRef(final Element signingCertificateDom, final List<CertificateToken> certificates) {
 
-		for (final X509Certificate certificate : certificates) {
+		for (final CertificateToken certificate : certificates) {
 
 			final Element certDom = DSSXMLUtils.addElement(documentDom, signingCertificateDom, XAdES, XADES_CERT);
 
@@ -224,13 +225,13 @@ public abstract class XAdESBuilder {
 			final DigestAlgorithm signingCertificateDigestMethod = params.bLevel().getSigningCertificateDigestMethod();
 			incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
 
-			final InMemoryDocument inMemoryCertificate = new InMemoryDocument(DSSUtils.getEncoded(certificate));
+			final InMemoryDocument inMemoryCertificate = new InMemoryDocument(certificate.getEncoded());
 			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, inMemoryCertificate);
 
 			final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
 
 			final Element x509IssuerNameDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
-			final String issuerX500PrincipalName = DSSUtils.getIssuerX500PrincipalName(certificate);
+			final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
 			DSSXMLUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
 
 			final Element x509SerialNumberDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);

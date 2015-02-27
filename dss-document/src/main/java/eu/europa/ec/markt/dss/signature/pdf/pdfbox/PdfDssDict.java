@@ -38,6 +38,7 @@ import eu.europa.ec.markt.dss.DSSPDFUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.signature.pdf.PdfArray;
 import eu.europa.ec.markt.dss.signature.pdf.PdfDict;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 public class PdfDssDict {
 
@@ -47,7 +48,7 @@ public class PdfDssDict {
 
     private Set<BasicOCSPResp> ocspList = new HashSet<BasicOCSPResp>();
 
-    private Set<X509Certificate> certList = new HashSet<X509Certificate>();
+    private Set<CertificateToken> certList = new HashSet<CertificateToken>();
 
 
     public static PdfDssDict build(PdfDict documentDict) throws IOException {
@@ -87,7 +88,7 @@ public class PdfDssDict {
             for (int ii = 0; ii < certsArray.size(); ii++) {
 
                 final byte[] stream = certsArray.getBytes(ii);
-                final X509Certificate cert = DSSUtils.loadCertificate(stream);
+                final CertificateToken cert = DSSUtils.loadCertificate(stream);
                 certList.add(cert);
             }
         }
@@ -140,7 +141,7 @@ public class PdfDssDict {
         return Collections.unmodifiableSet(ocspList);
     }
 
-    public Set<X509Certificate> getCertList() {
+    public Set<CertificateToken> getCertList() {
         return Collections.unmodifiableSet(certList);
     }
 }

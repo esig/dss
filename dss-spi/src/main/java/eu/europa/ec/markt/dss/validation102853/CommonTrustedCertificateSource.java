@@ -42,7 +42,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource impl
         return CertificateSourceType.TRUSTED_STORE;
     }
 
-    protected CertificateToken addCertificate(final X509Certificate cert, final List<CertificateSourceType> sources, final List<ServiceInfo> services) {
+    protected CertificateToken addCertificate(final CertificateToken cert, final List<CertificateSourceType> sources, final List<ServiceInfo> services) {
 
         final CertificateToken certToken = certPool.getInstance(cert, sources, services);
         return certToken;
@@ -56,7 +56,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource impl
      * @param serviceInfo the service information associated to the service
      * @return the corresponding certificate token
      */
-    public CertificateToken addCertificate(final X509Certificate certificate, final ServiceInfo serviceInfo) {
+    public CertificateToken addCertificate(final CertificateToken certificate, final ServiceInfo serviceInfo) {
 
         final CertificateToken certToken = certPool.getInstance(certificate, getCertificateSourceType(), serviceInfo);
         // print certificate
@@ -77,7 +77,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource impl
         final List<CertificateToken> certTokenList = keyStore.getCertificates();
         for (final CertificateToken certToken : certTokenList) {
 
-            certPool.getInstance(certToken.getCertificate(), getCertificateSourceType());
+            certPool.getInstance(certToken, getCertificateSourceType());
         }
     }
 

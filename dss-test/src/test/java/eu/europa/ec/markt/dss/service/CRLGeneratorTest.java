@@ -22,7 +22,7 @@ public class CRLGeneratorTest {
 	public void test() throws Exception {
 		DSSPrivateKeyEntry issuerKeyEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
 		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerKeyEntry);
-		X509CRL generatedCRL = crlGenerator.generateCRL(privateKeyEntry.getCertificate(), issuerKeyEntry, new Date(), CRLReason.privilegeWithdrawn);
+		X509CRL generatedCRL = crlGenerator.generateCRL(privateKeyEntry.getCertificate().getCertificate(), issuerKeyEntry, new Date(), CRLReason.privilegeWithdrawn);
 		assertNotNull(generatedCRL);
 
 		assertEquals(issuerKeyEntry.getCertificate().getSubjectX500Principal(), generatedCRL.getIssuerX500Principal());

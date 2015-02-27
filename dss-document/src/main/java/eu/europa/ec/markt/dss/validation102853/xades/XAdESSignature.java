@@ -683,7 +683,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 			final Element certEl = (Element) nodeList.item(ii);
 			final String textContent = certEl.getTextContent();
-			final X509Certificate x509Certificate = DSSUtils.loadCertificateFromBase64EncodedString(textContent);
+			final CertificateToken x509Certificate = DSSUtils.loadCertificateFromBase64EncodedString(textContent);
 			if (!roles.contains(x509Certificate)) {
 
 				roles.add(new CertifiedRole());

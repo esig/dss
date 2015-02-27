@@ -29,6 +29,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
@@ -78,7 +79,7 @@ public abstract class AbstractSignatureService implements DocumentSignatureServi
 		if (parameters.isSignWithExpiredCertificate()) {
 			return;
 		}
-		final X509Certificate signingCertificate = parameters.getSigningCertificate();
+		final CertificateToken signingCertificate = parameters.getSigningCertificate();
 		final Date notAfter = signingCertificate.getNotAfter();
 		final Date notBefore = signingCertificate.getNotBefore();
 		final Date signingDate = parameters.bLevel().getSigningDate();

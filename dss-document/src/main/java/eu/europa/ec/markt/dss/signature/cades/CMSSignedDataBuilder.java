@@ -55,6 +55,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.TrustedCertificateSource;
 
@@ -100,7 +101,7 @@ public class CMSSignedDataBuilder {
 	                                                              final CMSSignedData originalSignedData) throws DSSException {
 		try {
 
-			final X509Certificate signingCertificate = parameters.getSigningCertificate();
+			final CertificateToken signingCertificate = parameters.getSigningCertificate();
 
 			final CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
 
@@ -109,7 +110,7 @@ public class CMSSignedDataBuilder {
 
 			generator.addSignerInfoGenerator(signerInfoGenerator);
 
-			final Set<X509Certificate> newCertificateChain = new HashSet<X509Certificate>();
+			final Set<CertificateToken> newCertificateChain = new HashSet<CertificateToken>();
 
 			if (originalSignedData != null) {
 
@@ -123,14 +124,14 @@ public class CMSSignedDataBuilder {
 				final Collection<X509CertificateHolder> certificatesMatches = certificates.getMatches(null);
 				for (final X509CertificateHolder certificatesMatch : certificatesMatches) {
 
-					final X509Certificate x509Certificate = DSSUtils.getCertificate(certificatesMatch);
+					final CertificateToken x509Certificate = DSSUtils.getCertificate(certificatesMatch);
 					newCertificateChain.add(x509Certificate);
 				}
 			}
 			final List<ChainCertificate> certificateChain = parameters.getCertificateChain();
 			for (final ChainCertificate chainCertificate : certificateChain) {
 
-				final X509Certificate x509Certificate = chainCertificate.getX509Certificate();
+				final CertificateToken x509Certificate = chainCertificate.getX509Certificate();
 				newCertificateChain.add(x509Certificate);
 			}
 			final boolean trustAnchorBPPolicy = parameters.bLevel().isTrustAnchorBPPolicy();
@@ -201,12 +202,12 @@ public class CMSSignedDataBuilder {
 	 * @return a store with the certificate chain of the signing certificate. The {@code Collection} is unique.
 	 * @throws CertificateEncodingException
 	 */
-	private JcaCertStore getJcaCertStore(final Collection<X509Certificate> certificateChain, boolean trustAnchorBPPolicy) {
+	private JcaCertStore getJcaCertStore(final Collection<CertificateToken> certificateChain, boolean trustAnchorBPPolicy) {
 
 		try {
 
 			final Collection<X509Certificate> certs = new ArrayList<X509Certificate>();
-			for (final X509Certificate certificateInChain : certificateChain) {
+			for (final CertificateToken certificateInChain : certificateChain) {
 
 				// CAdES-Baseline-B: do not include certificates found in the trusted list
 				if (trustAnchorBPPolicy) {
@@ -219,7 +220,7 @@ public class CMSSignedDataBuilder {
 						}
 					}
 				}
-				certs.add(certificateInChain);
+				certs.add(certificateInChain.getCertificate());
 			}
 			return new JcaCertStore(certs);
 		} catch (CertificateEncodingException e) {

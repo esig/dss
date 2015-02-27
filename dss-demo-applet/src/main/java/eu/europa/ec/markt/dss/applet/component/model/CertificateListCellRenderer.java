@@ -27,6 +27,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * 
@@ -48,7 +49,7 @@ public class CertificateListCellRenderer extends DefaultListCellRenderer {
      */
     @Override
     public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
-        final X509Certificate cert = ((DSSPrivateKeyEntry) value).getCertificate();
+        final CertificateToken cert = ((DSSPrivateKeyEntry) value).getCertificate();
         String subjectDN = cert.getSubjectDN().getName();
         final int dnStartIndex = subjectDN.indexOf("CN=") + 3;
         if (dnStartIndex > 0 && subjectDN.indexOf(",", dnStartIndex) > 0) {

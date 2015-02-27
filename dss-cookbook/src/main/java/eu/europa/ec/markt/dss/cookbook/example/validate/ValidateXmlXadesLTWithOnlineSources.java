@@ -11,6 +11,7 @@ import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.cookbook.sources.MockServiceInfo;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.crl.OnlineCRLSource;
@@ -34,8 +35,8 @@ public class ValidateXmlXadesLTWithOnlineSources extends Cookbook {
 		// If you have a real signature for which it is possible to build the chain till the the TSL then just skip this point.
 		preparePKCS12TokenAndKey();
 
-		final X509Certificate[] certificateChain = privateKey.getCertificateChain();
-		final X509Certificate trustedCertificate = certificateChain[0];
+		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
+		final CertificateToken trustedCertificate = certificateChain[0];
 
 		// Already signed document
 		DSSDocument document = new FileDocument("signedXmlXadesLT.xml");

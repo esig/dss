@@ -3,7 +3,6 @@ package eu.europa.ec.markt.dss.cookbook.example.validate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.cert.X509Certificate;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
@@ -12,6 +11,7 @@ import eu.europa.ec.markt.dss.cookbook.sources.MockServiceInfo;
 import eu.europa.ec.markt.dss.cookbook.sources.MockTSLCertificateSource;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
@@ -27,10 +27,10 @@ public class ValidateSignedPdfPadesB extends Cookbook {
 
 		preparePKCS12TokenAndKey();
 
-		final X509Certificate[] certificateChain = privateKey.getCertificateChain();
+		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
 
 		//Exist 3 certificates - Which one to choose??
-		final X509Certificate trustedCertificate = certificateChain[0];
+		final CertificateToken trustedCertificate = certificateChain[0];
 
 		DSSDocument document = new FileDocument("signedPdfPadesB.pdf");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);

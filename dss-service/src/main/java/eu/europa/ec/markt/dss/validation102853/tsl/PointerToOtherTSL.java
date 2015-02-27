@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.tsl.jaxb.tsl.AnyType;
 import eu.europa.ec.markt.tsl.jaxb.tsl.DigitalIdentityListType;
 import eu.europa.ec.markt.tsl.jaxb.tsl.DigitalIdentityType;
@@ -134,13 +135,13 @@ class PointerToOtherTSL {
 	 *
 	 * @return
 	 */
-	List<X509Certificate> getDigitalIdentity() {
+	List<CertificateToken> getDigitalIdentity() {
 
 		if (getServiceDigitalIdentities() == null) {
 
 			return null;
 		}
-		final List<X509Certificate> x509DigitalIdentityList = new ArrayList<X509Certificate>();
+		final List<CertificateToken> x509DigitalIdentityList = new ArrayList<CertificateToken>();
 		for (final DigitalIdentityListType digitalIdentityList : getServiceDigitalIdentities()) {
 
 			final List<DigitalIdentityType> digitalIdList = digitalIdentityList.getDigitalId();
@@ -148,10 +149,10 @@ class PointerToOtherTSL {
 
 				if (currentDigitalIdentity.getX509Certificate() != null) {
 
-					final X509Certificate cert = DSSUtils.loadCertificate(currentDigitalIdentity.getX509Certificate());
+					final CertificateToken cert = DSSUtils.loadCertificate(currentDigitalIdentity.getX509Certificate());
 					if (LOG.isDebugEnabled()) {
 
-						LOG.debug("Territory {} signed by {}", new Object[]{getTerritory(), cert.getSubjectDN()});
+						LOG.debug("Territory {} signed by {}", new Object[]{getTerritory(), cert.getSubjectX500Principal().toString()});
 					}
 					x509DigitalIdentityList.add(cert);
 					break;

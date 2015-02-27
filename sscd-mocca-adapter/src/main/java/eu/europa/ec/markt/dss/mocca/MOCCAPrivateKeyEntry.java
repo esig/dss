@@ -33,6 +33,7 @@ import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotApplicableMethodException;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * A DSSPrivateKeyEntry implementation for the MOCCA framework
@@ -41,7 +42,7 @@ public class MOCCAPrivateKeyEntry implements DSSPrivateKeyEntry {
 
     private static final Logger LOG = LoggerFactory.getLogger(MOCCASignatureTokenConnection.class);
 
-    private X509Certificate signingCert;
+    private CertificateToken signingCert;
 
     private KeyboxName keyboxName;
 
@@ -51,7 +52,7 @@ public class MOCCAPrivateKeyEntry implements DSSPrivateKeyEntry {
 
     private EncryptionAlgorithm encryptionAlgorithm;
 
-    private X509Certificate[] certificateChain = new X509Certificate[1];
+    private CertificateToken[] certificateChain = new CertificateToken[1];
 
     /**
      * This constructor is used when working with several cards
@@ -92,13 +93,13 @@ public class MOCCAPrivateKeyEntry implements DSSPrivateKeyEntry {
     }
 
     @Override
-    public X509Certificate getCertificate() {
+    public CertificateToken getCertificate() {
 
         return signingCert;
     }
 
     @Override
-    public X509Certificate[] getCertificateChain() {
+    public CertificateToken[] getCertificateChain() {
 
         return certificateChain;
     }
@@ -121,7 +122,7 @@ public class MOCCAPrivateKeyEntry implements DSSPrivateKeyEntry {
      * @return the name (something like SHA1WithRSA)
      */
     public String getX509SignatureAlgorithmName() {
-        return signingCert.getSigAlgName();
+        return signingCert.getCertificate().getSigAlgName();
     }
 
     /**

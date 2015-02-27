@@ -23,6 +23,7 @@ package eu.europa.ec.markt.dss.parameter;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -40,6 +41,7 @@ import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
@@ -67,7 +69,7 @@ public class SignatureParameters implements Serializable {
 	/**
 	 * This field contains the signing certificate.
 	 */
-	private X509Certificate signingCertificate;
+	private CertificateToken signingCertificate;
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
@@ -295,7 +297,7 @@ public class SignatureParameters implements Serializable {
 
 			return deterministicId;
 		}
-		final String dssId = (signingCertificate == null ? "" : TokenIdentifier.getId(signingCertificate).asXmlId()) + signatureCounter++;
+		final String dssId = (signingCertificate == null ? "" : signingCertificate.getDSSId().asXmlId()) + signatureCounter++;
 		deterministicId = DSSUtils.getDeterministicId(bLevelParams.getSigningDate(), dssId);
 		return deterministicId;
 	}
@@ -324,7 +326,7 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @return the value
 	 */
-	public X509Certificate getSigningCertificate() {
+	public CertificateToken getSigningCertificate() {
 		return signingCertificate;
 	}
 
@@ -333,7 +335,7 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @param signingCertificate the value
 	 */
-	public void setSigningCertificate(final X509Certificate signingCertificate) {
+	public void setSigningCertificate(final CertificateToken signingCertificate) {
 
 		this.signingCertificate = signingCertificate;
 		final ChainCertificate chainCertificate = new ChainCertificate(signingCertificate, true);
@@ -398,12 +400,12 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @param certificateChainArray the array containing all certificates composing the chain
 	 */
-	public void setCertificateChain(final X509Certificate... certificateChainArray) {
+	public void setCertificateChain(final CertificateToken... certificateChainArray) {
 
 		if ((certificateChainArray == null) || (certificateChainArray.length == 0)) {
 			certificateChain.clear();
 		}
-		for (final X509Certificate certificate : certificateChainArray) {
+		for (final CertificateToken certificate : certificateChainArray) {
 
 			if (certificate != null) {
 
@@ -427,7 +429,9 @@ public class SignatureParameters implements Serializable {
 		// When the private key entry is set the certificate chain is reset
 		certificateChain.clear();
 		setSigningCertificate(privateKeyEntry.getCertificate());
+
 		setCertificateChain(privateKeyEntry.getCertificateChain());
+		
 		final String encryptionAlgorithmName = this.signingCertificate.getPublicKey().getAlgorithm();
 		this.encryptionAlgorithm = EncryptionAlgorithm.forName(encryptionAlgorithmName);
 		this.signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
