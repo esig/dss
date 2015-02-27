@@ -44,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSPKUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -53,6 +52,7 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.OID;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
@@ -71,7 +71,6 @@ import eu.europa.ec.markt.dss.validation102853.bean.CertifiedRole;
 import eu.europa.ec.markt.dss.validation102853.bean.CommitmentType;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureProductionPlace;
-import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
 import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 import eu.europa.ec.markt.dss.validation102853.condition.Condition;
@@ -110,14 +109,12 @@ import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTrustedService
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlUsedCertificates;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 import eu.europa.ec.markt.dss.validation102853.ocsp.ListOCSPSource;
-import eu.europa.ec.markt.dss.validation102853.pades.PAdESSignature;
 import eu.europa.ec.markt.dss.validation102853.pades.PDFDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScope;
-import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
 import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 
 
@@ -140,10 +137,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This variable can hold a specific {@code ProcessExecutor}
 	 */
 	protected ProcessExecutor processExecutor = null;
-
-	protected SignatureScopeFinder<CAdESSignature> cadesSignatureScopeFinder = null;
-	protected SignatureScopeFinder<PAdESSignature> padesSignatureScopeFinder = null;
-	protected SignatureScopeFinder<XAdESSignature> xadesSignatureScopeFinder = null;
 
 	/*
 	 * The factory used to create DiagnosticData
@@ -174,6 +167,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * encapsulates the references to different sources used in the signature validation process.
 	 */
 	protected CertificateVerifier certificateVerifier;
+	
+	private SignatureScopeFinder signatureScopeFinder;
 
 	/**
 	 * This list contains the list of signatures
@@ -198,6 +193,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private HashMap<String, File> policyDocuments;
 
+	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
+		this.signatureScopeFinder = signatureScopeFinder;
+	}
+	
 	/**
 	 * This method guesses the document format and returns an appropriate document validator.
 	 *
@@ -1397,7 +1396,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	protected void dealSignatureScope(XmlSignature xmlSignature, AdvancedSignature signature) {
 		final XmlSignatureScopes xmlSignatureScopes = new XmlSignatureScopes();
-		final List<SignatureScope> signatureScope = getSignatureScopeFinder().findSignatureScope(signature);
+		final List<SignatureScope> signatureScope = signatureScopeFinder.findSignatureScope(signature);
 		for (final SignatureScope scope : signatureScope) {
 			final XmlSignatureScopeType xmlSignatureScope = new XmlSignatureScopeType();
 			xmlSignatureScope.setName(scope.getName());
@@ -1491,50 +1490,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * @return {@code SignatureScopeFinder<XAdESSignature>}
-	 */
-	public SignatureScopeFinder<XAdESSignature> getXadesSignatureScopeFinder() {
-		return xadesSignatureScopeFinder;
-	}
-
-	/**
-	 * Set the SignatureScopeFinder to use for XML signatures
-	 *
-	 * @param xadesSignatureScopeFinder
-	 */
-	public void setXadesSignatureScopeFinder(SignatureScopeFinder<XAdESSignature> xadesSignatureScopeFinder) {
-		this.xadesSignatureScopeFinder = xadesSignatureScopeFinder;
-	}
-
-	public SignatureScopeFinder<CAdESSignature> getCadesSignatureScopeFinder() {
-		return cadesSignatureScopeFinder;
-	}
-
-	/**
-	 * Set the SignatureScopeFinder to use for CMS signatures
-	 *
-	 * @param cadesSignatureScopeFinder
-	 */
-	public void setCadesSignatureScopeFinder(SignatureScopeFinder<CAdESSignature> cadesSignatureScopeFinder) {
-		this.cadesSignatureScopeFinder = cadesSignatureScopeFinder;
-	}
-
-	public SignatureScopeFinder<PAdESSignature> getPadesSignatureScopeFinder() {
-		return padesSignatureScopeFinder;
-	}
-
-	/**
-	 * Set the SignatureScopeFinder to use for PDF signatures
-	 *
-	 * @param padesSignatureScopeFinder
-	 */
-	public void setPadesSignatureScopeFinder(SignatureScopeFinder<PAdESSignature> padesSignatureScopeFinder) {
-		this.padesSignatureScopeFinder = padesSignatureScopeFinder;
-	}
-
-	protected abstract SignatureScopeFinder getSignatureScopeFinder();
-
-	/**
 	 * This method allows to define the sequence of the validator related to a document to validate. It's only used with ASiC-E container.
 	 *
 	 * @param validator {@code SignedDocumentValidator} corresponding to the next signature with in the contained.
@@ -1552,4 +1507,5 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public DocumentValidator getSubordinatedValidator() {
 		return null;
 	}
+	
 }

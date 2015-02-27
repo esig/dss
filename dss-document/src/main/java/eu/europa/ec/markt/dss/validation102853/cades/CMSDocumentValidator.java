@@ -34,7 +34,6 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
-import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.scope.CAdESSignatureScopeFinder;
 
@@ -50,7 +49,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 * This constructor is used with {@code TimeStampToken}.
 	 */
 	public CMSDocumentValidator() {
-		cadesSignatureScopeFinder = new CAdESSignatureScopeFinder();
+		super(new CAdESSignatureScopeFinder());
 	}
 
 	/**
@@ -116,8 +115,4 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		throw new DSSUnsupportedOperationException("This method is not applicable for this kind of signatures!");
 	}
 
-	@Override
-	protected SignatureScopeFinder getSignatureScopeFinder() {
-		return cadesSignatureScopeFinder;
-	}
 }

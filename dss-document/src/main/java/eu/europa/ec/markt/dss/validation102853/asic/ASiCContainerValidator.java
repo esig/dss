@@ -129,7 +129,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	private boolean timestamped = false;
 
 	public ASiCContainerValidator(final DSSDocument asicContainer) {
-
+		super(null);
 		this.asicContainer = asicContainer;
 	}
 
@@ -493,11 +493,6 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			currentSubordinatedValidator = currentSubordinatedValidator.getNextValidator();
 		} while (currentSubordinatedValidator != null);
 		return firstReport;
-	}
-
-	@Override
-	protected SignatureScopeFinder getSignatureScopeFinder() {
-		return null;
 	}
 
 	/**

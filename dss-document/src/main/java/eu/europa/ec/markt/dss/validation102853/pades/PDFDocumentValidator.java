@@ -34,7 +34,6 @@ import eu.europa.ec.markt.dss.signature.pdf.PdfObjFactory;
 import eu.europa.ec.markt.dss.signature.pdf.PdfSignatureInfo;
 import eu.europa.ec.markt.dss.signature.pdf.PdfSignatureValidationCallback;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
-import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.scope.PAdESSignatureScopeFinder;
 
@@ -51,7 +50,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	 */
 	public PDFDocumentValidator(final DSSDocument document) {
 
-		padesSignatureScopeFinder = new PAdESSignatureScopeFinder();
+		super(new PAdESSignatureScopeFinder());
 		this.document = document;
 		pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 	}
@@ -88,11 +87,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public DSSDocument removeSignature(String signatureId) throws DSSException {
 		throw new DSSUnsupportedOperationException("This method is not applicable for this kind of signatures!");
-	}
-
-	@Override
-	protected SignatureScopeFinder getSignatureScopeFinder() {
-		return padesSignatureScopeFinder;
 	}
 
 }

@@ -37,7 +37,6 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
-import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.scope.XAdESSignatureScopeFinder;
 
@@ -62,7 +61,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 */
 	public XMLDocumentValidator(final DSSDocument dssDocument) throws DSSException {
 
-		xadesSignatureScopeFinder = new XAdESSignatureScopeFinder();
+		super(new XAdESSignatureScopeFinder());
 		this.document = dssDocument;
 		this.rootElement = DSSXMLUtils.buildDOM(dssDocument);
 
@@ -171,11 +170,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	public void clearQueryHolders() {
 
 		xPathQueryHolders.clear();
-	}
-
-	@Override
-	protected SignatureScopeFinder getSignatureScopeFinder() {
-		return xadesSignatureScopeFinder;
 	}
 
 	/**
