@@ -20,6 +20,7 @@
 
 package eu.europa.ec.markt.dss.signature.pdf.pdfbox;
 
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -48,6 +49,9 @@ import org.apache.pdfbox.exceptions.SignatureException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +59,9 @@ import eu.europa.ec.markt.dss.DSSPDFUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.SignatureImageParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.signature.pades.visible.ImageFactory;
 import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
 import eu.europa.ec.markt.dss.signature.pdf.PdfDict;
 import eu.europa.ec.markt.dss.signature.pdf.PdfDocTimestampInfo;
@@ -136,7 +142,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	private byte[] signDocumentAndReturnDigest(final SignatureParameters parameters, final byte[] signatureBytes, final File signedFile,
 			final FileOutputStream fileOutputStream, final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm)
-			throws DSSException {
+					throws DSSException {
 
 		try {
 
@@ -155,7 +161,13 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					return signatureBytes;
 				}
 			};
-			pdDocument.addSignature(pdSignature, signatureInterface);
+
+			if (parameters.getImageParameters() == null) {
+				pdDocument.addSignature(pdSignature, signatureInterface);
+			} else {
+				SignatureOptions options = createSignatureOptions(pdDocument, parameters.getImageParameters());
+				pdDocument.addSignature(pdSignature, signatureInterface, options);
+			}
 
 			saveDocumentIncrementally(parameters, signedFile, fileOutputStream, pdDocument);
 			final byte[] digestValue = digest.digest();
@@ -169,6 +181,22 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (SignatureException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	private SignatureOptions createSignatureOptions(final PDDocument doc, final SignatureImageParameters imgParams) throws IOException {
+		SignatureOptions options = new SignatureOptions();
+
+		Dimension optimalSize = ImageFactory.getOptimalSize(imgParams);
+		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, ImageFactory.create(imgParams), imgParams.getPage());
+		visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis()).width((float) optimalSize.getWidth()).height((float) optimalSize.getHeight());
+
+		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
+		signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
+
+		options.setVisualSignature(signatureProperties);
+		options.setPage(imgParams.getPage());
+
+		return options;
 	}
 
 	private void addExtraDictionaries(final PDDocument doc, final Map.Entry<String, PdfDict>[] extraDictionariesToAddBeforeSign) {

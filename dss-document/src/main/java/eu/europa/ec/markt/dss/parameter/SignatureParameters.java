@@ -21,9 +21,7 @@
 package eu.europa.ec.markt.dss.parameter;
 
 import java.io.Serializable;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -32,7 +30,6 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
@@ -141,6 +138,11 @@ public class SignatureParameters implements Serializable {
 	 *	This attribute is used to inject ASiC root (inclusive canonicalization)
 	 */
 	private Document rootDocumentXAdES;
+
+	/**
+	 * This attribute is used to create visible signature in PAdES form
+	 */
+	private SignatureImageParameters imageParameters;
 
 	public SignatureParameters() {
 
@@ -431,7 +433,7 @@ public class SignatureParameters implements Serializable {
 		setSigningCertificate(privateKeyEntry.getCertificate());
 
 		setCertificateChain(privateKeyEntry.getCertificateChain());
-		
+
 		final String encryptionAlgorithmName = this.signingCertificate.getPublicKey().getAlgorithm();
 		this.encryptionAlgorithm = EncryptionAlgorithm.forName(encryptionAlgorithmName);
 		this.signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
@@ -709,6 +711,14 @@ public class SignatureParameters implements Serializable {
 
 	public void setRootDocumentXAdES(Document rootDocumentXAdES) {
 		this.rootDocumentXAdES = rootDocumentXAdES;
+	}
+
+	public SignatureImageParameters getImageParameters() {
+		return imageParameters;
+	}
+
+	public void setImageParameters(SignatureImageParameters imageParameters) {
+		this.imageParameters = imageParameters;
 	}
 
 	@Override
