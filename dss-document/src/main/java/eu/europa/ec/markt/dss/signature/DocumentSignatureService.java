@@ -85,6 +85,7 @@ public interface DocumentSignatureService extends Serializable {
 	 * @return
 	 * @throws DSSException
 	 */
+	@Deprecated
 	DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException;
 
 	/**

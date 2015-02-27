@@ -247,19 +247,6 @@ public class SignatureParameters implements Serializable {
 	 * parameter. In the case of the DETACHED signature this is the detached document. In the case of ASiC-S this is the document to be signed.<p />
 	 * When extending this method must be invoked to indicate the {@code detachedContent}.
 	 *
-	 * @param document
-	 * @deprecated (4.1.0) use {@code setContents}
-	 */
-	@Deprecated
-	public void setOriginalDocument(final DSSDocument document) {
-		this.detachedContent = document;
-	}
-
-	/**
-	 * When signing this method is internally invoked by the {@code AbstractSignatureService} and the related variable {@code detachedContent} is overwritten by the service
-	 * parameter. In the case of the DETACHED signature this is the detached document. In the case of ASiC-S this is the document to be signed.<p />
-	 * When extending this method must be invoked to indicate the {@code detachedContent}.
-	 *
 	 * @param detachedContent
 	 */
 	public void setDetachedContent(final DSSDocument detachedContent) {
@@ -442,6 +429,7 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @return the value
 	 */
+	@Deprecated
 	public DSSPrivateKeyEntry getPrivateKeyEntry() {
 		return privateKeyEntry;
 	}
@@ -451,6 +439,7 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @return the value
 	 */
+	@Deprecated
 	public SignatureTokenConnection getSigningToken() {
 		return signingToken;
 	}
@@ -460,6 +449,7 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @param signingToken the value
 	 */
+	@Deprecated
 	public void setSigningToken(final SignatureTokenConnection signingToken) {
 		this.signingToken = signingToken;
 	}
@@ -544,6 +534,7 @@ public class SignatureParameters implements Serializable {
 	/**
 	 * @return the digest algorithm
 	 */
+	@Deprecated
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
@@ -551,6 +542,7 @@ public class SignatureParameters implements Serializable {
 	/**
 	 * @param digestAlgorithm the digest algorithm to set
 	 */
+	@Deprecated
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 
 		this.digestAlgorithm = digestAlgorithm;
@@ -566,6 +558,7 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @param encryptionAlgorithm
 	 */
+	@Deprecated
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 
 		this.encryptionAlgorithm = encryptionAlgorithm;
@@ -578,6 +571,7 @@ public class SignatureParameters implements Serializable {
 	/**
 	 * @return the encryption algorithm. It's determined by the privateKeyEntry and is null until the privateKeyEntry is set.
 	 */
+	@Deprecated
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgorithm;
 	}

@@ -987,22 +987,6 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method enables a user to add a specific namespace + corresponding prefix
-	 *
-	 * @param namespace a {@code HashMap} containing the additional namespace, with the prefix as key and the namespace URI as value
-	 * @deprecated From 4.3.0-RC use eu.europa.ec.markt.dss.DSSXMLUtils#registerNamespace(java.lang.String, java.lang.String)
-	 */
-	@Deprecated
-	public static void addNamespace(HashMap<String, String> namespace) {
-
-		namespaces.putAll(namespace);
-		for (final Map.Entry<String, String> entry : namespace.entrySet()) {
-
-			namespacePrefixMapper.registerNamespace(entry.getKey(), entry.getValue());
-		}
-	}
-
-	/**
 	 * This method allows to validate an XML against the XAdES XSD schema.
 	 *
 	 * @param streamSource {@code InputStream} XML to validate

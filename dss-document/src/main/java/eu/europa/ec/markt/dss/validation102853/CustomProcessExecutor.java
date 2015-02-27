@@ -95,12 +95,6 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	}
 
 	@Override
-	public void setValidationPolicyDom(final Document validationPolicyDom) {
-
-		validationPolicy = new EtsiValidationPolicy(validationPolicyDom);
-	}
-
-	@Override
 	public void setValidationPolicy(final ValidationPolicy validationPolicy) {
 		this.validationPolicy = validationPolicy;
 	}

@@ -2266,6 +2266,7 @@ public final class DSSUtils {
 	 * @param x509CertificateHolder {@code X509CertificateHolder} to be encoded
 	 * @return array of {@code byte}s
 	 */
+	@Deprecated
 	public static byte[] getEncoded(final X509CertificateHolder x509CertificateHolder) {
 
 		try {
