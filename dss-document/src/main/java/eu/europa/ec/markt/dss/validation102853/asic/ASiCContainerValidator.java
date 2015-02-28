@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.asic;
 
 import java.io.ByteArrayOutputStream;
@@ -56,7 +56,7 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
 /**
  * This class is the base class for ASiC containers.
- * <p/>
+ *
  * Mime-type handling: FROM: ETSI TS 102 918 V1.2.1
  * A.1 Mimetype
  * The "mimetype" object, when stored in a ZIP, file can be used to support operating systems that rely on some content in
@@ -72,14 +72,14 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
  * of this string is contained in the 4 octets starting at offset 18.
  * All multi-octets values are little-endian.
  * The "mimetype" shall NOT be compressed or encrypted inside the ZIP file.
- * <p/>
+ *
  * --> The use of two first bytes is not standard conforming.
- * <p/>
+ *
  * 5.2.1 Media type identification
  * 1) File extension: ".asics"|".asice" should be used (".scs"|".sce" is allowed for operating systems and/or file systems not
  * allowing more than 3 characters file extensions). In the case where the container content is to be handled
  * manually, the ".zip" extension may be used.
- * <p/>
+ *
  */
 public class ASiCContainerValidator extends SignedDocumentValidator {
 

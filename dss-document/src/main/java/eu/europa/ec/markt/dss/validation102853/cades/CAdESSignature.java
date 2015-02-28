@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.cades;
 
 import static eu.europa.ec.markt.dss.OID.id_aa_ets_archiveTimestampV2;
@@ -166,7 +166,7 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
 /**
  * CAdES Signature class helper
  *
- * @version $Revision: 1821 $ - $Date: 2013-03-28 15:56:00 +0100 (Thu, 28 Mar 2013) $
+ *
  */
 
 public class CAdESSignature extends DefaultAdvancedSignature {
@@ -347,10 +347,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * <p/>
+	 *
 	 * 5.6.3 Signature Verification Process
-	 * <p/>
-	 * <p/>
+	 *
+	 *
 	 * ...the public key from the first certificate identified in the sequence of certificate identifiers from SigningCertificate shall be the key
 	 * used to verify the digital signature.
 	 *
@@ -570,22 +570,22 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * 31 ETSI TS 101 733 V2.2.1 (2013-04)
-	 * <p/>
+	 *
 	 * 5.8.1 signature-policy-identifier The present document mandates that for CAdES-EPES, a reference to the signature policy is included in the
 	 * signedData. This reference is explicitly identified. A signature policy defines the rules for creation and validation of an electronic
 	 * signature, and is included as a signed attribute with every Explicit Policy-based Electronic Signature. The signature-policy-identifier shall
 	 * be a signed attribute.
-	 * <p/>
+	 *
 	 * The following object identifier identifies the signature-policy-identifier attribute: ... id-aa-ets-sigPolicyId OBJECT IDENTIFIER ::= { iso(1)
 	 * member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs9(9) smime(16) id-aa(2) 15 } signature-policy-identifier attribute values have ASN.1 type
 	 * SignaturePolicyIdentifier: ... SignaturePolicyIdentifier ::=CHOICE{ ...... signaturePolicyId ......... SignaturePolicyId, ......
 	 * signaturePolicyImplied .... SignaturePolicyImplied -- not used in this version}
-	 * <p/>
+	 *
 	 * ... SignaturePolicyId ::= SEQUENCE { ...... sigPolicyId ......... SigPolicyId, ...... sigPolicyHash ....... SigPolicyHash, ......
 	 * sigPolicyQualifiers . SEQUENCE SIZE (1..MAX) OF SigPolicyQualifierInfo OPTIONAL}
-	 * <p/>
+	 *
 	 * ... SignaturePolicyImplied ::= NULL
-	 * <p/>
+	 *
 	 * NOTE: {@code SignaturePolicyImplied} -- not used in this version
 	 *
 	 * @return
@@ -1164,13 +1164,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * if (SIGNATURE_TIMESTAMP == timestampType) {
-	 * <p/>
+	 *
 	 * final List<TimestampReference> references = new ArrayList<TimestampReference>(); final TimestampReference signatureReference = new
 	 * TimestampReference(); signatureReference.setCategory(TimestampReferenceCategory.SIGNATURE); signatureReference.setSignatureId(getId());
 	 * references.add(signatureReference); getCandidatesForSigningCertificate(); // to be sure that the function is called final TimestampReference
 	 * signingCertReference = createCertificateTimestampReference(signingCertificateValidity); references.add(signingCertReference);
 	 * timestampToken.setTimestampedReferences(references); } else if (ARCHIVE_TIMESTAMP == timestampType) {
-	 * <p/>
+	 *
 	 * final List<TimestampReference> references = new ArrayList<TimestampReference>(); final TimestampReference signatureReference = new
 	 * TimestampReference(); signatureReference.setCategory(TimestampReferenceCategory.SIGNATURE); signatureReference.setSignatureId(getId());
 	 * references.add(signatureReference); getCandidatesForSigningCertificate(); // to be sure that the function is called final TimestampReference
@@ -1664,12 +1664,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * This method handles the archive-timestamp-v2
-	 * <p/>
+	 *
 	 * The value of the messageImprint field within TimeStampToken shall be a hash of the concatenation of: • the encapContentInfo element of the
 	 * SignedData sequence; • any external content being protected by the signature, if the eContent element of the encapContentInfo is omitted; • the
 	 * Certificates and crls elements of the SignedData sequence, when present; and • all data elements in the SignerInfo sequence including all
 	 * signed and unsigned attributes.
-	 * <p/>
+	 *
 	 * NOTE 1: An alternative archiveTimestamp attribute, identified by an object identifier { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
 	 * pkcs-9(9) smime(16) id-aa(2) 27, is defined in prior versions of TS 101 733. The archiveTimestamp attribute, defined in versions of TS 101 733
 	 * prior to 1.5.1, is not compatible with the attribute defined in the present document. The archiveTimestamp attribute, defined in versions 1.5.1

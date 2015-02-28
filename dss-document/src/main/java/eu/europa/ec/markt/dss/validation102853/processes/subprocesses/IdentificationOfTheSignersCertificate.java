@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE;
@@ -50,7 +50,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 /**
  * 5.1 Identification of the Signer's Certificate (ISC)
- * <p/>
+ *
  * 5.1.1 Description
  * This process consists in identifying the signer's certificate that will be used to validate the signature.
  * 5.1.2 Inputs
@@ -62,11 +62,11 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * • In case of success, i.e. the signer's certificate can be identified, the output shall be the signer's certificate.
  * • In case of failure, i.e. the signer's certificate cannot be identified, the output shall be the indication INDETERMINATE and the sub indication NO_SIGNER_CERTIFICATE_FOUND.
  * NOTE: If the signature is compliant with the CD 2011/130/EU, this process will never return INDETERMINATE, since the signer's certificate is present in the signature.
- * <p/>
- * DISCLAIMER: Project owner DG-MARKT.
  *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
+ *
+ *
+ *
+ *
  */
 public class IdentificationOfTheSignersCertificate implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage {
 
@@ -142,7 +142,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 
 	/**
 	 * This method implements ISC process.
-	 * <p/>
+	 *
 	 * 5.1.4 Processing
 	 * The common way to unambiguously identify the signer's certificate is by using a property/attribute of the signature
 	 * containing a reference to it, which includes the digest computed over the certificates encoded value. The certificate or a
@@ -336,12 +336,12 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 	 * 2) If the ds:KeyInfo contains the ds:X509IssuerSerial element, check that the issuer and the serial
 	 * number indicated in that element and IssuerSerial from SigningCertificate are the same. If they do
 	 * not match, the validation of this property shall be taken as failed and INDETERMINATE is returned.<br/>
-	 * <p/>
+	 *
 	 * For CAdES:<br/>
 	 * 2) Compare the details of the issuer's name and the serial number of the certificate with those indicated in the
 	 * reference. If any of them does not match, the validation of this attribute shall be taken as failed and
 	 * INDETERMINATE is returned.<br/>
-	 * <p/>
+	 *
 	 * For PAdES:<br/>
 	 * The signing certificate shall be checked against the references present in one of the following attributes:
 	 * ESS-signing-certificate or ESS-signing-certificate-v2, since one of these attributes shall contain a reference to the

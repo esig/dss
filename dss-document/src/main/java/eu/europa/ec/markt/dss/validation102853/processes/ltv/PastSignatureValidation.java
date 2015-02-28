@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
 import static eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.XPathSignature.getSigningCertificateId;
@@ -47,13 +47,13 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 /**
  * 9.2.4 Past signature validation process<br>
- * <p/>
+ *
  * 9.2.4.1 Description<br>
- * <p/>
+ *
  * This process is used when validation of a signature (or a time-stamp token) fails at the current time with an
  * INDETERMINATE status such that the provided proofs of existence may help to go to a determined status.
  *
- * @author bielecro
+ *
  */
 public class PastSignatureValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage {
 
@@ -86,9 +86,9 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 
 	/**
 	 * This method carry out the Past Signature Validation process.
-	 * <p/>
+	 *
 	 * 9.2.1.2 Input<br>
-	 * <p/>
+	 *
 	 * - Signature or time-stamp token . Mandatory<br>
 	 * - Target certificate ............ Mandatory<br>
 	 * - X.509 Validation Parameters ... Mandatory<br>

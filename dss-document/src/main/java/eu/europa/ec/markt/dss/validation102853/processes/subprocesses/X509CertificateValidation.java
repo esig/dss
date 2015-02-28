@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2011 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2011 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM;
@@ -688,7 +688,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 
 	/**
 	 * This method checks if the signing certificate is revoked.
-	 * <p/>
+	 *
 	 * c) If the certificate path validation returns a failure indication because the signer's certificate has
 	 * been determined to be revoked, abort the process with the indication INDETERMINATE, the sub indication
 	 * REVOKED_NO_POE, the validated chain, the revocation date and the reason for revocation.
@@ -725,7 +725,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 
 	/**
 	 * This method checks if the signing certificate is on hold.
-	 * <p/>
+	 *
 	 * d) If the certificate path validation returns a failure indication because the signer's certificate has
 	 * been determined to be on hold, abort the process with the indication INDETERMINATE, the sub indication
 	 * TRY_LATER, the suspension time and, if available, the content of the NEXT_UPDATE-field of the CRL used as
@@ -907,7 +907,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 
 	/**
 	 * This method checks if the intermediate certificate is revoked.
-	 * <p/>
+	 *
 	 * e) If the certificate path validation returns a failure indication because an intermediate CA has been
 	 * determined to be revoked, set the current status to INDETERMINATE/REVOKED_CA_NO_POE and go to step 2.
 	 *

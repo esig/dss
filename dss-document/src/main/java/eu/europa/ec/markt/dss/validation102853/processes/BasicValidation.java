@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes;
 
 import java.util.Date;
@@ -45,7 +45,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * validating basic signatures (e.g. time-stamps, CRLs, etc.) as well as AdES-BES and AdES-EPES electronic signatures.
  * The process is built on the building blocks described in the previous clause.
  *
- * @author bielecro
+ *
  */
 public class BasicValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage {
 
@@ -80,7 +80,7 @@ public class BasicValidation implements Indication, SubIndication, NodeName, Nod
 
     /**
      * This method runs the Basic validation process.
-     * <p/>
+     *
      * 6.2 Inputs<br>
      * Signature ..................... Mandatory<br>
      * Signed data object (s) ........ Optional<br>
@@ -88,16 +88,16 @@ public class BasicValidation implements Indication, SubIndication, NodeName, Nod
      * Trusted-status Service Lists .. Optional<br>
      * Signature Validation Policies . Optional<br>
      * Local configuration ...........Optional<br>
-     * <p/>
+     *
      * 6.3 Outputs<br>
      * The main output of the signature validation is a status indicating the validity of the signature. This status may
      * be accompanied by additional information (see clause 4).<br>
-     * <p/>
+     *
      * 6.4 Processing<br>
      * NOTE 1: Since processing is largely implementation dependent, the steps listed in this clause are not necessarily
      * to be processed exactly in the order given. Any ordering that produces the same results can be used, even parallel
      * processing is possible.<br>
-     * <p/>
+     *
      * The following steps shall be performed:
      *
      * @param params

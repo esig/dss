@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.xades;
 
 import static eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder.XMLE_ALGORITHM;
@@ -986,7 +986,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * See ETSI TS 101 903 v1.4.1, clause G.2.2.16.1.1
-	 * <p/>
+	 *
 	 * Retrieves the data from {@code TimeStampToken} of type AllDataObjectsTimestampData
 	 *
 	 * @param timestampToken
@@ -1419,14 +1419,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * This method retrieves the potential countersignatures embedded in the XAdES signature document. From ETSI TS 101 903 v1.4.2:
-	 * <p/>
+	 *
 	 * 7.2.4.1 Countersignature identifier in Type attribute of ds:Reference
-	 * <p/>
+	 *
 	 * A XAdES signature containing a ds:Reference element whose Type attribute has value "http://uri.etsi.org/01903#CountersignedSignature" will
 	 * indicate that is is, in fact, a countersignature of the signature referenced by this element.
-	 * <p/>
+	 *
 	 * 7.2.4.2 Enveloped countersignatures: the CounterSignature element
-	 * <p/>
+	 *
 	 * The CounterSignature is an unsigned property that qualifies the signature. A XAdES signature MAY have more than one CounterSignature
 	 * properties. As indicated by its name, it contains one countersignature of the qualified signature.
 	 *
@@ -1459,7 +1459,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * This method verifies whether a given signature is a countersignature.
-	 * <p/>
+	 *
 	 * From ETSI TS 101 903 V1.4.2: - The signature's ds:SignedInfo element MUST contain one ds:Reference element referencing the ds:Signature element
 	 * of the embedding and countersigned XAdES signature - The content of the ds:DigestValue in the aforementioned ds:Reference element of the
 	 * countersignature MUST be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e. including the starting

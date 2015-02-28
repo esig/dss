@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIDF;
@@ -76,7 +76,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * 5.5 Signature Acceptance Validation (SAV)
  * 5.5.1 Description
  * This building block covers any additional verification that shall be performed on the attributes/properties of the signature.
- * <p/>
+ *
  * 5.5.2 Inputs
  * Table 10: Inputs to the SVA process
  * - Input                                Requirement
@@ -84,13 +84,13 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * - Cryptographic verification output    Optional
  * - Cryptographic Constraints            Optional
  * - Signature Constraints                Optional
- * <p/>
+ *
  * 5.5.3 Outputs
  * The process outputs one of the following indications:
  * Table 11: Outputs of the SVA process
  * - Indication: VALID
  * - Description: The signature is conformant with the validation constraints.
- * <p/>
+ *
  * - Indication: INVALID.SIG_CONSTRAINTS_FAILURE
  * - Description: The signature is not conformant with the validation constraints.
  * - Additional data items: The process shall output:
@@ -101,11 +101,11 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * - Additional data items: The process shall output:
  * • A list of algorithms, together with the size of the key, if applicable, that have been used in validation of the signature but no longer are considered reliable together
  * with a time up to which each of the listed algorithms were considered secure.
- * <p/>
- * DISCLAIMER: Project owner DG-MARKT.
  *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
+ *
+ *
+ *
+ *
  */
 public class SignatureAcceptanceValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
 
@@ -159,18 +159,18 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 	 * 5.5.4 Processing
 	 * This process consists in checking the Signature and Cryptographic Constraints against the signature. The
 	 * general principle is as follows: perform the following for each constraint:
-	 * <p/>
+	 *
 	 * • If the constraint necessitates processing a property/attribute in the signature, perform the processing of
 	 * the property/attribute as specified from clause 5.5.4.1 to 5.5.4.8.
-	 * <p/>
+	 *
 	 * 5.5.4.1 Processing AdES properties/attributes This clause describes the application of Signature Constraints on
 	 * the content of the signature including the processing on signed and unsigned properties/attributes.
 	 * Constraint XML description:
 	 * <SigningCertificateChainConstraint><br>
 	 * <MandatedSignedQProperties>
-	 * <p/>
+	 *
 	 * Indicates the mandated signed qualifying properties that are mandated to be present in the signature.
-	 * <p/>
+	 *
 	 * This method prepares the execution of the SAV process.
 	 *
 	 * @param params      validation process parameters
@@ -409,7 +409,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 
 	/**
 	 * Check of signing-time
-	 * <p/>
+	 *
 	 * 5.5.4.3 Processing claimed signing time
 	 * If the signature constraints contain constraints regarding this property, the verifying application shall follow its rules for
 	 * checking this signed property.
@@ -522,7 +522,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 
 	/**
 	 * Check of signer-location
-	 * <p/>
+	 *
 	 * 5.5.4.5 Processing indication of production place of the signature
 	 * If the signature constraints contain constraints regarding this property, the verifying application shall follow its rules for
 	 * checking this signed property.

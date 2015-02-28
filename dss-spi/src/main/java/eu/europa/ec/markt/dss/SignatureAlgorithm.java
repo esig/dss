@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss;
 
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 /**
  * Supported signature algorithms.
  *
- * @version $Revision: 1989 $ - $Date: 2013-05-12 22:35:51 +0200 (Sun, 12 May 2013) $
+ *
  */
 
 public enum SignatureAlgorithm {
@@ -210,7 +210,7 @@ public enum SignatureAlgorithm {
 
 	/**
 	 * This method return the {@code SignatureAlgorithm} or the default value if the algorithm is unknown.
-	 * <p/>
+	 *
 	 * TODO: (Bob: 2014 Feb 13) this method can return UNKNOWN ALGORITHM...
 	 *
 	 * @param xmlName      XML URI of the given algorithm
@@ -239,26 +239,26 @@ public enum SignatureAlgorithm {
 
 	/**
 	 * For given signature algorithm & digest algorithm this function returns the Java form of the signature algorithm Signature Algorithms
-	 * <p/>
+	 *
 	 * The algorithm names in this section can be specified when generating an instance of Signature.
-	 * <p/>
+	 *
 	 * NONEwithRSA - The RSA signature algorithm which does not use a digesting algorithm (e.g. MD5/SHA1) before performing the RSA operation. For more information about the RSA
 	 * Signature algorithms, please see PKCS1.
-	 * <p/>
+	 *
 	 * MD2withRSA MD5withRSA - The MD2/MD5 with RSA Encryption signature algorithm which uses the MD2/MD5 digest algorithm and RSA to create and verify RSA digital signatures as
 	 * defined in PKCS1.
-	 * <p/>
+	 *
 	 * SHA1withRSA SHA256withRSA SHA384withRSA SHA512withRSA - The signature algorithm with SHA-* and the RSA encryption algorithm as defined in the OSI Interoperability Workshop,
 	 * using the padding conventions described in PKCS1.
-	 * <p/>
+	 *
 	 * NONEwithDSA - The Digital Signature Algorithm as defined in FIPS PUB 186-2. The data must be exactly 20 bytes in length. This algorithms is also known under the alias name
 	 * of rawDSA.
-	 * <p/>
+	 *
 	 * SHA1withDSA - The DSA with SHA-1 signature algorithm which uses the SHA-1 digest algorithm and DSA to create and verify DSA digital signatures as defined in FIPS PUB 186.
-	 * <p/>
+	 *
 	 * NONEwithECDSA SHA1withECDSA SHA256withECDSA SHA384withECDSA SHA512withECDSA (ECDSA) - The ECDSA signature algorithms as defined in ANSI X9.62. Note:"ECDSA" is an ambiguous
 	 * name for the "SHA1withECDSA" algorithm and should not be used. The formal name "SHA1withECDSA" should be used instead.
-	 * <p/>
+	 *
 	 * <digest>with<encryption> - Use this to form a name for a signature algorithm with a particular message digest (such as MD2 or MD5) and algorithm (such as RSA or DSA), just
 	 * as was done for the explicitly-defined standard names in this section (MD2withRSA, etc.). For the new signature schemes defined in PKCS1 v 2.0, for which the
 	 * <digest>with<encryption> form is insufficient, <digest>with<encryption>and<mgf> can be used to form a name. Here, <mgf> should be replaced by a mask generation function

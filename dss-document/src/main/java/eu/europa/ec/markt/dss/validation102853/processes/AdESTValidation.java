@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes;
 
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIDF;
@@ -77,21 +77,21 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 /**
  * This class implements:<br>
- * <p/>
+ *
  * 8 Validation Process for AdES-T
- * <p/>
+ *
  * 8.1 Description<br>
- * <p/>
+ *
  * An AdES-T signature is built on BES or EPES signature and incorporates trusted time associated to the signature. The
  * trusted time may be provided by two different means:
- * <p/>
+ *
  * • A signature time-stamp unsigned property/attribute added to the electronic signature.
- * <p/>
+ *
  * • A time mark of the electronic signature provided by a trusted service provider.
- * <p/>
+ *
  * This clause describes a validation process for AdES-T signatures.
  *
- * @author bielecro
+ *
  */
 public class AdESTValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
 
@@ -210,7 +210,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * This method runs the AdES-T validation process.
-	 * <p/>
+	 *
 	 * 8.2 Inputs<br>
 	 * - Signature ..................... Mandatory<br>
 	 * - Signed data object (s) ........ Optional<br>
@@ -218,11 +218,11 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	 * - Signature Validation Policies . Optional<br>
 	 * - Local configuration ........... Optional<br>
 	 * - Signer's Certificate .......... Optional<br>
-	 * <p/>
+	 *
 	 * 8.3 Outputs<BR>
 	 * The main output of the signature validation is a status indicating the validity of the signature. This status may
 	 * be accompanied by additional information (see clause 4).
-	 * <p/>
+	 *
 	 * 8.4 Processing<BR>
 	 * The following steps shall be performed:
 	 *
@@ -438,10 +438,10 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	/**
 	 * b) Time-stamp token validation: For each time-stamp token remaining in the set of signature time-stamp
 	 * tokens, the SVA shall perform the time-stamp validation process (see clause 7):<br/>
-	 * <p/>
+	 *
 	 * 􀀀 If VALID is returned and if the returned generation time is before best-signature-time, set
 	 * best-signature-time to this date and try the next token.<br/>
-	 * <p/>
+	 *
 	 * 􀀀 In all remaining cases, remove the time-stamp token from the set of signature time-stamp tokens and try
 	 * the next token.<br/>
 	 *
@@ -542,18 +542,18 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * Check of: the result of the basic validation process
-	 * <p/>
+	 *
 	 * NOTE 2: We continue the process in the case INDETERMINATE/REVOKED_NO_POE, because a proof that the signing
 	 * occurred before the revocation date may help to go from INDETERMINATE to VALID (step 5-a).
-	 * <p/>
+	 *
 	 * NOTE 3: We continue the process in the case INDETERMINATE/OUT_OF_BOUNDS_NO_POE, because a proof that the
 	 * signing occurred before the issuance date (notBefore) of the signer's certificate may help to go from
 	 * INDETERMINATE to INVALID (step 5-b).
-	 * <p/>
+	 *
 	 * NOTE 4: We continue the process in the case INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, because a proof
 	 * that the signing occurred before the time one of the algorithms used was no longer considered secure may help
 	 * to go from INDETERMINATE to VALID (step 5-c).
-	 * <p/>
+	 *
 	 * AT: Problem of the revocation of the certificate after signing time --> Following the Austrian's laws the signature is still valid because the timestamps are not
 	 * mandatory, what is an aberration. To obtain the validity of such a signature the rule which checks the revocation data should be set as WARN. Then here VALID
 	 * indication is obtained.
@@ -579,9 +579,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * Check of: is the timestamp message imprint data found
-	 * <p/>
+	 *
 	 * 4) Signature time-stamp validation: Perform the following steps:
-	 * <p/>
+	 *
 	 * a) Message imprint verification: For each time-stamp token in the set of signature time-stamp tokens, do the
 	 * message imprint verification as specified in clauses 8.4.1 or 8.4.2 depending on the type of the signature.
 	 * If the verification fails, remove the token from the set.
@@ -654,7 +654,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * Check of: Is revocation time posterior to best-signature-time?
-	 * <p/>
+	 *
 	 * a) If step 2 returned INDETERMINATE/REVOKED_NO_POE: If the returned revocation time is posterior to
 	 * best-signature-time, perform step 5d. Otherwise, terminate with INDETERMINATE/REVOKED_NO_POE. In addition to
 	 * the data items returned in steps 1 and 2, the SVA should notify the DA with the reason of the failure.
@@ -685,10 +685,10 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * Check of: best-signature-time against the signing certificate issuance date.
-	 * <p/>
+	 *
 	 * b) If step 2 returned INDETERMINATE/OUT_OF_BOUNDS_NO_POE: If best-signature-time is before the issuance date
 	 * of the signer's certificate, terminate with INVALID/NOT_YET_VALID.
-	 * <p/>
+	 *
 	 * NOTE 5: In the algorithm above, the signature-time-stamp protects the signature against the revocation of
 	 * the signer's certificate (step 5-a) but not against expiration. The latter case requires validating the
 	 * signer's certificate in the past (see clause 9).
@@ -721,11 +721,11 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * Check of: best-signature-time against the signing certificate issuance date.
-	 * <p/>
+	 *
 	 * b) If step 2 returned INDETERMINATE/OUT_OF_BOUNDS_NO_POE: If best-signature-time is not before the issuance date
 	 * of the signer's certificate terminate with INDETERMINATE/OUT_OF_BOUNDS_NO_POE. In addition to the data items returned
 	 * in steps 1 and 2, the SVA should notify the DA with the reason of the failure.
-	 * <p/>
+	 *
 	 * NOTE 5: In the algorithm above, the signature-time-stamp protects the signature against the revocation of
 	 * the signer's certificate (step 5-a) but not against expiration. The latter case requires validating the
 	 * signer's certificate in the past (see clause 9).
@@ -755,7 +755,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * Check of: best-signature-time against the signing certificate issuance date.
-	 * <p/>
+	 *
 	 * c) If step 2 returned INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE and the material concerned by this
 	 * failure is the signature value or a signed attribute, check, if the algorithm(s) concerned were still
 	 * considered reliable at best-signature-time, continue with step d. Otherwise, terminate with
@@ -920,9 +920,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * Check of: Time-stamp delay.
-	 * <p/>
+	 *
 	 * 6) Handling Time-stamp delay: If the validation constraints specify a time-stamp delay, do the following:
-	 * <p/>
+	 *
 	 * a) If no signing-time property/attribute is present, fail with INDETERMINATE and an explanation that the
 	 * validation failed due to the absence of claimed signing time.
 	 *
@@ -946,7 +946,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 	/**
 	 * Check of: Time-stamp delay.
-	 * <p/>
+	 *
 	 * b) If a signing-time property/attribute is present, check that the claimed time in the attribute plus the
 	 * timestamp delay is after the best-signature-time. If the check is successful, go to the next step.
 	 * Otherwise, fail with INVALID/SIG_CONSTRAINTS_FAILURE and an explanation that the validation failed due to

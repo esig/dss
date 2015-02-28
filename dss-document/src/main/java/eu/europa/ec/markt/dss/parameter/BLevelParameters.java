@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.parameter;
 
 import java.io.Serializable;
@@ -147,16 +147,16 @@ public class BLevelParameters implements Serializable {
 
 	/**
 	 * THIS VALUE WILL BE SET AUTOMATICALLY IF LEFT BLANK
-	 * <p/>
+	 *
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * <p/>
+	 *
 	 * 5.10.2 content-identifier Attribute
 	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
 	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
 	 * content-identifier shall be a signed attribute.
 	 * content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
 	 * ESS (RFC 2634 [5]).
-	 * <p/>
+	 *
 	 * The minimal content-identifier attribute should contain a concatenation of user-specific identification
 	 * information (such as a user name or public keying material identification information), a GeneralizedTime string,
 	 * and a random number.
@@ -459,7 +459,7 @@ public class BLevelParameters implements Serializable {
 
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * <p/>
+	 *
 	 * 5.11.1 commitment-type-indication Attribute
 	 * There may be situations where a signer wants to explicitly indicate to a verifier that by signing the data, it illustrates a
 	 * type of commitment on behalf of the signer. The commitment-type-indication attribute conveys such
@@ -475,14 +475,14 @@ public class BLevelParameters implements Serializable {
 
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * <p/>
+	 *
 	 * 5.10.2 content-identifier Attribute
 	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
 	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
 	 * content-identifier shall be a signed attribute.
 	 * content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
 	 * ESS (RFC 2634 [5]).
-	 * <p/>
+	 *
 	 * The minimal content-identifier attribute should contain a concatenation of user-specific identification
 	 * information (such as a user name or public keying material identification information), a GeneralizedTime string,
 	 * and a random number.
@@ -503,13 +503,13 @@ public class BLevelParameters implements Serializable {
 
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * <p/>
+	 *
 	 * 5.11.2 signer-location Attribute
 	 * The signer-location attribute specifies a mnemonic for an address associated with the signer at a particular
 	 * geographical (e.g. city) location. The mnemonic is registered in the country in which the signer is located and is used in
 	 * the provision of the Public Telegram Service (according to Recommendation ITU-T F.1 [11]).
 	 * The signer-location attribute shall be a signed attribute.
-	 * <p/>
+	 *
 	 * The following object identifier identifies the signer-location attribute:
 	 * id-aa-ets-signerLocation OBJECT IDENTIFIER ::= { iso(1) member-body(2)
 	 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 17}

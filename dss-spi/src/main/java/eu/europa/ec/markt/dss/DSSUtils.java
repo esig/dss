@@ -1,21 +1,22 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.ec.markt.dss;
 
@@ -888,7 +889,7 @@ public final class DSSUtils {
 	/**
 	 * This method digest and encrypt the given {@code InputStream} with indicated private key and signature algorithm. To find the signature object
 	 * the list of registered security Providers, starting with the most preferred Provider is traversed.
-	 * <p/>
+	 *
 	 * This method returns an array of bytes representing the signature value. Signature object that implements the specified signature algorithm. It traverses the list of
 	 * registered security Providers, starting with the most preferred Provider. A new Signature object encapsulating the SignatureSpi implementation from the first Provider
 	 * that supports the specified algorithm is returned. The {@code NoSuchAlgorithmException} exception is wrapped in a DSSException.
@@ -929,7 +930,7 @@ public final class DSSUtils {
 	/**
 	 * This method digest and encrypt the given {@code InputStream} with indicated private key and signature algorithm. To find the signature object
 	 * the list of registered security Providers, starting with the most preferred Provider is traversed.
-	 * <p/>
+	 *
 	 * This method returns an array of bytes representing the signature value. Signature object that implements the specified signature algorithm. It traverses the list of
 	 * registered security Providers, starting with the most preferred Provider. A new Signature object encapsulating the SignatureSpi implementation from the first Provider
 	 * that supports the specified algorithm is returned. The {@code NoSuchAlgorithmException} exception is wrapped in a DSSException.
@@ -1188,7 +1189,7 @@ public final class DSSUtils {
 
 	/**
 	 * FROM: Apache
-	 * <p/>
+	 *
 	 * Reads the contents of a file into a byte array.
 	 * The file is always closed.
 	 *
@@ -1210,13 +1211,13 @@ public final class DSSUtils {
 
 	/**
 	 * FROM: Apache
-	 * <p/>
+	 *
 	 * Opens a {@link java.io.FileInputStream} for the specified file, providing better
 	 * error messages than simply calling {@code new FileInputStream(file)}.
-	 * <p/>
+	 *
 	 * At the end of the method either the stream will be successfully opened,
 	 * or an exception will have been thrown.
-	 * <p/>
+	 *
 	 * An exception is thrown if the file does not exist.
 	 * An exception is thrown if the file object exists but is a directory.
 	 * An exception is thrown if the file exists but cannot be read.
@@ -1451,9 +1452,9 @@ public final class DSSUtils {
 	// Apache Collection Utils
 
 	/**
-	 * <p>Checks if the object is in the given array.</p>
-	 * <p/>
-	 * <p>The method returns {@code false} if a {@code null} array is passed in.</p>
+	 *
+	 *
+	 *
 	 *
 	 * @param array        the array to search through
 	 * @param objectToFind the object to find
@@ -1464,9 +1465,9 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * <p>Finds the index of the given object in the array.</p>
-	 * <p/>
-	 * <p>This method returns {@link #INDEX_NOT_FOUND} ({@code -1}) for a {@code null} input array.</p>
+	 *
+	 *
+	 *
 	 *
 	 * @param array        the array to search through for the object, may be {@code null}
 	 * @param objectToFind the object to find, may be {@code null}
@@ -1478,11 +1479,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * <p>Finds the index of the given object in the array starting at the given index.</p>
-	 * <p/>
-	 * <p>This method returns {@link #INDEX_NOT_FOUND} ({@code -1}) for a {@code null} input array.</p>
-	 * <p/>
-	 * <p>A negative startIndex is treated as zero. A startIndex larger than the array
+	 *
+	 *
+	 *
+	 *
+	 *
 	 * length will return {@link #INDEX_NOT_FOUND} ({@code -1}).</p>
 	 *
 	 * @param array        the array to search through for the object, may be {@code null}
@@ -1580,9 +1581,9 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * <p>Gets the {@code toString} of an {@code Object} returning
+	 *
 	 * an empty string ("") if {@code null} input.</p>
-	 * <p/>
+	 *
 	 * <pre>
 	 * ObjectUtils.toString(null)         = ""
 	 * ObjectUtils.toString("")           = ""
@@ -1961,20 +1962,20 @@ public final class DSSUtils {
 	 * invocation of a method for this input stream. The next invocation
 	 * might be the same thread or another thread.  A single read or skip of this
 	 * many bytes will not block, but may read or skip fewer bytes.
-	 * <p/>
-	 * <p> Note that while some implementations of {@code InputStream} will return
+	 *
+	 *
 	 * the total number of bytes in the stream, many will not.  It is
 	 * never correct to use the return value of this method to allocate
 	 * a buffer intended to hold all data in this stream.
-	 * <p/>
-	 * <p> A subclass' implementation of this method may choose to throw an
+	 *
+	 *
 	 * {@link IOException} if this input stream has been closed by
 	 * invoking the {@link InputStream#close()} method.
-	 * <p/>
-	 * <p> The {@code available} method for class {@code InputStream} always
+	 *
+	 *
 	 * returns {@code 0}.
-	 * <p/>
-	 * <p> This method should be overridden by subclasses.
+	 *
+	 *
 	 *
 	 * @return an estimate of the number of bytes that can be read (or skipped
 	 * over) from this input stream without blocking or {@code 0} when
@@ -2278,7 +2279,7 @@ public final class DSSUtils {
 
 	/**
 	 * Null-safe check if the specified collection is empty.
-	 * <p/>
+	 *
 	 * Null returns true.
 	 *
 	 * @param collection the collection to check, may be null

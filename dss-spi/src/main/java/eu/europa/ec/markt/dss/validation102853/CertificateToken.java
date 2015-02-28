@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853;
 
 import java.math.BigInteger;
@@ -61,7 +61,7 @@ import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
  * This class encapsulates some frequently used information: a certificate comes from a certain context (Trusted List,
  * CertStore, Signature), has revocation data... To expedite the processing of such information, they are kept in cache.
  *
- * @version $Revision: 1837 $ - $Date: 2013-03-14 21:07:50 +0100 (Thu, 14 Mar 2013) $
+ *
  */
 
 public class CertificateToken extends Token {
@@ -222,11 +222,11 @@ public class CertificateToken extends Token {
 
 	/**
 	 * Returns the public key associated with the certificate.<br>
-	 * <p/>
+	 *
 	 * To get the encryption algorithm used with this public key call getAlgorithm() method.<br>
 	 * RFC 2459:<br>
 	 * 4.1.2.7 Subject Public Key Info
-	 * <p/>
+	 *
 	 * This field is used to carry the public key and identify the algorithm with which the key is used. The algorithm is
 	 * identified using the AlgorithmIdentifier structure specified in section 4.1.1.2. The object identifiers for the
 	 * supported algorithms and the methods for encoding the public key materials (public key and parameters) are

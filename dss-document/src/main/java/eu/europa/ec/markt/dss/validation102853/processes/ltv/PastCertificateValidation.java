@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CCCBB;
@@ -47,33 +47,33 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 /**
  * 9.2 Additional Building blocks<br>
- * <p/>
+ *
  * 9.2.1 Past certificate validation<br>
- * <p/>
+ *
  * 9.2.1.1 Description<br>
- * <p/>
+ *
  * This process validates a certificate at a date/time which may be in the past. This may become necessary in the LTV
  * settings when a compromising event (for instance, the end-entity certificate expires) prevents the traditional
  * certificate validation algorithm (see clause 5.3) to asserting the validation status of a certificate (for instance,
  * in case the end-entity certificate is expired at the current time, the traditional validation algorithm will return
  * INDETERMINATE/OUT_OF_BOUNDS_NO_POE due to the step 1).<br>
- * <p/>
+ *
  * The rationale of the algorithm described below are given in [i.4] and can be summarised in the following: if a
  * certificate chain has been usable to validate a certificate at some date/time in the past, the same chain can be used
  * at the current time to derive the same validity status, provided each certificate in the chain satisfies one of the
  * following:<br>
- * <p/>
+ *
  * a) <b>The revocation status of the certificate can be ascertained at the current time</b> (typically if the
  * certificate is not yet expired and appropriate revocation status information is obtained at the current time).<br>
- * <p/>
+ *
  * b) <b>The revocation status of the certificate can be ascertained using "old" revocation status information</b> such
  * that the certificate (resp. the revocation status information) is proven to having existed at a date in the past when
  * the issuer of the certificate (resp. the revocation status information) was still considered reliable and under
  * control of its signing key. This particular date/time will be named <b><i>control-time</i></b>.<br>
- * <p/>
+ *
  * NOTE: Control-time is an internal variable that is used within the algorithms and not part of the core results of the
  * validation process.<br>
- * <p/>
+ *
  * <b>Assuming that the trust anchor is still accepted as such at current time</b>, the validation process will slide
  * the control-time from the current-time to some date in the past each time it encounters a certificate proven to be
  * revoked. In addition to the certificate chain, the process outputs the last value of control-time – the control-time
@@ -81,7 +81,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * and proven to exist before this control-time can be accepted as VALID. This assertion is the basis of the LTV
  * validation processes presented in the next clauses. For more readability, the sliding algorithm is presented in its
  * own building block (control-time sliding process) described in the next clause.<br>
- * <p/>
+ *
  * It is important to note that when all the certificates in the chain can be validated at the current time, the
  * control-time never slides and the algorithm boils down to the traditional certificate validation algorithm described
  * in clause 5.3. The process below builds a prospective certificate chain in a very same way as in clause 5.3 except
@@ -89,7 +89,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * and without any revocation checking. For each such chain, the sliding algorithm is executed to calculate the
  * control-time.<br>
  *
- * @author bielecro
+ *
  */
 public class PastCertificateValidation extends X509CertificateValidation {
 
@@ -121,7 +121,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 	/**
 	 * This method prepares the past certificate validation process.
-	 * <p/>
+	 *
 	 * Input<br>
 	 * - Signature or time-stamp token . Mandatory<br>
 	 * - Target certificate ............ Mandatory<br>
@@ -130,7 +130,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 	 * - Certificate meta-data ......... Optional<br>
 	 * - Chain Constraints ............. Optional<br>
 	 * - Cryptographic Constraints ..... Optional<br>
-	 * <p/>
+	 *
 	 * 9.2.1.3 Output<br>
 	 * - VALID<br>
 	 * - INDETERMINATE CHAIN_CONSTRAINTS_FAILURE, NO_CERTIFICATE_CHAIN_FOUND, NO_POE (returned by ControlTimeSliding)

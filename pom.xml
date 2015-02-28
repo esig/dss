@@ -50,13 +50,6 @@
 				<role>developer</role>
 			</roles>
 		</developer>
-		<developer>
-			<id>bob</id>
-			<name>Robert Bielecki</name>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
 	</developers>
 	<build>
 		<plugins>

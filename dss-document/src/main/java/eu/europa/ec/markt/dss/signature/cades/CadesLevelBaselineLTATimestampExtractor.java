@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.signature.cades;
 
 import static eu.europa.ec.markt.dss.OID.id_aa_ATSHashIndex;
@@ -68,11 +68,11 @@ import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
 
 /**
  * Extracts the necessary information to compute the CAdES Archive Timestamp V3.
- * <p/>
- * DISCLAIMER: Project owner DG-MARKT.
  *
- * @author <a href="mailto:dgmarkt.Project-DSS@arhs-developments.com">ARHS Developments</a>
- * @version $Revision: 1016 $ - $Date: 2011-06-17 15:30:45 +0200 (Fri, 17 Jun 2011) $
+ *
+ *
+ *
+ *
  */
 public class CadesLevelBaselineLTATimestampExtractor {
 
@@ -87,7 +87,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * The field hashIndAlgorithm contains an identifier of the hash algorithm used to compute the hash values
 	 * contained in certificatesHashIndex, crlsHashIndex, and unsignedAttrsHashIndex. This algorithm
 	 * shall be the same as the hash algorithm used for computing the archive time-stamp’s message imprint.
-	 * <p/>
+	 *
 	 * hashIndAlgorithm AlgorithmIdentifier DEFAULT {algorithm id-sha256},
 	 */
 	private DigestAlgorithm hashIndexDigestAlgorithm;
@@ -112,7 +112,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * The ats-hash-index unsigned attribute provides an unambiguous imprint of the essential components of a CAdES
 	 * signature for use in the archive time-stamp (see 6.4.3). These essential components are elements of the following ASN.1
 	 * SET OF structures: unsignedAttrs, SignedData.certificates, and SignedData.crls.
-	 * <p/>
+	 *
 	 * The ats-hash-index attribute value has the ASN.1 syntax ATSHashIndex:
 	 * ATSHashIndex ::= SEQUENCE {
 	 * hashIndAlgorithm AlgorithmIdentifier DEFAULT {algorithm id-sha256},
@@ -350,14 +350,14 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * instance of Attribute within unsignedAttrs field of the SignerInfo. A hash value for every instance of
 	 * Attribute, as present at the time when the corresponding archive time-stamp is requested, shall be included in
 	 * unsignedAttrsHashIndex. No other hash values shall be included in this field.
-	 * <p/>
+	 *
 	 * We check that every hash attribute found in the timestamp token is found if the signerInformation.
-	 * <p/>
+	 *
 	 * If there is more unsigned attributes in the signerInformation than present in the hash attributes list
 	 * (and there is at least the archiveTimestampAttributeV3), we don't report any error nor which attributes are signed by the timestamp.
 	 * If there is some attributes that are not present or altered in the signerInformation, we just return some empty sequence to make
 	 * sure that the timestamped data will not match. We do not report which attributes hash are present if any.
-	 * <p/>
+	 *
 	 * If there is not attribute at all in the archive timestamp hash index, that would means we didn't check anything.
 	 *
 	 * @param signerInformation

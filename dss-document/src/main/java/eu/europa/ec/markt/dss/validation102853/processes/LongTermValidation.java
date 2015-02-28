@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes;
 
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC;
@@ -52,22 +52,22 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 /**
  * 9.3 Long Term Validation Process<br>
- * <p/>
+ *
  * 9.3.1 Description<br>
- * <p/>
+ *
  * An AdES-A (Archival Electronic Signature) is built on an XL signature (EXtended Long Electronic Signature). Several
  * unsigned attributes may be present in such signatures:<br>
- * <p/>
+ *
  * • Time-stamp(s) on the signature value (AdES-T).<br>
  * • Attributes with references of validation data (AdES-C).<br>
  * • Time-stamp(s) on the references of validation data (AdES-XT2).<br>
  * • Time-stamp(s) on the references of validation data, the signature value and the signature time stamp (AdES-XT1).<br>
  * • Attributes with the values of validation data (AdES-XL).<br>
  * • Archive time-stamp(s) on the whole signature except the last archive time-stamp (AdES-A).<br>
- * <p/>
+ *
  * The process described in this clause is able to validate any of the forms above but also any basic form (namely BES
  * and EPES).<br>
- * <p/>
+ *
  * The process handles the AdES signature as a succession of layers of signatures. Starting from the most external layer
  * (e.g. the last archive-time-stamp) to the most inner layer (the signature value to validate), the process performs
  * the basic signature validation algorithm (see clause 8 for the signature itself and clause 7 for the time-stamps). If
@@ -75,13 +75,13 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, we perform the past certificate validation which will output a
  * control-time in the past. The layer is accepted as VALID, provided we have a proof of existence before this
  * control-time.<br>
- * <p/>
+ *
  * The process does not necessarily fail when an intermediate time-stamp gives the status INVALID or INDETERMINATE
  * unless some validation constraints force the process to do so. If the validity of the signature can be ascertained
  * despite some time-stamps which were ignored due to INVALID (or INDETERLINATE) status, the SVA shall report this
  * information to the DA. What the DA does with this information is out of the scope of the present document.
  *
- * @author bielecro
+ *
  */
 public class LongTermValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
 
@@ -142,7 +142,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 
 	/**
 	 * This method lunches the long term validation process.
-	 * <p/>
+	 *
 	 * 9.3.2 Input<br>
 	 * Signature ..................... Mandatory<br>
 	 * Signed data object (s) ........ Optional<br>
@@ -151,11 +151,11 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 	 * Local configuration ........... Optional<br>
 	 * A set of POEs ................. Optional<br>
 	 * Signer's Certificate .......... Optional<br>
-	 * <p/>
+	 *
 	 * 9.3.3 Output<br>
 	 * The main output of this signature validation process is a status indicating the validity of the signature. This
 	 * status may be accompanied by additional information (see clause 4).<br>
-	 * <p/>
+	 *
 	 * 9.3.4 Processing<br>
 	 * The following steps shall be performed:
 	 *
@@ -210,7 +210,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 
 	/**
 	 * 9.3.4 Processing<br>
-	 * <p/>
+	 *
 	 * The following steps shall be performed:<br>
 	 *
 	 * @param params

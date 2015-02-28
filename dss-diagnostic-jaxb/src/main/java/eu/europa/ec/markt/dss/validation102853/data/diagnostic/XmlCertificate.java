@@ -6,6 +6,26 @@
 //
 
 
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ *
+ * This file is part of the "DSS - Digital Signature Services" project.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.ec.markt.dss.validation102853.data.diagnostic;
 
 import java.math.BigInteger;
@@ -21,9 +41,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ *
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ *
  * 
  * <pre>
  * &lt;complexType>
@@ -163,20 +183,20 @@ public class XmlCertificate {
     /**
      * Gets the value of the subjectDistinguishedName property.
      * 
-     * <p>
+     *
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the subjectDistinguishedName property.
      * 
-     * <p>
+     *
      * For example, to add a new item, do as follows:
      * <pre>
      *    getSubjectDistinguishedName().add(newItem);
      * </pre>
      * 
      * 
-     * <p>
+     *
      * Objects of the following type(s) are allowed in the list
      * {@link XmlDistinguishedName }
      * 
@@ -192,20 +212,20 @@ public class XmlCertificate {
     /**
      * Gets the value of the issuerDistinguishedName property.
      * 
-     * <p>
+     *
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the issuerDistinguishedName property.
      * 
-     * <p>
+     *
      * For example, to add a new item, do as follows:
      * <pre>
      *    getIssuerDistinguishedName().add(newItem);
      * </pre>
      * 
      * 
-     * <p>
+     *
      * Objects of the following type(s) are allowed in the list
      * {@link XmlDistinguishedName }
      * 
@@ -261,20 +281,20 @@ public class XmlCertificate {
     /**
      * Gets the value of the digestAlgAndValue property.
      * 
-     * <p>
+     *
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the digestAlgAndValue property.
      * 
-     * <p>
+     *
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDigestAlgAndValue().add(newItem);
      * </pre>
      * 
      * 
-     * <p>
+     *
      * Objects of the following type(s) are allowed in the list
      * {@link XmlDigestAlgAndValueType }
      * 
@@ -602,20 +622,20 @@ public class XmlCertificate {
     /**
      * Gets the value of the trustedServiceProvider property.
      * 
-     * <p>
+     *
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the trustedServiceProvider property.
      * 
-     * <p>
+     *
      * For example, to add a new item, do as follows:
      * <pre>
      *    getTrustedServiceProvider().add(newItem);
      * </pre>
      * 
      * 
-     * <p>
+     *
      * Objects of the following type(s) are allowed in the list
      * {@link XmlTrustedServiceProviderType }
      * 

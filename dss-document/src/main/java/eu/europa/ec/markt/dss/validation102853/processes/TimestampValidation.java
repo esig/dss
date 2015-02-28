@@ -1,23 +1,23 @@
-/*
+/**
  * DSS - Digital Signature Services
- *
- * Copyright (C) 2013 European Commission, Directorate-General Internal Market and Services (DG MARKT), B-1049 Bruxelles/Brussel
- *
- * Developed by: 2013 ARHS Developments S.A. (rue Nicolas Bové 2B, L-1253 Luxembourg) http://www.arhs-developments.com
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
  *
  * This file is part of the "DSS - Digital Signature Services" project.
  *
- * "DSS - Digital Signature Services" is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Lesser General Public License as published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * DSS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
- * "DSS - Digital Signature Services".  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.ec.markt.dss.validation102853.processes;
 
 import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM;
@@ -58,7 +58,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  * token is basically a CAdES-BES signature. Hence, the validation process is built in the validation process of a
  * CAdES-BES signature.<br>
  *
- * @author bielecro
+ *
  */
 public class TimestampValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
 
@@ -94,14 +94,14 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 
 	/**
 	 * 7.4 Processing<br>
-	 * <p/>
+	 *
 	 * The following steps shall be performed:<br>
-	 * <p/>
+	 *
 	 * 1) Token signature validation: perform the validation process for BES signature (see clause 6) with the time-stamp
 	 * token. In all the steps of this process, take into account that the signature to validate is a timestamp token
 	 * (e.g. to select TSA trust-anchors). If this step ends with a success indication, go to the next step. Otherwise,
 	 * fail with the indication and information returned by the validation process.<br>
-	 * <p/>
+	 *
 	 * 2) Data extraction: in addition to the data items returned in step 1, the process shall return data items
 	 * extracted from the TSTInfo [11] (the generation time, the message imprint, etc.). These items may be used by the
 	 * SVA in the process of validating the AdES signature.
@@ -282,14 +282,14 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 
 	/**
 	 * 5.5.4 Processing<br>
-	 * <p/>
+	 *
 	 * This process consists in checking the Signature and Cryptographic Constraints against the signature. The general
 	 * principle is as follows: perform the following for each constraint:<br>
-	 * <p/>
+	 *
 	 * • If the constraint necessitates processing a property/attribute in the signature, perform the processing of the
 	 * property/attribute as specified from clause 5.5.4.1 to 5.5.4.8. <b>--> The DSS framework does not handle the
 	 * constraints concerning timestamps.</b><br>
-	 * <p/>
+	 *
 	 * • If at least one of the algorithms that have been used in validation of the signature or the size of the keys
 	 * used with such an algorithm is no longer considered reliable, return
 	 * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE together with the list of algorithms and key sizes, if applicable,
