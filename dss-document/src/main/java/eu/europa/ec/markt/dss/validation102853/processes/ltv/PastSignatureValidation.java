@@ -277,9 +277,6 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 							poeExists = false;
 							continue;
 						}
-					} else if (SIGNATURE.equals(context)) {
-
-						//TODO:
 					}
 				}
 				if (poeExists) {

@@ -495,7 +495,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					// final boolean issuerNameMatches =
 					// candidateIssuerName.equals(issuerName);
-					final boolean issuerNameMatches = DSSUtils.equals(candidateIssuerName, issuerName);
+					final boolean issuerNameMatches = DSSUtils.x500PrincipalAreEquals(candidateIssuerName, issuerName);
 					if (!issuerNameMatches) {
 
 						final String c14nCandidateIssuerName = candidateIssuerName.getName(X500Principal.CANONICAL);

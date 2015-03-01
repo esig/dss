@@ -27,6 +27,7 @@ import java.net.URL;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -238,10 +239,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	private static boolean isXmlPreamble(byte[] preamble) {
-
-		return DSSUtils.equals(preamble, xmlPreamble, 5) || DSSUtils.equals(preamble, xmlUtf8, 5);
+		return Arrays.equals(preamble, xmlPreamble) || Arrays.equals(preamble, xmlUtf8);
 	}
 
+	
 	@Override
 	public DSSDocument getDocument() {
 

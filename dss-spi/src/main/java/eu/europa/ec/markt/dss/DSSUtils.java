@@ -1435,11 +1435,6 @@ public final class DSSUtils {
 	}
 
 	@Deprecated
-	public static boolean equals(String str1, String str2) {
-		return StringUtils.equals(str1, str2);
-	}
-
-	@Deprecated
 	public static boolean isBlank(String str) {
 		return StringUtils.isBlank(str);
 	}
@@ -1625,7 +1620,7 @@ public final class DSSUtils {
 	 * @param secondX500Principal
 	 * @return
 	 */
-	public static boolean equals(final X500Principal firstX500Principal, final X500Principal secondX500Principal) {
+	public static boolean x500PrincipalAreEquals(final X500Principal firstX500Principal, final X500Principal secondX500Principal) {
 
 		if ((firstX500Principal == null) || (secondX500Principal == null)) {
 			return false;
@@ -1976,38 +1971,6 @@ public final class DSSUtils {
 			throw new DSSException(e);
 		}
 	}
-
-	/**
-	 * Returns <tt>true</tt> if the first {@code elementNumber} elements of the two specified arrays are
-	 * <i>equal</i>.  Two arrays are considered equal if the first {@code elementNumber} corresponding pairs of elements in the two arrays are equal.
-	 * Also, two array references are considered equal if both are <tt>null</tt>.<p>
-	 *
-	 * @param leftArray     one array to be tested for equality
-	 * @param rightArray    the other array to be tested for equality
-	 * @param elementNumber the number of elements from the beginning to be tested
-	 * @return <tt>true</tt> if the two arrays are equal
-	 */
-	public static boolean equals(final byte[] leftArray, final byte[] rightArray, final int elementNumber) {
-
-		if (leftArray == rightArray) {
-			return true;
-		}
-		if ((leftArray == null) || (rightArray == null)) {
-			return false;
-		}
-		if ((leftArray == null) && (rightArray == null)) {
-			return true;
-		}
-		for (int ii = 0; ii < elementNumber; ii++) {
-
-			if (leftArray[ii] != rightArray[ii]) {
-
-				return false;
-			}
-		}
-		return true;
-	}
-
 
 	/**
 	 * replaces e.g. "\xc3\xa9" with "é"
