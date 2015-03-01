@@ -391,13 +391,42 @@ public class ServiceInfo implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-
-		if (obj == null || this.getClass() != obj.getClass()) {
-			return false;
-		}
-		ServiceInfo serviceInfo = (ServiceInfo) obj;
-		return tspName != null && tspName.equals(serviceInfo.tspName) && serviceName != null && serviceName
-			  .equals(serviceInfo.serviceName) && statusStartDate != null && statusStartDate.equals(serviceInfo.statusStartDate);
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((serviceName == null) ? 0 : serviceName.hashCode());
+		result = prime * result
+				+ ((statusStartDate == null) ? 0 : statusStartDate.hashCode());
+		result = prime * result + ((tspName == null) ? 0 : tspName.hashCode());
+		return result;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ServiceInfo other = (ServiceInfo) obj;
+		if (serviceName == null) {
+			if (other.serviceName != null)
+				return false;
+		} else if (!serviceName.equals(other.serviceName))
+			return false;
+		if (statusStartDate == null) {
+			if (other.statusStartDate != null)
+				return false;
+		} else if (!statusStartDate.equals(other.statusStartDate))
+			return false;
+		if (tspName == null) {
+			if (other.tspName != null)
+				return false;
+		} else if (!tspName.equals(other.tspName))
+			return false;
+		return true;
+	}
+	
 }

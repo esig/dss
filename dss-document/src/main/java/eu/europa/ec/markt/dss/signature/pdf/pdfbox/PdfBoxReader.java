@@ -24,11 +24,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSPDFUtils;
 import eu.europa.ec.markt.dss.signature.pdf.PdfReader;
 
 class PdfBoxReader implements PdfReader {
+	
+	private static final Logger logger = LoggerFactory.getLogger(PdfBoxReader.class);
 
 	private PDDocument wrapped;
 
@@ -42,8 +45,16 @@ class PdfBoxReader implements PdfReader {
 	}
 
     @Override
-    public void finalize() {
-        DSSPDFUtils.close(wrapped);
+    public void finalize() throws Throwable {
+		if (wrapped != null) {
+			try {
+				wrapped.close();
+			} catch (IOException e) {
+				logger.error("Error while closing PDDocument", e);
+			}
+		}
+		wrapped = null;
+        super.finalize();
     }
 
 	PDDocument getPDDocument() {

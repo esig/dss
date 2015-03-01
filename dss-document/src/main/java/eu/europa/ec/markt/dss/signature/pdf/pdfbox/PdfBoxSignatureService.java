@@ -101,7 +101,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} finally {
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
-			DSSPDFUtils.close(pdDocument);
+			close(pdDocument);
 		}
 	}
 
@@ -136,7 +136,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			IOUtils.closeQuietly(finalFileInputStream);
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
-			DSSPDFUtils.close(pdDocument);
+			close(pdDocument);
 		}
 	}
 
@@ -352,7 +352,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			LOG.error("Error loading buffer of size {}", buffer.size(), up);
 			// ignore error when loading signatures
 		} finally {
-			DSSPDFUtils.close(doc);
+			close(doc);
 		}
 		return signaturesFound;
 	}
@@ -401,4 +401,17 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 		return pdfSignatureOrDocTimestampInfo;
 	}
+
+	private void close(PDDocument doc) throws DSSException {
+
+		if (doc != null) {
+
+			try {
+				doc.close();
+			} catch (IOException e) {
+				throw new DSSException(e);
+			}
+		}
+	}
+
 }

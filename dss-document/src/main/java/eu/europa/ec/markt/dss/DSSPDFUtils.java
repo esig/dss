@@ -98,15 +98,4 @@ public final class DSSPDFUtils {
 		}
 	}
 
-	public static void close(PDDocument doc) throws DSSException {
-
-		if (doc != null) {
-
-			try {
-				doc.close();
-			} catch (IOException e) {
-				throw new DSSException(e);
-			}
-		}
-	}
 }
