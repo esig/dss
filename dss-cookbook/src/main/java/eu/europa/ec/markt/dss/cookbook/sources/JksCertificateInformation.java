@@ -28,6 +28,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.JKSSignatureToken;
@@ -35,13 +38,15 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 public class JksCertificateInformation {
 
+	private static final Logger logger = LoggerFactory.getLogger(JksCertificateInformation.class);
+	
 	public static void main(final String[] args) {
 
 		URL url = null;
 		try {
 			url = new File(Cookbook.getPathFromResource("/myJks.jks")).toURI().toURL();
 		} catch (final MalformedURLException e) {
-			e.printStackTrace();
+			logger.equals(e);
 		}
 		System.out.println(url.toString());
 		JKSSignatureToken jksSignatureToken = new JKSSignatureToken(url.toString(), "password");

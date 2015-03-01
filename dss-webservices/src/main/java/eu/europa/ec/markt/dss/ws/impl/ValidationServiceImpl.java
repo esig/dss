@@ -48,11 +48,10 @@ import eu.europa.ec.markt.dss.ws.report.WSValidationReport;
  *
  *
  */
-
 @WebService(endpointInterface = "eu.europa.ec.markt.dss.ws.ValidationService", serviceName = "ValidationService")
 public class ValidationServiceImpl implements ValidationService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SignatureServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(SignatureServiceImpl.class);
 
 	private CertificateVerifier certificateVerifier;
 
@@ -68,9 +67,9 @@ public class ValidationServiceImpl implements ValidationService {
 
 		String exceptionMessage;
 		try {
-			if (LOG.isInfoEnabled()) {
+			if (logger.isInfoEnabled()) {
 
-				LOG.info("WsValidateDocument: begin");
+				logger.info("WsValidateDocument: begin");
 			}
 			if (wsDocument == null) {
 
@@ -105,16 +104,16 @@ public class ValidationServiceImpl implements ValidationService {
 				final String diagnosticDataXml = diagnosticData.toString();
 				wsValidationReport.setXmlDiagnosticData(diagnosticDataXml);
 			}
-			if (LOG.isInfoEnabled()) {
+			if (logger.isInfoEnabled()) {
 
-				LOG.info("WsValidateDocument: end");
+				logger.info("WsValidateDocument: end");
 			}
 			return wsValidationReport;
 		} catch (Throwable e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			exceptionMessage = e.getMessage();
 		}
-		LOG.info("WsValidateDocument: end with exception");
+		logger.info("WsValidateDocument: end with exception");
 		throw new DSSException(exceptionMessage);
 	}
 }

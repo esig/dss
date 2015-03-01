@@ -24,6 +24,9 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -36,20 +39,17 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import java.io.*;
 import java.net.URL;
 
 /**
- * TODO
- *
- *
- *
- *
- *
  *
  */
 public class ValidationPolicyDao {
 
+	private static final Logger logger = LoggerFactory.getLogger(ValidationPolicyDao.class);
+	
 	private URL xmlUrl;
 	private URL xsdUrl;
 
@@ -88,7 +88,7 @@ public class ValidationPolicyDao {
 		try {
 			nl = (NodeList) xp.evaluate("//text()[normalize-space(.)='']", document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		for (int i = 0; i < nl.getLength(); ++i) {
 			Node node = nl.item(i);
@@ -113,7 +113,7 @@ public class ValidationPolicyDao {
 				baos.write(buf, 0, n);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		byte[] content = baos.toByteArray();
 		return baos.toByteArray();
@@ -128,9 +128,9 @@ public class ValidationPolicyDao {
 
 			transformer.transform(input, output);
 		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (TransformerException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 	}

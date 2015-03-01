@@ -119,10 +119,7 @@ public final class SigningUtils {
 
 			final InMemoryDocument inMemoryDocument = toInMemoryDocument(wsExtendedDocument);
 			return inMemoryDocument;
-		} catch (DSSException_Exception e) {
-			throw new DSSException(e);
-		} catch (Throwable e) {
-			e.printStackTrace();
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -171,10 +168,7 @@ public final class SigningUtils {
 
 			final InMemoryDocument inMemoryDocument = toInMemoryDocument(wsSignedDocument);
 			return inMemoryDocument;
-		} catch (DSSException_Exception e) {
-			throw new DSSException(e);
-		} catch (Throwable e) {
-			e.printStackTrace();
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}

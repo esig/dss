@@ -130,7 +130,7 @@ import eu.europa.ec.markt.dss.validation102853.loader.Protocol;
 
 public final class DSSUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DSSUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(DSSUtils.class);
 
 	public static final String CERT_BEGIN = "-----BEGIN CERTIFICATE-----\n";
 	public static final String CERT_END = "-----END CERTIFICATE-----";
@@ -177,10 +177,10 @@ public final class DSSUtils {
 			jcaDigestCalculatorProviderBuilder.setProvider("BC");
 
 		} catch (CertificateException e) {
-			LOG.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 			throw new DSSException("Platform does not support X509 certificate", e);
 		} catch (NoSuchProviderException e) {
-			LOG.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 			throw new DSSException("Platform does not support BouncyCastle", e);
 		}
 	}
@@ -578,27 +578,27 @@ public final class DSSUtils {
 
 		final String url = getAccessLocation(cert, X509ObjectIdentifiers.id_ad_caIssuers);
 		if (url == null) {
-			LOG.info("There is no AIA extension for certificate download.");
+			logger.info("There is no AIA extension for certificate download.");
 			return null;
 		}
-		LOG.debug("Loading certificate from {}", url);
+		logger.debug("Loading certificate from {}", url);
 		if (loader == null) {
 			throw new DSSNullException(DataLoader.class);
 		}
 		byte[] bytes = loader.get(url);
 		if ((bytes == null) || (bytes.length <= 0)) {
-			LOG.error("Unable to read data from {}.", url);
+			logger.error("Unable to read data from {}.", url);
 			return null;
 		}
 		final CertificateToken issuerCert = loadCertificate(bytes);
 		if (issuerCert == null) {
-			LOG.error("Unable to read data from {}.", url);
+			logger.error("Unable to read data from {}.", url);
 			return null;
 		}
 		if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal())) {
-			LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
-			LOG.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
-			LOG.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
+			logger.info("There is AIA extension, but the issuer subject name and subject name does not match.");
+			logger.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
+			logger.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
 			// return null;
 		}
 		return issuerCert;
@@ -904,7 +904,7 @@ public final class DSSUtils {
 
 		try {
 
-			LOG.debug("Signature Algorithm: " + javaSignatureAlgorithm);
+			logger.debug("Signature Algorithm: " + javaSignatureAlgorithm);
 			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
 
 			signature.initSign(privateKey);
@@ -1612,7 +1612,7 @@ public final class DSSUtils {
 			final X500Principal x500Principal = new X500Principal(x500PrincipalString);
 			return x500Principal;
 		} catch (Exception e) {
-			LOG.warn(e.getMessage());
+			logger.warn(e.getMessage());
 		}
 		return null;
 	}
@@ -1915,9 +1915,9 @@ public final class DSSUtils {
 
 			string = ((DERT61UTF8String) attributeValue).getString();
 		} else {
-			LOG.error("!!!*******!!! This encoding is unknown: " + attributeValue.getClass().getSimpleName());
+			logger.error("!!!*******!!! This encoding is unknown: " + attributeValue.getClass().getSimpleName());
 			string = attributeValue.toString();
-			LOG.error("!!!*******!!! value: " + string);
+			logger.error("!!!*******!!! value: " + string);
 		}
 		return string;
 	}
@@ -1940,20 +1940,6 @@ public final class DSSUtils {
 		}
 		final String nameIdString = nameId.toString();
 		return nameIdString.toUpperCase();
-	}
-
-	/**
-	 * This method allows to convert the stack trace to a string.
-	 *
-	 * @param exception from which the stack trace should be extracted
-	 * @return the exception's stack trace under the {@code String} form.
-	 */
-	public static String getStackTrace(final Exception exception) {
-
-		final StringWriter stringWriter = new StringWriter();
-		final PrintWriter printWriter = new PrintWriter(stringWriter);
-		exception.printStackTrace(printWriter);
-		return stringWriter.toString(); // stack trace as a string
 	}
 
 	/**

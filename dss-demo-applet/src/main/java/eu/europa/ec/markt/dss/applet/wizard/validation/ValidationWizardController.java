@@ -177,7 +177,6 @@ public class ValidationWizardController extends DSSWizardController<ValidationMo
 		} catch (DSSException_Exception e) {
 			throw new DSSException(e);
 		} catch (Throwable e) {
-			e.printStackTrace();
 			throw new DSSException(e);
 		}
 

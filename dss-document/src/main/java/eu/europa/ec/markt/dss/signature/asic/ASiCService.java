@@ -712,10 +712,8 @@ public class ASiCService extends AbstractSignatureService {
 			final DOMSource xmlSource = new DOMSource(xml);
 			final StreamResult outputTarget = new StreamResult(outZip);
 			TransformerFactory.newInstance().newTransformer().transform(xmlSource, outputTarget);
-		} catch (TransformerException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
-		} catch (TransformerFactoryConfigurationError transformerFactoryConfigurationError) {
-			transformerFactoryConfigurationError.printStackTrace();
 		}
 	}
 

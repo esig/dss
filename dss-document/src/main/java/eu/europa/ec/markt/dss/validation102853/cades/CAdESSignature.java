@@ -945,19 +945,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		ASN1OctetString octet = (ASN1OctetString) content.getContent();
 		return octet.getOctets();
-		// ContentInfo info2 = new ContentInfo(PKCSObjectIdentifiers.data, octet);
-		// byte[] contentInfoBytes = null;
-		// try {
-		// contentInfoBytes = info2.getEncoded();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-		// if (LOG.isTraceEnabled()) {
-		// LOG.trace("Content Info: {}", DSSUtils.toHex(contentInfoBytes));
-		// }
-		// return contentInfoBytes;
-
-		// return DSSUtils.EMPTY_BYTE_ARRAY;
 	}
 
 	@Override
@@ -1041,6 +1028,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				archiveReferences.addAll(getTimestampedReferences());
 				timestampToken.setTimestampedReferences(archiveReferences);
 				break;
+			default:
+				throw new DSSException("TimeStampType not supported : " + timestampType);
 			}
 			timestampedTimestamps.add(String.valueOf(timestampToken.getDSSId()));
 		}

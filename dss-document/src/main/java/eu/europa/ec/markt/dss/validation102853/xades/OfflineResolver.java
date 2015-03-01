@@ -45,7 +45,7 @@ import eu.europa.ec.markt.dss.signature.MimeType;
  */
 public class OfflineResolver extends ResourceResolverSpi {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OfflineResolver.class);
+	private static final Logger logger = LoggerFactory.getLogger(OfflineResolver.class);
 
 	private final List<DSSDocument> documents;
 
@@ -74,20 +74,20 @@ public class OfflineResolver extends ResourceResolverSpi {
 
 			if (isKnown(documentUri) != null) {
 
-				LOG.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
+				logger.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
 				return true;
 			}
 			final URI baseUri = new URI(baseUriString);
 			URI uriNew = new URI(baseUri, documentUri);
 			if (uriNew.getScheme().equals("http")) {
 
-				LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
+				logger.debug("I state that I can resolve '" + uriNew.toString() + "'");
 				return true;
 			}
-			LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
+			logger.debug("I state that I can't resolve '" + uriNew.toString() + "'");
 		} catch (URI.MalformedURIException ex) {
 			if (documents == null || documents.size() == 0) {
-				LOG.warn("OfflineResolver: WARNING: ", ex);
+				logger.warn("OfflineResolver: WARNING: ", ex);
 			}
 		}
 		if (doesContainOnlyOneDocument()) {
@@ -99,9 +99,9 @@ public class OfflineResolver extends ResourceResolverSpi {
 
 	private String decodeUrl(String documentUri) {
 		try {
-			documentUri = URLDecoder.decode(documentUri, "UTF-8");
+			return URLDecoder.decode(documentUri, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return documentUri;
 	}

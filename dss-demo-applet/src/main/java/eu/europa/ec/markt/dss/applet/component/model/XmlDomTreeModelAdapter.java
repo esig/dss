@@ -23,6 +23,9 @@ package eu.europa.ec.markt.dss.applet.component.model;
 import com.sun.xml.xsom.*;
 import com.sun.xml.xsom.impl.ComplexTypeImpl;
 import com.sun.xml.xsom.parser.XSOMParser;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,14 +34,18 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.*;
 
 /**
- * Created by kaczmani on 10/04/2014.
+ * 
  */
 public abstract class XmlDomTreeModelAdapter implements TreeModel {
+	
+	private static final Logger logger = LoggerFactory.getLogger(XmlDomTreeModelAdapter.class);
+	
     protected List<TreeModelListener> listeners = new ArrayList<TreeModelListener>();
     //XmlDom doc to view as a tree
     private Document document;
@@ -181,12 +188,11 @@ public abstract class XmlDomTreeModelAdapter implements TreeModel {
         XSOMParser parser = new XSOMParser();
         XSSchemaSet xsSchemaSet = null;
         try {
-            //			System.out.println("##########" + xsdUrl.toString());
             parser.parse(xsdUrl.openStream());
             xsSchemaSet = parser.getResult();
 
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(e.getMessage(), e);
         }
         Object[] schemaArray = xsSchemaSet.getSchemas().toArray();
         XSSchema s = null;
