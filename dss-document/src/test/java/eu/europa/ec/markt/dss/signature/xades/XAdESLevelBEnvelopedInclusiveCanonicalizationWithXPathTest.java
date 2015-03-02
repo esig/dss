@@ -27,7 +27,6 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import org.junit.Before;
 
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
@@ -64,7 +63,6 @@ public class XAdESLevelBEnvelopedInclusiveCanonicalizationWithXPathTest extends 
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		signatureParameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		// Will add the signature within the tr tag
 		signatureParameters.setXPathLocationString("//*[local-name() = 'tr']");
 

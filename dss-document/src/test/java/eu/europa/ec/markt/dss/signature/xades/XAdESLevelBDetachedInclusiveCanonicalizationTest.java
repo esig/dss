@@ -29,7 +29,6 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import org.junit.Before;
 
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
@@ -68,7 +67,6 @@ public class XAdESLevelBDetachedInclusiveCanonicalizationTest extends AbstractTe
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		signatureParameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);

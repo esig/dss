@@ -76,7 +76,6 @@ public class DigestStabilityTest {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		return service.getDataToSign(toBeSigned, signatureParameters);
 	}

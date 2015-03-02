@@ -25,7 +25,6 @@ import java.util.Date;
 
 import org.junit.Before;
 
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
@@ -61,7 +60,6 @@ public class XAdESLevelATest extends AbstractTestSignature {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_A);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);

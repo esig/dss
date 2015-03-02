@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -68,13 +69,13 @@ public abstract class AbstractTestSignature {
 	public void signAndVerify() throws IOException {
 		final DSSDocument signedDocument = sign();
 
-		// signedDocument.save("src/test/resources/validation/dss-signed.xml");
+		// signedDocument.save("target/cades-b.bin");
 
 		if (LOGGER.isDebugEnabled()) {
 			try {
 				byte[] byteArray = IOUtils.toByteArray(signedDocument.openStream());
 				onDocumentSigned(byteArray);
-				LOGGER.debug(new String(byteArray));
+				// LOGGER.debug(new String(byteArray));
 			} catch (Exception e) {
 				LOGGER.error("Cannot display file content", e);
 			}
@@ -91,11 +92,12 @@ public abstract class AbstractTestSignature {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		verify(diagnosticData);
 	}
-	
+
 	protected void onDocumentSigned(byte[] byteArray) {
 	}
 
 	protected void verify(DiagnosticData diagnosticData) {
+		checkBLevelValid(diagnosticData);
 		checkNumberOfSignatures(diagnosticData);
 		checkDigestAlgorithm(diagnosticData);
 		checkEncryptionAlgorithm(diagnosticData);
@@ -104,7 +106,6 @@ public abstract class AbstractTestSignature {
 		checkCertificateChain(diagnosticData);
 		checkSignatureLevel(diagnosticData);
 		checkSigningDate(diagnosticData);
-		checkBLevelValid(diagnosticData);
 		checkTLevelAndValid(diagnosticData);
 		checkALevelAndValid(diagnosticData);
 		checkTimestamps(diagnosticData);
@@ -134,15 +135,16 @@ public abstract class AbstractTestSignature {
 	}
 
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
-		assertEquals(1, (diagnosticData.getSignatureIdList() == null ? 0 : diagnosticData.getSignatureIdList().size()));
+		assertEquals(1, CollectionUtils.size(diagnosticData.getSignatureIdList()));
 	}
 
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
+		assertEquals(getSignatureParameters().getSignatureAlgorithm().getDigestAlgorithm(),
+				diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
 	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getEncryptionAlgorithm(),
+		assertEquals(getSignatureParameters().getSignatureAlgorithm().getEncryptionAlgorithm(),
 				diagnosticData.getSignatureEncryptionAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
@@ -201,14 +203,14 @@ public abstract class AbstractTestSignature {
 				String timestampType = diagnosticData.getTimestampType(timestampId);
 				TimestampType type = TimestampType.valueOf(timestampType);
 				switch (type) {
-					case SIGNATURE_TIMESTAMP:
-						foundSignatureTimeStamp = true;
-						break;
-					case ARCHIVE_TIMESTAMP:
-						foundArchiveTimeStamp = true;
-						break;
-					default:
-						break;
+				case SIGNATURE_TIMESTAMP:
+					foundSignatureTimeStamp = true;
+					break;
+				case ARCHIVE_TIMESTAMP:
+					foundArchiveTimeStamp = true;
+					break;
+				default:
+					break;
 				}
 
 			}

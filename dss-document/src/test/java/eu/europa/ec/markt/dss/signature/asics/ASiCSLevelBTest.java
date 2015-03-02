@@ -26,7 +26,6 @@ import java.util.Date;
 
 import org.junit.Before;
 
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
@@ -63,7 +62,6 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);

@@ -31,7 +31,6 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.parameter.SignatureImageParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureImageTextParameters;
@@ -71,7 +70,6 @@ public class PAdESVisibleSignatureTest {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new PAdESService(certificateVerifier);
@@ -101,7 +99,7 @@ public class PAdESVisibleSignatureTest {
 	}
 
 	@Test
-	public void testGeneratedImageAndTextOTop() throws IOException {
+	public void testGeneratedImageAndTextOnTop() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new File("src/test/resources/small-red.jpg"));
 		imageParameters.setxAxis(200);
@@ -111,6 +109,22 @@ public class PAdESVisibleSignatureTest {
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setFont(new Font("Arial", Font.BOLD, 15));
 		textParameters.setSignerNamePosition(SignerPosition.TOP);
+		imageParameters.setTextParameters(textParameters );
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate();
+	}
+
+	@Test
+	public void testGeneratedImageAndTextOnLeft() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new File("src/test/resources/small-red.jpg"));
+		imageParameters.setxAxis(200);
+		imageParameters.setyAxis(300);
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.BLUE);
+		textParameters.setSignerNamePosition(SignerPosition.LEFT);
 		imageParameters.setTextParameters(textParameters );
 		signatureParameters.setImageParameters(imageParameters);
 

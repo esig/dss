@@ -30,7 +30,6 @@ import java.util.Date;
 import org.bouncycastle.asn1.x509.CRLReason;
 import org.junit.Before;
 
-import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockCRLSource;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
@@ -78,7 +77,6 @@ public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 		signatureParameters.setCertificateChain(signerEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
