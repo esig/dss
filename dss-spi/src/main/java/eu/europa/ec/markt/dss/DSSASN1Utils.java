@@ -58,14 +58,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
 
 /**
  * Utility class that contains some XML related method.
  *
- *
  */
-
 public final class DSSASN1Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
@@ -249,29 +246,6 @@ public final class DSSASN1Utils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * If the {@code DSSDocument} is a CMS message and the signed content's content is not null then the {@code CMSSignedData} is returned.
-	 * All exceptions are hidden
-	 *
-	 * @param dssDocument
-	 * @return {@code CMSSignedData} or {@code null}
-	 */
-	public static CMSSignedData getOriginalSignedData(final DSSDocument dssDocument) {
-
-		CMSSignedData originalSignedData = null;
-
-		try {
-			// check if input toSignDocument is already signed
-			originalSignedData = new CMSSignedData(dssDocument.getBytes());
-			if (originalSignedData.getSignedContent().getContent() == null) {
-				originalSignedData = null;
-			}
-		} catch (Exception e) {
-			// not a parallel signature
-		}
-		return originalSignedData;
 	}
 
 	/**
