@@ -37,6 +37,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -168,7 +171,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * encapsulates the references to different sources used in the signature validation process.
 	 */
 	protected CertificateVerifier certificateVerifier;
-	
+
 	private SignatureScopeFinder signatureScopeFinder;
 
 	/**
@@ -197,7 +200,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
 	}
-	
+
 	/**
 	 * This method guesses the document format and returns an appropriate document validator.
 	 *
@@ -207,7 +210,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
 
 		final String dssDocumentName = dssDocument.getName();
-		if (dssDocumentName != null && MimeType.XML.equals(MimeType.fromFileName(dssDocumentName))) {
+		if (( dssDocumentName != null ) && MimeType.XML.equals(MimeType.fromFileName(dssDocumentName))) {
 
 			return new XMLDocumentValidator(dssDocument);
 		}
@@ -216,18 +219,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		byte[] preamble = new byte[headerLength];
 		int read = DSSUtils.readToArray(dssDocument, headerLength, preamble);
 		if (read < 5) {
-
 			throw new DSSException("The signature is not found.");
 		}
 		final String preambleString = new String(preamble);
 		if (isXmlPreamble(preamble)) {
-
 			return new XMLDocumentValidator(dssDocument);
 		} else if (preambleString.startsWith("%PDF-")) {
 
 			// TODO (29/08/2014): DSS-356
 			return new PDFDocumentValidator(dssDocument);
-		} else if (preamble[0] == 'P' && preamble[1] == 'K') {
+		} else if ((preamble[0] == 'P') && (preamble[1] == 'K')) {
 
 			return ASiCContainerValidator.getInstanceForAsics(dssDocument);
 		} else if (preambleString.getBytes()[0] == 0x30) {
@@ -239,10 +240,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	private static boolean isXmlPreamble(byte[] preamble) {
-		return Arrays.equals(preamble, xmlPreamble) || Arrays.equals(preamble, xmlUtf8);
+		byte[] startOfPramble = ArrayUtils.subarray(preamble, 0, xmlPreamble.length);
+		return Arrays.equals(startOfPramble, xmlPreamble) || Arrays.equals(startOfPramble, xmlUtf8);
 	}
 
-	
+
 	@Override
 	public DSSDocument getDocument() {
 
@@ -351,7 +353,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public Reports validateDocument(final File policyFile) {
 
-		if (policyFile == null || !policyFile.exists()) {
+		if ((policyFile == null) || !policyFile.exists()) {
 			return validateDocument((InputStream) null);
 		}
 		final InputStream inputStream = DSSUtils.toByteArrayInputStream(policyFile);
@@ -615,11 +617,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		String currentMessage = message;
 		String errorMessage = xmlSignature.getErrorMessage();
-		if (DSSUtils.isBlank(errorMessage)) {
-
+		if (StringUtils.isBlank(errorMessage)) {
 			errorMessage = currentMessage;
 		} else {
-
 			errorMessage += "<br />" + currentMessage;
 		}
 		xmlSignature.setErrorMessage(errorMessage);
@@ -690,7 +690,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlTimestampToken.setCertificateChain(xmlCertChainType);
 
 		final List<TimestampReference> timestampReferences = timestampToken.getTimestampedReferences();
-		if (timestampReferences != null && !timestampReferences.isEmpty()) {
+		if ((timestampReferences != null) && !timestampReferences.isEmpty()) {
 
 			final XmlSignedObjectsType xmlSignedObjectsType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSignedObjectsType();
 			final List<XmlDigestAlgAndValueType> xmlDigestAlgAndValueList = xmlSignedObjectsType.getDigestAlgAndValue();
@@ -925,7 +925,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private void xmlForKeyUsageBits(CertificateToken certToken, XmlCertificate xmlCert) {
 
 		final List<String> keyUsageBits = certToken.getKeyUsageBits();
-		if (DSSUtils.isEmpty(keyUsageBits)) {
+		if (CollectionUtils.isEmpty(keyUsageBits)) {
 			return;
 		}
 		final XmlKeyUsageBits xmlKeyUsageBits = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlKeyUsageBits();
@@ -1117,7 +1117,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		 * ETSI 102 853:
 		 * 3) Obtain the digest of the resulting document against which the digest value present in the property/attribute will be checked:
 		 */
-		if (policyDocument == null && (policyUrl == null || policyUrl.isEmpty())) {
+		if ((policyDocument == null) && ((policyUrl == null) || policyUrl.isEmpty())) {
 
 			xmlPolicy.setIdentified(false);
 			if (policyId.isEmpty()) {
@@ -1206,8 +1206,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			if (!signPolicyHashAlgFromPolicy.equals(signPolicyHashAlgFromSignature)) {
 
 				xmlPolicy.setProcessingError(
-					  "The digest algorithm indicated in the SignPolicyHashAlg from the resulting document (" + signPolicyHashAlgFromPolicy + ") is not equal to the digest " +
-							"algorithm (" + signPolicyHashAlgFromSignature + ").");
+						"The digest algorithm indicated in the SignPolicyHashAlg from the resulting document (" + signPolicyHashAlgFromPolicy + ") is not equal to the digest " +
+								"algorithm (" + signPolicyHashAlgFromSignature + ").");
 				xmlPolicy.setDigestAlgorithmsEqual(false);
 				xmlPolicy.setStatus(false);
 				return;
@@ -1219,7 +1219,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			if (!equal) {
 
 				xmlPolicy.setProcessingError(
-					  "The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
+						"The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
 				return;
 			}
 			equal = policyDigestValueFromSignature.equals(policyDigestHexValueFromPolicy);
@@ -1227,7 +1227,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			if (!equal) {
 
 				xmlPolicy.setProcessingError(
-					  "The policy digest value (" + policyDigestValueFromSignature + ") does not match the digest value from the policy file (" + policyDigestHexValueFromPolicy + ").");
+						"The policy digest value (" + policyDigestValueFromSignature + ") does not match the digest value from the policy file (" + policyDigestHexValueFromPolicy + ").");
 			}
 		} catch (RuntimeException e) {
 			// When any error (communication) we just set the status to false
@@ -1300,7 +1300,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private void performStructuralValidation(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
 		final ValidationPolicy validationPolicy = processExecutor.getValidationPolicy();
-		if (validationPolicy == null || validationPolicy.getStructuralValidationConstraint() == null) {
+		if (( validationPolicy == null ) || ( validationPolicy.getStructuralValidationConstraint() == null )) {
 			return;
 		}
 		final String structureValid = signature.validateStructure();
@@ -1338,7 +1338,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			LOG.warn("Exception", e);
 			addErrorMessage(xmlSignature, e);
 		}
-		if (certifiedRoles != null && !certifiedRoles.isEmpty()) {
+		if ((certifiedRoles != null) && !certifiedRoles.isEmpty()) {
 
 			for (final CertifiedRole certifiedRole : certifiedRoles) {
 
@@ -1361,7 +1361,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			LOG.warn("Exception: ", e);
 			addErrorMessage(xmlSignature, e);
 		}
-		if (claimedRoles != null && claimedRoles.length > 0) {
+		if ((claimedRoles != null) && (claimedRoles.length > 0)) {
 
 			final XmlClaimedRoles xmlClaimedRoles = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlClaimedRoles();
 			for (final String claimedRole : claimedRoles) {
@@ -1508,5 +1508,5 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public DocumentValidator getSubordinatedValidator() {
 		return null;
 	}
-	
+
 }
