@@ -55,9 +55,9 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.validation102853.CertificateSource;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.TrustedCertificateSource;
 
 /**
  *
@@ -213,7 +213,7 @@ public class CMSSignedDataBuilder {
 				if (trustAnchorBPPolicy) {
 
 					final X500Principal subjectX500Principal = certificateInChain.getSubjectX500Principal();
-					final TrustedCertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
+					final CertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
 					if (trustedCertSource != null) {
 						if (!trustedCertSource.get(subjectX500Principal).isEmpty()) {
 							continue;

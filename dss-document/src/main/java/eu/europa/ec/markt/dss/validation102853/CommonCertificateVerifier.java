@@ -48,7 +48,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This field contains the reference to the trusted certificate source. This source is fixed, it means that the same source is used for different validations.
 	 */
-	private TrustedCertificateSource trustedCertSource;
+	private CertificateSource trustedCertSource;
 
 	/**
 	 * This field contains the reference to any certificate source, can contain the trust store, or the any intermediate certificates.
@@ -127,7 +127,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * @param ocspSource        contains the reference to the {@code CRLSource}.
 	 * @param dataLoader        contains the reference to a data loader used to access AIA certificate source.
 	 */
-	public CommonCertificateVerifier(final TrustedCertificateSource trustedCertSource, final CRLSource crlSource, final OCSPSource ocspSource, final DataLoader dataLoader) {
+	public CommonCertificateVerifier(final CertificateSource trustedCertSource, final CRLSource crlSource, final OCSPSource ocspSource, final DataLoader dataLoader) {
 
 		LOG.info("+ New CommonCertificateVerifier created with parameters.");
 		this.trustedCertSource = trustedCertSource;
@@ -143,7 +143,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * @return
 	 */
 	@Override
-	public TrustedCertificateSource getTrustedCertSource() {
+	public CertificateSource getTrustedCertSource() {
 
 		return trustedCertSource;
 	}
@@ -194,7 +194,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * @param trustedCertSource The source of trusted certificates.
 	 */
 	@Override
-	public void setTrustedCertSource(final TrustedCertificateSource trustedCertSource) {
+	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
 
 		this.trustedCertSource = trustedCertSource;
 	}

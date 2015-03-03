@@ -33,7 +33,7 @@ import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
  *
  */
 
-public class CommonTrustedCertificateSource extends CommonCertificateSource implements TrustedCertificateSource {
+public class CommonTrustedCertificateSource extends CommonCertificateSource {
 
     @Override
     protected CertificateSourceType getCertificateSourceType() {

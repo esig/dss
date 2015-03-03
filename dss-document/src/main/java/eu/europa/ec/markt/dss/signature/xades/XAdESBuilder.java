@@ -24,7 +24,6 @@ import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.math.BigInteger;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -33,16 +32,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
+import eu.europa.ec.markt.dss.validation102853.CertificateSource;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.TrustedCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 public abstract class XAdESBuilder {
@@ -165,7 +163,7 @@ public abstract class XAdESBuilder {
 	 */
 	protected CertificatePool getCertificatePool() {
 
-		final TrustedCertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
+		final CertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
 		if (trustedCertSource != null) {
 			return trustedCertSource.getCertificatePool();
 		}

@@ -69,7 +69,7 @@ public interface CertificateVerifier {
 	 *
 	 * @return
 	 */
-	TrustedCertificateSource getTrustedCertSource();
+	CertificateSource getTrustedCertSource();
 
 	/**
 	 * Sets the trusted certificates source.
@@ -77,7 +77,7 @@ public interface CertificateVerifier {
 	 * @param certSource
 	 *            The certificates source to set
 	 */
-	void setTrustedCertSource(final TrustedCertificateSource certSource);
+	void setTrustedCertSource(final CertificateSource certSource);
 
 	/**
 	 * Returns the adjunct certificates source associated with this verifier.
