@@ -84,6 +84,6 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		DSSDocument signedDocument = xadesService.signDocument(toSignDocument, parameters, signatureValue);
 
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesMSCapi.xml");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesMSCapi.xml");
 	}
 }

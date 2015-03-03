@@ -67,7 +67,7 @@ public class SignPdfPadesB extends Cookbook {
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		// Create CAdES xadesService for signature
+		// Create PAdESService for signature
 		PAdESService service = new PAdESService(commonCertificateVerifier);
 
 		// Get the SignedInfo segment that need to be signed.
@@ -83,7 +83,7 @@ public class SignPdfPadesB extends Cookbook {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		//We use the DSSUtils to Save to file
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedPdfPadesB.pdf");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedPdfPadesB.pdf");
 
 	}
 }

@@ -75,6 +75,6 @@ public class SignXmlXadesBImplicitPolicy extends Cookbook {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		InputStream is = new ByteArrayInputStream(signedDocument.getBytes());
-		DSSUtils.saveToFile(is, "signedXmlXadesBImplicitPolicy.xml");
+		DSSUtils.saveToFile(is, "target/signedXmlXadesBImplicitPolicy.xml");
 	}
 }

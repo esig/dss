@@ -87,6 +87,6 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesTOnline.xml");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesTOnline.xml");
 	}
 }

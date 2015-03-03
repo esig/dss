@@ -23,13 +23,12 @@ package eu.europa.ec.markt.dss.cookbook.example.validate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.cert.X509Certificate;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
+import eu.europa.ec.markt.dss.cookbook.mock.MockServiceInfo;
+import eu.europa.ec.markt.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.ec.markt.dss.cookbook.sources.AlwaysValidOCSPSource;
-import eu.europa.ec.markt.dss.cookbook.sources.MockServiceInfo;
-import eu.europa.ec.markt.dss.cookbook.sources.MockTSLCertificateSource;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -52,7 +51,7 @@ public class ValidateSignedXmlXadesLT extends Cookbook {
 		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
 		final CertificateToken trustedCertificate = certificateChain[0];
 
-		DSSDocument document = new FileDocument("signedXmlXadesLT.xml");
+		DSSDocument document = new FileDocument("target/signedXmlXadesLT.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
@@ -74,9 +73,9 @@ public class ValidateSignedXmlXadesLT extends Cookbook {
 		DetailedReport detailReport = reports.getDetailedReport();
 
 		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
-		DSSUtils.saveToFile(is, "validationXmlXadesLT_simpleReport.xml");
+		DSSUtils.saveToFile(is, "target/validationXmlXadesLT_simpleReport.xml");
 
 		is = new ByteArrayInputStream(detailReport.toByteArray());
-		DSSUtils.saveToFile(is, "validationXmlXadesLT_detailReport.xml");
+		DSSUtils.saveToFile(is, "target/validationXmlXadesLT_detailReport.xml");
 	}
 }

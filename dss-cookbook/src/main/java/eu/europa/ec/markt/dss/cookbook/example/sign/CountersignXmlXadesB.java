@@ -71,6 +71,6 @@ public class CountersignXmlXadesB extends Cookbook {
 		DSSDocument countersignedDocument = service.counterSignDocument(toCountersignDocument, countersigningParameters);
 
 		InputStream is = new ByteArrayInputStream(countersignedDocument.getBytes());
-		DSSUtils.saveToFile(is, "countersigned.xml");
+		DSSUtils.saveToFile(is, "target/countersigned.xml");
 	}
 }

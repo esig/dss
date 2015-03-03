@@ -1,4 +1,4 @@
-package eu.europa.ec.markt.dss.cookbook.sources;
+package eu.europa.ec.markt.dss.cookbook.mock;
 
 import java.util.Calendar;
 

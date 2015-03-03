@@ -80,6 +80,6 @@ public class SignPdfAsicB extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedPdfAsicB.asic");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedPdfAsicB.asic");
 	}
 }

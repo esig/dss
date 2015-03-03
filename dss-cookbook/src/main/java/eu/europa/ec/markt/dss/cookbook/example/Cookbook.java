@@ -22,7 +22,7 @@ package eu.europa.ec.markt.dss.cookbook.example;
 
 import java.net.URL;
 
-import eu.europa.ec.markt.dss.cookbook.sources.MockTSPSource;
+import eu.europa.ec.markt.dss.cookbook.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.token.AbstractSignatureTokenConnection;

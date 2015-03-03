@@ -75,6 +75,6 @@ public class signXmlXadesBProperties extends Cookbook {
 
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesBProperties.xml");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesBProperties.xml");
 	}
 }

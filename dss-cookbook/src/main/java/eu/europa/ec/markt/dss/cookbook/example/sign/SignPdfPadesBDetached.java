@@ -83,7 +83,7 @@ public class SignPdfPadesBDetached extends Cookbook {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		//We use the DSSUtils to Save to file
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedPdfPadesBDetached.pdf");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedPdfPadesBDetached.pdf");
 
 	}
 }

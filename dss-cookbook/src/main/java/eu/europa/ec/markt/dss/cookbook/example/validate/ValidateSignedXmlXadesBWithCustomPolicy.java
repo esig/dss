@@ -26,9 +26,9 @@ import java.io.InputStream;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
+import eu.europa.ec.markt.dss.cookbook.mock.MockServiceInfo;
+import eu.europa.ec.markt.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.ec.markt.dss.cookbook.sources.AlwaysValidOCSPSource;
-import eu.europa.ec.markt.dss.cookbook.sources.MockServiceInfo;
-import eu.europa.ec.markt.dss.cookbook.sources.MockTSLCertificateSource;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -52,7 +52,7 @@ public class ValidateSignedXmlXadesBWithCustomPolicy extends Cookbook {
 		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
 		final CertificateToken trustedCertificate = certificateChain[0];
 
-		DSSDocument document = new FileDocument("signedXmlXadesB.xml");
+		DSSDocument document = new FileDocument("target/signedXmlXadesB.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
@@ -73,8 +73,8 @@ public class ValidateSignedXmlXadesBWithCustomPolicy extends Cookbook {
 		DetailedReport detailedReport = reports.getDetailedReport();
 
 		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
-		DSSUtils.saveToFile(is, "validationXmlXadesBWithCustomPolicy_simpleReport.xml");
+		DSSUtils.saveToFile(is, "target/validationXmlXadesBWithCustomPolicy_simpleReport.xml");
 		is = new ByteArrayInputStream(detailedReport.toByteArray());
-		DSSUtils.saveToFile(is, "validationXmlXadesBWithCustomPolicy_detailReport.xml");
+		DSSUtils.saveToFile(is, "target/validationXmlXadesBWithCustomPolicy_detailReport.xml");
 	}
 }

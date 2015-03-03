@@ -81,6 +81,6 @@ public class SignXmlXadesBWithSelfSignedCertificate extends Cookbook {
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
 		//signedDocument.save("c:/xml_example-xades-enveloped-b-signed-with-self-signed-certificate.xml");
 
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesB_WithSelfSignedCertificate.xml");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesB_WithSelfSignedCertificate.xml");
 	}
 }

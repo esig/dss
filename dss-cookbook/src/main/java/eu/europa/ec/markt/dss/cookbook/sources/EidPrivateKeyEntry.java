@@ -1,6 +1,7 @@
-package eu.europa.ec.markt.dss.cookbook.example.sign;
+package eu.europa.ec.markt.dss.cookbook.sources;
 
 import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
@@ -18,11 +19,11 @@ public class EidPrivateKeyEntry implements DSSPrivateKeyEntry {
 
 	private CertificateToken[] certificateChain;
 
-	public EidPrivateKeyEntry(CertificateToken certificate, List<CertificateToken> chain) {
+	public EidPrivateKeyEntry(CertificateToken certificate, List<X509Certificate> signatureChain) {
 
 		this.certificate = certificate;
-		certificateChain = new CertificateToken[chain.size()];
-		certificateChain = chain.toArray(certificateChain);
+		certificateChain = new CertificateToken[signatureChain.size()];
+		certificateChain = signatureChain.toArray(certificateChain);
 	}
 
 	@Override

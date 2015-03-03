@@ -26,9 +26,9 @@ import java.io.InputStream;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
+import eu.europa.ec.markt.dss.cookbook.mock.MockServiceInfo;
+import eu.europa.ec.markt.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.ec.markt.dss.cookbook.sources.AlwaysValidOCSPSource;
-import eu.europa.ec.markt.dss.cookbook.sources.MockServiceInfo;
-import eu.europa.ec.markt.dss.cookbook.sources.MockTSLCertificateSource;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -52,7 +52,7 @@ public class ValidateSignedXmlXadesB extends Cookbook {
 		final CertificateToken trustedCertificate = certificateChain[0];
 
 		// Already signed document - Created with the SignXmlXadesB Class
-		DSSDocument document = new FileDocument("signedXmlXadesB.xml");
+		DSSDocument document = new FileDocument("target/signedXmlXadesB.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
@@ -73,6 +73,6 @@ public class ValidateSignedXmlXadesB extends Cookbook {
 		SimpleReport simpleReport = reports.getSimpleReport();
 
 		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
-		DSSUtils.saveToFile(is, "validationXmlXadesB.xml");
+		DSSUtils.saveToFile(is, "target/validationXmlXadesB.xml");
 	}
 }

@@ -95,6 +95,6 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 
 		InputStream is = new ByteArrayInputStream(signedDocument.getBytes());
 
-		DSSUtils.saveToFile(is, "signedXmlXadesBAllDataObjectsTimestamp.xml");
+		DSSUtils.saveToFile(is, "target/signedXmlXadesBAllDataObjectsTimestamp.xml");
 	}
 }

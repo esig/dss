@@ -23,13 +23,12 @@ package eu.europa.ec.markt.dss.cookbook.example.validate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
-import eu.europa.ec.markt.dss.cookbook.sources.MockServiceInfo;
+import eu.europa.ec.markt.dss.cookbook.mock.MockServiceInfo;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -54,7 +53,7 @@ public class ValidateDetached extends Cookbook {
 		final CertificateToken trustedCertificate = certificateChain[0];
 
 		// Already signed document
-		DSSDocument document = new FileDocument("signedPdfPadesBDetached.pdf");
+		DSSDocument document = new FileDocument("target/signedPdfPadesBDetached.pdf");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
@@ -79,9 +78,9 @@ public class ValidateDetached extends Cookbook {
 		SimpleReport simpleReport = reports.getSimpleReport();
 
 		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
-		DSSUtils.saveToFile(is, "validationDetached_simpleReport.xml");
+		DSSUtils.saveToFile(is, "target/validationDetached_simpleReport.xml");
 		is = new ByteArrayInputStream(diagnosticData.toByteArray());
-		DSSUtils.saveToFile(is, "validationDetached_diagnosticReport.xml");
+		DSSUtils.saveToFile(is, "target/validationDetached_diagnosticReport.xml");
 
 		//System.out.println(diagnosticData);
 	}

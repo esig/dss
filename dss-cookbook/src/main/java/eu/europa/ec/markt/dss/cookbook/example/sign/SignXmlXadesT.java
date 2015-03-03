@@ -25,7 +25,7 @@ import java.io.IOException;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
-import eu.europa.ec.markt.dss.cookbook.sources.MockTSPSource;
+import eu.europa.ec.markt.dss.cookbook.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -85,6 +85,6 @@ public class SignXmlXadesT extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesT.xml");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesT.xml");
 	}
 }

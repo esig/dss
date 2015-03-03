@@ -82,6 +82,6 @@ public class SignXmlCadesB extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 		//signedDocument.save("c:/xml_example-cades-enveloping-b-signed.xml");
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlCadesBEnvelopping");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlCadesBEnvelopping");
 	}
 }

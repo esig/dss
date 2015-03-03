@@ -56,6 +56,6 @@ public class ExtendSignXmlXadesBToT extends Cookbook {
 
 		//DSSUtils.copy(extendedDocument.openStream(), System.out);
 		InputStream is = new ByteArrayInputStream(extendedDocument.getBytes());
-		DSSUtils.saveToFile(is, "extendedSignedXmlXadesBToT.xml");
+		DSSUtils.saveToFile(is, "target/extendedSignedXmlXadesBToT.xml");
 	}
 }
