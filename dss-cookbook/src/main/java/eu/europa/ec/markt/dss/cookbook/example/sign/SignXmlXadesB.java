@@ -80,6 +80,6 @@ public class SignXmlXadesB extends Cookbook {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "signedXmlXadesB.xml");
+		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesB.xml");
 	}
 }

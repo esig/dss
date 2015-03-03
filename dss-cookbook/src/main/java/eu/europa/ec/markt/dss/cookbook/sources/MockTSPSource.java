@@ -74,17 +74,11 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 public class MockTSPSource implements TSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MockTSPSource.class);
-
 	private Date lastTimestampDate = null;
-
 	private ASN1ObjectIdentifier policyOid;
-
 	private final PrivateKey key;
-
 	private final X509Certificate cert;
-
 	private final X509Certificate trustedAnchor;
-
 	private final Date timestampDate;
 
 	/**

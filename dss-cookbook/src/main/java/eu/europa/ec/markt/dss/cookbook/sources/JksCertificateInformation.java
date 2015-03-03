@@ -23,7 +23,6 @@ package eu.europa.ec.markt.dss.cookbook.sources;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -39,7 +38,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 public class JksCertificateInformation {
 
 	private static final Logger logger = LoggerFactory.getLogger(JksCertificateInformation.class);
-	
+
 	public static void main(final String[] args) {
 
 		URL url = null;

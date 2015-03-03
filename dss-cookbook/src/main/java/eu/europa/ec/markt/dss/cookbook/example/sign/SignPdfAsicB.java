@@ -55,10 +55,6 @@ public class SignPdfAsicB extends Cookbook {
 		SignatureParameters parameters = new SignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT).
 		parameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
-		// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
-
-		//UTILITY?? --> NO; always DETACHED??
-		//parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		// We set the digest algorithm to use with the signature algorithm. You must use the
 		// same parameter when you invoke the method sign on the token. The default value is
 		// SHA256
@@ -83,7 +79,6 @@ public class SignPdfAsicB extends Cookbook {
 		// We invoke the xadesService to sign the document with the signature value obtained in
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
-		//signedDocument.save("c:/xml_example-asic-b-signed.asic");
 		//DSSUtils.copy(signedDocument.openStream(), System.out);
 		DSSUtils.saveToFile(signedDocument.openStream(), "signedPdfAsicB.asic");
 	}

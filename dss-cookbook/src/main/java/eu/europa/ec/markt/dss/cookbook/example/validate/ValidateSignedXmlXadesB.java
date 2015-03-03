@@ -23,7 +23,6 @@ package eu.europa.ec.markt.dss.cookbook.example.validate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.cert.X509Certificate;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
@@ -46,8 +45,9 @@ public class ValidateSignedXmlXadesB extends Cookbook {
 
 	public static void main(String[] args) throws IOException {
 
+		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted anchor.
+		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this point.
 		preparePKCS12TokenAndKey();
-
 		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
 		final CertificateToken trustedCertificate = certificateChain[0];
 

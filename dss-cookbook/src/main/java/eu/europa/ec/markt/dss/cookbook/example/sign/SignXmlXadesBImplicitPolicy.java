@@ -36,9 +36,9 @@ import eu.europa.ec.markt.dss.signature.xades.XAdESService;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 
 /**
- * How to set explicit policy.
+ * How to set implicit policy.
  */
-public class SignXmlXadesBExplicitPolicy extends Cookbook {
+public class SignXmlXadesBImplicitPolicy extends Cookbook {
 
 	public static void main(String[] args) throws IOException {
 
@@ -52,17 +52,8 @@ public class SignXmlXadesBExplicitPolicy extends Cookbook {
 
 		BLevelParameters bLevelParameters = parameters.bLevel();
 
-		//Get and use the explicit policy
-		String signaturePolicyId = "http://www.example.com/policy.txt";
-		DigestAlgorithm signaturePolicyHashAlgo = DigestAlgorithm.SHA256;
-		String signaturePolicyDescription = "Policy text to digest";
-		byte[] signaturePolicyDescriptionBytes = signaturePolicyDescription.getBytes();
-		byte[] digestedBytes = DSSUtils.digest(signaturePolicyHashAlgo, signaturePolicyDescriptionBytes);
-
 		BLevelParameters.Policy policy = new BLevelParameters.Policy();
-		policy.setId(signaturePolicyId);
-		policy.setDigestAlgorithm(signaturePolicyHashAlgo);
-		policy.setDigestValue(digestedBytes);
+		policy.setId("");
 
 		bLevelParameters.setSignaturePolicy(policy);
 
@@ -84,6 +75,6 @@ public class SignXmlXadesBExplicitPolicy extends Cookbook {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		InputStream is = new ByteArrayInputStream(signedDocument.getBytes());
-		DSSUtils.saveToFile(is, "signedXmlXadesBExplicitPolicy.xml");
+		DSSUtils.saveToFile(is, "signedXmlXadesBImplicitPolicy.xml");
 	}
 }

@@ -31,11 +31,6 @@ import eu.europa.ec.markt.dss.signature.token.Pkcs12SignatureToken;
 
 /**
  * Super-class for all cookbook examples.
- *
- *
- *
- *
- *
  */
 public class Cookbook {
 
@@ -50,7 +45,7 @@ public class Cookbook {
 	static protected DSSDocument toExtendDocument;
 
 	/**
-	 * The object which is in charge of digesting ans encrypting the data to sign.
+	 * The object which is in charge of digesting and encrypting the data to sign.
 	 */
 	static protected AbstractSignatureTokenConnection signingToken;
 
