@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" AssertionID="any" IssueInstant="2009-10-13T18:19:03+02:00" Issuer="Thomas Knall" MajorVersion="1" MinorVersion="0" xmlns:pr="http://reference.e-government.gv.at/namespace/persondata/20020228#">
+ <saml:AttributeStatement>
+   <saml:Subject>
+     <saml:NameIdentifier>https://www.buergerkarte.at/test-moa-id-auth/</saml:NameIdentifier>
+   </saml:Subject>
+   <saml:Attribute AttributeName="wbPK" AttributeNamespace="http://reference.e-government.gv.at/namespace/moa/20020822#">
+     <saml:AttributeValue>
+       <pr:Identification>
+         <pr:Value>7NQv4oy08fDALucr+H3kdmKatZk=</pr:Value>
+         <pr:Type>urn:publicid:gv.at:wbpk+VR+948166612</pr:Type>
+       </pr:Identification>
+     </saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute AttributeName="OA" AttributeNamespace="http://reference.e-government.gv.at/namespace/moa/20020822#">
+     <saml:AttributeValue>https://www.buergerkarte.at/test-moa-id-auth-demo/moaid-acs-local?locale=en</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute AttributeName="Geburtsdatum" AttributeNamespace="http://reference.e-government.gv.at/namespace/moa/20020822#">
+     <saml:AttributeValue>1978-04-29</saml:AttributeValue>
+   </saml:Attribute>
+ </saml:AttributeStatement>
+<dsig:Signature Id="signature-1-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><dsig:Reference Id="reference-1-1" URI=""><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"><xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="pr saml" version="1.0" xmlns:pr="http://reference.e-government.gv.at/namespace/persondata/20020228#" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion">
+				<xsl:output method="xml" xml:space="default"/>
+				<xsl:template match="/" xmlns="http://www.w3.org/1999/xhtml">
+					<html xmlns="http://www.w3.org/1999/xhtml">
+						<head>
+							<title>Signatur der Anmeldedaten</title>
+							<style media="screen" type="text/css">.boldstyle { font-weight: bold; } .italicstyle { font-style: italic; } .annotationstyle { font-size: small; }</style>
+						</head>
+						<body>
+							<h1>Signatur der Anmeldedaten</h1>
+							<p/>
+							<h4>
+								<xsl:text>Mit meiner elektronischen Signatur beantrage ich, </xsl:text>
+								<span class="boldstyle">
+									<xsl:value-of select="//@Issuer"/>
+								</span>
+								<xsl:text>, geboren am </xsl:text> 
+								<xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,9,2)"/>
+								<xsl:text>.</xsl:text>
+								<xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,6,2)"/>
+								<xsl:text>.</xsl:text>
+								<xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,1,4)"/>
+								<xsl:text>, </xsl:text> 
+								<xsl:if test="//saml:Attribute[@AttributeName='OIDTextualDescription']">
+									<xsl:text>in der Rolle als </xsl:text>
+									<xsl:value-of select="//saml:Attribute[@AttributeName='OIDTextualDescription']/saml:AttributeValue"/>
+									<xsl:text> (OID***= </xsl:text>
+									<xsl:value-of select="//saml:Attribute[@AttributeName='OID']/saml:AttributeValue"/>
+									<xsl:text>), </xsl:text> 
+								</xsl:if>
+								<xsl:text>den Zugang zur gesicherten Anwendung.</xsl:text>
+							</h4>
+							<p/>
+							<h4>
+								<xsl:text>Datum und Uhrzeit: </xsl:text>
+								<xsl:value-of select="substring(//@IssueInstant,9,2)"/>
+								<xsl:text>.</xsl:text>
+								<xsl:value-of select="substring(//@IssueInstant,6,2)"/>
+								<xsl:text>.</xsl:text>
+								<xsl:value-of select="substring(//@IssueInstant,1,4)"/>
+								<xsl:text>, </xsl:text>
+								<xsl:value-of select="substring(//@IssueInstant,12,2)"/>
+								<xsl:text>:</xsl:text>
+								<xsl:value-of select="substring(//@IssueInstant,15,2)"/>
+								<xsl:text>:</xsl:text>
+								<xsl:value-of select="substring(//@IssueInstant,18,2)"/>
+							</h4>
+							<xsl:if test="//saml:Attribute[@AttributeName='HPI']">
+								<h4>HPI(**): <xsl:value-of select="//saml:Attribute[@AttributeName='HPI']/saml:AttributeValue"/></h4>
+							</xsl:if>
+							<xsl:if test="//saml:Attribute[@AttributeName='wbPK']">
+								<h4>wbPK(*): <xsl:value-of select="//saml:Attribute[@AttributeName='wbPK']/saml:AttributeValue/pr:Identification/pr:Value"/></h4>
+							</xsl:if>
+							<xsl:if test="//saml:Attribute[@AttributeName='MandatorName']">
+								<hr/>
+								<h4>
+									<xsl:text>Ich bin weiters ermächtigt als </xsl:text> 
+									<xsl:value-of select="//saml:Attribute[@AttributeName='RepresentationType']/saml:AttributeValue/text()"/>
+									<xsl:text> von </xsl:text>
+									<xsl:value-of select="//saml:Attribute[@AttributeName='MandatorName']/saml:AttributeValue/text()"/>
+									<xsl:if test="//saml:Attribute[@AttributeName='MandatorDateOfBirth']">
+										<xsl:text>, geboren am </xsl:text> 
+										<xsl:value-of select="substring(//saml:Attribute[@AttributeName='MandatorDateOfBirth']/saml:AttributeValue,9,2)"/>
+										<xsl:text>.</xsl:text>
+										<xsl:value-of select="substring(//saml:Attribute[@AttributeName='MandatorDateOfBirth']/saml:AttributeValue,6,2)"/>
+										<xsl:text>.</xsl:text>
+										<xsl:value-of select="substring(//saml:Attribute[@AttributeName='MandatorDateOfBirth']/saml:AttributeValue,1,4)"/>
+									</xsl:if>
+									<xsl:if test="//saml:Attribute[@AttributeName='MandatorDomainIdentifier']">
+										<xsl:text>, </xsl:text>
+										<xsl:value-of select="//saml:Attribute[@AttributeName='MandatorDomainIdentifier']/saml:AttributeValue/text()"/>
+									</xsl:if>
+									<xsl:text>, in deren Auftrag zu handeln.</xsl:text>
+								</h4>
+								<xsl:if test="//saml:Attribute[@AttributeName='MandatorWbpk']">
+									<h4>wbPK(*) des Vollmachtgebers: <xsl:value-of select="//saml:Attribute[@AttributeName='MandatorWbpk']/saml:AttributeValue/text()"/></h4>
+								</xsl:if>
+								<p/>
+							</xsl:if>
+							<xsl:choose>
+								<xsl:when test="//saml:Attribute[@AttributeName='OID']"><p/><hr/></xsl:when>
+								<xsl:when test="//saml:Attribute[@AttributeName='HPI']"><p/><hr/></xsl:when>
+								<xsl:when test="//saml:Attribute[@AttributeName='wbPK']"><p/><hr/></xsl:when>
+							</xsl:choose>
+							<xsl:if test="//saml:Attribute[@AttributeName='wbPK']">
+								<div class="annotationstyle">(*) wbPK: Das <span class="italicstyle">wirtschaftsbereichsspezifische Personenkennzeichen</span> wird aus den jeweiligen Stammzahlen des Bürgers und des Wirtschaftsunternehmens berechnet und ermöglicht eine eindeutige Zuordnung des Bürgers zum		Wirtschaftsunternehmen.</div>
+							</xsl:if>
+							<xsl:if test="//saml:Attribute[@AttributeName='HPI']">
+								<div class="annotationstyle">(**) HPI: Der <span class="italicstyle">eHealth Professional Identifier</span> wird aus den jeweiligen	Stammzahlen der Gesundheitsdiensteanbieterinnen / Gesundheitsdiensteanbieter berechnet und ermöglicht eine eindeutige Zuordnung der Gesundheitsdiensteanbieterin / des Gesundheitsdiensteanbieters im Gesundheitsbereich.</div>
+							</xsl:if>
+							<xsl:if test="//saml:Attribute[@AttributeName='OID']">
+								<div class="annotationstyle">(***) OID: <span class="italicstyle">Object Identifier</span> sind standardisierte Objekt-Bezeichner und		beschreiben eindeutig die Rollen des GDA-Token Inhabers.</div>
+							</xsl:if>
+						</body>
+					</html>
+				</xsl:template>
+			</xsl:stylesheet></dsig:Transform><dsig:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>PNWoOX8ZfIx8ka6qL1t/PCLZyhZKfDVMOyjC/o+hQZk=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="etsi-data-reference-1-1" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI=""><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf:XPath Filter="intersect" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#" xmlns:xpf="http://www.w3.org/2002/06/xmldsig-filter2">//*[@Id='etsi-signed-1-1']/etsi:QualifyingProperties/etsi:SignedProperties</xpf:XPath></dsig:Transform></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>a/RMLDBs024hbtuFuVAmd1RinQGTO9eXLfM5MwnVcPU=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>pcSljHbKBZMBj20BF601KhyYKIZG5F9QbvYR2uY7EM2+/ldRPICbJ10NiDi1wrx9M9sUiYN/vJ5c8AbvQC6bkw==</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIErTCCA5WgAwIBAgIDBhG8MA0GCSqGSIb3DQEBBQUAMIGdMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMSEwHwYDVQQLDBhhLXNpZ24tcHJlbWl1bS1tb2JpbGUtMDMxITAfBgNVBAMMGGEtc2lnbi1wcmVtaXVtLW1vYmlsZS0wMzAeFw0wOTEwMTMwODM0MTVaFw0xMDEyMzEwOTM0MTVaMGkxCzAJBgNVBAYTAkFUMRUwEwYDVQQDDAxUaG9tYXMgS25hbGwxDjAMBgNVBAQMBUtuYWxsMQ8wDQYDVQQqDAZUaG9tYXMxFTATBgNVBAUTDDE2MzM3OTg0NTY5MjELMAkGA1UEDAwCREkwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAT7eQ9umRCXMhb3q/PxKTsB6BGSYbdSIXPDGM9k7zT1OuWQqg7ij8azvnZJDswHIkiNJSKP79NziL+MrYw7SYrko4IB8jCCAe4wEwYDVR0jBAwwCoAIS7hh11/WSGMwJwYIKwYBBQUHAQMBAf8EGDAWMAgGBgQAjkYBATAKBggrBgEFBQcLATB+BggrBgEFBQcBAQRyMHAwRQYIKwYBBQUHMAKGOWh0dHA6Ly93d3cuYS10cnVzdC5hdC9jZXJ0cy9hLXNpZ24tcHJlbWl1bS1tb2JpbGUtMDNhLmNydDAnBggrBgEFBQcwAYYbaHR0cDovL29jc3AuYS10cnVzdC5hdC9vY3NwMGAGA1UdIARZMFcwSwYGKigAEQEUMEEwPwYIKwYBBQUHAgEWM2h0dHA6Ly93d3cuYS10cnVzdC5hdC9kb2NzL2NwL2Etc2lnbi1wcmVtaXVtLW1vYmlsZTAIBgYEAIswAQEwgZ0GA1UdHwSBlTCBkjCBj6CBjKCBiYaBhmxkYXA6Ly9sZGFwLmEtdHJ1c3QuYXQvb3U9YS1zaWduLXByZW1pdW0tbW9iaWxlLTAzLG89QS1UcnVzdCxjPUFUP2NlcnRpZmljYXRlcmV2b2NhdGlvbmxpc3Q/YmFzZT9vYmplY3RjbGFzcz1laWRDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5MBEGA1UdDgQKBAhGOdncHcYPEDAOBgNVHQ8BAf8EBAMCBsAwCQYDVR0TBAIwADANBgkqhkiG9w0BAQUFAAOCAQEAUGoZrLpn2f04Ko15MpwXwKJmLezUTkI88nKHFdXCnKhu+tMqUfMSKyPy2+KPMrRQuFz9TfP++R9Ittd1l4pJMLxhz79vWpf9tdUhxrtL91HFYsXXnp3JMRcK0kIYnUJ5EsRdvG6hoOAv72oPZ3PUhPBVVN1K/Dlfyz9A4wzmrYJVKusN6ihZbd97A1MFLzbWfblxZNZNxY0a0UyH++yxfljatDGm48sOJ0pDK5eh05moLh7sjjJorSsYpU1m+chLyoTSsbPEvEI36MsTVdKb7Cu/jttpMZe0368OgI75oazAR62ubfXHSF2DI9eUV9No6pbeldzk1nvi0PlQEi+vnw==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="etsi-signed-1-1"><etsi:QualifyingProperties Target="#signature-1-1" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2009-10-13T16:19:49Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><etsi:DigestValue>gCSRyhrPKgQov0hBh4NxLloQ33k=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-premium-mobile-03,OU=a-sign-premium-mobile-03,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>397756</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#reference-1-1"><etsi:MimeType>text/html</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object></dsig:Signature></saml:Assertion>

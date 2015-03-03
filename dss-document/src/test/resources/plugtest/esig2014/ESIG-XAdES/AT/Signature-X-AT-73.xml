@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" AssertionID="any" IssueInstant="2012-02-15T12:06:14+01:00" Issuer="XXXMaria-Theresia Kunigunda XXXHabsburg-Lothringen" MajorVersion="1" MinorVersion="0" xmlns:pr="http://reference.e-government.gv.at/namespace/persondata/20020228#">
+          <saml:AttributeStatement>
+            <saml:Subject>
+              <saml:NameIdentifier>https://localhost:8443/moa-id-auth/</saml:NameIdentifier>
+            </saml:Subject>
+            <saml:Attribute AttributeName="Geschaeftsbereich" AttributeNamespace="http://reference.e-government.gv.at/namespace/moa/20020822#">
+              <saml:AttributeValue>ZU (Zustellungen)</saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute AttributeName="OA" AttributeNamespace="http://reference.e-government.gv.at/namespace/moa/20020822#">
+              <saml:AttributeValue>
+              https://localhost:8443/TestMOAID_OA/LoginServletExample</saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute AttributeName="Geburtsdatum" AttributeNamespace="http://reference.e-government.gv.at/namespace/moa/20020822#">
+              <saml:AttributeValue>1980-02-29</saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute AttributeName="bPK" AttributeNamespace="http://reference.e-government.gv.at/namespace/moa/20020822#">
+              <saml:AttributeValue>
+                <pr:Identification xmlns:pr="http://reference.e-government.gv.at/namespace/persondata/20020228#">
+                  <pr:Value>XFPZNvBVBphHPVfqntB7k9QEZCQ=</pr:Value>
+                  <pr:Type>urn:publicid:gv.at:cdid+bpk</pr:Type>
+                </pr:Identification>
+              </saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute AttributeName="oaFriendlyName" AttributeNamespace="http://reference.e-government.gv.at/namespace/moa/20020822#">
+              <saml:AttributeValue>LoginServlet</saml:AttributeValue>
+            </saml:Attribute>
+          </saml:AttributeStatement><dsig:Signature Id="signature-1-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160"/><dsig:Reference Id="reference-1-1" URI=""><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"><xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="pr saml" version="1.0" xmlns:pr="http://reference.e-government.gv.at/namespace/persondata/20020228#" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion">
+            <xsl:output method="xml" xml:space="default"/>
+            <xsl:template match="/" xmlns="http://www.w3.org/1999/xhtml">
+              <html xmlns="http://www.w3.org/1999/xhtml">
+                <head>
+                  <title>Signatur der Anmeldedaten</title>
+                  <style media="screen" type="text/css">.normalstyle { font-size: medium; }
+                  .italicstyle { font-size: medium; font-style: italic; } .titlestyle{
+                  text-decoration:underline; font-weight:bold; font-size: medium; } .h4style{
+                  font-size: large; }</style>
+                </head>
+                <body>
+                  <h4 class="h4style">Anmeldedaten:</h4>
+                  <p class="titlestyle">Daten zur Person</p>
+                  <table class="parameters">
+                    <xsl:if test="normalize-space(//@Issuer)">
+                      <tr>
+                        <td class="italicstyle">Name:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="//@Issuer"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:if test="string(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue)">
+
+                      <tr>
+                        <td class="italicstyle">Geburtsdatum:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,9,2)"/>
+                          <xsl:text>
+.
+</xsl:text>
+                          <xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,6,2)"/>
+                          <xsl:text>
+.
+</xsl:text>
+                          <xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,1,4)"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:if test="//saml:Attribute[@AttributeName='OIDTextualDescription']">
+                      <tr>
+                        <td class="italicstyle">Rolle:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="//saml:Attribute[@AttributeName='OIDTextualDescription']/saml:AttributeValue"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:if test="//saml:Attribute[@AttributeName='mandateReferenceValue']">
+                      <tr>
+                        <td class="italicstyle">Vollmacht:</td>
+                        <td class="normalstyle">
+                          <xsl:text>
+Ich melde mich in Vertretung an. Im n�chsten Schritt wird mir eine Liste der f�r mich verf�gbaren
+Vertretungsverh�ltnisse angezeigt, aus denen ich eines ausw�hlen werde.
+</xsl:text>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                  </table>
+                  <p class="titlestyle">Daten zur Anwendung</p>
+                  <table class="parameters">
+                    <tr>
+                      <td class="italicstyle">Name:</td>
+                      <td class="normalstyle">
+                        <xsl:value-of select="//saml:Attribute[@AttributeName='oaFriendlyName']/saml:AttributeValue"/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="italicstyle">Staat:</td>
+                      <td class="normalstyle">�sterreich</td>
+                    </tr>
+                  </table>
+                  <p class="titlestyle">Technische Parameter</p>
+                  <table class="parameters">
+                    <tr>
+                      <td class="italicstyle">URL:</td>
+                      <td class="normalstyle">
+                        <xsl:value-of select="//saml:Attribute[@AttributeName='OA']/saml:AttributeValue"/>
+                      </td>
+                    </tr>
+                    <xsl:if test="//saml:Attribute[@AttributeName='Geschaeftsbereich']">
+                      <tr>
+                        <td class="italicstyle">Bereich:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="//saml:Attribute[@AttributeName='Geschaeftsbereich']/saml:AttributeValue"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:if test="//saml:Attribute[@AttributeName='mandateReferenceValue']">
+                      <tr>
+                        <td class="italicstyle">Vollmachten-Referenz:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="//saml:Attribute[@AttributeName='mandateReferenceValue']"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:if test="//saml:Attribute[@AttributeName='IdentityLinkDomainIdentifierType']">
+
+                      <tr>
+                        <td class="italicstyle">
+                        <xsl:value-of select="//saml:Attribute[@AttributeName='IdentityLinkDomainIdentifierType']"/>:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="//saml:Attribute[@AttributeName='wbPK']/saml:AttributeValue/pr:Identification/pr:Type"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:if test="//saml:Attribute[@AttributeName='bPK'] or //saml:Attribute[@AttributeName='wbPK']">
+
+                      <tr>
+                        <td class="italicstyle">Identifikator:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="//saml:Attribute[@AttributeName='bPK']/saml:AttributeValue/pr:Identification/pr:Value"/>
+                          <xsl:value-of select="//saml:Attribute[@AttributeName='wbPK']/saml:AttributeValue/pr:Identification/pr:Value"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:if test="//saml:Attribute[@AttributeName='OIDTextualDescription']">
+                      <tr>
+                        <td class="italicstyle">OID:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="//saml:Attribute[@AttributeName='OID']/saml:AttributeValue"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:if test="//saml:Attribute[@AttributeName='HPI']">
+                      <tr>
+                        <td class="italicstyle">HPI:</td>
+                        <td class="normalstyle">
+                          <xsl:value-of select="//saml:Attribute[@AttributeName='HPI']/saml:AttributeValue"/>
+                        </td>
+                      </tr>
+                    </xsl:if>
+                    <tr>
+                      <td class="italicstyle">Datum:</td>
+                      <td class="normalstyle">
+                        <xsl:value-of select="substring(//@IssueInstant,9,2)"/>
+                        <xsl:text>
+.
+</xsl:text>
+                        <xsl:value-of select="substring(//@IssueInstant,6,2)"/>
+                        <xsl:text>
+.
+</xsl:text>
+                        <xsl:value-of select="substring(//@IssueInstant,1,4)"/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="italicstyle">Uhrzeit:</td>
+                      <td class="normalstyle">
+                        <xsl:value-of select="substring(//@IssueInstant,12,2)"/>
+                        <xsl:text>
+:
+</xsl:text>
+                        <xsl:value-of select="substring(//@IssueInstant,15,2)"/>
+                        <xsl:text>
+:
+</xsl:text>
+                        <xsl:value-of select="substring(//@IssueInstant,18,2)"/>
+                      </td>
+                    </tr>
+                  </table>
+                </body>
+              </html>
+            </xsl:template>
+          </xsl:stylesheet></dsig:Transform><dsig:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>AGWeIkePGolsGceQm7dFgkrse0g6vkj/kXbVJg5nsdY=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="etsi-data-reference-1-1" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI=""><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf:XPath Filter="intersect" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#" xmlns:xpf="http://www.w3.org/2002/06/xmldsig-filter2">//*[@Id='etsi-signed-1-1']/etsi:QualifyingProperties/etsi:SignedProperties</xpf:XPath></dsig:Transform></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>v7jx5Weus1e861KTamPdakQJaXH0BzjBWe3BqB1w0Hs=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>F3imkXHXSUDYwCstaQ4zxP61XUMk25Gq6u4MMPtlIoqE9jq8FOSyqL2/1KDFTRU7</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIEkjCCA3qgAwIBAgIDBhG4MA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQGEwJBVDFIMEYGA1UE
+Cgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVy
+a2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJlbWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2ln
+bi1QcmVtaXVtLVNpZy0wMjAeFw0wOTEwMTMwODI4MDlaFw0xNDEwMTMwODI4MDlaMHExCzAJBgNV
+BAYTAkFUMRUwEwYDVQQDDAxSb25hbGQgVMO2Z2wxDjAMBgNVBAQMBVTDtmdsMQ8wDQYDVQQqDAZS
+b25hbGQxFTATBgNVBAUTDDc4MzUwNzc2MjUwOTETMBEGA1UEDAwKRGlwbC4tSW5nLjBJMBMGByqG
+SM49AgEGCCqGSM49AwEBAzIABAohwQPwq6AEQxWZ+3qKf3qTOfLnPe6lTjDORAR+LwmwKCvopdbx
+rrDxGDIqU5oYwaOCAeUwggHhMBMGA1UdIwQMMAqACE3f4f9L2cnfMCcGCCsGAQUFBwEDAQH/BBgw
+FjAIBgYEAI5GAQEwCgYIKwYBBQUHCwEwewYIKwYBBQUHAQEEbzBtMEIGCCsGAQUFBzAChjZodHRw
+Oi8vd3d3LmEtdHJ1c3QuYXQvY2VydHMvYS1zaWduLVByZW1pdW0tU2lnLTAyYS5jcnQwJwYIKwYB
+BQUHMAGGG2h0dHA6Ly9vY3NwLmEtdHJ1c3QuYXQvb2NzcDBZBgNVHSAEUjBQMEQGBiooABEBCzA6
+MDgGCCsGAQUFBwIBFixodHRwOi8vd3d3LmEtdHJ1c3QuYXQvZG9jcy9jcC9hLXNpZ24tUHJlbWl1
+bTAIBgYEAIswAQEwgZoGA1UdHwSBkjCBjzCBjKCBiaCBhoaBg2xkYXA6Ly9sZGFwLmEtdHJ1c3Qu
+YXQvb3U9YS1zaWduLVByZW1pdW0tU2lnLTAyLG89QS1UcnVzdCxjPUFUP2NlcnRpZmljYXRlcmV2
+b2NhdGlvbmxpc3Q/YmFzZT9vYmplY3RjbGFzcz1laWRDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5MBEG
+A1UdDgQKBAhOV+/CYsB1ETAOBgNVHQ8BAf8EBAMCBsAwCQYDVR0TBAIwADANBgkqhkiG9w0BAQUF
+AAOCAQEAF//k2K2KnPTbkco1uMVb5Sn4EKSipx9q0tDWUyYdIALL0sUKM2d10cgDeBqIp9L0u6Vc
+oI0gzLOBql5HCzMPTzNbzHVQH//Rwl6/5u0por5Fav8s+Sd6qvEiKmbyPsSKShYlyPiy/6bTAKZJ
+Df03h8Ho3jDFTPsG9jevbop37NvwLD41NF4rhE/TfS+N3Z7NXiDMTpFyHXqAynxY35AR++IH4iBB
+aVr/ewCkYqn0ON4XzfECzXzAd6GOvXWEM8p/9guw3XKFgu1kkm/dPmv239/G0iUyPy6UXTNxmIKS
+1Cvz+BXbcTgRlVHs6G2STDAIq1byHIs+2UtsjN1Z5RI+Gw==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="etsi-signed-1-1"><etsi:QualifyingProperties Target="#signature-1-1" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2013-12-20T13:39:04Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><etsi:DigestValue>IP1VcNALtA+dqZCqIltd8EMQHaE=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>397752</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#reference-1-1"><etsi:MimeType>application/xhtml+xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object></dsig:Signature>
+        </saml:Assertion>

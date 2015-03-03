@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sl:CreateXMLSignatureResponse xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#" xmlns:xmldsig="http://www.w3.org/2000/09/xmldsig#"><dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" Id="Signature-d14e4598-1"><dsig:SignedInfo Id="SignedInfo-d14e4598-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"/><dsig:Reference Id="Reference-d14e4598-1" URI="#Object-d14e4598-1"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><XPath xmlns="http://www.w3.org/2002/06/xmldsig-filter2" Filter="intersect">id("Object-d14e4598-1")/node()</XPath></dsig:Transform><dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>aayXR3+wL0N1ZetcLU52riCT/kk=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-d14e4598-2" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#xmlns(xades=http://uri.etsi.org/01903/v1.1.1%23)%20xpointer(id('Object-d14e4598-2')/child::xades:QualifyingProperties/child::xades:SignedProperties)"><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>0EeHdbmtVfxvCTIOMgVn7lDbrOk=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-d14e4598-1">MZCBuFZo57b4yZG/5ApY4e+1cMuRGTMqJjCSl8mt6Oxv/YAgNC3MBAnnufODlGZq</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIEjjCCA3agAwIBAgIDBFdsMA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQGEwJB
+VDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBp
+bSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJl
+bWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wMjAeFw0w
+ODA5MjkwNzIxNDBaFw0xMzA5MjkwNzIxNDBaMG0xCzAJBgNVBAYTAkFUMRcwFQYD
+VQQDDA5Xb2xmZ2FuZyBCYXVlcjEOMAwGA1UEBAwFQmF1ZXIxETAPBgNVBCoMCFdv
+bGZnYW5nMRUwEwYDVQQFEwwyNDMwMjU3NDgwMTkxCzAJBgNVBAwMAkRJMEkwEwYH
+KoZIzj0CAQYIKoZIzj0DAQEDMgAEWp2VUaWWWVcn8BDoA882bpAYOQ5DZ50aO54F
+pG8QfXE//fkNJZm8IVIECnVWJH4bo4IB5TCCAeEwEwYDVR0jBAwwCoAITd/h/0vZ
+yd8wJwYIKwYBBQUHAQMBAf8EGDAWMAgGBgQAjkYBATAKBggrBgEFBQcLATB7Bggr
+BgEFBQcBAQRvMG0wQgYIKwYBBQUHMAKGNmh0dHA6Ly93d3cuYS10cnVzdC5hdC9j
+ZXJ0cy9hLXNpZ24tUHJlbWl1bS1TaWctMDJhLmNydDAnBggrBgEFBQcwAYYbaHR0
+cDovL29jc3AuYS10cnVzdC5hdC9vY3NwMFkGA1UdIARSMFAwRAYGKigAEQELMDow
+OAYIKwYBBQUHAgEWLGh0dHA6Ly93d3cuYS10cnVzdC5hdC9kb2NzL2NwL2Etc2ln
+bi1QcmVtaXVtMAgGBgQAizABATCBmgYDVR0fBIGSMIGPMIGMoIGJoIGGhoGDbGRh
+cDovL2xkYXAuYS10cnVzdC5hdC9vdT1hLXNpZ24tUHJlbWl1bS1TaWctMDIsbz1B
+LVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlzdD9iYXNlP29iamVj
+dGNsYXNzPWVpZENlcnRpZmljYXRpb25BdXRob3JpdHkwEQYDVR0OBAoECE4XvzHw
+PNMWMA4GA1UdDwEB/wQEAwIGwDAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBBQUAA4IB
+AQCKvKH/kqS+aslkf4XF4UzB+ET9fsmkqK5EXEFfukai4iJSNb21txIyhms6YbqQ
+Uxek8WLrbPIbX+rkMs9RqPtWmB7XTTp4LlY31TTeKb2fuWWG+vHozsfUTXOv/D9a
+RMZy7Ji2v4DNKxrT0lC+o7khZpmG1H1DYChrC2aZqUG+hS1hCqB8As0uj9SYhJo4
+/9hbZn0BQSzblTyV+OlbOwIABUrcQGzvu7QWHWRHAFWa4j1PJHYSYMOQX8WxDZd+
+6RIrX/QxsUOFcqZnVZQ5KxKXekOHQKkYfLBbxdBN8ZLhg+W/IEXfzuAd3Ecjg0XJ
+vys9mLCoSD+3EiyOQeNla2DR</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-d14e4598-1"><eb:Invoice xmlns:eb="http://www.ebinterface.at/schema/2p1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" eb:Cancellation="false" eb:GeneratingSystem="none" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xsi:schemaLocation="http://www.ebinterface.at/schema/2p1/ http://www.ebinterface.at/schema/2p1/Invoice.xsd ">
+    <eb:InvoiceNumber>3</eb:InvoiceNumber>
+    <eb:InvoiceDate>2008-11-11</eb:InvoiceDate>
+    <eb:Biller>
+        <eb:VATIdentificationNumber>0</eb:VATIdentificationNumber>
+        <eb:Address>
+            <eb:Salutation>Firma</eb:Salutation>
+            <eb:Name>Gumpinger Software </eb:Name>
+            <eb:Street>Katzgrabenstraße 50</eb:Street>
+            <eb:Town>Altenberg bei Linz</eb:Town>
+            <eb:ZIP>4203</eb:ZIP>
+            <eb:Country>Österreich</eb:Country>
+            <eb:Phone>+43 (0) 660 4867 464</eb:Phone>
+            <eb:Email>office@gumpinger.info</eb:Email>
+            <eb:Contact>Florian Gumpinger</eb:Contact>
+        </eb:Address>
+    </eb:Biller>
+    <eb:InvoiceRecipient>
+        <eb:BillersInvoiceRecipientID>36</eb:BillersInvoiceRecipientID>
+        <eb:Address>
+            <eb:Salutation>Herr</eb:Salutation>
+            <eb:Name>Florian Gumpinger </eb:Name>
+            <eb:Street>Katzgrabenstraße 50</eb:Street>
+            <eb:Town>Altenberg bei Linz</eb:Town>
+            <eb:ZIP>4203</eb:ZIP>
+            <eb:Country>Österreich</eb:Country>
+            <eb:Phone/>
+            <eb:Email>florian.gumpinger@gumpinger.eu</eb:Email>
+            <eb:Contact/>
+        </eb:Address>
+    </eb:InvoiceRecipient>
+    <eb:Details>
+        <eb:ItemList eb:ListType="structured">
+            <eb:ListLineItem>
+                <eb:ListElement eb:Type="IntegerType" eb:Usage="SerialNumber">1</eb:ListElement>
+                <eb:ListElement eb:Type="StringType" eb:Usage="Description">Implementieren</eb:ListElement>
+                <eb:ListElement eb:Type="DecimalType" eb:Unit="EUR" eb:Usage="UnitPrice">10.00</eb:ListElement>
+                <eb:ListElement eb:Type="AmountType" eb:Unit="Stunde" eb:Usage="Quantity">2.0</eb:ListElement>
+                <eb:ListElement eb:Unit="%" eb:Usage="TaxRate">10.0</eb:ListElement>
+                <eb:ListElement eb:Type="DecimalType" eb:Unit="EUR" eb:Usage="Amount">20.00</eb:ListElement>
+            </eb:ListLineItem>
+            <eb:ListLineItem>
+                <eb:ListElement eb:Type="IntegerType" eb:Usage="SerialNumber">2</eb:ListElement>
+                <eb:ListElement eb:Type="StringType" eb:Usage="Description">Rechnungserstellungsgebühr</eb:ListElement>
+                <eb:ListElement eb:Type="DecimalType" eb:Unit="EUR" eb:Usage="UnitPrice">0.00</eb:ListElement>
+                <eb:ListElement eb:Type="AmountType" eb:Unit="Stunde" eb:Usage="Quantity">0.0</eb:ListElement>
+                <eb:ListElement eb:Unit="%" eb:Usage="TaxRate">0.0</eb:ListElement>
+                <eb:ListElement eb:Type="DecimalType" eb:Unit="EUR" eb:Usage="Amount">0.00</eb:ListElement>
+            </eb:ListLineItem>
+            <eb:ListLineItem>
+                <eb:ListElement eb:Type="IntegerType" eb:Usage="SerialNumber">3</eb:ListElement>
+                <eb:ListElement eb:Type="StringType" eb:Usage="Description">Testprodukt1</eb:ListElement>
+                <eb:ListElement eb:Type="DecimalType" eb:Unit="EUR" eb:Usage="UnitPrice">10.00</eb:ListElement>
+                <eb:ListElement eb:Type="AmountType" eb:Unit="Einheit" eb:Usage="Quantity">2.0</eb:ListElement>
+                <eb:ListElement eb:Unit="%" eb:Usage="TaxRate">20.0</eb:ListElement>
+                <eb:ListElement eb:Type="DecimalType" eb:Unit="EUR" eb:Usage="Amount">20.00</eb:ListElement>
+            </eb:ListLineItem>
+        </eb:ItemList>
+    </eb:Details>
+    <eb:Tax>
+        <eb:VAT>
+            <eb:Item>
+                <eb:TaxedAmount eb:Currency="EUR">20.00</eb:TaxedAmount>
+                <eb:Percentage>10.0</eb:Percentage>
+                <eb:Amount eb:Currency="EUR">2.00</eb:Amount>
+            </eb:Item>
+            <eb:Item>
+                <eb:TaxedAmount eb:Currency="EUR">20.00</eb:TaxedAmount>
+                <eb:Percentage>20.0</eb:Percentage>
+                <eb:Amount eb:Currency="EUR">4.00</eb:Amount>
+            </eb:Item>
+        </eb:VAT>
+    </eb:Tax>
+    <eb:TotalGrossAmount eb:Currency="EUR">46.00</eb:TotalGrossAmount>
+    <eb:PaymentMethod xsi:type="eb:NoPaymentType"/>
+    <eb:PaymentConditions>
+        <eb:DueDate>2008-11-20</eb:DueDate>
+    </eb:PaymentConditions>
+    <eb:PresentationDetails>
+        <eb:URL>http://www.gumpinger.eu</eb:URL>
+        <eb:LogoURL>https://erp1.verpura.eu:443/erpwithtiles/servlet/ImageLogo?clientId=1</eb:LogoURL>
+        <eb:LayoutID>0100</eb:LayoutID>
+        <eb:Language>ger</eb:Language>
+        <eb:DocumentTitle>Rechnung</eb:DocumentTitle>
+        <eb:ShortComment/>
+        <eb:HeaderComment>Wir erlauben uns wie folgt zu verrechnen.</eb:HeaderComment>
+        <eb:FooterComment>Wir danken für Ihren Auftrag.</eb:FooterComment>
+    </eb:PresentationDetails>
+</eb:Invoice>
+</dsig:Object><dsig:Object Id="Object-d14e4598-2"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.1.1#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#" xmlns:xmldsig="http://www.w3.org/2000/09/xmldsig#"><xades:SignedProperties Id="SignedProperties-d14e4598-1"><xades:SignedSignatureProperties><xades:SigningTime>2009-03-06T10:00:11Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><xades:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><xades:DigestValue>gjv+knnNzBrbknp1TNs2P27zmg0=</xades:DigestValue></xades:CertDigest><xades:IssuerSerial><xmldsig:X509IssuerName xmlns:xmldsig="http://www.w3.org/2000/09/xmldsig#">CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</xmldsig:X509IssuerName><xmldsig:X509SerialNumber xmlns:xmldsig="http://www.w3.org/2000/09/xmldsig#">284524</xmldsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-d14e4598-1"><xades:MimeType>text/plain</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature></sl:CreateXMLSignatureResponse>

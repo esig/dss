@@ -1,0 +1,108 @@
+﻿<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1463232215">
+	<ds:SignedInfo>
+		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+		<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"/>
+		<ds:Reference URI="#id-833345933">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/>
+			<ds:DigestValue>
+KV/rpPhn5bdvhwx9MiPqTtnNUE5ps7gZTJBKy5pjK7voHddiprFoy+ztTjMzJd/z
+nmsGopQMu8DWs71Xtia8Cw==
+			</ds:DigestValue>
+		</ds:Reference>
+		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-427228020">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+			<ds:DigestValue>DpJ1Fspm9QZ0Y0GQbmkC8WUfcM8=</ds:DigestValue>
+		</ds:Reference>
+	</ds:SignedInfo>
+	<ds:SignatureValue>
+StTUJchJAiE9dMC8Hso98m4fQqVjlGYwIyfEMO/cPX3lKtZVeM0un/SJvRvPzfwL
+lSM9sqqECn6N+j3CuC1b6M51akWBJhi8BuhBLXoR042HXuJLmpO7cvvpfvmKRiQf
+lcHRZPclwvuOH3pl2MUSzCJ0zNBx9dzk94yesB/sb0WtD/QSndgEamluwPn5K7gP
+7Y/CkyQZ+qY+54BuzzyWn05cJa0h+FeQLNe/RkfF/2BtOehMcC3hIFCRyZd6pGel
+diCU3wOUF1NIrAUqSJlpcCakcXv5NWFNnYpqB7tFkzsig07WGU7qSioKEbN0PHH4
+wUmH/DuPOOoyGXdhNjXaMQ==
+	</ds:SignatureValue>
+	<ds:KeyInfo>
+		<ds:KeyValue>
+			<ds:RSAKeyValue>
+				<ds:Modulus>
+qPuHQADYYFTs+kD4PnRJkBSNrB8xUJ9ajeEl/scL7EX0d5yG9UYi8gE5tFQcB376
+ZnxNgWAzLpofMvmCilFp1e6gUC3ERHEjW4eIb4KDIUMdajoMlq/K5YukSWEypzWh
+FavXFH3MsWjr429sdhTdiUxMrzyZ/UIa6qv88TCbANC6nuEVByOo2KCXWhq8HC1j
+zwS531GZDhcbLLpizS0lH5cbAGp7KDmhdPAV7XnalpR1UfudDGJzhkn33uIFGpR+
+KRmaxsUPt43nb9wtfAkbvjGdWAK3qoApFBEz1lVCKhSNOcwYJfmsqu1Rqx4dCKQr
+rQTk+aq6KeB3OVZPwmqXNw==
+				</ds:Modulus>
+				<ds:Exponent>AQAB</ds:Exponent>
+			</ds:RSAKeyValue>
+		</ds:KeyValue>
+		<ds:X509Data>
+			<ds:X509IssuerSerial>
+				<ds:X509IssuerName>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</ds:X509IssuerName>
+				<ds:X509SerialNumber>130114610919472312325890885591559005888</ds:X509SerialNumber>
+			</ds:X509IssuerSerial>
+			<ds:X509SubjectName>C=RO, 2.5.4.5=200412234AAV5, 2.5.4.4=Aneci, 2.5.4.42=Adrian-Vasile, CN=Adrian-Vasile Aneci</ds:X509SubjectName>
+			<ds:X509Certificate>
+MIIGQTCCBSmgAwIBAgIQYeMpnAnj+IRoVzR6uVdmwDANBgkqhkiG9w0BAQUFADBs
+MQswCQYDVQQGEwJSTzEXMBUGA1UEChMOVHJhbnMgU3BlZCBTUkwxKzApBgNVBAsT
+IlRyYW5zIFNwZWQgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxFzAVBgNVBAMTDlRy
+YW5zIFNwZWQgUUNBMB4XDTE0MTAyODAwMDAwMFoXDTE1MTAyODIzNTk1OVowazEc
+MBoGA1UEAwwTQWRyaWFuLVZhc2lsZSBBbmVjaTEWMBQGA1UEKgwNQWRyaWFuLVZh
+c2lsZTEOMAwGA1UEBAwFQW5lY2kxFjAUBgNVBAUTDTIwMDQxMjIzNEFBVjUxCzAJ
+BgNVBAYTAlJPMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqPuHQADY
+YFTs+kD4PnRJkBSNrB8xUJ9ajeEl/scL7EX0d5yG9UYi8gE5tFQcB376ZnxNgWAz
+LpofMvmCilFp1e6gUC3ERHEjW4eIb4KDIUMdajoMlq/K5YukSWEypzWhFavXFH3M
+sWjr429sdhTdiUxMrzyZ/UIa6qv88TCbANC6nuEVByOo2KCXWhq8HC1jzwS531GZ
+DhcbLLpizS0lH5cbAGp7KDmhdPAV7XnalpR1UfudDGJzhkn33uIFGpR+KRmaxsUP
+t43nb9wtfAkbvjGdWAK3qoApFBEz1lVCKhSNOcwYJfmsqu1Rqx4dCKQrrQTk+aq6
+KeB3OVZPwmqXNwIDAQABo4IC3jCCAtowDAYDVR0TAQH/BAIwADCCARIGA1UdHwSC
+AQkwggEFMIIBAaCB/qCB+4Y2aHR0cDovL29uc2l0ZWNybC5zLXRydXN0LmRlL1Ry
+YW5zU3BlZFBLSS9MYXRlc3RDUkwuY3JshiZodHRwOi8vd3d3LnRyYW5zc3BlZC5y
+by9jcmwvdHNfcWNhLmNybIaBmGxkYXA6Ly9kaXJlY3Rvcnkucy10cnVzdC5kZS9D
+Tj1UcmFucyUyMFNwZWQlMjBRQ0EsT1U9VHJhbnMlMjBTcGVkJTIwQ2VydGlmaWNh
+dGlvbiUyMEF1dGhvcml0eSxPPVRyYW5zJTIwU3BlZCUyMFNSTCxDPVJPP2NlcnRp
+ZmljYXRlUmV2b2NhdGlvbkxpc3Q7YmluYXJ5MA4GA1UdDwEB/wQEAwIFoDApBgNV
+HSUEIjAgBggrBgEFBQcDAgYIKwYBBQUHAwQGCisGAQQBgjcUAgIwgYYGA1UdIAR/
+MH0wPwYLKwYBBAGCuB0BAQEwMDAuBggrBgEFBQcCARYiaHR0cDovL3d3dy50cmFu
+c3NwZWQucm8vcmVwb3NpdG9yeTA6BgYEAIswAQEwMDAuBggrBgEFBQcCARYiaHR0
+cDovL3d3dy50cmFuc3NwZWQucm8vcmVwb3NpdG9yeTAYBggrBgEFBQcBAwQMMAow
+CAYGBACORgEBMEkGA1UdEQRCMECgJgYKKwYBBAGCNxQCA6AYDBZhbmVjaS5hZHJp
+YW5AZ21haWwuY29tgRZhbmVjaS5hZHJpYW5AZ21haWwuY29tMB8GA1UdIwQYMBaA
+FM/7rfLiGXBjLbqdlQi+gOGOG2cGMGoGCCsGAQUFBwEBBF4wXDA2BggrBgEFBQcw
+AoYqaHR0cDovL3d3dy50cmFuc3NwZWQucm8vY2FjZXJ0cy90c19xY2EuY3J0MCIG
+CCsGAQUFBzABhhZodHRwOi8vb2NzcC5zLXRydXN0LmRlMA0GCSqGSIb3DQEBBQUA
+A4IBAQC1fmG9iWzzRYfzMVrA0ziowqrnFDvojAgCCRsod7N5QueXQMs9JzrmTyZ7
+QikE0cMPY48uI7aZgLRc1dkq2as8QY/hbDUA+zq0GIwldIykSnO/gy4+GfSAKNwZ
+cLS8XN7wxOPB02+rbY8CQe4ctOesd/6Rr6uO2KN2u2PvMBjGwsU4yIDJhrFI6JL8
+kXsGWQrbovRzHwz/wJCv7gqHgHbnunKd3bM3aoMAHSIFFF4dv56R8BBhGmT+owsR
+TZGzg9wu45hyqn9ba/NwTYjXo/vuGOVp5qdMhRoetFqw5977YB9pa+hsPt4ZMzTV
+4SximhEPABBo0ExJ2bcPMdnXc4cO
+			</ds:X509Certificate>
+		</ds:X509Data>
+	</ds:KeyInfo>
+	<ds:Object>
+		<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature-1463232215">
+			<xades:SignedProperties Id="SignedProperties-427228020">
+				<xades:SignedSignatureProperties>
+					<xades:SigningTime>2014-11-10T20:37:58.701Z</xades:SigningTime>
+					<xades:SigningCertificate>
+						<xades:Cert>
+							<xades:CertDigest>
+								<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+								<ds:DigestValue>mNYyL1D+jDnRTOPF45CVJCU7mt8=</ds:DigestValue>
+							</xades:CertDigest>
+							<xades:IssuerSerial>
+								<ds:X509IssuerName>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</ds:X509IssuerName>
+								<ds:X509SerialNumber>130114610919472312325890885591559005888</ds:X509SerialNumber>
+							</xades:IssuerSerial>
+						</xades:Cert>
+					</xades:SigningCertificate>
+				</xades:SignedSignatureProperties>
+			</xades:SignedProperties>
+		</xades:QualifyingProperties>
+	</ds:Object>
+	<ds:Object Id="id-833345933"><test>
+This is a test file for ETSI plugtest.
+</test>
+	</ds:Object>
+</ds:Signature>

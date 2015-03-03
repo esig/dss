@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?><Envelope><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signer-15031079921056184176431164423231126436">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#SignedObject-Signer-15031079921056184176431164423231126436">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>0a2hYh6HaFL9ckfkz6yVjgU1PirK9gxaRy2Ilem1A7U=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-Signer-15031079921056184176431164423231126436">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>C9Z0VELv+pqqXPVkAJIeiJK+KkySS+BFXxTcjOyIenM=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+TMjX7cRQfb/rWyNxaNh1ZbTfGIg+gpvblULeAMQVmYYGnl5GUP0wvOf4RJCYSIVCG9UzMW/fDHNN
+OOc7W3pg74hE6WYM0xvPwmvSzBbKslpxb/AjYg/5EXwMoThEGaKJa1ikWOD1z/AH8JB0+QIcaDsQ
+BFlv4/1zum4RCGtY2k4=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIEbTCCA1WgAwIBAgIQC07hdQHwxPBitkIG5jo7pDANBgkqhkiG9w0BAQsFADBsMQswCQYDVQQG
+EwJJVDEYMBYGA1UECgwPQXJ1YmFQRUMgUy5wLkEuMSEwHwYDVQQLDBhDZXJ0aWZpY2F0aW9uIEF1
+dGhvcml0eUMxIDAeBgNVBAMMF0FydWJhUEVDIFMucC5BLiBORyBDQSAzMB4XDTE0MDkyMzAwMDAw
+MFoXDTE3MDkyMjIzNTk1OVowgZsxCzAJBgNVBAYTAklUMRUwEwYDVQQKDAxub24gcHJlc2VudGUx
+HDAaBgNVBAMME01hc3NhIEFsZm9uc28gTWFyaWExHDAaBgNVBAUTE0lUOk1TU0xOUzY2RTIwRDY0
+M0QxFjAUBgNVBCoMDUFsZm9uc28gTWFyaWExDjAMBgNVBAQMBU1hc3NhMREwDwYDVQQuEwgxMzQ2
+NjQ0MDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAyU3UHW4+kDbJ87E9jflWZ0USTRiuVbWs
+A72vM5/3yM23cgCvsCKpVfT88ywWJ1zYxKSJFpLv2wlLdttEwl8be2IeZcrHCWD7jmzNdqFALbMN
+VWkH3I0hIdP+U0PGqQTueLd7ot+ZsekuyudsKy8rWuez6ERrlybN8amiZqjvcSsCAwEAAaOCAV0w
+ggFZMA4GA1UdDwEB/wQEAwIGQDAdBgNVHQ4EFgQUVg2Zp5+FuM0qunvl63uIJUwDagYwRwYDVR0g
+BEAwPjA8BgsrBgEEAYHoLQEBATAtMCsGCCsGAQUFBwIBFh9odHRwczovL2NhLmFydWJhcGVjLml0
+L2Nwcy5odG1sMFgGA1UdHwRRME8wTaBLoEmGR2h0dHA6Ly9jcmwuYXJ1YmFwZWMuaXQvQXJ1YmFQ
+RUNTcEFDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5Qy9MYXRlc3RDUkwuY3JsMC8GCCsGAQUFBwEDBCMw
+ITAIBgYEAI5GAQEwCwYGBACORgEDAgEUMAgGBgQAjkYBBDAfBgNVHSMEGDAWgBTwwEWxtjW06l8p
++oMDStwv9bN96DAzBggrBgEFBQcBAQQnMCUwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLmFydWJh
+cGVjLml0MA0GCSqGSIb3DQEBCwUAA4IBAQBdwLXe+T977/0ICF2PF7oKrJkVsVybdWnroGsyYFye
+mFFYlDW+dJ84uYFu+1LooRrxOv25/F5d8awCPGFigPSfth4QN/bZr2OhACA+CMM+WJZhIlCF7aHS
+GDA1K6cTLJmQa545OClkz/xKbGBmLKrfEEeMdiFgBrBgFHi8jmDr6B0q8VK961HMM5fsRIhVEvUn
+Q4GAtL0WP07mVMDK5DXiD8BITOfS0a1NNdVwWw+KflpkIpIlOVqbAsXHk6XNSILn1jVE+tqKmPBz
+WD6eg3zkn3x8qmw4WD4jy9uL/rh7pBpE1EK5ZCN25G93XgbZtfbY7mmWiXJNIaEEPMpIx2gy
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+yU3UHW4+kDbJ87E9jflWZ0USTRiuVbWsA72vM5/3yM23cgCvsCKpVfT88ywWJ1zYxKSJFpLv2wlL
+dttEwl8be2IeZcrHCWD7jmzNdqFALbMNVWkH3I0hIdP+U0PGqQTueLd7ot+ZsekuyudsKy8rWuez
+6ERrlybN8amiZqjvcSs=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+</ds:KeyInfo>
+<ds:Object Id="SignedObject-Signer-15031079921056184176431164423231126436"><RootElement>hello world</RootElement></ds:Object>
+<ds:Object>
+<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signer-15031079921056184176431164423231126436">
+<xades:SignedProperties Id="SignedProperties-Signer-15031079921056184176431164423231126436">
+<xades:SignedSignatureProperties>
+<xades:SigningTime>2014-10-17T15:48:50.314+02:00</xades:SigningTime>
+<xades:SigningCertificate>
+<xades:Cert>
+<xades:CertDigest>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>MymzYQLKTmsaLixONemqB/mf4atKss49ZpsN+OG7I5o=</ds:DigestValue>
+</xades:CertDigest>
+<xades:IssuerSerial>
+<ds:X509IssuerName>CN=ArubaPEC S.p.A. NG CA 3, OU=Certification AuthorityC, O=ArubaPEC S.p.A., C=IT</ds:X509IssuerName>
+<ds:X509SerialNumber>15031079921056184176431164423231126436</ds:X509SerialNumber>
+</xades:IssuerSerial>
+</xades:Cert>
+</xades:SigningCertificate>
+</xades:SignedSignatureProperties>
+</xades:SignedProperties>
+</xades:QualifyingProperties>
+</ds:Object>
+</ds:Signature><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signer-69955739891705170332563842227902460013">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#SignedObject-Signer-15031079921056184176431164423231126436">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>0a2hYh6HaFL9ckfkz6yVjgU1PirK9gxaRy2Ilem1A7U=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-Signer-69955739891705170332563842227902460013">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>6T0HSVxGUu2C1KAdNj+Fvi2tzMO2f1e9sXIYEbxt4u8=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+tvQZ7qlEmkhtEvDcctXu2QlISTvd/Ba6DadXGB1XUmlpjUfMzAjQTP3QDy8DZNDYOX2k4TjI0pcx
+d9kRq6VVBFwt1laAS7gjySIFSapjq21CXvX+BQ+WSmrcaBdF5SEyMsnl135jvPdCrUNd8r8cYTdo
+w05yI20KmGAR+ZD2lY4=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIEzzCCA7egAwIBAgIQNKD8RL309On+mXkgXG2wbTANBgkqhkiG9w0BAQsFADBsMQswCQYDVQQG
+EwJJVDEYMBYGA1UECgwPQXJ1YmFQRUMgUy5wLkEuMSEwHwYDVQQLDBhDZXJ0aWZpY2F0aW9uIEF1
+dGhvcml0eUMxIDAeBgNVBAMMF0FydWJhUEVDIFMucC5BLiBORyBDQSAzMB4XDTEyMDkyODAwMDAw
+MFoXDTE1MDkyODIzNTk1OVowga8xCzAJBgNVBAYTAklUMRUwEwYDVQQKDAxub24gcHJlc2VudGUx
+HDAaBgNVBAMME01BU1NBIEFMRk9OU08gTUFSSUExHDAaBgNVBAUTE0lUOk1TU0xOUzY2RTIwRDY0
+M0QxFjAUBgNVBCoMDUFMRk9OU08gTUFSSUExDjAMBgNVBAQMBU1BU1NBMREwDwYDVQQuEwgxMTMx
+MzYwMzESMBAGA1UEDAwJSU5HRUdORVJFMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDh4ec0
+ONDubLIsIJxaRlbd7DYvFKCBoghQcK9L24kZiWM6xlNw03ZvJXAm6oQkkM+0+DHhtJKr85eBzNmI
+nVN9CB3UUp9R1LMZvfaWC3+ktE44RYVN5cbl2u0QSsMbiic3sHgzODGBOMDKrtM491NBbGcsDV7S
+hmvP6uMvLbcc2wIDAQABo4IBqzCCAacwDgYDVR0PAQH/BAQDAgZAMB0GA1UdDgQWBBSgFZGtp4sV
+st9hp4OZHxyifWOaXzBHBgNVHSAEQDA+MDwGCysGAQQBgegtAQEBMC0wKwYIKwYBBQUHAgEWH2h0
+dHBzOi8vY2EuYXJ1YmFwZWMuaXQvY3BzLmh0bWwwWAYDVR0fBFEwTzBNoEugSYZHaHR0cDovL2Ny
+bC5hcnViYXBlYy5pdC9BcnViYVBFQ1NwQUNlcnRpZmljYXRpb25BdXRob3JpdHlDL0xhdGVzdENS
+TC5jcmwwLwYIKwYBBQUHAQMEIzAhMAgGBgQAjkYBATALBgYEAI5GAQMCARQwCAYGBACORgEEMCIG
+A1UdEQQbMBmBF2FsZm9uc28ubWFzc2FAaW5zaWVsLml0MB8GA1UdIwQYMBaAFPDARbG2NbTqXyn6
+gwNK3C/1s33oMDMGCCsGAQUFBwEBBCcwJTAjBggrBgEFBQcwAYYXaHR0cDovL29jc3AuYXJ1YmFw
+ZWMuaXQwKAYDVR0JBCEwHzAdBggrBgEFBQcJATERGA8xOTY2MDUyMDA4MDAwMVowDQYJKoZIhvcN
+AQELBQADggEBAHdmQ5L92nJC42itfqrMlKTc70hXpuTeJjGbPg/i/80tah4LQIK7cyWzS+lOQzf4
+8shAOoGM+v4AXCdVlfFUNggHbQIxDeWgfpKI0c0GuVOj6+WEjFSXNMUt375Gdezt3FQ3T2q/pTCP
+bSulviDKrvg8jRPtIDw59t4L/a5+BCs9AmIrO9sVWD3spIGTf4E4vjSBeGubYnkVJAKf8jBIdE+8
+TgKWOyXC3P19IbAMfUz2xhUv/dV06epNScEO1ToHmZFyiI4JZZe+q1NNgrNf5NqGgAHoarXFOzZV
+BfYMFS33BXV4Dwccw6YstWKLJ1QdhW8bZVlUzLB8qOLmN74hF8o=
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+4eHnNDjQ7myyLCCcWkZW3ew2LxSggaIIUHCvS9uJGYljOsZTcNN2byVwJuqEJJDPtPgx4bSSq/OX
+gczZiJ1TfQgd1FKfUdSzGb32lgt/pLROOEWFTeXG5drtEErDG4onN7B4MzgxgTjAyq7TOPdTQWxn
+LA1e0oZrz+rjLy23HNs=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+</ds:KeyInfo>
+<ds:Object>
+<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signer-69955739891705170332563842227902460013">
+<xades:SignedProperties Id="SignedProperties-Signer-69955739891705170332563842227902460013">
+<xades:SignedSignatureProperties>
+<xades:SigningTime>2014-10-17T15:48:53.051+02:00</xades:SigningTime>
+<xades:SigningCertificate>
+<xades:Cert>
+<xades:CertDigest>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>+u1E4X+bPlLo8sFDU5XOlNajF1TCxwFiItdVD9uEWjI=</ds:DigestValue>
+</xades:CertDigest>
+<xades:IssuerSerial>
+<ds:X509IssuerName>CN=ArubaPEC S.p.A. NG CA 3, OU=Certification AuthorityC, O=ArubaPEC S.p.A., C=IT</ds:X509IssuerName>
+<ds:X509SerialNumber>69955739891705170332563842227902460013</ds:X509SerialNumber>
+</xades:IssuerSerial>
+</xades:Cert>
+</xades:SigningCertificate>
+</xades:SignedSignatureProperties>
+</xades:SignedProperties>
+</xades:QualifyingProperties>
+</ds:Object>
+</ds:Signature><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signer-3548539">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#SignedObject-Signer-15031079921056184176431164423231126436">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>0a2hYh6HaFL9ckfkz6yVjgU1PirK9gxaRy2Ilem1A7U=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-Signer-3548539">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>t+Kj1ETu+uHkl0Sd3W9mukAELxfBi234qtDKZJ0thDw=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+tR/d4GMiYI6VBEpopDh5IN2gZabumL/n84tDEvmQ/u+/ZF72kC6r+++2PA3JGhYjH1heHg72FRbv
+JEQzILNPEPq2QMzAQZ3XBgsfN/vbPltnva1DU364lhJhWqBk8+rFB4dfBmutHEKMl8pz7Mkzlimy
++CS5xVAUEf706plk7RY=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIFaTCCBFGgAwIBAgIDNiV7MA0GCSqGSIb3DQEBCwUAMIGDMQswCQYDVQQGEwJJVDEVMBMGA1UE
+CgwMSU5GT0NFUlQgU1BBMRQwEgYDVQQFEwswNzk0NTIxMTAwNjEiMCAGA1UECwwZQ2VydGlmaWNh
+dG9yZSBBY2NyZWRpdGF0bzEjMCEGA1UEAwwaSW5mb0NlcnQgRmlybWEgUXVhbGlmaWNhdGEwHhcN
+MTQwMzA2MDg1ODM2WhcNMTcwMzA2MDAwMDAwWjCBoDELMAkGA1UEBhMCSVQxFTATBgNVBAoMDE5P
+TiBQUkVTRU5URTEOMAwGA1UEBAwFTUFTU0ExFjAUBgNVBCoMDUFMRk9OU08gTUFSSUExHDAaBgNV
+BAUTE0lUOk1TU0xOUzY2RTIwRDY0M0QxFjAUBgNVBC4TDTIwMDgxNDc3MjAxMDkxHDAaBgNVBAMM
+E0FsZm9uc28gTWFyaWEgTWFzc2EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAN7Uy/Ii40uv
+uWqYdDOtG593NAfcJi2mwxlBTG9sF+aRA6Ywl7/xYr9AEaA2UCtHU4yGHT8mBFMPndwQAHe9QH1u
+v42Lk/RCyrHK7oyVGoKuxqLTVK33r4lFIw5EeSRoIBUjqJhnZ1pQMCBu1WQFio98IkfqVNb8CWXn
+d7ZEcalnAgMBAAGjggJJMIICRTAJBgNVHRMEAjAAMGQGA1UdIARdMFswTwYGK0wkAQEBMEUwQwYI
+KwYBBQUHAgEWN2h0dHA6Ly93d3cuZmlybWEuaW5mb2NlcnQuaXQvZG9jdW1lbnRhemlvbmUvbWFu
+dWFsaS5waHAwCAYGK0wYAQECMC8GCCsGAQUFBwEDBCMwITAIBgYEAI5GAQEwCwYGBACORgEDAgEU
+MAgGBgQAjkYBBDAoBgNVHQkEITAfMB0GCCsGAQUFBwkBMREYDzE5NjYwNTIwMDAwMDAwWjBOBggr
+BgEFBQcBAQRCMEAwPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmluZm9jZXJ0Lml0L09DU1BTZXJ2
+ZXJfSUNFL09DU1BTZXJ2bGV0MA4GA1UdDwEB/wQEAwIGQDAlBgNVHRIEHjAcgRpmaXJtYS5kaWdp
+dGFsZUBpbmZvY2VydC5pdDAfBgNVHSMEGDAWgBQw/CF8fNJ8bbyMw7oTUPd6oCvFtjCBrwYDVR0f
+BIGnMIGkMIGhoIGeoIGbhoGYbGRhcDovL2xkYXAuaW5mb2NlcnQuaXQvY24lM2RJbmZvQ2VydCUy
+MEZpcm1hJTIwUXVhbGlmaWNhdGElMjBDUkwwMixvdSUzZENlcnRpZmljYXRvcmUlMjBBY2NyZWRp
+dGF0byxvJTNkSU5GT0NFUlQlMjBTUEEsYyUzZElUP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Qw
+HQYDVR0OBBYEFNiSUwRITP6FiB7gDXhMfm7dQr2eMA0GCSqGSIb3DQEBCwUAA4IBAQBpRDk7agQq
+WyPg/v99CFKUFREyP6/N8MwwKchG/xIb23lkcLL9UvtO/ZBvvRAgS2MaILA/9RaMV0ntNA3u+4aG
+xMkGtSOvdDYoV4Zt7tIDnKCFeJQ5Ef8J1a2WQOAAWJ6TbbhzOakJsq6ygSO65Udfm8jHs+K1HMPV
+qGyQToIdPDTKF2L8ipmGrqMiuvyqPNP93jn237scRLP2x7uPG/4+GK4hPlmlSiBNF/Gqm9zxe9BX
+7fmweB7B9mZ0awIRj766KFZTuFX3EZK9YRP4BmJFZelNCKAWkmow/nz6osW4GQJQQ77gW7lKHf2S
+EnYHeAmbO+m1hCOf6K/N4ZYCm+KC
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+3tTL8iLjS6+5aph0M60bn3c0B9wmLabDGUFMb2wX5pEDpjCXv/Fiv0ARoDZQK0dTjIYdPyYEUw+d
+3BAAd71AfW6/jYuT9ELKscrujJUagq7GotNUrfeviUUjDkR5JGggFSOomGdnWlAwIG7VZAWKj3wi
+R+pU1vwJZed3tkRxqWc=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+</ds:KeyInfo>
+<ds:Object>
+<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signer-3548539">
+<xades:SignedProperties Id="SignedProperties-Signer-3548539">
+<xades:SignedSignatureProperties>
+<xades:SigningTime>2014-10-17T15:48:57.159+02:00</xades:SigningTime>
+<xades:SigningCertificate>
+<xades:Cert>
+<xades:CertDigest>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>PiN4JVpYST7n6YfSvh8HmA6hUP6+OCMFGwr0KZwlK/s=</ds:DigestValue>
+</xades:CertDigest>
+<xades:IssuerSerial>
+<ds:X509IssuerName>CN=InfoCert Firma Qualificata, OU=Certificatore Accreditato, OID.2.5.4.5=07945211006, O=INFOCERT SPA, C=IT</ds:X509IssuerName>
+<ds:X509SerialNumber>3548539</ds:X509SerialNumber>
+</xades:IssuerSerial>
+</xades:Cert>
+</xades:SigningCertificate>
+</xades:SignedSignatureProperties>
+</xades:SignedProperties>
+</xades:QualifyingProperties>
+</ds:Object>
+</ds:Signature></Envelope>

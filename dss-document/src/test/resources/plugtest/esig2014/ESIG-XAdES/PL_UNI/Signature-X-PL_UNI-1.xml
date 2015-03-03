@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><dokument>
+	<tytul>Testowy dokument XML</tytul>
+	<opis_testu>XAdES level B</opis_testu>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature_a5839263-1333-4508-a0da-b85196ce9539_44"><ds:SignedInfo Id="SignedInfo_a5839263-1333-4508-a0da-b85196ce9539_1c"><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="Reference1_a5839263-1333-4508-a0da-b85196ce9539_7a" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116"><ds:XPath>not(ancestor-or-self::ds:Signature)</ds:XPath></ds:Transform></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>Noc0dUvs3mKC1M8gglLHN6VyHoYuJY+vU2IO8zeBB/k=</ds:DigestValue></ds:Reference><ds:Reference Id="SignedProperties-Reference_a5839263-1333-4508-a0da-b85196ce9539_75" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties_a5839263-1333-4508-a0da-b85196ce9539_13"><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>gB6t0OJ7aQwFh8Gh7RYoZSF6WUKtyCMPBlkEqrMV/1U=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="SignatureValue_a5839263-1333-4508-a0da-b85196ce9539_0f">EC3t7lMNcPiDylgGiLO3hjGng9mcWLK5SSANCaKZWGV3DFIvdqgROwApZ3faw+Ga
+mNq4B4qhcavq5/Q0M7LF879qlKXy0Sl3Ebg/IYutBH8rkvkxXEcd/T6AgY6CcWW6
+0wqr/BC/yPR68d0QYlsYFZE8wEmmYqiYLmAbTTHkfCw=</ds:SignatureValue><ds:KeyInfo Id="KeyInfo_a5839263-1333-4508-a0da-b85196ce9539_79"><ds:X509Data><ds:X509Certificate>MIIFEzCCA/ugAwIBAgIDBhQPMA0GCSqGSIb3DQEBBQUAMFwxFDASBgNVBAUTC05y
+IHdwaXN1OiAxMQswCQYDVQQGEwJQTDEiMCAGA1UECgwZVW5pemV0byBUZWNobm9s
+b2dpZXMgUy5BLjETMBEGA1UEAwwKQ0VSVFVNIFFDQTAeFw0xNDAxMTIxNjM2MDVa
+Fw0xNjAxMTIxNjM2MDVaMIIBJDE3MDUGA1UEAwwuUm9iZXJ0IEhvc3BvZGFyeXNr
+bzsgVW5pemV0byBUZWNobm9sb2dpZXMgUy5BLjEPMA0GA1UEKgwGUm9iZXJ0MRUw
+EwYDVQQEDAxIb3Nwb2Rhcnlza28xGjAYBgNVBAUTEVBFU0VMOjgzMDExNjE2OTM2
+MS4wLAYDVQQKDCVVbml6ZXRvIFRlY2hub2xvZ2llcyBTcMOzxYJrYSBBa2N5am5h
+MTgwNgYDVQQQMC8MHEtyw7Nsb3dlaiBLb3JvbnkgUG9sc2tpZWogMjEMDzcwLTQ4
+NiBTemN6ZWNpbjERMA8GA1UEBwwIU3pjemVjaW4xGzAZBgNVBAgMEnphY2hvZG5p
+b3BvbW9yc2tpZTELMAkGA1UEBhMCUEwwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJ
+AoGBAKWd62GiFYZTjav9VqQN4eqL/uvrDDfkUjVQZk8mQQGbKPRXlBC6KaB6VXNj
+me1/fYLvLFm9URMtOKQA5xUhpFqGkAhAerH9EAqMO9nooSMsGofBFE1nZGnCQs3D
+8iZkf0tky9sS86I/zyPvyKLz3natA+CLHcNRzN/PuPgn9kiNAgMBAAGjggGWMIIB
+kjAOBgNVHQ8BAf8EBAMCBkAwgfUGA1UdIAEB/wSB6jCB5zCB5AYLKoRoAYb2dwIE
+AQEwgdQwLQYIKwYBBQUHAgEWIWh0dHA6Ly93d3cuY2VydHVtLnBsL3JlcG96eXRv
+cml1bTCBogYIKwYBBQUHAgIwgZUMgZJDZXJ0dW0gUUNBIFByb2Zlc2pvbmFsbnkg
+LSBrd2FsaWZpa293YW55IGNlcnR5ZmlrYXQgd3lkYW55IHByemV6IFVuaXpldG8g
+VGVjaG5vbG9naWVzIFMuQS4gemdvZG5pZSB6IHd5bWFnYW5pYW1pIFVzdGF3eSBv
+IHBvZHBpc2llIGVsZWt0cm9uaWN6bnltLjAMBgNVHRMBAf8EAjAAMC8GA1UdHwQo
+MCYwJKAioCCGHmh0dHA6Ly9jcmwuY2VydHVtLnBsL3FjYTExLmNybDAoBggrBgEF
+BQcBAwQcMBowCAYGBACORgEBMA4GCSqEaAFlAwEBAgoBAjAfBgNVHSMEGDAWgBTy
+Tl5reRDOhMckfhIqTI/PyDAH2TANBgkqhkiG9w0BAQUFAAOCAQEALzYy0dMJ3S/H
+VvEDYu3yFajTX8KxCqfIH3AMSUP9mtTMMUtQt89tu2WZl9XQErPA88z+CB49mySP
+eI/oVVEad3OUVHTfvtWv3cyU/QIxVIswYFOxGF6+4L83ZoZFjLtZlXuSLVWy1i70
+iaPk4HJfB2JXcV08kwQGOmFnJGYPINcOToQCaYyBVu2PsHzMfktdzuTgTcu31cLh
+lYQdB7Xfoz5LT0fo6l1AhIl/Ipvnod3AT6QnmGuGlKoB+hKh/ZZXi+p8vLsNc1bj
+jxh75qJQCjlPxv26fZWb+lEvNLfVxbnKJ0XQI5nF2rA9dQjrwjDczYt2r/SaQHNr
+iHUBOy3Ycw==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Id="QualifyingProperties_a5839263-1333-4508-a0da-b85196ce9539_1e" Target="#Signature_a5839263-1333-4508-a0da-b85196ce9539_44"><xades:SignedProperties Id="SignedProperties_a5839263-1333-4508-a0da-b85196ce9539_13"><xades:SignedSignatureProperties Id="SignedSignatureProperties_a5839263-1333-4508-a0da-b85196ce9539_57"><xades:SigningTime>2014-11-28T14:26:19Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>8WZ2AwC9A3SoG0aVS7HORSZjHPGRPZfarMPrxphmLjU=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=CERTUM QCA,O=Unizeto Technologies S.A.,C=PL,serialNumber=Nr wpisu: 1</ds:X509IssuerName><ds:X509SerialNumber>398351</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties Id="SignedDataObjectProperties_a5839263-1333-4508-a0da-b85196ce9539_16"><xades:DataObjectFormat ObjectReference="#Reference1_a5839263-1333-4508-a0da-b85196ce9539_7a"><xades:Description>MIME-Version: 1.0
+Content-Type: text/xml
+Content-Transfer-Encoding: binary
+Content-Disposition: filename="Signature_PL_UNI_XAdES-levelB.xml"</xades:Description><xades:ObjectIdentifier><xades:Identifier Qualifier="OIDAsURI">http://www.certum.pl/OIDAsURI/signedFile/1.2.616.1.113527.3.1.1.3.1</xades:Identifier><xades:Description>Opis formatu dokumentu oraz jego pełna nazwa</xades:Description><xades:DocumentationReferences><xades:DocumentationReference>http://www.certum.pl/OIDAsURI/signedFile.pdf</xades:DocumentationReference></xades:DocumentationReferences></xades:ObjectIdentifier><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties><xades:UnsignedProperties Id="UnsignedProperties_a5839263-1333-4508-a0da-b85196ce9539_08"/></xades:QualifyingProperties></ds:Object></ds:Signature></dokument>

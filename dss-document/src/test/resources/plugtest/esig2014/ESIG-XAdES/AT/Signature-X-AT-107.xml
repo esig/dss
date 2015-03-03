@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><arch:Dossier xmlns:arch="http://www.anwaltsarchiv.at/Archivium/1.0" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<arch:DossierProfile version="2.0">
+						<arch:CreationDate>24.04.2012</arch:CreationDate>
+						<arch:Subject>
+							<arch:Name>Testdokument</arch:Name>
+							<arch:DigestValue>DYivXbD4Z7xwYpBsH6jB1JvN0Pw=</arch:DigestValue>
+						</arch:Subject>
+					</arch:DossierProfile><dsig:Signature Id="Signature-f6a8c143-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo Id="SignedInfo-f6a8c143-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><dsig:Reference Id="Reference-f6a8c143-1" URI="file:sample.pdf"><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>QCWah4Aj+I/rcPQ5ODvFlvYmgj0=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-f6a8c143-2" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#xmlns(xades=http://uri.etsi.org/01903/v1.1.1%23)%20xpointer(id('Object-f6a8c143-1')/child::xades:QualifyingProperties/child::xades:SignedProperties)"><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>YUrjzgoaAh3kpPOZDR2ibD9hLxU=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-f6a8c143-1">IfhTl/UvhdAbI+tMdNbaIkEeKMRWk1snd+A2jMys8e7lC2CMMe/QPKovYOW5iBvn
+0eSrEdO00+BXIAisrXa07hRlsHeRYXVFx4CL7LpcN6OhuhORo0YjdQC/zywavHrO
+GkmI841zbkC00GmC4P86jx/S4Xf2aVn1XYdUAkjz1PqeiZabQBeIqftnp2Ot4byX
+dMwVk5nFFFXVkf9XzvBwrg57hfLF+snpu1OP6FtCsivX2umzQHMMdrD5uafzTCxv</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIE/DCCA+SgAwIBAgIDD2ZtMA0GCSqGSIb3DQEBBQUAMIGLMQswCQYDVQQGEwJB
+VDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBp
+bSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRgwFgYDVQQLDA9hLXNpZ24tVG9r
+ZW4tMDMxGDAWBgNVBAMMD2Etc2lnbi1Ub2tlbi0wMzAeFw0xMzA4MTIxMTQ1NTRa
+Fw0xODA4MTIwOTQ1NTRaMG8xCzAJBgNVBAYTAkFUMRgwFgYDVQQDDA9IZXJiZXJ0
+IExlaXRvbGQxEDAOBgNVBAQMB0xlaXRvbGQxEDAOBgNVBCoMB0hlcmJlcnQxFTAT
+BgNVBAUTDDM2Nzc1ODc3MzA5MDELMAkGA1UEDAwCREkwgd8wDQYJKoZIhvcNAQEB
+BQADgc0AMIHJAoHBAKH0cpRet0b3MDj/L3lraS9sYajCawkREcjvDIgobSHIWkNC
+0mt1vXlEwNlaB9TRzYPgNCibc6KlezF7+7c3I+n9dk0Mm12/ZmLPR4h4g61F9/2Y
+xM7sPYqWwxpAcsBhm8tHZTlobSV5Z+Fdqfo5f41oB+E3hSybuRf1AqM4JzEEqtU5
+SF0G61+2qzmoZ5n4H6k9bLdRxvjoM9Xlz5D5MgZ3XLeX/gwP2wdZxMr9vN4TIkpq
+YPcgEJYk8NCdK9qFswIDAQABo4IBxjCCAcIwEQYDVR0OBAoECE9Tr7I4wnTlMA4G
+A1UdDwEB/wQEAwIEsDATBgNVHSMEDDAKgAhF91IVFVVlZTAjBgNVHREEHDAagRho
+ZXJiZXJ0LmxlaXRvbGRAYS1zaXQuYXQwCQYDVR0TBAIwADB0BggrBgEFBQcBAQRo
+MGYwOwYIKwYBBQUHMAKGL2h0dHA6Ly93d3cuYS10cnVzdC5hdC9jZXJ0cy9hLXNp
+Z24tVG9rZW4tMDMuY3J0MCcGCCsGAQUFBzABhhtodHRwOi8vb2NzcC5hLXRydXN0
+LmF0L29jc3AwTQYDVR0gBEYwRDBCBgYqKAARAQwwODA2BggrBgEFBQcCARYqaHR0
+cDovL3d3dy5hLXRydXN0LmF0L2RvY3MvY3AvYS1zaWduLXRva2VuMIGSBgNVHR8E
+gYowgYcwgYSggYGgf4Z9bGRhcDovL2xkYXAuYS10cnVzdC5hdC9vdT1hLXNpZ24t
+dG9rZW4tMDMsbz1BLVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlz
+dD9iYXNlP29iamVjdGNsYXNzPWVpZENlcnRpZmljYXRpb25BdXRob3JpdHkwDQYJ
+KoZIhvcNAQEFBQADggEBAJeI4Vwli+Fe37KUDT14SR2y9V4qp/xHXFzndXrNGB3A
+yCPD/ydX6hY+Zw476b2GNF2FsclQplGuyp32gpfup6pS3d/S7Ct75sz1ToiO/gjl
+4s7Qd2wUjznX83dCogNCYq6McAXxjXisS8pJRFYXzfaMtdkcIqNRye91o16nd99t
+DgHAtTeSr69zxJqA3qczC9xSblHyogQraTLVL1D+gPi4RXRfDlAEuQbt15I0PME6
+8Xh/nUIuftgAP/wcm64JnoH3OMmCqFVeU/Ypz+KJpCmVXvzVg7O8KwPnuR4YADQw
+5L14VvvuqFvtFzTf9qK4rNc0KmmHzYLbYCqTdBOwFX4=</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-f6a8c143-1"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.1.1#" Target="#Signature-f6a8c143-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#"><xades:SignedProperties Id="SignedProperties-f6a8c143-1"><xades:SignedSignatureProperties><xades:SigningTime>2013-12-22T20:58:27Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><xades:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><xades:DigestValue>u0wWnfQctMRLPxU9phN81cmKVUo=</xades:DigestValue></xades:CertDigest><xades:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Token-03,OU=a-sign-Token-03,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>1009261</dsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-f6a8c143-1"><xades:MimeType>application/pdf</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature>
+					<arch:Documents>
+						<arch:Document>
+							<arch:DocumentProfile>
+								<arch:FileName>sample.xml</arch:FileName>
+								<arch:SourceLocation>file:sampfile.pdf</arch:SourceLocation>
+								<arch:MimeType>application/pdf</arch:MimeType>
+								<arch:SourceSize>332129</arch:SourceSize>
+							</arch:DocumentProfile>
+						</arch:Document>
+					</arch:Documents>
+				</arch:Dossier>

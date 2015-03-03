@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<ds:Signature Id="signature-1" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+			<ds:SignedInfo>
+				<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+				<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+				<ds:Reference URI="fina2id:///003170c4-4efb-fc20-1eb2-0a01c0fe0000">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+					<ds:DigestValue>STZXnnkQhthkSWOuuOERALQhKoA=</ds:DigestValue>
+				</ds:Reference>
+				<ds:Reference Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#signedproperties-signature-1">
+					<ds:Transforms><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></ds:Transforms>
+					<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+					<ds:DigestValue>ZnXFRVfa1uQSSaaJSNicx9KF/eM=</ds:DigestValue>
+				</ds:Reference>
+			</ds:SignedInfo>
+			<ds:SignatureValue>Mgl8TvSH1llmSbUKR00XoxGB8D7PN8u5DKPn8yRfSjr0Qv4Dt8MszQ25QsJ7tEU2/N8KhGdt1YeV21xw26RDKs9pvK2BKE5EYQCPl9DIsOigdH4vF7GddjbFqG4bWs9tGfu3pyaS+KM5LDiYhhuEiFnxvaZkdKsmYCFJlRel1tU=</ds:SignatureValue>
+			<ds:KeyInfo>
+				<ds:X509Data>
+					<ds:X509Certificate>MIIEdzCCA1+gAwIBAgIEPyXQAjANBgkqhkiG9w0BAQUFADAqMQswCQYDVQQGEwJI
+UjENMAsGA1UEChMERklOQTEMMAoGA1UECxMDUkRDMB4XDTEzMDMyODEzMzI1NloX
+DTE1MDMyODE0MDI1NlowejELMAkGA1UEBhMCSFIxJTAjBgNVBAoTHENJVEhBUkEg
+RC5PLk8uIEhSNjk5MzY4MTk4ODMxDzANBgNVBAcTBlJJSkVLQTEzMBcGA1UEAxMQ
+TkVSRU8gQ0VSTk9HT1JBWjAYBgNVBAUTEUhSNTYwMDQ1OTM5MTQuMi41MIGfMA0G
+CSqGSIb3DQEBAQUAA4GNADCBiQKBgQCDqPNx/7UEW41FTg4U9Y/JeHkNx1cMTqet
+tEkI3u+X0NNZZ20v8ZxTJYoxUF/b/wJqcFnQ6SEJZJN1DF+K78oEp9+FPf/PBkn5
+k4SwpyJOHNTOBH+1kAcaycrkogoImLQWUaupiXaVlRQrIYsGdAMfN/CmGihPf7CT
+jvan363HqwIDAQABo4IB1zCCAdMwDgYDVR0PAQH/BAQDAgZAMDwGA1UdIAQ1MDMw
+MQYJK3yIUAULAgICMCQwIgYIKwYBBQUHAgEWFmh0dHA6Ly9yZGMuZmluYS5oci9j
+cC8wGAYIKwYBBQUHAQMEDDAKMAgGBgQAjkYBATAlBgNVHREEHjAcgRpjZXJub2dv
+cmF6Lm5lcmVvQGdtYWlsLmNvbTCBxgYDVR0fBIG+MIG7MEOgQaA/pD0wOzELMAkG
+A1UEBhMCSFIxDTALBgNVBAoTBEZJTkExDDAKBgNVBAsTA1JEQzEPMA0GA1UEAxMG
+Q1JMMzYxMHSgcqBwhk1sZGFwOi8vcmRjLWxkYXAuZmluYS5oci9vdT1SREMsbz1G
+SU5BLGM9SFI/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdCUzQmJpbmFyeYYfaHR0
+cDovL3JkYy5maW5hLmhyL2NybHMvcmRjLmNybDArBgNVHRAEJDAigA8yMDEzMDMy
+ODEzMzI1NlqBDzIwMTUwMzI4MTQwMjU2WjATBgNVHSMEDDAKgAhHRQBu8FemwDAR
+BgNVHQ4ECgQITQMLEEFVt6YwCQYDVR0TBAIwADAZBgkqhkiG9n0HQQAEDDAKGwRW
+OC4xAwIDqDANBgkqhkiG9w0BAQUFAAOCAQEANTbjV7X6n3LZSM/XpB47PC8tqOoI
+isE+BW+Y4syt7RHZOjpo7lqFtIuZePAjZVqgfC51itjE91SA1zU3Fl7wXTkbCbaS
+t3K7Nwx9z3UfqkfNPt6p2WpuZdbHlaJCyq3YDh3sc+t1Uz8oXVAcdhrQXI3q7B9v
+9NBnyzmxY6h5RRPTVdreFbagz0BBKj7RcNBhfpATScMkf5A7mKYjg79wf+dUQTHK
+gjskba5EMZbUNf3RbU2iogqfUK/Car111NXz7uB79XXNBJI9LhAYEypVXmogeG6G
+28GMWnSff5P3zHAx3DVO6RLAewuaeDSQmjlvFGRDLFEMeJSBdtirIJto2w==
+</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties Target="signature-1" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#/"><xades:SignedProperties Id="signedproperties-signature-1"><xades:SignedSignatureProperties><xades:SigningTime>2014-02-05T19:51:03+01:00</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><xades:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha"/><xades:DigestValue>LvLkzUZGSJGHBbGoeJC47B16vN8=</xades:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>OU=RDC,O=FINA,C=HR</ds:X509IssuerName><ds:X509SerialNumber>1059442690</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyId><xades:SigPolicyId><xades:Identifier>1.3.124.1104.1.02.1</xades:Identifier></xades:SigPolicyId><xades:SigPolicyHash><xades:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><xades:DigestValue>8jE4iJW0dEmZmqYMs/Mf9jRtgP0=</xades:DigestValue></xades:SigPolicyHash><xades:SigPolicyQualifiers><xades:SigPolicyQualifier><xades:SPURI>https://rgfi.fina.hr/RGFI.Excel.Prihvat08.web/doc/FINA-PKI-SIGNP1.2.pdf</xades:SPURI></xades:SigPolicyQualifier></xades:SigPolicyQualifiers></xades:SignaturePolicyId></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature>

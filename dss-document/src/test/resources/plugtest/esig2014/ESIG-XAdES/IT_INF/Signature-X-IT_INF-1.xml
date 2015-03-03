@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><tagXML>I'm conducting positive tests for e-Signature Validation Plugtests Portal
+Greetings<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="xmldsig-0dc24302-58d5-4be5-bfdc-6344974f0a3b">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#xmldsig-0dc24302-58d5-4be5-bfdc-6344974f0a3b-keyinfo">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>tbxMQWRwLDyUqxZ01aAsR6FbfTF2Ts/4h8YUMdtzdyM=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="xmldsig-0dc24302-58d5-4be5-bfdc-6344974f0a3b-ref0" URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><dsig-xpath:XPath xmlns:dsig-xpath="http://www.w3.org/2002/06/xmldsig-filter2" Filter="subtract">/descendant::ds:Signature</dsig-xpath:XPath></ds:Transform>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>EQq+u/MP5flT4NnlzpLynNo+B8H9X55abeoKtpPSgC8=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xmldsig-0dc24302-58d5-4be5-bfdc-6344974f0a3b-signedprops">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>RFlBljVgZXCYoidKgOAGAncxE4+TNqp9d0MiNfGPFXo=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="xmldsig-0dc24302-58d5-4be5-bfdc-6344974f0a3b-sigvalue">
+iWuUmFX/6HDKxN5vDJWcUu2UHig/Ln7vdI6IoeYyXpjuNKiCRDfYzBBlGVNzfIn7HkBDvGq8UTmu
+JgAwskDcuEBuWpawrXGdOBe8rpbfSvuLurMdyjCF1ZD9u/ijMaD7DUwB1keDO1hKiVP5NtDTxK6F
+bHfH8rJ4zv/My20Ko6Y=
+</ds:SignatureValue>
+<ds:KeyInfo Id="xmldsig-0dc24302-58d5-4be5-bfdc-6344974f0a3b-keyinfo">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIGSjCCBTKgAwIBAgIDAfEQMA0GCSqGSIb3DQEBCwUAMIGFMQswCQYDVQQGEwJJVDEVMBMGA1UE
+CgwMSU5GT0NFUlQgU1BBMSIwIAYDVQQLDBlDZXJ0aWZpY2F0b3JlIEFjY3JlZGl0YXRvMRQwEgYD
+VQQFEwswNzk0NTIxMTAwNjElMCMGA1UEAwwcSW5mb0NlcnQgRmlybWEgUXVhbGlmaWNhdGEgMjAe
+Fw0xNDExMDMxNTEyMTFaFw0xNzExMDMwMDAwMDBaMIGjMQswCQYDVQQGEwJJVDEhMB8GA1UECgwY
+SU5GT0NFUlQgU1BBLzA3OTQ1MjExMDA2MRcwFQYDVQQDDA5GYWJpbyBDYXBvY2FzYTEXMBUGA1UE
+LhMOMjAxNDE0OTg1MDQzNDIxHDAaBgNVBAUTE0lUOkNQQ0ZCQTg1SDA2SDc2OUgxETAPBgNVBAQM
+CENBUE9DQVNBMQ4wDAYDVQQqDAVGQUJJTzCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA1tKb
+b+1lxmA1z/MJTukcRRlKz4YaW84pMTXjfaZOrvvahNyFx+6hCuoHpsg4lViH7d2BacwZjd6Vt6+B
+52mi/9TsU9mX9eibhygaDoMnpeTTULaIf4hut/5FgTNG3ZMhu8/gQZcbu325i9b5wUMnx7gw6qzo
+HSQRkSPk07pGkr0CAwEAAaOCAyUwggMhMDcGCCsGAQUFBwEBBCswKTAnBggrBgEFBQcwAYYbaHR0
+cDovL29jc3Auc2MuaW5mb2NlcnQuaXQvMAkGA1UdEwQCMAAwZAYDVR0gBF0wWzBPBgYrTCQBAQEw
+RTBDBggrBgEFBQcCARY3aHR0cDovL3d3dy5maXJtYS5pbmZvY2VydC5pdC9kb2N1bWVudGF6aW9u
+ZS9tYW51YWxpLnBocDAIBgYrTBgBAQIwgecGA1UdHwSB3zCB3DAyoDCgLoYsaHR0cDovL2NybC5p
+bmZvY2VydC5pdC9jcmxzL2Zpcm1hMi9DUkwwNC5jcmwwgaWggaKggZ+GgZxsZGFwOi8vbGRhcC5p
+bmZvY2VydC5pdC9jbiUzREluZm9DZXJ0JTIwRmlybWElMjBRdWFsaWZpY2F0YSUyMDIlMjBDUkww
+NCxvdSUzRENlcnRpZmljYXRvcmUlMjBBY2NyZWRpdGF0byxvJTNESU5GT0NFUlQlMjBTUEEsYyUz
+RElUP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3QwJQYDVR0SBB4wHIEaZmlybWEuZGlnaXRhbGVA
+aW5mb2NlcnQuaXQwLwYIKwYBBQUHAQMEIzAhMAgGBgQAjkYBATAIBgYEAI5GAQQwCwYGBACORgED
+AgEUMA4GA1UdDwEB/wQEAwIGQDAlBgNVHREEHjAcgRpmYWJpby5jYXBvY2FzYUBpbmZvY2VydC5p
+dDAoBgNVHQkEITAfMB0GCCsGAQUFBwkBMREYDzE5ODUwNjA2MDAwMDAwWjCBsgYDVR0jBIGqMIGn
+gBST3SH8A9AVCnKto8zVmgmdOIud6aGBi6SBiDCBhTELMAkGA1UEBhMCSVQxFTATBgNVBAoMDElO
+Rk9DRVJUIFNQQTEiMCAGA1UECwwZQ2VydGlmaWNhdG9yZSBBY2NyZWRpdGF0bzEUMBIGA1UEBRML
+MDc5NDUyMTEwMDYxJTAjBgNVBAMMHEluZm9DZXJ0IEZpcm1hIFF1YWxpZmljYXRhIDKCAQEwHQYD
+VR0OBBYEFLNf3Hxg2Ksj9d2Z8TwNiqaIfPxCMA0GCSqGSIb3DQEBCwUAA4IBAQCMYD/1xMthvKmy
+2qIZlq28qiqqMyjKhWrKbCF8Mq1iumWRzrLB4YZUkcQ+1Jy/X0IFoeBQ8UDQ+tK4ux/aal7WVuq+
+P3pZLuuuxgVQf/4XyOei7G4dpoESS3oi/dQonLpJZjTz6TvgOLAcfdgJxqE2Y19+JyaDGuaschcu
+/75OnQ8T7nFw398LcvrZjn2osHeNAkBmeLnqz81qKCyeT/vOOhkz8JDekZyzDpPaXIWFljF4Gri/
+UxnQU7+vk4rCB6XgXT1lBe948cKU/3QoQWl77BWogccPBWZQaBa8o5VkydnrTzpav0OjWNQcmudv
+RZ+DOGV96Gl93urTdXuiVETp
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xades141="http://uri.etsi.org/01903/v1.4.1#" Target="#xmldsig-0dc24302-58d5-4be5-bfdc-6344974f0a3b"><xades:SignedProperties Id="xmldsig-0dc24302-58d5-4be5-bfdc-6344974f0a3b-signedprops"><xades:SignedSignatureProperties><xades:SigningTime>2014-11-04T10:36:20.548+01:00</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>63hkPrTS2tpdDLHqHf8fdnh02iKoE3de2Zl7EhJD5ac=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=InfoCert Firma Qualificata 2,2.5.4.5=#130b3037393435323131303036,OU=Certificatore Accreditato,O=INFOCERT SPA,C=IT</ds:X509IssuerName><ds:X509SerialNumber>127248</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object>
+</ds:Signature></tagXML>

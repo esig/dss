@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" Id="signature-1226417333-30559125-16037"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"/><dsig:Reference Id="signed-data-reference-0-1226417333-30559125-9916" URI="#signed-data-object-0-1226417333-30559125-5552"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf:XPath xmlns:xpf="http://www.w3.org/2002/06/xmldsig-filter2" Filter="intersect">id('signed-data-object-0-1226417333-30559125-5552')/node()</xpf:XPath></dsig:Transform><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#base64"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>0qb4oxvCs+d94oKkq2w1i9HKx/8=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="etsi-data-reference-0-1226417333-30559125-29149" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#xmlns(etsi=http://uri.etsi.org/01903/v1.1.1%23)%20xpointer(id('etsi-data-object-0-1226417333-30559125-17965')/child::etsi:QualifyingProperties/child::etsi:SignedProperties)"><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>WhjH2LCxFsYEnxGP7Iyix3C8DM0=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>/gfqncwiA7sXey7t+YIBLdNVJtSSnKfgtDkJju69pjNnDetV2gd6v1Ztx5KR
+NuZu</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data>
+<dsig:X509Certificate>MIIEvTCCA6WgAwIBAgIDAxy5MA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQG
+EwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lz
+dGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVh
+LXNpZ24tUHJlbWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVt
+LVNpZy0wMjAeFw0wNzA0MjEwNzQwMjFaFw0xMjA0MjEwNzQwMjFaMHMxCzAJ
+BgNVBAYTAkFUMRowGAYDVQQDDBFFZGdhciBPZG8gTmV1aGVyejEQMA4GA1UE
+BAwHTmV1aGVyejESMBAGA1UEKgwJRWRnYXIgT2RvMRUwEwYDVQQFEww1NDM1
+NDE1NjM5NzgxCzAJBgNVBAwMAkRJMEkwEwYHKoZIzj0CAQYIKoZIzj0DAQED
+MgAE6wj5e9ZIyluya81g7Tb8qWRv7iOO+JJCIt7vlpJ24HU5rgo92lT7BgoK
+n9z30nCHo4ICDjCCAgowEwYDVR0jBAwwCoAITd/h/0vZyd8wJwYIKwYBBQUH
+AQMBAf8EGDAWMAgGBgQAjkYBATAKBggrBgEFBQcLATB7BggrBgEFBQcBAQRv
+MG0wQgYIKwYBBQUHMAKGNmh0dHA6Ly93d3cuYS10cnVzdC5hdC9jZXJ0cy9h
+LXNpZ24tUHJlbWl1bS1TaWctMDJhLmNydDAnBggrBgEFBQcwAYYbaHR0cDov
+L29jc3AuYS10cnVzdC5hdC9vY3NwMFkGA1UdIARSMFAwRAYGKigAEQELMDow
+OAYIKwYBBQUHAgEWLGh0dHA6Ly93d3cuYS10cnVzdC5hdC9kb2NzL2NwL2Et
+c2lnbi1QcmVtaXVtMAgGBgQAizABATCBmgYDVR0fBIGSMIGPMIGMoIGJoIGG
+hoGDbGRhcDovL2xkYXAuYS10cnVzdC5hdC9vdT1hLXNpZ24tUHJlbWl1bS1T
+aWctMDIsbz1BLVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlz
+dD9iYXNlP29iamVjdGNsYXNzPWVpZENlcnRpZmljYXRpb25BdXRob3JpdHkw
+EQYDVR0OBAoECECfN4Hpufe4MA4GA1UdDwEB/wQEAwIGwDAnBgNVHREEIDAe
+gRxlZGdhci5uZXVoZXJ6QGlhaWsudHVncmF6LmF0MAkGA1UdEwQCMAAwDQYJ
+KoZIhvcNAQEFBQADggEBAKfL9puJsx7oMxZzlPR2cLm9T/oQHRlvVZWbmE2e
+gyVH2Namq/hfGVdbLPs5M8JRS0fZYwMuPC21DEMTjAfXAhH/d676wFFhhtFP
+3cVBTsld4RYuwUbe6PSTVUQPTQKaJZ5Lok/4skya7DXyUIeKrMe4KQFvqN04
+JfKZPsZHkicf+CRkPA+eg7/oK2LknWDHCmpnoBoIKIbQNVbB08q3xzGsr0dY
+gemsiSTKvDjLDo2NgKqpCRzPTyR2yPxPHu9mDbHBz3YAqhcYxXkijPGiX1T+
+Fq10BESHzZwICGWr3JsSyWDlauKbVThCz3hiQ2kP5r2m/47X1REhNn08FbLT
+CFk=
+</dsig:X509Certificate>
+</dsig:X509Data></dsig:KeyInfo><dsig:Object Id="etsi-data-object-0-1226417333-30559125-17965"><etsi:QualifyingProperties xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#" Target="#signature-1226417333-30559125-16037"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2008-11-11T15:28:53Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><etsi:DigestValue>rym493c2exilORIZ2C0buvaZClA=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>203961</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#signed-data-reference-0-1226417333-30559125-9916"><etsi:MimeType>application/octet-stream</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object><dsig:Object Id="signed-data-object-0-1226417333-30559125-5552">AQABAHASAAAAUA0AABgKAAAAiwIAAA==
+</dsig:Object></dsig:Signature>

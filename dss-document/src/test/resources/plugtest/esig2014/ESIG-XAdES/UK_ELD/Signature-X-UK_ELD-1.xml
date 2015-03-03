@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root>
+<doc>
+  <a>Hello,
+  How        are
+	  you?
+  </a>
+</doc><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1453115473">
+	<ds:SignedInfo>
+		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+		<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+		<ds:Reference URI="">
+			<ds:Transforms>
+				<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+			</ds:Transforms>
+			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+			<ds:DigestValue>AoBWseDP2TztYH6thqeV07zspeo=</ds:DigestValue>
+		</ds:Reference>
+		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-1267311693">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+			<ds:DigestValue>rqF1fN0i1TgitjR2vdvhnQJWHvI=</ds:DigestValue>
+		</ds:Reference>
+	</ds:SignedInfo>
+	<ds:SignatureValue>
+eHu2jySFLbuEtr0qinS7JyeshhJvdWFKCaDQmcAqrSOH9UAT8H5qi+Z11V8Jo2dT
+rjPxDLrfJsvcwuWkmpXAQ/QYtbVC1PuC35GLkSW/gnU8caGBXbCiqG7mhUhYPTIH
+S8H5Iz374fLqYo+zc4nTyC+ZGnKfjgNOaLX3iykMqtPWRT2LandaMmF7XhZeh70k
+NxWynDEfT24nKTwxlAwaf6pmrlA/52E3v4oeKor+pQaduTdcwWxIa1LYWQ0FwaFb
+Q/0EpzDSXgrfB7IyLGZ3iOU4tUquKobkX6VVePSH+3sE+9UvOqJd70RvlUg/F+0s
+NW0RhaGkLOmjWL9G3bEsHg==
+	</ds:SignatureValue>
+	<ds:KeyInfo>
+		<ds:X509Data>
+			<ds:X509IssuerSerial>
+				<ds:X509IssuerName>E=info@eldos.com, O=EldoS Corporation, L=London, C=UK, CN=SecureBlackbox Demo Certificate</ds:X509IssuerName>
+				<ds:X509SerialNumber>1611514078</ds:X509SerialNumber>
+			</ds:X509IssuerSerial>
+			<ds:X509SubjectName>E=info@eldos.com, O=EldoS Corporation, L=London, C=UK, CN=SecureBlackbox Demo Certificate</ds:X509SubjectName>
+			<ds:X509Certificate>
+MIIEPDCCAySgAwIBAgIEYA3A3jANBgkqhkiG9w0BAQUFADCBgzEoMCYGA1UEAxMf
+U2VjdXJlQmxhY2tib3ggRGVtbyBDZXJ0aWZpY2F0ZTELMAkGA1UEBhMCVUsxDzAN
+BgNVBAcTBkxvbmRvbjEaMBgGA1UEChMRRWxkb1MgQ29ycG9yYXRpb24xHTAbBgkq
+hkiG9w0BCQETDmluZm9AZWxkb3MuY29tMB4XDTEyMDkwMTAwMDAwMFoXDTE3MDkw
+MTAwMDAwMFowgYMxKDAmBgNVBAMTH1NlY3VyZUJsYWNrYm94IERlbW8gQ2VydGlm
+aWNhdGUxCzAJBgNVBAYTAlVLMQ8wDQYDVQQHEwZMb25kb24xGjAYBgNVBAoTEUVs
+ZG9TIENvcnBvcmF0aW9uMR0wGwYJKoZIhvcNAQkBEw5pbmZvQGVsZG9zLmNvbTCC
+ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL9egqekQdjCVKKrhUzZ9uZl
+j6tKs7dcyRWn8hA7u5qivMRwg9evMlCvUBeMuO625XvI0bvxfNI3cIZWVeiIowbR
+GMBEUpZ6Xb0+pw0ThoXSnmt5LbPRxqfMn3hp54ns8g6v1BUYE2h2OcjU9Yamx7Xw
+jT8YPLPUzQ3HsXzc6BoKT45UJerqDspmmoOS3DtbDaEnStCidtqwa6rWV7tD022c
+fiDhWIjenqpzCFVDph4WNFa//9PvtgbDK5fPmHBlh+1AQXlNcuyGizXVgUJzLcNA
+yAeKC1DGbkqAKKsR8xz5h2F+InB8xZAXw0FX0FwPmbgm8KOqjAxBw6Z92MsYs4MC
+AwEAAaOBtTCBsjAiBgNVHSMBAQAEGDAWgBSL+UIC4g+pfOL/jIhIkwcgfyZOujAg
+BgNVHQ4BAQAEFgQUi/lCAuIPqXzi/4yISJMHIH8mTrowDwYDVR0TAQH/BAUwAwEB
+/zAPBgNVHQ8BAf8EBQMDAP4AMEgGA1UdJQEBAAQ+MDwGCCsGAQUFBwMBBggrBgEF
+BQcDAgYIKwYBBQUHAwMGCCsGAQUFBwMEBggrBgEFBQcDCAYIKwYBBQUHAwkwDQYJ
+KoZIhvcNAQEFBQADggEBAHwss45DCLD8X1r0soPsNVjbSUk+8AwZAAzEOotjT7ae
+YPCmcgoA3Hps7oeGimOsmJGAU8ateCu6xF7r1XXp1IF7e8eI6Um6EVx2Qa/XMjQW
+NCbxTf1jByCLKtQeIT0lB/hdTpeCu5LRKMcj6nU8kbUZH3DzZrKklKgSDpDrfYjw
+0692WU4dhR8H7vqyy8WNrlkRlior1xOHGb83VDo3NKMI5ZGG618H9kWo+Wiq6ZFu
+hezLbIkb5sUxEVum96AW3Gt2RuMtrLDskSKmslske4HCyulUQBF2QBSRkUlJuPGi
+LXvrD9g4LKjk8DHhB/cRGs76OJM/H1BUIorZkF3o5cE=
+			</ds:X509Certificate>
+		</ds:X509Data>
+	</ds:KeyInfo>
+	<ds:Object>
+		<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature-1453115473">
+			<xades:SignedProperties Id="SignedProperties-1267311693">
+				<xades:SignedSignatureProperties>
+					<xades:SigningTime>2014-11-18T14:36:00.230Z</xades:SigningTime>
+					<xades:SigningCertificate>
+						<xades:Cert>
+							<xades:CertDigest>
+								<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+								<ds:DigestValue>k8o1+y2XNDcGMyGX0gP0qHPH8YY=</ds:DigestValue>
+							</xades:CertDigest>
+							<xades:IssuerSerial>
+								<ds:X509IssuerName>E=info@eldos.com, O=EldoS Corporation, L=London, C=UK, CN=SecureBlackbox Demo Certificate</ds:X509IssuerName>
+								<ds:X509SerialNumber>1611514078</ds:X509SerialNumber>
+							</xades:IssuerSerial>
+						</xades:Cert>
+					</xades:SigningCertificate>
+				</xades:SignedSignatureProperties>
+			</xades:SignedProperties>
+		</xades:QualifyingProperties>
+	</ds:Object>
+</ds:Signature>
+</Root>

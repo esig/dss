@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ds:Signature Id="Signature-2e682d15-ba5b-4bf3-9a8f-bfb195492577-Signature" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"/><ds:Reference Id="Reference-de332791-7428-4c31-9785-4e8d35090dca" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#Object-69faad88-4179-4869-98a3-c9f20a742c7c"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#base64"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>ms/NcSgCkYk9w0apLIfz8J07BUbwisrOHgkPJOg92V1eaIh9z9qcD9I3SsXKWDMTVUDiN3kaFp3D
+v6R2RUE1Rw==</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature-2e682d15-ba5b-4bf3-9a8f-bfb195492577-SignedProperties"><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>IUeHC8fsJqehkLzr+7b3+i/Pfg9a7V6PMC+DT1rW1GuEd0tO0XH9erA/fusQev8+weU2GFssopU3
+Xt52OG9RyA==</ds:DigestValue></ds:Reference><ds:Reference URI="#Signature-2e682d15-ba5b-4bf3-9a8f-bfb195492577-KeyInfo"><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>P5ctWtRTpY9rDTIhz44ApLZLMO2MZ8VU1D7LOrvU7+EJR8EXxEoMzzBpbLn1qK1ESr+IxuQLpXCf
++l3c/oPz+A==</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="Signature-2e682d15-ba5b-4bf3-9a8f-bfb195492577-SignatureValue">NhjXIMtMEos10d9HJYix/ERPSIBR49MtGlazMCUMh8rj3kPQGm82U27piZYR6JcRe30OpQlO7cqP
+b+njO0yITVZ0mqTQWeiTQbdPq/oMbaNg8D9JshBHYWNF5GZlW8Cn66Eh0Qcy8+VzUrQPP4MMsK6V
+OGgr4/sOm0QrM0XeT/E=</ds:SignatureValue><ds:KeyInfo Id="Signature-2e682d15-ba5b-4bf3-9a8f-bfb195492577-KeyInfo"><ds:X509Data><ds:X509Certificate>MIIFnTCCBIWgAwIBAgICA+owDQYJKoZIhvcNAQEFBQAwgdoxCzAJBgNVBAYTAkVTMRIwEAYDVQQI
+EwlCYXJjZWxvbmExSDBGBgNVBAcMP0JhcmNlbG9uYSAoc2VlIGN1cnJlbnQgYWRkcmVzcyBhdCBo
+dHRwczovL3d3dy5hbmYuZXMvYWRkcmVzcy8gKTEnMCUGA1UEChMeQU5GIEF1dG9yaWRhZCBkZSBD
+ZXJ0aWZpY2FjaW9uMRcwFQYDVQQLEw5BTkYgQ2xhc2UgMSBDQTETMBEGA1UEBRMKRy02MzI4NzUx
+MDEWMBQGA1UEAxMNQU5GIFNlcnZlciBDQTAeFw0wNjEyMzEyMzAwMDBaFw0xNDEyMzEyMzAwMDBa
+MIGmMRswGQYDVQQDExJBTkYgVXN1YXJpbyBBY3Rpdm8xDDAKBgNVBCoTA0FORjEXMBUGA1UEBBMO
+VXN1YXJpbyBBY3Rpdm8xEjAQBgNVBAUTCTEyMzQ1Njc4WjEeMBwGCSqGSIb3DQEJARYPdGVzdEBw
+cnVlYmEuY29tMR8wHQYDVQQLExZDbGFzZSAyIHBlcnNvbmEgZmlzaWNhMQswCQYDVQQGEwJFUzCB
+nzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAj2qAceOf0pyATEM0BxBK7+eGA0HEZWDZpqdhCeVv
+sI1AqhLWQpWNg65TGXE8ijzxGU/yS94k/34gPgIkla+p/mrDaNsVY69RcLp1hWYcL61rM//In+hX
+lA3qUK6as942b55YyzNsbJSQPCNgkiGuIQTo1Xfsfk4XZDi+yNSRgUMCAwEAAaOCAiEwggIdMAkG
+A1UdEwQCMAAwCwYDVR0PBAQDAgbAMBMGCisGAQQBgY8cFAMEBQwDQU5GMBcGCisGAQQBgY8cFAQE
+CQwHVXN1YXJpbzAWBgorBgEEAYGPHBQFBAgMBkFjdGl2bzAZBgorBgEEAYGPHBQGBAsMCTEyMzQ1
+Njc4WjCBiAYDVR0gBIGAMH4wfAYKKwYBBAGBjxwDBDBuMD0GCCsGAQUFBwICMDEaL0NlcnRpZmlj
+YWRvIGVtaXRpZG8gcGFyYSByZWFsaXphY2nzbiBkZSBwcnVlYmFzMC0GCCsGAQUFBwIBFiFodHRw
+czovL3d3dy5hbmYuZXMvQUMvZG9jdW1lbnRvcy8wOAYIKwYBBQUHAQEELDAqMCgGCCsGAQUFBzAB
+hhxodHRwOi8vd3d3LmFuZi5lcy9BQy9SQy9vY3NwMDkGA1UdHwQyMDAwLqAsoCqGKGh0dHA6Ly93
+d3cuYW5mLmVzL0FDL1JDL0FORkFDQ0xBU0VBMS5jcmwwFwYKKwYBBAGBjxwTAQQJDAcxMjMtMzIx
+MDEGCisGAQQBgY8cKgYEIwwhaHR0cHM6Ly93d3cuYW5mLmVzL0FDL0FDVEFTLzU2Nzg5MBYGCSsG
+AQQBgY8cEwQJDAczMjEtMTIzMB0GA1UdDgQWBBSxTxAznF2uoOtMW+fJUoDN6B+rJDAfBgNVHSME
+GDAWgBS+O/a0MbdzJEg5xVcTlHWqn4E/LDANBgkqhkiG9w0BAQUFAAOCAQEATQgYAOwxrMRTT2Nh
+x7pqiNsoGT5dJmeunAv+iU5zx/VoEXB/mx+VtyLfMea3VS9LC23404XS7pz5oPwiVPLsMPZtzOcm
+facVnSdRn5J7+qOO8MB+OVlXq/QmARn+1XeBCHaTQ6AMc/pdveEoGktaXwEjTslWyRD9dGDzLp04
++FndQAbVcI5xRkb4vToRnhQmloUVddhQAO8usOAIb00GJFNTq4lsyZ1qT1HplQl+ngsSD1HBxkhx
+10Pm3KuvCunAh4um0QnSeeiq9qWIV0UZrFlMwNRXvH9OVTqSGC4PXjw2zOi2GLUfags1decu7gcG
+jidlELR/WHU/6lrztfdViQ==</ds:X509Certificate><ds:X509Certificate>MIIFyDCCBLCgAwIBAgIBKTANBgkqhkiG9w0BAQUFADCB2jELMAkGA1UEBhMCRVMxEjAQBgNVBAgT
+CUJhcmNlbG9uYTFIMEYGA1UEBww/QmFyY2Vsb25hIChzZWUgY3VycmVudCBhZGRyZXNzIGF0IGh0
+dHBzOi8vd3d3LmFuZi5lcy9hZGRyZXNzLyApMScwJQYDVQQKEx5BTkYgQXV0b3JpZGFkIGRlIENl
+cnRpZmljYWNpb24xFzAVBgNVBAsTDkFORiBDbGFzZSAxIENBMRMwEQYDVQQFEwpHLTYzMjg3NTEw
+MRYwFAYDVQQDEw1BTkYgU2VydmVyIENBMB4XDTA1MDQwNTE0MjkwNVoXDTE1MDQwMzE0MjkwNVow
+gdoxCzAJBgNVBAYTAkVTMRIwEAYDVQQIEwlCYXJjZWxvbmExSDBGBgNVBAcMP0JhcmNlbG9uYSAo
+c2VlIGN1cnJlbnQgYWRkcmVzcyBhdCBodHRwczovL3d3dy5hbmYuZXMvYWRkcmVzcy8gKTEnMCUG
+A1UEChMeQU5GIEF1dG9yaWRhZCBkZSBDZXJ0aWZpY2FjaW9uMRcwFQYDVQQLEw5BTkYgQ2xhc2Ug
+MSBDQTETMBEGA1UEBRMKRy02MzI4NzUxMDEWMBQGA1UEAxMNQU5GIFNlcnZlciBDQTCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAL/qSKeaiDlrLEhABwSTfPe4LX6lN+Jh1iH8kDfLaT5e
+izffW2872LbDiECQ9J0MXBBSsbPlX5EQ5v2ogBRf04u9XL0PI5IJN+Ny0maUC1x0lC9e8k7YA8az
+zlalHNl7/U8HTNS32l8pTXXyH1XPMiMcRgknHUXs8Yw0id57FqdDXoor6ZRDHtc+k21viT287rHI
+t//JfeNfDW93ePUqLo3Ei5iXMLFGWgtjcNR4x4azf/8nQqqfim5toZTK7IcCHNZUS/28iZumYzhm
+jBaJiZfDUOj2QgGnd30QGZID6F1FyBXFhxsNkfLGOZx788AKmfjug29+QncRjsMfHHIvPRsCAwEA
+AaOCAZUwggGRMB0GA1UdDgQWBBS+O/a0MbdzJEg5xVcTlHWqn4E/LDAMBgNVHRMEBTADAQH/MA4G
+A1UdDwEB/wQEAwIBBjCB6gYDVR0gBIHiMIHfMIHcBgorBgEEAYGPHAEIMIHNMCwGCCsGAQUFBwIB
+FiBodHRwczovL3d3dy5hbmYuZXMvQUMvZG9jdW1lbnRvczCBnAYIKwYBBQUHAgIwgY8agYxBbnRl
+cyBkZSBhY2VwdGFyIGVzdGUgY2VydGlmaWNhZG8sIGNvbXBydWViZToKLUNvbmRpY2lvbmVzLCBs
+aW1pdGFjaW9uZXMgeSB1c29zIGF1dG9yaXphZG9zIHNlZ3VuIENQIGEgbGEgcXVlIHNlIHNvbWV0
+ZS4KLUVzdGFkbyBkZSB2aWdlbmNpYTAUBgorBgEEAYGPHBMBBAYbBDUtMzQwLgYKKwYBBAGBjxwq
+BgQgGx5odHRwczovL3d3dy5hbmYuZXMvQUMvQUNUQVMvNDEwHwYDVR0jBBgwFoAUvjv2tDG3cyRI
+OcVXE5R1qp+BPywwDQYJKoZIhvcNAQEFBQADggEBAHC1akrsjj10BanorDUxdLdmQgkWxy7V1SOv
+mpMX8I+4reU3JxEXFc4GaqjsJYfR4nZ2MSfnf1pjUHgG/Xw7f1AhrAju/wBN5agDTuHJV3Cpdon2
+Z42LmDGCoI4N2tI2QeaFBtL5WO5jETyTHBLmTKvzS3v6w2AXnt9wNubaoO44ljlpzCYEwUvz8qkA
+LscchxypMYfDGW/bXHL8/Nzo7Z76nw8askDAk0HCiCnZFGNsCRi+OvgchbqSH2amUCBJuHqippHo
+ehiEexjH7g7yc9I3hKsKmYyFMv34F1gOU16oSCwXjwYO0GmRdlhf+A+EODN9eImoJJjtxqvQRmj1
+wtI=</ds:X509Certificate></ds:X509Data><ds:KeyValue><ds:RSAKeyValue><ds:Modulus>j2qAceOf0pyATEM0BxBK7+eGA0HEZWDZpqdhCeVvsI1AqhLWQpWNg65TGXE8ijzxGU/yS94k/34g
+PgIkla+p/mrDaNsVY69RcLp1hWYcL61rM//In+hXlA3qUK6as942b55YyzNsbJSQPCNgkiGuIQTo
+1Xfsfk4XZDi+yNSRgUM=</ds:Modulus><ds:Exponent>AQAB</ds:Exponent></ds:RSAKeyValue></ds:KeyValue></ds:KeyInfo><ds:Object Encoding="http://www.w3.org/2000/09/xmldsig#base64" Id="Object-69faad88-4179-4869-98a3-c9f20a742c7c" MimeType="text/plain">dG9CZVNpZ25lZA==</ds:Object><ds:Object><xades:QualifyingProperties Id="Signature-2e682d15-ba5b-4bf3-9a8f-bfb195492577-QualifyingProperties" Target="#Signature-2e682d15-ba5b-4bf3-9a8f-bfb195492577-Signature" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"><xades:SignedProperties Id="Signature-2e682d15-ba5b-4bf3-9a8f-bfb195492577-SignedProperties"><xades:SignedSignatureProperties><xades:SigningTime>2014-10-29T21:27:42+01:00</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>1rDFZmCv2tnbJwIGGS/hGVsLCFXy6V+RVbdKt0Lsd264A761AF1iMkrN/0uB9zXTN53lrATRdqfqwBUZFs0mDw==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=ANF Server CA, SERIALNUMBER=G-63287510, OU=ANF Clase 1 CA, O=ANF Autoridad de Certificacion, L=Barcelona (see current address at https://www.anf.es/address/ ), ST=Barcelona, C=ES</ds:X509IssuerName><ds:X509SerialNumber>1002</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-de332791-7428-4c31-9785-4e8d35090dca"><xades:Description/><xades:MimeType>text/plain</xades:MimeType><xades:Encoding>http://www.w3.org/2000/09/xmldsig#base64</xades:Encoding></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature>

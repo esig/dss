@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root test="none">
+<fs:MyComputer xmlns:fs='http://www.example.com/filesystem'>
+<!-- ________________________________________________________________________________ -->
+  <fs:StreamData><![CDATA[ <!-- --> </<<< &&&& CDATA CONTENT &&&& >>>/> <-- <!-- ]]></fs:StreamData>
+</fs:MyComputer><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-523785121">
+	<ds:SignedInfo>
+		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+		<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"/>
+		<ds:Reference URI="">
+			<ds:Transforms>
+				<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+				<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+			</ds:Transforms>
+			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/>
+			<ds:DigestValue>
+sZ2H/uBDxRc+EN7cbX6QGrLH34XnG0rxYT6Vp+QyG0/DHxSY4uZZpQ+B3iaaXyfW
+I9fLiKcH2907e9Xcmk/5nA==
+			</ds:DigestValue>
+		</ds:Reference>
+		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-1054719089">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+			<ds:DigestValue>wn3wdDrntW/7Z5jzJ13w6LD9Gsg=</ds:DigestValue>
+		</ds:Reference>
+	</ds:SignedInfo>
+	<ds:SignatureValue Id="SignatureValue-272488134">
+LB0NWH5XF6YDULNLmSaViAi1R1wGrBKiaxUcitFCJyDtHvSf1BNJXZloCo+zA5CE
+N71KL6KYO5tpOR5NTa//EgWeJuQvbx9ZrThuRI9+KoCjabGx9W1QzEFPdrDpC6Kt
+kwGbK0SwhCyxFaaQBfQaqTCKAyXO/27dhswWO9wXqXrIlEZHq5NpXLFE3AW40e4t
+lmGs4Omujvw58rb1OmdXnwpaoWq8fhPyqPE2xTs0bf0eWpSZM8n36YxdeGq9bPfL
+jgOFQiDZAGEHBXg5T4pDaJ7+h5UOLgl1EE726jrV4ylB/42h8eLsHP0vV8CE62WF
+3pk5Tqo/DrDJnDl2SHhkXw==
+	</ds:SignatureValue>
+	<ds:KeyInfo>
+		<ds:X509Data>
+			<ds:X509IssuerSerial>
+				<ds:X509IssuerName>E=info@eldos.com, O=EldoS Corporation, L=London, C=UK, CN=SecureBlackbox Demo Certificate</ds:X509IssuerName>
+				<ds:X509SerialNumber>1611514078</ds:X509SerialNumber>
+			</ds:X509IssuerSerial>
+			<ds:X509SubjectName>E=info@eldos.com, O=EldoS Corporation, L=London, C=UK, CN=SecureBlackbox Demo Certificate</ds:X509SubjectName>
+			<ds:X509Certificate>
+MIIEPDCCAySgAwIBAgIEYA3A3jANBgkqhkiG9w0BAQUFADCBgzEoMCYGA1UEAxMf
+U2VjdXJlQmxhY2tib3ggRGVtbyBDZXJ0aWZpY2F0ZTELMAkGA1UEBhMCVUsxDzAN
+BgNVBAcTBkxvbmRvbjEaMBgGA1UEChMRRWxkb1MgQ29ycG9yYXRpb24xHTAbBgkq
+hkiG9w0BCQETDmluZm9AZWxkb3MuY29tMB4XDTEyMDkwMTAwMDAwMFoXDTE3MDkw
+MTAwMDAwMFowgYMxKDAmBgNVBAMTH1NlY3VyZUJsYWNrYm94IERlbW8gQ2VydGlm
+aWNhdGUxCzAJBgNVBAYTAlVLMQ8wDQYDVQQHEwZMb25kb24xGjAYBgNVBAoTEUVs
+ZG9TIENvcnBvcmF0aW9uMR0wGwYJKoZIhvcNAQkBEw5pbmZvQGVsZG9zLmNvbTCC
+ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL9egqekQdjCVKKrhUzZ9uZl
+j6tKs7dcyRWn8hA7u5qivMRwg9evMlCvUBeMuO625XvI0bvxfNI3cIZWVeiIowbR
+GMBEUpZ6Xb0+pw0ThoXSnmt5LbPRxqfMn3hp54ns8g6v1BUYE2h2OcjU9Yamx7Xw
+jT8YPLPUzQ3HsXzc6BoKT45UJerqDspmmoOS3DtbDaEnStCidtqwa6rWV7tD022c
+fiDhWIjenqpzCFVDph4WNFa//9PvtgbDK5fPmHBlh+1AQXlNcuyGizXVgUJzLcNA
+yAeKC1DGbkqAKKsR8xz5h2F+InB8xZAXw0FX0FwPmbgm8KOqjAxBw6Z92MsYs4MC
+AwEAAaOBtTCBsjAiBgNVHSMBAQAEGDAWgBSL+UIC4g+pfOL/jIhIkwcgfyZOujAg
+BgNVHQ4BAQAEFgQUi/lCAuIPqXzi/4yISJMHIH8mTrowDwYDVR0TAQH/BAUwAwEB
+/zAPBgNVHQ8BAf8EBQMDAP4AMEgGA1UdJQEBAAQ+MDwGCCsGAQUFBwMBBggrBgEF
+BQcDAgYIKwYBBQUHAwMGCCsGAQUFBwMEBggrBgEFBQcDCAYIKwYBBQUHAwkwDQYJ
+KoZIhvcNAQEFBQADggEBAHwss45DCLD8X1r0soPsNVjbSUk+8AwZAAzEOotjT7ae
+YPCmcgoA3Hps7oeGimOsmJGAU8ateCu6xF7r1XXp1IF7e8eI6Um6EVx2Qa/XMjQW
+NCbxTf1jByCLKtQeIT0lB/hdTpeCu5LRKMcj6nU8kbUZH3DzZrKklKgSDpDrfYjw
+0692WU4dhR8H7vqyy8WNrlkRlior1xOHGb83VDo3NKMI5ZGG618H9kWo+Wiq6ZFu
+hezLbIkb5sUxEVum96AW3Gt2RuMtrLDskSKmslske4HCyulUQBF2QBSRkUlJuPGi
+LXvrD9g4LKjk8DHhB/cRGs76OJM/H1BUIorZkF3o5cE=
+			</ds:X509Certificate>
+		</ds:X509Data>
+	</ds:KeyInfo>
+	<ds:Object>
+		<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature-523785121">
+			<xades:SignedProperties Id="SignedProperties-1054719089">
+				<xades:SignedSignatureProperties>
+					<xades:SigningTime>2014-11-18T14:43:29.436Z</xades:SigningTime>
+					<xades:SigningCertificate>
+						<xades:Cert>
+							<xades:CertDigest>
+								<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+								<ds:DigestValue>k8o1+y2XNDcGMyGX0gP0qHPH8YY=</ds:DigestValue>
+							</xades:CertDigest>
+							<xades:IssuerSerial>
+								<ds:X509IssuerName>E=info@eldos.com, O=EldoS Corporation, L=London, C=UK, CN=SecureBlackbox Demo Certificate</ds:X509IssuerName>
+								<ds:X509SerialNumber>1611514078</ds:X509SerialNumber>
+							</xades:IssuerSerial>
+						</xades:Cert>
+					</xades:SigningCertificate>
+					<xades:SignatureProductionPlace>
+						<xades:City>London</xades:City>
+						<xades:CountryName>UK</xades:CountryName>
+					</xades:SignatureProductionPlace>
+				</xades:SignedSignatureProperties>
+			</xades:SignedProperties>
+		
+			<xades:UnsignedProperties>
+				<xades:UnsignedSignatureProperties>
+				<xades:SignatureTimeStamp>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+					<xades:EncapsulatedTimeStamp Encoding="http://uri.etsi.org/01903/v1.2.2#DER">
+MIIHGQYJKoZIhvcNAQcCoIIHCjCCBwYCAQMxCTAHBgUrDgMCGjCB+wYLKoZIhvcN
+AQkQAQSggesEgegwgeUCAQEGCiqEaAGG9ncCAgUwHzAHBgUrDgMCGgQUpX5M5/0X
+Kp1xD6RiNHtLpTVCb/QCBwONfqekjmAYDzIwMTQxMTE4MTQ0MzI5WjADAgEBAggd
+SuwQMY3tdKCBiaSBhjCBgzELMAkGA1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8g
+VGVjaG5vbG9naWVzIFMuQS4xJzAlBgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9u
+IEF1dGhvcml0eTEnMCUGA1UEAxMeQ2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9y
+aXR5oIIDrDCCA6gwggKQoAMCAQICAwR6VTANBgkqhkiG9w0BAQUFADA+MQswCQYD
+VQQGEwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlD
+ZXJ0dW0gQ0EwHhcNMDkwMzAzMTI1ODE1WhcNMjQwMzAzMTI1ODE1WjCBgzELMAkG
+A1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8gVGVjaG5vbG9naWVzIFMuQS4xJzAl
+BgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEnMCUGA1UEAxMe
+Q2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA3u2pB/R2wF6wC+c/oECJYSQjU4SgAvXTsTPsT2mAl6qd
+GCxmzzX4z1yN40cn5UOG6WdmPHjW4+kEND3PBWQyKqb7ZavAsSHPd6d7YbZt1tJ/
+u81V2AM9sZIV8dJCkF4KHADdfqLyTAVAEg0dG+MfegsP0Cgu3EzsXrChz8NVdo/k
+e3f/6IUVq8jxFT2Nx7suvrw5PYOap3MQ/wMozx13kB57NZm3TAEfGjbBuJmDUlRm
+19YaUhKfRyyZKYVWxvRzwJ+s2XiHfegexpVApnnSuKTBFqtqmAVxSmPtyphsXUWX
+UpX0ZibIc++l3AnP66R7S/Sf6hsPVRx0rbHGDrPqzQIDAQABo2kwZzAWBgNVHSUB
+Af8EDDAKBggrBgEFBQcDCDAsBgNVHR8EJTAjMCGgH6AdhhtodHRwOi8vY3JsLmNl
+cnR1bS5wbC9jYS5jcmwwHwYDVR0RBBgwFoYUaHR0cDovL3RzYS5jZXJ0dW0ucGww
+DQYJKoZIhvcNAQEFBQADggEBAKqLG6LshUXrOIsKTXjPeIlTENpXWlsHWycMydm5
+xAoqZ6y/B6s1wbQOb3lMe78Tv/p21W6uzaEUmV/yBIEUV5EE54uTRa6H8rnjWuh6
+NZF8OlYOWbfHDaY1G82c0OZVOv4bOUjHX5ohlv0csnNSxP7xY7NSr+Qk5btnkGdC
+RbZ2rhPnIrcHy5ZGAei+PQ0N5yB+RkATiZYvVMo0UxMnf+zvZsSxCPcyIsIUqX9W
++THu1C+teSE9ETP3067oy7xbzxb2i2hPDZz0bLgoWONIlpXUJJJXlHA8a9o66M6b
+0jorE+D9ggBXfw3cVtCpRbzZK5IXpxZtJW/zZz2nvudgnyoxggJGMIICQgIBATBF
+MD4xCzAJBgNVBAYTAlBMMRswGQYDVQQKExJVbml6ZXRvIFNwLiB6IG8uby4xEjAQ
+BgNVBAMTCUNlcnR1bSBDQQIDBHpVMAkGBSsOAwIaBQCggdcwGgYJKoZIhvcNAQkD
+MQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0xNDExMTgxNDQzMjlaMCMG
+CSqGSIb3DQEJBDEWBBQ6AEvQvhuCfToi6mvSlIzOHPeMGTB2BgsqhkiG9w0BCRAC
+DDFnMGUwYzBhBBQNLPli+00ELy8UAd5m6suoDadhEjBJMEKkQDA+MQswCQYDVQQG
+EwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlDZXJ0
+dW0gQ0ECAwR6VTANBgkqhkiG9w0BAQEFAASCAQDaNbmyTEyPZf1+XT51f1p+xsK6
+A8MWGbfsQN9noN//59hcq50enT6hwaSxoZ0ZZtT35bMlbnqbf1H8BZbk51t7Uf25
+UZ17B7Jg0djDZwJ/OJGEkCWXPwYYiK6y3tWFkYlJ1z6T28KgdpFVsfru9wU6/vHQ
+vovDAg0wFM0U82F4zkAFidSoxryG5IJ1Y0DAw59UaZpFZBWupS7DVvcuXHky0VDF
+7UKyTVRRfGEY2eg61vN3Pf66/G8PmzAiMzgYp24jI6zsOm+xy2taMjTDO4TGrFw1
+w20y9LcAs35uipAcG+LqhfYdXd2y0wldNXUkJjM6BU9HrAkNzoMedQb/GQOR
+					</xades:EncapsulatedTimeStamp>
+				</xades:SignatureTimeStamp></xades:UnsignedSignatureProperties>
+			</xades:UnsignedProperties></xades:QualifyingProperties>
+	</ds:Object>
+</ds:Signature>
+</Root>

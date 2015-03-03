@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><dsig:Signature Id="signature-1-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160"/><dsig:Reference Id="reference-1-2" URI="urn:Document"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>pcg5BjJUriSqehtBMwA1sMQe4WGbcv0JABc17vNEm3A=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="etsi-data-reference-1-1" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI=""><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf:XPath Filter="intersect" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#" xmlns:xpf="http://www.w3.org/2002/06/xmldsig-filter2">//*[@Id='etsi-signed-1-1']/etsi:QualifyingProperties/etsi:SignedProperties</xpf:XPath></dsig:Transform></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>u1HqiXXoGJ+iCD0COUEHOvZeF74RQTe9DDJPu5KqNmk=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>B5FmlLBoHfjmQBIQEZaoYFmi5hBAEdbtyAHDlMvLcmnwB65OtkMhnAYmS5Fik+z21/1XX/olf/O7
+rzRA8eHJxrONaOtcAS6dFOLGOP+5g8ICoOFbi1Z6tpn0u6S/cwhG+XiiFGzgfXGghtcZGI/YNuwT
+OWReyxXrEsyqDIiS/92jN/zF0yyJyIQt7BuV+0l/BeAOUProkuskiYY5c3COmgbut1ro+Ywtfm2G
+dqehXmZ0BY7slvjAGWh0Bzb9eOko</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIE/DCCA+SgAwIBAgIDD2ZtMA0GCSqGSIb3DQEBBQUAMIGLMQswCQYDVQQGEwJBVDFIMEYGA1UE
+Cgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVy
+a2VociBHbWJIMRgwFgYDVQQLDA9hLXNpZ24tVG9rZW4tMDMxGDAWBgNVBAMMD2Etc2lnbi1Ub2tl
+bi0wMzAeFw0xMzA4MTIxMTQ1NTRaFw0xODA4MTIwOTQ1NTRaMG8xCzAJBgNVBAYTAkFUMRgwFgYD
+VQQDDA9IZXJiZXJ0IExlaXRvbGQxEDAOBgNVBAQMB0xlaXRvbGQxEDAOBgNVBCoMB0hlcmJlcnQx
+FTATBgNVBAUTDDM2Nzc1ODc3MzA5MDELMAkGA1UEDAwCREkwgd8wDQYJKoZIhvcNAQEBBQADgc0A
+MIHJAoHBAKH0cpRet0b3MDj/L3lraS9sYajCawkREcjvDIgobSHIWkNC0mt1vXlEwNlaB9TRzYPg
+NCibc6KlezF7+7c3I+n9dk0Mm12/ZmLPR4h4g61F9/2YxM7sPYqWwxpAcsBhm8tHZTlobSV5Z+Fd
+qfo5f41oB+E3hSybuRf1AqM4JzEEqtU5SF0G61+2qzmoZ5n4H6k9bLdRxvjoM9Xlz5D5MgZ3XLeX
+/gwP2wdZxMr9vN4TIkpqYPcgEJYk8NCdK9qFswIDAQABo4IBxjCCAcIwEQYDVR0OBAoECE9Tr7I4
+wnTlMA4GA1UdDwEB/wQEAwIEsDATBgNVHSMEDDAKgAhF91IVFVVlZTAjBgNVHREEHDAagRhoZXJi
+ZXJ0LmxlaXRvbGRAYS1zaXQuYXQwCQYDVR0TBAIwADB0BggrBgEFBQcBAQRoMGYwOwYIKwYBBQUH
+MAKGL2h0dHA6Ly93d3cuYS10cnVzdC5hdC9jZXJ0cy9hLXNpZ24tVG9rZW4tMDMuY3J0MCcGCCsG
+AQUFBzABhhtodHRwOi8vb2NzcC5hLXRydXN0LmF0L29jc3AwTQYDVR0gBEYwRDBCBgYqKAARAQww
+ODA2BggrBgEFBQcCARYqaHR0cDovL3d3dy5hLXRydXN0LmF0L2RvY3MvY3AvYS1zaWduLXRva2Vu
+MIGSBgNVHR8EgYowgYcwgYSggYGgf4Z9bGRhcDovL2xkYXAuYS10cnVzdC5hdC9vdT1hLXNpZ24t
+dG9rZW4tMDMsbz1BLVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlzdD9iYXNlP29i
+amVjdGNsYXNzPWVpZENlcnRpZmljYXRpb25BdXRob3JpdHkwDQYJKoZIhvcNAQEFBQADggEBAJeI
+4Vwli+Fe37KUDT14SR2y9V4qp/xHXFzndXrNGB3AyCPD/ydX6hY+Zw476b2GNF2FsclQplGuyp32
+gpfup6pS3d/S7Ct75sz1ToiO/gjl4s7Qd2wUjznX83dCogNCYq6McAXxjXisS8pJRFYXzfaMtdkc
+IqNRye91o16nd99tDgHAtTeSr69zxJqA3qczC9xSblHyogQraTLVL1D+gPi4RXRfDlAEuQbt15I0
+PME68Xh/nUIuftgAP/wcm64JnoH3OMmCqFVeU/Ypz+KJpCmVXvzVg7O8KwPnuR4YADQw5L14Vvvu
+qFvtFzTf9qK4rNc0KmmHzYLbYCqTdBOwFX4=</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="etsi-signed-1-1"><etsi:QualifyingProperties Target="#signature-1-1" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2013-12-22T23:13:51Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><etsi:DigestValue>u0wWnfQctMRLPxU9phN81cmKVUo=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Token-03,OU=a-sign-Token-03,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>1009261</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#reference-1-2"><etsi:MimeType>application/pdf</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object></dsig:Signature>

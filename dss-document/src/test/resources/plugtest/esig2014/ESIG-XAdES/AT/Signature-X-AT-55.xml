@@ -1,0 +1,31 @@
+<dsig:Signature Id="signature-1161183118-33934312-22543" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"/><dsig:Reference Id="signed-data-reference-0-1161183118-33934312-25769" URI="#signed-data-object-0-1161183118-33934312-17946"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf:XPath Filter="intersect" xmlns:xpf="http://www.w3.org/2002/06/xmldsig-filter2">id('signed-data-object-0-1161183118-33934312-17946')/node()</xpf:XPath></dsig:Transform></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>B1IoKGeypdjDDuZiv4+gYt2xx/U=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="etsi-data-reference-0-1161183118-33934312-18429" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#etsi-data-object-0-1161183118-33934312-23523"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf:XPath Filter="intersect" xmlns:xpf="http://www.w3.org/2002/06/xmldsig-filter2">id('etsi-data-object-0-1161183118-33934312-23523')/node()</xpf:XPath></dsig:Transform></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>yl7JNP7Syszc1/MbWhb76qorQUk=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>S1/VXoFQsKrVk2ia4dc+h+ctCl5r40uQnx04cH8w7xOSM9grDAxk1PMyiuwW
+xp39</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data>
+<dsig:X509Certificate>MIIEtDCCA5ygAwIBAgIDAgTEMA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQG
+EwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lz
+dGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVh
+LXNpZ24tUHJlbWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVt
+LVNpZy0wMjAeFw0wNjA0MDQwOTUyMjhaFw0xMTA0MDQwOTUyMjhaMGkxCzAJ
+BgNVBAYTAkFUMRUwEwYDVQQDDAxUaG9tYXMgS25hbGwxDjAMBgNVBAQMBUtu
+YWxsMQ8wDQYDVQQqDAZUaG9tYXMxFTATBgNVBAUTDDUzNTE5ODkyMzM0OTEL
+MAkGA1UEDAwCREkwSTATBgcqhkjOPQIBBggqhkjOPQMBAQMyAARrnYW5sXCQ
+6M3irWaanDPi/ROXueKWiPRyZGjNH0Cp/NaiOuvrpv2RDVEKQm2tBiajggIP
+MIICCzATBgNVHSMEDDAKgAhN3+H/S9nJ3zAnBggrBgEFBQcBAwEB/wQYMBYw
+CAYGBACORgEBMAoGCCsGAQUFBwsBMHsGCCsGAQUFBwEBBG8wbTBCBggrBgEF
+BQcwAoY2aHR0cDovL3d3dy5hLXRydXN0LmF0L2NlcnRzL2Etc2lnbi1QcmVt
+aXVtLVNpZy0wMmEuY3J0MCcGCCsGAQUFBzABhhtodHRwOi8vb2NzcC5hLXRy
+dXN0LmF0L29jc3AwWQYDVR0gBFIwUDBEBgYqKAARAQswOjA4BggrBgEFBQcC
+ARYsaHR0cDovL3d3dy5hLXRydXN0LmF0L2RvY3MvY3AvYS1zaWduLVByZW1p
+dW0wCAYGBACLMAEBMIGaBgNVHR8EgZIwgY8wgYyggYmggYaGgYNsZGFwOi8v
+bGRhcC5hLXRydXN0LmF0L291PWEtc2lnbi1QcmVtaXVtLVNpZy0wMixvPUEt
+VHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0P2Jhc2U/b2Jq
+ZWN0Y2xhc3M9ZWlkQ2VydGlmaWNhdGlvbkF1dGhvcml0eTARBgNVHQ4ECgQI
+SNyH29WUoCgwDgYDVR0PAQH/BAQDAgbAMCgGA1UdCQQhMB8wHQYIKwYBBQUH
+CQExERgPMTk3ODA0MjkwMDAwMDBaMAkGA1UdEwQCMAAwDQYJKoZIhvcNAQEF
+BQADggEBAFkSCJE0YD4p4izU3ekQYPv4Z7gm/VFlpma5hXNvwkajVjHlAqo/
+ylYn8NQ4mMkD+yCDNtm8m8nr0K/yICb8Gnkbv59i6nh2AbzYBBb49VnYYGL6
+uunLH0aFUpAhy+3mDdlH8uhhIQBHwCfgwG1qa5zXY7bz4Vzkac/h6T+JVFkI
+egO8OHQDadhgJvW80qspiao2DTac6vVgx4tGvjpdmw1R2pXBYhHD5rkPHlkf
+GoeL3ak6hq4ea94Oy5VfNTIJv5MA0J2G1mwnW9B8uPWSM5EYPoWJyBOWcKBL
+SSUqOt9D/9215ZGfbchkdRZjx0dTAD3FIhgG8nA72/uCFrBzyTk=
+</dsig:X509Certificate>
+</dsig:X509Data></dsig:KeyInfo><dsig:Object Id="signed-data-object-0-1161183118-33934312-17946"><test>xxx</test></dsig:Object><dsig:Object Id="etsi-data-object-0-1161183118-33934312-23523"><etsi:QualifyingProperties Target="#signature-1161183118-33934312-22543" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2006-10-18T14:51:58Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><etsi:DigestValue>inMYWBmAxMHP7mDENjLFaEtv0Zk=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>132292</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#signed-data-reference-0-1161183118-33934312-25769"><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object></dsig:Signature>

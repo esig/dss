@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" Id="signature-1389362432-246378390-11393"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160"/><dsig:Reference Id="signed-data-reference-0-1389362432-246378390-1945" URI="Test.txt"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#ripemd160"/><dsig:DigestValue>yzo1sCt6TYbCS/m8KtQdrkx5sts=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="etsi-data-reference-0-1389362432-246378390-7608" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#xmlns(etsi=http://uri.etsi.org/01903/v1.1.1%23)%20xpointer(id('etsi-data-object-0-1389362432-246378390-28698')/child::etsi:QualifyingProperties/child::etsi:SignedProperties)"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#ripemd160"/><dsig:DigestValue>79F3Ec6frWHAvd4iTfdVAwFhkvE=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>lJTyiv17yn8PFvzuRSWq/jq/BuYgqU9xWxScCeI8rEqhA4DKwVv/cQpVcnQY
+PG9PyAvfq34o7W0h+Wc0YhJc+g==</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data>
+<dsig:X509Certificate>MIIE4TCCA8mgAwIBAgIDCufqMA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQG
+EwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lz
+dGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVh
+LXNpZ24tUHJlbWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVt
+LVNpZy0wMjAeFw0xMjAzMTUxMzAzNDFaFw0xNzAzMTUxMzAzNDFaMG8xCzAJ
+BgNVBAYTAkFUMRgwFgYDVQQDDA9IZXJiZXJ0IExlaXRvbGQxEDAOBgNVBAQM
+B0xlaXRvbGQxEDAOBgNVBCoMB0hlcmJlcnQxFTATBgNVBAUTDDMzNjYwMTk0
+NDc3ODELMAkGA1UEDAwCREkwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASo
+v91p26IfuqBVbJvtYTq6OMY/XUOwQl90BL5hHpl4ex78ER36aNB+wvdYGpU2
+CxBZvl0LvtArn+y/mrSiBlbDo4ICJjCCAiIwEQYDVR0OBAoECEf/Dwqr5IQM
+MA4GA1UdDwEB/wQEAwIGwDATBgNVHSMEDDAKgAhN3+H/S9nJ3zA/BgNVHREE
+ODA2gRhIZXJiZXJ0LkxlaXRvbGRAYS1zaXQuYXSBGmhlcmJlcnQubGVpdG9s
+ZEBlZ2l6Lmd2LmF0MAkGA1UdEwQCMAAwewYIKwYBBQUHAQEEbzBtMEIGCCsG
+AQUFBzAChjZodHRwOi8vd3d3LmEtdHJ1c3QuYXQvY2VydHMvYS1zaWduLVBy
+ZW1pdW0tU2lnLTAyYS5jcnQwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLmEt
+dHJ1c3QuYXQvb2NzcDBZBgNVHSAEUjBQMEQGBiooABEBCzA6MDgGCCsGAQUF
+BwIBFixodHRwOi8vd3d3LmEtdHJ1c3QuYXQvZG9jcy9jcC9hLXNpZ24tUHJl
+bWl1bTAIBgYEAIswAQEwJwYIKwYBBQUHAQMBAf8EGDAWMAgGBgQAjkYBATAK
+BggrBgEFBQcLATCBmgYDVR0fBIGSMIGPMIGMoIGJoIGGhoGDbGRhcDovL2xk
+YXAuYS10cnVzdC5hdC9vdT1hLXNpZ24tUHJlbWl1bS1TaWctMDIsbz1BLVRy
+dXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlzdD9iYXNlP29iamVj
+dGNsYXNzPWVpZENlcnRpZmljYXRpb25BdXRob3JpdHkwDQYJKoZIhvcNAQEF
+BQADggEBAD5c0Ub9w5iAN/4vK9z7wW+hmRVLJ4kQzHEEHBU3b2DFOng9NbCU
+9dmChwv8DZkgJqhJKLcjYkUOwpf0NV9g28Os0ZxOERCBOuDs4KfL3/pMsI5N
+ZA4iuzjcHsaauJbci3FBfIjuUId48B1niHDU0NdOFjsG2RuSjxCblg/FG0KZ
+/0Zr0jtVYrmFczfu69tTKRaKVGOuHFrCWx4Z5VF6bNfmgV4EkqsylstG0PQ5
+zs/II0B/kIJzuHdgo4rPaZvLsGQbWnhv6dGr8LsA6L8RmWC8zKU3BXT3e/65
+fz0trW5bi/bTVNbw818lTO6P3FjeM5g01M+/waKRGYDhe+z4u2Q=
+</dsig:X509Certificate>
+</dsig:X509Data></dsig:KeyInfo><dsig:Object Id="etsi-data-object-0-1389362432-246378390-28698"><etsi:QualifyingProperties xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#" Target="#signature-1389362432-246378390-11393"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2014-01-10T14:00:32Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#ripemd160"/><etsi:DigestValue>QdvEsAx4oJzabtKJn735K/BEJV0=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>714730</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#signed-data-reference-0-1389362432-246378390-1945"><etsi:MimeType>text/plain</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object></dsig:Signature>

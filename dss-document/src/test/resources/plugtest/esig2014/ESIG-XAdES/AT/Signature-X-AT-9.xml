@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dsig:Signature Id="HS_signature" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><dsig:Reference Id="reference-data-0" URI="Test.txt"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>ck5CfKRJ6J4x7YusP2LmJXRBo3sFoSgTCXlujYNSFvI=</dsig:DigestValue></dsig:Reference><dsig:Reference Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#refetsi"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xf2:XPath Filter="intersect" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#" xmlns:xf2="http://www.w3.org/2002/06/xmldsig-filter2">id(&apos;refetsi&apos;)/etsi:QualifyingProperties/etsi:SignedProperties</xf2:XPath></dsig:Transform></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>QqQcHJmNiy73lAQZwMRsP0ixExyGf9opsYfNiVNqvcI=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>NwxmXK7xo2xMecjoKqWjE3UW+T6bstEA/GEIOHiucwV3YgK5MfYN5vnBzE7ZKISn
+Ig/vFBXLu4GYmIB7MajnZw==</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIE4TCCA8mgAwIBAgIDCufqMA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQGEwJB
+VDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBp
+bSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJl
+bWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wMjAeFw0x
+MjAzMTUxMzAzNDFaFw0xNzAzMTUxMzAzNDFaMG8xCzAJBgNVBAYTAkFUMRgwFgYD
+VQQDDA9IZXJiZXJ0IExlaXRvbGQxEDAOBgNVBAQMB0xlaXRvbGQxEDAOBgNVBCoM
+B0hlcmJlcnQxFTATBgNVBAUTDDMzNjYwMTk0NDc3ODELMAkGA1UEDAwCREkwWTAT
+BgcqhkjOPQIBBggqhkjOPQMBBwNCAASov91p26IfuqBVbJvtYTq6OMY/XUOwQl90
+BL5hHpl4ex78ER36aNB+wvdYGpU2CxBZvl0LvtArn+y/mrSiBlbDo4ICJjCCAiIw
+EQYDVR0OBAoECEf/Dwqr5IQMMA4GA1UdDwEB/wQEAwIGwDATBgNVHSMEDDAKgAhN
+3+H/S9nJ3zA/BgNVHREEODA2gRhIZXJiZXJ0LkxlaXRvbGRAYS1zaXQuYXSBGmhl
+cmJlcnQubGVpdG9sZEBlZ2l6Lmd2LmF0MAkGA1UdEwQCMAAwewYIKwYBBQUHAQEE
+bzBtMEIGCCsGAQUFBzAChjZodHRwOi8vd3d3LmEtdHJ1c3QuYXQvY2VydHMvYS1z
+aWduLVByZW1pdW0tU2lnLTAyYS5jcnQwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3Nw
+LmEtdHJ1c3QuYXQvb2NzcDBZBgNVHSAEUjBQMEQGBiooABEBCzA6MDgGCCsGAQUF
+BwIBFixodHRwOi8vd3d3LmEtdHJ1c3QuYXQvZG9jcy9jcC9hLXNpZ24tUHJlbWl1
+bTAIBgYEAIswAQEwJwYIKwYBBQUHAQMBAf8EGDAWMAgGBgQAjkYBATAKBggrBgEF
+BQcLATCBmgYDVR0fBIGSMIGPMIGMoIGJoIGGhoGDbGRhcDovL2xkYXAuYS10cnVz
+dC5hdC9vdT1hLXNpZ24tUHJlbWl1bS1TaWctMDIsbz1BLVRydXN0LGM9QVQ/Y2Vy
+dGlmaWNhdGVyZXZvY2F0aW9ubGlzdD9iYXNlP29iamVjdGNsYXNzPWVpZENlcnRp
+ZmljYXRpb25BdXRob3JpdHkwDQYJKoZIhvcNAQEFBQADggEBAD5c0Ub9w5iAN/4v
+K9z7wW+hmRVLJ4kQzHEEHBU3b2DFOng9NbCU9dmChwv8DZkgJqhJKLcjYkUOwpf0
+NV9g28Os0ZxOERCBOuDs4KfL3/pMsI5NZA4iuzjcHsaauJbci3FBfIjuUId48B1n
+iHDU0NdOFjsG2RuSjxCblg/FG0KZ/0Zr0jtVYrmFczfu69tTKRaKVGOuHFrCWx4Z
+5VF6bNfmgV4EkqsylstG0PQ5zs/II0B/kIJzuHdgo4rPaZvLsGQbWnhv6dGr8LsA
+6L8RmWC8zKU3BXT3e/65fz0trW5bi/bTVNbw818lTO6P3FjeM5g01M+/waKRGYDh
+e+z4u2Q=</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="refetsi"><etsi:QualifyingProperties Target="#HS_signature" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2013-12-23T11:48:17Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><etsi:DigestValue>5X5J82vfdqgolp41KNa0z+02FSuc5EPDlDPpwWHflNE=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>714730</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#reference-data-0"><etsi:MimeType>text/plain;charset=iso-8859-1</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object></dsig:Signature>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><rootElement id="myInputDocRootElement">
+	<nonPairChildElement attr1="value1"/>
+	<pairSubElement attr2="value2">
+		text1
+	</pairSubElement>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference Id="myInputDoc" URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>76z7b8iQYrl/BAdCljNr2eJxey9cYR1T3xNK9zZ/clk=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603-genref-1" URI="#dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603-keyinfo">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>B325DTF5yS+EmvSMuJnpU6tYbY4RVlLsAfc71zkyYeU=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603-signedproperties">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>IGNRe3uQV7bUbYsKwS/5TxtSEF5VkZAdoYP4p4sgWkg=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603-value">JOWrJdE5j0j4TYugqBTmLWi7F1Gof00yPzyBFjUsEYbp+HzxI12pWZwZZmqGQtB7XNiWYKHtYjOd
+3WAvlxw6PX+yFfAqMI66W+qcsaIZT/YKFfPc5UlBoyW9LGwigcB85nUAyDwAyxr+BIX7REjIvvrF
+2Xuj6XZuYEMj77uZaF8dkpEiZBECsT8bM2bw5JGxSZCzKnPcDPAttMtbQkY426t7VzHOSNKjDPeh
+c8k49veUOX2a6WgDN6Q+L0yMvFFbS00p8+vQDrsCUY4gMrvhL0rXDUwSif/MlhILQ4HyQqS3FDSV
+azfVjkJMAAD/kiMYasp7+TubqhfStcxCpX6lSg==</ds:SignatureValue>
+<ds:KeyInfo Id="dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603-keyinfo">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIE9zCCA9+gAwIBAgIDCAwAMA0GCSqGSIb3DQEBCwUAMGQxCzAJBgNVBAYTAkNaMSwwKgYDVQQK
+DCPEjGVza8OhIHBvxaF0YSwgcy5wLiBbScSMIDQ3MTE0OTgzXTEnMCUGA1UEAxMeREVNTyBQb3N0
+U2lnbnVtIFF1YWxpZmllZCBDQSAyMB4XDTE0MTEwMzExMDQ1OVoXDTE0MTIwMzExMDQ1MlowfDEL
+MAkGA1UEBhMCQ1oxJjAkBgNVBAoMHUdlbWFsdG8gcy5yLm8uIFtJxIwgMjY0MzIyOTNdMQowCAYD
+VQQLEwExMRUwEwYDVQQDEwxNaWNoYWwgQm90a2ExIjAgBgNVBAUTGVAxMjM0NTYgLSBERU1PIGNl
+cnRpZmlr4XQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQClwjlAMaVGpJxpdd5ltx4C
+uQhJCyoPffwrmFdTfrNqwkyMqMcozmK/5XKNhaA7Y8FFj90IERfjaPUhByo7X9raIBRbVzi+iXVa
+M9ObMUU3HbHlFUFSt0a0Xo2qrgu4ljhaKZH1qnfsvDy87VVOa5T7DPKT4+Hhs10Yp5zaVhAaFj1z
+PRNiAeTqL5eUeWSH4mUXWZ+bn+gzGjQ9m+IZFboXdnpOboRLFBUNg9lCjl89uL/p6qKYt+C8U5tY
+oDV6A4wGocK1ymxRQ39W3TIKJP5hXsnYoOyPVvI4G24KnCIJi4BL1DjhfnEpxiLdI0NekeJSzvHn
+eMnugGo5dW6G/YpFAgMBAAGjggGYMIIBlDBZBgNVHREEUjBQgRhtaWNoYWwuYm90a2FAZ2VtYWx0
+by5jb22gGQYJKwYBBAHcGQIBoAwTCjEyMzQ1Njc4OTCgGQYDVQQNoBIMEEpha8O9a29saXYgcG9w
+aXMwNgYDVR0gBC8wLTArBghngQYBBAEBczAfMB0GCCsGAQUFBwICMBEaD0RFTU8gY2VydGlmaWth
+dDAYBggrBgEFBQcBAwQMMAowCAYGBACORgEBME8GCCsGAQUFBwEBBEMwQTA/BggrBgEFBQcwAoYz
+aHR0cDovL3d3dy5wb3N0c2lnbnVtLmN6L2NydC9kZW1vcHNxdWFsaWZpZWRjYTIuY3J0MA4GA1Ud
+DwEB/wQEAwIF4DAfBgNVHSMEGDAWgBSY//P3i4ubrWTm1D6mCaSAN89stDBEBgNVHR8EPTA7MDmg
+N6A1hjNodHRwOi8vd3d3LnBvc3RzaWdudW0uY3ovY3JsL2RlbW9wc3F1YWxpZmllZGNhMi5jcmww
+HQYDVR0OBBYEFHJ7HeOQAgl9EUa4gDgFIUcQ79kFMA0GCSqGSIb3DQEBCwUAA4IBAQABiMitUHkO
+csbHXUUFFva/Il9HQa+kEo4h/txrJ/V+PvpGQ/qEnskaeSHC4VO7fctC5gA7ky3WYU+goKVDrLfx
+mdmK7p6S0qaZR+Dh4rXJGsNqmPyYVnmuttK+FouTgci3h9kY3dMAmM+tXnKC3ZH/2S8aG/d9ZO/y
+vlt6cYJaWbg1JKDIvC9r26jBjnB2x2003UcVYJgKHwNfM0z4ocfecNMAFKt/MD3WdINqSnjJ3Dln
+Xa3v53zCGbrhoH0h2DvZj5WSN82I/aE3SVM9JGIZeqrE0k/WpSqMUboP8YZYH6OYDgGvNa5hKNPy
+jDljtmj734Z1+rCJx8aKhIbIuuKA
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+pcI5QDGlRqScaXXeZbceArkISQsqD338K5hXU36zasJMjKjHKM5iv+VyjYWgO2PBRY/dCBEX42j1
+IQcqO1/a2iAUW1c4vol1WjPTmzFFNx2x5RVBUrdGtF6Nqq4LuJY4WimR9ap37Lw8vO1VTmuU+wzy
+k+Ph4bNdGKec2lYQGhY9cz0TYgHk6i+XlHlkh+JlF1mfm5/oMxo0PZviGRW6F3Z6Tm6ESxQVDYPZ
+Qo5fPbi/6eqimLfgvFObWKA1egOMBqHCtcpsUUN/Vt0yCiT+YV7J2KDsj1byOBtuCpwiCYuAS9Q4
+4X5xKcYi3SNDXpHiUs7x53jJ7oBqOXVuhv2KRQ==
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+</ds:KeyInfo>
+<ds:Object><ns2:QualifyingProperties xmlns="http://www.w3.org/2000/09/xmldsig#" xmlns:ns2="http://uri.etsi.org/01903/v1.3.2#" Id="dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603-qualifyingProperties" Target="#dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603"><ns2:SignedProperties Id="dsigId-790b9fa2-be8f-4885-bd82-7b0a3367b603-signedproperties"><ns2:SignedSignatureProperties><ns2:SigningTime>2014-11-10T13:57:14.906Z</ns2:SigningTime><ns2:SigningCertificate><ns2:Cert><ns2:CertDigest><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>RnLI3ASVdxUdGxPZ9y2iwHZi9AAmDm1HYh/nkYsf85A=</DigestValue></ns2:CertDigest><ns2:IssuerSerial><X509IssuerName>CN=DEMO PostSignum Qualified CA 2, O="Česká pošta, s.p. [IČ 47114983]", C=CZ</X509IssuerName><X509SerialNumber>527360</X509SerialNumber></ns2:IssuerSerial></ns2:Cert></ns2:SigningCertificate><ns2:SignatureProductionPlace><ns2:City>Prague</ns2:City><ns2:StateOrProvince>Bohemia</ns2:StateOrProvince><ns2:PostalCode>120 00</ns2:PostalCode><ns2:CountryName>Czech Republic</ns2:CountryName></ns2:SignatureProductionPlace><ns2:SignerRole><ns2:ClaimedRoles><ns2:ClaimedRole>MzAxMEEwMEUzMDBDMzAwQTA2MDM1NTA0MDUzMTAzMEMwMTMx</ns2:ClaimedRole></ns2:ClaimedRoles></ns2:SignerRole></ns2:SignedSignatureProperties><ns2:SignedDataObjectProperties><ns2:DataObjectFormat ObjectReference="#myInputDoc"><ns2:Description>some data object format description</ns2:Description><ns2:ObjectIdentifier><ns2:Identifier>http://objectIdentifierUri.org/someuri</ns2:Identifier><ns2:Description>some object identifier description</ns2:Description><ns2:DocumentationReferences><ns2:DocumentationReference>http://docRef.org/docRef1</ns2:DocumentationReference><ns2:DocumentationReference>http://docRef.org/docRef2</ns2:DocumentationReference></ns2:DocumentationReferences></ns2:ObjectIdentifier><ns2:MimeType>application/xml</ns2:MimeType><ns2:Encoding>http://utf-8-blahblahblah.org</ns2:Encoding></ns2:DataObjectFormat><ns2:CommitmentTypeIndication><ns2:CommitmentTypeId><ns2:Identifier Qualifier="OIDAsURI"/><ns2:Description>somedescription</ns2:Description><ns2:DocumentationReferences><ns2:DocumentationReference>http://doc_ref.org/doc_ref_1</ns2:DocumentationReference><ns2:DocumentationReference>http://doc_ref.org/doc_ref_2</ns2:DocumentationReference></ns2:DocumentationReferences></ns2:CommitmentTypeId><ns2:AllSignedDataObjects xmlns:ns0="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:ns1="urn:oasis:names:tc:dss:1.0:profiles:AdES:schema#"/><ns2:CommitmentTypeQualifiers><ns2:CommitmentTypeQualifier>qualifier2</ns2:CommitmentTypeQualifier><ns2:CommitmentTypeQualifier>qualifier1</ns2:CommitmentTypeQualifier></ns2:CommitmentTypeQualifiers></ns2:CommitmentTypeIndication></ns2:SignedDataObjectProperties></ns2:SignedProperties></ns2:QualifyingProperties></ds:Object>
+</ds:Signature></rootElement>

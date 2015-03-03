@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<utenti xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.test.firmacerta.it/schema.xml">
+	<utente Id="u1">
+		<nome>Luca</nome>
+		<cognome>Cicci</cognome>
+		<indirizzo>Milano</indirizzo>
+	</utente>
+	<utente Id="u2">
+		<nome>Max</nome>
+		<cognome>Rossi</cognome>
+		<indirizzo>Roma</indirizzo>
+	</utente>
+	<utente Id="u3">
+		<nome>Mariano</nome>
+		<cognome>Lallari</cognome>
+		<indirizzo>Padova</indirizzo>
+	</utente><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1939752130">
+	<ds:SignedInfo>
+		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+		<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+		<ds:Reference URI="">
+			<ds:Transforms>
+				<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+			</ds:Transforms>
+			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+			<ds:DigestValue>M9TNsfM7rtEePBd8t4mSJaI5t228GYITAri27vYymww=</ds:DigestValue>
+		</ds:Reference>
+		<ds:Reference URI="#KeyInfo-1872730775">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+			<ds:DigestValue>dU88DNSKqemhJScCB1a2nCNw5pHgPjjBS3XiKUicAkI=</ds:DigestValue>
+		</ds:Reference>
+		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-1005416209">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+			<ds:DigestValue>SahNOfJN6XcDm1zhx0e2vKPqgJbZUGODYdzoeLiBt0w=</ds:DigestValue>
+		</ds:Reference>
+	</ds:SignedInfo>
+	<ds:SignatureValue>
+LwjENvsX/Y9XK8MfJZ8chnXnFvZZ82B7V4zmROt4/6TBf2SS8KxytHQXihL46rJN
+k/8aG+DYcWd3zyYAbT3dixGu1Mhquj45ZEriG972ZeDbOPCl87QloAQNg9lHioDt
+Qp8fr/dnwnmVmLumnSJD7p9gg+DY/KUYKfuHMyTIkcA3pIQBL7KUyKxla0YrJU20
+Dimq2YoilAhqfSSCmxa4/7+9v1Fgs4pLTdC2Xt+1NKU+5Tby8NaJW3DLXGjxILjo
+IYvBVz4gNF0UT9QmW9qBv7T6CUwRN4ptZ5jNyFsTi9zjtl6zFZZacM9P2vanuo7h
+2sBLzKnvNBdE4JY+hqm6aw==
+	</ds:SignatureValue>
+	<ds:KeyInfo Id="KeyInfo-1872730775">
+		<ds:X509Data>
+			<ds:X509Certificate>
+MIIG3TCCBcWgAwIBAgIIJtH54vEJx80wDQYJKoZIhvcNAQELBQAwfTELMAkGA1UE
+BhMCSVQxJDAiBgNVBAoMG05hbWlyaWFsIFMucC5BLi8wMjA0NjU3MDQyNjEgMB4G
+A1UECwwXQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxJjAkBgNVBAMMHU5hbWlyaWFs
+IENBIEZpcm1hIFF1YWxpZmljYXRhMB4XDTE0MTExMzE1MjIwMFoXDTE3MTExMjIz
+MDAwMFowgdExCzAJBgNVBAYTAklUMRUwEwYDVQQKDAxOT04gUFJFU0VOVEUxHjAc
+BgNVBAQMFUNPR05PTUUgVEVTVCBBVFRJVk8gQTEbMBkGA1UEKgwSTk9NRSBURVNU
+IEFUVElWTyBBMRwwGgYDVQQFExNJVDpDR05OVFM3MEEwMUEyNzFDMTEwLwYDVQQD
+DChDT0dOT01FIFRFU1QgQVRUSVZPIEEgTk9NRSBURVNUIEFUVElWTyBBMR0wGwYD
+VQQuExRSRUNOMjAxNDExMTM1OTA5NTQ3MTCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBAK5YGfmENh7GC954XamK1jjct+i4omAMe3pUcsmIOogDkiJ0eJiH
+FBKLbAKodjmqiwMEYgoGo8Ya0/dbEzFu5jVW9NRpRWwqXsbHAYvZtjJHBCFceOyY
+NQdlfWSTm0ZYDgzVztr/TR3A2KrTeXi4CnovZb0WoOgAPQBFsOlQo4KSoK+3rIf7
+uZoGGrXjYr6PTgoB51AexlMfwEiNr41fUWy4KOOP7zcaG0y7X5M3EspKEL2XSu4Z
+gbINme4DbkoWiGCdeOPBD8ODODHVbqUsZcRJUUJ+UxzlgXVpuauOjANkcKMrW8dc
+qoRAE0dk0ndNhJpry3wsx2dvOlE6PhM0CN8CAwEAAaOCAwowggMGMEUGCCsGAQUF
+BwEBBDkwNzA1BggrBgEFBQcwAYYpaHR0cDovL29jc3AuZmlybWFjZXJ0YS5pdC9v
+Y3NwL2NlcnRzdGF0dXMwHQYDVR0OBBYEFLaZIPjTPR8ekYPCPMN0xs5ZXEn8MB8G
+A1UdIwQYMBaAFGP97eaMYkdIz+oJQXN2EeJkYnsQMDsGCCsGAQUFBwEDBC8wLTAK
+BggrBgEFBQcLATAIBgYEAI5GAQEwCwYGBACORgEDAgEUMAgGBgQAjkYBBDCCAegG
+A1UdIASCAd8wggHbMIIB1wYLKwYBBAGCmmsBAQIwggHGMDAGCCsGAQUFBwIBFiRo
+dHRwOi8vd3d3LmZpcm1hY2VydGEuaXQvbWFudWFsaS1NTy8wggGQBggrBgEFBQcC
+AjCCAYIeggF+AEkAIAB0AGkAdABvAGwAYQByAGkAIABmAGEAbgBuAG8AIAB1AHMA
+bwAgAGQAZQBsACAAYwBlAHIAdABpAGYAaQBjAGEAdABvACAAcwBvAGwAbwAgAHAA
+ZQByACAAbABlACAAZgBpAG4AYQBsAGkAdABhACAAZABpACAAbABhAHYAbwByAG8A
+IABwAGUAcgAgAGwAZQAgAHEAdQBhAGwAaQAgAGUAcwBzAG8AIABlACAAcgBpAGwA
+YQBzAGMAaQBhAHQAbwAvAFQAaABlACAAYwBlAHIAdABpAGYAaQBjAGEAdABlACAA
+aABvAGwAZABlAHIAIABtAHUAcwB0ACAAdQBzAGUAIAB0AGgAZQAgAGMAZQByAHQA
+aQBmAGkAYwBhAHQAZQAgAG8AbgBsAHkAIABmAG8AcgAgAHQAaABlACAAcAB1AHIA
+cABvAHMAZQBzACAAZgBvAHIAIAB3AGgAaQBjAGgAIABpAHQAIABpAHMAIABpAHMA
+cwB1AGUAZDBEBgNVHR8EPTA7MDmgN6A1hjNodHRwOi8vY3JsLmZpcm1hY2VydGEu
+aXQvRmlybWFDZXJ0YVF1YWxpZmljYXRhMS5jcmwwDgYDVR0PAQH/BAQDAgZAMA0G
+CSqGSIb3DQEBCwUAA4IBAQDMqQa68AGuzjbc1d8IPzgKSrSOewbo4+ctixFVj5yB
+RE0yIbruMAx2dcX16n+TbUeSL22it2QuK/AvH11CtHUbIC1AQDWFk5GA95xjqh09
+XU/ve+KOxf9id2wqOs6KqR7upOigxv1ChaYI6p4bvo857A1BPR7tDgdQiUGCY3PX
+62KRWkI6SSk7KFJO+vcWSFzbCZdL56EOhFeOaAwXpf6wQum4RKkdMUJ2ag7wHh2u
+3/reLEhi0iDD5cz8AgQuvkupcTL1ytsRTuKItyFb4HMq+IdnqDOcmbj4d0pt6H3j
+RIBIe/DRA2RKnsbXZj7ZZB+WIeUwgpK9jL+ZrfwbuO3Z
+			</ds:X509Certificate>
+		</ds:X509Data>
+	</ds:KeyInfo>
+	<ds:Object>
+		<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xadesv141="http://uri.etsi.org/01903/v1.4.1#" Target="#Signature-1939752130">
+			<xades:SignedProperties Id="SignedProperties-1005416209">
+				<xades:SignedSignatureProperties>
+					<xades:SigningTime>2014-11-14T11:28:37.015Z</xades:SigningTime>
+					<xades:SigningCertificate>
+						<xades:Cert>
+							<xades:CertDigest>
+								<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+								<ds:DigestValue>N6kAGzJgPo3AY4xwdFlXEZVtYt0N3JBnoEhN4S0yUQI=</ds:DigestValue>
+							</xades:CertDigest>
+							<xades:IssuerSerial>
+								<ds:X509IssuerName>CN=Namirial CA Firma Qualificata, OU=Certification Authority, O=Namirial S.p.A./02046570426, C=IT</ds:X509IssuerName>
+								<ds:X509SerialNumber>2797291596675663821</ds:X509SerialNumber>
+							</xades:IssuerSerial>
+						</xades:Cert>
+					</xades:SigningCertificate>
+				</xades:SignedSignatureProperties>
+			</xades:SignedProperties>
+		</xades:QualifyingProperties>
+	</ds:Object>
+</ds:Signature>
+</utenti>		
+		

@@ -1,0 +1,240 @@
+﻿<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-35505489">
+	<ds:SignedInfo>
+		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+		<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"/>
+		<ds:Reference URI="#id-1643990435">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/>
+			<ds:DigestValue>
+MifSCUt11saRp7SZMJYkxHBBIKgmn8M3hHuZ+0DO+aHW6osXZR8ZPptMRuSNo733
+qsrkAQGIzyvXRjG1xLLXKw==
+			</ds:DigestValue>
+		</ds:Reference>
+		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-1504403832">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+			<ds:DigestValue>iC1v8ctO8NoeHXpfVl95fAGlxUk=</ds:DigestValue>
+		</ds:Reference>
+	</ds:SignedInfo>
+	<ds:SignatureValue Id="SignatureValue-1743389203">
+cjs9E8tZvSilYGGBM39RhU3i8VIuJ9ZH0R6eRWBrhIuMnEZyH4WudintHhfoHPsH
+B/W+eAKbvIeSjMuD4/yDkxKKkl9SaRDad0XShul/e01WaM42QaoS850iNmZ5j6eO
+6JclW/+t4vWRRaiFUcFP0sR7NFX+zQ20295E9+N0ELW+edRTGqJEAwkk8qg2RrZU
+zTFVQp4adh9iHGSqSEqDQX/+ALbSQplsXyK8/Zmz3Oo7Qtk36M9hk8WUdGzBMx/s
+81XkYpT2ystcWayJuZerBbriij+Tc/0sWEfLOYooa/pVJTIu0uNy7tjTu5B3vTPB
+9n0k404V3JlHbFiV/S14Cg==
+	</ds:SignatureValue>
+	<ds:KeyInfo>
+		<ds:KeyValue>
+			<ds:RSAKeyValue>
+				<ds:Modulus>
+qPuHQADYYFTs+kD4PnRJkBSNrB8xUJ9ajeEl/scL7EX0d5yG9UYi8gE5tFQcB376
+ZnxNgWAzLpofMvmCilFp1e6gUC3ERHEjW4eIb4KDIUMdajoMlq/K5YukSWEypzWh
+FavXFH3MsWjr429sdhTdiUxMrzyZ/UIa6qv88TCbANC6nuEVByOo2KCXWhq8HC1j
+zwS531GZDhcbLLpizS0lH5cbAGp7KDmhdPAV7XnalpR1UfudDGJzhkn33uIFGpR+
+KRmaxsUPt43nb9wtfAkbvjGdWAK3qoApFBEz1lVCKhSNOcwYJfmsqu1Rqx4dCKQr
+rQTk+aq6KeB3OVZPwmqXNw==
+				</ds:Modulus>
+				<ds:Exponent>AQAB</ds:Exponent>
+			</ds:RSAKeyValue>
+		</ds:KeyValue>
+		<ds:X509Data>
+			<ds:X509IssuerSerial>
+				<ds:X509IssuerName>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</ds:X509IssuerName>
+				<ds:X509SerialNumber>130114610919472312325890885591559005888</ds:X509SerialNumber>
+			</ds:X509IssuerSerial>
+			<ds:X509SubjectName>C=RO, 2.5.4.5=200412234AAV5, 2.5.4.4=Aneci, 2.5.4.42=Adrian-Vasile, CN=Adrian-Vasile Aneci</ds:X509SubjectName>
+			<ds:X509Certificate>
+MIIGQTCCBSmgAwIBAgIQYeMpnAnj+IRoVzR6uVdmwDANBgkqhkiG9w0BAQUFADBs
+MQswCQYDVQQGEwJSTzEXMBUGA1UEChMOVHJhbnMgU3BlZCBTUkwxKzApBgNVBAsT
+IlRyYW5zIFNwZWQgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxFzAVBgNVBAMTDlRy
+YW5zIFNwZWQgUUNBMB4XDTE0MTAyODAwMDAwMFoXDTE1MTAyODIzNTk1OVowazEc
+MBoGA1UEAwwTQWRyaWFuLVZhc2lsZSBBbmVjaTEWMBQGA1UEKgwNQWRyaWFuLVZh
+c2lsZTEOMAwGA1UEBAwFQW5lY2kxFjAUBgNVBAUTDTIwMDQxMjIzNEFBVjUxCzAJ
+BgNVBAYTAlJPMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqPuHQADY
+YFTs+kD4PnRJkBSNrB8xUJ9ajeEl/scL7EX0d5yG9UYi8gE5tFQcB376ZnxNgWAz
+LpofMvmCilFp1e6gUC3ERHEjW4eIb4KDIUMdajoMlq/K5YukSWEypzWhFavXFH3M
+sWjr429sdhTdiUxMrzyZ/UIa6qv88TCbANC6nuEVByOo2KCXWhq8HC1jzwS531GZ
+DhcbLLpizS0lH5cbAGp7KDmhdPAV7XnalpR1UfudDGJzhkn33uIFGpR+KRmaxsUP
+t43nb9wtfAkbvjGdWAK3qoApFBEz1lVCKhSNOcwYJfmsqu1Rqx4dCKQrrQTk+aq6
+KeB3OVZPwmqXNwIDAQABo4IC3jCCAtowDAYDVR0TAQH/BAIwADCCARIGA1UdHwSC
+AQkwggEFMIIBAaCB/qCB+4Y2aHR0cDovL29uc2l0ZWNybC5zLXRydXN0LmRlL1Ry
+YW5zU3BlZFBLSS9MYXRlc3RDUkwuY3JshiZodHRwOi8vd3d3LnRyYW5zc3BlZC5y
+by9jcmwvdHNfcWNhLmNybIaBmGxkYXA6Ly9kaXJlY3Rvcnkucy10cnVzdC5kZS9D
+Tj1UcmFucyUyMFNwZWQlMjBRQ0EsT1U9VHJhbnMlMjBTcGVkJTIwQ2VydGlmaWNh
+dGlvbiUyMEF1dGhvcml0eSxPPVRyYW5zJTIwU3BlZCUyMFNSTCxDPVJPP2NlcnRp
+ZmljYXRlUmV2b2NhdGlvbkxpc3Q7YmluYXJ5MA4GA1UdDwEB/wQEAwIFoDApBgNV
+HSUEIjAgBggrBgEFBQcDAgYIKwYBBQUHAwQGCisGAQQBgjcUAgIwgYYGA1UdIAR/
+MH0wPwYLKwYBBAGCuB0BAQEwMDAuBggrBgEFBQcCARYiaHR0cDovL3d3dy50cmFu
+c3NwZWQucm8vcmVwb3NpdG9yeTA6BgYEAIswAQEwMDAuBggrBgEFBQcCARYiaHR0
+cDovL3d3dy50cmFuc3NwZWQucm8vcmVwb3NpdG9yeTAYBggrBgEFBQcBAwQMMAow
+CAYGBACORgEBMEkGA1UdEQRCMECgJgYKKwYBBAGCNxQCA6AYDBZhbmVjaS5hZHJp
+YW5AZ21haWwuY29tgRZhbmVjaS5hZHJpYW5AZ21haWwuY29tMB8GA1UdIwQYMBaA
+FM/7rfLiGXBjLbqdlQi+gOGOG2cGMGoGCCsGAQUFBwEBBF4wXDA2BggrBgEFBQcw
+AoYqaHR0cDovL3d3dy50cmFuc3NwZWQucm8vY2FjZXJ0cy90c19xY2EuY3J0MCIG
+CCsGAQUFBzABhhZodHRwOi8vb2NzcC5zLXRydXN0LmRlMA0GCSqGSIb3DQEBBQUA
+A4IBAQC1fmG9iWzzRYfzMVrA0ziowqrnFDvojAgCCRsod7N5QueXQMs9JzrmTyZ7
+QikE0cMPY48uI7aZgLRc1dkq2as8QY/hbDUA+zq0GIwldIykSnO/gy4+GfSAKNwZ
+cLS8XN7wxOPB02+rbY8CQe4ctOesd/6Rr6uO2KN2u2PvMBjGwsU4yIDJhrFI6JL8
+kXsGWQrbovRzHwz/wJCv7gqHgHbnunKd3bM3aoMAHSIFFF4dv56R8BBhGmT+owsR
+TZGzg9wu45hyqn9ba/NwTYjXo/vuGOVp5qdMhRoetFqw5977YB9pa+hsPt4ZMzTV
+4SximhEPABBo0ExJ2bcPMdnXc4cO
+			</ds:X509Certificate>
+		</ds:X509Data>
+	</ds:KeyInfo>
+	<ds:Object>
+		<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature-35505489">
+			<xades:SignedProperties Id="SignedProperties-1504403832">
+				<xades:SignedSignatureProperties>
+					<xades:SigningTime>2014-11-10T20:40:01.129Z</xades:SigningTime>
+					<xades:SigningCertificate>
+						<xades:Cert>
+							<xades:CertDigest>
+								<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+								<ds:DigestValue>mNYyL1D+jDnRTOPF45CVJCU7mt8=</ds:DigestValue>
+							</xades:CertDigest>
+							<xades:IssuerSerial>
+								<ds:X509IssuerName>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</ds:X509IssuerName>
+								<ds:X509SerialNumber>130114610919472312325890885591559005888</ds:X509SerialNumber>
+							</xades:IssuerSerial>
+						</xades:Cert>
+					</xades:SigningCertificate>
+				</xades:SignedSignatureProperties>
+			</xades:SignedProperties>
+		
+			<xades:UnsignedProperties>
+				<xades:UnsignedSignatureProperties>
+				<xades:SignatureTimeStamp>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<xades:EncapsulatedTimeStamp Encoding="http://uri.etsi.org/01903/v1.2.2#DER">
+MIIHGQYJKoZIhvcNAQcCoIIHCjCCBwYCAQMxCTAHBgUrDgMCGjCB+wYLKoZIhvcN
+AQkQAQSggesEgegwgeUCAQEGCiqEaAGG9ncCAgUwHzAHBgUrDgMCGgQUIZLB8Pow
+JVujSfW/8MFRltRQwBsCBwONfqedOkAYDzIwMTQxMTEwMjAzOTI5WjADAgEBAgg5
+NCWz0BrR/qCBiaSBhjCBgzELMAkGA1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8g
+VGVjaG5vbG9naWVzIFMuQS4xJzAlBgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9u
+IEF1dGhvcml0eTEnMCUGA1UEAxMeQ2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9y
+aXR5oIIDrDCCA6gwggKQoAMCAQICAwR6VTANBgkqhkiG9w0BAQUFADA+MQswCQYD
+VQQGEwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlD
+ZXJ0dW0gQ0EwHhcNMDkwMzAzMTI1ODE1WhcNMjQwMzAzMTI1ODE1WjCBgzELMAkG
+A1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8gVGVjaG5vbG9naWVzIFMuQS4xJzAl
+BgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEnMCUGA1UEAxMe
+Q2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA3u2pB/R2wF6wC+c/oECJYSQjU4SgAvXTsTPsT2mAl6qd
+GCxmzzX4z1yN40cn5UOG6WdmPHjW4+kEND3PBWQyKqb7ZavAsSHPd6d7YbZt1tJ/
+u81V2AM9sZIV8dJCkF4KHADdfqLyTAVAEg0dG+MfegsP0Cgu3EzsXrChz8NVdo/k
+e3f/6IUVq8jxFT2Nx7suvrw5PYOap3MQ/wMozx13kB57NZm3TAEfGjbBuJmDUlRm
+19YaUhKfRyyZKYVWxvRzwJ+s2XiHfegexpVApnnSuKTBFqtqmAVxSmPtyphsXUWX
+UpX0ZibIc++l3AnP66R7S/Sf6hsPVRx0rbHGDrPqzQIDAQABo2kwZzAWBgNVHSUB
+Af8EDDAKBggrBgEFBQcDCDAsBgNVHR8EJTAjMCGgH6AdhhtodHRwOi8vY3JsLmNl
+cnR1bS5wbC9jYS5jcmwwHwYDVR0RBBgwFoYUaHR0cDovL3RzYS5jZXJ0dW0ucGww
+DQYJKoZIhvcNAQEFBQADggEBAKqLG6LshUXrOIsKTXjPeIlTENpXWlsHWycMydm5
+xAoqZ6y/B6s1wbQOb3lMe78Tv/p21W6uzaEUmV/yBIEUV5EE54uTRa6H8rnjWuh6
+NZF8OlYOWbfHDaY1G82c0OZVOv4bOUjHX5ohlv0csnNSxP7xY7NSr+Qk5btnkGdC
+RbZ2rhPnIrcHy5ZGAei+PQ0N5yB+RkATiZYvVMo0UxMnf+zvZsSxCPcyIsIUqX9W
++THu1C+teSE9ETP3067oy7xbzxb2i2hPDZz0bLgoWONIlpXUJJJXlHA8a9o66M6b
+0jorE+D9ggBXfw3cVtCpRbzZK5IXpxZtJW/zZz2nvudgnyoxggJGMIICQgIBATBF
+MD4xCzAJBgNVBAYTAlBMMRswGQYDVQQKExJVbml6ZXRvIFNwLiB6IG8uby4xEjAQ
+BgNVBAMTCUNlcnR1bSBDQQIDBHpVMAkGBSsOAwIaBQCggdcwGgYJKoZIhvcNAQkD
+MQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0xNDExMTAyMDM5MjlaMCMG
+CSqGSIb3DQEJBDEWBBRjQFMYlit8Zdl1/yaBMM9IG6y1UzB2BgsqhkiG9w0BCRAC
+DDFnMGUwYzBhBBQNLPli+00ELy8UAd5m6suoDadhEjBJMEKkQDA+MQswCQYDVQQG
+EwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlDZXJ0
+dW0gQ0ECAwR6VTANBgkqhkiG9w0BAQEFAASCAQCG2JaZE8ieCbLE2HVXy8eklGlu
+OTCsCj+hhJRUbFQKg2UtLkTbfEPMt8SU61CuAVBgCev6mCbx+a4zls9GJNRJtkEm
+Ejzes0Gc/QBC9ptQZkCUOefgEuN5PR7AHMhAeDz/CCSDSWtkk/4B5olu/qQcPVWQ
+IjEADjj2DG+Qyeftxu8keBiqFILi8jzg7WijrDhpgOBhO9JcF45DH8XSOKuI92kg
+FHVlv7Gn7FDS9ub8VSYb5nRgqrTrfObakETv7Sg/95X/YNsuCwXHitela5DXM89d
+1aEw4m27CRKvpbDraOOhR0wjsdbsliGeh7TYtVDQHJaM71BfbLrHEclK1Ut0
+					</xades:EncapsulatedTimeStamp>
+				</xades:SignatureTimeStamp><xades:CompleteCertificateRefs><xades:CertRefs><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>hlJp9wD8EmzbxhMnbKrrhBsqsUU=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</ds:X509IssuerName><ds:X509SerialNumber>15937880919645689038288334719056725396</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>9DAPIeqTT8t3n2JdG9Yd6wQrLiw=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=TC TrustCenter Class 3 CA II, OU=TC TrustCenter Class 3 CA, O=TC TrustCenter GmbH, C=DE</ds:X509IssuerName><ds:X509SerialNumber>810979472704977241028607898090068</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>gCXv9G5wyNRyJGWE/kA7io1q2/U=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=TC TrustCenter Class 3 CA II, OU=TC TrustCenter Class 3 CA, O=TC TrustCenter GmbH, C=DE</ds:X509IssuerName><ds:X509SerialNumber>1506523511417715638772220530020799</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:CertRefs></xades:CompleteCertificateRefs><xades:CompleteRevocationRefs><xades:CRLRefs><xades:CRLRef><xades:DigestAlgAndValue><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>MoTsz6sSvUlrwsFAqUXy6fWlKf0=</ds:DigestValue></xades:DigestAlgAndValue><xades:CRLIdentifier><xades:Issuer>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</xades:Issuer><xades:IssueTime>2014-11-10T11:06:11.000Z</xades:IssueTime><xades:Number>1271</xades:Number></xades:CRLIdentifier></xades:CRLRef><xades:CRLRef><xades:DigestAlgAndValue><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>ejI0GrShHPC0a9F4mJ0yPi9XtoU=</ds:DigestValue></xades:DigestAlgAndValue><xades:CRLIdentifier><xades:Issuer>CN=TC TrustCenter Class 3 CA II, OU=TC TrustCenter Class 3 CA, O=TC TrustCenter GmbH, C=DE</xades:Issuer><xades:IssueTime>2014-11-09T22:36:15.000Z</xades:IssueTime><xades:Number>3190</xades:Number></xades:CRLIdentifier></xades:CRLRef></xades:CRLRefs><xades:OCSPRefs><xades:OCSPRef><xades:OCSPIdentifier><xades:ResponderID><xades:ByName/></xades:ResponderID><xades:ProducedAt>2014-11-10T20:39:30.000Z</xades:ProducedAt></xades:OCSPIdentifier><xades:DigestAlgAndValue><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>OqYqTqEvyqIpcoUtTjEQflN8fOs=</ds:DigestValue></xades:DigestAlgAndValue></xades:OCSPRef></xades:OCSPRefs></xades:CompleteRevocationRefs>
+				<xades:SigAndRefsTimeStamp>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<xades:EncapsulatedTimeStamp Encoding="http://uri.etsi.org/01903/v1.2.2#DER">
+MIIHGQYJKoZIhvcNAQcCoIIHCjCCBwYCAQMxCTAHBgUrDgMCGjCB+wYLKoZIhvcN
+AQkQAQSggesEgegwgeUCAQEGCiqEaAGG9ncCAgUwHzAHBgUrDgMCGgQUaDt/jzY6
+awX0W6KC3/GVIoepWBkCBwONfqedOkQYDzIwMTQxMTEwMjAzOTMxWjADAgEBAgg5
+NCWz0BrR/qCBiaSBhjCBgzELMAkGA1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8g
+VGVjaG5vbG9naWVzIFMuQS4xJzAlBgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9u
+IEF1dGhvcml0eTEnMCUGA1UEAxMeQ2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9y
+aXR5oIIDrDCCA6gwggKQoAMCAQICAwR6VTANBgkqhkiG9w0BAQUFADA+MQswCQYD
+VQQGEwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlD
+ZXJ0dW0gQ0EwHhcNMDkwMzAzMTI1ODE1WhcNMjQwMzAzMTI1ODE1WjCBgzELMAkG
+A1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8gVGVjaG5vbG9naWVzIFMuQS4xJzAl
+BgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEnMCUGA1UEAxMe
+Q2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA3u2pB/R2wF6wC+c/oECJYSQjU4SgAvXTsTPsT2mAl6qd
+GCxmzzX4z1yN40cn5UOG6WdmPHjW4+kEND3PBWQyKqb7ZavAsSHPd6d7YbZt1tJ/
+u81V2AM9sZIV8dJCkF4KHADdfqLyTAVAEg0dG+MfegsP0Cgu3EzsXrChz8NVdo/k
+e3f/6IUVq8jxFT2Nx7suvrw5PYOap3MQ/wMozx13kB57NZm3TAEfGjbBuJmDUlRm
+19YaUhKfRyyZKYVWxvRzwJ+s2XiHfegexpVApnnSuKTBFqtqmAVxSmPtyphsXUWX
+UpX0ZibIc++l3AnP66R7S/Sf6hsPVRx0rbHGDrPqzQIDAQABo2kwZzAWBgNVHSUB
+Af8EDDAKBggrBgEFBQcDCDAsBgNVHR8EJTAjMCGgH6AdhhtodHRwOi8vY3JsLmNl
+cnR1bS5wbC9jYS5jcmwwHwYDVR0RBBgwFoYUaHR0cDovL3RzYS5jZXJ0dW0ucGww
+DQYJKoZIhvcNAQEFBQADggEBAKqLG6LshUXrOIsKTXjPeIlTENpXWlsHWycMydm5
+xAoqZ6y/B6s1wbQOb3lMe78Tv/p21W6uzaEUmV/yBIEUV5EE54uTRa6H8rnjWuh6
+NZF8OlYOWbfHDaY1G82c0OZVOv4bOUjHX5ohlv0csnNSxP7xY7NSr+Qk5btnkGdC
+RbZ2rhPnIrcHy5ZGAei+PQ0N5yB+RkATiZYvVMo0UxMnf+zvZsSxCPcyIsIUqX9W
++THu1C+teSE9ETP3067oy7xbzxb2i2hPDZz0bLgoWONIlpXUJJJXlHA8a9o66M6b
+0jorE+D9ggBXfw3cVtCpRbzZK5IXpxZtJW/zZz2nvudgnyoxggJGMIICQgIBATBF
+MD4xCzAJBgNVBAYTAlBMMRswGQYDVQQKExJVbml6ZXRvIFNwLiB6IG8uby4xEjAQ
+BgNVBAMTCUNlcnR1bSBDQQIDBHpVMAkGBSsOAwIaBQCggdcwGgYJKoZIhvcNAQkD
+MQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0xNDExMTAyMDM5MzFaMCMG
+CSqGSIb3DQEJBDEWBBRe2XimneIRCFmuxJUoPg99WktJEDB2BgsqhkiG9w0BCRAC
+DDFnMGUwYzBhBBQNLPli+00ELy8UAd5m6suoDadhEjBJMEKkQDA+MQswCQYDVQQG
+EwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlDZXJ0
+dW0gQ0ECAwR6VTANBgkqhkiG9w0BAQEFAASCAQCn5hiG6t198IJ3AwndGLKyPiux
+VxYWl3GmbE94XEmykfOfPkH/EjW6i/bteJmC6iGhfC3+SJCCkgcyQHSJB0/iiHGl
+htIv6iW6VbAtLwOMZ4QiCLFThUjUk2yipM+CLZw5lEkGYAuEhNnOcH+Gin2aLTBK
+dtOPUBkCeReh846CKU4MIR1/IWa57m1fz+9MExyWZlAdtIIH7ejFgF/jNFI1nsje
+Ha12b8RM6Qo3MyNBard2iqhKpnaN0I64qn6wmpL33VKrK5RgTX4vrXt65lylnvbd
+SkiN+xZogPoaxopQMlfLH/wgPffb7xkaHFXxTLk/RWj7dRuAZNzVcFFOaGQH
+					</xades:EncapsulatedTimeStamp>
+				</xades:SigAndRefsTimeStamp>
+				<xades:RefsOnlyTimeStamp>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<xades:EncapsulatedTimeStamp Encoding="http://uri.etsi.org/01903/v1.2.2#DER">
+MIIHGQYJKoZIhvcNAQcCoIIHCjCCBwYCAQMxCTAHBgUrDgMCGjCB+wYLKoZIhvcN
+AQkQAQSggesEgegwgeUCAQEGCiqEaAGG9ncCAgUwHzAHBgUrDgMCGgQUJI2w/ZPR
+7q7okbwqfkxB8LxVOKwCBwONfqedOkYYDzIwMTQxMTEwMjAzOTMyWjADAgEBAgg5
+NCWz0BrR/qCBiaSBhjCBgzELMAkGA1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8g
+VGVjaG5vbG9naWVzIFMuQS4xJzAlBgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9u
+IEF1dGhvcml0eTEnMCUGA1UEAxMeQ2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9y
+aXR5oIIDrDCCA6gwggKQoAMCAQICAwR6VTANBgkqhkiG9w0BAQUFADA+MQswCQYD
+VQQGEwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlD
+ZXJ0dW0gQ0EwHhcNMDkwMzAzMTI1ODE1WhcNMjQwMzAzMTI1ODE1WjCBgzELMAkG
+A1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8gVGVjaG5vbG9naWVzIFMuQS4xJzAl
+BgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEnMCUGA1UEAxMe
+Q2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA3u2pB/R2wF6wC+c/oECJYSQjU4SgAvXTsTPsT2mAl6qd
+GCxmzzX4z1yN40cn5UOG6WdmPHjW4+kEND3PBWQyKqb7ZavAsSHPd6d7YbZt1tJ/
+u81V2AM9sZIV8dJCkF4KHADdfqLyTAVAEg0dG+MfegsP0Cgu3EzsXrChz8NVdo/k
+e3f/6IUVq8jxFT2Nx7suvrw5PYOap3MQ/wMozx13kB57NZm3TAEfGjbBuJmDUlRm
+19YaUhKfRyyZKYVWxvRzwJ+s2XiHfegexpVApnnSuKTBFqtqmAVxSmPtyphsXUWX
+UpX0ZibIc++l3AnP66R7S/Sf6hsPVRx0rbHGDrPqzQIDAQABo2kwZzAWBgNVHSUB
+Af8EDDAKBggrBgEFBQcDCDAsBgNVHR8EJTAjMCGgH6AdhhtodHRwOi8vY3JsLmNl
+cnR1bS5wbC9jYS5jcmwwHwYDVR0RBBgwFoYUaHR0cDovL3RzYS5jZXJ0dW0ucGww
+DQYJKoZIhvcNAQEFBQADggEBAKqLG6LshUXrOIsKTXjPeIlTENpXWlsHWycMydm5
+xAoqZ6y/B6s1wbQOb3lMe78Tv/p21W6uzaEUmV/yBIEUV5EE54uTRa6H8rnjWuh6
+NZF8OlYOWbfHDaY1G82c0OZVOv4bOUjHX5ohlv0csnNSxP7xY7NSr+Qk5btnkGdC
+RbZ2rhPnIrcHy5ZGAei+PQ0N5yB+RkATiZYvVMo0UxMnf+zvZsSxCPcyIsIUqX9W
++THu1C+teSE9ETP3067oy7xbzxb2i2hPDZz0bLgoWONIlpXUJJJXlHA8a9o66M6b
+0jorE+D9ggBXfw3cVtCpRbzZK5IXpxZtJW/zZz2nvudgnyoxggJGMIICQgIBATBF
+MD4xCzAJBgNVBAYTAlBMMRswGQYDVQQKExJVbml6ZXRvIFNwLiB6IG8uby4xEjAQ
+BgNVBAMTCUNlcnR1bSBDQQIDBHpVMAkGBSsOAwIaBQCggdcwGgYJKoZIhvcNAQkD
+MQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0xNDExMTAyMDM5MzJaMCMG
+CSqGSIb3DQEJBDEWBBTRObU65/T19+Q6YYDfvnu0mcB5xTB2BgsqhkiG9w0BCRAC
+DDFnMGUwYzBhBBQNLPli+00ELy8UAd5m6suoDadhEjBJMEKkQDA+MQswCQYDVQQG
+EwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlDZXJ0
+dW0gQ0ECAwR6VTANBgkqhkiG9w0BAQEFAASCAQAKLbIyk3P1lInDMrALZ6V2F0Li
+MwnHYHh5NCEEMBN2SELvYaJGSewA4r2GBgWSCLnZRqsugNMj5ZQLKNKT6TcjIRnO
+AkzPYPIHblQTtrbEzqUxDRECkIK6r1uS6b5ZX9Feliw+PmW2PzXmCxDZ++yKpl+X
+i0R7Z0l+/cT1wtbAE7dyvROvegI9d3J2FlHJPNRYBY1TZ/sUlYZ3/3U+6nOqxtxx
+6eB7exf910SciXu81OnnVzTew0J+tw5M/qcUHYeBmjfX1sIcxtv0W/IgCpAel+2e
+T1HmYI697ec3CZ9HzqrDilnbLae2eTEZRvD2oWAHWXuUThCOyp5JXbWGe7bS
+					</xades:EncapsulatedTimeStamp>
+				</xades:RefsOnlyTimeStamp></xades:UnsignedSignatureProperties>
+			</xades:UnsignedProperties></xades:QualifyingProperties>
+	</ds:Object>
+	<ds:Object Id="id-1643990435"><test>
+This is a test file for ETSI plugtest.
+</test>
+	</ds:Object>
+</ds:Signature>

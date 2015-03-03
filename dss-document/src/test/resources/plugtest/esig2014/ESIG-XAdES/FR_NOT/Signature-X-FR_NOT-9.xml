@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?><MinuteDepot xmlns="http://ecaase.real.not/2007/06" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" DigestControl="NGpPV0tIV29IM1M1T01uTU84Um5rSGFIYUtWRmJiYXFySnhpOHVEUm85RT0=" LieuStockage="CAVE">
+	<Header>
+		<IdSSII>APPLI.NOT</IdSSII>
+		<IdLogiciel>Aase</IdLogiciel>
+		<VersionLogiciel>INCONNUE</VersionLogiciel>
+		<Serveur>PRODUCTION</Serveur>
+	</Header>
+	<DonneesTechniquesActe>
+		<CRPCEN>313002</CRPCEN>
+		<IdNotaire>3130020021</IdNotaire>
+		<VersionActe>1.0.0</VersionActe>
+	</DonneesTechniquesActe>
+	<Acte id="ActeRef">
+		<DonneesSigneesCommunes id="DonneesSigneesCommunesRef">
+			<ActeMetadonnees id="ActeMetadonneesRef">
+				<DateEtablissement>2013-07-05</DateEtablissement>
+				<NoChronoOffice>V300-RC4-C002</NoChronoOffice>
+				<Nature>Droit immobilier</Nature>
+				<Objet>depot acte avec annexes</Objet>
+				<EtablissementNI>
+					<Ligne2 xmlns="http://ecaase.real.not/parties/2007/06">Ligne 2</Ligne2>
+					<Ligne3 xmlns="http://ecaase.real.not/parties/2007/06">Ligne 3</Ligne3>
+					<VoieNumero xmlns="http://ecaase.real.not/parties/2007/06">1</VoieNumero>
+					<VoieExtension xmlns="http://ecaase.real.not/parties/2007/06">a</VoieExtension>
+					<VoieType xmlns="http://ecaase.real.not/parties/2007/06" code="rue" referentiel="rue">Rue</VoieType>
+					<Voie xmlns="http://ecaase.real.not/parties/2007/06">Poincarré</Voie>
+					<LieuDit xmlns="http://ecaase.real.not/parties/2007/06">Dérive</LieuDit>
+					<CodePostal xmlns="http://ecaase.real.not/parties/2007/06">13100</CodePostal>
+					<Localite xmlns="http://ecaase.real.not/parties/2007/06">Aix-en-Provence</Localite>
+					<LibellePays xmlns="http://ecaase.real.not/parties/2007/06">France</LibellePays>
+					<CRPCEN>313002</CRPCEN>
+					<RaisonSociale>SA</RaisonSociale>
+				</EtablissementNI>
+				<PartieTemoin>
+					<ClientPersonnePhysique xmlns="http://ecaase.real.not/parties/2007/06" id="ID_1">
+						<CRPCEN>313002</CRPCEN>
+						<Qualite>VENDEUR</Qualite>
+						<EtatCivil>
+							<Civilite>monsieur</Civilite>
+							<Nom>Dupuis</Nom>
+							<DateNaissance>1963-08-30</DateNaissance>
+							<CommuneNaissance>BETUNE</CommuneNaissance>
+							<DepartementNaissance>aa</DepartementNaissance>
+							<LibellePaysNaissance>FRANCE</LibellePaysNaissance>
+							<PrenomEtatCivil>
+								<Id>1</Id>
+								<Libelle>Roger</Libelle>
+							</PrenomEtatCivil>
+							<PrenomEtatCivil>
+								<Id>2</Id>
+								<Libelle>Luc</Libelle>
+							</PrenomEtatCivil>
+							<PrenomEtatCivil>
+								<Id>3</Id>
+								<Libelle>Armand</Libelle>
+							</PrenomEtatCivil>
+						</EtatCivil>
+						<Adresse>
+							<Ligne2>Ligne2</Ligne2>
+							<Ligne3>Ligne3</Ligne3>
+							<VoieNumero>1</VoieNumero>
+							<VoieExtension>a</VoieExtension>
+							<VoieType code="ave" referentiel="ave">avenue</VoieType>
+							<Voie>Jean Jaurès</Voie>
+							<LieuDit>Des Acacias</LieuDit>
+							<CodePostal>75001</CodePostal>
+							<Localite>PARIS</Localite>
+							<LibellePays>France</LibellePays>
+						</Adresse>
+						<Profession>Professeur</Profession>
+						<RegimeMatrimonial>Cté réduite aux acquêts</RegimeMatrimonial>
+						<NomConjoint>Louise</NomConjoint>
+					</ClientPersonnePhysique>
+					<ClientPersonnePhysique xmlns="http://ecaase.real.not/parties/2007/06" id="ID_2" xsi:type="PersonneRepresentantType">
+						<CRPCEN>313002</CRPCEN>
+						<EtatCivilRepresentant>
+							<Civilite>monsieur</Civilite>
+							<Nom>Martin</Nom>
+							<PrenomEtatCivil>
+								<Id>1</Id>
+								<Libelle>Eric</Libelle>
+							</PrenomEtatCivil>
+						</EtatCivilRepresentant>
+						<IdPartieRepresente>ID_3</IdPartieRepresente>
+					</ClientPersonnePhysique>
+					<ClientPersonneMorale xmlns="http://ecaase.real.not/parties/2007/06" id="ID_3">
+						<CRPCEN>313002</CRPCEN>
+						<Qualite>ACQUEREUR</Qualite>
+						<RaisonSociale>SA</RaisonSociale>
+						<CategorieJuridique code="5410" referentiel="Téléacte">Société à responsabilité limitée</CategorieJuridique>
+						<Immatriculation>1111</Immatriculation>
+						<LieuDepotStatuts>xxxx</LieuDepotStatuts>
+						<Adresse>
+							<Voie>Promenade des Anglais</Voie>
+							<CodePostal>06100</CodePostal>
+							<Localite>NICE</Localite>
+						</Adresse>
+					</ClientPersonneMorale>
+				</PartieTemoin>
+				<AnnexeMetadonnees id="ID_A1">
+					<Titre>ID_A1</Titre>
+					<Descriptif>Diagnostic1</Descriptif>
+					<Numerise>true</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+				<AnnexeMetadonnees id="ID_A2">
+					<Titre>ID_A2</Titre>
+					<Descriptif>Diagnostic2</Descriptif>
+					<Numerise>true</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+				<AnnexeMetadonnees id="ID_A3">
+					<Titre>ID_A3</Titre>
+					<Descriptif>Diagnostic3</Descriptif>
+					<Numerise>true</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+				<AnnexeMetadonnees id="ID_A4">
+					<Titre>DONT_AASE</Titre>
+					<Descriptif>DONT_AASE</Descriptif>
+					<Numerise>false</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+				<AnnexeMetadonnees id="ID_AnnexeSignature">
+					<Titre>DONT_AASE</Titre>
+					<Descriptif>Annexe de signature</Descriptif>
+					<Numerise>true</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+			</ActeMetadonnees>
+			<CorpsActe>
+				<Texte id="ActeTexteRef">
+					<DonneesTexte>
+			ACTE CERTIFIANT L’ACCORD DU CREANCIER A LA RADIATION TOTALE D’UNE INSCRIPTION D’HYPOTHEQUE CONVENTIONNELLE CONFORMEMENT AUX DISPOSITIONS DE L’ARTICLE 2441 ALINEA TROISIEME DU CODE CIVIL.
+
+L'AN DEUX MIL DIX, LE DIX SEPT NOVEMBRE A MONTPELLIER (Hérault), 133 Rue Henri Fabre, au siège de l’Office Notarial, ci-après nommé, Maître Virginie MINASSIAN, Notaire Associé de la Société Civile Professionnelle «GÉNAPI et Co », titulaire d’un Office Notarial à MONTPELLIER, 133, rue Henri Fabre. ,
+A dressé en la forme authentique le présent acte certifiant l’accord donné par le créancier titulaire de la créance garantie par l’inscription prise à son profit sous les références ci-après à sa radiation totale en application de l’alinéa troisième de l’article 2441 du Code civil. INDICATION ET REFERENCES DE L’INSCRIPTION Inscription prise à la conservation des hypothèques suivante : MONTPELLIER 1ER BUREAU Le 2 février 2000 Volume : 2000V Numéro : 123 CERTIFICATION Par le présent acte, le Notaire, après avoir vérifié l’état, la capacité et la qualité du créancier pour donner mainlevée pure et simple de l’inscription, certifie que ledit créancier a, à la demande du débiteur, donné son accord à la présente radiation dans le sens sus-indiqué. PUBLICATION EN FOI DE QUOI, en application des dispositions du troisième alinéa de l'article 2441 du Code civil, le Notaire soussigné a dressé le présent acte certifiant à la demande
+
+du débiteur, l’accord du créancier à la radiation de l’inscription et requiert en conséquence le Conservateur des Hypothèques de porter en marge de l’inscription mention de sa radiation. Pour le calcul du salaire de Monsieur le conservateur des hypothèques, il est rappelé que la créance garantit un montant en principal de mille euros (1 000,00 eur) et pour les accessoires de vingt cinq euros (25,00 eur). Droit d'enregistrement sur état : vingt cinq euros (25 euros) DONT ACTE sur 2 pages. Comprenant - renvoi approuvé : - blanc barré : - ligne entière rayée : - nombre rayé : - mot rayé : Paraphe
+
+Fait et passé aux lieu, jour, mois et an ci-dessus indiqués. Et le Notaire a signé le présent acte.
+
+et le notaire Me NOTAIRE_DIX ELODIE a signé à l'office L'AN DEUX MIL DIX LE DIX SEPT NOVEMBRE
+			</DonneesTexte>
+				</Texte>
+				<ImageCorps>JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovRmlsdGVyIC9GbGF0ZURlY29kZQovTGVuZ3RoIDI1
+OTMKL04gMwo+PgpzdHJlYW0KeJydlndUVNcWh8+9d3qhzTB0GHqvUgYQ6R2kV1EYZgYYygDDDNgL
+Ay/IEt9EOWRHBgunZqglFB47NhaprI5GevMLA3sbxH+v/ArgMskMFyW1Vm9uUeDrl5Bm0hBZGBO5
+0pFeJRm9SYO9lqRAsEGR/k6tAKeQ1EP9AKel0iFaDXCwbw0XloqOpK29ceaAAv6vyAGsASTajJCp
+MDAgbg0KdHJhaWxlcgo8PAovU2l6ZSA2MwovSUQgWzxENUY3QjA5QTE0RkM2M0I0MUEzNjVGMDJE
+QTFCQzZCQj4gPDY1NkY2M0Y0OURERkJDQjcxRTczMUZFMjk4NEFBNjUwPl0KL1Jvb3QgMSAwIFIK
+Pj4Kc3RhcnR4cmVmCjEzNzQ3NAolJUVPRgo=</ImageCorps>
+			</CorpsActe>
+			<Annexes>
+				<Annexe id="ID_A1">JVBERlJUVPRgo=</Annexe>
+				<Annexe id="ID_A2">JVBERKMjQ5MTMzNgolJUVPRgo=</Annexe>
+				<Annexe id="ID_A3">JVBERiVPRgo=</Annexe>
+				<Annexe id="ID_A4">JVBERgolJUVPRgo=</Annexe>
+				<Annexe id="ID_AnnexeSignature">JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovRmlsdGVyIC9GbGF0ZURlY29kZQovTGVuZ3RoIDI1
+OTMKL04gMwo+PgpzdHJlYW0KeJydlndUVNcWh8+9d3qhzTB0GHqvUgYQ6R2kV1EYZgYYygDDDNgL
+IioQUUSkKYIEBQwYDUViRRQLAVEBe0CCgBKDUWyoZEbWSnx5ee/l5ffHPd/aZ+9z99l737UuACQv
+Py4vHZYCII0n4Ad7utAjo6Lp2H4AAzzAAHMAmKysDP8Qj1Agkre7Kz1L5AT+Ra+HASRebxl7BdLp
+MDAwMCBuDQowMDAwMDI2MzYwIDAwMDAwIG4NCjAwMDAwMjI1MjQgMDAwMDAgbg0KMDAwMDAzMDc4
+OCAwMDAwMCBuDQowMDAwMDI2NTE3IDAwMDAwIG4NCjAwMDAwMzQ4MzQgMDAwMDAgbg0KMDAwMDAz
+MDk0NSAwMDAwMCBuDQowMDAwMDYzNDE4IDAwMDAwIG4NCjAwMDAwNjIzNjkgMDAwMDAgbg0KMDAw
+MDA4MTA3OCAwMDAwMCBuDQowMDAwMDgwMjc5IDAwMDAwIG4NCjAwMDAwOTM5MjcgMDAwMDAgbg0K
+MDAwMDA5MzI1NSAwMDAwMCBuDQowMDAwMTIwNjgxIDAwMDAwIG4NCjAwMDAxMTk3ODIgMDAwMDAg
+bg0KMDAwMDEzNTUxNyAwMDAwMCBuDQowMDAwMTM0NzkyIDAwMDAwIG4NCjAwMDAxMzYwODMgMDAw
+MDAgbg0KdHJhaWxlcgo8PAovU2l6ZSA2MwovSUQgWzxENUY3QjA5QTE0RkM2M0I0MUEzNjVGMDJE
+QTFCQzZCQj4gPDY1NkY2M0Y0OURERkJDQjcxRTczMUZFMjk4NEFBNjUwPl0KL1Jvb3QgMSAwIFIK
+Pj4Kc3RhcnR4cmVmCjEzNzQ3NAolJUVPRgo=</Annexe>
+			</Annexes>
+		</DonneesSigneesCommunes>
+		<DonneesSigneesNI id="DonneesSigneesNIRef">
+			<NotaireParties>
+				<SignatureNotaire id="Notaire">
+					<DateRecueil>2011-12-21T14:29:35.093125+01:00</DateRecueil>
+					<LieuRecueil>A l'office</LieuRecueil>
+					<PorteeSignature>CorpsActe</PorteeSignature>
+				</SignatureNotaire>
+				<SignaturesPartiesTemoins id="SignaturesPartiesTemoinsNIRef">
+					<SignaturePartieTemoin id="ID_1">
+						<DateRecueil>2011-12-21T00:00:00</DateRecueil>
+						<LieuRecueil>A l'office</LieuRecueil>
+						<PorteeSignature>CorpsActe</PorteeSignature>
+					</SignaturePartieTemoin>
+					<SignaturePartieTemoin id="ID_1">
+						<DateRecueil>2013-02-12T00:00:00</DateRecueil>
+						<LieuRecueil>A l'office</LieuRecueil>
+						<PorteeSignature>AnnexeSignature</PorteeSignature>
+					</SignaturePartieTemoin>
+					<SignaturePartieTemoin id="ID_2">
+						<DateRecueil>2013-02-12T00:00:00</DateRecueil>
+						<LieuRecueil>A l'office</LieuRecueil>
+						<PorteeSignature>CorpsActe</PorteeSignature>
+					</SignaturePartieTemoin>
+					<SignaturePartieTemoin id="ID_2">
+						<DateRecueil>2013-02-12T00:00:00</DateRecueil>
+						<LieuRecueil>A l'office</LieuRecueil>
+						<PorteeSignature>AnnexeSignature</PorteeSignature>
+					</SignaturePartieTemoin>
+				</SignaturesPartiesTemoins>
+				<SignatureClerc id="SignatureClercNIRef">
+					<DateRecueil>2013-02-12T09:30:47.0Z</DateRecueil>
+					<LieuRecueil>String</LieuRecueil>
+					<PorteeSignature>CorpsActe</PorteeSignature>
+					<ImageSignature>UjBsR09EbGhjZ0dTQUxNQUFBUUNBRU1tQ1p0dU1GUXhEUzhi</ImageSignature>
+					<x>1</x>
+					<y>1</y>
+				</SignatureClerc>
+			</NotaireParties>
+		</DonneesSigneesNI>
+	</Acte>
+
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="REALNOT">
+<ds:SignedInfo Id="REALNOT-SignedInfo">
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference Id="REALNOT-Reference-0" URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>VTO8PnlP8Sw1YdizLJtkRcEMX7Yobc+h305IZekodSA=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="REALNOT-Reference-1" Type="http://uri.etsi.org/01903#SignedProperties" URI="#REALNOT-SignedProperties">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>7008D+nRVp6yJvxelTbgCquwXdL21teVzrIxW8yELs8=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="REALNOT-Reference-2" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#REALNOT-doc-scsinfo">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>WAwLKOdTdzmJ3GdHgfVsc9MbQipOZRUl42e3+IAaJgw=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="REALNOT-SignatureValue">
+C0pLTDpR1u6jvDfgxLzdCbLYUkpfbXKWvnKUsSS51bdC7dOIF2B8VB6iNBjM/H7EAm6VLn0vnWSS
+71anAWy5sVuh614CXiBMLR3xu4+nSxeP50Zm+V1lqx1Y7S51XgYaW5Zin3aEWNH/++t+pXiLe6KZ
+jlNkwb/CyMQKMDOP8O9N+DsP6KEVlJmlS0SmWWFKTouF/r+ueYaAN+9vto9HEipuUXCoD5hyvCQX
+2y+CA0NcLKIU+pG4OQUyz0DNzBWrzHTW3PbFQNX7oV/lG4JRNcgx1Am3OaNNxVpToxpCM9/6Dnx0
+yAV2spgJIbvlaiRY7m1HhWiGtqSpV71WvDsxQQ==
+</ds:SignatureValue>
+<ds:KeyInfo Id="REALNOT-KeyInfo">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIEwzCCA6ugAwIBAgIBOjANBgkqhkiG9w0BAQsFADBlMQswCQYDVQQGEwJGUjEmMCQGA1UECgwd
+Q09OU0VJTCBTVVBFUklFVVIgRFUgTk9UQVJJQVQxFzAVBgNVBAsMDjAwMDIgNzg0MzUwMTM0MRUw
+EwYDVQQLDAxSRUFMVEVDSDIwMTcwHhcNMTQxMTAzMTM1NzE0WhcNMTYxMTAyMTM1NzE0WjBhMQsw
+CQYDVQQGEwJGUjERMA8GA1UECgwIUkVBTC5OT1QxFzAVBgNVBAsMDjAwMDIgNTA5MjQyOTg4MSYw
+JAYDVQQDDB1TZXJ2ZXVyIGRlIHNpZ25hdHVyZSBwMTIgcHAwMTCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAK0mpVDesba5UDOuhQK2fhPqrY9JpgJnj4+9t55J2FlX5zG8/quqX4rQ7c33
+rquJEPq+zMxf1ywqRqDRSZU4vyK/aCfLvnHJgcA2F+c2A7ep4gLyMRI7wJe6qfbtaF3nU1bTrqn2
+DAHP9hqmKDaORpPVplWPNFND0cmrv1bzuMBfQDwmOLinpb1ZX/XEdc7paI4e+ToAqqXWCGNHWO18
+RbA5+XftNZLpmKE+aUugkqLvh/FLWMA5AFWNXVb0x4bIQm/UuArC43iJs+YpxlkXWiztEDYzhCjH
+sd4keuJVy7VwuUPGaU3CtPpTbUyTfhUTWk5JeFjLp/+sl7WSLxonnKsCAwEAAaOCAYAwggF8MB0G
+A1UdDgQWBBTXp4QencyrV2itsOTi+61VD4s/PjAfBgNVHSMEGDAWgBTRN0d6l5GLY3C6nbuFtcLW
+LstdJTCBkQYDVR0gBIGJMIGGMHEGDSqBegFOAQIDAQMEAQEwYDBeBggrBgEFBQcCARZSaHR0cDov
+L3d3dy5wcmV1dmUtZWxlY3Ryb25pcXVlLm9yZy9QQ19BQ19SRUFMVEVDSF8xLjIuMjUwLjEuNzgu
+MS4yLjMuMS4zLjQuMS4xLnBkZjARBg8qgXoBTgECAwEDBAIAAwEwDgYDVR0PAQH/BAQDAgZAMDIG
+A1UdEQQrMCmBJ2hlbnJpLmJhcnRoZWxlbXkuZ3JvdXBlYWRzbkBub3RhaXJlcy5mcjBiBgNVHR8E
+WzBZMFegVaBThlFodHRwOi8vd3d3LnByZXV2ZS1lbGVjdHJvbmlxdWUub3JnL0xpc3RlUmV2b2Nh
+dGlvbnNQcmVQcm9kdWN0aW9uL3JlYWx0ZWNoMjAxNy5jcmwwDQYJKoZIhvcNAQELBQADggEBAG/L
+p9n1C/bYVhhDG20lNR3IqWuPFpBIfXZqRYTn04JYk27slQnDaV7Ac0cAYQgTtT9EPmYQDYryh5gx
+nTuXvawzIGX3pNgOOuVxTCfYOe1hm8xdJC34pLsVV45bIdEtI+P1kHZmErbICpZvyMgNxmz+kNrC
+NrAwnfXWwug3f7bRk5B2MR9o/GFbAtCo0MisJqG0mwgsURYg2o116vAMTReIDQrinSHEn8neWps6
+jsA+q5iwtW/gZe01pvqHxkDXn++Xoq+12pBFiMMk7y9A0A/m+gv0W5ZnS+T42vhk6VJdd0crXiRL
+4DBOMej2PypsjVAzVX2QpIMubDpyE4UQssw=
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIEOzCCAyOgAwIBAgIBCDANBgkqhkiG9w0BAQsFADBlMQswCQYDVQQGEwJGUjEmMCQGA1UECgwd
+Q09OU0VJTCBTVVBFUklFVVIgRFUgTk9UQVJJQVQxFzAVBgNVBAsMDjAwMDIgNzg0MzUwMTM0MRUw
+EwYDVQQLDAxOb3RhaXJlczIwMjAwHhcNMTMwNDI0MDkxMjUyWhcNMTcwNDI0MDkxMjUyWjBlMQsw
+CQYDVQQGEwJGUjEmMCQGA1UECgwdQ09OU0VJTCBTVVBFUklFVVIgRFUgTk9UQVJJQVQxFzAVBgNV
+BAsMDjAwMDIgNzg0MzUwMTM0MRUwEwYDVQQLDAxSRUFMVEVDSDIwMTcwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCtZW6n71c4++SqeBZyIiZVO6vASdXzs2BIX4wIBGQqkQG7xXgNHLk5
+8PjxO+JBFBDhP92ZiUFpqEkidMIa+EmgNYuf/zH2I0tOoBYxp0JHvduH6w/Wanyvaooh1pX9Li7Y
+iUzlY/nZ+8/qQHAZGwz15Wt2ynBKe2S0Tp6CrYK7IKiipn7Tfyo2nSt5tMOSmhaTGtYCm6i/mBVr
+F4AQncnLqro6oj6MRcFLq7YpPh8uIHtSgyAv90tuWxZEDOTnjjEfyhW0i2UbAKo2hVEEk9OBsVr3
+FPKajdJJwVsTB2c7wtGzJ045MTOSdc5eVpeb0dtn0IsB44L8rRm8PqgtHVNRAgMBAAGjgfUwgfIw
+DwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU0TdHepeRi2Nwup27hbXC1i7LXSUwHwYDVR0jBBgw
+FoAUYXvyQuGBPlAjo4LE07qCm5jmMo0wKwYDVR0gBCQwIjANBgsqgXoBTgECAwEBBTARBg8qgXoB
+TgECAwEDBAIEAwQwDgYDVR0PAQH/BAQDAgEGMGIGA1UdHwRbMFkwV6BVoFOGUWh0dHA6Ly93d3cu
+cHJldXZlLWVsZWN0cm9uaXF1ZS5vcmcvTGlzdGVSZXZvY2F0aW9uc1ByZVByb2R1Y3Rpb24vbm90
+YWlyZXMyMDIwLmFybDANBgkqhkiG9w0BAQsFAAOCAQEAYfh30BJVLXXfjYjF8/Wm2CsyLMxVk/oe
+GauluURfA5+/7MVtPiiyTlerGkz5KTwpEuC1AlZZ/lL3hWCjmQkraDOrJvw503SbsSQBqHCtaUbd
+bR3ztEON+mJHg/701YIt7GrDipCLJWwRVuh7yE35vIEg3ppmoMhkPSb9OHaOmrgplyGit7etFdj0
+CgFoJ/HDBdxi1Co/UIBZ7GjGaO1EpVrfQfXSUssSz6zA638f08aa9qMkNNfQWuM8m3Iea/uSR6eN
+Y65KlQ6+vRFZSj3lNLWU96jj3zu/cXEwhXJRTyYsvreqPe9SA8493iMcl+BWmsi6u2H/C8aXN2i8
+bQyfqw==
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIFVjCCAz6gAwIBAgIBBjANBgkqhkiG9w0BAQsFADB0MQswCQYDVQQGEwJGUjEmMCQGA1UECgwd
+Q09OU0VJTCBTVVBFUklFVVIgRFUgTk9UQVJJQVQxFzAVBgNVBAsMDjAwMDIgNzg0MzUwMTM0MSQw
+IgYDVQQLDBtQcm9mZXNzaW9uc1JlZ2xlbWVudGVlczIwMjgwHhcNMTEwMzAzMTAzMzE0WhcNMTkw
+MzAzMTAzMzE0WjBlMQswCQYDVQQGEwJGUjEmMCQGA1UECgwdQ09OU0VJTCBTVVBFUklFVVIgRFUg
+Tk9UQVJJQVQxFzAVBgNVBAsMDjAwMDIgNzg0MzUwMTM0MRUwEwYDVQQLDAxOb3RhaXJlczIwMjAw
+ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC3EJ3iW8Wr1mHHk9s/3/IUdt72BfS+M12g
+5MDB0UWe9OcSFd6GXYlAf9XumClEyiv6E9NMxV5j0bkH7nT1+TwLyiYH3b5MRjmNnB0l8rjhlCin
+ZcESA/nXQ7PmZgQn0MgWAY4rMU9X8cXy5KEtMUUDnNWWW+IkwhWEhTRem1e8ZGdar9YwdkxbSB1R
+HZIpmJjTjI7t3kr3VL4Uh8Kw5ochJVHJx0rbqZCgWfFwySL0jdzDsZPDUojpCcIJHnFams/556mS
+541bQNuX1qq+RV1Qdboufd9fRwBYcH/LHEPnvquJIknifvHvm7GGAUziL+4BBb7FEw1tHKYB2kvU
+/DqlAgMBAAGjggEAMIH9MA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFGF78kLhgT5QI6OCxNO6
+gpuY5jKNMB8GA1UdIwQYMBaAFMYG4ZTY8uhiHd6xPNd7WWbz4RoaMCcGA1UdIAQgMB4wCwYJKoF6
+AU4BAgEBMA8GDSqBegFOAQIDAQIEAwQwDgYDVR0PAQH/BAQDAgEGMHEGA1UdHwRqMGgwZqBkoGKG
+YGh0dHA6Ly93d3cucHJldXZlLWVsZWN0cm9uaXF1ZS5vcmcvTGlzdGVSZXZvY2F0aW9uc1ByZVBy
+b2R1Y3Rpb24vcHJvZmVzc2lvbnNyZWdsZW1lbnRlZXMyMDI4LmFybDANBgkqhkiG9w0BAQsFAAOC
+AgEAZg+Mt6Cjq5NourHOus+nqdvkfvLB3cw6NJrV+5Ktjs+oUYsRVhcWrgLcYBGiJuw19Xuqxs92
+2IB/bdkGYT9gf+31tTx/MF7AXmM/SG93IGtfqPtcuRiyEwrGAeoDA7XNCtWGNTyg6Q3hMCqUXwkw
+QOBN1v9scR0Qb8rPEjAMGr5cYh5+Ui2d4rdf7cluzOcS1gWyx/9iblOs+XW/AbELF61+soaBU4vC
+N7gbu4uqd1xKDuDSiF4kpMikfwmQNaMRpWW+vGZ61UOCz+miVbY8IgfKArrsa5gj5G/4lUeNyrDn
+7W9stya5z6Qspz6MmB+FO2T6LX32tqhkx4fCSIUUWWg+HqoetBzQecN8KaUTIxTYp1QB6gSYqGLv
+13a06mLdJgVmZ9El1e8c8rtJoEJtl37lyzswP7kwUU38fY1AxS2HBQG0wX6LqFIkd5Y3hGDjEiew
+0C2/xKR6OEI2r6sETYX8bVdpUifqr4CgHd4qZ4Oc6e20h983hz/A+pFmYoH0edxws1ycmILcukN1
+ejDWVD5UQfTUFhtotUdxSvuDxANYjgwVZY0HKP+T0kb74LlUGqbO1tPx1fVxc9v9cRoueB7LNplb
+R0xlN5fd93/guXi9D5VB1Ym9YBTBkhiOGFPnxX/dS1wxfcF4XstSliuRyqUxUjgYgW3wc9bzfEmD
+zjo=
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:X509Data>
+<ds:X509Certificate>
+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
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object><xad:QualifyingProperties xmlns:xad="http://uri.etsi.org/01903/v1.3.2#" Id="REALNOT-QualifyingProperties" Target="#REALNOT"><xad:SignedProperties Id="REALNOT-SignedProperties"><xad:SignedSignatureProperties><xad:SigningTime>2014-11-24T12:16:16.255+01:00</xad:SigningTime><xad:SigningCertificate><xad:Cert><xad:CertDigest><xd:DigestMethod xmlns:xd="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><xd:DigestValue xmlns:xd="http://www.w3.org/2000/09/xmldsig#">3P5TSs+7Wkyiq1sKKcV9safYbnB03MChLACp8lgUj30=</xd:DigestValue></xad:CertDigest><xad:IssuerSerial><xd:X509IssuerName xmlns:xd="http://www.w3.org/2000/09/xmldsig#">OU=REALTECH2017, OU=0002 784350134, O=CONSEIL SUPERIEUR DU NOTARIAT, C=FR</xd:X509IssuerName><xd:X509SerialNumber xmlns:xd="http://www.w3.org/2000/09/xmldsig#">58</xd:X509SerialNumber></xad:IssuerSerial></xad:Cert><xad:Cert><xad:CertDigest><xd:DigestMethod xmlns:xd="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><xd:DigestValue xmlns:xd="http://www.w3.org/2000/09/xmldsig#">TjEz2Cx+S2acHkDT9WeEuxvbEkrhXwlW6KubMUnd8bM=</xd:DigestValue></xad:CertDigest><xad:IssuerSerial><xd:X509IssuerName xmlns:xd="http://www.w3.org/2000/09/xmldsig#">OU=Notaires2020, OU=0002 784350134, O=CONSEIL SUPERIEUR DU NOTARIAT, C=FR</xd:X509IssuerName><xd:X509SerialNumber xmlns:xd="http://www.w3.org/2000/09/xmldsig#">8</xd:X509SerialNumber></xad:IssuerSerial></xad:Cert><xad:Cert><xad:CertDigest><xd:DigestMethod xmlns:xd="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><xd:DigestValue xmlns:xd="http://www.w3.org/2000/09/xmldsig#">/fra3AUlsFCBLyIb0Ag0OU/0lEYMNKx204qwPPr6YUI=</xd:DigestValue></xad:CertDigest><xad:IssuerSerial><xd:X509IssuerName xmlns:xd="http://www.w3.org/2000/09/xmldsig#">OU=ProfessionsReglementees2028, OU=0002 784350134, O=CONSEIL SUPERIEUR DU NOTARIAT, C=FR</xd:X509IssuerName><xd:X509SerialNumber xmlns:xd="http://www.w3.org/2000/09/xmldsig#">6</xd:X509SerialNumber></xad:IssuerSerial></xad:Cert><xad:Cert><xad:CertDigest><xd:DigestMethod xmlns:xd="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><xd:DigestValue xmlns:xd="http://www.w3.org/2000/09/xmldsig#">XvuFVGUdnrXZ8gdRQBZ5+RUj72P5gQj6jpOs89cEN+E=</xd:DigestValue></xad:CertDigest><xad:IssuerSerial><xd:X509IssuerName xmlns:xd="http://www.w3.org/2000/09/xmldsig#">OU=ProfessionsReglementees2028, OU=0002 784350134, O=CONSEIL SUPERIEUR DU NOTARIAT, C=FR</xd:X509IssuerName><xd:X509SerialNumber xmlns:xd="http://www.w3.org/2000/09/xmldsig#">1</xd:X509SerialNumber></xad:IssuerSerial></xad:Cert></xad:SigningCertificate><xad:SignatureProductionPlace><xad:City>Paris</xad:City><xad:PostalCode>75000</xad:PostalCode><xad:CountryName>France</xad:CountryName></xad:SignatureProductionPlace></xad:SignedSignatureProperties></xad:SignedProperties><xad:UnsignedProperties Id="REALNOT-UnsignedProperties" xmlns:xad="http://uri.etsi.org/01903/v1.3.2#"><xad:UnsignedSignatureProperties><xad:SignatureTimeStamp Id="REALNOT-SignatureTimeStamp"><xad:Include URI="#REALNOT-SignatureValue"/><xd:CanonicalizationMethod xmlns:xd="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><xad:EncapsulatedTimeStamp>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
+vMmjNAAAAAA=</xad:EncapsulatedTimeStamp></xad:SignatureTimeStamp></xad:UnsignedSignatureProperties></xad:UnsignedProperties></xad:QualifyingProperties></ds:Object><ds:Object Id="REALNOT-doc-scsinfo"><SignatureCreationSystemInfo xmlns="" Id="REALNOT-scsinfo"><SCAInfo><Name>Serveur de validation</Name><Version>1.8.0-RC2-SNAPSHOT</Version><Vendor>APPLI.NOT</Vendor></SCAInfo></SignatureCreationSystemInfo></ds:Object></ds:Signature>
+</MinuteDepot>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<utenti xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.test.firmacerta.it/schema.xml">
+	<utente Id="u1">
+		<nome>Luca</nome>
+		<cognome>Cicci</cognome>
+		<indirizzo>Milano</indirizzo>
+	</utente>
+	<utente Id="u2">
+		<nome>Max</nome>
+		<cognome>Rossi</cognome>
+		<indirizzo>Roma</indirizzo>
+	</utente>
+	<utente Id="u3">
+		<nome>Mariano</nome>
+		<cognome>Lallari</cognome>
+		<indirizzo>Padova</indirizzo>
+	</utente>
+<ds:Signature Id="xmldsig-e64e4ae3-6e8e-4fce-ab7c-ca8f415937c4" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#xmldsig-e64e4ae3-6e8e-4fce-ab7c-ca8f415937c4-keyinfo">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>wse7chMt+VZNtRpNONeWzZXr+jvkfc+8QYQlE4WAYSU=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="xmldsig-e64e4ae3-6e8e-4fce-ab7c-ca8f415937c4-ref0" URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><dsig-xpath:XPath Filter="subtract" xmlns:dsig-xpath="http://www.w3.org/2002/06/xmldsig-filter2">/descendant::ds:Signature</dsig-xpath:XPath></ds:Transform>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>M9TNsfM7rtEePBd8t4mSJaI5t228GYITAri27vYymww=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xmldsig-e64e4ae3-6e8e-4fce-ab7c-ca8f415937c4-signedprops">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>zQ0Q7aJojGddgdFNuSJdDGm8AsCuJPUTi3dAZ3TIT5E=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="xmldsig-e64e4ae3-6e8e-4fce-ab7c-ca8f415937c4-sigvalue">
+AVzZBP6Azqoqv654+GXsZfoyylH50k6au7DWCCxrGxTB29OWh2pwrSYgMpdVvEiubITvyMct30MK
+2Nn+iXyTctEfpJKMDFw95xyEEdek5knd2kkxk3I8mIYs4WRYRe/lBk1l2IDU/8+WCiwlOMaZzt15
+CNN/9sqU8WF7awd212Hy+9cTxvtzsCKOek7frzND0iDMsEuf8I0qg56XyjebyhHuL7F4PptZqBvn
+H0aCCNv4mJSrzLunjzzJ5kkKd/3VIoC1NZSw2vARhHtWFRA10BJ0yfKsJUw02U1Cp4gPoJ97p2yD
+oR628u4b60RwDom8KognILpvF4VKku/S+T0w9Q==
+</ds:SignatureValue>
+<ds:KeyInfo Id="xmldsig-e64e4ae3-6e8e-4fce-ab7c-ca8f415937c4-keyinfo">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIG3TCCBcWgAwIBAgIIJtH54vEJx80wDQYJKoZIhvcNAQELBQAwfTELMAkGA1UEBhMCSVQxJDAi
+BgNVBAoMG05hbWlyaWFsIFMucC5BLi8wMjA0NjU3MDQyNjEgMB4GA1UECwwXQ2VydGlmaWNhdGlv
+biBBdXRob3JpdHkxJjAkBgNVBAMMHU5hbWlyaWFsIENBIEZpcm1hIFF1YWxpZmljYXRhMB4XDTE0
+MTExMzE1MjIwMFoXDTE3MTExMjIzMDAwMFowgdExCzAJBgNVBAYTAklUMRUwEwYDVQQKDAxOT04g
+UFJFU0VOVEUxHjAcBgNVBAQMFUNPR05PTUUgVEVTVCBBVFRJVk8gQTEbMBkGA1UEKgwSTk9NRSBU
+RVNUIEFUVElWTyBBMRwwGgYDVQQFExNJVDpDR05OVFM3MEEwMUEyNzFDMTEwLwYDVQQDDChDT0dO
+T01FIFRFU1QgQVRUSVZPIEEgTk9NRSBURVNUIEFUVElWTyBBMR0wGwYDVQQuExRSRUNOMjAxNDEx
+MTM1OTA5NTQ3MTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK5YGfmENh7GC954XamK
+1jjct+i4omAMe3pUcsmIOogDkiJ0eJiHFBKLbAKodjmqiwMEYgoGo8Ya0/dbEzFu5jVW9NRpRWwq
+XsbHAYvZtjJHBCFceOyYNQdlfWSTm0ZYDgzVztr/TR3A2KrTeXi4CnovZb0WoOgAPQBFsOlQo4KS
+oK+3rIf7uZoGGrXjYr6PTgoB51AexlMfwEiNr41fUWy4KOOP7zcaG0y7X5M3EspKEL2XSu4ZgbIN
+me4DbkoWiGCdeOPBD8ODODHVbqUsZcRJUUJ+UxzlgXVpuauOjANkcKMrW8dcqoRAE0dk0ndNhJpr
+y3wsx2dvOlE6PhM0CN8CAwEAAaOCAwowggMGMEUGCCsGAQUFBwEBBDkwNzA1BggrBgEFBQcwAYYp
+aHR0cDovL29jc3AuZmlybWFjZXJ0YS5pdC9vY3NwL2NlcnRzdGF0dXMwHQYDVR0OBBYEFLaZIPjT
+PR8ekYPCPMN0xs5ZXEn8MB8GA1UdIwQYMBaAFGP97eaMYkdIz+oJQXN2EeJkYnsQMDsGCCsGAQUF
+BwEDBC8wLTAKBggrBgEFBQcLATAIBgYEAI5GAQEwCwYGBACORgEDAgEUMAgGBgQAjkYBBDCCAegG
+A1UdIASCAd8wggHbMIIB1wYLKwYBBAGCmmsBAQIwggHGMDAGCCsGAQUFBwIBFiRodHRwOi8vd3d3
+LmZpcm1hY2VydGEuaXQvbWFudWFsaS1NTy8wggGQBggrBgEFBQcCAjCCAYIeggF+AEkAIAB0AGkA
+dABvAGwAYQByAGkAIABmAGEAbgBuAG8AIAB1AHMAbwAgAGQAZQBsACAAYwBlAHIAdABpAGYAaQBj
+AGEAdABvACAAcwBvAGwAbwAgAHAAZQByACAAbABlACAAZgBpAG4AYQBsAGkAdABhACAAZABpACAA
+bABhAHYAbwByAG8AIABwAGUAcgAgAGwAZQAgAHEAdQBhAGwAaQAgAGUAcwBzAG8AIABlACAAcgBp
+AGwAYQBzAGMAaQBhAHQAbwAvAFQAaABlACAAYwBlAHIAdABpAGYAaQBjAGEAdABlACAAaABvAGwA
+ZABlAHIAIABtAHUAcwB0ACAAdQBzAGUAIAB0AGgAZQAgAGMAZQByAHQAaQBmAGkAYwBhAHQAZQAg
+AG8AbgBsAHkAIABmAG8AcgAgAHQAaABlACAAcAB1AHIAcABvAHMAZQBzACAAZgBvAHIAIAB3AGgA
+aQBjAGgAIABpAHQAIABpAHMAIABpAHMAcwB1AGUAZDBEBgNVHR8EPTA7MDmgN6A1hjNodHRwOi8v
+Y3JsLmZpcm1hY2VydGEuaXQvRmlybWFDZXJ0YVF1YWxpZmljYXRhMS5jcmwwDgYDVR0PAQH/BAQD
+AgZAMA0GCSqGSIb3DQEBCwUAA4IBAQDMqQa68AGuzjbc1d8IPzgKSrSOewbo4+ctixFVj5yBRE0y
+IbruMAx2dcX16n+TbUeSL22it2QuK/AvH11CtHUbIC1AQDWFk5GA95xjqh09XU/ve+KOxf9id2wq
+Os6KqR7upOigxv1ChaYI6p4bvo857A1BPR7tDgdQiUGCY3PX62KRWkI6SSk7KFJO+vcWSFzbCZdL
+56EOhFeOaAwXpf6wQum4RKkdMUJ2ag7wHh2u3/reLEhi0iDD5cz8AgQuvkupcTL1ytsRTuKItyFb
+4HMq+IdnqDOcmbj4d0pt6H3jRIBIe/DRA2RKnsbXZj7ZZB+WIeUwgpK9jL+ZrfwbuO3Z
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object><xades:QualifyingProperties Target="#xmldsig-e64e4ae3-6e8e-4fce-ab7c-ca8f415937c4" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xades141="http://uri.etsi.org/01903/v1.4.1#"><xades:SignedProperties Id="xmldsig-e64e4ae3-6e8e-4fce-ab7c-ca8f415937c4-signedprops"><xades:SignedSignatureProperties><xades:SigningTime>2014-11-14T11:26:14.899+01:00</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>N6kAGzJgPo3AY4xwdFlXEZVtYt0N3JBnoEhN4S0yUQI=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Namirial CA Firma Qualificata,OU=Certification Authority,O=Namirial S.p.A./02046570426,C=IT</ds:X509IssuerName><ds:X509SerialNumber>2797291596675663821</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>wC+V94r4CySaNIHKQZJK5g12Y4Z8XyL/hDeg6Mw0QTc=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Namirial CA Firma Qualificata,OU=Certification Authority,O=Namirial S.p.A./02046570426,C=IT</ds:X509IssuerName><ds:X509SerialNumber>4708725866506655769</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object>
+</ds:Signature><ds:Signature Id="xmldsig-6e67cadf-1c8a-4858-8823-57439d9d2115" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#xmldsig-6e67cadf-1c8a-4858-8823-57439d9d2115-keyinfo">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>/glx+7QrDcIc0fLA52IfD1xzwxdCUj6pkUb59gruKvs=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="xmldsig-6e67cadf-1c8a-4858-8823-57439d9d2115-ref0" URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><dsig-xpath:XPath Filter="subtract" xmlns:dsig-xpath="http://www.w3.org/2002/06/xmldsig-filter2">/descendant::ds:Signature</dsig-xpath:XPath></ds:Transform>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>M9TNsfM7rtEePBd8t4mSJaI5t228GYITAri27vYymww=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xmldsig-6e67cadf-1c8a-4858-8823-57439d9d2115-signedprops">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>NFJwt+GRzlT2RVvJSNGbHRC51EVd6jPRp3nhEme46Tw=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="xmldsig-6e67cadf-1c8a-4858-8823-57439d9d2115-sigvalue">
+ChOKJBa46FdQhb/HWA7yCGUbAJHsLq1YmSzNIsICLyYM7CtQUVxpZsJBkOvIXipz5ofGrUuBBIdI
+7qHDfPZsuFWnVTVZXJGfWf1+i8cHd0jwxNnyKQLhuKt0UxO7y03eLC2HBaHfQZ49ZpXIw4MJWXjD
+7qOYHK6ahEEiYWwwcpAXDc4iPQcbyxJQXB/ci16tjI0U1WkXZeSsTSdLH5tEAxoUAjyrp6PkfGX9
+wzttxcfaK9RYNzWNXByV6Riu5QlLCkrX6uuUWtV8fpHPtzXqf4NEezhysNUNBhQn4zDe08/jyTDu
+aBg6ri271G98V4CkP7p7xvo2zp4Sb59gt9MoVQ==
+</ds:SignatureValue>
+<ds:KeyInfo Id="xmldsig-6e67cadf-1c8a-4858-8823-57439d9d2115-keyinfo">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIG3TCCBcWgAwIBAgIISq7jKSo9T9kwDQYJKoZIhvcNAQELBQAwfTELMAkGA1UEBhMCSVQxJDAi
+BgNVBAoMG05hbWlyaWFsIFMucC5BLi8wMjA0NjU3MDQyNjEgMB4GA1UECwwXQ2VydGlmaWNhdGlv
+biBBdXRob3JpdHkxJjAkBgNVBAMMHU5hbWlyaWFsIENBIEZpcm1hIFF1YWxpZmljYXRhMB4XDTE0
+MTExMzE1MjYwMFoXDTE3MTExMjIzMDAwMFowgdExCzAJBgNVBAYTAklUMRUwEwYDVQQKDAxOT04g
+UFJFU0VOVEUxHjAcBgNVBAQMFUNPR05PTUUgVEVTVCBBVFRJVk8gQjEbMBkGA1UEKgwSTk9NRSBU
+RVNUIEFUVElWTyBCMRwwGgYDVQQFExNJVDpDR05OVFM3MUEwMUEyNzFEMTEwLwYDVQQDDChDT0dO
+T01FIFRFU1QgQVRUSVZPIEIgTk9NRSBURVNUIEFUVElWTyBCMR0wGwYDVQQuExRSRUNOMjAxNDEx
+MTM0Nzk3Mzg0NDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKRvBxC55TRykeh7CDe1
+jrNfGCNajdiZjA40irzzWe4TYTTB5H9YliGJI2Q9KywYzmESgCxojf15SGwTqlSbY1A+dJGpo9SU
+OTaAtlYRNRb8r+Gx4LcS4qFEum2dSOyzdwd3EcRsMG3EX2PXBHRiPzQXL/Sh0o7JmO4xXl+y5K8x
+td4KWFlk1+igneTj4HQedMBAPU3yyc4qsSlBtroPVDjliPokJ/zYIyGlAE/wMFaod4THCiSg+g3r
+Yr8S4L20rIq2PuTV5hPmjh7vgueCcqvSMWVVhptQCsgPHpQbuMr2d7SO8f/AqjZD+A4Bz9+fS1i3
+mKCQNMGE3LiE7US4uq8CAwEAAaOCAwowggMGMEUGCCsGAQUFBwEBBDkwNzA1BggrBgEFBQcwAYYp
+aHR0cDovL29jc3AuZmlybWFjZXJ0YS5pdC9vY3NwL2NlcnRzdGF0dXMwHQYDVR0OBBYEFEWqMvDT
+mzbE5FnmqSsfjNKBdXQMMB8GA1UdIwQYMBaAFGP97eaMYkdIz+oJQXN2EeJkYnsQMDsGCCsGAQUF
+BwEDBC8wLTAKBggrBgEFBQcLATAIBgYEAI5GAQEwCwYGBACORgEDAgEUMAgGBgQAjkYBBDCCAegG
+A1UdIASCAd8wggHbMIIB1wYLKwYBBAGCmmsBAQIwggHGMDAGCCsGAQUFBwIBFiRodHRwOi8vd3d3
+LmZpcm1hY2VydGEuaXQvbWFudWFsaS1NTy8wggGQBggrBgEFBQcCAjCCAYIeggF+AEkAIAB0AGkA
+dABvAGwAYQByAGkAIABmAGEAbgBuAG8AIAB1AHMAbwAgAGQAZQBsACAAYwBlAHIAdABpAGYAaQBj
+AGEAdABvACAAcwBvAGwAbwAgAHAAZQByACAAbABlACAAZgBpAG4AYQBsAGkAdABhACAAZABpACAA
+bABhAHYAbwByAG8AIABwAGUAcgAgAGwAZQAgAHEAdQBhAGwAaQAgAGUAcwBzAG8AIABlACAAcgBp
+AGwAYQBzAGMAaQBhAHQAbwAvAFQAaABlACAAYwBlAHIAdABpAGYAaQBjAGEAdABlACAAaABvAGwA
+ZABlAHIAIABtAHUAcwB0ACAAdQBzAGUAIAB0AGgAZQAgAGMAZQByAHQAaQBmAGkAYwBhAHQAZQAg
+AG8AbgBsAHkAIABmAG8AcgAgAHQAaABlACAAcAB1AHIAcABvAHMAZQBzACAAZgBvAHIAIAB3AGgA
+aQBjAGgAIABpAHQAIABpAHMAIABpAHMAcwB1AGUAZDBEBgNVHR8EPTA7MDmgN6A1hjNodHRwOi8v
+Y3JsLmZpcm1hY2VydGEuaXQvRmlybWFDZXJ0YVF1YWxpZmljYXRhMS5jcmwwDgYDVR0PAQH/BAQD
+AgZAMA0GCSqGSIb3DQEBCwUAA4IBAQC8rFsDKF75qhdI3Xn9lbqBz2qKv/JWxzn4scsr7O0+xqgm
+niPMU3fszlMnjrhysR6xlqjyCSeOLfdW0CGIPk2y0e7vvCNWyM3BlCJnOS1UEwB0hqIM9e6JeHe/
+jmLUjlegdlUA2mjnItCPemDqSr0W7/bNN5rrauw3fRfoW8aqrb8Z04CzTltSzoVkyKNyk69HeqHn
+PsueZrCotxf7T9ePR0wQh5nQZD72XNUcVT431WmZWh9zEvsGViZrRQVjUjvdsQLnKbtIz27vQztp
+e2kqFjQSkAf2GVxfOUwp5c63jDxhTVmOSioQugtwo/K/QveyMEhZrIIiEYfc992c+pfr
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object><xades:QualifyingProperties Target="#xmldsig-6e67cadf-1c8a-4858-8823-57439d9d2115" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xades141="http://uri.etsi.org/01903/v1.4.1#"><xades:SignedProperties Id="xmldsig-6e67cadf-1c8a-4858-8823-57439d9d2115-signedprops"><xades:SignedSignatureProperties><xades:SigningTime>2014-11-14T11:36:37.326+01:00</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>z1yP/4eV41tKUuuPc6Fp6Bx+cdET+M9ohP3Z1D5OKBk=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Namirial CA Firma Qualificata,OU=Certification Authority,O=Namirial S.p.A./02046570426,C=IT</ds:X509IssuerName><ds:X509SerialNumber>5381488370696146905</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>wC+V94r4CySaNIHKQZJK5g12Y4Z8XyL/hDeg6Mw0QTc=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Namirial CA Firma Qualificata,OU=Certification Authority,O=Namirial S.p.A./02046570426,C=IT</ds:X509IssuerName><ds:X509SerialNumber>4708725866506655769</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object>
+</ds:Signature></utenti>

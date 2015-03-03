@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><dsig:Signature Id="Signature-1015a00e-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo Id="SignedInfo-1015a00e-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160"/><dsig:Reference Id="Reference-1015a00e-1" URI="Test.txt"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#ripemd160"/><dsig:DigestValue>yzo1sCt6TYbCS/m8KtQdrkx5sts=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-1015a00e-2" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#xmlns(xades=http://uri.etsi.org/01903/v1.1.1%23)%20xpointer(id('Object-1015a00e-1')/child::xades:QualifyingProperties/child::xades:SignedProperties)"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#ripemd160"/><dsig:DigestValue>bfTyEt+p7vmR0Wit9h+zCbP+XUY=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-1015a00e-1">K7mQNyeibwB9lzlWN1kOHXCv/SxWLAWpd0/r2DWcax5Ij/UX/6JWngHCb0RIcfmM</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIEkjCCA3qgAwIBAgIDBhG4MA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQGEwJB
+VDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBp
+bSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJl
+bWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wMjAeFw0w
+OTEwMTMwODI4MDlaFw0xNDEwMTMwODI4MDlaMHExCzAJBgNVBAYTAkFUMRUwEwYD
+VQQDDAxSb25hbGQgVMO2Z2wxDjAMBgNVBAQMBVTDtmdsMQ8wDQYDVQQqDAZSb25h
+bGQxFTATBgNVBAUTDDc4MzUwNzc2MjUwOTETMBEGA1UEDAwKRGlwbC4tSW5nLjBJ
+MBMGByqGSM49AgEGCCqGSM49AwEBAzIABAohwQPwq6AEQxWZ+3qKf3qTOfLnPe6l
+TjDORAR+LwmwKCvopdbxrrDxGDIqU5oYwaOCAeUwggHhMBMGA1UdIwQMMAqACE3f
+4f9L2cnfMCcGCCsGAQUFBwEDAQH/BBgwFjAIBgYEAI5GAQEwCgYIKwYBBQUHCwEw
+ewYIKwYBBQUHAQEEbzBtMEIGCCsGAQUFBzAChjZodHRwOi8vd3d3LmEtdHJ1c3Qu
+YXQvY2VydHMvYS1zaWduLVByZW1pdW0tU2lnLTAyYS5jcnQwJwYIKwYBBQUHMAGG
+G2h0dHA6Ly9vY3NwLmEtdHJ1c3QuYXQvb2NzcDBZBgNVHSAEUjBQMEQGBiooABEB
+CzA6MDgGCCsGAQUFBwIBFixodHRwOi8vd3d3LmEtdHJ1c3QuYXQvZG9jcy9jcC9h
+LXNpZ24tUHJlbWl1bTAIBgYEAIswAQEwgZoGA1UdHwSBkjCBjzCBjKCBiaCBhoaB
+g2xkYXA6Ly9sZGFwLmEtdHJ1c3QuYXQvb3U9YS1zaWduLVByZW1pdW0tU2lnLTAy
+LG89QS1UcnVzdCxjPUFUP2NlcnRpZmljYXRlcmV2b2NhdGlvbmxpc3Q/YmFzZT9v
+YmplY3RjbGFzcz1laWRDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5MBEGA1UdDgQKBAhO
+V+/CYsB1ETAOBgNVHQ8BAf8EBAMCBsAwCQYDVR0TBAIwADANBgkqhkiG9w0BAQUF
+AAOCAQEAF//k2K2KnPTbkco1uMVb5Sn4EKSipx9q0tDWUyYdIALL0sUKM2d10cgD
+eBqIp9L0u6VcoI0gzLOBql5HCzMPTzNbzHVQH//Rwl6/5u0por5Fav8s+Sd6qvEi
+KmbyPsSKShYlyPiy/6bTAKZJDf03h8Ho3jDFTPsG9jevbop37NvwLD41NF4rhE/T
+fS+N3Z7NXiDMTpFyHXqAynxY35AR++IH4iBBaVr/ewCkYqn0ON4XzfECzXzAd6GO
+vXWEM8p/9guw3XKFgu1kkm/dPmv239/G0iUyPy6UXTNxmIKS1Cvz+BXbcTgRlVHs
+6G2STDAIq1byHIs+2UtsjN1Z5RI+Gw==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-1015a00e-1"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.1.1#" Target="#Signature-1015a00e-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#"><xades:SignedProperties Id="SignedProperties-1015a00e-1"><xades:SignedSignatureProperties><xades:SigningTime>2013-12-20T13:30:35Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><xades:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#ripemd160"/><xades:DigestValue>5vllGPyjfO0f0mjk2kyVo8lPsGs=</xades:DigestValue></xades:CertDigest><xades:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>397752</dsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-1015a00e-1"><xades:MimeType>text/plain</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature>

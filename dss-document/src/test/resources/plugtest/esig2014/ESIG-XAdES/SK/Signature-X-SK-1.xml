@@ -1,0 +1,2965 @@
+<?xml version="1.0" encoding="UTF-8"?><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="epSignature"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="Reference_SignedDataObject" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#SignedDataObject"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"><xsl:stylesheet xmlns:msxsl="urn:schemas-microsoft-com:xslt" xmlns:ns1="http://www.justice.gov.sk/Forms" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="msxsl" version="1.0">
+<xsl:output doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" encoding="utf-8" indent="yes" method="html"/>
+
+<xsl:template name="getValue">
+  <xsl:param name="value"/>
+  <xsl:if test="$value[@ns1:stav='true']">
+    <span style="color:green"><xsl:value-of select="$value"/></span>
+  </xsl:if>
+  <xsl:if test="$value[@ns1:stav='false']">
+    <span style="color:red"><xsl:value-of select="$value"/></span>
+  </xsl:if>
+  <xsl:if test="not($value[@ns1:stav])"><xsl:value-of select="$value"/></xsl:if>
+</xsl:template>
+  
+<xsl:template name="getInputValue">
+  <xsl:param name="value"/>
+  <xsl:param name="style"/>
+  <xsl:if test="$value[@ns1:stav='true']">
+    <input readonly="readonly" style="color:green;{$style}" type="text" value="{$value}"/>
+  </xsl:if>
+  <xsl:if test="$value[@ns1:stav='false']">
+    <input readonly="readonly" style="color:red;{$style}" type="text" value="{$value}"/>
+  </xsl:if>
+  <xsl:if test="not($value[@ns1:stav])"><input readonly="readonly" style="{$style}" type="text" value="{$value}"/></xsl:if>
+</xsl:template>
+  
+<xsl:template name="getMenitValue">
+  <xsl:param name="value"/>
+  <xsl:if test="$value[@ns1:menit='true']">
+    X
+  </xsl:if>
+</xsl:template>
+  
+<xsl:template name="getPodnikatelValue">
+  <xsl:param name="value"/>
+  <xsl:if test="$value[@podnikatel='true']">
+    X
+  </xsl:if>
+</xsl:template>
+  
+<xsl:template name="getPredajValue">
+  <xsl:param name="value"/>
+  <xsl:param name="type"/>
+  <xsl:if test="$value[@castiPodniku='true'] and $type='2'">
+    X
+  </xsl:if>
+  <xsl:if test="$value[@castiPodniku='false'] and $type='1'">
+    X
+  </xsl:if>
+</xsl:template>
+<xsl:template name="getAdresaOrganizacnejZlozkyValue">
+  <xsl:param name="value"/>
+  <xsl:param name="type"/>
+
+  <xsl:if test="$value[@ns1:typOrganizacnejZlozky='OdstepnyZavod'] and $type = '1'">
+    X
+  </xsl:if>
+  <xsl:if test="$value[@ns1:typOrganizacnejZlozky='InaOrganizacnaZlozkaPodniku'] and $type = '2'">
+    X
+  </xsl:if>
+</xsl:template>
+
+  <xsl:template name="compareValuesToCheckField">
+    <xsl:param name="value1"/>
+    <xsl:param name="value2"/>
+
+    <xsl:if test="$value1 = $value2">
+      X
+    </xsl:if>
+
+  </xsl:template>
+
+  <xsl:template name="formatDate">
+
+    <xsl:param name="DateTime"/>
+    <xsl:param name="OutputFormat"/>
+
+    <xsl:if test="string-length($DateTime) &gt; '0'">
+      <xsl:variable name="year">
+        <xsl:value-of select="substring($DateTime,1,4)"/>
+      </xsl:variable>
+
+      <xsl:variable name="mo-temp">
+        <xsl:value-of select="substring-after($DateTime,'-')"/>
+      </xsl:variable>
+
+      <xsl:variable name="mo">
+        <xsl:value-of select="substring-before($mo-temp,'-')"/>
+      </xsl:variable>
+
+      <xsl:variable name="day-temp">
+        <xsl:value-of select="substring-after($mo-temp,'-')"/>
+      </xsl:variable>
+
+      <xsl:variable name="day">
+        <xsl:value-of select="substring($day-temp,1,4)"/>
+      </xsl:variable>
+
+      <!-- Vystup -->
+      <xsl:choose>
+
+        <!-- 20.12.2010 -->
+        <xsl:when test="$OutputFormat = 'd.m.Y'">
+          <xsl:variable name="fullDate">
+            <xsl:value-of select="$day"/>
+            <xsl:value-of select="'.'"/>
+            <xsl:value-of select="$mo"/>
+            <xsl:value-of select="'.'"/>
+            <xsl:value-of select="$year"/>
+          </xsl:variable>
+
+          <xsl:choose>
+            <xsl:when test="$DateTime[@ns1:stav='true']">
+              <span style="color:green">
+                <xsl:value-of select="$fullDate"/>
+              </span>
+            </xsl:when>
+
+            <xsl:when test="$DateTime[@ns1:stav='false']">
+              <span style="color:red">
+                <xsl:value-of select="$fullDate"/>
+              </span>
+            </xsl:when>
+
+            <xsl:otherwise>
+              <xsl:value-of select="$fullDate"/>
+            </xsl:otherwise>
+          </xsl:choose>
+
+        </xsl:when>
+
+        <!-- 20. január 2010 -->
+        <xsl:when test="$OutputFormat = 'd. F Y'">
+          <xsl:variable name="fullDate">
+            <xsl:value-of select="$day"/>
+            <xsl:value-of select="'. '"/>
+            <xsl:choose>
+              <xsl:when test="$mo = '01'">január</xsl:when>
+              <xsl:when test="$mo = '02'">február</xsl:when>
+              <xsl:when test="$mo = '03'">marec</xsl:when>
+              <xsl:when test="$mo = '04'">apríl</xsl:when>
+              <xsl:when test="$mo = '05'">máj</xsl:when>
+              <xsl:when test="$mo = '06'">jún</xsl:when>
+              <xsl:when test="$mo = '07'">júl</xsl:when>
+              <xsl:when test="$mo = '08'">august</xsl:when>
+              <xsl:when test="$mo = '09'">september</xsl:when>
+              <xsl:when test="$mo = '10'">október</xsl:when>
+              <xsl:when test="$mo = '11'">november</xsl:when>
+              <xsl:when test="$mo = '12'">december</xsl:when>
+            </xsl:choose>
+            <xsl:value-of select="' '"/>
+            <xsl:value-of select="$year"/>
+          </xsl:variable>
+
+          <xsl:choose>
+            <xsl:when test="$DateTime[@ns1:stav='true']">
+              <span style="color:green">
+                <xsl:value-of select="$fullDate"/>
+              </span>
+            </xsl:when>
+
+            <xsl:when test="$DateTime[@ns1:stav='false']">
+              <span style="color:red">
+                <xsl:value-of select="$fullDate"/>
+              </span>
+            </xsl:when>
+
+            <xsl:otherwise>
+              <xsl:value-of select="$fullDate"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+
+        <!-- den - 20 -->
+        <xsl:when test="$OutputFormat = 'd'">
+          <xsl:value-of select="$day"/>
+        </xsl:when>
+
+        <!-- mesiac - 12 -->
+        <xsl:when test="$OutputFormat = 'm'">
+          <xsl:value-of select="$mo"/>
+        </xsl:when>
+
+        <!-- rok - 2010 -->
+        <xsl:when test="$OutputFormat = 'Y'">
+          <xsl:value-of select="$year"/>
+        </xsl:when>
+
+        <!-- vrati default datum 20.12.2010 -->
+        <xsl:otherwise>
+          <xsl:value-of select="$day"/>
+          <xsl:value-of select="'.'"/>
+          <xsl:value-of select="$mo"/>
+          <xsl:value-of select="'.'"/>
+          <xsl:value-of select="$year"/>
+        </xsl:otherwise>
+
+      </xsl:choose>
+    </xsl:if>
+
+
+  </xsl:template>
+
+  <xsl:template match="/">
+
+  <html>
+<head>
+    <title>FUPS</title>
+	<style type="text/css">
+	 
+
+    #container { width:652px; margin:0; padding:0; border:0px solid #000; font-size:12px; background:#fff; font-family:Arial}
+    #container * { font-family:Arial}
+    #container input { background:#fff;  font-family:Arial}
+	#container ol, #container ul { list-style:none;}
+    #container h1 { padding:15px 0; border:2px solid #000; font-size:16px; background:#ccffff; text-align:center;}
+    #container h2 { font-size:12px; margin-left:5px }
+    #container p { margin-left:5px }
+    
+    #container .version { float:left;}
+
+   
+    #container table { margin:0; padding:0; border-collapse:collapse; border-spacing:0; border:2px solid #000; font-size:12px;}
+    #container table th { margin:0; padding:1px 2px; border:1px solid #000;}
+    #container table td { margin:0; padding:1px 2px; border:1px solid #000;}
+    
+    #container table.obchRegTable { float:right; width:200px; margin-bottom:10px; border:1px solid #000; border-width:1px 0 0 1px;}
+    #container table.obchRegTable td { padding:1px 2px; border:1px solid #000; border-width:0 1px 1px 0;}
+    #container table.obchRegTable th { padding:1px 2px; border:1px solid #000; border-width:0 1px 1px 0; text-align:left; background:#e5e5e5}
+
+    #container table.tableTemplate { width:652px; margin-bottom:15px;}
+    #container table.tableTemplate caption { padding:5px; font-weight:bold; text-align:left;}
+    #container table.tableTemplate tr.secondRow th { font-size:12px}
+    #container table.tableTemplate th { border:1px solid #000; background:#e5e5e5; vertical-align:top; text-align:left;}
+    #container table.tableTemplate td { border:1px solid #000; vertical-align:top;}
+    #container table.tableTemplate .smallText { font-weight:normal;}
+
+    #container table.clearTable { width:100%; border:0;}
+    #container table.clearTable td { border:0; vertical-align:top;}
+
+    #container table.whiteBox { width:100%; height:47px; border:0;}
+    #container table.whiteBox td { vertical-align: middle;text-align:center; border:0; font-weight:bold;}
+    #container table.whiteBox td.tdWhiteBox { width:45px; border-left:1px solid #000; border-right:0; background:#fff;}
+
+    #container td.tablePredmetPodnikania { height:100%; padding:0;}
+    #container td.tablePredmetPodnikania table { width:100%; height:100%; border:0;}
+    #container td.tablePredmetPodnikania table tr.last td { border-bottom:0;}
+    #container td.tablePredmetPodnikania td.tdCislo { width:30px; border:0; border-right:1px solid #000;}
+    #container td.tablePredmetPodnikania td.tdCinnost { width:auto; border:0;}
+
+    #container td.tableVeduci { height:100%; padding:0; }
+    #container td.tableVeduci table { width:100%; margin:0; border:0;}
+    #container td.tableVeduci table .last { border-right:0;}
+    #container td.tableVeduci table th, #container td.tableVeduci table td { border-top:0; border-left:0; text-align:left;}
+
+    #container table.tableTemplate.tbl1 th { background:#fff; text-align:left;}
+    #container table.tableTemplate.tbl1 tbody th { width:226px;}
+    #container td.innerTable, #container th.innerTable { padding:0; text-align:left;}
+    #container table.innerTable { width:100%; border:0;}
+    #container table.innerTable td, #container table.innerTable th { border:0;}
+    
+    #container table.tab1 { text-align:left;}
+    
+    #container .smallText {font-size: 11px}
+    #container .vam { vertical-align:middle !important;}
+    #container .vat { vertical-align:top !important;}
+    #container .tac { text-align:center !important;}
+    #container .bold { font-weight:bold !important;}
+    #container .h45 { height:45px;}
+    #container .h25 { height:25px;}
+    #container .w44 { width:44px;}
+    #container .bb0 { border-bottom:0 !important;}
+    #container .bt0 { border-top:0 !important;}
+    #container table th.tableNumber { width:44px; text-align:center;}
+    #container table th.tableText { width:44px; font-size:8px;}
+    #container .pscCell { width:40px; white-space:nowrap}
+    #container .pscCellAfter { width:79px;}
+    #container .pscCellBefore { width:264px;}
+    
+    #container div.page-break {page-break-after:always}
+
+    #container .floatRight { float:right; margin-bottom:10px;}
+    #container .clr { clear:both;}
+
+    #container .kolkovaZnamka { padding-top:55px; border:1px solid #000; text-align:right; font-size:11px;}
+
+
+    #container div.box1 { margin-bottom:15px; border:2px solid #000; padding:15px 85px; line-height:1.6em; background:#e5e5e5; text-align:center; font-weight:bold;}
+    #container div.box1 input { width:35px; border:1px solid #000;} /* deprecated*/
+
+    #container div.box2 { margin-bottom:15px;}
+    #container div.box2 input { width:35px; border:2px solid #000; margin-top:2px; margin-right:3px} /* deprecated*/
+	#container div.box2 span.txtBox { height:15px; width:50px; margin-top:2px; padding:0; display:inline-block; text-align:center;}
+	
+    #container div.box3 { margin-bottom:15px; border:2px solid #000; padding:15px; background:#e5e5e5; text-align:left; }
+    #container div.box3 p { padding:0 0 10px; margin:0;}
+    #container div.box3 input { text-align:right; border:1px solid #000; width:12px; height:12px;}
+	#container div.box3 span.txtBox { display:inline-block; width:7px; height:15px; margin-left:70px;}
+	
+    #container p.box4 { margin-bottom:15px; padding:0 15px; text-align:left; }
+    #container p.box4 input { width:55px; border:2px solid #000; margin-top:2px; margin-right:3px}
+    #container p.box4 span.textDen { margin:0 15px;}
+	#container p.box4 span.txtBox { display:inline-block; height:15px; vertical-align:middle}
+
+	#container .tableWhiteRect { padding:0;}
+	#container .tableWhiteRect .whiteRectWrapper { padding:3px 16px; border-bottom:1px solid #000; background:#fff;}
+	#container .tableWhiteRect .whiteRect { margin:0; background:#fff;}
+
+    #container .whiteRect {border:1px solid #000;margin:2px 14px;width:14px;height:14px;text-align:center;line-height:12px;font-size:10px;}
+    #container .whiteRect.middle45 { margin-top:12px;}
+    #container .whiteRect.formH1 { margin:0 5px 0 0; padding:1px; display:inline-block; line-height:15px; background:#fff;}
+	
+	#container table.innerTable .whiteRect { margin:2px;}
+    #container .validMessage { color:red; font-size:12px; font-weight:bold; text-align:center}
+    #container table.tableTemplate.prilohy ul { list-style:disc; margin:0; padding-left:15px;}
+    #container table.tableTemplate.prilohy th { text-align:left;}
+    #container table.tableTemplate.prilohy thead th { padding:5px 0; text-align:center;}
+    #container table.tableTemplate.prilohy td p { margin:0 0 10px 0;}
+    
+    #container .navrhovatelOpinions { clear:both;}
+    #container .navrhovatelOpinion { float:left; margin-right:45px; line-height:19px}
+    #container .smallWhiteRect { float:left; border:1px solid #000;margin:2px 5px;width:12px;height:12px;text-align:center;line-height:12px;font-size:10px;}
+    
+    #container span.txtBox { margin:0 2px; padding:1px 5px; border:1px solid #000; background:#fff;}
+    #container span.txtBox.b2px { border-width:2px;}
+    #container span.txtBox.p20px { padding: 1px 20px;}
+	</style>
+</head>
+
+<body>  
+
+<div class="form-FUPS" id="container">
+  <xsl:if test="/ns1:FUPS/ns1:InfoPathData/ns1:ValidationResult/text() &gt; 0">
+    <div class="validMessage">
+      <xsl:value-of select="/ns1:FUPS/ns1:InfoPathData/ns1:Message"/>
+    </div>
+  </xsl:if>
+
+  <div class="version">
+    Verzia: 07.001
+  </div>
+
+  <div class="floatRight">
+    Príloha č. 7<br/>
+    k vyhláške č. 25/2004 Z. z.
+  </div>
+  <div class="clr"/>
+  
+  <div class="kolkovaZnamka">
+    Miesto na nalepenie kolkovej známky
+  </div>
+  
+  <h1>
+    NÁVRH NA ZÁPIS SPOLOČNOSTI S RUČENÍM OBMEDZENÝM<br/>
+    DO OBCHODNÉHO REGISTRA
+  </h1>
+  <table class="obchRegTable">
+    <tr>
+      <th colspan="2">Obchodný register</th>      
+    </tr> 
+    <tr>
+      <td colspan="2">Okresný súd <xsl:call-template name="getValue"><xsl:with-param name="value" select="/ns1:FUPS/ns1:ObchodnyRegister/ns1:OkresnySud"/></xsl:call-template> </td>
+    </tr>
+    <tr>
+      <td style="width:140px">Ulica <xsl:call-template name="getValue"><xsl:with-param name="value" select="/ns1:FUPS/ns1:ObchodnyRegister/ns1:Ulica"/></xsl:call-template></td>
+      <td style="width:60px">Číslo <xsl:call-template name="getValue"><xsl:with-param name="value" select="/ns1:FUPS/ns1:ObchodnyRegister/ns1:Cislo"/></xsl:call-template></td>
+    </tr>
+    <tr>
+      <td colspan="2">PSČ <xsl:call-template name="getValue"><xsl:with-param name="value" select="/ns1:FUPS/ns1:ObchodnyRegister/ns1:Psc"/></xsl:call-template></td>
+    </tr>
+    <tr>
+      <td colspan="2">Obec <xsl:call-template name="getValue"><xsl:with-param name="value" select="/ns1:FUPS/ns1:ObchodnyRegister/ns1:Obec/ns1:Value"/></xsl:call-template></td>
+    </tr>
+  </table>
+  <div class="clr"/>
+
+
+
+  <xsl:for-each select="/ns1:FUPS/ns1:NavrhovatelFO">
+    <table class="tableTemplate tbl1">
+      <thead>
+        <tr>
+          <th colspan="2">NAVRHOVATEĽ: FYZICKÁ OSOBA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th style="padding-left:10px;font-weight:normal;">Titul pred menom </th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulPred"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-left:10px;font-weight:normal;">Meno</th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Osoba/ns1:Meno"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-left:10px;font-weight:normal;">Priezvisko</th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Osoba/ns1:Priezvisko"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-left:10px;font-weight:normal;">Titul za menom</th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulZa"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" style="padding-left:10px;">
+            <strong>Bydlisko</strong>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-left:20px;font-weight:normal;">Názov ulice/verejného priestranstva</th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Ulica"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-left:20px;font-weight:normal;">Orientačné/súpisné číslo</th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Cislo"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-left:20px;font-weight:normal;">Názov obce</th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Obec/ns1:Value"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-left:20px;font-weight:normal;">PSČ</th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Psc"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-left:20px;font-weight:normal;">Štát</th>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Stat/ns1:Value"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </xsl:for-each>
+  
+  <div class="page-break"/>
+  
+  <p>
+    Na základe § 5 zákona č. 530/2003 Z. z. o obchodnom registri a o zmene a doplnení niektorých
+    zákonov navrhujem (navrhujeme) <strong>zápis týchto údajov:</strong></p>
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="tac vam" style="width:195px">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam" colspan="4" style="padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+    <tr>
+      <th class="tableNumber">I</th>
+      <th>Obchodné meno</th>
+      <td colspan="4">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:ObchodneMeno"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="tableNumber">II</th>
+      <th>Sídlo</th>
+      <th colspan="4"> </th>
+    </tr>
+    <tr>
+      <th/>
+      <th>
+        <span class="smallText">a) Názov ulice/verejného priestranstva</span>
+      </th>
+      <td colspan="4">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:Sidlo/ns1:Ulica"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th/>
+      <th>
+        <span class="smallText">b) Orientačné/súpisné číslo</span>
+      </th>
+      <td colspan="4">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:Sidlo/ns1:Cislo"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th/>
+      <th>
+        <span class="smallText">c) Názov obce </span>
+      </th>
+      <td class="pscCellBefore" colspan="2">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:Sidlo/ns1:Obec/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+      <th class="pscCell">
+        <span class="smallText">d) PSČ</span>
+      </th>
+      <td class="pscCellAfter">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:Sidlo/ns1:Psc"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="tableNumber">III</th>
+      <th>IČO</th>
+      <td colspan="4">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:Ico"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="vam tableNumber">IV</th>
+      <th class="h45 vam"> Právna forma </th>
+      <th class="vam tac" colspan="4">Spoločnosť s ručením obmedzeným </th>
+    </tr>
+  
+    <tr>
+      <th class="tableNumber">V</th>
+      <th>
+        Predmet podnikania<br/>(činnosti)
+      </th>
+
+      <td class="tablePredmetPodnikania" colspan="4">
+        <table>
+          <tbody>
+            <xsl:for-each select="/ns1:FUPS/ns1:PredmetPodnikania">
+              <tr>
+                <td class="tdCislo">
+                  <xsl:call-template name="getValue">
+                    <xsl:with-param name="value" select="ns1:PoradoveCislo"/>
+                  </xsl:call-template>
+                </td>
+                <td class="tdCinnost">
+                  <xsl:call-template name="getValue">
+                    <xsl:with-param name="value" select="ns1:Cinnost"/>
+                  </xsl:call-template>
+                </td>
+              </tr>
+            </xsl:for-each>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <div class="page-break"/>
+  <div class="clr"> </div>
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+
+
+    <tr>
+      <th class="tableNumber" style="padding-top:6px">VI</th>
+      <th class="h45 vam">
+        Štatutárny orgán<br/>
+        Konateľ/konatelia
+      </th>
+      <th colspan="3"> </th>
+    </tr>
+    <xsl:for-each select="/ns1:FUPS/ns1:StatutarnyOrganFO">
+    <tr>
+      <th rowspan="13"/>
+      <th class="h25 vam" colspan="4">
+        Konateľ
+      </th>
+    </tr>
+    <tr>
+      <th class="vam h45">1. Titul pred menom</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulPred"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam h45">2. Meno</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:Meno"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam h45">3. Priezvisko</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:Priezvisko"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam h45">4. Titul za menom</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulZa"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam h45">5. Bydlisko</th>
+      <th class="vam" colspan="3"> </th>
+    </tr>
+    <tr>
+      <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Ulica"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="smallText">b) Orientačné/súpisné číslo</th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Cislo"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="smallText">c) Názov obce</th>
+      <td class="pscCellBefore">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Obec/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+      <th class="pscCell smallText">d) PSČ</th>
+      <td class="pscCellAfter">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Psc"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam smallText">e) Štát</th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Stat/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam h45">6. Dátum narodenia</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="formatDate">
+          <xsl:with-param name="DateTime" select="ns1:Osoba/ns1:DatumNarodenia"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam h45">7. Rodné číslo</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:RodneCislo"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam h45">8. Deň vzniku funkcie</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="formatDate">
+          <xsl:with-param name="DateTime" select="ns1:DenVznikuFunkcie"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    </xsl:for-each>
+    <tr>
+      <th/>
+      <th class="vam h45">
+        9. Spôsob konania štatutárneho
+        orgánu v mene spoločnosti
+      </th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:StatutarnyOrganSposobKonania"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+  </table>
+
+    <div class="page-break"/>
+    <div class="clr"> </div>
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+
+    <xsl:for-each select="/ns1:FUPS/ns1:OrganizacnaZlozka">
+      <tr>
+        <th class="tableNumber" rowspan="10" style="padding-top:14px;">
+          <xsl:if test="not(ns1:OrganizacnaZlozka/ns1:Veduci)">
+            <xsl:attribute name="rowspan">9</xsl:attribute>
+          </xsl:if>
+          VII
+        </th>
+        <th class="vam" rowspan="2">Organizačná zložka</th>
+        <th class="innerTable" colspan="3">
+          <table class="innerTable">
+            <tr>
+              <td style="background:#fff;width:20px;border-right:1px solid #000">
+                <div class="whiteRect">
+                  <xsl:call-template name="compareValuesToCheckField">
+                    <xsl:with-param name="value1" select="@typOrganizacnejZlozkyEnum"/>
+                    <xsl:with-param name="value2" select="'OdstepnyZavod'"/>
+                  </xsl:call-template>
+                </div>
+              </td>
+              <td class="vam" style="border-bottom:0;border-right:0;">
+                <span class="smallText" style="display:block">Odštepný závod</span>
+              </td>
+            </tr>
+          </table>
+        </th>
+      </tr>
+      <tr>
+        <th class="innerTable" colspan="3">
+          <table class="innerTable">
+            <tr>
+              <td style="background:#fff;width:20px;border-right:1px solid #000">
+                <div class="whiteRect">
+                  <xsl:call-template name="compareValuesToCheckField">
+                    <xsl:with-param name="value1" select="@typOrganizacnejZlozkyEnum"/>
+                    <xsl:with-param name="value2" select="'InaOrganizacnaZlozkaPodniku'"/>
+                  </xsl:call-template>
+                </div>
+              </td>
+              <td class="vam" style="border-bottom:0;border-right:0;">
+                <span class="smallText" style="display:block">Iná organizačná zložka podniku</span>
+              </td>
+            </tr>
+          </table>
+        </th>
+      </tr>
+      <tr>
+        <th class="h45 vam">1. Označenie</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:OrganizacnaZlozka/ns1:Oznacenie"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="h45 vam">2. Adresa umiestnenia</th>
+        <th colspan="3"> </th>
+      </tr>
+      <tr>
+        <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:OrganizacnaZlozka/ns1:AdresaUmiestnenia/ns1:Ulica"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">b) Orientačné/súpisné číslo</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:OrganizacnaZlozka/ns1:AdresaUmiestnenia/ns1:Cislo"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">c) Názov obce</th>
+        <td class="pscCellBefore">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:OrganizacnaZlozka/ns1:AdresaUmiestnenia/ns1:Obec/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+        <th class="pscCell smallText">d) PSČ</th>
+        <td class="pscCellAfter">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:OrganizacnaZlozka/ns1:AdresaUmiestnenia/ns1:Psc"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="h45 vam">
+          3. Predmet podnikania<br/>
+          (činnosti)
+        </th>
+        <th colspan="3"> </th>
+      </tr>
+      <tr>
+        <th> </th>
+        <td class="tablePredmetPodnikania" colspan="3">
+          <table>
+            <tbody>
+              <xsl:for-each select="ns1:OrganizacnaZlozka/ns1:PredmetPodnikania">
+                <tr>
+                  <td class="tdCislo">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:PoradoveCislo"/>
+                    </xsl:call-template>
+                  </td>
+                  <td class="tdCinnost">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Cinnost"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <xsl:if test="ns1:OrganizacnaZlozka/ns1:Veduci">
+        <tr>
+          <td class="tableVeduci" colspan="4">
+
+            <xsl:for-each select="ns1:OrganizacnaZlozka/ns1:Veduci">
+              <table class="tableTemplate tab1">
+                <tr>
+                  <th class="h45 vam" style="width:194px;">4. Vedúci</th>
+                  <th class="last" colspan="3" style="width:394px;"> </th>
+                </tr>
+                <tr>
+                  <th class="smallText">a) Titul pred menom</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulPred"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">b) Meno</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Osoba/ns1:Meno"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">c) Priezvisko</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Osoba/ns1:Priezvisko"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">d) Titul za menom</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulZa"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">e) Bydlisko</th>
+                  <th class="last" colspan="3"> </th>
+                </tr>
+                <tr>
+                  <th class="smallText">e1) Názov ulice/verejného priestranstva</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Ulica"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">e2) Orientačné/súpisné číslo</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Cislo"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">e3) Názov obce</th>
+                  <td class="pscCellBefore">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Obec/ns1:Value"/>
+                    </xsl:call-template>
+                  </td>
+                  <th class="pscCell smallText">e4) PSČ</th>
+                  <td class="last pscCellAfter">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Psc"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">e5) Štát</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Stat/ns1:Value"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">f) Dátum narodenia</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="formatDate">
+                      <xsl:with-param name="DateTime" select="ns1:Osoba/ns1:DatumNarodenia"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">g) Rodné číslo</th>
+                  <td class="last" colspan="3">
+                    <xsl:call-template name="getValue">
+                      <xsl:with-param name="value" select="ns1:Osoba/ns1:RodneCislo"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="smallText">
+                    <xsl:if test="position() = last()">
+                      <xsl:attribute name="style">border-bottom:0</xsl:attribute>
+                    </xsl:if>h) Deň vzniku funkcie
+                  </th>
+                  <td class="last" colspan="3">
+                    <xsl:if test="position() = last()">
+                      <xsl:attribute name="style">border-bottom:0</xsl:attribute>
+                    </xsl:if>
+                    <xsl:call-template name="formatDate">
+                      <xsl:with-param name="DateTime" select="ns1:DenVznikuFunkcie"/>
+                    </xsl:call-template>
+                  </td>
+                </tr>
+
+              </table>
+            </xsl:for-each>
+
+          </td>
+        </tr>
+      </xsl:if>
+    </xsl:for-each>
+  </table>
+
+
+
+  <div class="page-break"/>
+  <div class="clr"> </div>
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+    <tr>
+      <th class="tableNumber">VIII</th>
+      <th class="vam">Prokúra</th>
+      <th colspan="3"> </th>
+    </tr>
+
+    <xsl:for-each select="/ns1:FUPS/ns1:Prokurista">
+      <tr>
+        <th rowspan="13"/>
+        <th class="vam">Prokurista</th>
+        <th colspan="3"> </th>
+      </tr>
+      <tr>
+        <th class="vam h45">1. Titul pred menom</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulPred"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">2. Meno</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Osoba/ns1:Meno"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">3. Priezvisko</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Osoba/ns1:Priezvisko"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">4. Titul za menom</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulZa"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">5. Bydlisko</th>
+        <th class="vam" colspan="3"> </th>
+      </tr>
+      <tr>
+        <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Ulica"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">
+          <span class="smallText1">b) Orientačné/súpisné číslo</span>
+        </th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Cislo"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">
+          <span class="vam">c) Názov obce</span>
+          <br/>
+        </th>
+        <td class="pscCellBefore">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Obec/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+        <th class="pscCell smallText">d) PSČ</th>
+        <td class="pscCellAfter">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Psc"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam smallText">e) Štát</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Stat/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">6. Dátum narodenia</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="formatDate">
+            <xsl:with-param name="DateTime" select="ns1:Osoba/ns1:DatumNarodenia"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">7. Rodné číslo</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Osoba/ns1:RodneCislo"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">8. Deň vzniku funkcie</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="formatDate">
+            <xsl:with-param name="DateTime" select="ns1:DenVznikuFunkcie"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+    </xsl:for-each>
+  </table>
+
+  <table class="tableTemplate tab1 h45">
+    <tr>
+      <th class="w44"/>
+      <th style="width:195px">
+        9. Spôsob konania prokuristu<br/>
+        (prokuristov) za podnikateľa 
+      </th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:ProkuraSposobKonania"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+  </table>
+
+  <div class="page-break"/>
+
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+    <tr>
+      <th class="tableNumber h45 vam">IX</th>
+      <th class="vam" colspan="4">
+        Spoločníci
+      </th>
+    </tr>
+    <xsl:for-each select="/ns1:FUPS/ns1:SpolocniciFO">
+    <tr>
+      <th rowspan="12"/>
+      <th class="vam" colspan="4">
+        Spoločník<br/>
+        Fyzická osoba
+      </th>
+    </tr>
+    <tr>
+      <th class="vam">1. Titul pred menom</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Osoba/ns1:TitulPred"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">2. Meno</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Osoba/ns1:Meno"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">3. Priezvisko</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Osoba/ns1:Priezvisko"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">4. Titul za menom</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Osoba/ns1:TitulZa"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">5. Bydlisko</th>
+      <th class="vam" colspan="3"> </th>
+    </tr>
+    <tr>
+      <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Ulica"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="smallText">
+        <span class="smallText1">b) Orientačné/súpisné číslo</span>
+      </th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Cislo"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="smallText">
+        <span class="vam">c) Názov obce</span>
+        <br/>
+      </th>
+      <td class="pscCellBefore">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Obec/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+      <th class="pscCell smallText">d) PSČ</th>
+      <td class="pscCellAfter">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Psc"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam smallText">e) Štát</th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Stat/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">6. Výška vkladu </th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Vklad/ns1:VyskaVkladu/ns1:Suma"/>
+        </xsl:call-template> <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Vklad/ns1:VyskaVkladu/ns1:Mena/ns1:Value"/>
+        </xsl:call-template><br/>
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Vklad/ns1:VyskaVkladu/ns1:TypVkladu/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">7. Rozsah splatenia vkladu </th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Vklad/ns1:RozsahSplatenia/ns1:Suma"/>
+        </xsl:call-template> <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Vklad/ns1:RozsahSplatenia/ns1:Mena/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    </xsl:for-each>
+  </table>
+
+  <div class="page-break"/>
+
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+    <tr>
+      <th class="vam tableNumber h45">IX</th>
+      <th class="vam" colspan="4">
+        Spoločníci
+      </th>
+    </tr>
+    <xsl:for-each select="/ns1:FUPS/ns1:SpolocniciPO">
+      <tr>
+        <th rowspan="9"/>
+        <th class="vam h25" colspan="4">
+          Spoločník<br/>
+          Právnická osoba
+        </th>
+      </tr>
+      <tr>
+        <th class="vam h45">1. Obchodné meno/názov </th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Spolocnik/ns1:ObchodneMeno"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam">2. Sídlo </th>
+        <th colspan="3"> </th>
+      </tr>
+      <tr>
+        <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Ulica"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">
+          <span class="smallText1">b) Orientačné/súpisné číslo</span>
+        </th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Cislo"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">
+          <span class="vam">c) Názov obce</span>
+          <br/>
+        </th>
+        <td class="pscCellBefore">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Obec/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+        <th class="pscCell smallText">d) PSČ</th>
+        <td class="pscCellAfter">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Psc"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam smallText">e) Štát</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Spolocnik/ns1:Adresa/ns1:Stat/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam">3. Výška vkladu  </th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Vklad/ns1:VyskaVkladu/ns1:Suma"/>
+          </xsl:call-template> <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Vklad/ns1:VyskaVkladu/ns1:Mena/ns1:Value"/>
+          </xsl:call-template><br/>
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Vklad/ns1:VyskaVkladu/ns1:TypVkladu/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">4. Rozsah splatenia vkladu  </th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Vklad/ns1:VyskaVkladu/ns1:Suma"/>
+          </xsl:call-template> <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Vklad/ns1:VyskaVkladu/ns1:Mena/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+    </xsl:for-each>
+  </table>
+
+  <div class="page-break"/>
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+    <xsl:for-each select="/ns1:FUPS/ns1:Spoluvlastnictvo">
+      <tr>
+        <th class="vam tac">X</th>
+        <th class="h45 vam" colspan="4">
+          Spoluvlastníctvo obchodného podielu
+        </th>
+      </tr>
+      <tr>
+        <th rowspan="2"/>
+        <th class="vam">1. Výška vkladu </th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyObchodnyPodel/ns1:VyskaVkladu/ns1:Suma"/>
+          </xsl:call-template> <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyObchodnyPodel/ns1:VyskaVkladu/ns1:Mena/ns1:Value"/>
+          </xsl:call-template><br/>
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyObchodnyPodel/ns1:VyskaVkladu/ns1:TypVkladu/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam">2. Rozsah splatenia vkladu </th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyObchodnyPodel/ns1:VyskaVkladu/ns1:Suma"/>
+          </xsl:call-template> <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyObchodnyPodel/ns1:VyskaVkladu/ns1:Mena/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th rowspan="10"/>
+        <th class="vam h45" colspan="4">
+          Spoločný zástupca<br/>
+          Fyzická osoba
+        </th>
+      </tr>
+      <tr>
+        <th class="vam">1. Titul pred menom</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Osoba/ns1:TitulPred"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam">2. Meno</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Osoba/ns1:Meno"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam">3. Priezvisko</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Osoba/ns1:Priezvisko"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam">4. Titul za menom</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Osoba/ns1:TitulZa"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam">5. Bydlisko</th>
+        <th class="vam" colspan="3"> </th>
+      </tr>
+      <tr>
+        <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Adresa/ns1:Ulica"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">b) Orientačné/súpisné číslo</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Adresa/ns1:Cislo"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">c) Názov obce</th>
+        <td class="pscCellBefore">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Adresa/ns1:Obec/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+        <th class="pscCell smallText">d) PSČ</th>
+        <td class="pscCellAfter">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Adresa/ns1:Psc"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam smallText">e) Štát</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaFO/ns1:Adresa/ns1:Stat/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th rowspan="7"/>
+        <th class="vam h45" colspan="4">
+          Spoločný zástupca<br/>
+          Právnická osoba
+        </th>
+      </tr>
+      <tr>
+        <th class="h45 vam">1. Obchodné meno / názov </th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaPO/ns1:ObchodneMeno"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam">2. Sídlo </th>
+        <th class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaPO/ns1:Osoba/ns1:Meno"/>
+          </xsl:call-template>
+        </th>
+      </tr>
+
+      <tr>
+        <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaPO/ns1:Adresa/ns1:Ulica"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">b) Orientačné/súpisné číslo</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaPO/ns1:Adresa/ns1:Cislo"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">c) Názov obce</th>
+        <td class="pscCellBefore">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaPO/ns1:Adresa/ns1:Obec/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+        <th class="pscCell smallText">d) PSČ</th>
+        <td class="pscCellAfter">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaPO/ns1:Adresa/ns1:Psc"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam smallText">e) Štát</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:SpolocnyZastupcaPO/ns1:Adresa/ns1:Stat/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="w44"> </th>
+        <th class="h45 vam" colspan="4">
+          Spoluvlastníci – Fyzické osoby
+        </th>
+      </tr>
+      <xsl:for-each select="ns1:SpoluvlastnikFO">
+        <tr>
+          <th rowspan="10"/>
+          <th class="vam h25" colspan="4">
+            Spoluvlastník
+          </th>
+        </tr>
+        <tr>
+          <th class="vam" style="width:195px;">1. Titul pred menom</th>
+          <td class="vam" colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulPred"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="vam">2. Meno</th>
+          <td class="vam" colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Osoba/ns1:Meno"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="vam">3. Priezvisko</th>
+          <td class="vam" colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Osoba/ns1:Priezvisko"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="vam">4. Titul za menom</th>
+          <td class="vam" colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulZa"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="vam">5. Bydlisko</th>
+          <th class="vam" colspan="3"> </th>
+        </tr>
+        <tr>
+          <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+          <td colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Ulica"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="smallText">b) Orientačné/súpisné číslo</th>
+          <td colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Cislo"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="smallText">c) Názov obce</th>
+          <td class="pscCellBefore">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Obec/ns1:Value"/>
+            </xsl:call-template>
+          </td>
+          <th class="pscCell smallText">d) PSČ</th>
+          <td class="pscCellAfter">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Psc"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="vam smallText">e) Štát</th>
+          <td colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Stat/ns1:Value"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+      </xsl:for-each>
+      <tr>
+        <th class="vam tac"> </th>
+        <th class="vam h45" colspan="4">
+          Spoluvlastníci – Právnické osoby
+        </th>
+      </tr>
+
+      <xsl:for-each select="ns1:SpoluvlastnikPO">
+        <tr>
+          <th rowspan="7"/>
+          <th class="vam h25" colspan="4">
+            Spoluvlastník
+          </th>
+        </tr>
+        <tr>
+          <th class="vam">1. Obchodné meno / názov </th>
+          <td class="vam" colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:ObchodneMeno"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="vam">2. Sídlo </th>
+          <th class="vam" colspan="3">
+          </th>
+        </tr>
+        <tr>
+          <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+          <td colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Ulica"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="smallText">b) Orientačné/súpisné číslo</th>
+          <td colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Cislo"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="smallText">c) Názov obce</th>
+          <td class="pscCellBefore">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Obec/ns1:Value"/>
+            </xsl:call-template>
+          </td>
+          <th class="pscCell smallText">d) PSČ</th>
+          <td class="pscCellAfter">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Psc"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+        <tr>
+          <th class="vam smallText">e) Štát</th>
+          <td colspan="3">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Adresa/ns1:Stat/ns1:Value"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+      </xsl:for-each>
+    </xsl:for-each>
+  </table>
+  <div class="page-break"/>
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+    <tr>
+      <th class="tableNumber h45 vam">XI</th>
+      <th class="vam" colspan="4">Dozorná rada </th>
+    </tr>
+    <xsl:for-each select="/ns1:FUPS/ns1:DozornaRada">
+    <tr>
+      <th rowspan="13"/>
+      <th class="vam h25" colspan="4">Člen dozornej rady </th>
+    </tr>
+    <tr>
+      <th class="vam">1. Titul pred menom</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulPred"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">2. Meno</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:Meno"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">3. Priezvisko</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:Priezvisko"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">4. Titul za menom</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:TitulZa"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">5. Bydlisko</th>
+      <th class="vam" colspan="3"> </th>
+    </tr>
+    <tr>
+      <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Ulica"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="smallText">
+        <span class="smallText1">b) Orientačné/súpisné číslo</span>
+      </th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Cislo"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="smallText">
+        <span class="vam">c) Názov obce</span>
+        <br/>
+      </th>
+      <td class="pscCellBefore">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Obec/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+      <th class="pscCell smallText">d) PSČ</th>
+      <td class="pscCellAfter">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Psc"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam smallText">e) Štát</th>
+      <td colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Bydlisko/ns1:Stat/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">6. Dátum narodenia</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="formatDate">
+          <xsl:with-param name="DateTime" select="ns1:Osoba/ns1:DatumNarodenia"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">7. Rodné číslo</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="ns1:Osoba/ns1:RodneCislo"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="vam">8. Deň vzniku funkcie</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="formatDate">
+          <xsl:with-param name="DateTime" select="ns1:DenVznikuFunkcie"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    </xsl:for-each>  
+
+  </table>
+  
+  <div class="page-break"/>
+  
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+    <tr>
+      <th class="tableNumber h25 vam">XII</th>
+      <th class="vam">Základné imanie</th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:ZakladneImanie/ns1:Suma"/>
+        </xsl:call-template> <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:ZakladneImanie/ns1:Mena/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+    <tr>
+      <th class="tableNumber h25">XIII</th>
+      <th class="vam">
+        Rozsah splatenia
+        základného imania
+      </th>
+      <td class="vam" colspan="3">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:RozsahSplatenia/ns1:Suma"/>
+        </xsl:call-template> <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:RozsahSplatenia/ns1:Mena/ns1:Value"/>
+        </xsl:call-template>
+      </td>
+    </tr>
+  </table>
+  
+  <div class="page-break"/>
+
+
+  <table class="tableTemplate tab1">
+    <tr>
+      <td class="w44 h45"/>
+      <th class="vam tac" style="width:195px;">ZAPISOVANÝ ÚDAJ</th>
+      <th class="vam tac" colspan="3" style="width:399px;padding:0">
+        <table class="whiteBox">
+          <tbody>
+            <tr>
+              <td>ZÁPIS</td>
+              <td class="tdWhiteBox"/>
+            </tr>
+          </tbody>
+        </table>
+      </th>
+    </tr>
+    <tr>
+      <th class="tableNumber" rowspan="3" style="padding-top:16px;">X</th>
+      <th class="h45 vam" colspan="4">Splynutie/rozdelenie </th>
+    </tr>
+    <tr>
+      <th class="vam" rowspan="2">
+        Spoločnosť vznikla v dôsledku
+      </th>
+      <th class="innerTable" colspan="3">
+        <table class="innerTable">
+          <tr>
+            <td style="background:#fff;width:20px;border-right:1px solid #000">
+              <div class="whiteRect">
+                <xsl:call-template name="compareValuesToCheckField">
+                  <xsl:with-param name="value1" select="/ns1:FUPS/ns1:SplynutieEnum"/>
+                  <xsl:with-param name="value2" select="'Zlucenie'"/>
+                </xsl:call-template>
+              </div>
+            </td>
+            <td class="vam" style="border-bottom:0;border-right:0;">
+              <span class="smallText" style="display:block">splynutia</span>
+            </td>
+          </tr>
+        </table>
+      </th>
+    </tr>
+    <tr>
+      <th class="innerTable" colspan="3">
+        <table class="innerTable">
+          <tr>
+            <td style="background:#fff;width:20px;border-right:1px solid #000">
+              <div class="whiteRect">
+                <xsl:call-template name="compareValuesToCheckField">
+                  <xsl:with-param name="value1" select="/ns1:FUPS/ns1:SplynutieEnum"/>
+                  <xsl:with-param name="value2" select="'Rozdelenie'"/>
+                </xsl:call-template>
+              </div>
+            </td>
+            <td class="vam" style="border-bottom:0;border-right:0;">
+              <span class="smallText" style="display:block">rozdelenia</span>
+            </td>
+          </tr>
+        </table>
+      </th>
+    </tr>
+
+    <xsl:for-each select="/ns1:FUPS/ns1:SplynutiePO">
+      <tr>
+        <th rowspan="9"/>
+        <th class="vam" rowspan="2">
+          Zanikajúca spoločnosť<br/>
+          (spoločnosti)
+        </th>
+        <th class="innerTable" colspan="3">
+          <table class="innerTable">
+            <tr>
+              <td style="background:#fff;width:20px;border-right:1px solid #000">
+                <div class="whiteRect">
+                  <xsl:call-template name="compareValuesToCheckField">
+                    <xsl:with-param name="value1" select="@slovZahrEnum"/>
+                    <xsl:with-param name="value2" select="'Slovenska'"/>
+                  </xsl:call-template>
+                </div>
+              </td>
+              <td class="vam" style="border-bottom:0;border-right:0;">
+                <span class="smallText" style="display:block">slovenská zanikajúca spoločnosť</span>
+              </td>
+            </tr>
+          </table>
+        </th>
+      </tr>
+      <tr>
+        <th class="innerTable" colspan="3">
+          <table class="innerTable">
+            <tr>
+              <td style="background:#fff;width:20px;border-right:1px solid #000">
+                <div class="whiteRect">
+                  <xsl:call-template name="compareValuesToCheckField">
+                    <xsl:with-param name="value1" select="@slovZahrEnum"/>
+                    <xsl:with-param name="value2" select="'Zahranicna'"/>
+                  </xsl:call-template>
+                </div>
+              </td>
+              <td class="vam" style="border-bottom:0;border-right:0;">
+                <span class="smallText" style="display:block">zahraničná zanikajúca spoločnosť</span>
+              </td>
+            </tr>
+          </table>
+        </th>
+      </tr>
+      <tr>
+        <th class="vam h45">1. Obchodné meno</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:ObchodneMeno"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">2. Sídlo </th>
+        <th colspan="3"> </th>
+      </tr>
+      <tr>
+        <th class="smallText">a) Názov ulice/verejného priestranstva</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Adresa/ns1:Ulica"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">
+          <span class="smallText1">b) Orientačné/súpisné číslo</span>
+        </th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Adresa/ns1:Cislo"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="smallText">
+          <span class="vam">c) Názov obce</span>
+          <br/>
+        </th>
+        <td class="pscCellBefore">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Adresa/ns1:Obec/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+        <th class="pscCell smallText" style="white-space:nowrap">d) PSČ</th>
+        <td class="pscCellAfter">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Adresa/ns1:Psc"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam smallText">e) Štát</th>
+        <td colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Adresa/ns1:Stat/ns1:Value"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+      <tr>
+        <th class="vam h45">3. IČO</th>
+        <td class="vam" colspan="3">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="ns1:Ico"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+    </xsl:for-each>
+  </table>
+  <div class="page-break"/>
+  
+  <div class="box1">
+    Údaje obsiahnuté v tomto návrhu na zápis spoločnosti s ručením obmedzeným
+    do obchodného registra navrhujem (navrhujeme) zapísať k <span class="txtBox">
+      <xsl:call-template name="formatDate">
+        <xsl:with-param name="DateTime" select="/ns1:FUPS/ns1:ZapisatK"/>
+        <xsl:with-param name="OutputFormat" select="'d'"/>
+      </xsl:call-template>
+    </span>.<span class="txtBox">
+      <xsl:call-template name="formatDate">
+        <xsl:with-param name="DateTime" select="/ns1:FUPS/ns1:ZapisatK"/>
+        <xsl:with-param name="OutputFormat" select="'m'"/>
+      </xsl:call-template>
+    </span>.<span class="txtBox">
+      <xsl:call-template name="formatDate">
+        <xsl:with-param name="DateTime" select="/ns1:FUPS/ns1:ZapisatK"/>
+        <xsl:with-param name="OutputFormat" select="'Y'"/>
+      </xsl:call-template>
+    </span>.
+  </div>
+
+  <p>
+    <strong>
+
+      PRÍLOHY K NÁVRHU NA ZÁPIS SPOLOČNOSTI S RUČENÍM OBMEDZENÝM
+      DO OBCHODNÉHO REGISTRA:
+
+    </strong>
+  </p>
+
+
+  <table class="tableTemplate">
+    <thead>
+      <tr>
+        <th style="width:100px;">Poradové číslo</th>
+        <th>Názov prílohy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <xsl:for-each select="/ns1:FUPS/ns1:PrilohyKNavrhu">
+        <tr>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:poradoveCislo"/>
+            </xsl:call-template>
+          </td>
+          <td>
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Nazov"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+      </xsl:for-each>
+    </tbody>
+
+  </table>
+
+
+  <div class="box2">
+
+    <p>
+      Počet listov, z ktorých pozostáva návrh na zápis spoločnosti s ručením obmedzeným
+      do obchodného registra (vrátane doplnkových listov): <br/>
+      <span class="txtBox b2px p20px">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:PocetListov"/>
+        </xsl:call-template>
+      </span>
+    </p>
+
+    <p>
+      Počet príloh (listín) priložených k návrhu na zápis spoločnosti s ručením obmedzeným
+      do obchodného registra:    <br/>
+      <span class="txtBox b2px p20px">
+        <xsl:call-template name="getValue">
+          <xsl:with-param name="value" select="/ns1:FUPS/ns1:PocetPriloh"/>
+        </xsl:call-template>
+      </span>
+    </p>
+
+  </div>
+
+
+  <div class="page-break"/>
+
+  <div class="box1" style="margin-bottom:30px;">
+    Vyhlasujem (vyhlasujeme), že všetky údaje uvedené v tomto návrhu na zápis spoločnosti
+    s ručením obmedzeným do obchodného registra a všetky prílohy priložené k návrhu
+    na zápis sú správne a úplné.
+  </div>
+
+  <table class="tableTemplate" style="margin-bottom:35px;">
+
+    <thead>
+      <tr>
+        <th style="text-align:left;">Spoločnosť s ručením obmedzeným  </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td class="h45">
+          <xsl:call-template name="getValue">
+            <xsl:with-param name="value" select="/ns1:FUPS/ns1:Spolocnost"/>
+          </xsl:call-template>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+
+  <table class="tableTemplate" style="margin-bottom:70px;">
+
+    <thead>
+      <tr>
+        <th class="vam" style="width:51px;">Titul pred menom</th>
+        <th class="vam" style="width:131px;">Meno</th>
+        <th class="vam" style="width:131px;">Priezvisko</th>
+        <th class="vam" style="width:51px;">Titul za menom</th>
+        <th class="vam" style="width:126px;">Podpis</th>
+        <th class="vam" style="width:126px;">Osvedčenie podpisu</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <xsl:for-each select="/ns1:FUPS/ns1:Podpis">
+        <tr>
+          <td class="h45 vam">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:TitulPred"/>
+            </xsl:call-template>
+          </td>
+          <td class="h45 vam">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Meno"/>
+            </xsl:call-template>
+          </td>
+          <td class="h45 vam">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:Priezvisko"/>
+            </xsl:call-template>
+          </td>
+          <td class="h45 vam">
+            <xsl:call-template name="getValue">
+              <xsl:with-param name="value" select="ns1:TitulZa"/>
+            </xsl:call-template>
+          </td>
+          <td> </td>
+          <td> </td>
+        </tr>
+      </xsl:for-each>
+    </tbody>
+
+  </table>
+  <p class="box4" style="margin-bottom:35px;">
+    V <span class="txtBox" style="width:200px">
+      <xsl:call-template name="getValue">
+        <xsl:with-param name="value" select="/ns1:FUPS/ns1:V"/>
+      </xsl:call-template>
+    </span> <span class="textDen">dňa</span> <span class="txtBox" style="min-width:10px">
+      <xsl:call-template name="formatDate">
+        <xsl:with-param name="DateTime" select="/ns1:FUPS/ns1:Dna"/>
+        <xsl:with-param name="OutputFormat" select="'d'"/>
+      </xsl:call-template>
+    </span>.<span class="txtBox" style="min-width:10px">
+      <xsl:call-template name="formatDate">
+        <xsl:with-param name="DateTime" select="/ns1:FUPS/ns1:Dna"/>
+        <xsl:with-param name="OutputFormat" select="'m'"/>
+      </xsl:call-template>
+    </span>.<span class="txtBox" style="min-width:10px">
+      <xsl:call-template name="formatDate">
+        <xsl:with-param name="DateTime" select="/ns1:FUPS/ns1:Dna"/>
+        <xsl:with-param name="OutputFormat" select="'Y'"/>
+      </xsl:call-template>
+    </span>
+  </p>
+
+
+  <div class="box3" style="text-align:left">
+    <p>
+      <strong>Požiadavka na osobné prevzatie/doručovanie písomností</strong>
+    </p>
+    <p>Po vykonaní zápisu/odmietnutí vykonania zápisu:</p>
+    <table class="clearTable" style="width:auto">
+      <tbody>
+        <tr>
+          <td>I. žiadam o doručenie potvrdenia o zápise/výpisu/oznámenia o odmietnutí vykonania zápisu poštou</td>
+          <td style="text-align:right">
+            <span class="txtBox">
+              <xsl:if test="/ns1:FUPS/ns1:Postou/text() = 'true'">
+                X
+              </xsl:if>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>II. potvrdenie o zápise/výpis/oznámenie o odmietnutí vykonania zápisu si prídem vyzdvihnúť na súd </td>
+          <td style="text-align:right">
+            <span class="txtBox">
+              <xsl:if test="/ns1:FUPS/ns1:Osobne/text() = 'true'">
+                X
+              </xsl:if>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="clr"/>
+
+</div>
+
+</body>
+</html>
+</xsl:template>
+</xsl:stylesheet></ds:Transform></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>O3ktF+UMo6vrE6Cte2jUC1zv7PHI4r5hBdKUik+iYXs=</ds:DigestValue></ds:Reference><ds:Reference Id="Reference_SignedPropertiesID" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedPropertiesID"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>cynz3dFgqCrVBHtGW49QeNx4UVAyRZelPn6Sf5G1zsc=</ds:DigestValue></ds:Reference><ds:Reference Id="Reference_keyInfoData" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#keyInfoData"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>k3cBB3VKAtX0j9r5w+IFdxLrVe173Y/lV3vQZrFCWZU=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="epSignatureValue">cQW2ZWB5roiKeKBiVEfK4N6xgi/Tkj32oOB/xLnNW+ttPbx1JiMjxdHg3Acd7ppDpeaMbaacfWZC
+yjDzIfxG1yBEIzKHgWG5pjuGR5WeJF7qlOyPOQxsrfiloYb9lgky7OFd1Fki2EeY1Ymrds2iAwO/
+4wLOeeIVarMn6XWxvRXynedaVeZNddCuvceU6AJ5G+nCTbRb5C+SuUw5hCBEoKrzfSDN024sDEuv
+/RQR68raU1VjB3VZLpt9PN43xYcdWl77Aysm4apUcnUaWO5x8Eu16cseq6PO9e78FFFzaxF9GsZb
+tZ4ntA9nIAkSGaSeXlJ0xoWeOUzqXCkt/BQdPw==</ds:SignatureValue><ds:KeyInfo Id="keyInfoData"><ds:X509Data><ds:X509Certificate>MIIHKTCCBRGgAwIBAgIEAQARejANBgkqhkiG9w0BAQsFADBjMQswCQYDVQQGEwJTSzETMBEGA1UE
+BwwKQnJhdGlzbGF2YTETMBEGA1UECgwKRGlzaWcgYS5zLjEXMBUGA1UECwwOQUNBLTMwNy0yMDA3
+LTIxETAPBgNVBAMMCENBIERpc2lnMB4XDTEwMDYxNTEyMzgyMFoXDTExMDYxNTEyMzgyMFowgZ4x
+HzAdBgNVBAMMFkluZy4gRnJhbnRpc2VrIEh2aXpkYWsxEjAQBgNVBCoMCUZyYW50aXNlazEQMA4G
+A1UEBAwHSHZpemRhazEUMBIGA1UECgwLQXJkYWNvIGEucy4xFzAVBgNVBAcMDlBhc3RpbmEgWmF2
+YWRhMQswCQYDVQQGEwJTSzEZMBcGA1UEBRMQUE5PU0sgODEwOTE0ODQyMTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAIinF+HtwnGXDHV0lB8LZrwSECGJhwo+bLNpwouCAEmTJer7mcEu
+t1twPCEzLXpF3xWCsX+SsfbFnfTXTj5W5wzYZkgYy+YUQqJ+XeGBFHxI6KMiicSd6IRUY7OMqvBN
+EUuzaRpP2xsvX+tJgbGq+LlM26xY++J5oP+DdfKV5lv3j7/qkZ2opgzNAaEvYb7tSi16aZH/QAFB
+ryzv/XL0EkchBVYQ8KX+vQ/23GZugkqEvHK+3LHUoWHryTfi/M5X02NtiS4TkTpEUG9gpen9u2p+
+Et8oJIXzSOL2wv7Qvb8+DJiY6t6Mi94t9aMDBxALxbrOUAxiA/yHdqLFJ/WEL48CAwEAAaOCAqcw
+ggKjMIGpBggrBgEFBQcBAQSBnDCBmTAkBggrBgEFBQcwAYYYaHR0cDovL2FjYS1vY3NwLmRpc2ln
+LnNrMDgGCCsGAQUFBzAChixodHRwOi8vd3d3LmRpc2lnLnNrL2FjYTIvY2VydC9hY2EyX2Rpc2ln
+LnA3YzA3BggrBgEFBQcwAoYraHR0cDovL2NhLmRpc2lnLnNrL2FjYTIvY2VydC9hY2EyX2Rpc2ln
+LnA3YzAdBgNVHQ4EFgQUtKmC3LF9em/KVfGUPZYwXnE0/8gwgZgGA1UdIwSBkDCBjYAUFX9fXwhp
+KsZwA6H6UWpNrI1fmFOhcaRvMG0xCzAJBgNVBAYTAlNLMRMwEQYDVQQHDApCcmF0aXNsYXZhMSIw
+IAYDVQQKDBlOYXJvZG55IGJlenBlY25vc3RueSB1cmFkMQ4wDAYDVQQLDAVTSUJFUDEVMBMGA1UE
+AwwMS0NBIE5CVSBTUiAzggIA9DAMBgNVHRMBAf8EAjAAMGAGA1UdIARZMFcwDwYNK4EekZmEBQAA
+AAECAjBEBg4rgR6Rk+YKAAABAAECADAyMDAGCCsGAQUFBwIBFiRodHRwOi8vd3d3LmRpc2lnLnNr
+L19wZGYvY3BfYWNhMi5wZGYwbgYDVR0fBGcwZTAxoC+gLYYraHR0cDovL3d3dy5kaXNpZy5zay9h
+Y2EyL2NybC9hY2EyX2Rpc2lnLmNybDAwoC6gLIYqaHR0cDovL2NhLmRpc2lnLnNrL2FjYTIvY3Js
+L2FjYTJfZGlzaWcuY3JsMA4GA1UdDwEB/wQEAwIGwDAiBggrBgEFBQcBAwQWMBQwCAYGBACORgEB
+MAgGBgQAjkYBBDAnBgNVHREEIDAegRxmcmFudGlzZWsuaHZpemRha0BhcmRhY28uY29tMA0GCSqG
+SIb3DQEBCwUAA4ICAQCItZ4FVm8+Rt3DkIQ2YT3ltWpzT8zw51hcVp4kmYOpNO10kAmS/AIswF94
+Rt3gQ8rvymPblO7d4Ulxi/t9dogu04VqRcJN+le6OkPTenry7zw+CtWt+0cKU1xRoKtKvtXBcJ3U
+9ZKFseYWBoqWrYm6ggRdFT8KtCuuvNIvjyzXRXW+dv0Pd8849+n/6dZFAkcIQ4UTUNHOThYVHs7G
+CTYlw+Nb54UfJQo0oMtG0UE0wvr43ON9lZw6O5Ai5CeVdl/SgQjsy+AsLjrjTax8vy0jYqjqpDKq
+V2sZ5EtIemVCT5jGoo3jFzvEAuyLi1ffq1AHpGlIG20Wqbgwsc4OrtUFwKmlpyTEFbpt0/zZcb4L
+lf1ERGfzcJmVSAg0ggqnbpZdN5W62n90JrS1gdzPWrLDg82RO77da1q/oGAU7qlOhdIJThqKB8op
+uYUWt9n4chwQuQ0mgiLRfFsEg7hhMnz4rBd0Q1//kkZ/EhO1eeE2qezO9lP/MScmfvpdmPWsZS87
+DGHF8qkzL1pu8VUgJT4/irkmK2ZeNbZZqF2IH5Yx5E1AjLOxkeKzT4AEOnjBSqmhXIFywMAO0p61
+L1c7OmiAAhQLN/h+N3thWE27LBMoHWMA3ABauA6nmYdr0cwepjhS4R2JU1DoYP/ENhwLhJI33bgX
+GWhfRClcdYjhZsR7/A==</ds:X509Certificate></ds:X509Data><ds:X509Data><ds:X509Certificate>MIIJADCCBuigAwIBAgICAPQwDQYJKoZIhvcNAQELBQAwbTELMAkGA1UEBhMCU0sxEzARBgNVBAcM
+CkJyYXRpc2xhdmExIjAgBgNVBAoMGU5hcm9kbnkgYmV6cGVjbm9zdG55IHVyYWQxDjAMBgNVBAsM
+BVNJQkVQMRUwEwYDVQQDDAxLQ0EgTkJVIFNSIDMwHhcNMDkxMjA4MTI0NzMwWhcNMTkxMjA4MTI0
+NjI1WjBjMQswCQYDVQQGEwJTSzETMBEGA1UEBwwKQnJhdGlzbGF2YTETMBEGA1UECgwKRGlzaWcg
+YS5zLjEXMBUGA1UECwwOQUNBLTMwNy0yMDA3LTIxETAPBgNVBAMMCENBIERpc2lnMIICIjANBgkq
+hkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAvgUCciy3pcZY1kYAb2ih6SNNti72VBOScEiioCgt5noA
+5ZT5hmnFxdSKnPhIZ3Yxrgo+sCcXd/9XOZBRuAo73Sc0ipsp+zK8Z0/H0QTuEJo/s/O62xK7uS9F
+vOVY4qnR5NkTJC8aE/VlOaIHgWH9bnh5aegfiKMoT9BPs/pE+V1KheToKI7DK9kqWu//kibSOZPi
+D5lIwkRVRJo42AnswYXK5nLY12vrZYoxkBqkdFBqKtO/hNSCoEdNNFQZ5zfKUM3euaIeZ+ysJX2R
+rAVkXQTyoypUGA0pkdLv3bwE4ny3E+j5Fn0fOvn5q+Jh57ohHwQ4raO1VZc8Wx/DwZH1E64WEMT6
+zPf8b2W7wZrYcLAF4ifaOxLKN1yeOQjLL0No+1sLjc7540cxRWR7O5uamrfGRvqJLYkxcOBYRYq0
+RtTKd2Xd4axE5IP9DTXDTlbp+nQMmJMKTGj+/NpWkLUGV5A7V8TEmZ08SKS31PlxGfgDPJ+07N82
+eGY5FpBBDzAHg/cPbUFr0ah9892aN3Z4cnmar3Slx1nrffJouwGGjx0bYaKxJCmwjrUYHr84Qrfs
+0ALcJQDczrQmsuzba+eEOUz2WAfSmTjudxHvFmawhH9RnZFBwV2J4nbK06qvPB4WaN5e1PrBuYAz
+bwVeiH++nfMyV8D7ou8EsAcLqt1Ko5sCAwEAAaOCA7IwggOuMBIGA1UdEwEB/wQIMAYBAf8CAQEw
+UwYDVR0gAQH/BEkwRzBFBg0rgR6RmYQFAAAAAQICMDQwMgYIKwYBBQUHAgEWJmh0dHA6Ly9lcC5u
+YnVzci5zay9rY2EvZG9jL2tjYV9jcHMucGRmMEIGA1UdIQQ7MDkwFwYNK4EekZmEBQAAAAECAgYG
+BACLMAEBMB4GDSuBHpGZhAUAAAABAgIGDSuBHpGZhAUAAAABAgIwDwYDVR0kAQH/BAUwA4ABADCC
+AUAGCCsGAQUFBwEBBIIBMjCCAS4wPwYIKwYBBQUHMAKGM2h0dHA6Ly9lcC5uYnVzci5zay9rY2Ev
+Y2VydHMva2NhMy9rY2FuYnVzcjNfcDdjLnA3YzB6BggrBgEFBQcwAoZubGRhcDovL2VwLm5idXNy
+LnNrL2NuPUtDQSBOQlUgU1IgMyxvdT1TSUJFUCxvPU5hcm9kbnkgYmV6cGVjbm9zdG55IHVyYWQs
+bD1CcmF0aXNsYXZhLGM9U0s/Y2FDZXJ0aWZpY2F0ZTtiaW5hcnkwbwYIKwYBBQUHMAKGY2xkYXA6
+Ly8vY249S0NBIE5CVSBTUiAzLG91PVNJQkVQLG89TmFyb2RueSBiZXpwZWNub3N0bnkgdXJhZCxs
+PUJyYXRpc2xhdmEsYz1TSz9jYUNlcnRpZmljYXRlO2JpbmFyeTAOBgNVHQ8BAf8EBAMCAQYwHwYD
+VR0jBBgwFoAUf/E9IcKXWi6XBw6xaYMl/SGGPgcwggFYBgNVHR8EggFPMIIBSzAwoC6gLIYqaHR0
+cDovL2VwLm5idXNyLnNrL2tjYS9jcmxzMy9rY2FuYnVzcjMuY3JsMIGQoIGNoIGKhoGHbGRhcDov
+L2VwLm5idXNyLnNrL2NuJTNkS0NBJTIwTkJVJTIwU1IlMjAzLG91JTNkU0lCRVAsbyUzZE5hcm9k
+bnklMjBiZXpwZWNub3N0bnklMjB1cmFkLGwlM2RCcmF0aXNsYXZhLGMlM2RTSz9jZXJ0aWZpY2F0
+ZVJldm9jYXRpb25MaXN0MIGDoIGAoH6GfGxkYXA6Ly8vY24lM2RLQ0ElMjBOQlUlMjBTUiUyMDMs
+b3UlM2RTSUJFUCxvJTNkTmFyb2RueSUyMGJlenBlY25vc3RueSUyMHVyYWQsbCUzZEJyYXRpc2xh
+dmEsYyUzZFNLP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3QwHQYDVR0OBBYEFBV/X18IaSrGcAOh
++lFqTayNX5hTMA0GCSqGSIb3DQEBCwUAA4ICAQDZaSXqjtnmj/cLVEU2vly8bFcjkkcVJB3e9nG6
+nBSyNwpS/IMg2Z5YMccSRiynXjPCSNP+4g4nMwW3ZMXJJ+TBjXDlUiwUocedaO3jxFMG8BFEAI3q
+iREecmOcp3Zwd82ZLpUof8qfXthWtqlXABE97dA4XIyfbt0DiNvP03moRLa8gtwQSN7QyLFUNCrl
+RNoH5DskDnRpHJzCJ4hNpcaghNLpk1mEHzjb8MPruOzhUtEib/WC0tjrgqbMz9c3OT0R1ikiS0Lo
+U+IsNaQgpXVt/UTkTtYeX+sxj1dstlQuV5W1nzA1Ep3U760xqua73pgvb+oxLtm+0QfZkIIhpCPx
+dIRQRfbG/nigjqmuwdF7IOhpTm0CzNHxtvI7XZDUq3rybkTqzZ4rFnNzqsJNUNZdkBEu3Tv/ftjH
+yFN1LEuLn6PSHHd+bMI8UZBv7dIUYoBiL1Q9ALAh/l30wcinU/ZIG2mGwwUs8KX7fwrg+NSL0PcK
+atQflYz96bJ7IcKVSB/ifSXOVAwLOq9e/eV/fXf/FjoXtKYw3FcBx6XA5NJfv/Ns5Ii0ASz0OxSs
+C3n01Ix+tnUZ31mv2ZXYF2F0mECNxPYUCFfiGFyIgw7puJKOVkJ92slDk+HORGx0LGzCKH2oNe0a
+F81fWkjMiU5uRHCEFNVskNfcEgpaMq82hrEwTQ==</ds:X509Certificate></ds:X509Data><ds:X509Data><ds:X509Certificate>MIIIiTCCBnGgAwIBAgIBATANBgkqhkiG9w0BAQsFADBtMQswCQYDVQQGEwJTSzETMBEGA1UEBwwK
+QnJhdGlzbGF2YTEiMCAGA1UECgwZTmFyb2RueSBiZXpwZWNub3N0bnkgdXJhZDEOMAwGA1UECwwF
+U0lCRVAxFTATBgNVBAMMDEtDQSBOQlUgU1IgMzAeFw0wOTExMDYwOTU5MzlaFw0yNTExMDYwNzI5
+MDlaMG0xCzAJBgNVBAYTAlNLMRMwEQYDVQQHDApCcmF0aXNsYXZhMSIwIAYDVQQKDBlOYXJvZG55
+IGJlenBlY25vc3RueSB1cmFkMQ4wDAYDVQQLDAVTSUJFUDEVMBMGA1UEAwwMS0NBIE5CVSBTUiAz
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA26rQjy9KlxLVuet9WdyDXIsxF/Llbl7O
+LNLFJ9xn6rOO8NcFIZfSlA1USbEfK+3kMJyNYJNyFi8OGQq3vv9/yRjJ5EARzVlns4ROhI/nxEah
+u4ET4VxVuyO5h0fmyJiGdFwJIPzFUxXYd2Z+u2OpLbNLynj4HG9k2CK6p5TB0CXzj4MUr7rbXF0s
+V+J3iQwcFSJol8C4gGln9wC4czC44jHWfZUSvQ3vK9hrSBbJJ3bYLZV/RawKvR4SkWDxnFiOti7u
+jULrWpfkgiCo2TDV4NSGsaGeXEIzoBShYRtppibHjmuLyFwZmvggY2/ux+EVwt6bgrlftQLpORF2
+rTQAdt10OyZNuMRphkKuDwgd1EhK4vW9XubLNbBCDBRhHG8dp7Vj/WOIVJPuQKR31O2ngnNiV4It
+FLfVTU6h54/IgN4WDIM72Ak75yVInkqUbq1uYeHI375wIVUR1eLkW1FusT+wMYvVApZKg/0GX6lN
+LRmpQOOFv7iPXaoO4YSN761PkHJf5qJVyYS8dCM/ecpATRKR/RfdJSNmHcPHea8U+Zr5v+0f9DkW
+J/zwzLAWNdU34C4s1LBmLA6uGAGfj8uesQ+5GRKCDcZwUA195XLN2o0JYner9ZY5L+DBTgjbxocx
+ey55qvsEqWhiJO0KwkgwM//tHiO5WxS/RW6k1ts16OMCAwEAAaOCAzIwggMuMFAGA1UdIARJMEcw
+RQYNK4EekZmEBQAAAAECAjA0MDIGCCsGAQUFBwIBFiZodHRwOi8vZXAubmJ1c3Iuc2sva2NhL2Rv
+Yy9rY2FfY3BzLnBkZjAPBgNVHRMBAf8EBTADAQH/MIIBWAYDVR0fBIIBTzCCAUswMKAuoCyGKmh0
+dHA6Ly9lcC5uYnVzci5zay9rY2EvY3JsczMva2NhbmJ1c3IzLmNybDCBkKCBjaCBioaBh2xkYXA6
+Ly9lcC5uYnVzci5zay9jbiUzZEtDQSUyME5CVSUyMFNSJTIwMyxvdSUzZFNJQkVQLG8lM2ROYXJv
+ZG55JTIwYmV6cGVjbm9zdG55JTIwdXJhZCxsJTNkQnJhdGlzbGF2YSxjJTNkU0s/Y2VydGlmaWNh
+dGVSZXZvY2F0aW9uTGlzdDCBg6CBgKB+hnxsZGFwOi8vL2NuJTNkS0NBJTIwTkJVJTIwU1IlMjAz
+LG91JTNkU0lCRVAsbyUzZE5hcm9kbnklMjBiZXpwZWNub3N0bnklMjB1cmFkLGwlM2RCcmF0aXNs
+YXZhLGMlM2RTSz9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0MIIBPAYIKwYBBQUHAQsEggEuMIIB
+KjA7BggrBgEFBQcwBYYvaHR0cDovL2VwLm5idXNyLnNrL2tjYS9jZXJ0cy9rY2EzL2tjYW5idXNy
+My5wN2MwegYIKwYBBQUHMAWGbmxkYXA6Ly9lcC5uYnVzci5zay9jbj1LQ0EgTkJVIFNSIDMsb3U9
+U0lCRVAsbz1OYXJvZG55IGJlenBlY25vc3RueSB1cmFkLGw9QnJhdGlzbGF2YSxjPVNLP2NhQ2Vy
+dGlmaWNhdGU7YmluYXJ5MG8GCCsGAQUFBzAFhmNsZGFwOi8vL2NuPUtDQSBOQlUgU1IgMyxvdT1T
+SUJFUCxvPU5hcm9kbnkgYmV6cGVjbm9zdG55IHVyYWQsbD1CcmF0aXNsYXZhLGM9U0s/Y2FDZXJ0
+aWZpY2F0ZTtiaW5hcnkwDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBR/8T0hwpdaLpcHDrFpgyX9
+IYY+BzANBgkqhkiG9w0BAQsFAAOCAgEANtv5EullQrKjuYnue9kecm9voLAnwqLqip4XEB22msgA
+uIrLkEteMt61k/BFgthXau9fBwD9CXu3qwTjtf+fyTgbU1aVR0b/ByzTbmkp179lQ5S8XOnawS95
+67JWNHaNiRW4XNN3WbQSsIfxBo5Vs1e0uW0GadTIXaRgMxwiWIpobd3nu1PbWlYPgi15dwRY4uSf
+jNQ1HFbVVgefi6Z4O32YKzxV38N+Os7uVsVcniyvI2Xo+MbUVzmdF2ExNvuguf06jekc/VfHSFY5
+zs1sMJyZI1aYmkbthQIHIQV5sK3/Bqv89I8Zx2CBwVTM/dgzzcdsNvh0RWkb3qK9tVqhJya2kGCF
+CD+h6Cya1d6TE4aWDub1dAX4L1w1lqdawG4rnz+HhoG5ZioUFzNdFJEYJCdCRcbrG0DsO25In1GZ
+VbO6mhWcof6vwKW4cTknKi09MUe5l1q5oKu1VsIzDimymUe0B2sG5yWnkCYz91BaYQdabr11Flwi
+KriMNzlXcd4FC/o6MvPNPvUWzkiEV9wg82uztiKANqRaFYcO8sHYajx4IY1kELi9TUectuWL2Eja
+Np9OJnbL2YXCVemtb9PUYdZG+gWpH5DlEAxhsMpY+qH7x1sunu4NtwIZmdBKZG76MDwz0mCPgmYS
+ous91QQBqeThl3hGnliUk8fF2aNJesA=</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object Id="SignedDataObject"><ns1:FUPS xmlns:dfs="http://schemas.microsoft.com/office/infopath/2003/dataFormSolution" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:my="http://schemas.microsoft.com/office/infopath/2003/myXSD/2010-02-19T13:35:51" xmlns:ns1="http://www.justice.gov.sk/Forms" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:tns="http://www.justice.gov.sk/FormsEnums" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xd="http://schemas.microsoft.com/office/infopath/2003" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.justice.gov.sk/Forms http://192.108.125.214/ORForms/Transformations/1.4.0.6/FUPS.xsd">
+  <ns1:IdentifikacneUdajeFormulara>
+    <ns1:Nazov/>
+    <ns1:IdentifikatorMFSR/>
+    <ns1:Verzia>1.0.0.294</ns1:Verzia>
+    <ns1:Popis xsi:nil="true"/>
+    <ns1:NazovGaranta/>
+    <ns1:PlatnostOd xsi:nil="true"/>
+    <ns1:PlatnostDo xsi:nil="true"/>
+  </ns1:IdentifikacneUdajeFormulara>
+  <ns1:InfoPathData>
+    <ns1:ID>7d4e3488-cc42-4dab-82c5-eef8b315fad6</ns1:ID>
+    <ns1:Message/>
+    <ns1:BinaryIn xsi:nil="true"/>
+    <ns1:BinaryOut xsi:nil="true"/>
+    <ns1:ValidationResult>0</ns1:ValidationResult>
+    <ns1:ShowWarnings>true</ns1:ShowWarnings>
+  </ns1:InfoPathData>
+  <ns1:ObchodnyRegister>
+    <ns1:OkresnySud>Bratislava I</ns1:OkresnySud>
+    <ns1:Ulica>Zahradnícka</ns1:Ulica>
+    <ns1:Cislo>10</ns1:Cislo>
+    <ns1:Obec>Bratislava</ns1:Obec>
+    <ns1:Psc>81244</ns1:Psc>
+    <ns1:Id>2</ns1:Id>
+    <ns1:Kod>B</ns1:Kod>
+  </ns1:ObchodnyRegister>
+  <ns1:ZapisatK xsi:nil="true"/>
+  <ns1:PrilohyKNavrhu>
+    <ns1:poradoveCislo>1</ns1:poradoveCislo>
+    <ns1:Nazov>Prvá mrkva</ns1:Nazov>
+  </ns1:PrilohyKNavrhu>
+  <ns1:PrilohyKNavrhu>
+    <ns1:poradoveCislo>2</ns1:poradoveCislo>
+    <ns1:Nazov>Druhá mrkva</ns1:Nazov>
+  </ns1:PrilohyKNavrhu>
+  <ns1:PocetListov xsi:nil="true"/>
+  <ns1:PocetPriloh xsi:nil="true"/>
+  <ns1:Spolocnost>Veľká mrkvová</ns1:Spolocnost>
+  <ns1:V>Modre</ns1:V>
+  <ns1:Dna>2010-04-19</ns1:Dna>
+  <ns1:Postou>true</ns1:Postou>
+  <ns1:Osobne>false</ns1:Osobne>
+  <ns1:NavrhovatelFO>
+    <ns1:Osoba>
+      <ns1:TitulPred/>
+      <ns1:Meno>Jozef</ns1:Meno>
+      <ns1:Priezvisko>Mrkva</ns1:Priezvisko>
+      <ns1:TitulZa/>
+      <ns1:DatumNarodenia xsi:nil="true"/>
+      <ns1:RodneCislo/>
+    </ns1:Osoba>
+    <ns1:Adresa>
+      <ns1:Ulica/>
+      <ns1:Cislo>111</ns1:Cislo>
+      <ns1:Obec>
+        <ns1:Id>20000825</ns1:Id>
+        <ns1:StatId>20000315</ns1:StatId>
+        <ns1:Value>Modra</ns1:Value>
+        <ns1:Obce/>
+      </ns1:Obec>
+      <ns1:Psc>12345</ns1:Psc>
+      <ns1:Stat>
+        <ns1:Id>20000315</ns1:Id>
+        <ns1:Value>Slovenská republika</ns1:Value>
+      </ns1:Stat>
+    </ns1:Adresa>
+  </ns1:NavrhovatelFO>
+  <ns1:ObchodneMeno>Veľká mrkvová</ns1:ObchodneMeno>
+  <ns1:Sidlo>
+    <ns1:Ulica>Mrkvičková</ns1:Ulica>
+    <ns1:Cislo>2</ns1:Cislo>
+    <ns1:Obec>
+      <ns1:Id>20000825</ns1:Id>
+      <ns1:StatId>20000315</ns1:StatId>
+      <ns1:Value>Modra</ns1:Value>
+      <ns1:Obce/>
+    </ns1:Obec>
+    <ns1:Psc>12345</ns1:Psc>
+    <ns1:Stat>
+      <ns1:Id>20000315</ns1:Id>
+      <ns1:Value>Slovenská republika</ns1:Value>
+    </ns1:Stat>
+  </ns1:Sidlo>
+  <ns1:Ico>45678910</ns1:Ico>
+  <ns1:PravnaForma>
+    <ns1:Id/>
+    <ns1:Value/>
+  </ns1:PravnaForma>
+  <ns1:PredmetPodnikania>
+    <ns1:PoradoveCislo>1</ns1:PoradoveCislo>
+    <ns1:Cinnost>Predaj a kúpa len veľkej mrkvy</ns1:Cinnost>
+  </ns1:PredmetPodnikania>
+  <ns1:StatutarnyOrganFO>
+    <ns1:Funkcia/>
+    <ns1:Osoba>
+      <ns1:TitulPred/>
+      <ns1:Meno>Jozef</ns1:Meno>
+      <ns1:Priezvisko>Mrkva</ns1:Priezvisko>
+      <ns1:TitulZa/>
+      <ns1:DatumNarodenia>1945-01-01</ns1:DatumNarodenia>
+      <ns1:RodneCislo>4501015816</ns1:RodneCislo>
+    </ns1:Osoba>
+    <ns1:Bydlisko>
+      <ns1:Ulica>Mrkvičková</ns1:Ulica>
+      <ns1:Cislo>2</ns1:Cislo>
+      <ns1:Obec>
+        <ns1:Id>20000825</ns1:Id>
+        <ns1:StatId>20000315</ns1:StatId>
+        <ns1:Value>Modra</ns1:Value>
+        <ns1:Obce/>
+      </ns1:Obec>
+      <ns1:Psc>12345</ns1:Psc>
+      <ns1:Stat>
+        <ns1:Id>20000315</ns1:Id>
+        <ns1:Value>Slovenská republika</ns1:Value>
+      </ns1:Stat>
+    </ns1:Bydlisko>
+    <ns1:DenVznikuFunkcie xsi:nil="true"/>
+    <ns1:DenSkonceniaFunkcie xsi:nil="true"/>
+  </ns1:StatutarnyOrganFO>
+  <ns1:StatutarnyOrganSposobKonania>Len s mrkvou</ns1:StatutarnyOrganSposobKonania>
+  <ns1:OrganizacnaZlozka typOrganizacnejZlozkyEnum="None">
+    <ns1:OrganizacnaZlozka>
+      <ns1:Oznacenie/>
+      <ns1:AdresaUmiestnenia>
+        <ns1:Ulica/>
+        <ns1:Cislo/>
+        <ns1:Obec>
+          <ns1:Id/>
+          <ns1:StatId/>
+          <ns1:Value/>
+          <ns1:Obce/>
+        </ns1:Obec>
+        <ns1:Psc/>
+        <ns1:Stat>
+          <ns1:Id>20000315</ns1:Id>
+          <ns1:Value>Slovenská republika</ns1:Value>
+        </ns1:Stat>
+      </ns1:AdresaUmiestnenia>
+      <ns1:PredmetPodnikania>
+        <ns1:PoradoveCislo/>
+        <ns1:Cinnost/>
+      </ns1:PredmetPodnikania>
+      <ns1:Veduci>
+        <ns1:Funkcia/>
+        <ns1:Osoba>
+          <ns1:TitulPred/>
+          <ns1:Meno/>
+          <ns1:Priezvisko/>
+          <ns1:TitulZa/>
+          <ns1:DatumNarodenia xsi:nil="true"/>
+          <ns1:RodneCislo/>
+        </ns1:Osoba>
+        <ns1:Bydlisko>
+          <ns1:Ulica/>
+          <ns1:Cislo/>
+          <ns1:Obec>
+            <ns1:Id/>
+            <ns1:StatId/>
+            <ns1:Value/>
+            <ns1:Obce/>
+          </ns1:Obec>
+          <ns1:Psc/>
+          <ns1:Stat>
+            <ns1:Id>20000315</ns1:Id>
+            <ns1:Value>Slovenská republika</ns1:Value>
+          </ns1:Stat>
+        </ns1:Bydlisko>
+        <ns1:DenVznikuFunkcie xsi:nil="true"/>
+        <ns1:DenSkonceniaFunkcie xsi:nil="true"/>
+      </ns1:Veduci>
+    </ns1:OrganizacnaZlozka>
+  </ns1:OrganizacnaZlozka>
+  <ns1:Prokurista>
+    <ns1:Funkcia/>
+    <ns1:Osoba>
+      <ns1:TitulPred/>
+      <ns1:Meno/>
+      <ns1:Priezvisko/>
+      <ns1:TitulZa/>
+      <ns1:DatumNarodenia xsi:nil="true"/>
+      <ns1:RodneCislo/>
+    </ns1:Osoba>
+    <ns1:Bydlisko>
+      <ns1:Ulica/>
+      <ns1:Cislo/>
+      <ns1:Obec>
+        <ns1:Id/>
+        <ns1:StatId/>
+        <ns1:Value/>
+        <ns1:Obce/>
+      </ns1:Obec>
+      <ns1:Psc/>
+      <ns1:Stat>
+        <ns1:Id>20000315</ns1:Id>
+        <ns1:Value>Slovenská republika</ns1:Value>
+      </ns1:Stat>
+    </ns1:Bydlisko>
+    <ns1:DenVznikuFunkcie xsi:nil="true"/>
+    <ns1:DenSkonceniaFunkcie xsi:nil="true"/>
+  </ns1:Prokurista>
+  <ns1:ProkuraSposobKonania/>
+  <ns1:SpolocniciFO>
+    <ns1:Spolocnik>
+      <ns1:Osoba>
+        <ns1:TitulPred/>
+        <ns1:Meno>Jozef</ns1:Meno>
+        <ns1:Priezvisko>Mrkva</ns1:Priezvisko>
+        <ns1:TitulZa/>
+        <ns1:DatumNarodenia xsi:nil="true"/>
+        <ns1:RodneCislo/>
+      </ns1:Osoba>
+      <ns1:Adresa>
+        <ns1:Ulica>Mrkvičková</ns1:Ulica>
+        <ns1:Cislo>2</ns1:Cislo>
+        <ns1:Obec>
+          <ns1:Id>20000825</ns1:Id>
+          <ns1:StatId>20000315</ns1:StatId>
+          <ns1:Value>Modra</ns1:Value>
+          <ns1:Obce/>
+        </ns1:Obec>
+        <ns1:Psc>12345</ns1:Psc>
+        <ns1:Stat>
+          <ns1:Id>20000315</ns1:Id>
+          <ns1:Value>Slovenská republika</ns1:Value>
+        </ns1:Stat>
+      </ns1:Adresa>
+    </ns1:Spolocnik>
+    <ns1:Vklad>
+      <ns1:VyskaVkladu>
+        <ns1:Suma>5000</ns1:Suma>
+        <ns1:Mena>
+          <ns1:Id>6</ns1:Id>
+          <ns1:Value>EUR</ns1:Value>
+          <ns1:Znacka>EUR</ns1:Znacka>
+        </ns1:Mena>
+        <ns1:TypVkladu>
+          <ns1:Id>1</ns1:Id>
+          <ns1:Value/>
+        </ns1:TypVkladu>
+      </ns1:VyskaVkladu>
+      <ns1:RozsahSplatenia>
+        <ns1:Suma>5000</ns1:Suma>
+        <ns1:Mena>
+          <ns1:Id>6</ns1:Id>
+          <ns1:Value>EUR</ns1:Value>
+          <ns1:Znacka>EUR</ns1:Znacka>
+        </ns1:Mena>
+      </ns1:RozsahSplatenia>
+      <ns1:ZaloznePravo/>
+    </ns1:Vklad>
+  </ns1:SpolocniciFO>
+  <ns1:SpolocniciPO>
+    <ns1:Spolocnik>
+      <ns1:ObchodneMeno/>
+      <ns1:Ico/>
+      <ns1:Adresa>
+        <ns1:Ulica/>
+        <ns1:Cislo/>
+        <ns1:Obec>
+          <ns1:Id/>
+          <ns1:StatId/>
+          <ns1:Value/>
+          <ns1:Obce/>
+        </ns1:Obec>
+        <ns1:Psc/>
+        <ns1:Stat>
+          <ns1:Id>20000315</ns1:Id>
+          <ns1:Value>Slovenská republika</ns1:Value>
+        </ns1:Stat>
+      </ns1:Adresa>
+    </ns1:Spolocnik>
+    <ns1:Vklad>
+      <ns1:VyskaVkladu>
+        <ns1:Suma xsi:nil="true"/>
+        <ns1:Mena>
+          <ns1:Id>6</ns1:Id>
+          <ns1:Value>EUR</ns1:Value>
+          <ns1:Znacka>EUR</ns1:Znacka>
+        </ns1:Mena>
+        <ns1:TypVkladu>
+          <ns1:Id/>
+          <ns1:Value/>
+        </ns1:TypVkladu>
+      </ns1:VyskaVkladu>
+      <ns1:RozsahSplatenia>
+        <ns1:Suma xsi:nil="true"/>
+        <ns1:Mena>
+          <ns1:Id>6</ns1:Id>
+          <ns1:Value>EUR</ns1:Value>
+          <ns1:Znacka>EUR</ns1:Znacka>
+        </ns1:Mena>
+      </ns1:RozsahSplatenia>
+      <ns1:ZaloznePravo/>
+    </ns1:Vklad>
+  </ns1:SpolocniciPO>
+  <ns1:Spoluvlastnictvo>
+    <ns1:SpolocnyObchodnyPodel>
+      <ns1:VyskaVkladu>
+        <ns1:Suma xsi:nil="true"/>
+        <ns1:Mena>
+          <ns1:Id>6</ns1:Id>
+          <ns1:Value>EUR</ns1:Value>
+          <ns1:Znacka>EUR</ns1:Znacka>
+        </ns1:Mena>
+        <ns1:TypVkladu>
+          <ns1:Id/>
+          <ns1:Value/>
+        </ns1:TypVkladu>
+      </ns1:VyskaVkladu>
+      <ns1:RozsahSplatenia>
+        <ns1:Suma xsi:nil="true"/>
+        <ns1:Mena>
+          <ns1:Id>6</ns1:Id>
+          <ns1:Value>EUR</ns1:Value>
+          <ns1:Znacka>EUR</ns1:Znacka>
+        </ns1:Mena>
+      </ns1:RozsahSplatenia>
+      <ns1:ZaloznePravo/>
+    </ns1:SpolocnyObchodnyPodel>
+    <ns1:SpolocnyZastupcaFO>
+      <ns1:Osoba>
+        <ns1:TitulPred/>
+        <ns1:Meno/>
+        <ns1:Priezvisko/>
+        <ns1:TitulZa/>
+        <ns1:DatumNarodenia xsi:nil="true"/>
+        <ns1:RodneCislo/>
+      </ns1:Osoba>
+      <ns1:Adresa>
+        <ns1:Ulica/>
+        <ns1:Cislo/>
+        <ns1:Obec>
+          <ns1:Id/>
+          <ns1:StatId/>
+          <ns1:Value/>
+          <ns1:Obce/>
+        </ns1:Obec>
+        <ns1:Psc/>
+        <ns1:Stat>
+          <ns1:Id>20000315</ns1:Id>
+          <ns1:Value>Slovenská republika</ns1:Value>
+        </ns1:Stat>
+      </ns1:Adresa>
+    </ns1:SpolocnyZastupcaFO>
+    <ns1:SpolocnyZastupcaPO>
+      <ns1:ObchodneMeno/>
+      <ns1:Ico/>
+      <ns1:Adresa>
+        <ns1:Ulica/>
+        <ns1:Cislo/>
+        <ns1:Obec>
+          <ns1:Id/>
+          <ns1:StatId/>
+          <ns1:Value/>
+          <ns1:Obce/>
+        </ns1:Obec>
+        <ns1:Psc/>
+        <ns1:Stat>
+          <ns1:Id>20000315</ns1:Id>
+          <ns1:Value>Slovenská republika</ns1:Value>
+        </ns1:Stat>
+      </ns1:Adresa>
+    </ns1:SpolocnyZastupcaPO>
+    <ns1:SpoluvlastnikFO>
+      <ns1:Osoba>
+        <ns1:TitulPred/>
+        <ns1:Meno/>
+        <ns1:Priezvisko/>
+        <ns1:TitulZa/>
+        <ns1:DatumNarodenia xsi:nil="true"/>
+        <ns1:RodneCislo/>
+      </ns1:Osoba>
+      <ns1:Adresa>
+        <ns1:Ulica/>
+        <ns1:Cislo/>
+        <ns1:Obec>
+          <ns1:Id/>
+          <ns1:StatId/>
+          <ns1:Value/>
+          <ns1:Obce/>
+        </ns1:Obec>
+        <ns1:Psc/>
+        <ns1:Stat>
+          <ns1:Id>20000315</ns1:Id>
+          <ns1:Value>Slovenská republika</ns1:Value>
+        </ns1:Stat>
+      </ns1:Adresa>
+    </ns1:SpoluvlastnikFO>
+    <ns1:SpoluvlastnikPO>
+      <ns1:ObchodneMeno/>
+      <ns1:Ico/>
+      <ns1:Adresa>
+        <ns1:Ulica/>
+        <ns1:Cislo/>
+        <ns1:Obec>
+          <ns1:Id/>
+          <ns1:StatId/>
+          <ns1:Value/>
+          <ns1:Obce/>
+        </ns1:Obec>
+        <ns1:Psc/>
+        <ns1:Stat>
+          <ns1:Id>20000315</ns1:Id>
+          <ns1:Value>Slovenská republika</ns1:Value>
+        </ns1:Stat>
+      </ns1:Adresa>
+    </ns1:SpoluvlastnikPO>
+  </ns1:Spoluvlastnictvo>
+  <ns1:DozornaRada>
+    <ns1:Funkcia/>
+    <ns1:Osoba>
+      <ns1:TitulPred/>
+      <ns1:Meno/>
+      <ns1:Priezvisko/>
+      <ns1:TitulZa/>
+      <ns1:DatumNarodenia xsi:nil="true"/>
+      <ns1:RodneCislo/>
+    </ns1:Osoba>
+    <ns1:Bydlisko>
+      <ns1:Ulica/>
+      <ns1:Cislo/>
+      <ns1:Obec>
+        <ns1:Id/>
+        <ns1:StatId/>
+        <ns1:Value/>
+        <ns1:Obce/>
+      </ns1:Obec>
+      <ns1:Psc/>
+      <ns1:Stat>
+        <ns1:Id>20000315</ns1:Id>
+        <ns1:Value>Slovenská republika</ns1:Value>
+      </ns1:Stat>
+    </ns1:Bydlisko>
+    <ns1:DenVznikuFunkcie xsi:nil="true"/>
+    <ns1:DenSkonceniaFunkcie xsi:nil="true"/>
+  </ns1:DozornaRada>
+  <ns1:ZakladneImanie>
+    <ns1:Suma>5000</ns1:Suma>
+    <ns1:Mena>
+      <ns1:Id>6</ns1:Id>
+      <ns1:Value>EUR</ns1:Value>
+      <ns1:Znacka>EUR</ns1:Znacka>
+    </ns1:Mena>
+  </ns1:ZakladneImanie>
+  <ns1:RozsahSplatenia>
+    <ns1:Suma>5000</ns1:Suma>
+    <ns1:Mena>
+      <ns1:Id>6</ns1:Id>
+      <ns1:Value>EUR</ns1:Value>
+      <ns1:Znacka>EUR</ns1:Znacka>
+    </ns1:Mena>
+  </ns1:RozsahSplatenia>
+  <ns1:SplynutieEnum>None</ns1:SplynutieEnum>
+  <ns1:SplynutiePO slovZahrEnum="Slovenska">
+    <ns1:ObchodneMeno/>
+    <ns1:Ico/>
+    <ns1:Adresa>
+      <ns1:Ulica/>
+      <ns1:Cislo/>
+      <ns1:Obec>
+        <ns1:Id/>
+        <ns1:StatId/>
+        <ns1:Value/>
+        <ns1:Obce/>
+      </ns1:Obec>
+      <ns1:Psc/>
+      <ns1:Stat>
+        <ns1:Id>20000315</ns1:Id>
+        <ns1:Value>Slovenská republika</ns1:Value>
+      </ns1:Stat>
+    </ns1:Adresa>
+  </ns1:SplynutiePO>
+  <ns1:Podpis>
+    <ns1:TitulPred/>
+    <ns1:Meno>Jozef</ns1:Meno>
+    <ns1:Priezvisko>Mrkva</ns1:Priezvisko>
+    <ns1:TitulZa/>
+  </ns1:Podpis>
+</ns1:FUPS></ds:Object><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#epSignature">
+    <xades:SignedProperties Id="SignedPropertiesID">
+        <xades:SignedSignatureProperties Id="SignedSignaturePropertiesId">
+            <xades:SigningTime>2011-05-10T10:25:48.953+02:00</xades:SigningTime>
+            <xades:SigningCertificate>
+                <xades:Cert>
+                    <xades:CertDigest>
+                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                        <ds:DigestValue>Yk/zs0BmbvA4Ogf6A0UpQgWGCBhFy704s/MhKbghRs0=</ds:DigestValue>
+                    </xades:CertDigest>
+                    <xades:IssuerSerial>
+                        <ds:X509IssuerName>CN=CA Disig, OU=ACA-307-2007-2, O=Disig a.s., L=Bratislava, C=SK</ds:X509IssuerName>
+                        <ds:X509SerialNumber>16781690</ds:X509SerialNumber>
+                    </xades:IssuerSerial>
+                </xades:Cert>
+                <xades:Cert>
+                    <xades:CertDigest>
+                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                        <ds:DigestValue>OmcwWucQu1w76jPw4Jwh/U+H65dyzpzElJxTAGpkius=</ds:DigestValue>
+                    </xades:CertDigest>
+                    <xades:IssuerSerial>
+                        <ds:X509IssuerName>CN=KCA NBU SR 3, OU=SIBEP, O=Narodny bezpecnostny urad, L=Bratislava, C=SK</ds:X509IssuerName>
+                        <ds:X509SerialNumber>244</ds:X509SerialNumber>
+                    </xades:IssuerSerial>
+                </xades:Cert>
+                <xades:Cert>
+                    <xades:CertDigest>
+                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                        <ds:DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</ds:DigestValue>
+                    </xades:CertDigest>
+                    <xades:IssuerSerial>
+                        <ds:X509IssuerName>CN=KCA NBU SR 3, OU=SIBEP, O=Narodny bezpecnostny urad, L=Bratislava, C=SK</ds:X509IssuerName>
+                        <ds:X509SerialNumber>1</ds:X509SerialNumber>
+                    </xades:IssuerSerial>
+                </xades:Cert>
+            </xades:SigningCertificate>
+            <xades:SignaturePolicyIdentifier>
+                <xades:SignaturePolicyId>
+                    <xades:SigPolicyId>
+                        <xades:Identifier>urn:oid:1.3.158.36061701.0.0.1.10.4.0.12</xades:Identifier>
+                    </xades:SigPolicyId>
+                    <xades:SigPolicyHash>
+                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                        <ds:DigestValue>S6l8bl4kTCPRKb9xF5/5Onkh2SMcOPaw326KX73hDdo=</ds:DigestValue>
+                    </xades:SigPolicyHash>
+                </xades:SignaturePolicyId>
+            </xades:SignaturePolicyIdentifier>
+        </xades:SignedSignatureProperties>
+        <xades:SignedDataObjectProperties>
+            <xades:DataObjectFormat ObjectReference="#Reference_SignedDataObject">
+                <xades:Description>Xml dáta zobrazené pomocout xslt</xades:Description>
+                <xades:MimeType>application/xml</xades:MimeType>
+            </xades:DataObjectFormat>
+        </xades:SignedDataObjectProperties>
+    </xades:SignedProperties>
+</xades:QualifyingProperties></ds:Object></ds:Signature>

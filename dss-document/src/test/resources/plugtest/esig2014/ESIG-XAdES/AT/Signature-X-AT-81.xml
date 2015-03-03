@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dsig:Signature Id="HS_signature" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><dsig:Reference Id="reference-data-0" URI="#signed-data-0"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xf2:XPath Filter="intersect" xmlns:xf2="http://www.w3.org/2002/06/xmldsig-filter2">id(&apos;signed-data-0&apos;)/node()</xf2:XPath></dsig:Transform></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>ck5CfKRJ6J4x7YusP2LmJXRBo3sFoSgTCXlujYNSFvI=</dsig:DigestValue></dsig:Reference><dsig:Reference Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#refetsi"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xf2:XPath Filter="intersect" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#" xmlns:xf2="http://www.w3.org/2002/06/xmldsig-filter2">id(&apos;refetsi&apos;)/etsi:QualifyingProperties/etsi:SignedProperties</xf2:XPath></dsig:Transform></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>xU6OVgLVY3sxKTnYJn8KHWISEjYlxGkoxPDRZuFyVpk=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>C7wjPPTFJxihBCzIpyM9YuTaRQkkL8EtF+CDdCor29vPrOi8k3RSlSZT2N3yx8oF
+GC/8id+X6DLHRmUD0A5vv4jAhVifPNTyoPxGp+wUXCaD6bww9WZgl/ebLJxY2kAX
+jKQjpRFy2E0GF3mazcU/P9Cwkffw8WrVhSH+MHOMT/W9yF0kokRy92GFeNUno4zw
+oUbrwMuF0hANE7EUoBIk+anZvRgEIHCUIxCyjulmXk9HQoUalyxrlQAHv54ucImv</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIE/DCCA+SgAwIBAgIDBuk3MA0GCSqGSIb3DQEBBQUAMIGLMQswCQYDVQQGEwJB
+VDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBp
+bSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRgwFgYDVQQLDA9hLXNpZ24tVG9r
+ZW4tMDMxGDAWBgNVBAMMD2Etc2lnbi1Ub2tlbi0wMzAeFw0xMDA2MDgxMDI5NDda
+Fw0xNTA2MDgxMDI5NDdaMG8xCzAJBgNVBAYTAkFUMRgwFgYDVQQDDA9IZXJiZXJ0
+IExlaXRvbGQxEDAOBgNVBAQMB0xlaXRvbGQxEDAOBgNVBCoMB0hlcmJlcnQxFTAT
+BgNVBAUTDDQ2MTIyODI1MDQwNzELMAkGA1UEDAwCREkwgd8wDQYJKoZIhvcNAQEB
+BQADgc0AMIHJAoHBAM0UxDJIO1Yk3ipxrsIS4UsUKwkemQTmaIcN4yBFLXL+P9dZ
+oAAi6zmgzBQOytt+tpthkmKPYEiBqjKZZ51fnVEEJE3DCPel9uu5219Phf41PYKa
+r6GmUs8pd3xm2CydvZo5CEc95uyAAiZPOMDaAoiZOd4WWFN3+Dl6nGlyJO6+O9us
+mIOx5PbDf1rJbTJb9jQ3P/7CUGuGNpDVbdICGh5Be2MMbR3GD904A61FWYo7j+kM
+JRauzLE/uidZ5e02bwIDAQABo4IBxjCCAcIwEwYDVR0jBAwwCoAIRfdSFRVVZWUw
+dAYIKwYBBQUHAQEEaDBmMDsGCCsGAQUFBzAChi9odHRwOi8vd3d3LmEtdHJ1c3Qu
+YXQvY2VydHMvYS1zaWduLXRva2VuLTAzLmNydDAnBggrBgEFBQcwAYYbaHR0cDov
+L29jc3AuYS10cnVzdC5hdC9vY3NwME0GA1UdIARGMEQwQgYGKigAEQEMMDgwNgYI
+KwYBBQUHAgEWKmh0dHA6Ly93d3cuYS10cnVzdC5hdC9kb2NzL2NwL2Etc2lnbi10
+b2tlbjCBkgYDVR0fBIGKMIGHMIGEoIGBoH+GfWxkYXA6Ly9sZGFwLmEtdHJ1c3Qu
+YXQvb3U9YS1zaWduLXRva2VuLTAzLG89QS1UcnVzdCxjPUFUP2NlcnRpZmljYXRl
+cmV2b2NhdGlvbmxpc3Q/YmFzZT9vYmplY3RjbGFzcz1laWRDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5MBEGA1UdDgQKBAhLFLdGxSF3zjAOBgNVHQ8BAf8EBAMCBLAwIwYD
+VR0RBBwwGoEYSGVyYmVydC5MZWl0b2xkQGEtc2l0LmF0MAkGA1UdEwQCMAAwDQYJ
+KoZIhvcNAQEFBQADggEBAHvXdTxprIf9+7EQHREE23Ikp2ggSguoYx5XeGZiiBCA
+Y6kB3B0QMHIjrx/whhcnY4TwawC0Ow8xv1+VnkUc9f4C5fwQDznXsVBlcaTla0Ot
+bFlaQ8oqgt8y8udSFiyw+5SuEJAjuwmRRMCRRFo4F3kuitwCD6gLSTzGygvo/1am
++sd3vVTk1kXyyMz3AVTZd0b+/CHwxOUidNC+Z1PitRAHzJwNen37DAVH78tC6ydn
+73vVY+JDYiHtxlt1ZPDxl78bN+AIbl9zUo4P5epaeCXy9GfBtv03kud7oian8Fdl
+ZR6Eu7+3+nZOXaFFfnLlB8ErskkLCar0PumvN98j0w8=</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="signed-data-0">Ich bin ein einfacher Text.</dsig:Object><dsig:Object Id="refetsi"><etsi:QualifyingProperties Target="#HS_signature" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2013-12-23T11:50:54Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><etsi:DigestValue>szMvcDjGcN1LYc0SjvjbGsWxT9QjGkvOECCOEtECZ5U=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Token-03,OU=a-sign-Token-03,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>452919</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#reference-data-0"><etsi:MimeType>text/plain</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object></dsig:Signature>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><document>
+     <test>abc</test>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><DigestValue>SpH/fdDFkLtgmPg1KhOmoiCAclg=</DigestValue></Reference><Reference URI="#85CA7EE8-A30E-11E0-863A-0019994312C1"><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><DigestValue>JiiqFAQKQZlSD4I5YE0MBNkHwWY=</DigestValue></Reference></SignedInfo><SignatureValue>KVCm+vEz5qfM2lVcDouI5xwnC4BcuZHScSZubqqE8NlCGHKSNSX4bUZsTS5b9EZnTaIr8FCOxLaK
+oBuBdWmLuG7kJmVxrEWthXt2FPxJ9bSQ7sTxoYaCpydphNeeXtTm+pNm+J9CE2ezx1S7prKCHodd
+g/b7e2JZi6AhuL0OewQ=</SignatureValue><KeyInfo><X509Data><X509SubjectName>serialNumber=1235588814018\+CN=Andreja Krajnc,OU=Government,OU=web-certificates,O=state-institutions,C=si</X509SubjectName><X509IssuerSerial><X509IssuerName>OU=sigov-ca,O=state-institutions,C=si</X509IssuerName><X509SerialNumber>979211239</X509SerialNumber></X509IssuerSerial><X509SKI>PpFt3WvHOJwVictBuyIuI4I2YI0=</X509SKI><X509Certificate Id="85CA7EE8-A30E-11E0-863A-0019994312C1">MIIEwjCCA6qgAwIBAgIEOl2T5zANBgkqhkiG9w0BAQUFADA9MQswCQYDVQQGEwJzaTEbMBkG
+A1UEChMSc3RhdGUtaW5zdGl0dXRpb25zMREwDwYDVQQLEwhzaWdvdi1jYTAeFw0wOTAxMDkw
+NjUzNDBaFw0xNDAxMDkwNzIzNDBaMIGJMQswCQYDVQQGEwJzaTEbMBkGA1UEChMSc3RhdGUt
+aW5zdGl0dXRpb25zMRkwFwYDVQQLExB3ZWItY2VydGlmaWNhdGVzMRMwEQYDVQQLEwpHb3Zl
+cm5tZW50MS0wFAYDVQQFEw0xMjM1NTg4ODE0MDE4MBUGA1UEAxMOQW5kcmVqYSBLcmFqbmMw
+gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAIEAY8zb1XlK6un9daI545qJ3OnUiwe/QLzk
+PFnGEX+u6O4VPWnpuML+2lUU5Wwqo882UlOwqvUp97Lonbf0RnoBPeQ35Xk0kZtnTU51lEX4
+g6naCxTshFmet7IcFw0FfYUupLfoJ+58jCDN6zu5qvueGPx2IyDY8VDYPTfDTHNzAgMBAAGj
+ggH/MIIB+zAOBgNVHQ8BAf8EBAMCBaAwKwYDVR0QBCQwIoAPMjAwOTAxMDkwNjUzNDBagQ8y
+MDE0MDEwOTA3MjM0MFowQAYDVR0gBDkwNzA1BgorBgEEAa9ZAQEEMCcwJQYIKwYBBQUHAgEW
+GWh0dHA6Ly93d3cuY2EuZ292LnNpL2Nwcy8wIAYDVR0RBBkwF4EVYW5kcmVqYS5rcmFqbmNA
+Z292LnNpMIHxBgNVHR8EgekwgeYwVaBToFGkTzBNMQswCQYDVQQGEwJzaTEbMBkGA1UEChMS
+c3RhdGUtaW5zdGl0dXRpb25zMREwDwYDVQQLEwhzaWdvdi1jYTEOMAwGA1UEAxMFQ1JMMjAw
+gYyggYmggYaGV2xkYXA6Ly94NTAwLmdvdi5zaS9vdT1zaWdvdi1jYSxvPXN0YXRlLWluc3Rp
+dHV0aW9ucyxjPXNpP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZYYraHR0cDovL3d3
+dy5zaWdvdi1jYS5nb3Yuc2kvY3JsL3NpZ292LWNhLmNybDAfBgNVHSMEGDAWgBQe+NRTa7OD
+BukEBlcC+aW/xlg8cjAdBgNVHQ4EFgQUPpFt3WvHOJwVictBuyIuI4I2YI0wCQYDVR0TBAIw
+ADAZBgkqhkiG9n0HQQAEDDAKGwRWNy4xAwIDqDANBgkqhkiG9w0BAQUFAAOCAQEAb4GGmY+B
+py8RlRcviKtH98DfzWIWruxbUwluOvC6dTG+u6duuJFgfaDRdmBugv+N47mnN5yJ34b221CI
+ObtxF7wbtQhrHgezzdxhwaETTKoJYwJuKATrSKRMkfll4grXfZ+5imHiIdcZPRzRmINv5HAf
+DS+j5BILGZXk+0I9+WVZVkdMOJtUT2dvfDpoi7w3FLNWUUdnxzzcoHqGwJRs9J/8vcGvRpHy
+QD7FrnINAcYP4lkqzE58lXkn5uqOQtdVAU5sb0GclYnWOFm6Cx4NvjK/5UM4cjUWdB1mMPZv
+o4wiV77Jx/Fzp7QClaE5Tfwn8v9IJW91SYVqr0iz0JB2hQ==</X509Certificate></X509Data><KeyValue><RSAKeyValue><Modulus>gQBjzNvVeUrq6f11ojnjmonc6dSLB79AvOQ8WcYRf67o7hU9aem4wv7aVRTlbCqjzzZSU7Cq
+9Sn3suidt/RGegE95DfleTSRm2dNTnWURfiDqdoLFOyEWZ63shwXDQV9hS6kt+gn7nyMIM3r
+O7mq+54Y/HYjINjxUNg9N8NMc3M=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue></KeyInfo></Signature></document>

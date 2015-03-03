@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?><MinuteDepot xmlns="http://ecaase.real.not/2007/06" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" DigestControl="NGpPV0tIV29IM1M1T01uTU84Um5rSGFIYUtWRmJiYXFySnhpOHVEUm85RT0=" LieuStockage="CAVE">
+	<Header>
+		<IdSSII>APPLI.NOT</IdSSII>
+		<IdLogiciel>Aase</IdLogiciel>
+		<VersionLogiciel>INCONNUE</VersionLogiciel>
+		<Serveur>PRODUCTION</Serveur>
+	</Header>
+	<DonneesTechniquesActe>
+		<CRPCEN>313002</CRPCEN>
+		<IdNotaire>3130020021</IdNotaire>
+		<VersionActe>1.0.0</VersionActe>
+	</DonneesTechniquesActe>
+	<Acte id="ActeRef">
+		<DonneesSigneesCommunes id="DonneesSigneesCommunesRef">
+			<ActeMetadonnees id="ActeMetadonneesRef">
+				<DateEtablissement>2013-07-05</DateEtablissement>
+				<NoChronoOffice>V300-RC4-C002</NoChronoOffice>
+				<Nature>Droit immobilier</Nature>
+				<Objet>depot acte avec annexes</Objet>
+				<EtablissementNI>
+					<Ligne2 xmlns="http://ecaase.real.not/parties/2007/06">Ligne 2</Ligne2>
+					<Ligne3 xmlns="http://ecaase.real.not/parties/2007/06">Ligne 3</Ligne3>
+					<VoieNumero xmlns="http://ecaase.real.not/parties/2007/06">1</VoieNumero>
+					<VoieExtension xmlns="http://ecaase.real.not/parties/2007/06">a</VoieExtension>
+					<VoieType xmlns="http://ecaase.real.not/parties/2007/06" code="rue" referentiel="rue">Rue</VoieType>
+					<Voie xmlns="http://ecaase.real.not/parties/2007/06">Poincarré</Voie>
+					<LieuDit xmlns="http://ecaase.real.not/parties/2007/06">Dérive</LieuDit>
+					<CodePostal xmlns="http://ecaase.real.not/parties/2007/06">13100</CodePostal>
+					<Localite xmlns="http://ecaase.real.not/parties/2007/06">Aix-en-Provence</Localite>
+					<LibellePays xmlns="http://ecaase.real.not/parties/2007/06">France</LibellePays>
+					<CRPCEN>313002</CRPCEN>
+					<RaisonSociale>SA</RaisonSociale>
+				</EtablissementNI>
+				<PartieTemoin>
+					<ClientPersonnePhysique xmlns="http://ecaase.real.not/parties/2007/06" id="ID_1">
+						<CRPCEN>313002</CRPCEN>
+						<Qualite>VENDEUR</Qualite>
+						<EtatCivil>
+							<Civilite>monsieur</Civilite>
+							<Nom>Dupuis</Nom>
+							<DateNaissance>1963-08-30</DateNaissance>
+							<CommuneNaissance>BETUNE</CommuneNaissance>
+							<DepartementNaissance>aa</DepartementNaissance>
+							<LibellePaysNaissance>FRANCE</LibellePaysNaissance>
+							<PrenomEtatCivil>
+								<Id>1</Id>
+								<Libelle>Roger</Libelle>
+							</PrenomEtatCivil>
+							<PrenomEtatCivil>
+								<Id>2</Id>
+								<Libelle>Luc</Libelle>
+							</PrenomEtatCivil>
+							<PrenomEtatCivil>
+								<Id>3</Id>
+								<Libelle>Armand</Libelle>
+							</PrenomEtatCivil>
+						</EtatCivil>
+						<Adresse>
+							<Ligne2>Ligne2</Ligne2>
+							<Ligne3>Ligne3</Ligne3>
+							<VoieNumero>1</VoieNumero>
+							<VoieExtension>a</VoieExtension>
+							<VoieType code="ave" referentiel="ave">avenue</VoieType>
+							<Voie>Jean Jaurès</Voie>
+							<LieuDit>Des Acacias</LieuDit>
+							<CodePostal>75001</CodePostal>
+							<Localite>PARIS</Localite>
+							<LibellePays>France</LibellePays>
+						</Adresse>
+						<Profession>Professeur</Profession>
+						<RegimeMatrimonial>Cté réduite aux acquêts</RegimeMatrimonial>
+						<NomConjoint>Louise</NomConjoint>
+					</ClientPersonnePhysique>
+					<ClientPersonnePhysique xmlns="http://ecaase.real.not/parties/2007/06" id="ID_2" xsi:type="PersonneRepresentantType">
+						<CRPCEN>313002</CRPCEN>
+						<EtatCivilRepresentant>
+							<Civilite>monsieur</Civilite>
+							<Nom>Martin</Nom>
+							<PrenomEtatCivil>
+								<Id>1</Id>
+								<Libelle>Eric</Libelle>
+							</PrenomEtatCivil>
+						</EtatCivilRepresentant>
+						<IdPartieRepresente>ID_3</IdPartieRepresente>
+					</ClientPersonnePhysique>
+					<ClientPersonneMorale xmlns="http://ecaase.real.not/parties/2007/06" id="ID_3">
+						<CRPCEN>313002</CRPCEN>
+						<Qualite>ACQUEREUR</Qualite>
+						<RaisonSociale>SA</RaisonSociale>
+						<CategorieJuridique code="5410" referentiel="Téléacte">Société à responsabilité limitée</CategorieJuridique>
+						<Immatriculation>1111</Immatriculation>
+						<LieuDepotStatuts>xxxx</LieuDepotStatuts>
+						<Adresse>
+							<Voie>Promenade des Anglais</Voie>
+							<CodePostal>06100</CodePostal>
+							<Localite>NICE</Localite>
+						</Adresse>
+					</ClientPersonneMorale>
+				</PartieTemoin>
+				<AnnexeMetadonnees id="ID_A1">
+					<Titre>ID_A1</Titre>
+					<Descriptif>Diagnostic1</Descriptif>
+					<Numerise>true</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+				<AnnexeMetadonnees id="ID_A2">
+					<Titre>ID_A2</Titre>
+					<Descriptif>Diagnostic2</Descriptif>
+					<Numerise>true</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+				<AnnexeMetadonnees id="ID_A3">
+					<Titre>ID_A3</Titre>
+					<Descriptif>Diagnostic3</Descriptif>
+					<Numerise>true</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+				<AnnexeMetadonnees id="ID_A4">
+					<Titre>DONT_AASE</Titre>
+					<Descriptif>DONT_AASE</Descriptif>
+					<Numerise>false</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+				<AnnexeMetadonnees id="ID_AnnexeSignature">
+					<Titre>DONT_AASE</Titre>
+					<Descriptif>Annexe de signature</Descriptif>
+					<Numerise>true</Numerise>
+					<Format>application/pdf</Format>
+				</AnnexeMetadonnees>
+			</ActeMetadonnees>
+			<CorpsActe>
+				<Texte id="ActeTexteRef">
+					<DonneesTexte>
+			ACTE CERTIFIANT L’ACCORD DU CREANCIER A LA RADIATION TOTALE D’UNE INSCRIPTION D’HYPOTHEQUE CONVENTIONNELLE CONFORMEMENT AUX DISPOSITIONS DE L’ARTICLE 2441 ALINEA TROISIEME DU CODE CIVIL.
+
+L'AN DEUX MIL DIX, LE DIX SEPT NOVEMBRE A MONTPELLIER (Hérault), 133 Rue Henri Fabre, au siège de l’Office Notarial, ci-après nommé, Maître Virginie MINASSIAN, Notaire Associé de la Société Civile Professionnelle «GÉNAPI et Co », titulaire d’un Office Notarial à MONTPELLIER, 133, rue Henri Fabre. ,
+A dressé en la forme authentique le présent acte certifiant l’accord donné par le créancier titulaire de la créance garantie par l’inscription prise à son profit sous les références ci-après à sa radiation totale en application de l’alinéa troisième de l’article 2441 du Code civil. INDICATION ET REFERENCES DE L’INSCRIPTION Inscription prise à la conservation des hypothèques suivante : MONTPELLIER 1ER BUREAU Le 2 février 2000 Volume : 2000V Numéro : 123 CERTIFICATION Par le présent acte, le Notaire, après avoir vérifié l’état, la capacité et la qualité du créancier pour donner mainlevée pure et simple de l’inscription, certifie que ledit créancier a, à la demande du débiteur, donné son accord à la présente radiation dans le sens sus-indiqué. PUBLICATION EN FOI DE QUOI, en application des dispositions du troisième alinéa de l'article 2441 du Code civil, le Notaire soussigné a dressé le présent acte certifiant à la demande
+
+du débiteur, l’accord du créancier à la radiation de l’inscription et requiert en conséquence le Conservateur des Hypothèques de porter en marge de l’inscription mention de sa radiation. Pour le calcul du salaire de Monsieur le conservateur des hypothèques, il est rappelé que la créance garantit un montant en principal de mille euros (1 000,00 eur) et pour les accessoires de vingt cinq euros (25,00 eur). Droit d'enregistrement sur état : vingt cinq euros (25 euros) DONT ACTE sur 2 pages. Comprenant - renvoi approuvé : - blanc barré : - ligne entière rayée : - nombre rayé : - mot rayé : Paraphe
+
+Fait et passé aux lieu, jour, mois et an ci-dessus indiqués. Et le Notaire a signé le présent acte.
+
+et le notaire Me NOTAIRE_DIX ELODIE a signé à l'office L'AN DEUX MIL DIX LE DIX SEPT NOVEMBRE
+			</DonneesTexte>
+				</Texte>
+				<ImageCorps>JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovRmlsdGVyIC9GbGF0ZURlY29kZQovTGVuZ3RoIDI1
+OTMKL04gMwo+PgpzdHJlYW0KeJydlndUVNcWh8+9d3qhzTB0GHqvUgYQ6R2kV1EYZgYYygDDDNgL
+Ay/IEt9EOWRHBgunZqglFB47NhaprI5GevMLA3sbxH+v/ArgMskMFyW1Vm9uUeDrl5Bm0hBZGBO5
+0pFeJRm9SYO9lqRAsEGR/k6tAKeQ1EP9AKel0iFaDXCwbw0XloqOpK29ceaAAv6vyAGsASTajJCp
+MDAgbg0KdHJhaWxlcgo8PAovU2l6ZSA2MwovSUQgWzxENUY3QjA5QTE0RkM2M0I0MUEzNjVGMDJE
+QTFCQzZCQj4gPDY1NkY2M0Y0OURERkJDQjcxRTczMUZFMjk4NEFBNjUwPl0KL1Jvb3QgMSAwIFIK
+Pj4Kc3RhcnR4cmVmCjEzNzQ3NAolJUVPRgo=</ImageCorps>
+			</CorpsActe>
+			<Annexes>
+				<Annexe id="ID_A1">JVBERlJUVPRgo=</Annexe>
+				<Annexe id="ID_A2">JVBERKMjQ5MTMzNgolJUVPRgo=</Annexe>
+				<Annexe id="ID_A3">JVBERiVPRgo=</Annexe>
+				<Annexe id="ID_A4">JVBERgolJUVPRgo=</Annexe>
+				<Annexe id="ID_AnnexeSignature">JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovRmlsdGVyIC9GbGF0ZURlY29kZQovTGVuZ3RoIDI1
+OTMKL04gMwo+PgpzdHJlYW0KeJydlndUVNcWh8+9d3qhzTB0GHqvUgYQ6R2kV1EYZgYYygDDDNgL
+IioQUUSkKYIEBQwYDUViRRQLAVEBe0CCgBKDUWyoZEbWSnx5ee/l5ffHPd/aZ+9z99l737UuACQv
+Py4vHZYCII0n4Ad7utAjo6Lp2H4AAzzAAHMAmKysDP8Qj1Agkre7Kz1L5AT+Ra+HASRebxl7BdLp
+MDAwMCBuDQowMDAwMDI2MzYwIDAwMDAwIG4NCjAwMDAwMjI1MjQgMDAwMDAgbg0KMDAwMDAzMDc4
+OCAwMDAwMCBuDQowMDAwMDI2NTE3IDAwMDAwIG4NCjAwMDAwMzQ4MzQgMDAwMDAgbg0KMDAwMDAz
+MDk0NSAwMDAwMCBuDQowMDAwMDYzNDE4IDAwMDAwIG4NCjAwMDAwNjIzNjkgMDAwMDAgbg0KMDAw
+MDA4MTA3OCAwMDAwMCBuDQowMDAwMDgwMjc5IDAwMDAwIG4NCjAwMDAwOTM5MjcgMDAwMDAgbg0K
+MDAwMDA5MzI1NSAwMDAwMCBuDQowMDAwMTIwNjgxIDAwMDAwIG4NCjAwMDAxMTk3ODIgMDAwMDAg
+bg0KMDAwMDEzNTUxNyAwMDAwMCBuDQowMDAwMTM0NzkyIDAwMDAwIG4NCjAwMDAxMzYwODMgMDAw
+MDAgbg0KdHJhaWxlcgo8PAovU2l6ZSA2MwovSUQgWzxENUY3QjA5QTE0RkM2M0I0MUEzNjVGMDJE
+QTFCQzZCQj4gPDY1NkY2M0Y0OURERkJDQjcxRTczMUZFMjk4NEFBNjUwPl0KL1Jvb3QgMSAwIFIK
+Pj4Kc3RhcnR4cmVmCjEzNzQ3NAolJUVPRgo=</Annexe>
+			</Annexes>
+		</DonneesSigneesCommunes>
+		<DonneesSigneesNI id="DonneesSigneesNIRef">
+			<NotaireParties>
+				<SignatureNotaire id="Notaire">
+					<DateRecueil>2011-12-21T14:29:35.093125+01:00</DateRecueil>
+					<LieuRecueil>A l'office</LieuRecueil>
+					<PorteeSignature>CorpsActe</PorteeSignature>
+				</SignatureNotaire>
+				<SignaturesPartiesTemoins id="SignaturesPartiesTemoinsNIRef">
+					<SignaturePartieTemoin id="ID_1">
+						<DateRecueil>2011-12-21T00:00:00</DateRecueil>
+						<LieuRecueil>A l'office</LieuRecueil>
+						<PorteeSignature>CorpsActe</PorteeSignature>
+					</SignaturePartieTemoin>
+					<SignaturePartieTemoin id="ID_1">
+						<DateRecueil>2013-02-12T00:00:00</DateRecueil>
+						<LieuRecueil>A l'office</LieuRecueil>
+						<PorteeSignature>AnnexeSignature</PorteeSignature>
+					</SignaturePartieTemoin>
+					<SignaturePartieTemoin id="ID_2">
+						<DateRecueil>2013-02-12T00:00:00</DateRecueil>
+						<LieuRecueil>A l'office</LieuRecueil>
+						<PorteeSignature>CorpsActe</PorteeSignature>
+					</SignaturePartieTemoin>
+					<SignaturePartieTemoin id="ID_2">
+						<DateRecueil>2013-02-12T00:00:00</DateRecueil>
+						<LieuRecueil>A l'office</LieuRecueil>
+						<PorteeSignature>AnnexeSignature</PorteeSignature>
+					</SignaturePartieTemoin>
+				</SignaturesPartiesTemoins>
+				<SignatureClerc id="SignatureClercNIRef">
+					<DateRecueil>2013-02-12T09:30:47.0Z</DateRecueil>
+					<LieuRecueil>String</LieuRecueil>
+					<PorteeSignature>CorpsActe</PorteeSignature>
+					<ImageSignature>UjBsR09EbGhjZ0dTQUxNQUFBUUNBRU1tQ1p0dU1GUXhEUzhi</ImageSignature>
+					<x>1</x>
+					<y>1</y>
+				</SignatureClerc>
+			</NotaireParties>
+		</DonneesSigneesNI>
+	</Acte>
+
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="REALNOT">
+<ds:SignedInfo Id="REALNOT-SignedInfo">
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference Id="REALNOT-Reference-0" URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>VTO8PnlP8Sw1YdizLJtkRcEMX7Yobc+h305IZekodSA=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="REALNOT-Reference-1" Type="http://uri.etsi.org/01903/v1.2.2#SignedProperties" URI="#REALNOT-SignedProperties">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>eAPrHcDbpCFFpreeDyIu1JCB1+0oXH4gNvSFHOUBFqE=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="REALNOT-Reference-2" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#REALNOT-doc-scsinfo">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>WAwLKOdTdzmJ3GdHgfVsc9MbQipOZRUl42e3+IAaJgw=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="REALNOT-SignatureValue">
+MXL5qjnYSk8nPs73Z1Q0McN1GvYkFgoHKDHt+kM6iGtkBIcvseeW7jom9Iky9heJBJdYoNS003jY
+bfBMZ8KdmDQQg+CK8iRnb6bZy7iGYvo2jC9Ex0S4XvLvuwJ96F5IHlNrzUcbjQ1Gwy0vWXL2cHhH
+BBtGRW6X+7e5PwXxCh/edAwGbpTBJdodwVX/WD/E0yH870N4xxOyd/MyTiGlzzqpyccHEi77gdcj
+hVvtlgDQH0YdJnlFIHaqzcIB6hkdrgkBidqoGzAehfUgSXa35iIqmAcZNjgNbyzQAUN/tDmvMhde
+eteG227w0nOofEkuwTp8i+2FCAkXymh2LZ9F8A==
+</ds:SignatureValue>
+<ds:KeyInfo Id="REALNOT-KeyInfo">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIEwzCCA6ugAwIBAgIBOjANBgkqhkiG9w0BAQsFADBlMQswCQYDVQQGEwJGUjEmMCQGA1UECgwd
+Q09OU0VJTCBTVVBFUklFVVIgRFUgTk9UQVJJQVQxFzAVBgNVBAsMDjAwMDIgNzg0MzUwMTM0MRUw
+EwYDVQQLDAxSRUFMVEVDSDIwMTcwHhcNMTQxMTAzMTM1NzE0WhcNMTYxMTAyMTM1NzE0WjBhMQsw
+CQYDVQQGEwJGUjERMA8GA1UECgwIUkVBTC5OT1QxFzAVBgNVBAsMDjAwMDIgNTA5MjQyOTg4MSYw
+JAYDVQQDDB1TZXJ2ZXVyIGRlIHNpZ25hdHVyZSBwMTIgcHAwMTCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAK0mpVDesba5UDOuhQK2fhPqrY9JpgJnj4+9t55J2FlX5zG8/quqX4rQ7c33
+rquJEPq+zMxf1ywqRqDRSZU4vyK/aCfLvnHJgcA2F+c2A7ep4gLyMRI7wJe6qfbtaF3nU1bTrqn2
+DAHP9hqmKDaORpPVplWPNFND0cmrv1bzuMBfQDwmOLinpb1ZX/XEdc7paI4e+ToAqqXWCGNHWO18
+RbA5+XftNZLpmKE+aUugkqLvh/FLWMA5AFWNXVb0x4bIQm/UuArC43iJs+YpxlkXWiztEDYzhCjH
+sd4keuJVy7VwuUPGaU3CtPpTbUyTfhUTWk5JeFjLp/+sl7WSLxonnKsCAwEAAaOCAYAwggF8MB0G
+A1UdDgQWBBTXp4QencyrV2itsOTi+61VD4s/PjAfBgNVHSMEGDAWgBTRN0d6l5GLY3C6nbuFtcLW
+LstdJTCBkQYDVR0gBIGJMIGGMHEGDSqBegFOAQIDAQMEAQEwYDBeBggrBgEFBQcCARZSaHR0cDov
+L3d3dy5wcmV1dmUtZWxlY3Ryb25pcXVlLm9yZy9QQ19BQ19SRUFMVEVDSF8xLjIuMjUwLjEuNzgu
+MS4yLjMuMS4zLjQuMS4xLnBkZjARBg8qgXoBTgECAwEDBAIAAwEwDgYDVR0PAQH/BAQDAgZAMDIG
+A1UdEQQrMCmBJ2hlbnJpLmJhcnRoZWxlbXkuZ3JvdXBlYWRzbkBub3RhaXJlcy5mcjBiBgNVHR8E
+WzBZMFegVaBThlFodHRwOi8vd3d3LnByZXV2ZS1lbGVjdHJvbmlxdWUub3JnL0xpc3RlUmV2b2Nh
+dGlvbnNQcmVQcm9kdWN0aW9uL3JlYWx0ZWNoMjAxNy5jcmwwDQYJKoZIhvcNAQELBQADggEBAG/L
+p9n1C/bYVhhDG20lNR3IqWuPFpBIfXZqRYTn04JYk27slQnDaV7Ac0cAYQgTtT9EPmYQDYryh5gx
+nTuXvawzIGX3pNgOOuVxTCfYOe1hm8xdJC34pLsVV45bIdEtI+P1kHZmErbICpZvyMgNxmz+kNrC
+NrAwnfXWwug3f7bRk5B2MR9o/GFbAtCo0MisJqG0mwgsURYg2o116vAMTReIDQrinSHEn8neWps6
+jsA+q5iwtW/gZe01pvqHxkDXn++Xoq+12pBFiMMk7y9A0A/m+gv0W5ZnS+T42vhk6VJdd0crXiRL
+4DBOMej2PypsjVAzVX2QpIMubDpyE4UQssw=
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object><xad:QualifyingProperties xmlns:xad="http://uri.etsi.org/01903/v1.2.2#" Id="REALNOT-QualifyingProperties" Target="#REALNOT"><xad:SignedProperties Id="REALNOT-SignedProperties"><xad:SignedSignatureProperties><xad:SigningTime>2014-11-07T09:48:28.507+01:00</xad:SigningTime><xad:SigningCertificate><xad:Cert><xad:CertDigest><xd:DigestMethod xmlns:xd="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><xd:DigestValue xmlns:xd="http://www.w3.org/2000/09/xmldsig#">3P5TSs+7Wkyiq1sKKcV9safYbnB03MChLACp8lgUj30=</xd:DigestValue></xad:CertDigest><xad:IssuerSerial><xd:X509IssuerName xmlns:xd="http://www.w3.org/2000/09/xmldsig#">OU=REALTECH2017, OU=0002 784350134, O=CONSEIL SUPERIEUR DU NOTARIAT, C=FR</xd:X509IssuerName><xd:X509SerialNumber xmlns:xd="http://www.w3.org/2000/09/xmldsig#">58</xd:X509SerialNumber></xad:IssuerSerial></xad:Cert></xad:SigningCertificate><xad:SignatureProductionPlace><xad:City>Paris</xad:City><xad:PostalCode>75000</xad:PostalCode><xad:CountryName>France</xad:CountryName></xad:SignatureProductionPlace></xad:SignedSignatureProperties></xad:SignedProperties><xad:UnsignedProperties Id="REALNOT-UnsignedProperties" xmlns:xad="http://uri.etsi.org/01903/v1.2.2#"><xad:UnsignedSignatureProperties/></xad:UnsignedProperties></xad:QualifyingProperties></ds:Object><ds:Object Id="REALNOT-doc-scsinfo"><SignatureCreationSystemInfo xmlns="" Id="REALNOT-scsinfo"><SCAInfo><Name>Serveur de validation</Name><Version>1.8.0-RC2-SNAPSHOT</Version><Vendor>APPLI.NOT</Vendor></SCAInfo></SignatureCreationSystemInfo></ds:Object></ds:Signature>
+</MinuteDepot>
