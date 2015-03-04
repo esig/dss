@@ -177,7 +177,9 @@
 	</build>
 
 	<scm>
+		<url>https://github.com/esig/dss.git</url>
 		<connection>scm:git:https://github.com/esig/dss.git</connection>
+		<developerConnection>scm:git:https://github.com/esig/dss.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
