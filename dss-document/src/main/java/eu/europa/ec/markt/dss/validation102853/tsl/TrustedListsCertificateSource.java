@@ -159,7 +159,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param tlWellSigned    Indicates if the signature of trusted list is valid
 	 */
 	private synchronized void addCertificate(final CertificateToken x509Certificate, final AbstractTrustService trustedService, final TrustServiceProvider tsProvider,
-	                                         final boolean tlWellSigned) {
+			final boolean tlWellSigned) {
 
 		try {
 			final ServiceInfo serviceInfo = getServiceInfo(trustedService, tsProvider, tlWellSigned);
@@ -348,7 +348,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 				throw new DSSException("SHA256 does not exist!");
 			}
 			final String hashValue = getTSLHashCode(url);
-			refresh = hashValue == null || !currentHashValue.equals(hashValue);
+			refresh = (hashValue == null) || !currentHashValue.equals(hashValue);
 			if (refresh) {
 
 				updateTSLHashCode(url, currentHashValue);
@@ -361,7 +361,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		// if the current date is after the last known nextUpdate then the refresh is forced.
 		final String tslNextUpdateProperty = getTSLNextUpdateDate(url);
 		final Date tslNextUpdateDate = DSSUtils.quietlyParseDate(tslNextUpdateProperty);
-		if (tslNextUpdateDate != null && new Date().after(tslNextUpdateDate)) {
+		if ((tslNextUpdateDate != null) && new Date().after(tslNextUpdateDate)) {
 			refresh = true;
 		}
 		return refresh;
@@ -508,7 +508,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		try {
 
 			diagnosticInfo.put(trimmedUrl, "Loading");
-			LOG.info("Downloading TrustStatusList for '{}' from url= {}", territory, trimmedUrl);
+			LOG.info("Downloading TrustStatusList for '{}' from url='{}'", territory, trimmedUrl);
 			final TrustStatusList countryTSL = getTrustStatusList(trimmedUrl, signingCertList);
 			loadAllCertificatesFromOneTSL(countryTSL);
 			LOG.info(".... done for '{}'", territory);

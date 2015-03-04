@@ -51,7 +51,7 @@
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat6-maven-plugin</artifactId>
 				<configuration>
-					<path>/</path>
+					<path>/dss-webapp</path>
 				</configuration>
 			</plugin>
 		</plugins>

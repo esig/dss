@@ -14,7 +14,7 @@
 	</appender>
 
 	<appender name="FILE" class="org.apache.log4j.FileAppender">
-		<param name="file" value="${log}/log.out"/>
+		<param name="file" value="log.out"/>
 		<param name="immediateFlush" value="true"/>
 		<param name="threshold" value="debug"/>
 		<param name="append" value="false"/>
