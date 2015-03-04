@@ -1,4 +1,0 @@
-The dss-package version 3.0-SNAPSHOT-20130918 is a work in progress.
-It is meant to early get feedback by the technical adviser of the DG MARKT - foremost on the design aspects.
-
-TODO

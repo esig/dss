@@ -1,9 +1,0 @@
-The dss-package version 4.0.0 is a major release.
-
-This version includes :
-- The new Baseline profile.
-- Replacement of iText by PDFBox.
-- Change of version of Bouncy Castle (now v1.49).
-- Correction of issues in CAdES discovered during the plugtests.
-- A full refactoring of Web services.
-

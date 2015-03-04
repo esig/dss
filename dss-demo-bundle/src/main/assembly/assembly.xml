@@ -44,6 +44,8 @@
 				<include>eu.europa.ec.joinup.sd-dss:dss-demo-webapp:war</include>
 			</includes>
 			<outputDirectory>tomcat/webapps</outputDirectory>
+			<!-- Works only if there is one include -->
+			<outputFileNameMapping>dss-webapp.war</outputFileNameMapping>
 		</dependencySet>
 	</dependencySets>
 
