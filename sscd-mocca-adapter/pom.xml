@@ -90,6 +90,7 @@
 							<alias>${keystore.alias}</alias>
 							<storepass>${keystore.store.password}</storepass>
 							<keypass>${keystore.key.password}</keypass>
+							<tsa>http://services.globaltrustfinder.com/adss/tsa</tsa>
 						</configuration>
 					</plugin>
 				</plugins>

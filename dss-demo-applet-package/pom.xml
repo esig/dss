@@ -35,7 +35,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -55,20 +54,23 @@
 						<filter>
 							<artifact>*:*</artifact>
 							<excludes>
+								<exclude>META-INF/maven/**/*</exclude>
 								<exclude>META-INF/*.SF</exclude>
 								<exclude>META-INF/*.DSA</exclude>
 								<exclude>META-INF/*.RSA</exclude>
 							</excludes>
 						</filter>
 					</filters>
-					<archive>
-						<addMavenDescriptor>false</addMavenDescriptor>
-						<manifestEntries>
-							<Permissions>all-permissions</Permissions>
-							<Application-Name>SD-DSS Demo Applet</Application-Name>
-							<Codebase>*</Codebase>
-						</manifestEntries>
-					</archive>
+					<transformers>
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+							<manifestEntries>
+								<Application-Name>SD-DSS Demo Applet</Application-Name>
+								<Permissions>all-permissions</Permissions>
+								<Codebase>*</Codebase>
+							</manifestEntries>
+						</transformer>
+					</transformers>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -115,6 +117,7 @@
 							<alias>${keystore.alias}</alias>
 							<storepass>${keystore.store.password}</storepass>
 							<keypass>${keystore.key.password}</keypass>
+							<tsa>http://services.globaltrustfinder.com/adss/tsa</tsa>
 						</configuration>
 					</plugin>
 				</plugins>
