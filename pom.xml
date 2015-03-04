@@ -6,7 +6,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>4.4.RC1</version>
+	<version>4.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -205,7 +205,7 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>sscd-mocca-adapter</artifactId>
-				<version>4.4.RC1</version>
+				<version>4.5-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
