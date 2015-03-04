@@ -38,6 +38,8 @@ import java.util.Properties;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -237,7 +239,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			return inputStream;
 		} catch (Exception e) {
 
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 			throw new DSSException(e);
 		}
 	}
@@ -466,7 +468,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			throw e;
 		} finally {
 
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 		}
 		return lotlCert;
 	}
@@ -481,25 +483,13 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	/**
-	 * This method allows to load any trusted list.
-	 *
-	 * @param url                 of the TSL to load
-	 * @param territory           of the TSL
-	 * @param signingCertificates the {@code List} of the possible signing certificates
-	 */
-	public void loadAdditionalList(final String url, final String territory, final List<CertificateToken> signingCertificates) {
-
-		loadTSL(url, territory, signingCertificates);
-	}
-
-	/**
 	 * @param url             of the TSL to load
 	 * @param territory       of the TSL
 	 * @param signingCertList the {@code List} of the possible signing certificates
 	 */
 	protected void loadTSL(final String url, final String territory, final List<CertificateToken> signingCertList) {
 
-		if (DSSUtils.isBlank(url)) {
+		if (StringUtils.isBlank(url)) {
 
 			LOG.error("The URL is blank!");
 			return;
@@ -551,23 +541,23 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 					try {
 
-						X509Certificate x509Certificate = null;
-						if (digitalIdentity instanceof X509Certificate) {
+						CertificateToken x509Certificate = null;
+						if (digitalIdentity instanceof CertificateToken) {
 
-							x509Certificate = (X509Certificate) digitalIdentity;
+							x509Certificate = (CertificateToken) digitalIdentity;
 						} else if (digitalIdentity instanceof X500Principal) {
 
 							final X500Principal x500Principal = (X500Principal) digitalIdentity;
 							final List<CertificateToken> certificateTokens = certPool.get(x500Principal);
 							if (certificateTokens.size() > 0) {
-								x509Certificate = certificateTokens.get(0).getCertificate();
+								x509Certificate = certificateTokens.get(0);
 							} else {
 								LOG.debug("WARNING: There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
 							}
 						}
 						if (x509Certificate != null) {
 
-							addCertificate(new CertificateToken(x509Certificate), trustService, trustServiceProvider, trustStatusList.isWellSigned());
+							addCertificate(x509Certificate, trustService, trustServiceProvider, trustStatusList.isWellSigned());
 						}
 					} catch (DSSException e) {
 
@@ -670,4 +660,5 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			LOG.error("Impossible to save: '{}'", file.getAbsolutePath(), e);
 		}
 	}
+	
 }

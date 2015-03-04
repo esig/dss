@@ -41,6 +41,8 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -81,9 +83,7 @@ import eu.europa.ec.markt.dss.validation102853.loader.Protocol;
 /**
  * Implementation of DataLoader for any protocol.<p/>
  * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without having to add the certificate to the JVM TrustStore. It takes into account a proxy management through
- * {@code ProxyPreferenceManager}. The authentication is also supported.<p/>
- *
- *
+ * {@code ProxyPreferenceManager}. The authentication is also supported.
  */
 public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
@@ -248,7 +248,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 				proxyUser = proxyPreferenceManager.getHttpUser();
 				proxyPassword = proxyPreferenceManager.getHttpPassword();
 			}
-			if (DSSUtils.isNotEmpty(proxyUser) && DSSUtils.isNotEmpty(proxyPassword)) {
+			if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
 
 				AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
 				UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
@@ -331,40 +331,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		return null;
 	}
 
-	//    /**
-	//     * Obtains a CRL from a specified LDAP URL (Another method)
-	//     *
-	//     * @param ldapURL The LDAP URL String
-	//     * @return A CRL obtained from this LDAP URL if successful, otherwise NULL (if no CRL was resent) or an exception will be thrown.
-	//     * @throws DSSException
-	//     */
-	//    public static byte[] ldapGet2(final String ldapURL) throws DSSException {
-	//
-	//        try {
-	//
-	//            //final String ldapUrlStr = URLDecoder.decode(ldapURL, "UTF-8");
-	//            final LdapUrl ldapUrl = new LdapUrl(ldapURL);
-	//            final int port = ldapUrl.getPort() > 0 ? ldapUrl.getPort() : 389;
-	//            final LdapConnection con = new LdapNetworkConnection(ldapUrl.getHost(), port);
-	//            con.connect();
-	//            final Entry entry = con.lookup(ldapUrl.getDn(), ldapUrl.getAttributes().toArray(new String[ldapUrl.getAttributes().size()]));
-	//            final Collection<Attribute> attributes = entry.getAttributes();
-	//            byte[] bytes = null;
-	//            for (Attribute attr : attributes) {
-	//
-	//                bytes = attr.getBytes();
-	//                break;
-	//            }
-	//            con.close();
-	//            return bytes;
-	//        } catch (Exception e) {
-	//
-	//            LOG.warn(e.toString(), e);
-	//        }
-	//        return null;
-	//    }
-	//
-
 	/**
 	 * This method retrieves data using LDAP protocol.
 	 * - CRL from given LDAP url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
@@ -411,7 +377,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 			LOG.warn(e.getMessage());
 		} finally {
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 		}
 		return null;
 	}
@@ -438,17 +404,20 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
 			return returnedBytes;
+			
 		} catch (URISyntaxException e) {
 			throw new DSSException(e);
+			
 		} finally {
-			if (httpRequest != null) {
 
+			if (httpRequest != null) {
 				httpRequest.releaseConnection();
 			}
+			
 			if (httpResponse != null) {
-
 				EntityUtils.consumeQuietly(httpResponse.getEntity());
 			}
+			
 		}
 	}
 
@@ -554,7 +523,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			DSSUtils.closeQuietly(content);
+			IOUtils.closeQuietly(content);
 		}
 	}
 
@@ -654,9 +623,9 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
-	 * This method allows to propgate the authentication information from the current object.
+	 * This method allows to propagate the authentication information from the current object.
 	 *
-	 * @param commonsDataLoader {@code CommonsDataLoader} to be initialised with authentication information
+	 * @param commonsDataLoader {@code CommonsDataLoader} to be initialized with authentication information
 	 */
 	public void propagateAuthentication(final CommonsDataLoader commonsDataLoader) {
 
@@ -670,7 +639,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	@Override
 	public void update() {
-
 		updated = true;
 	}
+
 }

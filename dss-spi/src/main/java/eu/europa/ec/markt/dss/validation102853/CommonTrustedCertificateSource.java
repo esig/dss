@@ -20,7 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853;
 
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
@@ -59,11 +58,6 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource impl
     public CertificateToken addCertificate(final CertificateToken certificate, final ServiceInfo serviceInfo) {
 
         final CertificateToken certToken = certPool.getInstance(certificate, getCertificateSourceType(), serviceInfo);
-        // print certificate
-        // System.out.println(certToken);
-        // This allows to check the conversion of X500 principal
-        // System.out.println("> " + DSSUtils.getSubjectX500Principal(certToken.getCertificate()).getName());
-        // System.out.println("> " + DSSUtils.getIssuerX500Principal(certToken.getCertificate()).getName());
         return certToken;
     }
 

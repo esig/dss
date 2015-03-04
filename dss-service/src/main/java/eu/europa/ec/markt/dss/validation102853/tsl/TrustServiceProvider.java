@@ -64,11 +64,6 @@ class TrustServiceProvider {
 		for (final TSPServiceType service : tspType.getTSPServices().getTSPService()) {
 
 			final List<AbstractTrustService> trustServiceList = new ArrayList<AbstractTrustService>();
-			// System.out.println();
-			// final TSPServiceInformationType serviceInformation = service.getServiceInformation();
-			// System.out.println("#------> " + serviceInformation.getServiceName());
-			// System.out.println("#------> " + serviceInformation.getServiceTypeIdentifier());
-			// System.out.println("#------> " + serviceInformation.getServiceStatus());
 
 			final CurrentTrustService currentService = new CurrentTrustService(service);
 			trustServiceList.add(currentService);

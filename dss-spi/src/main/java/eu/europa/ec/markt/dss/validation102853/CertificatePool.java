@@ -114,23 +114,24 @@ public class CertificatePool implements Serializable {
 	public CertificateToken getInstance(final CertificateToken certificateToAdd, final List<CertificateSourceType> sources, final List<ServiceInfo> services) {
 
 		if (certificateToAdd == null) {
-
-			throw new DSSNullException(X509Certificate.class);
+			throw new NullPointerException();
 		}
+		
 		if (sources == null || sources.size() == 0) {
-
-			throw new DSSException("The certificate source type must be set.");
+			throw new IllegalStateException("The certificate source type must be set.");
 		}
-		// TRACE ++
-		//		if (LOG.isTraceEnabled()) {
-		//			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal().toString() + "|" + certificateToAdd.getSerialNumber());
-		//		}
+		
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal() + "|" + certificateToAdd.getSerialNumber());
+		}
+		
 		final TokenIdentifier id = certificateToAdd.getDSSId();
 		synchronized (certById) {
 
 			CertificateToken certToken = certById.get(id);
 			if (certToken == null) {
 
+				LOG.debug("Certificate " + certificateToAdd.getDSSId() + " is not in the pool");
 				certToken = certificateToAdd;
 				certById.put(id, certToken);
 				final String subjectName = certificateToAdd.getSubjectX500Principal().getName(X500Principal.CANONICAL);
@@ -143,6 +144,7 @@ public class CertificatePool implements Serializable {
 				list.add(certToken);
 			} else {
 
+				LOG.debug("Certificate " + certificateToAdd.getDSSId() + " is already in the pool");
 				final X509Certificate foundCertificate = certToken.getCertificate();
 				final byte[] foundCertificateSignature = foundCertificate.getSignature();
 				final byte[] certificateToAddSignature = certificateToAdd.getSignature();
