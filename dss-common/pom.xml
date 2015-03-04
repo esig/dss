@@ -8,7 +8,7 @@
     <parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.3.1-SNAPSHOT</version>
+		<version>4.4.RC1</version>
     </parent>
 
     <name>DSS Common</name>
@@ -46,7 +46,7 @@
         <dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-tsl-jaxb</artifactId>
-			<version>4.3.1-SNAPSHOT</version>
+			<version>4.4.RC1</version>
         </dependency>
     </dependencies>
 
