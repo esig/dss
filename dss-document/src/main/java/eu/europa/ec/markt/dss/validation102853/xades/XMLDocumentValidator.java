@@ -33,7 +33,6 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
@@ -107,7 +106,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	public AdvancedSignature getSignatureById(final String signatureId) throws DSSException {
 
 		if (StringUtils.isBlank(signatureId)) {
-			throw new DSSNullException(String.class, "signatureId");
+			throw new NullPointerException("signatureId");
 		}
 		final List<AdvancedSignature> advancedSignatures = getSignatures();
 		for (final AdvancedSignature advancedSignature : advancedSignatures) {
@@ -124,7 +123,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	public DSSDocument removeSignature(final String signatureId) throws DSSException {
 
 		if (StringUtils.isBlank(signatureId)) {
-			throw new DSSNullException(String.class, "signatureId");
+			throw new NullPointerException("signatureId");
 		}
 		// TODO (31/07/2014): Checks on signature packaging to be added
 		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);

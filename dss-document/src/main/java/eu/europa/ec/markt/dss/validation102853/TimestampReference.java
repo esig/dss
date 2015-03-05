@@ -20,9 +20,10 @@
  */
 package eu.europa.ec.markt.dss.validation102853;
 
+import org.apache.commons.codec.binary.Base64;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 
 /**
  * This class stocks the timestamp reference, which is composed of:
@@ -30,8 +31,6 @@ import eu.europa.ec.markt.dss.exception.DSSNullException;
  * - digest value of the reference;
  * - the timestamp reference category {@code TimestampReferenceCategory};
  * - signature id in the case where the reference apply to the signature.
- *
- *
  */
 public class TimestampReference {
 
@@ -44,22 +43,22 @@ public class TimestampReference {
 	public TimestampReference(final String signatureId) {
 
 		if (signatureId == null) {
-			throw new DSSNullException(String.class, "signatureId");
+			throw new NullPointerException();
 		}
 		this.signatureId = signatureId;
 		this.digestAlgorithm = DigestAlgorithm.SHA1.name();
-		this.digestValue = DSSUtils.base64Encode(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
+		this.digestValue = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
 		this.category = TimestampReferenceCategory.SIGNATURE;
 	}
 
 	public TimestampReference(final String digestAlgorithm, final String digestValue) {
 
 		if (digestAlgorithm == null) {
-			throw new DSSNullException(String.class, "digestAlgorithm");
+			throw new NullPointerException("digestAlgorithm");
 		}
 		this.digestAlgorithm = digestAlgorithm;
 		if (digestValue == null) {
-			throw new DSSNullException(String.class, "digestValue");
+			throw new NullPointerException("digestValue");
 		}
 		this.digestValue = digestValue;
 		this.category = TimestampReferenceCategory.CERTIFICATE;

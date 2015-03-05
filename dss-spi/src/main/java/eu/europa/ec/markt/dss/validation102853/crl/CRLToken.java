@@ -43,7 +43,6 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotApplicableMethodException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.RevocationToken;
 import eu.europa.ec.markt.dss.validation102853.TokenValidationExtraInfo;
@@ -87,10 +86,10 @@ public class CRLToken extends RevocationToken {
 	private void ensureNotNull(final CRLValidity crlValidity) {
 
 		if (crlValidity == null) {
-			throw new DSSNullException(CRLValidity.class);
+			throw new NullPointerException();
 		}
 		if (crlValidity.getX509CRL() == null) {
-			throw new DSSNullException(X509CRL.class);
+			throw new NullPointerException();
 		}
 	}
 

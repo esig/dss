@@ -28,15 +28,11 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.crl.OfflineCRLSource;
 
 /**
  * Retrieves CRL values from an XAdES (-XL) signature.
- *
- *
  */
-
 public class XAdESCRLSource extends OfflineCRLSource {
 
     /**
@@ -49,11 +45,11 @@ public class XAdESCRLSource extends OfflineCRLSource {
 
         if (signatureElement == null) {
 
-            throw new DSSNullException(Element.class, "signatureElement");
+            throw new NullPointerException("signatureElement");
         }
         if (xPathQueryHolder == null) {
 
-            throw new DSSNullException(XPathQueryHolder.class, "xPathQueryHolder");
+            throw new NullPointerException("xPathQueryHolder");
         }
 	    x509CRLList = new ArrayList<X509CRL>();
         addCRLs(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUE);

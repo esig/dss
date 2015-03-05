@@ -20,25 +20,17 @@
  */
 package eu.europa.ec.markt.dss.validation102853;
 
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
 
 /**
  * This source of certificates handles any non trusted certificates. (ex: intermediate certificates used in building certification chain)
- *
- *
- *
- *
- *
- *
  */
 public class CommonCertificateSource implements CertificateSource {
 
@@ -68,7 +60,7 @@ public class CommonCertificateSource implements CertificateSource {
 
         if (certPool == null) {
 
-            throw new DSSNullException(CertificatePool.class);
+            throw new NullPointerException();
         }
         this.certPool = certPool;
     }

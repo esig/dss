@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -34,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
@@ -78,7 +78,7 @@ public class TimestampService {
 	 */
 	public TimestampService(final TSPSource tspSource) {
 		if (tspSource == null) {
-			throw new DSSNullException(TSPSource.class);
+			throw new NullPointerException();
 		}
 		this.tspSource = tspSource;
 		certificatePool = new CertificatePool();
@@ -95,12 +95,12 @@ public class TimestampService {
 	public TimestampService(final TSPSource tspSource, final CertificatePool certificatePool) {
 
 		if (tspSource == null) {
-			throw new DSSNullException(TSPSource.class);
+			throw new NullPointerException();
 		}
 		this.tspSource = tspSource;
 
 		if (certificatePool == null) {
-			throw new DSSNullException(CertificatePool.class);
+			throw new NullPointerException();
 		}
 		this.certificatePool = certificatePool;
 		xPathQueryHolder = new XPathQueryHolder();
@@ -147,7 +147,7 @@ public class TimestampService {
 	                                                                    final TimestampType timestampType) {
 
 		if (externalParameters == null) {
-			throw new DSSNullException(SignatureParameters.class);
+			throw new NullPointerException();
 		}
 		//1. Set initial parameters
 		final SignatureParameters signatureParameters = setSignatureParameters(externalParameters);
@@ -227,26 +227,26 @@ public class TimestampService {
 	public TimestampToken generateTimestampToken(final TimestampType timestampType, final SignatureParameters signatureParameters, final byte[] references) {
 
 		if (timestampType == null) {
-			throw new DSSNullException(TimestampType.class);
+			throw new NullPointerException();
 		}
 		if (signatureParameters == null) {
-			throw new DSSNullException(SignatureParameters.class);
+			throw new NullPointerException();
 		}
 		final TimestampParameters contentTimestampParameters = signatureParameters.getContentTimestampParameters();
 		if (contentTimestampParameters == null) {
-			throw new DSSNullException(TimestampParameters.class);
+			throw new NullPointerException();
 		}
 
 		final DigestAlgorithm digestAlgorithm = contentTimestampParameters.getDigestAlgorithm();
 		if (digestAlgorithm == null) {
 
-			throw new DSSNullException(DigestAlgorithm.class);
+			throw new NullPointerException();
 		}
 		byte[] digest = DSSUtils.digest(digestAlgorithm, references);
 		if (LOG.isTraceEnabled()) {
 
 			LOG.trace("Bytes to digest : [" + new String(references) + "]");
-			LOG.trace("Digest to timestamp: " + DSSUtils.base64Encode(digest));
+			LOG.trace("Digest to timestamp: " + Base64.encodeBase64String(digest));
 		}
 		final TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digest);
 		final TimestampToken token = new TimestampToken(timeStampResponse, timestampType, certificatePool);

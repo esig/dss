@@ -27,19 +27,12 @@ import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
 
 /**
  * Validator for ASiC timeStampToken
- *
- *
- *
- *
- *
- *
  */
 public class ASiCTimestampDocumentValidator extends CMSDocumentValidator {
 
@@ -74,7 +67,7 @@ public class ASiCTimestampDocumentValidator extends CMSDocumentValidator {
 			throw new DSSException(e);
 		}
 		if (detachedContents == null || detachedContents.size() == 0) {
-			throw new DSSNullException(DSSDocument.class, "detachedContents");
+			throw new NullPointerException("detachedContents");
 		}
 		timestampExternalContents = detachedContents;
 	}

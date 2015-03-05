@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.PublicKey;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -72,7 +71,6 @@ import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.exception.DSSNullReturnedException;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
@@ -211,12 +209,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *            can be null
 	 */
 	public XAdESSignature(final Element signatureElement, final List<XPathQueryHolder> xPathQueryHolders, final CertificatePool certPool)
-			throws DSSNullException {
+			throws NullPointerException {
 
 		super(certPool);
 		if (signatureElement == null) {
 
-			throw new DSSNullException(Element.class, "signatureElement");
+			throw new NullPointerException("signatureElement");
 		}
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolders = xPathQueryHolders;

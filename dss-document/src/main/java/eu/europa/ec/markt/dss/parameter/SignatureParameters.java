@@ -30,7 +30,6 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -166,7 +165,7 @@ public class SignatureParameters implements Serializable {
 
 		if (source == null) {
 
-			throw new DSSNullException(SignatureParameters.class);
+			throw new NullPointerException();
 		}
 		bLevelParams = new BLevelParameters(source.bLevelParams);
 		aSiCParams = new ASiCParameters(source.aSiCParams);
@@ -470,10 +469,10 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @param signatureLevel the value
 	 */
-	public void setSignatureLevel(final SignatureLevel signatureLevel) throws DSSNullException {
+	public void setSignatureLevel(final SignatureLevel signatureLevel) throws NullPointerException {
 
 		if (signatureLevel == null) {
-			throw new DSSNullException(SignatureLevel.class);
+			throw new NullPointerException();
 		}
 		final SignatureForm signatureForm = signatureLevel.getSignatureForm();
 		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)) {

@@ -35,16 +35,12 @@ import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.CommonDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 
 /**
  * A document composed by a CMSSignedData
- *
- *
  */
-
 public class CMSSignedDocument extends CommonDocument {
 
 	protected CMSSignedData signedData;
@@ -60,7 +56,7 @@ public class CMSSignedDocument extends CommonDocument {
 		this.signedData = data;
 		if (data == null) {
 
-			throw new DSSNullException(CMSSignedData.class);
+			throw new NullPointerException();
 		}
 		mimeType = MimeType.PKCS7;
 	}

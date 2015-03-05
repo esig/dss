@@ -32,14 +32,12 @@ import org.w3c.dom.Node;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
 import eu.europa.ec.markt.dss.signature.ProfileParameters.Operation;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
@@ -51,10 +49,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 
 /**
  * XAdES implementation of DocumentSignatureService
- *
- *
  */
-
 public class XAdESService extends AbstractSignatureService {
 
 	static {
@@ -92,7 +87,7 @@ public class XAdESService extends AbstractSignatureService {
 			throws DSSException {
 
 		if (parameters.getSignatureLevel() == null) {
-			throw new DSSNullException(SignatureLevel.class);
+			throw new NullPointerException();
 		}
 		assertSigningDateInCertificateValidityRange(parameters);
 		parameters.getContext().setOperationKind(Operation.SIGNING);
@@ -127,11 +122,11 @@ public class XAdESService extends AbstractSignatureService {
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException {
 
 		if (parameters.getSignatureLevel() == null) {
-			throw new DSSNullException(SignatureLevel.class);
+			throw new NullPointerException();
 		}
 		final SignatureTokenConnection signingToken = parameters.getSigningToken();
 		if (signingToken == null) {
-			throw new DSSNullException(SignatureTokenConnection.class);
+			throw new NullPointerException();
 		}
 
 		parameters.getContext().setOperationKind(Operation.SIGNING);
@@ -163,17 +158,17 @@ public class XAdESService extends AbstractSignatureService {
 	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final SignatureParameters parameters) throws DSSException {
 
 		if (toCounterSignDocument == null) {
-			throw new DSSNullException(DSSDocument.class, "toCounterSignDocument");
+			throw new NullPointerException();
 		}
 		if (parameters == null) {
-			throw new DSSNullException(SignatureParameters.class);
+			throw new NullPointerException();
 		}
 		if (parameters.getSignatureLevel() == null) {
-			throw new DSSNullException(SignatureLevel.class);
+			throw new NullPointerException();
 		}
 		final SignatureTokenConnection signingToken = parameters.getSigningToken();
 		if (signingToken == null) {
-			throw new DSSNullException(SignatureTokenConnection.class);
+			throw new NullPointerException();
 		}
 		final String toCounterSignSignatureId = parameters.getToCounterSignSignatureId();
 		if (StringUtils.isBlank(toCounterSignSignatureId)) {
@@ -185,7 +180,7 @@ public class XAdESService extends AbstractSignatureService {
 		}
 		final Node signatureValueNode = xadesSignature.getSignatureValue();
 		if (signatureValueNode == null) {
-			throw new DSSNullException(Node.class, "signature-value");
+			throw new NullPointerException();
 		}
 		final String signatureValueId = DSSXMLUtils.getIDIdentifier((Element) signatureValueNode);
 		if (StringUtils.isBlank(toCounterSignSignatureId)) {

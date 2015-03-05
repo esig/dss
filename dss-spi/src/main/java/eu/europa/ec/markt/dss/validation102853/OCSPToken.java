@@ -23,7 +23,6 @@ package eu.europa.ec.markt.dss.validation102853;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.PublicKey;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
@@ -53,15 +52,11 @@ import eu.europa.ec.markt.dss.DSSRevocationUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
- *
- *
  */
-
 public class OCSPToken extends RevocationToken {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPToken.class);
@@ -88,13 +83,13 @@ public class OCSPToken extends RevocationToken {
 	public OCSPToken(final BasicOCSPResp basicOCSPResp, final SingleResp singleResp, final CertificatePool certificatePool) {
 
 		if (basicOCSPResp == null) {
-			throw new DSSNullException(BasicOCSPResp.class);
+			throw new NullPointerException();
 		}
 		if (singleResp == null) {
-			throw new DSSNullException(SingleResp.class);
+			throw new NullPointerException();
 		}
 		if (certificatePool == null) {
-			throw new DSSNullException(CertificatePool.class);
+			throw new NullPointerException();
 		}
 		this.basicOCSPResp = basicOCSPResp;
 		this.singleResp = singleResp;

@@ -20,20 +20,14 @@
  */
 package eu.europa.ec.markt.dss.validation102853.condition;
 
-import java.security.cert.X509Certificate;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * Checks if a certificate has a specific policy OID.<br>
  * Objects based on this class are instantiated from trusted list or by SignedDocumentValidator for QCP and QCPPlus
- *
- *
  */
-
 public class PolicyIdCondition extends Condition {
 
 	private static final long serialVersionUID = 7590885101177874819L;
@@ -51,7 +45,7 @@ public class PolicyIdCondition extends Condition {
 	public PolicyIdCondition(final String policyId) {
 
 		if (policyId == null) {
-			throw new DSSNullException(StrictMath.class, "policyId");
+			throw new NullPointerException("policyId");
 		}
 		this.policyOid = policyId;
 	}
@@ -74,7 +68,7 @@ public class PolicyIdCondition extends Condition {
 	public boolean check(final CertificateToken certificateToken) {
 
 		if (certificateToken == null) {
-			throw new DSSNullException(X509Certificate.class);
+			throw new NullPointerException();
 		}
 		/**
 		 * Certificate policies identifier: 2.5.29.32 (IETF RFC 3280)<br>

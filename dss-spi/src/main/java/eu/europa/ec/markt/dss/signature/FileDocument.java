@@ -30,7 +30,6 @@ import org.apache.commons.io.IOUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 
 /**
  * Document implementation stored on file-system.
@@ -58,7 +57,7 @@ public class FileDocument extends CommonDocument {
 
 		if (file == null) {
 
-			throw new DSSNullException(File.class);
+			throw new NullPointerException();
 		}
 		if (!file.exists()) {
 

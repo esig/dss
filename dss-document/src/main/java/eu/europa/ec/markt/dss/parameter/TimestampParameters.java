@@ -22,9 +22,9 @@ package eu.europa.ec.markt.dss.parameter;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.DigestAlgorithm;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 
 /**
  * This class represents the parameters provided when generating specific timestamps in a signature, such as an AllDataObjectsTimestamp or an
@@ -53,7 +53,7 @@ public class TimestampParameters {
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 
 		if (digestAlgorithm == null) {
-			throw new DSSNullException(DigestAlgorithm.class);
+			throw new NullPointerException();
 		}
 		this.digestAlgorithm = digestAlgorithm;
 	}
@@ -64,8 +64,8 @@ public class TimestampParameters {
 
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
 
-		if (DSSUtils.isBlank(canonicalizationMethod)) {
-			throw new DSSNullException(String.class, "canonicalizationMethod");
+		if (StringUtils.isBlank(canonicalizationMethod)) {
+			throw new NullPointerException();
 		}
 		this.canonicalizationMethod = canonicalizationMethod;
 	}

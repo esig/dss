@@ -21,22 +21,17 @@
 package eu.europa.ec.markt.dss.signature;
 
 import java.security.Security;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
 /**
- *
- *
- *
  *
  */
 public abstract class AbstractSignatureService implements DocumentSignatureService {
@@ -58,7 +53,7 @@ public abstract class AbstractSignatureService implements DocumentSignatureServi
 
 		if (certificateVerifier == null) {
 
-			throw new DSSNullException(CertificateVerifier.class);
+			throw new NullPointerException();
 		}
 		this.certificateVerifier = certificateVerifier;
 	}

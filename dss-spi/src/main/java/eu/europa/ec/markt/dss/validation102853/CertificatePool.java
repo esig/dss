@@ -36,8 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.TokenIdentifier;
-import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
 
@@ -46,8 +44,6 @@ import eu.europa.ec.markt.dss.validation102853.condition.ServiceInfo;
  * different sources: trusted list, signature, OCSP response... but each certificate is unambiguously identified by its
  * issuer DN and serial number. This class allows to keep only one occurrence of the certificate regardless its
  * provenance. Two pools of certificates can be merged using the {@link #merge(CertificatePool)} method.
- *
- *
  */
 public class CertificatePool implements Serializable {
 

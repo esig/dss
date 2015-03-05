@@ -28,9 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -122,7 +120,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
@@ -546,7 +543,7 @@ public final class DSSUtils {
 	public static CertificateToken loadCertificate(final byte[] input) throws DSSException {
 
 		if (input == null) {
-			throw new DSSNullException(byte[].class, "X5009 certificate");
+			throw new NullPointerException("X5009 certificate");
 		}
 		final ByteArrayInputStream inputStream = new ByteArrayInputStream(input);
 		return loadCertificate(inputStream);
@@ -583,7 +580,7 @@ public final class DSSUtils {
 		}
 		logger.debug("Loading certificate from {}", url);
 		if (loader == null) {
-			throw new DSSNullException(DataLoader.class);
+			throw new NullPointerException();
 		}
 		byte[] bytes = loader.get(url);
 		if ((bytes == null) || (bytes.length <= 0)) {
@@ -1102,7 +1099,7 @@ public final class DSSUtils {
 
 		if (file == null) {
 
-			throw new DSSNullException(File.class);
+			throw new NullPointerException();
 		}
 		try {
 			final FileInputStream fileInputStream = openInputStream(file);
@@ -1155,7 +1152,7 @@ public final class DSSUtils {
 
 		if (file == null) {
 
-			throw new DSSNullException(File.class);
+			throw new NullPointerException();
 		}
 		try {
 			final byte[] bytes = readFileToByteArray(file);
@@ -1177,7 +1174,7 @@ public final class DSSUtils {
 
 		if (file == null) {
 
-			throw new DSSNullException(File.class);
+			throw new NullPointerException();
 		}
 		try {
 			final byte[] bytes = readFileToByteArray(file);
@@ -1252,7 +1249,7 @@ public final class DSSUtils {
 	public static byte[] toByteArray(final InputStream inputStream) {
 
 		if (inputStream == null) {
-			throw new DSSNullException(InputStream.class);
+			throw new NullPointerException();
 		}
 		try {
 			final byte[] bytes = IOUtils.toByteArray(inputStream);
@@ -1266,7 +1263,7 @@ public final class DSSUtils {
 
 		if (bytes == null) {
 
-			throw new DSSNullException(byte[].class);
+			throw new NullPointerException();
 		}
 		final String string = new String(bytes);
 		return string;

@@ -20,7 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853;
 
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.signature.validation.ValidationContext;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
@@ -112,7 +110,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public SignatureValidationContext(final CertificatePool validationCertificatePool) {
 
 		if (validationCertificatePool == null) {
-			throw new DSSNullException(CertificatePool.class);
+			throw new NullPointerException();
 		}
 		this.validationCertificatePool = validationCertificatePool;
 	}
@@ -124,7 +122,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public void initialize(final CertificateVerifier certificateVerifier) {
 
 		if (certificateVerifier == null) {
-			throw new DSSNullException(CertificateVerifier.class);
+			throw new NullPointerException();
 		}
 		if (validationCertificatePool == null) {
 
@@ -146,7 +144,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public void setCurrentTime(final Date currentTime) throws DSSException {
 
 		if (currentTime == null) {
-			throw new DSSNullException(Date.class, "currentTime");
+			throw new NullPointerException();
 		}
 		this.currentTime = currentTime;
 	}

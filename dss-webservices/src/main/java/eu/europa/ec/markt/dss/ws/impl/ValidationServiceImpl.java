@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
@@ -45,8 +44,6 @@ import eu.europa.ec.markt.dss.ws.report.WSValidationReport;
 
 /**
  * Implementation of the Interface for the Contract of the Validation Web Service.
- *
- *
  */
 @WebService(endpointInterface = "eu.europa.ec.markt.dss.ws.ValidationService", serviceName = "ValidationService")
 public class ValidationServiceImpl implements ValidationService {
@@ -73,7 +70,7 @@ public class ValidationServiceImpl implements ValidationService {
 			}
 			if (wsDocument == null) {
 
-				throw new DSSNullException(WSDocument.class);
+				throw new NullPointerException();
 			}
 			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
 			final SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.PublicKey;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -58,7 +57,6 @@ import eu.europa.ec.markt.dss.OID;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
@@ -127,8 +125,6 @@ import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
  *
  * SignatureScopeFinder can be set using the appropriate setter (ex. setCadesSignatureScopeFinder). By default, this class will use the
  * default SignatureScopeFinder as defined by eu.europa.ec.markt.dss.validation102853.scope.SignatureScopeFinderFactory
- *
- *
  */
 public abstract class SignedDocumentValidator implements DocumentValidator {
 
@@ -261,7 +257,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void defineSigningCertificate(final CertificateToken x509Certificate) {
 
 		if (x509Certificate == null) {
-			throw new DSSNullException(X509Certificate.class);
+			throw new NullPointerException();
 		}
 		providedSigningCertificateToken = validationCertPool.getInstance(x509Certificate, CertificateSourceType.OTHER);
 	}
@@ -397,7 +393,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		LOG.info("Document validation...");
 		if (certificateVerifier == null) {
 
-			throw new DSSNullException(CertificateVerifier.class);
+			throw new NullPointerException();
 		}
 		Date date1 = null;
 		if (LOG.isInfoEnabled()) {

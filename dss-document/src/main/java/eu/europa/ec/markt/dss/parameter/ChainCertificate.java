@@ -21,19 +21,12 @@
 package eu.europa.ec.markt.dss.parameter;
 
 import java.io.Serializable;
-import java.security.cert.X509Certificate;
 
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * This class represent an element of the certificate chain. Each element is composed of a {@code X509Certificate} and a {@code boolean} value idicating if the certificate must be
  * part of the signing certificate signed attribute.
- *
- *
- *
- *
- *
  */
 public class ChainCertificate implements Serializable {
 
@@ -48,7 +41,7 @@ public class ChainCertificate implements Serializable {
 	public ChainCertificate(final CertificateToken x509Certificate) {
 
 		if (x509Certificate == null) {
-			throw new DSSNullException(X509Certificate.class);
+			throw new NullPointerException("x509certificate");
 		}
 		this.x509Certificate = x509Certificate;
 	}

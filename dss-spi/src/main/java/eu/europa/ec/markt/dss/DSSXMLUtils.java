@@ -87,7 +87,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 
 /**
@@ -967,9 +966,9 @@ public final class DSSXMLUtils {
 	 * @param namespace  the namespace to take into account
 	 * @param tagName    the tagName of the element to find
 	 * @return the
-	 * @throws DSSNullException
+	 * @throws NullPointerException
 	 */
-	public static Element getElementById(Document currentDom, String elementId, String namespace, String tagName) throws DSSNullException {
+	public static Element getElementById(Document currentDom, String elementId, String namespace, String tagName) throws NullPointerException {
 
 		Element element = null;
 		NodeList nodes = currentDom.getElementsByTagNameNS(namespace, tagName);
@@ -981,7 +980,7 @@ public final class DSSXMLUtils {
 			}
 		}
 		if (element == null) {
-			throw new DSSNullException(Element.class);
+			throw new NullPointerException();
 		}
 		return null;
 	}

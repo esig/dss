@@ -25,16 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * This class holds the list of the candidates for the signing certificate of the main signature.
- *
- *
- *
- *
- *
  */
 public class CandidatesForSigningCertificate implements Serializable{
 
@@ -90,7 +84,7 @@ public class CandidatesForSigningCertificate implements Serializable{
 	public void setTheCertificateValidity(final CertificateValidity theCertificateValidity) throws DSSException {
 
 		if (theCertificateValidity == null) {
-			throw new DSSNullException(CertificateValidity.class);
+			throw new NullPointerException();
 		}
 		if (!certificateValidityList.contains(theCertificateValidity)) {
 			throw new DSSException("theSigningCertificateValidity must be the part of the candidates!");

@@ -31,16 +31,12 @@ import javax.xml.bind.Unmarshaller;
 import org.w3c.dom.Document;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.tsl.jaxb.tsl.ObjectFactory;
 import eu.europa.ec.markt.tsl.jaxb.tsl.TrustStatusListType;
 
 /**
  * Utility class for parsing Trusted List
- *
- *
  */
-
 abstract class TrustServiceListFactory {
 
     /**
@@ -71,7 +67,7 @@ abstract class TrustServiceListFactory {
 
         if (null == tslDocument) {
 
-            throw new DSSNullException(Document.class);
+            throw new NullPointerException();
         }
         TrustStatusListType trustServiceStatusList;
         try {

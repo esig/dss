@@ -33,9 +33,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.crypto.dsig.XMLSignature;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -53,7 +51,6 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.ASiCParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
@@ -187,7 +184,7 @@ public class ASiCService extends AbstractSignatureService {
 		final SignatureTokenConnection signingToken = parameters.getSigningToken();
 		if (signingToken == null) {
 
-			throw new DSSNullException(SignatureTokenConnection.class);
+			throw new NullPointerException();
 		}
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		final DSSPrivateKeyEntry privateKeyEntry = parameters.getPrivateKeyEntry();

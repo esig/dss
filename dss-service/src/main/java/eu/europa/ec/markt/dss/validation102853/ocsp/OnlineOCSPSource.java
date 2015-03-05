@@ -53,7 +53,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSRevocationUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
@@ -62,10 +61,7 @@ import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 
 /**
  * Online OCSP repository. This implementation will contact the OCSP Responder to retrieve the OCSP response.
- *
- *
  */
-
 public class OnlineOCSPSource implements OCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
@@ -115,7 +111,7 @@ public class OnlineOCSPSource implements OCSPSource {
 
 		if (dataLoader == null) {
 
-			throw new DSSNullException(DataLoader.class);
+			throw new NullPointerException();
 		}
 		try {
 

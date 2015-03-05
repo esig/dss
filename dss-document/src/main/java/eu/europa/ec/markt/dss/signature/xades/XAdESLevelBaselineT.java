@@ -42,12 +42,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -98,10 +96,10 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 	public InMemoryDocument extendSignatures(final DSSDocument dssDocument, final SignatureParameters params) throws DSSException {
 
 		if (dssDocument == null) {
-			throw new DSSNullException(DSSDocument.class);
+			throw new NullPointerException();
 		}
 		if (this.tspSource == null) {
-			throw new DSSNullException(TSPSource.class);
+			throw new NullPointerException();
 		}
 		this.params = params;
 		final ProfileParameters context = params.getContext();

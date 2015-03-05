@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -51,10 +50,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 /**
  * CAdES implementation of DocumentSignatureService
- *
- *
  */
-
 public class CAdESService extends AbstractSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESService.class);
@@ -143,7 +139,7 @@ public class CAdESService extends AbstractSignatureService {
 		final SignatureTokenConnection token = parameters.getSigningToken();
 		if (token == null) {
 
-			throw new DSSNullException(SignatureTokenConnection.class, "", "The connection through available API to the SSCD must be set.");
+			throw new NullPointerException("The connection through available API to the SSCD must be set.");
 		}
 		final byte[] dataToSign = getDataToSign(toSignDocument, parameters);
 		byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), parameters.getPrivateKeyEntry());
@@ -167,7 +163,7 @@ public class CAdESService extends AbstractSignatureService {
 		final SignatureTokenConnection token = parameters.getSigningToken();
 		if (token == null) {
 
-			throw new DSSNullException(SignatureTokenConnection.class, "", "The connection through available API to the SSCD must be set.");
+			throw new NullPointerException("The connection through available API to the SSCD must be set.");
 		}
 
 		try {

@@ -35,7 +35,6 @@ import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -52,10 +51,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 /**
  * PAdES implementation of the DocumentSignatureService
- *
- *
  */
-
 public class PAdESService extends AbstractSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
@@ -184,7 +180,7 @@ public class PAdESService extends AbstractSignatureService {
 
 		final SignatureTokenConnection token = parameters.getSigningToken();
 		if (token == null) {
-			throw new DSSNullException(SignatureTokenConnection.class, "", "The connection through the available API to the SSCD must be set.");
+			throw new NullPointerException("The connection through the available API to the SSCD must be set.");
 		}
 		final byte[] dataToSign = getDataToSign(toSignDocument, parameters);
 		final byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), parameters.getPrivateKeyEntry());

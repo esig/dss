@@ -30,16 +30,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * This class if a basic skeleton that is able to retrieve needed CRL data from
  * the contained list. The child need to retrieve the list of wrapped CRLs.
- *
- *
  */
-
 public abstract class OfflineCRLSource extends CommonCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
@@ -63,7 +59,7 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 
 		if (certificateToken == null) {
 
-			throw new DSSNullException(CertificateToken.class, "certificateToken");
+			throw new NullPointerException();
 		}
 		final CRLToken validCRLToken = validCRLTokenList.get(certificateToken);
 		if (validCRLToken != null) {
@@ -73,7 +69,7 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
 
-			throw new DSSNullException(CertificateToken.class, "issuerToken");
+			throw new NullPointerException();
 		}
 		final CRLValidity bestCRLValidity = getBestCrlValidity(certificateToken, issuerToken);
 		if (bestCRLValidity == null) {

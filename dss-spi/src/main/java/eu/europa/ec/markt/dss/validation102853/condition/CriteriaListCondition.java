@@ -20,15 +20,11 @@
  */
 package eu.europa.ec.markt.dss.validation102853.condition;
 
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
 /**
  * Condition resulting of the matchingCriteriaIndicator of other Conditions
- *
- *
  */
-
 public class CriteriaListCondition extends CompositeCondition {
 
     private MatchingCriteriaIndicator matchingCriteriaIndicator;
@@ -42,7 +38,7 @@ public class CriteriaListCondition extends CompositeCondition {
 
         if (matchingCriteriaIndicator == null) {
 
-            throw new DSSNullException(MatchingCriteriaIndicator.class);
+            throw new NullPointerException();
         }
         this.matchingCriteriaIndicator = matchingCriteriaIndicator;
     }

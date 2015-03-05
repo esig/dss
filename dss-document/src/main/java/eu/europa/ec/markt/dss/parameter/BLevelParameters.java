@@ -30,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSNotYetImplementedMethodException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 
 public class BLevelParameters implements Serializable {
 
@@ -81,7 +80,7 @@ public class BLevelParameters implements Serializable {
 	BLevelParameters(final BLevelParameters source) {
 
 		if (source == null) {
-			throw new DSSNullException(BLevelParameters.class);
+			throw new NullPointerException("source");
 		}
 		signingCertificateDigestMethod = source.signingCertificateDigestMethod;
 		this.trustAnchorBPPolicy = source.trustAnchorBPPolicy;
@@ -428,7 +427,7 @@ public class BLevelParameters implements Serializable {
 	 */
 	public void addClaimedSignerRole(final String claimedSignerRole) {
 		if (StringUtils.isEmpty(claimedSignerRole)) {
-			throw new DSSNullException(String.class, "claimedSignerRole");
+			throw new NullPointerException("claimedSignerRole");
 		}
 		if (claimedSignerRoles == null) {
 			claimedSignerRoles = new ArrayList<String>();

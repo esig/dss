@@ -41,7 +41,6 @@ import eu.europa.ec.markt.dss.ASiCNamespaces;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.signature.AsicManifestDocument;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
@@ -49,7 +48,6 @@ import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.asic.ASiCService;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
-import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
@@ -534,7 +532,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	public DSSDocument removeSignature(final String signatureId) throws DSSException {
 
 		if (StringUtils.isBlank(signatureId)) {
-			throw new DSSNullException(String.class, "signatureId");
+			throw new NullPointerException("signatureId");
 		}
 
 		for (int i = 0; i < signatures.size(); i++) {

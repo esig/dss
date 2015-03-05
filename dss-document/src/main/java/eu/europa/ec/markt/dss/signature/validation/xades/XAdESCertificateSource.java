@@ -20,7 +20,6 @@
  */
 package eu.europa.ec.markt.dss.signature.validation.xades;
 
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,6 @@ import org.w3c.dom.NodeList;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullException;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.SignatureCertificateSource;
@@ -68,11 +66,11 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		super(certificatePool);
 		if (signatureElement == null) {
 
-			throw new DSSNullException(Element.class, "signatureElement");
+			throw new NullPointerException();
 		}
 		if (xPathQueryHolder == null) {
 
-			throw new DSSNullException(XPathQueryHolder.class, "xPathQueryHolder");
+			throw new NullPointerException();
 		}
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
