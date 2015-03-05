@@ -80,7 +80,7 @@ public final class ImageTextWriter {
 		FontMetrics fm = g.getFontMetrics();
 
 		int x = img.getWidth() - fm.stringWidth(text) - (DEFAULT_MARGIN / 2);
-		int y = fm.getHeight();
+		int y = ((img.getHeight() - fm.getHeight()) / 2) + fm.getAscent();
 
 		g.drawString(text, x, y);
 		g.dispose();
