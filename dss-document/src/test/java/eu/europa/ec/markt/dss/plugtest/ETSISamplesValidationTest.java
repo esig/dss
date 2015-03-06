@@ -15,7 +15,10 @@ import org.junit.runners.Parameterized.Parameters;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
+import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
+import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
@@ -45,8 +48,18 @@ public class ETSISamplesValidationTest {
 	public void testValidate() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
 		Reports validateDocument = validator.validateDocument();
 		assertNotNull(validateDocument);
+
+		DiagnosticData diagnosticData = validateDocument.getDiagnosticData();
+		assertNotNull(diagnosticData);
+
+		SimpleReport simpleReport = validateDocument.getSimpleReport();
+		assertNotNull(simpleReport);
+
+		DetailedReport detailedReport = validateDocument.getDetailedReport();
+		assertNotNull(detailedReport);
 	}
 
 }
