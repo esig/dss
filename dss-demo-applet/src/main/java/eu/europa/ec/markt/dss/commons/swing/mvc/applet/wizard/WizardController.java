@@ -22,9 +22,12 @@ package eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard;
 
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 import com.jgoodies.binding.beans.Model;
+
 import eu.europa.ec.markt.dss.applet.controller.DSSAppletController;
 import eu.europa.ec.markt.dss.applet.main.DSSAppletCore;
 import eu.europa.ec.markt.dss.applet.view.WaitingGlassPanel;

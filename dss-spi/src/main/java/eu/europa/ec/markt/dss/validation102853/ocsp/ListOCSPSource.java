@@ -20,13 +20,10 @@
  */
 package eu.europa.ec.markt.dss.validation102853.ocsp;
 
-import java.security.cert.X509CRL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-
-import eu.europa.ec.markt.dss.validation102853.crl.OfflineCRLSource;
 
 /**
  * TODO

@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.jgoodies.binding.beans.Model;
+
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.applet.main.FileType;
 import eu.europa.ec.markt.dss.applet.util.FileTypeDetectorUtils;

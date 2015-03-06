@@ -29,6 +29,7 @@
 package eu.europa.ec.markt.tsl.jaxb.xmldsig;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;

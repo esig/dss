@@ -20,13 +20,15 @@
  */
 package eu.europa.ec.markt.dss.applet.view.signature;
 
-import java.awt.*;
+import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.binding.list.SelectionInList;
@@ -35,6 +37,7 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
 import eu.europa.ec.markt.dss.applet.component.model.AbstractComboBoxModel;
 import eu.europa.ec.markt.dss.applet.main.FileType;
 import eu.europa.ec.markt.dss.applet.model.FormatType;

@@ -21,6 +21,7 @@
 package eu.europa.ec.markt.dss.applet.controller;
 
 import com.jgoodies.binding.beans.Model;
+
 import eu.europa.ec.markt.dss.applet.main.DSSAppletCore;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController;
 

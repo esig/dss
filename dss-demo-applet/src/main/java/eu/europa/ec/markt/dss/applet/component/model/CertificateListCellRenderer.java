@@ -21,7 +21,6 @@
 package eu.europa.ec.markt.dss.applet.component.model;
 
 import java.awt.Component;
-import java.security.cert.X509Certificate;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;

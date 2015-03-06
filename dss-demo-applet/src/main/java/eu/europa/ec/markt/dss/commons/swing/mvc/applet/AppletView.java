@@ -20,7 +20,7 @@
  */
 package eu.europa.ec.markt.dss.commons.swing.mvc.applet;
 
-import java.awt.*;
+import java.awt.Container;
 
 import eu.europa.ec.markt.dss.applet.util.ComponentFactory;
 

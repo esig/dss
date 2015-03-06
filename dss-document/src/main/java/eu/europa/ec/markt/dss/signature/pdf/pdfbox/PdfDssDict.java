@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.signature.pdf.pdfbox;
 
 import java.io.IOException;
 import java.security.cert.X509CRL;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

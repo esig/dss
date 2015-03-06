@@ -23,7 +23,6 @@ package eu.europa.ec.markt.dss.applet.util;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +43,6 @@ import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
-import eu.europa.ec.markt.dss.ws.signature.DSSException_Exception;
 import eu.europa.ec.markt.dss.ws.signature.DigestAlgorithm;
 import eu.europa.ec.markt.dss.ws.signature.DssTransform;
 import eu.europa.ec.markt.dss.ws.signature.EncryptionAlgorithm;

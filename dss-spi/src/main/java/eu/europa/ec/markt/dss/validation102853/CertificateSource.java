@@ -21,7 +21,6 @@
 package eu.europa.ec.markt.dss.validation102853;
 
 import java.io.Serializable;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;

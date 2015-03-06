@@ -20,6 +20,12 @@
  */
 package eu.europa.ec.markt.dss.validation102853.policy;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_1;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_2;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_3;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_4;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_5;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +38,6 @@ import eu.europa.ec.markt.dss.exception.DSSNotApplicableMethodException;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
-
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_1;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_2;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_3;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_4;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_5;
 
 /**
  * This class represents a signature cryptographic constraints and indicates their level: IGNORE, INFORM, WARN, FAIL.

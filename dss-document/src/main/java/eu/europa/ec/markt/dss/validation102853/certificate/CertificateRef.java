@@ -22,8 +22,6 @@ package eu.europa.ec.markt.dss.validation102853.certificate;
 
 import org.apache.commons.codec.binary.Hex;
 
-import eu.europa.ec.markt.dss.DSSUtils;
-
 /**
  * Reference a Certificate
  *

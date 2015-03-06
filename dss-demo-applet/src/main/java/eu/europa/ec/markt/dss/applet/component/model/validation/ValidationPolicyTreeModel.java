@@ -20,12 +20,12 @@
  */
 package eu.europa.ec.markt.dss.applet.component.model.validation;
 
-import eu.europa.ec.markt.dss.applet.component.model.XmlDomTreeModelAdapter;
-import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
-
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
+
+import eu.europa.ec.markt.dss.applet.component.model.XmlDomTreeModelAdapter;
+import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
 
 /**
  * Build the tree model of the validation policy

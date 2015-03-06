@@ -20,10 +20,11 @@
  */
 package eu.europa.ec.markt.dss.applet.model;
 
-import com.jgoodies.binding.beans.Model;
-import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
-
 import java.io.File;
+
+import com.jgoodies.binding.beans.Model;
+
+import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
 
 /**
  *

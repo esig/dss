@@ -20,8 +20,6 @@
  */
 package eu.europa.ec.markt.dss.common;
 
-import eu.europa.ec.markt.dss.signature.token.PasswordInputCallback;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -39,6 +37,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+
+import eu.europa.ec.markt.dss.signature.token.PasswordInputCallback;
 
 /**
  * Holds the implementation of some eID related dialogs.

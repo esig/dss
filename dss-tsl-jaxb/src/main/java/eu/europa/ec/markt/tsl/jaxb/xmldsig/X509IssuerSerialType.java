@@ -30,6 +30,7 @@ package eu.europa.ec.markt.tsl.jaxb.xmldsig;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;

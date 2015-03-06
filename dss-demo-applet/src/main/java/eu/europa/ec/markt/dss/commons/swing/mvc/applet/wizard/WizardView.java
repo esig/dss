@@ -20,17 +20,21 @@
  */
 package eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 import com.jgoodies.binding.beans.Model;
+
 import eu.europa.ec.markt.dss.applet.util.ComponentFactory;
 import eu.europa.ec.markt.dss.applet.util.ResourceUtils;
 import eu.europa.ec.markt.dss.applet.view.DSSAppletView;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.AppletCore;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 
 /**
  * 

@@ -20,7 +20,7 @@
  */
 package eu.europa.ec.markt.dss.applet.view.validation;
 
-import java.awt.*;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -28,7 +28,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.w3c.dom.Document;
@@ -41,6 +46,7 @@ import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.lowagie.text.DocumentException;
+
 import eu.europa.ec.markt.dss.applet.component.model.XMLTreeModel;
 import eu.europa.ec.markt.dss.applet.model.ValidationModel;
 import eu.europa.ec.markt.dss.applet.util.ComponentFactory;

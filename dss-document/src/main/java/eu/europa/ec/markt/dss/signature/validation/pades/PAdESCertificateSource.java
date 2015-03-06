@@ -20,7 +20,6 @@
  */
 package eu.europa.ec.markt.dss.signature.validation.pades;
 
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

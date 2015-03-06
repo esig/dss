@@ -20,8 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.crl;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This enum is used to get String value of CRLReason

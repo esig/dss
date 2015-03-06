@@ -20,24 +20,29 @@
  */
 package eu.europa.ec.markt.dss.applet.view.validationpolicy;
 
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
 import eu.europa.ec.markt.dss.applet.model.ValidationPolicyModel;
 import eu.europa.ec.markt.dss.applet.util.ComponentFactory;
 import eu.europa.ec.markt.dss.applet.util.ResourceUtils;
 import eu.europa.ec.markt.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.AppletCore;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardView;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
 
 /**
  *

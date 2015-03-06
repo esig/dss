@@ -20,11 +20,12 @@
  */
 package eu.europa.ec.markt.dss.applet.component.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This abstract class contains common aspects of TreeModel (listeners + abstract getChildren()).

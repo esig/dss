@@ -20,11 +20,11 @@
  */
 package eu.europa.ec.markt.dss.applet.component.model;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.event.ListDataListener;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.ComboBoxModel;
+import javax.swing.event.ListDataListener;
 
 /**
  * This abstract class contains the common aspect of ComboBoxModel (listeners).

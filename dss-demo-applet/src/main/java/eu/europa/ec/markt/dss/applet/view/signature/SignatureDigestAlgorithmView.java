@@ -20,15 +20,16 @@
  */
 package eu.europa.ec.markt.dss.applet.view.signature;
 
-import java.awt.*;
+import java.awt.Container;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
+
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.applet.model.SignatureModel;
 import eu.europa.ec.markt.dss.applet.util.ComponentFactory;

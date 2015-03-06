@@ -23,7 +23,6 @@ package eu.europa.ec.markt.dss.signature.xades;
 import static eu.europa.ec.markt.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

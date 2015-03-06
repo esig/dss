@@ -20,12 +20,13 @@
  */
 package eu.europa.ec.markt.dss.applet.view.signature;
 
-import java.awt.*;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JList;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.SelectionInList;
@@ -33,6 +34,7 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
 import eu.europa.ec.markt.dss.applet.component.model.CertificateListCellRenderer;
 import eu.europa.ec.markt.dss.applet.model.SignatureModel;
 import eu.europa.ec.markt.dss.applet.util.ComponentFactory;

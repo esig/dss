@@ -20,6 +20,10 @@
  */
 package eu.europa.ec.markt.dss.applet.wizard.validationpolicy;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import eu.europa.ec.markt.dss.applet.model.ValidationPolicyModel;
 import eu.europa.ec.markt.dss.applet.util.ValidationPolicyDao;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.ControllerException;
@@ -27,10 +31,6 @@ import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardView;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * TODO

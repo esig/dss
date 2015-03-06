@@ -20,10 +20,22 @@
  */
 package eu.europa.ec.markt.dss.applet.view;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
+
 import eu.europa.ec.markt.dss.applet.controller.ActivityController;
 import eu.europa.ec.markt.dss.applet.main.Parameters.AppletUsage;
 import eu.europa.ec.markt.dss.applet.model.ActivityModel;
@@ -31,13 +43,6 @@ import eu.europa.ec.markt.dss.applet.model.ActivityModel.ActivityAction;
 import eu.europa.ec.markt.dss.applet.util.ComponentFactory;
 import eu.europa.ec.markt.dss.applet.util.ResourceUtils;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.AppletCore;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 

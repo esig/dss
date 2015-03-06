@@ -24,7 +24,9 @@ import java.applet.Applet;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.JApplet;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  * TODO

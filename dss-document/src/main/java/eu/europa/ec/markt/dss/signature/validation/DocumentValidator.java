@@ -23,7 +23,6 @@ package eu.europa.ec.markt.dss.signature.validation;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.w3c.dom.Document;

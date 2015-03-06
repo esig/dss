@@ -20,12 +20,13 @@
  */
 package eu.europa.ec.markt.dss.applet.component.model.validation;
 
-import eu.europa.ec.markt.dss.applet.component.model.XmlDomAdapterNode;
-import org.w3c.dom.Element;
+import java.awt.Color;
+import java.awt.Component;
 
-import javax.swing.*;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import java.awt.*;
+
+import eu.europa.ec.markt.dss.applet.component.model.XmlDomAdapterNode;
 
 /**
  * Created by kaczmani on 10/04/2014.

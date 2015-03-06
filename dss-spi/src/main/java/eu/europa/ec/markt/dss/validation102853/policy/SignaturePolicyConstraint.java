@@ -20,6 +20,10 @@
  */
 package eu.europa.ec.markt.dss.validation102853.policy;
 
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_1;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_2;
+import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_3;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +31,6 @@ import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
-
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_1;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_2;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_3;
 
 /**
  * This class represents a signature policy constraint. The validation is composed of:

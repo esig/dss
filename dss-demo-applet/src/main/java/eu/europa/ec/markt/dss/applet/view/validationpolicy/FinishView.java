@@ -20,15 +20,17 @@
  */
 package eu.europa.ec.markt.dss.applet.view.validationpolicy;
 
+import java.awt.Container;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import eu.europa.ec.markt.dss.applet.model.ValidationPolicyModel;
 import eu.europa.ec.markt.dss.applet.util.ComponentFactory;
 import eu.europa.ec.markt.dss.applet.util.ResourceUtils;
 import eu.europa.ec.markt.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.AppletCore;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardView;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * 
