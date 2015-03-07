@@ -12,9 +12,9 @@ The release is published on Joinup repository :
 
 https://joinup.ec.europa.eu/nexus/index.html#welcome
 
-<repository>
-  <id>joinup</id>
-  <name>Joinup</name>
-  <url>https://joinup.ec.europa.eu/nexus/content/repositories/releases/</url>
-</repository>
+&lt;repository&gt;
+  &lt;id&gt;joinup&lt;/id&gt;
+  &lt;name&gt;Joinup&lt;/name&gt;
+  &lt;url&gt;https://joinup.ec.europa.eu/nexus/content/repositories/releases/&lt;/url&gt;
+&lt;/repository&gt;
 
