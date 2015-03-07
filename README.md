@@ -1,4 +1,4 @@
-## SD-DSS
+## DSS : Digital Signature Service
 
 This is the official repository for project DSS : https://joinup.ec.europa.eu/asset/sd-dss/description. 
 
