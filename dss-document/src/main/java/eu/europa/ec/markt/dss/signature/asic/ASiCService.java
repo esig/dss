@@ -217,7 +217,10 @@ public class ASiCService extends AbstractSignatureService {
 
 				final String name = entry.getName();
 				final ZipEntry newEntry = new ZipEntry(name);
-				if (ASiCContainerValidator.isXAdES(name) || ASiCContainerValidator.isCAdES(name)) {
+				if (ASiCContainerValidator.isMimetype(name)) {
+
+					storeMimetype(parameters.aSiC(), zipOutputStream);
+				} else if (ASiCContainerValidator.isXAdES(name) || ASiCContainerValidator.isCAdES(name)) {
 
 					createZipEntry(zipOutputStream, newEntry);
 					final InputStream inputStream = signedDocument.openStream();
