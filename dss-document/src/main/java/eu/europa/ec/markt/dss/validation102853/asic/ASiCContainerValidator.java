@@ -270,7 +270,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 				} else if (isMetadata(entryName)) {
 
 					addEntryElement(entryName, detachedContents, asicsInputStream);
-				} else if (MIME_TYPE.equalsIgnoreCase(entryName)) {
+				} else if (isMimetype(entryName)) {
 
 					final DSSDocument mimeType = addEntryElement(entryName, detachedContents, asicsInputStream);
 					asicEntryMimeType = getMimeType(mimeType);
@@ -397,6 +397,10 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 		final boolean manifest = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER + "ASiCManifest");
 		return manifest;
+	}
+
+	public static boolean isMimetype(String entryName) {
+		return MIME_TYPE.equalsIgnoreCase(entryName);
 	}
 
 	public static boolean isTimestamp(String entryName) {
