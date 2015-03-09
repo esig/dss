@@ -50,8 +50,9 @@ public class CertificateServiceTest {
 		DSSPrivateKeyEntry entryChain = service.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		// Child certificate is signed with the issuer's private key
-		CertificateToken childCertificate = entryChain.getCertificate();
-		childCertificate.isSignedBy(childCertificate);
+		CertificateToken token = entryChain.getCertificate();
+		X509Certificate certificate = token.getCertificate();
+		certificate.verify(token.getPublicKey());
 	}
 
 	@Test

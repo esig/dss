@@ -99,14 +99,14 @@ public class CertificateService {
 		DSSPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
 
 		Date notBefore = new Date(System.currentTimeMillis() - (10 * 24 * 60 * 60 * 1000)); // -10d
-		Date notAfter =new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
+		Date notAfter = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
 
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
 
 	public DSSPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm) throws Exception {
 		KeyPair keyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
-		X500Name issuer = new X500Name("CN=RootIssuerSelfSignedFake,O=DSS-test");
+		X500Name issuer = new X500Name("CN=RootSelfSignedFake,O=DSS-test");
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
 		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
