@@ -21,6 +21,7 @@
 package eu.europa.ec.markt.dss.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -46,6 +47,7 @@ import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
+import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
 
 public abstract class AbstractTestSignature {
 
@@ -90,13 +92,16 @@ public abstract class AbstractTestSignature {
 		}
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		verify(diagnosticData);
+		verifyDiagnosticData(diagnosticData);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		verifySimpleReport(simpleReport);
 	}
 
 	protected void onDocumentSigned(byte[] byteArray) {
 	}
 
-	protected void verify(DiagnosticData diagnosticData) {
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
 		checkBLevelValid(diagnosticData);
 		checkNumberOfSignatures(diagnosticData);
 		checkDigestAlgorithm(diagnosticData);
@@ -109,6 +114,10 @@ public abstract class AbstractTestSignature {
 		checkTLevelAndValid(diagnosticData);
 		checkALevelAndValid(diagnosticData);
 		checkTimestamps(diagnosticData);
+	}
+
+	protected void verifySimpleReport(SimpleReport simpleReport) {
+		assertNotNull(simpleReport);
 	}
 
 	protected DSSDocument sign() {
@@ -203,14 +212,14 @@ public abstract class AbstractTestSignature {
 				String timestampType = diagnosticData.getTimestampType(timestampId);
 				TimestampType type = TimestampType.valueOf(timestampType);
 				switch (type) {
-				case SIGNATURE_TIMESTAMP:
-					foundSignatureTimeStamp = true;
-					break;
-				case ARCHIVE_TIMESTAMP:
-					foundArchiveTimeStamp = true;
-					break;
-				default:
-					break;
+					case SIGNATURE_TIMESTAMP:
+						foundSignatureTimeStamp = true;
+						break;
+					case ARCHIVE_TIMESTAMP:
+						foundArchiveTimeStamp = true;
+						break;
+					default:
+						break;
 				}
 
 			}

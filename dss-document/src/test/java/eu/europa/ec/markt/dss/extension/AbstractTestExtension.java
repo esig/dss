@@ -50,7 +50,7 @@ public abstract class AbstractTestExtension {
 
 	/**
 	 * This method is used in case of ASiC signatures
-	 * 
+	 *
 	 * @return
 	 */
 	protected SignatureLevel getOriginalUnderlyingSignatureLevel() {
@@ -59,7 +59,7 @@ public abstract class AbstractTestExtension {
 
 	/**
 	 * This method is used in case of ASiC signatures
-	 * 
+	 *
 	 * @return
 	 */
 	protected SignatureLevel getFinalUnderlyingSignatureLevel() {
@@ -83,14 +83,17 @@ public abstract class AbstractTestExtension {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		checkOriginalLevel(reports.getDiagnosticData());
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		checkOriginalLevel(diagnosticData);
+		checkBLevelValid(diagnosticData);
 
 		DSSDocument extendedDocument = extendSignature(signedDocument);
 		validator = SignedDocumentValidator.fromDocument(extendedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		reports = validator.validateDocument();
 
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		diagnosticData = reports.getDiagnosticData();
 
 		checkFinalLevel(diagnosticData);
 		checkBLevelValid(diagnosticData);
