@@ -11,12 +11,12 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 package eu.europa.ec.markt.dss.service;
 
@@ -64,15 +64,16 @@ public class CertificateService {
 
 	public KeyPair generateKeyPair(final EncryptionAlgorithm algorithm) throws GeneralSecurityException {
 		KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm.getName());
-		keyGenerator.initialize(1024);
+		keyGenerator.initialize(2048);
 		return keyGenerator.generateKeyPair();
 	}
 
-	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final DSSPrivateKeyEntry rootEntry) throws Exception {
+	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final DSSPrivateKeyEntry rootEntry, Date notBefore, Date notAfter) throws Exception {
 		X500Name rootName = new JcaX509CertificateHolder(rootEntry.getCertificate().getCertificate()).getSubject();
 		KeyPair childKeyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
-		X500Name childSubject = new X500Name("CN=SignerChildOfRootFake,O=DSS-test");
-		CertificateToken child = generateCertificate(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic());
+
+		X500Name childSubject = new X500Name("CN=SignerFake,O=DSS-test");
+		CertificateToken child = generateCertificate(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic(), notBefore, notAfter);
 		CertificateToken[] chain = createChildCertificateChain(rootEntry);
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), child, chain, childKeyPair.getPrivate());
@@ -80,15 +81,37 @@ public class CertificateService {
 
 	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
 		DSSPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
-		return generateCertificateChain(algorithm, rootEntry);
+
+		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
+		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
+
+		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
+	}
+
+	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, DSSPrivateKeyEntry rootEntry) throws Exception {
+		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
+		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
+
+		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
+	}
+
+	public DSSPrivateKeyEntry generateExpiredCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
+		DSSPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
+
+		Date notBefore = new Date(System.currentTimeMillis() - (10 * 24 * 60 * 60 * 1000)); // -10d
+		Date notAfter =new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
+
+		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
 
 	public DSSPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm) throws Exception {
 		KeyPair keyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 		X500Name issuer = new X500Name("CN=RootIssuerSelfSignedFake,O=DSS-test");
-		X500Name subject = new X500Name("CN=RootSubjectSelfSignedFake,O=DSS-test");
 
-		CertificateToken certificate = generateCertificate(algorithm, subject, issuer, keyPair.getPrivate(), keyPair.getPublic());
+		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
+		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
+
+		CertificateToken certificate = generateCertificate(algorithm, issuer, issuer, keyPair.getPrivate(), keyPair.getPublic(), notBefore, notAfter);
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), certificate, keyPair.getPrivate());
 	}
@@ -98,8 +121,8 @@ public class CertificateService {
 		X500Name issuer = new X500Name("CN=RootIssuerTSPFake,O=DSS-test");
 		X500Name subject = new X500Name("CN=RootSubjectTSP,O=DSS-test");
 
-		final Date notBefore = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000); // yesterday
-		final Date notAfter = new Date(System.currentTimeMillis() + 10 * 24 * 60 * 60 * 1000); // 10d
+		final Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
+		final Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
 
 		// generate certificate
 		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
@@ -119,11 +142,8 @@ public class CertificateService {
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), new CertificateToken(cert), keyPair.getPrivate());
 	}
 
-	public CertificateToken generateCertificate(final SignatureAlgorithm algorithm, final X500Name subject, final X500Name issuer,
-			final PrivateKey issuerPrivateKey, final PublicKey publicKey) throws Exception {
-
-		final Date notBefore = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000); // yesterday
-		final Date notAfter = new Date(System.currentTimeMillis() + 10 * 24 * 60 * 60 * 1000); // 10d
+	public CertificateToken generateCertificate(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer,
+			PrivateKey issuerPrivateKey, PublicKey publicKey, Date notBefore, Date notAfter) throws Exception {
 
 		// generate certificate
 		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
@@ -149,7 +169,7 @@ public class CertificateService {
 		List<CertificateToken> chainList = new ArrayList<CertificateToken>();
 		chainList.add(rootEntry.getCertificate());
 		CertificateToken[] rootChain = rootEntry.getCertificateChain();
-		if (rootChain != null && rootChain.length > 0) {
+		if ((rootChain != null) && (rootChain.length > 0)) {
 			for (CertificateToken certChainItem : rootChain) {
 				chainList.add(certChainItem);
 			}
