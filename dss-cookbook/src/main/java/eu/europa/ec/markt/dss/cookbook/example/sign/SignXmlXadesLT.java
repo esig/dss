@@ -93,7 +93,12 @@ public class SignXmlXadesLT extends Cookbook {
 
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
-		service.setTspSource(getMockTSPSource());
+		try{
+			service.setTspSource(getMockTSPSource());
+		}catch (Exception e) {
+			new DSSException("Error during MockTspSource",e);
+		}
+
 
 		// Get the SignedInfo XML segment that need to be signed.
 		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);

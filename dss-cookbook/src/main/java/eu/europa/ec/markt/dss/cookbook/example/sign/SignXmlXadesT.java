@@ -21,13 +21,16 @@
 package eu.europa.ec.markt.dss.cookbook.example.sign;
 
 import java.io.IOException;
+import java.util.Date;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
+import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
-import eu.europa.ec.markt.dss.cookbook.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
@@ -71,8 +74,14 @@ public class SignXmlXadesT extends Cookbook {
 		XAdESService service = new XAdESService(commonCertificateVerifier);
 
 		//Set the TimeStamp
-		MockTSPSource mockTSPSource = new MockTSPSource();
-		service.setTspSource(mockTSPSource);
+		MockTSPSource mockTSPSource;
+
+		try {
+			mockTSPSource = new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256),new Date());
+			service.setTspSource(mockTSPSource);
+		} catch (Exception e) {
+			new DSSException("Error during MockTspSource",e);
+		}
 
 		// Get the SignedInfo XML segment that need to be signed.
 		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);

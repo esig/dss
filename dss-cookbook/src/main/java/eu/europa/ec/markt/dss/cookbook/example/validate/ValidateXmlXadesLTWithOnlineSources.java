@@ -27,7 +27,7 @@ import java.io.InputStream;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
-import eu.europa.ec.markt.dss.cookbook.mock.MockServiceInfo;
+import eu.europa.ec.markt.dss.mock.MockServiceInfo;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
