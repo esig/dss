@@ -94,8 +94,8 @@ public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected void verify(DiagnosticData diagnosticData) {
-		super.verify(diagnosticData);
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
 
 		// TODO improve if not revocation info found, that returns false (add a
 		// method hasRevocationInfo)
