@@ -24,9 +24,9 @@ import java.util.Set;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
-import eu.europa.ec.markt.dss.cookbook.mock.MockCRLSource;
-import eu.europa.ec.markt.dss.cookbook.mock.MockEmptyTSLCertificateSource;
-import eu.europa.ec.markt.dss.cookbook.mock.MockOCSPSource;
+import eu.europa.ec.markt.dss.mock.MockCRLSource;
+import eu.europa.ec.markt.dss.mock.MockEmptyTSLCertificateSource;
+import eu.europa.ec.markt.dss.mock.MockOCSPSource;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;

@@ -31,6 +31,8 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
+import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
@@ -79,15 +81,20 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 
 		//Define the contentTimestamp specific parameters
-		TimestampService timestampService = new TimestampService(getMockTSPSource(), new CertificatePool());
-		TimestampToken timestampToken = timestampService.generateXAdESContentTimestampAsTimestampToken(toSignDocument, signatureParameters,
-				TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 
-		//The AllDataObjectsTimestamp has been generated, now we have to include it in the signature parameters
-		List<TimestampToken> contentTimestamps = new ArrayList<TimestampToken>();
-		contentTimestamps.add(timestampToken);
-		signatureParameters.setContentTimestamps(contentTimestamps);
+		try{
+			MockTSPSource mockTsp= getMockTSPSource();
+			TimestampService timestampService = new TimestampService(mockTsp, new CertificatePool());
+			TimestampToken timestampToken = timestampService.generateXAdESContentTimestampAsTimestampToken(toSignDocument, signatureParameters,
+					TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 
+			//The AllDataObjectsTimestamp has been generated, now we have to include it in the signature parameters
+			List<TimestampToken> contentTimestamps = new ArrayList<TimestampToken>();
+			contentTimestamps.add(timestampToken);
+			signatureParameters.setContentTimestamps(contentTimestamps);
+		}catch (Exception e) {
+			new DSSException("Error during MockTspSource",e);
+		}
 		//Create the signature, including the AllDataObjectsTimestamp
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(verifier);

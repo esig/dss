@@ -21,8 +21,12 @@
 package eu.europa.ec.markt.dss.cookbook.example;
 
 import java.net.URL;
+import java.util.Date;
 
-import eu.europa.ec.markt.dss.cookbook.mock.MockTSPSource;
+import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.mock.MockTSPSource;
+import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.token.AbstractSignatureTokenConnection;
@@ -93,7 +97,7 @@ public class Cookbook {
 		privateKey = signingToken.getKeys().get(0);
 	}
 
-	protected static MockTSPSource getMockTSPSource() {
-		return new MockTSPSource();
+	protected static MockTSPSource getMockTSPSource() throws DSSException, Exception {
+		return new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256),new Date());
 	}
 }

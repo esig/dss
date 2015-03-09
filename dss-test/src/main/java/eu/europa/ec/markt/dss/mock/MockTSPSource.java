@@ -88,8 +88,9 @@ public class MockTSPSource implements TSPSource {
 
 	/**
 	 * The default constructor for MockTSPSource.
-	 *
 	 */
+
+
 	public MockTSPSource(final DSSPrivateKeyEntry entry, final Date timestampDate) throws DSSException {
 		this.timestampDate = timestampDate;
 
@@ -101,6 +102,7 @@ public class MockTSPSource implements TSPSource {
 		LOG.debug("TSP mockup with certificate {}", cert.getDSSId());
 
 	}
+
 
 	@Override
 	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {

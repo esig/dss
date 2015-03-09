@@ -26,6 +26,7 @@ import java.io.InputStream;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
+import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
@@ -50,7 +51,11 @@ public class ExtendSignXmlXadesBToT extends Cookbook {
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService xadesService = new XAdESService(certificateVerifier);
-		xadesService.setTspSource(getMockTSPSource());
+		try{
+			xadesService.setTspSource(getMockTSPSource());
+		}catch (Exception e) {
+			new DSSException("Error during MockTspSource",e);
+		}
 
 		DSSDocument extendedDocument = xadesService.extendDocument(toExtendDocument, parameters);
 
