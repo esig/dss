@@ -1084,8 +1084,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				for (final ASN1Encodable value : attrValues.toArray()) {
 
 					try {
+						byte[] encoded = null;
+						if (value instanceof DEROctetString){
+							ASN1OctetString derOctetString = DEROctetString.getInstance(value);
+							encoded = derOctetString.getOctets();
+						} else {
+							encoded = value.toASN1Primitive().getEncoded();
+						}
 
-						final byte[] encoded = value.toASN1Primitive().getEncoded(); // getEncoded(ASN1Encoding.DER)
 						final CMSSignedData signedData = new CMSSignedData(encoded);
 						final TimeStampToken token = new TimeStampToken(signedData);
 						final TimestampToken timestampToken = new TimestampToken(token, timestampType, certPool);
