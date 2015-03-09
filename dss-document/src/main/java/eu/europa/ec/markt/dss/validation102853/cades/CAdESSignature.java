@@ -43,7 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.cert.X509Certificate;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1237,8 +1237,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 					final JcaSimpleSignerInfoVerifierBuilder verifier = new JcaSimpleSignerInfoVerifierBuilder();
 					final CertificateToken certificateToken = signingCertificateValidity.getCertificateToken();
-					final X509Certificate certificate = certificateToken.getCertificate();
-					final SignerInformationVerifier signerInformationVerifier = verifier.build(certificate);
+					final PublicKey publicKey = certificateToken.getPublicKey();
+					final SignerInformationVerifier signerInformationVerifier = verifier.build(publicKey);
 					LOG.debug(" - WITH SIGNING CERTIFICATE: " + certificateToken.getAbbreviation());
 					boolean signatureIntact = signerInformationToCheck.verify(signerInformationVerifier);
 					signatureCryptographicVerification.setReferenceDataIntact(signatureIntact);
