@@ -30,6 +30,7 @@ import org.w3c.dom.Document;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 /**
@@ -322,11 +323,11 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 			constraint.setDigestAlgorithms(digestAlgoStringList);
 
 			final List<XmlDom> miniPublicKeySizeList = getElements(rootXPathQuery + "/MiniPublicKeySize/Algo");
-			final Map<String, String> miniPublicKeySizeStringMap = XmlDom.convertToStringMap(miniPublicKeySizeList, SIZE);
+			final Map<String, String> miniPublicKeySizeStringMap = XmlDom.convertToStringMap(miniPublicKeySizeList, AttributeName.SIZE);
 			constraint.setMinimumPublicKeySizes(miniPublicKeySizeStringMap);
 
 			final List<XmlDom> algoExpirationDateList = getElements("/ConstraintsParameters/Cryptographic/AlgoExpirationDate/Algo");
-			final Map<String, Date> algoExpirationDateStringMap = XmlDom.convertToStringDateMap(algoExpirationDateList, DATE);
+			final Map<String, Date> algoExpirationDateStringMap = XmlDom.convertToStringDateMap(algoExpirationDateList, AttributeName.DATE);
 			constraint.setAlgorithmExpirationDates(algoExpirationDateStringMap);
 
 			return constraint;

@@ -25,15 +25,13 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
-import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. This is the base class used to implement a specific validation
  * policy
  */
-public abstract class ValidationPolicy extends XmlDom implements RuleConstant, AttributeName {
+public abstract class ValidationPolicy extends XmlDom {
 
 	public ValidationPolicy(final Document document) {
 

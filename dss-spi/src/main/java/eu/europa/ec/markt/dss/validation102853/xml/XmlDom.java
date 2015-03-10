@@ -21,6 +21,9 @@
 package eu.europa.ec.markt.dss.validation102853.xml;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -43,15 +51,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.NamespaceContextMap;
 import eu.europa.ec.markt.dss.exception.DSSException;
 
 /**
  * This class encapsulates an org.w3c.dom.Document. Its integrates the ability to execute XPath queries on XML
  * documents.
- *
- *
  */
 public class XmlDom {
 
@@ -134,7 +139,7 @@ public class XmlDom {
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
 
 				Node node = nodeList.item(ii);
-				if (node != null && node.getNodeType() == Node.ELEMENT_NODE) {
+				if ((node != null) && (node.getNodeType() == Node.ELEMENT_NODE)) {
 
 					list.add(new XmlDom((Element) node));
 				}
@@ -157,7 +162,7 @@ public class XmlDom {
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
 
 				Node node = nodeList.item(ii);
-				if (node != null && node.getNodeType() == Node.ELEMENT_NODE) {
+				if ((node != null) && (node.getNodeType() == Node.ELEMENT_NODE)) {
 
 					return new XmlDom((Element) node);
 				}
@@ -225,9 +230,6 @@ public class XmlDom {
 			stringBuilder.append(slash).append(prefix).append(token);
 		}
 
-		// System.out.println("");
-		// System.out.println("--> " + formatedXPath);
-		// System.out.println("--> " + stringBuilder.toString());
 		String normalizedXPath = stringBuilder.toString();
 		if (special) {
 			normalizedXPath = normalizedXPath.replace(to, from);
@@ -452,7 +454,7 @@ public class XmlDom {
 		if (rootElement != null) {
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			DSSXMLUtils.printDocument(rootElement, byteArrayOutputStream);
+			printDocument(rootElement, byteArrayOutputStream, false);
 			return byteArrayOutputStream.toByteArray();
 		}
 		return DSSUtils.EMPTY_BYTE_ARRAY;
@@ -464,10 +466,63 @@ public class XmlDom {
 		if (rootElement != null) {
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			DSSXMLUtils.printDocument(rootElement, byteArrayOutputStream);
-			return DSSUtils.getUtf8String(byteArrayOutputStream.toByteArray());
+			printDocument(rootElement, byteArrayOutputStream, false);
+			return getUtf8String(byteArrayOutputStream.toByteArray());
 		}
 		return super.toString();
+	}
+
+
+	/**
+	 * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-8 charset.
+	 *
+	 * @param bytes The bytes to be decoded into characters
+	 * @return A new <code>String</code> decoded from the specified array of bytes using the UTF-8 charset,
+	 * or <code>null</code> if the input byte array was <code>null</code>.
+	 * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the
+	 *                               charset is required.
+	 */
+	private static String getUtf8String(byte[] bytes) {
+
+		if (bytes == null) {
+			return null;
+		}
+		try {
+			return new String(bytes, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * This method writes formatted {@link org.w3c.dom.Node} to the outputStream.
+	 *
+	 * @param node
+	 * @param out
+	 */
+	private static void printDocument(final Node node, final OutputStream out, final boolean raw) {
+
+		try {
+
+			final TransformerFactory tf = TransformerFactory.newInstance();
+			final Transformer transformer = tf.newTransformer();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			if (!raw) {
+
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+			}
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+			final DOMSource xmlSource = new DOMSource(node);
+			final OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
+			final StreamResult outputTarget = new StreamResult(writer);
+			transformer.transform(xmlSource, outputTarget);
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+
 	}
 
 	public Element getRootElement() {

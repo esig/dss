@@ -1743,36 +1743,6 @@ public final class DSSUtils {
 		return newDate;
 	}
 
-	/**
-	 * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-8 charset.
-	 *
-	 * @param bytes The bytes to be decoded into characters
-	 * @return A new <code>String</code> decoded from the specified array of bytes using the UTF-8 charset,
-	 * or <code>null</code> if the input byte array was <code>null</code>.
-	 * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the
-	 *                               charset is required.
-	 */
-	public static String getUtf8String(byte[] bytes) {
-
-		if (bytes == null) {
-			return null;
-		}
-		try {
-			return new String(bytes, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * @param string
-	 * @return
-	 */
-	public static String getUtf8String(final String string) {
-
-		return getUtf8String(string.getBytes());
-	}
-
 	public static byte[] getUtf8Bytes(final String string) {
 
 		if (string == null) {

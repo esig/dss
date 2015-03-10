@@ -24,8 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -598,93 +596,6 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method writes formatted {@link org.w3c.dom.Node} to the outputStream.
-	 *
-	 * @param node
-	 * @param out
-	 */
-	public static void printDocument(final Node node, final OutputStream out) {
-
-		printDocument(node, out, false);
-	}
-
-	/**
-	 * This method writes formatted {@link org.w3c.dom.Node} to the outputStream.
-	 *
-	 * @param node
-	 * @param out
-	 */
-	private static void printDocument(final Node node, final OutputStream out, final boolean raw) {
-
-		try {
-
-			final TransformerFactory tf = TransformerFactory.newInstance();
-			final Transformer transformer = tf.newTransformer();
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-			if (!raw) {
-
-				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
-			}
-			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-
-			final DOMSource xmlSource = new DOMSource(node);
-			final OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
-			final StreamResult outputTarget = new StreamResult(writer);
-			transformer.transform(xmlSource, outputTarget);
-		} catch (Exception e) {
-
-			// Ignore
-		}
-	}
-
-	/**
-	 * This method writes raw {@link org.w3c.dom.Node} (without blanks) to the outputStream.
-	 *
-	 * @param node
-	 * @param out
-	 */
-	public static void printRawDocument(final Node node, final OutputStream out) {
-
-		trimWhitespace(node);
-		printDocument(node, out, true);
-	}
-
-	/**
-	 * This method trims all whitespaces in TEXT_NODE.
-	 *
-	 * @param node
-	 */
-	public static void trimWhitespace(final Node node) {
-
-		final NodeList children = node.getChildNodes();
-		for (int ii = 0; ii < children.getLength(); ++ii) {
-
-			final Node child = children.item(ii);
-			if (child.getNodeType() == Node.TEXT_NODE) {
-
-				final String textContent = child.getTextContent();
-				child.setTextContent(textContent.trim());
-			}
-			trimWhitespace(child);
-		}
-	}
-
-	/**
-	 * This method writes formatted {@link org.w3c.dom.Node} to the outputStream.
-	 *
-	 * @param dssDocument
-	 * @param out
-	 */
-	public static void printDocument(final DSSDocument dssDocument, final OutputStream out) {
-
-		final byte[] bytes = dssDocument.getBytes();
-		final Document document = DSSXMLUtils.buildDOM(bytes);
-		printDocument(document, out, false);
-	}
-
-	/**
 	 * This method says if the framework can canonicalize an XML data with the provided method.
 	 *
 	 * @param canonicalizationMethod the canonicalization method to be checked
@@ -713,15 +624,7 @@ public final class DSSXMLUtils {
 
 			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
 			return c14n.canonicalize(toCanonicalizeBytes);
-		} catch (InvalidCanonicalizerException e) {
-			throw new DSSException(e);
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		} catch (SAXException e) {
-			throw new DSSException(e);
-		} catch (CanonicalizationException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
