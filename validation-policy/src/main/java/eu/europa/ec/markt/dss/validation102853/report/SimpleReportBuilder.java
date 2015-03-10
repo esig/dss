@@ -20,9 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.report;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.LABEL_TINTWS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.LABEL_TINVTWS;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +45,7 @@ import eu.europa.ec.markt.dss.validation102853.processes.dss.InvolvedServiceInfo
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
+import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
@@ -200,12 +198,12 @@ public class SimpleReportBuilder {
 
 					if (noTimestamp) {
 
-						final XmlNode xmlNode = new XmlNode(NodeName.WARNING, LABEL_TINTWS, null);
+						final XmlNode xmlNode = new XmlNode(NodeName.WARNING, MessageTag.LABEL_TINTWS, null);
 						final XmlDom xmlDom = xmlNode.toXmlDom();
 						infoList.add(xmlDom);
 					} else {
 
-						final XmlNode xmlNode = new XmlNode(NodeName.WARNING, LABEL_TINVTWS, null);
+						final XmlNode xmlNode = new XmlNode(NodeName.WARNING, MessageTag.LABEL_TINVTWS, null);
 						final XmlDom xmlDom = xmlNode.toXmlDom();
 						infoList.add(xmlDom);
 						infoList.addAll(ltvInfoList);

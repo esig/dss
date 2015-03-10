@@ -20,8 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
@@ -33,6 +31,7 @@ import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
+import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
@@ -236,7 +235,7 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
 			return true;
 		}
 
-		constraint.create(subProcessNode, BBB_VCI_ISPK);
+		constraint.create(subProcessNode, MessageTag.BBB_VCI_ISPK);
 		String policyId = signatureContext.getValue("./Policy/Id/text()");
 		if (DSSUtils.isBlank(policyId)) {
 			policyId = SignaturePolicy.NO_POLICY;
@@ -246,7 +245,7 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
 		constraint.setProcessingError(signatureContext.getValue("./Policy/ProcessingError/text()"));
 		constraint.setNotice(signatureContext.getValue("./Policy/Notice/text()"));
 
-		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, BBB_ICS_AIDNASNE_ANS);
+		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

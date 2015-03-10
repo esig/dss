@@ -20,11 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ADEST_IMIVC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IATVC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPSVC;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -254,7 +249,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		 *
 		 */
 
-		XmlNode constraintNode = addConstraint(signatureNode, PSV_IATVC);
+		XmlNode constraintNode = addConstraint(signatureNode, MessageTag.PSV_IATVC);
 
 		if (VALID.equals(adestSignatureIndication)) {
 
@@ -286,7 +281,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		 * of the signature.<br>
 		 */
 		final boolean finalStatus = INDETERMINATE.equals(adestSignatureIndication) && (RuleUtils
-			  .in(adestSignatureSubIndication, REVOKED_NO_POE, REVOKED_CA_NO_POE, OUT_OF_BOUNDS_NO_POE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE));
+				.in(adestSignatureSubIndication, REVOKED_NO_POE, REVOKED_CA_NO_POE, OUT_OF_BOUNDS_NO_POE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE));
 		if (!finalStatus) {
 
 			conclusionNode.addChildrenOf(adestSignatureConclusion);
@@ -383,7 +378,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		 * associated explanations.<br>
 		 */
 
-		constraintNode = addConstraint(signatureNode, PSV_IPSVC);
+		constraintNode = addConstraint(signatureNode, MessageTag.PSV_IPSVC);
 
 		if (!VALID.equals(psvConclusion.getIndication())) {
 
@@ -431,14 +426,14 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 				 * If the verification fails, remove the token from the set.
 				 */
 
-				XmlNode constraintNode = addConstraint(processNode, ADEST_IMIVC);
+				XmlNode constraintNode = addConstraint(processNode, MessageTag.ADEST_IMIVC);
 				// constraintNode.setAttribute("Id", timestampId);
 
 				final boolean messageImprintDataIntact = timestamp.getBoolValue(XP_MESSAGE_IMPRINT_DATA_INTACT);
 				if (!messageImprintDataIntact) {
 
 					constraintNode.addChild(STATUS, KO);
-					XmlNode xmlNode = conclusionNode.addChild(INFO, ADEST_IMIVC_ANS.getMessage());
+					XmlNode xmlNode = conclusionNode.addChild(INFO, MessageTag.ADEST_IMIVC_ANS.getMessage());
 					xmlNode.setAttribute("Id", timestampId);
 					continue;
 				}
@@ -526,7 +521,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		final String digestAlgorithm = RuleUtils.canonicalizeDigestAlgo(timestamp.getValue("./SignedDataDigestAlgo/text()"));
 		final Date algorithmExpirationDate = params.getCurrentValidationPolicy().getAlgorithmExpirationDate(digestAlgorithm);
 		final Date timestampProductionTime = timestamp.getTimeValue("./ProductionTime/text()");
-		if (algorithmExpirationDate == null || timestampProductionTime.before(algorithmExpirationDate)) {
+		if ((algorithmExpirationDate == null) || timestampProductionTime.before(algorithmExpirationDate)) {
 
 			poe.addPOE(timestamp, params.getCertPool());
 			return true;

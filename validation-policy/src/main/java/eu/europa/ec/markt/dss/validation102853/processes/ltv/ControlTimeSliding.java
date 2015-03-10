@@ -20,16 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
-import static eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.XPathSignature.getCertificateId;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRIF_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_DRIE;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_DSOPCPOEOC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_ICNEAIDORSI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_IIDORSIBCT;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_SCT;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_WITSS;
-import static eu.europa.ec.markt.dss.validation102853.toolbox.Reversed.reversed;
-
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +39,7 @@ import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
+import eu.europa.ec.markt.dss.validation102853.toolbox.Reversed;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
@@ -129,6 +120,18 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 	}
 
 	/**
+	 * This method returns the certificate id. This id is extracted either from the ChainCertificate, or Certificate.
+	 *
+	 * @param xmlDomObject
+	 * @return
+	 */
+	private int getCertificateId(final XmlDom xmlDomObject) {
+
+		final int certificateId = xmlDomObject.getIntValue("./@Id");
+		return certificateId;
+	}
+
+	/**
 	 * @param params
 	 * @param certificateChain
 	 * @return
@@ -145,7 +148,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 		 * 2) For each certificate in the chain starting from the first certificate (the certificate issued by the trust
 		 * anchor), do the following:<br>
 		 */
-		for (final XmlDom chainCertificate : reversed(chainCertificates)) {
+		for (final XmlDom chainCertificate : Reversed.reversed(chainCertificates)) {
 
 			final int certificateId = getCertificateId(chainCertificate);
 			final XmlNode certificateNode = controlTimeSlidingData.addChild(CERTIFICATE, DSSUtils.EMPTY);
@@ -165,7 +168,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 				 * (See NOTE 1) Concerning the trust anchor, it must be checked if it is still trusted at the current
 				 * date/time. Other checks are not necessary.<br>
 				 */
-				final XmlNode constraintNode = addConstraint(CTS_WITSS);
+				final XmlNode constraintNode = addConstraint(MessageTag.CTS_WITSS);
 
 				final String status = InvolvedServiceInfo.getStatus(certificate);
 				constraintNode.addChild(STATUS, OK);
@@ -202,7 +205,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 			 * TODO: 20130704 by bielecro: To notify ETSI --> (see clause 6.3) is not the right clause.<br>
 			 */
 
-			XmlNode constraintNode = addConstraint(CTS_DRIE);
+			XmlNode constraintNode = addConstraint(MessageTag.CTS_DRIE);
 
 			final boolean revocationExists = certificate.exists("./Revocation");
 			if (!revocationExists) {
@@ -227,7 +230,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 			 * TODO: ...(for instance, using the CRL extension expiredCertOnCRL (OID: 2.5.29.60)) This check need to be
 			 * added to the revocation information retrieval.
 			 */
-			constraintNode = addConstraint(CTS_ICNEAIDORSI);
+			constraintNode = addConstraint(MessageTag.CTS_ICNEAIDORSI);
 
 			if (revocationIssuingTime.before(notBeforeTime) || revocationIssuingTime.after(notAfterTime)) {
 
@@ -245,7 +248,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 			 * information, terminate with INDETERMINATE/NO_POE:<br>
 			 */
 
-			constraintNode = addConstraint(CTS_IIDORSIBCT);
+			constraintNode = addConstraint(MessageTag.CTS_IIDORSIBCT);
 
 			if (!revocationIssuingTime.before(controlTime)) {
 
@@ -263,10 +266,10 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 			 * information at (or before) control-time, go to step c). Otherwise, terminate with INDETERMINATE/NO_POE.
 			 */
 
-			constraintNode = addConstraint(CTS_DSOPCPOEOC);
+			constraintNode = addConstraint(MessageTag.CTS_DSOPCPOEOC);
 
 			final boolean poeExists = poe.getCertificatePOE(certificateId, controlTime);
-			if (!poeExists || revocationIssuingTime.compareTo(controlTime) > 0) {
+			if (!poeExists || (revocationIssuingTime.compareTo(controlTime) > 0)) {
 
 				constraintNode.addChild(STATUS, KO);
 				conclusion.setIndication(INDETERMINATE);
@@ -279,7 +282,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 			 * - c) Update the value of control-time as follows:<br>
 			 */
 
-			constraintNode = addConstraint(CTS_SCT);
+			constraintNode = addConstraint(MessageTag.CTS_SCT);
 			addControlTime(constraintNode);
 
 			final boolean revoked = !certificate.getBoolValue("./Revocation/Status/text()");
@@ -307,7 +310,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 
 					controlTime = revocationIssuingTime;
 					constraintNode.addChild(INFO, CTS_CTSTRIT_LABEL);
-					final XmlNode xmlNode = constraintNode.addChild(INFO, BBB_XCV_IRIF_ANS);
+					final XmlNode xmlNode = constraintNode.addChild(INFO, MessageTag.BBB_XCV_IRIF_ANS);
 					xmlNode.setAttribute(CERTIFICATE_ID, String.valueOf(certificateId)).setAttribute(REVOCATION_ISSUING_TIME, formatedRevocationIssuingTime);
 				}
 
@@ -394,7 +397,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 		final String algoWithKeyLength = encryptionAlgo + encryptionKeyLength;
 
 		final Date algoExpirationDate = constraintData.getAlgorithmExpirationDate(algoWithKeyLength);
-		if (algoExpirationDate != null && controlTime.after(algoExpirationDate)) {
+		if ((algoExpirationDate != null) && controlTime.after(algoExpirationDate)) {
 
 			controlTime = algoExpirationDate;
 			final String formatedCertAlgoExpirationDate = DSSUtils.formatDate(algoExpirationDate);
@@ -408,7 +411,7 @@ public class ControlTimeSliding implements Indication, SubIndication, NodeName, 
 		String digestAlgo = token.getValue(XP_DIGEST_ALGO_USED_TO_SIGN_THIS_TOKEN);
 		digestAlgo = RuleUtils.canonicalizeSignatureAlgo(digestAlgo);
 		final Date algoExpirationDate = constraintData.getAlgorithmExpirationDate(digestAlgo);
-		if (algoExpirationDate != null && controlTime.after(algoExpirationDate)) {
+		if ((algoExpirationDate != null) && controlTime.after(algoExpirationDate)) {
 
 			controlTime = algoExpirationDate;
 			final String formatedCertAlgoExpirationDate = DSSUtils.formatDate(algoExpirationDate);

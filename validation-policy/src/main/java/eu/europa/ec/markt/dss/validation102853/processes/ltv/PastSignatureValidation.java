@@ -20,11 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
-import static eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.XPathSignature.getSigningCertificateId;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPCVC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_IPCVC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PSV_ITPOSVAOBCT;
-
 import java.util.Date;
 import java.util.List;
 
@@ -149,7 +144,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 
 		final Date controlTime = pcvConclusion.getControlTime();
 
-		XmlNode constraintNode = addConstraint(PSV_IPCVC);
+		XmlNode constraintNode = addConstraint(MessageTag.PSV_IPCVC);
 
 		boolean ok = VALID.equals(pcvConclusion.getIndication());
 		constraintNode.addChild(STATUS, ok ? OK : KO);
@@ -159,7 +154,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 			returnedPcvIndication = constraintNode.addChild(INFO);
 		} else {
 
-			returnedPcvIndication = constraintNode.addChild(ERROR, PSV_IPCVC_ANS);
+			returnedPcvIndication = constraintNode.addChild(ERROR, MessageTag.PSV_IPCVC_ANS);
 		}
 		returnedPcvIndication.setAttribute(INDICATION, pcvConclusion.getIndication());
 		final String pcvSubIndication = pcvConclusion.getSubIndication();
@@ -189,7 +184,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 		 * 2) If there is a POE of the signature value at (or before) control-time do the following:<br>
 		 */
 
-		constraintNode = addConstraint(PSV_ITPOSVAOBCT);
+		constraintNode = addConstraint(MessageTag.PSV_ITPOSVAOBCT);
 
 		final Date bestSignatureTime = poe.getLowestSignaturePOE(signatureId, controlTime);
 
@@ -297,6 +292,18 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 		conclusion.setIndication(currentTimeIndication);
 		conclusion.setSubIndication(currentTimeSubIndication);
 		return conclusion;
+	}
+
+	/**
+	 * This method returns the signing certificate.
+	 *
+	 * @param signature
+	 * @return
+	 */
+	private static int getSigningCertificateId(final XmlDom signature) {
+
+		final int signingCertId = signature.getIntValue("./SigningCertificate/@Id");
+		return signingCertId;
 	}
 
 	/**

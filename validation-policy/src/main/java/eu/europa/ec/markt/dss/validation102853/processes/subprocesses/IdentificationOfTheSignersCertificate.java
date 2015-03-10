@@ -20,18 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_AIDNASNE_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ICDVV;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ICDVV_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISACDP;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISACDP_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISASCP;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISASCP_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCI_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_ICS_ISCS_ANS;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
@@ -41,6 +29,7 @@ import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
+import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
@@ -217,12 +206,12 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_ICS_ISCI);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISCI);
 		constraint.setValue(signingCertificateRecognised);
 		if (DSSUtils.isNotBlank(signingCertificateId) && !signingCertificateId.equals("0")) {
 			constraint.setAttribute(CERTIFICATE_ID, signingCertificateId);
 		}
-		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, BBB_ICS_ISCI_ANS);
+		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_ISCI_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -231,11 +220,11 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 
 	private boolean checkSignedSigningCertificateConstraint(final Constraint constraint, final Conclusion conclusion, final String signedElement) {
 
-		constraint.create(validationDataXmlNode, BBB_ICS_ISCS);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISCS);
 		final boolean signed = XPathQueryHolder.XMLE_X509CERTIFICATE.equals(signedElement) || XPathQueryHolder.XMLE_X509DATA.equals(signedElement) || XPathQueryHolder.XMLE_KEYINFO
 				.equals(signedElement);
 		constraint.setValue(signed);
-		constraint.setIndications(INVALID, FORMAT_FAILURE, BBB_ICS_ISCS_ANS);
+		constraint.setIndications(INVALID, FORMAT_FAILURE, MessageTag.BBB_ICS_ISCS_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -247,10 +236,10 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_ICS_ISASCP);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISASCP);
 		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/AttributePresent/text()");
 		constraint.setValue(digestValueMatch);
-		constraint.setIndications(INVALID, FORMAT_FAILURE, BBB_ICS_ISASCP_ANS);
+		constraint.setIndications(INVALID, FORMAT_FAILURE, MessageTag.BBB_ICS_ISASCP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -268,10 +257,10 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_ICS_ISACDP);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISACDP);
 		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/DigestValuePresent/text()");
 		constraint.setValue(digestValueMatch);
-		constraint.setIndications(INVALID, FORMAT_FAILURE, BBB_ICS_ISACDP_ANS);
+		constraint.setIndications(INVALID, FORMAT_FAILURE, MessageTag.BBB_ICS_ISACDP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -315,10 +304,10 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_ICS_ICDVV);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ICDVV);
 		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/DigestValueMatch/text()");
 		constraint.setValue(digestValueMatch);
-		constraint.setIndications(INVALID, FORMAT_FAILURE, BBB_ICS_ICDVV_ANS);
+		constraint.setIndications(INVALID, FORMAT_FAILURE, MessageTag.BBB_ICS_ICDVV_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -351,10 +340,10 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_ICS_AIDNASNE);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_AIDNASNE);
 		final boolean issuerSerialMatch = contextElement.getBoolValue("./SigningCertificate/IssuerSerialMatch/text()");
 		constraint.setValue(issuerSerialMatch);
-		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, BBB_ICS_AIDNASNE_ANS);
+		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

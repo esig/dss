@@ -20,12 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOF;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOF_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_IRDOI_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_ISI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_CV_ISI_ANS;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
@@ -36,6 +30,7 @@ import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
+import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
@@ -180,10 +175,10 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(subProcessNode, BBB_CV_IRDOF);
+		constraint.create(subProcessNode, MessageTag.BBB_CV_IRDOF);
 		final boolean referenceDataFound = contextElement.getBoolValue(XP_REFERENCE_DATA_FOUND);
 		constraint.setValue(referenceDataFound);
-		constraint.setIndications(INDETERMINATE, SIGNED_DATA_NOT_FOUND, BBB_CV_IRDOF_ANS);
+		constraint.setIndications(INDETERMINATE, SIGNED_DATA_NOT_FOUND, MessageTag.BBB_CV_IRDOF_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -202,10 +197,10 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(subProcessNode, BBB_CV_IRDOI);
+		constraint.create(subProcessNode, MessageTag.BBB_CV_IRDOI);
 		final boolean referenceDataIntact = contextElement.getBoolValue(XP_REFERENCE_DATA_INTACT);
 		constraint.setValue(referenceDataIntact);
-		constraint.setIndications(INVALID, HASH_FAILURE, BBB_CV_IRDOI_ANS);
+		constraint.setIndications(INVALID, HASH_FAILURE, MessageTag.BBB_CV_IRDOI_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -226,10 +221,10 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(subProcessNode, BBB_CV_ISI);
+		constraint.create(subProcessNode, MessageTag.BBB_CV_ISI);
 		final boolean signatureIntact = contextElement.getBoolValue(XP_SIGNATURE_INTACT);
 		constraint.setValue(signatureIntact);
-		constraint.setIndications(INVALID, SIG_CRYPTO_FAILURE, BBB_CV_ISI_ANS);
+		constraint.setIndications(INVALID, SIG_CRYPTO_FAILURE, MessageTag.BBB_CV_ISI_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

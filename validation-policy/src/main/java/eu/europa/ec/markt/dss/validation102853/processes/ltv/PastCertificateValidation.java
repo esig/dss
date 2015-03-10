@@ -20,13 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CCCBB;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ICSI_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_ICTSC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_ICTSC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.PCV_TINTA_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.XCV_IFCCIIPC_ANS;
-
 import java.util.Date;
 import java.util.List;
 
@@ -193,7 +186,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 			return conclusion;
 		}
 
-		XmlNode constraintNode = addConstraint(BBB_XCV_CCCBB);
+		XmlNode constraintNode = addConstraint(MessageTag.BBB_XCV_CCCBB);
 
 		final String trustedAnchorId = certificateChainXmlDom.getValue("./ChainCertificate[last()]/@Id");
 		final XmlDom trustedAnchor = params.getCertificate(trustedAnchorId);
@@ -206,7 +199,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 			constraintNode.addChild(STATUS, KO);
 			conclusion.setIndication(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND);
-			final Info info = conclusion.addInfo(PCV_TINTA_ANS);
+			final Info info = conclusion.addInfo(MessageTag.PCV_TINTA_ANS);
 			info.addTo(constraintNode);
 			return conclusion;
 		}
@@ -253,7 +246,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 				constraintNode.addChild(STATUS, KO);
 				conclusion.setIndication(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND);
-				final Info info = conclusion.addInfo(XCV_IFCCIIPC_ANS, notAfter.toString(), notAfter.toString(), certificateId);
+				final Info info = conclusion.addInfo(MessageTag.XCV_IFCCIIPC_ANS, notAfter.toString(), notAfter.toString(), certificateId);
 				info.setAttribute(CERTIFICATE_ID, certificateId);
 				info.addTo(constraintNode);
 				return conclusion;
@@ -323,7 +316,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 				constraintNode.addChild(STATUS, KO);
 				conclusion.setIndication(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND);
-				final Info info = conclusion.addInfo(BBB_XCV_ICSI_ANS);
+				final Info info = conclusion.addInfo(MessageTag.BBB_XCV_ICSI_ANS);
 				info.setAttribute(CERTIFICATE_ID, certificateId);
 				info.addTo(constraintNode);
 				return conclusion;
@@ -359,7 +352,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		 * Otherwise, set the current status to the returned indication and sub-indication and go back to step 1.<br>
 		 */
 
-		constraintNode = addConstraint(PCV_ICTSC);
+		constraintNode = addConstraint(MessageTag.PCV_ICTSC);
 
 		// --> DSS builds only one chain
 		// From 1):
@@ -371,7 +364,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 			constraintNode.addChild(STATUS, KO);
 
 			conclusion.setIndication(ctsConclusionIndication, ctsConclusion.getSubIndication());
-			conclusion.addInfo(PCV_ICTSC_ANS);
+			conclusion.addInfo(MessageTag.PCV_ICTSC_ANS);
 			return conclusion;
 		}
 		constraintNode.addChild(STATUS, OK);

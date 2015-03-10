@@ -20,15 +20,12 @@
  */
 package eu.europa.ec.markt.dss.validation102853.policy;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_1;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_2;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_VCI_ISPK_ANS_3;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
+import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
@@ -131,14 +128,14 @@ public class SignaturePolicyConstraint extends Constraint {
 					if (warn()) {
 
 						node.addChild(STATUS, WARN);
-						node.addChild(WARNING, BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
-						conclusion.addWarning(BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
+						node.addChild(WARNING, MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
+						conclusion.addWarning(MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
 						return true;
 					}
 					node.addChild(STATUS, KO);
-					node.addChild(ERROR, BBB_VCI_ISPK_ANS_1);
+					node.addChild(ERROR, MessageTag.BBB_VCI_ISPK_ANS_1);
 					conclusion.setIndication(INDETERMINATE, NO_POLICY);
-					conclusion.addError(BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
+					conclusion.addError(MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
 					return false;
 				}
 			} else {
@@ -150,15 +147,15 @@ public class SignaturePolicyConstraint extends Constraint {
 						if (warn()) {
 
 							node.addChild(STATUS, WARN);
-							node.addChild(WARNING, BBB_VCI_ISPK_ANS_2).setAttribute(ERROR, processingError);
-							final Conclusion.Warning warning = conclusion.addWarning(BBB_VCI_ISPK_ANS_2);
+							node.addChild(WARNING, MessageTag.BBB_VCI_ISPK_ANS_2).setAttribute(ERROR, processingError);
+							final Conclusion.Warning warning = conclusion.addWarning(MessageTag.BBB_VCI_ISPK_ANS_2);
 							warning.setAttribute(ERROR, processingError);
 							return true;
 						}
 						node.addChild(STATUS, KO);
-						node.addChild(ERROR, BBB_VCI_ISPK_ANS_2);
+						node.addChild(ERROR, MessageTag.BBB_VCI_ISPK_ANS_2);
 						conclusion.setIndication(INDETERMINATE, POLICY_PROCESSING_ERROR);
-						final Conclusion.Error error = conclusion.addError(BBB_VCI_ISPK_ANS_2);
+						final Conclusion.Error error = conclusion.addError(MessageTag.BBB_VCI_ISPK_ANS_2);
 						error.setAttribute(ERROR, processingError);
 						return false;
 					}
@@ -167,15 +164,15 @@ public class SignaturePolicyConstraint extends Constraint {
 						if (warn()) {
 
 							node.addChild(STATUS, WARN);
-							node.addChild(WARNING, BBB_VCI_ISPK_ANS_3).setAttribute(ERROR, processingError);
-							final Conclusion.Warning warning = conclusion.addWarning(BBB_VCI_ISPK_ANS_3);
+							node.addChild(WARNING, MessageTag.BBB_VCI_ISPK_ANS_3).setAttribute(ERROR, processingError);
+							final Conclusion.Warning warning = conclusion.addWarning(MessageTag.BBB_VCI_ISPK_ANS_3);
 							warning.setAttribute(EXPECTED_VALUE, expectedValue).setAttribute("ConstraintValue", identifier);
 							return true;
 						}
 						node.addChild(STATUS, KO);
-						node.addChild(ERROR, BBB_VCI_ISPK_ANS_3);
+						node.addChild(ERROR, MessageTag.BBB_VCI_ISPK_ANS_3);
 						conclusion.setIndication(INDETERMINATE, NO_POLICY);
-						final Conclusion.Error error = conclusion.addError(BBB_VCI_ISPK_ANS_3);
+						final Conclusion.Error error = conclusion.addError(MessageTag.BBB_VCI_ISPK_ANS_3);
 						error.setAttribute(EXPECTED_VALUE, expectedValue).setAttribute("ConstraintValue", identifier);
 						return false;
 					}

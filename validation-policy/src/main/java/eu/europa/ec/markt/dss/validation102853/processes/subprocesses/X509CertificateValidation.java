@@ -20,42 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ACCM;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CCCBB;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CCCBB_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CMDCIITLP;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CMDCIITLP_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CMDCIQC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CMDCIQC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CMDCISSCD;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_CMDCISSCD_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ICSI;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ICSI_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ICTIVRSC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ICTIVRSC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IICR;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IICR_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRDPFC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRDPFC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRDTFC;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRDTFC_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRIF;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_IRIF_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCGKU;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCGKU_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCOH;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCOH_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCR;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.BBB_XCV_ISCR_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_IIDOCWVPOTS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_IIDOCWVPOTS_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_ITACBT;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_ITACBT_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_WITSS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.CTS_WITSS_ANS;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.EMPTY;
-
 import java.util.Date;
 import java.util.List;
 
@@ -80,6 +44,7 @@ import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
+import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
@@ -477,12 +442,12 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_ICTIVRSC);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_ICTIVRSC);
 		constraint.setCurrentTime(currentTime);
 		constraint.setNotAfter(getDate(signingCertificate, "./NotAfter"));
 		constraint.setNotBefore(getDate(signingCertificate, "./NotBefore"));
 		constraint.setExpiredCertsRevocationInfo(getDate(signingCertificate, "./TrustedServiceProvider/ExpiredCertsRevocationInfo"));
-		constraint.setIndications(INDETERMINATE, OUT_OF_BOUNDS_NO_POE, BBB_XCV_ICTIVRSC_ANS);
+		constraint.setIndications(INDETERMINATE, OUT_OF_BOUNDS_NO_POE, MessageTag.BBB_XCV_ICTIVRSC_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -502,9 +467,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_CCCBB);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_CCCBB);
 		constraint.setValue(trustedProspectiveCertificateChain);
-		constraint.setIndications(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND, BBB_XCV_CCCBB_ANS);
+		constraint.setIndications(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND, MessageTag.BBB_XCV_CCCBB_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -554,9 +519,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_ICSI);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_ICSI);
 		constraint.setValue(certificateXmlDom.getBoolValue(XP_SIGNATURE_VALID));
-		constraint.setIndications(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND, BBB_XCV_ICSI_ANS);
+		constraint.setIndications(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND, MessageTag.BBB_XCV_ICSI_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -578,9 +543,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_IRDPFC);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_IRDPFC);
 		constraint.setValue(isRevocationDataAvailable(certificateXmlDom));
-		constraint.setIndications(INDETERMINATE, TRY_LATER, BBB_XCV_IRDPFC_ANS);
+		constraint.setIndications(INDETERMINATE, TRY_LATER, MessageTag.BBB_XCV_IRDPFC_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -608,11 +573,11 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_IRDTFC);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_IRDTFC);
 		final String anchorSource = certificateXmlDom.getValue("./Revocation/CertificateChain/ChainCertificate[last()]/Source/text()");
 		final CertificateSourceType anchorSourceType = StringUtils.isBlank(anchorSource) ? CertificateSourceType.UNKNOWN : CertificateSourceType.valueOf(anchorSource);
 		constraint.setValue(isRevocationDataTrusted(anchorSourceType));
-		constraint.setIndications(INDETERMINATE, TRY_LATER, BBB_XCV_IRDTFC_ANS);
+		constraint.setIndications(INDETERMINATE, TRY_LATER, MessageTag.BBB_XCV_IRDTFC_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setAttribute(CERTIFICATE_SOURCE, anchorSource);
 		constraint.setConclusionReceiver(conclusion);
@@ -649,9 +614,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_IRIF);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_IRIF);
 		constraint.setValue(String.valueOf(revocationFresh));
-		constraint.setIndications(INDETERMINATE, TRY_LATER, BBB_XCV_IRIF_ANS);
+		constraint.setIndications(INDETERMINATE, TRY_LATER, MessageTag.BBB_XCV_IRIF_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setAttribute(REVOCATION_NEXT_UPDATE, revocationNextUpdate);
 		constraint.setAttribute(REVOCATION_ISSUING_TIME, revocationIssuingTimeString);
@@ -675,11 +640,11 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_ISCGKU);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_ISCGKU);
 		final List<XmlDom> keyUsageBits = certificateXmlDom.getElements("./KeyUsageBits/KeyUsage");
 		final List<String> stringList = XmlDom.convertToStringList(keyUsageBits);
 		constraint.setValue(stringList);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, BBB_XCV_ISCGKU_ANS);
+		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_XCV_ISCGKU_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -707,10 +672,10 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_ISCR);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_ISCR);
 		final boolean revoked = !revocationStatus && !CRLReasonEnum.certificateHold.name().equals(revocationReason);
 		constraint.setValue(String.valueOf(revoked));
-		constraint.setIndications(INDETERMINATE, REVOKED_NO_POE, BBB_XCV_ISCR_ANS);
+		constraint.setIndications(INDETERMINATE, REVOKED_NO_POE, MessageTag.BBB_XCV_ISCR_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		if (StringUtils.isNotBlank(revocationDatetime)) {
 			constraint.setAttribute(REVOCATION_TIME, revocationDatetime);
@@ -747,10 +712,10 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_ISCOH);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_ISCOH);
 		final boolean onHold = !revocationStatus && CRLReasonEnum.certificateHold.name().equals(revocationReason);
 		constraint.setValue(String.valueOf(onHold));
-		constraint.setIndications(INDETERMINATE, TRY_LATER, BBB_XCV_ISCOH_ANS);
+		constraint.setIndications(INDETERMINATE, TRY_LATER, MessageTag.BBB_XCV_ISCOH_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		if (StringUtils.isNotBlank(revocationDatetime)) {
 			constraint.setAttribute(REVOCATION_TIME, revocationDatetime);
@@ -782,7 +747,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 			return true;
 		}
 
-		constraint.create(validationDataXmlNode, CTS_IIDOCWVPOTS);
+		constraint.create(validationDataXmlNode, MessageTag.CTS_IIDOCWVPOTS);
 
 		final Date certificateValidFrom = certificateXmlDom.getTimeValueOrNull("./NotBefore/text()");
 		final List<XmlDom> tspList = certificateXmlDom.getElements("./TrustedServiceProvider");
@@ -803,7 +768,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		}
 
 		constraint.setValue(found);
-		constraint.setIndications(INDETERMINATE, TRY_LATER, CTS_IIDOCWVPOTS_ANS);
+		constraint.setIndications(INDETERMINATE, TRY_LATER, MessageTag.CTS_IIDOCWVPOTS_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -828,7 +793,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, CTS_WITSS);
+		constraint.create(validationDataXmlNode, MessageTag.CTS_WITSS);
 		final List<XmlDom> tspList = certificateXmlDom.getElements("./TrustedServiceProvider");
 		boolean acceptableStatus = false;
 		String status = DSSUtils.EMPTY;
@@ -844,7 +809,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		}
 
 		constraint.setValue(acceptableStatus);
-		constraint.setIndications(INDETERMINATE, TRY_LATER, CTS_WITSS_ANS);
+		constraint.setIndications(INDETERMINATE, TRY_LATER, MessageTag.CTS_WITSS_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setAttribute(TRUSTED_SERVICE_STATUS, status);
 		constraint.setConclusionReceiver(conclusion);
@@ -872,7 +837,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 			return true;
 		}
 
-		constraint.create(validationDataXmlNode, CTS_ITACBT);
+		constraint.create(validationDataXmlNode, MessageTag.CTS_ITACBT);
 
 		final Date certificateValidFrom = certificateXmlDom.getTimeValueOrNull("./NotBefore/text()");
 		final List<XmlDom> tspList = certificateXmlDom.getElements("./TrustedServiceProvider");
@@ -898,7 +863,7 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		}
 
 		constraint.setValue(found);
-		constraint.setIndications(INDETERMINATE, TRY_LATER, CTS_ITACBT_ANS);
+		constraint.setIndications(INDETERMINATE, TRY_LATER, MessageTag.CTS_ITACBT_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -925,10 +890,10 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_IICR, certificateId);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_IICR, certificateId);
 		final boolean revoked = !revocationStatus;
 		constraint.setValue(String.valueOf(revoked));
-		constraint.setIndications(INDETERMINATE, REVOKED_CA_NO_POE, BBB_XCV_IICR_ANS);
+		constraint.setIndications(INDETERMINATE, REVOKED_CA_NO_POE, MessageTag.BBB_XCV_IICR_ANS);
 		constraint.setAttribute(CERTIFICATE_ID, certificateId);
 		if (StringUtils.isNotBlank(revocationDatetime)) {
 			constraint.setAttribute(REVOCATION_TIME, revocationDatetime);
@@ -954,10 +919,10 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_ACCM);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_ACCM);
 		// TODO: (Bob: 2014 Mar 09) --> DSS does not check these constraints
 		constraint.setValue("TO BE IMPLEMENTED");
-		constraint.setIndications(INVALID, CHAIN_CONSTRAINTS_FAILURE, EMPTY);
+		constraint.setIndications(INVALID, CHAIN_CONSTRAINTS_FAILURE, MessageTag.EMPTY);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -976,9 +941,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_CMDCIQC);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_CMDCIQC);
 		constraint.setValue(String.valueOf(qualifiedCertificate));
-		constraint.setIndications(INVALID, CHAIN_CONSTRAINTS_FAILURE, BBB_XCV_CMDCIQC_ANS);
+		constraint.setIndications(INVALID, CHAIN_CONSTRAINTS_FAILURE, MessageTag.BBB_XCV_CMDCIQC_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -997,9 +962,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_CMDCISSCD);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_CMDCISSCD);
 		constraint.setValue(String.valueOf(supportedBySSCD));
-		constraint.setIndications(INVALID, CHAIN_CONSTRAINTS_FAILURE, BBB_XCV_CMDCISSCD_ANS);
+		constraint.setIndications(INVALID, CHAIN_CONSTRAINTS_FAILURE, MessageTag.BBB_XCV_CMDCISSCD_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -1018,9 +983,9 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, BBB_XCV_CMDCIITLP);
+		constraint.create(validationDataXmlNode, MessageTag.BBB_XCV_CMDCIITLP);
 		constraint.setValue(String.valueOf(issuedToLegalPerson));
-		constraint.setIndications(INVALID, CHAIN_CONSTRAINTS_FAILURE, BBB_XCV_CMDCIITLP_ANS);
+		constraint.setIndications(INVALID, CHAIN_CONSTRAINTS_FAILURE, MessageTag.BBB_XCV_CMDCIITLP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -1042,12 +1007,12 @@ public class X509CertificateValidation implements Indication, SubIndication, Nod
 		if (constraint == null) {
 			return true;
 		}
-		constraint.create(validationDataXmlNode, ASCCM);
+		constraint.create(validationDataXmlNode, MessageTag.ASCCM);
 		constraint.setCurrentTime(currentTime);
 		constraint.setEncryptionAlgorithm(getValue(contextXmlDom, XP_ENCRYPTION_ALGO_USED_TO_SIGN_THIS_TOKEN));
 		constraint.setDigestAlgorithm(getValue(contextXmlDom, XP_DIGEST_ALGO_USED_TO_SIGN_THIS_TOKEN));
 		constraint.setKeyLength(getValue(contextXmlDom, XP_KEY_LENGTH_USED_TO_SIGN_THIS_TOKEN));
-		constraint.setIndications(INDETERMINATE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, EMPTY);
+		constraint.setIndications(INDETERMINATE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.EMPTY);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

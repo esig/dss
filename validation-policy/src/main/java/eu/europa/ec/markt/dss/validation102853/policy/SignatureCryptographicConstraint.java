@@ -20,12 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.policy;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_1;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_2;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_3;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_4;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM_ANS_5;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -228,7 +222,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 		if (!containsEncryptionAlgorithm) {
 
 			final Pair[] pairs = getParametersAnswer1();
-			if (fail(ASCCM_ANS_1, pairs)) {
+			if (fail(MessageTag.ASCCM_ANS_1, pairs)) {
 				return false;
 			}
 		}
@@ -237,7 +231,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 		if (!containsDigestAlgorithm) {
 
 			final Pair[] pairs = getParametersAnswer2();
-			if (fail(ASCCM_ANS_2, pairs)) {
+			if (fail(MessageTag.ASCCM_ANS_2, pairs)) {
 				return false;
 			}
 		}
@@ -253,7 +247,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 		if (!publicKeyBigEnough) {
 
 			final Pair[] pairs = getParametersAnswer3(minimumPublicKeySize);
-			if (fail(ASCCM_ANS_3, pairs)) {
+			if (fail(MessageTag.ASCCM_ANS_3, pairs)) {
 				return false;
 			}
 		}
@@ -265,7 +259,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 			if (algorithmExpirationDate == null) {
 
 				final Pair[] pairs = getParametersAnswer4(encryptionAlgorithmAndKey);
-				if (fail(ASCCM_ANS_4, pairs)) {
+				if (fail(MessageTag.ASCCM_ANS_4, pairs)) {
 					return false;
 				}
 			}
@@ -273,7 +267,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 			if (expiredAlgorithm) {
 
 				final Pair[] pairs = getParametersAnswer5(encryptionAlgorithmAndKey, algorithmExpirationDate);
-				if (fail(ASCCM_ANS_5, pairs)) {
+				if (fail(MessageTag.ASCCM_ANS_5, pairs)) {
 					return false;
 				}
 			}
@@ -282,7 +276,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 			if (algorithmExpirationDate == null) {
 
 				final Pair[] pairs = getParametersAnswer4(digestAlgorithm);
-				if (fail(ASCCM_ANS_4, pairs)) {
+				if (fail(MessageTag.ASCCM_ANS_4, pairs)) {
 					return false;
 				}
 			}
@@ -290,7 +284,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 			if (expiredAlgorithm) {
 
 				final Pair[] pairs = getParametersAnswer5(digestAlgorithm, algorithmExpirationDate);
-				if (fail(ASCCM_ANS_5, pairs)) {
+				if (fail(MessageTag.ASCCM_ANS_5, pairs)) {
 					return false;
 				}
 			}

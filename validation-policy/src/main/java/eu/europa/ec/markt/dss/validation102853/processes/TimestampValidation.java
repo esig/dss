@@ -20,9 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes;
 
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.ASCCM;
-import static eu.europa.ec.markt.dss.validation102853.rules.MessageTag.EMPTY;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +40,7 @@ import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
 import eu.europa.ec.markt.dss.validation102853.rules.Indication;
+import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
@@ -132,9 +130,8 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 
 			final List<XmlDom> timestamps = new ArrayList<XmlDom>();
 			final TimestampType[] timestampTypes = TimestampType.values();
-			for (int ii = 0; ii < timestampTypes.length; ii++) {
+			for (final TimestampType timestampType : timestampTypes) {
 
-				final TimestampType timestampType = timestampTypes[ii];
 				extractTimestamp(signature, timestampType, timestamps);
 			}
 			if (timestamps.isEmpty()) {
@@ -187,10 +184,10 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 				 * 5.2. Validation Context Initialisation (VCI)
 				 */
 
-            /*
-             * --> Not needed for Timestamps validation. The constraints are already loaded during the execution of the
-             * Basic Building Blocks process for the main signature.
-             */
+				/*
+				 * --> Not needed for Timestamps validation. The constraints are already loaded during the execution of the
+				 * Basic Building Blocks process for the main signature.
+				 */
 
 				/**
 				 * 5.4 Cryptographic Verification (CV)
@@ -306,12 +303,12 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 		final SignatureCryptographicConstraint signatureConstraint = constraintData.getSignatureCryptographicConstraint(TIMESTAMP);
 		if (signatureConstraint != null) {
 
-			signatureConstraint.create(subProcessNode, ASCCM);
+			signatureConstraint.create(subProcessNode, MessageTag.ASCCM);
 			signatureConstraint.setCurrentTime(currentTime);
 			signatureConstraint.setEncryptionAlgorithm(timestampXmlDom.getValue(XP_ENCRYPTION_ALGO_USED_TO_SIGN_THIS_TOKEN));
 			signatureConstraint.setDigestAlgorithm(timestampXmlDom.getValue(XP_DIGEST_ALGO_USED_TO_SIGN_THIS_TOKEN));
 			signatureConstraint.setKeyLength(timestampXmlDom.getValue(XP_KEY_LENGTH_USED_TO_SIGN_THIS_TOKEN));
-			signatureConstraint.setIndications(INDETERMINATE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, EMPTY);
+			signatureConstraint.setIndications(INDETERMINATE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.EMPTY);
 			signatureConstraint.setConclusionReceiver(conclusion);
 
 			if (!signatureConstraint.check()) {
@@ -323,12 +320,12 @@ public class TimestampValidation implements Indication, SubIndication, NodeName,
 		final SignatureCryptographicConstraint signingCertificateConstraint = constraintData.getSignatureCryptographicConstraint(TIMESTAMP, SIGNING_CERTIFICATE);
 		if (signingCertificateConstraint != null) {
 
-			signingCertificateConstraint.create(subProcessNode, ASCCM);
+			signingCertificateConstraint.create(subProcessNode, MessageTag.ASCCM);
 			signingCertificateConstraint.setCurrentTime(currentTime);
 			signingCertificateConstraint.setEncryptionAlgorithm(timestampXmlDom.getValue(XP_ENCRYPTION_ALGO_USED_TO_SIGN_THIS_TOKEN));
 			signingCertificateConstraint.setDigestAlgorithm(timestampXmlDom.getValue(XP_DIGEST_ALGO_USED_TO_SIGN_THIS_TOKEN));
 			signingCertificateConstraint.setKeyLength(timestampXmlDom.getValue(XP_KEY_LENGTH_USED_TO_SIGN_THIS_TOKEN));
-			signingCertificateConstraint.setIndications(INDETERMINATE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, EMPTY);
+			signingCertificateConstraint.setIndications(INDETERMINATE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.EMPTY);
 			signingCertificateConstraint.setConclusionReceiver(conclusion);
 
 			if (!signingCertificateConstraint.check()) {
