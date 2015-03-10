@@ -21,7 +21,6 @@
 package eu.europa.ec.markt.dss.mocca;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -40,20 +39,21 @@ import org.slf4j.LoggerFactory;
 import at.gv.egiz.smcc.CardNotSupportedException;
 import at.gv.egiz.smcc.SignatureCard;
 import at.gv.egiz.smcc.SignatureCard.KeyboxName;
-import at.gv.egiz.smcc.SignatureCardException;
 import at.gv.egiz.smcc.SignatureCardFactory;
 import at.gv.egiz.smcc.util.SmartCardIO;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.SignatureValue;
+import eu.europa.ec.markt.dss.ToBeSigned;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.PasswordInputCallback;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 
 /**
- * 
+ *
  */
 @SuppressWarnings("restriction")
 public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
@@ -155,9 +155,9 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 	}
 
 	@Override
-	public byte[] sign(byte[] bytes, DigestAlgorithm digestAlgo, DSSPrivateKeyEntry keyEntry) throws DSSException {
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
 
-		final InputStream inputStream = new ByteArrayInputStream(bytes);
+		final InputStream inputStream = new ByteArrayInputStream(toBeSigned.getBytes());
 		if (!(keyEntry instanceof MOCCAPrivateKeyEntry)) {
 
 			throw new DSSException("Unsupported DSSPrivateKeyEntry instance " + keyEntry.getClass() + " / Must be MOCCAPrivateKeyEntry.");
@@ -169,13 +169,13 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 		}
 		// TODO Bob:20130619 This is not completely true, it is true only for the last card. The signing certificate
 		// should be checked.
-		if (moccaKey.getPos() > _signatureCards.size() - 1) {
+		if (moccaKey.getPos() > (_signatureCards.size() - 1)) {
 
 			throw new IllegalStateException("Card was removed or disconnected " + moccaKey.getPos() + " " + _signatureCards.size());
 		}
 		final SignatureCard signatureCard = _signatureCards.get(moccaKey.getPos());
 		final EncryptionAlgorithm encryptionAlgo = moccaKey.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgo, digestAlgo);
+		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgo, digestAlgorithm);
 
 		LOG.info("MOCCA>>>Signature algorithm: " + signatureAlgorithm.getJCEId());
 		try {
@@ -186,14 +186,26 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 
 				signedData = encode(signedData);
 			}
-			return signedData;
-		} catch (SignatureCardException e) {
-			throw new DSSException(e);
-		} catch (InterruptedException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
+
+			SignatureValue value = new SignatureValue();
+			value.setAlgorithm(signatureAlgorithm);
+			value.setValue(signedData);
+			return value;
+
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
+
+	}
+
+	@Override
+	@Deprecated
+	public byte[] sign(byte[] bytes, DigestAlgorithm digestAlgo, DSSPrivateKeyEntry keyEntry) throws DSSException {
+
+		ToBeSigned tbs = new ToBeSigned();
+		tbs.setBytes(bytes);
+
+		return sign(tbs, digestAlgo, keyEntry).getValue();
 	}
 
 	/**

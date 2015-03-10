@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.SignatureValue;
+import eu.europa.ec.markt.dss.ToBeSigned;
 import eu.europa.ec.markt.dss.exception.DSSException;
 
 /**
@@ -35,26 +37,38 @@ import eu.europa.ec.markt.dss.exception.DSSException;
  */
 public abstract class AbstractSignatureTokenConnection implements SignatureTokenConnection {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
 
-    @Override
-    public byte[] sign(final byte[] bytes, final DigestAlgorithm digestAlgorithm, final DSSPrivateKeyEntry keyEntry) throws DSSException {
+	@Override
+	@Deprecated
+	public byte[] sign(final byte[] bytes, final DigestAlgorithm digestAlgorithm, final DSSPrivateKeyEntry keyEntry) throws DSSException {
 
-        final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-        LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
-        final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
-        final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
-        
-        try {
+		ToBeSigned tbs = new ToBeSigned();
+		tbs.setBytes(bytes);
+		return sign(tbs, digestAlgorithm, keyEntry).getValue();
+	}
+
+	@Override
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
+
+		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
+		LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
+		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
+
+		try {
 			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
 			signature.initSign(keyEntry.getPrivateKey());
-			signature.update(bytes);
+			signature.update(toBeSigned.getBytes());
 			final byte[] signatureValue = signature.sign();
-			return signatureValue;
-        } catch(Exception e) {
-        	throw new DSSException(e);
-        }
+			SignatureValue value = new SignatureValue();
+			value.setAlgorithm(signatureAlgorithm);
+			value.setValue(signatureValue);
+			return value;
+		} catch(Exception e) {
+			throw new DSSException(e);
+		}
 
-    }
+	}
 
 }
