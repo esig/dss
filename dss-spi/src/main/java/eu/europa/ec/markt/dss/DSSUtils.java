@@ -608,11 +608,10 @@ public final class DSSUtils {
 	 * @return ski bytes from the given certificate
 	 * @throws Exception
 	 */
-	public static byte[] getSki(final X509Certificate x509Certificate) throws DSSException {
+	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
 
 		try {
-
-			final byte[] skiBytesFromCert = XMLX509SKI.getSKIBytesFromCert(x509Certificate);
+			final byte[] skiBytesFromCert = XMLX509SKI.getSKIBytesFromCert(certificateToken.getCertificate());
 			return skiBytesFromCert;
 		} catch (XMLSecurityException e) {
 			return null;
