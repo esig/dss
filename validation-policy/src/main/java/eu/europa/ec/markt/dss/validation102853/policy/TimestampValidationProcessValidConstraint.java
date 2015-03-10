@@ -23,6 +23,9 @@ package eu.europa.ec.markt.dss.validation102853.policy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
+
 /**
  * This class represents the timestamp validation process validity constraints.
  */
@@ -55,7 +58,7 @@ public class TimestampValidationProcessValidConstraint extends Constraint {
 
 		if (validTimestampCount < 1) {
 
-			node.addChild(STATUS, KO);
+			node.addChild(NodeName.STATUS, NodeValue.KO);
 
 			if (validTimestampCount == 0) {
 
@@ -67,9 +70,9 @@ public class TimestampValidationProcessValidConstraint extends Constraint {
 			conclusion.addError(failureMessageTag, messageAttributes);
 			return false;
 		}
-		node.addChild(STATUS, OK);
+		node.addChild(NodeName.STATUS, NodeValue.OK);
 		if (!messageAttributes.isEmpty()) {
-			node.addChild(INFO, null, messageAttributes);
+			node.addChild(NodeName.INFO, null, messageAttributes);
 		}
 		return true;
 	}

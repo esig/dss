@@ -25,8 +25,13 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
+import eu.europa.ec.markt.dss.validation102853.rules.Indication;
 import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
+import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 /**
@@ -110,13 +115,13 @@ public class SignaturePolicyConstraint extends Constraint {
 
 		if (ignore()) {
 
-			node.addChild(STATUS, IGNORED);
+			node.addChild(NodeName.STATUS, NodeValue.IGNORED);
 			return true;
 		}
 		if (inform()) {
 
-			node.addChild(STATUS, INFORMATION);
-			node.addChild(INFO, null, messageAttributes).setAttribute(EXPECTED_VALUE, expectedValue).setAttribute("ConstraintValue", identifier);
+			node.addChild(NodeName.STATUS, NodeValue.INFORMATION);
+			node.addChild(NodeName.INFO, null, messageAttributes).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute("ConstraintValue", identifier);
 			return true;
 		}
 		if (!SignaturePolicy.IMPLICIT_POLICY.equals(identifier)) {
@@ -127,15 +132,15 @@ public class SignaturePolicyConstraint extends Constraint {
 
 					if (warn()) {
 
-						node.addChild(STATUS, WARN);
-						node.addChild(WARNING, MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
-						conclusion.addWarning(MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
+						node.addChild(NodeName.STATUS, NodeValue.WARN);
+						node.addChild(NodeName.WARNING, MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue);
+						conclusion.addWarning(MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue);
 						return true;
 					}
-					node.addChild(STATUS, KO);
-					node.addChild(ERROR, MessageTag.BBB_VCI_ISPK_ANS_1);
-					conclusion.setIndication(INDETERMINATE, NO_POLICY);
-					conclusion.addError(MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(EXPECTED_VALUE, expectedValue);
+					node.addChild(NodeName.STATUS, NodeValue.KO);
+					node.addChild(NodeName.ERROR, MessageTag.BBB_VCI_ISPK_ANS_1);
+					conclusion.setIndication(Indication.INDETERMINATE, SubIndication.NO_POLICY);
+					conclusion.addError(MessageTag.BBB_VCI_ISPK_ANS_1).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue);
 					return false;
 				}
 			} else {
@@ -146,45 +151,45 @@ public class SignaturePolicyConstraint extends Constraint {
 
 						if (warn()) {
 
-							node.addChild(STATUS, WARN);
-							node.addChild(WARNING, MessageTag.BBB_VCI_ISPK_ANS_2).setAttribute(ERROR, processingError);
+							node.addChild(NodeName.STATUS, NodeValue.WARN);
+							node.addChild(NodeName.WARNING, MessageTag.BBB_VCI_ISPK_ANS_2).setAttribute(NodeName.ERROR, processingError);
 							final Conclusion.Warning warning = conclusion.addWarning(MessageTag.BBB_VCI_ISPK_ANS_2);
-							warning.setAttribute(ERROR, processingError);
+							warning.setAttribute(NodeName.ERROR, processingError);
 							return true;
 						}
-						node.addChild(STATUS, KO);
-						node.addChild(ERROR, MessageTag.BBB_VCI_ISPK_ANS_2);
-						conclusion.setIndication(INDETERMINATE, POLICY_PROCESSING_ERROR);
+						node.addChild(NodeName.STATUS, NodeValue.KO);
+						node.addChild(NodeName.ERROR, MessageTag.BBB_VCI_ISPK_ANS_2);
+						conclusion.setIndication(Indication.INDETERMINATE, SubIndication.POLICY_PROCESSING_ERROR);
 						final Conclusion.Error error = conclusion.addError(MessageTag.BBB_VCI_ISPK_ANS_2);
-						error.setAttribute(ERROR, processingError);
+						error.setAttribute(NodeName.ERROR, processingError);
 						return false;
 					}
 					if (!identifiers.contains(identifier)) {
 
 						if (warn()) {
 
-							node.addChild(STATUS, WARN);
-							node.addChild(WARNING, MessageTag.BBB_VCI_ISPK_ANS_3).setAttribute(ERROR, processingError);
+							node.addChild(NodeName.STATUS, NodeValue.WARN);
+							node.addChild(NodeName.WARNING, MessageTag.BBB_VCI_ISPK_ANS_3).setAttribute(NodeName.ERROR, processingError);
 							final Conclusion.Warning warning = conclusion.addWarning(MessageTag.BBB_VCI_ISPK_ANS_3);
-							warning.setAttribute(EXPECTED_VALUE, expectedValue).setAttribute("ConstraintValue", identifier);
+							warning.setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute("ConstraintValue", identifier);
 							return true;
 						}
-						node.addChild(STATUS, KO);
-						node.addChild(ERROR, MessageTag.BBB_VCI_ISPK_ANS_3);
-						conclusion.setIndication(INDETERMINATE, NO_POLICY);
+						node.addChild(NodeName.STATUS, NodeValue.KO);
+						node.addChild(NodeName.ERROR, MessageTag.BBB_VCI_ISPK_ANS_3);
+						conclusion.setIndication(Indication.INDETERMINATE, SubIndication.NO_POLICY);
 						final Conclusion.Error error = conclusion.addError(MessageTag.BBB_VCI_ISPK_ANS_3);
-						error.setAttribute(EXPECTED_VALUE, expectedValue).setAttribute("ConstraintValue", identifier);
+						error.setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute("ConstraintValue", identifier);
 						return false;
 					}
 				}
 			}
 		}
-		node.addChild(STATUS, OK);
-		final XmlNode info = node.addChild(INFO);
-		info.setAttribute(IDENTIFIER, identifier);
+		node.addChild(NodeName.STATUS, NodeValue.OK);
+		final XmlNode info = node.addChild(NodeName.INFO);
+		info.setAttribute(NodeName.IDENTIFIER, identifier);
 		if (!notice.isEmpty()) {
 
-			info.setAttribute(NOTICE, notice);
+			info.setAttribute(NodeName.NOTICE, notice);
 		}
 		return true;
 	}

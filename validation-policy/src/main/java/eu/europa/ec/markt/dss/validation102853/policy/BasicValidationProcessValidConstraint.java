@@ -23,6 +23,8 @@ package eu.europa.ec.markt.dss.validation102853.policy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 /**
@@ -55,11 +57,11 @@ public class BasicValidationProcessValidConstraint extends Constraint {
 
 		if (!value.equals(expectedValue)) {
 
-			node.addChild(STATUS, KO);
+			node.addChild(NodeName.STATUS, NodeValue.KO);
 			conclusion.copyConclusion(basicValidationProcessConclusionNode);
 			return false;
 		}
-		node.addChild(STATUS, OK);
+		node.addChild(NodeName.STATUS, NodeValue.OK);
 		// The consolidation of the warning is made in the SimpleReportBuilder
 		// conclusion.copyWarnings(basicValidationProcessConclusionNode);
 		return true;

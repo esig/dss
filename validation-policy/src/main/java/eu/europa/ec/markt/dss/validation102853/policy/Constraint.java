@@ -32,19 +32,16 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
-import eu.europa.ec.markt.dss.validation102853.rules.Indication;
 import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
-import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
 /**
  * This class represents a constraint and indicates its level: IGNORE, INFORM, WARN, FAIL.
  */
-public class Constraint implements NodeName, NodeValue, AttributeName, AttributeValue, Indication, SubIndication {
+public class Constraint {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Constraint.class);
 
@@ -114,8 +111,8 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 	 */
 	public XmlNode create(final XmlNode parentNode, final MessageTag messageTag) {
 
-		this.node = parentNode.addChild(CONSTRAINT);
-		this.node.addChild(NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
+		this.node = parentNode.addChild(NodeName.CONSTRAINT);
+		this.node.addChild(NodeName.NAME, messageTag.getMessage()).setAttribute(AttributeName.NAME_ID, messageTag.name());
 		return this.node;
 	}
 
@@ -129,9 +126,9 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 	 */
 	public XmlNode create(final XmlNode parentNode, final MessageTag messageTag, final String parameters) {
 
-		this.node = parentNode.addChild(CONSTRAINT);
+		this.node = parentNode.addChild(NodeName.CONSTRAINT);
 		final String message = String.format(messageTag.getMessage(), parameters);
-		this.node.addChild(NAME, message).setAttribute(NAME_ID, messageTag.name());
+		this.node.addChild(NodeName.NAME, message).setAttribute(AttributeName.NAME_ID, messageTag.name());
 		return this.node;
 	}
 
@@ -202,13 +199,13 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 
 		if (ignore()) {
 
-			node.addChild(STATUS, IGNORED);
+			node.addChild(NodeName.STATUS, NodeValue.IGNORED);
 			return true;
 		}
 		if (inform()) {
 
-			node.addChild(STATUS, INFORMATION);
-			node.addChild(INFO, null, messageAttributes).setAttribute(EXPECTED_VALUE, expectedValue).setAttribute(CONSTRAINT_VALUE, value);
+			node.addChild(NodeName.STATUS, NodeValue.INFORMATION);
+			node.addChild(NodeName.INFO, null, messageAttributes).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 			return true;
 		}
 		boolean error = value.isEmpty();
@@ -223,17 +220,17 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 
 			if (warn()) {
 
-				node.addChild(STATUS, WARN);
-				final XmlNode xmlNode = node.addChild(WARNING, failureMessageTag, messageAttributes);
+				node.addChild(NodeName.STATUS, NodeValue.WARN);
+				final XmlNode xmlNode = node.addChild(NodeName.WARNING, failureMessageTag, messageAttributes);
 				if (DSSUtils.isNotBlank(expectedValue) && !expectedValue.equals("true") && !expectedValue.equals("false")) {
-					xmlNode.setAttribute(EXPECTED_VALUE, expectedValue).setAttribute(CONSTRAINT_VALUE, value);
+					xmlNode.setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 				}
 				conclusion.addWarning(failureMessageTag, messageAttributes);
 				return true;
 			}
-			node.addChild(STATUS, KO);
+			node.addChild(NodeName.STATUS, NodeValue.KO);
 			if (DSSUtils.isNotBlank(expectedValue) && !expectedValue.equals("true") && !expectedValue.equals("false")) {
-				node.addChild(INFO).setAttribute(EXPECTED_VALUE, expectedValue).setAttribute(CONSTRAINT_VALUE, value);
+				node.addChild(NodeName.INFO).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 			}
 			if (DSSUtils.isNotBlank(indication)) {
 
@@ -242,9 +239,9 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 			conclusion.addError(failureMessageTag, messageAttributes);
 			return false;
 		}
-		node.addChild(STATUS, OK);
+		node.addChild(NodeName.STATUS, NodeValue.OK);
 		if (!messageAttributes.isEmpty()) {
-			node.addChild(INFO, null, messageAttributes);
+			node.addChild(NodeName.INFO, null, messageAttributes);
 		}
 		return true;
 	}
@@ -258,13 +255,13 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 
 		if (ignore()) {
 
-			node.addChild(STATUS, IGNORED);
+			node.addChild(NodeName.STATUS, NodeValue.IGNORED);
 			return true;
 		}
 		if (inform()) {
 
-			node.addChild(STATUS, INFORMATION);
-			node.addChild(INFO, null, messageAttributes).setAttribute("ExpectedValue", expectedValue).setAttribute("ConstraintValue", value);
+			node.addChild(NodeName.STATUS, NodeValue.INFORMATION);
+			node.addChild(NodeName.INFO, null, messageAttributes).setAttribute("ExpectedValue", expectedValue).setAttribute("ConstraintValue", value);
 			return true;
 		}
 		final boolean contains;
@@ -280,19 +277,19 @@ public class Constraint implements NodeName, NodeValue, AttributeName, Attribute
 
 			if (warn()) {
 
-				node.addChild(STATUS, WARN);
-				node.addChild(WARNING, failureMessageTag, messageAttributes).setAttribute(EXPECTED_VALUE, expectedValue).setAttribute(CONSTRAINT_VALUE, value);
+				node.addChild(NodeName.STATUS, NodeValue.WARN);
+				node.addChild(NodeName.WARNING, failureMessageTag, messageAttributes).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 				conclusion.addWarning(failureMessageTag, messageAttributes);
 				return true;
 			}
-			node.addChild(STATUS, KO);
-			node.addChild(INFO).setAttribute(EXPECTED_VALUE, expectedValue).setAttribute(CONSTRAINT_VALUE, value);
+			node.addChild(NodeName.STATUS, NodeValue.KO);
+			node.addChild(NodeName.INFO).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 			conclusion.setIndication(indication, subIndication);
 			conclusion.addError(failureMessageTag, messageAttributes);
 			return false;
 		}
-		node.addChild(STATUS, OK);
-		node.addChild(INFO, null, messageAttributes);
+		node.addChild(NodeName.STATUS, NodeValue.OK);
+		node.addChild(NodeName.INFO, null, messageAttributes);
 		return true;
 	}
 

@@ -66,7 +66,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  *
  *
  */
-public class AdESTValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
+public class AdESTValidation implements Indication, SubIndication, NodeValue, AttributeName, AttributeValue, ValidationXPathQueryHolder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AdESTValidation.class);
 
@@ -152,10 +152,10 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	private void isInitialised(final XmlNode mainNode, final ProcessParameters params) {
 
 		if (diagnosticData == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
 		}
 		if (params.getValidationPolicy() == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 		if (currentTime == null) {
 
@@ -208,7 +208,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		LOG.debug(this.getClass().getSimpleName() + ": start.");
 
 		// This script is a validation process for AdES-T signatures.
-		XmlNode adestValidationData = mainNode.addChild(ADEST_VALIDATION_DATA);
+		XmlNode adestValidationData = mainNode.addChild(NodeName.ADEST_VALIDATION_DATA);
 
 		/**
 		 * 1) Initialise the set of signature time-stamp tokens from the signature time-stamp properties/attributes
@@ -231,7 +231,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 				params.setCurrentValidationPolicy(params.getValidationPolicy());
 			}
 			constraintData = params.getCurrentValidationPolicy();
-			signatureXmlNode = adestValidationData.addChild(SIGNATURE);
+			signatureXmlNode = adestValidationData.addChild(NodeName.SIGNATURE);
 			signatureXmlNode.setAttribute(ID, signatureId);
 
 			// current time
@@ -258,7 +258,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 		final Conclusion signatureConclusion = new Conclusion();
 
-		bvpConclusion = basicValidationData.getElement("/" + BASIC_VALIDATION_DATA + "/Signature[@Id='%s']/Conclusion", signatureId);
+		bvpConclusion = basicValidationData.getElement("/" + NodeName.BASIC_VALIDATION_DATA + "/Signature[@Id='%s']/Conclusion", signatureId);
 		bvpIndication = bvpConclusion.getValue("./Indication/text()");
 		bvpSubIndication = bvpConclusion.getValue("./SubIndication/text()");
 
@@ -298,7 +298,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 				noContentTimestampCount++;
 			}
 
-			timestampXmlNode = signatureXmlNode.addChild(TIMESTAMP);
+			timestampXmlNode = signatureXmlNode.addChild(NodeName.TIMESTAMP);
 			timestampXmlNode.setAttribute(ID, timestampId);
 			timestampXmlNode.setAttribute(TYPE, timestampTypeString);
 			timestampXmlNode.setAttribute(GENERATION_TIME, DSSUtils.formatDate(productionTime));
@@ -441,21 +441,21 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 
 			if (productionTime.before(bestSignatureTime)) {
 
-				constraintNode.addChild(STATUS, OK);
+				constraintNode.addChild(NodeName.STATUS, OK);
 
 				bestSignatureTime = productionTime;
-				constraintNode.addChild(INFO, MessageTag.ADEST_ITVPC_INFO_1);
+				constraintNode.addChild(NodeName.INFO, MessageTag.ADEST_ITVPC_INFO_1);
 				rightTimestamps.add(timestampId);
 				return true;
 			} else {
 
-				constraintNode.addChild(STATUS, KO);
-				constraintNode.addChild(WARNING, MessageTag.ADEST_ITVPC_ANS_1);
+				constraintNode.addChild(NodeName.STATUS, KO);
+				constraintNode.addChild(NodeName.WARNING, MessageTag.ADEST_ITVPC_ANS_1);
 			}
 			return found;
 		}
-		constraintNode.addChild(STATUS, KO);
-		constraintNode.addChild(ERROR, MessageTag.ADEST_ITVPC_ANS_2);
+		constraintNode.addChild(NodeName.STATUS, KO);
+		constraintNode.addChild(NodeName.ERROR, MessageTag.ADEST_ITVPC_ANS_2);
 		// TODO: (Bob: 2014 Mar 15) the information from the timestamp validation process should be copied.
 		return found;
 	}
@@ -475,11 +475,11 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 		final XmlNode constraintNode = addConstraint(timestampXmlNode, MessageTag.ADEST_ITVPC);
 
 		if (VALID.equals(tsvpIndication)) {
-			constraintNode.addChild(STATUS, OK);
-			constraintNode.addChild(INFO, MessageTag.ADEST_ITVPC_INFO_1);
+			constraintNode.addChild(NodeName.STATUS, OK);
+			constraintNode.addChild(NodeName.INFO, MessageTag.ADEST_ITVPC_INFO_1);
 		} else {
-			constraintNode.addChild(STATUS, KO);
-			constraintNode.addChild(ERROR, MessageTag.ADEST_ITVPC_ANS_2);
+			constraintNode.addChild(NodeName.STATUS, KO);
+			constraintNode.addChild(NodeName.ERROR, MessageTag.ADEST_ITVPC_ANS_2);
 		}
 	}
 
@@ -508,8 +508,8 @@ public class AdESTValidation implements Indication, SubIndication, NodeName, Nod
 	 */
 	private XmlNode addConstraint(final XmlNode parent, final MessageTag messageTag) {
 
-		XmlNode constraintNode = parent.addChild(CONSTRAINT);
-		constraintNode.addChild(NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
+		XmlNode constraintNode = parent.addChild(NodeName.CONSTRAINT);
+		constraintNode.addChild(NodeName.NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
 		return constraintNode;
 	}
 

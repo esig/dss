@@ -31,7 +31,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
  * This class allows to retrieve the appropriated TSP service (current or historical) for the given certificate and the given date time.
  *
  */
-public class InvolvedServiceInfo implements TSLConstant {
+public class InvolvedServiceInfo {
 
 	/**
 	 * This method returns the TSPName.
@@ -125,37 +125,37 @@ public class InvolvedServiceInfo implements TSLConstant {
 
 	public static boolean isQC_NO_SSCD(final List<String> qualifiers) {
 
-		final boolean is = qualifiers.contains(QC_NO_SSCD) || qualifiers.contains(QC_NO_SSCD_119612);
+		final boolean is = qualifiers.contains(TSLConstant.QC_NO_SSCD) || qualifiers.contains(TSLConstant.QC_NO_SSCD_119612);
 		return is;
 	}
 
 	public static boolean isQC_FOR_LEGAL_PERSON(final List<String> qualifiers) {
 
-		final boolean is = qualifiers.contains(QC_FOR_LEGAL_PERSON) || qualifiers.contains(QC_FOR_LEGAL_PERSON_119612);
+		final boolean is = qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON) || qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON_119612);
 		return is;
 	}
 
 	public static boolean isQCSSCD_STATUS_AS_IN_CERT(final List<String> qualifiers) {
 
-		final boolean is = qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT) || qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT_119612);
+		final boolean is = qualifiers.contains(TSLConstant.QCSSCD_STATUS_AS_IN_CERT) || qualifiers.contains(TSLConstant.QCSSCD_STATUS_AS_IN_CERT_119612);
 		return is;
 	}
 
 	public static boolean isSERVICE_STATUS_UNDERSUPERVISION(final String status) {
 
-		final boolean is = SERVICE_STATUS_UNDERSUPERVISION.equals(status) || SERVICE_STATUS_UNDERSUPERVISION_119612.equals(status);
+		final boolean is = TSLConstant.SERVICE_STATUS_UNDERSUPERVISION.equals(status) || TSLConstant.SERVICE_STATUS_UNDERSUPERVISION_119612.equals(status);
 		return is;
 	}
 
 	public static boolean isSERVICE_STATUS_SUPERVISIONINCESSATION(final String status) {
 
-		final boolean is = SERVICE_STATUS_SUPERVISIONINCESSATION.equals(status) || SERVICE_STATUS_SUPERVISIONINCESSATION_119612.equals(status);
+		final boolean is = TSLConstant.SERVICE_STATUS_SUPERVISIONINCESSATION.equals(status) || TSLConstant.SERVICE_STATUS_SUPERVISIONINCESSATION_119612.equals(status);
 		return is;
 	}
 
 	public static boolean isSERVICE_STATUS_ACCREDITED(final String status) {
 
-		final boolean is = SERVICE_STATUS_ACCREDITED.equals(status) || SERVICE_STATUS_ACCREDITED_119612.equals(status);
+		final boolean is = TSLConstant.SERVICE_STATUS_ACCREDITED.equals(status) || TSLConstant.SERVICE_STATUS_ACCREDITED_119612.equals(status);
 		return is;
 	}
 }

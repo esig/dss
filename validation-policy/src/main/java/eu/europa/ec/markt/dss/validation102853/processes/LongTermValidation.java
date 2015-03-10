@@ -78,7 +78,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
  *
  *
  */
-public class LongTermValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
+public class LongTermValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ValidationXPathQueryHolder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LongTermValidation.class);
 
@@ -112,10 +112,10 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 	private void isInitialised(final XmlNode mainNode) {
 
 		if (diagnosticData == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
 		}
 		if (params.getValidationPolicy() == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 		if (adestValidationData == null) {
 

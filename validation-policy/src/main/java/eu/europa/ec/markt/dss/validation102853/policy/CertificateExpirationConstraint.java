@@ -27,6 +27,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 
 /**
  * This class represents a signing certificate validity constraints. The validation is composed of:
@@ -110,13 +113,13 @@ public class CertificateExpirationConstraint extends Constraint {
 
 		if (ignore()) {
 
-			node.addChild(STATUS, IGNORED);
+			node.addChild(NodeName.STATUS, NodeValue.IGNORED);
 			return true;
 		}
 		if (inform()) {
 
-			node.addChild(STATUS, INFORMATION);
-			node.addChild(INFO, null, messageAttributes).setAttribute("ExpectedValue", expectedValue).setAttribute("ConstraintValue", value);
+			node.addChild(NodeName.STATUS, NodeValue.INFORMATION);
+			node.addChild(NodeName.INFO, null, messageAttributes).setAttribute("ExpectedValue", expectedValue).setAttribute("ConstraintValue", value);
 			return true;
 		}
 		final boolean certValidity = (currentTime.compareTo(notBefore) >= 0) && (currentTime.compareTo(notAfter) <= 0);
@@ -126,29 +129,29 @@ public class CertificateExpirationConstraint extends Constraint {
 			final String formatedNotAfter = DSSUtils.formatDate(notAfter);
 			if (warn()) {
 
-				node.addChild(STATUS, WARN);
-				node.addChild(WARNING, failureMessageTag, messageAttributes);
+				node.addChild(NodeName.STATUS, NodeValue.WARN);
+				node.addChild(NodeName.WARNING, failureMessageTag, messageAttributes);
 				final Conclusion.Warning warning = conclusion.addWarning(failureMessageTag, messageAttributes);
-				warning.setAttribute(NOT_BEFORE, formatedNotBefore);
-				warning.setAttribute(NOT_AFTER, formatedNotAfter);
+				warning.setAttribute(AttributeValue.NOT_BEFORE, formatedNotBefore);
+				warning.setAttribute(AttributeValue.NOT_AFTER, formatedNotAfter);
 				return true;
 			}
-			node.addChild(STATUS, KO);
-			node.addChild(ERROR, failureMessageTag, messageAttributes);
+			node.addChild(NodeName.STATUS, NodeValue.KO);
+			node.addChild(NodeName.ERROR, failureMessageTag, messageAttributes);
 			conclusion.setIndication(indication, subIndication);
 			final Conclusion.Error error = conclusion.addError(failureMessageTag, messageAttributes);
-			error.setAttribute(NOT_BEFORE, formatedNotBefore);
-			error.setAttribute(NOT_AFTER, formatedNotAfter);
+			error.setAttribute(AttributeValue.NOT_BEFORE, formatedNotBefore);
+			error.setAttribute(AttributeValue.NOT_AFTER, formatedNotAfter);
 			return false;
 		}
-		node.addChild(STATUS, OK);
+		node.addChild(NodeName.STATUS, NodeValue.OK);
 		if (messageAttributes.size() > 0) {
-			node.addChild(INFO, null, messageAttributes);
+			node.addChild(NodeName.INFO, null, messageAttributes);
 		}
 		if (expiredCertsRevocationInfo != null) {
 
 			final String formatedExpiredCertsRevocationInfo = DSSUtils.formatDate(expiredCertsRevocationInfo);
-			node.addChild(INFO).setAttribute(EXPIRED_CERTS_REVOCATION_INFO, formatedExpiredCertsRevocationInfo);
+			node.addChild(NodeName.INFO).setAttribute(AttributeValue.EXPIRED_CERTS_REVOCATION_INFO, formatedExpiredCertsRevocationInfo);
 		}
 		return true;
 	}

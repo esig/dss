@@ -31,7 +31,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 /**
  * This class stores the references to data exchanged and manipulated by different sub validation processes.
  */
-public class ProcessParameters implements ExceptionMessage {
+public class ProcessParameters {
 
 	/**
 	 * This variable contains the diagnostic data which is used to carry out all validation processes. It is extracted
@@ -335,7 +335,7 @@ public class ProcessParameters implements ExceptionMessage {
 	public void setCurrentTime(final Date currentTime) {
 		if (this.currentTime != null) {
 
-			throw new DSSException(EXCEPTION_CTVSBIOO);
+			throw new DSSException(ExceptionMessage.EXCEPTION_CTVSBIOO);
 		}
 		this.currentTime = currentTime;
 	}

@@ -23,10 +23,6 @@ package eu.europa.ec.markt.dss.validation102853.processes.dss;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
-import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
-import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.RuleConstant;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
@@ -38,7 +34,7 @@ import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
  *
  *
  */
-public class QualifiedCertificate implements NodeName, NodeValue, AttributeName, AttributeValue, RuleConstant {
+public class QualifiedCertificate {
 
 	private ValidationPolicy constraintData;
 
@@ -105,7 +101,7 @@ public class QualifiedCertificate implements NodeName, NodeValue, AttributeName,
 		 */
 
 		final List<String> qualifiers = InvolvedServiceInfo.getQualifiers(certificate);
-		final boolean isSIE = qualifiers.contains(QC_STATEMENT) || qualifiers.contains(QC_STATEMENT_119612);
+		final boolean isSIE = qualifiers.contains(RuleConstant.QC_STATEMENT) || qualifiers.contains(RuleConstant.QC_STATEMENT_119612);
 
 		/**
 		 * or • Static configuration that provides such information in a trusted manner.

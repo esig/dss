@@ -20,13 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.process;
 
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
-import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
-import eu.europa.ec.markt.dss.validation102853.rules.Indication;
-import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
-import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
-import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
 
 /**
  * 9.2.3 POE extraction<br>
@@ -145,6 +138,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
  *
  *
  */
-public abstract class POEExtraction implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage {
+public abstract class POEExtraction {
 
 }

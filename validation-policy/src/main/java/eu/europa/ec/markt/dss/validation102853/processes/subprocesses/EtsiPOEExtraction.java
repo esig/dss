@@ -31,6 +31,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.process.POEExtraction;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
+import eu.europa.ec.markt.dss.validation102853.rules.ExceptionMessage;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 /**
@@ -185,22 +189,22 @@ public class EtsiPOEExtraction extends POEExtraction {
 
 		final Date date = timestamp.getTimeValue("./ProductionTime/text()");
 		if (date == null) {
-			throw new DSSException(EXCEPTION_TPTCBN);
+			throw new DSSException(ExceptionMessage.EXCEPTION_TPTCBN);
 		}
 		LOG.debug("Extraction of POE from the timestamp at: " + date);
 		final List<XmlDom> nodes = timestamp.getElements("./SignedObjects/*");
 		for (final XmlDom xmlDom : nodes) {
 
 			final String nodeName = xmlDom.getName();
-			if (SIGNED_SIGNATURE.equals(nodeName)) {
+			if (NodeName.SIGNED_SIGNATURE.equals(nodeName)) {
 
-				final String signatureId = xmlDom.getAttribute(ID);
+				final String signatureId = xmlDom.getAttribute(AttributeName.ID);
 				addSignaturePoe(signatureId, date);
 				continue;
 			}
-			final String category = xmlDom.getAttribute(CATEGORY);
+			final String category = xmlDom.getAttribute(AttributeName.CATEGORY);
 			final String digestValue = xmlDom.getValue("./DigestValue/text()");
-			if (CERTIFICATE.toUpperCase().equals(category)) {
+			if (AttributeValue.CERTIFICATE.toUpperCase().equals(category)) {
 
 				try {
 

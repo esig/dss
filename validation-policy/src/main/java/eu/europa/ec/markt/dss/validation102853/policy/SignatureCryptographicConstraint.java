@@ -31,7 +31,11 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSNotApplicableMethodException;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeName;
+import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
+import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 
 /**
  * This class represents a signature cryptographic constraints and indicates their level: IGNORE, INFORM, WARN, FAIL.
@@ -206,15 +210,15 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 		if (ignore()) {
 
-			node.addChild(STATUS, IGNORED);
+			node.addChild(NodeName.STATUS, NodeValue.IGNORED);
 			return true;
 		}
 		if (inform()) {
 
-			node.addChild(STATUS, INFORMATION);
-			node.addChild(INFO).setAttribute(ENCRYPTION_ALGORITHM, encryptionAlgorithm);
-			node.addChild(INFO).setAttribute(DIGEST_ALGORITHM, digestAlgorithm);
-			node.addChild(INFO).setAttribute(PUBLIC_KEY_SIZE, keyLength);
+			node.addChild(NodeName.STATUS, NodeValue.INFORMATION);
+			node.addChild(NodeName.INFO).setAttribute(AttributeValue.ENCRYPTION_ALGORITHM, encryptionAlgorithm);
+			node.addChild(NodeName.INFO).setAttribute(AttributeValue.DIGEST_ALGORITHM, digestAlgorithm);
+			node.addChild(NodeName.INFO).setAttribute(AttributeValue.PUBLIC_KEY_SIZE, keyLength);
 			return true;
 		}
 		// Encryption algorithm verification:
@@ -289,7 +293,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 				}
 			}
 		}
-		node.addChild(STATUS, OK);
+		node.addChild(NodeName.STATUS, NodeValue.OK);
 		return true;
 	}
 
@@ -297,11 +301,11 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 4 : 3];
-		pairs[0] = new Pair(ALGORITHM, algorithm);
-		pairs[1] = new Pair(CONTEXT, context);
-		pairs[2] = new Pair(ALGORITHM_EXPIRATION_DATE, algorithmExpirationDate == null ? "?" : DSSUtils.formatDate(algorithmExpirationDate));
+		pairs[0] = new Pair(AttributeValue.ALGORITHM, algorithm);
+		pairs[1] = new Pair(AttributeName.CONTEXT, context);
+		pairs[2] = new Pair(AttributeValue.ALGORITHM_EXPIRATION_DATE, algorithmExpirationDate == null ? "?" : DSSUtils.formatDate(algorithmExpirationDate));
 		if (subContextPresent) {
-			pairs[3] = new Pair(SUB_CONTEXT, subContext);
+			pairs[3] = new Pair(AttributeName.SUB_CONTEXT, subContext);
 		}
 		return pairs;
 	}
@@ -310,10 +314,10 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 3 : 2];
-		pairs[0] = new Pair(ALGORITHM, algorithm);
-		pairs[1] = new Pair(CONTEXT, context);
+		pairs[0] = new Pair(AttributeValue.ALGORITHM, algorithm);
+		pairs[1] = new Pair(AttributeName.CONTEXT, context);
 		if (subContextPresent) {
-			pairs[2] = new Pair(SUB_CONTEXT, subContext);
+			pairs[2] = new Pair(AttributeName.SUB_CONTEXT, subContext);
 		}
 		return pairs;
 	}
@@ -322,12 +326,12 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 5 : 4];
-		pairs[0] = new Pair(ENCRYPTION_ALGORITHM, encryptionAlgorithm);
-		pairs[1] = new Pair(PUBLIC_KEY_SIZE, keyLength);
-		pairs[2] = new Pair(MINIMUM_PUBLIC_KEY_SIZE, minimumPublicKeySize);
-		pairs[3] = new Pair(CONTEXT, context);
+		pairs[0] = new Pair(AttributeValue.ENCRYPTION_ALGORITHM, encryptionAlgorithm);
+		pairs[1] = new Pair(AttributeValue.PUBLIC_KEY_SIZE, keyLength);
+		pairs[2] = new Pair(AttributeValue.MINIMUM_PUBLIC_KEY_SIZE, minimumPublicKeySize);
+		pairs[3] = new Pair(AttributeName.CONTEXT, context);
 		if (subContextPresent) {
-			pairs[4] = new Pair(SUB_CONTEXT, subContext);
+			pairs[4] = new Pair(AttributeName.SUB_CONTEXT, subContext);
 		}
 		return pairs;
 	}
@@ -336,10 +340,10 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 3 : 2];
-		pairs[0] = new Pair(DIGEST_ALGORITHM, digestAlgorithm);
-		pairs[1] = new Pair(CONTEXT, context);
+		pairs[0] = new Pair(AttributeValue.DIGEST_ALGORITHM, digestAlgorithm);
+		pairs[1] = new Pair(AttributeName.CONTEXT, context);
 		if (subContextPresent) {
-			pairs[2] = new Pair(SUB_CONTEXT, subContext);
+			pairs[2] = new Pair(AttributeName.SUB_CONTEXT, subContext);
 		}
 		return pairs;
 	}
@@ -348,10 +352,10 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 3 : 2];
-		pairs[0] = new Pair(ENCRYPTION_ALGORITHM, encryptionAlgorithm);
-		pairs[1] = new Pair(CONTEXT, context);
+		pairs[0] = new Pair(AttributeValue.ENCRYPTION_ALGORITHM, encryptionAlgorithm);
+		pairs[1] = new Pair(AttributeName.CONTEXT, context);
 		if (subContextPresent) {
-			pairs[2] = new Pair(SUB_CONTEXT, subContext);
+			pairs[2] = new Pair(AttributeName.SUB_CONTEXT, subContext);
 		}
 		return pairs;
 	}
@@ -371,7 +375,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 	private void addError(final MessageTag messageTag, final Pair[] pairs) {
 
-		node.addChild(STATUS, KO);
+		node.addChild(NodeName.STATUS, NodeValue.KO);
 		conclusion.setIndication(indication, subIndication);
 		final Conclusion.Error error = conclusion.addError(messageTag);
 		for (final Pair pair : pairs) {
@@ -382,7 +386,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 	private void addWarning(final MessageTag messageTag, final Pair[] pairs) {
 
-		node.addChild(STATUS, WARN);
+		node.addChild(NodeName.STATUS, NodeValue.WARN);
 		final Conclusion.Warning warning = conclusion.addWarning(messageTag);
 		for (final Pair pair : pairs) {
 
