@@ -26,6 +26,7 @@
 		<module>dss-tsl-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-cookbook</module>
+		<module>validation-policy</module>
 	</modules>
 
 	<developers>

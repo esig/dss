@@ -104,6 +104,11 @@
 			<artifactId>dss-service</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>validation-policy</artifactId>
+			<version>4.5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 		</dependency>

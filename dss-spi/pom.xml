@@ -52,20 +52,4 @@
 		</dependency>
 	</dependencies>
 
-	<profiles>
-		<profile>
-			<id>jdk7-64-windows</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>oracle</groupId>
-					<artifactId>pkcs11</artifactId>
-					<version>1.7.0.40</version>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
-
 </project>

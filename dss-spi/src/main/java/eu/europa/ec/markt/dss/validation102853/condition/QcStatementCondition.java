@@ -31,7 +31,6 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
  *
  *
  */
-
 public class QcStatementCondition extends Condition {
 
 	private static final long serialVersionUID = -5504958938057542907L;
@@ -78,8 +77,8 @@ public class QcStatementCondition extends Condition {
 			indent = "";
 		}
 		return indent + "QcStatementCondition{" +
-			  "qcStatementId='" + qcStatementId + '\'' +
-			  '}';
+		"qcStatementId='" + qcStatementId + '\'' +
+		'}';
 	}
 
 	@Override
