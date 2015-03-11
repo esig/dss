@@ -60,9 +60,11 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.signature.cades.CAdESService;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
+import eu.europa.ec.markt.dss.signature.xades.XAdESService;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
@@ -88,6 +90,8 @@ public class ASiCService extends AbstractSignatureService {
 	private final static String ASICS_EXTENSION = ".asics"; // can be ".scs"
 	private final static String ASICE_EXTENSION = ".asice"; // can be ".sce"
 	public final static String ASICS_NS = "asic:XAdESSignatures";
+	
+	private DocumentSignatureService underlyingASiCService;
 
 	/**
 	 * This is the constructor to create an instance of the {@code ASiCService}. A certificate verifier must be provided.
@@ -732,10 +736,17 @@ public class ASiCService extends AbstractSignatureService {
 	 * @return
 	 */
 	protected DocumentSignatureService getSpecificService(final SignatureParameters specificParameters) {
-
-		final SignatureForm asicSignatureForm = specificParameters.aSiC().getUnderlyingForm();
-		final DocumentSignatureService underlyingASiCService = specificParameters.getContext().getUnderlyingASiCService(certificateVerifier, asicSignatureForm);
-		underlyingASiCService.setTspSource(tspSource);
+		if (underlyingASiCService == null){
+			final SignatureForm asicSignatureForm = specificParameters.aSiC().getUnderlyingForm();
+			if (asicSignatureForm == SignatureForm.XAdES) {
+				underlyingASiCService = new XAdESService(certificateVerifier);
+			} else if (asicSignatureForm == SignatureForm.CAdES) {
+				underlyingASiCService = new CAdESService(certificateVerifier);
+			} else {
+				throw new DSSException("Unsupported parameter value: only XAdES and CAdES forms are acceptable!");
+			}
+			underlyingASiCService.setTspSource(tspSource);
+		}
 		return underlyingASiCService;
 	}
 }
