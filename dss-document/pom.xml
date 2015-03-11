@@ -32,61 +32,6 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- Default test configuration -->
-					<skipTests>true</skipTests>
-					<systemProperties>
-						<java.util.logging.config.file>../logging.properties</java.util.logging.config.file>
-					</systemProperties>
-				</configuration>
-				<executions>
-					<execution>
-						<id>non-regression</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skipTests>false</skipTests>
-							<testFailureIgnore>false</testFailureIgnore>		
-							<includes>
-								<include>eu/**/*Test.java</include>	
-							</includes>
-						</configuration>
-					</execution>
-					<execution>
-						<id>plugtests</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skipTests>false</skipTests>
-							<testFailureIgnore>true</testFailureIgnore>		
-							<includes>
-								<include>plugtests/**/*Test.java</include>	
-							</includes>
-						</configuration>
-					</execution>
-					<execution>
-						<id>known-issues</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skipTests>false</skipTests>
-							<testFailureIgnore>true</testFailureIgnore>						
-							<includes>
-								<include>known/issues/**/*Test.java</include>	
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
