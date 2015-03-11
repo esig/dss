@@ -78,6 +78,10 @@
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-webservices-client</artifactId>
         </dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-asic</artifactId>
+		</dependency>
         <dependency>
             <groupId>be.fedict.eid-applet</groupId>
             <artifactId>eid-applet-service</artifactId>

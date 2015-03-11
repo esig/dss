@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import eu.europa.ec.markt.dss.ASiCNamespaces;
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
@@ -126,30 +127,35 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	private boolean xadesSigned = false;
 	private boolean timestamped = false;
 
+	/**
+	 * Default constructor used with reflexion (see SignedDocumentValidator)
+	 */
+	private ASiCContainerValidator() {
+		super(null);
+		this.asicContainer = null;
+	}
+	
 	public ASiCContainerValidator(final DSSDocument asicContainer) {
 		super(null);
 		this.asicContainer = asicContainer;
-	}
-
-	/**
-	 * This method creates a dedicated {@code SignedDocumentValidator} based on the given container type: XAdES or CAdES.
-	 *
-	 * @param asicContainer The instance of {@code DSSDocument} to validate
-	 * @return {@code SignedDocumentValidator}
-	 * @throws DSSException
-	 */
-	public static SignedDocumentValidator getInstanceForAsics(final DSSDocument asicContainer) throws DSSException {
-
-
-		final ASiCContainerValidator asicContainerValidator = new ASiCContainerValidator(asicContainer);
-		asicContainerValidator.analyseEntries();
+		analyseEntries();
 
 		// ASiC-S:
 		// - throw new DSSException("ASiC-S profile support only one data file");
 		// - DSSNotETSICompliantException.MSG.MORE_THAN_ONE_SIGNATURE
 
-		asicContainerValidator.createSubordinatedContainerValidators();
-		return asicContainerValidator;
+		createSubordinatedContainerValidators();
+	}
+	
+	@Override
+	public boolean isSupported(DSSDocument dssDocument) {
+		int headerLength = 500;
+		byte[] preamble = new byte[headerLength];
+		DSSUtils.readToArray(dssDocument, headerLength, preamble);
+		if ((preamble[0] == 'P') && (preamble[1] == 'K')) {
+			return true;
+		}
+		return false;
 	}
 
 	private MimeType determinateAsicMimeType(final MimeType asicContainerMimetype, final MimeType asicEntryMimetype) {

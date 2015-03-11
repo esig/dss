@@ -23,6 +23,7 @@ package eu.europa.ec.markt.dss.validation102853;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -66,7 +68,6 @@ import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.signature.validation.ValidationContext;
 import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
-import eu.europa.ec.markt.dss.validation102853.asic.ASiCContainerValidator;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
 import eu.europa.ec.markt.dss.validation102853.bean.CertificateValidity;
 import eu.europa.ec.markt.dss.validation102853.bean.CertifiedRole;
@@ -168,7 +169,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected CertificateVerifier certificateVerifier;
 
-	private SignatureScopeFinder signatureScopeFinder;
+	private final SignatureScopeFinder signatureScopeFinder;
 
 	/**
 	 * This list contains the list of signatures
@@ -192,6 +193,31 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private File policyDocument;
 
 	private HashMap<String, File> policyDocuments;
+	
+	private static List<Class<SignedDocumentValidator>> registredDocumentValidators = new ArrayList<Class<SignedDocumentValidator>>();
+
+	static {
+		Properties properties = new Properties();
+		try {
+			properties.load(SignedDocumentValidator.class.getResourceAsStream("/document-validators.properties"));
+		} catch (IOException e) {
+			LOG.error("Cannot load properties from document-validators.properties : " + e.getMessage(), e);
+		}
+		for (String propName : properties.stringPropertyNames()) {
+			registerDocumentValidator(propName, properties.getProperty(propName));
+		}
+	}
+
+	private static void registerDocumentValidator(String type, String clazzToFind) {
+		try {
+			@SuppressWarnings("unchecked")
+			Class<SignedDocumentValidator> documentValidator = (Class<SignedDocumentValidator>) Class.forName(clazzToFind);
+			registredDocumentValidators.add(documentValidator);
+			LOG.info("Validator '" + documentValidator.getName() + "' is registred");
+		} catch (ClassNotFoundException e) {
+			LOG.warn("Validator not found for signature type " + type);
+		}
+	}
 
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
@@ -224,13 +250,28 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			// TODO (29/08/2014): DSS-356
 			return new PDFDocumentValidator(dssDocument);
-		} else if ((preamble[0] == 'P') && (preamble[1] == 'K')) {
-
-			return ASiCContainerValidator.getInstanceForAsics(dssDocument);
 		} else if (preambleString.getBytes()[0] == 0x30) {
-
 			return new CMSDocumentValidator(dssDocument);
 		} else {
+
+			// TODO PVA remove the previous code when everything is splitted
+			if (CollectionUtils.isEmpty(registredDocumentValidators)) {
+				throw new DSSException("No validator registred");
+			}
+
+			for (Class<SignedDocumentValidator> clazz : registredDocumentValidators) {
+				try {
+					Constructor<SignedDocumentValidator> defaultAndPrivateConstructor = clazz.getDeclaredConstructor();
+					defaultAndPrivateConstructor.setAccessible(true);
+					SignedDocumentValidator validator = defaultAndPrivateConstructor.newInstance();
+					if (validator.isSupported(dssDocument)) {
+						Constructor<? extends SignedDocumentValidator> constructor = clazz.getDeclaredConstructor(DSSDocument.class);
+						return constructor.newInstance(dssDocument);
+					}
+				} catch (Exception e) {
+					LOG.error("Cannot instanciate class '" + clazz.getName() + "' : " + e.getMessage(), e);
+				}
+			}
 			throw new DSSException("Document format not recognized/handled");
 		}
 	}
@@ -239,7 +280,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		byte[] startOfPramble = ArrayUtils.subarray(preamble, 0, xmlPreamble.length);
 		return Arrays.equals(startOfPramble, xmlPreamble) || Arrays.equals(startOfPramble, xmlUtf8);
 	}
-
+	
+	// TODO PVA change to abstract
+	public boolean isSupported(DSSDocument dssDocument){
+		return false;
+	}
 
 	@Override
 	public DSSDocument getDocument() {
