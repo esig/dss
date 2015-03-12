@@ -55,12 +55,12 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleS
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSPDFUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureImageParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.signature.DSSPDFUtils;
 import eu.europa.ec.markt.dss.signature.pades.visible.ImageFactory;
 import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
 import eu.europa.ec.markt.dss.signature.pdf.PdfDict;

@@ -112,7 +112,6 @@ import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTrustedService
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlUsedCertificates;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 import eu.europa.ec.markt.dss.validation102853.ocsp.ListOCSPSource;
-import eu.europa.ec.markt.dss.validation102853.pades.PDFDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
@@ -246,10 +245,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final String preambleString = new String(preamble);
 		if (isXmlPreamble(preamble)) {
 			return new XMLDocumentValidator(dssDocument);
-		} else if (preambleString.startsWith("%PDF-")) {
-
-			// TODO (29/08/2014): DSS-356
-			return new PDFDocumentValidator(dssDocument);
 		} else if (preambleString.getBytes()[0] == 0x30) {
 			return new CMSDocumentValidator(dssDocument);
 		} else {

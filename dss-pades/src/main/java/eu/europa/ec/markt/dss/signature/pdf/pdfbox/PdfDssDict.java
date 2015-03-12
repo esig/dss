@@ -33,8 +33,8 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSPDFUtils;
 import eu.europa.ec.markt.dss.DSSUtils;
+import eu.europa.ec.markt.dss.signature.DSSPDFUtils;
 import eu.europa.ec.markt.dss.signature.pdf.PdfArray;
 import eu.europa.ec.markt.dss.signature.pdf.PdfDict;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
