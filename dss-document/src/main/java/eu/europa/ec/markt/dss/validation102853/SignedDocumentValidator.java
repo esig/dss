@@ -27,7 +27,6 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -61,7 +59,6 @@ import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
@@ -117,7 +114,6 @@ import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScope;
-import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 
 
 /**
@@ -129,9 +125,6 @@ import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
-
-	private static final byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
-	private static final byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
 
 	/**
 	 * This variable can hold a specific {@code ProcessExecutor}
@@ -229,13 +222,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return returns the specific instance of SignedDocumentValidator in terms of the document type
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
-
-		final String dssDocumentName = dssDocument.getName();
-		if (( dssDocumentName != null ) && MimeType.XML.equals(MimeType.fromFileName(dssDocumentName))) {
-
-			return new XMLDocumentValidator(dssDocument);
-		}
-
 		int headerLength = 500;
 		byte[] preamble = new byte[headerLength];
 		int read = DSSUtils.readToArray(dssDocument, headerLength, preamble);
@@ -243,9 +229,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			throw new DSSException("The signature is not found.");
 		}
 		final String preambleString = new String(preamble);
-		if (isXmlPreamble(preamble)) {
-			return new XMLDocumentValidator(dssDocument);
-		} else if (preambleString.getBytes()[0] == 0x30) {
+		if (preambleString.getBytes()[0] == 0x30) {
 			return new CMSDocumentValidator(dssDocument);
 		} else {
 
@@ -269,11 +253,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			}
 			throw new DSSException("Document format not recognized/handled");
 		}
-	}
-
-	private static boolean isXmlPreamble(byte[] preamble) {
-		byte[] startOfPramble = ArrayUtils.subarray(preamble, 0, xmlPreamble.length);
-		return Arrays.equals(startOfPramble, xmlPreamble) || Arrays.equals(startOfPramble, xmlUtf8);
 	}
 	
 	// TODO PVA change to abstract

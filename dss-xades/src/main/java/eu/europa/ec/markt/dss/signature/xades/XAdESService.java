@@ -39,6 +39,7 @@ import eu.europa.ec.markt.dss.signature.ProfileParameters;
 import eu.europa.ec.markt.dss.signature.ProfileParameters.Operation;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.signature.SignatureProfile;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
@@ -91,13 +92,11 @@ public class XAdESService extends AbstractSignatureService {
 		}
 		assertSigningDateInCertificateValidityRange(parameters);
 		parameters.getContext().setOperationKind(Operation.SIGNING);
-		final XAdESLevelBaselineB profile;
+		SignatureProfile profile;
 		final ProfileParameters context = parameters.getContext();
 		if (context.getProfile() != null) {
-
 			profile = context.getProfile();
 		} else {
-
 			profile = new XAdESLevelBaselineB(certificateVerifier);
 		}
 		final DSSDocument signedDoc = profile.signDocument(toSignDocument, parameters, signatureValue);

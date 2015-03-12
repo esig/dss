@@ -29,6 +29,7 @@
 		<module>validation-policy</module>
 		<module>dss-asic</module>
 		<module>dss-pades</module>
+		<module>dss-xades</module>
 	</modules>
 
 	<developers>
@@ -334,6 +335,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-pades</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-xades</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

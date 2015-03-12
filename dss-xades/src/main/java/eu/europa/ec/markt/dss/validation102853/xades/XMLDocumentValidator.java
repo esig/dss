@@ -21,20 +21,24 @@
 package eu.europa.ec.markt.dss.validation102853.xades;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
+import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.scope.XAdESSignatureScopeFinder;
@@ -44,6 +48,9 @@ import eu.europa.ec.markt.dss.validation102853.scope.XAdESSignatureScopeFinder;
  *
  */
 public class XMLDocumentValidator extends SignedDocumentValidator {
+	
+	private static final byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
+	private static final byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -51,6 +58,13 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	protected List<XPathQueryHolder> xPathQueryHolders;
 
 	protected Document rootElement;
+	
+	/**
+	 * Default constructor used with reflexion (see SignedDocumentValidator)
+	 */
+	private XMLDocumentValidator() {
+		super(null);
+	}
 
 	/**
 	 * The default constructor for XMLDocumentValidator. The created instance is initialised with default {@code XPathQueryHolder} and {@code XAdES111XPathQueryHolder}.
@@ -74,6 +88,26 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 		final XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
 		xPathQueryHolders.add(xPathQueryHolder);
+	}
+
+	@Override
+	public boolean isSupported(DSSDocument dssDocument) {
+		final String dssDocumentName = dssDocument.getName();
+		if ((dssDocumentName != null) && MimeType.XML.equals(MimeType.fromFileName(dssDocumentName))) {
+			return true;
+		}
+		int headerLength = 500;
+		byte[] preamble = new byte[headerLength];
+		DSSUtils.readToArray(dssDocument, headerLength, preamble);
+		if (isXmlPreamble(preamble)) {
+			return true;
+		} 
+		return false;
+	}
+	
+	private  boolean isXmlPreamble(byte[] preamble) {
+		byte[] startOfPramble = ArrayUtils.subarray(preamble, 0, xmlPreamble.length);
+		return Arrays.equals(startOfPramble, xmlPreamble) || Arrays.equals(startOfPramble, xmlUtf8);
 	}
 
 	@Override

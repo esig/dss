@@ -46,10 +46,6 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-service</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>validation-policy</artifactId>
 			<version>4.5-SNAPSHOT</version>
 		</dependency>
@@ -73,10 +69,6 @@
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
 			<version>2.7.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>

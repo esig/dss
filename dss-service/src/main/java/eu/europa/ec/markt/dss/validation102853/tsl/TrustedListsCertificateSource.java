@@ -63,7 +63,6 @@ import eu.europa.ec.markt.dss.validation102853.https.CommonsDataLoader;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
-import eu.europa.ec.markt.dss.validation102853.rules.Indication;
 import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
@@ -280,7 +279,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			final List<String> signatureIdList = simpleReport.getSignatureIdList();
 			final String signatureId = signatureIdList.get(0);
 			final String indication = simpleReport.getIndication(signatureId);
-			coreValidity = Indication.VALID.equals(indication);
+			coreValidity = "VALID".equals(indication);
 			LOG.info("The TSL signature validity: " + coreValidity);
 			if (!coreValidity) {
 
@@ -372,7 +371,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 		final CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		for (final CertificateToken x509Certificate : signingCertList) {
-
+ 
 			commonTrustedCertificateSource.addCertificate(x509Certificate);
 		}
 		final CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);

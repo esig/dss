@@ -38,7 +38,6 @@ import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
@@ -47,7 +46,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
  * This class handles the specifics of the enveloping XML signature
  *
  */
-class EnvelopingSignatureBuilder extends SignatureBuilder {
+class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 
 	/**
 	 * The default constructor for EnvelopingSignatureBuilder. The enveloped signature uses by default the inclusive

@@ -30,7 +30,7 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.util.List;
 
-import org.apache.pdfbox.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

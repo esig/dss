@@ -22,9 +22,6 @@ package eu.europa.ec.markt.dss.signature;
 
 import java.io.Serializable;
 
-import eu.europa.ec.markt.dss.signature.xades.SignatureBuilder;
-import eu.europa.ec.markt.dss.signature.xades.XAdESLevelBaselineB;
-
 /**
  * This class This class manages the internal variables used in the process of creating of a signature and which allows to
  * accelerate the generation.<br>
@@ -32,15 +29,14 @@ import eu.europa.ec.markt.dss.signature.xades.XAdESLevelBaselineB;
  */
 public class ProfileParameters implements Serializable {
 
-	private XAdESLevelBaselineB profile;
+	private SignatureProfile profile;
 
 	/**
 	 * Returns the current Profile used to generate the signature or its extension
 	 *
 	 * @return
 	 */
-	public XAdESLevelBaselineB getProfile() {
-
+	public SignatureProfile getProfile() {
 		return profile;
 	}
 
@@ -49,8 +45,7 @@ public class ProfileParameters implements Serializable {
 	 *
 	 * @return
 	 */
-	public void setProfile(XAdESLevelBaselineB profile) {
-
+	public void setProfile(SignatureProfile profile) {
 		this.profile = profile;
 	}
 
@@ -60,12 +55,10 @@ public class ProfileParameters implements Serializable {
 	private SignatureBuilder builder;
 
 	public SignatureBuilder getBuilder() {
-
 		return builder;
 	}
 
 	public void setBuilder(SignatureBuilder builder) {
-
 		this.builder = builder;
 	}
 

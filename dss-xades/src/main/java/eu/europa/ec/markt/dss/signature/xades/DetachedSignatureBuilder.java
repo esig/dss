@@ -38,7 +38,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 /**
  * This class handles the specifics of the detached XML signature.
  */
-class DetachedSignatureBuilder extends SignatureBuilder {
+class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 
 	/**
 	 * The default constructor for DetachedSignatureBuilder.<br>

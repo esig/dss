@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.ec.markt.dss.signature;
+package eu.europa.ec.markt.dss.signature.xades;
 
 import java.io.IOException;
 
@@ -48,10 +48,10 @@ public final class DSSSignatureUtils {
 
 			if (algorithm == EncryptionAlgorithm.ECDSA) {
 
-				return DSSSignatureUtils.convertECDSAASN1toXMLDSIG(signatureValue);
+				return convertECDSAASN1toXMLDSIG(signatureValue);
 			} else if (algorithm == EncryptionAlgorithm.DSA) {
 
-				return DSSSignatureUtils.convertDSAASN1toXMLDSIG(signatureValue);
+				return convertDSAASN1toXMLDSIG(signatureValue);
 			}
 			return signatureValue;
 		} catch (IOException e) {

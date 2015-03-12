@@ -32,7 +32,7 @@ import java.security.Signature;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.pdfbox.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;

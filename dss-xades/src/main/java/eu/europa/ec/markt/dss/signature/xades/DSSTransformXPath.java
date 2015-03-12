@@ -49,10 +49,10 @@ class DSSTransformXPath {
 
 		this.dssTransform = dssTransform;
 		document = DSSXMLUtils.buildDOM();
-		final Element transformDom = document.createElementNS(XMLSignature.XMLNS, SignatureBuilder.DS_TRANSFORM);
+		final Element transformDom = document.createElementNS(XMLSignature.XMLNS, XAdESSignatureBuilder.DS_TRANSFORM);
 		document.appendChild(transformDom);
 
-		SignatureBuilder.createTransform(document, dssTransform, transformDom);
+		XAdESSignatureBuilder.createTransform(document, dssTransform, transformDom);
 	}
 
 	public byte[] transform(final DSSDocument input) throws DSSException {

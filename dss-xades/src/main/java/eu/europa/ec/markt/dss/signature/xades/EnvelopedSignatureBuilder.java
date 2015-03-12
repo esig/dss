@@ -49,7 +49,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
  * This class handles the specifics of the enveloped XML signature
  *
  */
-class EnvelopedSignatureBuilder extends SignatureBuilder {
+class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 
 	/**
 	 * The default constructor for EnvelopedSignatureBuilder. The enveloped signature uses by default the exclusive method of canonicalization.

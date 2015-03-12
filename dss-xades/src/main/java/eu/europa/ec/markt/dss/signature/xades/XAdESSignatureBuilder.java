@@ -50,9 +50,9 @@ import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.DSSSignatureUtils;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
+import eu.europa.ec.markt.dss.signature.SignatureBuilder;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -65,11 +65,11 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  * This class implements all the necessary mechanisms to build each form of the XML signature.
  *
  */
-public abstract class SignatureBuilder extends XAdESBuilder {
+public abstract class XAdESSignatureBuilder extends XAdESBuilder implements SignatureBuilder {
 
 	/**
 	 * Indicates if the signature was already built. (Two steps building)
-	 */
+	 */ 
 	protected boolean built = false;
 
 	/**
@@ -108,7 +108,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 * @param certificateVerifier
 	 * @return
 	 */
-	public static SignatureBuilder getSignatureBuilder(final SignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
+	public static XAdESSignatureBuilder getSignatureBuilder(final SignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
 
 		switch (params.getSignaturePackaging()) {
 			case ENVELOPED:
@@ -129,7 +129,7 @@ public abstract class SignatureBuilder extends XAdESBuilder {
 	 * @param detachedDocument    The original document to sign.
 	 * @param certificateVerifier
 	 */
-	public SignatureBuilder(final SignatureParameters params, final DSSDocument detachedDocument, final CertificateVerifier certificateVerifier) {
+	public XAdESSignatureBuilder(final SignatureParameters params, final DSSDocument detachedDocument, final CertificateVerifier certificateVerifier) {
 
 		super(certificateVerifier);
 		this.params = params;

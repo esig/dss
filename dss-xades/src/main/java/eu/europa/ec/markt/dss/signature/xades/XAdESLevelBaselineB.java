@@ -25,6 +25,8 @@ import org.apache.xml.security.Init;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
+import eu.europa.ec.markt.dss.signature.SignatureBuilder;
+import eu.europa.ec.markt.dss.signature.SignatureProfile;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 /**
@@ -32,8 +34,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
  *
  *
  */
-
-public class XAdESLevelBaselineB {
+public class XAdESLevelBaselineB implements SignatureProfile {
 
 	static {
 
@@ -47,7 +48,7 @@ public class XAdESLevelBaselineB {
 
 	/**
 	 * The default constructor for XAdESLevelBaselineB.
-	 *
+	 * 
 	 * @param certificateVerifier
 	 */
 	public XAdESLevelBaselineB(final CertificateVerifier certificateVerifier) {
@@ -63,8 +64,7 @@ public class XAdESLevelBaselineB {
 	 * @return bytes
 	 */
 	public byte[] getDataToSign(final DSSDocument dssDocument, final SignatureParameters parameters) throws DSSException {
-
-		final SignatureBuilder signatureBuilder = SignatureBuilder.getSignatureBuilder(parameters, dssDocument, certificateVerifier);
+		final XAdESSignatureBuilder signatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, dssDocument, certificateVerifier);
 		parameters.getContext().setBuilder(signatureBuilder);
 		final byte[] dataToSign = signatureBuilder.build();
 		return dataToSign;
@@ -80,14 +80,11 @@ public class XAdESLevelBaselineB {
 	 * @throws DSSException
 	 */
 	public DSSDocument signDocument(final DSSDocument document, final SignatureParameters parameters, final byte[] signatureValue) throws DSSException {
-
 		SignatureBuilder builder = parameters.getContext().getBuilder();
 		if (builder != null) {
-
 			builder = parameters.getContext().getBuilder();
 		} else {
-
-			builder = SignatureBuilder.getSignatureBuilder(parameters, document, certificateVerifier);
+			builder = XAdESSignatureBuilder.getSignatureBuilder(parameters, document, certificateVerifier);
 		}
 		final DSSDocument dssDocument = builder.signDocument(signatureValue);
 		parameters.getContext().setBuilder(builder);

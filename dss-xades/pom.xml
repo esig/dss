@@ -10,9 +10,9 @@
 		<version>4.5-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>dss-pades</artifactId>
-	<name>DSS PAdES</name>
-	<description>DSS PAdES contains the code for the creation and validation of PAdES signatures.</description>
+	<artifactId>dss-xades</artifactId>
+	<name>DSS XAdES</name>
+	<description>DSS XAdES contains the code for the creation and validation of XAdES signatures.</description>
 	
 	<dependencies>
         <dependency>
@@ -23,10 +23,6 @@
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-spi</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-		</dependency>
         
         
 		<dependency>
