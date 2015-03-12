@@ -44,7 +44,7 @@ import eu.europa.ec.markt.dss.validation102853.scope.CAdESSignatureScopeFinder;
 public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	protected CMSSignedData cmsSignedData;
-
+	
 	/**
 	 * This constructor is used with {@code TimeStampToken}.
 	 */
@@ -90,6 +90,18 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
+	public boolean isSupported(DSSDocument dssDocument) {
+		int headerLength = 500;
+		byte[] preamble = new byte[headerLength];
+		DSSUtils.readToArray(dssDocument, headerLength, preamble);
+		final String preambleString = new String(preamble);
+		if (preambleString.getBytes()[0] == 0x30) {
+			return true;
+		} 
+		return false;
+	}
+
+	@Override
 	public List<AdvancedSignature> getSignatures() {
 
 		if (signatures != null) {
@@ -114,5 +126,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	public DSSDocument removeSignature(final String signatureId) throws DSSException {
 		throw new DSSUnsupportedOperationException("This method is not applicable for this kind of signatures!");
 	}
+
 
 }

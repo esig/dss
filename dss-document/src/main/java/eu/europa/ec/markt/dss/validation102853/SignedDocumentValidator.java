@@ -71,7 +71,6 @@ import eu.europa.ec.markt.dss.validation102853.bean.CertifiedRole;
 import eu.europa.ec.markt.dss.validation102853.bean.CommitmentType;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureProductionPlace;
-import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 import eu.europa.ec.markt.dss.validation102853.condition.Condition;
 import eu.europa.ec.markt.dss.validation102853.condition.PolicyIdCondition;
@@ -222,43 +221,27 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return returns the specific instance of SignedDocumentValidator in terms of the document type
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
-		int headerLength = 500;
-		byte[] preamble = new byte[headerLength];
-		int read = DSSUtils.readToArray(dssDocument, headerLength, preamble);
-		if (read < 5) {
-			throw new DSSException("The signature is not found.");
+		if (CollectionUtils.isEmpty(registredDocumentValidators)) {
+			throw new DSSException("No validator registred");
 		}
-		final String preambleString = new String(preamble);
-		if (preambleString.getBytes()[0] == 0x30) {
-			return new CMSDocumentValidator(dssDocument);
-		} else {
 
-			// TODO PVA remove the previous code when everything is splitted
-			if (CollectionUtils.isEmpty(registredDocumentValidators)) {
-				throw new DSSException("No validator registred");
-			}
-
-			for (Class<SignedDocumentValidator> clazz : registredDocumentValidators) {
-				try {
-					Constructor<SignedDocumentValidator> defaultAndPrivateConstructor = clazz.getDeclaredConstructor();
-					defaultAndPrivateConstructor.setAccessible(true);
-					SignedDocumentValidator validator = defaultAndPrivateConstructor.newInstance();
-					if (validator.isSupported(dssDocument)) {
-						Constructor<? extends SignedDocumentValidator> constructor = clazz.getDeclaredConstructor(DSSDocument.class);
-						return constructor.newInstance(dssDocument);
-					}
-				} catch (Exception e) {
-					LOG.error("Cannot instanciate class '" + clazz.getName() + "' : " + e.getMessage(), e);
+		for (Class<SignedDocumentValidator> clazz : registredDocumentValidators) {
+			try {
+				Constructor<SignedDocumentValidator> defaultAndPrivateConstructor = clazz.getDeclaredConstructor();
+				defaultAndPrivateConstructor.setAccessible(true);
+				SignedDocumentValidator validator = defaultAndPrivateConstructor.newInstance();
+				if (validator.isSupported(dssDocument)) {
+					Constructor<? extends SignedDocumentValidator> constructor = clazz.getDeclaredConstructor(DSSDocument.class);
+					return constructor.newInstance(dssDocument);
 				}
+			} catch (Exception e) {
+				LOG.error("Cannot instanciate class '" + clazz.getName() + "' : " + e.getMessage(), e);
 			}
-			throw new DSSException("Document format not recognized/handled");
 		}
+		throw new DSSException("Document format not recognized/handled");
 	}
 	
-	// TODO PVA change to abstract
-	public boolean isSupported(DSSDocument dssDocument){
-		return false;
-	}
+	public abstract boolean isSupported(DSSDocument dssDocument);
 
 	@Override
 	public DSSDocument getDocument() {

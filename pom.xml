@@ -28,6 +28,7 @@
 		<module>dss-cookbook</module>
 		<module>validation-policy</module>
 		<module>dss-asic</module>
+		<module>dss-cades</module>
 		<module>dss-pades</module>
 		<module>dss-xades</module>
 	</modules>
@@ -330,6 +331,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-asic</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cades</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

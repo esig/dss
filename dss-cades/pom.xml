@@ -10,9 +10,9 @@
 		<version>4.5-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>dss-pades</artifactId>
-	<name>DSS PAdES</name>
-	<description>DSS PAdES contains the code for the creation and validation of PAdES signatures.</description>
+	<artifactId>dss-cades</artifactId>
+	<name>DSS CAdES</name>
+	<description>DSS CAdES contains the code for the creation and validation of CAdES signatures.</description>
 	
 	<dependencies>
         <dependency>
@@ -21,16 +21,8 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-cades</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-spi</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-		</dependency>
         
         
 		<dependency>
