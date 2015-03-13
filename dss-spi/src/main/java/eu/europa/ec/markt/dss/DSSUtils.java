@@ -709,22 +709,14 @@ public final class DSSUtils {
 	 *
 	 * @param base64Encoded base 64 encoded OCSP response
 	 * @return {@code BasicOCSPResp}
+	 * @throws IOException
+	 * @throws OCSPException
 	 */
-	public static BasicOCSPResp loadOCSPBase64Encoded(final String base64Encoded) {
-
+	public static BasicOCSPResp loadOCSPBase64Encoded(final String base64Encoded) throws IOException, OCSPException {
 		final byte[] derEncoded = Base64.decodeBase64(base64Encoded);
-		try {
-
-			final OCSPResp ocspResp = new OCSPResp(derEncoded);
-			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-			return basicOCSPResp;
-		} catch (OCSPException e) {
-
-			throw new DSSException(e);
-		} catch (IOException e) {
-
-			throw new DSSException(e);
-		}
+		final OCSPResp ocspResp = new OCSPResp(derEncoded);
+		final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
+		return basicOCSPResp;
 	}
 
 	public static List<String> getPolicyIdentifiers(final X509Certificate cert) {

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -39,39 +41,45 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OfflineOCSPSource;
 
 public class XAdESOCSPSource extends OfflineOCSPSource {
 
-    private final Element signatureElement;
+	private static Logger logger = LoggerFactory.getLogger(XAdESOCSPSource.class);
 
-    private final XPathQueryHolder xPathQueryHolder;
+	private final Element signatureElement;
 
-    /**
-     * The default constructor for XAdESOCSPSource.
-     *
-     * @param signatureElement {@code Element} that contains an XML signature
-     * @param xPathQueryHolder adapted {@code XPathQueryHolder}
-     */
-    public XAdESOCSPSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
+	private final XPathQueryHolder xPathQueryHolder;
 
-        this.signatureElement = signatureElement;
-        this.xPathQueryHolder = xPathQueryHolder;
-    }
+	/**
+	 * The default constructor for XAdESOCSPSource.
+	 *
+	 * @param signatureElement {@code Element} that contains an XML signature
+	 * @param xPathQueryHolder adapted {@code XPathQueryHolder}
+	 */
+	public XAdESOCSPSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
 
-    @Override
-    public List<BasicOCSPResp> getContainedOCSPResponses() {
+		this.signatureElement = signatureElement;
+		this.xPathQueryHolder = xPathQueryHolder;
+	}
 
-        final List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
-        addOCSP(list, xPathQueryHolder.XPATH_ENCAPSULATED_OCSP_VALUE);
-        addOCSP(list, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
-        return list;
-    }
+	@Override
+	public List<BasicOCSPResp> getContainedOCSPResponses() {
 
-    private void addOCSP(final List<BasicOCSPResp> list, final String xPathQuery) {
+		final List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
+		addOCSP(list, xPathQueryHolder.XPATH_ENCAPSULATED_OCSP_VALUE);
+		addOCSP(list, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
+		return list;
+	}
 
-        final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQuery);
-        for (int ii = 0; ii < nodeList.getLength(); ii++) {
+	private void addOCSP(final List<BasicOCSPResp> list, final String xPathQuery) {
 
-            final Element certEl = (Element) nodeList.item(ii);
-            final BasicOCSPResp basicOCSPResp = DSSUtils.loadOCSPBase64Encoded(certEl.getTextContent());
-            list.add(basicOCSPResp);
-        }
-    }
+		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQuery);
+		for (int ii = 0; ii < nodeList.getLength(); ii++) {
+
+			final Element certEl = (Element) nodeList.item(ii);
+			try{
+				final BasicOCSPResp basicOCSPResp = DSSUtils.loadOCSPBase64Encoded(certEl.getTextContent());
+				list.add(basicOCSPResp);
+			} catch (Exception e){
+				logger.warn("Cannot retrieve OCSP response from '" + certEl.getTextContent() + "' : " + e.getMessage(), e);
+			}
+		}
+	}
 }
