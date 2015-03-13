@@ -33,7 +33,7 @@
                     <spring:message code="application.title" />
                 </span>
                 <div class="powered">
-                    <span><a href="https://joinup.ec.europa.eu/software/sd-dss/description">Powered by DSS</a></span>
+                    <span><a href="https://joinup.ec.europa.eu/asset/sd-dss/description">Powered by DSS</a></span>
                 </div>
         </div>
         <!--[if lte IE 8]><div class="deco">&nbsp;</div><![endif]-->
