@@ -23,21 +23,21 @@ package eu.europa.ec.markt.dss.validation102853;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -59,21 +59,18 @@ import eu.europa.ec.markt.dss.TokenIdentifier;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSUnsupportedOperationException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.signature.validation.ValidationContext;
 import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
-import eu.europa.ec.markt.dss.validation102853.asic.ASiCContainerValidator;
 import eu.europa.ec.markt.dss.validation102853.bean.CandidatesForSigningCertificate;
 import eu.europa.ec.markt.dss.validation102853.bean.CertificateValidity;
 import eu.europa.ec.markt.dss.validation102853.bean.CertifiedRole;
 import eu.europa.ec.markt.dss.validation102853.bean.CommitmentType;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureProductionPlace;
-import eu.europa.ec.markt.dss.validation102853.cades.CMSDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.certificate.CertificateSourceType;
 import eu.europa.ec.markt.dss.validation102853.condition.Condition;
 import eu.europa.ec.markt.dss.validation102853.condition.PolicyIdCondition;
@@ -111,13 +108,11 @@ import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTrustedService
 import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlUsedCertificates;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 import eu.europa.ec.markt.dss.validation102853.ocsp.ListOCSPSource;
-import eu.europa.ec.markt.dss.validation102853.pades.PDFDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.policy.EtsiValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ValidationPolicy;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
 import eu.europa.ec.markt.dss.validation102853.scope.SignatureScope;
-import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 
 
 /**
@@ -129,9 +124,6 @@ import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
-
-	private static final byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
-	private static final byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
 
 	/**
 	 * This variable can hold a specific {@code ProcessExecutor}
@@ -168,7 +160,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected CertificateVerifier certificateVerifier;
 
-	private SignatureScopeFinder signatureScopeFinder;
+	private final SignatureScopeFinder signatureScopeFinder;
 
 	/**
 	 * This list contains the list of signatures
@@ -192,6 +184,31 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private File policyDocument;
 
 	private HashMap<String, File> policyDocuments;
+	
+	private static List<Class<SignedDocumentValidator>> registredDocumentValidators = new ArrayList<Class<SignedDocumentValidator>>();
+
+	static {
+		Properties properties = new Properties();
+		try {
+			properties.load(SignedDocumentValidator.class.getResourceAsStream("/document-validators.properties"));
+		} catch (IOException e) {
+			LOG.error("Cannot load properties from document-validators.properties : " + e.getMessage(), e);
+		}
+		for (String propName : properties.stringPropertyNames()) {
+			registerDocumentValidator(propName, properties.getProperty(propName));
+		}
+	}
+
+	private static void registerDocumentValidator(String type, String clazzToFind) {
+		try {
+			@SuppressWarnings("unchecked")
+			Class<SignedDocumentValidator> documentValidator = (Class<SignedDocumentValidator>) Class.forName(clazzToFind);
+			registredDocumentValidators.add(documentValidator);
+			LOG.info("Validator '" + documentValidator.getName() + "' is registred");
+		} catch (ClassNotFoundException e) {
+			LOG.warn("Validator not found for signature type " + type);
+		}
+	}
 
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
@@ -204,42 +221,27 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return returns the specific instance of SignedDocumentValidator in terms of the document type
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
-
-		final String dssDocumentName = dssDocument.getName();
-		if (( dssDocumentName != null ) && MimeType.XML.equals(MimeType.fromFileName(dssDocumentName))) {
-
-			return new XMLDocumentValidator(dssDocument);
+		if (CollectionUtils.isEmpty(registredDocumentValidators)) {
+			throw new DSSException("No validator registred");
 		}
 
-		int headerLength = 500;
-		byte[] preamble = new byte[headerLength];
-		int read = DSSUtils.readToArray(dssDocument, headerLength, preamble);
-		if (read < 5) {
-			throw new DSSException("The signature is not found.");
+		for (Class<SignedDocumentValidator> clazz : registredDocumentValidators) {
+			try {
+				Constructor<SignedDocumentValidator> defaultAndPrivateConstructor = clazz.getDeclaredConstructor();
+				defaultAndPrivateConstructor.setAccessible(true);
+				SignedDocumentValidator validator = defaultAndPrivateConstructor.newInstance();
+				if (validator.isSupported(dssDocument)) {
+					Constructor<? extends SignedDocumentValidator> constructor = clazz.getDeclaredConstructor(DSSDocument.class);
+					return constructor.newInstance(dssDocument);
+				}
+			} catch (Exception e) {
+				LOG.error("Cannot instanciate class '" + clazz.getName() + "' : " + e.getMessage(), e);
+			}
 		}
-		final String preambleString = new String(preamble);
-		if (isXmlPreamble(preamble)) {
-			return new XMLDocumentValidator(dssDocument);
-		} else if (preambleString.startsWith("%PDF-")) {
-
-			// TODO (29/08/2014): DSS-356
-			return new PDFDocumentValidator(dssDocument);
-		} else if ((preamble[0] == 'P') && (preamble[1] == 'K')) {
-
-			return ASiCContainerValidator.getInstanceForAsics(dssDocument);
-		} else if (preambleString.getBytes()[0] == 0x30) {
-
-			return new CMSDocumentValidator(dssDocument);
-		} else {
-			throw new DSSException("Document format not recognized/handled");
-		}
+		throw new DSSException("Document format not recognized/handled");
 	}
-
-	private static boolean isXmlPreamble(byte[] preamble) {
-		byte[] startOfPramble = ArrayUtils.subarray(preamble, 0, xmlPreamble.length);
-		return Arrays.equals(startOfPramble, xmlPreamble) || Arrays.equals(startOfPramble, xmlUtf8);
-	}
-
+	
+	public abstract boolean isSupported(DSSDocument dssDocument);
 
 	@Override
 	public DSSDocument getDocument() {

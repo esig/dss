@@ -22,14 +22,6 @@ package eu.europa.ec.markt.dss.signature;
 
 import java.io.Serializable;
 
-import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.signature.cades.CAdESService;
-import eu.europa.ec.markt.dss.signature.xades.SignatureBuilder;
-import eu.europa.ec.markt.dss.signature.xades.XAdESLevelBaselineB;
-import eu.europa.ec.markt.dss.signature.xades.XAdESService;
-import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.SignatureForm;
-
 /**
  * This class This class manages the internal variables used in the process of creating of a signature and which allows to
  * accelerate the generation.<br>
@@ -37,15 +29,14 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
  */
 public class ProfileParameters implements Serializable {
 
-	private XAdESLevelBaselineB profile;
+	private SignatureProfile profile;
 
 	/**
 	 * Returns the current Profile used to generate the signature or its extension
 	 *
 	 * @return
 	 */
-	public XAdESLevelBaselineB getProfile() {
-
+	public SignatureProfile getProfile() {
 		return profile;
 	}
 
@@ -54,8 +45,7 @@ public class ProfileParameters implements Serializable {
 	 *
 	 * @return
 	 */
-	public void setProfile(XAdESLevelBaselineB profile) {
-
+	public void setProfile(SignatureProfile profile) {
 		this.profile = profile;
 	}
 
@@ -65,12 +55,10 @@ public class ProfileParameters implements Serializable {
 	private SignatureBuilder builder;
 
 	public SignatureBuilder getBuilder() {
-
 		return builder;
 	}
 
 	public void setBuilder(SignatureBuilder builder) {
-
 		this.builder = builder;
 	}
 
@@ -94,32 +82,4 @@ public class ProfileParameters implements Serializable {
 		this.operationKind = operationKind;
 	}
 
-	/*
-	 * This is the underlying service used within the ASiC signature generation process.
-	 */
-	private DocumentSignatureService underlyingASiCService;
-
-	/**
-	 * Returns the underlying {@code DocumentSignatureService} to use within the ASiC signature process.
-	 *
-	 * @param certificateVerifier the certificate verifier to use with the signature service.
-	 * @param signatureForm       This is the form of the underlying ASiC signature. Only XAdES ans CAdES forms are acceptable.
-	 * @return the underlying ASiC signature service.
-	 */
-	public DocumentSignatureService getUnderlyingASiCService(final CertificateVerifier certificateVerifier, final SignatureForm signatureForm) {
-
-		if (underlyingASiCService == null) {
-
-			if (signatureForm == SignatureForm.XAdES) {
-
-				underlyingASiCService = new XAdESService(certificateVerifier);
-			} else if (signatureForm == SignatureForm.CAdES) {
-
-				underlyingASiCService = new CAdESService(certificateVerifier);
-			} else {
-				throw new DSSException("Unsupported parameter value: only XAdES and CAdES forms are acceptable!");
-			}
-		}
-		return underlyingASiCService;
-	}
 }

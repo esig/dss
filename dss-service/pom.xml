@@ -24,11 +24,10 @@
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-common</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apache.directory.api</groupId>-->
-            <!--<artifactId>api-ldap-client-all</artifactId>-->
-	        <!--<version>1.0.0-M22</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-xades</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
 	        <artifactId>bcprov-jdk15on</artifactId>
@@ -49,5 +48,16 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
+        
+        <dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 </project>

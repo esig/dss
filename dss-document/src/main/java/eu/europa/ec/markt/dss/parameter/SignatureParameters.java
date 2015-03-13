@@ -535,7 +535,6 @@ public class SignatureParameters implements Serializable {
 	/**
 	 * @return the digest algorithm
 	 */
-	@Deprecated
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
@@ -572,7 +571,6 @@ public class SignatureParameters implements Serializable {
 	/**
 	 * @return the encryption algorithm. It's determined by the privateKeyEntry and is null until the privateKeyEntry is set.
 	 */
-	@Deprecated
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgorithm;
 	}
