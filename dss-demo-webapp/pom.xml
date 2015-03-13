@@ -230,6 +230,10 @@
 						<artifactId>tomcat6-maven-plugin</artifactId>
 						<configuration>
 							<path>/dss-demo-webapp</path>
+							<port>8765</port>
+							<systemProperties>
+        						<log>${project.build.directory}/src/test/resources</log>
+        					</systemProperties>
 						</configuration>
 						<executions>
 							<execution>
