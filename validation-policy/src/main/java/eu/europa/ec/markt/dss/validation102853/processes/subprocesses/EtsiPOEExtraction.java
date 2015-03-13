@@ -159,7 +159,7 @@ public class EtsiPOEExtraction extends POEExtraction {
 	private static final Logger LOG = LoggerFactory.getLogger(EtsiPOEExtraction.class);
 
 	private Map<String, List<Date>> signaturePOEList = new HashMap<String, List<Date>>();
-	private Map<Integer, List<Date>> certificatePOEList = new HashMap<Integer, List<Date>>();
+	private Map<String, List<Date>> certificatePOEList = new HashMap<String, List<Date>>();
 
 	/**
 	 * This method adds the POE for a given signature and for the given list of certificates.
@@ -174,7 +174,7 @@ public class EtsiPOEExtraction extends POEExtraction {
 		addSignaturePoe(signatureId, date);
 		for (final XmlDom certificate : certificates) {
 
-			Integer certificateId = certificate.getIntValue("./@Id");
+			String certificateId = certificate.getValue("./@Id");
 			addCertificatePoe(certificateId, date);
 		}
 	}
@@ -208,7 +208,7 @@ public class EtsiPOEExtraction extends POEExtraction {
 
 				try {
 
-					final Integer certificateId = certPool.getIntValue("./dss:Certificate/dss:DigestAlgAndValue[dss:DigestValue='%s']/../@Id", digestValue);
+					final String certificateId = certPool.getValue("./dss:Certificate/dss:DigestAlgAndValue[dss:DigestValue='%s']/../@Id", digestValue);
 					addCertificatePoe(certificateId, date);
 				} catch (Exception e) {
 
@@ -249,9 +249,9 @@ public class EtsiPOEExtraction extends POEExtraction {
 	 * @param id
 	 * @param date
 	 */
-	private void addCertificatePoe(final Integer id, final Date date) {
+	private void addCertificatePoe(final String id, final Date date) {
 
-		List<Date> dates = certificatePOEList.get(Integer.toString(id));
+		List<Date> dates = certificatePOEList.get(id);
 		if (dates == null) {
 
 			dates = new ArrayList<Date>();
@@ -270,7 +270,7 @@ public class EtsiPOEExtraction extends POEExtraction {
 	 * @param controlTime
 	 * @return
 	 */
-	public boolean getCertificatePOE(final int certificateId, final Date controlTime) {
+	public boolean getCertificatePOE(final String certificateId, final Date controlTime) {
 
 		List<Date> dates = certificatePOEList.get(certificateId);
 		if (dates != null) {
