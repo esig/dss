@@ -45,14 +45,8 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 /**
  * This is the representation of simple (common) CRL source, this is the base
  * class for all real implementations.
- *
- *
- *
- *
- *         Developments</a>
- *
  */
-public abstract class CommonCRLSource implements CRLSource {
+public class CRLUtils {
 
 	/**
 	 * This method verifies: the signature of the CRL, the key usage of its
@@ -68,7 +62,7 @@ public abstract class CommonCRLSource implements CRLSource {
 	 *            (cannot be null)
 	 * @return {@code CRLValidity}
 	 */
-	protected CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
+	public static CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
 
 		final CRLValidity crlValidity = new CRLValidity();
 		crlValidity.setX509CRL(x509CRL);
@@ -87,7 +81,7 @@ public abstract class CommonCRLSource implements CRLSource {
 		return crlValidity;
 	}
 
-	private void checkSignatureValue(final X509CRL x509CRL, final CertificateToken issuerToken, final CRLValidity crlValidity) {
+	private static void checkSignatureValue(final X509CRL x509CRL, final CertificateToken issuerToken, final CRLValidity crlValidity) {
 
 		try {
 
@@ -107,10 +101,10 @@ public abstract class CommonCRLSource implements CRLSource {
 		}
 	}
 
-	private void checkCriticalExtensions(final X509CRL x509CRL, final CRLValidity crlValidity) {
+	private static void checkCriticalExtensions(final X509CRL x509CRL, final CRLValidity crlValidity) {
 
 		final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
-		if (criticalExtensionOIDs == null || criticalExtensionOIDs.size() == 0) {
+		if ((criticalExtensionOIDs == null) || (criticalExtensionOIDs.size() == 0)) {
 			crlValidity.setUnknownCriticalExtension(false);
 		} else {
 
@@ -126,7 +120,7 @@ public abstract class CommonCRLSource implements CRLSource {
 			boolean urlFound = false;
 			if (DistributionPointName.FULL_NAME == distributionPoint.getType()) {
 				final GeneralNames generalNames = (GeneralNames) distributionPoint.getName();
-				if (generalNames != null && generalNames.getNames() != null && generalNames.getNames().length > 0) {
+				if ((generalNames != null) && (generalNames.getNames() != null) && (generalNames.getNames().length > 0)) {
 					for (GeneralName generalName : generalNames.getNames()) {
 						if (GeneralName.uniformResourceIdentifier == generalName.getTagNo()) {
 							urlFound = true;
@@ -135,7 +129,7 @@ public abstract class CommonCRLSource implements CRLSource {
 				}
 			}
 
-			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && onlySomeReasons == null && urlFound) {
+			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && (onlySomeReasons == null) && urlFound) {
 				crlValidity.setUnknownCriticalExtension(false);
 			}
 		}

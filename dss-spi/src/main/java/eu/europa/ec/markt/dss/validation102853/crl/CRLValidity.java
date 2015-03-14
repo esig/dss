@@ -27,13 +27,6 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 /**
  * This class encapsulates all information related to the validity of a CRL. It
  * exposes the method {@code isValid} to check the validity.
- *
- *
- *
- *
- *
- *         Developments</a>
- *
  */
 public class CRLValidity {
 

@@ -44,7 +44,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
  *
  */
 
-public class JdbcCacheCRLSource extends CommonCRLSource {
+public class JdbcCacheCRLSource implements CRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheCRLSource.class);
 
@@ -134,7 +134,7 @@ public class JdbcCacheCRLSource extends CommonCRLSource {
 				if (x509Crl.getNextUpdate().after(new Date())) {
 
 					LOG.debug("CRL in cache");
-					final CRLValidity crlValidity = isValidCRL(x509Crl, issuerToken);
+					final CRLValidity crlValidity = CRLUtils.isValidCRL(x509Crl, issuerToken);
 					final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 					if (crlToken.isValid()) {
 
@@ -143,7 +143,7 @@ public class JdbcCacheCRLSource extends CommonCRLSource {
 				}
 			}
 			final CRLToken crlToken = cachedSource.findCrl(certificateToken);
-			if (crlToken != null && crlToken.isValid()) {
+			if ((crlToken != null) && crlToken.isValid()) {
 
 				if (dbCrl == null) {
 

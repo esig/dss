@@ -20,8 +20,6 @@
  */
 package eu.europa.ec.markt.dss.validation102853.crl;
 
-import java.io.Serializable;
-
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
@@ -31,7 +29,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
  *
  *
  */
-public interface CRLSource extends Serializable {
+public interface CRLSource {
 
 	/**
 	 * Finds the CRL(s) for the requested certificate. If found:<br />
@@ -45,4 +43,5 @@ public interface CRLSource extends Serializable {
 	 * @throws DSSException
 	 */
 	CRLToken findCrl(final CertificateToken certificateToken) throws DSSException;
+
 }

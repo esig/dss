@@ -52,7 +52,7 @@ import eu.europa.ec.markt.dss.validation102853.loader.Protocol;
  *
  */
 
-public class OnlineCRLSource extends CommonCRLSource {
+public class OnlineCRLSource implements CRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineCRLSource.class);
 
@@ -133,7 +133,7 @@ public class OnlineCRLSource extends CommonCRLSource {
 			LOG.warn("", e);
 			return null;
 		}
-		final CRLValidity crlValidity = isValidCRL(crl, issuerToken);
+		final CRLValidity crlValidity = CRLUtils.isValidCRL(crl, issuerToken);
 		final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 		crlToken.setSourceURL(dataAndUrl.urlString);
 		return crlToken;

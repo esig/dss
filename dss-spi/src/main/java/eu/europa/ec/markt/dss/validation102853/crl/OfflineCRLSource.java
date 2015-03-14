@@ -36,7 +36,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
  * This class if a basic skeleton that is able to retrieve needed CRL data from
  * the contained list. The child need to retrieve the list of wrapped CRLs.
  */
-public abstract class OfflineCRLSource extends CommonCRLSource {
+public abstract class OfflineCRLSource implements CRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
@@ -114,7 +114,7 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 						continue;
 					}
 				}
-				if (bestX509UpdateDate == null || thisUpdate.after(bestX509UpdateDate)) {
+				if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
 
 					bestCRLValidity = crlValidity;
 					bestX509UpdateDate = thisUpdate;
@@ -139,7 +139,7 @@ public abstract class OfflineCRLSource extends CommonCRLSource {
 		CRLValidity crlValidity = crlValidityMap.get(x509CRL);
 		if (crlValidity == null) {
 
-			crlValidity = isValidCRL(x509CRL, issuerToken);
+			crlValidity = CRLUtils.isValidCRL(x509CRL, issuerToken);
 			if (crlValidity.isValid()) {
 
 				crlValidityMap.put(x509CRL, crlValidity);
