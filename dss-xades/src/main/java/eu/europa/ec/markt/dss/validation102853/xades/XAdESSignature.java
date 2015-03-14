@@ -71,7 +71,6 @@ import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
-import eu.europa.ec.markt.dss.exception.DSSNullReturnedException;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
@@ -110,8 +109,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This array contains all the XAdES signatures levels TODO: do not return redundant levels.
 	 */
 	private static SignatureLevel[] signatureLevels = new SignatureLevel[] { SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B,
-			SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL,
-			SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A };
+		SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL,
+		SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A };
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -428,7 +427,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					continue;
 				}
-				if (certificateToken != null && id.equals(certificateToken.getXmlId())) {
+				if ((certificateToken != null) && id.equals(certificateToken.getXmlId())) {
 
 					theCertificateValidity.setSigned(element.getNodeName());
 					return;
@@ -618,7 +617,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public SignatureProductionPlace getSignatureProductionPlace() {
 
 		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_PRODUCTION_PLACE);
-		if (nodeList.getLength() == 0 || nodeList.item(0) == null) {
+		if ((nodeList.getLength() == 0) || (nodeList.item(0) == null)) {
 
 			return null;
 		}
@@ -900,8 +899,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final Element include = (Element) timestampIncludes.item(jj);
 				final String uri = include.getAttribute("URI").substring(1); // '#'
-																				// is
-																				// removed
+				// is
+				// removed
 				timestampToken.getTimestampIncludes().add(new TimestampInclude(uri, include.getAttribute("referencedData")));
 			}
 			timestampTokens.add(timestampToken);
@@ -912,12 +911,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
 
 		switch (timestampToken.getTimeStampType()) {
-		case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-			return getIndividualDataObjectsTimestampData(timestampToken);
-		case ALL_DATA_OBJECTS_TIMESTAMP:
-			return getAllDataObjectsTimestampData(timestampToken);
-		default:
-			return null;
+			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+				return getIndividualDataObjectsTimestampData(timestampToken);
+			case ALL_DATA_OBJECTS_TIMESTAMP:
+				return getAllDataObjectsTimestampData(timestampToken);
+			default:
+				return null;
 		}
 	}
 
@@ -1147,9 +1146,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 			final Node node = unsignedProperties.item(ii);
 			if (node.getNodeType() != Node.ELEMENT_NODE) { // This can happened
-															// when there is a
-															// blank line
-															// between tags.
+				// when there is a
+				// blank line
+				// between tags.
 				continue;
 			}
 			TimestampToken timestampToken;
@@ -1246,7 +1245,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/*
 	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
-	 * 
+	 *
 	 * @see eu.europa.ec.markt.dss.validation.AdvancedSignature#getCertificates()
 	 */
 	@Override
@@ -1338,12 +1337,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
 			int lineNumber = 0;
-			for (int ii = 0; ii < stackTrace.length; ii++) {
+			for (StackTraceElement element : stackTrace) {
 
-				final String className = stackTrace[ii].getClassName();
+				final String className = element.getClassName();
 				if (className.equals(name)) {
 
-					lineNumber = stackTrace[ii].getLineNumber();
+					lineNumber = element.getLineNumber();
 					break;
 				}
 			}
@@ -1381,7 +1380,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				// The public key can also be extracted from the signature.
 				final KeyInfo extractedKeyInfo = santuarioSignature.getKeyInfo();
 				final PublicKey publicKey;
-				if (extractedKeyInfo == null || (publicKey = extractedKeyInfo.getPublicKey()) == null) {
+				if ((extractedKeyInfo == null) || ((publicKey = extractedKeyInfo.getPublicKey()) == null)) {
 
 					scv.setErrorMessage("There is no signing certificate within the signature.");
 					return certificateValidityList;
@@ -1500,7 +1499,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			Element digestValueEl = DSSXMLUtils.getElement(certId, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
 
 			CertificateRef genericCertId = new CertificateRef();
-			if (issuerNameEl != null && issuerSerialEl != null) {
+			if ((issuerNameEl != null) && (issuerSerialEl != null)) {
 				genericCertId.setIssuerName(issuerNameEl.getTextContent());
 				genericCertId.setIssuerSerial(issuerSerialEl.getTextContent());
 			}
@@ -1554,7 +1553,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element digestAlgorithmEl = DSSXMLUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
 				final Element digestValueEl = DSSXMLUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
 
-				if (digestAlgorithmEl == null || digestValueEl == null) {
+				if ((digestAlgorithmEl == null) || (digestValueEl == null)) {
 					throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.XADES_DIGEST_ALG_AND_VALUE_ENCODING);
 				}
 
@@ -1710,17 +1709,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			 */
 			final Element unsignedSignaturePropertiesDom = getUnsignedSignaturePropertiesDom();
 			if (unsignedSignaturePropertiesDom == null) {
-				throw new DSSNullReturnedException(xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+				throw new NullPointerException(xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
 			}
 			final NodeList unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
 			for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 
 				final Node node = unsignedProperties.item(ii);
 				if (node.getNodeType() != Node.ELEMENT_NODE) { // This can
-																// happened when
-																// there is a
-																// blank line
-																// between tags.
+					// happened when
+					// there is a
+					// blank line
+					// between tags.
 					continue;
 				}
 				final String localName = node.getLocalName();
@@ -1752,7 +1751,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				// } else
 				if (isArchiveTimestamp(localName)) {
 
-					if (timestampToken != null && timestampToken.getHashCode() == node.hashCode()) {
+					if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
 						break;
 					}
 				} else if ("TimeStampValidationData".equals(localName)) {
@@ -1789,7 +1788,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			 * each resulting octet stream to the final octet stream. If ds:Canonicalization is present, the algorithm indicated by this element is
 			 * used. If not, the standard canonicalization method specified by XMLDSIG is used.
 			 */
-			boolean xades141 = timestampToken == null || !ArchiveTimestampType.XAdES.equals(timestampToken.getArchiveTimestampType());
+			boolean xades141 = (timestampToken == null) || !ArchiveTimestampType.XAdES.equals(timestampToken.getArchiveTimestampType());
 
 			final NodeList objects = getObjects();
 			for (int ii = 0; ii < objects.getLength(); ii++) {
@@ -1979,32 +1978,32 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		boolean dataForLevelPresent = true;
 		switch (signatureLevel) {
-		case XML_NOT_ETSI:
-			break;
-		case XAdES_BASELINE_LTA:
-		case XAdES_A:
-			dataForLevelPresent = hasLTAProfile();
-			break;
-		case XAdES_BASELINE_LT:
-			dataForLevelPresent &= hasLTProfile();
-			break;
-		case XAdES_BASELINE_T:
-			dataForLevelPresent &= hasTProfile();
-			break;
-		case XAdES_BASELINE_B:
-			dataForLevelPresent &= hasBProfile();
-			break;
-		case XAdES_XL:
-			dataForLevelPresent &= hasXLProfile();
-			break;
-		case XAdES_X:
-			dataForLevelPresent &= hasXProfile();
-			break;
-		case XAdES_C:
-			dataForLevelPresent &= hasCProfile();
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown level " + signatureLevel);
+			case XML_NOT_ETSI:
+				break;
+			case XAdES_BASELINE_LTA:
+			case XAdES_A:
+				dataForLevelPresent = hasLTAProfile();
+				break;
+			case XAdES_BASELINE_LT:
+				dataForLevelPresent &= hasLTProfile();
+				break;
+			case XAdES_BASELINE_T:
+				dataForLevelPresent &= hasTProfile();
+				break;
+			case XAdES_BASELINE_B:
+				dataForLevelPresent &= hasBProfile();
+				break;
+			case XAdES_XL:
+				dataForLevelPresent &= hasXLProfile();
+				break;
+			case XAdES_X:
+				dataForLevelPresent &= hasXProfile();
+				break;
+			case XAdES_C:
+				dataForLevelPresent &= hasCProfile();
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
 		return dataForLevelPresent;
 	}

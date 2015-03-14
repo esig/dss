@@ -45,7 +45,6 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSConfigurationException;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.exception.DSSNullReturnedException;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
@@ -97,6 +96,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	 * @return a new extended document
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
+	@Override
 	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final SignatureParameters parameters) throws DSSException {
 
 		LOG.info("EXTEND SIGNATURES.");
@@ -259,7 +259,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	}
 
 	public static ASN1Object getTimeStampAttributeValue(final TSPSource tspSource, final byte[] messageToTimestamp, final DigestAlgorithm timestampDigestAlgorithm,
-	                                                    final Attribute... attributesForTimestampToken) {
+			final Attribute... attributesForTimestampToken) {
 		try {
 
 			if (LOG.isDebugEnabled()) {
@@ -273,7 +273,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 			final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampDigest);
 
 			if (timeStampToken == null) {
-				throw new DSSNullReturnedException(TimeStampToken.class);
+				throw new NullPointerException();
 			}
 
 			if (LOG.isDebugEnabled()) {

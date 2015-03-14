@@ -49,7 +49,6 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.exception.DSSNotApplicableMethodException;
 import eu.europa.ec.markt.dss.exception.DSSNotETSICompliantException;
-import eu.europa.ec.markt.dss.exception.DSSNullReturnedException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
@@ -254,7 +253,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		boolean refresh = shouldRefresh(url);
 		final byte[] bytes = dataLoader.get(url, refresh);
 		if (bytes == null) {
-			throw new DSSNullReturnedException(url);
+			throw new NullPointerException(url);
 		}
 		boolean coreValidity = checkSignature ? validateTslSignature(signingCertList, bytes) : true;
 		final Document doc = DSSXMLUtils.buildDOM(bytes);
@@ -371,7 +370,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 		final CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		for (final CertificateToken x509Certificate : signingCertList) {
- 
+
 			commonTrustedCertificateSource.addCertificate(x509Certificate);
 		}
 		final CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
@@ -501,10 +500,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			loadAllCertificatesFromOneTSL(countryTSL);
 			LOG.info(".... done for '{}'", territory);
 			diagnosticInfo.put(trimmedUrl, "Loaded " + new Date().toString());
-		} catch (final DSSNullReturnedException e) {
-
-			LOG.info("Download skipped.");
-			// do nothing: it can happened when a mock data loader is used.
 		} catch (final Exception e) {
 			makeATrace(trimmedUrl, "Other problem: " + e.toString(), e);
 		}
@@ -658,5 +653,5 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			LOG.error("Impossible to save: '{}'", file.getAbsolutePath(), e);
 		}
 	}
-	
+
 }
