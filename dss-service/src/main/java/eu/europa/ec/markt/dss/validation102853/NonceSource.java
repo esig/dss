@@ -18,25 +18,32 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.ec.markt.dss.validation102853.tsp;
+package eu.europa.ec.markt.dss.validation102853;
 
 import java.math.BigInteger;
 
 /**
- * This class implements a dedicated  nonce source.
- *
- *
- *
- *
+ * This class implements a dedicated nonce source.
  *
  */
-public class TSPNonceSource {
+public class NonceSource {
 
+	private BigInteger nonce;
+
+	public NonceSource() {
+		this. nonce = BigInteger.valueOf(System.currentTimeMillis());
+	}
+
+	public NonceSource(BigInteger nonce) {
+		this.nonce = nonce;
+	}
 
 	public BigInteger getNonce() {
-
-		final long nonceValue = System.currentTimeMillis();
-		final BigInteger nonce = BigInteger.valueOf(nonceValue);
 		return nonce;
 	}
+
+	public void setNonce(BigInteger nonce) {
+		this.nonce = nonce;
+	}
+
 }

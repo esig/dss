@@ -22,10 +22,11 @@ package eu.europa.ec.markt.dss.validation102853.tsp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.net.URLConnection;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampRequest;
@@ -38,17 +39,16 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.NonceSource;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
 
 /**
  * Class encompassing a RFC 3161 TSA, accessed through HTTP(S) to a given URI
  *
- *
  */
-
 public class OnlineTSPSource implements TSPSource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSource.class);
+	private static final Logger logger = LoggerFactory.getLogger(OnlineTSPSource.class);
 
 	private String tspServer;
 
@@ -56,13 +56,12 @@ public class OnlineTSPSource implements TSPSource {
 
 	private DataLoader dataLoader;
 
-	private TSPNonceSource tspNonceSource;
+	private NonceSource nonceSource;
 
 	/**
 	 * The default constructor for OnlineTSPSource.
 	 */
 	public OnlineTSPSource() {
-
 		this(null);
 	}
 
@@ -72,7 +71,6 @@ public class OnlineTSPSource implements TSPSource {
 	 * @param tspServer
 	 */
 	public OnlineTSPSource(final String tspServer) {
-
 		this.tspServer = tspServer;
 	}
 
@@ -82,7 +80,6 @@ public class OnlineTSPSource implements TSPSource {
 	 * @param tspServer
 	 */
 	public void setTspServer(final String tspServer) {
-
 		this.tspServer = tspServer;
 	}
 
@@ -91,16 +88,19 @@ public class OnlineTSPSource implements TSPSource {
 	 *
 	 * @param policyOid
 	 */
+	@Override
 	public void setPolicyOid(final String policyOid) {
-
 		this.policyOid = new ASN1ObjectIdentifier(policyOid);
-
 	}
 
 	@Override
 	public String getUniqueId(final byte[] digestValue) {
-
-		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue, tspNonceSource.getNonce().toByteArray());
+		byte[] digest;
+		if (nonceSource !=null){
+			digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue, nonceSource.getNonce().toByteArray());
+		} else {
+			digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue);
+		}
 		return Hex.encodeHexString(digest);
 	}
 
@@ -112,23 +112,20 @@ public class OnlineTSPSource implements TSPSource {
 		this.dataLoader = dataLoader;
 	}
 
-	public TSPNonceSource getTspNonceSource() {
-		return tspNonceSource;
+	public NonceSource getNonceSource() {
+		return nonceSource;
 	}
 
-	public void setTspNonceSource(final TSPNonceSource tspNonceSource) {
-		this.tspNonceSource = tspNonceSource;
+	public void setNonceSource(NonceSource nonceSource) {
+		this.nonceSource = nonceSource;
 	}
 
 	@Override
 	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
-
 		try {
-
-			if (LOG.isTraceEnabled()) {
-
-				LOG.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
-				LOG.trace("Timestamp digest value    : " + DSSUtils.toHex(digest));
+			if (logger.isTraceEnabled()) {
+				logger.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
+				logger.trace("Timestamp digest value    : " + Hex.encodeHexString(digest));
 			}
 
 			// Setup the time stamp request
@@ -137,34 +134,42 @@ public class OnlineTSPSource implements TSPSource {
 			if (policyOid != null) {
 				tsqGenerator.setReqPolicy(policyOid);
 			}
-			final ASN1ObjectIdentifier asn1ObjectIdentifier = digestAlgorithm.getOid();
-			if (tspNonceSource == null) {
-				tspNonceSource = new TSPNonceSource();
+
+			ASN1ObjectIdentifier asn1ObjectIdentifier = digestAlgorithm.getOid();
+			TimeStampRequest timeStampRequest = null;
+			if (nonceSource == null) {
+				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest);
+			} else {
+				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest, nonceSource.getNonce());
 			}
-			final BigInteger nonce = tspNonceSource.getNonce();
-			final TimeStampRequest request = tsqGenerator.generate(asn1ObjectIdentifier, digest, nonce);
-			final byte[] requestBytes = request.getEncoded();
+
+			final byte[] requestBytes = timeStampRequest.getEncoded();
 
 			// Call the communications layer
 			byte[] respBytes;
 			if (dataLoader != null) {
-
 				respBytes = dataLoader.post(tspServer, requestBytes);
-				//if ("base64".equalsIgnoreCase(encoding)) {
-				//respBytes = DSSUtils.base64Decode(respBytes);
-				//}
 			} else {
-
 				respBytes = getTSAResponse(requestBytes);
 			}
+
 			// Handle the TSA response
 			final TimeStampResponse timeStampResponse = new TimeStampResponse(respBytes);
-			LOG.info("Status: " + timeStampResponse.getStatusString());
-			final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
-			if (timeStampToken != null) {
 
-				LOG.info("SID: " + timeStampToken.getSID());
+			// Validates nonce, policy id, ... if present
+			timeStampResponse.validate(timeStampRequest);
+
+			String statusString = timeStampResponse.getStatusString();
+			if (statusString !=null){
+				logger.info("Status: " + statusString);
 			}
+
+			final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
+
+			if (timeStampToken != null) {
+				logger.info("TSP SID : SN " + timeStampToken.getSID().getSerialNumber() + ", Issuer " + timeStampToken.getSID().getIssuer());
+			}
+
 			return timeStampToken;
 		} catch (TSPException e) {
 			throw new DSSException("Invalid TSP response", e);
@@ -195,17 +200,15 @@ public class OnlineTSPSource implements TSPSource {
 		byte[] respBytes = getReadFromURLConnection(tsaConnection);
 		final String encoding = tsaConnection.getContentEncoding();
 		if ("base64".equalsIgnoreCase(encoding)) {
-
-			respBytes = DSSUtils.base64Decode(respBytes);
+			respBytes = Base64.decodeBase64(respBytes);
 		}
 		return respBytes;
 	}
 
 	private byte[] getReadFromURLConnection(final URLConnection tsaConnection) throws DSSException {
-
 		try {
 			final InputStream inputStream = tsaConnection.getInputStream();
-			return DSSUtils.toByteArray(inputStream);
+			return IOUtils.toByteArray(inputStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
