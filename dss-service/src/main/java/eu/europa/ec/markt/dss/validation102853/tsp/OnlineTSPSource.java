@@ -50,12 +50,24 @@ public class OnlineTSPSource implements TSPSource {
 
 	private static final Logger logger = LoggerFactory.getLogger(OnlineTSPSource.class);
 
+	/**
+	 * The URL of the TSP server
+	 */
 	private String tspServer;
 
+	/**
+	 * The requested policy oid
+	 */
 	private ASN1ObjectIdentifier policyOid;
 
+	/**
+	 * The data loader used to retrieve the TSP response.
+	 */
 	private DataLoader dataLoader;
 
+	/**
+	 * This variable is used to prevent the replay attack.
+	 */
 	private NonceSource nonceSource;
 
 	/**
@@ -104,18 +116,20 @@ public class OnlineTSPSource implements TSPSource {
 		return Hex.encodeHexString(digest);
 	}
 
-	public DataLoader getDataLoader() {
-		return dataLoader;
-	}
-
+	/**
+	 * Set the DataLoader to use for querying the TSP server.
+	 *
+	 * @param dataLoader the component that allows to retrieve the TSP response using HTTP.
+	 */
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
 
-	public NonceSource getNonceSource() {
-		return nonceSource;
-	}
-
+	/**
+	 * Set the NonceSource to use for querying the TSP server.
+	 *
+	 * @param nonceSource the component that prevents the replay attack.
+	 */
 	public void setNonceSource(NonceSource nonceSource) {
 		this.nonceSource = nonceSource;
 	}
