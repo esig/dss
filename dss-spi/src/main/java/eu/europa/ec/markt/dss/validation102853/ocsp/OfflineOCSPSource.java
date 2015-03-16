@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSRevocationUtils;
-import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
 
@@ -46,7 +45,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
 	@Override
-	final public OCSPToken getOCSPToken(final CertificateToken certificateToken, final CertificatePool certificatePool) {
+	final public OCSPToken getOCSPToken(final CertificateToken certificateToken) {
 
 		final List<BasicOCSPResp> containedOCSPResponses = getContainedOCSPResponses();
 		if (LOG.isTraceEnabled()) {
@@ -78,7 +77,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 				if (DSSRevocationUtils.matches(certId, singleResp)) {
 
 					final Date thisUpdate = singleResp.getThisUpdate();
-					if (bestUpdate == null || thisUpdate.after(bestUpdate)) {
+					if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
 
 						bestBasicOCSPResp = basicOCSPResp;
 						bestSingleResp = singleResp;
@@ -92,7 +91,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		}
 		if (bestSingleResp != null) {
 
-			final OCSPToken ocspToken = new OCSPToken(bestBasicOCSPResp, bestSingleResp, certificatePool);
+			final OCSPToken ocspToken = new OCSPToken(bestBasicOCSPResp, bestSingleResp);
 			certificateToken.setRevocationToken(ocspToken);
 			return ocspToken;
 		}

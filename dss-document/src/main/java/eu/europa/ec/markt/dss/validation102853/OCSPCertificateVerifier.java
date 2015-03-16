@@ -29,12 +29,10 @@ import eu.europa.ec.markt.dss.validation102853.ocsp.OCSPSource;
 /**
  * Check the status of the certificate using an OCSPSource
  *
- *
  */
-
 public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OCSPCertificateVerifier.class);
+	private static final Logger logger = LoggerFactory.getLogger(OCSPCertificateVerifier.class);
 
 	private final OCSPSource ocspSource;
 
@@ -55,26 +53,28 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 
 	@Override
 	public RevocationToken check(final CertificateToken toCheckToken) {
-
 		if (ocspSource == null) {
-
-			LOG.warn("OCSPSource null");
+			logger.warn("OCSPSource null");
 			toCheckToken.extraInfo().infoOCSPSourceIsNull();
 			return null;
 		}
+
 		try {
-
-			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken, validationCertPool);
+			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken);
 			if (ocspToken == null) {
+				if (logger.isInfoEnabled()) {
+					logger.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
+				}
+			} else {
 
-				if (LOG.isInfoEnabled()) {
-					LOG.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
+				final boolean found = ocspToken.extractSigningCertificateFromResponse(validationCertPool);
+				if (!found) {
+					ocspToken.extractSigningCertificateFormResponderId(validationCertPool);
 				}
 			}
 			return ocspToken;
 		} catch (DSSException e) {
-
-			LOG.error("OCSP DSS Exception: " + e.getMessage(), e);
+			logger.error("OCSP DSS Exception: " + e.getMessage(), e);
 			toCheckToken.extraInfo().infoOCSPException(e);
 			return null;
 		}

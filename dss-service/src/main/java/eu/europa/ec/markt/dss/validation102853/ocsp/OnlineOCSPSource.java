@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSRevocationUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.NonceSource;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
@@ -109,7 +108,7 @@ public class OnlineOCSPSource implements OCSPSource {
 	}
 
 	@Override
-	public OCSPToken getOCSPToken(final CertificateToken certificateToken, final CertificatePool certificatePool) {
+	public OCSPToken getOCSPToken(CertificateToken certificateToken) {
 		if (dataLoader == null) {
 			throw new NullPointerException("DataLoad is not provided !");
 		}
@@ -161,7 +160,7 @@ public class OnlineOCSPSource implements OCSPSource {
 			}
 
 			if (bestSingleResp != null) {
-				final OCSPToken ocspToken = new OCSPToken(basicOCSPResp, bestSingleResp, certificatePool);
+				final OCSPToken ocspToken = new OCSPToken(basicOCSPResp, bestSingleResp);
 				ocspToken.setSourceURI(ocspAccessLocation);
 				certificateToken.setRevocationToken(ocspToken);
 				return ocspToken;

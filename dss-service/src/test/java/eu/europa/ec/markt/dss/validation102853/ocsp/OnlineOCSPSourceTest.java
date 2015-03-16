@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.NonceSource;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
@@ -33,7 +32,7 @@ public class OnlineOCSPSourceTest {
 	public void testOCSPWithoutNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(new NativeHTTPDataLoader());
-		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, new CertificatePool());
+		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken);
 		assertNotNull(ocspToken);
 	}
 
@@ -42,7 +41,7 @@ public class OnlineOCSPSourceTest {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(new NativeHTTPDataLoader());
 		ocspSource.setNonceSource(new NonceSource());
-		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, new CertificatePool());
+		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken);
 		assertNotNull(ocspToken);
 	}
 }
