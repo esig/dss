@@ -36,7 +36,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  */
 @WebServiceClient(name = "SignatureService", targetNamespace = "http://impl.ws.dss.markt.ec.europa.eu/",
-	  wsdlLocation = "http://localhost:8080/dss-webapp/wservice/signatureService?wsdl")
+	  wsdlLocation = "http://localhost:8080/wservice/signatureService?wsdl")
 public class SignatureService_Service extends Service {
 
 	private static final String METHOD_URL = "/signatureService?wsdl";
@@ -49,9 +49,9 @@ public class SignatureService_Service extends Service {
         try {
             URL baseUrl;
             baseUrl = eu.europa.ec.markt.dss.ws.signature.SignatureService_Service.class.getResource(".");
-            url = new URL(baseUrl, "http://localhost:8080/dss-webapp/wservice/signatureService?wsdl");
+            url = new URL(baseUrl, "http://localhost:8080/wservice/signatureService?wsdl");
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8080/dss-webapp/wservice/signatureService?wsdl', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8080/wservice/signatureService?wsdl', retrying as a local file");
             logger.warning(e.getMessage());
         }
         SIGNATURESERVICE_WSDL_LOCATION = url;

@@ -36,7 +36,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  */
 @WebServiceClient(name = "ValidationService", targetNamespace = "http://impl.ws.dss.markt.ec.europa.eu/",
-	  wsdlLocation = "http://localhost:8080/dss-webapp/wservice/validationService?wsdl")
+	  wsdlLocation = "http://localhost:8080/wservice/validationService?wsdl")
 public class ValidationService_Service extends Service {
 
 	private static final String METHOD_URL = "/validationService?wsdl";
@@ -49,9 +49,9 @@ public class ValidationService_Service extends Service {
 		try {
 			URL baseUrl;
 			baseUrl = eu.europa.ec.markt.dss.ws.validation.ValidationService_Service.class.getResource(".");
-			url = new URL(baseUrl, "http://localhost:8080/dss-webapp/wservice/validationService?wsdl");
+			url = new URL(baseUrl, "http://localhost:8080/wservice/validationService?wsdl");
 		} catch (MalformedURLException e) {
-			logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8080/dss-webapp/wservice/validationService?wsdl', retrying as a local file");
+			logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8080/wservice/validationService?wsdl', retrying as a local file");
 			logger.warning(e.getMessage());
 		}
 		VALIDATIONSERVICE_WSDL_LOCATION = url;
