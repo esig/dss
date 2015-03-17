@@ -26,12 +26,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Test;
 
+import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
@@ -71,6 +75,16 @@ public class CAdESWithDEREncodedTimestampTest {
 
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
 		assertTrue(CollectionUtils.isNotEmpty(timestampIdList));
+	}
+
+
+	@Test
+	public void testFile3() throws DSSException, CMSException  {
+		DSSDocument dssDocument = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-CAdES/DE_CRY/Signature-C-DE_CRY-4.p7m");
+
+		CAdESSignature signature = new CAdESSignature(dssDocument.getBytes());
+		CMSSignedData cmsSignedData = signature.getCmsSignedData();
+		assertNotNull(cmsSignedData);
 	}
 
 }

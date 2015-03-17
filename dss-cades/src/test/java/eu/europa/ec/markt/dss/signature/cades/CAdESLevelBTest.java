@@ -76,6 +76,7 @@ import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
+import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
 
 public class CAdESLevelBTest extends AbstractTestSignature {
 
@@ -110,6 +111,9 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		try {
+
+			CAdESSignature signature = new CAdESSignature(byteArray);
+			assertNotNull(signature.getCmsSignedData());
 
 			ASN1InputStream asn1sInput = new ASN1InputStream(byteArray);
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();

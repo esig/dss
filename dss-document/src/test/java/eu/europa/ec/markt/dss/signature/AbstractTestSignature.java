@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
+import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.utils.TestUtils;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
@@ -135,6 +136,10 @@ public abstract class AbstractTestSignature {
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertTrue(CollectionUtils.isNotEmpty(signatures));
+
 		Reports reports = validator.validateDocument();
 		return reports;
 	}
