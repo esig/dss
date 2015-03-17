@@ -22,11 +22,11 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-xades</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-tsl-jaxb</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>

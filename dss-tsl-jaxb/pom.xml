@@ -9,6 +9,13 @@
 	<artifactId>dss-tsl-jaxb</artifactId>
 	<name>JAXB TSL Model</name>
 	<description>Generated source from XSD for TSL and XAdES.</description>
+	
+	<dependencies>
+		<dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+	</dependencies>
 
 	<profiles>
 		<profile>
