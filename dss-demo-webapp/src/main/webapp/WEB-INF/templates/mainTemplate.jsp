@@ -64,7 +64,7 @@
     </div>
     <footer role="contentinfo" class="full-row">
     	<div class="full-column">
-            <p><spring:message code="application.title"/> <spring:message code="application.version"/> - Nowina 2015 &copy;</p>
+            <p><spring:message code="application.title"/> <spring:message code="application.version"/></p>
         </div>
     </footer>
 
