@@ -43,8 +43,12 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>validation-policy</artifactId>
-			<version>4.5-SNAPSHOT</version>
-		</dependency>
+		</dependency> 
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-diagnostic-jaxb</artifactId>
+        </dependency>
+        
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
@@ -70,11 +74,6 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
-        <dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-diagnostic-jaxb</artifactId>
-			<version>4.5-SNAPSHOT</version>
-        </dependency>
 		
 		<dependency>
 			<groupId>junit</groupId>

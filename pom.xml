@@ -274,7 +274,7 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>sscd-mocca-adapter</artifactId>
-				<version>4.5-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -351,6 +351,16 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-diagnostic-jaxb</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>validation-policy</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

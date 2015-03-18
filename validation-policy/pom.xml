@@ -11,13 +11,12 @@
   	<dependency>
   		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
   		<artifactId>dss-spi</artifactId>
-  		<version>4.5-SNAPSHOT</version>
   	</dependency>
+  	
   	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
   		<scope>test</scope>
   	</dependency>
   </dependencies>
-  
 </project>
