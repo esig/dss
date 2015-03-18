@@ -59,7 +59,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateSource;
 import eu.europa.ec.markt.dss.validation102853.OCSPToken;
@@ -159,14 +158,13 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 	}
 
 	@Override
-	public OCSPToken getOCSPToken(final CertificateToken certificateToken, final CertificatePool certificatePool) {
+	public OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 
 		try {
 
 			final X509Certificate cert = certificateToken.getCertificate();
 			final BigInteger serialNumber = cert.getSerialNumber();
-			final CertificateToken issuerToken = certificateToken.getIssuerToken();
-			X509Certificate issuerCert = issuerToken.getCertificate();
+			X509Certificate issuerCert = issuerCertificateToken.getCertificate();
 			final OCSPReq ocspReq = generateOCSPRequest(issuerCert, serialNumber);
 
 			final DigestCalculator digestCalculator = DSSUtils.getSHA1DigestCalculator();
@@ -204,7 +202,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			BasicOCSPResp basicResp = basicOCSPRespBuilder.build(contentSigner, chain, ocspDate);
 			final SingleResp[] responses = basicResp.getResponses();
 
-			final OCSPToken ocspToken = new OCSPToken(basicResp, responses[0], certificatePool);
+			final OCSPToken ocspToken = new OCSPToken(basicResp, responses[0]);
 			//final OCSPResp ocspResp = new OCSPRespBuilder().build(OCSPRespBuilder.SUCCESSFUL, basicResp);
 			return ocspToken;
 		} catch (OCSPException e) {
