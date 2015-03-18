@@ -24,14 +24,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Document;
-
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.ProfileParameters;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
@@ -39,7 +36,6 @@ import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.SignatureForm;
-import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 
 /**
  * Parameters for a Signature creation/extension
@@ -77,19 +73,8 @@ public class SignatureParameters implements Serializable {
 	 */
 	private List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
 
-	ProfileParameters context;
 	private SignatureLevel signatureLevel;
 	private SignaturePackaging signaturePackaging;
-
-	/**
-	 * XAdES: ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
-	 */
-	private String signedInfoCanonicalizationMethod;
-
-	/**
-	 * XAdES: ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
-	 */
-	private String signedPropertiesCanonicalizationMethod;
 
 	/**
 	 * XAdES: The ds:SignatureMethod indicates the algorithms used to sign ds:SignedInfo.
@@ -105,24 +90,13 @@ public class SignatureParameters implements Serializable {
 	 * XAdES: The digest algorithm used to hash ds:SignedInfo.
 	 */
 	private DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
-	private List<DSSReference> dssReferences;
 
 	/**
 	 * The object representing the parameters related to B- level.
 	 */
 	private BLevelParameters bLevelParams = new BLevelParameters();
 
-	/**
-	 * The object representing the parameters related to ASiC from of the signature.
-	 */
-	private ASiCParameters aSiCParams = new ASiCParameters();
-
-	private String reason;
-	private String contactInfo;
 	private String deterministicId;
-
-	private String toCounterSignSignatureId;
-	private String xPathLocationString;
 
 	private TimestampParameters signatureTimestampParameters;
 	private TimestampParameters archiveTimestampParameters;
@@ -130,33 +104,13 @@ public class SignatureParameters implements Serializable {
 
 	private List<TimestampToken> contentTimestamps;
 
-	private XPathQueryHolder toCountersignXPathQueryHolder = new XPathQueryHolder();
-	private String toCounterSignSignatureValueId;
-
-	/**
-	 *	This attribute is used to inject ASiC root (inclusive canonicalization)
-	 */
-	private Document rootDocumentXAdES;
-
-	/**
-	 * This attribute is used to create visible signature in PAdES form
-	 */
-	private SignatureImageParameters imageParameters;
-
 	public SignatureParameters() {
-
 	}
 
 	/**
 	 * The document to be signed
 	 */
 	private DSSDocument detachedContent;
-
-	// TODO-Bob (11/09/2014):  More then one document
-	//	/**
-	//	 * The documents to be signed. In the case where more then one document should be signed.
-	//	 */
-	//	private List<DSSDocument> detachedContents;
 
 	/**
 	 * Copy constructor (used by ASiC)
@@ -170,15 +124,15 @@ public class SignatureParameters implements Serializable {
 		bLevelParams = new BLevelParameters(source.bLevelParams);
 		aSiCParams = new ASiCParameters(source.aSiCParams);
 		certificateChain = new ArrayList<ChainCertificate>(source.certificateChain);
-		contactInfo = source.contactInfo;
+		//		contactInfo = source.contactInfo;
 		deterministicId = source.getDeterministicId();
 		digestAlgorithm = source.digestAlgorithm;
 		encryptionAlgorithm = source.encryptionAlgorithm;
 		detachedContent = source.detachedContent;
 		privateKeyEntry = source.privateKeyEntry;
-		reason = source.reason;
-		signedInfoCanonicalizationMethod = source.signedInfoCanonicalizationMethod;
-		signedPropertiesCanonicalizationMethod = source.signedPropertiesCanonicalizationMethod;
+		//		reason = source.reason;
+		//		signedInfoCanonicalizationMethod = source.signedInfoCanonicalizationMethod;
+		//		signedPropertiesCanonicalizationMethod = source.signedPropertiesCanonicalizationMethod;
 		signatureAlgorithm = source.signatureAlgorithm;
 		signaturePackaging = source.signaturePackaging;
 		signatureLevel = source.signatureLevel;
@@ -186,52 +140,22 @@ public class SignatureParameters implements Serializable {
 		signingCertificate = source.signingCertificate;
 		signWithExpiredCertificate = source.signWithExpiredCertificate;
 		contentTimestamps = source.getContentTimestamps();
-		toCounterSignSignatureId = source.getToCounterSignSignatureId();
+		//		toCounterSignSignatureId = source.getToCounterSignSignatureId();
 		signatureTimestampParameters = source.signatureTimestampParameters;
 		archiveTimestampParameters = source.archiveTimestampParameters;
-		toCountersignXPathQueryHolder = source.toCountersignXPathQueryHolder;
 
-		final List<DSSReference> references = source.getReferences();
-		if ((references != null) && (references.size() > 0)) {
-
-			dssReferences = new ArrayList<DSSReference>();
-			for (final DSSReference reference : references) {
-
-				final DSSReference dssReference = new DSSReference(reference);
-				dssReferences.add(dssReference);
-			}
-		}
+		//		final List<DSSReference> references = source.getReferences();
+		//		if ((references != null) && (references.size() > 0)) {
+		//
+		//			dssReferences = new ArrayList<DSSReference>();
+		//			for (final DSSReference reference : references) {
+		//
+		//				final DSSReference dssReference = new DSSReference(reference);
+		//				dssReferences.add(dssReference);
+		//			}
+		//		}
 		// This is a simple copy of reference and not of the object content!
-		context = source.context;
-	}
-
-	/**
-	 * This method returns the Id of the signature to be countersigned.
-	 *
-	 * @return
-	 */
-	public String getToCounterSignSignatureId() {
-		return toCounterSignSignatureId;
-	}
-
-	/**
-	 * This method sets the Id of the signature to be countersigned.
-	 *
-	 * @param toCounterSignSignatureId
-	 */
-	public void setToCounterSignSignatureId(String toCounterSignSignatureId) {
-		this.toCounterSignSignatureId = toCounterSignSignatureId;
-	}
-
-	/**
-	 * This method returns the document to sign. In the case of the DETACHED signature this is the detached document.
-	 *
-	 * @return
-	 * @deprecated (4.1.0) use {@code getContents}
-	 */
-	@Deprecated
-	public DSSDocument getOriginalDocument() {
-		return detachedContent;
+		//		context = source.context;
 	}
 
 	/**
@@ -275,7 +199,7 @@ public class SignatureParameters implements Serializable {
 	}
 
 	/**
-	 * XAdES: The ID of xades:SignedProperties is contained in the signed content of the xades Signature. We must create this ID in a deterministic way.
+	 * The ID of xades:SignedProperties is contained in the signed content of the xades Signature. We must create this ID in a deterministic way.
 	 *
 	 * @return
 	 */
@@ -300,13 +224,6 @@ public class SignatureParameters implements Serializable {
 	public void setDeterministicId(final String deterministicId) {
 
 		this.deterministicId = deterministicId;
-	}
-
-	public ProfileParameters getContext() {
-		if (context == null) {
-			context = new ProfileParameters();
-		}
-		return context;
 	}
 
 	/**
@@ -411,6 +328,7 @@ public class SignatureParameters implements Serializable {
 	 *
 	 * @param privateKeyEntry the private key entry used to sign?
 	 */
+	@Deprecated
 	public void setPrivateKeyEntry(final DSSPrivateKeyEntry privateKeyEntry) {
 
 		this.privateKeyEntry = privateKeyEntry;
@@ -500,37 +418,6 @@ public class SignatureParameters implements Serializable {
 		this.signaturePackaging = signaturePackaging;
 	}
 
-	/**
-	 * @return (XAdES) the canonicalization algorithm to be used when dealing with SignedInfo.
-	 */
-	public String getSignedInfoCanonicalizationMethod() {
-		return signedInfoCanonicalizationMethod;
-	}
-
-	/**
-	 * Set the canonicalization algorithm to be used when dealing with SignedInfo (XAdES).
-	 *
-	 * @param signedInfoCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
-	 */
-	public void setSignedInfoCanonicalizationMethod(final String signedInfoCanonicalizationMethod) {
-		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
-	}
-
-	/**
-	 * @return (XAdES) the canonicalization algorithm to be used when dealing with SignedProperties.
-	 */
-	public String getSignedPropertiesCanonicalizationMethod() {
-		return signedPropertiesCanonicalizationMethod;
-	}
-
-	/**
-	 * Set the canonicalization algorithm to be used when dealing with SignedProperties (XAdES).
-	 *
-	 * @param signedPropertiesCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
-	 */
-	public void setSignedPropertiesCanonicalizationMethod(final String signedPropertiesCanonicalizationMethod) {
-		this.signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod;
-	}
 
 	/**
 	 * @return the digest algorithm
@@ -584,55 +471,9 @@ public class SignatureParameters implements Serializable {
 		return signatureAlgorithm;
 	}
 
-	public List<DSSReference> getReferences() {
-
-		return dssReferences;
-	}
-
-	public void setReferences(List<DSSReference> references) {
-		this.dssReferences = references;
-	}
-
-	/**
-	 * @return the reason (used by PAdES)
-	 */
-	public String getReason() {
-		return reason;
-	}
-
-	/**
-	 * @param reason the reason to set (used by PAdES)
-	 */
-	public void setReason(final String reason) {
-		this.reason = reason;
-	}
-
-	/**
-	 * @return the contactInfo (used by PAdES)
-	 */
-	public String getContactInfo() {
-		return contactInfo;
-	}
-
-	/**
-	 * @param contactInfo the contactInfo to set (used by PAdES)
-	 */
-	public void setContactInfo(final String contactInfo) {
-		this.contactInfo = contactInfo;
-	}
-
 	public BLevelParameters bLevel() {
 
 		return bLevelParams;
-	}
-
-	public ASiCParameters aSiC() {
-
-		if (aSiCParams == null) {
-
-			aSiCParams = new ASiCParameters();
-		}
-		return aSiCParams;
 	}
 
 	public TimestampParameters getSignatureTimestampParameters() {
@@ -668,50 +509,6 @@ public class SignatureParameters implements Serializable {
 		this.contentTimestampParameters = contentTimestampParameters;
 	}
 
-	public String getXPathLocationString() {
-		return xPathLocationString;
-	}
-
-	/**
-	 * Defines the area where the signature will be added (XAdES Enveloped)
-	 * @param xPathLocationString the xpath location of the signature
-	 */
-	public void setXPathLocationString(String xPathLocationString) {
-		this.xPathLocationString = xPathLocationString;
-	}
-
-	public XPathQueryHolder getToCountersignXPathQueryHolder() {
-		return toCountersignXPathQueryHolder;
-	}
-
-	public void setToCountersignXPathQueryHolder(XPathQueryHolder toCountersignXPathQueryHolder) {
-		this.toCountersignXPathQueryHolder = toCountersignXPathQueryHolder;
-	}
-
-	public String getToCounterSignSignatureValueId() {
-		return toCounterSignSignatureValueId;
-	}
-
-	public void setToCounterSignSignatureValueId(String toCounterSignSignatureValueId) {
-		this.toCounterSignSignatureValueId = toCounterSignSignatureValueId;
-	}
-
-	public Document getRootDocumentXAdES() {
-		return rootDocumentXAdES;
-	}
-
-	public void setRootDocumentXAdES(Document rootDocumentXAdES) {
-		this.rootDocumentXAdES = rootDocumentXAdES;
-	}
-
-	public SignatureImageParameters getImageParameters() {
-		return imageParameters;
-	}
-
-	public void setImageParameters(SignatureImageParameters imageParameters) {
-		this.imageParameters = imageParameters;
-	}
-
 	@Override
 	public String toString() {
 		return "SignatureParameters{" +
@@ -720,24 +517,18 @@ public class SignatureParameters implements Serializable {
 				", signingCertificate=" + signingCertificate +
 				", signWithExpiredCertificate=" + signWithExpiredCertificate +
 				", certificateChain_=" + certificateChain +
-				", context=" + context +
 				", signatureLevel=" + signatureLevel +
 				", signaturePackaging=" + signaturePackaging +
 				", signatureAlgorithm=" + signatureAlgorithm +
 				", encryptionAlgorithm=" + encryptionAlgorithm +
 				", digestAlgorithm=" + digestAlgorithm +
-				", references=" + dssReferences +
 				", bLevelParams=" + bLevelParams +
 				", aSiCParams=" + aSiCParams +
-				", reason='" + reason + '\'' +
-				", contactInfo='" + contactInfo + '\'' +
 				", deterministicId='" + deterministicId + '\'' +
 				", signatureTimestampParameters=" + signatureTimestampParameters.toString() +
 				", archiveTimestampParameters=" + archiveTimestampParameters.toString() +
 				", contentTimestamps=" + contentTimestamps +
 				", detachedContent=" + detachedContent +
-				", toCountersignSignatureId=" + toCounterSignSignatureId +
-				", toCountersignXPathQueryHolder=" + toCountersignXPathQueryHolder.toString() +
 				'}';
 	}
 }

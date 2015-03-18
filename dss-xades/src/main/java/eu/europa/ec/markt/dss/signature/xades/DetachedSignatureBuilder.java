@@ -31,7 +31,7 @@ import org.w3c.dom.Node;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
@@ -48,7 +48,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 	 * @param origDoc The original document to sign.
 	 * @param certificateVerifier
 	 */
-	public DetachedSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
+	public DetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 		super(params, origDoc, certificateVerifier);
 		setCanonicalizationMethods(params, CanonicalizationMethod.EXCLUSIVE);
 	}
@@ -56,15 +56,15 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 
 	@Override
 	protected Document buildRootDocumentDom() {
-		if (params.getRootDocumentXAdES() != null){
-			return params.getRootDocumentXAdES();
+		if (params.getRootDocument() != null){
+			return params.getRootDocument();
 		}
 		return DSSXMLUtils.buildDOM();
 	}
 
 	@Override
 	protected Node getParentNodeOfSignature() {
-		if (params.getRootDocumentXAdES() != null){
+		if (params.getRootDocument() != null){
 			return documentDom.getDocumentElement();
 		}
 		return documentDom;

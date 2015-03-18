@@ -7,6 +7,7 @@ import java.util.Date;
 import org.junit.Before;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
@@ -29,8 +30,8 @@ import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
  */
 public class CAdESLevelBWithExpiredCertificate extends AbstractTestSignature {
 
-	private DocumentSignatureService service;
-	private SignatureParameters signatureParameters;
+	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSPrivateKeyEntry privateKeyEntry;
 
@@ -41,7 +42,7 @@ public class CAdESLevelBWithExpiredCertificate extends AbstractTestSignature {
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateExpiredCertificateChain(SignatureAlgorithm.RSA_SHA512);
 
-		signatureParameters = new SignatureParameters();
+		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
@@ -64,7 +65,7 @@ public class CAdESLevelBWithExpiredCertificate extends AbstractTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
 		return service;
 	}
 

@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -45,6 +46,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSConfigurationException;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
@@ -58,7 +60,7 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  *
  */
 
-abstract class CAdESSignatureExtension implements SignatureExtension {
+abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureExtension.class);
 
@@ -97,13 +99,13 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
 	@Override
-	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final SignatureParameters parameters) throws DSSException {
+	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final CAdESSignatureParameters parameters) throws DSSException {
 
 		LOG.info("EXTEND SIGNATURES.");
 		try {
 			final InputStream inputStream = signatureToExtend.openStream();
 			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
 			final CMSSignedDocument cmsSignedDocument = new CMSSignedDocument(extendCMSSignedData);
 			return cmsSignedDocument;

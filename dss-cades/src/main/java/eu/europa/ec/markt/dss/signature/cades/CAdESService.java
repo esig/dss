@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
@@ -51,7 +51,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 /**
  * CAdES implementation of DocumentSignatureService
  */
-public class CAdESService extends AbstractSignatureService {
+public class CAdESService extends AbstractSignatureService<CAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESService.class);
 
@@ -71,7 +71,7 @@ public class CAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public byte[] getDataToSign(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException {
+	public byte[] getDataToSign(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters) throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
@@ -95,7 +95,7 @@ public class CAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters, final byte[] signatureValue)
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, final byte[] signatureValue)
 			throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
@@ -106,7 +106,7 @@ public class CAdESService extends AbstractSignatureService {
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue);
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, true);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
-		if (originalCmsSignedData == null && SignaturePackaging.DETACHED.equals(packaging) && parameters.getDetachedContent() == null) {
+		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && (parameters.getDetachedContent() == null)) {
 
 			parameters.setDetachedContent(toSignDocument);
 		}
@@ -134,7 +134,7 @@ public class CAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters) throws DSSException {
 
 		final SignatureTokenConnection token = parameters.getSigningToken();
 		if (token == null) {
@@ -158,7 +158,7 @@ public class CAdESService extends AbstractSignatureService {
 	 *            the SignerId identifying the signature to countersign
 	 * @return the updated signature document, in which the countersignature has been embedded
 	 */
-	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final SignatureParameters parameters, SignerId selector) {
+	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final CAdESSignatureParameters parameters, SignerId selector) {
 
 		final SignatureTokenConnection token = parameters.getSigningToken();
 		if (token == null) {
@@ -203,7 +203,7 @@ public class CAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final SignatureParameters parameters) {
+	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final CAdESSignatureParameters parameters) {
 
 		// false: All signature are extended
 		final SignatureExtension extension = getExtensionProfile(parameters, false);
@@ -222,7 +222,7 @@ public class CAdESService extends AbstractSignatureService {
 	 *            the signed data extracted from an existing signature or null
 	 * @return
 	 */
-	private DSSDocument getToSignData(final DSSDocument toSignDocument, final SignatureParameters parameters,
+	private DSSDocument getToSignData(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters,
 			final CMSSignedData originalCmsSignedData) {
 
 		final DSSDocument detachedContent = parameters.getDetachedContent();
@@ -265,18 +265,18 @@ public class CAdESService extends AbstractSignatureService {
 	 *            indicates if only the last CSM signature should be extended
 	 * @return {@code SignatureExtension} related to the predefine profile
 	 */
-	private SignatureExtension getExtensionProfile(final SignatureParameters parameters, final boolean onlyLastCMSSignature) {
+	private SignatureExtension getExtensionProfile(final CAdESSignatureParameters parameters, final boolean onlyLastCMSSignature) {
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		switch (signatureLevel) {
-		case CAdES_BASELINE_T:
-			return new CAdESLevelBaselineT(tspSource, certificateVerifier, onlyLastCMSSignature);
-		case CAdES_BASELINE_LT:
-			return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
-		case CAdES_BASELINE_LTA:
-			return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
-		default:
-			throw new DSSException("Unsupported signature format " + signatureLevel);
+			case CAdES_BASELINE_T:
+				return new CAdESLevelBaselineT(tspSource, certificateVerifier, onlyLastCMSSignature);
+			case CAdES_BASELINE_LT:
+				return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
+			case CAdES_BASELINE_LTA:
+				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
+			default:
+				throw new DSSException("Unsupported signature format " + signatureLevel);
 		}
 	}
 
@@ -289,7 +289,7 @@ public class CAdESService extends AbstractSignatureService {
 	 *            set of driving signing parameters
 	 * @return the {@code CMSSignedData} if the dssDocument is an CMS signed message. Null otherwise.
 	 */
-	private CMSSignedData getCmsSignedData(final DSSDocument dssDocument, final SignatureParameters parameters) {
+	private CMSSignedData getCmsSignedData(final DSSDocument dssDocument, final CAdESSignatureParameters parameters) {
 
 		CMSSignedData cmsSignedData = null;
 		try {
@@ -316,7 +316,7 @@ public class CAdESService extends AbstractSignatureService {
 	 */
 	private void assertSignaturePackaging(final SignaturePackaging packaging) throws DSSException {
 
-		if (packaging != SignaturePackaging.ENVELOPING && packaging != SignaturePackaging.DETACHED) {
+		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
 			throw new DSSException("Unsupported signature packaging: " + packaging);
 		}
 	}

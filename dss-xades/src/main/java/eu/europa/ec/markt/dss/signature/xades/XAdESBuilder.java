@@ -34,7 +34,7 @@ import org.w3c.dom.Text;
 
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
@@ -135,7 +135,7 @@ public abstract class XAdESBuilder {
 	 * This variable is a reference to the set of parameters relating to the structure and process of the creation or
 	 * extension of the electronic signature.
 	 */
-	protected SignatureParameters params;
+	protected XAdESSignatureParameters params;
 
 	/**
 	 * This is the variable which represents the root XML document root (with signature).

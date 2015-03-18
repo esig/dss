@@ -40,7 +40,7 @@ import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
-public abstract class AbstractTestExtension {
+public abstract class AbstractTestExtension<SP extends SignatureParameters> {
 
 	protected abstract DSSDocument getSignedDocument() throws Exception;
 
@@ -66,7 +66,7 @@ public abstract class AbstractTestExtension {
 		return getFinalSignatureLevel();
 	}
 
-	protected abstract DocumentSignatureService getSignatureServiceToExtend() throws Exception;
+	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend() throws Exception;
 
 	protected byte[] sign(SignatureAlgorithm algo, PrivateKey privateKey, byte[] bytesToSign) throws GeneralSecurityException {
 		final Signature signature = Signature.getInstance(algo.getJCEId());
@@ -101,19 +101,16 @@ public abstract class AbstractTestExtension {
 	}
 
 	private DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
-		SignatureParameters extensionParameters = getExtensionParameters();
-		DocumentSignatureService service = getSignatureServiceToExtend();
+		SP extensionParameters = getExtensionParameters();
+		DocumentSignatureService<SP> service = getSignatureServiceToExtend();
 
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extensionParameters);
 		assertNotNull(extendedDocument);
 		return extendedDocument;
 	}
 
-	protected SignatureParameters getExtensionParameters() {
-		SignatureParameters extensionParameters = new SignatureParameters();
-		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
-		return extensionParameters;
-	}
+
+	protected abstract SP getExtensionParameters();
 
 	private void checkOriginalLevel(DiagnosticData diagnosticData) {
 		assertEquals(getOriginalUnderlyingSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));

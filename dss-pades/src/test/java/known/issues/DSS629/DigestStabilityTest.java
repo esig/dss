@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
@@ -73,9 +73,9 @@ public class DigestStabilityTest {
 
 	private byte[] getDataToSign(DSSDocument toBeSigned, DSSPrivateKeyEntry privateKeyEntry, Date signingDate) {
 
-		DocumentSignatureService service = new PAdESService(new CommonCertificateVerifier());
+		DocumentSignatureService<PAdESSignatureParameters> service = new PAdESService(new CommonCertificateVerifier());
 
-		SignatureParameters signatureParameters = new SignatureParameters();
+		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(signingDate);
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());

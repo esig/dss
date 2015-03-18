@@ -36,7 +36,7 @@ import org.w3c.dom.Text;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
@@ -51,7 +51,7 @@ public class CounterSignatureBuilder extends EnvelopedSignatureBuilder {
 
 	private XAdESSignature toCounterSignXadesSignature;
 
-	public CounterSignatureBuilder(final DSSDocument toCounterSignDocument, final XAdESSignature toCounterSignXadesSignature, final SignatureParameters parameters,
+	public CounterSignatureBuilder(final DSSDocument toCounterSignDocument, final XAdESSignature toCounterSignXadesSignature, final XAdESSignatureParameters parameters,
 			final CertificateVerifier certificateVerifier) {
 
 		super(parameters, toCounterSignDocument, certificateVerifier);

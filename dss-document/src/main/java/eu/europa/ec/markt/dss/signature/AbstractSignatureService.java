@@ -34,7 +34,7 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 /**
  *
  */
-public abstract class AbstractSignatureService implements DocumentSignatureService {
+public abstract class AbstractSignatureService<SP extends SignatureParameters> implements DocumentSignatureService<SP> {
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
@@ -80,7 +80,7 @@ public abstract class AbstractSignatureService implements DocumentSignatureServi
 		final Date signingDate = parameters.bLevel().getSigningDate();
 		if (signingDate.after(notAfter) || signingDate.before(notBefore)) {
 			throw new DSSException(
-				  String.format("Signing Date (%s) is not in certificate validity range (%s, %s).", signingDate.toString(), notBefore.toString(), notAfter.toString()));
+					String.format("Signing Date (%s) is not in certificate validity range (%s, %s).", signingDate.toString(), notBefore.toString(), notAfter.toString()));
 		}
 	}
 }

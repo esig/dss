@@ -28,11 +28,6 @@ import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 /**
  * This class regroups the signature parameters related to ASiC form.
  *
- *
- *
- *
- *
- *
  */
 public class ASiCParameters implements Serializable {
 

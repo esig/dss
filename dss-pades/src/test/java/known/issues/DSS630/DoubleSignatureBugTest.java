@@ -30,7 +30,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
@@ -64,7 +64,7 @@ public class DoubleSignatureBugTest {
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(verifier);
 
-		SignatureParameters params = new SignatureParameters();
+		PAdESSignatureParameters params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
@@ -72,7 +72,7 @@ public class DoubleSignatureBugTest {
 		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
-		params = new SignatureParameters();
+		params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 

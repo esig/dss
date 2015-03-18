@@ -46,13 +46,14 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
 import eu.europa.ec.markt.dss.signature.ProfileParameters.Operation;
+import eu.europa.ec.markt.dss.signature.SignatureExtension;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.validation.ValidationContext;
@@ -67,7 +68,7 @@ import eu.europa.ec.markt.dss.validation102853.xades.XAdESSignature;
  * -T profile of XAdES signature
  *
  */
-public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignatureExtension {
+public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureExtension<XAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineT.class);
 
@@ -93,7 +94,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements XAdESSignat
 	}
 
 	@Override
-	public InMemoryDocument extendSignatures(final DSSDocument dssDocument, final SignatureParameters params) throws DSSException {
+	public InMemoryDocument extendSignatures(final DSSDocument dssDocument, final XAdESSignatureParameters params) throws DSSException {
 
 		if (dssDocument == null) {
 			throw new NullPointerException();

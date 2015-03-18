@@ -27,7 +27,7 @@ import java.io.InputStream;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -44,7 +44,7 @@ public class ExtendSignXmlXadesBToT extends Cookbook {
 
 		toExtendDocument = new FileDocument("signedXmlXadesB.xml");
 
-		SignatureParameters parameters = new SignatureParameters();
+		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);

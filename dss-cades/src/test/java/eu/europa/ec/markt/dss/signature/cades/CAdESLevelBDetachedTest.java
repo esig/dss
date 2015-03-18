@@ -27,6 +27,7 @@ import java.util.List;
 import org.junit.Before;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
@@ -44,8 +45,8 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
 public class CAdESLevelBDetachedTest extends AbstractTestSignature {
 
-	private DocumentSignatureService service;
-	private SignatureParameters signatureParameters;
+	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSPrivateKeyEntry privateKeyEntry;
 
@@ -56,7 +57,7 @@ public class CAdESLevelBDetachedTest extends AbstractTestSignature {
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
 
-		signatureParameters = new SignatureParameters();
+		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
@@ -80,7 +81,7 @@ public class CAdESLevelBDetachedTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
 		return service;
 	}
 

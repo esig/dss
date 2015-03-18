@@ -28,7 +28,7 @@ import eu.europa.ec.markt.dss.parameter.SignatureParameters;
  * consists of adding unsigned properties to the signature. It can be done without breaking the signature.
  *
  */
-public interface SignatureExtension {
+public interface SignatureExtension<SP extends SignatureParameters> {
 
 	/**
 	 * Extends the level of the signatures contained in a document.
@@ -38,6 +38,6 @@ public interface SignatureExtension {
 	 * @return
 	 * @throws DSSException
 	 */
-	DSSDocument extendSignatures(DSSDocument document, SignatureParameters params) throws DSSException;
+	DSSDocument extendSignatures(DSSDocument document, SP params) throws DSSException;
 
 }

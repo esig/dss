@@ -28,7 +28,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters.SignerLocation;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -50,7 +50,7 @@ public class CountersignXmlXadesB extends Cookbook {
 		preparePKCS12TokenAndKey();
 
 		// Preparing the parameters for the countersignature
-		SignatureParameters countersigningParameters = new SignatureParameters();
+		XAdESSignatureParameters countersigningParameters = new XAdESSignatureParameters();
 		countersigningParameters.setSigningToken(signingToken);
 		countersigningParameters.setPrivateKeyEntry(privateKey);
 		countersigningParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);

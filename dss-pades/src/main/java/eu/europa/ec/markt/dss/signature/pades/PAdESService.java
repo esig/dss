@@ -23,6 +23,8 @@ package eu.europa.ec.markt.dss.signature.pades;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -32,10 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSASN1Utils;
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
@@ -52,7 +53,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 /**
  * PAdES implementation of the DocumentSignatureService
  */
-public class PAdESService extends AbstractSignatureService {
+public class PAdESService extends AbstractSignatureService<PAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
 
@@ -70,7 +71,7 @@ public class PAdESService extends AbstractSignatureService {
 		LOG.debug("+ PAdESService created");
 	}
 
-	private SignatureExtension getExtensionProfile(SignatureParameters parameters) {
+	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(PAdESSignatureParameters parameters) {
 
 		switch (parameters.getSignatureLevel()) {
 			case PAdES_BASELINE_B:
@@ -87,7 +88,7 @@ public class PAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public byte[] getDataToSign(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException {
+	public byte[] getDataToSign(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -97,7 +98,7 @@ public class PAdESService extends AbstractSignatureService {
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 		final InputStream inputStream = toSignDocument.openStream();
 		final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-		DSSUtils.closeQuietly(inputStream);
+		IOUtils.closeQuietly(inputStream);
 
 		SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
@@ -112,7 +113,7 @@ public class PAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters, final byte[] signatureValue) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final byte[] signatureValue) throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
 		try {
@@ -122,7 +123,7 @@ public class PAdESService extends AbstractSignatureService {
 			final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 			InputStream inputStream = toSignDocument.openStream();
 			final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 
 			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
@@ -143,16 +144,16 @@ public class PAdESService extends AbstractSignatureService {
 			final byte[] encodedData = DSSASN1Utils.getEncoded(data);
 			inputStream = toSignDocument.openStream();
 			pdfSignatureService.sign(inputStream, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 			final DSSDocument signature;
-			if (DSSUtils.isEmpty(toSignDocument.getName())) {
+			if (StringUtils.isEmpty(toSignDocument.getName())) {
 				signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), null, MimeType.PDF);
 			} else {
 				signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), toSignDocument.getName(), MimeType.PDF);
 			}
 
-			final SignatureExtension extension = getExtensionProfile(parameters);
-			if (signatureLevel != SignatureLevel.PAdES_BASELINE_B && signatureLevel != SignatureLevel.PAdES_BASELINE_T && extension != null) {
+			final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters);
+			if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {
 				final DSSDocument extendSignature = extension.extendSignatures(signature, parameters);
 				parameters.setDeterministicId(null);
 				return extendSignature;
@@ -166,9 +167,9 @@ public class PAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument extendDocument(DSSDocument toExtendDocument, SignatureParameters parameters) throws DSSException {
+	public DSSDocument extendDocument(DSSDocument toExtendDocument, PAdESSignatureParameters parameters) throws DSSException {
 
-		final SignatureExtension extension = getExtensionProfile(parameters);
+		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			return extension.extendSignatures(toExtendDocument, parameters);
 		}
@@ -176,7 +177,7 @@ public class PAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) throws DSSException {
 
 		final SignatureTokenConnection token = parameters.getSigningToken();
 		if (token == null) {
