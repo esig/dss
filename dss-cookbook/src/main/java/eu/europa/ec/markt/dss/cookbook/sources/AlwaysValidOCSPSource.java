@@ -158,14 +158,13 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 	}
 
 	@Override
-	public OCSPToken getOCSPToken(final CertificateToken certificateToken) {
+	public OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 
 		try {
 
 			final X509Certificate cert = certificateToken.getCertificate();
 			final BigInteger serialNumber = cert.getSerialNumber();
-			final CertificateToken issuerToken = certificateToken.getIssuerToken();
-			X509Certificate issuerCert = issuerToken.getCertificate();
+			X509Certificate issuerCert = issuerCertificateToken.getCertificate();
 			final OCSPReq ocspReq = generateOCSPRequest(issuerCert, serialNumber);
 
 			final DigestCalculator digestCalculator = DSSUtils.getSHA1DigestCalculator();

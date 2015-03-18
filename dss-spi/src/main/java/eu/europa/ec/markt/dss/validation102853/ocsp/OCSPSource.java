@@ -38,7 +38,8 @@ public interface OCSPSource extends Serializable {
 	 * Gets an {@code OCSPToken} for the given certificate / issuer's certificate couple. The coherence between the response and the request is checked.
 	 *
 	 * @param certificateToken The {@code CertificateToken} for which the request is made
+	 * @param issuerCertificateToken The {@code CertificateToken} which is the issuer of the certificateToken
 	 * @return {@code OCSPToken} containing information about the validity of the cert
 	 */
-	OCSPToken getOCSPToken(final CertificateToken certificateToken);
+	OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
 }

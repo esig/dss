@@ -45,7 +45,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
 	@Override
-	final public OCSPToken getOCSPToken(final CertificateToken certificateToken) {
+	final public OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 
 		final List<BasicOCSPResp> containedOCSPResponses = getContainedOCSPResponses();
 		if (LOG.isTraceEnabled()) {
@@ -53,7 +53,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 			LOG.trace("--> OfflineOCSPSource queried for " + dssIdAsString + " contains: " + containedOCSPResponses.size() + " element(s).");
 		}
 		final X509Certificate x509Certificate = certificateToken.getCertificate();
-		final X509Certificate issuerX509Certificate = certificateToken.getIssuerToken().getCertificate();
+		final X509Certificate issuerX509Certificate = issuerCertificateToken.getCertificate();
 		/**
 		 * TODO: (Bob 2013.05.08) Does the OCSP responses always use SHA1?<br>
 		 * RFC 2560:<br>

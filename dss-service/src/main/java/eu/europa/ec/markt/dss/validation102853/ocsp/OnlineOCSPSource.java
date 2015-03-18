@@ -108,7 +108,7 @@ public class OnlineOCSPSource implements OCSPSource {
 	}
 
 	@Override
-	public OCSPToken getOCSPToken(CertificateToken certificateToken) {
+	public OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		if (dataLoader == null) {
 			throw new NullPointerException("DataLoad is not provided !");
 		}
@@ -128,7 +128,7 @@ public class OnlineOCSPSource implements OCSPSource {
 				return null;
 			}
 
-			final X509Certificate issuerX509Certificate = certificateToken.getIssuerToken().getCertificate();
+			final X509Certificate issuerX509Certificate = issuerCertificateToken.getCertificate();
 			final byte[] content = buildOCSPRequest(x509Certificate, issuerX509Certificate);
 
 			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
