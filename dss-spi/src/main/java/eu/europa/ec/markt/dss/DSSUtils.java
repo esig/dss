@@ -1379,7 +1379,6 @@ public final class DSSUtils {
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			if (signingTime != null) {
-				logger.info("Time : "+Long.toString(signingTime.getTime()));
 				baos.write(Long.toString(signingTime.getTime()).getBytes());
 			}
 			baos.write(id.getBytes());
@@ -1388,7 +1387,6 @@ public final class DSSUtils {
 			byte[] digestValue = digest.digest();
 
 			final String deterministicId = "id-" + Hex.encodeHexString(digestValue);
-			logger.info("deterministicId : "+deterministicId);
 			return deterministicId;
 		} catch (Exception e) {
 			throw new DSSException(e);

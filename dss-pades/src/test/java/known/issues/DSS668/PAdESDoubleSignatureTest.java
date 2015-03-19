@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,9 +52,9 @@ public class PAdESDoubleSignatureTest {
 
 	private static SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
 
-	private DSSDocument toBeSigned;
+	private static DSSDocument toBeSigned;
 
-	private DSSPrivateKeyEntry privateKeyEntry;
+	private static DSSPrivateKeyEntry privateKeyEntry;
 
 	@Parameters
 	public static List<Object[]> data() {
@@ -64,8 +64,8 @@ public class PAdESDoubleSignatureTest {
 	public PAdESDoubleSignatureTest() {
 	}
 
-	@Before
-	public  void setUp() throws Exception {
+	@BeforeClass
+	public static void setUp() throws Exception {
 		toBeSigned = new FileDocument(new File("src/test/resources/sample.pdf"));
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(signatureAlgorithm);

@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -50,11 +50,11 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
 @RunWith(Parameterized.class)
 public class XAdESDoubleSignatureTest {
 
-	private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
+	private static SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
 
-	private DSSDocument toBeSigned;
+	private static DSSDocument toBeSigned;
 
-	private DSSPrivateKeyEntry privateKeyEntry;
+	private static DSSPrivateKeyEntry privateKeyEntry;
 
 	// Run 10 times this test
 	@Parameters
@@ -65,8 +65,8 @@ public class XAdESDoubleSignatureTest {
 	public XAdESDoubleSignatureTest() {
 	}
 
-	@Before
-	public  void setUp() throws Exception {
+	@BeforeClass
+	public static void setUp() throws Exception {
 		toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(signatureAlgorithm);
