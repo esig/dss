@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues.DSS630;
+package eu.europa.ec.markt.dss;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -75,8 +75,6 @@ public class DoubleSignatureBugTest {
 		params = new SignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
-
-		Thread.sleep(2000);
 
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);

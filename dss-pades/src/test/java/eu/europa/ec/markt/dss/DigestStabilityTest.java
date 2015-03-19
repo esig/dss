@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues.DSS629;
+package eu.europa.ec.markt.dss;
 
 import static org.junit.Assert.assertEquals;
 

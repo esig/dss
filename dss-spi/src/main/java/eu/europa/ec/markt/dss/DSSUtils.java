@@ -21,6 +21,7 @@
 package eu.europa.ec.markt.dss;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -1375,16 +1376,21 @@ public final class DSSUtils {
 
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
-			if(signingTime != null) {
-				digest.update(Long.toString(signingTime.getTime()).getBytes());
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			if (signingTime != null) {
+				logger.info("Time : "+Long.toString(signingTime.getTime()));
+				baos.write(Long.toString(signingTime.getTime()).getBytes());
 			}
-			digest.update(id.getBytes());
+			baos.write(id.getBytes());
+			digest.update(baos.toByteArray());
 
 			byte[] digestValue = digest.digest();
 
 			final String deterministicId = "id-" + Hex.encodeHexString(digestValue);
+			logger.info("deterministicId : "+deterministicId);
 			return deterministicId;
-		} catch (NoSuchAlgorithmException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 

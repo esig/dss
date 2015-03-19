@@ -48,11 +48,6 @@ import eu.europa.ec.markt.dss.validation102853.xades.XPathQueryHolder;
 public class SignatureParameters implements Serializable {
 
 	/**
-	 * This variable is used to ensure the uniqueness of the signature in the same document.
-	 */
-	protected static int signatureCounter = 0;
-
-	/**
 	 * This parameter is used in one shot signature process. Cannot be used with 3-steps signature process.
 	 */
 	private SignatureTokenConnection signingToken;
@@ -280,12 +275,10 @@ public class SignatureParameters implements Serializable {
 	 * @return
 	 */
 	public String getDeterministicId() {
-
 		if (deterministicId != null) {
-
 			return deterministicId;
 		}
-		final String dssId = (signingCertificate == null ? "" : signingCertificate.getDSSId().asXmlId()) + signatureCounter++;
+		final String dssId = (signingCertificate == null ? "" : signingCertificate.getDSSId().asXmlId());
 		deterministicId = DSSUtils.getDeterministicId(bLevelParams.getSigningDate(), dssId);
 		return deterministicId;
 	}
