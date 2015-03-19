@@ -18,16 +18,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.ec.markt.dss;
+package eu.europa.ec.markt.dss.signature.xades;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
@@ -35,7 +39,7 @@ import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.signature.pades.PAdESService;
+import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.utils.TestUtils;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
@@ -43,17 +47,27 @@ import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
-public class DoubleSignatureBugTest {
+@RunWith(Parameterized.class)
+public class XAdESDoubleSignatureTest {
 
-	private static SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
+	private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
 
-	private static DSSDocument toBeSigned;
+	private DSSDocument toBeSigned;
 
-	private static DSSPrivateKeyEntry privateKeyEntry;
+	private DSSPrivateKeyEntry privateKeyEntry;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		toBeSigned = new FileDocument(new File("src/test/resources/sample.pdf"));
+	// Run 10 times this test
+	@Parameters
+	public static List<Object[]> data() {
+		return Arrays.asList(new Object[10][0]);
+	}
+
+	public XAdESDoubleSignatureTest() {
+	}
+
+	@Before
+	public  void setUp() throws Exception {
+		toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(signatureAlgorithm);
 	}
@@ -62,10 +76,11 @@ public class DoubleSignatureBugTest {
 	public void testDoubleSignature() throws InterruptedException {
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-		PAdESService service = new PAdESService(verifier);
+		XAdESService service = new XAdESService(verifier);
 
 		SignatureParameters params = new SignatureParameters();
-		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
 		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
@@ -73,7 +88,8 @@ public class DoubleSignatureBugTest {
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new SignatureParameters();
-		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
 		dataToSign = service.getDataToSign(signedDocument, params);
@@ -89,7 +105,6 @@ public class DoubleSignatureBugTest {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
-		// Bug with 2 signatures which have the same ID
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		assertEquals(2, signatureIdList.size());
 		for (String signatureId : signatureIdList) {
