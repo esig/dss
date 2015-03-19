@@ -54,7 +54,7 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
 public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
-	private SignatureParameters signatureParameters;
+	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSPrivateKeyEntry issuerEntry;
 	private DSSPrivateKeyEntry signerEntry;

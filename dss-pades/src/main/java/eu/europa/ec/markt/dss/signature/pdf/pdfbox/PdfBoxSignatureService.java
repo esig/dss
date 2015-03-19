@@ -60,7 +60,6 @@ import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureImageParameters;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSPDFUtils;
 import eu.europa.ec.markt.dss.signature.pades.visible.ImageFactory;
 import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
@@ -212,7 +211,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	private PDSignature createSignatureDictionary(final SignatureParameters parameters) {
+	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters) {
 
 		final PDSignature signature = new PDSignature();
 		signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
@@ -228,7 +227,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		return signature;
 	}
 
-	public static void saveDocumentIncrementally(SignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream,
+	public static void saveDocumentIncrementally(PAdESSignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream,
 			PDDocument pdDocument) throws DSSException {
 
 		FileInputStream signedFileInputStream = null;

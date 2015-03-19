@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
@@ -44,51 +44,51 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
 public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineT.class);
-    final CertificateVerifier certificateVerifier;
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineT.class);
+	final CertificateVerifier certificateVerifier;
 
-    public CAdESLevelBaselineT(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastCMSSignature) {
+	public CAdESLevelBaselineT(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastCMSSignature) {
 
-        super(signatureTsa, onlyLastCMSSignature);
-        this.certificateVerifier = certificateVerifier;
-    }
+		super(signatureTsa, onlyLastCMSSignature);
+		this.certificateVerifier = certificateVerifier;
+	}
 
-    @Override
-    protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, SignatureParameters parameters)  throws DSSException {
+	@Override
+	protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)  throws DSSException {
 
-        final CAdESSignature cadesSignature = new CAdESSignature(signedData, signerInformation);
-	    cadesSignature.setDetachedContents(parameters.getDetachedContent());
-        assertExtendSignaturePossible(cadesSignature);
+		final CAdESSignature cadesSignature = new CAdESSignature(signedData, signerInformation);
+		cadesSignature.setDetachedContents(parameters.getDetachedContent());
+		assertExtendSignaturePossible(cadesSignature);
 
-        AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(signerInformation);
-        unsignedAttributes = addSignatureTimestampAttribute(signerInformation, unsignedAttributes, parameters);
+		AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(signerInformation);
+		unsignedAttributes = addSignatureTimestampAttribute(signerInformation, unsignedAttributes, parameters);
 
-        return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
-    }
+		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+	}
 
-    /**
-     * @param cadesSignature
-     */
-    protected void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
+	/**
+	 * @param cadesSignature
+	 */
+	 protected void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
 
-	    final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
-        if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
-            throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
-        }
-        AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(cadesSignature.getSignerInformation());
-        if (unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp) != null) {
-            throw new DSSException(String.format(exceptionMessage, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
-        }
-    }
+		 final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
+		 if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
+			 throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
+		 }
+		 AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(cadesSignature.getSignerInformation());
+		 if (unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp) != null) {
+			 throw new DSSException(String.format(exceptionMessage, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
+		 }
+	 }
 
-    private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes, SignatureParameters parameters) {
+	 private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes, CAdESSignatureParameters parameters) {
 
-	    ASN1Object signatureTimeStamp = getTimeStampAttributeValue(signatureTsa, signerInformation.getSignature(), parameters);
-        return unsignedAttributes.add(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken, signatureTimeStamp);
-    }
+		 ASN1Object signatureTimeStamp = getTimeStampAttributeValue(signatureTsa, signerInformation.getSignature(), parameters);
+		 return unsignedAttributes.add(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken, signatureTimeStamp);
+	 }
 
-    public CertificateVerifier getCertificateVerifier() {
-        return certificateVerifier;
-    }
+	 public CertificateVerifier getCertificateVerifier() {
+		 return certificateVerifier;
+	 }
 
 }

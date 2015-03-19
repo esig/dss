@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.validation.ValidationContext;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -71,7 +71,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	}
 
 	@Override
-	protected SignerInformation extendCMSSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, SignatureParameters parameters) throws DSSException {
+	protected SignerInformation extendCMSSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) throws DSSException {
 
 		// add a LT level or replace an existing LT level
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
@@ -84,7 +84,8 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		return signerInformation;
 	}
 
-	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, SignatureParameters parameters) {
+	@Override
+	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContent());
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
@@ -121,8 +122,8 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		cmsSignedData = cmsSignedDataBuilder
-			  .regenerateCMSSignedData(cmsSignedData, parameters, certificatesStore, attributeCertificatesStore, crlsStore, otherRevocationInfoFormatStoreBasic,
-					otherRevocationInfoFormatStoreOcsp);
+				.regenerateCMSSignedData(cmsSignedData, parameters, certificatesStore, attributeCertificatesStore, crlsStore, otherRevocationInfoFormatStoreBasic,
+						otherRevocationInfoFormatStoreOcsp);
 		return cmsSignedData;
 	}
 
@@ -130,7 +131,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	 * @param cadesSignature
 	 * @param parameters
 	 */
-	private void assertExtendSignaturePossible(CAdESSignature cadesSignature, SignatureParameters parameters) throws DSSException {
+	private void assertExtendSignaturePossible(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) throws DSSException {
 		//        if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
 		//            final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
 		//            throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));

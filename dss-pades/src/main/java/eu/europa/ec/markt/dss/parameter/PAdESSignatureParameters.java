@@ -1,6 +1,6 @@
 package eu.europa.ec.markt.dss.parameter;
 
-public class PAdESSignatureParameters extends SignatureParameters {
+public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	private String reason;
 	private String contactInfo;

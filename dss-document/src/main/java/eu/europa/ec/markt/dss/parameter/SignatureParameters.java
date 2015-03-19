@@ -122,7 +122,7 @@ public class SignatureParameters implements Serializable {
 			throw new NullPointerException();
 		}
 		bLevelParams = new BLevelParameters(source.bLevelParams);
-		aSiCParams = new ASiCParameters(source.aSiCParams);
+		//		aSiCParams = new ASiCParameters(source.aSiCParams);
 		certificateChain = new ArrayList<ChainCertificate>(source.certificateChain);
 		//		contactInfo = source.contactInfo;
 		deterministicId = source.getDeterministicId();
@@ -523,7 +523,6 @@ public class SignatureParameters implements Serializable {
 				", encryptionAlgorithm=" + encryptionAlgorithm +
 				", digestAlgorithm=" + digestAlgorithm +
 				", bLevelParams=" + bLevelParams +
-				", aSiCParams=" + aSiCParams +
 				", deterministicId='" + deterministicId + '\'' +
 				", signatureTimestampParameters=" + signatureTimestampParameters.toString() +
 				", archiveTimestampParameters=" + archiveTimestampParameters.toString() +

@@ -31,7 +31,7 @@ import org.bouncycastle.cms.CMSAttributeTableGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.cades.CAdESLevelBaselineB;
 
 /**
@@ -44,7 +44,7 @@ class PAdESLevelBaselineB {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineB.class);
 
-	AttributeTable getSignedAttributes(Map params, CAdESLevelBaselineB cadesProfile, SignatureParameters parameters, byte[] messageDigest) {
+	AttributeTable getSignedAttributes(Map params, CAdESLevelBaselineB cadesProfile, PAdESSignatureParameters parameters, byte[] messageDigest) {
 
 		AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
 

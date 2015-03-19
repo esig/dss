@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.OID;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
@@ -63,13 +63,13 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	}
 
 	@Override
-	protected CMSSignedData preExtendCMSSignedData(CMSSignedData cmsSignedData, SignatureParameters parameters) {
+	protected CMSSignedData preExtendCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
 		return cadesProfileLT.extendCMSSignatures(cmsSignedData, parameters);
 	}
 
 	@Override
 	protected SignerInformation extendCMSSignature(final CMSSignedData cmsSignedData, SignerInformation signerInformation,
-	                                               final SignatureParameters parameters) throws DSSException {
+			final CAdESSignatureParameters parameters) throws DSSException {
 
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContent());
@@ -104,7 +104,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
 	private AttributeTable addArchiveTimestampV3Attribute(CAdESSignature cadesSignature, CMSSignedData cmsSignedData, SignerInformation signerInformation,
-	                                                      SignatureParameters parameters, AttributeTable unsignedAttributes) throws DSSException {
+			CAdESSignatureParameters parameters, AttributeTable unsignedAttributes) throws DSSException {
 
 		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(cadesSignature);
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
@@ -128,7 +128,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	 * @return
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
-	private byte[] getOriginalDocumentBytes(CMSSignedData cmsSignedData, SignatureParameters parameters) throws DSSException {
+	private byte[] getOriginalDocumentBytes(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) throws DSSException {
 
 		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		if (signedContent != null) {

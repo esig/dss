@@ -43,8 +43,8 @@ import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 
 public class XAdESLevelLTTest extends AbstractTestSignature {
 
-	private DocumentSignatureService service;
-	private SignatureParameters signatureParameters;
+	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSPrivateKeyEntry privateKeyEntry;
 
@@ -69,7 +69,7 @@ public class XAdESLevelLTTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
 

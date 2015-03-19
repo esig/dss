@@ -32,7 +32,6 @@ import org.w3c.dom.Node;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureProfile;
 import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
@@ -55,7 +54,6 @@ import eu.europa.ec.markt.dss.validation102853.xades.XMLDocumentValidator;
 public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters> {
 
 	static {
-
 		Init.init();
 	}
 
@@ -101,7 +99,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			profile = new XAdESLevelBaselineB(certificateVerifier);
 		}
 		final DSSDocument signedDoc = profile.signDocument(toSignDocument, parameters, signatureValue);
-		final SignatureExtension extension = getExtensionProfile(parameters);
+		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
@@ -146,7 +144,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final XAdESSignatureParameters parameters) throws DSSException {
 
 		parameters.getContext().setOperationKind(Operation.EXTENDING);
-		final SignatureExtension extension = getExtensionProfile(parameters);
+		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 
 			final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
@@ -231,7 +229,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	 * @param parameters
 	 * @return
 	 */
-	private SignatureExtension getExtensionProfile(final SignatureParameters parameters) {
+	private SignatureExtension<XAdESSignatureParameters> getExtensionProfile(final XAdESSignatureParameters parameters) {
 
 		switch (parameters.getSignatureLevel()) {
 			case XAdES_BASELINE_B:
