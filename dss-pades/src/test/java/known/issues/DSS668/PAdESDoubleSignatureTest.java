@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -34,6 +35,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -72,22 +74,27 @@ public class PAdESDoubleSignatureTest {
 	}
 
 	@Test
-	public void testDoubleSignature() throws InterruptedException {
+	public void testDoubleSignature() throws Exception {
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(verifier);
+		CertificateService certificateService = new CertificateService();
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
 		SignatureParameters params = new SignatureParameters();
-		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
 		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
 		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
+		Thread.sleep(1000); // SigningDate is limited to a second
+
 		params = new SignatureParameters();
-		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
