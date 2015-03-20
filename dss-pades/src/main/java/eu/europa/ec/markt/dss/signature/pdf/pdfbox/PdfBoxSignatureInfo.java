@@ -53,12 +53,13 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 	 * @throws IOException
 	 */
 	PdfBoxSignatureInfo(CertificatePool validationCertPool, PdfDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms,
-	                    InputStream inputStream) throws IOException {
+			InputStream inputStream) throws IOException {
 		super(validationCertPool, outerCatalog, document, signature, cms, inputStream);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
 			final InMemoryDocument detachedContent = new InMemoryDocument(signedBytes);
 			cades.setDetachedContents(detachedContent);
+			cades.setPadesSigningTime(getSigningDate());
 		} catch (CMSException e) {
 			throw new IOException(e);
 		}
@@ -107,7 +108,7 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();
-		result = 31 * result + cades.hashCode();
+		result = (31 * result) + cades.hashCode();
 		return result;
 	}
 
