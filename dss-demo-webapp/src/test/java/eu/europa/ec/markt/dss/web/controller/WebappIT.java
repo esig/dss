@@ -17,7 +17,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class WebappIT {
 
-	private static final String BASE_URL = "http://localhost:8765/dss-demo-webapp/";
+	private static final String BASE_URL = "http://localhost:8765/";
 
 	private WebDriver driver;
 

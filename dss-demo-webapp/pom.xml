@@ -50,9 +50,9 @@
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat6-maven-plugin</artifactId>
-				<configuration>
-					<path>/dss-webapp</path>
-				</configuration>
+	            <configuration>
+	                <path>/</path>
+	            </configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -235,7 +235,7 @@
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat6-maven-plugin</artifactId>
 						<configuration>
-							<path>/dss-demo-webapp</path>
+							<path>/</path>
 							<port>8765</port>
 							<systemProperties>
         						<log>${project.build.directory}/src/test/resources</log>
