@@ -1373,25 +1373,34 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static String getDeterministicId(final Date signingTime, final String id) {
-
 		try {
-			MessageDigest digest = MessageDigest.getInstance("MD5");
-
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			if (signingTime != null) {
 				baos.write(Long.toString(signingTime.getTime()).getBytes());
 			}
 			baos.write(id.getBytes());
-			digest.update(baos.toByteArray());
 
-			byte[] digestValue = digest.digest();
-
-			final String deterministicId = "id-" + Hex.encodeHexString(digestValue);
+			final String deterministicId = "id-" + getMD5Digest(baos);
 			return deterministicId;
+		} catch (IOException e){
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * Returns a Hex encoded of the MD5 digest of ByteArrayOutputStream
+	 * @param baos
+	 * @return
+	 */
+	public static String getMD5Digest(ByteArrayOutputStream baos){
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			digest.update(baos.toByteArray());
+			byte[] digestValue = digest.digest();
+			return Hex.encodeHexString(digestValue);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
-
 	}
 
 	public static Date getLocalDate(final Date gtmDate, final Date localDate) {

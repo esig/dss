@@ -20,6 +20,7 @@
  */
 package eu.europa.ec.markt.dss.validation102853.pades;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -193,7 +194,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	public SignatureProductionPlace getSignatureProductionPlace() {
 
 		String location = pdfSignatureInfo.getLocation();
-		if (location == null || location.trim().length() == 0) {
+		if ((location == null) || (location.trim().length() == 0)) {
 
 			return cadesSignature.getSignatureProductionPlace();
 		} else {
@@ -430,8 +431,17 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getId() {
+		String cadesId = cadesSignature.getId();
+		return cadesId + getDigestOfByteRange();
+	}
 
-		return cadesSignature.getId();
+	private String getDigestOfByteRange() {
+		int[] signatureByteRange = pdfSignatureInfo.getSignatureByteRange();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		for (int i : signatureByteRange) {
+			baos.write(i);
+		}
+		return DSSUtils.getMD5Digest(baos);
 	}
 
 	@Override
@@ -452,24 +462,24 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		boolean dataForLevelPresent = true;
 		final List<TimestampToken> signatureTimestamps = getSignatureTimestamps();
 		switch (signatureLevel) {
-		case PAdES_BASELINE_LTA:
-			dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
-			dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
-			break;
-		case PAdES_102778_LTV:
-			dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
-			break;
-		case PAdES_BASELINE_LT:
-			dataForLevelPresent &= hasDSSDictionary();
-			// break omitted purposely
-		case PAdES_BASELINE_T:
-			dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
-			// break omitted purposely
-		case PAdES_BASELINE_B:
-			dataForLevelPresent &= (pdfSignatureInfo != null);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown level " + signatureLevel);
+			case PAdES_BASELINE_LTA:
+				dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
+				dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
+				break;
+			case PAdES_102778_LTV:
+				dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
+				break;
+			case PAdES_BASELINE_LT:
+				dataForLevelPresent &= hasDSSDictionary();
+				// break omitted purposely
+			case PAdES_BASELINE_T:
+				dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
+				// break omitted purposely
+			case PAdES_BASELINE_B:
+				dataForLevelPresent &= (pdfSignatureInfo != null);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
 		LOG.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
 		return dataForLevelPresent;
