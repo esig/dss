@@ -66,7 +66,7 @@ public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 
 		CertificateService certificateService = new CertificateService();
 		issuerEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
-		signerEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1, issuerEntry);
+		signerEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerEntry);
 
 		CRLGenerator crlGenerator = new CRLGenerator();
 		generatedCRL = crlGenerator.generateCRL(signerEntry.getCertificate().getCertificate(), issuerEntry, new Date(), CRLReason.privilegeWithdrawn);

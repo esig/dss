@@ -55,7 +55,7 @@ public class XAdESLevelBDetachedTest extends AbstractTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
+		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		signatureParameters = new SignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

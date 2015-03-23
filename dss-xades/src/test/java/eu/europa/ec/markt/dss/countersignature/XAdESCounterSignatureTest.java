@@ -66,7 +66,7 @@ public class XAdESCounterSignatureTest {
 	@Test
 	public void test() throws Exception {
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
+		DSSPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 		MockPrivateKeyEntry entryUserB = (MockPrivateKeyEntry) certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));

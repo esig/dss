@@ -42,7 +42,7 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension {
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
+		DSSPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
 

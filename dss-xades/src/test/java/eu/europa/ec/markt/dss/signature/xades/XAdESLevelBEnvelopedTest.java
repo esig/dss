@@ -23,6 +23,7 @@ package eu.europa.ec.markt.dss.signature.xades;
 import java.io.File;
 import java.util.Date;
 
+import org.apache.xml.security.utils.Base64;
 import org.junit.Before;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
@@ -50,8 +51,13 @@ public class XAdESLevelBEnvelopedTest extends AbstractTestSignature {
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
+		System.out.println("Base64 orignal file : "+Base64.encode(documentToSign.getBytes()));
+
+
 		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
+		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+
+		System.out.println("Base64 certificate : "+Base64.encode(privateKeyEntry.getCertificate().getEncoded()));
 
 		signatureParameters = new SignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

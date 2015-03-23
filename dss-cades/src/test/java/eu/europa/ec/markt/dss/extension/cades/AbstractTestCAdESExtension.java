@@ -41,7 +41,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension {
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
+		DSSPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		DSSDocument document = new InMemoryDocument("Hello world!".getBytes(), "test.bin");
 
@@ -54,7 +54,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CAdESService service = new CAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
 
 		byte[] dataToSign = service.getDataToSign(document, signatureParameters);
 		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA.getPrivateKey(), dataToSign);
@@ -66,7 +66,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension {
 	protected DocumentSignatureService getSignatureServiceToExtend() throws Exception {
 		CAdESService service = new CAdESService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
 		return service;
 	}
 

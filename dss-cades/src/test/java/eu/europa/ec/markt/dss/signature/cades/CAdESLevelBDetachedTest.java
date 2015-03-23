@@ -54,7 +54,7 @@ public class CAdESLevelBDetachedTest extends AbstractTestSignature {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA1);
+		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		signatureParameters = new SignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
