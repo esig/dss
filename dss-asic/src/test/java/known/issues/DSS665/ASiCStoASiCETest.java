@@ -7,7 +7,7 @@ import java.util.Date;
 import org.junit.Test;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
@@ -31,7 +31,7 @@ public class ASiCStoASiCETest {
 		CertificateService certificateService = new CertificateService();
 		DSSPrivateKeyEntry	privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
-		SignatureParameters signatureParameters = new SignatureParameters();
+		ASiCSignatureParameters signatureParameters = new ASiCSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());

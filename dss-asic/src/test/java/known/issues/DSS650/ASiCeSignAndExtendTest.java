@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockTSPSource;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
@@ -31,7 +31,7 @@ public class ASiCeSignAndExtendTest {
 		ASiCService service = new ASiCService(new CommonCertificateVerifier());
 
 		DSSDocument toSignDocument = new InMemoryDocument("HELLO".getBytes(), "hello.bin");
-		SignatureParameters parameters = new SignatureParameters();
+		ASiCSignatureParameters parameters = new ASiCSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
 		parameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 		parameters.setSigningCertificate(entry.getCertificate());
@@ -58,7 +58,7 @@ public class ASiCeSignAndExtendTest {
 		CertificateService certificateService = new CertificateService();
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
-		SignatureParameters parameters = new SignatureParameters();
+		ASiCSignatureParameters parameters = new ASiCSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_LT);
 		parameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 		DSSDocument extendDocument = service.extendDocument(docToExtend, parameters);

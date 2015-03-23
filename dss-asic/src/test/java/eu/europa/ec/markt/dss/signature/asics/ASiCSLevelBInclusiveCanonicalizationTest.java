@@ -29,6 +29,7 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 import org.junit.Before;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
@@ -46,8 +47,8 @@ import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 
 public class ASiCSLevelBInclusiveCanonicalizationTest extends AbstractTestSignature {
 
-	private DocumentSignatureService service;
-	private SignatureParameters signatureParameters;
+	private DocumentSignatureService<ASiCSignatureParameters> service;
+	private ASiCSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSPrivateKeyEntry privateKeyEntry;
 
@@ -58,7 +59,7 @@ public class ASiCSLevelBInclusiveCanonicalizationTest extends AbstractTestSignat
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
-		signatureParameters = new SignatureParameters();
+		signatureParameters = new ASiCSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
@@ -77,7 +78,7 @@ public class ASiCSLevelBInclusiveCanonicalizationTest extends AbstractTestSignat
 	}
 
 	@Override
-	protected DocumentSignatureService getService() {
+	protected DocumentSignatureService<ASiCSignatureParameters> getService() {
 		return service;
 	}
 

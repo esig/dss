@@ -35,7 +35,6 @@ import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
-import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 
 /**
  * Parameters for a Signature creation/extension
@@ -388,14 +387,8 @@ public class SignatureParameters implements Serializable {
 	 * @param signatureLevel the value
 	 */
 	public void setSignatureLevel(final SignatureLevel signatureLevel) throws NullPointerException {
-
 		if (signatureLevel == null) {
 			throw new NullPointerException();
-		}
-		final SignatureForm signatureForm = signatureLevel.getSignatureForm();
-		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)) {
-
-			aSiC().containerForm = signatureForm;
 		}
 		this.signatureLevel = signatureLevel;
 	}
