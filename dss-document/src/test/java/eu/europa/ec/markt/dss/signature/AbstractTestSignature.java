@@ -153,7 +153,7 @@ public abstract class AbstractTestSignature {
 	}
 
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getSignatureAlgorithm().getDigestAlgorithm(),
+		assertEquals(getPrivateKeyEntry().getCertificate().getDigestAlgorithm(),
 				diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 

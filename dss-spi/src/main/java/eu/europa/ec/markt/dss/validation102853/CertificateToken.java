@@ -142,7 +142,7 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Creates a CertificateToken wrapping the provided X509Certificate. 
+	 * Creates a CertificateToken wrapping the provided X509Certificate.
 	 *
 	 * @param x509Certificate X509Certificate
 	 */
@@ -154,6 +154,7 @@ public class CertificateToken extends Token {
 		final String sigAlgOID = x509Certificate.getSigAlgOID();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(sigAlgOID);
 		this.algorithmUsedToSignToken = signatureAlgorithm;
+		this.digestAlgorithm = algorithmUsedToSignToken.getDigestAlgorithm();
 
 		super.extraInfo = this.extraInfo = new CertificateTokenValidationExtraInfo();
 	}
@@ -267,7 +268,7 @@ public class CertificateToken extends Token {
 	 */
 	public boolean isExpiredOn(final Date date) {
 
-		if (x509Certificate == null || date == null) {
+		if ((x509Certificate == null) || (date == null)) {
 			return true;
 		}
 		return x509Certificate.getNotAfter().before(date);
@@ -281,7 +282,7 @@ public class CertificateToken extends Token {
 	 */
 	public boolean isValidOn(final Date date) {
 
-		if (x509Certificate == null || date == null) {
+		if ((x509Certificate == null) || (date == null)) {
 			return false;
 		}
 		try {
@@ -320,6 +321,7 @@ public class CertificateToken extends Token {
 	 *
 	 * @return
 	 */
+	@Override
 	public boolean isTrusted() {
 
 		return sources.contains(CertificateSourceType.TRUSTED_LIST) || sources.contains(CertificateSourceType.TRUSTED_STORE);
@@ -330,6 +332,7 @@ public class CertificateToken extends Token {
 	 *
 	 * @return
 	 */
+	@Override
 	public boolean isSelfSigned() {
 
 		if (selfSigned == null) {
@@ -462,7 +465,7 @@ public class CertificateToken extends Token {
 		try {
 
 			List<String> keyPurposes = x509Certificate.getExtendedKeyUsage();
-			if (keyPurposes != null && keyPurposes.contains(OID.id_kp_OCSPSigning.getId())) {
+			if ((keyPurposes != null) && keyPurposes.contains(OID.id_kp_OCSPSigning.getId())) {
 
 				return true;
 			}
@@ -533,6 +536,7 @@ public class CertificateToken extends Token {
 	 *
 	 * @return
 	 */
+	@Override
 	public CertificateTokenValidationExtraInfo extraInfo() {
 
 		return extraInfo;
@@ -603,7 +607,7 @@ public class CertificateToken extends Token {
 	public boolean hasCRLSignKeyUsage() {
 
 		final boolean[] keyUsage = x509Certificate.getKeyUsage();
-		final boolean crlSignKeyUsage = keyUsage != null || (keyUsage != null && keyUsage[6]);
+		final boolean crlSignKeyUsage = (keyUsage != null) || ((keyUsage != null) && keyUsage[6]);
 		return crlSignKeyUsage;
 	}
 
@@ -704,7 +708,7 @@ public class CertificateToken extends Token {
 				indentStr += "\t";
 				final CertificateToken revocationTokenIssuerToken = revocationToken.getIssuerToken();
 				out.append(indentStr).append("Status: ").append(revocationToken.getStatus()).append(" / ").append(revocationToken.getIssuingTime())
-					  .append(" / issuer's certificate ").append(revocationTokenIssuerToken != null ? revocationTokenIssuerToken.getDSSIdAsString() : "null").append('\n');
+				.append(" / issuer's certificate ").append(revocationTokenIssuerToken != null ? revocationTokenIssuerToken.getDSSIdAsString() : "null").append('\n');
 				indentStr = indentStr.substring(1);
 				out.append(indentStr).append("]\n");
 			} else {
