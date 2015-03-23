@@ -25,7 +25,7 @@ import java.io.IOException;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.asic.ASiCService;
@@ -52,7 +52,7 @@ public class SignPdfAsicB extends Cookbook {
 		preparePKCS12TokenAndKey();
 
 		// Preparing parameters for the AsicS signature
-		SignatureParameters parameters = new SignatureParameters();
+		ASiCSignatureParameters parameters = new ASiCSignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT).
 		parameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
 		// We set the digest algorithm to use with the signature algorithm. You must use the

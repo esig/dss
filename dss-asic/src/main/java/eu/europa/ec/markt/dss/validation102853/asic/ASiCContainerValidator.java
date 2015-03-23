@@ -46,7 +46,6 @@ import eu.europa.ec.markt.dss.signature.AsicManifestDocument;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
-import eu.europa.ec.markt.dss.signature.asic.ASiCService;
 import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
@@ -87,6 +86,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	private static final String MIME_TYPE = "mimetype";
 	private static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 	private static final String META_INF_FOLDER = "META-INF/";
+	private final static String ASICS_NS = "asic:XAdESSignatures";
 
 	private final DSSDocument asicContainer;
 
@@ -134,7 +134,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		super(null);
 		this.asicContainer = null;
 	}
-	
+
 	public ASiCContainerValidator(final DSSDocument asicContainer) {
 		super(null);
 		this.asicContainer = asicContainer;
@@ -146,7 +146,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 		createSubordinatedContainerValidators();
 	}
-	
+
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
 		int headerLength = 500;
@@ -445,7 +445,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			if (isMagicStart) {
 
 				// Magic Start found!
-				int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
+				int commentLen = buffer[ii + 20] + (buffer[ii + 21] * 256);
 				int realLen = buffLen - ii - 22;
 				if (commentLen != realLen) {
 					LOG.warn("WARNING! ZIP comment size mismatch: directory says len is " + commentLen + ", but file ends after " + realLen + " bytes!");
@@ -480,7 +480,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		do {
 
 			currentSubordinatedValidator.setProcessExecutor(processExecutor);
-			if (MimeType.ASICE.equals(asicMimeType) && currentSubordinatedValidator instanceof ASiCCMSDocumentValidator) {
+			if (MimeType.ASICE.equals(asicMimeType) && (currentSubordinatedValidator instanceof ASiCCMSDocumentValidator)) {
 
 				final DSSDocument signature = currentSubordinatedValidator.getDocument();
 				final AsicManifestDocument relatedAsicManifest = getRelatedAsicManifest(signature);
@@ -554,7 +554,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			if (signatureId.equals(idIdentifier)) {
 
 				signatures.remove(i);
-				final Document signatureDOM = DSSXMLUtils.createDocument(ASiCNamespaces.ASiC, ASiCService.ASICS_NS);
+				final Document signatureDOM = DSSXMLUtils.createDocument(ASiCNamespaces.ASiC, ASICS_NS);
 				for (int j = 0; j < signatures.size(); j++) {
 
 					final Document doc = DSSXMLUtils.buildDOM(signature);

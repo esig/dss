@@ -42,11 +42,6 @@ public class ASiCParameters implements Serializable {
 	private String mimeType = null;
 
 	/**
-	 * The default signature form to use within the ASiC containers.
-	 */
-	private SignatureForm underlyingForm = SignatureForm.XAdES;
-
-	/**
 	 * The form of the container -S or -E.
 	 */
 	SignatureForm containerForm;
@@ -65,21 +60,6 @@ public class ASiCParameters implements Serializable {
 	 * Default constructor
 	 */
 	public ASiCParameters() {
-	}
-
-	/**
-	 * A copy constructor.
-	 *
-	 * @param source {@code ASiCParameters}
-	 */
-	public ASiCParameters(final ASiCParameters source) {
-
-		zipComment = source.zipComment;
-		mimeType = source.mimeType;
-		underlyingForm = source.underlyingForm;
-		containerForm = source.containerForm;
-		enclosedSignature = source.enclosedSignature;
-		signatureFileName = source.signatureFileName;
 	}
 
 	/**
@@ -111,19 +91,6 @@ public class ASiCParameters implements Serializable {
 	 */
 	public void setMimeType(final String mimeType) {
 		this.mimeType = mimeType;
-	}
-
-	public SignatureForm getUnderlyingForm() {
-		return underlyingForm;
-	}
-
-	/**
-	 * Sets the signature form associated with an ASiC container. Only two forms are acceptable: XAdES and CAdES.
-	 *
-	 * @param underlyingForm signature form to associate with the ASiC container.
-	 */
-	public void setUnderlyingForm(final SignatureForm underlyingForm) {
-		this.underlyingForm = underlyingForm;
 	}
 
 	/**
