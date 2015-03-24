@@ -58,7 +58,7 @@ public class CAdESWithDEREncodedTimestampTest {
 		assertNotNull(diagnosticData);
 
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
-		assertTrue(CollectionUtils.isNotEmpty(timestampIdList));
+		assertTrue(CollectionUtils.isEmpty(timestampIdList));
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class CAdESWithDEREncodedTimestampTest {
 		assertNotNull(diagnosticData);
 
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
-		assertTrue(CollectionUtils.isNotEmpty(timestampIdList));
+		assertTrue(CollectionUtils.isEmpty(timestampIdList));
 	}
 
 

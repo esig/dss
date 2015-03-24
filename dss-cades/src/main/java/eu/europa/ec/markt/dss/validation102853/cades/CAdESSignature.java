@@ -1078,28 +1078,23 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			final ASN1EncodableVector allAttributes = attributes.getAll(attrType);
 			for (int ii = 0; ii < allAttributes.size(); ii++) {
-
 				final Attribute attribute = (Attribute) allAttributes.get(ii);
 				final ASN1Set attrValues = attribute.getAttrValues();
 				for (final ASN1Encodable value : attrValues.toArray()) {
+					if (value instanceof DEROctetString){
+						LOG.warn("Illegal content for timestamp (OID : " + attrType + ") : OCTET STRING is not allowed !");
+					} else {
+						try {
+							byte[] encoded = value.toASN1Primitive().getEncoded();
+							final CMSSignedData signedData = new CMSSignedData(encoded);
+							final TimeStampToken token = new TimeStampToken(signedData);
+							final TimestampToken timestampToken = new TimestampToken(token, timestampType, certPool);
 
-					try {
-						byte[] encoded = null;
-						if (value instanceof DEROctetString){
-							ASN1OctetString derOctetString = DEROctetString.getInstance(value);
-							encoded = derOctetString.getOctets();
-						} else {
-							encoded = value.toASN1Primitive().getEncoded();
+							timestampToken.setArchiveTimestampType(archiveTimestampType);
+							timestampTokenList.add(timestampToken);
+						} catch (Exception e) {
+							throw new DSSException(e);
 						}
-
-						final CMSSignedData signedData = new CMSSignedData(encoded);
-						final TimeStampToken token = new TimeStampToken(signedData);
-						final TimestampToken timestampToken = new TimestampToken(token, timestampType, certPool);
-
-						timestampToken.setArchiveTimestampType(archiveTimestampType);
-						timestampTokenList.add(timestampToken);
-					} catch (Exception e) {
-						throw new DSSException(e);
 					}
 				}
 			}
