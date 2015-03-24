@@ -173,36 +173,26 @@ public class MimeType implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result)
+		result = prime * result
 				+ ((mimeTypeString == null) ? 0 : mimeTypeString.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		MimeType other = (MimeType) obj;
 		if (mimeTypeString == null) {
-			if (other.mimeTypeString != null) {
+			if (other.mimeTypeString != null)
 				return false;
-			}
-		} else if (!mimeTypeString.equals(other.mimeTypeString)) {
+		} else if (!mimeTypeString.equals(other.mimeTypeString))
 			return false;
-		}
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return mimeTypeString;
-	}
-
+	
 }

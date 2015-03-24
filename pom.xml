@@ -31,8 +31,6 @@
 		<module>dss-cades</module>
 		<module>dss-pades</module>
 		<module>dss-xades</module>
-		<module>dss-asic-cades</module>
-		<module>dss-asic-xades</module>
 	</modules>
 
 	<developers>
