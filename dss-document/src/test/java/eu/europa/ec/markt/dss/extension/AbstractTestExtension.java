@@ -31,7 +31,7 @@ import java.security.Signature;
 import org.junit.Test;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -40,7 +40,7 @@ import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
 import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
-public abstract class AbstractTestExtension<SP extends SignatureParameters> {
+public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> {
 
 	protected abstract DSSDocument getSignedDocument() throws Exception;
 

@@ -32,7 +32,7 @@ import org.junit.Before;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockCRLSource;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CRLGenerator;
 import eu.europa.ec.markt.dss.service.CertificateService;
@@ -112,7 +112,7 @@ public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected SignatureParameters getSignatureParameters() {
+	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

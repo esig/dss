@@ -6,7 +6,7 @@ import org.w3c.dom.Document;
 
 import eu.europa.ec.markt.dss.signature.ProfileParameters;
 
-public class XAdESSignatureParameters extends SignatureParameters {
+public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	ProfileParameters context;
 

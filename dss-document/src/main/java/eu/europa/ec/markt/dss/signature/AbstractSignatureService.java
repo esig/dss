@@ -26,7 +26,7 @@ import java.util.Date;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
@@ -34,7 +34,7 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 /**
  *
  */
-public abstract class AbstractSignatureService<SP extends SignatureParameters> implements DocumentSignatureService<SP> {
+public abstract class AbstractSignatureService<SP extends AbstractSignatureParameters> implements DocumentSignatureService<SP> {
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());

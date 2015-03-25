@@ -23,7 +23,7 @@ package eu.europa.ec.markt.dss.signature;
 import java.io.Serializable;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
 /**
@@ -31,7 +31,7 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  *
  *
  */
-public interface DocumentSignatureService<SP extends SignatureParameters> extends Serializable {
+public interface DocumentSignatureService<SP extends AbstractSignatureParameters> extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}. (Added in version 4) When

@@ -30,7 +30,6 @@ import org.junit.Before;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -83,7 +82,7 @@ public class ASiCELevelBInclusiveCanonicalizationTest extends AbstractTestSignat
 	}
 
 	@Override
-	protected SignatureParameters getSignatureParameters() {
+	protected ASiCSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

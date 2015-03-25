@@ -30,7 +30,7 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 import org.junit.Before;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
@@ -90,7 +90,7 @@ public class XAdESLevelBDetachedInclusiveCanonicalizationTest extends AbstractTe
 	}
 
 	@Override
-	protected SignatureParameters getSignatureParameters() {
+	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

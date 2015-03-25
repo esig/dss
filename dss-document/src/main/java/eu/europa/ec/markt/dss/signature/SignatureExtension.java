@@ -21,14 +21,14 @@
 package eu.europa.ec.markt.dss.signature;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 
 /**
  * Extends the level of AdES signature of a document. After level -B, going upper in the signature format level
  * consists of adding unsigned properties to the signature. It can be done without breaking the signature.
  *
  */
-public interface SignatureExtension<SP extends SignatureParameters> {
+public interface SignatureExtension<SP extends AbstractSignatureParameters> {
 
 	/**
 	 * Extends the level of the signatures contained in a document.

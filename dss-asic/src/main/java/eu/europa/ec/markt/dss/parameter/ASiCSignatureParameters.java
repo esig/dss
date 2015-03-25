@@ -2,7 +2,7 @@ package eu.europa.ec.markt.dss.parameter;
 
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 
-public class ASiCSignatureParameters extends SignatureParameters {
+public class ASiCSignatureParameters extends AbstractSignatureParameters {
 
 	/**
 	 * The object representing the parameters related to ASiC from of the signature.

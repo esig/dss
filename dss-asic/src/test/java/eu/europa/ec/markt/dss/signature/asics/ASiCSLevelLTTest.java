@@ -29,7 +29,7 @@ import org.junit.Before;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -81,7 +81,7 @@ public class ASiCSLevelLTTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected SignatureParameters getSignatureParameters() {
+	protected ASiCSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

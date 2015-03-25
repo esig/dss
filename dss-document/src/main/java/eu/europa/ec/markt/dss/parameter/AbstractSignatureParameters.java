@@ -40,7 +40,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
  * Parameters for a Signature creation/extension
  *
  */
-public class SignatureParameters implements Serializable {
+public abstract class AbstractSignatureParameters implements Serializable {
 
 	/**
 	 * This variable is used to ensure the uniqueness of the signature in the same document.
@@ -103,59 +103,10 @@ public class SignatureParameters implements Serializable {
 
 	private List<TimestampToken> contentTimestamps;
 
-	public SignatureParameters() {
-	}
-
 	/**
 	 * The document to be signed
 	 */
 	private DSSDocument detachedContent;
-
-	/**
-	 * Copy constructor (used by ASiC)
-	 */
-	public SignatureParameters(final SignatureParameters source) {
-
-		if (source == null) {
-
-			throw new NullPointerException();
-		}
-		bLevelParams = new BLevelParameters(source.bLevelParams);
-		//		aSiCParams = new ASiCParameters(source.aSiCParams);
-		certificateChain = new ArrayList<ChainCertificate>(source.certificateChain);
-		//		contactInfo = source.contactInfo;
-		deterministicId = source.getDeterministicId();
-		digestAlgorithm = source.digestAlgorithm;
-		encryptionAlgorithm = source.encryptionAlgorithm;
-		detachedContent = source.detachedContent;
-		privateKeyEntry = source.privateKeyEntry;
-		//		reason = source.reason;
-		//		signedInfoCanonicalizationMethod = source.signedInfoCanonicalizationMethod;
-		//		signedPropertiesCanonicalizationMethod = source.signedPropertiesCanonicalizationMethod;
-		signatureAlgorithm = source.signatureAlgorithm;
-		signaturePackaging = source.signaturePackaging;
-		signatureLevel = source.signatureLevel;
-		signingToken = source.signingToken;
-		signingCertificate = source.signingCertificate;
-		signWithExpiredCertificate = source.signWithExpiredCertificate;
-		contentTimestamps = source.getContentTimestamps();
-		//		toCounterSignSignatureId = source.getToCounterSignSignatureId();
-		signatureTimestampParameters = source.signatureTimestampParameters;
-		archiveTimestampParameters = source.archiveTimestampParameters;
-
-		//		final List<DSSReference> references = source.getReferences();
-		//		if ((references != null) && (references.size() > 0)) {
-		//
-		//			dssReferences = new ArrayList<DSSReference>();
-		//			for (final DSSReference reference : references) {
-		//
-		//				final DSSReference dssReference = new DSSReference(reference);
-		//				dssReferences.add(dssReference);
-		//			}
-		//		}
-		// This is a simple copy of reference and not of the object content!
-		//		context = source.context;
-	}
 
 	/**
 	 * This method returns the document to sign. In the case of the DETACHED signature this is the detached document.
@@ -215,8 +166,8 @@ public class SignatureParameters implements Serializable {
 
 	/**
 	 * This method allows to set the XAdES signature id. Be careful, if you change this id between the call to eu.europa.ec.markt.dss.signature.xades.XAdESService#toBeSigned(eu
-	 * .europa.ec.markt.dss.signature.DSSDocument, eu.europa.ec.markt.dss.parameter.SignatureParameters) and eu.europa.ec.markt.dss.signature.xades.XAdESService#signDocument(eu
-	 * .europa.ec.markt.dss.signature.DSSDocument, eu.europa.ec.markt.dss.parameter.SignatureParameters, byte[]) the created signature will be corrupted.
+	 * .europa.ec.markt.dss.signature.DSSDocument, eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters) and eu.europa.ec.markt.dss.signature.xades.XAdESService#signDocument(eu
+	 * .europa.ec.markt.dss.signature.DSSDocument, eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters, byte[]) the created signature will be corrupted.
 	 *
 	 * @param deterministicId
 	 */

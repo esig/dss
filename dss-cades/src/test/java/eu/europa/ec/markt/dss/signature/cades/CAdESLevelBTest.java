@@ -64,8 +64,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -290,7 +290,7 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected SignatureParameters getSignatureParameters() {
+	protected CAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

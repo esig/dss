@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.utils.TestUtils;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -59,7 +59,7 @@ public abstract class AbstractTestSignature {
 
 	protected abstract DSSPrivateKeyEntry getPrivateKeyEntry();
 
-	protected abstract SignatureParameters getSignatureParameters();
+	protected abstract AbstractSignatureParameters getSignatureParameters();
 
 	protected abstract MimeType getExpectedMime();
 
@@ -122,7 +122,7 @@ public abstract class AbstractTestSignature {
 
 	protected DSSDocument sign() {
 		DSSDocument toBeSigned = getDocumentToSign();
-		SignatureParameters params = getSignatureParameters();
+		AbstractSignatureParameters params = getSignatureParameters();
 		DocumentSignatureService service = getService();
 		DSSPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
 
