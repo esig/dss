@@ -47,8 +47,8 @@ import eu.europa.ec.markt.dss.applet.util.ResourceUtils;
 import eu.europa.ec.markt.dss.applet.wizard.extension.ExtensionWizardController;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.AppletCore;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardView;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.ws.signature.SignatureLevel;
+import eu.europa.ec.markt.dss.ws.signature.SignaturePackaging;
 
 /**
  * TODO
@@ -218,7 +218,7 @@ public class SignatureView extends WizardView<ExtendSignatureModel, ExtensionWiz
 		final FileType fileType = model.getFileType();
 
 		padesButton.setEnabled(FileType.PDF == fileType);
-		cadesButton.setEnabled(FileType.CMS == fileType || FileType.BINARY == fileType);
+		cadesButton.setEnabled((FileType.CMS == fileType) || (FileType.BINARY == fileType));
 		xadesButton.setEnabled(FileType.XML == fileType);
 		asicsButton.setEnabled(FileType.ASiCS == fileType);
 		asiceButton.setEnabled(FileType.ASiCE == fileType);

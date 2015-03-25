@@ -28,86 +28,85 @@ import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardView;
 
 /**
- * 
+ *
  * TODO
- * 
  *
  *
- * 
+ *
+ *
  *
  *
  */
 public class FileStep extends WizardStep<ExtendSignatureModel, ExtensionWizardController> {
-    /**
-     * 
-     * The default constructor for FileStep.
-     * 
-     * @param model
-     * @param view
-     * @param controller
-     */
-    public FileStep(final ExtendSignatureModel model, final WizardView<ExtendSignatureModel, ExtensionWizardController> view, final ExtensionWizardController controller) {
-        super(model, view, controller);
-    }
+	/**
+	 *
+	 * The default constructor for FileStep.
+	 *
+	 * @param model
+	 * @param view
+	 * @param controller
+	 */
+	public FileStep(final ExtendSignatureModel model, final WizardView<ExtendSignatureModel, ExtensionWizardController> view, final ExtensionWizardController controller) {
+		super(model, view, controller);
+	}
 
-    @Override
-    protected void finish() throws ControllerException {
-        // TODO Auto-generated method stub
+	@Override
+	protected void finish() throws ControllerException {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#execute()
-     */
-    @Override
-    protected void init() throws ControllerException {
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#execute()
+	 */
+	@Override
+	protected void init() throws ControllerException {
 
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getBackStep()
-     */
-    @Override
-    protected Class<? extends WizardStep<ExtendSignatureModel, ExtensionWizardController>> getBackStep() {
-        return null;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getBackStep()
+	 */
+	@Override
+	protected Class<? extends WizardStep<ExtendSignatureModel, ExtensionWizardController>> getBackStep() {
+		return null;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getNextStep()
-     */
-    @Override
-    protected Class<? extends WizardStep<ExtendSignatureModel, ExtensionWizardController>> getNextStep() {
-        return SignatureStep.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getNextStep()
+	 */
+	@Override
+	protected Class<? extends WizardStep<ExtendSignatureModel, ExtensionWizardController>> getNextStep() {
+		return SignatureStep.class;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getStepProgression()
-     */
-    @Override
-    protected int getStepProgression() {
-        return 1;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getStepProgression()
+	 */
+	@Override
+	protected int getStepProgression() {
+		return 1;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#isValid()
-     */
-    @Override
-    protected boolean isValid() {
-        final ExtendSignatureModel model = getModel();
-        final File selectedFile = model.getSelectedFile();
-        final File originalFile = model.getOriginalFile();
-        boolean valid = selectedFile != null && selectedFile.exists() && selectedFile.isFile();
-        return valid;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#isValid()
+	 */
+	@Override
+	protected boolean isValid() {
+		final ExtendSignatureModel model = getModel();
+		final File selectedFile = model.getSelectedFile();
+		boolean valid = (selectedFile != null) && selectedFile.exists() && selectedFile.isFile();
+		return valid;
+	}
 
 }
