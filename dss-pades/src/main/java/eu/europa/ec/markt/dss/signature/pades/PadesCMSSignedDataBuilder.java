@@ -33,7 +33,8 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.cades.CAdESLevelBaselineB;
 import eu.europa.ec.markt.dss.signature.cades.CMSSignedDataBuilder;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
@@ -59,8 +60,8 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 	}
 
 	@Override
-	protected CMSSignedDataGenerator createCMSSignedDataGenerator(SignatureParameters parameters, ContentSigner contentSigner, SignerInfoGeneratorBuilder signerInfoGeneratorBuilder,
-	                                                              CMSSignedData originalSignedData) throws DSSException {
+	protected CMSSignedDataGenerator createCMSSignedDataGenerator(CAdESSignatureParameters parameters, ContentSigner contentSigner, SignerInfoGeneratorBuilder signerInfoGeneratorBuilder,
+			CMSSignedData originalSignedData) throws DSSException {
 
 		return super.createCMSSignedDataGenerator(parameters, contentSigner, signerInfoGeneratorBuilder, originalSignedData);
 	}
@@ -70,7 +71,7 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the CAdESLevelBaselineB and
 	 * PAdESLevelBaselineB
 	 */
-	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final SignatureParameters parameters, final byte[] messageDigest) {
+	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final PAdESSignatureParameters parameters, final byte[] messageDigest) {
 
 		final CAdESLevelBaselineB cAdESLevelBaselineB = new CAdESLevelBaselineB(true);
 		final PAdESLevelBaselineB pAdESProfileEPES = new PAdESLevelBaselineB();

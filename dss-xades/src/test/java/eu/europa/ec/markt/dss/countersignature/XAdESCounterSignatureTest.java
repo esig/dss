@@ -42,7 +42,7 @@ import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockPrivateKeyEntry;
 import eu.europa.ec.markt.dss.mock.MockSignatureTokenConnection;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
@@ -72,7 +72,7 @@ public class XAdESCounterSignatureTest {
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		// Sign
-		SignatureParameters signatureParameters = new SignatureParameters();
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(entryUserA.getCertificate());
 		signatureParameters.setCertificateChain(entryUserA.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -94,7 +94,7 @@ public class XAdESCounterSignatureTest {
 		Node attributeId = attributes.getNamedItem("Id");
 		assertNotNull(attributeId);
 
-		SignatureParameters countersigningParameters = new SignatureParameters();
+		XAdESSignatureParameters countersigningParameters = new XAdESSignatureParameters();
 		countersigningParameters.setPrivateKeyEntry(entryUserB);
 		countersigningParameters.setSigningToken(new MockSignatureTokenConnection());
 		countersigningParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);

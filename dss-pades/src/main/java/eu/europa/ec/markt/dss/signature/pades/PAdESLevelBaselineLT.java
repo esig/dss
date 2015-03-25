@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
@@ -64,7 +64,7 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  *
  */
 
-class PAdESLevelBaselineLT implements SignatureExtension {
+class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineLT.class);
 
@@ -93,7 +93,7 @@ class PAdESLevelBaselineLT implements SignatureExtension {
 	 * @throws IOException
 	 */
 	@Override
-	public InMemoryDocument extendSignatures(DSSDocument document, final SignatureParameters parameters) throws DSSException {
+	public InMemoryDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) throws DSSException {
 
 		try {
 
@@ -152,7 +152,7 @@ class PAdESLevelBaselineLT implements SignatureExtension {
 				// Cert, CRL and OCSP to be included
 			}
 
-            /*
+			/*
              Baseline LT: "Hence implementations claiming conformance to the LT-Conformance Level build the PAdES-LTV form
              (PAdES Part 4 [9], clause 4) on signatures that shall be compliant to the T-Level requirements and to the present
              clause."
@@ -160,7 +160,7 @@ class PAdESLevelBaselineLT implements SignatureExtension {
              LTA: "It is recommended that signed PDF documents, conforming to this profile, contain DSS followed by a document Time-stamp."
 
              So we add a timestamp, and that a good thing because PDFBox cannot do incremental update without signing.
-             */
+			 */
 			final ByteArrayOutputStream tDoc = new ByteArrayOutputStream();
 			final PDFTimestampService timestampService = factory.newTimestampSignatureService();
 			Map.Entry<String, PdfDict> dictToAdd = new AbstractMap.SimpleEntry<String, PdfDict>("DSS", dssDictionary);

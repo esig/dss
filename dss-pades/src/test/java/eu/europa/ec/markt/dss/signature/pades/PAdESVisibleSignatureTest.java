@@ -32,10 +32,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureImageParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureImageTextParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureImageTextParameters.SignerPosition;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
@@ -52,8 +52,8 @@ import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
 public class PAdESVisibleSignatureTest {
 
-	private DocumentSignatureService service;
-	private SignatureParameters signatureParameters;
+	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSPrivateKeyEntry privateKeyEntry;
 
@@ -64,7 +64,7 @@ public class PAdESVisibleSignatureTest {
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
-		signatureParameters = new SignatureParameters();
+		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());

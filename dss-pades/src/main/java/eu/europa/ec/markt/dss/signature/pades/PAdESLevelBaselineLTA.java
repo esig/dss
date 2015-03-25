@@ -23,7 +23,7 @@ package eu.europa.ec.markt.dss.signature.pades;
 import java.util.List;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -41,34 +41,34 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  *
  *
  */
-class PAdESLevelBaselineLTA implements SignatureExtension {
+class PAdESLevelBaselineLTA implements SignatureExtension<PAdESSignatureParameters> {
 
-    private final PAdESLevelBaselineLT padesLevelBaselineLT;
-    private final PAdESLevelBaselineT padesProfileT;
-    private final CertificateVerifier certificateVerifier;
+	private final PAdESLevelBaselineLT padesLevelBaselineLT;
+	private final PAdESLevelBaselineT padesProfileT;
+	private final CertificateVerifier certificateVerifier;
 
-    public PAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier) {
+	public PAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier) {
 
-        padesLevelBaselineLT = new PAdESLevelBaselineLT(tspSource, certificateVerifier);
-        padesProfileT = new PAdESLevelBaselineT(tspSource, certificateVerifier);
-        this.certificateVerifier = certificateVerifier;
-    }
+		padesLevelBaselineLT = new PAdESLevelBaselineLT(tspSource, certificateVerifier);
+		padesProfileT = new PAdESLevelBaselineT(tspSource, certificateVerifier);
+		this.certificateVerifier = certificateVerifier;
+	}
 
-    @Override
-    public DSSDocument extendSignatures(DSSDocument document, SignatureParameters params) throws DSSException {
+	@Override
+	public DSSDocument extendSignatures(DSSDocument document, PAdESSignatureParameters params) throws DSSException {
 
-        final PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
-        pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
-        final List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
-        for (final AdvancedSignature signature : signatures) {
+		final PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
+		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+		final List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
+		for (final AdvancedSignature signature : signatures) {
 
-            if (!signature.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT)) {
+			if (!signature.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT)) {
 
-                document = padesLevelBaselineLT.extendSignatures(document, params);
-                // PAdES LT already add a timestamp on top of the LT data. No need to timestamp again.
-                return document;
-            }
-        }
-        return padesProfileT.extendSignatures(document, params);
-    }
+				document = padesLevelBaselineLT.extendSignatures(document, params);
+				// PAdES LT already add a timestamp on top of the LT data. No need to timestamp again.
+				return document;
+			}
+		}
+		return padesProfileT.extendSignatures(document, params);
+	}
 }

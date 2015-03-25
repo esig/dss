@@ -36,8 +36,8 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -112,7 +112,7 @@ public class TimestampService {
 	 * @param externalParameters the original signature parameters
 	 * @return contentTimestamp as an InMemoryDocument
 	 */
-	public DSSDocument generateCAdESContentTimestamp(final SignatureParameters externalParameters) {
+	public DSSDocument generateCAdESContentTimestamp(final XAdESSignatureParameters externalParameters) {
 
 		final TimestampToken contentTimestampToken = generateCAdESContentTimestampAsTimestampToken(externalParameters);
 		final InMemoryDocument document = new InMemoryDocument(contentTimestampToken.getEncoded());
@@ -127,7 +127,7 @@ public class TimestampService {
 	 * @param externalParameters the original signature parameters
 	 * @return the ContentTimestamp as a DSS TimestampToken
 	 */
-	public TimestampToken generateCAdESContentTimestampAsTimestampToken(final SignatureParameters externalParameters) {
+	public TimestampToken generateCAdESContentTimestampAsTimestampToken(final XAdESSignatureParameters externalParameters) {
 
 		final byte[] bytes = externalParameters.getDetachedContent().getBytes();
 		final TimestampToken token = generateTimestampToken(TimestampType.CONTENT_TIMESTAMP, externalParameters, bytes);
@@ -143,14 +143,14 @@ public class TimestampService {
 	 * @param timestampType
 	 * @return
 	 */
-	public TimestampToken generateXAdESContentTimestampAsTimestampToken(final DSSDocument toSignDocument, final SignatureParameters externalParameters,
-	                                                                    final TimestampType timestampType) {
+	public TimestampToken generateXAdESContentTimestampAsTimestampToken(final DSSDocument toSignDocument, final XAdESSignatureParameters externalParameters,
+			final TimestampType timestampType) {
 
 		if (externalParameters == null) {
 			throw new NullPointerException();
 		}
 		//1. Set initial parameters
-		final SignatureParameters signatureParameters = setSignatureParameters(externalParameters);
+		final XAdESSignatureParameters signatureParameters = setSignatureParameters(externalParameters);
 
 		//2. Build temporary signature structure
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(commonCertificateVerifier);
@@ -210,8 +210,8 @@ public class TimestampService {
 	 * @param timestampType      the contentTimestamp type, either ALL_DATA_OBJECTS_TIMESTAMP or INDIVIDUAL_DATA_OBJECTS_TIMESTAMP
 	 * @return a ContentTimestamp as a DSSDocument
 	 */
-	public DSSDocument generateXAdESContentTimestampAsDSSDocument(final DSSDocument toSignDocument, final SignatureParameters externalParameters,
-	                                                              final TimestampType timestampType) {
+	public DSSDocument generateXAdESContentTimestampAsDSSDocument(final DSSDocument toSignDocument, final XAdESSignatureParameters externalParameters,
+			final TimestampType timestampType) {
 		final TimestampToken timestampToken = generateXAdESContentTimestampAsTimestampToken(toSignDocument, externalParameters, timestampType);
 		return new InMemoryDocument(timestampToken.getEncoded());
 	}
@@ -224,7 +224,7 @@ public class TimestampService {
 	 * @param references
 	 * @return
 	 */
-	public TimestampToken generateTimestampToken(final TimestampType timestampType, final SignatureParameters signatureParameters, final byte[] references) {
+	public TimestampToken generateTimestampToken(final TimestampType timestampType, final XAdESSignatureParameters signatureParameters, final byte[] references) {
 
 		if (timestampType == null) {
 			throw new NullPointerException();
@@ -266,9 +266,9 @@ public class TimestampService {
 	 * @param externalParameters the original signature parameters
 	 * @return a set of signature parameters
 	 */
-	private SignatureParameters setSignatureParameters(final SignatureParameters externalParameters) {
+	private XAdESSignatureParameters setSignatureParameters(final XAdESSignatureParameters externalParameters) {
 
-		final SignatureParameters signatureParameters = new SignatureParameters();
+		final XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setReferences(externalParameters.getReferences());
 		signatureParameters.setSignatureTimestampParameters(externalParameters.getSignatureTimestampParameters());
 		signatureParameters.setSigningCertificate(externalParameters.getSigningCertificate());

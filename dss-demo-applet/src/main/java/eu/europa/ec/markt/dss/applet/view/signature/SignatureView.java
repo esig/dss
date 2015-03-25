@@ -47,8 +47,8 @@ import eu.europa.ec.markt.dss.applet.util.ResourceUtils;
 import eu.europa.ec.markt.dss.applet.wizard.signature.SignatureWizardController;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.AppletCore;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardView;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.ws.signature.SignatureLevel;
+import eu.europa.ec.markt.dss.ws.signature.SignaturePackaging;
 
 /**
  * TODO

@@ -43,53 +43,53 @@ public class WSParameters {
 	/**
 	 * {@code SignatureLevel}
 	 */
-	private SignatureLevel signatureLevel; // ok
+	private SignatureLevel signatureLevel;
 
-	private SignaturePackaging signaturePackaging; // ok
+	private SignaturePackaging signaturePackaging;
 
 	/**
 	 * XAdES: ds:CanonicalizationMethod indicate the canonicalization algorithm: Algorithm="...".
 	 */
-	private String signedInfoCanonicalizationMethod; // ok
+	private String signedInfoCanonicalizationMethod;
 
 	/**
 	 * The encryption algorithm shall be automatically extracted from the signing token.
 	 */
-	private EncryptionAlgorithm encryptionAlgorithm; // ok
+	private EncryptionAlgorithm encryptionAlgorithm;
 
 	/**
 	 * XAdES: The digest algorithm used to hash ds:SignedInfo.
 	 */
-	private DigestAlgorithm digestAlgorithm; // ok
+	private DigestAlgorithm digestAlgorithm;
 
-	private String deterministicId; // ok
+	private String deterministicId;
 
-	private Date signingDate; // ok
+	private Date signingDate;
 
-	private byte[] signingCertificateBytes; // ok
+	private byte[] signingCertificateBytes;
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
 	 */
 	private boolean signWithExpiredCertificate = false;
 
-	private List<WSChainCertificate> chainCertificateList = new ArrayList<WSChainCertificate>(); // ok
+	private List<WSChainCertificate> chainCertificateList = new ArrayList<WSChainCertificate>();
 
-	private BLevelParameters.Policy signaturePolicy; // ok
+	private BLevelParameters.Policy signaturePolicy;
 
-	private DigestAlgorithm signingCertificateDigestAlgorithm = DigestAlgorithm.SHA1; // ok
+	private DigestAlgorithm signingCertificateDigestAlgorithm = DigestAlgorithm.SHA1;
 
-	private List<String> claimedSignerRole; // ok
+	private List<String> claimedSignerRole;
 
-	private List<String> certifiedSignerRoles; // ok
+	private List<String> certifiedSignerRoles;
 
-	private String contentIdentifierPrefix; // ok
-	private String contentIdentifierSuffix; // ok
+	private String contentIdentifierPrefix;
+	private String contentIdentifierSuffix;
 
-	private List<String> commitmentTypeIndication; // ok
-	private BLevelParameters.SignerLocation signerLocation; // ok
+	private List<String> commitmentTypeIndication;
+	private BLevelParameters.SignerLocation signerLocation;
 
-	private DigestAlgorithm timestampDigestAlgorithm; // ok
+	private DigestAlgorithm timestampDigestAlgorithm;
 
 	private List<WSDSSReference> references;
 

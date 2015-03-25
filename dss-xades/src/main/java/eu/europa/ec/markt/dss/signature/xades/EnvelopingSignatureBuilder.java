@@ -36,7 +36,7 @@ import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
@@ -56,7 +56,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 	 * @param origDoc The original document to sign.
 	 * @param certificateVerifier
 	 */
-	public EnvelopingSignatureBuilder(final SignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
+	public EnvelopingSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 
 		super(params, origDoc, certificateVerifier);
 		setCanonicalizationMethods(params, CanonicalizationMethod.INCLUSIVE);

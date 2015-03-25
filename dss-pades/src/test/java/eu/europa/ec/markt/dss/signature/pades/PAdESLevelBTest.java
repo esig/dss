@@ -26,7 +26,7 @@ import java.util.Date;
 import org.junit.Before;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -41,8 +41,8 @@ import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 
 public class PAdESLevelBTest extends AbstractTestSignature {
 
-	private DocumentSignatureService service;
-	private SignatureParameters signatureParameters;
+	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSPrivateKeyEntry privateKeyEntry;
 
@@ -53,7 +53,7 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
-		signatureParameters = new SignatureParameters();
+		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
@@ -65,12 +65,12 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected SignatureParameters getSignatureParameters() {
+	protected PAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

@@ -41,7 +41,7 @@ import org.junit.Test;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockPrivateKeyEntry;
 import eu.europa.ec.markt.dss.mock.MockSignatureTokenConnection;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
@@ -68,7 +68,7 @@ public class CAdESCounterSignatureTest {
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		// Sign
-		SignatureParameters signatureParameters = new SignatureParameters();
+		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(entryUserA.getCertificate());
 		signatureParameters.setCertificateChain(entryUserA.getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
@@ -94,7 +94,7 @@ public class CAdESCounterSignatureTest {
 		assertEquals(1, signerInfos.size());
 		SignerInformation signerInfo = signerInfos.iterator().next();
 
-		SignatureParameters countersigningParameters = new SignatureParameters();
+		CAdESSignatureParameters countersigningParameters = new CAdESSignatureParameters();
 		countersigningParameters.setPrivateKeyEntry(entryUserB);
 		countersigningParameters.setSigningToken(new MockSignatureTokenConnection());
 		countersigningParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);

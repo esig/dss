@@ -31,7 +31,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
 import eu.europa.ec.markt.dss.signature.pdf.PDFTimestampService;
@@ -51,7 +51,7 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
 	}
 
 	@Override
-	public void timestamp(final DSSDocument document, final OutputStream signedStream, final SignatureParameters parameters, final TSPSource tspSource,
+	public void timestamp(final DSSDocument document, final OutputStream signedStream, final PAdESSignatureParameters parameters, final TSPSource tspSource,
 			final Map.Entry<String, PdfDict>... dictToAdd) throws DSSException {
 
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();

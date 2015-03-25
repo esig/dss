@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSASN1Utils;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.AbstractSignatureService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
@@ -53,7 +53,7 @@ import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 /**
  * PAdES implementation of the DocumentSignatureService
  */
-public class PAdESService extends AbstractSignatureService {
+public class PAdESService extends AbstractSignatureService<PAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
 
@@ -71,7 +71,7 @@ public class PAdESService extends AbstractSignatureService {
 		LOG.debug("+ PAdESService created");
 	}
 
-	private SignatureExtension getExtensionProfile(SignatureParameters parameters) {
+	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(PAdESSignatureParameters parameters) {
 
 		switch (parameters.getSignatureLevel()) {
 			case PAdES_BASELINE_B:
@@ -88,7 +88,7 @@ public class PAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public byte[] getDataToSign(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException {
+	public byte[] getDataToSign(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -113,7 +113,7 @@ public class PAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters, final byte[] signatureValue) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final byte[] signatureValue) throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
 		try {
@@ -152,7 +152,7 @@ public class PAdESService extends AbstractSignatureService {
 				signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), toSignDocument.getName(), MimeType.PDF);
 			}
 
-			final SignatureExtension extension = getExtensionProfile(parameters);
+			final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters);
 			if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {
 				final DSSDocument extendSignature = extension.extendSignatures(signature, parameters);
 				parameters.setDeterministicId(null);
@@ -167,9 +167,9 @@ public class PAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument extendDocument(DSSDocument toExtendDocument, SignatureParameters parameters) throws DSSException {
+	public DSSDocument extendDocument(DSSDocument toExtendDocument, PAdESSignatureParameters parameters) throws DSSException {
 
-		final SignatureExtension extension = getExtensionProfile(parameters);
+		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			return extension.extendSignatures(toExtendDocument, parameters);
 		}
@@ -177,7 +177,7 @@ public class PAdESService extends AbstractSignatureService {
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) throws DSSException {
 
 		final SignatureTokenConnection token = parameters.getSigningToken();
 		if (token == null) {

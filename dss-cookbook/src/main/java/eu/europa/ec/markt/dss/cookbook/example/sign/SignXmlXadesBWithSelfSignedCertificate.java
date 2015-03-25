@@ -25,7 +25,7 @@ import java.io.IOException;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
@@ -50,7 +50,7 @@ public class SignXmlXadesBWithSelfSignedCertificate extends Cookbook {
 		privateKey = signingToken.getKeys().get(0);
 
 		// Preparing parameters for the XAdES signature
-		SignatureParameters parameters = new SignatureParameters();
+		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, -LTA).
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).

@@ -34,9 +34,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockTSPSource;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
@@ -81,7 +80,7 @@ public class PAdESDoubleSignatureTest {
 		CertificateService certificateService = new CertificateService();
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
-		SignatureParameters params = new SignatureParameters();
+		PAdESSignatureParameters params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
@@ -89,7 +88,7 @@ public class PAdESDoubleSignatureTest {
 		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
-		params = new SignatureParameters();
+		params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));

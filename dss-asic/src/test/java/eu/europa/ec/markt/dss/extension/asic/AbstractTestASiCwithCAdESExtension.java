@@ -25,7 +25,7 @@ import java.util.Date;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.extension.AbstractTestExtension;
 import eu.europa.ec.markt.dss.mock.MockTSPSource;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
@@ -47,7 +47,7 @@ public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExt
 		DSSDocument document = new InMemoryDocument("Hello world!".getBytes(), "test.bin");
 
 		// Sign
-		SignatureParameters signatureParameters = new SignatureParameters();
+		ASiCSignatureParameters signatureParameters = new ASiCSignatureParameters();
 		signatureParameters.setSigningCertificate(entryUserA.getCertificate());
 		signatureParameters.setCertificateChain(entryUserA.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -65,15 +65,15 @@ public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExt
 	}
 
 	@Override
-	protected SignatureParameters getExtensionParameters() {
-		SignatureParameters extensionParameters = new SignatureParameters();
+	protected ASiCSignatureParameters getExtensionParameters() {
+		ASiCSignatureParameters extensionParameters = new ASiCSignatureParameters();
 		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
 		extensionParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 		return extensionParameters;
 	}
 
 	@Override
-	protected DocumentSignatureService getSignatureServiceToExtend() throws Exception {
+	protected DocumentSignatureService<ASiCSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		ASiCService service = new ASiCService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
