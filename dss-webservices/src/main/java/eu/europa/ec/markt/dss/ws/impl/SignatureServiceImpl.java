@@ -158,8 +158,6 @@ public class SignatureServiceImpl implements SignatureService {
 
 		setSignWithExpiredCertificate(wsParameters, params);
 
-		//		setDeterministicId(wsParameters, params);
-
 		setSignaturePolicy(wsParameters, params);
 
 		setClaimedSignerRole(wsParameters, params);
@@ -226,23 +224,16 @@ public class SignatureServiceImpl implements SignatureService {
 		params.setDigestAlgorithm(digestAlgorithm);
 	}
 
-	private void setDeterministicId(final WSParameters wsParameters, final AbstractSignatureParameters params) {
-		final String deterministicId = wsParameters.getDeterministicId();
-		params.setDeterministicId(deterministicId);
-	}
-
 	private void setClaimedSignerRole(final WSParameters wsParameters, final AbstractSignatureParameters params) {
 		final List<String> claimedSignerRoles = wsParameters.getClaimedSignerRole();
 		if (claimedSignerRoles != null) {
 			for (final String claimedSignerRole : claimedSignerRoles) {
-
 				params.bLevel().addClaimedSignerRole(claimedSignerRole);
 			}
 		}
 	}
 
 	private void setSigningCertificateAndChain(final WSParameters wsParameters, final AbstractSignatureParameters params) {
-
 		final byte[] signingCertBytes = wsParameters.getSigningCertificateBytes();
 		if (signingCertBytes == null) {
 			return;
@@ -255,7 +246,6 @@ public class SignatureServiceImpl implements SignatureService {
 		final List<WSChainCertificate> wsChainCertificateList = wsParameters.getChainCertificateList();
 		if (CollectionUtils.isNotEmpty(wsChainCertificateList)) {
 			for (final WSChainCertificate wsChainCertificate : wsChainCertificateList) {
-
 				final CertificateToken x509Certificate = DSSUtils.loadCertificate(wsChainCertificate.getX509Certificate());
 				final ChainCertificate chainCertificate = new ChainCertificate(x509Certificate, wsChainCertificate.isSignedAttribute());
 				if (!chainCertificates.contains(chainCertificate)) {
@@ -326,18 +316,15 @@ public class SignatureServiceImpl implements SignatureService {
 	}
 
 	private void setAsicEnclosedSignature(final WSParameters wsParameters, final ASiCSignatureParameters params) {
-
 		final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsParameters.getAsicEnclosedSignature());
 		params.aSiC().setEnclosedSignature(dssDocument);
 	}
 
 	@Override
 	public byte[] getDataToSign(final WSDocument wsDocument, final WSParameters wsParameters) throws DSSException {
-
 		String exceptionMessage;
 		try {
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsGetDataToSign: begin");
 			}
 			final AbstractSignatureParameters params = createParameters(wsParameters);
@@ -346,12 +333,10 @@ public class SignatureServiceImpl implements SignatureService {
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
 			final byte[] dataToSign = service.getDataToSign(dssDocument, params);
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsGetDataToSign: end");
 			}
 			return dataToSign;
 		} catch (Throwable e) {
-
 			exceptionMessage = e.getMessage();
 			LOG.error("WsGetDataToSign: ended with exception", e);
 			throw new DSSException(exceptionMessage);
@@ -360,11 +345,9 @@ public class SignatureServiceImpl implements SignatureService {
 
 	@Override
 	public WSDocument signDocument(final WSDocument wsDocument, final WSParameters wsParameters, final byte[] signatureValue) throws DSSException {
-
 		String exceptionMessage;
 		try {
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsSignDocument: begin");
 			}
 			final AbstractSignatureParameters params = createParameters(wsParameters);
@@ -374,12 +357,10 @@ public class SignatureServiceImpl implements SignatureService {
 			final DSSDocument signatureDssDocument = service.signDocument(dssDocument, params, signatureValue);
 			WSDocument SignatureWsDocument = new WSDocument(signatureDssDocument);
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsSignDocument: end");
 			}
 			return SignatureWsDocument;
 		} catch (Throwable e) {
-
 			exceptionMessage = e.getMessage();
 			LOG.error("WsSignDocument: ended with exception", e);
 			throw new DSSException(exceptionMessage);
@@ -388,11 +369,9 @@ public class SignatureServiceImpl implements SignatureService {
 
 	@Override
 	public WSDocument extendSignature(final WSDocument wsDocument, final WSParameters wsParameters) throws DSSException {
-
 		String exceptionMessage;
 		try {
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsExtendSignature: begin");
 			}
 			final AbstractSignatureParameters params = createParameters(wsParameters);
@@ -401,12 +380,10 @@ public class SignatureServiceImpl implements SignatureService {
 			final DSSDocument signatureDssDocument = service.extendDocument(dssDocument, params);
 			final WSDocument signatureWsDocument = new WSDocument(signatureDssDocument);
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsExtendSignature: end");
 			}
 			return signatureWsDocument;
 		} catch (Throwable e) {
-
 			exceptionMessage = e.getMessage();
 			LOG.error("WsExtendSignature: end with exception", e);
 			throw new DSSException(exceptionMessage);

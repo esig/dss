@@ -62,8 +62,6 @@ public class WSParameters {
 	 */
 	private DigestAlgorithm digestAlgorithm;
 
-	private String deterministicId;
-
 	private Date signingDate;
 
 	private byte[] signingCertificateBytes;
@@ -185,20 +183,6 @@ public class WSParameters {
 	 */
 	public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getDeterministicId() {
-		return deterministicId;
-	}
-
-	/**
-	 * @param deterministicId
-	 */
-	public void setDeterministicId(String deterministicId) {
-		this.deterministicId = deterministicId;
 	}
 
 	/**
