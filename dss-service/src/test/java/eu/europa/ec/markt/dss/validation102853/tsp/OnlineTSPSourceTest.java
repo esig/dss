@@ -8,6 +8,7 @@ import org.junit.Test;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.validation102853.NonceSource;
+import eu.europa.ec.markt.dss.validation102853.https.CommonsDataLoader;
 import eu.europa.ec.markt.dss.validation102853.loader.NativeHTTPDataLoader;
 
 public class OnlineTSPSourceTest {
@@ -17,6 +18,16 @@ public class OnlineTSPSourceTest {
 	@Test
 	public void testWithoutNonce() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
+
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		assertNotNull(timeStampResponse);
+	}
+
+	@Test
+	public void testWithCommonDataLoader() {
+		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
+		tspSource.setDataLoader(new CommonsDataLoader());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);

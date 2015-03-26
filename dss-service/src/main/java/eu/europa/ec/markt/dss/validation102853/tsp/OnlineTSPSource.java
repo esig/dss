@@ -21,12 +21,8 @@
 package eu.europa.ec.markt.dss.validation102853.tsp;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLConnection;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampRequest;
@@ -36,11 +32,11 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.NonceSource;
 import eu.europa.ec.markt.dss.validation102853.loader.DataLoader;
+import eu.europa.ec.markt.dss.validation102853.loader.NativeHTTPDataLoader;
 
 /**
  * Class encompassing a RFC 3161 TSA, accessed through HTTP(S) to a given URI
@@ -148,12 +144,10 @@ public class OnlineTSPSource implements TSPSource {
 			final byte[] requestBytes = timeStampRequest.getEncoded();
 
 			// Call the communications layer
-			byte[] respBytes;
-			if (dataLoader != null) {
-				respBytes = dataLoader.post(tspServer, requestBytes);
-			} else {
-				respBytes = getTSAResponse(requestBytes);
+			if (dataLoader == null) {
+				dataLoader = new NativeHTTPDataLoader();
 			}
+			byte[] respBytes = dataLoader.post(tspServer, requestBytes);
 
 			// Handle the TSA response
 			final TimeStampResponse timeStampResponse = new TimeStampResponse(respBytes);
@@ -180,39 +174,4 @@ public class OnlineTSPSource implements TSPSource {
 		}
 	}
 
-	/**
-	 * Get timestamp token - communications layer
-	 *
-	 * @return - byte[] - TSA response, raw bytes (RFC 3161 encoded)
-	 */
-	protected byte[] getTSAResponse(final byte[] requestBytes) throws DSSException {
-
-		// Setup the TSA connection
-		final URLConnection tsaConnection = DSSUtils.openURLConnection(tspServer);
-
-		tsaConnection.setDoInput(true);
-		tsaConnection.setDoOutput(true);
-		tsaConnection.setUseCaches(false);
-		tsaConnection.setRequestProperty("Content-Type", "application/timestamp-query");
-		tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
-
-		DSSUtils.writeToURLConnection(tsaConnection, requestBytes);
-
-		// Get TSA response as a byte array
-		byte[] respBytes = getReadFromURLConnection(tsaConnection);
-		final String encoding = tsaConnection.getContentEncoding();
-		if ("base64".equalsIgnoreCase(encoding)) {
-			respBytes = Base64.decodeBase64(respBytes);
-		}
-		return respBytes;
-	}
-
-	private byte[] getReadFromURLConnection(final URLConnection tsaConnection) throws DSSException {
-		try {
-			final InputStream inputStream = tsaConnection.getInputStream();
-			return IOUtils.toByteArray(inputStream);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
 }
