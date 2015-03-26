@@ -20,42 +20,49 @@
  */
 package eu.europa.ec.markt.dss.validation;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
-import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
+import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
 import eu.europa.ec.markt.dss.validation102853.report.Reports;
 
-public class InfiniteLoopDSS621Test {
+/**
+ * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-667
+ *
+ */
+public class CAdESDigestComputationSetOrderedTest {
 
-	@Test(timeout = 5000)
-	public void testReadTimestamp1() throws Exception {
-		DSSDocument signDocument = new FileDocument(new File("src/test/resources/validation/pades-5-signatures-and-1-document-timestamp.pdf"));
-		final CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-
-		final SignedDocumentValidator signedDocumentValidator = SignedDocumentValidator.fromDocument(signDocument);
-		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
-		Reports reports = signedDocumentValidator.validateDocument();
+	@Test
+	public void testFile1() {
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-667/BER_reordered_prova.txt.p7m");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument();
 
 		reports.print();
 
-		final List<AdvancedSignature> signatures = signedDocumentValidator.getSignatures();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
-		assertEquals(5, signatures.size());
-		for (final AdvancedSignature signature : signatures) {
-			assertTrue(signature.checkSignatureIntegrity().isSignatureIntact());
-			assertTrue(CollectionUtils.isNotEmpty(signature.getSignatureTimestamps()));
-		}
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testFile2() {
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-667/DER_reordered_prova.txt.p7m");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument();
+
+		reports.print();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 }
