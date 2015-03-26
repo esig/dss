@@ -44,16 +44,6 @@ public interface TSPSource extends Serializable {
 	 * @return
 	 * @throws DSSException
 	 */
-	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException;
+	TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException;
 
-	/**
-	 * @param policyOid
-	 */
-	public void setPolicyOid(final String policyOid);
-
-	/**
-	 * @return this method returns the unique id associated with the timestamp
-	 * @param digestValue
-	 */
-	public String getUniqueId(byte[] digestValue);
 }

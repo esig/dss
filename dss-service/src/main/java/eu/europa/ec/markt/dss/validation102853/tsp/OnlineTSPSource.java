@@ -100,20 +100,8 @@ public class OnlineTSPSource implements TSPSource {
 	 *
 	 * @param policyOid
 	 */
-	@Override
 	public void setPolicyOid(final String policyOid) {
 		this.policyOid = new ASN1ObjectIdentifier(policyOid);
-	}
-
-	@Override
-	public String getUniqueId(final byte[] digestValue) {
-		byte[] digest;
-		if (nonceSource !=null){
-			digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue, nonceSource.getNonce().toByteArray());
-		} else {
-			digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue);
-		}
-		return Hex.encodeHexString(digest);
 	}
 
 	/**
