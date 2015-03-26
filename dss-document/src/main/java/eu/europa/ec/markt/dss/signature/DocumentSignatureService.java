@@ -75,20 +75,6 @@ public interface DocumentSignatureService<SP extends AbstractSignatureParameters
 	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, final byte[] signatureValue) throws DSSException;
 
 	/**
-	 * Signs the toSignDocument in the single operation. It is possible to invoke this method when the private key is known on the server side or
-	 * everything is done on the client side.
-	 *
-	 * @param toSignDocument
-	 *            document to sign
-	 * @param parameters
-	 *            set of the driving signing parameters
-	 * @return
-	 * @throws DSSException
-	 */
-	@Deprecated
-	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters) throws DSSException;
-
-	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}
 	 *
 	 * @param toExtendDocument

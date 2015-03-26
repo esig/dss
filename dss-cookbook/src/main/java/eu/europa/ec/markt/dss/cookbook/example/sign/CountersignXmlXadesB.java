@@ -51,8 +51,6 @@ public class CountersignXmlXadesB extends Cookbook {
 
 		// Preparing the parameters for the countersignature
 		XAdESSignatureParameters countersigningParameters = new XAdESSignatureParameters();
-		countersigningParameters.setSigningToken(signingToken);
-		countersigningParameters.setPrivateKeyEntry(privateKey);
 		countersigningParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		countersigningParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		//The ID of the signature was manually retrieved in the document to countersign
@@ -68,7 +66,7 @@ public class CountersignXmlXadesB extends Cookbook {
 		// Countersign the document
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(commonCertificateVerifier);
-		DSSDocument countersignedDocument = service.counterSignDocument(toCountersignDocument, countersigningParameters);
+		DSSDocument countersignedDocument = service.counterSignDocument(toCountersignDocument, countersigningParameters, signingToken, privateKey);
 
 		InputStream is = new ByteArrayInputStream(countersignedDocument.getBytes());
 		DSSUtils.saveToFile(is, "target/countersigned.xml");

@@ -64,8 +64,6 @@ import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.cades.CAdESService;
-import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
-import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.signature.validation.DocumentValidator;
 import eu.europa.ec.markt.dss.signature.xades.XAdESService;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
@@ -182,20 +180,6 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			throw new DSSException(e);
 		}
 
-	}
-
-	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final ASiCSignatureParameters parameters) throws DSSException {
-		final byte[] dataToSign = getDataToSign(toSignDocument, parameters);
-		final SignatureTokenConnection signingToken = parameters.getSigningToken();
-		if (signingToken == null) {
-			throw new NullPointerException();
-		}
-		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		final DSSPrivateKeyEntry privateKeyEntry = parameters.getPrivateKeyEntry();
-		final byte[] signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKeyEntry);
-		final DSSDocument dssDocument = signDocument(toSignDocument, parameters, signatureValue);
-		return dssDocument;
 	}
 
 	@Override

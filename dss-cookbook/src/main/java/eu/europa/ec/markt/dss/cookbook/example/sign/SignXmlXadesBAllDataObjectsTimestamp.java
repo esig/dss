@@ -72,8 +72,6 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setReferences(references);
-		signatureParameters.setPrivateKeyEntry(signingToken.getKeys().get(0));
-		signatureParameters.setSigningToken(signingToken);
 
 		TimestampParameters contentTimestampParameters = new TimestampParameters();
 		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
@@ -98,7 +96,10 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		//Create the signature, including the AllDataObjectsTimestamp
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(verifier);
-		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters);
+
+		byte[] dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
+		byte[] signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
+		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
 		InputStream is = new ByteArrayInputStream(signedDocument.getBytes());
 

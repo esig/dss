@@ -95,28 +95,28 @@ public class XAdESCounterSignatureTest {
 		assertNotNull(attributeId);
 
 		XAdESSignatureParameters countersigningParameters = new XAdESSignatureParameters();
-		countersigningParameters.setPrivateKeyEntry(entryUserB);
-		countersigningParameters.setSigningToken(new MockSignatureTokenConnection());
 		countersigningParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		countersigningParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		countersigningParameters.setToCounterSignSignatureId(attributeId.getNodeValue());
+		countersigningParameters.setSigningCertificate(entryUserB.getCertificate());
+		countersigningParameters.setCertificateChain(entryUserB.getCertificateChain());
 
-		DSSDocument counterSignDocument = service.counterSignDocument(signedDocument, countersigningParameters);
+		DSSDocument counterSignDocument = service.counterSignDocument(signedDocument, countersigningParameters, new MockSignatureTokenConnection(), entryUserB);
 		assertNotNull(counterSignDocument);
 
-		if (LOGGER.isDebugEnabled()) {
-			try {
-				byte[] byteArray = IOUtils.toByteArray(counterSignDocument.openStream());
-				LOGGER.debug(new String(byteArray));
-			} catch (Exception e) {
-				LOGGER.error("Cannot display file content", e);
-			}
+		try {
+			byte[] byteArray = IOUtils.toByteArray(counterSignDocument.openStream());
+			LOGGER.info(new String(byteArray));
+		} catch (Exception e) {
+			LOGGER.error("Cannot display file content", e);
 		}
 
 		// Validate
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(counterSignDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
+
+		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 

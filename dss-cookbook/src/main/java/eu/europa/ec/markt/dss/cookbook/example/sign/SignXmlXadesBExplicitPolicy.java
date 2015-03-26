@@ -48,7 +48,6 @@ public class SignXmlXadesBExplicitPolicy extends Cookbook {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		parameters.setPrivateKeyEntry(privateKey);
 
 		BLevelParameters bLevelParameters = parameters.bLevel();
 

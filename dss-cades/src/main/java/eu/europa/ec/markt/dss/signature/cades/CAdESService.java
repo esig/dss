@@ -45,6 +45,7 @@ import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
@@ -133,20 +134,6 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		return signature;
 	}
 
-	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters) throws DSSException {
-
-		final SignatureTokenConnection token = parameters.getSigningToken();
-		if (token == null) {
-
-			throw new NullPointerException("The connection through available API to the SSCD must be set.");
-		}
-		final byte[] dataToSign = getDataToSign(toSignDocument, parameters);
-		byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), parameters.getPrivateKeyEntry());
-		final DSSDocument document = signDocument(toSignDocument, parameters, signatureValue);
-		return document;
-	}
-
 	/**
 	 * This method countersigns a signature identified through its SignerId
 	 *
@@ -156,13 +143,12 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 *            the signature parameters
 	 * @param selector
 	 *            the SignerId identifying the signature to countersign
+	 * @param token
+	 * 				the token used to countersign
 	 * @return the updated signature document, in which the countersignature has been embedded
 	 */
-	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final CAdESSignatureParameters parameters, SignerId selector) {
-
-		final SignatureTokenConnection token = parameters.getSigningToken();
+	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final CAdESSignatureParameters parameters, SignerId selector, SignatureTokenConnection token, DSSPrivateKeyEntry privateKeyEntry) {
 		if (token == null) {
-
 			throw new NullPointerException("The connection through available API to the SSCD must be set.");
 		}
 
@@ -178,7 +164,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			// Generate a signed digest on the contents octets of the signature octet String in the identified SignerInfo value
 			// of the original signature's SignedData
 			byte[] dataToSign = signerInformation.getSignature();
-			byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), parameters.getPrivateKeyEntry());
+			byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), privateKeyEntry);
 
 			// Set the countersignature builder
 			CounterSignatureBuilder builder = new CounterSignatureBuilder(certificateVerifier);

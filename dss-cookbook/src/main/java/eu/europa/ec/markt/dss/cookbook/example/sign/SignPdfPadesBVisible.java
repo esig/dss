@@ -77,10 +77,6 @@ public class SignPdfPadesBVisible extends Cookbook {
 
 		parameters.setImageParameters(imageParameters);
 
-		// We choose the private key with the certificate and corresponding certificate
-		// chain.
-		parameters.setPrivateKeyEntry(privateKey);
-
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		// Create PAdESService for signature

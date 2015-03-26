@@ -62,9 +62,6 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		// We set the digest algorithm to use with the signature algorithm. You must use the
 		// same parameter when you invoke the method sign on the token.
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
-		// We choose the private key with the certificate and corresponding certificate
-		// chain.
-		parameters.setPrivateKeyEntry(privateKey);
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();

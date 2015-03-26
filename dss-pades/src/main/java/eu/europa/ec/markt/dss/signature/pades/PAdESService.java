@@ -47,7 +47,6 @@ import eu.europa.ec.markt.dss.signature.cades.CAdESLevelBaselineT;
 import eu.europa.ec.markt.dss.signature.cades.CustomContentSigner;
 import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
 import eu.europa.ec.markt.dss.signature.pdf.PdfObjFactory;
-import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 /**
@@ -168,7 +167,6 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, PAdESSignatureParameters parameters) throws DSSException {
-
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			return extension.extendSignatures(toExtendDocument, parameters);
@@ -176,16 +174,4 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		return toExtendDocument;
 	}
 
-	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) throws DSSException {
-
-		final SignatureTokenConnection token = parameters.getSigningToken();
-		if (token == null) {
-			throw new NullPointerException("The connection through the available API to the SSCD must be set.");
-		}
-		final byte[] dataToSign = getDataToSign(toSignDocument, parameters);
-		final byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), parameters.getPrivateKeyEntry());
-		final DSSDocument dssDocument = signDocument(toSignDocument, parameters, signatureValue);
-		return dssDocument;
-	}
 }

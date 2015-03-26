@@ -95,12 +95,10 @@ public class CAdESCounterSignatureTest {
 		SignerInformation signerInfo = signerInfos.iterator().next();
 
 		CAdESSignatureParameters countersigningParameters = new CAdESSignatureParameters();
-		countersigningParameters.setPrivateKeyEntry(entryUserB);
-		countersigningParameters.setSigningToken(new MockSignatureTokenConnection());
 		countersigningParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		countersigningParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 
-		DSSDocument counterSignDocument = service.counterSignDocument(signedDocument, countersigningParameters, signerInfo.getSID());
+		DSSDocument counterSignDocument = service.counterSignDocument(signedDocument, countersigningParameters, signerInfo.getSID(), new MockSignatureTokenConnection(), entryUserB);
 		assertNotNull(counterSignDocument);
 
 		// Validate

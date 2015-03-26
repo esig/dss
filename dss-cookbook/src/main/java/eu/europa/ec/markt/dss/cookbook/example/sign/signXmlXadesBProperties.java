@@ -48,7 +48,6 @@ public class signXmlXadesBProperties extends Cookbook {
 		preparePKCS12TokenAndKey();
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-		parameters.setPrivateKeyEntry(privateKey);
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);

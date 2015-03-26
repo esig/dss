@@ -62,9 +62,7 @@ public class SignXmlCadesB extends Cookbook {
 		// same parameter when you invoke the method sign on the token. The default value is
 		// SHA256
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		// We choose the private key with the certificate and corresponding certificate
-		// chain.
-		parameters.setPrivateKeyEntry(privateKey);
+
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		// Create CAdES xadesService for signature

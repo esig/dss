@@ -117,32 +117,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) throws DSSException {
-
-		if (parameters.getSignatureLevel() == null) {
-			throw new NullPointerException();
-		}
-		final SignatureTokenConnection signingToken = parameters.getSigningToken();
-		if (signingToken == null) {
-			throw new NullPointerException();
-		}
-
-		parameters.getContext().setOperationKind(Operation.SIGNING);
-
-		final XAdESLevelBaselineB profile = new XAdESLevelBaselineB(certificateVerifier);
-		final byte[] dataToSign = profile.getDataToSign(toSignDocument, parameters);
-		parameters.getContext().setProfile(profile);
-
-		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		final DSSPrivateKeyEntry dssPrivateKeyEntry = parameters.getPrivateKeyEntry();
-		final byte[] signatureValue = signingToken.sign(dataToSign, digestAlgorithm, dssPrivateKeyEntry);
-		final DSSDocument dssDocument = signDocument(toSignDocument, parameters, signatureValue);
-		return dssDocument;
-	}
-
-	@Override
 	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final XAdESSignatureParameters parameters) throws DSSException {
-
 		parameters.getContext().setOperationKind(Operation.EXTENDING);
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
@@ -153,7 +128,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel().name());
 	}
 
-	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final XAdESSignatureParameters parameters) throws DSSException {
+	public DSSDocument counterSignDocument(final DSSDocument toCounterSignDocument, final XAdESSignatureParameters parameters, SignatureTokenConnection signingToken, DSSPrivateKeyEntry dssPrivateKeyEntry) throws DSSException {
 
 		if (toCounterSignDocument == null) {
 			throw new NullPointerException();
@@ -164,10 +139,17 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		if (parameters.getSignatureLevel() == null) {
 			throw new NullPointerException();
 		}
-		final SignatureTokenConnection signingToken = parameters.getSigningToken();
 		if (signingToken == null) {
 			throw new NullPointerException();
 		}
+
+		if (dssPrivateKeyEntry == null){
+			throw new NullPointerException();
+		} else {
+			parameters.setSigningCertificate(dssPrivateKeyEntry.getCertificate());
+			parameters.setCertificateChain(dssPrivateKeyEntry.getCertificateChain());
+		}
+
 		final String toCounterSignSignatureId = parameters.getToCounterSignSignatureId();
 		if (StringUtils.isBlank(toCounterSignSignatureId)) {
 			throw new DSSException("There is no provided signature id to countersign!");
@@ -191,8 +173,6 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		final byte[] dataToSign = counterSignatureBuilder.build();
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		final DSSPrivateKeyEntry dssPrivateKeyEntry = parameters.getPrivateKeyEntry();
-
 		byte[] counterSignatureValue = signingToken.sign(dataToSign, digestAlgorithm, dssPrivateKeyEntry);
 
 		final DSSDocument counterSignedDocument = counterSignatureBuilder.signDocument(counterSignatureValue);

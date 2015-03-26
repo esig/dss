@@ -31,8 +31,6 @@ import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
-import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
-import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 
@@ -41,16 +39,6 @@ import eu.europa.ec.markt.dss.validation102853.CertificateToken;
  *
  */
 public abstract class AbstractSignatureParameters implements Serializable {
-
-	/**
-	 * This parameter is used in one shot signature process. Cannot be used with 3-steps signature process.
-	 */
-	private SignatureTokenConnection signingToken;
-
-	/**
-	 * This parameter is used in one shot signature process. Cannot be used with 3-steps signature process.
-	 */
-	private DSSPrivateKeyEntry privateKeyEntry;
 
 	/**
 	 * This field contains the signing certificate.
@@ -266,57 +254,6 @@ public abstract class AbstractSignatureParameters implements Serializable {
 	}
 
 	/**
-	 * This method sets the private key entry used to create the signature. Note that the certificate chain is reset, the encryption algorithm is set and the signature algorithm
-	 * is updated.
-	 *
-	 * @param privateKeyEntry the private key entry used to sign?
-	 */
-	@Deprecated
-	public void setPrivateKeyEntry(final DSSPrivateKeyEntry privateKeyEntry) {
-
-		this.privateKeyEntry = privateKeyEntry;
-		// When the private key entry is set the certificate chain is reset
-		certificateChain.clear();
-		setSigningCertificate(privateKeyEntry.getCertificate());
-
-		setCertificateChain(privateKeyEntry.getCertificateChain());
-
-		final String encryptionAlgorithmName = this.signingCertificate.getPublicKey().getAlgorithm();
-		this.encryptionAlgorithm = EncryptionAlgorithm.forName(encryptionAlgorithmName);
-		this.signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
-	}
-
-	/**
-	 * Returns the private key entry
-	 *
-	 * @return the value
-	 */
-	@Deprecated
-	public DSSPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
-	}
-
-	/**
-	 * Returns the connection through available API to the SSCD (SmartCard, MSCAPI, PKCS#12)
-	 *
-	 * @return the value
-	 */
-	@Deprecated
-	public SignatureTokenConnection getSigningToken() {
-		return signingToken;
-	}
-
-	/**
-	 * Sets the connection through available API to the SSCD (SmartCard, MSCAPI, PKCS#12)
-	 *
-	 * @param signingToken the value
-	 */
-	@Deprecated
-	public void setSigningToken(final SignatureTokenConnection signingToken) {
-		this.signingToken = signingToken;
-	}
-
-	/**
 	 * Get signature format: XAdES_BES, XAdES_EPES, XAdES_BASELINE_T ../.. CAdES_BES...
 	 *
 	 * @return the value
@@ -409,7 +346,6 @@ public abstract class AbstractSignatureParameters implements Serializable {
 	}
 
 	public BLevelParameters bLevel() {
-
 		return bLevelParams;
 	}
 
@@ -449,9 +385,7 @@ public abstract class AbstractSignatureParameters implements Serializable {
 	@Override
 	public String toString() {
 		return "SignatureParameters{" +
-				"signingToken=" + signingToken +
-				", privateKeyEntry=" + privateKeyEntry +
-				", signingCertificate=" + signingCertificate +
+				"signingCertificate=" + signingCertificate +
 				", signWithExpiredCertificate=" + signWithExpiredCertificate +
 				", certificateChain_=" + certificateChain +
 				", signatureLevel=" + signatureLevel +
