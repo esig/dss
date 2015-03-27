@@ -140,7 +140,7 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 			logger.info("DIGEST ALGOS : " + digestAlgorithms.toString());
 
 			ContentInfo encapContentInfo = signedData.getEncapContentInfo();
-			logger.info("ENCAPSULATED CONTENT INFO : " + encapContentInfo);
+			logger.info("ENCAPSULATED CONTENT INFO : " + encapContentInfo.getContentType() + " " + encapContentInfo.getContent());
 
 			ASN1Set certificates = signedData.getCertificates();
 			logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
