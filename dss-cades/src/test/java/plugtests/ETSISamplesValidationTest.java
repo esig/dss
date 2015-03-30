@@ -29,8 +29,9 @@ public class ETSISamplesValidationTest {
 	@Parameters(name = "Validation {index} : {0}")
 	public static Collection<Object[]> data() {
 		File folder = new File("src/test/resources/plugtest");
-		Collection<File> listFiles = FileUtils.listFiles(folder, new String[] { "p7", "p7b", "p7m", "p7s", "asice", "asics", "pdf", "xml", "bdoc",
-				"csig", "xsig", "es3" }, true);
+		Collection<File> listFiles = FileUtils.listFiles(folder, new String[] {
+				"p7", "p7b", "p7m", "p7s", "pkcs7"
+		}, true);
 		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
 		for (File file : listFiles) {
 			dataToRun.add(new Object[] { file });
