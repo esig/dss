@@ -173,7 +173,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 				}
 			}
 			final InMemoryDocument asicSignature = buildASiCContainer(contextToSignDocument, asicContainer, parameters, signature);
-			parameters.setDeterministicId(null);
+			parameters.reinitDeterministicId();
 			return asicSignature;
 
 		} catch (IOException e) {
@@ -578,7 +578,6 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		}
 		parameters.setSignWithExpiredCertificate(originalParameters.isSignWithExpiredCertificate());
 		parameters.setDetachedContent(originalParameters.getDetachedContent());
-		parameters.setDeterministicId(originalParameters.getDeterministicId());
 		parameters.bLevel().setSigningDate(originalParameters.bLevel().getSigningDate());
 	}
 

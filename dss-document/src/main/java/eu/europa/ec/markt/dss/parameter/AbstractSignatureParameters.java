@@ -146,18 +146,6 @@ public abstract class AbstractSignatureParameters implements Serializable {
 	}
 
 	/**
-	 * This method allows to set the XAdES signature id. Be careful, if you change this id between the call to eu.europa.ec.markt.dss.signature.xades.XAdESService#toBeSigned(eu
-	 * .europa.ec.markt.dss.signature.DSSDocument, eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters) and eu.europa.ec.markt.dss.signature.xades.XAdESService#signDocument(eu
-	 * .europa.ec.markt.dss.signature.DSSDocument, eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters, byte[]) the created signature will be corrupted.
-	 *
-	 * @param deterministicId
-	 */
-	public void setDeterministicId(final String deterministicId) {
-
-		this.deterministicId = deterministicId;
-	}
-
-	/**
 	 * Get the signing certificate
 	 *
 	 * @return the value
@@ -380,6 +368,13 @@ public abstract class AbstractSignatureParameters implements Serializable {
 
 	public void setContentTimestampParameters(TimestampParameters contentTimestampParameters) {
 		this.contentTimestampParameters = contentTimestampParameters;
+	}
+
+	/**
+	 * This methods reinits the deterministicId to force to recompute it
+	 */
+	public void reinitDeterministicId() {
+		deterministicId = null;
 	}
 
 	@Override

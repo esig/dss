@@ -127,10 +127,10 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			// true: Only the last signature will be extended
 			final SignatureExtension extension = getExtensionProfile(parameters, true);
 			final DSSDocument extendSignature = extension.extendSignatures(signature, parameters);
-			parameters.setDeterministicId(null);
+			parameters.reinitDeterministicId();
 			return extendSignature;
 		}
-		parameters.setDeterministicId(null);
+		parameters.reinitDeterministicId();
 		return signature;
 	}
 

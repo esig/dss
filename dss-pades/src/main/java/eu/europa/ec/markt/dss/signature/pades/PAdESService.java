@@ -154,10 +154,10 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters);
 			if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {
 				final DSSDocument extendSignature = extension.extendSignatures(signature, parameters);
-				parameters.setDeterministicId(null);
+				parameters.reinitDeterministicId();
 				return extendSignature;
 			} else {
-				parameters.setDeterministicId(null);
+				parameters.reinitDeterministicId();
 				return signature;
 			}
 		} catch (CMSException e) {
