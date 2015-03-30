@@ -263,7 +263,7 @@
 		<tiles.version>2.2.2</tiles.version>
 		<slf4j.version>1.6.6</slf4j.version>
 		<logback-classic.version>1.0.13</logback-classic.version>
-		<bouncycastle.version>1.51</bouncycastle.version>
+		<bouncycastle.version>1.52</bouncycastle.version>
 		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
 		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
 		<flying-saucer.version>9.0.4</flying-saucer.version>

@@ -26,6 +26,8 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -52,7 +54,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.jce.provider.X509CertificateObject;
-import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -222,7 +223,7 @@ public final class DSSASN1Utils {
 	 * @throws DSSException
 	 */
 	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content,
-	                                                  final boolean encapsulate) throws DSSException {
+			final boolean encapsulate) throws DSSException {
 
 		try {
 			final CMSSignedData cmsSignedData = generator.generate(content, encapsulate);
@@ -256,19 +257,11 @@ public final class DSSASN1Utils {
 	 * @throws DSSException
 	 */
 	public static TimeStampToken createTimeStampToken(final String base64EncodedTimestamp) throws DSSException {
-
 		try {
-
-			final byte[] tokenBytes = DSSUtils.base64Decode(base64EncodedTimestamp);
+			final byte[] tokenBytes = Base64.decodeBase64(base64EncodedTimestamp);
 			final CMSSignedData signedData = new CMSSignedData(tokenBytes);
 			return new TimeStampToken(signedData);
-		} catch (DSSException e) {
-			throw new DSSException(e);
-		} catch (CMSException e) {
-			throw new DSSException(e);
-		} catch (TSPException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -354,7 +347,7 @@ public final class DSSASN1Utils {
 		} catch (IOException e) {
 			throw new DSSException("Error when computing certificate's extensions.", e);
 		} finally {
-			DSSUtils.closeQuietly(input);
+			IOUtils.closeQuietly(input);
 		}
 	}
 
