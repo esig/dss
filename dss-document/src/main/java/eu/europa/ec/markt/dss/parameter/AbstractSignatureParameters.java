@@ -337,6 +337,10 @@ public abstract class AbstractSignatureParameters implements Serializable {
 		return bLevelParams;
 	}
 
+	public void setBLevelParams(BLevelParameters bLevelParams) {
+		this.bLevelParams = bLevelParams;
+	}
+
 	public TimestampParameters getSignatureTimestampParameters() {
 		if (signatureTimestampParameters == null) {
 			signatureTimestampParameters = new TimestampParameters();

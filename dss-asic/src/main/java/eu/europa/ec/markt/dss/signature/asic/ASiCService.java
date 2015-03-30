@@ -578,7 +578,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		}
 		parameters.setSignWithExpiredCertificate(originalParameters.isSignWithExpiredCertificate());
 		parameters.setDetachedContent(originalParameters.getDetachedContent());
-		parameters.bLevel().setSigningDate(originalParameters.bLevel().getSigningDate());
+		parameters.setBLevelParams(originalParameters.bLevel());
 	}
 
 	private void buildCAdES(final ASiCParameters asicParameters, final DSSDocument signature, final ZipOutputStream outZip) throws DSSException {

@@ -22,7 +22,6 @@ package eu.europa.ec.markt.dss.parameter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -70,43 +69,6 @@ public class BLevelParameters implements Serializable {
 	 * Default constructor
 	 */
 	BLevelParameters() {
-	}
-
-	/**
-	 * Copy constructor.
-	 *
-	 * @param source {@code BLevelParameters} source parameters
-	 */
-	BLevelParameters(final BLevelParameters source) {
-
-		if (source == null) {
-			throw new NullPointerException("source");
-		}
-		signingCertificateDigestMethod = source.signingCertificateDigestMethod;
-		this.trustAnchorBPPolicy = source.trustAnchorBPPolicy;
-		if (source.signaturePolicy != null) {
-			this.signaturePolicy = new Policy(source.signaturePolicy);
-		}
-		this.signingDate = source.signingDate;
-		if (source.claimedSignerRoles != null) {
-			this.claimedSignerRoles = new ArrayList<String>(source.claimedSignerRoles);
-		}
-		if (source.certifiedSignerRoles != null) {
-			this.certifiedSignerRoles = new ArrayList<String>(source.certifiedSignerRoles);
-		}
-
-		this.contentHintsType = source.contentHintsType;
-		this.contentHintsDescription = source.contentHintsDescription;
-
-		this.contentIdentifierPrefix = source.contentIdentifierPrefix;
-		this.contentIdentifierSuffix = source.contentIdentifierSuffix;
-
-		if (source.commitmentTypeIndication != null) {
-			this.commitmentTypeIndication = new ArrayList<String>(source.commitmentTypeIndication);
-		}
-		if (source.signerLocation != null) {
-			this.signerLocation = new SignerLocation(source.signerLocation);
-		}
 	}
 
 	/**
@@ -218,19 +180,6 @@ public class BLevelParameters implements Serializable {
 		public SignerLocation() {
 		}
 
-		public SignerLocation(final SignerLocation signerLocation) {
-
-			country = signerLocation.country;
-			locality = signerLocation.locality;
-			if (signerLocation.postalAddress != null) {
-
-				postalAddress = new ArrayList<String>(signerLocation.postalAddress);
-			}
-			postalCode = signerLocation.postalCode;
-			city = signerLocation.city;
-			stateOrProvince = signerLocation.stateOrProvince;
-		}
-
 		public String getCountry() {
 			return country;
 		}
@@ -306,13 +255,6 @@ public class BLevelParameters implements Serializable {
 		private byte[] digestValue;
 
 		public Policy() {
-		}
-
-		public Policy(final Policy policy) {
-
-			id = policy.id;
-			digestAlgorithm = policy.digestAlgorithm;
-			digestValue = Arrays.copyOf(policy.digestValue, policy.digestValue.length);
 		}
 
 		/**
