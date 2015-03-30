@@ -32,6 +32,7 @@ import java.math.BigInteger;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -65,6 +66,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.ASN1ObjectIdentifierComparator;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
@@ -159,23 +161,17 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 				ASN1Set authenticatedAttributeSet = signedInfo.getAuthenticatedAttributes();
 				logger.info("AUTHENTICATED ATTR : " + authenticatedAttributeSet);
 
-				//				LinkedList<ASN1ObjectIdentifier > attributeOids = new LinkedList<ASN1ObjectIdentifier >();
-				//				for (int i = 0; i < authenticatedAttributeSet.size(); i++) {
-				//					Attribute attribute = Attribute.getInstance(authenticatedAttributeSet.getObjectAt(i));
-				//					attributeOids.add(attribute.getAttrType());
-				//				}
-				//				logger.info("List of OID for Auth Attrb : " + attributeOids);
-				//
-				//				byte[] encoded2 = authenticatedAttributeSet.getEncoded("DER");
-				//				ASN1InputStream stream = new ASN1InputStream(encoded2);
-				//				DERSet derSet = new DERSet(stream.readObject());
-				//				LinkedList<ASN1ObjectIdentifier> attributeOidsSorted = new LinkedList<ASN1ObjectIdentifier>();
-				//				for (int i = 0; i < derSet.size(); i++) {
-				//					Attribute attribute = Attribute.getInstance(derSet.getObjectAt(i));
-				//					attributeOids.add(attribute.getAttrType());
-				//				}
-				//
-				//				assertTrue(attributeOids.equals(attributeOidsSorted));
+				List<ASN1ObjectIdentifier> attributeOids = new ArrayList<ASN1ObjectIdentifier>();
+				for (int i = 0; i < authenticatedAttributeSet.size(); i++) {
+					Attribute attribute = Attribute.getInstance(authenticatedAttributeSet.getObjectAt(i));
+					attributeOids.add(attribute.getAttrType());
+				}
+				logger.info("List of OID for Auth Attrb : " + attributeOids);
+
+				List<ASN1ObjectIdentifier> attributeOidsSorted = new ArrayList<ASN1ObjectIdentifier>(attributeOids);
+				Collections.sort(attributeOidsSorted, new ASN1ObjectIdentifierComparator());
+
+				assertEquals(attributeOids, attributeOidsSorted);
 
 				Attribute attributeDigest = Attribute.getInstance(authenticatedAttributeSet.getObjectAt(1));
 				assertEquals(PKCSObjectIdentifiers.pkcs_9_at_messageDigest, attributeDigest.getAttrType());

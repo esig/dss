@@ -21,6 +21,8 @@
 package eu.europa.ec.markt.dss.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +34,7 @@ import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.crypto.Cipher;
@@ -66,6 +69,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.ASN1ObjectIdentifierComparator;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
@@ -87,7 +91,7 @@ public class InfiniteLoopDSS621Test {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	@Test//(timeout = 5000)
+	@Test(timeout = 5000)
 	public void testReadTimestamp1() throws Exception {
 		DSSDocument signDocument = new FileDocument(new File(FILE_PATH));
 		final CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -103,12 +107,19 @@ public class InfiniteLoopDSS621Test {
 		assertEquals(5, signatures.size()); // 1 timestamp is not counted as signature
 		for (final AdvancedSignature signature : signatures) {
 			SignatureCryptographicVerification cryptographicVerification = signature.checkSignatureIntegrity();
-			assertTrue(cryptographicVerification.isSignatureValid());
+			assertTrue(cryptographicVerification.isReferenceDataFound());
+			assertFalse(cryptographicVerification.isReferenceDataIntact());
+			assertFalse(cryptographicVerification.isSignatureIntact());
+			assertFalse(cryptographicVerification.isSignatureValid());
 			assertTrue(StringUtils.isEmpty(cryptographicVerification.getErrorMessage()));
 			assertTrue(CollectionUtils.isNotEmpty(signature.getSignatureTimestamps()));
 		}
 	}
 
+
+	/**
+	 * These signatures are invalid because of non ordered  signed attributes
+	 */
 	@Test
 	public void manualTest() throws Exception {
 
@@ -165,13 +176,21 @@ public class InfiniteLoopDSS621Test {
 				logger.info("AUTHENTICATED ATTR : " + authenticatedAttributeSet);
 
 				Attribute attributeDigest = null;
+				List<ASN1ObjectIdentifier> attributeOids = new ArrayList<ASN1ObjectIdentifier>();
 				for (int i = 0; i < authenticatedAttributeSet.size(); i++) {
 					Attribute attribute = Attribute.getInstance(authenticatedAttributeSet.getObjectAt(i));
+					attributeOids.add(attribute.getAttrType());
 					if (PKCSObjectIdentifiers.pkcs_9_at_messageDigest.equals(attribute.getAttrType())) {
 						attributeDigest = attribute;
 						break;
 					}
 				}
+				logger.info("List of OID for Auth Attrb : " + attributeOids);
+
+				List<ASN1ObjectIdentifier> attributeOidsSorted = new ArrayList<ASN1ObjectIdentifier>(attributeOids);
+				Collections.sort(attributeOidsSorted, new ASN1ObjectIdentifierComparator());
+
+				assertNotEquals(attributeOids, attributeOidsSorted);
 				assertNotNull(attributeDigest);
 
 				ASN1OctetString asn1ObjString = ASN1OctetString.getInstance(attributeDigest.getAttrValues().getObjectAt(0));
@@ -247,15 +266,10 @@ public class InfiniteLoopDSS621Test {
 		List<X509Certificate> foundCertificates = new ArrayList<X509Certificate>();
 		for (int i = 0; i < certificates.size(); i++) {
 			ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
-			//			logger.info("SEQ cert " + i + " : " + seqCertif);
 
 			X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
 			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(
 					certificateHolder);
-
-			//			certificate.checkValidity();
-
-			//			logger.info("Cert " + i + " : " + certificate);
 
 			foundCertificates.add(certificate);
 		}
