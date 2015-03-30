@@ -30,7 +30,7 @@ public class ETSISamplesValidationTest {
 	public static Collection<Object[]> data() {
 		File folder = new File("src/test/resources/plugtest");
 		Collection<File> listFiles = FileUtils.listFiles(folder, new String[] {
-				"p7", "p7b", "p7m", "p7s", "pkcs7"
+				"p7", "p7b", "p7m", "p7s", "pkcs7", "csig",
 		}, true);
 		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
 		for (File file : listFiles) {
