@@ -27,7 +27,7 @@ import java.util.Map;
 
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificatePool;
 
 /**
@@ -47,8 +47,8 @@ public interface PDFSignatureService {
 	 * @return
 	 * @throws DSSException
 	 */
-	byte[] digest(final InputStream toSignDocument, final SignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
-	              final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
+	byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
+			final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
 
 	/**
 	 * Signs a PDF document
@@ -61,8 +61,8 @@ public interface PDFSignatureService {
 	 * @param extraDictionariesToAddBeforeSign
 	 * @throws DSSException
 	 */
-	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final SignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
-	          final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
+	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
+			final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
 
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document

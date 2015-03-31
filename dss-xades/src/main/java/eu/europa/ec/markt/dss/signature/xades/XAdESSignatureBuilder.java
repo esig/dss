@@ -48,7 +48,7 @@ import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
@@ -69,7 +69,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * Indicates if the signature was already built. (Two steps building)
-	 */ 
+	 */
 	protected boolean built = false;
 
 	/**
@@ -108,7 +108,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @param certificateVerifier
 	 * @return
 	 */
-	public static XAdESSignatureBuilder getSignatureBuilder(final SignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
+	public static XAdESSignatureBuilder getSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
 
 		switch (params.getSignaturePackaging()) {
 			case ENVELOPED:
@@ -129,14 +129,14 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @param detachedDocument    The original document to sign.
 	 * @param certificateVerifier
 	 */
-	public XAdESSignatureBuilder(final SignatureParameters params, final DSSDocument detachedDocument, final CertificateVerifier certificateVerifier) {
+	public XAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument detachedDocument, final CertificateVerifier certificateVerifier) {
 
 		super(certificateVerifier);
 		this.params = params;
 		this.detachedDocument = detachedDocument;
 	}
 
-	protected void setCanonicalizationMethods(final SignatureParameters params, final String canonicalizationMethod) {
+	protected void setCanonicalizationMethods(final XAdESSignatureParameters params, final String canonicalizationMethod) {
 
 		final String signedInfoCanonicalizationMethod_ = params.getSignedInfoCanonicalizationMethod();
 		if (StringUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
@@ -692,6 +692,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @return
 	 * @throws DSSException
 	 */
+	@Override
 	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
 		if (!built) {
 			build();

@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 
@@ -73,4 +73,7 @@ public class DeterministicIdGenerationTest {
 
 	}
 
+	private class SignatureParameters extends AbstractSignatureParameters {
+
+	}
 }

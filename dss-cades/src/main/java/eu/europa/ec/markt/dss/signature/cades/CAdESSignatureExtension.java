@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -45,7 +46,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSConfigurationException;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
@@ -58,7 +59,7 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  *
  */
 
-abstract class CAdESSignatureExtension implements SignatureExtension {
+abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureExtension.class);
 
@@ -97,13 +98,13 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
 	@Override
-	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final SignatureParameters parameters) throws DSSException {
+	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final CAdESSignatureParameters parameters) throws DSSException {
 
 		LOG.info("EXTEND SIGNATURES.");
 		try {
 			final InputStream inputStream = signatureToExtend.openStream();
 			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
 			final CMSSignedDocument cmsSignedDocument = new CMSSignedDocument(extendCMSSignedData);
 			return cmsSignedDocument;
@@ -112,7 +113,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 		}
 	}
 
-	public CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData, SignatureParameters parameters) {
+	public CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
 		CMSSignedData extendCMSSignedData;
 		if (onlyLastCMSSignature) {
 			extendCMSSignedData = extendLastCMSSignature(cmsSignedData, parameters);
@@ -128,7 +129,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	 * @param cmsSignedData
 	 * @return
 	 */
-	private CMSSignedData extendAllCMSSignatures(CMSSignedData cmsSignedData, SignatureParameters parameters) {
+	private CMSSignedData extendAllCMSSignatures(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
 		LOG.info("EXTEND ALL CMS SIGNATURES.");
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
 		for (SignerInformation signerInformation : signerInformationCollection) {
@@ -162,7 +163,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	 * @param cmsSignedData
 	 * @return
 	 */
-	private CMSSignedData extendLastCMSSignature(CMSSignedData cmsSignedData, SignatureParameters parameters) {
+	private CMSSignedData extendLastCMSSignature(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
 
 		LOG.info("EXTEND LAST CMS SIGNATURES.");
 		cmsSignedData = preExtendCMSSignedData(cmsSignedData, parameters);
@@ -203,7 +204,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 		return lastSignerInformation;
 	}
 
-	private void assertSignatureValid(final CAdESSignature cadesSignature, final SignatureParameters parameters) {
+	private void assertSignatureValid(final CAdESSignature cadesSignature, final CAdESSignatureParameters parameters) {
 
 		// TODO: (Bob: 2014 Jan 22) To be changed to enum check and not string!
 		if (!parameters.getSignatureLevel().toString().toLowerCase().startsWith("pades")) {
@@ -226,7 +227,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	 * @return
 	 * @throws java.io.IOException
 	 */
-	abstract protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, SignatureParameters parameters) throws DSSException;
+	abstract protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) throws DSSException;
 
 	/**
 	 * Extends the root Signed Data. Nothing to do by default.
@@ -235,7 +236,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	 * @param parameters
 	 * @return
 	 */
-	protected CMSSignedData preExtendCMSSignedData(CMSSignedData cmsSignedData, SignatureParameters parameters) {
+	protected CMSSignedData preExtendCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
 		return cmsSignedData;
 	}
 
@@ -247,11 +248,11 @@ abstract class CAdESSignatureExtension implements SignatureExtension {
 	 * @param parameters
 	 * @return
 	 */
-	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, SignatureParameters parameters) {
+	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
 		return cmsSignedData;
 	}
 
-	protected ASN1Object getTimeStampAttributeValue(TSPSource tspSource, byte[] message, SignatureParameters parameters) {
+	protected ASN1Object getTimeStampAttributeValue(TSPSource tspSource, byte[] message, CAdESSignatureParameters parameters) {
 
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		ASN1Object signatureTimeStampValue = getTimeStampAttributeValue(tspSource, message, timestampDigestAlgorithm);

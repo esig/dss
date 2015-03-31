@@ -24,10 +24,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.io.IOUtils;
+
+import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.applet.controller.ActivityController;
 import eu.europa.ec.markt.dss.applet.main.DSSAppletCore;
 import eu.europa.ec.markt.dss.applet.model.ExtendSignatureModel;
@@ -38,9 +41,9 @@ import eu.europa.ec.markt.dss.applet.view.extension.SaveView;
 import eu.europa.ec.markt.dss.applet.view.extension.SignatureView;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
+import eu.europa.ec.markt.dss.ws.signature.SignatureLevel;
+import eu.europa.ec.markt.dss.ws.signature.WsParameters;
 
 /**
  * TODO
@@ -97,17 +100,18 @@ public class ExtensionWizardController extends WizardController<ExtendSignatureM
 		final File signedFile = getModel().getSelectedFile();
 		final File originalFile = getModel().getOriginalFile();
 
-		final SignatureParameters parameters = new SignatureParameters();
-		parameters.setSignatureLevel(SignatureLevel.valueByName(model.getLevel()));
+		final WsParameters parameters = new WsParameters();
+		parameters.setSigningDate(DSSXMLUtils.createXMLGregorianCalendar(new Date()));
+		parameters.setSignatureLevel(SignatureLevel.valueOf(model.getLevel()));
 		parameters.setSignaturePackaging(model.getPackaging());
 
-		final DSSDocument signedDocument = SigningUtils.extendDocument(serviceURL, signedFile, originalFile, parameters);
+		final DSSDocument signedDocument = SigningUtils.extendDocument(serviceURL, signedFile, parameters);
 
 		final InputStream inputStream = signedDocument.openStream();
 		final FileOutputStream fileOutputStream = new FileOutputStream(model.getTargetFile());
-		DSSUtils.copy(inputStream, fileOutputStream);
-		DSSUtils.closeQuietly(inputStream);
-		DSSUtils.closeQuietly(fileOutputStream);
+		IOUtils.copy(inputStream, fileOutputStream);
+		IOUtils.closeQuietly(inputStream);
+		IOUtils.closeQuietly(fileOutputStream);
 	}
 
 	/*

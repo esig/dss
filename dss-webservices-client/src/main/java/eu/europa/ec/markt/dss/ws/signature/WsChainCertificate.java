@@ -28,9 +28,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * 
  *
- * 
+ *
+ *
  * <pre>
  * &lt;complexType name="wsChainCertificate">
  *   &lt;complexContent>
@@ -43,55 +43,55 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "wsChainCertificate", propOrder = {
-    "signedAttribute",
-    "x509Certificate"
+		"signedAttribute",
+		"x509Certificate"
 })
 public class WsChainCertificate {
 
-    protected boolean signedAttribute;
-    protected byte[] x509Certificate;
+	protected boolean signedAttribute;
+	protected byte[] x509Certificate;
 
-    /**
-     * Gets the value of the signedAttribute property.
-     * 
-     */
-    public boolean isSignedAttribute() {
-        return signedAttribute;
-    }
+	/**
+	 * Gets the value of the signedAttribute property.
+	 *
+	 */
+	public boolean isSignedAttribute() {
+		return signedAttribute;
+	}
 
-    /**
-     * Sets the value of the signedAttribute property.
-     * 
-     */
-    public void setSignedAttribute(boolean value) {
-        this.signedAttribute = value;
-    }
+	/**
+	 * Sets the value of the signedAttribute property.
+	 *
+	 */
+	public void setSignedAttribute(boolean value) {
+		this.signedAttribute = value;
+	}
 
-    /**
-     * Gets the value of the x509Certificate property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
-     */
-    public byte[] getX509Certificate() {
-        return x509Certificate;
-    }
+	/**
+	 * Gets the value of the x509Certificate property.
+	 *
+	 * @return
+	 *     possible object is
+	 *     byte[]
+	 */
+	public byte[] getX509Certificate() {
+		return x509Certificate;
+	}
 
-    /**
-     * Sets the value of the x509Certificate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
-     */
-    public void setX509Certificate(byte[] value) {
-        this.x509Certificate = value;
-    }
+	/**
+	 * Sets the value of the x509Certificate property.
+	 *
+	 * @param value
+	 *     allowed object is
+	 *     byte[]
+	 */
+	public void setX509Certificate(byte[] value) {
+		this.x509Certificate = value;
+	}
 
 }

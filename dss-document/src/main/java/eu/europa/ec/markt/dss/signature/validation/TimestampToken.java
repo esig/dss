@@ -74,8 +74,6 @@ public class TimestampToken extends Token {
 
 	private TimestampType timeStampType;
 
-	private int dssId;
-
 	private CAdESCertificateSource wrappedSource;
 
 	private X500Principal issuerX500Principal;
@@ -133,14 +131,10 @@ public class TimestampToken extends Token {
 				}
 			}
 		}
-		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, DSSUtils.getEncoded(timeStamp));
-		final String base64Encoded = DSSUtils.base64Encode(digest);
-		dssId = base64Encoded.hashCode();
 	}
 
 	@Override
 	public String getAbbreviation() {
-
 		return timeStampType.name() + ": " + getDSSId() + ": " + DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime());
 	}
 
@@ -149,6 +143,7 @@ public class TimestampToken extends Token {
 	 *
 	 * @return {@code X500Principal} representing the issuing certificate's distinguished subject name.
 	 */
+	@Override
 	public X500Principal getIssuerX500Principal() {
 
 		return issuerX500Principal;

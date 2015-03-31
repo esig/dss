@@ -23,10 +23,10 @@ package eu.europa.ec.markt.dss.signature.xades;
 import org.apache.xml.security.Init;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.SignatureProfile;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureBuilder;
-import eu.europa.ec.markt.dss.signature.SignatureProfile;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 
 /**
@@ -48,7 +48,7 @@ public class XAdESLevelBaselineB implements SignatureProfile {
 
 	/**
 	 * The default constructor for XAdESLevelBaselineB.
-	 * 
+	 *
 	 * @param certificateVerifier
 	 */
 	public XAdESLevelBaselineB(final CertificateVerifier certificateVerifier) {
@@ -63,7 +63,7 @@ public class XAdESLevelBaselineB implements SignatureProfile {
 	 * @param parameters  set of the driving signing parameters
 	 * @return bytes
 	 */
-	public byte[] getDataToSign(final DSSDocument dssDocument, final SignatureParameters parameters) throws DSSException {
+	public byte[] getDataToSign(final DSSDocument dssDocument, final XAdESSignatureParameters parameters) throws DSSException {
 		final XAdESSignatureBuilder signatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, dssDocument, certificateVerifier);
 		parameters.getContext().setBuilder(signatureBuilder);
 		final byte[] dataToSign = signatureBuilder.build();
@@ -79,7 +79,8 @@ public class XAdESLevelBaselineB implements SignatureProfile {
 	 * @return
 	 * @throws DSSException
 	 */
-	public DSSDocument signDocument(final DSSDocument document, final SignatureParameters parameters, final byte[] signatureValue) throws DSSException {
+	@Override
+	public DSSDocument signDocument(final DSSDocument document, final XAdESSignatureParameters parameters, final byte[] signatureValue) throws DSSException {
 		SignatureBuilder builder = parameters.getContext().getBuilder();
 		if (builder != null) {
 			builder = parameters.getContext().getBuilder();

@@ -26,14 +26,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
+
+import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.applet.controller.ActivityController;
 import eu.europa.ec.markt.dss.applet.controller.DSSWizardController;
 import eu.europa.ec.markt.dss.applet.main.DSSAppletCore;
@@ -52,16 +56,20 @@ import eu.europa.ec.markt.dss.applet.view.signature.TokenView;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardController;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.BLevelParameters.Policy;
-import eu.europa.ec.markt.dss.parameter.DSSReference;
-import eu.europa.ec.markt.dss.parameter.DSSTransform;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
+import eu.europa.ec.markt.dss.validation102853.CertificateToken;
+import eu.europa.ec.markt.dss.ws.signature.DigestAlgorithm;
+import eu.europa.ec.markt.dss.ws.signature.DssTransform;
+import eu.europa.ec.markt.dss.ws.signature.EncryptionAlgorithm;
+import eu.europa.ec.markt.dss.ws.signature.Policy;
+import eu.europa.ec.markt.dss.ws.signature.SignatureLevel;
+import eu.europa.ec.markt.dss.ws.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.ws.signature.WsChainCertificate;
+import eu.europa.ec.markt.dss.ws.signature.WsParameters;
+import eu.europa.ec.markt.dss.ws.signature.WsdssReference;
 
 /**
  * TODO
@@ -190,9 +198,26 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		final SignatureTokenConnection tokenConnection = model.getTokenConnection();
 		final DSSPrivateKeyEntry privateKey = model.getSelectedPrivateKey();
 
-		final SignatureParameters parameters = new SignatureParameters();
-		parameters.setPrivateKeyEntry(privateKey);
-		parameters.setSigningToken(tokenConnection);
+		final WsParameters parameters = new WsParameters();
+
+		parameters.setSigningCertificateBytes(privateKey.getCertificate().getEncoded());
+
+		List<WsChainCertificate> chainCertificateList = parameters.getChainCertificateList();
+		WsChainCertificate certificate = new WsChainCertificate();
+		certificate.setX509Certificate(privateKey.getCertificate().getEncoded());
+		chainCertificateList.add(certificate);
+		CertificateToken[] certificateChain = privateKey.getCertificateChain();
+		if (ArrayUtils.isNotEmpty(certificateChain)){
+			for (CertificateToken certificateToken : certificateChain) {
+				WsChainCertificate c = new WsChainCertificate();
+				c.setX509Certificate(certificateToken.getEncoded());
+				chainCertificateList.add(c);
+			}
+		}
+
+		parameters.setEncryptionAlgorithm(EncryptionAlgorithm.fromValue(privateKey.getEncryptionAlgorithm().name()));
+
+		parameters.setSigningDate(DSSXMLUtils.createXMLGregorianCalendar(new Date()));
 
 		DigestAlgorithm digestAlgorithm = model.getSignatureDigestAlgorithm();
 		if (digestAlgorithm == null) {
@@ -200,80 +225,69 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		} else {
 			parameters.setDigestAlgorithm(digestAlgorithm);
 		}
-		if (model.isTslSignatureCheck()) {
 
+		if (model.isTslSignatureCheck()) {
 			prepareTSLSignature(parameters, fileToSign);
 		} else {
-
 			prepareCommonSignature(model, parameters);
 		}
-		final DSSDocument signedDocument = SigningUtils.signDocument(serviceURL, fileToSign, parameters);
+
+		final DSSDocument signedDocument = SigningUtils.signDocument(serviceURL, fileToSign, parameters, privateKey, tokenConnection);
 		final FileOutputStream fileOutputStream = new FileOutputStream(model.getTargetFile());
 		final InputStream inputStream = signedDocument.openStream();
-		DSSUtils.copy(inputStream, fileOutputStream);
-		DSSUtils.closeQuietly(inputStream);
-		DSSUtils.closeQuietly(fileOutputStream);
+		IOUtils.copy(inputStream, fileOutputStream);
+		IOUtils.closeQuietly(inputStream);
+		IOUtils.closeQuietly(fileOutputStream);
 	}
 
-	private void prepareCommonSignature(SignatureModel model, SignatureParameters parameters) {
+	private void prepareCommonSignature(SignatureModel model, WsParameters parameters) {
 
 		final String signatureLevelString = model.getLevel();
-		final SignatureLevel signatureLevel = SignatureLevel.valueByName(signatureLevelString);
-		parameters.setSignatureLevel(signatureLevel);
+		parameters.setSignatureLevel(SignatureLevel.valueOf(signatureLevelString));
 		parameters.setSignaturePackaging(model.getPackaging());
 
 		if (model.isClaimedCheck()) {
-			parameters.bLevel().addClaimedSignerRole(model.getClaimedRole());
+			parameters.getClaimedSignerRole().add(model.getClaimedRole());
 		}
+
 		if (model.isSignaturePolicyCheck()) {
 
-			final byte[] hashValue = DSSUtils.base64Decode(model.getSignaturePolicyValue());
+			final byte[] hashValue = Base64.decodeBase64(model.getSignaturePolicyValue());
 			final Policy policy = new Policy();
 			policy.setId(model.getSignaturePolicyId());
-			final DigestAlgorithm policyDigestAlgorithm = DigestAlgorithm.forName(model.getSignaturePolicyAlgo());
+			final DigestAlgorithm policyDigestAlgorithm = DigestAlgorithm.valueOf(model.getSignaturePolicyAlgo());
 			policy.setDigestAlgorithm(policyDigestAlgorithm);
 			policy.setDigestValue(hashValue);
-			parameters.bLevel().setSignaturePolicy(policy);
+			parameters.setSignaturePolicy(policy);
 		}
 	}
 
-	private void prepareTSLSignature(SignatureParameters parameters, File fileToSign) {
-
-		parameters.clearCertificateChain();
-		parameters.setCertificateChain(parameters.getSigningCertificate());
+	private void prepareTSLSignature(WsParameters parameters, File fileToSign) {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 
-		final List<DSSReference> references = new ArrayList<DSSReference>();
+		final List<WsdssReference> references = new ArrayList<WsdssReference>();
 
-		DSSReference dssReference = new DSSReference();
+		WsdssReference dssReference = new WsdssReference();
 		dssReference.setId("xml_ref_id");
 		dssReference.setUri("");
-		dssReference.setContents(new FileDocument(fileToSign));
+		dssReference.setContents(SigningUtils.toWsDocument(new FileDocument(fileToSign)));
 		dssReference.setDigestMethodAlgorithm(parameters.getDigestAlgorithm());
 
-		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		final List<DssTransform> transforms = new ArrayList<DssTransform>();
 
-		DSSTransform dssTransform = new DSSTransform();
+		DssTransform dssTransform = new DssTransform();
 		dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
 		transforms.add(dssTransform);
+		dssReference.getTransforms().add(dssTransform);
 
-		dssTransform = new DSSTransform();
+		dssTransform = new DssTransform();
 		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
 		transforms.add(dssTransform);
+		dssReference.getTransforms().add(dssTransform);
 
-		dssReference.setTransforms(transforms);
 		references.add(dssReference);
 
-		//			System.out.println("###APPLET - REFERENCES:");
-		//			for (DSSReference reference : references) {
-		//				System.out.println("    --> " + reference.getId() + "/" + reference.getUri() + "/" + reference.getType());
-		//				final List<DSSTransform> transforms_ = reference.getTransforms();
-		//				for (DSSTransform transform : transforms_) {
-		//
-		//					System.out.println("    --> ---> " + transform.getElementName() + "/" + transform.getTextContent() + "/" + transform.getAlgorithm());
-		//				}
-		//			}
-		parameters.setReferences(references);
+		parameters.getReferences().addAll(references);
 	}
 }

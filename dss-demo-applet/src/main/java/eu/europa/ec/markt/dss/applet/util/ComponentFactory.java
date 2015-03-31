@@ -52,6 +52,8 @@ import javax.swing.border.Border;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.RadioButtonAdapter;
 import com.jgoodies.binding.value.ValueModel;
@@ -439,7 +441,7 @@ public final class ComponentFactory extends BasicComponentFactory {
 			colSpecs.add("default:grow");
 		}
 
-		final FormLayout layout = new FormLayout(DSSUtils.join(colSpecs, ","), "pref");
+		final FormLayout layout = new FormLayout(StringUtils.join(colSpecs, ","), "pref");
 		final PanelBuilder builder = ComponentFactory.createBuilder(layout);
 		final CellConstraints cc = new CellConstraints();
 

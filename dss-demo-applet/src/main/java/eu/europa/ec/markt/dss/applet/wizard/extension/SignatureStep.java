@@ -20,7 +20,8 @@
  */
 package eu.europa.ec.markt.dss.applet.wizard.extension;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.applet.model.ExtendSignatureModel;
 import eu.europa.ec.markt.dss.applet.model.FormatType;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.ControllerException;
@@ -132,6 +133,6 @@ public class SignatureStep extends WizardStep<ExtendSignatureModel, ExtensionWiz
 	@Override
 	protected boolean isValid() {
 		final ExtendSignatureModel model = getModel();
-		return DSSUtils.isNotEmpty(model.getFormat()) && model.getPackaging() != null && DSSUtils.isNotEmpty(model.getLevel());
+		return StringUtils.isNotEmpty(model.getFormat()) && (model.getPackaging() != null) && StringUtils.isNotEmpty(model.getLevel());
 	}
 }

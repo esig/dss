@@ -34,8 +34,8 @@ import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.mock.MockTSPSource;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.parameter.TimestampParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
@@ -68,12 +68,10 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		references.add(dssReference);
 
 		//Define the signature parameters
-		SignatureParameters signatureParameters = new SignatureParameters();
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setReferences(references);
-		signatureParameters.setPrivateKeyEntry(signingToken.getKeys().get(0));
-		signatureParameters.setSigningToken(signingToken);
 
 		TimestampParameters contentTimestampParameters = new TimestampParameters();
 		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
@@ -98,7 +96,10 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		//Create the signature, including the AllDataObjectsTimestamp
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(verifier);
-		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters);
+
+		byte[] dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
+		byte[] signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
+		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
 		InputStream is = new ByteArrayInputStream(signedDocument.getBytes());
 

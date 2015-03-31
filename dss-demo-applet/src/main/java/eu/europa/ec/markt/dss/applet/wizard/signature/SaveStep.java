@@ -22,12 +22,14 @@ package eu.europa.ec.markt.dss.applet.wizard.signature;
 
 import java.io.File;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.applet.model.SignatureModel;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.ControllerException;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardView;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.ws.signature.SignaturePackaging;
 
 /**
  * TODO
@@ -39,110 +41,110 @@ import eu.europa.ec.markt.dss.signature.SignaturePackaging;
  *
  */
 public class SaveStep extends WizardStep<SignatureModel, SignatureWizardController> {
-    /**
-     * The default constructor for SaveStep.
-     *
-     * @param model
-     * @param view
-     * @param controller
-     */
-    public SaveStep(final SignatureModel model, final WizardView<SignatureModel, SignatureWizardController> view, final SignatureWizardController controller) {
-        super(model, view, controller);
-    }
+	/**
+	 * The default constructor for SaveStep.
+	 *
+	 * @param model
+	 * @param view
+	 * @param controller
+	 */
+	public SaveStep(final SignatureModel model, final WizardView<SignatureModel, SignatureWizardController> view, final SignatureWizardController controller) {
+		super(model, view, controller);
+	}
 
-    @Override
-    protected void finish() throws ControllerException {
-        // TODO Auto-generated method stub
+	@Override
+	protected void finish() throws ControllerException {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getBackStep()
-     */
-    @Override
-    protected Class<? extends WizardStep<SignatureModel, SignatureWizardController>> getBackStep() {
-        return PersonalDataStep.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getBackStep()
+	 */
+	@Override
+	protected Class<? extends WizardStep<SignatureModel, SignatureWizardController>> getBackStep() {
+		return PersonalDataStep.class;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getNextStep()
-     */
-    @Override
-    protected Class<? extends WizardStep<SignatureModel, SignatureWizardController>> getNextStep() {
-        return FinishStep.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getNextStep()
+	 */
+	@Override
+	protected Class<? extends WizardStep<SignatureModel, SignatureWizardController>> getNextStep() {
+		return FinishStep.class;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getStepProgression()
-     */
-    @Override
-    protected int getStepProgression() {
-        return 6;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#getStepProgression()
+	 */
+	@Override
+	protected int getStepProgression() {
+		return 6;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#execute()
-     */
-    @Override
-    protected void init() {
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#execute()
+	 */
+	@Override
+	protected void init() {
 
-        final File selectedFile = getModel().getSelectedFile();
-        // Initialize the target file base on the current selected file
+		final File selectedFile = getModel().getSelectedFile();
+		// Initialize the target file base on the current selected file
 
-        final SignaturePackaging signaturePackaging = getModel().getPackaging();
-        final String signatureLevel = getModel().getLevel();
-        final File targetFile = prepareTargetFileName(selectedFile, signaturePackaging, signatureLevel);
+		final SignaturePackaging signaturePackaging = getModel().getPackaging();
+		final String signatureLevel = getModel().getLevel();
+		final File targetFile = prepareTargetFileName(selectedFile, signaturePackaging, signatureLevel);
 
-        getModel().setTargetFile(targetFile);
+		getModel().setTargetFile(targetFile);
 
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#isValid()
-     */
-    @Override
-    protected boolean isValid() {
-        final File targetFile = getModel().getTargetFile();
-        return targetFile != null;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.ec.markt.dss.commons.swing.mvc.applet.wizard.WizardStep#isValid()
+	 */
+	@Override
+	protected boolean isValid() {
+		final File targetFile = getModel().getTargetFile();
+		return targetFile != null;
+	}
 
-    private File prepareTargetFileName(final File file, final SignaturePackaging signaturePackaging, final String signatureLevel) {
+	private File prepareTargetFileName(final File file, final SignaturePackaging signaturePackaging, final String signatureLevel) {
 
-        final File parentDir = file.getParentFile();
-        final String originalName = DSSUtils.substringBeforeLast(file.getName(), ".");
-        final String originalExtension = "." + DSSUtils.substringAfterLast(file.getName(), ".");
-        final String level = signatureLevel.toUpperCase();
+		final File parentDir = file.getParentFile();
+		final String originalName = StringUtils.substringBeforeLast(file.getName(), ".");
+		final String originalExtension = "." + StringUtils.substringAfterLast(file.getName(), ".");
+		final String level = signatureLevel.toUpperCase();
 
-        if ((SignaturePackaging.ENVELOPING == signaturePackaging || SignaturePackaging.DETACHED == signaturePackaging) && level.startsWith("XADES")) {
+		if (((SignaturePackaging.ENVELOPING == signaturePackaging) || (SignaturePackaging.DETACHED == signaturePackaging)) && level.startsWith("XADES")) {
 
-            final String form = "xades";
-            final String levelOnly = DSSUtils.replaceStrStr(level, "XADES-", "").toLowerCase();
-            final String packaging = signaturePackaging.name().toLowerCase();
-            return new File(parentDir, originalName + "-" + form + "-" + packaging + "-" + levelOnly + ".xml");
-        }
+			final String form = "xades";
+			final String levelOnly = DSSUtils.replaceStrStr(level, "XADES-", "").toLowerCase();
+			final String packaging = signaturePackaging.name().toLowerCase();
+			return new File(parentDir, originalName + "-" + form + "-" + packaging + "-" + levelOnly + ".xml");
+		}
 
-        if (level.startsWith("CADES") && !originalExtension.toLowerCase().equals(".p7m")) {
-            return new File(parentDir, originalName + originalExtension + ".p7m");
-        }
+		if (level.startsWith("CADES") && !originalExtension.toLowerCase().equals(".p7m")) {
+			return new File(parentDir, originalName + originalExtension + ".p7m");
+		}
 
-	    if (level.startsWith("ASIC-S")) {
-		    return new File(parentDir, originalName + originalExtension + ".asics");
-	    }
-	    if (level.startsWith("ASIC-E")) {
-		    return new File(parentDir, originalName + originalExtension + ".asice");
-	    }
+		if (level.startsWith("ASIC_S")) {
+			return new File(parentDir, originalName + originalExtension + ".asics");
+		}
+		if (level.startsWith("ASIC_E")) {
+			return new File(parentDir, originalName + originalExtension + ".asice");
+		}
 
-        return new File(parentDir, originalName + "-signed" + originalExtension);
+		return new File(parentDir, originalName + "-signed" + originalExtension);
 
-    }
+	}
 }

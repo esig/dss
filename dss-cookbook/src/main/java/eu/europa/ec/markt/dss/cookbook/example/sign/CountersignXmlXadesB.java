@@ -28,7 +28,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters.SignerLocation;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -50,9 +50,7 @@ public class CountersignXmlXadesB extends Cookbook {
 		preparePKCS12TokenAndKey();
 
 		// Preparing the parameters for the countersignature
-		SignatureParameters countersigningParameters = new SignatureParameters();
-		countersigningParameters.setSigningToken(signingToken);
-		countersigningParameters.setPrivateKeyEntry(privateKey);
+		XAdESSignatureParameters countersigningParameters = new XAdESSignatureParameters();
 		countersigningParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		countersigningParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		//The ID of the signature was manually retrieved in the document to countersign
@@ -68,7 +66,7 @@ public class CountersignXmlXadesB extends Cookbook {
 		// Countersign the document
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(commonCertificateVerifier);
-		DSSDocument countersignedDocument = service.counterSignDocument(toCountersignDocument, countersigningParameters);
+		DSSDocument countersignedDocument = service.counterSignDocument(toCountersignDocument, countersigningParameters, signingToken, privateKey);
 
 		InputStream is = new ByteArrayInputStream(countersignedDocument.getBytes());
 		DSSUtils.saveToFile(is, "target/countersigned.xml");

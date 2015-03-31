@@ -22,10 +22,11 @@ package eu.europa.ec.markt.dss.signature;
 
 import java.io.Serializable;
 
+import eu.europa.ec.markt.dss.parameter.SignatureProfile;
+
 /**
  * This class This class manages the internal variables used in the process of creating of a signature and which allows to
  * accelerate the generation.<br>
- * ! This class must be derived to  take also into account other formats then XAdES
  */
 public class ProfileParameters implements Serializable {
 

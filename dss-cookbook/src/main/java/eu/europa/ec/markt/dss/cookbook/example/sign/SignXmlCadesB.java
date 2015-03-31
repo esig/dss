@@ -25,7 +25,7 @@ import java.io.IOException;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
@@ -53,7 +53,7 @@ public class SignXmlCadesB extends Cookbook {
 		preparePKCS12TokenAndKey();
 
 		// Preparing parameters for the CAdES signature
-		SignatureParameters parameters = new SignatureParameters();
+		CAdESSignatureParameters parameters = new CAdESSignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, -LTA).
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		// We choose the type of the signature packaging (ENVELOPING, DETACHED).
@@ -62,9 +62,7 @@ public class SignXmlCadesB extends Cookbook {
 		// same parameter when you invoke the method sign on the token. The default value is
 		// SHA256
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		// We choose the private key with the certificate and corresponding certificate
-		// chain.
-		parameters.setPrivateKeyEntry(privateKey);
+
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		// Create CAdES xadesService for signature

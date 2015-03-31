@@ -23,7 +23,7 @@ package eu.europa.ec.markt.dss.signature;
 import java.io.Serializable;
 
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
 
 /**
@@ -31,7 +31,7 @@ import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
  *
  *
  */
-public interface DocumentSignatureService extends Serializable {
+public interface DocumentSignatureService<SP extends AbstractSignatureParameters> extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}. (Added in version 4) When
@@ -59,7 +59,7 @@ public interface DocumentSignatureService extends Serializable {
 	 * @return
 	 * @throws DSSException
 	 */
-	byte[] getDataToSign(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException;
+	byte[] getDataToSign(final DSSDocument toSignDocument, final SP parameters) throws DSSException;
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.
@@ -72,21 +72,7 @@ public interface DocumentSignatureService extends Serializable {
 	 * @return
 	 * @throws DSSException
 	 */
-	DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters, final byte[] signatureValue) throws DSSException;
-
-	/**
-	 * Signs the toSignDocument in the single operation. It is possible to invoke this method when the private key is known on the server side or
-	 * everything is done on the client side.
-	 *
-	 * @param toSignDocument
-	 *            document to sign
-	 * @param parameters
-	 *            set of the driving signing parameters
-	 * @return
-	 * @throws DSSException
-	 */
-	@Deprecated
-	DSSDocument signDocument(final DSSDocument toSignDocument, final SignatureParameters parameters) throws DSSException;
+	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, final byte[] signatureValue) throws DSSException;
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}
@@ -98,7 +84,7 @@ public interface DocumentSignatureService extends Serializable {
 	 * @return
 	 * @throws DSSException
 	 */
-	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SignatureParameters parameters) throws DSSException;
+	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters) throws DSSException;
 
 	/**
 	 * This setter allows to define the TSP (timestamp provider) source.

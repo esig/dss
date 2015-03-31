@@ -26,7 +26,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
@@ -54,7 +54,7 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 		preparePKCS12TokenAndKey();
 
 		// Preparing parameters for the XAdES signature
-		SignatureParameters parameters = new SignatureParameters();
+		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, -LTA).
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 		// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
@@ -62,8 +62,6 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 		// We set the digest algorithm to use with the signature algorithm. You must use the
 		// same parameter when you invoke the method sign on the token. The default value is SHA256
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		// We choose the private key with the certificate and corresponding certificate chain.
-		parameters.setPrivateKeyEntry(privateKey);
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();

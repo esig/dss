@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.jws.WebService;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,15 +34,20 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
+import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
+import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 import eu.europa.ec.markt.dss.ws.DSSWSUtils;
 import eu.europa.ec.markt.dss.ws.SignatureService;
 import eu.europa.ec.markt.dss.ws.WSChainCertificate;
@@ -60,93 +66,87 @@ public class SignatureServiceImpl implements SignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureServiceImpl.class);
 
-	private DocumentSignatureService xadesService;
+	private DocumentSignatureService<XAdESSignatureParameters> xadesService;
 
-	private DocumentSignatureService cadesService;
+	private DocumentSignatureService<CAdESSignatureParameters> cadesService;
 
-	private DocumentSignatureService padesService;
+	private DocumentSignatureService<PAdESSignatureParameters> padesService;
 
-	private DocumentSignatureService asicService;
+	private DocumentSignatureService<ASiCSignatureParameters> asicService;
 
 	/**
 	 * @param xadesService the xadesService to set
 	 */
-	public void setXadesService(final DocumentSignatureService xadesService) {
-
+	public void setXadesService(DocumentSignatureService<XAdESSignatureParameters> xadesService) {
 		this.xadesService = xadesService;
 	}
 
 	/**
 	 * @param cadesService the cadesService to set
 	 */
-	public void setCadesService(final DocumentSignatureService cadesService) {
-
+	public void setCadesService(DocumentSignatureService<CAdESSignatureParameters> cadesService) {
 		this.cadesService = cadesService;
 	}
 
 	/**
 	 * @param padesService the padesService to set
 	 */
-	public void setPadesService(final DocumentSignatureService padesService) {
-
+	public void setPadesService(DocumentSignatureService<PAdESSignatureParameters> padesService) {
 		this.padesService = padesService;
 	}
 
 	/**
 	 * @param asicService the asicService to set
 	 */
-	public void setAsicService(final DocumentSignatureService asicService) {
-
+	public void setAsicService(DocumentSignatureService<ASiCSignatureParameters> asicService) {
 		this.asicService = asicService;
 	}
 
 	private DocumentSignatureService getServiceForSignatureLevel(final SignatureLevel signatureLevel) {
-
-		switch (signatureLevel) {
-			case XAdES_BASELINE_B:
-			case XAdES_BASELINE_T:
-			case XAdES_C:
-			case XAdES_X:
-			case XAdES_XL:
-			case XAdES_BASELINE_LT:
-			case XAdES_A:
-			case XAdES_BASELINE_LTA:
+		SignatureForm signatureForm = signatureLevel.getSignatureForm();
+		switch (signatureForm) {
+			case XAdES:
 				return xadesService;
-			case CAdES_BASELINE_B:
-			case CAdES_BASELINE_T:
-			case CAdES_BASELINE_LT:
-			case CAdES_BASELINE_LTA:
+			case CAdES:
 				return cadesService;
-			case PAdES_BASELINE_B:
-			case PAdES_BASELINE_T:
-			case PAdES_BASELINE_LT:
-			case PAdES_BASELINE_LTA:
+			case PAdES:
 				return padesService;
-			case ASiC_S_BASELINE_B:
-			case ASiC_S_BASELINE_T:
-			case ASiC_S_BASELINE_LT:
-			case ASiC_E_BASELINE_B:
-			case ASiC_E_BASELINE_T:
-			case ASiC_E_BASELINE_LT:
+			case ASiC_E:
+			case ASiC_S:
 				return asicService;
 			default:
 				throw new IllegalArgumentException("Unrecognized format " + signatureLevel);
 		}
 	}
 
-	private SignatureParameters createParameters(final WSParameters wsParameters) throws DSSException {
-
+	private AbstractSignatureParameters createParameters(final WSParameters wsParameters) throws DSSException {
 		if (wsParameters == null) {
-
 			return null;
 		}
-		final SignatureParameters params = new SignatureParameters();
+
+		SignatureForm signatureForm = wsParameters.getSignatureLevel().getSignatureForm();
+		AbstractSignatureParameters params = null;
+		switch (signatureForm) {
+			case XAdES :
+				params = new XAdESSignatureParameters();
+				break;
+			case CAdES :
+				params = new CAdESSignatureParameters();
+				break;
+			case PAdES :
+				params = new PAdESSignatureParameters();
+				break;
+			case ASiC_E:
+			case ASiC_S:
+				params = new ASiCSignatureParameters();
+				break;
+			default:
+				throw new IllegalArgumentException("Unrecognized format " + signatureForm);
+		}
 
 		setSignatureLevel(wsParameters, params);
 
 		setSignaturePackaging(wsParameters, params);
-
-		setSignedInfoCanonicalizationMethod(wsParameters, params);
 
 		setEncryptionAlgorithm(wsParameters, params);
 
@@ -157,8 +157,6 @@ public class SignatureServiceImpl implements SignatureService {
 		setSigningCertificateAndChain(wsParameters, params);
 
 		setSignWithExpiredCertificate(wsParameters, params);
-
-		setDeterministicId(wsParameters, params);
 
 		setSignaturePolicy(wsParameters, params);
 
@@ -171,81 +169,71 @@ public class SignatureServiceImpl implements SignatureService {
 
 		setSignerLocation(wsParameters, params);
 
-		setReferences(wsParameters, params);
+		if (SignatureForm.XAdES.equals(signatureForm)){
+			setSignedInfoCanonicalizationMethod(wsParameters, (XAdESSignatureParameters) params);
+			setReferences(wsParameters, (XAdESSignatureParameters) params);
+		}
 
-		setAsicSignatureForm(wsParameters, params);
-		setAsicMimeType(wsParameters, params);
-		setAsicZipComment(wsParameters, params);
-		setAsicEnclosedSignature(wsParameters, params);
+		if (SignatureForm.ASiC_E.equals(signatureForm) || SignatureForm.ASiC_S.equals(signatureForm)){
+			setAsicSignatureForm(wsParameters, (ASiCSignatureParameters) params);
+			setAsicMimeType(wsParameters,  (ASiCSignatureParameters) params);
+			setAsicZipComment(wsParameters,  (ASiCSignatureParameters) params);
+			setAsicEnclosedSignature(wsParameters,  (ASiCSignatureParameters) params);
+		}
+
 		return params;
 	}
 
-	private void setSignaturePolicy(WSParameters wsParameters, SignatureParameters params) {
-
+	private void setSignaturePolicy(WSParameters wsParameters, AbstractSignatureParameters params) {
 		final BLevelParameters.Policy signaturePolicy = wsParameters.getSignaturePolicy();
 		params.bLevel().setSignaturePolicy(signaturePolicy);
 	}
 
-	private void setSignerLocation(WSParameters wsParameters, SignatureParameters params) {
-
+	private void setSignerLocation(WSParameters wsParameters, AbstractSignatureParameters params) {
 		final BLevelParameters.SignerLocation signerLocation = wsParameters.getSignerLocation();
 		params.bLevel().setSignerLocation(signerLocation);
 	}
 
-	private void setCommitmentTypeIndication(WSParameters wsParameters, SignatureParameters params) {
-
+	private void setCommitmentTypeIndication(WSParameters wsParameters, AbstractSignatureParameters params) {
 		final List<String> commitmentTypeIndication = wsParameters.getCommitmentTypeIndication();
 		params.bLevel().setCommitmentTypeIndications(commitmentTypeIndication);
 	}
 
-	private void setContentIdentifierSuffix(WSParameters wsParameters, SignatureParameters params) {
-
+	private void setContentIdentifierSuffix(WSParameters wsParameters, AbstractSignatureParameters params) {
 		final String contentIdentifierSuffix = wsParameters.getContentIdentifierSuffix();
 		params.bLevel().setContentIdentifierSuffix(contentIdentifierSuffix);
 	}
 
-	private void setContentIdentifierPrefix(WSParameters wsParameters, SignatureParameters params) {
-
+	private void setContentIdentifierPrefix(WSParameters wsParameters, AbstractSignatureParameters params) {
 		final String contentIdentifierPrefix = wsParameters.getContentIdentifierPrefix();
 		params.bLevel().setContentIdentifierPrefix(contentIdentifierPrefix);
 	}
 
-	private void setSignedInfoCanonicalizationMethod(WSParameters wsParameters, SignatureParameters params) {
-
+	private void setSignedInfoCanonicalizationMethod(WSParameters wsParameters, XAdESSignatureParameters params) {
 		final String signedInfoCanonicalizationMethod = wsParameters.getSignedInfoCanonicalizationMethod();
 		params.setSignedInfoCanonicalizationMethod(signedInfoCanonicalizationMethod);
 	}
 
-	private void setEncryptionAlgorithm(WSParameters wsParameters, SignatureParameters params) {
-
+	private void setEncryptionAlgorithm(WSParameters wsParameters, AbstractSignatureParameters params) {
 		final EncryptionAlgorithm encryptionAlgorithm = wsParameters.getEncryptionAlgorithm();
 		params.setEncryptionAlgorithm(encryptionAlgorithm);
 	}
 
-	private void setDigestAlgorithm(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setDigestAlgorithm(final WSParameters wsParameters, final AbstractSignatureParameters params) {
 		final DigestAlgorithm digestAlgorithm = wsParameters.getDigestAlgorithm();
 		params.setDigestAlgorithm(digestAlgorithm);
 	}
 
-	private void setDeterministicId(final WSParameters wsParameters, final SignatureParameters params) {
-
-		final String deterministicId = wsParameters.getDeterministicId();
-		params.setDeterministicId(deterministicId);
-	}
-
-	private void setClaimedSignerRole(final WSParameters wsParameters, final SignatureParameters params) {
+	private void setClaimedSignerRole(final WSParameters wsParameters, final AbstractSignatureParameters params) {
 		final List<String> claimedSignerRoles = wsParameters.getClaimedSignerRole();
 		if (claimedSignerRoles != null) {
 			for (final String claimedSignerRole : claimedSignerRoles) {
-
 				params.bLevel().addClaimedSignerRole(claimedSignerRole);
 			}
 		}
 	}
 
-	private void setSigningCertificateAndChain(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setSigningCertificateAndChain(final WSParameters wsParameters, final AbstractSignatureParameters params) {
 		final byte[] signingCertBytes = wsParameters.getSigningCertificateBytes();
 		if (signingCertBytes == null) {
 			return;
@@ -256,10 +244,8 @@ public class SignatureServiceImpl implements SignatureService {
 		final List<ChainCertificate> chainCertificates = new ArrayList<ChainCertificate>();
 		chainCertificates.add(new ChainCertificate(x509SigningCertificate, true));
 		final List<WSChainCertificate> wsChainCertificateList = wsParameters.getChainCertificateList();
-		if (!DSSUtils.isEmpty(wsChainCertificateList)) {
-
+		if (CollectionUtils.isNotEmpty(wsChainCertificateList)) {
 			for (final WSChainCertificate wsChainCertificate : wsChainCertificateList) {
-
 				final CertificateToken x509Certificate = DSSUtils.loadCertificate(wsChainCertificate.getX509Certificate());
 				final ChainCertificate chainCertificate = new ChainCertificate(x509Certificate, wsChainCertificate.isSignedAttribute());
 				if (!chainCertificates.contains(chainCertificate)) {
@@ -276,32 +262,27 @@ public class SignatureServiceImpl implements SignatureService {
 	 * @param wsParameters
 	 * @param params
 	 */
-	private void setSignWithExpiredCertificate(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setSignWithExpiredCertificate(final WSParameters wsParameters, final AbstractSignatureParameters params) {
 		final boolean signWithExpiredCertificate = wsParameters.getSignWithExpiredCertificate();
 		params.setSignWithExpiredCertificate(signWithExpiredCertificate);
 	}
 
-	private void setSigningDate(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setSigningDate(final WSParameters wsParameters, final AbstractSignatureParameters params) {
 		final Date signingDate = wsParameters.getSigningDate();
 		params.bLevel().setSigningDate(signingDate);
 	}
 
-	private void setSignaturePackaging(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setSignaturePackaging(final WSParameters wsParameters, final AbstractSignatureParameters params) {
 		final SignaturePackaging signaturePackaging = wsParameters.getSignaturePackaging();
 		params.setSignaturePackaging(signaturePackaging);
 	}
 
-	private void setSignatureLevel(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setSignatureLevel(final WSParameters wsParameters, final AbstractSignatureParameters params) {
 		final SignatureLevel signatureLevel = wsParameters.getSignatureLevel();
 		params.setSignatureLevel(signatureLevel);
 	}
 
-	private void setReferences(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setReferences(final WSParameters wsParameters, final XAdESSignatureParameters params) {
 		final List<WSDSSReference> wsReferences = wsParameters.getReferences();
 		if (wsReferences == null) {
 			return;
@@ -322,46 +303,40 @@ public class SignatureServiceImpl implements SignatureService {
 		params.setReferences(dssReferences);
 	}
 
-	private void setAsicZipComment(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setAsicZipComment(final WSParameters wsParameters, final ASiCSignatureParameters params) {
 		params.aSiC().setZipComment(wsParameters.getAsicZipComment());
 	}
 
-	private void setAsicMimeType(final WSParameters wsParameters, final SignatureParameters params) {
+	private void setAsicMimeType(final WSParameters wsParameters, final ASiCSignatureParameters params) {
 		params.aSiC().setMimeType(wsParameters.getAsicMimeType());
 	}
 
-	private void setAsicSignatureForm(final WSParameters wsParameters, final SignatureParameters params) {
+	private void setAsicSignatureForm(final WSParameters wsParameters, final ASiCSignatureParameters params) {
 		params.aSiC().setUnderlyingForm(wsParameters.getAsicSignatureForm());
 	}
 
-	private void setAsicEnclosedSignature(final WSParameters wsParameters, final SignatureParameters params) {
-
+	private void setAsicEnclosedSignature(final WSParameters wsParameters, final ASiCSignatureParameters params) {
 		final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsParameters.getAsicEnclosedSignature());
 		params.aSiC().setEnclosedSignature(dssDocument);
 	}
 
 	@Override
 	public byte[] getDataToSign(final WSDocument wsDocument, final WSParameters wsParameters) throws DSSException {
-
 		String exceptionMessage;
 		try {
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsGetDataToSign: begin");
 			}
-			final SignatureParameters params = createParameters(wsParameters);
+			final AbstractSignatureParameters params = createParameters(wsParameters);
 			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
 
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
 			final byte[] dataToSign = service.getDataToSign(dssDocument, params);
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsGetDataToSign: end");
 			}
 			return dataToSign;
 		} catch (Throwable e) {
-
 			exceptionMessage = e.getMessage();
 			LOG.error("WsGetDataToSign: ended with exception", e);
 			throw new DSSException(exceptionMessage);
@@ -370,26 +345,22 @@ public class SignatureServiceImpl implements SignatureService {
 
 	@Override
 	public WSDocument signDocument(final WSDocument wsDocument, final WSParameters wsParameters, final byte[] signatureValue) throws DSSException {
-
 		String exceptionMessage;
 		try {
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsSignDocument: begin");
 			}
-			final SignatureParameters params = createParameters(wsParameters);
+			final AbstractSignatureParameters params = createParameters(wsParameters);
 			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
 
 			final DSSDocument signatureDssDocument = service.signDocument(dssDocument, params, signatureValue);
 			WSDocument SignatureWsDocument = new WSDocument(signatureDssDocument);
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsSignDocument: end");
 			}
 			return SignatureWsDocument;
 		} catch (Throwable e) {
-
 			exceptionMessage = e.getMessage();
 			LOG.error("WsSignDocument: ended with exception", e);
 			throw new DSSException(exceptionMessage);
@@ -398,25 +369,21 @@ public class SignatureServiceImpl implements SignatureService {
 
 	@Override
 	public WSDocument extendSignature(final WSDocument wsDocument, final WSParameters wsParameters) throws DSSException {
-
 		String exceptionMessage;
 		try {
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsExtendSignature: begin");
 			}
-			final SignatureParameters params = createParameters(wsParameters);
+			final AbstractSignatureParameters params = createParameters(wsParameters);
 			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
 			final DSSDocument signatureDssDocument = service.extendDocument(dssDocument, params);
 			final WSDocument signatureWsDocument = new WSDocument(signatureDssDocument);
 			if (LOG.isInfoEnabled()) {
-
 				LOG.info("WsExtendSignature: end");
 			}
 			return signatureWsDocument;
 		} catch (Throwable e) {
-
 			exceptionMessage = e.getMessage();
 			LOG.error("WsExtendSignature: end with exception", e);
 			throw new DSSException(exceptionMessage);

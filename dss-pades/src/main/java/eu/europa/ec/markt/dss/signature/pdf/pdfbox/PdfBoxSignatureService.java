@@ -58,8 +58,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureImageParameters;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSPDFUtils;
 import eu.europa.ec.markt.dss.signature.pades.visible.ImageFactory;
 import eu.europa.ec.markt.dss.signature.pdf.PDFSignatureService;
@@ -75,7 +75,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
 	@Override
-	public byte[] digest(final InputStream toSignDocument, final SignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
+	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
 			final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
@@ -106,7 +106,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	@Override
-	public void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final SignatureParameters parameters,
+	public void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
 			final DigestAlgorithm digestAlgorithm, final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
 
 		File toSignFile = null;
@@ -140,7 +140,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	private byte[] signDocumentAndReturnDigest(final SignatureParameters parameters, final byte[] signatureBytes, final File signedFile,
+	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final File signedFile,
 			final FileOutputStream fileOutputStream, final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm)
 					throws DSSException {
 
@@ -211,7 +211,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	private PDSignature createSignatureDictionary(final SignatureParameters parameters) {
+	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters) {
 
 		final PDSignature signature = new PDSignature();
 		signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
@@ -227,7 +227,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		return signature;
 	}
 
-	public static void saveDocumentIncrementally(SignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream,
+	public static void saveDocumentIncrementally(PAdESSignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream,
 			PDDocument pdDocument) throws DSSException {
 
 		FileInputStream signedFileInputStream = null;

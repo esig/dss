@@ -27,9 +27,9 @@ import java.io.IOException;
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
+import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureImageParameters;
 import eu.europa.ec.markt.dss.parameter.SignatureImageTextParameters;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
@@ -56,7 +56,7 @@ public class SignPdfPadesBVisible extends Cookbook {
 		preparePKCS12TokenAndKey();
 
 		// Preparing parameters for the PAdES signature
-		SignatureParameters parameters = new SignatureParameters();
+		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, -LTA).
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		// We choose the type of the signature packaging (ENVELOPING, DETACHED).
@@ -76,10 +76,6 @@ public class SignPdfPadesBVisible extends Cookbook {
 		imageParameters.setTextParameters(textParameters);
 
 		parameters.setImageParameters(imageParameters);
-
-		// We choose the private key with the certificate and corresponding certificate
-		// chain.
-		parameters.setPrivateKeyEntry(privateKey);
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();

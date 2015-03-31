@@ -53,8 +53,8 @@ import org.bouncycastle.util.Store;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.validation102853.CertificateSource;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
@@ -96,9 +96,9 @@ public class CMSSignedDataBuilder {
 	 * @return the bouncycastle signed data generator which signs the document and adds the required signed and unsigned CMS attributes
 	 * @throws eu.europa.ec.markt.dss.exception.DSSException
 	 */
-	protected CMSSignedDataGenerator createCMSSignedDataGenerator(final SignatureParameters parameters, final ContentSigner contentSigner,
-	                                                              final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder,
-	                                                              final CMSSignedData originalSignedData) throws DSSException {
+	protected CMSSignedDataGenerator createCMSSignedDataGenerator(final CAdESSignatureParameters parameters, final ContentSigner contentSigner,
+			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder,
+			final CMSSignedData originalSignedData) throws DSSException {
 		try {
 
 			final CertificateToken signingCertificate = parameters.getSigningCertificate();
@@ -150,7 +150,7 @@ public class CMSSignedDataBuilder {
 	 * @param includeUnsignedAttributes true if the unsigned attributes must be included
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the CAdESLevelBaselineB
 	 */
-	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final SignatureParameters parameters, final boolean includeUnsignedAttributes) {
+	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final CAdESSignatureParameters parameters, final boolean includeUnsignedAttributes) {
 
 		final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB();
 		final AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
@@ -169,11 +169,11 @@ public class CMSSignedDataBuilder {
 	 */
 	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(AttributeTable signedAttributes, AttributeTable unsignedAttributes) {
 
-		if (signedAttributes != null && signedAttributes.size() == 0) {
+		if ((signedAttributes != null) && (signedAttributes.size() == 0)) {
 			signedAttributes = null;
 		}
 		final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
-		if (unsignedAttributes != null && unsignedAttributes.size() == 0) {
+		if ((unsignedAttributes != null) && (unsignedAttributes.size() == 0)) {
 			unsignedAttributes = null;
 		}
 		final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);
@@ -187,7 +187,7 @@ public class CMSSignedDataBuilder {
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the parameters
 	 */
 	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DefaultSignedAttributeTableGenerator signedAttributeGenerator,
-	                                                                 SimpleAttributeTableGenerator unsignedAttributeGenerator) {
+			SimpleAttributeTableGenerator unsignedAttributeGenerator) {
 
 		final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
 		SignerInfoGeneratorBuilder sigInfoGeneratorBuilder = new SignerInfoGeneratorBuilder(digestCalculatorProvider);
@@ -228,8 +228,8 @@ public class CMSSignedDataBuilder {
 		}
 	}
 
-	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, SignatureParameters parameters, Store certificatesStore, Store attributeCertificatesStore,
-	                                                Store crlsStore, Store otherRevocationInfoFormatStoreBasic, Store otherRevocationInfoFormatStoreOcsp) {
+	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters, Store certificatesStore, Store attributeCertificatesStore,
+			Store crlsStore, Store otherRevocationInfoFormatStoreBasic, Store otherRevocationInfoFormatStoreOcsp) {
 		try {
 
 			final CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();

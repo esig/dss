@@ -99,7 +99,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				final Element crlRefDom = DSSXMLUtils.addElement(documentDom, crlRefsDom, XAdESNamespaces.XAdES, "xades:CRLRef");
 
 				final Element digestAlgAndValueDom = DSSXMLUtils.addElement(documentDom, crlRefDom, XAdESNamespaces.XAdES, "xades:DigestAlgAndValue");
-				// TODO: to be added as field to eu.europa.ec.markt.dss.parameter.SignatureParameters.
+				// TODO: to be added as field to eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters.
 				DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 				incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
 
@@ -180,7 +180,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				DSSXMLUtils.addTextElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XAdES, "xades:ProducedAt", producedAtXmlEncoded);
 
 				final Element digestAlgAndValueDom = DSSXMLUtils.addElement(documentDom, ocspRefDom, XAdESNamespaces.XAdES, "xades:DigestAlgAndValue");
-				// TODO: to be added as field to eu.europa.ec.markt.dss.parameter.SignatureParameters.
+				// TODO: to be added as field to eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters.
 				DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 				incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
 
@@ -222,7 +222,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			// .........<xades:CertDigest>
 
 			final Element completeCertificateRefsDom = DSSXMLUtils
-				  .addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:CompleteCertificateRefs");
+					.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:CompleteCertificateRefs");
 
 			final Element certRefsDom = DSSXMLUtils.addElement(documentDom, completeCertificateRefsDom, XAdESNamespaces.XAdES, "xades:CertRefs");
 
@@ -250,7 +250,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			// <xades:CompleteRevocationRefs>
 			final Element completeRevocationRefsDom = DSSXMLUtils
-				  .addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:CompleteRevocationRefs");
+					.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:CompleteRevocationRefs");
 			incorporateCRLRefs(completeRevocationRefsDom, validationContext.getProcessedRevocations());
 			incorporateOCSPRefs(completeRevocationRefsDom, validationContext.getProcessedRevocations());
 		}

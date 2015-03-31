@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.applet.controller.ActivityController;
 import eu.europa.ec.markt.dss.applet.main.Parameters.AppletUsage;
 import eu.europa.ec.markt.dss.applet.model.ActivityModel;
@@ -39,7 +41,7 @@ import eu.europa.ec.markt.dss.applet.wizard.validation.ValidationWizardControlle
 import eu.europa.ec.markt.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
 import eu.europa.ec.markt.dss.common.SignatureTokenType;
 import eu.europa.ec.markt.dss.commons.swing.mvc.applet.AppletCore;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
+import eu.europa.ec.markt.dss.ws.signature.SignaturePackaging;
 
 /**
  * TODO
@@ -119,18 +121,18 @@ public class DSSAppletCore extends AppletCore {
 		final Parameters parameters = new Parameters();
 
 		final String appletUsageParam = parameterProvider.getParameter(PARAM_APPLET_USAGE);
-		if (DSSUtils.isNotEmpty(appletUsageParam)) {
+		if (StringUtils.isNotEmpty(appletUsageParam)) {
 			parameters.setAppletUsage(AppletUsage.valueOf(appletUsageParam.toUpperCase()));
 		}
 
 		final String signatureFormatParam = parameterProvider.getParameter(PARAM_SIGNATURE_FORMAT);
-		if (!DSSUtils.isEmpty(signatureFormatParam)) {
+		if (StringUtils.isNotEmpty(signatureFormatParam)) {
 			parameters.setSignatureFormat(signatureFormatParam);
 			final String signaturePackagingParam = parameterProvider.getParameter(PARAM_SIGNATURE_PACKAGING);
-			if (!DSSUtils.isEmpty(signaturePackagingParam)) {
+			if (StringUtils.isNotEmpty(signaturePackagingParam)) {
 				parameters.setSignaturePackaging(SignaturePackaging.valueOf(signaturePackagingParam));
 				final String signatureLevelParam = parameterProvider.getParameter(PARAM_SIGNATURE_LEVEL);
-				if (!DSSUtils.isEmpty(signatureLevelParam)) {
+				if (StringUtils.isNotEmpty(signatureLevelParam)) {
 					parameters.setSignatureLevel(signatureLevelParam);
 				}
 			}
@@ -139,15 +141,15 @@ public class DSSAppletCore extends AppletCore {
 		// Service URL
 		final String serviceParam = parameterProvider.getParameter(PARAM_SERVICE_URL);
 		//        System.out.println(serviceParam);
-		if (DSSUtils.isEmpty(serviceParam)) {
-			throw new IllegalArgumentException(PARAM_SERVICE_URL + "cannot be empty");
+		if (StringUtils.isEmpty(serviceParam)) {
+			throw new IllegalArgumentException(PARAM_SERVICE_URL + " cannot be empty");
 		}
 		parameters.setServiceURL(serviceParam);
 
 		// Signature Token
 		final String tokenParam = parameterProvider.getParameter(PARAM_TOKEN_TYPE);
 		if (DSSStringUtils
-			  .contains(tokenParam, SignatureTokenType.MOCCA.name(), SignatureTokenType.MSCAPI.name(), SignatureTokenType.PKCS11.name(), SignatureTokenType.PKCS12.name())) {
+				.contains(tokenParam, SignatureTokenType.MOCCA.name(), SignatureTokenType.MSCAPI.name(), SignatureTokenType.PKCS11.name(), SignatureTokenType.PKCS12.name())) {
 			parameters.setSignatureTokenType(SignatureTokenType.valueOf(tokenParam));
 		} else {
 			LOG.warn("Invalid value of " + PARAM_TOKEN_TYPE + " parameter: {}", tokenParam);
@@ -155,7 +157,7 @@ public class DSSAppletCore extends AppletCore {
 
 		// RFC3370
 		final String rfc3370Param = parameterProvider.getParameter(PARAM_STRICT_RFC3370);
-		if (DSSUtils.isNotEmpty(rfc3370Param)) {
+		if (StringUtils.isNotEmpty(rfc3370Param)) {
 			try {
 				parameters.setStrictRFC3370(Boolean.parseBoolean(rfc3370Param));
 			} catch (final Exception e) {
@@ -165,7 +167,7 @@ public class DSSAppletCore extends AppletCore {
 
 		// File path PKCS11
 		final String pkcs11Param = parameterProvider.getParameter(PARAM_PKCS11_FILE);
-		if (DSSUtils.isNotEmpty(pkcs11Param)) {
+		if (StringUtils.isNotEmpty(pkcs11Param)) {
 			final File file = new File(pkcs11Param);
 			if (!file.exists() || file.isFile()) {
 				LOG.warn("Invalid value of " + PARAM_PKCS11_FILE + " parameter: {}", pkcs11Param);
@@ -175,7 +177,7 @@ public class DSSAppletCore extends AppletCore {
 
 		// File path PKCS12
 		final String pkcs12Param = parameterProvider.getParameter(PARAM_PKCS12_FILE);
-		if (DSSUtils.isNotEmpty(pkcs12Param)) {
+		if (StringUtils.isNotEmpty(pkcs12Param)) {
 			final File file = new File(pkcs12Param);
 			if (!file.exists() || file.isFile()) {
 				LOG.warn("Invalid value of " + PARAM_PKCS12_FILE + " parameter: {}", pkcs11Param);
@@ -187,11 +189,11 @@ public class DSSAppletCore extends AppletCore {
 		parameters.setSignaturePolicyAlgo(signaturePolicyAlgoParam);
 
 		final String signaturePolicyValueParam = parameterProvider.getParameter(PARAM_SIGNATURE_POLICY_HASH);
-		parameters.setSignaturePolicyValue(DSSUtils.base64Decode(signaturePolicyValueParam));
+		parameters.setSignaturePolicyValue(Base64.decodeBase64(signaturePolicyValueParam));
 
 		// Default policy URL
 		final String defaultPolicyUrl = parameterProvider.getParameter(PARAM_DEFAULT_POLICY_URL);
-		if (DSSUtils.isNotEmpty(defaultPolicyUrl)) {
+		if (StringUtils.isNotEmpty(defaultPolicyUrl)) {
 			try {
 				parameters.setDefaultPolicyUrl(new URL(defaultPolicyUrl));
 			} catch (IOException e) {

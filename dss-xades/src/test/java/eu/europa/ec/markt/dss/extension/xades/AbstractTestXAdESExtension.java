@@ -26,7 +26,7 @@ import java.util.Date;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.extension.AbstractTestExtension;
 import eu.europa.ec.markt.dss.mock.MockTSPSource;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
@@ -37,7 +37,7 @@ import eu.europa.ec.markt.dss.signature.xades.XAdESService;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 
-public abstract class AbstractTestXAdESExtension extends AbstractTestExtension {
+public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<XAdESSignatureParameters> {
 
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
@@ -47,7 +47,7 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension {
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		// Sign
-		SignatureParameters signatureParameters = new SignatureParameters();
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(entryUserA.getCertificate());
 		signatureParameters.setCertificateChain(entryUserA.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -64,11 +64,17 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension {
 	}
 
 	@Override
-	protected DocumentSignatureService getSignatureServiceToExtend() throws Exception {
+	protected DocumentSignatureService<XAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		XAdESService service = new XAdESService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 		return service;
+	}
+
+	protected XAdESSignatureParameters getExtensionParameters() {
+		XAdESSignatureParameters extensionParameters = new XAdESSignatureParameters();
+		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
+		return extensionParameters;
 	}
 
 }

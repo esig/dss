@@ -25,7 +25,7 @@ import java.util.Date;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.cookbook.sources.JavaKeyStoreTool;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -49,7 +49,7 @@ public class SigningApplication {
 
 		DSSDocument toBeSigned = new FileDocument("src/test/resources/xml_example.xml");
 
-		SignatureParameters params = new SignatureParameters();
+		XAdESSignatureParameters params = new XAdESSignatureParameters();
 
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);

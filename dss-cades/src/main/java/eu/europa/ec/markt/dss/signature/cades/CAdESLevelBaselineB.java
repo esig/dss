@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -75,8 +76,8 @@ import eu.europa.ec.markt.dss.OID;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters.Policy;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.validation.TimestampToken;
@@ -120,7 +121,7 @@ public class CAdESLevelBaselineB {
 		return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, ASN1Encodable>());
 	}
 
-	public AttributeTable getSignedAttributes(final SignatureParameters parameters) {
+	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
 
 		ASN1EncodableVector signedAttributes = new ASN1EncodableVector();
 
@@ -173,10 +174,10 @@ public class CAdESLevelBaselineB {
 
 		if (!padesUsage) {
 			final MimeType mimeType = document.getMimeType();
-			if (mimeType != null && DSSUtils.isNotBlank(mimeType.getMimeTypeString())) {
+			if ((mimeType != null) && StringUtils.isNotBlank(mimeType.getMimeTypeString())) {
 
 				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_mimeType,
-					  new DERSet(new DERUTF8String(mimeType.getMimeTypeString())));
+						new DERSet(new DERUTF8String(mimeType.getMimeTypeString())));
 				signedAttributes.add(attribute);
 			}
 		}
@@ -197,7 +198,7 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 * @return
 	 */
-	private void addSignerAttribute(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+	private void addSignerAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		// In PAdES, the role is in the signature dictionary
 		if (!padesUsage) {
@@ -215,7 +216,7 @@ public class CAdESLevelBaselineB {
 					claimedAttributes.add(id_aa_ets_signerAttr);
 				}
 				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
-					  new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+						new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
 				signedAttributes.add(attribute);
 			}
 			//TODO: handle CertifiedAttributes ::= AttributeCertificate -- as defined in RFC 3281: see clause 4.1.
@@ -223,13 +224,13 @@ public class CAdESLevelBaselineB {
 		}
 	}
 
-	private void addSigningTimeAttribute(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+	private void addSigningTimeAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		if (!padesUsage) {
-		    /*
-		     * In PAdES, we don't include the signing time : ETSI TS 102 778-3 V1.2.1 (2010-07): 4.5.3 signing-time
-             * Attribute
-             */
+			/*
+			 * In PAdES, we don't include the signing time : ETSI TS 102 778-3 V1.2.1 (2010-07): 4.5.3 signing-time
+			 * Attribute
+			 */
 			final Date signingDate = parameters.bLevel().getSigningDate();
 			if (signingDate != null) {
 
@@ -252,12 +253,12 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 * @return
 	 */
-	private void addSignerLocation(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+	private void addSignerLocation(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		if (!padesUsage) {
-		    /*
-		     * In PAdES, the role is in the signature dictionary
-             */
+			/*
+			 * In PAdES, the role is in the signature dictionary
+			 */
 			final BLevelParameters.SignerLocation signerLocationParameter = parameters.bLevel().getSignerLocation();
 			if (signerLocationParameter != null) {
 
@@ -292,13 +293,13 @@ public class CAdESLevelBaselineB {
 	 * @param parameters
 	 * @param signedAttributes
 	 */
-	private void addCommitmentType(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+	private void addCommitmentType(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		// TODO (19/08/2014): commitmentTypeQualifier is not implemented
 		final BLevelParameters bLevelParameters = parameters.bLevel();
 
 		final List<String> commitmentTypeIndications = bLevelParameters.getCommitmentTypeIndications();
-		if (commitmentTypeIndications != null && !commitmentTypeIndications.isEmpty()) {
+		if ((commitmentTypeIndications != null) && !commitmentTypeIndications.isEmpty()) {
 
 			final int size = commitmentTypeIndications.size();
 			ASN1Encodable[] asn1Encodables = new ASN1Encodable[size];
@@ -340,9 +341,9 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 * @return
 	 */
-	private void addContentTimestamps(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+	private void addContentTimestamps(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
-		if (parameters.getContentTimestamps() != null && !parameters.getContentTimestamps().isEmpty()) {
+		if ((parameters.getContentTimestamps() != null) && !parameters.getContentTimestamps().isEmpty()) {
 
 			final List<TimestampToken> contentTimestamps = parameters.getContentTimestamps();
 			for (final TimestampToken contentTimestamp : contentTimestamps) {
@@ -379,7 +380,7 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 * @return
 	 */
-	private void addContentHints(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+	private void addContentHints(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		final BLevelParameters bLevelParameters = parameters.bLevel();
 		if (DSSUtils.isNotBlank(bLevelParameters.getContentHintsType())) {
@@ -413,9 +414,9 @@ public class CAdESLevelBaselineB {
 	 * @param parameters
 	 * @param signedAttributes
 	 */
-	private void addContentIdentifier(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+	private void addContentIdentifier(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
-        /* this attribute is prohibited in PAdES B */
+		/* this attribute is prohibited in PAdES B */
 		if (!padesUsage) {
 
 			final BLevelParameters bLevelParameters = parameters.bLevel();
@@ -442,10 +443,10 @@ public class CAdESLevelBaselineB {
 		}
 	}
 
-	private void addSignaturePolicyId(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+	private void addSignaturePolicyId(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		Policy policy = parameters.bLevel().getSignaturePolicy();
-		if (policy != null && policy.getId() != null) {
+		if ((policy != null) && (policy.getId() != null)) {
 
 			final String policyId = policy.getId();
 			SignaturePolicyIdentifier sigPolicy = null;
@@ -465,7 +466,7 @@ public class CAdESLevelBaselineB {
 		}
 	}
 
-	private void addSigningCertificateAttribute(final SignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
+	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		final List<ChainCertificate> chainCertificateList = parameters.getCertificateChain();
