@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
 import eu.europa.ec.markt.dss.mock.MockTSPSource;
-import eu.europa.ec.markt.dss.parameter.SignatureParameters;
+import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.FileDocument;
@@ -51,7 +51,7 @@ public class ExtendToCAdESLtaTest {
 		CAdESService service = new CAdESService(new CommonCertificateVerifier());
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
 
-		SignatureParameters parameters = new SignatureParameters();
+		CAdESSignatureParameters parameters = new CAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		DSSDocument detachedContent = new FileDocument(DETACHED_DOC_PATH);
 		parameters.setDetachedContent(detachedContent );
