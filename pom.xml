@@ -12,7 +12,6 @@
 
 	<modules>
 		<module>dss-document</module>
-		<module>dss-common</module>
 		<module>dss-service</module>
 		<module>dss-spi</module>
 		<module>dss-test</module>
@@ -326,11 +325,6 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-webservices-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
