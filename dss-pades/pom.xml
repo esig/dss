@@ -27,11 +27,12 @@
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-spi</artifactId>
         </dependency>
+		
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
+			<version>1.8.8</version>
 		</dependency>
-        
         
 		<dependency>
 			<groupId>junit</groupId>

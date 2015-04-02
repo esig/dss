@@ -55,6 +55,24 @@
 			</roles>
 		</developer>
 	</developers>
+	
+	<properties>
+		<project.encoding>UTF-8</project.encoding>
+	
+		<log4j.version>1.2.17</log4j.version>
+		<spring.version>3.1.4.RELEASE</spring.version>
+		<tiles.version>2.2.2</tiles.version>
+		<slf4j.version>1.6.6</slf4j.version>
+		<logback-classic.version>1.0.13</logback-classic.version>
+		<bouncycastle.version>1.52</bouncycastle.version>
+		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
+		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
+		<flying-saucer.version>9.0.4</flying-saucer.version>
+		<beansbinding.version>1.2.1</beansbinding.version>
+		<xmlsec.version>2.0.2</xmlsec.version>
+		<junit.version>4.11</junit.version>
+	</properties>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -152,7 +170,7 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>2.5.1</version>
 					<configuration>
-						<encoding>UTF-8</encoding>
+						<encoding>${project.encoding}</encoding>
 						<source>1.6</source>
 						<target>1.6</target>
 					</configuration>
@@ -162,7 +180,7 @@
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>2.5</version>
 					<configuration>
-						<encoding>UTF-8</encoding>
+						<encoding>${project.encoding}</encoding>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -255,22 +273,6 @@
 		<developerConnection>scm:git:https://github.com/esig/dss.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
-
-	<properties>
-		<log4j.version>1.2.17</log4j.version>
-		<spring.version>3.1.4.RELEASE</spring.version>
-		<tiles.version>2.2.2</tiles.version>
-		<slf4j.version>1.6.6</slf4j.version>
-		<logback-classic.version>1.0.13</logback-classic.version>
-		<bouncycastle.version>1.52</bouncycastle.version>
-		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
-		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
-		<flying-saucer.version>9.0.4</flying-saucer.version>
-		<beansbinding.version>1.2.1</beansbinding.version>
-		<xmlsec.version>2.0.2</xmlsec.version>
-		<pdfbox.version>1.8.8</pdfbox.version>
-		<junit.version>4.11</junit.version>
-	</properties>
 
 	<dependencyManagement>
 		<dependencies>
@@ -395,11 +397,6 @@
 				<version>${xmlsec.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-				<version>2.11.0</version>
-			</dependency>
-			<dependency>
 				<groupId>xml-apis</groupId>
 				<artifactId>xml-apis</artifactId>
 				<version>1.4.01</version>
@@ -423,11 +420,6 @@
 				<groupId>org.jdesktop</groupId>
 				<artifactId>beansbinding</artifactId>
 				<version>${beansbinding.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>pdfbox</artifactId>
-				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
