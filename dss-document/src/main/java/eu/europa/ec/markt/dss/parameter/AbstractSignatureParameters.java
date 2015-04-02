@@ -394,9 +394,8 @@ public abstract class AbstractSignatureParameters implements Serializable {
 				", digestAlgorithm=" + digestAlgorithm +
 				", bLevelParams=" + bLevelParams +
 				", deterministicId='" + deterministicId + '\'' +
-				", signatureTimestampParameters=" + signatureTimestampParameters.toString() +
-				", archiveTimestampParameters=" + archiveTimestampParameters.toString() +
-				", contentTimestamps=" + contentTimestamps +
+				", signatureTimestampParameters=" + ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString())
+				+ ", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) +	", contentTimestamps=" + contentTimestamps +
 				", detachedContent=" + detachedContent +
 				'}';
 	}
