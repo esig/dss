@@ -48,6 +48,7 @@ import eu.europa.ec.markt.dss.parameter.BLevelParameters;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.DSSTransform;
+import eu.europa.ec.markt.dss.parameter.Policy;
 import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.InMemoryDocument;
@@ -455,20 +456,24 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	private void incorporatePolicy() {
 
-		final BLevelParameters.Policy signaturePolicy = params.bLevel().getSignaturePolicy();
+		final Policy signaturePolicy = params.bLevel().getSignaturePolicy();
 		if ((signaturePolicy != null) && (signaturePolicy.getId() != null)) {
 
 			final Element signaturePolicyIdentifierDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_POLICY_IDENTIFIER);
 			final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
-			if ("".equals(signaturePolicy.getId())) { // implicit
 
-				final Element signaturePolicyImpliedDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_IMPLIED);
+			String signaturePolicyId = signaturePolicy.getId();
+			if (StringUtils.isEmpty(signaturePolicyId)) { // implicit
+				DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_IMPLIED);
 			} else { // explicit
-
 				final Element sigPolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIG_POLICY_ID);
 
-				final String signaturePolicyId = signaturePolicy.getId();
 				DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);
+
+				String description = signaturePolicy.getDescription();
+				if (StringUtils.isNotEmpty(description)){
+					DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_DESCRIPTION, description);
+				}
 
 				if ((signaturePolicy.getDigestAlgorithm() != null) && (signaturePolicy.getDigestValue() != null)) {
 
@@ -481,6 +486,14 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					final byte[] hashValue = signaturePolicy.getDigestValue();
 					final String bas64EncodedHashValue = Base64.encodeBase64String(hashValue);
 					DSSXMLUtils.addTextElement(documentDom, sigPolicyHashDom, XMLNS, DS_DIGEST_VALUE, bas64EncodedHashValue);
+				}
+
+				String spuri = signaturePolicy.getSpuri();
+				if (StringUtils.isNotEmpty(spuri)){
+					Element sigPolicyQualifiers = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_QUALIFIERS);
+					Element sigPolicyQualifier = DSSXMLUtils.addElement(documentDom, sigPolicyQualifiers, XAdES, XADES_SIGNATURE_POLICY_QUALIFIERS);
+
+					DSSXMLUtils.addTextElement(documentDom, sigPolicyQualifier, XAdES, XADES_SPURI, spuri);
 				}
 			}
 		}

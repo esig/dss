@@ -41,6 +41,7 @@ import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.parameter.ChainCertificate;
 import eu.europa.ec.markt.dss.parameter.DSSReference;
 import eu.europa.ec.markt.dss.parameter.PAdESSignatureParameters;
+import eu.europa.ec.markt.dss.parameter.Policy;
 import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
@@ -185,7 +186,7 @@ public class SignatureServiceImpl implements SignatureService {
 	}
 
 	private void setSignaturePolicy(WSParameters wsParameters, AbstractSignatureParameters params) {
-		final BLevelParameters.Policy signaturePolicy = wsParameters.getSignaturePolicy();
+		final Policy signaturePolicy = wsParameters.getSignaturePolicy();
 		params.bLevel().setSignaturePolicy(signaturePolicy);
 	}
 

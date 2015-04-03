@@ -20,6 +20,8 @@
  */
 package eu.europa.ec.markt.dss.signature.xades;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Date;
 
@@ -27,7 +29,9 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.SignatureAlgorithm;
+import eu.europa.ec.markt.dss.parameter.Policy;
 import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.service.CertificateService;
 import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
@@ -41,9 +45,11 @@ import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
 import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
 
-public class XAdESLevelBTest extends AbstractTestSignature {
+public class XAdESLevelBWithPolicyTest extends AbstractTestSignature {
 
-	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithPolicyTest.class);
+
+	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -57,8 +63,18 @@ public class XAdESLevelBTest extends AbstractTestSignature {
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
+		Policy signaturePolicy = new Policy();
+		signaturePolicy.setId("1.2.3.4.5.6");
+		signaturePolicy.setDescription("Test description");
+		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA1);
+		signaturePolicy.setDigestValue(new byte[] {
+				'd', 'i', 'g', 'e', 's', 't', 'v', 'a', 'l', 'u', 'e'
+		});
+		signaturePolicy.setSpuri(HTTP_SPURI_TEST);
+
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -73,6 +89,8 @@ public class XAdESLevelBTest extends AbstractTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		String xmlContent = new String(byteArray);
 		logger.info(xmlContent);
+		assertTrue(xmlContent.contains("description"));
+		assertTrue(xmlContent.contains(HTTP_SPURI_TEST));
 	}
 
 	@Override

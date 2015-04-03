@@ -184,7 +184,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private File policyDocument;
 
 	private HashMap<String, File> policyDocuments;
-	
+
 	private static List<Class<SignedDocumentValidator>> registredDocumentValidators = new ArrayList<Class<SignedDocumentValidator>>();
 
 	static {
@@ -240,7 +240,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 		throw new DSSException("Document format not recognized/handled");
 	}
-	
+
 	public abstract boolean isSupported(DSSDocument dssDocument);
 
 	@Override
@@ -1086,10 +1086,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		SignaturePolicy signaturePolicy = null;
 		try {
-
 			signaturePolicy = signature.getPolicyId();
 		} catch (Exception e) {
-
 			final String msg = "Error when extracting the signature policy: " + e.getMessage();
 			LOG.warn(msg, e);
 			addErrorMessage(xmlSignature, msg);
@@ -1115,14 +1113,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		 * ETSI 102 853:
 		 * 3) Obtain the digest of the resulting document against which the digest value present in the property/attribute will be checked:
 		 */
-		if ((policyDocument == null) && ((policyUrl == null) || policyUrl.isEmpty())) {
-
+		if ((policyDocument == null) && StringUtils.isEmpty(policyUrl)) {
 			xmlPolicy.setIdentified(false);
 			if (policyId.isEmpty()) {
-
 				xmlPolicy.setStatus(true);
 			} else {
-
 				xmlPolicy.setStatus(false);
 			}
 			return;
@@ -1143,9 +1138,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		} catch (Exception e) {
 			// When any error (communication) we just set the status to false
 			xmlPolicy.setStatus(false);
-			xmlPolicy.setProcessingError(e.toString());
+			xmlPolicy.setProcessingError(e.getMessage());
 			//Do nothing
-			LOG.warn(e.toString());
+			LOG.warn(e.getMessage(), e);
 			return;
 		}
 
@@ -1230,9 +1225,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		} catch (RuntimeException e) {
 			// When any error (communication) we just set the status to false
 			xmlPolicy.setStatus(false);
-			xmlPolicy.setProcessingError(e.toString());
+			xmlPolicy.setProcessingError(e.getMessage());
 			//Do nothing
-			LOG.warn(e.toString());
+			LOG.warn(e.getMessage(), e);
 		}
 	}
 
