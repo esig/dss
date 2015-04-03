@@ -52,6 +52,8 @@ import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
+import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
+import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
 import org.bouncycastle.asn1.esf.SignaturePolicyId;
 import org.bouncycastle.asn1.esf.SignaturePolicyIdentifier;
 import org.bouncycastle.asn1.esf.SignerAttribute;
@@ -62,6 +64,7 @@ import org.bouncycastle.asn1.ess.ESSCertID;
 import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.Time;
@@ -383,11 +386,11 @@ public class CAdESLevelBaselineB {
 	private void addContentHints(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		final BLevelParameters bLevelParameters = parameters.bLevel();
-		if (DSSUtils.isNotBlank(bLevelParameters.getContentHintsType())) {
+		if (StringUtils.isNotBlank(bLevelParameters.getContentHintsType())) {
 
 			final ASN1ObjectIdentifier contentHintsType = new ASN1ObjectIdentifier(bLevelParameters.getContentHintsType());
 			final String contentHintsDescriptionString = bLevelParameters.getContentHintsDescription();
-			final DERUTF8String contentHintsDescription = DSSUtils.isBlank(contentHintsDescriptionString) ? null : new DERUTF8String(contentHintsDescriptionString);
+			final DERUTF8String contentHintsDescription = StringUtils.isBlank(contentHintsDescriptionString) ? null : new DERUTF8String(contentHintsDescriptionString);
 			//		"text/plain";
 			//		"1.2.840.113549.1.7.1";
 
@@ -421,10 +424,10 @@ public class CAdESLevelBaselineB {
 
 			final BLevelParameters bLevelParameters = parameters.bLevel();
 			final String contentIdentifierPrefix = bLevelParameters.getContentIdentifierPrefix();
-			if (DSSUtils.isNotBlank(contentIdentifierPrefix)) {
+			if (StringUtils.isNotBlank(contentIdentifierPrefix)) {
 
 				final String contentIdentifierSuffix;
-				if (DSSUtils.isBlank(bLevelParameters.getContentIdentifierSuffix())) {
+				if (StringUtils.isBlank(bLevelParameters.getContentIdentifierSuffix())) {
 
 					final Date now = new Date();
 					final String asn1GeneralizedTimeString = new ASN1GeneralizedTime(now).getTimeString();
@@ -446,20 +449,32 @@ public class CAdESLevelBaselineB {
 	private void addSignaturePolicyId(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		Policy policy = parameters.bLevel().getSignaturePolicy();
-		if ((policy != null) && (policy.getId() != null)) {
+		if (policy != null) {
 
 			final String policyId = policy.getId();
 			SignaturePolicyIdentifier sigPolicy = null;
-			if (!"".equals(policyId)) { // explicit
 
+			if (StringUtils.isEmpty(policyId)) {// implicit
+				sigPolicy = new SignaturePolicyIdentifier();
+			} else { // explicit
 				final ASN1ObjectIdentifier derOIPolicyId = new ASN1ObjectIdentifier(policyId);
 				final ASN1ObjectIdentifier oid = policy.getDigestAlgorithm().getOid();
 				final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(oid);
 				OtherHashAlgAndValue otherHashAlgAndValue = new OtherHashAlgAndValue(algorithmIdentifier, new DEROctetString(policy.getDigestValue()));
-				sigPolicy = new SignaturePolicyIdentifier(new SignaturePolicyId(derOIPolicyId, otherHashAlgAndValue));
-			} else {// implicit
-				sigPolicy = new SignaturePolicyIdentifier();
+
+				if (StringUtils.isNotEmpty(policy.getSpuri())) {
+					SigPolicyQualifierInfo policyQualifierInfo = new SigPolicyQualifierInfo(PKCSObjectIdentifiers.id_spq_ets_uri, new DERUTF8String(policy.getSpuri()));
+					SigPolicyQualifierInfo[] qualifierInfos = new SigPolicyQualifierInfo[] {
+							policyQualifierInfo
+					};
+					SigPolicyQualifiers qualifiers = new SigPolicyQualifiers(qualifierInfos);
+
+					sigPolicy = new SignaturePolicyIdentifier(new SignaturePolicyId(derOIPolicyId, otherHashAlgAndValue, qualifiers));
+				} else {
+					sigPolicy = new SignaturePolicyIdentifier(new SignaturePolicyId(derOIPolicyId, otherHashAlgAndValue));
+				}
 			}
+
 			final DERSet attrValues = new DERSet(sigPolicy);
 			final Attribute attribute = new Attribute(id_aa_ets_sigPolicyId, attrValues);
 			signedAttributes.add(attribute);
