@@ -20,6 +20,7 @@
  */
 package eu.europa.ec.markt.dss.validation102853;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -27,6 +28,7 @@ import java.security.NoSuchProviderException;
 import java.security.Principal;
 import java.security.PublicKey;
 import java.security.SignatureException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -44,6 +46,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -362,9 +365,26 @@ public class CertificateToken extends Token {
 	 */
 	@Override
 	public byte[] getEncoded() {
+		try {
+			return x509Certificate.getEncoded();
+		} catch (CertificateEncodingException e) {
+			throw new DSSException(e);
+		}
+	}
 
-		final byte[] bytes = DSSUtils.getEncoded(x509Certificate);
-		return bytes;
+	/**
+	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code X509Certificate}.
+	 *
+	 * @return a X509CertificateHolder holding this certificate
+	 */
+	public  X509CertificateHolder getX509CertificateHolder() {
+		try {
+			return new X509CertificateHolder(x509Certificate.getEncoded());
+		} catch (IOException e) {
+			throw new DSSException(e);
+		} catch (CertificateEncodingException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	/**
@@ -374,7 +394,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public List<CertificateSourceType> getSources() {
-
 		return sources;
 	}
 
@@ -555,16 +574,18 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public String getDigestValue(final DigestAlgorithm digestAlgorithm) {
-
 		if (digests == null) {
 			digests = new HashMap<DigestAlgorithm, String>();
 		}
 		String encodedDigest = digests.get(digestAlgorithm);
 		if (encodedDigest == null) {
-
-			final byte[] digest = DSSUtils.digest(digestAlgorithm, DSSUtils.getEncoded(x509Certificate));
-			encodedDigest = Base64.encodeBase64String(digest);
-			digests.put(digestAlgorithm, encodedDigest);
+			try {
+				byte[] digest = DSSUtils.digest(digestAlgorithm, x509Certificate.getEncoded());
+				encodedDigest = Base64.encodeBase64String(digest);
+				digests.put(digestAlgorithm, encodedDigest);
+			} catch (Exception e) {
+				throw new DSSException(e);
+			}
 		}
 		return encodedDigest;
 	}

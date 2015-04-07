@@ -99,7 +99,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
 		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
 		for (final CertificateToken certificateToken : certificates) {
-			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(certificateToken);
+			final X509CertificateHolder x509CertificateHolder = certificateToken.getX509CertificateHolder();
 			newCertificateStore.add(x509CertificateHolder);
 		}
 

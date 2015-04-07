@@ -378,7 +378,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 			candidatesForSigningCertificate.add(certificateValidity);
 
-			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(certificateToken);
+			final X509CertificateHolder x509CertificateHolder = certificateToken.getX509CertificateHolder();
 			final boolean match = signerId.match(x509CertificateHolder);
 			if (match) {
 
