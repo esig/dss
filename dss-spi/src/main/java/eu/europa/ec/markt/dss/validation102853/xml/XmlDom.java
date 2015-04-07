@@ -42,6 +42,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -428,10 +429,10 @@ public class XmlDom {
 			final String key = xmlDom.getText();
 			final String dateString = xmlDom.getAttribute(attributeName);
 			String format = xmlDom.getAttribute("Format");
-			if (DSSUtils.isBlank(format)) {
+			if (StringUtils.isBlank(format)) {
 				format = "yyyy-MM-dd";
 			}
-			if (DSSUtils.isBlank(dateString)) {
+			if (StringUtils.isBlank(dateString)) {
 
 				LOG.warn(String.format("The date is not defined for key '%s'!", key));
 				continue;

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -463,20 +464,21 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		final List<TimestampToken> signatureTimestamps = getSignatureTimestamps();
 		switch (signatureLevel) {
 			case PAdES_BASELINE_LTA:
-				dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
-				dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
-				break;
 			case PAdES_102778_LTV:
 				dataForLevelPresent = hasDocumentTimestampOnTopOfDSSDict();
+				// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
+				dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT);
 				break;
 			case PAdES_BASELINE_LT:
-				dataForLevelPresent &= hasDSSDictionary();
-				// break omitted purposely
+				dataForLevelPresent = hasDSSDictionary();
+				dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T);
+				break;
 			case PAdES_BASELINE_T:
-				dataForLevelPresent &= (((signatureTimestamps != null) && (!signatureTimestamps.isEmpty())));
-				// break omitted purposely
+				dataForLevelPresent = CollectionUtils.isNotEmpty(signatureTimestamps);
+				dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_B);
+				break;
 			case PAdES_BASELINE_B:
-				dataForLevelPresent &= (pdfSignatureInfo != null);
+				dataForLevelPresent = (pdfSignatureInfo != null);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown level " + signatureLevel);

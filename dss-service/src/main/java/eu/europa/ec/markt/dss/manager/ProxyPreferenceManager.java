@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,7 +149,7 @@ public class ProxyPreferenceManager {
 	public boolean isHttpEnabled() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_ENABLED);
 
-		if (preference == null || DSSUtils.isEmpty(preference.getValue())) {
+		if ((preference == null) || StringUtils.isEmpty(preference.getValue())) {
 			return false;
 		} else {
 			return Boolean.valueOf(preference.getValue()).booleanValue();
@@ -163,7 +164,7 @@ public class ProxyPreferenceManager {
 	public boolean isHttpsEnabled() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_ENABLED);
 
-		if (preference == null || DSSUtils.isEmpty(preference.getValue())) {
+		if ((preference == null) || StringUtils.isEmpty(preference.getValue())) {
 			return false;
 		} else {
 			return Boolean.valueOf(preference.getValue()).booleanValue();
@@ -371,7 +372,7 @@ public class ProxyPreferenceManager {
 	@Override
 	public String toString() {
 		return "ProxyPreferenceManager{" +
-			  "proxyDao=" + proxyDao +
-			  '}';
+				"proxyDao=" + proxyDao +
+				'}';
 	}
 }

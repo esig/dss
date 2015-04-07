@@ -20,42 +20,42 @@
  */
 package eu.europa.ec.markt.dss.applet.util;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * 
+ *
  * TODO
- * 
  *
  *
- * 
+ *
+ *
  *
  *
  */
 public final class DSSStringUtils {
-    /**
-     * 
-     * @param source
-     * @param values
-     * @return
-     */
-    public static boolean contains(final String source, final String... values) {
+	/**
+	 *
+	 * @param source
+	 * @param values
+	 * @return
+	 */
+	public static boolean contains(final String source, final String... values) {
 
-        if (DSSUtils.isEmpty(source)) {
-            return false;
-        }
+		if (StringUtils.isEmpty(source)) {
+			return false;
+		}
 
-        for (final String value : values) {
-            if (source.equals(value)) {
-                return true;
-            }
-        }
+		for (final String value : values) {
+			if (source.equals(value)) {
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    private DSSStringUtils() {
+	private DSSStringUtils() {
 
-    }
+	}
 
 }

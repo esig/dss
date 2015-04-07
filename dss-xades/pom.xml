@@ -23,7 +23,12 @@
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-spi</artifactId>
         </dependency>
-        
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+			<version>2.7.1</version>
+			<scope>compile</scope>
+		</dependency>
         
 		<dependency>
 			<groupId>junit</groupId>

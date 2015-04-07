@@ -20,7 +20,8 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.SignaturePolicy;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
@@ -237,7 +238,7 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
 
 		constraint.create(subProcessNode, MessageTag.BBB_VCI_ISPK);
 		String policyId = signatureContext.getValue("./Policy/Id/text()");
-		if (DSSUtils.isBlank(policyId)) {
+		if (StringUtils.isBlank(policyId)) {
 			policyId = SignaturePolicy.NO_POLICY;
 		}
 		constraint.setIdentifier(policyId);

@@ -27,6 +27,7 @@ import java.util.List;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.EncryptionAlgorithm;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
+import eu.europa.ec.markt.dss.parameter.Policy;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
 import eu.europa.ec.markt.dss.signature.SignaturePackaging;
@@ -73,7 +74,7 @@ public class WSParameters {
 
 	private List<WSChainCertificate> chainCertificateList = new ArrayList<WSChainCertificate>();
 
-	private BLevelParameters.Policy signaturePolicy;
+	private Policy signaturePolicy;
 
 	private DigestAlgorithm signingCertificateDigestAlgorithm = DigestAlgorithm.SHA1;
 
@@ -244,14 +245,14 @@ public class WSParameters {
 	/**
 	 * @return
 	 */
-	public BLevelParameters.Policy getSignaturePolicy() {
+	public Policy getSignaturePolicy() {
 		return signaturePolicy;
 	}
 
 	/**
 	 * @param signaturePolicy
 	 */
-	public void setSignaturePolicy(final BLevelParameters.Policy signaturePolicy) {
+	public void setSignaturePolicy(final Policy signaturePolicy) {
 		this.signaturePolicy = signaturePolicy;
 	}
 

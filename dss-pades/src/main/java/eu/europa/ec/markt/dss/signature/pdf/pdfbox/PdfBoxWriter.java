@@ -26,10 +26,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.signature.pdf.PdfWriter;
 
 class PdfBoxWriter implements PdfWriter {
@@ -59,7 +59,7 @@ class PdfBoxWriter implements PdfWriter {
 			tempInput = new FileInputStream(tempDocumentIn);
 			tempDocumentOut = new File("target/copyoffileout.pdf");
 			tempOutput = new FileOutputStream(tempDocumentOut);
-            DSSUtils.copy(tempInput, tempOutput);
+			IOUtils.copy(tempInput, tempOutput);
 			tempInput.close();
 
 			tempInput = new FileInputStream(tempDocumentIn);
@@ -73,12 +73,12 @@ class PdfBoxWriter implements PdfWriter {
 	@Override
 	public void saveIncremental() throws IOException {
 		try {
-            document.saveIncremental(tempInput, tempOutput);
+			document.saveIncremental(tempInput, tempOutput);
 			tempOutput.close();
 			tempInput.close();
 
 			tempInput = new FileInputStream(tempDocumentOut);
-            DSSUtils.copy(tempInput, output);
+			IOUtils.copy(tempInput, output);
 			tempInput.close();
 		} catch (COSVisitorException e) {
 			throw new IOException(e);

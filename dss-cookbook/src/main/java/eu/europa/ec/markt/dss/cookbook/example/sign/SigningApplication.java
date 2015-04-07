@@ -23,7 +23,8 @@ package eu.europa.ec.markt.dss.cookbook.example.sign;
 import java.io.IOException;
 import java.util.Date;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.io.IOUtils;
+
 import eu.europa.ec.markt.dss.cookbook.sources.JavaKeyStoreTool;
 import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
@@ -62,6 +63,6 @@ public class SigningApplication {
 		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
 		byte[] signatureValue = signingToken.sign(dataToSign, params.getDigestAlgorithm(), privateKey);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
-		DSSUtils.copy(signedDocument.openStream(), System.out);
+		IOUtils.copy(signedDocument.openStream(), System.out);
 	}
 }

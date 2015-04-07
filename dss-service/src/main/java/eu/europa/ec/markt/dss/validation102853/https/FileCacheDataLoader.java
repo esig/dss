@@ -27,6 +27,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -85,7 +86,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 			toBeLoaded = new ArrayList<String>();
 		}
-		if (DSSUtils.isNotBlank(url)) {
+		if (StringUtils.isNotBlank(url)) {
 
 			toBeLoaded.add(url);
 		}
@@ -103,7 +104,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 			toIgnored = new ArrayList<String>();
 		}
-		if (DSSUtils.isNotBlank(urlString)) {
+		if (StringUtils.isNotBlank(urlString)) {
 
 			final String normalizedFileName = ResourceLoader.getNormalizedFileName(urlString);
 			toIgnored.add(normalizedFileName);
@@ -113,7 +114,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	@Override
 	public byte[] get(final String url, final boolean refresh) throws DSSCannotFetchDataException {
 
-		if (toBeLoaded != null && !toBeLoaded.contains(url)) {
+		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
 			return null;
 		}
 		final String fileName = ResourceLoader.getNormalizedFileName(url);
@@ -141,7 +142,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 			bytes = super.get(url);
 		}
-		if (bytes != null && bytes.length != 0) {
+		if ((bytes != null) && (bytes.length != 0)) {
 
 			final File out = getCacheFile(fileName);
 			DSSUtils.saveToFile(bytes, out);
@@ -164,7 +165,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	private File getCacheFile(final String fileName) {
 
 		final String trimmedFileName = fileName.trim();
-		if (toIgnored != null && toIgnored.contains(trimmedFileName)) {
+		if ((toIgnored != null) && toIgnored.contains(trimmedFileName)) {
 
 			throw new DSSException("Part of urls to ignore.");
 		}

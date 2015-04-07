@@ -18,22 +18,6 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<executions>
 					<execution>
@@ -62,8 +46,7 @@
 						</filter>
 					</filters>
 					<transformers>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 							<manifestEntries>
 								<Application-Name>SD-DSS Demo Applet</Application-Name>
 								<Permissions>all-permissions</Permissions>
@@ -75,10 +58,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 
 	<dependencies>
 		<dependency>

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,7 +244,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 		final String minimumPublicKeySize = minimumPublicKeySizes.get(encryptionAlgorithm);
 		int keyLengthInt = 0;
 		try {
-			keyLengthInt = DSSUtils.isBlank(keyLength) || "?".equals(keyLength) ? 0 : Integer.valueOf(keyLength);
+			keyLengthInt = StringUtils.isBlank(keyLength) || "?".equals(keyLength) ? 0 : Integer.valueOf(keyLength);
 		} catch (NumberFormatException e) {
 			LOG.debug("Unknown key length: '" + keyLength + "'");
 		}
@@ -299,7 +300,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 	private Pair[] getParametersAnswer5(final String algorithm, final Date algorithmExpirationDate) {
 
-		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
+		boolean subContextPresent = StringUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 4 : 3];
 		pairs[0] = new Pair(AttributeValue.ALGORITHM, algorithm);
 		pairs[1] = new Pair(AttributeName.CONTEXT, context);
@@ -312,7 +313,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 	private Pair[] getParametersAnswer4(final String algorithm) {
 
-		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
+		boolean subContextPresent = StringUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 3 : 2];
 		pairs[0] = new Pair(AttributeValue.ALGORITHM, algorithm);
 		pairs[1] = new Pair(AttributeName.CONTEXT, context);
@@ -324,7 +325,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 	private Pair[] getParametersAnswer3(final String minimumPublicKeySize) {
 
-		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
+		boolean subContextPresent = StringUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 5 : 4];
 		pairs[0] = new Pair(AttributeValue.ENCRYPTION_ALGORITHM, encryptionAlgorithm);
 		pairs[1] = new Pair(AttributeValue.PUBLIC_KEY_SIZE, keyLength);
@@ -338,7 +339,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 	private Pair[] getParametersAnswer2() {
 
-		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
+		boolean subContextPresent = StringUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 3 : 2];
 		pairs[0] = new Pair(AttributeValue.DIGEST_ALGORITHM, digestAlgorithm);
 		pairs[1] = new Pair(AttributeName.CONTEXT, context);
@@ -350,7 +351,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 
 	private Pair[] getParametersAnswer1() {
 
-		boolean subContextPresent = DSSUtils.isNotBlank(subContext);
+		boolean subContextPresent = StringUtils.isNotBlank(subContext);
 		final Pair[] pairs = new Pair[subContextPresent ? 3 : 2];
 		pairs[0] = new Pair(AttributeValue.ENCRYPTION_ALGORITHM, encryptionAlgorithm);
 		pairs[1] = new Pair(AttributeName.CONTEXT, context);

@@ -34,6 +34,7 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
@@ -243,7 +244,7 @@ public class CMSSignedDataBuilder {
 			if (!encapsulate) {
 				final InputStream inputStream = parameters.getDetachedContent().openStream();
 				final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(inputStream));
-				DSSUtils.closeQuietly(inputStream);
+				IOUtils.closeQuietly(inputStream);
 				cmsSignedData = cmsSignedDataGenerator.generate(content, encapsulate);
 			} else {
 				cmsSignedData = cmsSignedDataGenerator.generate(cmsSignedData.getSignedContent(), encapsulate);

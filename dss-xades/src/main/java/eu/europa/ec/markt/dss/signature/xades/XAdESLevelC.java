@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -37,7 +38,6 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
@@ -165,7 +165,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 					final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
 					final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-					final String base65EncodedKeyHashOctetStringBytes = DSSUtils.base64Encode(keyHashOctetStringBytes);
+					final String base65EncodedKeyHashOctetStringBytes = Base64.encodeBase64String(keyHashOctetStringBytes);
 					DSSXMLUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, "xades:ByKey", base65EncodedKeyHashOctetStringBytes);
 				} else {
 

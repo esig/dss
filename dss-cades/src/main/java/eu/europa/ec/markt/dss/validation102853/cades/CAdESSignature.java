@@ -1928,49 +1928,48 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel) {
-
 		final AttributeTable unsignedAttributes = getUnsignedAttributes(signerInformation);
 		final AttributeTable signedAttributes = getSignedAttributes(signerInformation);
 		boolean dataForProfilePresent = true;
-		final boolean baseline = signatureLevel.toString().contains("BASELINE");
 		switch (signatureLevel) {
 			case CAdES_BASELINE_LTA:
 				dataForProfilePresent = unsignedAttributes.get(id_aa_ets_archiveTimestampV3) != null;
-				// break omitted purposely
+				// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
+				dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LT);
+				break;
 			case CAdES_101733_A:
-				if (signatureLevel != SignatureLevel.CAdES_BASELINE_LTA) {
-					dataForProfilePresent &= unsignedAttributes.get(id_aa_ets_archiveTimestampV2) != null;
-				}
-				// break omitted purposely
+				dataForProfilePresent = unsignedAttributes.get(id_aa_ets_archiveTimestampV2) != null;
+				dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LT);
+				dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_101733_X);
+				break;
 			case CAdES_BASELINE_LT:
-				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
-				final int certificateStoreSize = encapsulatedCertificates.size();
-				final Store crlStore = cmsSignedData.getCRLs();
-				final int crlStoreSize = crlStore.getMatches(null).size();
-				final Store ocspStore = cmsSignedData.getOtherRevocationInfo(id_ri_ocsp_response);
-				final int ocspStoreSize = ocspStore.getMatches(null).size();
-				final Store ocspBasicStore = cmsSignedData.getOtherRevocationInfo(id_pkix_ocsp_basic);
-				final int basicOcspStoreSize = ocspBasicStore.getMatches(null).size();
-				final int ltInfoSize = certificateStoreSize + crlStoreSize + ocspStoreSize + basicOcspStoreSize;
-				dataForProfilePresent &= (ltInfoSize > 0);
-				// break omitted purposely
+				List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
+				int certificateStoreSize = encapsulatedCertificates.size();
+				Store crlStore = cmsSignedData.getCRLs();
+				int crlStoreSize = crlStore.getMatches(null).size();
+				Store ocspStore = cmsSignedData.getOtherRevocationInfo(id_ri_ocsp_response);
+				int ocspStoreSize = ocspStore.getMatches(null).size();
+				Store ocspBasicStore = cmsSignedData.getOtherRevocationInfo(id_pkix_ocsp_basic);
+				int basicOcspStoreSize = ocspBasicStore.getMatches(null).size();
+				int ltInfoSize = certificateStoreSize + crlStoreSize + ocspStoreSize + basicOcspStoreSize;
+				dataForProfilePresent = (ltInfoSize > 0);
+				dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T);
+				break;
 			case CAdES_101733_X:
-				if (!baseline) {
-					dataForProfilePresent &= ((unsignedAttributes.get(id_aa_ets_certCRLTimestamp) != null) || (unsignedAttributes.get(id_aa_ets_escTimeStamp) != null));
-				}
-				// break omitted purposely
+				dataForProfilePresent = ((unsignedAttributes.get(id_aa_ets_certCRLTimestamp) != null) || (unsignedAttributes.get(id_aa_ets_escTimeStamp) != null));
+				dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_101733_C);
+				break;
 			case CAdES_101733_C:
-				if (!baseline) {
-					dataForProfilePresent &= unsignedAttributes.get(id_aa_ets_certificateRefs) != null;
-					dataForProfilePresent &= isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T);
-				}
-				// break omitted purposely
+				dataForProfilePresent = unsignedAttributes.get(id_aa_ets_certificateRefs) != null;
+				dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T);
+				break;
 			case CAdES_BASELINE_T:
-				dataForProfilePresent &= unsignedAttributes.get(id_aa_signatureTimeStampToken) != null;
-				// break omitted purposely
+				dataForProfilePresent = unsignedAttributes.get(id_aa_signatureTimeStampToken) != null;
+				dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_B);
+				break;
 			case CAdES_BASELINE_B:
-				dataForProfilePresent &= ((signedAttributes.get(id_aa_signingCertificate) != null) || (signedAttributes.get(id_aa_signingCertificateV2) != null));
-				break; // break placed purposely
+				dataForProfilePresent = ((signedAttributes.get(id_aa_signingCertificate) != null) || (signedAttributes.get(id_aa_signingCertificateV2) != null));
+				break;
 			case CMS_NOT_ETSI:
 				dataForProfilePresent = true;
 				break;

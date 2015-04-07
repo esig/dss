@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Document;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -158,7 +159,7 @@ public class ValidationWizardController extends DSSWizardController<ValidationMo
 		final WsDocument wsDetachedDocument = detachedFile != null ? toWsDocument(detachedFile) : null;
 
 		WsDocument wsPolicyDocument = null;
-		if (!model.isDefaultPolicy() && model.getSelectedPolicyFile() != null) {
+		if (!model.isDefaultPolicy() && (model.getSelectedPolicyFile() != null)) {
 
 			final File policyFile = new File(model.getSelectedPolicyFile().getAbsolutePath());
 			final InputStream inputStream = DSSUtils.toInputStream(policyFile);
@@ -203,7 +204,7 @@ public class ValidationWizardController extends DSSWizardController<ValidationMo
 			model.setSimpleReport(simpleReportXmlDom);
 		} catch (Exception e) {
 
-			final String base64Encode = DSSUtils.base64Encode(xmlData.getBytes());
+			final String base64Encode = Base64.encodeBase64String(xmlData.getBytes());
 			LOG.error("Erroneous data: " + base64Encode);
 			if (e instanceof DSSException) {
 				throw (DSSException) e;

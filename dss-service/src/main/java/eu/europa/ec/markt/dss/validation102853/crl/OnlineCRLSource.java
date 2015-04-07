@@ -24,6 +24,7 @@ import java.security.cert.X509CRL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
@@ -119,7 +120,7 @@ public class OnlineCRLSource implements CRLSource {
 		}
 		final List<String> crlUrls = getCrlUrl(certificateToken);
 		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrls);
-		if (DSSUtils.isEmpty(crlUrls)) {
+		if (CollectionUtils.isEmpty(crlUrls)) {
 			return null;
 		}
 		final DataLoader.DataAndUrl dataAndUrl = downloadCrl(crlUrls);
@@ -147,7 +148,7 @@ public class OnlineCRLSource implements CRLSource {
 	 */
 	private DataLoader.DataAndUrl downloadCrl(final List<String> downloadUrls) {
 
-		if (DSSUtils.isEmpty(downloadUrls)) {
+		if (CollectionUtils.isEmpty(downloadUrls)) {
 			return null;
 		}
 		try {

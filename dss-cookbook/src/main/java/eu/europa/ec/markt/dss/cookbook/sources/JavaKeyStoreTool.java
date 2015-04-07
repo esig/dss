@@ -33,7 +33,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.io.IOUtils;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.signature.token.KSPrivateKeyEntry;
 
@@ -58,7 +59,7 @@ public class JavaKeyStoreTool {
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 		} finally {
-			DSSUtils.closeQuietly(ksStream);
+			IOUtils.closeQuietly(ksStream);
 		}
 	}
 

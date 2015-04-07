@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 
 import eu.europa.ec.markt.dss.DSSUtils;
@@ -126,7 +127,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	public SignaturePolicyConstraint getSignaturePolicyConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/AcceptablePolicies/@Level");
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final SignaturePolicyConstraint constraint = new SignaturePolicyConstraint(level);
 
@@ -179,7 +180,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	public Constraint getCommitmentTypeIndicationConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/@Level");
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final Constraint constraint = new Constraint(level);
 			final List<XmlDom> commitmentTypeIndications = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/Identifier");
@@ -195,7 +196,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	public Constraint getSignerLocationConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/SignerLocation/@Level");
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final Constraint constraint = new Constraint(level);
 			return constraint;
@@ -207,7 +208,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	public Constraint getContentTimestampPresenceConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/@Level");
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final Constraint constraint = new Constraint(level);
 			return constraint;
@@ -219,7 +220,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	public Constraint getClaimedRoleConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/@Level");
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final Constraint constraint = new Constraint(level);
 			final List<XmlDom> claimedRoles = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/Role");
@@ -310,7 +311,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	protected SignatureCryptographicConstraint getSignatureCryptographicConstraint_(final String rootXPathQuery, final String context, final String subContext) {
 
 		final String level = getValue(rootXPathQuery + "/@Level");
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final SignatureCryptographicConstraint constraint = new SignatureCryptographicConstraint(level, context, subContext);
 
@@ -339,7 +340,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	public Constraint getSigningCertificateKeyUsageConstraint(final String context) {
 
 		final String level = getValue("/ConstraintsParameters/%s/SigningCertificate/KeyUsage/@Level", context);
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final Constraint constraint = new Constraint(level);
 			final List<XmlDom> keyUsages = getElements("/ConstraintsParameters/%s/SigningCertificate/KeyUsage/Identifier", context);
@@ -355,7 +356,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	public CertificateExpirationConstraint getSigningCertificateExpirationConstraint(final String context, final String subContext) {
 
 		final String level = getValue(String.format("/ConstraintsParameters/%s/%s/Expiration/@Level", context, subContext));
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final CertificateExpirationConstraint constraint = new CertificateExpirationConstraint(level);
 			return constraint;
@@ -444,7 +445,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	public Constraint getChainConstraint() {
 
 		final String level = getValue("/ConstraintsParameters/MainSignature/CertificateChain/@Level");
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final Constraint constraint = new Constraint(level);
 			return constraint;
@@ -540,11 +541,11 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	protected Constraint getBasicConstraint(final String XP_ROOT, final boolean defaultExpectedValue) {
 
 		final String level = getValue(XP_ROOT + "/@Level");
-		if (DSSUtils.isNotBlank(level)) {
+		if (StringUtils.isNotBlank(level)) {
 
 			final Constraint constraint = new Constraint(level);
 			String expectedValue = getValue(XP_ROOT + "/text()");
-			if (DSSUtils.isBlank(expectedValue)) {
+			if (StringUtils.isBlank(expectedValue)) {
 				expectedValue = defaultExpectedValue ? TRUE : FALSE;
 			}
 			constraint.setExpectedValue(expectedValue);

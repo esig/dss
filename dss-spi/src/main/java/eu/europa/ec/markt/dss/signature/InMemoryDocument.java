@@ -26,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.codec.binary.Base64;
+
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
@@ -165,7 +167,7 @@ public class InMemoryDocument extends CommonDocument {
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
-		final String base64Encode = DSSUtils.base64Encode(digestBytes);
+		final String base64Encode = Base64.encodeBase64String(digestBytes);
 		return base64Encode;
 	}
 }

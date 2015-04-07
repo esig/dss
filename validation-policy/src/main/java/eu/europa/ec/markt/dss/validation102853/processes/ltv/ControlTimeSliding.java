@@ -20,6 +20,7 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.ltv;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +40,6 @@ import eu.europa.ec.markt.dss.validation102853.rules.MessageTag;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeName;
 import eu.europa.ec.markt.dss.validation102853.rules.NodeValue;
 import eu.europa.ec.markt.dss.validation102853.rules.SubIndication;
-import eu.europa.ec.markt.dss.validation102853.toolbox.Reversed;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 import eu.europa.ec.markt.dss.validation102853.xml.XmlNode;
 
@@ -143,11 +143,13 @@ public class ControlTimeSliding {
 
 		final List<XmlDom> chainCertificates = certificateChain.getElements("./ChainCertificate");
 
+		Collections.reverse(chainCertificates);
+
 		/**
 		 * 2) For each certificate in the chain starting from the first certificate (the certificate issued by the trust
 		 * anchor), do the following:<br>
 		 */
-		for (final XmlDom chainCertificate : Reversed.reversed(chainCertificates)) {
+		for (final XmlDom chainCertificate : chainCertificates) {
 
 			final String certificateId = getCertificateId(chainCertificate);
 			final XmlNode certificateNode = controlTimeSlidingData.addChild(AttributeValue.CERTIFICATE, DSSUtils.EMPTY);

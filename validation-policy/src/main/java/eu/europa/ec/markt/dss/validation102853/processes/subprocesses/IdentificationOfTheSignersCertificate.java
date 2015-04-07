@@ -20,7 +20,8 @@
  */
 package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.policy.Constraint;
 import eu.europa.ec.markt.dss.validation102853.policy.ProcessParameters;
@@ -161,7 +162,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 
 		Constraint constraint = null;
 		final String signedElement = contextElement.getValue("./SigningCertificate/Signed/text()");
-		if (DSSUtils.isNotEmpty(signedElement)) {
+		if (StringUtils.isNotEmpty(signedElement)) {
 
 			constraint = params.getCurrentValidationPolicy().getSigningCertificateSignedConstraint(contextName);
 			if (constraint != null) {
@@ -208,7 +209,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		}
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISCI);
 		constraint.setValue(signingCertificateRecognised);
-		if (DSSUtils.isNotBlank(signingCertificateId) && !signingCertificateId.equals("0")) {
+		if (StringUtils.isNotBlank(signingCertificateId) && !signingCertificateId.equals("0")) {
 			constraint.setAttribute(CERTIFICATE_ID, signingCertificateId);
 		}
 		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_ISCI_ANS);

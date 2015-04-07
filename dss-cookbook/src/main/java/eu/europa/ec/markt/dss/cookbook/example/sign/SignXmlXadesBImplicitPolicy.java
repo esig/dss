@@ -28,6 +28,7 @@ import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.cookbook.example.Cookbook;
 import eu.europa.ec.markt.dss.parameter.BLevelParameters;
+import eu.europa.ec.markt.dss.parameter.Policy;
 import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureLevel;
@@ -51,7 +52,7 @@ public class SignXmlXadesBImplicitPolicy extends Cookbook {
 
 		BLevelParameters bLevelParameters = parameters.bLevel();
 
-		BLevelParameters.Policy policy = new BLevelParameters.Policy();
+		Policy policy = new Policy();
 		policy.setId("");
 
 		bLevelParameters.setSignaturePolicy(policy);

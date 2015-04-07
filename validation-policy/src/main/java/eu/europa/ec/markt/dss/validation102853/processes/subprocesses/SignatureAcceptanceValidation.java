@@ -23,7 +23,8 @@ package eu.europa.ec.markt.dss.validation102853.processes.subprocesses;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.TimestampType;
@@ -367,7 +368,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		final boolean structureValid = signatureContext.getBoolValue("./StructuralValidation/Valid/text()");
 		constraint.setValue(structureValid);
 		final String message = signatureContext.getValue("./StructuralValidation/Message/text()");
-		if (DSSUtils.isNotBlank(message)) {
+		if (StringUtils.isNotBlank(message)) {
 			constraint.setAttribute("Log", message);
 		}
 		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISSV_ANS);
@@ -396,7 +397,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPSTP);
 		final String signingTime = signatureContext.getValue("./DateTime/text()");
-		constraint.setValue(DSSUtils.isNotBlank(signingTime));
+		constraint.setValue(StringUtils.isNotBlank(signingTime));
 		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPSTP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 

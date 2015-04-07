@@ -477,7 +477,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * failed and INVALID/FORMAT_FAILURE is returned.
 				 */
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
-				final byte[] recalculatedBase64DigestValue = DSSUtils.base64BinaryEncode(digest);
+				final byte[] recalculatedBase64DigestValue = Base64.encodeBase64(digest);
 				certificateValidity.setDigestEqual(false);
 				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
 
@@ -1507,7 +1507,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 			genericCertId.setDigestAlgorithm(DigestAlgorithm.forXML(xmlName).getName());
 
-			genericCertId.setDigestValue(DSSUtils.base64Decode(digestValueEl.getTextContent()));
+			genericCertId.setDigestValue(Base64.decodeBase64(digestValueEl.getTextContent()));
 			certIds.add(genericCertId);
 		}
 
@@ -1561,7 +1561,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 
 				final String digestValue = digestValueEl.getTextContent();
-				final byte[] base64EncodedDigestValue = DSSUtils.base64Decode(digestValue);
+				final byte[] base64EncodedDigestValue = Base64.decodeBase64(digestValue);
 				final OCSPRef ocspRef = new OCSPRef(digestAlgo, base64EncodedDigestValue, false);
 				certIds.add(ocspRef);
 			}

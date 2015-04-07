@@ -83,6 +83,7 @@ public abstract class XAdESBuilder {
 	public static final String XADES_ENCAPSULATED_TIME_STAMP = "xades:EncapsulatedTimeStamp";
 	public static final String XADES_ENCAPSULATED_X509_CERTIFICATE = "xades:EncapsulatedX509Certificate";
 	public static final String XADES_IDENTIFIER = "xades:Identifier";
+	public static final String XADES_DESCRIPTION = "xades:Description";
 	public static final String XADES_INCLUDE = "xades:Include";
 	public static final String XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP = "xades:IndividualDataObjectsTimeStamp";
 	public static final String XADES_ISSUER_SERIAL = "xades:IssuerSerial";
@@ -95,6 +96,9 @@ public abstract class XAdESBuilder {
 	public static final String XADES_SIGNATURE_POLICY_ID = "xades:SignaturePolicyId";
 	public static final String XADES_SIGNATURE_POLICY_IDENTIFIER = "xades:SignaturePolicyIdentifier";
 	public static final String XADES_SIGNATURE_POLICY_IMPLIED = "xades:SignaturePolicyImplied";
+	public static final String XADES_SIGNATURE_POLICY_QUALIFIERS = "xades:SigPolicyQualifiers";
+	public static final String XADES_SIGNATURE_POLICY_QUALIFIER = "xades:SigPolicyQualifier";
+	public static final String XADES_SPURI = "xades:SPURI";
 	public static final String XADES_SIGNATURE_PRODUCTION_PLACE = "xades:SignatureProductionPlace";
 	public static final String XADES_SIGNATURE_TIME_STAMP = "xades:SignatureTimeStamp";
 	public static final String XADES_SIGNED_DATA_OBJECT_PROPERTIES = "xades:SignedDataObjectProperties";

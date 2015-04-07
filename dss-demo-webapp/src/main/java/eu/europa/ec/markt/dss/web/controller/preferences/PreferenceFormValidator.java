@@ -22,11 +22,12 @@ package eu.europa.ec.markt.dss.web.controller.preferences;
 
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.model.PreferenceKey;
 import eu.europa.ec.markt.dss.web.model.PreferenceForm;
 
@@ -41,24 +42,24 @@ import eu.europa.ec.markt.dss.web.model.PreferenceForm;
  */
 @Component
 public class PreferenceFormValidator implements Validator {
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return clazz.equals(PreferenceForm.class);
-    }
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return clazz.equals(PreferenceForm.class);
+	}
 
-    @Override
-    public void validate(Object target, Errors errors) {
-        PreferenceForm preferenceForm = (PreferenceForm) target;
-        if (preferenceForm.getKey().equals(PreferenceKey.DEFAULT_POLICY_URL.toString())) {
-            // check that the entered URL is loadable
-            final String value = preferenceForm.getValue();
-            if (DSSUtils.isNotBlank(value)) {
-                try {
-                    DSSUtils.toString(new URL(value).openStream());
-                } catch (Exception e) {
-                    errors.rejectValue("value", "url.error");
-                }
-            }
-        }
-    }
+	@Override
+	public void validate(Object target, Errors errors) {
+		PreferenceForm preferenceForm = (PreferenceForm) target;
+		if (preferenceForm.getKey().equals(PreferenceKey.DEFAULT_POLICY_URL.toString())) {
+			// check that the entered URL is loadable
+			final String value = preferenceForm.getValue();
+			if (StringUtils.isNotBlank(value)) {
+				try {
+					IOUtils.toString(new URL(value).openStream());
+				} catch (Exception e) {
+					errors.rejectValue("value", "url.error");
+				}
+			}
+		}
+	}
 }

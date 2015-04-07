@@ -40,6 +40,7 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,7 +51,6 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.applet.component.model.XmlDomAdapterNode;
 import eu.europa.ec.markt.dss.applet.component.model.XsdNode;
 import eu.europa.ec.markt.dss.applet.component.model.XsdNodeCardinality;
@@ -120,6 +120,7 @@ public class EditView extends WizardView<ValidationPolicyModel, ValidationPolicy
 	private void registerMouseListener(final JTree tree) {
 
 		MouseListener mouseAdapter = new MouseAdapter() {
+			@Override
 			public void mousePressed(MouseEvent mouseEvent) {
 				if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
 					final int selectedRow = tree.getRowForLocation(mouseEvent.getX(), mouseEvent.getY());
@@ -145,7 +146,7 @@ public class EditView extends WizardView<ValidationPolicyModel, ValidationPolicy
 
 	String getXPath(Node node) {
 		Node parent = node.getParentNode();
-		if (parent == null || parent instanceof Document) {
+		if ((parent == null) || (parent instanceof Document)) {
 			return node.getNodeName();
 		}
 		return getXPath(parent) + "/" + node.getNodeName();
@@ -172,14 +173,14 @@ public class EditView extends WizardView<ValidationPolicyModel, ValidationPolicy
 				if (xsdNode.getType() == XsdNodeType.ATTRIBUTE) {
 					//Check if this attribute is already present
 					final String attribute = element.getAttribute(xmlName);
-					if (DSSUtils.isEmpty(attribute)) {
+					if (StringUtils.isEmpty(attribute)) {
 						elementExists = false;
 						xsdNodeAddable = xsdNode;
 					} else {
 						elementExists = true;
 					}
 				} else if (xsdNode.getType() == XsdNodeType.ELEMENT) {
-					if (xsdNode.getCardinality() == XsdNodeCardinality.ONCE_EXACTLY || xsdNode.getCardinality() == XsdNodeCardinality.ONCE_OPTIONALY) {
+					if ((xsdNode.getCardinality() == XsdNodeCardinality.ONCE_EXACTLY) || (xsdNode.getCardinality() == XsdNodeCardinality.ONCE_OPTIONALY)) {
 						// check if this item already exist as a child of this item. If not, it can be added.
 						elementExists = getModel().getValidationPolicy().getXmlDom().exists(xsdNode.getName());
 						if (!elementExists) {
@@ -193,7 +194,7 @@ public class EditView extends WizardView<ValidationPolicyModel, ValidationPolicy
 					}
 				} else if (xsdNode.getType() == XsdNodeType.TEXT) {
 					final XmlDom xmlDomElement = new XmlDom(element);
-					if (element != null && xmlDomElement.getText() != null && xmlDomElement.getText().length() > 0) {
+					if ((element != null) && (xmlDomElement.getText() != null) && (xmlDomElement.getText().length() > 0)) {
 						elementExists = true;
 					} else {
 						elementExists = false;
@@ -203,7 +204,7 @@ public class EditView extends WizardView<ValidationPolicyModel, ValidationPolicy
 					throw new IllegalArgumentException("Unknown type " + xsdNode.getType());
 				}
 
-				if (!elementExists && xsdNodeAddable != null) {
+				if (!elementExists && (xsdNodeAddable != null)) {
 					result.add(xsdNodeAddable);
 				}
 			}
@@ -274,13 +275,13 @@ public class EditView extends WizardView<ValidationPolicyModel, ValidationPolicy
 						boolean toAddSeen = false;
 						Element elementIsToAddBeforeThisOne = null;
 						for (final XsdNode allowed : childrenMap.keySet()) {
-							if (!toAddSeen && allowed == xsdChild) {
+							if (!toAddSeen && (allowed == xsdChild)) {
 								toAddSeen = true;
 								continue;
 							}
 							if (toAddSeen) {
 								final NodeList elementsByTagNameNS = clickedElement
-									  .getElementsByTagNameNS("http://dss.markt.ec.europa.eu/validation/diagnostic", allowed.getLastNameOfPath());
+										.getElementsByTagNameNS("http://dss.markt.ec.europa.eu/validation/diagnostic", allowed.getLastNameOfPath());
 								if (elementsByTagNameNS.getLength() > 0) {
 									// we found an element that is supposed to be after the one to add
 									elementIsToAddBeforeThisOne = (Element) elementsByTagNameNS.item(0);
