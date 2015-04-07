@@ -343,7 +343,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		try {
 			final byte[] sha2Bytes = commonsDataLoader.get(urlSha2);
 			final String currentHashValue = new String(sha2Bytes).trim();
-			if (DSSUtils.isBlank(currentHashValue)) {
+			if (StringUtils.isBlank(currentHashValue)) {
 				throw new DSSException("SHA256 does not exist!");
 			}
 			final String hashValue = getTSLHashCode(url);

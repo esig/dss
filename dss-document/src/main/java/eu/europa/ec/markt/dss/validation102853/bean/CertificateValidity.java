@@ -23,7 +23,8 @@ package eu.europa.ec.markt.dss.validation102853.bean;
 import java.io.Serializable;
 import java.security.PublicKey;
 
-import eu.europa.ec.markt.dss.DSSUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.markt.dss.DigestAlgorithm;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
@@ -160,7 +161,7 @@ public class CertificateValidity implements Serializable {
 	 */
 	public boolean isValid() {
 
-		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual()) || DSSUtils.isNotEmpty(getSigned());
+		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual()) || StringUtils.isNotEmpty(getSigned());
 		return valid;
 	}
 

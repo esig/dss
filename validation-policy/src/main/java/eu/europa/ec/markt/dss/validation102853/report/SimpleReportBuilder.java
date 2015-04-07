@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.jce.X509Principal;
 import org.slf4j.Logger;
@@ -289,10 +290,10 @@ public class SimpleReportBuilder {
 			if ((values != null) && (values.size() > 0)) {
 
 				final String string = (String) values.get(0);
-				if (DSSUtils.isNotBlank(string)) {
+				if (StringUtils.isNotBlank(string)) {
 					signedBy = DSSUtils.replaceStrStr(string, "&", "&amp;");
 				}
-				if (DSSUtils.isEmpty(signedBy)) {
+				if (StringUtils.isEmpty(signedBy)) {
 					signedBy = DSSUtils.replaceStrStr(dn, "&", "&amp;");
 				}
 			}

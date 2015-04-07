@@ -61,8 +61,6 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import eu.europa.ec.markt.dss.DSSUtils;
-
 /**
  * TODO
  *
@@ -189,7 +187,7 @@ public final class ComponentFactory extends BasicComponentFactory {
 	}
 
 	public static PanelBuilder createBuilder(final String[] columnSpecs, final String[] rowSpecs) {
-		return createBuilder(new FormLayout(DSSUtils.join(columnSpecs, ","), DSSUtils.join(rowSpecs, ",")));
+		return createBuilder(new FormLayout(StringUtils.join(columnSpecs, ","), StringUtils.join(rowSpecs, ",")));
 	}
 
 	/**

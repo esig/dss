@@ -23,6 +23,7 @@ package eu.europa.ec.markt.dss.signature.validation.xades;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -100,7 +101,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 
 			final Element certificateElement = (Element) nodeList.item(ii);
 
-			final byte[] derEncoded = DSSUtils.base64Decode(certificateElement.getTextContent());
+			final byte[] derEncoded = Base64.decodeBase64(certificateElement.getTextContent());
 			final CertificateToken cert = DSSUtils.loadCertificate(derEncoded);
 			final CertificateToken certToken = addCertificate(cert);
 			if (!list.contains(certToken)) {
@@ -119,6 +120,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 *
 	 * @return list of X509Certificate(s)
 	 */
+	@Override
 	public List<CertificateToken> getEncapsulatedCertificates() throws DSSException {
 
 		return encapsulatedCerts;
@@ -129,6 +131,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 *
 	 * @return list of X509Certificate(s)
 	 */
+	@Override
 	public List<CertificateToken> getKeyInfoCertificates() throws DSSException {
 
 		return keyInfoCerts;

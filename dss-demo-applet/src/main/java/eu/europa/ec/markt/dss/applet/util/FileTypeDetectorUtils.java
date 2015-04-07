@@ -25,10 +25,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.applet.main.FileType;
 
 /**
@@ -61,7 +61,7 @@ public final class FileTypeDetectorUtils {
 
 			return new String(preamble);
 		} finally {
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 		}
 	}
 
@@ -88,7 +88,7 @@ public final class FileTypeDetectorUtils {
 		} catch (final CMSException e) {
 			return false;
 		} finally {
-			DSSUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(inputStream);
 		}
 	}
 

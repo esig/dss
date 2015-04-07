@@ -24,10 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.validation102853.RuleUtils;
 import eu.europa.ec.markt.dss.validation102853.report.Conclusion;
@@ -222,17 +223,17 @@ public class Constraint {
 
 				node.addChild(NodeName.STATUS, NodeValue.WARN);
 				final XmlNode xmlNode = node.addChild(NodeName.WARNING, failureMessageTag, messageAttributes);
-				if (DSSUtils.isNotBlank(expectedValue) && !expectedValue.equals("true") && !expectedValue.equals("false")) {
+				if (StringUtils.isNotBlank(expectedValue) && !expectedValue.equals("true") && !expectedValue.equals("false")) {
 					xmlNode.setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 				}
 				conclusion.addWarning(failureMessageTag, messageAttributes);
 				return true;
 			}
 			node.addChild(NodeName.STATUS, NodeValue.KO);
-			if (DSSUtils.isNotBlank(expectedValue) && !expectedValue.equals("true") && !expectedValue.equals("false")) {
+			if (StringUtils.isNotBlank(expectedValue) && !expectedValue.equals("true") && !expectedValue.equals("false")) {
 				node.addChild(NodeName.INFO).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 			}
-			if (DSSUtils.isNotBlank(indication)) {
+			if (StringUtils.isNotBlank(indication)) {
 
 				conclusion.setIndication(indication, subIndication);
 			}
@@ -267,7 +268,7 @@ public class Constraint {
 		final boolean contains;
 		if ((value != null) && "*".equals(expectedValue)) {
 			contains = true;
-		} else if (!DSSUtils.isEmpty(valueList)) {
+		} else if (CollectionUtils.isNotEmpty(valueList)) {
 			contains = valueList.containsAll(identifiers);
 			value = valueList.toString();
 		} else {

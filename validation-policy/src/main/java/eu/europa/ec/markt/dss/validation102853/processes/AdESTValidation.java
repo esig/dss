@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -751,7 +752,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		if (error != null) {
 
 			final String algorithmExpirationDateString = error.getAttribute("AlgorithmExpirationDate");
-			if (DSSUtils.isNotBlank(algorithmExpirationDateString)) {
+			if (StringUtils.isNotBlank(algorithmExpirationDateString)) {
 
 				final Date algorithmExpirationDate = DSSUtils.parseDate(DSSUtils.DEFAULT_DATE_FORMAT, algorithmExpirationDateString);
 				if (!algorithmExpirationDate.before(bestSignatureTime)) {
@@ -911,7 +912,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		constraint.create(signatureXmlNode, MessageTag.BBB_SAV_ISQPSTP);
 		constraint.setIndications(INDETERMINATE, CLAIMED_SIGNING_TIME_ABSENT, MessageTag.ADEST_VFDTAOCST_ANS);
 		final String signingTime = signatureXmlDom.getValue("./DateTime/text()");
-		constraint.setValue(DSSUtils.isNotBlank(signingTime));
+		constraint.setValue(StringUtils.isNotBlank(signingTime));
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

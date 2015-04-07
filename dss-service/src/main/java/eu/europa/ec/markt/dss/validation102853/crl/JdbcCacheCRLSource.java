@@ -31,6 +31,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +120,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			return null;
 		}
 		final List<String> crlUrls = cachedSource.getCrlUrl(certificateToken);
-		if (DSSUtils.isEmpty(crlUrls)) {
+		if (CollectionUtils.isEmpty(crlUrls)) {
 			return null;
 		}
 		final String crlUrl = crlUrls.get(0);

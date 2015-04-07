@@ -40,6 +40,7 @@ import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x509.Extension;
@@ -562,7 +563,7 @@ public class CertificateToken extends Token {
 		if (encodedDigest == null) {
 
 			final byte[] digest = DSSUtils.digest(digestAlgorithm, DSSUtils.getEncoded(x509Certificate));
-			encodedDigest = DSSUtils.base64Encode(digest);
+			encodedDigest = Base64.encodeBase64String(digest);
 			digests.put(digestAlgorithm, encodedDigest);
 		}
 		return encodedDigest;

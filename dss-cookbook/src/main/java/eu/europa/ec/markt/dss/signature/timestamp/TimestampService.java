@@ -155,7 +155,7 @@ public class TimestampService {
 		//2. Build temporary signature structure
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(commonCertificateVerifier);
 
-		byte[] signatureValueBytes = DSSUtils.base64Decode(fakeSignatureValue);
+		byte[] signatureValueBytes = Base64.decodeBase64(fakeSignatureValue);
 		final DSSDocument fullSignature = levelBaselineB.signDocument(toSignDocument, signatureParameters, signatureValueBytes);
 
 		final List<Reference> references = getReferencesFromValidatedSignature(toSignDocument, fullSignature);

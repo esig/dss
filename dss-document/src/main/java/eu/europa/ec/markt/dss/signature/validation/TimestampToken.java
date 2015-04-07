@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -270,7 +271,7 @@ public class TimestampToken extends Token {
 	public String getEncodedSignedDataDigestValue() {
 
 		final byte[] messageImprintDigest = timeStamp.getTimeStampInfo().getMessageImprintDigest();
-		return DSSUtils.base64Encode(messageImprintDigest);
+		return Base64.encodeBase64String(messageImprintDigest);
 	}
 
 	/**

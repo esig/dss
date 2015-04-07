@@ -29,16 +29,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -46,7 +43,6 @@ import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.Security;
 import java.security.Signature;
-import java.security.SignatureException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -58,11 +54,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -73,9 +67,7 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -302,26 +294,6 @@ public final class DSSUtils {
 		return digit;
 	}
 
-	@Deprecated
-	public static byte[] base64Decode(final String base64String) throws DSSException {
-		return Base64.decodeBase64(base64String);
-	}
-
-	@Deprecated
-	public static byte[] base64Decode(final byte[] binaryData) {
-		return Base64.decodeBase64(binaryData);
-	}
-
-	@Deprecated
-	public static String base64Encode(final byte[] binaryData) {
-		return Base64.encodeBase64String(binaryData);
-	}
-
-	@Deprecated
-	public static byte[] base64BinaryEncode(final byte[] binaryData) {
-		return Base64.encodeBase64(binaryData);
-	}
-
 	/**
 	 * This method re-encode base 64 encoded string to base 64 encoded byte array.
 	 *
@@ -359,36 +331,6 @@ public final class DSSUtils {
 		} catch (CertificateEncodingException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	@Deprecated
-	public static String toString(InputStream input) throws IOException {
-		return IOUtils.toString(input);
-	}
-
-	@Deprecated
-	public static String toString(InputStream input, String encoding) throws IOException {
-		return IOUtils.toString(input, encoding);
-	}
-
-	@Deprecated
-	public static void copy(InputStream input, Writer output, String encoding) throws IOException {
-		IOUtils.copy(input, output, encoding);
-	}
-
-	@Deprecated
-	public static void copy(InputStream input, Writer output) throws IOException {
-		IOUtils.copy(input, output);
-	}
-
-	@Deprecated
-	public static int copy(Reader input, Writer output) throws IOException {
-		return IOUtils.copy(input, output);
-	}
-
-	@Deprecated
-	public static int copy(final InputStream input, final OutputStream output) throws IOException {
-		return IOUtils.copy(input, output);
 	}
 
 	/**
@@ -905,11 +847,7 @@ public final class DSSUtils {
 			}
 			final byte[] signatureValue = signature.sign();
 			return signatureValue;
-		} catch (SignatureException e) {
-			throw new DSSException(e);
-		} catch (InvalidKeyException e) {
-			throw new DSSException(e);
-		} catch (NoSuchAlgorithmException e) {
+		} catch (GeneralSecurityException e) {
 			throw new DSSException(e);
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -1194,7 +1132,7 @@ public final class DSSUtils {
 			in = openInputStream(file);
 			return IOUtils.toByteArray(in);
 		} finally {
-			closeQuietly(in);
+			IOUtils.closeQuietly(in);
 		}
 	}
 
@@ -1275,7 +1213,7 @@ public final class DSSUtils {
 
 			final FileOutputStream fileOutputStream = new FileOutputStream(file);
 			final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-			copy(inputStream, fileOutputStream);
+			IOUtils.copy(inputStream, fileOutputStream);
 			IOUtils.closeQuietly(inputStream);
 			IOUtils.closeQuietly(fileOutputStream);
 		} catch (IOException e) {
@@ -1425,28 +1363,6 @@ public final class DSSUtils {
 		}
 	}
 
-	@Deprecated
-	public static boolean isEmpty(String str) {
-		return StringUtils.isEmpty(str);
-	}
-
-	@Deprecated
-	public static boolean isNotEmpty(String str) {
-		return StringUtils.isNotEmpty(str);
-	}
-
-	@Deprecated
-	public static boolean isBlank(String str) {
-		return StringUtils.isBlank(str);
-	}
-
-	@Deprecated
-	public static boolean isNotBlank(String str) {
-		return StringUtils.isNotBlank(str);
-	}
-
-	// Apache Collection Utils
-
 	/**
 	 *
 	 *
@@ -1509,71 +1425,6 @@ public final class DSSUtils {
 			}
 		}
 		return INDEX_NOT_FOUND;
-	}
-
-	@Deprecated
-	public static void closeQuietly(OutputStream output) {
-		IOUtils.closeQuietly(output);
-	}
-
-	@Deprecated
-	public static void closeQuietly(final InputStream input) {
-		IOUtils.closeQuietly(input);
-	}
-
-	@Deprecated
-	public static void closeQuietly(Reader input) {
-		IOUtils.closeQuietly(input);
-	}
-
-	@Deprecated
-	public static void closeQuietly(Writer output) {
-		IOUtils.closeQuietly(output);
-	}
-
-	@Deprecated
-	public static List readLines(InputStream input) throws IOException {
-		return IOUtils.readLines(input);
-	}
-
-	@Deprecated
-	public static List readLines(Reader input) throws IOException {
-		return IOUtils.readLines(input);
-	}
-
-	@Deprecated
-	public static String join(Object[] array, String separator) {
-		return StringUtils.join(array, separator);
-	}
-
-	@Deprecated
-	public static String join(Collection collection, String separator) {
-		return StringUtils.join(collection, separator);
-	}
-
-	@Deprecated
-	public static String join(Iterator iterator, String separator) {
-		return StringUtils.join(iterator, separator);
-	}
-
-	@Deprecated
-	public static String join(Object[] array, String separator, int startIndex, int endIndex) {
-		return StringUtils.join(array, separator, startIndex, endIndex);
-	}
-
-	@Deprecated
-	public static String substringBeforeLast(String str, String separator) {
-		return StringUtils.substringBeforeLast(str, separator);
-	}
-
-	@Deprecated
-	public static String substringAfterLast(String str, String separator) {
-		return StringUtils.substringAfterLast(str, separator);
-	}
-
-	@Deprecated
-	public static String repeat(String str, int repeat) {
-		return StringUtils.repeat(str, repeat);
 	}
 
 	/**
@@ -2195,19 +2046,6 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * Null-safe check if the specified collection is empty.
-	 *
-	 * Null returns true.
-	 *
-	 * @param collection the collection to check, may be null
-	 * @return true if empty or null
-	 */
-	@Deprecated
-	public static boolean isEmpty(final Collection collection) {
-		return CollectionUtils.isEmpty(collection);
 	}
 
 	/**

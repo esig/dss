@@ -30,10 +30,10 @@ import java.util.Set;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
 import eu.europa.ec.markt.dss.XAdESNamespaces;
 import eu.europa.ec.markt.dss.signature.validation.scope.SignatureScopeFinder;
@@ -89,7 +89,7 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 			}
 			final String uri = DSSXMLUtils.getValue(signatureReference, "@URI");
 			final List<String> transformations = getTransformationNames(signatureReference);
-			if (DSSUtils.isBlank(uri)) {
+			if (StringUtils.isBlank(uri)) {
 				// self contained document
 				result.add(new XmlRootSignatureScope(transformations));
 			} else if (uri.startsWith("#")) {
@@ -112,11 +112,11 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 					}
 				} else {
 					signedElement = DSSXMLUtils
-						  .getElement(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(), "//*" + "[@Id='" + xmlIdOfSignedElement + "']");
+							.getElement(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(), "//*" + "[@Id='" + xmlIdOfSignedElement + "']");
 					if (signedElement != null) {
 
 						final String namespaceURI = signedElement.getNamespaceURI();
-						if (namespaceURI == null || (!XAdESNamespaces.exists(namespaceURI) && !namespaceURI.equals(XMLSignature.XMLNS))) {
+						if ((namespaceURI == null) || (!XAdESNamespaces.exists(namespaceURI) && !namespaceURI.equals(XMLSignature.XMLNS))) {
 							signedObjects.add(signedElement);
 							result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
 						}
