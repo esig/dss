@@ -291,12 +291,9 @@ public abstract class AbstractSignatureParameters implements Serializable {
 	/**
 	 * @param digestAlgorithm the digest algorithm to set
 	 */
-	@Deprecated
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-
 		this.digestAlgorithm = digestAlgorithm;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
 		}
 	}
