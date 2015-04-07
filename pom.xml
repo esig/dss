@@ -89,6 +89,7 @@
 					<execution>
 						<id>generate-unit-test-report</id>
 						<goals>
+							<goal>merge</goal>
 							<goal>report</goal>
 						</goals>
 					</execution>
@@ -101,6 +102,7 @@
 					<execution>
 						<id>generate-integration-test-report</id>
 						<goals>
+							<goal>merge</goal>
 							<goal>report-integration</goal>
 						</goals>
 					</execution>
