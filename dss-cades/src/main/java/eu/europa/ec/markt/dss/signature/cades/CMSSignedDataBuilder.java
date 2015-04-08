@@ -106,7 +106,7 @@ public class CMSSignedDataBuilder {
 
 			final CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
 
-			final X509CertificateHolder certHolder = DSSUtils.getX509CertificateHolder(signingCertificate);
+			final X509CertificateHolder certHolder = signingCertificate.getX509CertificateHolder();
 			final SignerInfoGenerator signerInfoGenerator = signerInfoGeneratorBuilder.build(contentSigner, certHolder);
 
 			generator.addSignerInfoGenerator(signerInfoGenerator);

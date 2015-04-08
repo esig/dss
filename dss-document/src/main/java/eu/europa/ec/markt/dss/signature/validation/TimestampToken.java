@@ -20,6 +20,7 @@
  */
 package eu.europa.ec.markt.dss.signature.validation;
 
+import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -350,7 +351,11 @@ public class TimestampToken extends Token {
 
 	@Override
 	public byte[] getEncoded() {
-		return DSSUtils.getEncoded(timeStamp);
+		try {
+			return timeStamp.getEncoded();
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	// TODO-Vin (12/09/2014): Comment!

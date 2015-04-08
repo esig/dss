@@ -91,20 +91,15 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
 
 		Store certificatesStore = cmsSignedData.getCertificates();
-		final Store attributeCertificatesStore = cmsSignedData.getAttributeCertificates();
-		Store crlsStore = cmsSignedData.getCRLs();
-		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-		Store otherRevocationInfoFormatStoreOcsp = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
-
 		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
 		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
 		for (final CertificateToken certificateToken : certificates) {
-			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(certificateToken);
+			final X509CertificateHolder x509CertificateHolder = certificateToken.getX509CertificateHolder();
 			newCertificateStore.add(x509CertificateHolder);
 		}
-
 		certificatesStore = new CollectionStore(newCertificateStore);
 
+		Store crlsStore = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
 		final DefaultAdvancedSignature.RevocationDataForInclusion revocationDataForInclusion = cadesSignature.getRevocationDataForInclusion(validationContext);
 		for (final CRLToken crlToken : revocationDataForInclusion.crlTokens) {
@@ -113,12 +108,16 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		}
 		crlsStore = new CollectionStore(newCrlsStore);
 
+		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));
 		for (final OCSPToken ocspToken : revocationDataForInclusion.ocspTokens) {
 			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
 			newOtherRevocationInfoFormatStore.add(DSSASN1Utils.toASN1Primitive(DSSUtils.getEncoded(basicOCSPResp)));
 		}
 		otherRevocationInfoFormatStoreBasic = new CollectionStore(newOtherRevocationInfoFormatStore);
+
+		Store attributeCertificatesStore = cmsSignedData.getAttributeCertificates();
+		Store otherRevocationInfoFormatStoreOcsp = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		cmsSignedData = cmsSignedDataBuilder

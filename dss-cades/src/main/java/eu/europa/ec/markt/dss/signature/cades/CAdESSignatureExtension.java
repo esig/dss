@@ -49,6 +49,7 @@ import eu.europa.ec.markt.dss.exception.DSSException;
 import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
 import eu.europa.ec.markt.dss.signature.DSSDocument;
 import eu.europa.ec.markt.dss.signature.SignatureExtension;
+import eu.europa.ec.markt.dss.validation102853.SignatureForm;
 import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
 import eu.europa.ec.markt.dss.validation102853.cades.CAdESSignature;
 import eu.europa.ec.markt.dss.validation102853.tsp.TSPSource;
@@ -206,8 +207,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 	private void assertSignatureValid(final CAdESSignature cadesSignature, final CAdESSignatureParameters parameters) {
 
-		// TODO: (Bob: 2014 Jan 22) To be changed to enum check and not string!
-		if (!parameters.getSignatureLevel().toString().toLowerCase().startsWith("pades")) {
+		if (! SignatureForm.PAdES.equals(parameters.getSignatureLevel().getSignatureForm())) {
 
 			final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.checkSignatureIntegrity();
 			if (!signatureCryptographicVerification.isSignatureIntact()) {
@@ -287,7 +287,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
 			if (attributesForTimestampToken != null) {
 				// timeStampToken contains one and only one signer
-				final SignerInformation signerInformation = (SignerInformation) cmsSignedDataTimeStampToken.getSignerInfos().getSigners().iterator().next();
+				final SignerInformation signerInformation = cmsSignedDataTimeStampToken.getSignerInfos().getSigners().iterator().next();
 				AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(signerInformation);
 				for (final Attribute attributeToAdd : attributesForTimestampToken) {
 					final ASN1ObjectIdentifier attrType = attributeToAdd.getAttrType();

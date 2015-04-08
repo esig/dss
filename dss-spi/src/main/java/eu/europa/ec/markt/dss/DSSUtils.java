@@ -108,7 +108,6 @@ import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -919,18 +918,6 @@ public final class DSSUtils {
 		}
 	}
 
-	/**
-	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code CertificateToken}.
-	 *
-	 * @param certificateToken
-	 * @return a X509CertificateHolder holding this certificate
-	 */
-	public static X509CertificateHolder getX509CertificateHolder(final CertificateToken certificateToken) {
-
-		final X509CertificateHolder x509CertificateHolder = getX509CertificateHolder(certificateToken.getCertificate());
-		return x509CertificateHolder;
-	}
-
 	public static DigestCalculator getSHA1DigestCalculator() throws DSSException {
 
 		try {
@@ -938,39 +925,6 @@ public final class DSSUtils {
 			final DigestCalculator digestCalculator = digestCalculatorProvider.get(CertificateID.HASH_SHA1);
 			return digestCalculator;
 		} catch (OperatorCreationException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * Returns the encoded (as ASN.1 DER) form of this X.509 certificate.
-	 *
-	 * @param cert certificate
-	 * @return encoded array of bytes
-	 */
-	@Deprecated
-	public static byte[] getEncoded(final X509Certificate cert) {
-
-		try {
-			byte[] encoded = cert.getEncoded();
-			return encoded;
-		} catch (CertificateEncodingException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * Returns the encoded (as ASN.1 DER) form of this {@code TimeStampToken}.
-	 *
-	 * @param timeStamp {@code TimeStampToken}
-	 * @return encoded array of bytes
-	 */
-	@Deprecated
-	public static byte[] getEncoded(final TimeStampToken timeStamp) {
-
-		try {
-			return timeStamp.getEncoded();
-		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
