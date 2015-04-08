@@ -40,49 +40,49 @@ public interface DSSDocument extends Serializable {
 	 * @return an {@code InputStream}
 	 * @throws DSSException
 	 */
-	public InputStream openStream() throws DSSException;
+	InputStream openStream() throws DSSException;
 
 	/**
 	 * Returns the array of bytes representing the document. Do not use this method with large files.
 	 *
 	 * @return array of {@code byte}
 	 */
-	public byte[] getBytes() throws DSSException;
+	byte[] getBytes() throws DSSException;
 
 	/**
 	 * Returns the name of the document. If the {@code DSSDocument} was built based on the {@code File} then the file name is returned.
 	 *
 	 * @return {@code String}  representing the name of the current {@code DSSDocument}
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Returns the {@code String} representing the absolute path to the encapsulated document.
 	 *
 	 * @return {@code String} representing the absolute path to the encapsulated document.
 	 */
-	public String getAbsolutePath();
+	String getAbsolutePath();
 
 	/**
 	 * Returns the mime-type of the {@code DSSDocument}.
 	 *
 	 * @return {@code MimeType}
 	 */
-	public MimeType getMimeType();
+	MimeType getMimeType();
 
 	/**
 	 * This method sets the mime-type of the {@code DSSDocument}.
 	 *
 	 * @param mimeType {@code MimeType}
 	 */
-	public void setMimeType(final MimeType mimeType);
+	void setMimeType(final MimeType mimeType);
 
 	/**
 	 * Save the content of the DSSDocument to the file.
 	 *
 	 * @param filePath the path to the file to be created
 	 */
-	public void save(final String filePath) throws IOException;
+	void save(final String filePath) throws IOException;
 
 	/**
 	 * This method returns the encoded digest value of the current {@code DSSDocument} using the base64 algorithm.
@@ -90,14 +90,14 @@ public interface DSSDocument extends Serializable {
 	 * @param digestAlgorithm {@code DigestAlgorithm}
 	 * @return base64 encoded {@code String}
 	 */
-	public String getDigest(final DigestAlgorithm digestAlgorithm);
+	String getDigest(final DigestAlgorithm digestAlgorithm);
 
 	/**
 	 * This method return the next {@code DSSDocument}.
 	 *
 	 * @return {@code DSSDocument}
 	 */
-	public DSSDocument getNextDocument();
+	DSSDocument getNextDocument();
 
-	public void setNextDocument(final DSSDocument nextDocument);
+	void setNextDocument(final DSSDocument nextDocument);
 }
