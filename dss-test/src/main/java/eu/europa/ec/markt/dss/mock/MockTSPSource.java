@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
-import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -89,8 +88,6 @@ public class MockTSPSource implements TSPSource {
 	/**
 	 * The default constructor for MockTSPSource.
 	 */
-
-
 	public MockTSPSource(final DSSPrivateKeyEntry entry, final Date timestampDate) throws DSSException {
 		this.timestampDate = timestampDate;
 
@@ -170,19 +167,11 @@ public class MockTSPSource implements TSPSource {
 		}
 	}
 
-	@Override
 	public void setPolicyOid(final String policyOid) {
 		this.policyOid = new ASN1ObjectIdentifier(policyOid);
 	}
 
-	@Override
-	public String getUniqueId(byte[] digestValue) {
-		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, digestValue, DSSUtils.toByteArray(timestampDate.getTime()));
-		return Hex.encodeHexString(digest);
-	}
-
 	private String getSignatureAlgorithm(DigestAlgorithm algorithm, byte[] digest) {
-
 		String signatureAlgorithm;
 		if (DigestAlgorithm.SHA1.equals(algorithm)) {
 			signatureAlgorithm = "SHA1withRSA";
