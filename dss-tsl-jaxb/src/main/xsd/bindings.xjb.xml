@@ -11,15 +11,15 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/j
   
   <jxb:bindings schemaLocation="ts_sie_xsd.xsd" node="/xs:schema">
     <jxb:schemaBindings>
-      <jxb:package name="eu.europa.ec.markt.tsl.jaxb.ecc" />
+      <jxb:package name="eu.europa.esig.jaxb.ecc" />
     </jxb:schemaBindings>
     <jxb:bindings schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd" node="/xs:schema">
       <jxb:schemaBindings>
-        <jxb:package name="eu.europa.ec.markt.tsl.jaxb.xades" />
+        <jxb:package name="eu.europa.esig.jaxb.xades" />
       </jxb:schemaBindings>
       <jxb:bindings schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" node="/xs:schema">
         <jxb:schemaBindings>
-          <jxb:package name="eu.europa.ec.markt.tsl.jaxb.xmldsig" />
+          <jxb:package name="eu.europa.esig.jaxb.xmldsig" />
         </jxb:schemaBindings>
       </jxb:bindings>
     </jxb:bindings>
@@ -27,18 +27,18 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/j
   
   <jxb:bindings schemaLocation="ts_additionaltypes_xsd.xsd" node="/xs:schema">
     <jxb:schemaBindings>
-      <jxb:package name="eu.europa.ec.markt.tsl.jaxb.tslx" />
+      <jxb:package name="eu.europa.esig.jaxb.tslx" />
     </jxb:schemaBindings>
     <jxb:bindings schemaLocation="http://uri.etsi.org/02231/v3.1.2/tsl.xsd" node="/xs:schema">
       <jxb:schemaBindings>
-        <jxb:package name="eu.europa.ec.markt.tsl.jaxb.tsl" />
+        <jxb:package name="eu.europa.esig.jaxb.tsl" />
       </jxb:schemaBindings>
     </jxb:bindings>
   </jxb:bindings>
   
   <jxb:bindings schemaLocation="XAdESv141.xsd" node="/xs:schema">
     <jxb:schemaBindings>
-      <jxb:package name="eu.europa.ec.markt.jaxb.xades141" />
+      <jxb:package name="eu.europa.esig.jaxb.xades141" />
     </jxb:schemaBindings>
   </jxb:bindings>
   

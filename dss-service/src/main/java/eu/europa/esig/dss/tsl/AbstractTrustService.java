@@ -32,26 +32,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import eu.europa.ec.markt.tsl.jaxb.ecc.CriteriaListType;
-import eu.europa.ec.markt.tsl.jaxb.ecc.KeyUsageBitType;
-import eu.europa.ec.markt.tsl.jaxb.ecc.KeyUsageType;
-import eu.europa.ec.markt.tsl.jaxb.ecc.PoliciesListType;
-import eu.europa.ec.markt.tsl.jaxb.ecc.QualificationElementType;
-import eu.europa.ec.markt.tsl.jaxb.ecc.QualificationsType;
-import eu.europa.ec.markt.tsl.jaxb.ecc.QualifierType;
-import eu.europa.ec.markt.tsl.jaxb.ecc.QualifiersType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.AdditionalServiceInformationType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.DigitalIdentityListType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.DigitalIdentityType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.ExtensionType;
-import eu.europa.ec.markt.tsl.jaxb.tslx.TakenOverByType;
-import eu.europa.ec.markt.tsl.jaxb.xades.IdentifierType;
-import eu.europa.ec.markt.tsl.jaxb.xades.ObjectIdentifierType;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.jaxb.ecc.CriteriaListType;
+import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
+import eu.europa.esig.jaxb.ecc.KeyUsageType;
+import eu.europa.esig.jaxb.ecc.PoliciesListType;
+import eu.europa.esig.jaxb.ecc.QualificationElementType;
+import eu.europa.esig.jaxb.ecc.QualificationsType;
+import eu.europa.esig.jaxb.ecc.QualifierType;
+import eu.europa.esig.jaxb.ecc.QualifiersType;
+import eu.europa.esig.jaxb.tsl.AdditionalServiceInformationType;
+import eu.europa.esig.jaxb.tsl.DigitalIdentityListType;
+import eu.europa.esig.jaxb.tsl.DigitalIdentityType;
+import eu.europa.esig.jaxb.tsl.ExtensionType;
+import eu.europa.esig.jaxb.tslx.TakenOverByType;
+import eu.europa.esig.jaxb.xades.IdentifierType;
+import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
 
 /**
  * Service information from current status and TrustedList shares some common information.
@@ -169,7 +169,7 @@ abstract class AbstractTrustService {
 
 				if (object instanceof String) {
 
-                    /* do nothing */
+					/* do nothing */
 					// if (DSSUtils.isBlank(object.toString())) {
 					//
 					// } else {
@@ -200,7 +200,7 @@ abstract class AbstractTrustService {
 					}
 				} else if (object instanceof Element) {
 
-                    /* We don't know what to do with the Element without further analysis */
+					/* We don't know what to do with the Element without further analysis */
 					final Element element = (Element) object;
 					final String localName = element.getLocalName();
 					String namespaceUri = element.getNamespaceURI();
@@ -232,7 +232,7 @@ abstract class AbstractTrustService {
 	private void parseQualificationElement(final QualificationElementType qualificationElement, final ServiceInfo service) {
 
 		final QualifiersType qualifierList = qualificationElement.getQualifiers();
-		if (qualifierList == null || qualifierList.getQualifier().isEmpty()) {
+		if ((qualifierList == null) || qualifierList.getQualifier().isEmpty()) {
 			return;
 		}
 		try {

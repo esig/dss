@@ -30,62 +30,62 @@ import javax.xml.bind.Unmarshaller;
 
 import org.w3c.dom.Document;
 
-import eu.europa.ec.markt.tsl.jaxb.tsl.ObjectFactory;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TrustStatusListType;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.jaxb.tsl.ObjectFactory;
+import eu.europa.esig.jaxb.tsl.TrustStatusListType;
 
 /**
  * Utility class for parsing Trusted List
  */
 abstract class TrustServiceListFactory {
 
-    /**
-     * @param input
-     * @return
-     * @throws IOException
-     */
-    @SuppressWarnings("unchecked")
-    public static TrustStatusList newInstance(InputStream input) throws IOException {
-        TrustStatusListType trustServiceStatusList;
-        try {
-            Unmarshaller unmarshaller = getUnmarshaller();
-            JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(input);
-            trustServiceStatusList = jaxbElement.getValue();
-        } catch (JAXBException e) {
-            throw new IOException("TSL parse error: " + e.getMessage(), e);
-        }
-        return new TrustStatusList(trustServiceStatusList);
-    }
+	/**
+	 * @param input
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	public static TrustStatusList newInstance(InputStream input) throws IOException {
+		TrustStatusListType trustServiceStatusList;
+		try {
+			Unmarshaller unmarshaller = getUnmarshaller();
+			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(input);
+			trustServiceStatusList = jaxbElement.getValue();
+		} catch (JAXBException e) {
+			throw new IOException("TSL parse error: " + e.getMessage(), e);
+		}
+		return new TrustStatusList(trustServiceStatusList);
+	}
 
-    /**
-     * @param tslDocument
-     * @return
-     * @throws DSSException
-     */
-    @SuppressWarnings("unchecked")
-    public static TrustStatusList newInstance(final Document tslDocument) throws DSSException {
+	/**
+	 * @param tslDocument
+	 * @return
+	 * @throws DSSException
+	 */
+	@SuppressWarnings("unchecked")
+	public static TrustStatusList newInstance(final Document tslDocument) throws DSSException {
 
-        if (null == tslDocument) {
+		if (null == tslDocument) {
 
-            throw new NullPointerException();
-        }
-        TrustStatusListType trustServiceStatusList;
-        try {
+			throw new NullPointerException();
+		}
+		TrustStatusListType trustServiceStatusList;
+		try {
 
-            final Unmarshaller unmarshaller = getUnmarshaller();
-            final JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(tslDocument);
-            trustServiceStatusList = jaxbElement.getValue();
-        } catch (JAXBException e) {
+			final Unmarshaller unmarshaller = getUnmarshaller();
+			final JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(tslDocument);
+			trustServiceStatusList = jaxbElement.getValue();
+		} catch (JAXBException e) {
 
-            throw new DSSException("TSL parse error.", e);
-        }
-        return new TrustStatusList(trustServiceStatusList);
-    }
+			throw new DSSException("TSL parse error.", e);
+		}
+		return new TrustStatusList(trustServiceStatusList);
+	}
 
-    private static Unmarshaller getUnmarshaller() throws JAXBException {
+	private static Unmarshaller getUnmarshaller() throws JAXBException {
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class, ObjectFactory.class, eu.europa.ec.markt.tsl.jaxb.ecc.ObjectFactory.class);
-        final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        return unmarshaller;
-    }
+		JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class, ObjectFactory.class, eu.europa.esig.jaxb.ecc.ObjectFactory.class);
+		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		return unmarshaller;
+	}
 }

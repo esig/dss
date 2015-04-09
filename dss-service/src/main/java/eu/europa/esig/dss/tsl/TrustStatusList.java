@@ -27,13 +27,13 @@ import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import eu.europa.ec.markt.tsl.jaxb.tsl.NextUpdateType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.OtherTSLPointerType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.OtherTSLPointersType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TSLSchemeInformationType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TSPType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TrustServiceProviderListType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TrustStatusListType;
+import eu.europa.esig.jaxb.tsl.NextUpdateType;
+import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
+import eu.europa.esig.jaxb.tsl.OtherTSLPointersType;
+import eu.europa.esig.jaxb.tsl.TSLSchemeInformationType;
+import eu.europa.esig.jaxb.tsl.TSPType;
+import eu.europa.esig.jaxb.tsl.TrustServiceProviderListType;
+import eu.europa.esig.jaxb.tsl.TrustStatusListType;
 
 /**
  * Represents a Trusted List

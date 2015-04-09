@@ -24,11 +24,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.ec.markt.tsl.jaxb.tsl.DigitalIdentityListType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.ExtensionType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.InternationalNamesType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.MultiLangNormStringType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.ServiceHistoryInstanceType;
+import eu.europa.esig.jaxb.tsl.DigitalIdentityListType;
+import eu.europa.esig.jaxb.tsl.ExtensionType;
+import eu.europa.esig.jaxb.tsl.InternationalNamesType;
+import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
+import eu.europa.esig.jaxb.tsl.ServiceHistoryInstanceType;
 
 /**
  * Historical entry in the TL for the service
@@ -38,71 +38,71 @@ import eu.europa.ec.markt.tsl.jaxb.tsl.ServiceHistoryInstanceType;
 
 class HistoricalTrustService extends AbstractTrustService {
 
-    private ServiceHistoryInstanceType service;
+	private ServiceHistoryInstanceType service;
 
-    protected AbstractTrustService previousEntry;
+	protected AbstractTrustService previousEntry;
 
-    /**
-     * The default constructor for TrustServiceHistoryEntry.
-     */
-    public HistoricalTrustService(ServiceHistoryInstanceType serviceHistoryInstance) {
-        this.service = serviceHistoryInstance;
-    }
+	/**
+	 * The default constructor for TrustServiceHistoryEntry.
+	 */
+	public HistoricalTrustService(ServiceHistoryInstanceType serviceHistoryInstance) {
+		this.service = serviceHistoryInstance;
+	}
 
-    /**
-     * Set the previous entry in the Trusted List
-     *
-     * @param previousEntry the previousEntry to set
-     */
-    void setPreviousEntry(AbstractTrustService previousEntry) {
-        this.previousEntry = previousEntry;
-    }
+	/**
+	 * Set the previous entry in the Trusted List
+	 *
+	 * @param previousEntry the previousEntry to set
+	 */
+	void setPreviousEntry(AbstractTrustService previousEntry) {
+		this.previousEntry = previousEntry;
+	}
 
-    @Override
-    List<ExtensionType> getExtensions() {
-        if (service != null && service.getServiceInformationExtensions() != null) {
-            return service.getServiceInformationExtensions().getExtension();
-        } else {
-            return Collections.emptyList();
-        }
-    }
+	@Override
+	List<ExtensionType> getExtensions() {
+		if ((service != null) && (service.getServiceInformationExtensions() != null)) {
+			return service.getServiceInformationExtensions().getExtension();
+		} else {
+			return Collections.emptyList();
+		}
+	}
 
-    @Override
-    DigitalIdentityListType getServiceDigitalIdentity() {
+	@Override
+	DigitalIdentityListType getServiceDigitalIdentity() {
 
-        return service.getServiceDigitalIdentity();
-    }
+		return service.getServiceDigitalIdentity();
+	}
 
-    @Override
-    String getStatus() {
-        return service.getServiceStatus();
-    }
+	@Override
+	String getStatus() {
+		return service.getServiceStatus();
+	}
 
-    @Override
-    Date getStatusStartDate() {
-        return service.getStatusStartingTime().toGregorianCalendar().getTime();
-    }
+	@Override
+	Date getStatusStartDate() {
+		return service.getStatusStartingTime().toGregorianCalendar().getTime();
+	}
 
-    @Override
-    Date getStatusEndDate() {
-        return previousEntry.getStatusStartDate();
-    }
+	@Override
+	Date getStatusEndDate() {
+		return previousEntry.getStatusStartDate();
+	}
 
-    @Override
-    String getType() {
-        return service.getServiceTypeIdentifier();
-    }
+	@Override
+	String getType() {
+		return service.getServiceTypeIdentifier();
+	}
 
-    @Override
-    String getServiceName() {
+	@Override
+	String getServiceName() {
 
-        /* Return the english name or the first name */
-        InternationalNamesType names = service.getServiceName();
-        for (MultiLangNormStringType s : names.getName()) {
-            if ("en".equalsIgnoreCase(s.getLang())) {
-                return s.getValue();
-            }
-        }
-        return names.getName().get(0).getValue();
-    }
+		/* Return the english name or the first name */
+		InternationalNamesType names = service.getServiceName();
+		for (MultiLangNormStringType s : names.getName()) {
+			if ("en".equalsIgnoreCase(s.getLang())) {
+				return s.getValue();
+			}
+		}
+		return names.getName().get(0).getValue();
+	}
 }

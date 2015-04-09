@@ -14,7 +14,7 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
-import eu.europa.ec.markt.tsl.jaxb.tsl.TrustStatusListType;
+import eu.europa.esig.jaxb.tsl.TrustStatusListType;
 
 /**
  * This test loads the UE LOTL

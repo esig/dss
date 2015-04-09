@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import eu.europa.ec.markt.tsl.jaxb.tsl.InternationalNamesType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.MultiLangNormStringType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.PostalAddressType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.ServiceHistoryInstanceType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.ServiceHistoryType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TSPServiceType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TSPType;
+import eu.europa.esig.jaxb.tsl.InternationalNamesType;
+import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
+import eu.europa.esig.jaxb.tsl.PostalAddressType;
+import eu.europa.esig.jaxb.tsl.ServiceHistoryInstanceType;
+import eu.europa.esig.jaxb.tsl.ServiceHistoryType;
+import eu.europa.esig.jaxb.tsl.TSPServiceType;
+import eu.europa.esig.jaxb.tsl.TSPType;
 
 /**
  * Wrapper for the tag TrustServiceProvider

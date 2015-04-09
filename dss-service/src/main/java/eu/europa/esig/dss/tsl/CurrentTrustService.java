@@ -24,13 +24,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.ec.markt.tsl.jaxb.tsl.DigitalIdentityListType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.ExtensionType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.ExtensionsListType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.InternationalNamesType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.MultiLangNormStringType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TSPServiceInformationType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.TSPServiceType;
+import eu.europa.esig.jaxb.tsl.DigitalIdentityListType;
+import eu.europa.esig.jaxb.tsl.ExtensionType;
+import eu.europa.esig.jaxb.tsl.ExtensionsListType;
+import eu.europa.esig.jaxb.tsl.InternationalNamesType;
+import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
+import eu.europa.esig.jaxb.tsl.TSPServiceInformationType;
+import eu.europa.esig.jaxb.tsl.TSPServiceType;
 
 /**
  * Current entry of the Service for the TrustedList
@@ -40,76 +40,76 @@ import eu.europa.ec.markt.tsl.jaxb.tsl.TSPServiceType;
 
 class CurrentTrustService extends AbstractTrustService {
 
-    private TSPServiceType service;
+	private TSPServiceType service;
 
-    /**
-     * The default constructor for TrustService.
-     *
-     * @param service
-     */
-    CurrentTrustService(TSPServiceType service) {
+	/**
+	 * The default constructor for TrustService.
+	 *
+	 * @param service
+	 */
+	CurrentTrustService(TSPServiceType service) {
 
-        this.service = service;
-    }
+		this.service = service;
+	}
 
-    @Override
-    List<ExtensionType> getExtensions() {
+	@Override
+	List<ExtensionType> getExtensions() {
 
-        final TSPServiceInformationType serviceInfo = service.getServiceInformation();
-        if (serviceInfo != null) {
+		final TSPServiceInformationType serviceInfo = service.getServiceInformation();
+		if (serviceInfo != null) {
 
-            final ExtensionsListType extensionsList = serviceInfo.getServiceInformationExtensions();
-            if (extensionsList != null) {
-                return extensionsList.getExtension();
-            }
-        }
-        return Collections.emptyList();
-    }
+			final ExtensionsListType extensionsList = serviceInfo.getServiceInformationExtensions();
+			if (extensionsList != null) {
+				return extensionsList.getExtension();
+			}
+		}
+		return Collections.emptyList();
+	}
 
-    @Override
-    DigitalIdentityListType getServiceDigitalIdentity() {
+	@Override
+	DigitalIdentityListType getServiceDigitalIdentity() {
 
-        return service.getServiceInformation().getServiceDigitalIdentity();
-    }
+		return service.getServiceInformation().getServiceDigitalIdentity();
+	}
 
-    @Override
-    String getStatus() {
+	@Override
+	String getStatus() {
 
-        return service.getServiceInformation().getServiceStatus();
-    }
+		return service.getServiceInformation().getServiceStatus();
+	}
 
-    @Override
-    Date getStatusStartDate() {
+	@Override
+	Date getStatusStartDate() {
 
-        if (service.getServiceInformation() != null && service.getServiceInformation().getStatusStartingTime() != null) {
-            return service.getServiceInformation().getStatusStartingTime().toGregorianCalendar().getTime();
-        } else {
-            return null;
-        }
-    }
+		if ((service.getServiceInformation() != null) && (service.getServiceInformation().getStatusStartingTime() != null)) {
+			return service.getServiceInformation().getStatusStartingTime().toGregorianCalendar().getTime();
+		} else {
+			return null;
+		}
+	}
 
-    @Override
-    Date getStatusEndDate() {
+	@Override
+	Date getStatusEndDate() {
 
-        return null;
-    }
+		return null;
+	}
 
-    @Override
-    String getType() {
+	@Override
+	String getType() {
 
-        return service.getServiceInformation().getServiceTypeIdentifier();
-    }
+		return service.getServiceInformation().getServiceTypeIdentifier();
+	}
 
-    @Override
-    String getServiceName() {
+	@Override
+	String getServiceName() {
 
 		/* Return the english name or the first name */
-        InternationalNamesType names = service.getServiceInformation().getServiceName();
-        for (MultiLangNormStringType s : names.getName()) {
-            if ("en".equalsIgnoreCase(s.getLang())) {
-                return s.getValue();
-            }
-        }
-        return names.getName().get(0).getValue();
-    }
+		InternationalNamesType names = service.getServiceInformation().getServiceName();
+		for (MultiLangNormStringType s : names.getName()) {
+			if ("en".equalsIgnoreCase(s.getLang())) {
+				return s.getValue();
+			}
+		}
+		return names.getName().get(0).getValue();
+	}
 }

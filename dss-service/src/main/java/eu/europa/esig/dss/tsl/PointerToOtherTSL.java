@@ -29,14 +29,14 @@ import javax.xml.bind.JAXBElement;
 
 import org.w3c.dom.Element;
 
-import eu.europa.ec.markt.tsl.jaxb.tsl.AnyType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.DigitalIdentityListType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.DigitalIdentityType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.OtherTSLPointerType;
-import eu.europa.ec.markt.tsl.jaxb.tsl.ServiceDigitalIdentityListType;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.jaxb.tsl.AnyType;
+import eu.europa.esig.jaxb.tsl.DigitalIdentityListType;
+import eu.europa.esig.jaxb.tsl.DigitalIdentityType;
+import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
+import eu.europa.esig.jaxb.tsl.ServiceDigitalIdentityListType;
 
 /**
  * Wrapper for the tag OtherTSLPointer
