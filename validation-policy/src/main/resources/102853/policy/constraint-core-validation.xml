@@ -1,4 +1,4 @@
-<ConstraintsParameters Name="Core-Validation" xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
+<ConstraintsParameters Name="Core-Validation" xmlns="http://dss.esig.europa.eu/validation/diagnostic">
 	<Description>This policy allows to check the core validity of the signature.</Description>
 	<MainSignature>
 		<ReferenceDataExistence Level="FAIL">true</ReferenceDataExistence>

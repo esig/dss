@@ -59,7 +59,7 @@ public class XmlDom {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XmlDom.class);
 
-	public static final String NAMESPACE = "http://dss.markt.ec.europa.eu/validation/diagnostic";
+	public static final String NAMESPACE = "http://dss.esig.europa.eu/validation/diagnostic";
 
 	private static final String NS_PREFIX = "dss";
 

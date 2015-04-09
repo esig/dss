@@ -268,7 +268,7 @@ public class EditView extends WizardView<ValidationPolicyModel, ValidationPolicy
 						((Attr) newElement).setValue("VALUE");
 						clickedElement.setAttributeNode((Attr) newElement);
 					} else if (xsdChild.getType() == XsdNodeType.ELEMENT) {
-						final Element childToAdd = document.createElementNS("http://dss.markt.ec.europa.eu/validation/diagnostic", xmlName);
+						final Element childToAdd = document.createElementNS("http://dss.esig.europa.eu/validation/diagnostic", xmlName);
 						// find the correct possition to add the child
 						// Get all allowed children
 						Map<XsdNode, Object> childrenMap = getChild(getXPath(clickedElement), xsdTree);
@@ -281,7 +281,7 @@ public class EditView extends WizardView<ValidationPolicyModel, ValidationPolicy
 							}
 							if (toAddSeen) {
 								final NodeList elementsByTagNameNS = clickedElement
-										.getElementsByTagNameNS("http://dss.markt.ec.europa.eu/validation/diagnostic", allowed.getLastNameOfPath());
+										.getElementsByTagNameNS("http://dss.esig.europa.eu/validation/diagnostic", allowed.getLastNameOfPath());
 								if (elementsByTagNameNS.getLength() > 0) {
 									// we found an element that is supposed to be after the one to add
 									elementIsToAddBeforeThisOne = (Element) elementsByTagNameNS.item(0);

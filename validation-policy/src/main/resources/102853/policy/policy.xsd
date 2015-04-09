@@ -1,6 +1,6 @@
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
-           xmlns:tns="http://dss.markt.ec.europa.eu/validation/diagnostic"
-           targetNamespace="http://dss.markt.ec.europa.eu/validation/diagnostic"
+           xmlns:tns="http://dss.esig.europa.eu/validation/diagnostic"
+           targetNamespace="http://dss.esig.europa.eu/validation/diagnostic"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xs:element name="ConstraintsParameters">
 		<xs:complexType>

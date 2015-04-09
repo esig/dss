@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:dss="http://dss.markt.ec.europa.eu/validation/diagnostic">
+                xmlns:dss="http://dss.esig.europa.eu/validation/diagnostic">
 
     <xsl:output method="xml"
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
