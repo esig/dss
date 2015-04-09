@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
-           targetNamespace="http://dss.markt.ec.europa.eu/validation/diagnostic" xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic"
+           targetNamespace="http://dss.esig.europa.eu/validation/diagnostic" xmlns="http://dss.esig.europa.eu/validation/diagnostic"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xs:element name="DiagnosticData">
 		<xs:complexType>

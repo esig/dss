@@ -47,35 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.ObjectFactory;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlBasicSignatureType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlCertificate;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlCertificateChainType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlCertifiedRolesType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlChainCertificate;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlClaimedRoles;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlCommitmentTypeIndication;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlDigestAlgAndValueType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlDistinguishedName;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlInfoType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlKeyUsageBits;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlMessage;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlPolicy;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlQCStatement;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlQualifiers;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlRevocationType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignature;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignatureProductionPlace;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignatureScopeType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignatureScopes;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignedObjectsType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSignedSignature;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlSigningCertificateType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlStructuralValidationType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTimestampType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTimestamps;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlTrustedServiceProviderType;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.XmlUsedCertificates;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -90,6 +61,36 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRolesType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlClaimedRoles;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCommitmentTypeIndication;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlInfoType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlKeyUsageBits;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlMessage;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamps;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.QcStatementCondition;
@@ -165,7 +166,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This variable contains the reference to the diagnostic data.
 	 */
-	protected eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData jaxbDiagnosticData; // JAXB object
+	protected DiagnosticData jaxbDiagnosticData; // JAXB object
 
 	private final Condition qcp = new PolicyIdCondition(OID.id_etsi_qcp_public.getId());
 
@@ -405,7 +406,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 		executor.setCountersignatureValidationPolicy(countersignatureValidationPolicy);
 
-		final eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
+		final DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
 
 		final Document diagnosticDataDom = ValidationResourceManager.convert(jaxbDiagnosticData);
 		executor.setDiagnosticDataDom(diagnosticDataDom);
@@ -449,7 +450,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This method generates the diagnostic data. This is the set of all data extracted from the signature, associated certificates and trusted lists. The diagnostic data contains
 	 * also the results of basic computations (hash check, signature integrity, certificates chain...
 	 */
-	private eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData generateDiagnosticData() {
+	private DiagnosticData generateDiagnosticData() {
 
 		prepareDiagnosticData();
 

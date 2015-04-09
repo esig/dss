@@ -27,7 +27,7 @@
 								</goals>
 								<configuration>
 									<schemaDirectory>src/main/xsd</schemaDirectory>
-									<generatePackage>eu.europa.ec.markt.dss.validation102853.data.diagnostic</generatePackage>
+									<generatePackage>eu.europa.esig.dss.jaxb.diagnostic</generatePackage>
 									<schemaIncludes>
 										<schemaInclude>DiagnosticData.xsd</schemaInclude>
 									</schemaIncludes>

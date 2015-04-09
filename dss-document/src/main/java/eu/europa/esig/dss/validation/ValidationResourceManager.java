@@ -30,10 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.DiagnosticData;
-import eu.europa.ec.markt.dss.validation102853.data.diagnostic.ObjectFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSXMLUtils;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
 
 public class ValidationResourceManager {
 
@@ -67,7 +67,7 @@ public class ValidationResourceManager {
 
 			return load(policyDataStream);
 		}
-		if (defaultPolicyConstraintsLocation != null && !defaultPolicyConstraintsLocation.isEmpty()) {
+		if ((defaultPolicyConstraintsLocation != null) && !defaultPolicyConstraintsLocation.isEmpty()) {
 
 			return load(defaultPolicyConstraintsLocation);
 		}
@@ -87,7 +87,7 @@ public class ValidationResourceManager {
 
 			return load(policyDataStream);
 		}
-		if (defaultCountersignaturePolicyConstraintsLocation != null && !defaultCountersignaturePolicyConstraintsLocation.isEmpty()) {
+		if ((defaultCountersignaturePolicyConstraintsLocation != null) && !defaultCountersignaturePolicyConstraintsLocation.isEmpty()) {
 
 			return load(defaultCountersignaturePolicyConstraintsLocation);
 		}
@@ -122,7 +122,7 @@ public class ValidationResourceManager {
 	 */
 	public static Document load(final String path) {
 
-		if (path == null || path.isEmpty()) {
+		if ((path == null) || path.isEmpty()) {
 
 			return null;
 		}
