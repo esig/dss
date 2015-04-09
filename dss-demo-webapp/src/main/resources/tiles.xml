@@ -19,12 +19,12 @@
 
     <definition name="app.menu" template="/WEB-INF/templates/menuLayout.jsp">
         <put-list-attribute name="menus">
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
+            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
                 <set-property value="label.signature.applet" property="key"/>
                 <set-property value="/signature" property="url"/>
                 <set-property value="/signature" property="startWith"/>
             </bean>
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
+            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
                 <set-property value="label.tlmanager.tl.eu" property="key"/>
                 <set-property value="https://joinup.ec.europa.eu/software/tlmanager/release/all" property="url"/>
                 <set-property value="https://joinup.ec.europa.eu/software/tlmanager/release/all" property="startWith"/>
@@ -34,17 +34,17 @@
 
     <definition name="app.menu.administration" extends="app.menu">
         <put-list-attribute name="menus">
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
+            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
                 <set-property value="label.general" property="key"/>
                 <set-property value="/admin/general" property="url"/>
                 <set-property value="/admin/general" property="startWith"/>
             </bean>
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
+            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
                 <set-property value="label.proxy" property="key"/>
                 <set-property value="/admin/proxy" property="url"/>
                 <set-property value="/admin/proxy" property="startWith"/>
             </bean>
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
+            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
                 <set-property value="label.tsl" property="key"/>
                 <set-property value="/admin/tsl-info" property="url"/>
                 <set-property value="/admin/tsl-info" property="startWith"/>

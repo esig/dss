@@ -38,24 +38,24 @@ import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.junit.Test;
 
-import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.mock.MockPrivateKeyEntry;
-import eu.europa.ec.markt.dss.mock.MockSignatureTokenConnection;
-import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
-import eu.europa.ec.markt.dss.service.CertificateService;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.FileDocument;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
-import eu.europa.ec.markt.dss.signature.cades.CAdESService;
-import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
-import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
-import eu.europa.ec.markt.dss.validation102853.report.Reports;
-import eu.europa.ec.markt.dss.validation102853.rules.AttributeValue;
-import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESService;
+import eu.europa.esig.dss.signature.SignaturePackaging;
+import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockSignatureTokenConnection;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.report.Reports;
 
 public class CAdESCounterSignatureTest {
 

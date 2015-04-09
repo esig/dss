@@ -20,8 +20,8 @@
  */
 package known.issues.DSS631;
 
-import eu.europa.ec.markt.dss.extension.cades.AbstractTestCAdESExtension;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.cades.extension.AbstractTestCAdESExtension;
 
 public class CAdESExtensionLTToLTATest extends AbstractTestCAdESExtension {
 

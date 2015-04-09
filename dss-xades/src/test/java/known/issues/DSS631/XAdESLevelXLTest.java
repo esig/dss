@@ -25,22 +25,22 @@ import java.util.Date;
 
 import org.junit.Before;
 
-import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.mock.MockTSPSource;
-import eu.europa.ec.markt.dss.parameter.AbstractSignatureParameters;
-import eu.europa.ec.markt.dss.parameter.XAdESSignatureParameters;
-import eu.europa.ec.markt.dss.service.CertificateService;
-import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
-import eu.europa.ec.markt.dss.signature.FileDocument;
-import eu.europa.ec.markt.dss.signature.MimeType;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
-import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
-import eu.europa.ec.markt.dss.signature.xades.XAdESService;
-import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
+import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.signature.AbstractTestSignature;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.SignaturePackaging;
+import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockTSPSource;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class XAdESLevelXLTest extends AbstractTestSignature {
 

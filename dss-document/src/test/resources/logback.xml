@@ -7,7 +7,7 @@
 		</encoder>
 	</appender>
 	
-	<logger name="eu.europa.ec.markt.dss" level="TRACE"/>
+	<logger name="eu.europa.esig.dss" level="TRACE"/>
 	<logger name="org.apache.pdfbox" level="ERROR"/>
 
 	<root level="debug">

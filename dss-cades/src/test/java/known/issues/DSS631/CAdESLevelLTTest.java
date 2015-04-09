@@ -24,21 +24,21 @@ import java.util.Date;
 
 import org.junit.Before;
 
-import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.mock.MockTSPSource;
-import eu.europa.ec.markt.dss.parameter.CAdESSignatureParameters;
-import eu.europa.ec.markt.dss.service.CertificateService;
-import eu.europa.ec.markt.dss.signature.AbstractTestSignature;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.DocumentSignatureService;
-import eu.europa.ec.markt.dss.signature.InMemoryDocument;
-import eu.europa.ec.markt.dss.signature.MimeType;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
-import eu.europa.ec.markt.dss.signature.cades.CAdESService;
-import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
-import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESService;
+import eu.europa.esig.dss.signature.AbstractTestSignature;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.SignaturePackaging;
+import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockTSPSource;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 public class CAdESLevelLTTest extends AbstractTestSignature {
 

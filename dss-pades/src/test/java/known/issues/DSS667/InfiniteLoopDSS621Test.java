@@ -67,16 +67,16 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.markt.dss.DSSUtils;
-import eu.europa.ec.markt.dss.DigestAlgorithm;
-import eu.europa.ec.markt.dss.EncryptionAlgorithm;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.FileDocument;
-import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
-import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.bean.SignatureCryptographicVerification;
-import eu.europa.ec.markt.dss.validation102853.report.Reports;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
 
 public class InfiniteLoopDSS621Test {
 

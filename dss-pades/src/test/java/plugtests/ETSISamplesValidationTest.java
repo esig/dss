@@ -12,13 +12,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.ec.markt.dss.signature.FileDocument;
-import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.report.DetailedReport;
-import eu.europa.ec.markt.dss.validation102853.report.DiagnosticData;
-import eu.europa.ec.markt.dss.validation102853.report.Reports;
-import eu.europa.ec.markt.dss.validation102853.report.SimpleReport;
+import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.DetailedReport;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.report.SimpleReport;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files

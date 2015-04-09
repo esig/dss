@@ -20,8 +20,8 @@
  */
 package known.issues.DSS650;
 
-import eu.europa.ec.markt.dss.extension.asic.AbstractTestASiCwithCAdESExtension;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithCAdESExtension;
 
 public class ASiCeExtensionWithCAdESBToLTTest extends AbstractTestASiCwithCAdESExtension {
 

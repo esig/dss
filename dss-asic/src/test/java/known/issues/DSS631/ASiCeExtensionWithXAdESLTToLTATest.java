@@ -20,8 +20,8 @@
  */
 package known.issues.DSS631;
 
-import eu.europa.ec.markt.dss.extension.asic.AbstractTestASiCwithXAdESExtension;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithXAdESExtension;
 
 public class ASiCeExtensionWithXAdESLTToLTATest extends AbstractTestASiCwithXAdESExtension {
 

@@ -9,22 +9,22 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
-import eu.europa.ec.markt.dss.SignatureAlgorithm;
-import eu.europa.ec.markt.dss.parameter.ASiCSignatureParameters;
-import eu.europa.ec.markt.dss.service.CertificateService;
-import eu.europa.ec.markt.dss.signature.DSSDocument;
-import eu.europa.ec.markt.dss.signature.InMemoryDocument;
-import eu.europa.ec.markt.dss.signature.SignatureLevel;
-import eu.europa.ec.markt.dss.signature.SignaturePackaging;
-import eu.europa.ec.markt.dss.signature.asic.ASiCService;
-import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
-import eu.europa.ec.markt.dss.signature.validation.AdvancedSignature;
-import eu.europa.ec.markt.dss.utils.TestUtils;
-import eu.europa.ec.markt.dss.validation102853.CertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier;
-import eu.europa.ec.markt.dss.validation102853.SignatureForm;
-import eu.europa.ec.markt.dss.validation102853.SignedDocumentValidator;
-import eu.europa.ec.markt.dss.validation102853.report.Reports;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.asic.ASiCSignatureParameters;
+import eu.europa.esig.dss.asic.signature.ASiCService;
+import eu.europa.esig.dss.signature.SignaturePackaging;
+import eu.europa.esig.dss.test.TestUtils;
+import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.x509.SignatureForm;
 
 public class CertificatePoolSharingTest {
 
