@@ -39,9 +39,9 @@ public class ValidationResourceManager {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationResourceManager.class);
 
-	public static String defaultPolicyConstraintsLocation = "/102853/policy/constraint.xml";
-	public static String defaultCountersignaturePolicyConstraintsLocation = "/102853/policy/countersignature-constraint.xml";
-	public static String defaultPolicyXsdLocation = "/102853/policy/policy.xsd";
+	public static String defaultPolicyConstraintsLocation = "/policy/constraint.xml";
+	public static String defaultCountersignaturePolicyConstraintsLocation = "/policy/countersignature-constraint.xml";
+	public static String defaultPolicyXsdLocation = "/policy/policy.xsd";
 
 	private static JAXBContext jaxbContext;
 

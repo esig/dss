@@ -32,52 +32,52 @@ import java.util.ResourceBundle;
  */
 public class DSSCannotFetchDataException extends RuntimeException {
 
-    private static final long serialVersionUID = -1112490792269827445L;
+	private static final long serialVersionUID = -1112490792269827445L;
 
-    private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/ec/markt/dss/i18n");
+	private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/esig/dss/i18n");
 
-    private MSG key;
+	private MSG key;
 
-    private Exception cause;
+	private Exception cause;
 
-    private String serviceName;
+	private String serviceName;
 
-    /**
-     * Supported messages
-     */
-    public enum MSG {
-        IO_EXCEPTION, TIMOUT_EXCEPTION, SIZE_LIMIT_EXCEPTION, UNKNOWN_HOST_EXCEPTION, RESOURCE_NOT_FOUND_EXCEPTION
-    }
+	/**
+	 * Supported messages
+	 */
+	public enum MSG {
+		IO_EXCEPTION, TIMOUT_EXCEPTION, SIZE_LIMIT_EXCEPTION, UNKNOWN_HOST_EXCEPTION, RESOURCE_NOT_FOUND_EXCEPTION
+	}
 
-    /**
-     * The default constructor for DSSCannotFetchDataException.
-     *
-     * @param message
-     */
-    public DSSCannotFetchDataException(MSG message, String serviceName) {
-        if (message == null) {
-            throw new IllegalArgumentException("Cannot build Exception without a message");
-        }
-        this.key = message;
-        this.serviceName = serviceName;
-    }
+	/**
+	 * The default constructor for DSSCannotFetchDataException.
+	 *
+	 * @param message
+	 */
+	public DSSCannotFetchDataException(MSG message, String serviceName) {
+		if (message == null) {
+			throw new IllegalArgumentException("Cannot build Exception without a message");
+		}
+		this.key = message;
+		this.serviceName = serviceName;
+	}
 
-    /**
-     * The default constructor for DSSCannotFetchDataException.
-     *
-     * @param ex
-     */
-    public DSSCannotFetchDataException(IOException ex, String serviceName) {
-        this(ex instanceof UnknownHostException ? MSG.UNKNOWN_HOST_EXCEPTION : MSG.IO_EXCEPTION, serviceName);
-        cause = ex;
-        this.serviceName = serviceName;
-    }
+	/**
+	 * The default constructor for DSSCannotFetchDataException.
+	 *
+	 * @param ex
+	 */
+	public DSSCannotFetchDataException(IOException ex, String serviceName) {
+		this(ex instanceof UnknownHostException ? MSG.UNKNOWN_HOST_EXCEPTION : MSG.IO_EXCEPTION, serviceName);
+		cause = ex;
+		this.serviceName = serviceName;
+	}
 
-    @Override
-    public String getLocalizedMessage() {
-        MessageFormat format = new MessageFormat(bundle.getString(key.toString()));
-        Object[] args = new Object[]{serviceName};
-        return format.format(args) + (cause == null ? "" : (" --> " + cause.getMessage()));
-    }
+	@Override
+	public String getLocalizedMessage() {
+		MessageFormat format = new MessageFormat(bundle.getString(key.toString()));
+		Object[] args = new Object[]{serviceName};
+		return format.format(args) + (cause == null ? "" : (" --> " + cause.getMessage()));
+	}
 
 }

@@ -32,42 +32,42 @@ import java.util.ResourceBundle;
 @SuppressWarnings("serial")
 public class DSSConfigurationException extends RuntimeException {
 
-    private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/ec/markt/dss/i18n");
+	private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/esig/dss/i18n");
 
-    private MSG key;
+	private MSG key;
 
-    /**
-     * Supported messages
-     */
-    public enum MSG {
-        CONFIGURE_TSP_SERVER, NOT_PKCS11_LIB
-    }
+	/**
+	 * Supported messages
+	 */
+	public enum MSG {
+		CONFIGURE_TSP_SERVER, NOT_PKCS11_LIB
+	}
 
-    /**
-     * The default constructor for DSSConfigurationException.
-     */
-    public DSSConfigurationException(MSG message) {
-        init(message);
-    }
+	/**
+	 * The default constructor for DSSConfigurationException.
+	 */
+	public DSSConfigurationException(MSG message) {
+		init(message);
+	}
 
-    /**
-     * The default constructor for DSSConfigurationException.
-     */
-    public DSSConfigurationException(MSG message, Throwable cause) {
-        super(cause);
-        init(message);
-    }
+	/**
+	 * The default constructor for DSSConfigurationException.
+	 */
+	public DSSConfigurationException(MSG message, Throwable cause) {
+		super(cause);
+		init(message);
+	}
 
-    private void init(MSG message) {
-        if (message == null) {
-            throw new IllegalArgumentException("Cannot build Exception without a message");
-        }
-        this.key = message;
-    }
+	private void init(MSG message) {
+		if (message == null) {
+			throw new IllegalArgumentException("Cannot build Exception without a message");
+		}
+		this.key = message;
+	}
 
-    @Override
-    public String getLocalizedMessage() {
-        return bundle.getString(key.toString());
-    }
+	@Override
+	public String getLocalizedMessage() {
+		return bundle.getString(key.toString());
+	}
 
 }

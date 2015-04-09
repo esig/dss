@@ -30,74 +30,74 @@ import java.util.ResourceBundle;
 
 public class DSSNotETSICompliantException extends RuntimeException {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 
-    private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/ec/markt/dss/i18n");
+	private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/esig/dss/i18n");
 
-    private MSG key;
+	private MSG key;
 
-    private String more;
+	private String more;
 
-    /**
-     * Supported messages
-     */
-    public enum MSG {
-        TSL_NOT_SIGNED, MORE_THAN_ONE_SIGNATURE, DIFFERENT_SIGNATURE_FORMATS, SIGNATURE_INVALID, NOT_A_VALID_XML,
+	/**
+	 * Supported messages
+	 */
+	public enum MSG {
+		TSL_NOT_SIGNED, MORE_THAN_ONE_SIGNATURE, DIFFERENT_SIGNATURE_FORMATS, SIGNATURE_INVALID, NOT_A_VALID_XML,
 
-        UNRECOGNIZED_TAG, UNSUPPORTED_ASSERT,
+		UNRECOGNIZED_TAG, UNSUPPORTED_ASSERT,
 
-        XADES_DIGEST_ALG_AND_VALUE_ENCODING,
+		XADES_DIGEST_ALG_AND_VALUE_ENCODING,
 
-        ASICS_CADES, NO_SIGNING_TIME, NO_SIGNING_CERTIFICATE
-    }
+		ASICS_CADES, NO_SIGNING_TIME, NO_SIGNING_CERTIFICATE
+	}
 
-    /**
-     * The default constructor for DSSNotETSICompliantException.
-     *
-     * @param message
-     */
-    public DSSNotETSICompliantException(final MSG message) {
+	/**
+	 * The default constructor for DSSNotETSICompliantException.
+	 *
+	 * @param message
+	 */
+	public DSSNotETSICompliantException(final MSG message) {
 
-        init(message);
-    }
+		init(message);
+	}
 
-    /**
-     * The default constructor for DSSNotETSICompliantException.
-     *
-     * @param message
-     */
-    public DSSNotETSICompliantException(final MSG message, final String more) {
+	/**
+	 * The default constructor for DSSNotETSICompliantException.
+	 *
+	 * @param message
+	 */
+	public DSSNotETSICompliantException(final MSG message, final String more) {
 
-        init(message);
-        this.more = more;
-    }
+		init(message);
+		this.more = more;
+	}
 
-    public DSSNotETSICompliantException(final MSG message, final Throwable cause) {
-        super(cause);
-        init(message);
-    }
+	public DSSNotETSICompliantException(final MSG message, final Throwable cause) {
+		super(cause);
+		init(message);
+	}
 
-    private void init(MSG message) {
-        if (message == null) {
+	private void init(MSG message) {
+		if (message == null) {
 
-            throw new IllegalArgumentException("Cannot build Exception without a message");
-        }
-        this.key = message;
-    }
+			throw new IllegalArgumentException("Cannot build Exception without a message");
+		}
+		this.key = message;
+	}
 
-    @Override
-    public String getLocalizedMessage() {
+	@Override
+	public String getLocalizedMessage() {
 
-        final String bundleString = bundle.getString(key.toString());
-        return bundleString + ((more != null) ? " / " + more : "");
-    }
+		final String bundleString = bundle.getString(key.toString());
+		return bundleString + ((more != null) ? " / " + more : "");
+	}
 
-    @Override
-    public String getMessage() {
+	@Override
+	public String getMessage() {
 
-        return getLocalizedMessage();
-    }
+		return getLocalizedMessage();
+	}
 }

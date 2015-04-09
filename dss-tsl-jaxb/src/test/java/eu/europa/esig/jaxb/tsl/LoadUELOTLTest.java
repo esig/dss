@@ -1,4 +1,4 @@
-package eu.europa.ec.markt.tsl.jaxb;
+package eu.europa.esig.jaxb.tsl;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -14,8 +14,6 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
-import eu.europa.esig.jaxb.tsl.TrustStatusListType;
-
 /**
  * This test loads the UE LOTL
  */
@@ -26,7 +24,7 @@ public class LoadUELOTLTest {
 	public void test() throws JAXBException{
 		File euLOTL = new File("src/test/resources/tl-mp.xml");
 
-		JAXBContext jc = JAXBContext.newInstance("eu.europa.ec.markt.tsl.jaxb.tsl");
+		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.tsl");
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 
 		JAXBElement<TrustStatusListType> unmarshalled = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(euLOTL);

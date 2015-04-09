@@ -93,21 +93,21 @@ public final class ComponentFactory extends BasicComponentFactory {
 
 	static {
 
-		// this.getClass().getResource("/eu/europa/ec/markt/dss/applet/wizard/" + name);
+		// this.getClass().getResource("/eu/europa/esig/dss/applet/wizard/" + name);
 
-		ICON_NEXT = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/wizard/arrow_right.png"));
-		ICON_BACK = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/wizard/arrow_left.png"));
-		ICON_CANCEL = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/wizard/cancel.png"));
-		ICON_WAIT = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/wizard/wait.png"));
-		ICON_REFRESH = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/wizard/refresh.png"));
+		ICON_NEXT = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/arrow_right.png"));
+		ICON_BACK = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/arrow_left.png"));
+		ICON_CANCEL = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/cancel.png"));
+		ICON_WAIT = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/wait.png"));
+		ICON_REFRESH = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/refresh.png"));
 		ICON_FILE = UIManager.getIcon("FileView.fileIcon");
 		ICON_SAVE_FILE = UIManager.getIcon("FileChooser.floppyDriveIcon");
-		ICON_VALID = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/report/tick_16.png"));
-		ICON_INVALID = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/report/block_16.png"));
-		ICON_WARNING = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/report/warning_16.png"));
-		ICON_UNSURE = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/report/unsure_16.png"));
-		ICON_INFO = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/report/info_16.png"));
-		ICON_SUCCESS = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/ec/markt/dss/applet/wizard/big_ok.png"));
+		ICON_VALID = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/tick_16.png"));
+		ICON_INVALID = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/block_16.png"));
+		ICON_WARNING = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/warning_16.png"));
+		ICON_UNSURE = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/unsure_16.png"));
+		ICON_INFO = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/info_16.png"));
+		ICON_SUCCESS = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/big_ok.png"));
 	}
 
 	/**

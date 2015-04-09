@@ -31,55 +31,55 @@ import java.util.ResourceBundle;
 @SuppressWarnings("serial")
 public class DSSEncodingException extends RuntimeException {
 
-    private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/ec/markt/dss/i18n");
+	private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/esig/dss/i18n");
 
-    private MSG key;
+	private MSG key;
 
-    /**
-     * Supported messages
-     */
-    public enum MSG {
-        CERTIFICATE_CANNOT_BE_READ, OCSP_CANNOT_BE_READ, SIGNATURE_METHOD_ERROR,
+	/**
+	 * Supported messages
+	 */
+	public enum MSG {
+		CERTIFICATE_CANNOT_BE_READ, OCSP_CANNOT_BE_READ, SIGNATURE_METHOD_ERROR,
 
-        SIGNING_CERTIFICATE_ENCODING, SIGNING_TIME_ENCODING, SIGNATURE_POLICY_ENCODING, COUNTERSIGNATURE_ENCODING,
+		SIGNING_CERTIFICATE_ENCODING, SIGNING_TIME_ENCODING, SIGNATURE_POLICY_ENCODING, COUNTERSIGNATURE_ENCODING,
 
-        SIGNATURE_TIMESTAMP_ENCODING, TIMESTAMP_X1_ENCODING, TIMESTAMP_X2_ENCODING,
+		SIGNATURE_TIMESTAMP_ENCODING, TIMESTAMP_X1_ENCODING, TIMESTAMP_X2_ENCODING,
 
-        ARCHIVE_TIMESTAMP_ENCODING, CERTIFICATE_REF_ENCODING, CRL_REF_ENCODING,
+		ARCHIVE_TIMESTAMP_ENCODING, CERTIFICATE_REF_ENCODING, CRL_REF_ENCODING,
 
-        OCSP_REF_ENCODING, SIGNATURE_TIMESTAMP_DATA_ENCODING, TIMESTAMP_X1_DATA_ENCODING,
+		OCSP_REF_ENCODING, SIGNATURE_TIMESTAMP_DATA_ENCODING, TIMESTAMP_X1_DATA_ENCODING,
 
-        TIMESTAMP_X2_DATA_ENCODING, ARCHIVE_TIMESTAMP_DATA_ENCODING, CRL_CANNOT_BE_WRITTEN
-    }
+		TIMESTAMP_X2_DATA_ENCODING, ARCHIVE_TIMESTAMP_DATA_ENCODING, CRL_CANNOT_BE_WRITTEN
+	}
 
-    /**
-     * The default constructor for DSSEncodingException.
-     *
-     * @param key
-     */
-    public DSSEncodingException(MSG key) {
-        init(key);
-    }
+	/**
+	 * The default constructor for DSSEncodingException.
+	 *
+	 * @param key
+	 */
+	public DSSEncodingException(MSG key) {
+		init(key);
+	}
 
-    /**
-     * @param key
-     * @param cause
-     */
-    public DSSEncodingException(MSG key, Throwable cause) {
-        super(cause);
-        init(key);
-    }
+	/**
+	 * @param key
+	 * @param cause
+	 */
+	public DSSEncodingException(MSG key, Throwable cause) {
+		super(cause);
+		init(key);
+	}
 
-    private void init(MSG key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Cannot build Exception without a message");
-        }
-        this.key = key;
-    }
+	private void init(MSG key) {
+		if (key == null) {
+			throw new IllegalArgumentException("Cannot build Exception without a message");
+		}
+		this.key = key;
+	}
 
-    @Override
-    public String getLocalizedMessage() {
-        return bundle.getString(key.toString());
-    }
+	@Override
+	public String getLocalizedMessage() {
+		return bundle.getString(key.toString());
+	}
 
 }

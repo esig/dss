@@ -30,46 +30,46 @@ import java.util.ResourceBundle;
 
 public class DSSBadPasswordException extends RuntimeException {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 
-    private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/ec/markt/dss/i18n");
+	private ResourceBundle bundle = ResourceBundle.getBundle("eu/europa/esig/dss/i18n");
 
-    private MSG key;
+	private MSG key;
 
-    /**
-     * Supported messages
-     */
-    public enum MSG {
-        PKCS11_BAD_PASSWORD, PKCS12_BAD_PASSWORD, JAVA_KEYSTORE_BAD_PASSWORD
-    }
+	/**
+	 * Supported messages
+	 */
+	public enum MSG {
+		PKCS11_BAD_PASSWORD, PKCS12_BAD_PASSWORD, JAVA_KEYSTORE_BAD_PASSWORD
+	}
 
-    /**
-     * The default constructor for DSSBadPasswordException.
-     *
-     * @param message
-     */
-    public DSSBadPasswordException(MSG message) {
-        init(message);
-    }
+	/**
+	 * The default constructor for DSSBadPasswordException.
+	 *
+	 * @param message
+	 */
+	public DSSBadPasswordException(MSG message) {
+		init(message);
+	}
 
-    public DSSBadPasswordException(MSG message, Throwable cause) {
-        super(cause);
-        init(message);
-    }
+	public DSSBadPasswordException(MSG message, Throwable cause) {
+		super(cause);
+		init(message);
+	}
 
-    private void init(MSG message) {
-        if (message == null) {
-            throw new IllegalArgumentException("Cannot build Exception without a message");
-        }
-        this.key = message;
-    }
+	private void init(MSG message) {
+		if (message == null) {
+			throw new IllegalArgumentException("Cannot build Exception without a message");
+		}
+		this.key = message;
+	}
 
-    @Override
-    public String getLocalizedMessage() {
-        return bundle.getString(key.toString());
-    }
+	@Override
+	public String getLocalizedMessage() {
+		return bundle.getString(key.toString());
+	}
 
 }

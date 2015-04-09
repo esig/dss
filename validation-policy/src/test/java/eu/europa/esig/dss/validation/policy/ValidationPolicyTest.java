@@ -16,7 +16,7 @@ public class ValidationPolicyTest {
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
-		byte[] data = IOUtils.toByteArray(getClass().getResourceAsStream("/102853/policy/constraint.xml"));
+		byte[] data = IOUtils.toByteArray(getClass().getResourceAsStream("/policy/constraint.xml"));
 
 		EtsiValidationPolicy policy = new EtsiValidationPolicy(dbf.newDocumentBuilder().parse(new ByteArrayInputStream(data)));
 

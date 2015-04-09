@@ -34,8 +34,9 @@ import java.io.InputStream;
  */
 public class SimpleReportConverter extends XsltConverter {
 
-    InputStream getXsltFileClasspathResource() {
-        return getClass().getResourceAsStream("/eu/europa/ec/markt/dss/applet/util/simpleReport.xslt");
-    }
+	@Override
+	InputStream getXsltFileClasspathResource() {
+		return getClass().getResourceAsStream("/eu/europa/esig/dss/applet/util/simpleReport.xslt");
+	}
 
 }
