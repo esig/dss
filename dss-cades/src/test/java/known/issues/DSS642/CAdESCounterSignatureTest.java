@@ -89,7 +89,6 @@ public class CAdESCounterSignatureTest {
 
 		SignerInformationStore signerInfosStore = cmsSignedData.getSignerInfos();
 
-		@SuppressWarnings("unchecked")
 		Collection<SignerInformation> signerInfos = signerInfosStore.getSigners();
 		assertEquals(1, signerInfos.size());
 		SignerInformation signerInfo = signerInfos.iterator().next();

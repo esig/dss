@@ -25,8 +25,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 
 import org.junit.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -36,7 +34,6 @@ import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
@@ -51,8 +48,6 @@ public class CAdESLevelBWithPolicyTest extends AbstractTestSignature {
 	private static final String POLICY_ID = "1.2.3.4.5.6";
 	private static final String HELLO_WORLD = "Hello World";
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
-
-	private static Logger logger = LoggerFactory.getLogger(CAdESLevelBWithPolicyTest.class);
 
 	private DocumentSignatureService<CAdESSignatureParameters> service;
 	private CAdESSignatureParameters signatureParameters;
