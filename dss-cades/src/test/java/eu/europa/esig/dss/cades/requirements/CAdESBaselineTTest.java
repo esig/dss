@@ -1,6 +1,10 @@
 package eu.europa.esig.dss.cades.requirements;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
+
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -38,6 +42,42 @@ public class CAdESBaselineTTest extends AbstractRequirementChecks {
 		byte[] dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		byte[] signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry.getPrivateKey(), dataToSign);
 		return service.signDocument(documentToSign, signatureParameters, signature);
+	}
+
+	@Override
+	public void checkCertificateValue() {
+		int counter = countUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_certValues);
+		assertTrue((counter == 0) || (counter == 1));
+	}
+
+	@Override
+	public void checkCompleteCertificateReference() {
+		int counter = countUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_certificateRefs);
+		assertTrue((counter == 0) || (counter == 1));
+	}
+
+	@Override
+	public void checkRevocationValues() {
+		int counter = countUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationValues);
+		assertTrue((counter == 0) || (counter == 1));
+	}
+
+	@Override
+	public void checkCompleteRevocationReferences() {
+		int counter = countUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
+		assertTrue((counter == 0) || (counter == 1));
+	}
+
+	@Override
+	public void checkCAdESCTimestamp() {
+		int counter = countUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp);
+		assertTrue(counter >= 0);
+	}
+
+	@Override
+	public void checkTimestampedCertsCrlsReferences() {
+		int counter = countUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp);
+		assertTrue(counter >= 0);
 	}
 
 }

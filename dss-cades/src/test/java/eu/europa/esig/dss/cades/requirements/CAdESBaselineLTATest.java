@@ -1,6 +1,10 @@
 package eu.europa.esig.dss.cades.requirements;
 
+import static org.junit.Assert.assertFalse;
+
 import java.util.Date;
+
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -38,6 +42,36 @@ public class CAdESBaselineLTATest extends AbstractRequirementChecks {
 		byte[] dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		byte[] signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry.getPrivateKey(), dataToSign);
 		return service.signDocument(documentToSign, signatureParameters, signature);
+	}
+
+	@Override
+	public void checkCertificateValue() {
+		assertFalse(isUnsignedAttributeFound(PKCSObjectIdentifiers.id_aa_ets_certValues));
+	}
+
+	@Override
+	public void checkCompleteCertificateReference() {
+		assertFalse(isUnsignedAttributeFound(PKCSObjectIdentifiers.id_aa_ets_certificateRefs));
+	}
+
+	@Override
+	public void checkRevocationValues() {
+		assertFalse(isUnsignedAttributeFound(PKCSObjectIdentifiers.id_aa_ets_revocationValues));
+	}
+
+	@Override
+	public void checkCompleteRevocationReferences() {
+		assertFalse(isUnsignedAttributeFound(PKCSObjectIdentifiers.id_aa_ets_revocationRefs));
+	}
+
+	@Override
+	public void checkCAdESCTimestamp() {
+		assertFalse(isUnsignedAttributeFound(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp));
+	}
+
+	@Override
+	public void checkTimestampedCertsCrlsReferences() {
+		assertFalse(isUnsignedAttributeFound(PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp));
 	}
 
 }

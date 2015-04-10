@@ -105,27 +105,71 @@ public abstract class AbstractRequirementChecks {
 		assertTrue(isUnsignedAttributeFound(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken));
 	}
 
-	private boolean isSignedAttributeFound(ASN1ObjectIdentifier oid) {
-		ASN1Set authenticatedAttributes = signerInfo.getAuthenticatedAttributes();
-		for (int i = 0; i < authenticatedAttributes.size(); i++) {
-			ASN1Sequence authAttrSeq = ASN1Sequence.getInstance(authenticatedAttributes.getObjectAt(i));
-			ASN1ObjectIdentifier attrOid = ASN1ObjectIdentifier.getInstance(authAttrSeq.getObjectAt(0));
-			if (oid.equals(attrOid)) {
-				return true;
-			}
-		}
-		return false;
+	/**
+	 * certificate-value shall not be present (B/T 1 or 0 ; LT/LTA 0)
+	 */
+	@Test
+	public abstract void checkCertificateValue();
+
+	/**
+	 * complete-certificate-references  shall not be present (B/T 1 or 0 ; LT/LTA 0)
+	 */
+	@Test
+	public abstract void checkCompleteCertificateReference();
+
+	/**
+	 * revocation-values  shall not be present (B/T 1 or 0 ; LT/LTA 0)
+	 */
+	@Test
+	public abstract void checkRevocationValues();
+
+	/**
+	 * complete-revocation-references shall not be present (B/T 1 or 0 ; LT/LTA 0)
+	 */
+	@Test
+	public abstract void checkCompleteRevocationReferences();
+
+	/**
+	 * 	CAdES-C-timestamp shall not be present (B/T >= 0 ; LT/LTA 0)
+	 */
+	@Test
+	public abstract void checkCAdESCTimestamp();
+
+	/**
+	 * 	time-stamped-certs-crls-references shall not be present (B/T >= 0 ; LT/LTA 0)
+	 */
+	@Test
+	public abstract void checkTimestampedCertsCrlsReferences();
+
+	protected boolean isSignedAttributeFound(ASN1ObjectIdentifier oid) {
+		return countSignedAttribute(oid) > 0;
 	}
 
-	private boolean isUnsignedAttributeFound(ASN1ObjectIdentifier oid) {
+	protected boolean isUnsignedAttributeFound(ASN1ObjectIdentifier oid) {
+		return countUnsignedAttribute(oid) >0;
+	}
+
+	protected int countSignedAttribute(ASN1ObjectIdentifier oid) {
+		ASN1Set authenticatedAttributes = signerInfo.getAuthenticatedAttributes();
+		return countInSet(oid, authenticatedAttributes);
+	}
+
+	protected int countUnsignedAttribute(ASN1ObjectIdentifier oid) {
 		ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
-		for (int i = 0; i < unauthenticatedAttributes.size(); i++) {
-			ASN1Sequence authAttrSeq = ASN1Sequence.getInstance(unauthenticatedAttributes.getObjectAt(i));
-			ASN1ObjectIdentifier attrOid = ASN1ObjectIdentifier.getInstance(authAttrSeq.getObjectAt(0));
-			if (oid.equals(attrOid)) {
-				return true;
+		return countInSet(oid, unauthenticatedAttributes);
+	}
+
+	private int countInSet(ASN1ObjectIdentifier oid, ASN1Set set) {
+		int counter = 0;
+		if (set != null) {
+			for (int i = 0; i < set.size(); i++) {
+				ASN1Sequence attrSeq = ASN1Sequence.getInstance(set.getObjectAt(i));
+				ASN1ObjectIdentifier attrOid = ASN1ObjectIdentifier.getInstance(attrSeq.getObjectAt(0));
+				if (oid.equals(attrOid)) {
+					counter++;
+				}
 			}
 		}
-		return false;
+		return counter;
 	}
 }
