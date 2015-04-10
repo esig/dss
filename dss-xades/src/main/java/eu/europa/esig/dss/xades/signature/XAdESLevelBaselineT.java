@@ -60,8 +60,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.ProfileParameters;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 /**
@@ -283,6 +283,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 					break;
 				case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
 					timeStampDom = DSSXMLUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES, XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP);
+					break;
+				default :
+					LOG.error("Unsupported timestamp type : "+timestampType);
 					break;
 			}
 

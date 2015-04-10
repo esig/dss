@@ -30,7 +30,6 @@ import java.util.Date;
 import org.bouncycastle.asn1.x509.CRLReason;
 import org.junit.Before;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
@@ -50,7 +49,6 @@ import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 

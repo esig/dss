@@ -59,8 +59,6 @@ import eu.europa.esig.dss.x509.crl.CRLToken;
 
 public class XAdESLevelC extends XAdESLevelBaselineT {
 
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(XAdESLevelC.class);
-
 	/**
 	 * The default constructor for XAdESLevelC.
 	 *
