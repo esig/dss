@@ -8,7 +8,7 @@
 	</parent>
 	
 	<artifactId>dss-diagnostic-jaxb</artifactId>
-	<name>JAXB TSL Model</name>
+	<name>JAXB Diagnostic Data Model</name>
 	<description>Generated source from XSD for Diagnostic Data.</description>
 
 	<profiles>
