@@ -222,8 +222,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			}
 			IOUtils.closeQuietly(zipInputStream);
 			IOUtils.closeQuietly(zipOutputStream);
-			return new InMemoryDocument(output.toByteArray());
-
+			return new InMemoryDocument(output.toByteArray(), getName(toExtendDocument.getName(), parameters.aSiC().getContainerForm()), getMimeType(parameters.aSiC().getContainerForm()));
 		} catch(IOException e) {
 			throw new DSSException(e);
 		}
@@ -371,14 +370,19 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	}
 
 	private InMemoryDocument createASiCContainer(final ASiCParameters asicParameters, final ByteArrayOutputStream outBytes, final String toSignDocumentName) {
+		SignatureForm containerForm = asicParameters.getContainerForm();
+		return new InMemoryDocument(outBytes.toByteArray(), getName(toSignDocumentName, containerForm), getMimeType(containerForm));
+	}
 
-		final byte[] documentBytes = outBytes.toByteArray();
-		final SignatureForm containerForm = asicParameters.getContainerForm();
+	private String getName(String toSignDocumentName, SignatureForm containerForm) {
 		final boolean asics = SignatureForm.ASiC_S.equals(containerForm);
 		final String extension = asics ? ASICS_EXTENSION : ASICE_EXTENSION;
-		final String name = toSignDocumentName != null ? toSignDocumentName + extension : null;
-		final MimeType mimeType = asics ? MimeType.ASICS : MimeType.ASICE;
-		return new InMemoryDocument(documentBytes, name, mimeType);
+		return toSignDocumentName != null ? toSignDocumentName + extension : null;
+	}
+
+	private MimeType getMimeType(SignatureForm containerForm) {
+		boolean asics = SignatureForm.ASiC_S.equals(containerForm);
+		return asics ? MimeType.ASICS : MimeType.ASICE;
 	}
 
 	private void storesSignature(final ASiCParameters asicParameters, final DSSDocument signature, final ZipOutputStream outZip) {

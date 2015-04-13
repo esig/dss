@@ -24,6 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
@@ -48,6 +51,8 @@ import eu.europa.esig.dss.wsclient.signature.WsParameters;
  *
  */
 public final class SigningUtils {
+
+	private static final Logger logger = LoggerFactory.getLogger(SigningUtils.class);
 
 	private static ObjectFactory FACTORY;
 
@@ -147,8 +152,12 @@ public final class SigningUtils {
 		inMemoryDocument.setName(wsSignedDocument.getName());
 		inMemoryDocument.setAbsolutePath(wsSignedDocument.getAbsolutePath());
 		final eu.europa.esig.dss.wsclient.signature.MimeType wsMimeType = wsSignedDocument.getMimeType();
-		final MimeType mimeType = MimeType.fromMimeTypeString(wsMimeType.getMimeTypeString());
-		inMemoryDocument.setMimeType(mimeType);
+		if (wsMimeType != null) {
+			final MimeType mimeType = MimeType.fromMimeTypeString(wsMimeType.getMimeTypeString());
+			inMemoryDocument.setMimeType(mimeType);
+		} else{
+			logger.warn("Mimetype is not filled !");
+		}
 		return inMemoryDocument;
 	}
 }
