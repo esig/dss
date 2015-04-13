@@ -500,6 +500,16 @@ public final class DSSXMLUtils {
 		}
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
+
+		try {
+			// disable external entities
+			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			dbFactory.setXIncludeAware(false);
+			dbFactory.setExpandEntityReferences(false);
+		} catch (ParserConfigurationException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	/**
