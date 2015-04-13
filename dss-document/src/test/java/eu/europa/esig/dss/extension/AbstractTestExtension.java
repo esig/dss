@@ -89,6 +89,11 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		checkBLevelValid(diagnosticData);
 
 		DSSDocument extendedDocument = extendSignature(signedDocument);
+
+		assertNotNull(extendedDocument);
+		assertNotNull(extendedDocument.getMimeType());
+		assertNotNull(extendedDocument.getBytes());
+
 		validator = SignedDocumentValidator.fromDocument(extendedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		reports = validator.validateDocument();
