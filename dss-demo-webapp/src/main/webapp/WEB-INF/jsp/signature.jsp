@@ -17,7 +17,7 @@
             var parameters = {
                 service_url : '<c:out value="${prefUrlService.value}"/>',
                 default_policy_url : '<c:out value="${prefDefaultPolicyUrl}"/>',
-                jnlp_href: 'applet.jnlp'
+                jnlp_href: 'jnlp/applet.jnlp'
             };
             var version = '1.6';
             deployJava.runApplet(attributes, parameters, version);
