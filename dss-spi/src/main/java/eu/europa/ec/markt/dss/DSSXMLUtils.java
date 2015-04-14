@@ -512,6 +512,16 @@ public final class DSSXMLUtils {
 		}
 	}
 
+	public static TransformerFactory getSecureTransformerFactory() {
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		try {
+			transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		} catch (TransformerConfigurationException e) {
+			throw new DSSException(e);
+		}
+		return transformerFactory;
+	}
+
 	/**
 	 * Creates the new empty Document.
 	 *

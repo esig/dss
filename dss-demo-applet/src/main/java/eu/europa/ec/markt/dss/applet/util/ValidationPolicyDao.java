@@ -20,10 +20,25 @@
  */
 package eu.europa.ec.markt.dss.applet.util;
 
-import eu.europa.ec.markt.dss.DSSXMLUtils;
-import eu.europa.ec.markt.dss.exception.DSSException;
-import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
-import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,16 +47,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import java.io.*;
-import java.net.URL;
+import eu.europa.ec.markt.dss.DSSXMLUtils;
+import eu.europa.ec.markt.dss.exception.DSSException;
+import eu.europa.ec.markt.dss.validation102853.engine.rules.wrapper.constraint.ValidationPolicy;
+import eu.europa.ec.markt.dss.validation102853.xml.XmlDom;
 
 /**
  *
@@ -49,7 +58,7 @@ import java.net.URL;
 public class ValidationPolicyDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(ValidationPolicyDao.class);
-	
+
 	private URL xmlUrl;
 	private URL xsdUrl;
 
@@ -120,9 +129,9 @@ public class ValidationPolicyDao {
 	}
 
 	public void save(ValidationPolicy validationPolicy, OutputStream outputStream) {
-		Transformer transformer = null;
 		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
+			Transformer transformer = transformerFactory.newTransformer();
 			Result output = new StreamResult(outputStream);
 			Source input = new DOMSource(validationPolicy.getDocument());
 
