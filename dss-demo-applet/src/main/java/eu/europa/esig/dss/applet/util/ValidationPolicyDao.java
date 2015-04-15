@@ -58,7 +58,7 @@ import eu.europa.esig.dss.validation.model.ValidationPolicy;
 public class ValidationPolicyDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(ValidationPolicyDao.class);
-	
+
 	private URL xmlUrl;
 	private URL xsdUrl;
 
@@ -129,9 +129,9 @@ public class ValidationPolicyDao {
 	}
 
 	public void save(ValidationPolicy validationPolicy, OutputStream outputStream) {
-		Transformer transformer = null;
 		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
+			Transformer transformer = transformerFactory.newTransformer();
 			Result output = new StreamResult(outputStream);
 			Source input = new DOMSource(validationPolicy.getDocument());
 

@@ -723,7 +723,8 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		try {
 			final DOMSource xmlSource = new DOMSource(xml);
 			final StreamResult outputTarget = new StreamResult(outZip);
-			TransformerFactory.newInstance().newTransformer().transform(xmlSource, outputTarget);
+			TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
+			transformerFactory.newTransformer().transform(xmlSource, outputTarget);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
