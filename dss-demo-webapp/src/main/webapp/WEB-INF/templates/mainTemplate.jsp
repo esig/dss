@@ -50,13 +50,10 @@
     </nav>
     <div class="full-row">
         <section id="content" class="full-column">
-        	<tiles:useAttribute name="menu" id="menu" ignore="true"/>
-        	<c:if test="${menu != null}">
             <nav id="inside-menu" class="left-column">
             	<div class="mobile-menu"><a class="down" href="javascript:;">MENU</a></div>
-            	<tiles:insertAttribute name="menu"/>
+            	<jsp:include page="menuLayout.jsp" />
             </nav>
-            </c:if>
             <section id="main" role="main" class="middle-column">
 				<tiles:insertAttribute name="content" />                
             </section> <!-- /#main -->

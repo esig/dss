@@ -1,17 +1,32 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
-
-<tiles:useAttribute name="menus" id="menus" classname="java.util.List"/>
 <ul role="navigation">
-	<c:forEach items="${menus}" var="menu">
-		<li class="<c:if test="${fn:startsWith(requestScope['javax.servlet.forward.servlet_path'],menu.startWith)}">selected</c:if>">
-			<a href="<spring:url value="${menu.url}"/>"><spring:message code="${menu.key}" /></a>
-		</li>
-	</c:forEach>	
+    <c:set var="currentPage" value="${requestScope['javax.servlet.forward.servlet_path']}" />
+    <c:choose> 
+        <%-- ADMIN PART --%>
+        <c:when test="${fn:contains(currentPage, 'admin')}">
+            <li class="${currentPage eq '/admin/general' ? 'selected' : ''}">
+                <a href="<spring:url value="/admin/general"/>"><spring:message code="label.general" /></a>
+            </li>
+            <li class="${currentPage eq '/admin/proxy' ? 'selected' : ''}">
+                <a href="<spring:url value="/admin/proxy"/>"><spring:message code="label.proxy" /></a>
+            </li>
+            <li class="${currentPage eq '/admin/tsl-info' ? 'selected' : ''}">
+                <a href="<spring:url value="/admin/tsl-info"/>"><spring:message code="label.tsl" /></a>
+            </li>
+        </c:when>
+        <%-- NO ADMIN PART --%>
+        <c:otherwise>
+            <li class="${currentPage eq '/signature' ? 'selected' : ''}">
+                <a href="<spring:url value="/signature"/>"><spring:message code="label.signature.applet" /></a>
+            </li>
+            <li>
+                <a href="https://joinup.ec.europa.eu/software/tlmanager/release/all"><spring:message code="label.tlmanager.tl.eu" /></a> 
+            </li>
+        </c:otherwise>
+    </c:choose>
 </ul>
-

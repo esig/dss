@@ -7,7 +7,6 @@
 
     <definition name="main" template="/WEB-INF/templates/mainTemplate.jsp">
         <put-attribute name="jsFile" value="app.jsFiles" />
-        <put-attribute name="menu" value="app.menu" />
     </definition>
 
     <definition name="app.jsFiles" template="/WEB-INF/templates/jsLayout.jsp">
@@ -17,41 +16,6 @@
         </put-list-attribute>
     </definition>
 
-    <definition name="app.menu" template="/WEB-INF/templates/menuLayout.jsp">
-        <put-list-attribute name="menus">
-            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.signature.applet" property="key"/>
-                <set-property value="/signature" property="url"/>
-                <set-property value="/signature" property="startWith"/>
-            </bean>
-            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.tlmanager.tl.eu" property="key"/>
-                <set-property value="https://joinup.ec.europa.eu/software/tlmanager/release/all" property="url"/>
-                <set-property value="https://joinup.ec.europa.eu/software/tlmanager/release/all" property="startWith"/>
-            </bean>
-        </put-list-attribute>
-    </definition>
-
-    <definition name="app.menu.administration" extends="app.menu">
-        <put-list-attribute name="menus">
-            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.general" property="key"/>
-                <set-property value="/admin/general" property="url"/>
-                <set-property value="/admin/general" property="startWith"/>
-            </bean>
-            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.proxy" property="key"/>
-                <set-property value="/admin/proxy" property="url"/>
-                <set-property value="/admin/proxy" property="startWith"/>
-            </bean>
-            <bean classtype="eu.europa.esig.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.tsl" property="key"/>
-                <set-property value="/admin/tsl-info" property="url"/>
-                <set-property value="/admin/tsl-info" property="startWith"/>
-            </bean>
-
-        </put-list-attribute>
-    </definition>
 
     <definition name="home" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/home.jsp" />
@@ -66,23 +30,19 @@
     </definition>
 
     <!-- Administration -->
-    <definition name="administration" extends="main">
-        <put-attribute name="menu" value="app.menu.administration" />
-    </definition>
-
-    <definition name="admin-general-list" extends="administration">
+    <definition name="admin-general-list" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/admin/general/list.jsp" />
     </definition>
-    <definition name="admin-general-edit" extends="administration">
+    <definition name="admin-general-edit" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/admin/general/form.jsp" />
     </definition>
-    <definition name="admin-proxy-list" extends="administration">
+    <definition name="admin-proxy-list" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/admin/proxy/list.jsp" />
     </definition>
-    <definition name="admin-proxy-edit" extends="administration">
+    <definition name="admin-proxy-edit" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/admin/proxy/form.jsp" />
     </definition>
-    <definition name="admin-tsl-info" extends="administration">
+    <definition name="admin-tsl-info" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/tsl-info.jsp" />
     </definition>
 
