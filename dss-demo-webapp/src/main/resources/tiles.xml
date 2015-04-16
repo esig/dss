@@ -5,28 +5,22 @@
 
 <tiles-definitions>
 
-    <definition name="main" template="/WEB-INF/templates/mainTemplate.jsp">
-        <put-attribute name="jsFile" value="app.jsFiles" />
-    </definition>
-
-    <definition name="app.jsFiles" template="/WEB-INF/templates/jsLayout.jsp">
-        <put-list-attribute name="jsFiles">
-            <add-attribute value="/scripts/template.js" />
-            <add-attribute value="/scripts/jquery-1.7.2.min.js" />
-        </put-list-attribute>
-    </definition>
-
+    <definition name="main" template="/WEB-INF/templates/mainTemplate.jsp" />
 
     <definition name="home" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/home.jsp" />
     </definition>
 
-    <definition name="login" template="/WEB-INF/templates/mainTemplate.jsp">
+    <definition name="login" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/login.jsp" />
     </definition>
 
-    <definition name="login-error" template="/WEB-INF/templates/mainTemplate.jsp">
+    <definition name="login-error" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/login-error.jsp" />
+    </definition>
+    
+    <definition name="signature" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature.jsp" />
     </definition>
 
     <!-- Administration -->
@@ -44,20 +38,6 @@
     </definition>
     <definition name="admin-tsl-info" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/tsl-info.jsp" />
-    </definition>
-
-
-    <!-- Signature -->
-    <definition name="signature" extends="main">
-        <put-attribute name="content" value="/WEB-INF/jsp/signature.jsp" />
-        <put-attribute name="jsFile" value="app.signature.jsfiles" />
-    </definition>
-
-    <definition name="app.signature.jsfiles" extends="app.jsFiles">
-        <put-list-attribute name="jsFiles" inherit="true">
-            <!-- <add-attribute value="/scripts/jquery-ui-effects.js" /> -->
-            <add-attribute value="/scripts/detect_browser_version.js" />
-        </put-list-attribute>
     </definition>
 
 </tiles-definitions>

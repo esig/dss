@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
@@ -12,7 +11,11 @@
 		<link rel="stylesheet" href="<c:url value="/css/reset.css" />" />
 		<link rel="stylesheet" href="<c:url value="/css/template.css" />"/>
 		<link rel="stylesheet" href="<c:url value="/css/dss.css" />"/>
-		<tiles:insertAttribute name="jsFile" ignore="true" />
+        
+        <script type="text/javascript" src="<c:url value="/scripts/template.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/scripts/jquery-1.7.2.min.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/scripts/detect_browser_version.js" />"></script>
+        
 		<!--[if lte IE 8]>
 		<link rel="stylesheet" href="<c:url value="/css/template-ie.css"/>">
 		<script type="text/javascript"> activeHTML(); </script>

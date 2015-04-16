@@ -1,5 +1,4 @@
-<%@page language="java" contentType="text/html; charset=UTF-8"
-        pageEncoding="UTF-8"%>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
@@ -86,8 +85,7 @@
 <h2><spring:message code="label.info" /></h2>
 
 <div id="compatibility" class="common-box">
-    <p>
-        For the latest information about DSS compatibility, please consult the pages :
+    <p>For the latest information about DSS compatibility, please consult the pages :
     <ul>
         <li><a href="https://joinup.ec.europa.eu/software/sd-dss/wiki/smartcard-compatibility">wiki/smartcard-compatibility</a></li>
         <li><a href="https://joinup.ec.europa.eu/software/sd-dss/wiki/applet-compatibility">wiki/applet-compatibility</a></li>
