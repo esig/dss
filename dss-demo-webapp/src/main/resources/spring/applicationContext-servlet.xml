@@ -11,6 +11,7 @@
 
     <mvc:resources mapping="/jnlp/**" location="/jnlp/" />
     <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/fonts/**" location="/fonts/"/>
     <mvc:resources mapping="/images/**" location="/images/"/>
     <mvc:resources mapping="/scripts/**" location="/scripts/"/>
     <mvc:resources mapping="/jar/**" location="/jar/"/>
