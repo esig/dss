@@ -17,6 +17,11 @@
     <mvc:resources mapping="/jar/**" location="/jar/"/>
     
 	<mvc:annotation-driven />
+	
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- the maximum file size in bytes -->
+        <property name="maxUploadSize" value="52428800"/>
+    </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
