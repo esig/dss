@@ -2,6 +2,8 @@ package eu.europa.esig.dss.web.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -103,6 +107,35 @@ public class ExtensionController {
 	@ModelAttribute("signatureLevels")
 	public SignatureLevel[] getSignatureLevels() {
 		return SignatureLevel.values();
+	}
+
+	@RequestMapping(value = "/packagingsByForm")
+	@ResponseBody
+	public List<SignaturePackaging> getAllowedPackagingsByForm(@RequestParam("form") SignatureForm signatureForm) {
+		List<SignaturePackaging> packagings = new ArrayList<SignaturePackaging>();
+		if (signatureForm != null) {
+			switch (signatureForm) {
+				case CAdES:
+					packagings.add(SignaturePackaging.ENVELOPING);
+					packagings.add(SignaturePackaging.DETACHED);
+					break;
+				case PAdES:
+					packagings.add(SignaturePackaging.ENVELOPED);
+					break;
+				case XAdES:
+					packagings.add(SignaturePackaging.ENVELOPED);
+					packagings.add(SignaturePackaging.ENVELOPING);
+					packagings.add(SignaturePackaging.DETACHED);
+					break;
+				case ASiC_S:
+				case ASiC_E:
+					packagings.add(SignaturePackaging.DETACHED);
+					break;
+				default:
+					break;
+			}
+		}
+		return packagings;
 	}
 
 }
