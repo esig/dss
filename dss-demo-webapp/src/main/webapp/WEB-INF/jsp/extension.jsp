@@ -50,7 +50,7 @@
         <div class="col-sm-6">
             <c:forEach var="sigPack" items="${signaturePackagings}">
                 <label class="radio-inline">
-                    <form:radiobutton path="signaturePackaging" value="${sigPack}" /> <spring:message code="label.${sigPack}" />
+                    <form:radiobutton path="signaturePackaging" value="${sigPack}" id="signaturePackaging-${sigPack}" /> <spring:message code="label.${sigPack}" />
                 </label>
             </c:forEach>
         </div>
@@ -64,9 +64,7 @@
             <spring:message code="label.signature.level" />
         </form:label>
         <div class="col-xs-4">
-            <form:select path="signatureLevel" cssClass="form-control input-sm">
-                <form:option value="" />
-                <form:options items="${signatureLevels}" />
+            <form:select path="signatureLevel" cssClass="form-control input-sm" id="selectSignatureLevel">
             </form:select>
         </div>
         <div class="col-xs-4 col-md-offset-2">
@@ -82,3 +80,48 @@
     </div>   
 </form:form>
 
+<script type="text/javascript">
+
+	$('input[name="signaturePackaging"]:radio').attr("disabled", true);
+
+	$('#selectSignatureLevel').empty();
+
+	$('input[name="signatureForm"]:radio').change(
+			function() {
+
+				$('input[name="signaturePackaging"]:radio').attr("disabled", true).prop("checked", false);
+				
+				$('#selectSignatureLevel').empty();
+
+				$.ajax({
+					type : "GET",
+					url : "extension/packagingsByForm?form=" + this.value,
+					dataType : "json",
+					error : function(msg) {
+						alert("Error !: " + msg);
+					},
+					success : function(data) {
+						$.each(data, function(idx) {
+							$('#signaturePackaging-' + data[idx]).attr("disabled", false);
+						});
+					}
+				});
+				
+				$.ajax({
+					type : "GET",
+					url : "extension/levelsByForm?form=" + this.value,
+					dataType : "json",
+					error : function(msg) {
+						alert("Error !: " + msg);
+					},
+					success : function(data) {
+						$.each(data, function(idx) {
+							$('#selectSignatureLevel').append($('<option>', {
+							    value: data[idx],
+							    text: data[idx].replace(/_/g, "-")
+							}));
+						});
+					}
+				});
+			});
+</script> 
