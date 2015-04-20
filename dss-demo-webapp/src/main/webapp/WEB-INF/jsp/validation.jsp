@@ -10,10 +10,6 @@
     
     <jsp:include page="fields/originalFileField.jsp" />
 
-    <p>
-        <spring:message code="label.validation.policy" />
-    </p>
-
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <form:radiobutton path="defaultPolicy" value="true" /> <spring:message code="label.validation.default.policy.file" />
@@ -24,7 +20,7 @@
         <div class="col-sm-offset-2 col-sm-4">
             <form:radiobutton path="defaultPolicy" value="false" /> <spring:message code="label.validation.custom.policy.file" /> :
         </div>
-        
+
         <div class="col-sm-6">
             <c:choose>
                 <c:when test="${defaultPolicy}">

@@ -21,7 +21,7 @@
     deployJava.runApplet(attributes, parameters, version);
 </script>
 
-<div class="alert alert-warning" role="alert" id="compatibility_warning" style="display: none;">
+<div class="col-md-8 col-md-offset-2 alert alert-warning" role="alert" id="compatibility_warning" style="display: none;">
     <strong>Warning</strong>
     <p>It seems that your environment does not meet the requirements:</p>
     <ul>
@@ -34,7 +34,7 @@
     <p>Anyway, we tried to start the applet (should be displayed on the top).</p>
 </div>
 
-<div class="alert alert-info" role="alert">
+<div class="col-md-8 col-md-offset-2 alert alert-info" role="alert">
     <strong>
         <spring:message code="label.info" />
     </strong>

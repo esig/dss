@@ -4,9 +4,9 @@
 
 <div role="tabpanel">
     <ul class="nav nav-tabs nav-justified" id="tabsResult">
-        <li role="presentation" class="active"><a href="#simple-report" aria-controls="simple-report"><spring:message code="label.simple.report" /></a></li>
-        <li role="presentation"><a href="#detailed-report" aria-controls="detailed-report"><spring:message code="label.detailed.report" /></a></li>
-        <li role="presentation"><a href="#diagnostic-tree" aria-controls="detailed-report"><spring:message code="label.diagnostic.tree" /></a></li>
+        <li role="presentation" class="active"><a href="#simple-report"><spring:message code="label.simple.report" /></a></li>
+        <li role="presentation"><a href="#detailed-report"><spring:message code="label.detailed.report" /></a></li>
+        <li role="presentation"><a href="#diagnostic-tree"><spring:message code="label.diagnostic.tree" /></a></li>
     </ul>
 
     <div class="tab-content">
@@ -17,7 +17,7 @@
             <p>Detailed report</p>
         </div>
         <div role="tabpanel" class="tab-pane fade" id="diagnostic-tree">
-            <p>Diagnostic Tree</p>
+            <jsp:include page="diagnosticTree.jsp" />
         </div>
     </div>
 </div>

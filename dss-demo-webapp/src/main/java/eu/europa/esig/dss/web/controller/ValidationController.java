@@ -73,7 +73,7 @@ public class ValidationController {
 			reports = documentValidator.validateDocument();
 		}
 
-		model.addAttribute("report", reports);
+		model.addAttribute("reports", reports);
 
 		return VALIDATION_RESULT_TILE;
 	}
