@@ -45,7 +45,7 @@ public class ValidationController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String validate(@ModelAttribute("validationForm") @Valid ValidationForm validationForm, Model model, BindingResult result) {
+	public String validate(@ModelAttribute("validationForm") @Valid ValidationForm validationForm,  BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			return VALIDATION_TILE;
 		}
