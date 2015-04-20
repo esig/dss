@@ -23,61 +23,57 @@ package eu.europa.esig.dss.applet.controller;
 import eu.europa.esig.dss.applet.main.DSSAppletCore;
 import eu.europa.esig.dss.applet.model.ActivityModel;
 import eu.europa.esig.dss.applet.view.ActivityView;
-import eu.europa.esig.dss.applet.wizard.extension.ExtensionWizardController;
 import eu.europa.esig.dss.applet.wizard.signature.SignatureWizardController;
 import eu.europa.esig.dss.applet.wizard.validation.ValidationWizardController;
 import eu.europa.esig.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
 
 /**
- * 
+ *
  * TODO
- * 
  *
  *
- * 
+ *
+ *
  *
  *
  */
 public class ActivityController extends DSSAppletController<ActivityModel> {
 
-    private ActivityView view;
+	private ActivityView view;
 
-    /**
-     * 
-     * The default constructor for ActivityController.
-     * 
-     * @param core
-     * @param model
-     */
-    public ActivityController(final DSSAppletCore core, final ActivityModel model) {
-        super(core, model);
-        view = new ActivityView(getCore(), this, getModel());
-    }
+	/**
+	 *
+	 * The default constructor for ActivityController.
+	 *
+	 * @param core
+	 * @param model
+	 */
+	public ActivityController(final DSSAppletCore core, final ActivityModel model) {
+		super(core, model);
+		view = new ActivityView(getCore(), this, getModel());
+	}
 
-    /**
-     * 
-     */
-    public void display() {
-        view.show();
-    }
+	/**
+	 *
+	 */
+	public void display() {
+		view.show();
+	}
 
-    /**
-     * 
-     */
-    public void startAction() {
-        switch (getModel().getAction()) {
-        case EXTEND:
-            getCore().getController(ExtensionWizardController.class).start();
-            break;
-        case SIGN:
-            getCore().getController(SignatureWizardController.class).start();
-            break;
-        case VERIFY:
-            getCore().getController(ValidationWizardController.class).start();
-            break;
-        case EDIT_VALIDATION_POLICY:
-            getCore().getController(ValidationPolicyWizardController.class).start();
-            break;
-        }
-    }
+	/**
+	 *
+	 */
+	public void startAction() {
+		switch (getModel().getAction()) {
+			case SIGN:
+				getCore().getController(SignatureWizardController.class).start();
+				break;
+			case VERIFY:
+				getCore().getController(ValidationWizardController.class).start();
+				break;
+			case EDIT_VALIDATION_POLICY:
+				getCore().getController(ValidationPolicyWizardController.class).start();
+				break;
+		}
+	}
 }

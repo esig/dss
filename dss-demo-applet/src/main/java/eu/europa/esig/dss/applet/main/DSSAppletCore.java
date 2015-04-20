@@ -31,13 +31,11 @@ import eu.europa.esig.dss.applet.SignatureTokenType;
 import eu.europa.esig.dss.applet.controller.ActivityController;
 import eu.europa.esig.dss.applet.main.Parameters.AppletUsage;
 import eu.europa.esig.dss.applet.model.ActivityModel;
-import eu.europa.esig.dss.applet.model.ExtendSignatureModel;
 import eu.europa.esig.dss.applet.model.SignatureModel;
 import eu.europa.esig.dss.applet.model.ValidationModel;
 import eu.europa.esig.dss.applet.model.ValidationPolicyModel;
 import eu.europa.esig.dss.applet.swing.mvc.AppletCore;
 import eu.europa.esig.dss.applet.util.DSSStringUtils;
-import eu.europa.esig.dss.applet.wizard.extension.ExtensionWizardController;
 import eu.europa.esig.dss.applet.wizard.signature.SignatureWizardController;
 import eu.europa.esig.dss.applet.wizard.validation.ValidationWizardController;
 import eu.europa.esig.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
@@ -104,7 +102,6 @@ public class DSSAppletCore extends AppletCore {
 		getControllers().put(ActivityController.class, new ActivityController(this, new ActivityModel()));
 		getControllers().put(ValidationWizardController.class, new ValidationWizardController(this, new ValidationModel()));
 		getControllers().put(SignatureWizardController.class, new SignatureWizardController(this, new SignatureModel()));
-		getControllers().put(ExtensionWizardController.class, new ExtensionWizardController(this, new ExtendSignatureModel()));
 		getControllers().put(ValidationPolicyWizardController.class, new ValidationPolicyWizardController(this, new ValidationPolicyModel()));
 	}
 

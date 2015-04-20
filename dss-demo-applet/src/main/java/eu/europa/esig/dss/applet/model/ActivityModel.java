@@ -23,49 +23,49 @@ package eu.europa.esig.dss.applet.model;
 import com.jgoodies.binding.beans.Model;
 
 /**
- * 
+ *
  * TODO
- * 
  *
  *
- * 
+ *
+ *
  *
  *
  */
 @SuppressWarnings("serial")
 public class ActivityModel extends Model {
-    /**
-     * 
-     * TODO
-     * 
-     *
-     *
-     * 
-     *
-     *
-     */
-    public enum ActivityAction {
-        SIGN, VERIFY, EDIT_VALIDATION_POLICY, EXTEND
-    }
+	/**
+	 *
+	 * TODO
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 */
+	public enum ActivityAction {
+		SIGN, VERIFY, EDIT_VALIDATION_POLICY
+	}
 
-    public static final String PROPERTY_ACTIVITY = "action";
-    private ActivityAction action;
+	public static final String PROPERTY_ACTIVITY = "action";
+	private ActivityAction action;
 
-    /**
-     * @return the action
-     */
-    public ActivityAction getAction() {
-        return action;
-    }
+	/**
+	 * @return the action
+	 */
+	public ActivityAction getAction() {
+		return action;
+	}
 
-    /**
-     * @param action the action to set
-     */
-    public void setAction(final ActivityAction action) {
-        final ActivityAction oldValue = this.action;
-        final ActivityAction newValue = action;
-        this.action = newValue;
-        firePropertyChange(PROPERTY_ACTIVITY, oldValue, newValue);
-    }
+	/**
+	 * @param action the action to set
+	 */
+	public void setAction(final ActivityAction action) {
+		final ActivityAction oldValue = this.action;
+		final ActivityAction newValue = action;
+		this.action = newValue;
+		firePropertyChange(PROPERTY_ACTIVITY, oldValue, newValue);
+	}
 
 }
