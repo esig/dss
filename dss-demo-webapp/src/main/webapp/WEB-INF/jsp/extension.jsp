@@ -6,26 +6,9 @@
 <h2><spring:message code="label.extend"/></h2>
 <form:form method="post" modelAttribute="extensionForm" cssClass="form-horizontal" enctype="multipart/form-data">
 
-    <div class="form-group">
-        <form:label path="signedFile" cssClass="col-sm-2 control-label">
-            <spring:message code="label.signed.file" />
-        </form:label>
-        <div class="col-sm-4">
-            <form:input path="signedFile" type="file" /> 
-        </div>
-        <div class="col-xs-4 col-md-offset-2">
-            <form:errors path="signedFile" cssClass="text-danger" />
-        </div>
-    </div>
+    <jsp:include page="fields/signedFileField.jsp" />
     
-    <div class="form-group">
-        <form:label path="originalFile" cssClass="col-sm-2 control-label">
-            <spring:message code="label.original.file" />
-        </form:label>
-        <div class="col-sm-4">
-            <form:input path="originalFile" type="file" />
-        </div>
-    </div>
+    <jsp:include page="fields/originalFileField.jsp" />
 
     <div class="form-group">
         <form:label path="signatureForm" cssClass="col-sm-2 control-label">

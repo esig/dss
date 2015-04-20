@@ -20,6 +20,15 @@
     <definition name="extension" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/extension.jsp" />
     </definition>
+    
+    <definition name="validation" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/validation.jsp" />
+    </definition>
+
+    <definition name="validation_result" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/validation_result.jsp" />
+    </definition>
+
 
     <definition name="login" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/login.jsp" />

@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.web.controller;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.signature.SignaturePackaging;
+import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.ExtensionForm;
 import eu.europa.esig.dss.web.service.SigningService;
@@ -55,7 +53,7 @@ public class ExtensionController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String showExtension(Model model, HttpServletRequest request) {
+	public String showExtension(Model model) {
 		model.addAttribute("extensionForm", new ExtensionForm());
 		return EXTENSION_TILE;
 	}
@@ -66,8 +64,8 @@ public class ExtensionController {
 			return EXTENSION_TILE;
 		}
 
-		DSSDocument toExtendDocument = toDSSDocument(extensionForm.getSignedFile());
-		DSSDocument extendedDocument = signingService.extend(extensionForm.getSignatureForm(), extensionForm.getSignaturePackaging(), extensionForm.getSignatureLevel(), toExtendDocument, toDSSDocument(extensionForm.getOriginalFile()));
+		DSSDocument toExtendDocument = WebAppUtils.toDSSDocument(extensionForm.getSignedFile());
+		DSSDocument extendedDocument = signingService.extend(extensionForm.getSignatureForm(), extensionForm.getSignaturePackaging(), extensionForm.getSignatureLevel(), toExtendDocument, WebAppUtils.toDSSDocument(extensionForm.getOriginalFile()));
 
 		String originalName = toExtendDocument.getName();
 		String extendedFileName = StringUtils.substringBeforeLast(originalName, ".") + "-extended."+StringUtils.substringAfterLast(originalName, ".");
@@ -80,18 +78,6 @@ public class ExtensionController {
 			logger.error(e.getMessage(), e);
 		}
 
-		return null;
-	}
-
-	private DSSDocument toDSSDocument(MultipartFile multipartFile) {
-		try {
-			if ((multipartFile != null) && !multipartFile.isEmpty()) {
-				DSSDocument document = new InMemoryDocument(multipartFile.getBytes(), multipartFile.getOriginalFilename());
-				return document;
-			}
-		} catch (IOException e) {
-			logger.error("Cannot read  file : " + e.getMessage(), e);
-		}
 		return null;
 	}
 
@@ -133,7 +119,7 @@ public class ExtensionController {
 		}
 		return packagings;
 	}
-	
+
 	@RequestMapping(value = "/levelsByForm", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<SignatureLevel> getAllowedLevelsByForm(@RequestParam("form") SignatureForm signatureForm) {
