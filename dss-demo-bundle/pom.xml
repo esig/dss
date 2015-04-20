@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.4.RC1</version>
+		<version>4.4.RC2</version>
 	</parent>
 
 	<name>DSS Package: OOTB Web-Application</name>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.apache</groupId>
 			<artifactId>tomcat</artifactId>
-			<version>6.0.35</version>
+			<version>6.0.43</version>
 			<type>zip</type>
 		</dependency>
 	</dependencies>

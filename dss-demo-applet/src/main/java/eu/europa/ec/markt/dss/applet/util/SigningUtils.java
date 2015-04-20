@@ -23,11 +23,13 @@ package eu.europa.ec.markt.dss.applet.util;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.markt.dss.DSSUtils;
 import eu.europa.ec.markt.dss.DSSXMLUtils;
@@ -44,7 +46,6 @@ import eu.europa.ec.markt.dss.signature.MimeType;
 import eu.europa.ec.markt.dss.signature.token.DSSPrivateKeyEntry;
 import eu.europa.ec.markt.dss.signature.token.SignatureTokenConnection;
 import eu.europa.ec.markt.dss.validation102853.CertificateToken;
-import eu.europa.ec.markt.dss.ws.signature.DSSException_Exception;
 import eu.europa.ec.markt.dss.ws.signature.DigestAlgorithm;
 import eu.europa.ec.markt.dss.ws.signature.DssTransform;
 import eu.europa.ec.markt.dss.ws.signature.EncryptionAlgorithm;
@@ -69,6 +70,8 @@ import eu.europa.ec.markt.dss.ws.signature.WsdssReference;
  *
  */
 public final class SigningUtils {
+
+	private static final Logger logger = LoggerFactory.getLogger(SigningUtils.class);
 
 	private static ObjectFactory FACTORY;
 
@@ -316,8 +319,13 @@ public final class SigningUtils {
 		inMemoryDocument.setName(wsSignedDocument.getName());
 		inMemoryDocument.setAbsolutePath(wsSignedDocument.getAbsolutePath());
 		final eu.europa.ec.markt.dss.ws.signature.MimeType wsMimeType = wsSignedDocument.getMimeType();
-		final MimeType mimeType = MimeType.fromMimeTypeString(wsMimeType.getMimeTypeString());
-		inMemoryDocument.setMimeType(mimeType);
+		if (wsMimeType != null) {
+			final MimeType mimeType = MimeType.fromMimeTypeString(wsMimeType.getMimeTypeString());
+			inMemoryDocument.setMimeType(mimeType);
+		} else {
+			logger.warn("Mimetype is not filled !");
+		}
 		return inMemoryDocument;
 	}
+
 }

@@ -54,6 +54,7 @@
 
 	<bean id="tspSource" class="eu.europa.ec.markt.dss.validation102853.tsp.OnlineTSPSource">
 		<property name="tspServer" value="http://tsa.belgium.be/connect"/>
+		<property name="dataLoader" ref="dataLoader"/>
 	</bean>
 
 </beans>

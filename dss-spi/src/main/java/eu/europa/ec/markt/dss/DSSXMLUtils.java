@@ -500,6 +500,26 @@ public final class DSSXMLUtils {
 		}
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
+
+		try {
+			// disable external entities
+			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			dbFactory.setXIncludeAware(false);
+			dbFactory.setExpandEntityReferences(false);
+		} catch (ParserConfigurationException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public static TransformerFactory getSecureTransformerFactory() {
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		try {
+			transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		} catch (TransformerConfigurationException e) {
+			throw new DSSException(e);
+		}
+		return transformerFactory;
 	}
 
 	/**

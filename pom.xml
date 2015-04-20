@@ -6,7 +6,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>4.4.RC1</version>
+	<version>4.4.RC2</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -135,11 +135,6 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<groupId>org.codehaus.cargo</groupId>
-					<artifactId>cargo-maven2-plugin</artifactId>
-					<version>1.2.2</version>
-				</plugin>
-				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>1.7</version>
@@ -185,7 +180,7 @@
 
 	<properties>
 		<log4j.version>1.2.17</log4j.version>
-		<spring.version>3.1.4.RELEASE</spring.version>
+		<spring.version>3.2.13.RELEASE</spring.version>
 		<tiles.version>2.2.2</tiles.version>
 		<slf4j.version>1.6.6</slf4j.version>
 		<logback-classic.version>1.0.13</logback-classic.version>
@@ -193,7 +188,6 @@
 		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
 		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
 		<flying-saucer.version>9.0.4</flying-saucer.version>
-		<beansbinding.version>1.2.1</beansbinding.version>
 		<xmlsec.version>2.0.2</xmlsec.version>
 		<pdfbox.version>1.8.8</pdfbox.version>
 		<junit.version>4.11</junit.version>
@@ -205,7 +199,7 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>sscd-mocca-adapter</artifactId>
-				<version>4.4.RC1</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -281,9 +275,20 @@
 				<version>3.2</version>
 			</dependency>
 			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.4</version>
+			</dependency>
+			
+			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>2.7.2</version>
 			</dependency>
 			<dependency>
 				<groupId>xerces</groupId>
@@ -291,35 +296,16 @@
 				<version>2.11.0</version>
 			</dependency>
 			<dependency>
-				<groupId>xml-apis</groupId>
-				<artifactId>xml-apis</artifactId>
-				<version>1.4.01</version>
-			</dependency>
-			<dependency>
 				<groupId>com.sun.xml.bind</groupId>
 				<artifactId>jaxb-impl</artifactId>
 				<version>2.1.13</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<version>0.10.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.swinglabs</groupId>
-				<artifactId>swingx</artifactId>
-				<version>1.6.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jdesktop</groupId>
-				<artifactId>beansbinding</artifactId>
-				<version>${beansbinding.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.pdfbox</groupId>
 				<artifactId>pdfbox</artifactId>
 				<version>${pdfbox.version}</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
 				<artifactId>bcprov-jdk15on</artifactId>
@@ -330,11 +316,7 @@
 				<artifactId>bcmail-jdk15on</artifactId>
 				<version>${bouncycastle.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.netbeans.api</groupId>
-				<artifactId>org-openide-dialogs</artifactId>
-				<version>RELEASE71</version>
-			</dependency>
+			
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
@@ -359,16 +341,6 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-orm</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-aop</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
@@ -480,11 +452,6 @@
 
 			<dependency>
 				<groupId>org.xhtmlrenderer</groupId>
-				<artifactId>flying-saucer-core</artifactId>
-				<version>${flying-saucer.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.xhtmlrenderer</groupId>
 				<artifactId>flying-saucer-pdf</artifactId>
 				<version>${flying-saucer.version}</version>
 			</dependency>
@@ -494,13 +461,6 @@
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
 			</dependency>
-
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
-			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
@@ -577,6 +537,29 @@
 						</executions>
 					</plugin>
 				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>owasp</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.owasp</groupId>
+						<artifactId>dependency-check-maven</artifactId>
+						<version>1.2.10</version>
+						<configuration>
+							<failBuildOnCVSS>6</failBuildOnCVSS>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+
 			</build>
 		</profile>
 	</profiles>
