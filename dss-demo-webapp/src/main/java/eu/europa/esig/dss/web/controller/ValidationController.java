@@ -23,6 +23,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.model.ValidationForm;
+import eu.europa.esig.dss.web.service.XSLTService;
 
 @Controller
 @RequestMapping(value = "/validation")
@@ -35,6 +36,9 @@ public class ValidationController {
 
 	@Autowired
 	private CertificateVerifier certificateVerifier;
+
+	@Autowired
+	private XSLTService xsltService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showValidationForm(Model model) {
@@ -73,7 +77,8 @@ public class ValidationController {
 			reports = documentValidator.validateDocument();
 		}
 
-		model.addAttribute("reports", reports);
+		model.addAttribute("simpleReport", xsltService.generateSimpleReport(reports.getSimpleReport()));
+		model.addAttribute("detailedReport", xsltService.generateDetailedReport(reports.getDetailedReport()));
 
 		return VALIDATION_RESULT_TILE;
 	}
