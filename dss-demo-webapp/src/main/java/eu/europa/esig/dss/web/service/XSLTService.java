@@ -35,8 +35,15 @@ public class XSLTService {
 	}
 
 	public String generateDetailedReport(DetailedReport detailedReport) {
-		// TODO Auto-generated method stub
-		return null;
+		Writer writer = new StringWriter();
+		try {
+			TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
+			Transformer transformer = transformerFactory.newTransformer(new StreamSource(XSLTService.class.getResourceAsStream("/xslt/validationReport.xslt")));
+			transformer.transform(new StreamSource(new StringReader(detailedReport.toString())), new StreamResult(writer));
+		} catch (Exception e) {
+			logger.error("Error while generating detailed report : " + e.getMessage(), e);
+		}
+		return writer.toString();
 	}
 
 }

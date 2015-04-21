@@ -13,7 +13,7 @@
         <c:out value="${simpleReport}" escapeXml="false" />
     </div>
     <div role="tabpanel" class="tab-pane fade" id="detailed-report">
-        <p>Detailed report</p>
+        <c:out value="${detailedReport}" escapeXml="false" />
     </div>
     <div role="tabpanel" class="tab-pane fade" id="diagnostic-tree">
         <jsp:include page="diagnosticTree.jsp" />
@@ -25,4 +25,6 @@
         e.preventDefault()
         $(this).tab('show')
     });
+    
+    $('.collapse').collapse();
 </script>
