@@ -43,6 +43,7 @@ import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.model.ValidationForm;
+import eu.europa.esig.dss.web.service.FOPService;
 import eu.europa.esig.dss.web.service.XSLTService;
 
 @Controller
@@ -63,6 +64,9 @@ public class ValidationController {
 
 	@Autowired
 	private XSLTService xsltService;
+	
+	@Autowired
+	private FOPService fopService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showValidationForm(Model model) {
@@ -116,34 +120,15 @@ public class ValidationController {
 	@RequestMapping(value = "/download-simple-report")
 	public void downloadSimpleReport(HttpSession session, HttpServletResponse response) {
 		try {
+			SimpleReport simpleReport = (SimpleReport) session.getAttribute(SIMPLE_REPORT_ATTRIBUTE);
 
 			response.setContentType(MimeType.PDF.getMimeTypeString());
 			response.setHeader("Content-Disposition", "attachment; filename=DSS-Simple-report.pdf");
 
-			SimpleReport simpleReport = (SimpleReport) session.getAttribute(SIMPLE_REPORT_ATTRIBUTE);
-
-			FopFactory fopFactory = FopFactory.newInstance();
-			FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-			foUserAgent.setCreator("DSS Webapp");
-			foUserAgent.setCreationDate(new Date());
-			foUserAgent.setTitle("Simple validation report");
-			foUserAgent.setAccessibility(true);
-
-			InputStream xsltIS = ValidationController.class.getResourceAsStream("/xslt/simpleReportFop.xslt");
-			Source xslt = new StreamSource(xsltIS);
-
-			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, response.getOutputStream());
-
-			TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
-			Transformer transformer = transformerFactory.newTransformer(xslt);
-
-			Result res = new SAXResult(fop.getDefaultHandler());
-			transformer.transform(new StreamSource(new StringReader(simpleReport.toString())), res);
-
+			fopService.generateSimpleReport(simpleReport, response.getOutputStream());
 		} catch (Exception e) {
 			logger.error("An error occured while generating pdf for simple report : " + e.getMessage(), e);
 		}
-
 	}
 
 }
