@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
-<div class="list-group">
+<div class="list-group hidden-print">
     <c:set var="currentPage" value="${requestScope['javax.servlet.forward.servlet_path']}" />
     <c:choose> 
         <%-- ADMIN PART --%>

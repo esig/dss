@@ -25,7 +25,7 @@
     <script type="text/javascript" src="<c:url value="/scripts/detect_browser_version.js" />"></script>
   </head>
   <body>
-       <nav class="navbar navbar-default">
+       <nav class="navbar navbar-default hidden-print">
             <div class="container">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="<spring:url value="/home"/>">
