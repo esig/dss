@@ -11,7 +11,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -24,7 +24,7 @@ public class XAdESBaselineBTest extends AbstractRequirementChecks {
 		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
@@ -36,7 +36,7 @@ public class XAdESBaselineBTest extends AbstractRequirementChecks {
 		XAdESService service = new XAdESService(certificateVerifier);
 
 		byte[] dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		byte[] signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry.getPrivateKey(), dataToSign);
+		byte[] signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		return service.signDocument(documentToSign, signatureParameters, signature);
 	}
 

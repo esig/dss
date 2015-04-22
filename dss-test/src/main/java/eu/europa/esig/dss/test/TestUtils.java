@@ -21,21 +21,21 @@
 package eu.europa.esig.dss.test;
 
 import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
 import java.security.Signature;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 
 public final class TestUtils {
 
 	private TestUtils(){
 	}
 
-	public static byte[] sign(final SignatureAlgorithm signatureAlgorithm, final PrivateKey privateKey, final byte[] bytes) {
+	public static byte[] sign(final SignatureAlgorithm signatureAlgorithm, final MockPrivateKeyEntry privateKey, final byte[] bytes) {
 		try {
 			final Signature signature = Signature.getInstance(signatureAlgorithm.getJCEId());
-			signature.initSign(privateKey);
+			signature.initSign(privateKey.getPrivateKey());
 			signature.update(bytes);
 			final byte[] signatureValue = signature.sign();
 			return signatureValue;

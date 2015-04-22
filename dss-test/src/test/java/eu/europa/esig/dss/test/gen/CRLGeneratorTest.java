@@ -31,9 +31,7 @@ import org.bouncycastle.asn1.x509.CRLReason;
 import org.junit.Test;
 
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.test.gen.CRLGenerator;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 
 public class CRLGeneratorTest {
 
@@ -42,8 +40,8 @@ public class CRLGeneratorTest {
 
 	@Test
 	public void test() throws Exception {
-		DSSPrivateKeyEntry issuerKeyEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
-		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerKeyEntry);
+		MockPrivateKeyEntry issuerKeyEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerKeyEntry);
 		X509CRL generatedCRL = crlGenerator.generateCRL(privateKeyEntry.getCertificate().getCertificate(), issuerKeyEntry, new Date(), CRLReason.privilegeWithdrawn);
 		assertNotNull(generatedCRL);
 

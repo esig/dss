@@ -13,7 +13,7 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
@@ -24,7 +24,7 @@ public class CAdESBaselineBTest extends AbstractRequirementChecks {
 		DSSDocument documentToSign = new InMemoryDocument("Hello world".getBytes());
 
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
@@ -36,7 +36,7 @@ public class CAdESBaselineBTest extends AbstractRequirementChecks {
 		CAdESService service = new CAdESService(certificateVerifier);
 
 		byte[] dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		byte[] signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry.getPrivateKey(), dataToSign);
+		byte[] signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		return service.signDocument(documentToSign, signatureParameters, signature);
 	}
 

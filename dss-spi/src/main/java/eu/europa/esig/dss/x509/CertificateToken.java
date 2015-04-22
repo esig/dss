@@ -863,4 +863,33 @@ public class CertificateToken extends Token {
 		return x509Certificate.getSubjectDN();
 	}
 
+	private String extractCNName(X500Principal principal) {
+		String name = principal.getName();
+		int index = name.indexOf("CN=") + 3;
+		if (index == -1) {
+			return name;
+		}
+		int stop = name.indexOf(",", index);
+		if (stop == -1) {
+			return name.substring(index);
+		} else {
+			return name.substring(index, stop);
+		}
+	}
+
+	public String getSubjectShortName() {
+		return extractCNName(getSubjectX500Principal());
+	}
+
+	/**
+	 * KeyUsage ::= BIT STRING { digitalSignature (0), nonRepudiation (1),
+	 * keyEncipherment (2), dataEncipherment (3), keyAgreement (4), keyCertSign
+	 * (5), cRLSign (6), encipherOnly (7), decipherOnly (8) }
+	 *
+	 * @return
+	 */
+	public boolean[] getKeyUsage() {
+		return x509Certificate.getKeyUsage();
+	}
+
 }

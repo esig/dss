@@ -39,12 +39,11 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
-import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -56,7 +55,7 @@ public class PAdESVisibleSignatureTest {
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private DSSPrivateKeyEntry privateKeyEntry;
+	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
@@ -134,7 +133,7 @@ public class PAdESVisibleSignatureTest {
 
 	private void signAndValidate() throws IOException {
 		byte[] dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		byte[] signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry.getPrivateKey(), dataToSign);
+		byte[] signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		// signedDocument.save("test.pdf");

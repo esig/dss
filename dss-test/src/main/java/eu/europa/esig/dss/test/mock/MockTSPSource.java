@@ -61,7 +61,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -88,7 +87,7 @@ public class MockTSPSource implements TSPSource {
 	/**
 	 * The default constructor for MockTSPSource.
 	 */
-	public MockTSPSource(final DSSPrivateKeyEntry entry, final Date timestampDate) throws DSSException {
+	public MockTSPSource(final MockPrivateKeyEntry entry, final Date timestampDate) throws DSSException {
 		this.timestampDate = timestampDate;
 
 		key = entry.getPrivateKey();

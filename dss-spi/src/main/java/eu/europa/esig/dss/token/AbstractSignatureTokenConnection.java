@@ -51,6 +51,10 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
 
+		if(!(keyEntry instanceof KSPrivateKeyEntry)) {
+			throw new IllegalArgumentException("Only KSPrivateKeyEntry are supported");
+		}
+
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
 		LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
@@ -58,7 +62,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 		try {
 			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
-			signature.initSign(keyEntry.getPrivateKey());
+			signature.initSign(((KSPrivateKeyEntry)keyEntry).getPrivateKey());
 			signature.update(toBeSigned.getBytes());
 			final byte[] signatureValue = signature.sign();
 			SignatureValue value = new SignatureValue();

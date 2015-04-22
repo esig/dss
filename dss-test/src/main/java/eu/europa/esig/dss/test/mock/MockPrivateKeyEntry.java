@@ -64,7 +64,6 @@ public class MockPrivateKeyEntry implements DSSPrivateKeyEntry {
 		return encryptionAlgo;
 	}
 
-	@Override
 	public PrivateKey getPrivateKey() {
 		return privateKey;
 	}

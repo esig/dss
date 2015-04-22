@@ -32,8 +32,8 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
@@ -42,7 +42,7 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.pdf"));
 
@@ -58,7 +58,7 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
 		byte[] dataToSign = service.getDataToSign(document, signatureParameters);
-		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA.getPrivateKey(), dataToSign);
+		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 		return signedDocument;
 	}

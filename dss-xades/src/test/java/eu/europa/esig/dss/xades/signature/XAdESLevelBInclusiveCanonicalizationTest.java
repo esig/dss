@@ -36,7 +36,7 @@ import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -46,7 +46,7 @@ public class XAdESLevelBInclusiveCanonicalizationTest extends AbstractTestSignat
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private DSSPrivateKeyEntry privateKeyEntry;
+	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
@@ -100,7 +100,7 @@ public class XAdESLevelBInclusiveCanonicalizationTest extends AbstractTestSignat
 	}
 
 	@Override
-	protected DSSPrivateKeyEntry getPrivateKeyEntry() {
+	protected MockPrivateKeyEntry getPrivateKeyEntry() {
 		return privateKeyEntry;
 	}
 

@@ -35,8 +35,8 @@ import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
@@ -45,7 +45,7 @@ public class PAdESLevelLTATest extends AbstractTestSignature {
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private DSSPrivateKeyEntry privateKeyEntry;
+	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
@@ -97,7 +97,7 @@ public class PAdESLevelLTATest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected DSSPrivateKeyEntry getPrivateKeyEntry() {
+	protected MockPrivateKeyEntry getPrivateKeyEntry() {
 		return privateKeyEntry;
 	}
 

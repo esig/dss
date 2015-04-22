@@ -68,7 +68,7 @@ public class CertificateService {
 		return keyGenerator.generateKeyPair();
 	}
 
-	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final DSSPrivateKeyEntry rootEntry, Date notBefore, Date notAfter) throws Exception {
+	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final MockPrivateKeyEntry rootEntry, Date notBefore, Date notAfter) throws Exception {
 		X500Name rootName = new JcaX509CertificateHolder(rootEntry.getCertificate().getCertificate()).getSubject();
 		KeyPair childKeyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 
@@ -79,8 +79,8 @@ public class CertificateService {
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), child, chain, childKeyPair.getPrivate());
 	}
 
-	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
-		DSSPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
+	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
+		MockPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
 		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
@@ -88,15 +88,15 @@ public class CertificateService {
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
 
-	public DSSPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, DSSPrivateKeyEntry rootEntry) throws Exception {
+	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, MockPrivateKeyEntry rootEntry) throws Exception {
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
 		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
 
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
 
-	public DSSPrivateKeyEntry generateExpiredCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
-		DSSPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
+	public MockPrivateKeyEntry generateExpiredCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
+		MockPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
 
 		Date notBefore = new Date(System.currentTimeMillis() - (10 * 24 * 60 * 60 * 1000)); // -10d
 		Date notAfter = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
@@ -104,7 +104,7 @@ public class CertificateService {
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
 
-	public DSSPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm) throws Exception {
+	public MockPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm) throws Exception {
 		KeyPair keyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 		X500Name issuer = new X500Name("CN=RootSelfSignedFake,O=DSS-test");
 
@@ -116,7 +116,7 @@ public class CertificateService {
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), certificate, keyPair.getPrivate());
 	}
 
-	public DSSPrivateKeyEntry generateTspCertificate(final SignatureAlgorithm algorithm) throws Exception {
+	public MockPrivateKeyEntry generateTspCertificate(final SignatureAlgorithm algorithm) throws Exception {
 		KeyPair keyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 		X500Name issuer = new X500Name("CN=RootIssuerTSPFake,O=DSS-test");
 		X500Name subject = new X500Name("CN=RootSubjectTSP,O=DSS-test");

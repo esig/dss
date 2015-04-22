@@ -35,7 +35,7 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 
 public class CRLGenerator {
 
@@ -45,7 +45,7 @@ public class CRLGenerator {
 		Security.addProvider(SECURITY_PROVIDER);
 	}
 
-	public X509CRL generateCRL(X509Certificate certToRevoke, DSSPrivateKeyEntry issuerEntry, Date dateOfRevoke, int reason) throws Exception {
+	public X509CRL generateCRL(X509Certificate certToRevoke, MockPrivateKeyEntry issuerEntry, Date dateOfRevoke, int reason) throws Exception {
 
 		Date now = new Date();
 		X500Name x500nameIssuer = new JcaX509CertificateHolder(issuerEntry.getCertificate().getCertificate()).getSubject();

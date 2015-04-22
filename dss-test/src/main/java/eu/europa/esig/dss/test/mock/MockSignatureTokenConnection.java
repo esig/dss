@@ -20,9 +20,15 @@
  */
 package eu.europa.esig.dss.test.mock;
 
+import java.security.Signature;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 
@@ -38,6 +44,30 @@ public class MockSignatureTokenConnection extends AbstractSignatureTokenConnecti
 
 	@Override
 	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
+		return null;
+	}
+
+	@Override
+	public byte[] sign(byte[] bytes, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
+
+		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
+		LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
+		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
+
+		try {
+			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
+			signature.initSign(((MockPrivateKeyEntry)keyEntry).getPrivateKey());
+			signature.update(bytes);
+			final byte[] signatureValue = signature.sign();
+			return signatureValue;
+		} catch(Exception e) {
+			throw new DSSException(e);
+		}
+	}
+
+	@Override
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
 		return null;
 	}
 

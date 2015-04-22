@@ -38,12 +38,11 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
@@ -56,7 +55,7 @@ public class PAdESDoubleSignatureTest {
 
 	private static DSSDocument toBeSigned;
 
-	private static DSSPrivateKeyEntry privateKeyEntry;
+	private static MockPrivateKeyEntry privateKeyEntry;
 
 	@Parameters
 	public static List<Object[]> data() {
@@ -86,7 +85,7 @@ public class PAdESDoubleSignatureTest {
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
 		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
-		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
+		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new PAdESSignatureParameters();
@@ -95,7 +94,7 @@ public class PAdESDoubleSignatureTest {
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
 		dataToSign = service.getDataToSign(signedDocument, params);
-		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
+		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);

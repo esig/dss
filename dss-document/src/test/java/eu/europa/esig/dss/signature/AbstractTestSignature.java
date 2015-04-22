@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.TestUtils;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -60,7 +60,7 @@ public abstract class AbstractTestSignature {
 
 	protected abstract DocumentSignatureService getService();
 
-	protected abstract DSSPrivateKeyEntry getPrivateKeyEntry();
+	protected abstract MockPrivateKeyEntry getPrivateKeyEntry();
 
 	protected abstract AbstractSignatureParameters getSignatureParameters();
 
@@ -127,10 +127,10 @@ public abstract class AbstractTestSignature {
 		DSSDocument toBeSigned = getDocumentToSign();
 		AbstractSignatureParameters params = getSignatureParameters();
 		DocumentSignatureService service = getService();
-		DSSPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
+		MockPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
 
 		final byte[] dataToSign = service.getDataToSign(toBeSigned, params);
-		final byte[] signatureValue = TestUtils.sign(params.getSignatureAlgorithm(), privateKeyEntry.getPrivateKey(), dataToSign);
+		final byte[] signatureValue = TestUtils.sign(params.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 		return signedDocument;
 	}

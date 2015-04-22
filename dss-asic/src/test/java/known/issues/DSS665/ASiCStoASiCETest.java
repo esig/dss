@@ -15,7 +15,7 @@ import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -29,7 +29,7 @@ public class ASiCStoASiCETest {
 		DSSDocument documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
 
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry	privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry	privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		ASiCSignatureParameters signatureParameters = new ASiCSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -42,7 +42,7 @@ public class ASiCStoASiCETest {
 		ASiCService service = new ASiCService(certificateVerifier);
 
 		byte[] dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		byte[] signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry.getPrivateKey(), dataToSign);
+		byte[] signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
@@ -56,7 +56,7 @@ public class ASiCStoASiCETest {
 		service = new ASiCService(certificateVerifier);
 
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
-		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry.getPrivateKey(), dataToSign);
+		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);

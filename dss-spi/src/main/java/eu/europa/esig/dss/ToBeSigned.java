@@ -7,6 +7,13 @@ public class ToBeSigned {
 
 	private byte[] bytes;
 
+	public ToBeSigned() {
+	}
+
+	public ToBeSigned(byte[] bytes) {
+		this.bytes = bytes;
+	}
+
 	public byte[] getBytes() {
 		return bytes;
 	}

@@ -14,8 +14,8 @@ import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.Reports;
@@ -26,7 +26,7 @@ public class ASiCeSignAndExtendTest {
 	@Test
 	public void sign() throws Exception {
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry entry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry entry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		ASiCService service = new ASiCService(new CommonCertificateVerifier());
 
@@ -37,7 +37,7 @@ public class ASiCeSignAndExtendTest {
 		parameters.setSigningCertificate(entry.getCertificate());
 
 		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);
-		byte[] signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, entry.getPrivateKey(), dataToSign);
+		byte[] signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, entry, dataToSign);
 		DSSDocument signDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		signDocument.save("target/asic-e-cades-b.asice");

@@ -40,13 +40,12 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.signature.XAdESService;
 
 @RunWith(Parameterized.class)
 public class XAdESDoubleSignatureTest {
@@ -55,7 +54,7 @@ public class XAdESDoubleSignatureTest {
 
 	private static DSSDocument toBeSigned;
 
-	private static DSSPrivateKeyEntry privateKeyEntry;
+	private static MockPrivateKeyEntry privateKeyEntry;
 
 	// Run 10 times this test
 	@Parameters
@@ -85,7 +84,7 @@ public class XAdESDoubleSignatureTest {
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
 		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
-		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
+		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new XAdESSignatureParameters();
@@ -94,7 +93,7 @@ public class XAdESDoubleSignatureTest {
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
 		dataToSign = service.getDataToSign(signedDocument, params);
-		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry.getPrivateKey(), dataToSign);
+		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);

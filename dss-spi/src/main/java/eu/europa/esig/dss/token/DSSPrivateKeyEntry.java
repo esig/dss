@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.token;
 
-import java.security.PrivateKey;
-
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -32,28 +30,21 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public interface DSSPrivateKeyEntry {
 
-    /**
-     * @return the certificate
-     */
+	/**
+	 * @return the certificate
+	 */
 	CertificateToken getCertificate();
 
-    /**
-     * @return the certificateChain
-     */
+	/**
+	 * @return the certificateChain
+	 */
 	CertificateToken[] getCertificateChain();
 
-    /**
-     * Get the SignatureAlgorithm corresponding to the PrivateKey
-     *
-     * @return
-     */
-    EncryptionAlgorithm getEncryptionAlgorithm() throws DSSException;
-
-    /**
-     * Returns the encapsulated private key.
-     *
-     * @return
-     */
-    public PrivateKey getPrivateKey();
+	/**
+	 * Get the SignatureAlgorithm corresponding to the PrivateKey
+	 *
+	 * @return
+	 */
+	EncryptionAlgorithm getEncryptionAlgorithm() throws DSSException;
 
 }

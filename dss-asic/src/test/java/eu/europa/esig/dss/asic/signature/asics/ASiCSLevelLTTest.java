@@ -26,7 +26,6 @@ import java.util.Date;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
@@ -38,8 +37,8 @@ import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
@@ -49,7 +48,7 @@ public class ASiCSLevelLTTest extends AbstractTestSignature {
 	private DocumentSignatureService<ASiCSignatureParameters> service;
 	private ASiCSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private DSSPrivateKeyEntry privateKeyEntry;
+	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
@@ -106,7 +105,7 @@ public class ASiCSLevelLTTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected DSSPrivateKeyEntry getPrivateKeyEntry() {
+	protected MockPrivateKeyEntry getPrivateKeyEntry() {
 		return privateKeyEntry;
 	}
 

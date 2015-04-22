@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
 import java.security.Signature;
 import java.util.List;
 
@@ -49,7 +48,6 @@ import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockSignatureTokenConnection;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -66,8 +64,8 @@ public class XAdESCounterSignatureTest {
 	@Test
 	public void test() throws Exception {
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-		MockPrivateKeyEntry entryUserB = (MockPrivateKeyEntry) certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry entryUserB = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -82,7 +80,7 @@ public class XAdESCounterSignatureTest {
 		XAdESService service = new XAdESService(certificateVerifier);
 
 		byte[] dataToSign = service.getDataToSign(document, signatureParameters);
-		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA.getPrivateKey(), dataToSign);
+		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 
 		// Countersign
@@ -134,9 +132,9 @@ public class XAdESCounterSignatureTest {
 		assertTrue(foundCounterSignature);
 	}
 
-	private byte[] sign(SignatureAlgorithm algo, PrivateKey privateKey, byte[] bytesToSign) throws GeneralSecurityException {
+	private byte[] sign(SignatureAlgorithm algo, MockPrivateKeyEntry privateKey, byte[] bytesToSign) throws GeneralSecurityException {
 		final Signature signature = Signature.getInstance(algo.getJCEId());
-		signature.initSign(privateKey);
+		signature.initSign(privateKey.getPrivateKey());
 		signature.update(bytesToSign);
 		final byte[] signatureValue = signature.sign();
 		return signatureValue;

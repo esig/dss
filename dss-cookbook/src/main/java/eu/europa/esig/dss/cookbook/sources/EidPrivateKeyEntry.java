@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.sources;
 
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -63,8 +62,4 @@ public class EidPrivateKeyEntry implements DSSPrivateKeyEntry {
 		return null;
 	}
 
-	@Override
-	public PrivateKey getPrivateKey() {
-		return null;
-	}
 }

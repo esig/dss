@@ -18,7 +18,7 @@ import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -33,7 +33,7 @@ public class CertificatePoolSharingTest {
 		DSSDocument	documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
 
 		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		ASiCSignatureParameters	signatureParameters = new ASiCSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -47,7 +47,7 @@ public class CertificatePoolSharingTest {
 		ASiCService service = new ASiCService(certificateVerifier);
 
 		byte[] dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		byte[] signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry.getPrivateKey(), dataToSign);
+		byte[] signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);

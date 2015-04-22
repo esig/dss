@@ -41,7 +41,7 @@ import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CRLGenerator;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockCRLSource;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -55,8 +55,8 @@ public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private DSSPrivateKeyEntry issuerEntry;
-	private DSSPrivateKeyEntry signerEntry;
+	private MockPrivateKeyEntry issuerEntry;
+	private MockPrivateKeyEntry signerEntry;
 
 	private X509CRL generatedCRL;
 
@@ -136,7 +136,7 @@ public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 	}
 
 	@Override
-	protected DSSPrivateKeyEntry getPrivateKeyEntry() {
+	protected MockPrivateKeyEntry getPrivateKeyEntry() {
 		return signerEntry;
 	}
 
