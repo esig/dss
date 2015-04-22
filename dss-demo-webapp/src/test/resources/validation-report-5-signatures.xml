@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8"?><ValidationData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+	<BasicBuildingBlocks>
+		<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
+			<ISC>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+					<Status>OK</Status>
+					<Info CertificateId="4f807bd663b32fd5f324fcae0854450ff6a2ed0835530dc6d06c9047cfcf7c36"/>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISASCP">Is the signed attribute: 'signing-certificate' present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISACDP">Is the signed attribute: 'cert-digest' of the certificate present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ICDVV">Is the certificate's digest value valid?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_AIDNASNE">Are the issuer distinguished name and the serial number equal?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</ISC>
+			<VCI>
+				<Constraint>
+					<Name NameId="BBB_VCI_ISPK">Is the signature policy known?</Name>
+					<Status>OK</Status>
+					<Info Identifier="1.3.158.36061701.0.0.1.10.4.0.12" Notice="[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]"/>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</VCI>
+			<CV>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+					<Status>NOT OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>INVALID</Indication>
+					<SubIndication>HASH_FAILURE</SubIndication>
+					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+				</Conclusion>
+			</CV>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463">
+			<ISC>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+					<Status>OK</Status>
+					<Info CertificateId="63792c6f85f5d489832f8ffc3a0a0af19fdd4659ffa85372eef25469b0566418"/>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISASCP">Is the signed attribute: 'signing-certificate' present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISACDP">Is the signed attribute: 'cert-digest' of the certificate present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ICDVV">Is the certificate's digest value valid?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_AIDNASNE">Are the issuer distinguished name and the serial number equal?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</ISC>
+			<VCI>
+				<Constraint>
+					<Name NameId="BBB_VCI_ISPK">Is the signature policy known?</Name>
+					<Status>OK</Status>
+					<Info Identifier="NO_POLICY"/>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</VCI>
+			<CV>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+					<Status>NOT OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>INVALID</Indication>
+					<SubIndication>HASH_FAILURE</SubIndication>
+					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+				</Conclusion>
+			</CV>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770">
+			<ISC>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+					<Status>OK</Status>
+					<Info CertificateId="5f7db6aa051ca3384fce329513e5474706a2b2c5fa2edcab1ff3984ceec292d7"/>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISASCP">Is the signed attribute: 'signing-certificate' present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISACDP">Is the signed attribute: 'cert-digest' of the certificate present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ICDVV">Is the certificate's digest value valid?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_AIDNASNE">Are the issuer distinguished name and the serial number equal?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</ISC>
+			<VCI>
+				<Constraint>
+					<Name NameId="BBB_VCI_ISPK">Is the signature policy known?</Name>
+					<Status>OK</Status>
+					<Info Identifier="NO_POLICY"/>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</VCI>
+			<CV>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+					<Status>NOT OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>INVALID</Indication>
+					<SubIndication>HASH_FAILURE</SubIndication>
+					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+				</Conclusion>
+			</CV>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71">
+			<ISC>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+					<Status>OK</Status>
+					<Info CertificateId="5f7db6aa051ca3384fce329513e5474706a2b2c5fa2edcab1ff3984ceec292d7"/>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISASCP">Is the signed attribute: 'signing-certificate' present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISACDP">Is the signed attribute: 'cert-digest' of the certificate present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ICDVV">Is the certificate's digest value valid?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_AIDNASNE">Are the issuer distinguished name and the serial number equal?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</ISC>
+			<VCI>
+				<Constraint>
+					<Name NameId="BBB_VCI_ISPK">Is the signature policy known?</Name>
+					<Status>OK</Status>
+					<Info Identifier="NO_POLICY"/>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</VCI>
+			<CV>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+					<Status>NOT OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>INVALID</Indication>
+					<SubIndication>HASH_FAILURE</SubIndication>
+					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+				</Conclusion>
+			</CV>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef">
+			<ISC>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+					<Status>OK</Status>
+					<Info CertificateId="6ca650ff093aee46e8542d6f319124d54394424b0341e18dc47c7c46f96f1eff"/>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISASCP">Is the signed attribute: 'signing-certificate' present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ISACDP">Is the signed attribute: 'cert-digest' of the certificate present?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_ICDVV">Is the certificate's digest value valid?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_ICS_AIDNASNE">Are the issuer distinguished name and the serial number equal?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</ISC>
+			<VCI>
+				<Constraint>
+					<Name NameId="BBB_VCI_ISPK">Is the signature policy known?</Name>
+					<Status>OK</Status>
+					<Info Identifier="1.3.158.36061701.0.0.1.10.4.0.12" Notice="[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]"/>
+				</Constraint>
+				<Conclusion>
+					<Indication>VALID</Indication>
+				</Conclusion>
+			</VCI>
+			<CV>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+					<Status>OK</Status>
+				</Constraint>
+				<Constraint>
+					<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+					<Status>NOT OK</Status>
+				</Constraint>
+				<Conclusion>
+					<Indication>INVALID</Indication>
+					<SubIndication>HASH_FAILURE</SubIndication>
+					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+				</Conclusion>
+			</CV>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+	</BasicBuildingBlocks>
+	<BasicValidationData>
+		<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463">
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770">
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71">
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef">
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+	</BasicValidationData>
+	<TimestampValidationData>
+		<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
+			<Timestamp Id="34335a90343489694c6abe782cb99498530da0fca07b94b220aede0f0749b23a" Type="SIGNATURE_TIMESTAMP">
+				<BasicBuildingBlocks>
+					<ISC>
+						<Constraint>
+							<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+							<Status>OK</Status>
+							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</ISC>
+					<CV>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</CV>
+					<SAV>
+						<Constraint>
+							<Name NameId="ASCCM">Are signature cryptographic constraints met?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</SAV>
+					<XCV>
+						<Constraint>
+							<Name NameId="BBB_XCV_ICTIVRSC">Is the current time in the validity range of the signer's certificate?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_XCV_CCCBB">Can the certificate chain be built till the trust anchor?</Name>
+							<Status>NOT OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>INDETERMINATE</Indication>
+							<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+							<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+						</Conclusion>
+					</XCV>
+					<Conclusion>
+						<Indication>INDETERMINATE</Indication>
+						<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+						<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+			<Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+				<BasicBuildingBlocks>
+					<ISC>
+						<Constraint>
+							<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+							<Status>OK</Status>
+							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</ISC>
+					<CV>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</CV>
+					<SAV>
+						<Constraint>
+							<Name NameId="ASCCM">Are signature cryptographic constraints met?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</SAV>
+					<XCV>
+						<Constraint>
+							<Name NameId="BBB_XCV_ICTIVRSC">Is the current time in the validity range of the signer's certificate?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_XCV_CCCBB">Can the certificate chain be built till the trust anchor?</Name>
+							<Status>NOT OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>INDETERMINATE</Indication>
+							<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+							<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+						</Conclusion>
+					</XCV>
+					<Conclusion>
+						<Indication>INDETERMINATE</Indication>
+						<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+						<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+		</Signature>
+		<Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463">
+			<Timestamp Id="698e8a6f2123434396785a91d54b968ad9f7036097cf732462afb94e1b60d6e8" Type="SIGNATURE_TIMESTAMP">
+				<BasicBuildingBlocks>
+					<ISC>
+						<Constraint>
+							<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+							<Status>OK</Status>
+							<Info CertificateId="93a3a101335fa7324b5711e923074713fbb2bb49b201f9f181db2a7956899e06"/>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</ISC>
+					<CV>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</CV>
+					<SAV>
+						<Constraint>
+							<Name NameId="ASCCM">Are signature cryptographic constraints met?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</SAV>
+					<XCV>
+						<Constraint>
+							<Name NameId="BBB_XCV_ICTIVRSC">Is the current time in the validity range of the signer's certificate?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_XCV_CCCBB">Can the certificate chain be built till the trust anchor?</Name>
+							<Status>NOT OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>INDETERMINATE</Indication>
+							<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+							<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+						</Conclusion>
+					</XCV>
+					<Conclusion>
+						<Indication>INDETERMINATE</Indication>
+						<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+						<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+			<Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+				<BasicBuildingBlocks>
+					<ISC>
+						<Constraint>
+							<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+							<Status>OK</Status>
+							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</ISC>
+					<CV>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</CV>
+					<SAV>
+						<Constraint>
+							<Name NameId="ASCCM">Are signature cryptographic constraints met?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</SAV>
+					<XCV>
+						<Constraint>
+							<Name NameId="BBB_XCV_ICTIVRSC">Is the current time in the validity range of the signer's certificate?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_XCV_CCCBB">Can the certificate chain be built till the trust anchor?</Name>
+							<Status>NOT OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>INDETERMINATE</Indication>
+							<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+							<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+						</Conclusion>
+					</XCV>
+					<Conclusion>
+						<Indication>INDETERMINATE</Indication>
+						<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+						<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+		</Signature>
+		<Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770">
+			<Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+				<BasicBuildingBlocks>
+					<ISC>
+						<Constraint>
+							<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+							<Status>OK</Status>
+							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</ISC>
+					<CV>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</CV>
+					<SAV>
+						<Constraint>
+							<Name NameId="ASCCM">Are signature cryptographic constraints met?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</SAV>
+					<XCV>
+						<Constraint>
+							<Name NameId="BBB_XCV_ICTIVRSC">Is the current time in the validity range of the signer's certificate?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_XCV_CCCBB">Can the certificate chain be built till the trust anchor?</Name>
+							<Status>NOT OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>INDETERMINATE</Indication>
+							<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+							<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+						</Conclusion>
+					</XCV>
+					<Conclusion>
+						<Indication>INDETERMINATE</Indication>
+						<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+						<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+		</Signature>
+		<Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71">
+			<Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+				<BasicBuildingBlocks>
+					<ISC>
+						<Constraint>
+							<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+							<Status>OK</Status>
+							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</ISC>
+					<CV>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</CV>
+					<SAV>
+						<Constraint>
+							<Name NameId="ASCCM">Are signature cryptographic constraints met?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</SAV>
+					<XCV>
+						<Constraint>
+							<Name NameId="BBB_XCV_ICTIVRSC">Is the current time in the validity range of the signer's certificate?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_XCV_CCCBB">Can the certificate chain be built till the trust anchor?</Name>
+							<Status>NOT OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>INDETERMINATE</Indication>
+							<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+							<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+						</Conclusion>
+					</XCV>
+					<Conclusion>
+						<Indication>INDETERMINATE</Indication>
+						<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+						<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+		</Signature>
+		<Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef">
+			<Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+				<BasicBuildingBlocks>
+					<ISC>
+						<Constraint>
+							<Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+							<Status>OK</Status>
+							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</ISC>
+					<CV>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOF">Is the reference data object(s) found?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_IRDOI">Is the reference data object(s) intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</CV>
+					<SAV>
+						<Constraint>
+							<Name NameId="ASCCM">Are signature cryptographic constraints met?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>VALID</Indication>
+						</Conclusion>
+					</SAV>
+					<XCV>
+						<Constraint>
+							<Name NameId="BBB_XCV_ICTIVRSC">Is the current time in the validity range of the signer's certificate?</Name>
+							<Status>OK</Status>
+						</Constraint>
+						<Constraint>
+							<Name NameId="BBB_XCV_CCCBB">Can the certificate chain be built till the trust anchor?</Name>
+							<Status>NOT OK</Status>
+						</Constraint>
+						<Conclusion>
+							<Indication>INDETERMINATE</Indication>
+							<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+							<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+						</Conclusion>
+					</XCV>
+					<Conclusion>
+						<Indication>INDETERMINATE</Indication>
+						<SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+						<Error NameId="BBB_XCV_CCCBB_ANS">The certificate chain is not trusted, there is no trusted anchor.</Error>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+		</Signature>
+	</TimestampValidationData>
+	<AdESTValidationData>
+		<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
+			<Constraint>
+				<Name NameId="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
+				<Status>NOT OK</Status>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463">
+			<Constraint>
+				<Name NameId="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
+				<Status>NOT OK</Status>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770">
+			<Constraint>
+				<Name NameId="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
+				<Status>NOT OK</Status>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71">
+			<Constraint>
+				<Name NameId="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
+				<Status>NOT OK</Status>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef">
+			<Constraint>
+				<Name NameId="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
+				<Status>NOT OK</Status>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+	</AdESTValidationData>
+	<LongTermValidationData>
+		<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
+			<Constraint>
+				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
+				<Status>NOT OK</Status>
+				<Info Field="Indication">INVALID</Info>
+				<Info Field="SubIndication">HASH_FAILURE</Info>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463">
+			<Constraint>
+				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
+				<Status>NOT OK</Status>
+				<Info Field="Indication">INVALID</Info>
+				<Info Field="SubIndication">HASH_FAILURE</Info>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770">
+			<Constraint>
+				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
+				<Status>NOT OK</Status>
+				<Info Field="Indication">INVALID</Info>
+				<Info Field="SubIndication">HASH_FAILURE</Info>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71">
+			<Constraint>
+				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
+				<Status>NOT OK</Status>
+				<Info Field="Indication">INVALID</Info>
+				<Info Field="SubIndication">HASH_FAILURE</Info>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+		<Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef">
+			<Constraint>
+				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
+				<Status>NOT OK</Status>
+				<Info Field="Indication">INVALID</Info>
+				<Info Field="SubIndication">HASH_FAILURE</Info>
+			</Constraint>
+			<Conclusion>
+				<Indication>INVALID</Indication>
+				<SubIndication>HASH_FAILURE</SubIndication>
+				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+			</Conclusion>
+		</Signature>
+	</LongTermValidationData>
+</ValidationData>
