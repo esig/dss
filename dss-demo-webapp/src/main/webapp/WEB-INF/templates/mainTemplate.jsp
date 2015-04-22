@@ -20,6 +20,7 @@
     <script type="text/javascript" src="<c:url value="/scripts/jquery-1.11.2.min.js" />"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script type="text/javascript" src="<c:url value="/scripts/bootstrap.min.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/scripts/prettify.js" />"></script>
     <%--Used in signature.jsp --%>
     <script type="text/javascript" src="<c:url value="/scripts/detect_browser_version.js" />"></script>
   </head>

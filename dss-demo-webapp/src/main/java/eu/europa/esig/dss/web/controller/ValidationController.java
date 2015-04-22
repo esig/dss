@@ -79,6 +79,7 @@ public class ValidationController {
 
 		model.addAttribute("simpleReport", xsltService.generateSimpleReport(reports.getSimpleReport()));
 		model.addAttribute("detailedReport", xsltService.generateDetailedReport(reports.getDetailedReport()));
+		model.addAttribute("diagnosticTree", reports.getDiagnosticData().toString());
 
 		return VALIDATION_RESULT_TILE;
 	}
