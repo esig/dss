@@ -147,21 +147,18 @@ class PdfBoxDict implements PdfDict {
 		return wrapped.toString();
 	}
 
-	@Override
 	public void add(String key, PdfArray array) throws IOException {
 		PdfBoxArray a = (PdfBoxArray) array;
 		wrapped.setItem(key, a.wrapped);
 		wrapped.setNeedToBeUpdate(true);
 	}
 
-	@Override
 	public void add(String key, PdfDict dict) throws IOException {
 		PdfBoxDict d = (PdfBoxDict) dict;
 		wrapped.setItem(key, d.wrapped);
 		wrapped.setNeedToBeUpdate(true);
 	}
 
-	@Override
 	public void add(String key, Calendar cal) throws IOException {
 		wrapped.setDate(key, cal);
 		wrapped.setNeedToBeUpdate(true);

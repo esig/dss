@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pdf;
 
 import java.io.IOException;
-import java.util.Calendar;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF
@@ -48,11 +47,5 @@ public interface PdfDict {
 	boolean hasANameWithValue(String name, String value);
 
 	byte[] get(String name) throws IOException;
-
-	void add(String key, PdfArray array) throws IOException;
-
-	void add(String key, PdfDict dict) throws IOException;
-
-	void add(String key, Calendar cal) throws IOException;
 
 }
