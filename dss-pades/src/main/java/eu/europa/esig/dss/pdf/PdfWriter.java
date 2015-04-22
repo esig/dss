@@ -25,12 +25,8 @@ import java.io.IOException;
 /**
  * The usage of this interface permit the user to choose the underlying PDF
  * library use to created PDF signatures.
- * 
- * 
- *
  */
 public interface PdfWriter {
-
 
 	void saveIncremental() throws IOException;
 

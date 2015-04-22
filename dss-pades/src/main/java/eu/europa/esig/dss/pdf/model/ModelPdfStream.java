@@ -18,22 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox;
+package eu.europa.esig.dss.pdf.model;
 
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 
-public class PdfBoxObjectFactory extends PdfObjFactory {
+public class ModelPdfStream {
 
-	@Override
-	public PDFSignatureService newPAdESSignatureService() {
-		return new PdfBoxSignatureService();
+	byte[] bytes;
+
+	public ModelPdfStream(byte[] bytes) {
+		this.bytes = bytes;
 	}
 
-	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new PdfBoxDocTimeStampService();
+	public byte[] getBytes() {
+		return bytes;
 	}
 
 }

@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.TimestampToken;
@@ -54,73 +53,75 @@ import eu.europa.esig.dss.x509.TimestampType;
  */
 class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInfo {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PdfBoxDocTimestampInfo.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxDocTimestampInfo.class);
 
-    private final TimestampToken timestampToken;
+	private final TimestampToken timestampToken;
 
-    /**
-     * @param validationCertPool
-     * @param outerCatalog       the PDF Dict of the outer document, if the PDFDocument in a enclosed revision. Can be null.
-     * @param document           the signed PDFDocument
-     * @param cms                the CMS (CAdES) bytes
-     * @param inputStream        the stream of the whole signed document
-     * @throws IOException
-     */
-    PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PdfDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms, InputStream inputStream) throws DSSException, IOException {
-        super(validationCertPool, outerCatalog, document, signature, cms, inputStream);
-        try {
-            TimeStampToken timeStampToken = new TimeStampToken(new CMSSignedData(cms));
+	/**
+	 * @param validationCertPool
+	 * @param outerCatalog       the PDF Dict of the outer document, if the PDFDocument in a enclosed revision. Can be null.
+	 * @param document           the signed PDFDocument
+	 * @param cms                the CMS (CAdES) bytes
+	 * @param inputStream        the stream of the whole signed document
+	 * @throws IOException
+	 */
+	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PdfBoxDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms, InputStream inputStream) throws DSSException, IOException {
+		super(validationCertPool, outerCatalog, document, signature, cms, inputStream);
+		try {
+			TimeStampToken timeStampToken = new TimeStampToken(new CMSSignedData(cms));
 
-            TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
-            if (document.getDocumentCatalog().getCOSDictionary().containsKey("DSS")) {
-                timestampType = TimestampType.ARCHIVE_TIMESTAMP;
-            }
-            timestampToken = new TimestampToken(timeStampToken, timestampType, validationCertPool);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Created PdfBoxDocTimestampInfo {}: {}", timestampType, uniqueId());
-            }
-        } catch (CMSException e) {
-            throw new DSSException(e);
-        } catch (TSPException e) {
-            throw new DSSException(e);
-        } catch (IOException e) {
-            throw new DSSException(e);
-        }
-    }
+			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
+			if (document.getDocumentCatalog().getCOSDictionary().containsKey("DSS")) {
+				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
+			}
+			timestampToken = new TimestampToken(timeStampToken, timestampType, validationCertPool);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Created PdfBoxDocTimestampInfo {}: {}", timestampType, uniqueId());
+			}
+		} catch (CMSException e) {
+			throw new DSSException(e);
+		} catch (TSPException e) {
+			throw new DSSException(e);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
 
-    @Override
-    public SignatureCryptographicVerification checkIntegrityOnce() {
+	@Override
+	public SignatureCryptographicVerification checkIntegrityOnce() {
 
-        final SignatureCryptographicVerification signatureCryptographicVerification = new SignatureCryptographicVerification();
-        signatureCryptographicVerification.setReferenceDataFound(false);
-        signatureCryptographicVerification.setReferenceDataIntact(false);
-        signatureCryptographicVerification.setSignatureIntact(false);
-        if (signedBytes != null) {
-            signatureCryptographicVerification.setReferenceDataFound(true);
-        }
-        signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(signedBytes));
-        signatureCryptographicVerification.setSignatureIntact(timestampToken.isSignatureValid());
-        return signatureCryptographicVerification;
-    }
+		final SignatureCryptographicVerification signatureCryptographicVerification = new SignatureCryptographicVerification();
+		signatureCryptographicVerification.setReferenceDataFound(false);
+		signatureCryptographicVerification.setReferenceDataIntact(false);
+		signatureCryptographicVerification.setSignatureIntact(false);
+		if (signedBytes != null) {
+			signatureCryptographicVerification.setReferenceDataFound(true);
+		}
+		signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(signedBytes));
+		signatureCryptographicVerification.setSignatureIntact(timestampToken.isSignatureValid());
+		return signatureCryptographicVerification;
+	}
 
-    public X509Certificate getSigningCertificate() {
+	@Override
+	public X509Certificate getSigningCertificate() {
 
-        final CertificateToken signingCertificate = timestampToken.getIssuerToken();
-        return signingCertificate == null ? null : signingCertificate.getCertificate();
-    }
+		final CertificateToken signingCertificate = timestampToken.getIssuerToken();
+		return signingCertificate == null ? null : signingCertificate.getCertificate();
+	}
 
-    public X509Certificate[] getCertificates() {
-        final List<CertificateToken> certificateTokens = timestampToken.getCertificates();
-        return toX509CertificateArray(certificateTokens);
-    }
+	@Override
+	public X509Certificate[] getCertificates() {
+		final List<CertificateToken> certificateTokens = timestampToken.getCertificates();
+		return toX509CertificateArray(certificateTokens);
+	}
 
-    @Override
-    public boolean isTimestamp() {
-        return true;
-    }
+	@Override
+	public boolean isTimestamp() {
+		return true;
+	}
 
-    @Override
-    public TimestampToken getTimestampToken() {
-        return timestampToken;
-    }
+	@Override
+	public TimestampToken getTimestampToken() {
+		return timestampToken;
+	}
 }

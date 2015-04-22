@@ -18,22 +18,38 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox;
+package eu.europa.esig.dss.pdf.model;
 
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
-public class PdfBoxObjectFactory extends PdfObjFactory {
+public class ModelPdfDict {
 
-	@Override
-	public PDFSignatureService newPAdESSignatureService() {
-		return new PdfBoxSignatureService();
+	private Map<String, Object> values = new HashMap<String, Object>();
+
+	public ModelPdfDict() {
 	}
 
-	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new PdfBoxDocTimeStampService();
+	public ModelPdfDict(String dictType) {
+		values.put("Type", dictType);
+	}
+
+	public void add(String key, ModelPdfArray array) throws IOException {
+		values.put(key, array);
+	}
+
+	public void add(String key, ModelPdfDict dict) throws IOException {
+		values.put(key, dict);
+	}
+
+	public void add(String key, Calendar cal) throws IOException {
+		values.put(key, cal);
+	}
+
+	public Map<String, Object> getValues() {
+		return values;
 	}
 
 }

@@ -18,22 +18,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox;
+package eu.europa.esig.dss.pdf.model;
 
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PdfBoxObjectFactory extends PdfObjFactory {
+public class ModelPdfArray {
 
-	@Override
-	public PDFSignatureService newPAdESSignatureService() {
-		return new PdfBoxSignatureService();
+	private List<Object> values = new ArrayList<Object>();
+
+	public int size() {
+		return values.size();
 	}
 
-	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new PdfBoxDocTimeStampService();
+	public void add(ModelPdfStream stream) throws IOException {
+		values.add(stream);
+	}
+
+	public List<Object> getValues() {
+		return values;
 	}
 
 }

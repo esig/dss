@@ -26,20 +26,15 @@ import java.util.Map;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
  * TODO
- *
- *
- *
- *
- *
- *
  */
 public interface PDFTimestampService extends PDFSignatureService {
 
 	void timestamp(final DSSDocument document, final OutputStream signedStream, final PAdESSignatureParameters parameters, final TSPSource tspSource,
-			final Map.Entry<String, PdfDict>... dictToAdd) throws DSSException;
+			final Map.Entry<String, ModelPdfDict>... dictToAdd) throws DSSException;
 
 }

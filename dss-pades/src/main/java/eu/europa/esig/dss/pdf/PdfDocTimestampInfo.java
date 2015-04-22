@@ -24,13 +24,9 @@ import eu.europa.esig.dss.validation.TimestampToken;
 
 /**
  * TODO
- *
- *
- *
- *
- *
- *
  */
 public interface PdfDocTimestampInfo extends PdfSignatureOrDocTimestampInfo {
-    TimestampToken getTimestampToken();
+
+	TimestampToken getTimestampToken();
+
 }

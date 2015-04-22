@@ -20,24 +20,33 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.io.RandomAccessBuffer;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pdf.PdfStream;
+import eu.europa.esig.dss.pdf.model.ModelPdfStream;
 
 class PdfBoxStream implements PdfStream {
 
 	COSStream wrapped;
 
-	public PdfBoxStream(byte[] bytes) throws IOException {
-		RandomAccessBuffer storage = new RandomAccessBuffer();
-		this.wrapped = new COSStream(storage);
-        final OutputStream unfilteredStream = this.wrapped.createUnfilteredStream();
-        unfilteredStream.write(bytes);
-        unfilteredStream.flush();
+	public PdfBoxStream(byte[] bytes) {
+		try {
+			RandomAccessBuffer storage = new RandomAccessBuffer();
+			this.wrapped = new COSStream(storage);
+			final OutputStream unfilteredStream = this.wrapped.createUnfilteredStream();
+			unfilteredStream.write(bytes);
+			unfilteredStream.flush();
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public PdfBoxStream(ModelPdfStream stream) {
+		this(stream.getBytes());
 	}
 
 }
