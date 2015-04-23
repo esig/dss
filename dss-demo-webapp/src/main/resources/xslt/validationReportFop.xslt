@@ -73,8 +73,6 @@
 					<xsl:attribute name="flow-name">xsl-region-body</xsl:attribute>
 					<xsl:apply-templates />
 					
-	    			<xsl:call-template name="documentInformation"/>
-	    			
 					<fo:block>
 						<xsl:attribute name="id">theEnd</xsl:attribute>
 					</fo:block>
