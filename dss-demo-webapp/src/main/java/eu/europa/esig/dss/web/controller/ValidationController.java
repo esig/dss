@@ -1,26 +1,13 @@
 package eu.europa.esig.dss.web.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
 
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +21,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -47,7 +33,9 @@ import eu.europa.esig.dss.web.service.FOPService;
 import eu.europa.esig.dss.web.service.XSLTService;
 
 @Controller
-@SessionAttributes({"simpleReportXml", "detailedReportXml"})
+@SessionAttributes({
+	"simpleReportXml", "detailedReportXml"
+})
 @RequestMapping(value = "/validation")
 public class ValidationController {
 
@@ -64,7 +52,7 @@ public class ValidationController {
 
 	@Autowired
 	private XSLTService xsltService;
-	
+
 	@Autowired
 	private FOPService fopService;
 
@@ -77,7 +65,7 @@ public class ValidationController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String validate(@ModelAttribute("validationForm") @Valid ValidationForm validationForm,  BindingResult result, Model model) {
+	public String validate(@ModelAttribute("validationForm") @Valid ValidationForm validationForm, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			return VALIDATION_TILE;
 		}
@@ -86,22 +74,22 @@ public class ValidationController {
 		documentValidator.setCertificateVerifier(certificateVerifier);
 
 		MultipartFile originalFile = validationForm.getOriginalFile();
-		if ((originalFile !=null) && !originalFile.isEmpty()) {
+		if ((originalFile != null) && !originalFile.isEmpty()) {
 			List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 			detachedContents.add(WebAppUtils.toDSSDocument(originalFile));
-			documentValidator.setDetachedContents(detachedContents );
+			documentValidator.setDetachedContents(detachedContents);
 		}
 
 		Reports reports = null;
 
 		MultipartFile policyFile = validationForm.getPolicyFile();
-		if (!validationForm.isDefaultPolicy() && (policyFile !=null) && !policyFile.isEmpty()) {
+		if (!validationForm.isDefaultPolicy() && (policyFile != null) && !policyFile.isEmpty()) {
 			try {
 				reports = documentValidator.validateDocument(policyFile.getInputStream());
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
 			}
-		} else{
+		} else {
 			reports = documentValidator.validateDocument();
 		}
 
@@ -128,6 +116,20 @@ public class ValidationController {
 			fopService.generateSimpleReport(simpleReport, response.getOutputStream());
 		} catch (Exception e) {
 			logger.error("An error occured while generating pdf for simple report : " + e.getMessage(), e);
+		}
+	}
+
+	@RequestMapping(value = "/download-detailed-report")
+	public void downloadDetailedReport(HttpSession session, HttpServletResponse response) {
+		try {
+			DetailedReport detailedReport = (DetailedReport) session.getAttribute(DETAILED_REPORT_ATTRIBUTE);
+
+			response.setContentType(MimeType.PDF.getMimeTypeString());
+			response.setHeader("Content-Disposition", "attachment; filename=DSS-Detailed-report.pdf");
+
+			fopService.generateDetailedReport(detailedReport, response.getOutputStream());
+		} catch (Exception e) {
+			logger.error("An error occured while generating pdf for detailed report : " + e.getMessage(), e);
 		}
 	}
 

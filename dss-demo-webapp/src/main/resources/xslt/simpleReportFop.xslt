@@ -16,12 +16,12 @@
 					<xsl:attribute name="font-size">small</xsl:attribute>
 			
 					<fo:region-body>
-						<xsl:attribute name="margin-bottom">.6in</xsl:attribute>
+						<xsl:attribute name="margin-bottom">.5in</xsl:attribute>
 					</fo:region-body>
 
 					<fo:region-after>
 						<xsl:attribute name="region-name">page-footer</xsl:attribute>
-						<xsl:attribute name="extent">.6in</xsl:attribute>
+						<xsl:attribute name="extent">.5in</xsl:attribute>
 					</fo:region-after>
 			
 				</fo:simple-page-master>
@@ -103,7 +103,11 @@
     <xsl:template match="dss:Policy">
     	<fo:block>
     		<xsl:attribute name="id">policy</xsl:attribute>
-       		<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+       		<xsl:attribute name="background-color">#0066CC</xsl:attribute>
+       		<xsl:attribute name="color">white</xsl:attribute>
+       		<xsl:attribute name="padding">5px</xsl:attribute>
+       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
     		Validation Policy : <xsl:value-of select="dss:PolicyName"/>
     	</fo:block>
     	<fo:block>
@@ -130,12 +134,17 @@
     		<xsl:attribute name="id">signature<xsl:value-of select="$counter" /></xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
        		<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="margin-top">.2in</xsl:attribute>
+       		<xsl:attribute name="margin-top">15px</xsl:attribute>
+       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
+       		<xsl:attribute name="color">white</xsl:attribute>
+       		<xsl:attribute name="padding">5px</xsl:attribute>
        		Signature <xsl:value-of select="$idSig" />
        	</fo:block>
 
 		<fo:table>
 			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+			
 			<fo:table-column>
 				<xsl:attribute name="column-width">25%</xsl:attribute>
 			</fo:table-column>
@@ -147,21 +156,27 @@
 				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							Indication : 
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 	       					<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
 							<xsl:value-of select="dss:Indication" /> - <xsl:value-of select="dss:SubIndication" />
 						</fo:block>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							<xsl:value-of select="dss:Error" />
 						</fo:block>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							<xsl:value-of select="dss:Warning" />
 						</fo:block>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							<xsl:value-of select="dss:Info" />
 						</fo:block>
 					</fo:table-cell>
@@ -170,11 +185,14 @@
 				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							Signature Level : 
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							<xsl:value-of select="dss:SignatureLevel" />
 						</fo:block>
 					</fo:table-cell>
@@ -183,11 +201,14 @@
 				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							Signature Format : 
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							<xsl:value-of select="@SignatureFormat" />
 						</fo:block>
 					</fo:table-cell>
@@ -196,11 +217,14 @@
 				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							Signed by : 
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							<xsl:value-of select="dss:SignedBy" />
 						</fo:block>
 					</fo:table-cell>
@@ -209,14 +233,18 @@
 				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							On claimed time : 
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							<xsl:value-of select="dss:SigningTime"/>
 						</fo:block>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							The validation of the signature, of its supporting certificates and of the related certification path has been performed from this reference time.
 						</fo:block>
 					</fo:table-cell>
@@ -225,12 +253,15 @@
 				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							Signature position : 
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
-								<xsl:value-of select="$counter" /> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+							<xsl:value-of select="$counter" /> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/>
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
@@ -239,14 +270,18 @@
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       							<xsl:attribute name="font-weight">bold</xsl:attribute>
 								Signature scope:
 							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 								<xsl:value-of select="@name" />	(<xsl:value-of select="@scope" />)
 							</fo:block>
 							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 								<xsl:value-of select="." />
 							</fo:block>
 						</fo:table-cell>
@@ -262,12 +297,14 @@
     	<fo:block>
     		<xsl:attribute name="id">docInfo</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-       		<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="margin-top">.2in</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+       		<xsl:attribute name="background-color">#0066CC</xsl:attribute>
+       		<xsl:attribute name="color">white</xsl:attribute>
+       		<xsl:attribute name="padding">5px</xsl:attribute>
+       		<xsl:attribute name="margin-top">15px</xsl:attribute>
+       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
        		Document Information
        	</fo:block>
-       	
-       	
 		<fo:table>
 			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
 			<fo:table-column>
@@ -281,11 +318,14 @@
 				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
+       						<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							Signatures status : 
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 	       					<xsl:value-of select="dss:ValidSignaturesCount"/> valid signatures, out of <xsl:value-of select="dss:SignaturesCount"/>
 						</fo:block>
 					</fo:table-cell>
@@ -293,11 +333,14 @@
 				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							Document name : 
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 							<xsl:value-of select="dss:DocumentName"/>
 						</fo:block>
 					</fo:table-cell>
