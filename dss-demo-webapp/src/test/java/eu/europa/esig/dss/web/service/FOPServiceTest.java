@@ -1,16 +1,12 @@
 package eu.europa.esig.dss.web.service;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,8 +25,7 @@ public class FOPServiceTest {
 
 	@Test
 	public void generateSimpleReportFiveSignatures() throws Exception {
-		InputStream is = FOPServiceTest.class
-				.getResourceAsStream("/simple-report-5-signatures.xml");
+		InputStream is = FOPServiceTest.class.getResourceAsStream("/simple-report-5-signatures.xml");
 
 		Document document = DSSXMLUtils.buildDOM(is);
 		SimpleReport report = new SimpleReport(document);
@@ -42,8 +37,7 @@ public class FOPServiceTest {
 
 	@Test
 	public void generateDetailedReportFiveSignatures() throws Exception {
-		InputStream is = FOPServiceTest.class
-				.getResourceAsStream("/validation-report-5-signatures.xml");
+		InputStream is = FOPServiceTest.class.getResourceAsStream("/validation-report-5-signatures.xml");
 
 		Document document = DSSXMLUtils.buildDOM(is);
 		DetailedReport report = new DetailedReport(document);

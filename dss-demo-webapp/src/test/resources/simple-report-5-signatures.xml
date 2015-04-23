@@ -12,7 +12,7 @@
 	<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657" SignatureFormat="PAdES_BASELINE_T">
 		<SigningTime>2011-05-05T09:06:38Z</SigningTime>
 		<SignedBy>Peter Rybár</SignedBy>
-		<Indication>INVALID</Indication>
+		<Indication>VALID</Indication>
 		<SubIndication>HASH_FAILURE</SubIndication>
 		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 		<SignatureLevel>QES</SignatureLevel>
@@ -23,7 +23,7 @@
 	<Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463" SignatureFormat="PAdES_BASELINE_T">
 		<SigningTime>2011-05-05T09:19:40Z</SigningTime>
 		<SignedBy>Peter Rybár</SignedBy>
-		<Indication>INVALID</Indication>
+		<Indication>INDETERMINATE</Indication>
 		<SubIndication>HASH_FAILURE</SubIndication>
 		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 		<SignatureLevel>AdES</SignatureLevel>

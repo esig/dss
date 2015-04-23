@@ -6,7 +6,6 @@ import java.io.StringReader;
 
 import javax.annotation.PostConstruct;
 import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -20,7 +19,6 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 import org.apache.pdfbox.io.IOUtils;
 import org.springframework.stereotype.Component;
-import org.xhtmlrenderer.util.IOUtil;
 
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.validation.report.DetailedReport;
@@ -28,12 +26,12 @@ import eu.europa.esig.dss.validation.report.SimpleReport;
 
 @Component
 public class FOPService {
-	
+
 	private FopFactory fopFactory;
 	private FOUserAgent foUserAgent;
 	private Templates templateSimpleReport;
 	private Templates templateDetailedReport;
-	
+
 	@PostConstruct
 	public void init() throws TransformerConfigurationException {
 		fopFactory = FopFactory.newInstance();
@@ -43,16 +41,16 @@ public class FOPService {
 		foUserAgent.setAccessibility(true);
 
 		TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
-		
+
 		InputStream simpleIS = FOPService.class.getResourceAsStream("/xslt/simpleReportFop.xslt");
 		templateSimpleReport = transformerFactory.newTemplates(new StreamSource(simpleIS));
 		IOUtils.closeQuietly(simpleIS);
-		
+
 		InputStream detailedIS = FOPService.class.getResourceAsStream("/xslt/validationReportFop.xslt");
 		templateDetailedReport = transformerFactory.newTemplates(new StreamSource(detailedIS));
 		IOUtils.closeQuietly(detailedIS);
 	}
-	
+
 	public void generateSimpleReport(SimpleReport report, OutputStream os) throws Exception {
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, os);
 		Result res = new SAXResult(fop.getDefaultHandler());
