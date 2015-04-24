@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<fop version="1.0">
+	<default-page-settings height="29.7cm" width="21cm" />
+	<renderers>
+		<renderer mime="application/pdf">
+			<fonts>
+				<font metrics-url="gothic.xml" kerning="yes" embed-url="gothic.ttf">
+					<font-triplet name="Century Gothic" style="normal" weight="normal" />
+				</font>
+				<font metrics-url="gothicb.xml" kerning="yes" embed-url="gothicb.ttf">
+					<font-triplet name="Century Gothic" style="normal" weight="bold" />
+				</font>
+				<font metrics-url="gothici.xml" kerning="yes" embed-url="gothici.ttf">
+					<font-triplet name="Century Gothic" style="italic" weight="normal" />
+				</font>
+			</fonts>
+		</renderer>
+	</renderers>
+</fop>
