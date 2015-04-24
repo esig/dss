@@ -10,20 +10,22 @@
 			<fo:layout-master-set>
 				<fo:simple-page-master>
 					<xsl:attribute name="master-name">A4-portrait</xsl:attribute>
-					<xsl:attribute name="page-height">11in</xsl:attribute>
-					<xsl:attribute name="page-width">8.5in</xsl:attribute>
-					<xsl:attribute name="margin">.6in</xsl:attribute>
-					<xsl:attribute name="font-size">small</xsl:attribute>
+					<xsl:attribute name="page-height">29.7cm</xsl:attribute>
+					<xsl:attribute name="page-width">21cm</xsl:attribute>
+					<xsl:attribute name="margin-top">1cm</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1cm</xsl:attribute>
+					<xsl:attribute name="margin-right">2.5cm</xsl:attribute>
+					<xsl:attribute name="margin-left">2.5cm</xsl:attribute>
 			
 					<fo:region-body>
-						<xsl:attribute name="margin-bottom">.5in</xsl:attribute>
+						<xsl:attribute name="margin-top">1cm</xsl:attribute>
+						<xsl:attribute name="margin-bottom">2cm</xsl:attribute>
 					</fo:region-body>
 
 					<fo:region-after>
 						<xsl:attribute name="region-name">page-footer</xsl:attribute>
-						<xsl:attribute name="extent">.5in</xsl:attribute>
+						<xsl:attribute name="extent">1.5cm</xsl:attribute>
 					</fo:region-after>
-			
 				</fo:simple-page-master>
 			</fo:layout-master-set>
 
@@ -52,6 +54,8 @@
 	
 				<fo:static-content>
 					<xsl:attribute name="flow-name">page-footer</xsl:attribute>
+					<xsl:attribute name="font-size">8pt</xsl:attribute>
+					
 					<fo:block>
 						<xsl:attribute name="color">grey</xsl:attribute>
 						<xsl:attribute name="border-top-style">solid</xsl:attribute>
@@ -79,6 +83,8 @@
 
 				<fo:flow>
 					<xsl:attribute name="flow-name">xsl-region-body</xsl:attribute>
+					<xsl:attribute name="font-size">9pt</xsl:attribute>
+					
 					<xsl:apply-templates />
 					
 	    			<xsl:call-template name="documentInformation"/>
