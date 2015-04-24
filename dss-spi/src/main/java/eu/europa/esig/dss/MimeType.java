@@ -121,12 +121,28 @@ public class MimeType implements Serializable {
 	public static MimeType fromFileName(final String fileName) {
 
 		final String inLowerCaseName = fileName.toLowerCase();
-		final String fileExtension = DSSUtils.getFileExtension(inLowerCaseName);
+		final String fileExtension = getFileExtension(inLowerCaseName);
 		final MimeType mimeType = fileExtensions.get(fileExtension);
 		if (mimeType != null) {
 			return mimeType;
 		}
 		return BINARY;
+	}
+
+	/**
+	 * Returns the file extension based on the position of the '.' in the path. The paths as "xxx.y/toto" are not handled.
+	 *
+	 * @param path to be analysed
+	 * @return the file extension or null
+	 */
+	public static String getFileExtension(final String path) {
+
+		String extension = null;
+		int lastIndexOf = path.lastIndexOf('.');
+		if (lastIndexOf > 0) {
+			extension = path.substring(lastIndexOf + 1);
+		}
+		return extension;
 	}
 
 	/**
@@ -170,26 +186,31 @@ public class MimeType implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
+		result = (prime * result)
 				+ ((mimeTypeString == null) ? 0 : mimeTypeString.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		MimeType other = (MimeType) obj;
 		if (mimeTypeString == null) {
-			if (other.mimeTypeString != null)
+			if (other.mimeTypeString != null) {
 				return false;
-		} else if (!mimeTypeString.equals(other.mimeTypeString))
+			}
+		} else if (!mimeTypeString.equals(other.mimeTypeString)) {
 			return false;
+		}
 		return true;
 	}
-	
+
 }
