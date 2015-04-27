@@ -192,13 +192,29 @@
 		        	</span>
 		        </xsl:if>
 		        
-				Timestamp <xsl:value-of select="@Id" />	(<xsl:value-of select="@Type" />):	
+				Timestamp <xsl:value-of select="@Id" /> :	
 			</div>
 			
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
 					<xsl:attribute name="id">collapseSig<xsl:value-of select="$uid" /></xsl:attribute>
+
+					<div>
+						<xsl:attribute name="class">row</xsl:attribute>
+						<div>
+							<xsl:attribute name="class">col-md-6</xsl:attribute>
+							<strong>Type :</strong> 
+						</div>
+						<div>
+							<xsl:attribute name="class">col-md-6</xsl:attribute>
+							<span>
+			        			<xsl:attribute name="class">label label-primary</xsl:attribute>
+			        			<xsl:value-of select="@Type" />
+			        		</span>
+						</div>
+					</div>
+
 					<xsl:apply-templates/>
 			    </div>
 		    </xsl:if>

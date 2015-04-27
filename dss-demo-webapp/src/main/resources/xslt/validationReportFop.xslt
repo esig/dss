@@ -359,7 +359,36 @@
 					<fo:table-cell>
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-							<xsl:value-of select="dss:Status"/>
+							
+							
+							<xsl:variable name="statusText" select="dss:Status"/>
+				        	<xsl:choose>
+								<xsl:when test="$statusText='OK'">
+									<fo:external-graphic>
+										<xsl:attribute name="src">url('../fop/ok.jpg')</xsl:attribute>
+										<xsl:attribute name="content-width">8px</xsl:attribute>
+										<xsl:attribute name="height">8px</xsl:attribute>
+									</fo:external-graphic>
+								</xsl:when>
+								<xsl:when test="$statusText='NOT OK'">
+									<fo:external-graphic>
+										<xsl:attribute name="src">url('../fop/not_ok.jpg')</xsl:attribute>
+										<xsl:attribute name="content-width">8px</xsl:attribute>
+										<xsl:attribute name="height">8px</xsl:attribute>
+									</fo:external-graphic>
+								</xsl:when>
+								<xsl:when test="$statusText='WARNING'">
+									<fo:external-graphic>
+										<xsl:attribute name="src">url('../fop/warning.jpg')</xsl:attribute>
+										<xsl:attribute name="content-width">8px</xsl:attribute>
+										<xsl:attribute name="height">8px</xsl:attribute>
+									</fo:external-graphic>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="dss:Status" />
+								</xsl:otherwise>
+				    		</xsl:choose>
+							
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
@@ -371,62 +400,64 @@
     <xsl:template name="analysis-conclusion">
         <xsl:param name="Conclusion"/>
         
-        <fo:table>
-			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
-			
-			<fo:table-column>
-				<xsl:attribute name="column-width">20%</xsl:attribute>
-			</fo:table-column>
-			<fo:table-column>
-				<xsl:attribute name="column-width">70%</xsl:attribute>
-			</fo:table-column>
-			
-			<fo:table-body>
-       			<fo:table-row>
-       				<fo:table-cell>
-       					<fo:block>
-       						<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-       						Conclusion : 
-       					</fo:block>
-       				</fo:table-cell>
-
-					<fo:table-cell>
-						<xsl:variable name="indicationText" select="$Conclusion/dss:Indication"/>
-				        <xsl:variable name="indicationColor">
-				        	<xsl:choose>
-								<xsl:when test="$indicationText='VALID'">green</xsl:when>
-								<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-								<xsl:when test="$indicationText='INVALID'">red</xsl:when>
-								<xsl:otherwise>grey</xsl:otherwise>
-							</xsl:choose>
-				        </xsl:variable>
+        <xsl:if test="string-length($Conclusion/dss:Indication) &gt; 0">
+	        <fo:table>
+				<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+				
+				<fo:table-column>
+					<xsl:attribute name="column-width">20%</xsl:attribute>
+				</fo:table-column>
+				<fo:table-column>
+					<xsl:attribute name="column-width">70%</xsl:attribute>
+				</fo:table-column>
+				
+				<fo:table-body>
+	       			<fo:table-row>
+	       				<fo:table-cell>
+	       					<fo:block>
+	       						<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+	       						Conclusion : 
+	       					</fo:block>
+	       				</fo:table-cell>
+	
+						<fo:table-cell>
+							<xsl:variable name="indicationText" select="$Conclusion/dss:Indication"/>
+					        <xsl:variable name="indicationColor">
+					        	<xsl:choose>
+									<xsl:when test="$indicationText='VALID'">green</xsl:when>
+									<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
+									<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+									<xsl:otherwise>grey</xsl:otherwise>
+								</xsl:choose>
+					        </xsl:variable>
+									
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+			    				<xsl:attribute name="font-weight">bold</xsl:attribute>
+								<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
+								<xsl:value-of select="$Conclusion/dss:Indication" />
 								
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-							<xsl:value-of select="$Conclusion/dss:Indication" />
+								<xsl:if test="string-length($Conclusion/dss:SubIndication) &gt; 0">
+									<xsl:text> - </xsl:text>
+									<xsl:value-of select="$Conclusion/dss:SubIndication"/>
+								</xsl:if>
+							</fo:block>
 							
-							<xsl:if test="string-length($Conclusion/dss:SubIndication) &gt; 0">
-								<xsl:text> - </xsl:text>
-								<xsl:value-of select="$Conclusion/dss:SubIndication"/>
+							<xsl:if test="string-length($Conclusion/dss:Error) &gt; 0">
+								<fo:block>
+									<xsl:value-of select="$Conclusion/dss:Error"/>
+								</fo:block>
 							</xsl:if>
-						</fo:block>
-						
-						<xsl:if test="string-length($Conclusion/dss:Error) &gt; 0">
-							<fo:block>
-								<xsl:value-of select="$Conclusion/dss:Error"/>
-							</fo:block>
-						</xsl:if>
-						<xsl:if test="string-length($Conclusion/dss:Warning) &gt; 0">
-							<fo:block>
-								<xsl:value-of select="$Conclusion/dss:Warning"/>
-							</fo:block>
-						</xsl:if>
-					</fo:table-cell>       			
-       			</fo:table-row>
-       		</fo:table-body>
-       	</fo:table>
+							<xsl:if test="string-length($Conclusion/dss:Warning) &gt; 0">
+								<fo:block>
+									<xsl:value-of select="$Conclusion/dss:Warning"/>
+								</fo:block>
+							</xsl:if>
+						</fo:table-cell>       			
+	       			</fo:table-row>
+	       		</fo:table-body>
+	       	</fo:table>
+		</xsl:if>
     </xsl:template>
     
 </xsl:stylesheet>
