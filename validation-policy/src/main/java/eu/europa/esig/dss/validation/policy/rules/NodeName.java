@@ -22,54 +22,55 @@ package eu.europa.esig.dss.validation.policy.rules;
 
 public interface NodeName {
 
-    public static final String STATUS = "Status";
-    public static final String SIGNING_CERTIFICATE = "SigningCertificate"; // constraint
-    public static final String CA_CERTIFICATE = "CACertificate"; //constraint
-    public static final String MAIN_SIGNATURE = "MainSignature"; // constraint
-    public static final String INDICATION = "Indication";
-    public static final String SUB_INDICATION = "SubIndication";
+	String STATUS = "Status";
+	String SIGNING_CERTIFICATE = "SigningCertificate"; // constraint
+	String CA_CERTIFICATE = "CACertificate"; //constraint
+	String MAIN_SIGNATURE = "MainSignature"; // constraint
+	String INDICATION = "Indication";
+	String SUB_INDICATION = "SubIndication";
 
-    // Returned by Basic Building Blocks process
-    public static final String VALIDATION_DATA = "ValidationData";
-    // returned by Basic Validation Process
-    public static final String BASIC_VALIDATION_DATA = "BasicValidationData";
+	// Returned by Basic Building Blocks process
+	String VALIDATION_DATA = "ValidationData";
+	// returned by Basic Validation Process
+	String BASIC_VALIDATION_DATA = "BasicValidationData";
 
-    public static final String ADEST_VALIDATION_DATA = "AdESTValidationData";
-    public static final String PAST_CERT_VALIDATION_DATA = "PastCertValidationData";
-    public static final String PAST_SIGNATURE_VALIDATION_DATA = "PastSignatureValidationData";
-    public static final String LONG_TERM_VALIDATION_DATA = "LongTermValidationData";
-    public static final String CONTROL_TIME_SLIDING_DATA = "ControlTimeSlidingData";
-    public static final String TIMESTAMP_VALIDATION_DATA = "TimestampValidationData";
+	String ADEST_VALIDATION_DATA = "AdESTValidationData";
+	String PAST_CERT_VALIDATION_DATA = "PastCertValidationData";
+	String PAST_SIGNATURE_VALIDATION_DATA = "PastSignatureValidationData";
+	String LONG_TERM_VALIDATION_DATA = "LongTermValidationData";
+	String CONTROL_TIME_SLIDING_DATA = "ControlTimeSlidingData";
+	String TIMESTAMP_VALIDATION_DATA = "TimestampValidationData";
 
-    public static final String SIGNATURE = "Signature";
-    public static final String CONCLUSION = "Conclusion";
-    public static final String BASIC_BUILDING_BLOCKS = "BasicBuildingBlocks";
-    public static final String NAME = "Name";
-    public static final String ISC = "ISC";
-    public static final String VCI = "VCI";
-    public static final String XCV = "XCV";
-    public static final String CV = "CV";
-    public static final String SAV = "SAV";
-    public static final String IDENTIFIER = "Identifier";
-    public static final String POLICY = "Policy";
-    public static final String POLICY_NAME = "PolicyName";
-    public static final String POLICY_DESCRIPTION = "PolicyDescription";
-    public static final String NOTICE = "Notice";
-    public static final String INFO = "Info";
-    public static final String WARNING = "Warning";
-    public static final String ERROR = "Error";
-    public static final String CONSTRAINT = "Constraint";
-    public static final String SIGNING_TIME = "SigningTime";
-    public static final String TIMESTAMP = "Timestamp"; // node, constraint
-    public static final String SIGNED_SIGNATURE = "SignedSignature";
-    public static final String CONTENT_HINTS = "ContentHints";
+	String SIGNATURE = "Signature";
+	String CONCLUSION = "Conclusion";
+	String BASIC_BUILDING_BLOCKS = "BasicBuildingBlocks";
+	String NAME = "Name";
+	String ISC = "ISC";
+	String VCI = "VCI";
+	String XCV = "XCV";
+	String CV = "CV";
+	String SAV = "SAV";
+	String IDENTIFIER = "Identifier";
+	String POLICY = "Policy";
+	String POLICY_NAME = "PolicyName";
+	String POLICY_DESCRIPTION = "PolicyDescription";
+	String NOTICE = "Notice";
+	String INFO = "Info";
+	String WARNING = "Warning";
+	String ERROR = "Error";
+	String CONSTRAINT = "Constraint";
+	String SIGNING_TIME = "SigningTime";
+	String TIMESTAMP = "Timestamp"; // node, constraint
+	String SIGNED_SIGNATURE = "SignedSignature";
+	String CONTENT_HINTS = "ContentHints";
 
-    public static final String SIMPLE_REPORT = "SimpleReport";
-    public static final String VALIDATION_TIME = "ValidationTime";
-    public static final String DOCUMENT_NAME = "DocumentName";
-    public static final String SIGNATURES_COUNT = "SignaturesCount";
-    public static final String VALID_SIGNATURES_COUNT = "ValidSignaturesCount";
-    public static final String SIGNATURE_FORMAT = "SignatureFormat";
-    public static final String SIGNATURE_LEVEL = "SignatureLevel";
-    public static final String SIGNED_BY = "SignedBy";
+	String SIMPLE_REPORT = "SimpleReport";
+	String VALIDATION_TIME = "ValidationTime";
+	String DOCUMENT_NAME = "DocumentName";
+	String SIGNATURES_COUNT = "SignaturesCount";
+	String VALID_SIGNATURES_COUNT = "ValidSignaturesCount";
+	String SIGNATURE_FORMAT = "SignatureFormat";
+	String SIGNATURE_LEVEL = "SignatureLevel";
+	String SIGNED_BY = "SignedBy";
+
 }

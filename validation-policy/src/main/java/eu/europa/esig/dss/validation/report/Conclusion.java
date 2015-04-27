@@ -36,7 +36,6 @@ import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
  * This class represents the conclusion (result) of the process, with at least the Indication, SubIndication (if any)...
@@ -44,7 +43,7 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
  *
  *
  */
-public class Conclusion implements Indication, SubIndication, NodeName, AttributeName {
+public class Conclusion {
 
 	private String indication;
 	private String subIndication;
@@ -72,27 +71,27 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	static public class Info extends BasicInfo {
 
 		public Info() {
-			super(INFO);
+			super(NodeName.INFO);
 		}
 
 		public Info(final String value) {
-			super(INFO, value);
+			super(NodeName.INFO, value);
 		}
 
 		public Info(final String nameId, final String value) {
-			super(nameId, INFO, value);
+			super(nameId, NodeName.INFO, value);
 		}
 
 		public Info(final MessageTag messageTag) {
-			super(INFO, messageTag);
+			super(NodeName.INFO, messageTag);
 		}
 
 		public Info(final MessageTag messageTag, final String... dynamicParameters) {
-			super(INFO, messageTag, dynamicParameters);
+			super(NodeName.INFO, messageTag, dynamicParameters);
 		}
 
 		public Info(final MessageTag messageTag, final Map<String, String> attributes) {
-			super(INFO, messageTag, attributes);
+			super(NodeName.INFO, messageTag, attributes);
 		}
 	}
 
@@ -102,23 +101,23 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	static public class Warning extends BasicInfo {
 
 		public Warning() {
-			super(WARNING);
+			super(NodeName.WARNING);
 		}
 
 		public Warning(final String value) {
-			super(WARNING, value);
+			super(NodeName.WARNING, value);
 		}
 
 		public Warning(final String nameId, final String value) {
-			super(nameId, WARNING, value);
+			super(nameId, NodeName.WARNING, value);
 		}
 
 		public Warning(final MessageTag messageTag) {
-			super(WARNING, messageTag);
+			super(NodeName.WARNING, messageTag);
 		}
 
 		public Warning(final MessageTag messageTag, final Map<String, String> attributes) {
-			super(WARNING, messageTag, attributes);
+			super(NodeName.WARNING, messageTag, attributes);
 		}
 	}
 
@@ -128,23 +127,23 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	static public class Error extends BasicInfo {
 
 		public Error() {
-			super(ERROR);
+			super(NodeName.ERROR);
 		}
 
 		public Error(String value) {
-			super(ERROR, value);
+			super(NodeName.ERROR, value);
 		}
 
 		public Error(final String nameId, final String value) {
-			super(nameId, ERROR, value);
+			super(nameId, NodeName.ERROR, value);
 		}
 
 		public Error(final MessageTag messageTag) {
-			super(ERROR, messageTag);
+			super(NodeName.ERROR, messageTag);
 		}
 
 		public Error(final MessageTag messageTag, final Map<String, String> attributes) {
-			super(ERROR, messageTag, attributes);
+			super(NodeName.ERROR, messageTag, attributes);
 		}
 	}
 
@@ -189,7 +188,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 		 */
 		protected BasicInfo(final String nameId, final String tag, final String value) {
 
-			setAttribute(NAME_ID, nameId);
+			setAttribute(AttributeName.NAME_ID, nameId);
 			this.tag = tag;
 			this.value = value;
 		}
@@ -200,7 +199,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 		 */
 		protected BasicInfo(final String tag, final MessageTag messageTag) {
 
-			setAttribute(NAME_ID, messageTag.name());
+			setAttribute(AttributeName.NAME_ID, messageTag.name());
 			this.tag = tag;
 			this.value = messageTag.getMessage();
 		}
@@ -211,7 +210,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 		 */
 		protected BasicInfo(final String tag, final MessageTag messageTag, final String... dynamicParameters) {
 
-			setAttribute(NAME_ID, messageTag.name());
+			setAttribute(AttributeName.NAME_ID, messageTag.name());
 			this.tag = tag;
 			final String message = String.format(messageTag.getMessage(), dynamicParameters);
 			this.value = message;
@@ -224,7 +223,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 		 */
 		protected BasicInfo(final String tag, final MessageTag messageTag, final Map<String, String> attributes) {
 
-			setAttribute(NAME_ID, messageTag.name());
+			setAttribute(AttributeName.NAME_ID, messageTag.name());
 			this.tag = tag;
 			this.value = messageTag.getMessage();
 			if (attributes != null) {
@@ -256,7 +255,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 				return false;
 			}
 			final String attributeValue = attributes.get(name);
-			return attributeValue != null && attributeValue.equals(value);
+			return (attributeValue != null) && attributeValue.equals(value);
 		}
 
 		public String getAttributeValue(final String name) {
@@ -283,7 +282,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 		 */
 		public void addTo(final XmlNode xmlNode) {
 
-			final XmlNode info = xmlNode.addChild(INFO, value);
+			final XmlNode info = xmlNode.addChild(NodeName.INFO, value);
 
 			for (final Entry<String, String> entry : attributes.entrySet()) {
 
@@ -318,7 +317,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 
 	public boolean isValid() {
 
-		return VALID.equals(indication);
+		return Indication.VALID.equals(indication);
 	}
 
 	/**
@@ -423,7 +422,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	 */
 	public void addInfo(final Conclusion conclusion) {
 
-		if (conclusion.infoList != null && !conclusion.infoList.isEmpty()) {
+		if ((conclusion.infoList != null) && !conclusion.infoList.isEmpty()) {
 
 			ensureInfoList();
 			infoList.addAll(conclusion.infoList);
@@ -437,7 +436,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	 */
 	public void addInfo(final List<XmlDom> infoList) {
 
-		if (infoList == null || infoList.isEmpty()) {
+		if ((infoList == null) || infoList.isEmpty()) {
 
 			return;
 		}
@@ -471,7 +470,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	public void addInfo(final XmlNode infoContainerXmlNode) {
 
 		List<XmlNode> children;
-		if (infoContainerXmlNode == null || (children = infoContainerXmlNode.getChildren()).isEmpty()) {
+		if ((infoContainerXmlNode == null) || (children = infoContainerXmlNode.getChildren()).isEmpty()) {
 
 			return;
 		}
@@ -501,13 +500,13 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 		final String name = xmlNode.getName();
 		final String value = xmlNode.getValue();
 		BasicInfo basicInfo = null;
-		if (ERROR.equals(name)) {
+		if (NodeName.ERROR.equals(name)) {
 
 			basicInfo = addError();
-		} else if (WARNING.equals(name)) {
+		} else if (NodeName.WARNING.equals(name)) {
 
 			basicInfo = addWarning();
-		} else if (INFO.equals(name)) {
+		} else if (NodeName.INFO.equals(name)) {
 
 			basicInfo = addInfo();
 
@@ -535,7 +534,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	 */
 	private void addErrors(final List<XmlDom> errors) {
 
-		if (errors == null || errors.isEmpty()) {
+		if ((errors == null) || errors.isEmpty()) {
 
 			return;
 		}
@@ -626,7 +625,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	 */
 	private void addWarnings(List<XmlDom> warnings) {
 
-		if (warnings == null || warnings.isEmpty()) {
+		if ((warnings == null) || warnings.isEmpty()) {
 
 			return;
 		}
@@ -647,7 +646,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	 */
 	public void addWarnings(final Conclusion conclusion) {
 
-		if (conclusion.warningList != null && !conclusion.warningList.isEmpty()) {
+		if ((conclusion.warningList != null) && !conclusion.warningList.isEmpty()) {
 
 			ensureWarningList();
 			warningList.addAll(conclusion.warningList);
@@ -722,11 +721,11 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 	 */
 	public XmlNode toXmlNode() {
 
-		final XmlNode conclusion = new XmlNode(CONCLUSION);
-		conclusion.addChild(INDICATION, indication);
+		final XmlNode conclusion = new XmlNode(NodeName.CONCLUSION);
+		conclusion.addChild(NodeName.INDICATION, indication);
 		if (subIndication != null) {
 
-			conclusion.addChild(SUB_INDICATION, subIndication);
+			conclusion.addChild(NodeName.SUB_INDICATION, subIndication);
 		}
 		infoToXmlNode(conclusion);
 		warningToXmlNode(conclusion);
@@ -736,17 +735,17 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 
 	public void infoToXmlNode(final XmlNode conclusion) {
 
-		basicInfoToXmlNode(infoList, INFO, conclusion);
+		basicInfoToXmlNode(infoList, NodeName.INFO, conclusion);
 	}
 
 	public void warningToXmlNode(final XmlNode conclusion) {
 
-		basicInfoToXmlNode(warningList, WARNING, conclusion);
+		basicInfoToXmlNode(warningList, NodeName.WARNING, conclusion);
 	}
 
 	public void errorToXmlNode(final XmlNode conclusion) {
 
-		basicInfoToXmlNode(errorList, ERROR, conclusion);
+		basicInfoToXmlNode(errorList, NodeName.ERROR, conclusion);
 	}
 
 	private void basicInfoToXmlNode(List<?> basicInfoList, final String infoLevel, final XmlNode conclusion) {
@@ -794,6 +793,7 @@ public class Conclusion implements Indication, SubIndication, NodeName, Attribut
 		addWarnings(warnings);
 	}
 
+	@Override
 	public String toString() {
 
 		return toXmlNode().toString();

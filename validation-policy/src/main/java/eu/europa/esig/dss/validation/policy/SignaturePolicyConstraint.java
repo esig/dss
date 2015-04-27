@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
@@ -37,8 +34,6 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
  * This class represents a signature policy constraint.
  */
 public class SignaturePolicyConstraint extends Constraint {
-
-	private static final Logger LOG = LoggerFactory.getLogger(SignaturePolicyConstraint.class);
 
 	/**
 	 * This variable stores the used signature policy identifier. If no policy is used then it contains {@code NO_POLICY}, if the policy is implied then it contains {@code

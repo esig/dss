@@ -28,14 +28,10 @@ import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyConstraint;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.XmlNode;
-import eu.europa.esig.dss.validation.policy.rules.AttributeName;
-import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
-import eu.europa.esig.dss.validation.policy.rules.NodeValue;
-import eu.europa.esig.dss.validation.policy.rules.RuleConstant;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.Conclusion;
 import eu.europa.esig.dss.x509.SignaturePolicy;
@@ -65,7 +61,7 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
  * - Signature Constraints<br/>
  *
  */
-public class ValidationContextInitialisation implements RuleConstant, Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage {
+public class ValidationContextInitialisation {
 
 	/**
 	 * See {@link ProcessParameters#getDiagnosticData()}
@@ -99,10 +95,10 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
 	private void isInitialised() {
 
 		if (diagnosticData == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
 		}
 		if (signatureContext == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "signatureContext"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "signatureContext"));
 		}
 	}
 
@@ -117,7 +113,7 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
 
 		if (processNode == null) {
 
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "processNode"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "processNode"));
 		}
 		prepareParameters(params);
 
@@ -125,7 +121,7 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
 		 * 5.2. Validation Context Initialisation (VCI)
 		 */
 
-		subProcessNode = processNode.addChild(VCI);
+		subProcessNode = processNode.addChild(NodeName.VCI);
 
 		final Conclusion conclusion = process(params);
 
@@ -182,7 +178,7 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
 		}
 
 		// This validation process returns VALID
-		conclusion.setIndication(VALID);
+		conclusion.setIndication(Indication.VALID);
 		return conclusion;
 	}
 
@@ -246,7 +242,7 @@ public class ValidationContextInitialisation implements RuleConstant, Indication
 		constraint.setProcessingError(signatureContext.getValue("./Policy/ProcessingError/text()"));
 		constraint.setNotice(signatureContext.getValue("./Policy/Notice/text()"));
 
-		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

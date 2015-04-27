@@ -34,7 +34,6 @@ import eu.europa.esig.dss.validation.policy.SignatureCryptographicConstraint;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.XmlNode;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
-import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
@@ -77,7 +76,7 @@ import eu.europa.esig.dss.x509.TimestampType;
  * with a time up to which each of the listed algorithms were considered secure.
  *
  */
-public class SignatureAcceptanceValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
+public class SignatureAcceptanceValidation {
 
 	/**
 	 * The following variables are used only in order to simplify the writing of the rules!
@@ -115,13 +114,13 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 	private void isInitialised() {
 
 		if (constraintData == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 		if (signatureContext == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "signatureContext"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "signatureContext"));
 		}
 		if (currentTime == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "currentTime"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "currentTime"));
 		}
 	}
 
@@ -151,14 +150,14 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 
 		if (processNode == null) {
 
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "processNode"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "processNode"));
 		}
 		prepareParameters(params);
 
 		/**
 		 * 5.5 Signature Acceptance Validation (SAV)
 		 */
-		subProcessNode = processNode.addChild(SAV);
+		subProcessNode = processNode.addChild(NodeName.SAV);
 
 		final Conclusion conclusion = process(params);
 
@@ -321,14 +320,14 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 
 			if (!contains) {
 
-				constraintNode.addChild(STATUS, KO);
-				conclusion.setIndication(INVALID, SIG_CONSTRAINTS_FAILURE);
-				conclusion.addError(MessageTag.BBB_SAV_ICERRM_ANS).setAttribute(CERTIFIED_ROLES, certifiedRolesString).setAttribute(REQUESTED_ROLES, requestedCertifiedRolesString);
+				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
+				conclusion.setIndication(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE);
+				conclusion.addError(MessageTag.BBB_SAV_ICERRM_ANS).setAttribute(AttributeName.CERTIFIED_ROLES, certifiedRolesString).setAttribute(AttributeName.REQUESTED_ROLES, requestedCertifiedRolesString);
 				return conclusion;
 			}
-			constraintNode.addChild(STATUS, OK);
-			constraintNode.addChild(INFO, certifiedRolesString).setAttribute(FIELD, CERTIFIED_ROLES);
-			constraintNode.addChild(INFO, "WARNING: The attribute certificate is not cryptographically validated.");
+			constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
+			constraintNode.addChild(NodeName.INFO, certifiedRolesString).setAttribute(AttributeName.FIELD, AttributeName.CERTIFIED_ROLES);
+			constraintNode.addChild(NodeName.INFO, "WARNING: The attribute certificate is not cryptographically validated.");
 		}
 
 		// Main signature cryptographic constraints validation
@@ -337,7 +336,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		}
 
 		// This validation process returns VALID
-		conclusion.setIndication(VALID);
+		conclusion.setIndication(Indication.VALID);
 		return conclusion;
 	}
 
@@ -347,8 +346,8 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 	 */
 	private XmlNode addConstraint(final MessageTag messageTag) {
 
-		final XmlNode constraintNode = subProcessNode.addChild(CONSTRAINT);
-		constraintNode.addChild(NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
+		final XmlNode constraintNode = subProcessNode.addChild(NodeName.CONSTRAINT);
+		constraintNode.addChild(NodeName.NAME, messageTag.getMessage()).setAttribute(AttributeName.NAME_ID, messageTag.name());
 		return constraintNode;
 	}
 
@@ -371,7 +370,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		if (StringUtils.isNotBlank(message)) {
 			constraint.setAttribute("Log", message);
 		}
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISSV_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISSV_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -398,7 +397,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPSTP);
 		final String signingTime = signatureContext.getValue("./DateTime/text()");
 		constraint.setValue(StringUtils.isNotBlank(signingTime));
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPSTP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPSTP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -419,7 +418,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPCTP);
 		final String contentType = signatureContext.getValue("./ContentType/text()");
 		constraint.setValue(contentType);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -440,7 +439,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPCHP);
 		final String contentHints = signatureContext.getValue("./ContentHints/text()");
 		constraint.setValue(contentHints);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCHP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCHP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -461,7 +460,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPCIP);
 		final String contentIdentifier = signatureContext.getValue("./ContentIdentifier/text()");
 		constraint.setValue(contentIdentifier);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCIP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCIP_ANS);
 		//constraint.setAttribute()
 		constraint.setConclusionReceiver(conclusion);
 
@@ -484,7 +483,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		// TODO: A set of commitments must be checked
 		final String commitmentTypeIndicationIdentifier = signatureContext.getValue("./CommitmentTypeIndication/Identifier[1]/text()");
 		constraint.setValue(commitmentTypeIndicationIdentifier);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPXTIP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPXTIP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.checkInList();
@@ -524,7 +523,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 			}
 		}
 		constraint.setValue(signatureProductionPlace);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPSLP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPSLP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -551,7 +550,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 
 		final String countValue = count <= 0 ? "" : String.valueOf(count);
 		constraint1.setValue(countValue);
-		constraint1.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);
+		constraint1.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);
 		constraint1.setConclusionReceiver(conclusion);
 
 		final Constraint constraint2 = constraintData.getContentTimestampImprintFoundConstraint();
@@ -560,7 +559,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		}
 		constraint2.create(subProcessNode, MessageTag.ADEST_IMIDF);
 		constraint2.setValue(true);
-		constraint2.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.ADEST_IMIDF_ANS);
+		constraint2.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.ADEST_IMIDF_ANS);
 		constraint2.setConclusionReceiver(conclusion);
 
 		final Constraint constraint3 = constraintData.getContentTimestampImprintIntactConstraint();
@@ -569,7 +568,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 		}
 		constraint3.create(subProcessNode, MessageTag.ADEST_IMIVC);
 		constraint3.setValue(true);
-		constraint3.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.ADEST_IMIVC_ANS);
+		constraint3.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.ADEST_IMIVC_ANS);
 		constraint3.setConclusionReceiver(conclusion);
 
 		return constraint1.check() && constraint2.check() && constraint3.check();
@@ -594,7 +593,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 
 		final String countValue = count <= 0 ? "" : String.valueOf(count);
 		constraint.setValue(countValue);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -627,7 +626,7 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 			constraint.setExpectedValue("*");
 		}
 		constraint.setValue(claimedRole);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ICRM_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ICRM_ANS);
 		constraint.setConclusionReceiver(conclusion);
 		boolean check = constraint.checkInList();
 		return check;
@@ -641,16 +640,16 @@ public class SignatureAcceptanceValidation implements Indication, SubIndication,
 	 */
 	private boolean checkMainSignatureCryptographicConstraint(final Conclusion conclusion) {
 
-		final SignatureCryptographicConstraint constraint = constraintData.getSignatureCryptographicConstraint(MAIN_SIGNATURE);
+		final SignatureCryptographicConstraint constraint = constraintData.getSignatureCryptographicConstraint(NodeName.MAIN_SIGNATURE);
 		if (constraint == null) {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.ASCCM);
 		constraint.setCurrentTime(currentTime);
-		constraint.setEncryptionAlgorithm(signatureContext.getValue(XP_ENCRYPTION_ALGO_USED_TO_SIGN_THIS_TOKEN));
-		constraint.setDigestAlgorithm(signatureContext.getValue(XP_DIGEST_ALGO_USED_TO_SIGN_THIS_TOKEN));
-		constraint.setKeyLength(signatureContext.getValue(XP_KEY_LENGTH_USED_TO_SIGN_THIS_TOKEN));
-		constraint.setIndications(INDETERMINATE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.EMPTY);
+		constraint.setEncryptionAlgorithm(signatureContext.getValue(ValidationXPathQueryHolder.XP_ENCRYPTION_ALGO_USED_TO_SIGN_THIS_TOKEN));
+		constraint.setDigestAlgorithm(signatureContext.getValue(ValidationXPathQueryHolder.XP_DIGEST_ALGO_USED_TO_SIGN_THIS_TOKEN));
+		constraint.setKeyLength(signatureContext.getValue(ValidationXPathQueryHolder.XP_KEY_LENGTH_USED_TO_SIGN_THIS_TOKEN));
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.EMPTY);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

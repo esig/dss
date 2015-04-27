@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 
@@ -30,8 +27,6 @@ import eu.europa.esig.dss.validation.policy.rules.NodeValue;
  * This class represents the timestamp validation process validity constraints.
  */
 public class TimestampValidationProcessValidConstraint extends Constraint {
-
-	private static final Logger LOG = LoggerFactory.getLogger(TimestampValidationProcessValidConstraint.class);
 
 	private int validTimestampCount;
 	private String subIndication1;

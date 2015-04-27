@@ -67,7 +67,7 @@ import eu.europa.esig.dss.x509.TimestampType;
  *
  *
  */
-public class AdESTValidation implements Indication, SubIndication, NodeValue, AttributeName, AttributeValue, ValidationXPathQueryHolder {
+public class AdESTValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AdESTValidation.class);
 
@@ -224,7 +224,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			signatureXmlDom = signature;
 			signatureId = signature.getValue("./@Id");
 			final String type = signature.getValue("./@Type");
-			if (COUNTERSIGNATURE.equals(type)) {
+			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
 
 				params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
 			} else {
@@ -233,7 +233,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			}
 			constraintData = params.getCurrentValidationPolicy();
 			signatureXmlNode = adestValidationData.addChild(NodeName.SIGNATURE);
-			signatureXmlNode.setAttribute(ID, signatureId);
+			signatureXmlNode.setAttribute(AttributeName.ID, signatureId);
 
 			// current time
 			bestSignatureTime = currentTime;
@@ -300,9 +300,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			}
 
 			timestampXmlNode = signatureXmlNode.addChild(NodeName.TIMESTAMP);
-			timestampXmlNode.setAttribute(ID, timestampId);
-			timestampXmlNode.setAttribute(TYPE, timestampTypeString);
-			timestampXmlNode.setAttribute(GENERATION_TIME, DSSUtils.formatDate(productionTime));
+			timestampXmlNode.setAttribute(AttributeName.ID, timestampId);
+			timestampXmlNode.setAttribute(AttributeName.TYPE, timestampTypeString);
+			timestampXmlNode.setAttribute(AttributeName.GENERATION_TIME, DSSUtils.formatDate(productionTime));
 
 			final Conclusion timestampConclusion = new Conclusion();
 
@@ -336,7 +336,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		/**
 		 * NOTE 2:
 		 */
-		if (INDETERMINATE.equals(bvpIndication) && REVOKED_NO_POE.equals(bvpSubIndication)) {
+		if (Indication.INDETERMINATE.equals(bvpIndication) && SubIndication.REVOKED_NO_POE.equals(bvpSubIndication)) {
 
 			if (!checkRevocationTimeConstraint(signatureConclusion)) {
 				return signatureConclusion;
@@ -346,7 +346,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		/**
 		 * NOTE 3:
 		 */
-		if (INDETERMINATE.equals(bvpIndication) && OUT_OF_BOUNDS_NO_POE.equals(bvpSubIndication)) {
+		if (Indication.INDETERMINATE.equals(bvpIndication) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bvpSubIndication)) {
 
 			if (!checkBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint(signatureConclusion)) {
 				return signatureConclusion;
@@ -359,7 +359,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		/**
 		 * NOTE 4:
 		 */
-		if (INDETERMINATE.equals(bvpIndication) && CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bvpSubIndication)) {
+		if (Indication.INDETERMINATE.equals(bvpIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bvpSubIndication)) {
 
 			if (!checkAlgorithmReliableAtBestSignatureTimeConstraint(signatureConclusion)) {
 				return signatureConclusion;
@@ -379,9 +379,9 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		}
 
 		// This validation process returns VALID
-		signatureConclusion.setIndication(VALID);
+		signatureConclusion.setIndication(Indication.VALID);
 		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
-		signatureConclusion.addInfo(MessageTag.EMPTY).setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
+		signatureConclusion.addInfo(MessageTag.EMPTY).setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 
 		return signatureConclusion;
 	}
@@ -433,16 +433,16 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 
 		final XmlNode constraintNode = addConstraint(timestampXmlNode, MessageTag.ADEST_ITVPC);
 
-		boolean valid = VALID.equals(tsvpIndication);
-		boolean cryptoConstraintsFailureNoPoe = CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(tsvpSubIndication);
-		boolean revokedNoPoe = REVOKED_NO_POE.equals(tsvpSubIndication);
-		boolean outOfBoundsNoPoe = OUT_OF_BOUNDS_NO_POE.equals(tsvpSubIndication);
+		boolean valid = Indication.VALID.equals(tsvpIndication);
+		boolean cryptoConstraintsFailureNoPoe = SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(tsvpSubIndication);
+		boolean revokedNoPoe = SubIndication.REVOKED_NO_POE.equals(tsvpSubIndication);
+		boolean outOfBoundsNoPoe = SubIndication.OUT_OF_BOUNDS_NO_POE.equals(tsvpSubIndication);
 
 		if (valid || cryptoConstraintsFailureNoPoe || revokedNoPoe || outOfBoundsNoPoe) {
 
 			if (productionTime.before(bestSignatureTime)) {
 
-				constraintNode.addChild(NodeName.STATUS, OK);
+				constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 
 				bestSignatureTime = productionTime;
 				constraintNode.addChild(NodeName.INFO, MessageTag.ADEST_ITVPC_INFO_1);
@@ -450,12 +450,12 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 				return true;
 			} else {
 
-				constraintNode.addChild(NodeName.STATUS, KO);
+				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
 				constraintNode.addChild(NodeName.WARNING, MessageTag.ADEST_ITVPC_ANS_1);
 			}
 			return found;
 		}
-		constraintNode.addChild(NodeName.STATUS, KO);
+		constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
 		constraintNode.addChild(NodeName.ERROR, MessageTag.ADEST_ITVPC_ANS_2);
 		// TODO: (Bob: 2014 Mar 15) the information from the timestamp validation process should be copied.
 		return found;
@@ -475,11 +475,11 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 
 		final XmlNode constraintNode = addConstraint(timestampXmlNode, MessageTag.ADEST_ITVPC);
 
-		if (VALID.equals(tsvpIndication)) {
-			constraintNode.addChild(NodeName.STATUS, OK);
+		if (Indication.VALID.equals(tsvpIndication)) {
+			constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 			constraintNode.addChild(NodeName.INFO, MessageTag.ADEST_ITVPC_INFO_1);
 		} else {
-			constraintNode.addChild(NodeName.STATUS, KO);
+			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
 			constraintNode.addChild(NodeName.ERROR, MessageTag.ADEST_ITVPC_ANS_2);
 		}
 	}
@@ -510,7 +510,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 	private XmlNode addConstraint(final XmlNode parent, final MessageTag messageTag) {
 
 		XmlNode constraintNode = parent.addChild(NodeName.CONSTRAINT);
-		constraintNode.addChild(NodeName.NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
+		constraintNode.addChild(NodeName.NAME, messageTag.getMessage()).setAttribute(AttributeName.NAME_ID, messageTag.name());
 		return constraintNode;
 	}
 
@@ -542,8 +542,8 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(signatureXmlNode, MessageTag.ADEST_ROBVPIIC);
-		boolean validBasicValidationProcess = VALID.equals(bvpIndication) || (INDETERMINATE.equals(bvpIndication) && (RuleUtils
-				.in(bvpSubIndication, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, OUT_OF_BOUNDS_NO_POE, REVOKED_NO_POE)));
+		boolean validBasicValidationProcess = Indication.VALID.equals(bvpIndication) || (Indication.INDETERMINATE.equals(bvpIndication) && (RuleUtils
+				.in(bvpSubIndication, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, SubIndication.OUT_OF_BOUNDS_NO_POE, SubIndication.REVOKED_NO_POE)));
 		constraint.setValue(validBasicValidationProcess);
 		constraint.setBasicValidationProcessConclusionNode(bvpConclusion);
 		constraint.setConclusionReceiver(conclusion);
@@ -571,7 +571,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(timestampXmlNode, MessageTag.ADEST_IMIDF);
-		final boolean messageImprintDataIntact = timestamp.getBoolValue(XP_MESSAGE_IMPRINT_DATA_FOUND);
+		final boolean messageImprintDataIntact = timestamp.getBoolValue(ValidationXPathQueryHolder.XP_MESSAGE_IMPRINT_DATA_FOUND);
 		constraint.setValue(messageImprintDataIntact);
 		constraint.setIndications(MessageTag.ADEST_IMIDF_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -593,7 +593,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(timestampXmlNode, MessageTag.ADEST_IMIVC);
-		final boolean messageImprintDataIntact = timestamp.getBoolValue(XP_MESSAGE_IMPRINT_DATA_INTACT);
+		final boolean messageImprintDataIntact = timestamp.getBoolValue(ValidationXPathQueryHolder.XP_MESSAGE_IMPRINT_DATA_INTACT);
 		constraint.setValue(messageImprintDataIntact);
 		constraint.setIndications(MessageTag.ADEST_IMIVC_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -616,11 +616,11 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		}
 		constraint.create(signatureXmlNode, MessageTag.ADEST_ROTVPIIC);
 		constraint.setValidTimestampCount(validTimestampCount);
-		constraint.setIndications(INDETERMINATE, null, MessageTag.ADEST_ROTVPIIC_ANS);
-		constraint.setSubIndication1(NO_VALID_TIMESTAMP);
-		constraint.setSubIndication2(NO_TIMESTAMP);
+		constraint.setIndications(Indication.INDETERMINATE, null, MessageTag.ADEST_ROTVPIIC_ANS);
+		constraint.setSubIndication1(SubIndication.NO_VALID_TIMESTAMP);
+		constraint.setSubIndication2(SubIndication.NO_TIMESTAMP);
 		final String formattedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
-		constraint.setAttribute(BEST_SIGNATURE_TIME, formattedBestSignatureTime);
+		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formattedBestSignatureTime);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -643,12 +643,12 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(signatureXmlNode, MessageTag.ADEST_IRTPTBST);
-		constraint.setIndications(INDETERMINATE, REVOKED_NO_POE, MessageTag.ADEST_IRTPTBST_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.REVOKED_NO_POE, MessageTag.ADEST_IRTPTBST_ANS);
 		final Date revocationDate = bvpConclusion.getTimeValue("./Error/@RevocationTime");
 		final boolean before = bestSignatureTime.before(revocationDate);
 		constraint.setValue(before);
 		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
-		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
+		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
 		//        conclusionNode.addChild(errorXmlDom);
@@ -677,14 +677,14 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(signatureXmlNode, MessageTag.TSV_IBSTAIDOSC);
-		constraint.setIndications(INVALID, NOT_YET_VALID, MessageTag.TSV_IBSTAIDOSC_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.NOT_YET_VALID, MessageTag.TSV_IBSTAIDOSC_ANS);
 		final String formatedNotBefore = bvpConclusion.getValue("./Error/@NotBefore");
 		final Date notBeforeTime = DSSUtils.parseDate(formatedNotBefore);
 		final boolean notBefore = !bestSignatureTime.before(notBeforeTime);
 		constraint.setValue(notBefore);
 		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
-		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
-		constraint.setAttribute(NOT_BEFORE, formatedNotBefore);
+		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
+		constraint.setAttribute(AttributeValue.NOT_BEFORE, formatedNotBefore);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
 		//        conclusionNode.addChild(errorXmlDom);
@@ -714,11 +714,11 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(signatureXmlNode, MessageTag.TSV_ISCNVABST);
-		constraint.setIndications(INDETERMINATE, OUT_OF_BOUNDS_NO_POE, MessageTag.TSV_ISCNVABST_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.OUT_OF_BOUNDS_NO_POE, MessageTag.TSV_ISCNVABST_ANS);
 		// false is always returned: this corresponds to: Otherwise, terminate with INDETERMINATE/OUT_OF_BOUNDS_NO_POE.
 		constraint.setValue(false);
 		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
-		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
+		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
 		//        conclusionNode.addChild(errorXmlDom);
@@ -745,7 +745,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(signatureXmlNode, MessageTag.TSV_WACRABST);
-		constraint.setIndications(INDETERMINATE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.TSV_WACRABST_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.TSV_WACRABST_ANS);
 
 		boolean ok = false;
 		final XmlDom error = bvpConclusion.getElement("./Error");
@@ -763,7 +763,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		}
 		constraint.setValue(ok);
 		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
-		constraint.setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
+		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
 		//        conclusionNode.addChild(errorXmlDom);
@@ -801,7 +801,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signatureId, timestampId);
 			final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
 			final String tsvpIndication = tsvpConclusion.getValue("./Indication/text()");
-			if (!VALID.equals(tsvpIndication)) {
+			if (!Indication.VALID.equals(tsvpIndication)) {
 
 				timestamps.remove(index);
 			}
@@ -854,14 +854,14 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 		}
 
 		constraint.create(signatureXmlNode, MessageTag.TSV_ASTPTCT);
-		constraint.setIndications(INVALID, TIMESTAMP_ORDER_FAILURE, MessageTag.TSV_ASTPTCT_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.TIMESTAMP_ORDER_FAILURE, MessageTag.TSV_ASTPTCT_ANS);
 
 		constraint.setValue(ok);
 
 		final String formattedLatestContentTimestampProductionDate = DSSUtils.formatDate(latestContent);
 		final String formattedEarliestSignatureTimestampProductionDate = DSSUtils.formatDate(earliestSignature);
-		constraint.setAttribute(LATEST_CONTENT_TIMESTAMP_PRODUCTION_TIME, formattedLatestContentTimestampProductionDate);
-		constraint.setAttribute(EARLIEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME, formattedEarliestSignatureTimestampProductionDate);
+		constraint.setAttribute(AttributeValue.LATEST_CONTENT_TIMESTAMP_PRODUCTION_TIME, formattedLatestContentTimestampProductionDate);
+		constraint.setAttribute(AttributeValue.EARLIEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME, formattedEarliestSignatureTimestampProductionDate);
 
 		constraint.setConclusionReceiver(conclusion);
 
@@ -910,7 +910,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(signatureXmlNode, MessageTag.BBB_SAV_ISQPSTP);
-		constraint.setIndications(INDETERMINATE, CLAIMED_SIGNING_TIME_ABSENT, MessageTag.ADEST_VFDTAOCST_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.CLAIMED_SIGNING_TIME_ABSENT, MessageTag.ADEST_VFDTAOCST_ANS);
 		final String signingTime = signatureXmlDom.getValue("./DateTime/text()");
 		constraint.setValue(StringUtils.isNotBlank(signingTime));
 		constraint.setConclusionReceiver(conclusion);
@@ -936,7 +936,7 @@ public class AdESTValidation implements Indication, SubIndication, NodeValue, At
 			return true;
 		}
 		constraint.create(signatureXmlNode, MessageTag.ADEST_ISTPTDABST);
-		constraint.setIndications(INVALID, SIG_CONSTRAINTS_FAILURE, MessageTag.ADEST_ISTPTDABST_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.ADEST_ISTPTDABST_ANS);
 		final Long timestampDelay = constraintData.getTimestampDelayTime();
 		final String signingTime = signatureXmlDom.getValue("./DateTime/text()");
 		final Date date = DSSUtils.quietlyParseDate(signingTime);

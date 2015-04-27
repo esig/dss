@@ -22,40 +22,38 @@ package eu.europa.esig.dss.validation.policy.rules;
 
 public interface SubIndication {
 
-	public static final String NONE = "";
-	public static final String NO_SIGNER_CERTIFICATE_FOUND = "NO_SIGNER_CERTIFICATE_FOUND";
-	public static final String FORMAT_FAILURE = "FORMAT_FAILURE";
-	public static final String NO_POLICY = "NO_POLICY";
-	public static final String POLICY_PROCESSING_ERROR = "POLICY_PROCESSING_ERROR";
-	public static final String OUT_OF_BOUNDS_NO_POE = "OUT_OF_BOUNDS_NO_POE";
-	public static final String NO_CERTIFICATE_CHAIN_FOUND = "NO_CERTIFICATE_CHAIN_FOUND";
-	public static final String TRY_LATER = "TRY_LATER";
-	public static final String REVOKED_NO_POE = "REVOKED_NO_POE";
-	public static final String REVOKED_CA_NO_POE = "REVOKED_CA_NO_POE";
-	public static final String CHAIN_CONSTRAINTS_FAILURE = "CHAIN_CONSTRAINTS_FAILURE";
-	public static final String CRYPTO_CONSTRAINTS_FAILURE = "CRYPTO_CONSTRAINTS_FAILURE";
-	public static final String CRYPTO_CONSTRAINTS_FAILURE_NO_POE = "CRYPTO_CONSTRAINTS_FAILURE_NO_POE";
-	public static final String SIGNED_DATA_NOT_FOUND = "SIGNED_DATA_NOT_FOUND";
-	public static final String HASH_FAILURE = "HASH_FAILURE";
-	public static final String SIG_CRYPTO_FAILURE = "SIG_CRYPTO_FAILURE";
-	public static final String SIG_CONSTRAINTS_FAILURE = "SIG_CONSTRAINTS_FAILURE";
-	public static final String NO_VALID_TIMESTAMP = "NO_VALID_TIMESTAMP";
-	public static final String NO_TIMESTAMP = "NO_TIMESTAMP";
-	public static final String NOT_YET_VALID = "NOT_YET_VALID";
-	public static final String TIMESTAMP_ORDER_FAILURE = "TIMESTAMP_ORDER_FAILURE";
-	public static final String REVOKED = "REVOKED";
-	public static final String EXPIRED = "EXPIRED";
-	public static final String NO_POE = "NO_POE";
+	String NONE = "";
+	String NO_SIGNER_CERTIFICATE_FOUND = "NO_SIGNER_CERTIFICATE_FOUND";
+	String FORMAT_FAILURE = "FORMAT_FAILURE";
+	String NO_POLICY = "NO_POLICY";
+	String POLICY_PROCESSING_ERROR = "POLICY_PROCESSING_ERROR";
+	String OUT_OF_BOUNDS_NO_POE = "OUT_OF_BOUNDS_NO_POE";
+	String NO_CERTIFICATE_CHAIN_FOUND = "NO_CERTIFICATE_CHAIN_FOUND";
+	String TRY_LATER = "TRY_LATER";
+	String REVOKED_NO_POE = "REVOKED_NO_POE";
+	String REVOKED_CA_NO_POE = "REVOKED_CA_NO_POE";
+	String CHAIN_CONSTRAINTS_FAILURE = "CHAIN_CONSTRAINTS_FAILURE";
+	String CRYPTO_CONSTRAINTS_FAILURE = "CRYPTO_CONSTRAINTS_FAILURE";
+	String CRYPTO_CONSTRAINTS_FAILURE_NO_POE = "CRYPTO_CONSTRAINTS_FAILURE_NO_POE";
+	String SIGNED_DATA_NOT_FOUND = "SIGNED_DATA_NOT_FOUND";
+	String HASH_FAILURE = "HASH_FAILURE";
+	String SIG_CRYPTO_FAILURE = "SIG_CRYPTO_FAILURE";
+	String SIG_CONSTRAINTS_FAILURE = "SIG_CONSTRAINTS_FAILURE";
+	String NO_VALID_TIMESTAMP = "NO_VALID_TIMESTAMP";
+	String NO_TIMESTAMP = "NO_TIMESTAMP";
+	String NOT_YET_VALID = "NOT_YET_VALID";
+	String TIMESTAMP_ORDER_FAILURE = "TIMESTAMP_ORDER_FAILURE";
+	String REVOKED = "REVOKED";
+	String EXPIRED = "EXPIRED";
+	String NO_POE = "NO_POE";
 
 	/**
 	 * Added to handle the constraint on the timestamp delay in case where no signing-time property/attribute is present.
 	 */
-	public static final String CLAIMED_SIGNING_TIME_ABSENT = "CLAIMED_SIGNING_TIME_ABSENT";
+	String CLAIMED_SIGNING_TIME_ABSENT = "CLAIMED_SIGNING_TIME_ABSENT";
 	/**
 	 * Added to handle any unexpected error encountered during the validation process.
 	 */
-	public static final String UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
-	// public static final String = "";
-	// public static final String = "";
+	String UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
 
 }

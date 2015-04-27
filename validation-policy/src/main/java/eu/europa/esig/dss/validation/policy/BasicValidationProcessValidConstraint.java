@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
@@ -31,8 +28,6 @@ import eu.europa.esig.dss.validation.policy.rules.NodeValue;
  * This class represents the basic validation process validity constraints.
  */
 public class BasicValidationProcessValidConstraint extends Constraint {
-
-	private static final Logger LOG = LoggerFactory.getLogger(BasicValidationProcessValidConstraint.class);
 
 	private XmlDom basicValidationProcessConclusionNode;
 

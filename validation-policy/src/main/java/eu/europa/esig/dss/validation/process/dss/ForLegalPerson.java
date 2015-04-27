@@ -22,13 +22,9 @@ package eu.europa.esig.dss.validation.process.dss;
 
 import java.util.List;
 
+import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.AttributeName;
-import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
-import eu.europa.esig.dss.validation.policy.rules.NodeName;
-import eu.europa.esig.dss.validation.policy.rules.NodeValue;
-import eu.europa.esig.dss.validation.policy.rules.RuleConstant;
 
 /**
  * This class checks if the signer's certificate used in validating the signature is mandated to be issued by a
@@ -36,7 +32,7 @@ import eu.europa.esig.dss.validation.policy.rules.RuleConstant;
  *
  *
  */
-public class ForLegalPerson implements NodeName, NodeValue, AttributeName, AttributeValue, RuleConstant {
+public class ForLegalPerson {
 
 	private ValidationPolicy constraintData;
 
@@ -79,6 +75,6 @@ public class ForLegalPerson implements NodeName, NodeValue, AttributeName, Attri
 		 * Mandates the signer's certificate used in validating the signature to be issued by a certificate authority
 		 * issuing certificate as having been issued to a legal person.
 		 */
-		return qualifiers.contains(QC_FOR_LEGAL_PERSON) || qualifiers.contains(QC_FOR_LEGAL_PERSON_119612);
+		return qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON) || qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON_119612);
 	}
 }

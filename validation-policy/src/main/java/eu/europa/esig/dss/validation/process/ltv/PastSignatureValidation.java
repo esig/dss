@@ -32,7 +32,6 @@ import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
-import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
@@ -50,7 +49,7 @@ import eu.europa.esig.dss.validation.process.subprocess.EtsiPOEExtraction;
  *
  *
  */
-public class PastSignatureValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage {
+public class PastSignatureValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PastSignatureValidation.class);
 
@@ -103,7 +102,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 		prepareParameters(params);
 		LOG.debug(this.getClass().getSimpleName() + ": start.");
 
-		pastSignatureValidationData = new XmlNode(PAST_SIGNATURE_VALIDATION_DATA);
+		pastSignatureValidationData = new XmlNode(NodeName.PAST_SIGNATURE_VALIDATION_DATA);
 		pastSignatureValidationData.setNameSpace(XmlDom.NAMESPACE);
 
 		final PastSignatureValidationConclusion conclusion = process(params, signature, currentTimeSignatureConclusion);
@@ -118,7 +117,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 
 		final String signatureId = signature.getValue("./@Id");
 
-		pastSignatureValidationData.setAttribute(ID, signatureId);
+		pastSignatureValidationData.setAttribute(AttributeName.ID, signatureId);
 
 		final String currentTimeIndication = currentTimeSignatureConclusion.getValue("./Indication/text()");
 		final String currentTimeSubIndication = currentTimeSignatureConclusion.getValue("./SubIndication/text()");
@@ -146,26 +145,26 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 
 		XmlNode constraintNode = addConstraint(MessageTag.PSV_IPCVC);
 
-		boolean ok = VALID.equals(pcvConclusion.getIndication());
-		constraintNode.addChild(STATUS, ok ? OK : KO);
+		boolean ok = Indication.VALID.equals(pcvConclusion.getIndication());
+		constraintNode.addChild(NodeName.STATUS, ok ? NodeValue.OK : NodeValue.KO);
 
 		final XmlNode returnedPcvIndication;
 		if (ok) {
-			returnedPcvIndication = constraintNode.addChild(INFO);
+			returnedPcvIndication = constraintNode.addChild(NodeName.INFO);
 		} else {
 
-			returnedPcvIndication = constraintNode.addChild(ERROR, MessageTag.PSV_IPCVC_ANS);
+			returnedPcvIndication = constraintNode.addChild(NodeName.ERROR, MessageTag.PSV_IPCVC_ANS);
 		}
-		returnedPcvIndication.setAttribute(INDICATION, pcvConclusion.getIndication());
+		returnedPcvIndication.setAttribute(NodeName.INDICATION, pcvConclusion.getIndication());
 		final String pcvSubIndication = pcvConclusion.getSubIndication();
 		if (pcvSubIndication != null) {
 
-			returnedPcvIndication.setAttribute(SUB_INDICATION, pcvSubIndication);
+			returnedPcvIndication.setAttribute(NodeName.SUB_INDICATION, pcvSubIndication);
 		}
 		if (controlTime != null) {
 
 			final String formatedControlTime = DSSUtils.formatDate(controlTime);
-			returnedPcvIndication.setAttribute(CONTROL_TIME, formatedControlTime);
+			returnedPcvIndication.setAttribute(AttributeValue.CONTROL_TIME, formatedControlTime);
 		}
 
 		/**
@@ -189,26 +188,26 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 		final Date bestSignatureTime = poe.getLowestSignaturePOE(signatureId, controlTime);
 
 		ok = bestSignatureTime != null;
-		constraintNode.addChild(STATUS, ok ? OK : KO);
+		constraintNode.addChild(NodeName.STATUS, ok ? NodeValue.OK : NodeValue.KO);
 
 		if (ok) {
 
 			final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
-			constraintNode.addChild(INFO).setAttribute(BEST_SIGNATURE_TIME, formatedBestSignatureTime);
+			constraintNode.addChild(NodeName.INFO).setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 
 			/**
 			 * -- If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE or INDETERMINATE/
 			 * REVOKED_CA_NO_POE, return VALID.<br>
 			 */
-			if (INDETERMINATE.equals(currentTimeIndication) && (REVOKED_NO_POE.equals(currentTimeSubIndication) || REVOKED_CA_NO_POE.equals(currentTimeSubIndication))) {
+			if (Indication.INDETERMINATE.equals(currentTimeIndication) && (SubIndication.REVOKED_NO_POE.equals(currentTimeSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(currentTimeSubIndication))) {
 
-				conclusion.setIndication(VALID);
+				conclusion.setIndication(Indication.VALID);
 				return conclusion;
 			}
 			/**
 			 * -- If current time indication/sub-indication is INDETERMINATE/OUT_OF_BOUNDS_NO_POE:<br>
 			 */
-			if (INDETERMINATE.equals(currentTimeIndication) && OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)) {
+			if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)) {
 
 				/**
 				 * say best-signature-time is the lowest time at which there exists a POE for the signature value in the set
@@ -224,15 +223,15 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 
 				if (bestSignatureTime.before(notBefore)) {
 
-					conclusion.setIndication(INVALID);
-					conclusion.setSubIndication(NOT_YET_VALID);
+					conclusion.setIndication(Indication.INVALID);
+					conclusion.setSubIndication(SubIndication.NOT_YET_VALID);
 					return conclusion;
 				} else {
 
 					/**
 					 * --- b) If best-signature-time is after the issuance date of the signer's certificate, return VALID.<br>
 					 */
-					conclusion.setIndication(VALID);
+					conclusion.setIndication(Indication.VALID);
 					return conclusion;
 				}
 			}
@@ -243,7 +242,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 			 * algorithm (or key size) at a time before to the time up to which the algorithm in question was considered
 			 * secure, return VALID.<br>
 			 */
-			if (INDETERMINATE.equals(currentTimeIndication) && CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
+			if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
 
 				boolean poeExists = true;
 				final List<XmlDom> infoList = currentTimeSignatureConclusion.getElements("./Info");
@@ -257,14 +256,14 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 					}
 
 					final String expirationDateString = info.getValue("./text()");
-					if (ALGORITHM_NOT_FOUND.equals(expirationDateString)) {
+					if (AttributeValue.ALGORITHM_NOT_FOUND.equals(expirationDateString)) {
 
 						poeExists = false;
 						continue;
 					}
 					final Date expirationDate = DSSUtils.parseDate(DSSUtils.DEFAULT_DATE_FORMAT, expirationDateString);
 					final String context = info.getValue("./@Context");
-					if (SIGNATURE.equals(context)) {
+					if (NodeName.SIGNATURE.equals(context)) {
 
 						Date poeDate_ = poe.getSignaturePOE(signatureId, expirationDate);
 						if (poeDate_ == null) {
@@ -276,7 +275,7 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 				}
 				if (poeExists) {
 
-					conclusion.setIndication(VALID);
+					conclusion.setIndication(Indication.VALID);
 					return conclusion;
 				} else {
 
@@ -312,8 +311,8 @@ public class PastSignatureValidation implements Indication, SubIndication, NodeN
 	 */
 	private XmlNode addConstraint(final MessageTag messageTag) {
 
-		XmlNode constraintNode = pastSignatureValidationData.addChild(CONSTRAINT);
-		constraintNode.addChild(NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
+		XmlNode constraintNode = pastSignatureValidationData.addChild(NodeName.CONSTRAINT);
+		constraintNode.addChild(NodeName.NAME, messageTag.getMessage()).setAttribute(AttributeName.NAME_ID, messageTag.name());
 		return constraintNode;
 	}
 }

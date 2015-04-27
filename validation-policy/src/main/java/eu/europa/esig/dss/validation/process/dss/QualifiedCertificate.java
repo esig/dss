@@ -22,9 +22,9 @@ package eu.europa.esig.dss.validation.process.dss;
 
 import java.util.List;
 
+import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.RuleConstant;
 
 /**
  * A.2 Constraints on X.509 Certificate meta-data
@@ -101,7 +101,7 @@ public class QualifiedCertificate {
 		 */
 
 		final List<String> qualifiers = InvolvedServiceInfo.getQualifiers(certificate);
-		final boolean isSIE = qualifiers.contains(RuleConstant.QC_STATEMENT) || qualifiers.contains(RuleConstant.QC_STATEMENT_119612);
+		final boolean isSIE = qualifiers.contains(TSLConstant.QC_STATEMENT) || qualifiers.contains(TSLConstant.QC_STATEMENT_119612);
 
 		/**
 		 * or • Static configuration that provides such information in a trusted manner.

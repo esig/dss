@@ -22,9 +22,6 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
@@ -37,8 +34,6 @@ import eu.europa.esig.dss.validation.report.Conclusion;
  * - check of the field: ExpiredCertsRevocationInfo in the trusted list.
  */
 public class CertificateExpirationConstraint extends Constraint {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CertificateExpirationConstraint.class);
 
 	/**
 	 * This variable stores the notAfter field of the signing certificate.

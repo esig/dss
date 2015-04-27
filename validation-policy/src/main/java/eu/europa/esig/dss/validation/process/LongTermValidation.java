@@ -78,7 +78,7 @@ import eu.europa.esig.dss.x509.TimestampType;
  *
  *
  */
-public class LongTermValidation implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ValidationXPathQueryHolder {
+public class LongTermValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LongTermValidation.class);
 
@@ -163,7 +163,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		prepareParameters(mainNode);
 		LOG.debug(this.getClass().getSimpleName() + ": start.");
 
-		XmlNode longTermValidationData = mainNode.addChild(LONG_TERM_VALIDATION_DATA);
+		XmlNode longTermValidationData = mainNode.addChild(NodeName.LONG_TERM_VALIDATION_DATA);
 
 		final List<XmlDom> signatures = diagnosticData.getElements("/DiagnosticData/Signature");
 
@@ -171,7 +171,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 
 			final String signatureId = signature.getValue("./@Id");
 			final String type = signature.getValue("./@Type");
-			if (COUNTERSIGNATURE.equals(type)) {
+			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
 
 				params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
 			} else {
@@ -181,20 +181,20 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 			final XmlDom signatureTimestampValidationData = timestampValidationData.getElement("./Signature[@Id='%s']", signatureId);
 			final XmlDom adestSignatureValidationData = adestValidationData.getElement("/AdESTValidationData/Signature[@Id='%s']", signatureId);
 
-			signatureNode = longTermValidationData.addChild(SIGNATURE);
-			signatureNode.setAttribute(ID, signatureId);
+			signatureNode = longTermValidationData.addChild(NodeName.SIGNATURE);
+			signatureNode.setAttribute(AttributeName.ID, signatureId);
 
-			conclusionNode = new XmlNode(CONCLUSION);
+			conclusionNode = new XmlNode(NodeName.CONCLUSION);
 			try {
 
 				final boolean valid = process(params, signature, signatureTimestampValidationData, adestSignatureValidationData);
 				if (valid) {
 
-					conclusionNode.addFirstChild(INDICATION, VALID);
+					conclusionNode.addFirstChild(NodeName.INDICATION, Indication.VALID);
 				}
 			} catch (Exception e) {
 
-				LOG.warn("Unexpected exception: " + e.toString(), e);
+				LOG.warn("Unexpected exception: " + e.getMessage(), e);
 			}
 			conclusionNode.setParent(signatureNode);
 		}
@@ -251,9 +251,9 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 
 		XmlNode constraintNode = addConstraint(signatureNode, MessageTag.PSV_IATVC);
 
-		if (VALID.equals(adestSignatureIndication)) {
+		if (Indication.VALID.equals(adestSignatureIndication)) {
 
-			constraintNode.addChild(STATUS, OK);
+			constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 			final List<XmlDom> adestInfo = adestSignatureConclusion.getElements("./Info");
 			constraintNode.addChildren(adestInfo);
 			conclusionNode.addChildren(adestInfo);
@@ -280,19 +280,19 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 		 * LTV attribute/property present in the signature is actually valid before making a decision about the archival
 		 * of the signature.<br>
 		 */
-		final boolean finalStatus = INDETERMINATE.equals(adestSignatureIndication) && (RuleUtils
-				.in(adestSignatureSubIndication, REVOKED_NO_POE, REVOKED_CA_NO_POE, OUT_OF_BOUNDS_NO_POE, CRYPTO_CONSTRAINTS_FAILURE_NO_POE));
+		final boolean finalStatus = Indication.INDETERMINATE.equals(adestSignatureIndication) && (RuleUtils
+				.in(adestSignatureSubIndication, SubIndication.REVOKED_NO_POE, SubIndication.REVOKED_CA_NO_POE, SubIndication.OUT_OF_BOUNDS_NO_POE, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE));
 		if (!finalStatus) {
 
 			conclusionNode.addChildrenOf(adestSignatureConclusion);
-			constraintNode.addChild(STATUS, KO);
-			constraintNode.addChild(INFO, adestSignatureIndication).setAttribute(FIELD, INDICATION);
-			constraintNode.addChild(INFO, adestSignatureSubIndication).setAttribute(FIELD, SUB_INDICATION);
+			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
+			constraintNode.addChild(NodeName.INFO, adestSignatureIndication).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
+			constraintNode.addChild(NodeName.INFO, adestSignatureSubIndication).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
 			return false;
 		}
-		constraintNode.addChild(STATUS, OK);
-		constraintNode.addChild(INFO, adestSignatureIndication).setAttribute(FIELD, INDICATION);
-		constraintNode.addChild(INFO, adestSignatureSubIndication).setAttribute(FIELD, SUB_INDICATION);
+		constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
+		constraintNode.addChild(NodeName.INFO, adestSignatureIndication).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
+		constraintNode.addChild(NodeName.INFO, adestSignatureSubIndication).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
 
 		/**
 		 * 3) If there is at least one long-term-validation attribute with a poeValue, process them, starting from the
@@ -370,7 +370,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 
 		final PastSignatureValidation pastSignatureValidation = new PastSignatureValidation();
 
-		final PastSignatureValidationConclusion psvConclusion = pastSignatureValidation.run(params, signature, adestSignatureConclusion, MAIN_SIGNATURE);
+		final PastSignatureValidationConclusion psvConclusion = pastSignatureValidation.run(params, signature, adestSignatureConclusion, NodeName.MAIN_SIGNATURE);
 
 		signatureNode.addChild(psvConclusion.getValidationData());
 		/**
@@ -380,19 +380,19 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 
 		constraintNode = addConstraint(signatureNode, MessageTag.PSV_IPSVC);
 
-		if (!VALID.equals(psvConclusion.getIndication())) {
+		if (!Indication.VALID.equals(psvConclusion.getIndication())) {
 
-			constraintNode.addChild(STATUS, KO);
-			constraintNode.addChild(INFO, psvConclusion.getIndication()).setAttribute(FIELD, INDICATION);
-			constraintNode.addChild(INFO, psvConclusion.getSubIndication()).setAttribute(FIELD, SUB_INDICATION);
+			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
+			constraintNode.addChild(NodeName.INFO, psvConclusion.getIndication()).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
+			constraintNode.addChild(NodeName.INFO, psvConclusion.getSubIndication()).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
 			psvConclusion.infoToXmlNode(constraintNode);
 
-			conclusionNode.addChild(INDICATION, psvConclusion.getIndication());
-			conclusionNode.addChild(SUB_INDICATION, psvConclusion.getSubIndication());
+			conclusionNode.addChild(NodeName.INDICATION, psvConclusion.getIndication());
+			conclusionNode.addChild(NodeName.SUB_INDICATION, psvConclusion.getSubIndication());
 			psvConclusion.infoToXmlNode(conclusionNode);
 			return false;
 		}
-		constraintNode.addChild(STATUS, OK);
+		constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 
 		/**
 		 * Data extraction: the SVA shall return the success indication VALID. In addition, the SVA should return
@@ -429,15 +429,15 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 				XmlNode constraintNode = addConstraint(processNode, MessageTag.ADEST_IMIVC);
 				// constraintNode.setAttribute("Id", timestampId);
 
-				final boolean messageImprintDataIntact = timestamp.getBoolValue(XP_MESSAGE_IMPRINT_DATA_INTACT);
+				final boolean messageImprintDataIntact = timestamp.getBoolValue(ValidationXPathQueryHolder.XP_MESSAGE_IMPRINT_DATA_INTACT);
 				if (!messageImprintDataIntact) {
 
-					constraintNode.addChild(STATUS, KO);
-					XmlNode xmlNode = conclusionNode.addChild(INFO, MessageTag.ADEST_IMIVC_ANS.getMessage());
+					constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
+					XmlNode xmlNode = conclusionNode.addChild(NodeName.INFO, MessageTag.ADEST_IMIVC_ANS.getMessage());
 					xmlNode.setAttribute("Id", timestampId);
 					continue;
 				}
-				constraintNode.addChild(STATUS, OK);
+				constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 
 				final XmlDom timestampConclusion = signatureTimestampValidationData.getElement("./Timestamp[@Id='%s']/BasicBuildingBlocks/Conclusion", timestampId);
 				final String timestampIndication = timestampConclusion.getValue("./Indication/text()");
@@ -452,9 +452,9 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 				 * - the cryptographic constraints as inputs.<br>
 				 * Add the returned POEs to the set of POEs.
 				 */
-				if (VALID.equals(timestampIndication)) {
+				if (Indication.VALID.equals(timestampIndication)) {
 
-					processNode.addChild("POEExtraction", OK);
+					processNode.addChild("POEExtraction", NodeValue.OK);
 					extractPOEs(timestamp);
 				} else {
 
@@ -471,7 +471,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 					 */
 
 					final PastSignatureValidation psvp = new PastSignatureValidation();
-					final PastSignatureValidationConclusion psvConclusion = psvp.run(params, timestamp, timestampConclusion, TIMESTAMP);
+					final PastSignatureValidationConclusion psvConclusion = psvp.run(params, timestamp, timestampConclusion, NodeName.TIMESTAMP);
 
 					processNode.addChild(psvConclusion.getValidationData());
 
@@ -480,7 +480,7 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 					 * at the generation time of the time-stamp, perform the POE extraction process and add the returned POEs
 					 * to the set of POEs.
 					 */
-					if (VALID.equals(psvConclusion.getIndication())) {
+					if (Indication.VALID.equals(psvConclusion.getIndication())) {
 
 						final boolean couldExtract = extractPOEs(timestamp);
 						if (couldExtract) {
@@ -538,8 +538,8 @@ public class LongTermValidation implements Indication, SubIndication, NodeName, 
 	 */
 	private XmlNode addConstraint(final XmlNode parentNode, final MessageTag messageTag) {
 
-		final XmlNode constraintNode = parentNode.addChild(CONSTRAINT);
-		constraintNode.addChild(NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
+		final XmlNode constraintNode = parentNode.addChild(NodeName.CONSTRAINT);
+		constraintNode.addChild(NodeName.NAME, messageTag.getMessage()).setAttribute(AttributeName.NAME_ID, messageTag.name());
 		return constraintNode;
 	}
 }

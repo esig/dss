@@ -22,11 +22,11 @@ package eu.europa.esig.dss.validation.policy.rules;
 
 public interface ExceptionMessage {
 
-    public static final String EXCEPTION_TCOPPNTBI = "To carry out %s process the '%s' parameter need to be initialised!";
-    public static final String EXCEPTION_TWUEIVP = "There was an unexpected error in the validation process!";
-    public static final String EXCEPTION_TPTCBN = "The timestamp production time cannot be null!";
-    public static final String EXCEPTION_CTVSBIOO = "The current-time variable should be initialised only once!";
+	String EXCEPTION_TCOPPNTBI = "To carry out %s process the '%s' parameter need to be initialised!";
+	String EXCEPTION_TWUEIVP = "There was an unexpected error in the validation process!";
+	String EXCEPTION_TPTCBN = "The timestamp production time cannot be null!";
+	String EXCEPTION_CTVSBIOO = "The current-time variable should be initialised only once!";
 
-    public static final String EXCEPTION_ = "The '%s' parameter cann!";
+	String EXCEPTION_ = "The '%s' parameter cann!";
 
 }
