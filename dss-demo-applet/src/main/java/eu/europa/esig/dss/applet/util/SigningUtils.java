@@ -65,30 +65,6 @@ public final class SigningUtils {
 	}
 
 	/**
-	 * @param serviceURL
-	 * @param signedFile
-	 * @param parameters
-	 * @return
-	 * @throws DSSException
-	 */
-	public static DSSDocument extendDocument(final String serviceURL, final File signedFile, final WsParameters wsParameters) throws DSSException {
-		try {
-			final WsDocument wsSignedDocument = toWsDocument(signedFile);
-
-			SignatureService_Service.setROOT_SERVICE_URL(serviceURL);
-			final SignatureService_Service signatureService_service = new SignatureService_Service();
-			final SignatureService signatureServiceImplPort = signatureService_service.getSignatureServiceImplPort();
-
-			final WsDocument wsExtendedDocument = signatureServiceImplPort.extendSignature(wsSignedDocument, wsParameters);
-
-			final InMemoryDocument inMemoryDocument = toInMemoryDocument(wsExtendedDocument);
-			return inMemoryDocument;
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * @param file
 	 * @param parameters
 	 * @return

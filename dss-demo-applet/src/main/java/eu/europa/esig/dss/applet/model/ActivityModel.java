@@ -25,27 +25,12 @@ import com.jgoodies.binding.beans.Model;
 /**
  *
  * TODO
- *
- *
- *
- *
- *
- *
  */
 @SuppressWarnings("serial")
 public class ActivityModel extends Model {
-	/**
-	 *
-	 * TODO
-	 *
-	 *
-	 *
-	 *
-	 *
-	 *
-	 */
+
 	public enum ActivityAction {
-		SIGN, VERIFY, EDIT_VALIDATION_POLICY
+		SIGN, EDIT_VALIDATION_POLICY
 	}
 
 	public static final String PROPERTY_ACTIVITY = "action";

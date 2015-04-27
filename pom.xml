@@ -67,7 +67,6 @@
 		<bouncycastle.version>1.52</bouncycastle.version>
 		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
 		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
-		<flying-saucer.version>9.0.4</flying-saucer.version>
 		<xmlsec.version>2.0.2</xmlsec.version>
 		<junit.version>4.11</junit.version>
 	</properties>
@@ -561,12 +560,6 @@
 				<groupId>com.jgoodies</groupId>
 				<artifactId>jgoodies-forms</artifactId>
 				<version>${jgoodies-forms.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.xhtmlrenderer</groupId>
-				<artifactId>flying-saucer-pdf</artifactId>
-				<version>${flying-saucer.version}</version>
 			</dependency>
 
 			<dependency>

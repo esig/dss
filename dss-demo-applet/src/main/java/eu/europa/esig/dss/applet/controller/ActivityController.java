@@ -20,24 +20,24 @@
  */
 package eu.europa.esig.dss.applet.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.applet.main.DSSAppletCore;
 import eu.europa.esig.dss.applet.model.ActivityModel;
 import eu.europa.esig.dss.applet.view.ActivityView;
 import eu.europa.esig.dss.applet.wizard.signature.SignatureWizardController;
-import eu.europa.esig.dss.applet.wizard.validation.ValidationWizardController;
 import eu.europa.esig.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
 
 /**
  *
  * TODO
- *
- *
- *
- *
- *
- *
  */
 public class ActivityController extends DSSAppletController<ActivityModel> {
+
+
+	private static final Logger logger = LoggerFactory.getLogger(ActivityController.class);
+
 
 	private ActivityView view;
 
@@ -68,11 +68,11 @@ public class ActivityController extends DSSAppletController<ActivityModel> {
 			case SIGN:
 				getCore().getController(SignatureWizardController.class).start();
 				break;
-			case VERIFY:
-				getCore().getController(ValidationWizardController.class).start();
-				break;
 			case EDIT_VALIDATION_POLICY:
 				getCore().getController(ValidationPolicyWizardController.class).start();
+				break;
+			default:
+				logger.error("Unknown action : " + getModel().getAction());
 				break;
 		}
 	}
