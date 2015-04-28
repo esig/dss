@@ -62,6 +62,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>
