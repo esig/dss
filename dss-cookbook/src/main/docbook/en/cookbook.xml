@@ -1,0 +1,400 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<book>
+    <chapter id="1.INTRODUCTION">
+        <title>INTRODUCTION</title>
+        <section id="1.1-Purpose-of-the-document">
+            <title>PURPOSE OF THE DOCUMENT</title>
+            <para>
+                This document describes some examples of how to develop in Java
+                using the DSS framework. The aim is to show to the developers,
+                in a progressive manner, the
+                different uses
+                of the
+                framework. It will familiarise them with the code step by step.
+            </para>
+        </section>
+        <section id="1.2-Scope-Of-The-Document">
+            <title>SCOPE OF THE DOCUMENT</title>
+            <para>
+                This document provides examples of code which
+                allow easy handling of digital signatures.
+                The examples are consistent with the Release 4.1 of
+                SD-DSS framework which can
+                be
+                downloaded via
+                <ulink>
+                    https://joinup.ec.europa.eu/software/sd-dss/release/all
+                </ulink>
+                .
+            </para>
+            <para>
+                Three main features can be distinguished within the framework:
+                <itemizedlist>
+                    <listitem>
+                        <para>The digital signature;</para>
+                    </listitem>
+                    <listitem>
+                        <para>The extension of a digital signature and;</para>
+                    </listitem>
+                    <listitem>
+                        <para>The validation of a digital signature.</para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+            <para>
+                On a more detailed manner the following concepts
+                and features are addressed in this document:
+                <itemizedlist>
+                    <listitem>
+                        <para>Formats of the signed documents: XML, PDF, DOC, TXT, ZIP…;</para>
+                    </listitem>
+                    <listitem>
+                        <para>Packaging structures: enveloping, enveloped and detached;</para>
+                    </listitem>
+                    <listitem>
+                        <para>Forms of digital signatures: XAdES, CAdES, PAdES and ASiC;</para>
+                    </listitem>
+                    <listitem>
+                        <para>Profiles associated to each form of the digital signature;</para>
+                    </listitem>
+                    <listitem>
+                        <para>Trust management;</para>
+                    </listitem>
+                    <listitem>
+                        <para>Revocation data handling (OCSP and CRL sources);</para>
+                    </listitem>
+                    <listitem>
+                        <para>Certificate chain building;</para>
+                    </listitem>
+                    <listitem>
+                        <para>Signature validation and validation policy;</para>
+                    </listitem>
+                    <listitem>
+                        <para>Validation of the signing certificate.</para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+            <para>
+                This is not an exhaustive list of all the possibilities offered by the framework and
+                the proposed examples cover only the most useful features. However, to
+                discover every detail of
+                the operational principles of the framework, the JavaDoc is available within the
+                source code.
+            </para>
+            <para>
+                Please note that the SD-DSS framework is still under maintenance and new features will be released in the future.
+            </para>
+        </section>
+        <section id="1.3-Intended-Audience">
+            <title>INTENDED AUDIENCE</title>
+        </section>
+    </chapter>
+    <chapter id="3.Sinature-Profile-simplification">
+        <title>SIGNATURE’S PROFILE SIMPLIFICATION</title>
+        <para>
+            The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus we distinguish the following
+            formats: XAdES,
+            CAdES, PAdES and ASIC. To each one of them a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes
+            their
+            interoperability very difficult. This is the main reason for which new standards commonly called « baseline profiles » were published. Their goal is to limit the
+            number
+            of options and variants thereby making possible a better interoperability between different actors.
+        </para>
+        <para>
+            In general can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a
+            comparative table of
+            old and new levels for each format of the signature:
+        </para>
+        <para>************************INSERT IMAGE************************</para>
+        <para>
+            Note that the new version (v4) of the SD-DSS framework is compatible with the baseline profiles, it is no longer possible to use the standard profiles for signing
+            purpose. The
+            validation of the signature still takes into account the old profiles.
+        </para>
+    </chapter>
+    <chapter id="4.The-Xml-Signature">
+        <para>
+            The simplest way to address the digital signature passes through the XAdES format. Indeed, it allows to visualize the content of the signature with a simple text
+            editor. Thus it
+            becomes much easier to make the connection between theoretical concepts and their implementation. Before embarking on the use of the SD-DSS framework, it
+            is advisable
+            to read the following documents:
+        </para>
+        <itemizedlist>
+            <listitem>
+                <para>XAdES Specifications (cf. [R04])</para>
+            </listitem>
+            <listitem>
+                <para>XAdES Baseline Profile (cf. [R17])</para>
+            </listitem>
+            <listitem>
+                <para>DSS Technical Analysis: Design Model (cf. [R03])</para>
+            </listitem>
+        </itemizedlist>
+        <para>
+            After reading these documents, it is clear that:
+        </para>
+        <itemizedlist>
+            <listitem>
+                <para>To electronically sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed. </para>
+            </listitem>
+            <listitem>
+                <para>To electronically validate a signed document the signer’s certificate containing the public key is needed. To give a more colourful example: when a
+                    digitally
+                    signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature
+                    must also be
+                    provided.
+                </para>
+            </listitem>
+        </itemizedlist>
+        <section id="4.1-Xades-Profiles">
+            <para>
+                The new ETSI standard [17] defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth to denote the
+                level of the
+                signature the word “level” will be used. Follows the list of levels defined in the standard:
+            </para>
+            <itemizedlist>
+                <listitem>
+                    <para>XAdES-BASELINE- B: Basic Electronic Signature</para>
+                    <para>The lowest and simplest version just containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties. This level combines the old –BES and –EPES
+                        levels.
+                    </para>
+                    <para>This form extends the definition of an electronic signature to conform to the identified signature policy.</para>
+                </listitem>
+                <listitem>
+                    <para>XAdES-BASELINE- T: Signature timestamp</para>
+                    <para>A timestamp regarding the time of signing is added to protect against repudiation.</para>
+                </listitem>
+                <listitem>
+                    <para>XAdES-BASELINE- LT: Long Term level</para>
+                    <para>Certificates and revocation data are embedded to allow verification in future even if their original source is not available. This level is equivalent to
+                        the old –XL level.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>XAdES-BASELINE- LTA: Long Term with Archive timestamp</para>
+                    <para>By using periodical timestamping (e.g. each year) compromising is prevented which could be caused by weakening previous signatures during a long-time
+                        storage period. This level is equivalent to the old –A level.
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <para>
+                NOTE: Old levels: -BES, -EPES, -C, -X, -XL, -A are not supported any more when signing.
+            </para>
+            <section id="4.1.1-XAdES-Baseline-B">
+                <para>To start, let's take a simple XML document:</para>
+                <para>************************INSERT DOC XML*************************</para>
+                <para>Since this is an XML document, we will use the XAdES signature and more particularly XAdES-BASELINE-B level, which is the lowest level of protection: just
+                    satisfying Directive (cf. [R13]) legal requirements for advanced signature. The normal process of signing wants to sign first with the level -B or level-T, and
+                    then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level. The use of
+                    CAdES format for signing an XML document is also possible, but will be discussed later.
+                </para>
+                <para>When signing data, the resulting signature needs to be linked with the data to which it applies. This can be done either by creating a data set which combines
+                    the signature and the data (e.g. by enveloping the data with the signature or including a signature element in the data set) or placing the signature in a
+                    separate resource and having some external means for associating the signature with the data. So, we need to define the packaging of the signature, namely
+                    ENVELOPED, ENVELOPING or DETACHED.
+                </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>ENVELOPED: when the signature applies to data that surround the rest of the document;</para>
+                    </listitem>
+                    <listitem>
+                        <para>ENVELOPING: when the signed data form a sub-element of the signature itself;</para>
+                    </listitem>
+                    <listitem>
+                        <para>DETACHED: when the signature relates to the external resources separated from it.</para>
+                    </listitem>
+                </itemizedlist>
+                <para>
+                    For our example we will use ENVELOPED packaging.
+                </para>
+                <para>
+                    To write our Java code, we still need to specify the type of KeyStore to use for signing our document, more simply, where the private key can be found. We can
+                    choose between
+                    three different connection tokens:
+                </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>PKCS#11, </para>
+                    </listitem>
+                    <listitem>
+                        <para>PKCS#12, </para>
+                    </listitem>
+                    <listitem>
+                        <para>MS CAPI</para>
+                    </listitem>
+                </itemizedlist>
+                <para>
+                    The SD-DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK
+                    libraries. To use a
+                    Java KeyStore please refer to the following paragraphs: #JavaKeyStore, #JKSSignatureToken and #Signing_with_JKSSignatureToken.
+                </para>
+                <para>
+                    In the package "eu.europa.ec.markt.dss.signature.token" (see [R03] document for further details on the structure of components and packages.), we can find
+                    three corresponding
+                    Java classes:
+                </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>Pkcs11SignatureToken, </para>
+                    </listitem>
+                    <listitem>
+                        <para>Pkcs12SignatureToken, </para>
+                    </listitem>
+                    <listitem>
+                        <para>MSCAPISignatureToken.</para>
+                    </listitem>
+                </itemizedlist>
+                <para>
+                    To know more about the use of the different signature tokens, please consult “Management of Signature Tokens” chapter.
+                </para>
+                <para>
+                    In our example the class: "Pkcs12SignatureToken" will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains an X.509
+                    private key
+                    accompanying the public key certificate and protected by symmetrical password. The certification chain can also be included in this file. It is
+                    possible to
+                    generate dummy certificates and their chains with OpenSSL. Please visit http://www.openssl.org/ for more details.
+                </para>
+                <para>
+                    This is the complete code that allows you to sign our XML document.
+                </para>
+                <programlisting>
+                    <xi:include href="../../java/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesB.java" parse="text" xmlns:xi="http://www.w3.org/2001/XInclude" />
+                </programlisting>
+                <para>
+                    What you may notice is that to sign a document we need to:
+                </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>Create an object based on SignatureParameters class. The number of specified parameters depends on the type of signature. Generally, the number of
+                            specified parameters depends on the profile of signature. This object also defines some default parameters.
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>Choose the profile, packaging, signature digest algorithm.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Indicate the private key entry to be used.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Instantiate the adequate signature service.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Carry out the signature process.</para>
+                    </listitem>
+                </itemizedlist>
+                <para>
+                    The encryption algorithm is determined by the private key and therefore cannot
+                    be compelled by the setter of the signature parameters object. It will cause an
+                    inconsistency in
+                    the signature making its validation impossible. This setter can be used in
+                    a particular context where the signing process is distributed on
+                    different machines
+                    and the private key is known only to the signature value creation process.
+                    See clause « Signing process » for more information.
+                </para>
+                <para>
+                    In the case where the private key entry object is not available, it is possible to choose the signing certificate and its certificate chain as in the
+                    following example:
+                </para>
+                <para>*******************CODE RESME***********************</para>
+                <para>Integrating the certificate chain in the signature simplifies the build of a prospective certificate chain during the validation process.</para>
+                <para>By default the framework uses the current date time to set the signing date, but in the case where it is necessary to indicate the different time it is
+                    possible to use the setter «setSigningDate(Date) » as in the example:
+                </para>
+                <para>*******************CODE RESME***********************</para>
+                <para>When the specific service is instantiated a certificate verifier must be set. This object is used to provide four different sources of information:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para>the source of trusted certificates (based on the trusted list(s) specific to the context);</para>
+                    </listitem>
+                    <listitem>
+                        <para>the source of intermediate certificates used to build the certificate chain till the trust anchor. This source is only needed when these
+                            certificates
+                            are not included in the signature itself;
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>the source of OCSP;</para>
+                    </listitem>
+                    <listitem>
+                        <para>the source of CRL.</para>
+                    </listitem>
+                </itemizedlist>
+                <para>In the current implementation this object is only used when profile –LT or –LTA are created. In the next release it will be used to identify the trust anchor
+                    and by the same limit the number of certificates included within the KeyInfo.
+                </para>
+                <section id="4.1.1.1-Signing process">
+                    <title>Signing process</title>
+                    <para>Once the parameters of the signature were identified the service object itself must be created. The service used will depend on the type of document to
+                        sign. In our case it is an XML file, so we will instantiate a XAdES service. The process of signing takes place in three stages. The first is the
+                        "getDataToSign ()" method call, passing as a parameter the document to be signed and the previously selected settings. This step returns the data which is
+                        going to be digested and encrypted. In our case it corresponds to the SignedInfo XMLDSig element.
+                    </para>
+                    <para>***********************************************</para>
+                    <para>The next step is a call to the function "sign()" which is invoked on the object token representing the KeyStore and not on the service. This method takes
+                        three parameters. The first is the array of bytes that must be signed. It is obtained by the previous method invocation. The second is the algorithm used to
+                        create the digest. You have the choice between SHA1, SHA256, and SHA512 (this list is not exhaustive). And the last one is the private key entry.
+                    </para>
+                    <para>*****************************</para>
+                    <para>The last step of this process is the integration of the signature value in the signature and linking of that one to the signed document based on the
+                        selected packaging method. This is the method "signDocument()" on the service. We must pass to it three parameters: again the document to sign, the
+                        signature parameters and the value of the signature obtained in the previous step.
+                    </para>
+                    <para>This separation into three steps allows use cases where different environments have their precise responsibilities: specifically the distinction between
+                        communicating with the token and executing the business logic.
+                    </para>
+                    <para>When the breakdown of this process is not necessary than a simple call to only one method can be done as in the following example:</para>
+                    <para>******************************</para>
+                    <para>Note that in this particular case, the signing token must be set.</para>
+                </section><!-- 4.1.1.1 -->
+                <section id="4.1.1.2-Additionnal-Atributes">
+                    <title>Additional attributes</title>
+                    <para>For this type (XAdES-BASELINE-B) of signature it is possible to identify some additional attributes:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>SignerRole - contains claimed or certified roles assumed by the signer when creating the signature.</para>
+                        </listitem>
+                        <listitem>
+                            <para>SignatureProductionPlace - contains the indication of the purported place where the signer claims to have produced the signature.</para>
+                        </listitem>
+                        <listitem>
+                            <para>CommitmentTypeIndication - identifies the commitment undertaken by the signer in signing (a) signed data object(s) in the context of the selected
+                                signature policy. (for more information consult [R03]).;
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>AllDataObjectsTimeStamp – each time-stamp token within this property covers the full set of references defined in the Signature’s SignedInfo
+                                element, excluding references of type “SignedProperties”.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>IndividualDataObjectsTimeStamp - each time-stamp token within this property covers selected signed data objects.</para>
+                        </listitem>
+                        <listitem>
+                            <para>CounterSignature - contains signature(s) produced on the signature.</para>
+                        </listitem>
+                    </itemizedlist>
+                    <para>The DSS framework allows to setup the following signed properties: SignerRole, SignatureProductionPlace, CommitmentTypeIndication,
+                        AllDataObjectsTimestamp, IndividualDataObjectsTimeStamp and CounterSignature.
+                    </para>
+                    <programlisting>
+                        <xi:include href="../../java/eu/europa/esig/dss/cookbook/example/sign/signXmlXadesBProperties.java" parse="text" xmlns:xi="http://www.w3.org/2001/XInclude" />
+                    </programlisting>
+                    <para>This code adds the following elements into the signature:</para>
+                    <para>********************************</para>
+                    <programlisting language="XML">
+                           ************************* XML ********************
+                    </programlisting>
+                    <para>The following code provides an example of AllDataObjectsTimestamp generation for a XAdES Detached signature:</para>
+                    <programlisting>
+                        <xi:include href="../../java/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBAllDataObjectsTimestamp.java" parse="text" xmlns:xi="http://www.w3.org/2001/XInclude" />
+                    </programlisting>
+                </section><!-- 4.1.1.2 -->
+            </section><!-- 4.1.1 -->
+        </section><!-- 4.1 -->
+    </chapter><!-- 4 -->
+
+
+</book>
