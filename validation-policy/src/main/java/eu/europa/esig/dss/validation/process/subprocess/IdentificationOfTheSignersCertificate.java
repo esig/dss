@@ -28,13 +28,11 @@ import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
-import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
-import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.Conclusion;
 
@@ -53,7 +51,7 @@ import eu.europa.esig.dss.validation.report.Conclusion;
  * • In case of failure, i.e. the signer's certificate cannot be identified, the output shall be the indication INDETERMINATE and the sub indication NO_SIGNER_CERTIFICATE_FOUND.
  * NOTE: If the signature is compliant with the CD 2011/130/EU, this process will never return INDETERMINATE, since the signer's certificate is present in the signature.
  */
-public class IdentificationOfTheSignersCertificate implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage {
+public class IdentificationOfTheSignersCertificate {
 
 	/**
 	 * The following variables are used only in order to simplify the writing of the rules!
@@ -91,13 +89,13 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 	private void isInitialised() {
 
 		if (params.getCurrentValidationPolicy() == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 		if (diagnosticData == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData"));
 		}
 		if (contextElement == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "contextElement"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "contextElement"));
 		}
 	}
 
@@ -116,7 +114,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		/**
 		 * 5.1 Identification of the signer's certificate (ISC)
 		 */
-		validationDataXmlNode = new XmlNode(ISC);
+		validationDataXmlNode = new XmlNode(NodeName.ISC);
 		validationDataXmlNode.setNameSpace(XmlDom.NAMESPACE);
 
 		final Conclusion conclusion = process(params);
@@ -190,7 +188,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 			}
 		}
 		// This validation process returns VALID
-		conclusion.setIndication(VALID);
+		conclusion.setIndication(Indication.VALID);
 		return conclusion;
 	}
 
@@ -210,9 +208,9 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISCI);
 		constraint.setValue(signingCertificateRecognised);
 		if (StringUtils.isNotBlank(signingCertificateId) && !signingCertificateId.equals("0")) {
-			constraint.setAttribute(CERTIFICATE_ID, signingCertificateId);
+			constraint.setAttribute(AttributeValue.CERTIFICATE_ID, signingCertificateId);
 		}
-		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_ISCI_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_ISCI_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -225,7 +223,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		final boolean signed = XPathQueryHolder.XMLE_X509CERTIFICATE.equals(signedElement) || XPathQueryHolder.XMLE_X509DATA.equals(signedElement) || XPathQueryHolder.XMLE_KEYINFO
 				.equals(signedElement);
 		constraint.setValue(signed);
-		constraint.setIndications(INVALID, FORMAT_FAILURE, MessageTag.BBB_ICS_ISCS_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.FORMAT_FAILURE, MessageTag.BBB_ICS_ISCS_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -240,7 +238,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISASCP);
 		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/AttributePresent/text()");
 		constraint.setValue(digestValueMatch);
-		constraint.setIndications(INVALID, FORMAT_FAILURE, MessageTag.BBB_ICS_ISASCP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.FORMAT_FAILURE, MessageTag.BBB_ICS_ISASCP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -261,7 +259,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISACDP);
 		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/DigestValuePresent/text()");
 		constraint.setValue(digestValueMatch);
-		constraint.setIndications(INVALID, FORMAT_FAILURE, MessageTag.BBB_ICS_ISACDP_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.FORMAT_FAILURE, MessageTag.BBB_ICS_ISACDP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -308,7 +306,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ICDVV);
 		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/DigestValueMatch/text()");
 		constraint.setValue(digestValueMatch);
-		constraint.setIndications(INVALID, FORMAT_FAILURE, MessageTag.BBB_ICS_ICDVV_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.FORMAT_FAILURE, MessageTag.BBB_ICS_ICDVV_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -344,7 +342,7 @@ public class IdentificationOfTheSignersCertificate implements Indication, SubInd
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_AIDNASNE);
 		final boolean issuerSerialMatch = contextElement.getBoolValue("./SigningCertificate/IssuerSerialMatch/text()");
 		constraint.setValue(issuerSerialMatch);
-		constraint.setIndications(INDETERMINATE, NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

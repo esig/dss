@@ -67,7 +67,6 @@
 		<bouncycastle.version>1.52</bouncycastle.version>
 		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
 		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
-		<flying-saucer.version>9.0.4</flying-saucer.version>
 		<xmlsec.version>2.0.2</xmlsec.version>
 		<junit.version>4.11</junit.version>
 	</properties>
@@ -393,6 +392,11 @@
 				<artifactId>commons-io</artifactId>
 				<version>2.4</version>
 			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>1.2.1</version>
+			</dependency>
 			
 			<dependency>
 				<groupId>org.apache.santuario</groupId>
@@ -455,6 +459,12 @@
 				<artifactId>spring-jdbc</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
@@ -550,12 +560,6 @@
 				<groupId>com.jgoodies</groupId>
 				<artifactId>jgoodies-forms</artifactId>
 				<version>${jgoodies-forms.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.xhtmlrenderer</groupId>
-				<artifactId>flying-saucer-pdf</artifactId>
-				<version>${flying-saucer.version}</version>
 			</dependency>
 
 			<dependency>

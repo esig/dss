@@ -31,7 +31,7 @@ import eu.europa.esig.dss.XmlDom;
  */
 public class ValidationPolicy {
 	private Document document;
-	XmlDom xmlDom;
+	private XmlDom xmlDom;
 	private final URL sourceXSD;
 
 	public ValidationPolicy(XmlDom xmlDom, URL sourceXSD, Document document) {

@@ -26,13 +26,10 @@ import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.XmlNode;
-import eu.europa.esig.dss.validation.policy.rules.AttributeName;
-import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
-import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ValidationXPathQueryHolder;
 import eu.europa.esig.dss.validation.report.Conclusion;
@@ -76,7 +73,7 @@ import eu.europa.esig.dss.validation.report.Conclusion;
  *
  *
  */
-public class CryptographicVerification implements Indication, SubIndication, NodeName, NodeValue, AttributeName, AttributeValue, ExceptionMessage, ValidationXPathQueryHolder {
+public class CryptographicVerification {
 
 	/**
 	 * See {@link ProcessParameters#getCurrentValidationPolicy()}
@@ -101,10 +98,10 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 	private void isInitialised() {
 
 		if (constraintData == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 		if (contextElement == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "signature"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "signature"));
 		}
 	}
 
@@ -122,11 +119,11 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 
 		if (processNode == null) {
 
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "processNode"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "processNode"));
 		}
 		prepareParameters(params);
 
-		subProcessNode = processNode.addChild(CV);
+		subProcessNode = processNode.addChild(NodeName.CV);
 
 		final Conclusion conclusion = process(params);
 
@@ -157,7 +154,7 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 			return conclusion;
 		}
 		// This validation process returns VALID
-		conclusion.setIndication(VALID);
+		conclusion.setIndication(Indication.VALID);
 		return conclusion;
 	}
 
@@ -176,9 +173,9 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_CV_IRDOF);
-		final boolean referenceDataFound = contextElement.getBoolValue(XP_REFERENCE_DATA_FOUND);
+		final boolean referenceDataFound = contextElement.getBoolValue(ValidationXPathQueryHolder.XP_REFERENCE_DATA_FOUND);
 		constraint.setValue(referenceDataFound);
-		constraint.setIndications(INDETERMINATE, SIGNED_DATA_NOT_FOUND, MessageTag.BBB_CV_IRDOF_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.SIGNED_DATA_NOT_FOUND, MessageTag.BBB_CV_IRDOF_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -198,9 +195,9 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_CV_IRDOI);
-		final boolean referenceDataIntact = contextElement.getBoolValue(XP_REFERENCE_DATA_INTACT);
+		final boolean referenceDataIntact = contextElement.getBoolValue(ValidationXPathQueryHolder.XP_REFERENCE_DATA_INTACT);
 		constraint.setValue(referenceDataIntact);
-		constraint.setIndications(INVALID, HASH_FAILURE, MessageTag.BBB_CV_IRDOI_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.HASH_FAILURE, MessageTag.BBB_CV_IRDOI_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -222,9 +219,9 @@ public class CryptographicVerification implements Indication, SubIndication, Nod
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_CV_ISI);
-		final boolean signatureIntact = contextElement.getBoolValue(XP_SIGNATURE_INTACT);
+		final boolean signatureIntact = contextElement.getBoolValue(ValidationXPathQueryHolder.XP_SIGNATURE_INTACT);
 		constraint.setValue(signatureIntact);
-		constraint.setIndications(INVALID, SIG_CRYPTO_FAILURE, MessageTag.BBB_CV_ISI_ANS);
+		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CRYPTO_FAILURE, MessageTag.BBB_CV_ISI_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

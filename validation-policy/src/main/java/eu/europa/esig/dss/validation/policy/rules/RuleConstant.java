@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.validation.policy.rules;
 
-import eu.europa.esig.dss.TSLConstant;
 
-public interface RuleConstant extends TSLConstant {
+public interface RuleConstant  {
 
 	/**
 	 * The validation process accepts any policy. The used policy is only showed, no particular treatment is done.

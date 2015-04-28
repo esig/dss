@@ -31,39 +31,33 @@ import eu.europa.esig.dss.applet.swing.mvc.AppletController;
 /**
  * TODO
  *
- *
- *
- *
- * @param <M>
- *
- *
  */
 public abstract class DSSAppletController<M> extends AppletController<DSSAppletCore, M> {
 
-    protected final String serviceURL;
+	protected final String serviceURL;
 
-    /**
-     * The default constructor for DSSAppletController.
-     *
-     * @param core
-     * @param model
-     */
-    protected DSSAppletController(final DSSAppletCore core, final M model) {
-        super(core, model);
+	/**
+	 * The default constructor for DSSAppletController.
+	 *
+	 * @param core
+	 * @param model
+	 */
+	protected DSSAppletController(final DSSAppletCore core, final M model) {
+		super(core, model);
 
-        Security.addProvider(new BouncyCastleProvider());
+		Security.addProvider(new BouncyCastleProvider());
 
-        final Parameters parameters = core.getParameters();
+		final Parameters parameters = core.getParameters();
 
-        serviceURL = parameters.getServiceURL();
+		serviceURL = parameters.getServiceURL();
 
-    }
+	}
 
-    /**
-     * @return
-     */
-    public Parameters getParameter() {
-        return getCore().getParameters();
-    }
+	/**
+	 * @return
+	 */
+	public Parameters getParameter() {
+		return getCore().getParameters();
+	}
 
 }

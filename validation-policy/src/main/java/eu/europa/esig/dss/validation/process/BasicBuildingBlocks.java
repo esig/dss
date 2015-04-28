@@ -34,7 +34,6 @@ import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
-import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.process.subprocess.CryptographicVerification;
 import eu.europa.esig.dss.validation.process.subprocess.IdentificationOfTheSignersCertificate;
 import eu.europa.esig.dss.validation.process.subprocess.SignatureAcceptanceValidation;
@@ -51,7 +50,7 @@ import eu.europa.esig.dss.validation.report.Conclusion;
  *
  *
  */
-public class BasicBuildingBlocks implements NodeName, NodeValue, AttributeName, AttributeValue, Indication, ExceptionMessage {
+public class BasicBuildingBlocks {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BasicBuildingBlocks.class);
 
@@ -66,7 +65,7 @@ public class BasicBuildingBlocks implements NodeName, NodeValue, AttributeName, 
 	private void isInitialised() {
 
 		if (diagnosticData == null) {
-			final String message = String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData");
+			final String message = String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "diagnosticData");
 			throw new DSSException(message);
 		}
 	}
@@ -82,16 +81,16 @@ public class BasicBuildingBlocks implements NodeName, NodeValue, AttributeName, 
 		prepareParameters(params);
 		LOG.debug(this.getClass().getSimpleName() + ": start.");
 
-		params.setContextName(SIGNING_CERTIFICATE);
+		params.setContextName(NodeName.SIGNING_CERTIFICATE);
 
-		final XmlNode basicBuildingBlocksNode = mainNode.addChild(BASIC_BUILDING_BLOCKS);
+		final XmlNode basicBuildingBlocksNode = mainNode.addChild(NodeName.BASIC_BUILDING_BLOCKS);
 
 		final List<XmlDom> signatures = diagnosticData.getElements("/DiagnosticData/Signature");
 
 		for (final XmlDom signature : signatures) {
 
 			final String type = signature.getValue("./@Type");
-			if (COUNTERSIGNATURE.equals(type)) {
+			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
 
 				params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
 			} else {
@@ -113,13 +112,13 @@ public class BasicBuildingBlocks implements NodeName, NodeValue, AttributeName, 
 			 */
 
 			final String signatureId = signature.getValue("./@Id");
-			final XmlNode signatureNode = basicBuildingBlocksNode.addChild(SIGNATURE);
-			signatureNode.setAttribute(ID, signatureId);
+			final XmlNode signatureNode = basicBuildingBlocksNode.addChild(NodeName.SIGNATURE);
+			signatureNode.setAttribute(AttributeName.ID, signatureId);
 			/**
 			 * 5.1. Identification of the signer's certificate (ISC)
 			 */
 			final IdentificationOfTheSignersCertificate isc = new IdentificationOfTheSignersCertificate();
-			final Conclusion iscConclusion = isc.run(params, MAIN_SIGNATURE);
+			final Conclusion iscConclusion = isc.run(params, NodeName.MAIN_SIGNATURE);
 			signatureNode.addChild(iscConclusion.getValidationData());
 			if (!iscConclusion.isValid()) {
 
@@ -174,7 +173,7 @@ public class BasicBuildingBlocks implements NodeName, NodeValue, AttributeName, 
 			 * 5.3 X.509 Certificate Validation (XCV)
 			 */
 			final X509CertificateValidation xcv = new X509CertificateValidation();
-			final Conclusion xcvConclusion = xcv.run(params, MAIN_SIGNATURE);
+			final Conclusion xcvConclusion = xcv.run(params, NodeName.MAIN_SIGNATURE);
 			signatureNode.addChild(xcvConclusion.getValidationData());
 			if (!xcvConclusion.isValid()) {
 
@@ -184,7 +183,7 @@ public class BasicBuildingBlocks implements NodeName, NodeValue, AttributeName, 
 			conclusion.addInfo(xcvConclusion);
 			conclusion.addWarnings(xcvConclusion);
 
-			conclusion.setIndication(VALID);
+			conclusion.setIndication(Indication.VALID);
 			final XmlNode conclusionXmlNode = conclusion.toXmlNode();
 			signatureNode.addChild(conclusionXmlNode);
 		}

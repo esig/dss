@@ -22,19 +22,15 @@ package eu.europa.esig.dss.validation.process.dss;
 
 import java.util.List;
 
+import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.AttributeName;
-import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
-import eu.europa.esig.dss.validation.policy.rules.NodeName;
-import eu.europa.esig.dss.validation.policy.rules.NodeValue;
-import eu.europa.esig.dss.validation.policy.rules.RuleConstant;
 
 /**
  * This class checks if the signing certificate is mandated to be supported by SSCD device.
  *
  */
-public class SSCD implements NodeName, NodeValue, AttributeName, AttributeValue, RuleConstant {
+public class SSCD  {
 
 	private ValidationPolicy constraintData;
 
@@ -99,7 +95,7 @@ public class SSCD implements NodeName, NodeValue, AttributeName, AttributeValue,
 
 		final List<String> qualifiers = InvolvedServiceInfo.getQualifiers(certificate);
 
-		final boolean sie = qualifiers.contains(QC_WITH_SSCD) || qualifiers.contains(QC_WITH_SSCD_119612) ;
+		final boolean sie = qualifiers.contains(TSLConstant.QC_WITH_SSCD) || qualifiers.contains(TSLConstant.QC_WITH_SSCD_119612) ;
 		// todo To be clarified with Olivier D.
 		//		|| qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT) || qualifiers
 		//			  .contains(QCSSCD_STATUS_AS_IN_CERT_119612);

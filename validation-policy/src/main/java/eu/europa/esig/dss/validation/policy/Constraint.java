@@ -26,8 +26,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
@@ -41,8 +39,6 @@ import eu.europa.esig.dss.validation.report.Conclusion;
  * This class represents a constraint and indicates its level: IGNORE, INFORM, WARN, FAIL.
  */
 public class Constraint {
-
-	private static final Logger LOG = LoggerFactory.getLogger(Constraint.class);
 
 	/**
 	 * Diagnostic data containing all static information

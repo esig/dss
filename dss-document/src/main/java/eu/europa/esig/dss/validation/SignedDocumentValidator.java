@@ -494,7 +494,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		jaxbDiagnosticData = DIAGNOSTIC_DATA_OBJECT_FACTORY.createDiagnosticData();
 
 		String absolutePath = document.getAbsolutePath();
-		jaxbDiagnosticData.setDocumentName(absolutePath);
+		if (StringUtils.isNotEmpty(absolutePath)) {
+			jaxbDiagnosticData.setDocumentName(absolutePath);
+		} else {
+			jaxbDiagnosticData.setDocumentName(document.getName());
+		}
 	}
 
 	/**

@@ -25,8 +25,8 @@ package eu.europa.esig.dss.validation.policy.rules;
  */
 public interface Indication {
 
-	public static final String VALID = "VALID";
-	public static final String INDETERMINATE = "INDETERMINATE";
-	public static final String INVALID = "INVALID";
+	String VALID = "VALID";
+	String INDETERMINATE = "INDETERMINATE";
+	String INVALID = "INVALID";
 
 }

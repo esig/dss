@@ -31,7 +31,15 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
+import eu.europa.esig.dss.validation.policy.rules.AttributeName;
+import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
+import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
+import eu.europa.esig.dss.validation.policy.rules.NodeName;
+import eu.europa.esig.dss.validation.policy.rules.NodeValue;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.ValidationXPathQueryHolder;
 import eu.europa.esig.dss.validation.process.dss.ForLegalPerson;
 import eu.europa.esig.dss.validation.process.dss.QualifiedCertificate;
 import eu.europa.esig.dss.validation.process.dss.SSCD;
@@ -108,7 +116,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 	private void isInitialised() {
 
 		if (constraintData == null) {
-			throw new DSSException(String.format(EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
+			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
 	}
 
@@ -138,7 +146,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		prepareParameters(params);
 		LOG.debug(this.getClass().getSimpleName() + ": start.");
 
-		validationDataXmlNode = new XmlNode(PAST_CERT_VALIDATION_DATA);
+		validationDataXmlNode = new XmlNode(NodeName.PAST_CERT_VALIDATION_DATA);
 		validationDataXmlNode.setNameSpace(XmlDom.NAMESPACE);
 
 		contextElement = signatureXmlDom;
@@ -179,7 +187,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 		final String signingCertificateId = certificateChainXmlDom.getValue("./ChainCertificate[1]/@Id");
 
-		validationDataXmlNode.setAttribute(CERTIFICATE_ID, signingCertificateId);
+		validationDataXmlNode.setAttribute(AttributeValue.CERTIFICATE_ID, signingCertificateId);
 
 		final boolean trustedProspectiveCertificateChain = Boolean.valueOf(isTrustedProspectiveCertificateChain(params));
 		if (!checkProspectiveCertificateChainConstraint(conclusion, trustedProspectiveCertificateChain)) {
@@ -197,8 +205,8 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		}
 		if (!isLastTrusted) {
 
-			constraintNode.addChild(STATUS, KO);
-			conclusion.setIndication(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND);
+			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
+			conclusion.setIndication(Indication.INDETERMINATE, SubIndication.NO_CERTIFICATE_CHAIN_FOUND);
 			final Info info = conclusion.addInfo(MessageTag.PCV_TINTA_ANS);
 			info.addTo(constraintNode);
 			return conclusion;
@@ -244,10 +252,10 @@ public class PastCertificateValidation extends X509CertificateValidation {
 			}
 			if (intersectionNotAfter.before(intersectionNotBefore)) {
 
-				constraintNode.addChild(STATUS, KO);
-				conclusion.setIndication(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND);
+				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
+				conclusion.setIndication(Indication.INDETERMINATE, SubIndication.NO_CERTIFICATE_CHAIN_FOUND);
 				final Info info = conclusion.addInfo(MessageTag.XCV_IFCCIIPC_ANS, notAfter.toString(), notAfter.toString(), certificateId);
-				info.setAttribute(CERTIFICATE_ID, certificateId);
+				info.setAttribute(AttributeValue.CERTIFICATE_ID, certificateId);
 				info.addTo(constraintNode);
 				return conclusion;
 			}
@@ -311,19 +319,19 @@ public class PastCertificateValidation extends X509CertificateValidation {
 			 * - - (4) The certificate issuer name is the working_issuer_name.<br>
 			 *
 			 */
-			final boolean isSignatureIntact = certificate.getBoolValue(XP_SIGNATURE_VALID);
+			final boolean isSignatureIntact = certificate.getBoolValue(ValidationXPathQueryHolder.XP_SIGNATURE_VALID);
 			if (!isSignatureIntact) {
 
-				constraintNode.addChild(STATUS, KO);
-				conclusion.setIndication(INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND);
+				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
+				conclusion.setIndication(Indication.INDETERMINATE, SubIndication.NO_CERTIFICATE_CHAIN_FOUND);
 				final Info info = conclusion.addInfo(MessageTag.BBB_XCV_ICSI_ANS);
-				info.setAttribute(CERTIFICATE_ID, certificateId);
+				info.setAttribute(AttributeValue.CERTIFICATE_ID, certificateId);
 				info.addTo(constraintNode);
 				return conclusion;
 			}
 			// The revocation status is checked in ControlTimeSliding process.
 		}
-		constraintNode.addChild(STATUS, OK);
+		constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 
 		/**
 		 * a) If the certificate path validation returns a success indication, go to the next step.<br>
@@ -359,25 +367,25 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		// a) If no new chain can be built, abort the processing with the current status and the last chain built.
 
 		final String ctsConclusionIndication = ctsConclusion.getIndication();
-		if (!VALID.equals(ctsConclusionIndication)) {
+		if (!Indication.VALID.equals(ctsConclusionIndication)) {
 
-			constraintNode.addChild(STATUS, KO);
+			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
 
 			conclusion.setIndication(ctsConclusionIndication, ctsConclusion.getSubIndication());
 			conclusion.addInfo(MessageTag.PCV_ICTSC_ANS);
 			return conclusion;
 		}
-		constraintNode.addChild(STATUS, OK);
+		constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 		final Date controlTime = ctsConclusion.getControlTime();
 		final String formatedControlTime = DSSUtils.formatDate(controlTime);
-		constraintNode.addChild(INFO).setAttribute(CONTROL_TIME, formatedControlTime);
+		constraintNode.addChild(NodeName.INFO).setAttribute(AttributeValue.CONTROL_TIME, formatedControlTime);
 		/**
 		 * 4) Apply the Chain Constraints to the chain. Certificate meta-data has to be taken into account when checking
 		 * these constraints against the chain. If the chain does not match these constraints, set the current status to
 		 * INVALID/CHAIN_CONSTRAINTS_FAILURE and go to step 1.<br>
 		 */
 
-		if (MAIN_SIGNATURE.equals(contextName)) {
+		if (NodeName.MAIN_SIGNATURE.equals(contextName)) {
 
 			/**
 			 * A.2 Constraints on X.509 Certificate meta-data
@@ -411,8 +419,8 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		 * returned in step 3.
 		 */
 
-		conclusion.setIndication(VALID);
-		conclusion.addInfo().setAttribute(CONTROL_TIME, formatedControlTime);
+		conclusion.setIndication(Indication.VALID);
+		conclusion.addInfo().setAttribute(AttributeValue.CONTROL_TIME, formatedControlTime);
 		conclusion.setControlTime(controlTime);
 		return conclusion;
 	}
@@ -423,8 +431,8 @@ public class PastCertificateValidation extends X509CertificateValidation {
 	 */
 	private XmlNode addConstraint(final MessageTag messageTag) {
 
-		XmlNode constraintNode = validationDataXmlNode.addChild(CONSTRAINT);
-		constraintNode.addChild(NAME, messageTag.getMessage()).setAttribute(NAME_ID, messageTag.name());
+		XmlNode constraintNode = validationDataXmlNode.addChild(NodeName.CONSTRAINT);
+		constraintNode.addChild(NodeName.NAME, messageTag.getMessage()).setAttribute(AttributeName.NAME_ID, messageTag.name());
 		return constraintNode;
 	}
 }
