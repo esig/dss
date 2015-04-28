@@ -236,6 +236,8 @@
 			</Cryptographic>
 		</CACertificate>
 	</Revocation>
+	<Cryptographic />
+<!-- 
 	<Cryptographic>
 		<AlgoExpirationDate Format="yyyy-MM-dd">
 			<Algo Date="2017-02-24">SHA1</Algo>
@@ -254,4 +256,5 @@
 			<Algo Date="2035-02-24">ECDSA256</Algo>
 		</AlgoExpirationDate>
 	</Cryptographic>
+ -->
 </ConstraintsParameters>
