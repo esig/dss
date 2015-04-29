@@ -6,9 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.junit.Test;
 
@@ -22,14 +25,19 @@ public class JaxbPolicyTest {
 		File constraintsFile = new File("src/test/resources/constraint.xml");
 		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.policy");
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		Schema schema = sf.newSchema(new File("src/main/xsd/policy.xsd"));
+		unmarshaller.setSchema(schema);
+
 		ConstraintsParameters constraintsParamaters = (ConstraintsParameters) unmarshaller.unmarshal(constraintsFile);
 		assertNotNull(constraintsParamaters);
 
-		// Problem to read element with optional attributes
-		Algo algo = constraintsParamaters.getMainSignature().getCryptographic().getAcceptableDigestAlgo().get(0);
+		Algo algo = constraintsParamaters.getMainSignature().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
 		assertNotNull(algo);
 		String algoName = algo.getValue();
-		assertEquals("SHA1", algoName);
+		assertEquals("DSA", algoName);
+		assertEquals("128", algo.getSize());
 
 		Marshaller marshaller = jc.createMarshaller();
 		marshaller.marshal(constraintsParamaters, new FileOutputStream("target/constraint.xml"));

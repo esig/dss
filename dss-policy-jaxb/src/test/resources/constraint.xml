@@ -251,7 +251,6 @@
 			</Cryptographic>
 		</CACertificate>
 	</Revocation>
-	<Cryptographic /> 
 <!--
 	<Cryptographic> 
 			<AlgoExpirationDate Format="yyyy-MM-dd">

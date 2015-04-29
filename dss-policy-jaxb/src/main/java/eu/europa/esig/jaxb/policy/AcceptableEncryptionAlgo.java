@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -29,7 +28,6 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="Algo" type="{http://dss.esig.europa.eu/validation/diagnostic}Algo" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
- *       &lt;attribute name="Format" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -41,12 +39,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "algo"
 })
-public class AlgoExpirationDate {
+public class AcceptableEncryptionAlgo {
 
     @XmlElement(name = "Algo")
     protected List<Algo> algo;
-    @XmlAttribute(name = "Format")
-    protected String format;
 
     /**
      * Gets the value of the algo property.
@@ -75,30 +71,6 @@ public class AlgoExpirationDate {
             algo = new ArrayList<Algo>();
         }
         return this.algo;
-    }
-
-    /**
-     * Gets the value of the format property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFormat() {
-        return format;
-    }
-
-    /**
-     * Sets the value of the format property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFormat(String value) {
-        this.format = value;
     }
 
 }

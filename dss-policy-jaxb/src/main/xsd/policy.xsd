@@ -47,7 +47,6 @@
 							<xs:element name="SigningCertificateValidityAtBestSignatureTime" type="tns:LevelConstraint" />
 							<xs:element name="AlgorithmReliableAtBestSignatureTime" type="tns:LevelConstraint" />
 							<xs:element name="Coherence" type="tns:LevelConstraint" />
-							<xs:element name="RightOrder" type="tns:LevelConstraint" />
 							<xs:element name="SigningCertificate" type="tns:CertificateType" />
 							<xs:element name="CACertificate" type="tns:CertificateType" />
 						</xs:sequence>
@@ -62,7 +61,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="Cryptographic">
+				<xs:element name="Cryptographic" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="AlgoExpirationDate">
@@ -95,8 +94,8 @@
 			<xs:element name="RevocationDataIsTrusted" minOccurs="0" type="tns:LevelConstraint" />
 			<xs:element name="RevocationDataFreshness" minOccurs="0" type="tns:LevelConstraint" />
 			<xs:element name="ProspectiveCertificateChain" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="Revoked" minOccurs="0" type="tns:LevelConstraint" />
 			<xs:element name="KeyUsage" minOccurs="0" type="tns:MultiValuesConstraint" />
+			<xs:element name="Revoked" minOccurs="0" type="tns:LevelConstraint" />
 			<xs:element name="OnHold" minOccurs="0" type="tns:LevelConstraint" />
 			<xs:element name="TSLValidity" minOccurs="0" type="tns:LevelConstraint" />
 			<xs:element name="TSLStatus" minOccurs="0" type="tns:LevelConstraint" />
@@ -107,12 +106,30 @@
 			<xs:element name="Cryptographic" type="tns:CryptographicType"/>
 		</xs:sequence>
 	</xs:complexType>
-
+	
 	<xs:complexType name="CryptographicType">
 		<xs:sequence>
-			<xs:element name="AcceptableEncryptionAlgo" minOccurs="0" maxOccurs="unbounded" type="tns:Algo"/>
-			<xs:element name="MiniPublicKeySize" minOccurs="0" maxOccurs="unbounded" type="tns:Algo"/>
-			<xs:element name="AcceptableDigestAlgo" minOccurs="0" maxOccurs="unbounded" type="tns:Algo"/>
+			<xs:element name="AcceptableEncryptionAlgo">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Algo" maxOccurs="unbounded" minOccurs="0" type="tns:Algo"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="MiniPublicKeySize">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Algo" maxOccurs="unbounded" minOccurs="0" type="tns:Algo"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AcceptableDigestAlgo">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Algo" maxOccurs="unbounded" minOccurs="0" type="tns:Algo"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute type="tns:level" name="Level"/>
 	</xs:complexType>
