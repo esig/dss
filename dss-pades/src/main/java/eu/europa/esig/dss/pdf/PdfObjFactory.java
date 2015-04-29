@@ -44,7 +44,7 @@ public abstract class PdfObjFactory {
 					Class<PdfObjFactory> factoryClass = (Class<PdfObjFactory>) Class.forName(factoryClassName);
 					INSTANCE = factoryClass.newInstance();
 				} catch (Exception ex) {
-					LOGGER.error("dss.pdf_obj_factory is '" + factoryClassName + "' but factory cannot be instantiated (fallback will be used)");
+					LOGGER.error("dss.pdf_obj_factory is '" + factoryClassName + "' but factory cannot be instantiated (fallback will be used)", ex);
 				}
 			}
 			if (INSTANCE == null) {
