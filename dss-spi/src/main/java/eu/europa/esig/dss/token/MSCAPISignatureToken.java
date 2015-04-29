@@ -42,100 +42,106 @@ import eu.europa.esig.dss.DSSException;
  */
 public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MSCAPISignatureToken.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MSCAPISignatureToken.class);
 
-    private static class CallbackPasswordProtection extends KeyStore.PasswordProtection {
-        PasswordInputCallback passwordCallback;
+	private static class CallbackPasswordProtection extends KeyStore.PasswordProtection {
+		PasswordInputCallback passwordCallback;
 
-        public CallbackPasswordProtection(PasswordInputCallback callback) {
-            super(null);
-            this.passwordCallback = callback;
-        }
+		public CallbackPasswordProtection(PasswordInputCallback callback) {
+			super(null);
+			this.passwordCallback = callback;
+		}
 
-        @Override
-        public synchronized char[] getPassword() {
-            if (passwordCallback == null) {
-                throw new RuntimeException("MSCAPI: No callback provided for entering the PIN/password");
-            }
-            char[] password = passwordCallback.getPassword();
-            return password;
-        }
-    }
+		@Override
+		public synchronized char[] getPassword() {
+			if (passwordCallback == null) {
+				throw new RuntimeException("MSCAPI: No callback provided for entering the PIN/password");
+			}
+			char[] password = passwordCallback.getPassword();
+			return password;
+		}
+	}
 
-    @Override
-    public void close() {
-    }
+	private PasswordInputCallback callback;
 
-    /**
-     * This method is a workaround for scenarios when multiple entries have the same alias. Since the alias is the only "official"
-     * way of retrieving an entry, only the first entry with a given alias is accessible.
-     * See: https://joinup.ec.europa.eu/software/sd-dss/issue/problem-possible-keystore-aliases-collision-when-using-mscapi
-     *
-     * @param keyStore the key store to fix
-     */
-    private static void _fixAliases(KeyStore keyStore) {
-        Field field;
-        KeyStoreSpi keyStoreVeritable;
+	public MSCAPISignatureToken(PasswordInputCallback callback) {
+		this.callback = callback;
+	}
 
-        try {
-            field = keyStore.getClass().getDeclaredField("keyStoreSpi");
-            field.setAccessible(true);
-            keyStoreVeritable = (KeyStoreSpi) field.get(keyStore);
+	@Override
+	public void close() {
+	}
 
-            if ("sun.security.mscapi.KeyStore$MY".equals(keyStoreVeritable.getClass().getName())) {
-                Collection<?> entries;
-                String alias, hashCode;
-                X509Certificate[] certificates;
+	/**
+	 * This method is a workaround for scenarios when multiple entries have the same alias. Since the alias is the only "official"
+	 * way of retrieving an entry, only the first entry with a given alias is accessible.
+	 * See: https://joinup.ec.europa.eu/software/sd-dss/issue/problem-possible-keystore-aliases-collision-when-using-mscapi
+	 *
+	 * @param keyStore the key store to fix
+	 */
+	private static void _fixAliases(KeyStore keyStore) {
+		Field field;
+		KeyStoreSpi keyStoreVeritable;
 
-                field = keyStoreVeritable.getClass().getEnclosingClass().getDeclaredField("entries");
-                field.setAccessible(true);
-                entries = (Collection<?>) field.get(keyStoreVeritable);
+		try {
+			field = keyStore.getClass().getDeclaredField("keyStoreSpi");
+			field.setAccessible(true);
+			keyStoreVeritable = (KeyStoreSpi) field.get(keyStore);
 
-                for (Object entry : entries) {
-                    field = entry.getClass().getDeclaredField("certChain");
-                    field.setAccessible(true);
-                    certificates = (X509Certificate[]) field.get(entry);
+			if ("sun.security.mscapi.KeyStore$MY".equals(keyStoreVeritable.getClass().getName())) {
+				Collection<?> entries;
+				String alias, hashCode;
+				X509Certificate[] certificates;
 
-                    hashCode = Integer.toString(certificates[0].hashCode());
+				field = keyStoreVeritable.getClass().getEnclosingClass().getDeclaredField("entries");
+				field.setAccessible(true);
+				entries = (Collection<?>) field.get(keyStoreVeritable);
 
-                    field = entry.getClass().getDeclaredField("alias");
-                    field.setAccessible(true);
-                    alias = (String) field.get(entry);
+				for (Object entry : entries) {
+					field = entry.getClass().getDeclaredField("certChain");
+					field.setAccessible(true);
+					certificates = (X509Certificate[]) field.get(entry);
 
-                    if (!alias.equals(hashCode)) {
-                        field.set(entry, alias.concat(" - ").concat(hashCode));
-                    }
-                }
-            }
-        } catch (Exception exception) {
-            LOG.error(exception.getMessage(), exception);
-        }
-    }
+					hashCode = Integer.toString(certificates[0].hashCode());
 
-    @Override
-    public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
+					field = entry.getClass().getDeclaredField("alias");
+					field.setAccessible(true);
+					alias = (String) field.get(entry);
 
-        List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
+					if (!alias.equals(hashCode)) {
+						field.set(entry, alias.concat(" - ").concat(hashCode));
+					}
+				}
+			}
+		} catch (Exception exception) {
+			LOG.error(exception.getMessage(), exception);
+		}
+	}
 
-        try {
-            ProtectionParameter protectionParameter = new CallbackPasswordProtection(new PrefilledPasswordCallback("nimp".toCharArray()));
+	@Override
+	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
 
-            KeyStore keyStore = KeyStore.getInstance("Windows-MY");
-            keyStore.load(null, null);
-            _fixAliases(keyStore);
+		List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
 
-            Enumeration<String> aliases = keyStore.aliases();
-            while (aliases.hasMoreElements()) {
-                String alias = aliases.nextElement();
-                if (keyStore.isKeyEntry(alias)) {
-                    PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, protectionParameter);
-                    list.add(new KSPrivateKeyEntry(entry));
-                }
-            }
+		try {
+			ProtectionParameter protectionParameter = new CallbackPasswordProtection(new PrefilledPasswordCallback("nimp".toCharArray()));
 
-        } catch (Exception e) {
-            throw new DSSException(e);
-        }
-        return list;
-    }
+			KeyStore keyStore = KeyStore.getInstance("Windows-MY");
+			keyStore.load(null, null);
+			_fixAliases(keyStore);
+
+			Enumeration<String> aliases = keyStore.aliases();
+			while (aliases.hasMoreElements()) {
+				String alias = aliases.nextElement();
+				if (keyStore.isKeyEntry(alias)) {
+					PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, protectionParameter);
+					list.add(new KSPrivateKeyEntry(entry));
+				}
+			}
+
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+		return list;
+	}
 }

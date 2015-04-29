@@ -31,6 +31,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfStream;
+import eu.europa.esig.dss.pdf.model.ModelPdfArray;
+import eu.europa.esig.dss.pdf.model.ModelPdfStream;
 
 class PdfBoxArray implements PdfArray {
 
@@ -47,6 +49,17 @@ class PdfBoxArray implements PdfArray {
 	public PdfBoxArray(COSArray wrapped, PDDocument document) {
 		this.wrapped = wrapped;
 		this.document = document;
+	}
+
+	public PdfBoxArray(ModelPdfArray array) {
+		this();
+		for(Object o : array.getValues()) {
+			if(o instanceof ModelPdfStream) {
+				add(new PdfBoxStream((ModelPdfStream) o));
+			} else {
+				throw new IllegalArgumentException(o.getClass().getName());
+			}
+		}
 	}
 
 	@Override
@@ -81,10 +94,10 @@ class PdfBoxArray implements PdfArray {
 		return wrapped.toString();
 	}
 
-    @Override
-    public void add(PdfStream stream) throws IOException {
-        PdfBoxStream s = (PdfBoxStream) stream;
-        wrapped.add(s.wrapped);
-        wrapped.setNeedToBeUpdate(true);
-    }
+	@Override
+	public void add(PdfStream stream) {
+		PdfBoxStream s = (PdfBoxStream) stream;
+		wrapped.add(s.wrapped);
+		wrapped.setNeedToBeUpdate(true);
+	}
 }

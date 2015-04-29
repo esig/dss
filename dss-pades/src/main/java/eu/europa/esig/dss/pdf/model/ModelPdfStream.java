@@ -18,16 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.model;
 
-/**
- * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
- * 
- * 
- *
- */
-public interface PdfReader {
 
-	PdfDict getCatalog();
+public class ModelPdfStream {
+
+	byte[] bytes;
+
+	public ModelPdfStream(byte[] bytes) {
+		this.bytes = bytes;
+	}
+
+	public byte[] getBytes() {
+		return bytes;
+	}
 
 }

@@ -63,10 +63,10 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.DSSPDFUtils;
 import eu.europa.esig.dss.pades.signature.visible.ImageFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -76,7 +76,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	@Override
 	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
-			final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
+			final Map.Entry<String, ModelPdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 		File toSignFile = null;
@@ -107,7 +107,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	@Override
 	public void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
-			final DigestAlgorithm digestAlgorithm, final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
+			final DigestAlgorithm digestAlgorithm, final Map.Entry<String, ModelPdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
 
 		File toSignFile = null;
 		File signedFile = null;
@@ -199,13 +199,13 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		return options;
 	}
 
-	private void addExtraDictionaries(final PDDocument doc, final Map.Entry<String, PdfDict>[] extraDictionariesToAddBeforeSign) {
+	private void addExtraDictionaries(final PDDocument doc, final Map.Entry<String, ModelPdfDict>[] extraDictionariesToAddBeforeSign) {
 
 		final COSDictionary cosDictionary = doc.getDocumentCatalog().getCOSDictionary();
-		for (final Map.Entry<String, PdfDict> pdfDictEntry : extraDictionariesToAddBeforeSign) {
+		for (final Map.Entry<String, ModelPdfDict> pdfDictEntry : extraDictionariesToAddBeforeSign) {
 
 			final String key = pdfDictEntry.getKey();
-			final PdfBoxDict value = (PdfBoxDict) pdfDictEntry.getValue();
+			final PdfBoxDict value = new PdfBoxDict(pdfDictEntry.getValue());
 			final COSDictionary wrapped = value.getWrapped();
 			cosDictionary.setItem(key, wrapped);
 		}
@@ -279,7 +279,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	 * @throws DSSException
 	 */
 	private Set<PdfSignatureOrDocTimestampInfo> validateSignatures(CertificatePool validationCertPool,
-			Map<String, Set<PdfSignatureOrDocTimestampInfo>> byteRangeMap, PdfDict outerCatalog, InputStream input) throws DSSException {
+			Map<String, Set<PdfSignatureOrDocTimestampInfo>> byteRangeMap, PdfBoxDict outerCatalog, InputStream input) throws DSSException {
 
 		Set<PdfSignatureOrDocTimestampInfo> signaturesFound = new LinkedHashSet<PdfSignatureOrDocTimestampInfo>();
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -289,7 +289,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			IOUtils.copy(input, buffer);
 
 			doc = PDDocument.load(new ByteArrayInputStream(buffer.toByteArray()));
-			final PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
+			final PdfBoxDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
 
 			final List<PDSignature> signatureDictionaries = doc.getSignatureDictionaries();
 			if (LOG.isDebugEnabled()) {

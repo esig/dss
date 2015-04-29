@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -43,8 +45,10 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
 
+	private static final Logger logger = LoggerFactory.getLogger(PDFDocumentValidator.class);
+
 	final PDFSignatureService pdfSignatureService;
-	
+
 	/**
 	 * Default constructor used with reflexion (see SignedDocumentValidator)
 	 */
@@ -61,7 +65,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		this.document = document;
 		pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 	}
-	
+
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
 		int headerLength = 500;
@@ -95,6 +99,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 						signatures.add(padesSignature);
 					}
 				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
 					throw new DSSException(e);
 				}
 			}

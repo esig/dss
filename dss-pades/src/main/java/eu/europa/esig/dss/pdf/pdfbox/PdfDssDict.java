@@ -41,106 +41,105 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 public class PdfDssDict {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PdfDssDict.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfDssDict.class);
 
-    private Set<X509CRL> crlList = new HashSet<X509CRL>();
+	private Set<X509CRL> crlList = new HashSet<X509CRL>();
 
-    private Set<BasicOCSPResp> ocspList = new HashSet<BasicOCSPResp>();
+	private Set<BasicOCSPResp> ocspList = new HashSet<BasicOCSPResp>();
 
-    private Set<CertificateToken> certList = new HashSet<CertificateToken>();
+	private Set<CertificateToken> certList = new HashSet<CertificateToken>();
 
+	public static PdfDssDict build(PdfDict documentDict) throws IOException {
+		if (documentDict != null) {
 
-    public static PdfDssDict build(PdfDict documentDict) throws IOException {
-        if (documentDict != null) {
+			final PdfDict dssCatalog = documentDict.getAsDict("DSS");
+			if (dssCatalog != null) {
+				return new PdfDssDict(dssCatalog);
+			}
+		}
+		return null;
+	}
 
-            final PdfDict dssCatalog = documentDict.getAsDict("DSS");
-            if (dssCatalog != null) {
-                return new PdfDssDict(dssCatalog);
-            }
-        }
-        return null;
-    }
+	private PdfDssDict(PdfDict dssCatalog) throws IOException {
+		try {
+			readCerts(dssCatalog);
+		} catch (Exception e) {
+			LOG.debug(e.getMessage(), e);
+		}
+		try {
+			readCrl(dssCatalog);
+		} catch (Exception e) {
+			LOG.debug(e.getMessage(), e);
+		}
+		try {
+			readOcsp(dssCatalog);
+		} catch (Exception e) {
+			LOG.debug(e.getMessage(), e);
+		}
+	}
 
-    private PdfDssDict(PdfDict dssCatalog) throws IOException {
-	    try {
-		    readCerts(dssCatalog);
-	    } catch (Exception e) {
-		    LOG.debug(e.getMessage(), e);
-	    }
-        try {
-            readCrl(dssCatalog);
-        } catch (Exception e) {
-            LOG.debug(e.getMessage(), e);
-        }
-        try {
-            readOcsp(dssCatalog);
-        } catch (Exception e) {
-            LOG.debug(e.getMessage(), e);
-        }
-    }
+	private void readCerts(PdfDict dssCatalog) throws IOException {
+		final PdfArray certsArray = dssCatalog.getAsArray("Certs");
+		if (certsArray != null) {
 
-    private void readCerts(PdfDict dssCatalog) throws IOException {
-        final PdfArray certsArray = dssCatalog.getAsArray("Certs");
-        if (certsArray != null) {
+			LOG.debug("There is {} in this certsArray", certsArray.size());
+			for (int ii = 0; ii < certsArray.size(); ii++) {
 
-            LOG.debug("There is {} in this certsArray", certsArray.size());
-            for (int ii = 0; ii < certsArray.size(); ii++) {
+				final byte[] stream = certsArray.getBytes(ii);
+				final CertificateToken cert = DSSUtils.loadCertificate(stream);
+				certList.add(cert);
+			}
+		}
+	}
 
-                final byte[] stream = certsArray.getBytes(ii);
-                final CertificateToken cert = DSSUtils.loadCertificate(stream);
-                certList.add(cert);
-            }
-        }
-    }
+	private void readOcsp(PdfDict dssCatalog) throws IOException {
+		// Add OSCPs from DSS catalog (LT level)
+		PdfArray ocspArray = dssCatalog.getAsArray("OCSPs");
+		if (ocspArray != null) {
+			LOG.debug("Found oscpArray of size {}", ocspArray.size());
 
-    private void readOcsp(PdfDict dssCatalog) throws IOException {
-        // Add OSCPs from DSS catalog (LT level)
-        PdfArray ocspArray = dssCatalog.getAsArray("OCSPs");
-        if (ocspArray != null) {
-            LOG.debug("Found oscpArray of size {}", ocspArray.size());
+			for (int ii = 0; ii < ocspArray.size(); ii++) {
+				final byte[] stream = ocspArray.getBytes(ii);
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("OSCP {} data = {}", ii, Hex.encodeHexString(stream));
+				}
+				final OCSPResp ocspResp = new OCSPResp(stream);
+				final BasicOCSPResp responseObject;
+				try {
+					responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
+					ocspList.add(responseObject);
+				} catch (OCSPException e) {
+					LOG.error("Error decoding ocspResp " + ocspResp, e);
+				}
+			}
+		} else {
+			LOG.debug("oscpArray is null");
+		}
 
-            for (int ii = 0; ii < ocspArray.size(); ii++) {
-                final byte[] stream = ocspArray.getBytes(ii);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("OSCP {} data = {}", ii, Hex.encodeHexString(stream));
-                }
-                final OCSPResp ocspResp = new OCSPResp(stream);
-                final BasicOCSPResp responseObject;
-                try {
-                    responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
-                    ocspList.add(responseObject);
-                } catch (OCSPException e) {
-                    LOG.error("Error decoding ocspResp " + ocspResp, e);
-                }
-            }
-        } else {
-            LOG.debug("oscpArray is null");
-        }
+	}
 
-    }
+	private void readCrl(PdfDict dssCatalog) {
+		final PdfArray crlArray = dssCatalog.getAsArray("CRLs");
+		if (crlArray != null) {
 
-    private void readCrl(PdfDict dssCatalog) {
-        final PdfArray crlArray = dssCatalog.getAsArray("CRLs");
-        if (crlArray != null) {
+			for (int ii = 0; ii < crlArray.size(); ii++) {
 
-            for (int ii = 0; ii < crlArray.size(); ii++) {
+				final byte[] bytes = DSSPDFUtils.getBytes(crlArray, ii);
+				final X509CRL x509CRL = DSSUtils.loadCRL(bytes);
+				crlList.add(x509CRL);
+			}
+		}
+	}
 
-                final byte[] bytes = DSSPDFUtils.getBytes(crlArray, ii);
-                final X509CRL x509CRL = DSSUtils.loadCRL(bytes);
-                crlList.add(x509CRL);
-            }
-        }
-    }
+	public Set<X509CRL> getCrlList() {
+		return Collections.unmodifiableSet(crlList);
+	}
 
-    public Set<X509CRL> getCrlList() {
-        return Collections.unmodifiableSet(crlList);
-    }
+	public Set<BasicOCSPResp> getOcspList() {
+		return Collections.unmodifiableSet(ocspList);
+	}
 
-    public Set<BasicOCSPResp> getOcspList() {
-        return Collections.unmodifiableSet(ocspList);
-    }
-
-    public Set<CertificateToken> getCertList() {
-        return Collections.unmodifiableSet(certList);
-    }
+	public Set<CertificateToken> getCertList() {
+		return Collections.unmodifiableSet(certList);
+	}
 }

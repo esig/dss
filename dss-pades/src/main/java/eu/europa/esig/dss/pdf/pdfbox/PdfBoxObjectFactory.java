@@ -20,54 +20,20 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfArray;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.PdfReader;
-import eu.europa.esig.dss.pdf.PdfStream;
-import eu.europa.esig.dss.pdf.PdfWriter;
 
 public class PdfBoxObjectFactory extends PdfObjFactory {
 
-    @Override
-    public PdfArray newArray() {
-        return new PdfBoxArray();
-    }
+	@Override
+	public PDFSignatureService newPAdESSignatureService() {
+		return new PdfBoxSignatureService();
+	}
 
-    @Override
-    public PdfDict newDict(String dictType) {
-        return new PdfBoxDict(dictType);
-    }
-
-    @Override
-    public PdfReader newReader(InputStream input) throws IOException {
-        return new PdfBoxReader(input);
-    }
-
-    @Override
-    public PdfStream newStream(byte[] bytes) throws IOException {
-        return new PdfBoxStream(bytes);
-    }
-
-    @Override
-    public PdfWriter newWriter(PdfReader reader, OutputStream output) throws IOException {
-        return new PdfBoxWriter(((PdfBoxReader) reader).getPDDocument(), output);
-    }
-
-    @Override
-    public PDFSignatureService newPAdESSignatureService() {
-        return new PdfBoxSignatureService();
-    }
-
-    @Override
-    public PDFTimestampService newTimestampSignatureService() {
-        return new PdfBoxDocTimeStampService();
-    }
+	@Override
+	public PDFTimestampService newTimestampSignatureService() {
+		return new PdfBoxDocTimeStampService();
+	}
 
 }

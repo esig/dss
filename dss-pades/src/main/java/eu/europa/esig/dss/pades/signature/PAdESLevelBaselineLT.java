@@ -43,10 +43,10 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfArray;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.PdfStream;
+import eu.europa.esig.dss.pdf.model.ModelPdfArray;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
+import eu.europa.esig.dss.pdf.model.ModelPdfStream;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -72,10 +72,9 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 	private static final boolean INCLUDE_VRI_DICTIONARY = false;
 
 	// the information read from the signatures
-	final PdfObjFactory factory = PdfObjFactory.getInstance();
-	private PdfArray certArray = factory.newArray();
-	private PdfArray ocspArray = factory.newArray();
-	private PdfArray crlArray = factory.newArray();
+	private ModelPdfArray certArray = new ModelPdfArray();
+	private ModelPdfArray ocspArray = new ModelPdfArray();
+	private ModelPdfArray crlArray = new ModelPdfArray();
 
 	private final CertificateVerifier certificateVerifier;
 	private final TSPSource tspSource;
@@ -123,7 +122,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 				}
 			}
 
-			final PdfDict dssDictionary = createDSSDictionary();
+			final ModelPdfDict dssDictionary = createDSSDictionary();
 
 			/**
 			 * Add the signature's VRI dictionary, hashing the signature block from the callback method.<br>
@@ -133,10 +132,10 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 			 */
 			if (INCLUDE_VRI_DICTIONARY) {
 
-				PdfDict vriDictionary = factory.newDict("VRI");
+				ModelPdfDict vriDictionary = new ModelPdfDict("VRI");
 				for (final AdvancedSignature signature : signatures) {
 					if (signature instanceof PAdESSignature) {
-						PdfDict sigVriDictionary = factory.newDict();
+						ModelPdfDict sigVriDictionary = new ModelPdfDict();
 						// sigVriDictionary to be completed with Cert, CRL and OCSP specific to this signature
 						PAdESSignature pAdESSignature = (PAdESSignature) signature;
 
@@ -162,8 +161,8 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
              So we add a timestamp, and that a good thing because PDFBox cannot do incremental update without signing.
 			 */
 			final ByteArrayOutputStream tDoc = new ByteArrayOutputStream();
-			final PDFTimestampService timestampService = factory.newTimestampSignatureService();
-			Map.Entry<String, PdfDict> dictToAdd = new AbstractMap.SimpleEntry<String, PdfDict>("DSS", dssDictionary);
+			final PDFTimestampService timestampService = PdfObjFactory.getInstance().newTimestampSignatureService();
+			Map.Entry<String, ModelPdfDict> dictToAdd = new AbstractMap.SimpleEntry<String, ModelPdfDict>("DSS", dssDictionary);
 			timestampService.timestamp(document, tDoc, parameters, tspSource, dictToAdd);
 			final InMemoryDocument inMemoryDocument = new InMemoryDocument(tDoc.toByteArray());
 			inMemoryDocument.setMimeType(MimeType.PDF);
@@ -173,8 +172,8 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		}
 	}
 
-	private PdfDict createDSSDictionary() throws IOException {
-		final PdfDict dssDictionary = factory.newDict("DSS");
+	private ModelPdfDict createDSSDictionary() throws IOException {
+		final ModelPdfDict dssDictionary = new ModelPdfDict("DSS");
 
 		if (certArray.size() > 0) {
 			dssDictionary.add("Certs", certArray);
@@ -215,14 +214,13 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		}
 	}
 
-	private void addNewToken(final Token crlToken, final PdfArray pdfArray) throws DSSException {
-
+	private void addNewToken(final Token crlToken, final ModelPdfArray pdfArray) throws DSSException {
 		try {
-
-			final PdfStream stream = factory.newStream(crlToken.getEncoded());
+			final ModelPdfStream stream = new ModelPdfStream(crlToken.getEncoded());
 			pdfArray.add(stream);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
+
 }

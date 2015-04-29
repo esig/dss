@@ -25,12 +25,9 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 /**
  * TODO
  *
- *
- *
- *
- *
- *
  */
 public interface PdfSignatureInfo extends PdfSignatureOrDocTimestampInfo {
-    CAdESSignature getCades();
+
+	CAdESSignature getCades();
+
 }

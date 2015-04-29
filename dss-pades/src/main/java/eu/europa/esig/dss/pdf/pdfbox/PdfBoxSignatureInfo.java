@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -52,7 +51,7 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 	 * @param inputStream        the stream of the whole signed document
 	 * @throws IOException
 	 */
-	PdfBoxSignatureInfo(CertificatePool validationCertPool, PdfDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms,
+	PdfBoxSignatureInfo(CertificatePool validationCertPool, PdfBoxDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms,
 			InputStream inputStream) throws IOException {
 		super(validationCertPool, outerCatalog, document, signature, cms, inputStream);
 		try {

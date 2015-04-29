@@ -1889,14 +1889,10 @@ public final class DSSUtils {
 	 * @param path to be analysed
 	 * @return the file extension or null
 	 */
+	@Deprecated
 	public static String getFileExtension(final String path) {
 
-		String extension = null;
-		int lastIndexOf = path.lastIndexOf('.');
-		if (lastIndexOf > 0) {
-			extension = path.substring(lastIndexOf + 1);
-		}
-		return extension;
+		return MimeType.getFileExtension(path);
 	}
 
 	/**

@@ -6,6 +6,7 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	private String reason;
 	private String contactInfo;
+	private String location;
 
 	/**
 	 * This attribute is used to create visible signature in PAdES form
@@ -46,6 +47,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	public void setImageParameters(SignatureImageParameters imageParameters) {
 		this.imageParameters = imageParameters;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 }

@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -82,7 +81,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 *            the stream of the whole signed document
 	 * @throws IOException
 	 */
-	PdfBoxCMSInfo(CertificatePool validationCertPool, PdfDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms,
+	PdfBoxCMSInfo(CertificatePool validationCertPool, PdfBoxDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms,
 			InputStream inputStream) throws DSSException, IOException {
 		this.validationCertPool = validationCertPool;
 		this.outerCatalog = PdfDssDict.build(outerCatalog);

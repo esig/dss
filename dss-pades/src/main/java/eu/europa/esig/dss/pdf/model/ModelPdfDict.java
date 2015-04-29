@@ -18,20 +18,38 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.model;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * The usage of this interface permit the user to choose the underlying PDF
- * library use to created PDF signatures.
- * 
- * 
- *
- */
-public interface PdfWriter {
+public class ModelPdfDict {
 
+	private Map<String, Object> values = new HashMap<String, Object>();
 
-	void saveIncremental() throws IOException;
+	public ModelPdfDict() {
+	}
+
+	public ModelPdfDict(String dictType) {
+		values.put("Type", dictType);
+	}
+
+	public void add(String key, ModelPdfArray array) throws IOException {
+		values.put(key, array);
+	}
+
+	public void add(String key, ModelPdfDict dict) throws IOException {
+		values.put(key, dict);
+	}
+
+	public void add(String key, Calendar cal) throws IOException {
+		values.put(key, cal);
+	}
+
+	public Map<String, Object> getValues() {
+		return values;
+	}
 
 }

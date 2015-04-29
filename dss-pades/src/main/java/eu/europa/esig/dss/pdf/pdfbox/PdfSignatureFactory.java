@@ -27,7 +27,6 @@ import java.io.IOException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -43,16 +42,16 @@ import eu.europa.esig.dss.x509.CertificatePool;
  */
 public class PdfSignatureFactory {
 
-    // dependency to pdfbox/PDDocument is just for building inner object and pdf object can be closed after
-    public static PdfSignatureInfo createPdfSignatureInfo(CertificatePool validationCertPool, PdfDict outerCatalog, PDDocument doc, PDSignature signature, byte[] cms,
-                                                          ByteArrayOutputStream buffer) throws IOException {
-        return new PdfBoxSignatureInfo(validationCertPool, outerCatalog, doc, signature, cms, new ByteArrayInputStream(buffer.toByteArray()));
-    }
+	// dependency to pdfbox/PDDocument is just for building inner object and pdf object can be closed after
+	public static PdfSignatureInfo createPdfSignatureInfo(CertificatePool validationCertPool, PdfBoxDict outerCatalog, PDDocument doc, PDSignature signature, byte[] cms,
+			ByteArrayOutputStream buffer) throws IOException {
+		return new PdfBoxSignatureInfo(validationCertPool, outerCatalog, doc, signature, cms, new ByteArrayInputStream(buffer.toByteArray()));
+	}
 
-    // dependency to pdfbox/PDDocument is just for building inner object and pdf object can be closed after
-    public static PdfDocTimestampInfo createPdfTimestampInfo(CertificatePool validationCertPool, PdfDict outerCatalog, PDDocument doc, PDSignature signature, byte[] cms,
-                                                             ByteArrayOutputStream buffer) throws IOException {
-        return new PdfBoxDocTimestampInfo(validationCertPool, outerCatalog, doc, signature, cms, new ByteArrayInputStream(buffer.toByteArray()));
-    }
+	// dependency to pdfbox/PDDocument is just for building inner object and pdf object can be closed after
+	public static PdfDocTimestampInfo createPdfTimestampInfo(CertificatePool validationCertPool, PdfBoxDict outerCatalog, PDDocument doc, PDSignature signature, byte[] cms,
+			ByteArrayOutputStream buffer) throws IOException {
+		return new PdfBoxDocTimestampInfo(validationCertPool, outerCatalog, doc, signature, cms, new ByteArrayInputStream(buffer.toByteArray()));
+	}
 
 }

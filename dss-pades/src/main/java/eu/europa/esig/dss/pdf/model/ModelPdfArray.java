@@ -18,47 +18,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox;
+package eu.europa.esig.dss.pdf.model;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class ModelPdfArray {
 
-import eu.europa.esig.dss.pdf.PdfReader;
+	private List<Object> values = new ArrayList<Object>();
 
-class PdfBoxReader implements PdfReader {
-	
-	private static final Logger logger = LoggerFactory.getLogger(PdfBoxReader.class);
-
-	private PDDocument wrapped;
-
-	public PdfBoxReader(InputStream inputstream) throws IOException {
-		wrapped = PDDocument.load(inputstream);
+	public int size() {
+		return values.size();
 	}
 
-	@Override
-	public PdfBoxDict getCatalog() {
-		return new PdfBoxDict(wrapped.getDocumentCatalog().getCOSDictionary(), wrapped);
+	public void add(ModelPdfStream stream) throws IOException {
+		values.add(stream);
 	}
 
-    @Override
-    public void finalize() throws Throwable {
-		if (wrapped != null) {
-			try {
-				wrapped.close();
-			} catch (IOException e) {
-				logger.error("Error while closing PDDocument", e);
-			}
-		}
-		wrapped = null;
-        super.finalize();
-    }
-
-	PDDocument getPDDocument() {
-		return wrapped;
+	public List<Object> getValues() {
+		return values;
 	}
 
 }

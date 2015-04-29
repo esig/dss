@@ -28,6 +28,7 @@ import java.util.Map;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
@@ -48,7 +49,7 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 */
 	byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
-			final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
+			final Map.Entry<String, ModelPdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
 
 	/**
 	 * Signs a PDF document
@@ -62,7 +63,7 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 */
 	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
-			final Map.Entry<String, PdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
+			final Map.Entry<String, ModelPdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
 
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document

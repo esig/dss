@@ -35,7 +35,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSignatureService, PDFTimestampService {
@@ -52,7 +52,7 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
 
 	@Override
 	public void timestamp(final DSSDocument document, final OutputStream signedStream, final PAdESSignatureParameters parameters, final TSPSource tspSource,
-			final Map.Entry<String, PdfDict>... dictToAdd) throws DSSException {
+			final Map.Entry<String, ModelPdfDict>... dictToAdd) throws DSSException {
 
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		InputStream inputStream = document.openStream();
