@@ -12,7 +12,7 @@ public class MSCAPISignatureTokenApp {
 
 	public static void main(String[] args){
 
-		MSCAPISignatureToken token = new MSCAPISignatureToken();
+		MSCAPISignatureToken token = new MSCAPISignatureToken(null);
 
 		List<DSSPrivateKeyEntry> keys = token.getKeys();
 		for (DSSPrivateKeyEntry entry : keys) {

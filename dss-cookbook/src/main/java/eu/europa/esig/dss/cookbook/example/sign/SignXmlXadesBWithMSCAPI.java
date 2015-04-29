@@ -47,7 +47,7 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		prepareXmlDoc();
 
 		// Creation of MS-CAPI signature token
-		signingToken = new MSCAPISignatureToken();
+		signingToken = new MSCAPISignatureToken(null);
 		List<DSSPrivateKeyEntry> list = signingToken.getKeys();
 		// Chose the right private key entry from store. The index will depend of the number of the certificates on your card.
 		System.out.println(signingToken.getKeys().size());
