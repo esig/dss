@@ -28,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.commons.DSSNotifier;
 
 /**
@@ -65,7 +64,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpHost() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_HOST);
-		return preference != null ? preference.getValue() : DSSUtils.EMPTY;
+		return preference != null ? preference.getValue() : StringUtils.EMPTY;
 	}
 
 	/**
@@ -75,7 +74,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpPassword() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_PASSWORD);
-		return preference != null ? preference.getValue() : DSSUtils.EMPTY;
+		return preference != null ? preference.getValue() : StringUtils.EMPTY;
 	}
 
 	/**
@@ -95,7 +94,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpsHost() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_HOST);
-		return preference != null ? preference.getValue() : DSSUtils.EMPTY;
+		return preference != null ? preference.getValue() : StringUtils.EMPTY;
 	}
 
 	/**
@@ -105,7 +104,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpsPassword() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_PASSWORD);
-		return preference != null ? preference.getValue() : DSSUtils.EMPTY;
+		return preference != null ? preference.getValue() : StringUtils.EMPTY;
 	}
 
 	/**
@@ -125,7 +124,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpsUser() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_USER);
-		return preference != null ? preference.getValue() : DSSUtils.EMPTY;
+		return preference != null ? preference.getValue() : StringUtils.EMPTY;
 	}
 
 	/**
@@ -135,7 +134,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpUser() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_USER);
-		return preference != null ? preference.getValue() : DSSUtils.EMPTY;
+		return preference != null ? preference.getValue() : StringUtils.EMPTY;
 	}
 
 	/**
@@ -211,7 +210,7 @@ public class ProxyPreferenceManager {
 	 */
 	public void setHttpPort(Long port) {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_PORT);
-		preference.setValue(port != null ? String.valueOf(port) : DSSUtils.EMPTY);
+		preference.setValue(port != null ? String.valueOf(port) : StringUtils.EMPTY);
 		getProxyDao().update(preference);
 		dssNotify();
 	}
@@ -251,7 +250,7 @@ public class ProxyPreferenceManager {
 	 */
 	public void setHttpsPort(Long port) {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_PORT);
-		preference.setValue(port != null ? String.valueOf(port) : DSSUtils.EMPTY);
+		preference.setValue(port != null ? String.valueOf(port) : StringUtils.EMPTY);
 		getProxyDao().update(preference);
 		dssNotify();
 	}

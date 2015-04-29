@@ -68,6 +68,7 @@ import javax.security.auth.x500.X500Principal;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -132,14 +133,6 @@ public final class DSSUtils {
 	 */
 	public static final int INDEX_NOT_FOUND = -1;
 
-	/**
-	 * The empty String {@code ""}.
-	 *
-	 * @since 2.0
-	 */
-	public static final String EMPTY = "";
-
-
 	private static final CertificateFactory certificateFactory;
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
@@ -202,7 +195,7 @@ public final class DSSUtils {
 			final String stringDate = new SimpleDateFormat(DSSUtils.DEFAULT_DATE_TIME_FORMAT).format(date);
 			return stringDate;
 		}
-		return EMPTY;
+		return StringUtils.EMPTY;
 	}
 
 	/**

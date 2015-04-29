@@ -152,7 +152,7 @@ public class ControlTimeSliding {
 		for (final XmlDom chainCertificate : chainCertificates) {
 
 			final String certificateId = getCertificateId(chainCertificate);
-			final XmlNode certificateNode = controlTimeSlidingData.addChild(AttributeValue.CERTIFICATE, DSSUtils.EMPTY);
+			final XmlNode certificateNode = controlTimeSlidingData.addChild(AttributeValue.CERTIFICATE, StringUtils.EMPTY);
 			certificateNode.setAttribute(AttributeValue.CERTIFICATE_ID, String.valueOf(certificateId));
 
 			final XmlDom certificate = params.getCertificate(certificateId);

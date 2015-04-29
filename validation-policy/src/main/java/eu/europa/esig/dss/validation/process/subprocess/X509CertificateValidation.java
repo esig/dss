@@ -794,7 +794,7 @@ public class X509CertificateValidation {
 		constraint.create(validationDataXmlNode, MessageTag.CTS_WITSS);
 		final List<XmlDom> tspList = certificateXmlDom.getElements("./TrustedServiceProvider");
 		boolean acceptableStatus = false;
-		String status = DSSUtils.EMPTY;
+		String status = StringUtils.EMPTY;
 		for (final XmlDom trustedServiceProviderXmlDom : tspList) {
 
 			status = trustedServiceProviderXmlDom == null ? "" : trustedServiceProviderXmlDom.getValue("./Status/text()");

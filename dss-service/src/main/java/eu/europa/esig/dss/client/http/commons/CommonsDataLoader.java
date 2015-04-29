@@ -160,7 +160,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	protected synchronized HttpClient getHttpClient(final String url) throws DSSException {
 
-		if (httpClient != null && !updated) {
+		if ((httpClient != null) && !updated) {
 			return httpClient;
 		}
 		if (LOG.isTraceEnabled() && updated) {
@@ -326,7 +326,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		try {
 			return DSSUtils.toByteArray(new URL(urlString).openStream());
 		} catch (IOException e) {
-			LOG.warn(e.toString(), e);
+			LOG.warn(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -349,7 +349,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			final Attributes attributes = ctx.getAttributes("");
 			final javax.naming.directory.Attribute attribute = attributes.get("certificateRevocationList;binary");
 			final byte[] ldapBytes = (byte[]) attribute.get();
-			if (ldapBytes == null || ldapBytes.length == 0) {
+			if ((ldapBytes == null) || (ldapBytes.length == 0)) {
 				throw new DSSException("Cannot download CRL from: " + urlString);
 			}
 			return ldapBytes;
@@ -404,20 +404,20 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
 			return returnedBytes;
-			
+
 		} catch (URISyntaxException e) {
 			throw new DSSException(e);
-			
+
 		} finally {
 
 			if (httpRequest != null) {
 				httpRequest.releaseConnection();
 			}
-			
+
 			if (httpResponse != null) {
 				EntityUtils.consumeQuietly(httpResponse.getEntity());
 			}
-			
+
 		}
 	}
 

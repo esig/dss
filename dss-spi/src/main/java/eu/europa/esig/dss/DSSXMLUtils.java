@@ -919,7 +919,7 @@ public final class DSSXMLUtils {
 			}
 			final Validator validator = schema.newValidator();
 			validator.validate(streamSource);
-			return DSSUtils.EMPTY;
+			return StringUtils.EMPTY;
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();

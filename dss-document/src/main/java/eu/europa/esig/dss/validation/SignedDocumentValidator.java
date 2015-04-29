@@ -1300,8 +1300,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (structureValid != null) {
 
 			final XmlStructuralValidationType xmlStructuralValidationType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlStructuralValidationType();
-			xmlStructuralValidationType.setValid(DSSUtils.EMPTY.equals(structureValid));
-			if (!DSSUtils.EMPTY.equals(structureValid)) {
+			xmlStructuralValidationType.setValid(StringUtils.EMPTY.equals(structureValid));
+			if (!StringUtils.EMPTY.equals(structureValid)) {
 				xmlStructuralValidationType.setMessage(structureValid);
 			}
 			xmlSignature.setStructuralValidation(xmlStructuralValidationType);

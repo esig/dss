@@ -337,10 +337,10 @@ public class DiagnosticData extends XmlDom {
 	public boolean isThereXLevel(final String signatureId) {
 
 		final List<XmlDom> vdroTimestamps = getElements("/DiagnosticData/Signature[@Id='%s']/Timestamps/Timestamp[@Type='%s']", signatureId,
-			  TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.name());
+				TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.name());
 		final List<XmlDom> vdTimestamps = getElements("/DiagnosticData/Signature[@Id='%s']/Timestamps/Timestamp[@Type='%s']", signatureId,
-			  TimestampType.VALIDATION_DATA_TIMESTAMP.name());
-		return vdroTimestamps.size() > 0 || vdTimestamps.size() > 0;
+				TimestampType.VALIDATION_DATA_TIMESTAMP.name());
+		return (vdroTimestamps.size() > 0) || (vdTimestamps.size() > 0);
 	}
 
 	/**
@@ -352,11 +352,11 @@ public class DiagnosticData extends XmlDom {
 	public boolean isXLevelTechnicallyValid(final String signatureId) {
 
 		final List<XmlDom> vdroTimestamps = getElements("/DiagnosticData/Signature[@Id='%s']/Timestamps/Timestamp[@Type='%s']", signatureId,
-			  TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.name());
+				TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.name());
 		final List<XmlDom> vdTimestamps = getElements("/DiagnosticData/Signature[@Id='%s']/Timestamps/Timestamp[@Type='%s']", signatureId,
-			  TimestampType.VALIDATION_DATA_TIMESTAMP.name());
+				TimestampType.VALIDATION_DATA_TIMESTAMP.name());
 		final List<XmlDom> timestamps = new ArrayList<XmlDom>(vdroTimestamps);
-		timestamps.addAll(vdroTimestamps);
+		timestamps.addAll(vdTimestamps);
 		for (final XmlDom timestamp : timestamps) {
 
 			final boolean signatureValid = timestamp.getBoolValue("./BasicSignature/SignatureValid/text()");
@@ -504,7 +504,7 @@ public class DiagnosticData extends XmlDom {
 	public String getCertificateDN(final String dssCertificateId) {
 
 		final String subjectDistinguishedName = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/SubjectDistinguishedName[@Format='RFC2253']/text()",
-			  dssCertificateId);
+				dssCertificateId);
 		return subjectDistinguishedName;
 	}
 
@@ -517,7 +517,7 @@ public class DiagnosticData extends XmlDom {
 	public String getCertificateIssuerDN(final String dssCertificateId) {
 
 		final String issuerDistinguishedName = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/IssuerDistinguishedName[@Format='RFC2253']/text()",
-			  dssCertificateId);
+				dssCertificateId);
 		return issuerDistinguishedName;
 	}
 
@@ -604,7 +604,7 @@ public class DiagnosticData extends XmlDom {
 
 		final String condition = "contains('" + TSLConstant.QC_WITH_SSCD + "', '" + TSLConstant.QC_WITH_SSCD_119612 + "')";
 		final String qualification = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier[" + condition + "]/text()",
-			  dssCertificateId);
+				dssCertificateId);
 		return !qualification.isEmpty();
 	}
 
@@ -618,7 +618,7 @@ public class DiagnosticData extends XmlDom {
 
 		final String condition = "contains('" + TSLConstant.QC_NO_SSCD + "', '" + TSLConstant.QC_NO_SSCD_119612 + "')";
 		final String qualification = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier[" + condition + "]/text()",
-			  dssCertificateId);
+				dssCertificateId);
 		return !qualification.isEmpty();
 	}
 
@@ -632,7 +632,7 @@ public class DiagnosticData extends XmlDom {
 
 		final String condition = "contains('" + TSLConstant.QCSSCD_STATUS_AS_IN_CERT + "', '" + TSLConstant.QCSSCD_STATUS_AS_IN_CERT_119612 + "')";
 		final String qualification = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier[" + condition + "]/text()",
-			  dssCertificateId);
+				dssCertificateId);
 		return !qualification.isEmpty();
 	}
 
@@ -646,7 +646,7 @@ public class DiagnosticData extends XmlDom {
 
 		final String condition = "contains('" + TSLConstant.QC_FOR_LEGAL_PERSON + "', '" + TSLConstant.QC_FOR_LEGAL_PERSON_119612 + "')";
 		final String qualification = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier[" + condition + "]/text()",
-			  dssCertificateId);
+				dssCertificateId);
 		return !qualification.isEmpty();
 	}
 
@@ -678,7 +678,7 @@ public class DiagnosticData extends XmlDom {
 
 		List<String> tspServiceQualifiers = new ArrayList<String>();
 		final List<XmlDom> TSPServiceQualifiers = getElements("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier",
-			  dssCertificateId);
+				dssCertificateId);
 
 		for (XmlDom tspServiceQualifier : TSPServiceQualifiers) {
 			tspServiceQualifiers.add(tspServiceQualifier.getText());
