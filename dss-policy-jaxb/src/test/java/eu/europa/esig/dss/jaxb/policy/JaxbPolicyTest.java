@@ -22,7 +22,35 @@ public class JaxbPolicyTest {
 
 	@Test
 	public void testUnmarshalling() throws Exception {
-		File constraintsFile = new File("src/test/resources/constraint.xml");
+		ConstraintsParameters constraintsParameters = unmarshal(new File("src/test/resources/constraint.xml"));
+
+		Algo algo = constraintsParameters.getMainSignature().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
+		assertNotNull(algo);
+		String algoName = algo.getValue();
+		assertEquals("DSA", algoName);
+		assertEquals("128", algo.getSize());
+
+		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.policy");
+		Marshaller marshaller = jc.createMarshaller();
+		marshaller.marshal(constraintsParameters, new FileOutputStream("target/constraint.xml"));
+	}
+
+	@Test
+	public void testUnmarshalCoreValidation() throws Exception {
+		unmarshal(new File("src/test/resources/constraint-core-validation.xml"));
+	}
+
+	// TODO	@Test
+	public void testUnmarshalModel() throws Exception {
+		unmarshal(new File("src/test/resources/constraints_MODEL.xml"));
+	}
+
+	@Test
+	public void testUnmarshalCountersignature() throws Exception {
+		unmarshal(new File("src/test/resources/countersignature-constraint.xml"));
+	}
+
+	public ConstraintsParameters unmarshal(File file) throws Exception {
 		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.policy");
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 
@@ -30,17 +58,9 @@ public class JaxbPolicyTest {
 		Schema schema = sf.newSchema(new File("src/main/xsd/policy.xsd"));
 		unmarshaller.setSchema(schema);
 
-		ConstraintsParameters constraintsParamaters = (ConstraintsParameters) unmarshaller.unmarshal(constraintsFile);
+		ConstraintsParameters constraintsParamaters = (ConstraintsParameters) unmarshaller.unmarshal(file);
 		assertNotNull(constraintsParamaters);
-
-		Algo algo = constraintsParamaters.getMainSignature().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
-		assertNotNull(algo);
-		String algoName = algo.getValue();
-		assertEquals("DSA", algoName);
-		assertEquals("128", algo.getSize());
-
-		Marshaller marshaller = jc.createMarshaller();
-		marshaller.marshal(constraintsParamaters, new FileOutputStream("target/constraint.xml"));
+		return constraintsParamaters;
 	}
 
 }

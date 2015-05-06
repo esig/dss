@@ -6,37 +6,36 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element type="xs:string" name="Description"/>
-				<xs:element name="MainSignature">
+				<xs:element name="MainSignature" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="StructuralValidation" minOccurs="0" maxOccurs="1" type="tns:LevelConstraint" />
-							<xs:element name="AcceptablePolicies" minOccurs="0" maxOccurs="1" type="tns:MultiValuesConstraint" />
-							<xs:element name="ReferenceDataExistence" type="tns:LevelConstraint" minOccurs="0" maxOccurs="1" />
-							<xs:element name="ReferenceDataIntact" type="tns:LevelConstraint" minOccurs="0" maxOccurs="1" />
-							<xs:element name="SignatureIntact" type="tns:LevelConstraint" minOccurs="0" maxOccurs="1" />
-							<xs:element name="SigningCertificate" type="tns:CertificateType" />
-							<xs:element name="CACertificate" type="tns:CertificateType" />
-							<xs:element name="Cryptographic" type="tns:CryptographicType" />
-							<xs:element name="MandatedSignedQProperties" minOccurs="0" maxOccurs="1">
+							<xs:element name="StructuralValidation" type="tns:LevelConstraint" minOccurs="0" />
+							<xs:element name="AcceptablePolicies" type="tns:MultiValuesConstraint" minOccurs="0" />
+							<xs:element name="ReferenceDataExistence" type="tns:LevelConstraint" minOccurs="0" />
+							<xs:element name="ReferenceDataIntact" type="tns:LevelConstraint" minOccurs="0" />
+							<xs:element name="SignatureIntact" type="tns:LevelConstraint" minOccurs="0" />
+							<xs:element name="SigningCertificate" type="tns:CertificateType" minOccurs="0" />
+							<xs:element name="CACertificate" type="tns:CertificateType" minOccurs="0" />
+							<xs:element name="Cryptographic" type="tns:CryptographicType" minOccurs="0" />
+							<xs:element name="MandatedSignedQProperties" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="SigningTime" type="tns:LevelConstraint" />
-										<xs:element name="ContentTimeStamp" type="tns:ContentTimeStampType"/>
+										<xs:element name="ContentTimeStamp" type="tns:ContentTimeStampType" minOccurs="0" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="MandatedUnsignedQProperties" minOccurs="0" maxOccurs="1">
+							<xs:element name="MandatedUnsignedQProperties" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="CounterSignature" type="tns:CounterSignatureType">
-										</xs:element>
+										<xs:element name="CounterSignature" type="tns:CounterSignatureType" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="Timestamp">
+				<xs:element name="Timestamp" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="TimestampDelay" type="tns:TimeConstraint" />
@@ -52,7 +51,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="Revocation">
+				<xs:element name="Revocation" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="RevocationFreshness" type="tns:TimeConstraint" />
@@ -67,9 +66,9 @@
 							<xs:element name="AlgoExpirationDate">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element type="tns:Algo" name="Algo" maxOccurs="unbounded" minOccurs="0"/>
+										<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
 									</xs:sequence>
-									<xs:attribute type="xs:string" name="Format"/>
+									<xs:attribute name="Format" type="xs:string" />
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
@@ -82,28 +81,28 @@
 
 	<xs:complexType name="CertificateType">
 		<xs:sequence>
-			<xs:element name="Recognition" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="AttributePresent" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="DigestValuePresent" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="DigestValueMatch" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="IssuerSerialMatch" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="Signed" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="Signature" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="Expiration" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="RevocationDataAvailable" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="RevocationDataIsTrusted" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="RevocationDataFreshness" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="ProspectiveCertificateChain" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="KeyUsage" minOccurs="0" type="tns:MultiValuesConstraint" />
-			<xs:element name="Revoked" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="OnHold" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="TSLValidity" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="TSLStatus" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="TSLStatusAndValidity" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="Qualification" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="SupportedBySSCD" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="IssuedToLegalPerson" minOccurs="0" type="tns:LevelConstraint" />
-			<xs:element name="Cryptographic" type="tns:CryptographicType"/>
+			<xs:element name="Recognition" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="AttributePresent" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="DigestValuePresent" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="DigestValueMatch" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="IssuerSerialMatch" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="Signed" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="Signature" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="Expiration" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="RevocationDataAvailable" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="RevocationDataIsTrusted" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="RevocationDataFreshness" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="ProspectiveCertificateChain" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="KeyUsage" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="Revoked" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="OnHold" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TSLValidity" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TSLStatus" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TSLStatusAndValidity" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="Qualification" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="SupportedBySSCD" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="IssuedToLegalPerson" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="Cryptographic" type="tns:CryptographicType" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -112,21 +111,21 @@
 			<xs:element name="AcceptableEncryptionAlgo">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Algo" maxOccurs="unbounded" minOccurs="0" type="tns:Algo"/>
+						<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="MiniPublicKeySize">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Algo" maxOccurs="unbounded" minOccurs="0" type="tns:Algo"/>
+						<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="AcceptableDigestAlgo">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Algo" maxOccurs="unbounded" minOccurs="0" type="tns:Algo"/>
+						<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -161,11 +160,7 @@
 	</xs:complexType>
 
 	<xs:complexType name="LevelConstraint">
-		<xs:simpleContent>
-			<xs:extension base="xs:string">
-				<xs:attribute type="tns:level" name="Level"/>
-			</xs:extension>
-		</xs:simpleContent>
+		<xs:attribute type="tns:level" name="Level"/>
 	</xs:complexType>
 
 	<xs:complexType name="MultiValuesConstraint">
