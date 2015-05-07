@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
@@ -42,6 +43,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -334,6 +336,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * This method retrieves data using LDAP protocol.
 	 * - CRL from given LDAP url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
+	 * - ex URL from AIA ldap://xadessrv.plugtests.net/CN=LevelBCAOK,OU=Plugtests_2015-2016,O=ETSI,C=FR?cACertificate;binary
 	 *
 	 * @param urlString
 	 * @return
@@ -345,11 +348,17 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		env.put(Context.PROVIDER_URL, urlString);
 		try {
 
+			String attributeName = StringUtils.substringAfterLast(urlString, "?");
+			if (StringUtils.isEmpty(attributeName)) {
+				// default was CRL
+				attributeName = "certificateRevocationList;binary";
+			}
+
 			final DirContext ctx = new InitialDirContext(env);
-			final Attributes attributes = ctx.getAttributes("");
-			final javax.naming.directory.Attribute attribute = attributes.get("certificateRevocationList;binary");
+			final Attributes attributes = ctx.getAttributes(StringUtils.EMPTY);
+			final Attribute attribute = attributes.get(attributeName);
 			final byte[] ldapBytes = (byte[]) attribute.get();
-			if ((ldapBytes == null) || (ldapBytes.length == 0)) {
+			if (ArrayUtils.isEmpty(ldapBytes)) {
 				throw new DSSException("Cannot download CRL from: " + urlString);
 			}
 			return ldapBytes;

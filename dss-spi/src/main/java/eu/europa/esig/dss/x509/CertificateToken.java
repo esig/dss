@@ -150,6 +150,9 @@ public class CertificateToken extends Token {
 	 * @param x509Certificate X509Certificate
 	 */
 	public CertificateToken(X509Certificate x509Certificate) {
+		if (x509Certificate == null) {
+			throw new NullPointerException("X509 certificate is missing");
+		}
 
 		this.x509Certificate = x509Certificate;
 		this.issuerX500Principal = DSSUtils.getIssuerX500Principal(x509Certificate);

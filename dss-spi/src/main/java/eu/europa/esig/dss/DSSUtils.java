@@ -67,7 +67,9 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
@@ -113,7 +115,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public final class DSSUtils {
@@ -476,7 +477,7 @@ public final class DSSUtils {
 	public static CertificateToken loadCertificate(final byte[] input) throws DSSException {
 
 		if (input == null) {
-			throw new NullPointerException("X5009 certificate");
+			throw new NullPointerException("X509 certificate");
 		}
 		final ByteArrayInputStream inputStream = new ByteArrayInputStream(input);
 		return loadCertificate(inputStream);
@@ -506,32 +507,42 @@ public final class DSSUtils {
 	 */
 	public static CertificateToken loadIssuerCertificate(final CertificateToken cert, final DataLoader loader) {
 
-		final String url = getAccessLocation(cert, X509ObjectIdentifiers.id_ad_caIssuers);
-		if (url == null) {
+		List<String> urls = getAccessLocations(cert);
+		if (CollectionUtils.isEmpty(urls)) {
 			logger.info("There is no AIA extension for certificate download.");
 			return null;
 		}
-		logger.debug("Loading certificate from {}", url);
+
 		if (loader == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("No data loader provided to download certificate from AIA extension");
 		}
-		byte[] bytes = loader.get(url);
-		if ((bytes == null) || (bytes.length <= 0)) {
-			logger.error("Unable to read data from {}.", url);
-			return null;
+
+		for (String url : urls) {
+			logger.debug("Loading certificate from {}", url);
+
+			byte[] bytes = loader.get(url);
+			if (ArrayUtils.isNotEmpty(bytes)) {
+				try {
+					logger.debug("Certificate : " + Base64.encodeBase64String(bytes));
+
+					CertificateToken issuerCert = loadCertificate(bytes);
+					if (issuerCert != null) {
+						if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal())) {
+							logger.info("There is AIA extension, but the issuer subject name and subject name does not match.");
+							logger.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
+							logger.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
+						}
+						return issuerCert;
+					}
+				} catch (DSSException e) {
+					logger.warn("Unable to parse certficate from AIA : " + e.getMessage(), e);
+				}
+			} else {
+				logger.error("Unable to read data from {}.", url);
+			}
 		}
-		final CertificateToken issuerCert = loadCertificate(bytes);
-		if (issuerCert == null) {
-			logger.error("Unable to read data from {}.", url);
-			return null;
-		}
-		if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal())) {
-			logger.info("There is AIA extension, but the issuer subject name and subject name does not match.");
-			logger.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
-			logger.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
-			// return null;
-		}
-		return issuerCert;
+
+		return null;
 	}
 
 	/**
@@ -553,12 +564,12 @@ public final class DSSUtils {
 		}
 	}
 
-	private static String getAccessLocation(final CertificateToken certificate, final ASN1ObjectIdentifier accessMethod) {
-
+	private static List<String> getAccessLocations(final CertificateToken certificate) {
 		final byte[] authInfoAccessExtensionValue = certificate.getCertificate().getExtensionValue(Extension.authorityInfoAccess.getId());
 		if (null == authInfoAccessExtensionValue) {
 			return null;
 		}
+
 		// Parse the extension
 		ASN1Sequence asn1Sequence = null;
 		try {
@@ -566,32 +577,21 @@ public final class DSSUtils {
 		} catch (DSSException e) {
 			return null;
 		}
-		final AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1Sequence);
 
-		String accessLocation = null;
-		final AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
-		for (final AccessDescription accessDescription : accessDescriptions) {
+		AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1Sequence);
+		AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
 
-			// LOG.debug("access method: " + accessDescription.getAccessMethod());
-			final boolean correctAccessMethod = accessDescription.getAccessMethod().equals(accessMethod);
-			if (!correctAccessMethod) {
-				continue;
-			}
-			GeneralName gn = accessDescription.getAccessLocation();
-			if (gn.getTagNo() != GeneralName.uniformResourceIdentifier) {
-
-				// LOG.debug("not a uniform resource identifier");
-				continue;
-			}
-			final DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
-			accessLocation = str.getString();
-			// The HTTP protocol is preferred.
-			if (Protocol.isHttpUrl(accessLocation)) {
-				// LOG.debug("access location: " + accessLocation);
-				break;
+		List<String> locationsUrls = new ArrayList<String>();
+		for (AccessDescription accessDescription : accessDescriptions) {
+			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())){
+				GeneralName gn = accessDescription.getAccessLocation();
+				if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
+					DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
+					locationsUrls.add(str.getString());
+				}
 			}
 		}
-		return accessLocation;
+		return locationsUrls;
 	}
 
 	/**
