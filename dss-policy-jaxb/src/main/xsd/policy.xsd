@@ -108,29 +108,17 @@
 	
 	<xs:complexType name="CryptographicType">
 		<xs:sequence>
-			<xs:element name="AcceptableEncryptionAlgo">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="MiniPublicKeySize">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="AcceptableDigestAlgo">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="AcceptableEncryptionAlgo" type="tns:ListAlgo" minOccurs="0" />
+			<xs:element name="MiniPublicKeySize" type="tns:ListAlgo" minOccurs="0" />
+			<xs:element name="AcceptableDigestAlgo" type="tns:ListAlgo" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute type="tns:level" name="Level"/>
+	</xs:complexType>
+	
+	<xs:complexType name="ListAlgo">
+		<xs:sequence>
+			<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="Algo">
