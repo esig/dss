@@ -514,7 +514,8 @@ public final class DSSUtils {
 		}
 
 		if (loader == null) {
-			throw new NullPointerException("No data loader provided to download certificate from AIA extension");
+			logger.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : " + urls + ")");
+			return null;
 		}
 
 		for (String url : urls) {
