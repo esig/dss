@@ -67,7 +67,7 @@ import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
  */
 public class TimestampToken extends Token {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TimestampToken.class);
+	private static final Logger logger = LoggerFactory.getLogger(TimestampToken.class);
 
 	private final TimeStampToken timeStamp;
 
@@ -184,13 +184,32 @@ public class TimestampToken extends Token {
 			timeStampToken.validate(verifier);
 			timestampValidity = TimestampValidity.VALID;
 		} catch (IllegalArgumentException e) {
+			if(logger.isDebugEnabled()) {
+				logger.debug("No signing certificate for timestamp token: ", e);
+			} else {
+				logger.info("No signing certificate for timestamp token: ", e.getMessage());
+			}
 			timestampValidity = TimestampValidity.NO_SIGNING_CERTIFICATE;
-			LOG.error("No signing certificate for timestamp token: " + e);
 		} catch (TSPValidationException e) {
+			if(logger.isDebugEnabled()) {
+				logger.info("No valid signature for timestamp token: ", e);
+			} else {
+				logger.info("No valid signature for timestamp token: " + e.getMessage());
+			}
 			timestampValidity = TimestampValidity.NOT_VALID_SIGNATURE;
 		} catch (TSPException e) {
+			if(logger.isDebugEnabled()) {
+				logger.info("No valid structure for timestamp token: ", e);
+			} else {
+				logger.info("No valid structure for timestamp token: " + e.getMessage());
+			}
 			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
 		} catch (OperatorCreationException e) {
+			if(logger.isDebugEnabled()) {
+				logger.info("No valid structure for timestamp token: ", e);
+			} else {
+				logger.info("No valid structure for timestamp token: " + e.getMessage());
+			}
 			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
 		}
 		final TimestampValidation timestampValidation = new TimestampValidation(timestampValidity);
@@ -217,10 +236,10 @@ public class TimestampToken extends Token {
 			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
 			if (!messageImprintIntact) {
 
-				LOG.error("Extracted data from the document: {}", Hex.encodeHexString(data));
-				LOG.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Hex.encodeHexString(computedDigest));
-				LOG.error("Digest present in TimestampToken: {}", Hex.encodeHexString(timestampDigest));
-				LOG.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
+				logger.error("Extracted data from the document: {}", Hex.encodeHexString(data));
+				logger.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Hex.encodeHexString(computedDigest));
+				logger.error("Digest present in TimestampToken: {}", Hex.encodeHexString(timestampDigest));
+				logger.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 			}
 		} catch (DSSException e) {
 
