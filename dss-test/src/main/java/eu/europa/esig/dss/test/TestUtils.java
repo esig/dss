@@ -25,6 +25,8 @@ import java.security.Signature;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 
 public final class TestUtils {
@@ -32,13 +34,13 @@ public final class TestUtils {
 	private TestUtils(){
 	}
 
-	public static byte[] sign(final SignatureAlgorithm signatureAlgorithm, final MockPrivateKeyEntry privateKey, final byte[] bytes) {
+	public static SignatureValue sign(final SignatureAlgorithm signatureAlgorithm, final MockPrivateKeyEntry privateKey, ToBeSigned bytes) {
 		try {
 			final Signature signature = Signature.getInstance(signatureAlgorithm.getJCEId());
 			signature.initSign(privateKey.getPrivateKey());
-			signature.update(bytes);
+			signature.update(bytes.getBytes());
 			final byte[] signatureValue = signature.sign();
-			return signatureValue;
+			return new SignatureValue(signatureAlgorithm, signatureValue);
 		} catch (GeneralSecurityException e) {
 			throw new DSSException(e);
 		}

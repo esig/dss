@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cookbook.sources;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -39,7 +40,7 @@ public class JksCertificateInformation {
 
 	private static final Logger logger = LoggerFactory.getLogger(JksCertificateInformation.class);
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws IOException {
 
 		URL url = null;
 		try {
@@ -48,7 +49,7 @@ public class JksCertificateInformation {
 			logger.equals(e);
 		}
 		System.out.println(url.toString());
-		JKSSignatureToken jksSignatureToken = new JKSSignatureToken(url.toString(), "password");
+		JKSSignatureToken jksSignatureToken = new JKSSignatureToken(url.openStream(), "password");
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -28,6 +29,8 @@ import org.apache.commons.io.IOUtils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.sources.JavaKeyStoreTool;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.token.JKSSignatureToken;
@@ -44,7 +47,7 @@ public class SigningApplication {
 		String location = "yourFile.jks";
 		JavaKeyStoreTool jks = new JavaKeyStoreTool(location, "password");
 
-		JKSSignatureToken signingToken = new JKSSignatureToken(location, "password");
+		JKSSignatureToken signingToken = new JKSSignatureToken(new FileInputStream(location), "password");
 
 		KSPrivateKeyEntry privateKey = jks.getPrivateKey("dss", "password");
 
@@ -60,8 +63,8 @@ public class SigningApplication {
 
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(commonCertificateVerifier);
-		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
-		byte[] signatureValue = signingToken.sign(dataToSign, params.getDigestAlgorithm(), privateKey);
+		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
+		SignatureValue signatureValue = signingToken.sign(dataToSign, params.getDigestAlgorithm(), privateKey);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 		IOUtils.copy(signedDocument.openStream(), System.out);
 	}

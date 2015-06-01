@@ -56,6 +56,8 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.validation.ASiCCMSDocumentValidator;
@@ -106,7 +108,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	}
 
 	@Override
-	public byte[] getDataToSign(final DSSDocument toSignDocument, final ASiCSignatureParameters parameters) throws DSSException {
+	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final ASiCSignatureParameters parameters) throws DSSException {
 
 		final ASiCParameters asicParameters = parameters.aSiC();
 
@@ -144,7 +146,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	 * </ul>
 	 */
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final ASiCSignatureParameters parameters, final byte[] signatureValue) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final ASiCSignatureParameters parameters, SignatureValue signatureValue) throws DSSException {
 		try {
 			assertSigningDateInCertificateValidityRange(parameters);
 

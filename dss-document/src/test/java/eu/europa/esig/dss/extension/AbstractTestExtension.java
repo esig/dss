@@ -33,6 +33,8 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -68,12 +70,12 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend() throws Exception;
 
-	protected byte[] sign(SignatureAlgorithm algo, MockPrivateKeyEntry privateKey, byte[] bytesToSign) throws GeneralSecurityException {
+	protected SignatureValue sign(SignatureAlgorithm algo, MockPrivateKeyEntry privateKey, ToBeSigned bytesToSign) throws GeneralSecurityException {
 		final Signature signature = Signature.getInstance(algo.getJCEId());
 		signature.initSign(privateKey.getPrivateKey());
-		signature.update(bytesToSign);
+		signature.update(bytesToSign.getBytes());
 		final byte[] signatureValue = signature.sign();
-		return signatureValue;
+		return new SignatureValue(algo, signatureValue);
 	}
 
 	@Test

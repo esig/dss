@@ -40,6 +40,8 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -332,11 +334,11 @@ public class SignatureServiceImpl implements SignatureService {
 			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
 
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
-			final byte[] dataToSign = service.getDataToSign(dssDocument, params);
+			ToBeSigned dataToSign = service.getDataToSign(dssDocument, params);
 			if (LOG.isInfoEnabled()) {
 				LOG.info("WsGetDataToSign: end");
 			}
-			return dataToSign;
+			return dataToSign.getBytes();
 		} catch (Throwable e) {
 			exceptionMessage = e.getMessage();
 			LOG.error("WsGetDataToSign: ended with exception", e);
@@ -355,7 +357,10 @@ public class SignatureServiceImpl implements SignatureService {
 			final DSSDocument dssDocument = DSSWSUtils.createDssDocument(wsDocument);
 			final DocumentSignatureService service = getServiceForSignatureLevel(params.getSignatureLevel());
 
-			final DSSDocument signatureDssDocument = service.signDocument(dssDocument, params, signatureValue);
+			SignatureValue value = new SignatureValue();
+			value.setValue(signatureValue);
+			final DSSDocument signatureDssDocument = service.signDocument(dssDocument, params, value);
+
 			WSDocument SignatureWsDocument = new WSDocument(signatureDssDocument);
 			if (LOG.isInfoEnabled()) {
 				LOG.info("WsSignDocument: end");

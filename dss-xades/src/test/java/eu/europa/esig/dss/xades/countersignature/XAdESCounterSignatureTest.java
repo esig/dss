@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.security.GeneralSecurityException;
-import java.security.Signature;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -42,9 +41,12 @@ import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.signature.SignaturePackaging;
+import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockSignatureTokenConnection;
@@ -79,8 +81,8 @@ public class XAdESCounterSignatureTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(certificateVerifier);
 
-		byte[] dataToSign = service.getDataToSign(document, signatureParameters);
-		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 
 		// Countersign
@@ -132,12 +134,8 @@ public class XAdESCounterSignatureTest {
 		assertTrue(foundCounterSignature);
 	}
 
-	private byte[] sign(SignatureAlgorithm algo, MockPrivateKeyEntry privateKey, byte[] bytesToSign) throws GeneralSecurityException {
-		final Signature signature = Signature.getInstance(algo.getJCEId());
-		signature.initSign(privateKey.getPrivateKey());
-		signature.update(bytesToSign);
-		final byte[] signatureValue = signature.sign();
-		return signatureValue;
+	private SignatureValue sign(SignatureAlgorithm algo, MockPrivateKeyEntry privateKey, ToBeSigned bytesToSign) throws GeneralSecurityException {
+		return TestUtils.sign(algo, privateKey, bytesToSign);
 	}
 
 }

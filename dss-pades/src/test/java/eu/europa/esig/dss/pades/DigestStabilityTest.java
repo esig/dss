@@ -35,7 +35,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
@@ -59,12 +59,12 @@ public class DigestStabilityTest {
 
 		Date signingDate = new Date();
 
-		byte[] dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
-		byte[] dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
+		ToBeSigned dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
+		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 
 		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid().getId());
-		byte[] digest1 = messageDigest.digest(dataToSign1);
-		byte[] digest2 = messageDigest.digest(dataToSign2);
+		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
+		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
 		assertEquals(Base64.encodeBase64String(digest1), Base64.encodeBase64String(digest2));
 	}
@@ -79,12 +79,12 @@ public class DigestStabilityTest {
 
 		Date signingDate = new Date();
 
-		byte[] dataToSign1 = getDataToSign(toBeSigned1, privateKeyEntry, signingDate);
-		byte[] dataToSign2 = getDataToSign(toBeSigned2, privateKeyEntry, signingDate);
+		ToBeSigned dataToSign1 = getDataToSign(toBeSigned1, privateKeyEntry, signingDate);
+		ToBeSigned dataToSign2 = getDataToSign(toBeSigned2, privateKeyEntry, signingDate);
 
 		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid().getId());
-		byte[] digest1 = messageDigest.digest(dataToSign1);
-		byte[] digest2 = messageDigest.digest(dataToSign2);
+		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
+		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
 		assertNotEquals(Base64.encodeBase64String(digest1), Base64.encodeBase64String(digest2));
 	}
@@ -97,19 +97,19 @@ public class DigestStabilityTest {
 		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		Date signingDate = new Date();
-		byte[] dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
+		ToBeSigned dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 
 		signingDate = new Date();
-		byte[] dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
+		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 
 		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid().getId());
-		byte[] digest1 = messageDigest.digest(dataToSign1);
-		byte[] digest2 = messageDigest.digest(dataToSign2);
+		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
+		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
 		assertNotEquals(Base64.encodeBase64String(digest1), Base64.encodeBase64String(digest2));
 	}
 
-	private byte[] getDataToSign(DSSDocument toBeSigned, DSSPrivateKeyEntry privateKeyEntry, Date signingDate) {
+	private ToBeSigned getDataToSign(DSSDocument toBeSigned, DSSPrivateKeyEntry privateKeyEntry, Date signingDate) {
 
 		DocumentSignatureService<PAdESSignatureParameters> service = new PAdESService(new CommonCertificateVerifier());
 

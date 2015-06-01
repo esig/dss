@@ -29,6 +29,8 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -82,11 +84,11 @@ public class SignXmlXadesT extends Cookbook {
 		}
 
 		// Get the SignedInfo XML segment that need to be signed.
-		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);
+		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 
 		// This function obtains the signature value for signed information using the
 		// private key and specified algorithm
-		byte[] signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
+		SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
 
 		// We invoke the service to sign the document with the signature value obtained in
 		// the previous step.

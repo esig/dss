@@ -33,7 +33,9 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.TimestampParameters;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.cookbook.timestamp.TimestampService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
@@ -97,8 +99,8 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(verifier);
 
-		byte[] dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
-		byte[] signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
+		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
+		SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
 		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
 		InputStream is = new ByteArrayInputStream(signedDocument.getBytes());

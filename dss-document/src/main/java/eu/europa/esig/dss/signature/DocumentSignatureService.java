@@ -25,6 +25,8 @@ import java.io.Serializable;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
@@ -60,7 +62,7 @@ public interface DocumentSignatureService<SP extends AbstractSignatureParameters
 	 * @return
 	 * @throws DSSException
 	 */
-	byte[] getDataToSign(final DSSDocument toSignDocument, final SP parameters) throws DSSException;
+	ToBeSigned getDataToSign(final DSSDocument toSignDocument, final SP parameters) throws DSSException;
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.
@@ -73,7 +75,7 @@ public interface DocumentSignatureService<SP extends AbstractSignatureParameters
 	 * @return
 	 * @throws DSSException
 	 */
-	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, final byte[] signatureValue) throws DSSException;
+	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, SignatureValue signatureValue) throws DSSException;
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}

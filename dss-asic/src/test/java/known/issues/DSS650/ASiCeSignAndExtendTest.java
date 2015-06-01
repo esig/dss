@@ -10,6 +10,8 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.test.TestUtils;
@@ -36,8 +38,8 @@ public class ASiCeSignAndExtendTest {
 		parameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 		parameters.setSigningCertificate(entry.getCertificate());
 
-		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);
-		byte[] signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, entry, dataToSign);
+		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+		SignatureValue signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, entry, dataToSign);
 		DSSDocument signDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 		signDocument.save("target/asic-e-cades-b.asice");
