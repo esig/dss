@@ -22,6 +22,7 @@ package eu.europa.esig.dss.test.mock;
 
 import java.math.BigInteger;
 import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -61,6 +62,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -74,31 +76,47 @@ public class MockTSPSource implements TSPSource {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	private Date lastTimestampDate = null;
-
 	private ASN1ObjectIdentifier policyOid;
 
 	private final PrivateKey key;
 
 	private final CertificateToken cert;
 
-	private final Date timestampDate;
+	private boolean useNonce;
+
+	private SecureRandom random;
+
+	public MockTSPSource(PrivateKey tsaKey, CertificateToken tsaCert, boolean useNonce, byte[] nonceSeed, String policyOid) {
+		this.key = tsaKey;
+		this.cert = tsaCert;
+		this.useNonce = useNonce;
+		if(useNonce) {
+			if(nonceSeed != null) {
+				random = new SecureRandom(nonceSeed);
+			} else {
+				random = new SecureRandom();
+			}
+		}
+		this.policyOid = new ASN1ObjectIdentifier(policyOid);
+	}
 
 	/**
 	 * The default constructor for MockTSPSource.
 	 */
+	@Deprecated
 	public MockTSPSource(final MockPrivateKeyEntry entry, final Date timestampDate) throws DSSException {
-		this.timestampDate = timestampDate;
+		this(entry.getPrivateKey(), entry.getCertificate(), true, null, "1.234.567.890");
+		LOG.debug("TSP mockup with certificate {}", cert.getDSSId());
+	}
 
-		key = entry.getPrivateKey();
-		cert = entry.getCertificate();
-
-		this.setPolicyOid("1.234.567.890");
-
+	/**
+	 * The default constructor for MockTSPSource.
+	 */
+	public MockTSPSource(final KSPrivateKeyEntry entry) throws DSSException {
+		this(entry.getPrivateKey(), entry.getCertificate(), true, null, "1.234.567.890");
 		LOG.debug("TSP mockup with certificate {}", cert.getDSSId());
 
 	}
-
 
 	@Override
 	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
@@ -107,25 +125,24 @@ public class MockTSPSource implements TSPSource {
 
 		final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
 		tsqGenerator.setCertReq(true);
+
 		/**
 		 * The code below guarantee that the dates of the two successive
-		 * timestamps are different.
+		 * timestamps are different. This is activated only if timestampDate is provided at
+		 * construction time
 		 */
-		if (lastTimestampDate == null) {
-			lastTimestampDate = timestampDate;
-		} else {
+		Date timestampDate_ = new Date();
 
-			final long time = lastTimestampDate.getTime() + 1000;
-			lastTimestampDate = new Date(time);
-		}
-		final Date timestampDate_ = lastTimestampDate;
-		LOG.debug("-->#######:O:" + timestampDate.toString());
-		LOG.debug("-->#######:N:" + timestampDate_.toString());
-		final BigInteger nonce = BigInteger.valueOf(timestampDate.getTime());
-		final TimeStampRequest tsRequest = tsqGenerator.generate(digestAlgorithm.getOid(), digest, nonce);
 		if (policyOid != null) {
-
 			tsqGenerator.setReqPolicy(policyOid);
+		}
+
+		TimeStampRequest tsRequest = null;
+		if(useNonce) {
+			final BigInteger nonce = BigInteger.valueOf(random.nextLong());
+			tsRequest = tsqGenerator.generate(digestAlgorithm.getOid(), digest, nonce);
+		} else {
+			tsRequest = tsqGenerator.generate(digestAlgorithm.getOid(), digest);
 		}
 
 		try {
@@ -154,7 +171,8 @@ public class MockTSPSource implements TSPSource {
 			tokenGenerator.addCertificates(new JcaCertStore(singleton));
 			final TimeStampResponseGenerator generator = new TimeStampResponseGenerator(tokenGenerator, TSPAlgorithms.ALLOWED);
 
-			TimeStampResponse tsResponse = generator.generate(tsRequest, BigInteger.ONE, timestampDate_);
+			Date responseDate = new Date();
+			TimeStampResponse tsResponse = generator.generate(tsRequest, BigInteger.ONE, responseDate);
 			final TimeStampToken timeStampToken = tsResponse.getTimeStampToken();
 			return timeStampToken;
 		} catch (OperatorCreationException e) {
@@ -164,10 +182,6 @@ public class MockTSPSource implements TSPSource {
 		} catch (TSPException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	public void setPolicyOid(final String policyOid) {
-		this.policyOid = new ASN1ObjectIdentifier(policyOid);
 	}
 
 	private String getSignatureAlgorithm(DigestAlgorithm algorithm, byte[] digest) {
