@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.test.gen;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
@@ -28,6 +29,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -41,11 +43,13 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import eu.europa.esig.dss.EncryptionAlgorithm;
@@ -125,6 +129,27 @@ public class CertificateService {
 		final Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
 
 		// generate certificate
+		CertificateToken cert = generateTspCertificate(algorithm, keyPair, issuer, subject, notBefore, notAfter);
+		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), cert, keyPair.getPrivate());
+	}
+
+	/**
+	 * Generate a CertificateToken suitable for a TSA
+	 *
+	 * @param algorithm
+	 * @param keyPair
+	 * @param issuer
+	 * @param subject
+	 * @param notBefore
+	 * @param notAfter
+	 * @return
+	 * @throws CertIOException
+	 * @throws OperatorCreationException
+	 * @throws CertificateException
+	 * @throws IOException
+	 */
+	public CertificateToken generateTspCertificate(final SignatureAlgorithm algorithm, KeyPair keyPair, X500Name issuer, X500Name subject, final Date notBefore,
+			final Date notAfter) throws CertIOException, OperatorCreationException, CertificateException, IOException {
 		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
 
 		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer, new BigInteger("" + new Random().nextInt(10)
@@ -139,7 +164,7 @@ public class CertificateService {
 		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(
 				new ByteArrayInputStream(holder.getEncoded()));
 
-		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), new CertificateToken(cert), keyPair.getPrivate());
+		return new CertificateToken(cert);
 	}
 
 	public CertificateToken generateCertificate(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer,
