@@ -25,6 +25,8 @@ import java.util.Date;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
@@ -56,8 +58,8 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 		CAdESService service = new CAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
 
-		byte[] dataToSign = service.getDataToSign(document, signatureParameters);
-		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 		return signedDocument;
 	}

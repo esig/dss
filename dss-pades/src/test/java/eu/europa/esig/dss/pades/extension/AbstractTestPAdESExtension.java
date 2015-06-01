@@ -26,6 +26,8 @@ import java.util.Date;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -57,8 +59,8 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 		PAdESService service = new PAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
-		byte[] dataToSign = service.getDataToSign(document, signatureParameters);
-		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 		return signedDocument;
 	}

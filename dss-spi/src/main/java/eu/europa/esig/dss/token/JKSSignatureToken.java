@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.token;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -44,19 +43,14 @@ public class JKSSignatureToken extends AbstractSignatureTokenConnection {
 	protected KeyStore keyStore = null;
 
 	/**
-	 * Creates a SignatureTokenConnection with the provided path to Java KeyStore file and password.
+	 * Creates a SignatureTokenConnection with the provided InputStream to Java KeyStore file and password.
 	 *
-	 * @param ksUrlLocation
+	 * @param ksStream
 	 * @param ksPassword
 	 */
-	public JKSSignatureToken(String ksUrlLocation, String ksPassword) {
-
-		InputStream ksStream = null;
+	public JKSSignatureToken(InputStream ksStream, String ksPassword) {
 		try {
-
-			final URL ksLocation = new URL(ksUrlLocation);
 			keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-			ksStream = ksLocation.openStream();
 			password = (ksPassword == null) ? null : ksPassword.toCharArray();
 			keyStore.load(ksStream, password);
 		} catch (Exception e) {

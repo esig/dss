@@ -26,6 +26,8 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -68,12 +70,12 @@ public class SignPdfPadesB extends Cookbook {
 		PAdESService service = new PAdESService(commonCertificateVerifier);
 
 		// Get the SignedInfo segment that need to be signed.
-		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);
+		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 
 		// This function obtains the signature value for signed information using the
 		// private key and specified algorithm
 		DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		byte[] signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
+		SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
 
 		// We invoke the xadesService to sign the document with the signature value obtained in
 		// the previous step.

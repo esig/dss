@@ -8,6 +8,8 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -35,8 +37,8 @@ public class XAdESBaselineBTest extends AbstractRequirementChecks {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(certificateVerifier);
 
-		byte[] dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		byte[] signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		SignatureValue signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		return service.signDocument(documentToSign, signatureParameters, signature);
 	}
 

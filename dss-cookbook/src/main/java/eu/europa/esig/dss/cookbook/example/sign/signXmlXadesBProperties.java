@@ -30,6 +30,8 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -69,8 +71,8 @@ public class signXmlXadesBProperties extends Cookbook {
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(verifier);
-		byte[] dataToSign = service.getDataToSign(toSignDocument, parameters);
-		byte[] signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
+		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+		SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
 
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 

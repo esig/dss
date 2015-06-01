@@ -33,6 +33,8 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignaturePackaging;
@@ -42,9 +44,9 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.ProfileParameters;
+import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
@@ -72,18 +74,18 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	}
 
 	@Override
-	public byte[] getDataToSign(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) throws DSSException {
+	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
 
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(certificateVerifier);
 		final byte[] dataToSign = levelBaselineB.getDataToSign(toSignDocument, parameters);
 		parameters.getContext().setProfile(levelBaselineB);
-		return dataToSign;
+		return new ToBeSigned(dataToSign);
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters, final byte[] signatureValue)
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters, SignatureValue signatureValue)
 			throws DSSException {
 
 		if (parameters.getSignatureLevel() == null) {
@@ -98,7 +100,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		} else {
 			profile = new XAdESLevelBaselineB(certificateVerifier);
 		}
-		final DSSDocument signedDoc = profile.signDocument(toSignDocument, parameters, signatureValue);
+		final DSSDocument signedDoc = profile.signDocument(toSignDocument, parameters, signatureValue.getValue());
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 

@@ -38,6 +38,8 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -84,8 +86,8 @@ public class PAdESDoubleSignatureTest {
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
 
-		byte[] dataToSign = service.getDataToSign(toBeSigned, params);
-		byte[] signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
+		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
+		SignatureValue signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new PAdESSignatureParameters();

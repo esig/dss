@@ -26,6 +26,8 @@ import java.util.Date;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
@@ -57,8 +59,8 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 		XAdESService service = new XAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
-		byte[] dataToSign = service.getDataToSign(document, signatureParameters);
-		byte[] signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 		return signedDocument;
 	}
