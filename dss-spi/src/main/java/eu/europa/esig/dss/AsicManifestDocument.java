@@ -78,7 +78,6 @@ public class AsicManifestDocument extends CommonDocument {
 
 	@Override
 	public byte[] getBytes() throws DSSException {
-
 		return bytes;
 	}
 
@@ -115,10 +114,14 @@ public class AsicManifestDocument extends CommonDocument {
 
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
+		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, bytes);
 		final String base64Encode = Base64.encodeBase64String(digestBytes);
 		return base64Encode;
+	}
+
+	@Override
+	public String getBase64Encoded() {
+		return Base64.encodeBase64String(bytes);
 	}
 
 	public String getSignatureUri() {

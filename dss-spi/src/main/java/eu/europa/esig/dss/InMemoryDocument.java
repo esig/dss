@@ -21,7 +21,6 @@
 package eu.europa.esig.dss;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,7 +57,6 @@ public class InMemoryDocument extends CommonDocument {
 	 * @param name  the file name if the data originates from a file
 	 */
 	public InMemoryDocument(final byte[] bytes, final String name) {
-
 		this.bytes = bytes;
 		this.name = name;
 		this.mimeType = MimeType.fromFileName(name);
@@ -112,7 +110,6 @@ public class InMemoryDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() throws DSSException {
-
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 		return byteArrayInputStream;
 	}
@@ -124,7 +121,6 @@ public class InMemoryDocument extends CommonDocument {
 
 	@Override
 	public byte[] getBytes() throws DSSException {
-
 		return bytes;
 	}
 
@@ -138,14 +134,10 @@ public class InMemoryDocument extends CommonDocument {
 
 	@Override
 	public void save(final String filePath) {
-
 		try {
-
 			final FileOutputStream fos = new FileOutputStream(filePath);
 			DSSUtils.write(getBytes(), fos);
 			fos.close();
-		} catch (FileNotFoundException e) {
-			throw new DSSException(e);
 		} catch (DSSException e) {
 			throw new DSSException(e);
 		} catch (IOException e) {
@@ -155,15 +147,18 @@ public class InMemoryDocument extends CommonDocument {
 
 	@Override
 	public String getAbsolutePath() {
-
 		return absolutePath;
 	}
 
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
+		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, bytes);
 		final String base64Encode = Base64.encodeBase64String(digestBytes);
 		return base64Encode;
+	}
+
+	@Override
+	public String getBase64Encoded() {
+		return Base64.encodeBase64String(bytes);
 	}
 }

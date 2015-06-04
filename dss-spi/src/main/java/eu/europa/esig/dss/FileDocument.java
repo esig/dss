@@ -110,4 +110,12 @@ public class FileDocument extends CommonDocument {
 		final String base64Encode = Base64.encodeBase64String(digestBytes);
 		return base64Encode;
 	}
+
+	@Override
+	public String getBase64Encoded() {
+		final InputStream inputStream = openStream();
+		final byte[] bytes = DSSUtils.toByteArray(inputStream);
+		IOUtils.closeQuietly(inputStream);
+		return Base64.encodeBase64String(bytes);
+	}
 }

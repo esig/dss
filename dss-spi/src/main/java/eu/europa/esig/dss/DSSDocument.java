@@ -90,6 +90,12 @@ public interface DSSDocument extends Serializable {
 	String getDigest(final DigestAlgorithm digestAlgorithm);
 
 	/**
+	 * This method returns the base64 encoded file content
+	 * @return base64 encoded {@code String}
+	 */
+	String getBase64Encoded();
+
+	/**
 	 * This method return the next {@code DSSDocument}.
 	 *
 	 * @return {@code DSSDocument}
