@@ -21,13 +21,17 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -52,7 +56,13 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new DigestDocument(new File("src/test/resources/sample.xml"));
+		File file = new File("src/test/resources/sample.xml");
+		DigestDocument digestDocument = new DigestDocument(file);
+		FileInputStream fis = new FileInputStream(file);
+		String computedDigest = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA256, fis));
+		digestDocument.addDigest(DigestAlgorithm.SHA256, computedDigest);
+
+		documentToSign = digestDocument;
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
