@@ -56,7 +56,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 
 public abstract class AbstractTestSignature {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTestSignature.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractTestSignature.class);
 
 	protected abstract DSSDocument getDocumentToSign();
 
@@ -76,15 +76,17 @@ public abstract class AbstractTestSignature {
 	public void signAndVerify() throws IOException {
 		final DSSDocument signedDocument = sign();
 
+		logger.info("=================== VALIDATION =================");
+
 		// signedDocument.save("target/cades-b.bin");
 
-		if (LOGGER.isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			try {
 				byte[] byteArray = IOUtils.toByteArray(signedDocument.openStream());
 				onDocumentSigned(byteArray);
 				// LOGGER.debug(new String(byteArray));
 			} catch (Exception e) {
-				LOGGER.error("Cannot display file content", e);
+				logger.error("Cannot display file content", e);
 			}
 		}
 
@@ -92,7 +94,7 @@ public abstract class AbstractTestSignature {
 
 		Reports reports = getValidationReport(signedDocument);
 
-		if (LOGGER.isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			reports.print();
 		}
 

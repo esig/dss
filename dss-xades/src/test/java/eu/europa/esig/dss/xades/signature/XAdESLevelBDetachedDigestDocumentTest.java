@@ -27,12 +27,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -59,8 +61,11 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature
 		File file = new File("src/test/resources/sample.xml");
 		DigestDocument digestDocument = new DigestDocument(file);
 		FileInputStream fis = new FileInputStream(file);
-		String computedDigest = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA256, fis));
+		byte[] bytes = IOUtils.toByteArray(fis);
+		IOUtils.closeQuietly(fis);
+		String computedDigest = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA256, bytes));
 		digestDocument.addDigest(DigestAlgorithm.SHA256, computedDigest);
+		digestDocument.setBase64Encoded(Base64.encodeBase64String(bytes));
 
 		documentToSign = digestDocument;
 
@@ -83,7 +88,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		detachedContents.add(documentToSign);
+		detachedContents.add(new FileDocument(new File("src/test/resources/sample.xml")));
 		validator.setDetachedContents(detachedContents);
 		Reports reports = validator.validateDocument();
 		return reports;

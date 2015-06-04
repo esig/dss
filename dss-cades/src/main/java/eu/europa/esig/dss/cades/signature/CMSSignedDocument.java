@@ -126,7 +126,13 @@ public class CMSSignedDocument extends CommonDocument {
 	}
 
 	@Override
+	public String getBase64Encoded() {
+		return Base64.encodeBase64String(getBytes());
+	}
+
+	@Override
 	public String getAbsolutePath() {
 		return getName();
 	}
+
 }

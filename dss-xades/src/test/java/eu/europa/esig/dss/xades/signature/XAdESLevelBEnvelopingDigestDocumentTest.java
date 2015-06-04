@@ -60,9 +60,11 @@ public class XAdESLevelBEnvelopingDigestDocumentTest extends AbstractTestSignatu
 		File file = new File("src/test/resources/sample.xml");
 		DigestDocument digestDocument = new DigestDocument(file);
 		FileInputStream fis = new FileInputStream(file);
-		String computedDigest = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA256, fis));
+		byte[] bytes= IOUtils.toByteArray(fis);
+		IOUtils.closeQuietly(fis);
+		String computedDigest = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA256, bytes));
 		digestDocument.addDigest(DigestAlgorithm.SHA256, computedDigest);
-		digestDocument.setBase64Encoded(Base64.encodeBase64String(IOUtils.toByteArray(fis)));
+		digestDocument.setBase64Encoded(Base64.encodeBase64String(bytes));
 
 		documentToSign = digestDocument;
 

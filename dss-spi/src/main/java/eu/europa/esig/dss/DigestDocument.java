@@ -21,6 +21,7 @@
 package eu.europa.esig.dss;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,6 +58,11 @@ public class DigestDocument extends FileDocument {
 	 */
 	public DigestDocument(final File file) {
 		super(file);
+	}
+
+	@Override
+	public InputStream openStream() throws DSSException {
+		throw new DSSUnsupportedOperationException("Cannot open DigestDocument");
 	}
 
 	@Override
