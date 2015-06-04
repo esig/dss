@@ -366,8 +366,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		final DSSDocument canonicalizedDocument = transformReference(dssReference);
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Canonicalization method  -->" + signedInfoCanonicalizationMethod);
-			LOG.trace("Canonicalized REF_1      --> " + new String(canonicalizedDocument.getBytes()));
+			LOG.trace("Reference canonicalization method  -->" + signedInfoCanonicalizationMethod);
 		}
 		incorporateDigestValue(referenceDom, digestAlgorithm, canonicalizedDocument);
 	}
