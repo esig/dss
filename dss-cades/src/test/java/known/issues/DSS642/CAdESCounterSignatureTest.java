@@ -22,6 +22,7 @@ package known.issues.DSS642;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -31,10 +32,21 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.cms.SignerInformationVerifier;
+import org.bouncycastle.cms.SignerInformationVerifierProvider;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
@@ -59,11 +71,13 @@ import eu.europa.esig.dss.validation.report.Reports;
 
 public class CAdESCounterSignatureTest {
 
+	private static final Logger logger = LoggerFactory.getLogger(CAdESCounterSignatureTest.class);
+
 	@Test
 	public void test() throws Exception {
 		CertificateService certificateService = new CertificateService();
-		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-		MockPrivateKeyEntry entryUserB = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		final MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		final MockPrivateKeyEntry entryUserB = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -77,7 +91,7 @@ public class CAdESCounterSignatureTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CAdESService service = new CAdESService(certificateVerifier);
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 
@@ -93,12 +107,54 @@ public class CAdESCounterSignatureTest {
 		assertEquals(1, signerInfos.size());
 		SignerInformation signerInfo = signerInfos.iterator().next();
 
+		Thread.sleep(1000);
+
 		CAdESSignatureParameters countersigningParameters = new CAdESSignatureParameters();
 		countersigningParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		countersigningParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		countersigningParameters.setSigningCertificate(entryUserB.getCertificate());
+		countersigningParameters.setCertificateChain(entryUserB.getCertificateChain());
 
 		DSSDocument counterSignDocument = service.counterSignDocument(signedDocument, countersigningParameters, signerInfo.getSID(), new MockSignatureTokenConnection(), entryUserB);
 		assertNotNull(counterSignDocument);
+
+		counterSignDocument.save("target/countersign.p7m");
+
+		CMSSignedData data = new CMSSignedData(counterSignDocument.openStream());
+
+		SignerInformationStore informationStore = data.getSignerInfos();
+		Collection<SignerInformation> signers = informationStore.getSigners();
+		for (SignerInformation signerInformation : signers) {
+			AttributeTable signedAttributes = signerInformation.getSignedAttributes();
+			Attribute attribute = signedAttributes.get(PKCSObjectIdentifiers.pkcs_9_at_contentType);
+			assertNotNull(attribute);
+			SignerInformationStore counterSignatures = signerInformation.getCounterSignatures();
+			assertNotNull(counterSignatures);
+			Collection<SignerInformation> signersCounter = counterSignatures.getSigners();
+			for (SignerInformation signerCounter : signersCounter) {
+				AttributeTable signedAttributes2 = signerCounter.getSignedAttributes();
+				Attribute attribute2 = signedAttributes2.get(PKCSObjectIdentifiers.pkcs_9_at_contentType); // Counter-signatures don't allow content-type
+				assertNull(attribute2);
+			}
+		}
+
+		SignerInformationVerifierProvider vProv = new SignerInformationVerifierProvider() {
+			@Override
+			public SignerInformationVerifier get(SignerId signerId) throws OperatorCreationException {
+				if (entryUserA.getCertificate().getSerialNumber().equals(signerId.getSerialNumber())) {
+					return new JcaSimpleSignerInfoVerifierBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build(
+							entryUserA.getCertificate().getCertificate());
+				} else if (entryUserB.getCertificate().getSerialNumber().equals(signerId.getSerialNumber())) {
+					return new JcaSimpleSignerInfoVerifierBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build(
+							entryUserB.getCertificate().getCertificate());
+				} else {
+					throw new IllegalStateException("no signerID matched");
+				}
+			}
+		};
+
+		// Validate both signatures by BC
+		assertTrue(data.verifySignatures(vProv, false));
 
 		// Validate
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(counterSignDocument);
@@ -125,6 +181,30 @@ public class CAdESCounterSignatureTest {
 
 	private SignatureValue sign(SignatureAlgorithm algo, MockPrivateKeyEntry privateKey, ToBeSigned bytesToSign) throws GeneralSecurityException {
 		return TestUtils.sign(algo, privateKey, bytesToSign);
+	}
+
+	@Test
+	public void testBCFile() {
+
+		File fileToTest = new File("src/test/resources/validation/counterSig.p7m");
+
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		List<XmlDom> signatures = diagnosticData.getElements("/DiagnosticData/Signature");
+		assertEquals(2, signatures.size());
+
+		boolean foundCounterSignature = false;
+		for (XmlDom xmlDom : signatures) {
+			String type = xmlDom.getAttribute("Type");
+			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
+				foundCounterSignature = true;
+			}
+			assertTrue(diagnosticData.isBLevelTechnicallyValid(xmlDom.getAttribute("Id")));
+		}
+		assertTrue(foundCounterSignature);
 	}
 
 }
