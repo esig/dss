@@ -24,29 +24,25 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Set;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pdf.pdfbox.PdfDssDict;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
- *
  */
 public interface PdfSignatureOrDocTimestampInfo {
 
 	int[] getSignatureByteRange();
 
-	public static class DSSPadesNoSignatureFound extends DSSException {
-
-		private static final long serialVersionUID = 1L;
-
-	}
-
 	SignatureCryptographicVerification checkIntegrity();
 
-	X509Certificate[] getCertificates();
-
 	String getLocation();
+
+	String getContactInfo();
+
+	String getReason();
+
+	String getSubFilter();
 
 	Date getSigningDate();
 
@@ -64,11 +60,9 @@ public interface PdfSignatureOrDocTimestampInfo {
 	 */
 	byte[] getOriginalBytes();
 
-	PdfDssDict getDocumentDictionary();
+	PdfDssDict getDssDictionary();
 
-	PdfDssDict getOuterCatalog();
-
-	int uniqueId();
+	String uniqueId();
 
 	void addOuterSignature(PdfSignatureOrDocTimestampInfo signatureInfo);
 

@@ -25,7 +25,6 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
@@ -72,19 +71,18 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		LOG.debug("+ PAdESService created");
 	}
 
-	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(PAdESSignatureParameters parameters) {
-
-		switch (parameters.getSignatureLevel()) {
+	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(SignatureLevel signatureLevel) {
+		switch (signatureLevel) {
 			case PAdES_BASELINE_B:
 				return null;
 			case PAdES_BASELINE_T:
-				return new PAdESLevelBaselineT(tspSource, certificateVerifier);
+				return new PAdESLevelBaselineT(tspSource);
 			case PAdES_BASELINE_LT:
 				return new PAdESLevelBaselineLT(tspSource, certificateVerifier);
 			case PAdES_BASELINE_LTA:
 				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier);
 			default:
-				throw new IllegalArgumentException("Signature format '" + parameters.getSignatureLevel() + "' not supported");
+				throw new IllegalArgumentException("Signature format '" + signatureLevel + "' not supported");
 		}
 	}
 
@@ -107,69 +105,65 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
 
-		DSSASN1Utils.generateCMSSignedData(generator, content, false);
+		DSSASN1Utils.generateDetachedCMSSignedData(generator, content);
 
 		final byte[] dataToSign = customContentSigner.getOutputStream().toByteArray();
 		return new ToBeSigned(dataToSign);
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, SignatureValue signatureValue) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue) throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
-		try {
-			final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
-			final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
-			final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
-			InputStream inputStream = toSignDocument.openStream();
-			final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-			IOUtils.closeQuietly(inputStream);
+		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
+		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
-			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
+		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		InputStream inputStream = toSignDocument.openStream();
+		final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
+		IOUtils.closeQuietly(inputStream);
 
-			final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, null);
+		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
-			final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
-			final boolean encapsulate = false;
-			CMSSignedData data = generator.generate(content, encapsulate);
+		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, null);
 
-			final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-			if (signatureLevel != SignatureLevel.PAdES_BASELINE_B) {
-				// use an embedded timestamp
-				CAdESLevelBaselineT cadesLevelBaselineT = new CAdESLevelBaselineT(tspSource, certificateVerifier, false);
-				data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
-			}
+		final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
+		CMSSignedData data = DSSASN1Utils.generateDetachedCMSSignedData(generator, content);
 
-			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			final byte[] encodedData = DSSASN1Utils.getEncoded(data);
-			inputStream = toSignDocument.openStream();
-			pdfSignatureService.sign(inputStream, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
-			IOUtils.closeQuietly(inputStream);
-			final DSSDocument signature;
-			if (StringUtils.isEmpty(toSignDocument.getName())) {
-				signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), null, MimeType.PDF);
-			} else {
-				signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), toSignDocument.getName(), MimeType.PDF);
-			}
+		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
+		if (signatureLevel != SignatureLevel.PAdES_BASELINE_B) {
+			// use an embedded timestamp
+			CAdESLevelBaselineT cadesLevelBaselineT = new CAdESLevelBaselineT(tspSource, false);
+			data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
+		}
 
-			final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters);
-			if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {
-				final DSSDocument extendSignature = extension.extendSignatures(signature, parameters);
-				parameters.reinitDeterministicId();
-				return extendSignature;
-			} else {
-				parameters.reinitDeterministicId();
-				return signature;
-			}
-		} catch (CMSException e) {
-			throw new DSSException(e);
+		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		final byte[] encodedData = DSSASN1Utils.getEncoded(data);
+		inputStream = toSignDocument.openStream();
+		pdfSignatureService.sign(inputStream, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
+		IOUtils.closeQuietly(inputStream);
+		final DSSDocument signature;
+		if (StringUtils.isEmpty(toSignDocument.getName())) {
+			signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), null, MimeType.PDF);
+		} else {
+			signature = new InMemoryDocument(byteArrayOutputStream.toByteArray(), toSignDocument.getName(), MimeType.PDF);
+		}
+
+		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(signatureLevel);
+		if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {
+			final DSSDocument extendSignature = extension.extendSignatures(signature, parameters);
+			parameters.reinitDeterministicId();
+			return extendSignature;
+		} else {
+			parameters.reinitDeterministicId();
+			return signature;
 		}
 	}
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, PAdESSignatureParameters parameters) throws DSSException {
-		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters);
+		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters.getSignatureLevel());
 		if (extension != null) {
 			return extension.extendSignatures(toExtendDocument, parameters);
 		}

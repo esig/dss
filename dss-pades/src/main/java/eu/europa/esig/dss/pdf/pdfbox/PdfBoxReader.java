@@ -18,20 +18,47 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-/**
- * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
- *
- */
-public interface PdfArray {
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	int size();
+import eu.europa.esig.dss.pdf.PdfReader;
 
-	byte[] getBytes(int i) throws IOException ;
+class PdfBoxReader implements PdfReader {
 
-	void add(PdfStream stream);
+	private static final Logger logger = LoggerFactory.getLogger(PdfBoxReader.class);
+
+	private PDDocument wrapped;
+
+	public PdfBoxReader(InputStream inputstream) throws IOException {
+		wrapped = PDDocument.load(inputstream);
+	}
+
+	@Override
+	public PdfBoxDict getCatalog() {
+		return new PdfBoxDict(wrapped.getDocumentCatalog().getCOSDictionary(), wrapped);
+	}
+
+	@Override
+	public void finalize() throws Throwable {
+		if (wrapped != null) {
+			try {
+				wrapped.close();
+			} catch (IOException e) {
+				logger.error("Error while closing PDDocument", e);
+			}
+		}
+		wrapped = null;
+		super.finalize();
+	}
+
+	PDDocument getPDDocument() {
+		return wrapped;
+	}
 
 }

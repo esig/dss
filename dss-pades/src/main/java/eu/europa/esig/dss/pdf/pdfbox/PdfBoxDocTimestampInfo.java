@@ -20,16 +20,10 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.cert.X509Certificate;
-import java.util.List;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,46 +37,37 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
- * TODO
- *
- *
- *
- *
- *
- *
+ * Signature timestamp representation
+ * This class is only used in case of Document Timestamp (not signature-timestamp from CAdES/CMS)
  */
 class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInfo {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxDocTimestampInfo.class);
+	private static final Logger logger = LoggerFactory.getLogger(PdfBoxDocTimestampInfo.class);
 
 	private final TimestampToken timestampToken;
 
 	/**
 	 * @param validationCertPool
-	 * @param outerCatalog       the PDF Dict of the outer document, if the PDFDocument in a enclosed revision. Can be null.
-	 * @param document           the signed PDFDocument
-	 * @param cms                the CMS (CAdES) bytes
-	 * @param inputStream        the stream of the whole signed document
-	 * @throws IOException
+	 * @param dssDictionary
+	 *            the DSS dictionary
+	 * @param cms
+	 *            the CMS (CAdES) bytes
+	 * @param isArchiveTimestamp
+	 * @param inputStream
+	 *            the stream of the whole signed document
+	 * @throws DSSException
 	 */
-	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PdfBoxDict outerCatalog, PDDocument document, PDSignature signature, byte[] cms, InputStream inputStream) throws DSSException, IOException {
-		super(validationCertPool, outerCatalog, document, signature, cms, inputStream);
+	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean isArchiveTimestamp) throws DSSException {
+		super(signature, dssDictionary, cms, signedContent);
 		try {
 			TimeStampToken timeStampToken = new TimeStampToken(new CMSSignedData(cms));
-
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
-			if (document.getDocumentCatalog().getCOSDictionary().containsKey("DSS")) {
+			if (isArchiveTimestamp) {
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
 			timestampToken = new TimestampToken(timeStampToken, timestampType, validationCertPool);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Created PdfBoxDocTimestampInfo {}: {}", timestampType, uniqueId());
-			}
-		} catch (CMSException e) {
-			throw new DSSException(e);
-		} catch (TSPException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
+			logger.debug("Created PdfBoxDocTimestampInfo {} : {}", timestampType, uniqueId());
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -94,25 +79,18 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 		signatureCryptographicVerification.setReferenceDataFound(false);
 		signatureCryptographicVerification.setReferenceDataIntact(false);
 		signatureCryptographicVerification.setSignatureIntact(false);
-		if (signedBytes != null) {
+		if (getSignedDocumentBytes() != null) {
 			signatureCryptographicVerification.setReferenceDataFound(true);
 		}
-		signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(signedBytes));
+		signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(getSignedDocumentBytes()));
 		signatureCryptographicVerification.setSignatureIntact(timestampToken.isSignatureValid());
 		return signatureCryptographicVerification;
 	}
 
 	@Override
 	public X509Certificate getSigningCertificate() {
-
 		final CertificateToken signingCertificate = timestampToken.getIssuerToken();
 		return signingCertificate == null ? null : signingCertificate.getCertificate();
-	}
-
-	@Override
-	public X509Certificate[] getCertificates() {
-		final List<CertificateToken> certificateTokens = timestampToken.getCertificates();
-		return toX509CertificateArray(certificateTokens);
 	}
 
 	@Override

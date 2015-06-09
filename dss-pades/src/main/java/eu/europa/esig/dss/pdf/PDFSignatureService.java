@@ -25,10 +25,10 @@ import java.io.OutputStream;
 import java.security.SignatureException;
 import java.util.Map;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
@@ -48,8 +48,7 @@ public interface PDFSignatureService {
 	 * @return
 	 * @throws DSSException
 	 */
-	byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
-			final Map.Entry<String, ModelPdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
+	byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException;
 
 	/**
 	 * Signs a PDF document
@@ -62,18 +61,19 @@ public interface PDFSignatureService {
 	 * @param extraDictionariesToAddBeforeSign
 	 * @throws DSSException
 	 */
-	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
-			final Map.Entry<String, ModelPdfDict>... extraDictionariesToAddBeforeSign) throws DSSException;
+	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException;
 
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document
 	 *
 	 * @param validationCertPool
-	 * @param input
+	 * @param document
 	 * @param callback
 	 * @throws DSSException
 	 * @throws SignatureException
 	 */
-	void validateSignatures(final CertificatePool validationCertPool, final InputStream input, final SignatureValidationCallback callback) throws DSSException;
+	void validateSignatures(final CertificatePool validationCertPool, final DSSDocument document, final SignatureValidationCallback callback) throws DSSException;
+
+	void addDictionaries(InputStream inputStream, OutputStream outpuStream, Map<String, PdfDict> extraDictionariesToAddBeforeSign) throws DSSException;
 
 }

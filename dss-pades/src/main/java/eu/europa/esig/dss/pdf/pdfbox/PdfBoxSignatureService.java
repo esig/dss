@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,17 +29,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -55,6 +57,7 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleS
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -63,20 +66,18 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.DSSPDFUtils;
 import eu.europa.esig.dss.pades.signature.visible.ImageFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;
-import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
 
 class PdfBoxSignatureService implements PDFSignatureService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
 	@Override
-	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
-			final Map.Entry<String, ModelPdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
+	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 		File toSignFile = null;
@@ -87,14 +88,12 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			toSignFile = DSSPDFUtils.getFileFromPdfData(toSignDocument);
 
 			pdDocument = PDDocument.load(toSignFile);
-			addExtraDictionaries(pdDocument, extraDictionariesToAddBeforeSign);
 			PDSignature pdSignature = createSignatureDictionary(parameters);
 
 			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
 			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
 
-			final byte[] digestValue = signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature,
-					digestAlgorithm);
+			final byte[] digestValue = signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature, digestAlgorithm);
 			return digestValue;
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -107,7 +106,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	@Override
 	public void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
-			final DigestAlgorithm digestAlgorithm, final Map.Entry<String, ModelPdfDict>... extraDictionariesToAddBeforeSign) throws DSSException {
+			final DigestAlgorithm digestAlgorithm) throws DSSException {
 
 		File toSignFile = null;
 		File signedFile = null;
@@ -119,7 +118,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			toSignFile = DSSPDFUtils.getFileFromPdfData(pdfData);
 
 			pdDocument = PDDocument.load(toSignFile);
-			addExtraDictionaries(pdDocument, extraDictionariesToAddBeforeSign);
 			final PDSignature pdSignature = createSignatureDictionary(parameters);
 
 			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
@@ -141,8 +139,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final File signedFile,
-			final FileOutputStream fileOutputStream, final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm)
-					throws DSSException {
+			final FileOutputStream fileOutputStream, final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm) throws DSSException {
 
 		try {
 
@@ -152,6 +149,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 				@Override
 				public byte[] sign(InputStream content) throws SignatureException, IOException {
+
 					byte[] b = new byte[4096];
 					int count;
 					while ((count = content.read(b)) > 0) {
@@ -195,18 +193,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		options.setPage(imgParams.getPage());
 	}
 
-	private void addExtraDictionaries(final PDDocument doc, final Map.Entry<String, ModelPdfDict>[] extraDictionariesToAddBeforeSign) {
-
-		final COSDictionary cosDictionary = doc.getDocumentCatalog().getCOSDictionary();
-		for (final Map.Entry<String, ModelPdfDict> pdfDictEntry : extraDictionariesToAddBeforeSign) {
-
-			final String key = pdfDictEntry.getKey();
-			final PdfBoxDict value = new PdfBoxDict(pdfDictEntry.getValue());
-			final COSDictionary wrapped = value.getWrapped();
-			cosDictionary.setItem(key, wrapped);
-		}
-	}
-
 	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters) {
 
 		final PDSignature signature = new PDSignature();
@@ -216,7 +202,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(getSubFilter());
 
-		if (COSName.SIG.equals(getType())){
+		if (COSName.SIG.equals(getType())) {
 			if (StringUtils.isNotEmpty(parameters.getContactInfo())) {
 				signature.setContactInfo(parameters.getContactInfo());
 			}
@@ -238,8 +224,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		return signature;
 	}
 
-	public static void saveDocumentIncrementally(PAdESSignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream,
-			PDDocument pdDocument) throws DSSException {
+	protected COSName getType() {
+		return COSName.SIG;
+	}
+
+	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream, PDDocument pdDocument) throws DSSException {
 
 		FileInputStream signedFileInputStream = null;
 		try {
@@ -263,159 +252,174 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	protected COSName getType() {
-		return COSName.SIG;
-	}
-
 	protected COSName getSubFilter() {
 		return PDSignature.SUBFILTER_ETSI_CADES_DETACHED;
 	}
 
 	@Override
-	public void validateSignatures(CertificatePool validationCertPool, InputStream input, SignatureValidationCallback callback) throws DSSException {
+	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
 		// recursive search of signature
-		Map<String, Set<PdfSignatureOrDocTimestampInfo>> byteRangeMap = new HashMap<String, Set<PdfSignatureOrDocTimestampInfo>>();
-		final Set<PdfSignatureOrDocTimestampInfo> signaturesFound = validateSignatures(validationCertPool, byteRangeMap, null, input);
-		for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
-			callback.validate(pdfSignatureOrDocTimestampInfo);
+		InputStream inputStream = document.openStream();
+		try {
+			List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, IOUtils.toByteArray(inputStream));
+			for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
+				callback.validate(pdfSignatureOrDocTimestampInfo);
+			}
+		} catch (IOException e) {
+			logger.error("Cannot validate signatures : " + e.getMessage(), e);
 		}
+
+		IOUtils.closeQuietly(inputStream);
 	}
 
-	/* This is O(scary), but seems quick enough in practice. */
-
-	/**
-	 * @param validationCertPool
-	 * @param byteRangeMap
-	 * @param outerCatalog
-	 *            the PdfDictionary of the document that enclose the document stored in the input InputStream
-	 * @param input
-	 *            the Pdf bytes to open as a PDF
-	 * @return
-	 * @throws DSSException
-	 */
-	private Set<PdfSignatureOrDocTimestampInfo> validateSignatures(CertificatePool validationCertPool,
-			Map<String, Set<PdfSignatureOrDocTimestampInfo>> byteRangeMap, PdfBoxDict outerCatalog, InputStream input) throws DSSException {
-
-		Set<PdfSignatureOrDocTimestampInfo> signaturesFound = new LinkedHashSet<PdfSignatureOrDocTimestampInfo>();
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+	private List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, byte[] originalBytes) {
+		List<PdfSignatureOrDocTimestampInfo> signatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		ByteArrayInputStream bais = null;
 		PDDocument doc = null;
 		try {
 
-			IOUtils.copy(input, buffer);
+			bais = new ByteArrayInputStream(originalBytes);
+			doc = PDDocument.load(bais);
 
-			doc = PDDocument.load(new ByteArrayInputStream(buffer.toByteArray()));
-			final PdfBoxDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
+			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
+			if (CollectionUtils.isNotEmpty(pdSignatures)) {
+				logger.debug("{} signature(s) found", pdSignatures.size());
 
-			final List<PDSignature> signatureDictionaries = doc.getSignatureDictionaries();
-			if (logger.isDebugEnabled()) {
-				logger.debug("Found {} signatures in PDF dictionary of PDF sized {} bytes", signatureDictionaries.size(), buffer.size());
-			}
-			for (int i = 0; i < signatureDictionaries.size(); i++) {
+				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
+				PdfDssDict dssDictionary = PdfDssDict.build(catalog);
 
-				final PDSignature signature = signatureDictionaries.get(i);
-				/**
-				 * SubFilter Name (Required) The value of SubFilter identifies the format of the data contained in the stream. A conforming reader may
-				 * use any conforming signature handler that supports the specified format. When the value of Type is DocTimestamp, the value of
-				 * SubFilter shall be ETSI.RFC3161.
-				 */
-				final String subFilter = signature.getSubFilter();
-				if (StringUtils.isBlank(subFilter)) {
+				for (PDSignature signature : pdSignatures) {
+					String subFilter = signature.getSubFilter();
+					byte[] cms = signature.getContents(originalBytes);
 
-					logger.warn("No signature found in signature Dictionary:Content, SUB_FILTER is empty!");
-					continue;
-				}
-				byte[] cms = new PdfBoxDict(signature.getDictionary(), doc).get("Contents");
+					if (StringUtils.isEmpty(subFilter) || ArrayUtils.isEmpty(cms)) {
+						logger.warn("Wrong signature with empty subfilter or cms.");
+						continue;
+					}
 
-				PdfSignatureOrDocTimestampInfo signatureInfo;
-				try {
+					byte[] signedContent = signature.getSignedContent(originalBytes);
+					int[] byteRange = signature.getByteRange();
+
+					PdfSignatureOrDocTimestampInfo signatureInfo = null;
 					if (PdfBoxDocTimeStampService.SUB_FILTER_ETSI_RFC3161.getName().equals(subFilter)) {
-						signatureInfo = PdfSignatureFactory.createPdfTimestampInfo(validationCertPool, outerCatalog, doc, signature, cms, buffer);
+						boolean isArchiveTimestamp = false;
+
+						// LT or LTA
+						if (dssDictionary != null) {
+							// check is DSS dictionary already exist
+							if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
+								isArchiveTimestamp = true;
+							}
+						}
+						signatureInfo = PdfSignatureFactory.createPdfTimestampInfo(validationCertPool, signature, dssDictionary, cms, signedContent, isArchiveTimestamp);
 					} else {
-						signatureInfo = PdfSignatureFactory.createPdfSignatureInfo(validationCertPool, outerCatalog, doc, signature, cms, buffer);
+						signatureInfo = PdfSignatureFactory.createPdfSignatureInfo(validationCertPool, signature, dssDictionary, cms, signedContent);
 					}
-				} catch (PdfSignatureOrDocTimestampInfo.DSSPadesNoSignatureFound e) {
-					logger.debug("No signature found in signature Dictionary:Content", e);
-					continue;
-				}
 
-				signatureInfo = signatureAlreadyInListOrSelf(signaturesFound, signatureInfo);
-
-				// should store in memory this byte range with a list of signature found there
-				final String byteRange = Arrays.toString(signature.getByteRange());
-				Set<PdfSignatureOrDocTimestampInfo> innerSignaturesFound = byteRangeMap.get(byteRange);
-				if (innerSignaturesFound == null) {
-					// Recursive call to find inner signatures in the byte range covered by this signature. Deep first search.
-					final byte[] originalBytes = signatureInfo.getOriginalBytes();
-					if (logger.isDebugEnabled()) {
-						logger.debug("Searching signature in the previous revision of the document, size of revision is {} bytes", originalBytes.length);
+					if (signatureInfo != null) {
+						signatures.add(signatureInfo);
 					}
-					innerSignaturesFound = validateSignatures(validationCertPool, byteRangeMap, catalog, new ByteArrayInputStream(originalBytes));
-					byteRangeMap.put(byteRange, innerSignaturesFound);
 				}
+				Collections.sort(signatures, new PdfSignatureOrDocTimestampInfoComparator());
+				linkSignatures(signatures);
 
-				// need to mark a signature as included inside another one. It's needed to link timestamp signature with the signatures covered by the
-				// timestamp.
-				for (PdfSignatureOrDocTimestampInfo innerSignature : innerSignaturesFound) {
-					innerSignature = signatureAlreadyInListOrSelf(signaturesFound, innerSignature);
-					signaturesFound.add(innerSignature);
-					innerSignature.addOuterSignature(signatureInfo);
+				for (PdfSignatureOrDocTimestampInfo sig : signatures) {
+					logger.debug("Signature " + sig.uniqueId() + " found with byteRange " + Arrays.toString(sig.getSignatureByteRange()) + " ("	+ sig.getSubFilter() + ")");
 				}
-
-				signaturesFound.add(signatureInfo);
 			}
-		} catch (IOException up) {
-			logger.error("Error loading buffer of size {}", buffer.size(), up);
-			// ignore error when loading signatures
+
+		} catch (Exception e) {
+			logger.warn("Cannot analyze signatures : " + e.getMessage(), e);
 		} finally {
+			IOUtils.closeQuietly(bais);
 			IOUtils.closeQuietly(doc);
 		}
-		return signaturesFound;
+
+		return signatures;
 	}
 
 	/**
-	 * This method is needed because we will encounter many times the same signature during our document analysis. We make sure that we always add it
-	 * only once.
-	 *
-	 * @param signaturesFound
-	 * @param pdfSignatureOrDocTimestampInfo
-	 * @return
+	 * This method links previous signatures to the new one. This is useful to get revision number and to know if a TSP is over the DSS dictionary
 	 */
-	private PdfSignatureOrDocTimestampInfo signatureAlreadyInListOrSelf(Set<PdfSignatureOrDocTimestampInfo> signaturesFound,
-			final PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo) {
-		final int uniqueId = pdfSignatureOrDocTimestampInfo.uniqueId();
-		for (final PdfSignatureOrDocTimestampInfo existingSignature : signaturesFound) {
-
-			if (existingSignature.uniqueId() == uniqueId) {
-
-				if (existingSignature instanceof PdfDocTimestampInfo) {
-
-					final PdfDocTimestampInfo existingSignatureDocTimestamp = (PdfDocTimestampInfo) existingSignature;
-					if (existingSignatureDocTimestamp.getTimestampToken().getTimeStampType() == TimestampType.SIGNATURE_TIMESTAMP) {
-
-						if (logger.isDebugEnabled()) {
-							logger.debug("Signature was already found in the external doc. Returning newly (inner) found signature {} {}",
-									existingSignature.getClass().getSimpleName(), uniqueId);
-						}
-						return existingSignatureDocTimestamp;
-					}
+	private void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
+		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		for (PdfSignatureOrDocTimestampInfo sig : signatures) {
+			if (CollectionUtils.isNotEmpty(previousList)) {
+				for (PdfSignatureOrDocTimestampInfo previous : previousList) {
+					previous.addOuterSignature(sig);
 				}
-				for (final PdfSignatureOrDocTimestampInfo outerSignature : existingSignature.getOuterSignatures()) {
-					pdfSignatureOrDocTimestampInfo.addOuterSignature(outerSignature);
-				}
-				signaturesFound.remove(existingSignature);
-				signaturesFound.add(pdfSignatureOrDocTimestampInfo);
-				if (logger.isDebugEnabled()) {
-					logger.debug("Signature was already found in the external doc. Returning newly (inner) found signature {} {}",
-							pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), uniqueId);
-				}
-				return pdfSignatureOrDocTimestampInfo;
 			}
+			previousList.add(sig);
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("Signature newly found {} {}", pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), uniqueId);
-		}
-		return pdfSignatureOrDocTimestampInfo;
 	}
 
+
+	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
+		ByteArrayInputStream bais = null;
+		PDDocument doc = null;
+		PdfDssDict dssDictionary = null;
+		try {
+			bais = new ByteArrayInputStream(originalBytes);
+			doc = PDDocument.load(bais);
+			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
+			if (CollectionUtils.isNotEmpty(pdSignatures)) {
+				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
+				dssDictionary = PdfDssDict.build(catalog);
+			}
+		} catch (Exception e) {
+			logger.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
+		} finally {
+			IOUtils.closeQuietly(bais);
+			IOUtils.closeQuietly(doc);
+		}
+
+		return dssDictionary != null;
+	}
+
+	private byte[] getOriginalBytes(int[] byteRange, byte[] signedContent) {
+		final int length = byteRange[1];
+		final byte[] result = new byte[length];
+		System.arraycopy(signedContent, 0, result, 0, length);
+		return result;
+	}
+
+	@Override
+	public void addDictionaries(InputStream inputStream, OutputStream outpuStream, Map<String, PdfDict> extraDictionariesToAddBeforeSign) {
+		FileInputStream fis = null;
+		PDDocument pdDocument = null;
+		try {
+
+			File toSignFile = DSSPDFUtils.getFileFromPdfData(inputStream);
+
+			pdDocument = PDDocument.load(toSignFile);
+
+			File signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
+
+			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
+
+			if (MapUtils.isNotEmpty(extraDictionariesToAddBeforeSign)) {
+				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSDictionary();
+				for (Entry<String, PdfDict> pdfDictEntry : extraDictionariesToAddBeforeSign.entrySet()) {
+					final String key = pdfDictEntry.getKey();
+					final PdfBoxDict value = (PdfBoxDict) pdfDictEntry.getValue();
+					cosDictionary.setItem(key, value.getWrapped());
+					cosDictionary.setNeedToBeUpdate(true);
+				}
+			}
+
+			if (pdDocument.getDocumentId() == null) {
+				pdDocument.setDocumentId(0L);
+			}
+			pdDocument.saveIncremental(inputStream, fileOutputStream);
+
+			fis = new FileInputStream(signedFile);
+			IOUtils.copy(fis, outpuStream);
+		} catch (Exception e) {
+			throw new DSSException(e);
+		} finally {
+			IOUtils.closeQuietly(pdDocument);
+			IOUtils.closeQuietly(fis);
+		}
+	}
 
 }

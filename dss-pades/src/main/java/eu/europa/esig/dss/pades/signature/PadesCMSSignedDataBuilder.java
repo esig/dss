@@ -43,10 +43,6 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
  * TODO
  *
  *
- *
- *
- *
- *
  */
 class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 
@@ -74,25 +70,23 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final PAdESSignatureParameters parameters, final byte[] messageDigest) {
 
 		final CAdESLevelBaselineB cAdESLevelBaselineB = new CAdESLevelBaselineB(true);
-		final PAdESLevelBaselineB pAdESProfileEPES = new PAdESLevelBaselineB();
+		final PAdESLevelBaselineB pAdESProfileB = new PAdESLevelBaselineB();
 
 		final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
 
 		SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = new SignerInfoGeneratorBuilder(digestCalculatorProvider);
-		signerInfoGeneratorBuilder = signerInfoGeneratorBuilder.setSignedAttributeGenerator(new CMSAttributeTableGenerator() {
 
-			@SuppressWarnings("unchecked")
+		signerInfoGeneratorBuilder = signerInfoGeneratorBuilder.setSignedAttributeGenerator(new CMSAttributeTableGenerator() {
 			@Override
 			public AttributeTable getAttributes(@SuppressWarnings("rawtypes") Map params) throws CMSAttributeTableGenerationException {
-
-				return pAdESProfileEPES.getSignedAttributes(params, cAdESLevelBaselineB, parameters, messageDigest);
+				return pAdESProfileB.getSignedAttributes(params, cAdESLevelBaselineB, parameters, messageDigest);
 			}
 		});
 
-		signerInfoGeneratorBuilder.setUnsignedAttributeGenerator(new CMSAttributeTableGenerator() {
+		signerInfoGeneratorBuilder = signerInfoGeneratorBuilder.setUnsignedAttributeGenerator(new CMSAttributeTableGenerator() {
 			@Override
-			public AttributeTable getAttributes(Map params) throws CMSAttributeTableGenerationException {
-				return pAdESProfileEPES.getUnsignedAttributes();
+			public AttributeTable getAttributes(@SuppressWarnings("rawtypes") Map params) throws CMSAttributeTableGenerationException {
+				return pAdESProfileB.getUnsignedAttributes();
 			}
 		});
 

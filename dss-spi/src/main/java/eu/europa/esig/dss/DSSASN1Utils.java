@@ -231,6 +231,10 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content) throws DSSException {
+		return generateCMSSignedData(generator, content, false);
+	}
+
 	/**
 	 * Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
 	 *

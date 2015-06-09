@@ -33,42 +33,36 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
- * TODO
- *
- *
- *
- *
- *
- *
+ * PAdES Baseline LTA signature
  */
 class PAdESLevelBaselineLTA implements SignatureExtension<PAdESSignatureParameters> {
 
 	private final PAdESLevelBaselineLT padesLevelBaselineLT;
-	private final PAdESLevelBaselineT padesProfileT;
+	private final PAdESLevelBaselineT padesLevelBaselineT;
 	private final CertificateVerifier certificateVerifier;
 
 	public PAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier) {
-
 		padesLevelBaselineLT = new PAdESLevelBaselineLT(tspSource, certificateVerifier);
-		padesProfileT = new PAdESLevelBaselineT(tspSource, certificateVerifier);
+		padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
 		this.certificateVerifier = certificateVerifier;
 	}
 
 	@Override
-	public DSSDocument extendSignatures(DSSDocument document, PAdESSignatureParameters params) throws DSSException {
+	public DSSDocument extendSignatures(DSSDocument document, PAdESSignatureParameters parameters) throws DSSException {
 
+		// check if needed to extends with PAdESLevelBaselineLT
 		final PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
-		final List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
+
+		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
 		for (final AdvancedSignature signature : signatures) {
-
 			if (!signature.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT)) {
-
-				document = padesLevelBaselineLT.extendSignatures(document, params);
-				// PAdES LT already add a timestamp on top of the LT data. No need to timestamp again.
-				return document;
+				document = padesLevelBaselineLT.extendSignatures(document, parameters);
+				break;
 			}
 		}
-		return padesProfileT.extendSignatures(document, params);
+
+		// Will add a Document TimeStamp (not CMS)
+		return padesLevelBaselineT.extendSignatures(document, parameters);
 	}
 }

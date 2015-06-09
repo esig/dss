@@ -20,13 +20,8 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -44,8 +39,6 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  *
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
-
-	private static final Logger logger = LoggerFactory.getLogger(PDFDocumentValidator.class);
 
 	final PDFSignatureService pdfSignatureService;
 
@@ -85,9 +78,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			return signatures;
 		}
 		signatures = new ArrayList<AdvancedSignature>();
-		// TODO: (Bob: 2014 Feb 27) to be replaced document.openStream() by document
-		final InputStream inputStream = document.openStream();
-		pdfSignatureService.validateSignatures(validationCertPool, inputStream, new PdfSignatureValidationCallback() {
+		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override
 			public void validate(final PdfSignatureInfo pdfSignatureInfo) {
@@ -99,12 +90,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 						signatures.add(padesSignature);
 					}
 				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
 					throw new DSSException(e);
 				}
 			}
 		});
-		IOUtils.closeQuietly(inputStream);
 		return signatures;
 	}
 

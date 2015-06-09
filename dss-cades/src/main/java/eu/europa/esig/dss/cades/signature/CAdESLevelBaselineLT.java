@@ -34,8 +34,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Store;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
@@ -59,15 +57,13 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLT.class);
-
 	private final CertificateVerifier certificateVerifier;
 	private final CAdESLevelBaselineT cadesProfileT;
 
 	public CAdESLevelBaselineLT(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
 		super(signatureTsa, onlyLastSigner);
 		this.certificateVerifier = certificateVerifier;
-		cadesProfileT = new CAdESLevelBaselineT(signatureTsa, certificateVerifier, onlyLastSigner);
+		cadesProfileT = new CAdESLevelBaselineT(signatureTsa, onlyLastSigner);
 	}
 
 	@Override

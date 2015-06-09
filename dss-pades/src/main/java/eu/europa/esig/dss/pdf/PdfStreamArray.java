@@ -20,18 +20,13 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.IOException;
-
 /**
- * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
+ * The usage of this interface permit the user to choose the underlying PDF
+ * library use to created PDF signatures.
+ *
+ *
  *
  */
-public interface PdfArray {
-
-	int size();
-
-	byte[] getBytes(int i) throws IOException ;
-
-	void add(PdfStream stream);
+public interface PdfStreamArray {
 
 }

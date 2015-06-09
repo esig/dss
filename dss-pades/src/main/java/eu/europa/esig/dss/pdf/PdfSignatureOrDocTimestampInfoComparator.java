@@ -20,18 +20,30 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
- * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
- *
+ * This comparator is used to sort signatures by ByteRange
  */
-public interface PdfArray {
+public class PdfSignatureOrDocTimestampInfoComparator implements Comparator<PdfSignatureOrDocTimestampInfo>, Serializable {
 
-	int size();
+	private static final long serialVersionUID = 1451660656464810618L;
 
-	byte[] getBytes(int i) throws IOException ;
+	@Override
+	public int compare(PdfSignatureOrDocTimestampInfo o1, PdfSignatureOrDocTimestampInfo o2) {
+		/*
+		[0, 91747, 124517, 723]
+		[0, 126092, 158862, 626]
+		[0, 160367, 193137, 642]
+		 */
+		int[] byteRange1 = o1.getSignatureByteRange();
+		int[] byteRange2 = o2.getSignatureByteRange();
 
-	void add(PdfStream stream);
+		int totalLenght1 = byteRange1[2] + byteRange1[3];
+		int signedContentPre = byteRange2[1] - byteRange2[0];
+
+		return totalLenght1 < signedContentPre ? -1 : totalLenght1 == signedContentPre ? 0 : 1;
+	}
 
 }

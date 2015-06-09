@@ -30,34 +30,23 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
- * TODO
- *
- *
- *
- *
- *
- *
+ * PAdES Baseline T signature
  */
 class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters> {
 
 	private final TSPSource tspSource;
-	private final CertificateVerifier certificateVerifier;
 
-	public PAdESLevelBaselineT(TSPSource tspSource, CertificateVerifier certificateVerifier) {
-
+	public PAdESLevelBaselineT(TSPSource tspSource) {
 		this.tspSource = tspSource;
-		this.certificateVerifier = certificateVerifier;
 	}
 
 	@Override
 	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) throws DSSException {
 
-		assertExtendSignaturePossible(document);
-
+		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 		final PdfObjFactory factory = PdfObjFactory.getInstance();
 		final ByteArrayOutputStream tDoc = new ByteArrayOutputStream();
 		final PDFTimestampService timestampService = factory.newTimestampSignatureService();
@@ -67,6 +56,4 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		return inMemoryDocument;
 	}
 
-	private void assertExtendSignaturePossible(final DSSDocument document) {
-	}
 }

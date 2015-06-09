@@ -28,21 +28,15 @@ import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.cms.CMSAttributeTableGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 
 /**
- * EPES profile for PAdES signature
- *
+ * PAdES Baseline B signature
  *
  */
-
 class PAdESLevelBaselineB {
-
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineB.class);
 
 	AttributeTable getSignedAttributes(Map params, CAdESLevelBaselineB cadesProfile, PAdESSignatureParameters parameters, byte[] messageDigest) {
 

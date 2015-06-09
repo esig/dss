@@ -25,14 +25,11 @@ import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
@@ -44,18 +41,12 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineT.class);
-	final CertificateVerifier certificateVerifier;
-
-	public CAdESLevelBaselineT(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastCMSSignature) {
-
+	public CAdESLevelBaselineT(TSPSource signatureTsa, boolean onlyLastCMSSignature) {
 		super(signatureTsa, onlyLastCMSSignature);
-		this.certificateVerifier = certificateVerifier;
 	}
 
 	@Override
 	protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)  throws DSSException {
-
 		final CAdESSignature cadesSignature = new CAdESSignature(signedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContent());
 		assertExtendSignaturePossible(cadesSignature);
@@ -69,26 +60,21 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 	/**
 	 * @param cadesSignature
 	 */
-	 protected void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
+	protected void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
+		final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
+		if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
+			throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
+		}
+		AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(cadesSignature.getSignerInformation());
+		if (unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp) != null) {
+			throw new DSSException(String.format(exceptionMessage, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
+		}
+	}
 
-		 final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
-		 if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
-			 throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
-		 }
-		 AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(cadesSignature.getSignerInformation());
-		 if (unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp) != null) {
-			 throw new DSSException(String.format(exceptionMessage, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
-		 }
-	 }
+	private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes, CAdESSignatureParameters parameters) {
+		ASN1Object signatureTimeStamp = getTimeStampAttributeValue(signatureTsa, signerInformation.getSignature(), parameters);
+		return unsignedAttributes.add(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken, signatureTimeStamp);
+	}
 
-	 private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes, CAdESSignatureParameters parameters) {
-
-		 ASN1Object signatureTimeStamp = getTimeStampAttributeValue(signatureTsa, signerInformation.getSignature(), parameters);
-		 return unsignedAttributes.add(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken, signatureTimeStamp);
-	 }
-
-	 public CertificateVerifier getCertificateVerifier() {
-		 return certificateVerifier;
-	 }
 
 }

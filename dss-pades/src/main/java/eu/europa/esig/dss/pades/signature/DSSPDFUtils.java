@@ -29,7 +29,6 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.pdf.PdfArray;
 
 /**
  * This class proposes some utility methods to manipulate PDF files.
@@ -38,16 +37,6 @@ import eu.europa.esig.dss.pdf.PdfArray;
 public final class DSSPDFUtils {
 
 	private DSSPDFUtils() {
-	}
-
-	public static byte[] getBytes(final PdfArray crlArray, final int ii) throws DSSException {
-
-		try {
-
-			return crlArray.getBytes(ii);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**

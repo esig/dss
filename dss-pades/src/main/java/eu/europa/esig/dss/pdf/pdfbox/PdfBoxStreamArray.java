@@ -18,20 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.pdfbox;
+import org.apache.pdfbox.pdmodel.common.COSStreamArray;
 
-import java.io.IOException;
+import eu.europa.esig.dss.pdf.PdfArray;
+import eu.europa.esig.dss.pdf.PdfStreamArray;
 
-/**
- * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
- *
- */
-public interface PdfArray {
 
-	int size();
+class PdfBoxStreamArray implements PdfStreamArray {
 
-	byte[] getBytes(int i) throws IOException ;
+	COSStreamArray wrapped;
 
-	void add(PdfStream stream);
+	public PdfBoxStreamArray(PdfArray array) {
+		this.wrapped = new COSStreamArray(((PdfBoxArray) array).wrapped);
+	}
 
 }

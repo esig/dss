@@ -258,7 +258,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		switch (signatureLevel) {
 			case CAdES_BASELINE_T:
-				return new CAdESLevelBaselineT(tspSource, certificateVerifier, onlyLastCMSSignature);
+				return new CAdESLevelBaselineT(tspSource, onlyLastCMSSignature);
 			case CAdES_BASELINE_LT:
 				return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
 			case CAdES_BASELINE_LTA:

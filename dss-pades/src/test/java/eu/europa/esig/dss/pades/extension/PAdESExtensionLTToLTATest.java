@@ -18,20 +18,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pades.extension;
 
-import java.io.IOException;
+import eu.europa.esig.dss.SignatureLevel;
 
-/**
- * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
- *
- */
-public interface PdfArray {
+public class PAdESExtensionLTToLTATest extends AbstractTestPAdESExtension {
 
-	int size();
+	@Override
+	protected SignatureLevel getOriginalSignatureLevel() {
+		return SignatureLevel.PAdES_BASELINE_LT;
+	}
 
-	byte[] getBytes(int i) throws IOException ;
-
-	void add(PdfStream stream);
+	@Override
+	protected SignatureLevel getFinalSignatureLevel() {
+		return SignatureLevel.PAdES_BASELINE_LTA;
+	}
 
 }
