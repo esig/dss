@@ -104,6 +104,9 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		signatureParameters.setLocation("Luxembourg");
+		signatureParameters.setReason("DSS testing");
+		signatureParameters.setContactInfo("Jira");
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new PAdESService(certificateVerifier);

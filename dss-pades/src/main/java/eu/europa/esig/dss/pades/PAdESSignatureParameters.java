@@ -16,7 +16,7 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private SignatureImageParameters imageParameters;
 
 	/**
-	 * @return the reason (used by PAdES)
+	 * @return the reason
 	 */
 	public String getReason() {
 		return reason;
@@ -24,14 +24,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	/**
 	 * @param reason
-	 *            the reason to set (used by PAdES)
+	 *            the reason to set
 	 */
 	public void setReason(final String reason) {
 		this.reason = reason;
 	}
 
 	/**
-	 * @return the contactInfo (used by PAdES)
+	 * @return the contactInfo
 	 */
 	public String getContactInfo() {
 		return contactInfo;
@@ -39,7 +39,7 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	/**
 	 * @param contactInfo
-	 *            the contactInfo to set (used by PAdES)
+	 *            the contactInfo to set
 	 */
 	public void setContactInfo(final String contactInfo) {
 		this.contactInfo = contactInfo;

@@ -72,7 +72,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 
 class PdfBoxSignatureService implements PDFSignatureService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
+	private static final Logger logger = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
 	@Override
 	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm,
@@ -101,7 +101,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} finally {
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
-			close(pdDocument);
+			IOUtils.closeQuietly(pdDocument);
 		}
 	}
 
@@ -136,7 +136,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			IOUtils.closeQuietly(finalFileInputStream);
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
-			close(pdDocument);
+			IOUtils.closeQuietly(pdDocument);
 		}
 	}
 
@@ -152,7 +152,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 				@Override
 				public byte[] sign(InputStream content) throws SignatureException, IOException {
-
 					byte[] b = new byte[4096];
 					int count;
 					while ((count = content.read(b)) > 0) {
@@ -172,8 +171,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			saveDocumentIncrementally(parameters, signedFile, fileOutputStream, pdDocument);
 			final byte[] digestValue = digest.digest();
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Digest to be signed: " + Hex.encodeHexString(digestValue));
+			if (logger.isDebugEnabled()) {
+				logger.debug("Digest to be signed: " + Hex.encodeHexString(digestValue));
 			}
 			fileOutputStream.close();
 			return digestValue;
@@ -216,6 +215,20 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(getSubFilter());
 
+		if (COSName.SIG.equals(getType())){
+			if (StringUtils.isNotEmpty(parameters.getContactInfo())) {
+				signature.setContactInfo(parameters.getContactInfo());
+			}
+
+			if (StringUtils.isNotEmpty(parameters.getLocation())) {
+				signature.setLocation(parameters.getLocation());
+			}
+
+			if (StringUtils.isNotEmpty(parameters.getReason())) {
+				signature.setReason(parameters.getReason());
+			}
+		}
+
 		// the signing date, needed for valid signature
 		final Calendar cal = Calendar.getInstance();
 		final Date signingDate = parameters.bLevel().getSigningDate();
@@ -247,6 +260,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} finally {
 			IOUtils.closeQuietly(signedFileInputStream);
 		}
+	}
+
+	protected COSName getType() {
+		return COSName.SIG;
 	}
 
 	protected COSName getSubFilter() {
@@ -289,8 +306,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			final PdfBoxDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
 
 			final List<PDSignature> signatureDictionaries = doc.getSignatureDictionaries();
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Found {} signatures in PDF dictionary of PDF sized {} bytes", signatureDictionaries.size(), buffer.size());
+			if (logger.isDebugEnabled()) {
+				logger.debug("Found {} signatures in PDF dictionary of PDF sized {} bytes", signatureDictionaries.size(), buffer.size());
 			}
 			for (int i = 0; i < signatureDictionaries.size(); i++) {
 
@@ -303,7 +320,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				final String subFilter = signature.getSubFilter();
 				if (StringUtils.isBlank(subFilter)) {
 
-					LOG.warn("No signature found in signature Dictionary:Content, SUB_FILTER is empty!");
+					logger.warn("No signature found in signature Dictionary:Content, SUB_FILTER is empty!");
 					continue;
 				}
 				byte[] cms = new PdfBoxDict(signature.getDictionary(), doc).get("Contents");
@@ -316,7 +333,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 						signatureInfo = PdfSignatureFactory.createPdfSignatureInfo(validationCertPool, outerCatalog, doc, signature, cms, buffer);
 					}
 				} catch (PdfSignatureOrDocTimestampInfo.DSSPadesNoSignatureFound e) {
-					LOG.debug("No signature found in signature Dictionary:Content", e);
+					logger.debug("No signature found in signature Dictionary:Content", e);
 					continue;
 				}
 
@@ -328,8 +345,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				if (innerSignaturesFound == null) {
 					// Recursive call to find inner signatures in the byte range covered by this signature. Deep first search.
 					final byte[] originalBytes = signatureInfo.getOriginalBytes();
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Searching signature in the previous revision of the document, size of revision is {} bytes", originalBytes.length);
+					if (logger.isDebugEnabled()) {
+						logger.debug("Searching signature in the previous revision of the document, size of revision is {} bytes", originalBytes.length);
 					}
 					innerSignaturesFound = validateSignatures(validationCertPool, byteRangeMap, catalog, new ByteArrayInputStream(originalBytes));
 					byteRangeMap.put(byteRange, innerSignaturesFound);
@@ -346,10 +363,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				signaturesFound.add(signatureInfo);
 			}
 		} catch (IOException up) {
-			LOG.error("Error loading buffer of size {}", buffer.size(), up);
+			logger.error("Error loading buffer of size {}", buffer.size(), up);
 			// ignore error when loading signatures
 		} finally {
-			close(doc);
+			IOUtils.closeQuietly(doc);
 		}
 		return signaturesFound;
 	}
@@ -374,8 +391,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					final PdfDocTimestampInfo existingSignatureDocTimestamp = (PdfDocTimestampInfo) existingSignature;
 					if (existingSignatureDocTimestamp.getTimestampToken().getTimeStampType() == TimestampType.SIGNATURE_TIMESTAMP) {
 
-						if (LOG.isDebugEnabled()) {
-							LOG.debug("Signature was already found in the external doc. Returning newly (inner) found signature {} {}",
+						if (logger.isDebugEnabled()) {
+							logger.debug("Signature was already found in the external doc. Returning newly (inner) found signature {} {}",
 									existingSignature.getClass().getSimpleName(), uniqueId);
 						}
 						return existingSignatureDocTimestamp;
@@ -386,29 +403,18 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				}
 				signaturesFound.remove(existingSignature);
 				signaturesFound.add(pdfSignatureOrDocTimestampInfo);
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Signature was already found in the external doc. Returning newly (inner) found signature {} {}",
+				if (logger.isDebugEnabled()) {
+					logger.debug("Signature was already found in the external doc. Returning newly (inner) found signature {} {}",
 							pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), uniqueId);
 				}
 				return pdfSignatureOrDocTimestampInfo;
 			}
 		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Signature newly found {} {}", pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), uniqueId);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Signature newly found {} {}", pdfSignatureOrDocTimestampInfo.getClass().getSimpleName(), uniqueId);
 		}
 		return pdfSignatureOrDocTimestampInfo;
 	}
 
-	private void close(PDDocument doc) throws DSSException {
-
-		if (doc != null) {
-
-			try {
-				doc.close();
-			} catch (IOException e) {
-				throw new DSSException(e);
-			}
-		}
-	}
 
 }
