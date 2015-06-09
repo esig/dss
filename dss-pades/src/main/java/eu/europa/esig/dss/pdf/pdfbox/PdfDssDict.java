@@ -20,28 +20,40 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.IOException;
 import java.security.cert.X509CRL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.ArrayUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.pades.signature.DSSPDFUtils;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.x509.CertificateToken;
 
+/**
+ * This class is a representation of a DSS (Document Security Store) Dictionary embedded in a PDF file.
+ * The dictionary is unique in a PDF file and can contain : VRI dictionary, certificates (Certs), OCSP responses (OCSPs) and CRLs.
+ * This dictionary is filled in PAdES-BASELINE-LT extension process.
+ */
 public class PdfDssDict {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfDssDict.class);
+	private static final Logger logger = LoggerFactory.getLogger(PdfDssDict.class);
+
+	private static final String DSS_DICTIONARY_NAME = "DSS";
+	private static final String CERT_ARRAY_NAME_DSS = "Certs";
+	private static final String OCSP_ARRAY_NAME_DSS = "OCSPs";
+	private static final String CRL_ARRAY_NAME_DSS = "CRLs";
+
+	private static final String VRI_DICTIONARY_NAME = "VRI";
+	private static final String CERT_ARRAY_NAME_VRI = "Cert";
+	private static final String OCSP_ARRAY_NAME_VRI = "OCSP";
+	private static final String CRL_ARRAY_NAME_VRI = "CRL";
 
 	private Set<X509CRL> crlList = new HashSet<X509CRL>();
 
@@ -49,85 +61,109 @@ public class PdfDssDict {
 
 	private Set<CertificateToken> certList = new HashSet<CertificateToken>();
 
-	public static PdfDssDict build(PdfDict documentDict) throws IOException {
+	public static PdfDssDict build(PdfDict documentDict) {
 		if (documentDict != null) {
-
-			final PdfDict dssCatalog = documentDict.getAsDict("DSS");
+			final PdfDict dssCatalog = documentDict.getAsDict(DSS_DICTIONARY_NAME);
 			if (dssCatalog != null) {
 				return new PdfDssDict(dssCatalog);
 			}
 		}
+		logger.debug("No DSS dictionary found");
 		return null;
 	}
 
-	private PdfDssDict(PdfDict dssCatalog) throws IOException {
-		try {
-			readCerts(dssCatalog);
-		} catch (Exception e) {
-			LOG.debug(e.getMessage(), e);
-		}
-		try {
-			readCrl(dssCatalog);
-		} catch (Exception e) {
-			LOG.debug(e.getMessage(), e);
-		}
-		try {
-			readOcsp(dssCatalog);
-		} catch (Exception e) {
-			LOG.debug(e.getMessage(), e);
-		}
+	private PdfDssDict(PdfDict dssDictionary) {
+		readVRI(dssDictionary);
+		readCerts(dssDictionary);
+		readCrls(dssDictionary);
+		readOcsps(dssDictionary);
 	}
 
-	private void readCerts(PdfDict dssCatalog) throws IOException {
-		final PdfArray certsArray = dssCatalog.getAsArray("Certs");
-		if (certsArray != null) {
-
-			LOG.debug("There is {} in this certsArray", certsArray.size());
-			for (int ii = 0; ii < certsArray.size(); ii++) {
-
-				final byte[] stream = certsArray.getBytes(ii);
-				final CertificateToken cert = DSSUtils.loadCertificate(stream);
-				certList.add(cert);
-			}
-		}
-	}
-
-	private void readOcsp(PdfDict dssCatalog) throws IOException {
-		// Add OSCPs from DSS catalog (LT level)
-		PdfArray ocspArray = dssCatalog.getAsArray("OCSPs");
-		if (ocspArray != null) {
-			LOG.debug("Found oscpArray of size {}", ocspArray.size());
-
-			for (int ii = 0; ii < ocspArray.size(); ii++) {
-				final byte[] stream = ocspArray.getBytes(ii);
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("OSCP {} data = {}", ii, Hex.encodeHexString(stream));
+	private void readVRI(PdfDict dssDictionary) {
+		PdfDict vriDict = dssDictionary.getAsDict(VRI_DICTIONARY_NAME);
+		if (vriDict != null) {
+			logger.debug("There is a VRI dictionary in DSS dictionary");
+			try {
+				String[] names = vriDict.list();
+				if (ArrayUtils.isNotEmpty(names)) {
+					for (String name : names) {
+						extractCertsFromArray(vriDict.getAsDict(name), VRI_DICTIONARY_NAME + "/" + name, CERT_ARRAY_NAME_VRI);
+						extractOCSPsFromArray(vriDict.getAsDict(name), VRI_DICTIONARY_NAME + "/" + name, OCSP_ARRAY_NAME_VRI);
+						extractCRLsFromArray(vriDict.getAsDict(name), VRI_DICTIONARY_NAME + "/" + name, CRL_ARRAY_NAME_VRI);
+					}
 				}
-				final OCSPResp ocspResp = new OCSPResp(stream);
-				final BasicOCSPResp responseObject;
+			} catch (Exception e) {
+				logger.debug("Unable to analyse VRI dictionary : " + e.getMessage());
+			}
+		} else {
+			logger.debug("No VRI dictionary found in DSS dictionary");
+		}
+	}
+
+	private void readCerts(PdfDict dssDictionary) {
+		extractCertsFromArray(dssDictionary, DSS_DICTIONARY_NAME, CERT_ARRAY_NAME_DSS);
+	}
+
+	private void readOcsps(PdfDict dssDictionary) {
+		extractOCSPsFromArray(dssDictionary, DSS_DICTIONARY_NAME, OCSP_ARRAY_NAME_DSS);
+	}
+
+	private void readCrls(PdfDict dssDictionary) {
+		extractCRLsFromArray(dssDictionary, DSS_DICTIONARY_NAME, CRL_ARRAY_NAME_DSS);
+	}
+
+	private void extractCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
+		final PdfArray crlArray = dict.getAsArray(arrayName);
+		if (crlArray != null) {
+			logger.debug("There are {} CRLs in {} dictionary", crlArray.size(), dictionaryName);
+			for (int ii = 0; ii < crlArray.size(); ii++) {
 				try {
-					responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
-					ocspList.add(responseObject);
-				} catch (OCSPException e) {
-					LOG.error("Error decoding ocspResp " + ocspResp, e);
+					final byte[] bytes = crlArray.getBytes(ii);
+					final X509CRL x509CRL = DSSUtils.loadCRL(bytes);
+					crlList.add(x509CRL);
+				} catch (Exception e) {
+					logger.debug("Unable to read CRL " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
 				}
 			}
 		} else {
-			LOG.debug("oscpArray is null");
+			logger.debug("No CRLs found in {} dictionary", dictionaryName);
 		}
-
 	}
 
-	private void readCrl(PdfDict dssCatalog) {
-		final PdfArray crlArray = dssCatalog.getAsArray("CRLs");
-		if (crlArray != null) {
-
-			for (int ii = 0; ii < crlArray.size(); ii++) {
-
-				final byte[] bytes = DSSPDFUtils.getBytes(crlArray, ii);
-				final X509CRL x509CRL = DSSUtils.loadCRL(bytes);
-				crlList.add(x509CRL);
+	private void extractCertsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
+		final PdfArray certsArray = dict.getAsArray(arrayName);
+		if (certsArray != null) {
+			logger.debug("There are {} certificates in {} dictionary", certsArray.size(), dictionaryName);
+			for (int ii = 0; ii < certsArray.size(); ii++) {
+				try {
+					final byte[] stream = certsArray.getBytes(ii);
+					final CertificateToken cert = DSSUtils.loadCertificate(stream);
+					certList.add(cert);
+				} catch (Exception e) {
+					logger.debug("Unable to read Cert " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
+				}
 			}
+		} else {
+			logger.debug("No Certs found in {} dictionary", dictionaryName);
+		}
+	}
+
+	private void extractOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
+		PdfArray ocspArray = dict.getAsArray(arrayName);
+		if (ocspArray != null) {
+			logger.debug("There are {} OCSPs in {} dictionary", ocspArray.size(), dictionaryName);
+			for (int ii = 0; ii < ocspArray.size(); ii++) {
+				try {
+					final byte[] stream = ocspArray.getBytes(ii);
+					final OCSPResp ocspResp = new OCSPResp(stream);
+					final BasicOCSPResp responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
+					ocspList.add(responseObject);
+				} catch (Exception e) {
+					logger.debug("Unable to read OCSP " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
+				}
+			}
+		} else {
+			logger.debug("No OCSPs found in {} dictionary", dictionaryName);
 		}
 	}
 

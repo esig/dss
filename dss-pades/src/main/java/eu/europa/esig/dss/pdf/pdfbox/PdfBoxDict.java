@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.pdfbox.cos.COSArray;
@@ -36,8 +35,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
-import eu.europa.esig.dss.pdf.model.ModelPdfArray;
-import eu.europa.esig.dss.pdf.model.ModelPdfDict;
+import eu.europa.esig.dss.pdf.PdfStreamArray;
 
 class PdfBoxDict implements PdfDict {
 
@@ -56,27 +54,6 @@ class PdfBoxDict implements PdfDict {
 		wrapped = new COSDictionary();
 		if (type != null) {
 			wrapped.setItem("Type", COSName.getPDFName(type));
-		}
-	}
-
-	public PdfBoxDict(ModelPdfDict dict) {
-		try {
-			wrapped = new COSDictionary();
-			for (Entry<String, Object> e : dict.getValues().entrySet()) {
-				if (e.getValue() instanceof Calendar) {
-					add(e.getKey(), (Calendar) e.getValue());
-				} else if (e.getValue() instanceof ModelPdfDict) {
-					add(e.getKey(), new PdfBoxDict((ModelPdfDict) e.getValue()));
-				} else if (e.getValue() instanceof PdfArray) {
-					add(e.getKey(), new PdfBoxArray((ModelPdfArray) e.getValue()));
-				} else if (e.getValue() instanceof String) {
-					wrapped.setItem(e.getKey(), COSName.getPDFName((String) e.getValue()));
-				} else {
-					throw new IllegalArgumentException(e.getValue().getClass().getName());
-				}
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -131,8 +108,8 @@ class PdfBoxDict implements PdfDict {
 		throw new IOException(name + " was expected to be a COSString element but was " + val.getClass() + " : " + val);
 	}
 
-	// @Override
-	public String[] list() throws IOException {
+	@Override
+	public String[] list() {
 		final Set<COSName> cosNames = wrapped.keySet();
 		List<String> result = new ArrayList<String>(cosNames.size());
 		for (final COSName cosName : cosNames) {
@@ -147,21 +124,35 @@ class PdfBoxDict implements PdfDict {
 		return wrapped.toString();
 	}
 
-	public void add(String key, PdfArray array) throws IOException {
+	@Override
+	public void add(String key, PdfArray array) {
 		PdfBoxArray a = (PdfBoxArray) array;
 		wrapped.setItem(key, a.wrapped);
 		wrapped.setNeedToBeUpdate(true);
 	}
 
-	public void add(String key, PdfDict dict) throws IOException {
+	@Override
+	public void add(String key, PdfStreamArray streamArray) {
+		PdfBoxStreamArray a = (PdfBoxStreamArray) streamArray;
+		wrapped.setItem(key, a.wrapped);
+		wrapped.setNeedToBeUpdate(true);
+	}
+
+	@Override
+	public void add(String key, PdfDict dict) {
 		PdfBoxDict d = (PdfBoxDict) dict;
 		wrapped.setItem(key, d.wrapped);
 		wrapped.setNeedToBeUpdate(true);
 	}
 
-	public void add(String key, Calendar cal) throws IOException {
+	@Override
+	public void add(String key, Calendar cal) {
 		wrapped.setDate(key, cal);
 		wrapped.setNeedToBeUpdate(true);
+	}
+
+	public void setDirect(boolean direct) {
+		wrapped.setDirect(true);
 	}
 
 	COSDictionary getWrapped() {

@@ -22,14 +22,14 @@ package eu.europa.esig.dss.pades.signature;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.collections.CollectionUtils;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -42,11 +42,11 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
+import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PdfArray;
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.model.ModelPdfArray;
-import eu.europa.esig.dss.pdf.model.ModelPdfDict;
-import eu.europa.esig.dss.pdf.model.ModelPdfStream;
+import eu.europa.esig.dss.pdf.PdfStream;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -54,33 +54,24 @@ import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.OCSPToken;
-import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
- * Extend a PAdES extension up to LTV.
- *
- *
+ * PAdES Baseline LT signature
  */
-
 class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameters> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineLT.class);
-
-	// DSSS/VRI dictionary is not mandatory, therefore it's not included
-	private static final boolean INCLUDE_VRI_DICTIONARY = false;
-
 	// the information read from the signatures
-	private ModelPdfArray certArray = new ModelPdfArray();
-	private ModelPdfArray ocspArray = new ModelPdfArray();
-	private ModelPdfArray crlArray = new ModelPdfArray();
+	final PdfObjFactory factory = PdfObjFactory.getInstance();
+	private PdfArray dssCertArray = factory.newArray();
+	private PdfArray dssOcspArray = factory.newArray();
+	private PdfArray dssCrlArray = factory.newArray();
 
 	private final CertificateVerifier certificateVerifier;
 	private final TSPSource tspSource;
 
 	PAdESLevelBaselineLT(final TSPSource tspSource, final CertificateVerifier certificateVerifier) {
-
 		this.certificateVerifier = certificateVerifier;
 		this.tspSource = tspSource;
 	}
@@ -93,78 +84,43 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 	 */
 	@Override
 	public InMemoryDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) throws DSSException {
-
 		try {
 
 			// check if needed to extends with PAdESLevelBaselineT
-			final PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
+			PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
 			pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+
 			List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
 			for (final AdvancedSignature signature : signatures) {
-
 				if (!signature.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T)) {
-
-					final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource, certificateVerifier);
+					final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
 					document = padesLevelBaselineT.extendSignatures(document, parameters);
-					final PDFDocumentValidator pdfDocumentValidatorOverTimestamp = new PDFDocumentValidator(document);
-					pdfDocumentValidatorOverTimestamp.setCertificateVerifier(certificateVerifier);
-					signatures = pdfDocumentValidator.getSignatures();
 					break;
 				}
 			}
 
-			assertExtendSignaturePossible(pdfDocumentValidator);
-
+			// create DSS dictionary
+			PdfDict dssDictionary = factory.newDict("DSS");
 			for (final AdvancedSignature signature : signatures) {
 				if (signature instanceof PAdESSignature) {
 					PAdESSignature pAdESSignature = (PAdESSignature) signature;
-					validate(pAdESSignature);
+					SignatureValidationCallBack callback = new SignatureValidationCallBack();
+					validate(pAdESSignature, callback);
+					includeToDssDictionary(dssDictionary, callback);
 				}
 			}
 
-			final ModelPdfDict dssDictionary = createDSSDictionary();
+			addGlobalCertsCrlsOcsps(dssDictionary);
 
-			/**
-			 * Add the signature's VRI dictionary, hashing the signature block from the callback method.<br>
-			 * The key of each entry in this dictionary is the base-16-encoded (uppercase) SHA1 digest of the signature to
-			 * which it applies and the value is the Signature VRI dictionary which contains the validation-related
-			 * information for that signature.
-			 */
-			if (INCLUDE_VRI_DICTIONARY) {
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-				ModelPdfDict vriDictionary = new ModelPdfDict("VRI");
-				for (final AdvancedSignature signature : signatures) {
-					if (signature instanceof PAdESSignature) {
-						ModelPdfDict sigVriDictionary = new ModelPdfDict();
-						// sigVriDictionary to be completed with Cert, CRL and OCSP specific to this signature
-						PAdESSignature pAdESSignature = (PAdESSignature) signature;
+			Map<String, PdfDict> dictionariesToAdd = new HashMap<String, PdfDict>();
+			dictionariesToAdd.put("DSS", dssDictionary);
 
-						final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, pAdESSignature.getCAdESSignature().getCmsSignedData().getEncoded());
-						String hexHash = Hex.encodeHexString(digest).toUpperCase();
+			final PDFSignatureService signatureService = factory.newPAdESSignatureService();
+			signatureService.addDictionaries(document.openStream(), baos, dictionariesToAdd);
 
-						vriDictionary.add(hexHash, sigVriDictionary);
-
-					}
-				}
-
-				dssDictionary.add("VRI", vriDictionary);
-				// Cert, CRL and OCSP to be included
-			}
-
-			/*
-             Baseline LT: "Hence implementations claiming conformance to the LT-Conformance Level build the PAdES-LTV form
-             (PAdES Part 4 [9], clause 4) on signatures that shall be compliant to the T-Level requirements and to the present
-             clause."
-
-             LTA: "It is recommended that signed PDF documents, conforming to this profile, contain DSS followed by a document Time-stamp."
-
-             So we add a timestamp, and that a good thing because PDFBox cannot do incremental update without signing.
-			 */
-			final ByteArrayOutputStream tDoc = new ByteArrayOutputStream();
-			final PDFTimestampService timestampService = PdfObjFactory.getInstance().newTimestampSignatureService();
-			Map.Entry<String, ModelPdfDict> dictToAdd = new AbstractMap.SimpleEntry<String, ModelPdfDict>("DSS", dssDictionary);
-			timestampService.timestamp(document, tDoc, parameters, tspSource, dictToAdd);
-			final InMemoryDocument inMemoryDocument = new InMemoryDocument(tDoc.toByteArray());
+			final InMemoryDocument inMemoryDocument = new InMemoryDocument(baos.toByteArray());
 			inMemoryDocument.setMimeType(MimeType.PDF);
 			return inMemoryDocument;
 		} catch (IOException e) {
@@ -172,55 +128,124 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		}
 	}
 
-	private ModelPdfDict createDSSDictionary() throws IOException {
-		final ModelPdfDict dssDictionary = new ModelPdfDict("DSS");
+	private void includeToDssDictionary(PdfDict dssDictionary, SignatureValidationCallBack callback) throws IOException {
 
-		if (certArray.size() > 0) {
-			dssDictionary.add("Certs", certArray);
+		PdfDict vriDictionary = ensureNotNull(dssDictionary, "VRI");
+
+		PdfDict sigVriDictionary = factory.newDirectDict();
+
+		PAdESSignature signature = callback.getSignature();
+		final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, signature.getCAdESSignature().getCmsSignedData().getEncoded());
+		String hexHash = Hex.encodeHexString(digest).toUpperCase();
+
+		if (CollectionUtils.isNotEmpty(callback.getCertificates())) {
+			PdfArray vriCertArray = factory.newArray();
+			for (CertificateToken token : callback.getCertificates()) {
+				PdfStream stream = factory.newStream(token.getEncoded());
+				vriCertArray.add(stream);
+				dssCertArray.add(stream);
+			}
+			sigVriDictionary.add("Cert", factory.newStreamArray(vriCertArray));
 		}
 
-		if (crlArray.size() > 0) {
-			dssDictionary.add("CRLs", crlArray);
+		if (CollectionUtils.isNotEmpty(callback.getCrls())) {
+			PdfArray vriCrlArray = factory.newArray();
+			for (CRLToken token : callback.getCrls()) {
+				PdfStream stream = factory.newStream(token.getEncoded());
+				vriCrlArray.add(stream);
+				dssCrlArray.add(stream);
+			}
+			sigVriDictionary.add("CRL", factory.newStreamArray(vriCrlArray));
 		}
 
-		if (ocspArray.size() > 0) {
-			dssDictionary.add("OCSPs", ocspArray);
+		if (CollectionUtils.isNotEmpty(callback.getOcsps())) {
+			PdfArray vriOcspArray = factory.newArray();
+			for (OCSPToken token : callback.getOcsps()) {
+				PdfStream stream = factory.newStream(token.getEncoded());
+				vriOcspArray.add(stream);
+				dssOcspArray.add(stream);
+			}
+			sigVriDictionary.add("OCSP", factory.newStreamArray(vriOcspArray));
 		}
-		return dssDictionary;
+
+		vriDictionary.add(hexHash, sigVriDictionary);
+
 	}
 
-	private void assertExtendSignaturePossible(PDFDocumentValidator pdfDocumentValidator) {
-
-	}
-
-	private void validate(final PAdESSignature pAdESSignature) {
-
-		final CAdESSignature cadesSignature = pAdESSignature.getCAdESSignature();
-		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
-		final DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusionInProfileLT = cadesSignature.getRevocationDataForInclusion(validationContext);
-
-		for (final CRLToken crlToken : revocationsForInclusionInProfileLT.crlTokens) {
-			addNewToken(crlToken, crlArray);
-
+	private void addGlobalCertsCrlsOcsps(PdfDict dssDictionary) {
+		if (dssCertArray.size() > 0) {
+			dssDictionary.add("Certs", dssCertArray);
 		}
-		for (final OCSPToken ocspToken : revocationsForInclusionInProfileLT.ocspTokens) {
-
-			addNewToken(ocspToken, ocspArray);
+		if (dssCrlArray.size() > 0) {
+			dssDictionary.add("CRLs", dssCrlArray);
 		}
-		final Set<CertificateToken> certificatesForInclusionInProfileLT = cadesSignature.getCertificatesForInclusion(validationContext);
-		for (final CertificateToken certificateToken : certificatesForInclusionInProfileLT) {
-
-			addNewToken(certificateToken, certArray);
+		if (dssOcspArray.size() > 0) {
+			dssDictionary.add("OCSPs", dssOcspArray);
 		}
 	}
 
-	private void addNewToken(final Token crlToken, final ModelPdfArray pdfArray) throws DSSException {
-		try {
-			final ModelPdfStream stream = new ModelPdfStream(crlToken.getEncoded());
-			pdfArray.add(stream);
-		} catch (IOException e) {
-			throw new DSSException(e);
+	private PdfDict ensureNotNull(PdfDict dssDictionary, String dictionaryName) {
+		PdfDict dictionary = dssDictionary.getAsDict(dictionaryName);
+		if (dictionary == null) {
+			dictionary = factory.newDict();
+			dssDictionary.add(dictionaryName, dictionary);
 		}
+		return dictionary;
+	}
+
+	private void validate(PAdESSignature signature, SignatureValidationCallBack validationCallback) {
+
+		CAdESSignature cadesSignature = signature.getCAdESSignature();
+		ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
+		DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusionInProfileLT = cadesSignature.getRevocationDataForInclusion(validationContext);
+
+		validationCallback.setSignature(signature);
+		validationCallback.setCrls(revocationsForInclusionInProfileLT.crlTokens);
+		validationCallback.setOcsps(revocationsForInclusionInProfileLT.ocspTokens);
+
+		Set<CertificateToken> certs = new HashSet<CertificateToken>(cadesSignature.getCertificates());
+		validationCallback.setCertificates(certs);
+	}
+
+	class SignatureValidationCallBack {
+
+		private PAdESSignature signature;
+		private List<CRLToken> crls;
+		private List<OCSPToken> ocsps;
+		private Set<CertificateToken> certificates;
+
+		public PAdESSignature getSignature() {
+			return signature;
+		}
+
+		public void setSignature(PAdESSignature signature) {
+			this.signature = signature;
+		}
+
+		public List<CRLToken> getCrls() {
+			return crls;
+		}
+
+		public void setCrls(List<CRLToken> crls) {
+			this.crls = crls;
+		}
+
+		public List<OCSPToken> getOcsps() {
+			return ocsps;
+		}
+
+		public void setOcsps(List<OCSPToken> ocsps) {
+			this.ocsps = ocsps;
+		}
+
+		public Set<CertificateToken> getCertificates() {
+			return certificates;
+		}
+
+		public void setCertificates(Set<CertificateToken> certificates) {
+			this.certificates = certificates;
+		}
+
 	}
 
 }
