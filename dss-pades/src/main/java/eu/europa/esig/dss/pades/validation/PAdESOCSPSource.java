@@ -22,58 +22,37 @@ package eu.europa.esig.dss.pades.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pdf.pdfbox.PdfDssDict;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 
 /**
  * OCSPSource that retrieves the OCSPResp from a PAdES Signature
  *
- *
  */
-
 public class PAdESOCSPSource extends OfflineOCSPSource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PAdESOCSPSource.class);
+	private PdfDssDict dssDictionary;
 
-    private final CAdESSignature cadesSignature;
-    private PdfDssDict dssCatalog;
+	/**
+	 * The default constructor for PAdESOCSPSource.
+	 *
+	 * @param dssDictionary
+	 */
+	public PAdESOCSPSource(PdfDssDict dssDictionary) {
+		this.dssDictionary = dssDictionary;
+	}
 
-    /**
-     * The default constructor for PAdESOCSPSource.
-     *
-     * @param cadesSignature
-     * @param dssCatalog
-     */
-    public PAdESOCSPSource(CAdESSignature cadesSignature, PdfDssDict dssCatalog) {
-        this.cadesSignature = cadesSignature;
-        this.dssCatalog = dssCatalog;
-    }
+	@Override
+	public List<BasicOCSPResp> getContainedOCSPResponses() {
+		List<BasicOCSPResp> result = new ArrayList<BasicOCSPResp>();
 
-    @Override
-    public List<BasicOCSPResp> getContainedOCSPResponses() {
-        List<BasicOCSPResp> result = new ArrayList<BasicOCSPResp>();
+		if (dssDictionary != null) {
+			result.addAll(dssDictionary.getOcspList());
+		}
 
-        // add OSCPs from embedded cadesSignature
-        if (cadesSignature != null) {
-            final List<BasicOCSPResp> containedOCSPResponses = cadesSignature.getOCSPSource().getContainedOCSPResponses();
-            result.addAll(containedOCSPResponses);
-        }
-
-        if (dssCatalog != null) {
-            // Add OSCPs from DSS catalog (LT level)
-
-            final Set<BasicOCSPResp> ocspList = dssCatalog.getOcspList();
-            for (final BasicOCSPResp basicOCSPResp : ocspList) {
-                result.add(basicOCSPResp);
-            }
-        }
-        return result;
-    }
+		return result;
+	}
 }

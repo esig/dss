@@ -38,50 +38,43 @@ import eu.europa.esig.dss.x509.SignatureCertificateSource;
 
 public class PAdESCertificateSource extends SignatureCertificateSource {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(PAdESCertificateSource.class.getName());
+	/**
+	 * The default constructor for PAdESCertificateSource.
+	 *
+	 * @param dssCatalog
+	 * @param cadesCertSource
+	 * @param certPool        The pool of certificates to be used. Can be null.
+	 */
+	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CAdESCertificateSource cadesCertSource, final CertificatePool certPool) {
 
-    private final PdfDssDict dssCatalog;
+		super(certPool);
 
-    /**
-     * The default constructor for PAdESCertificateSource.
-     *
-     * @param dssCatalog
-     * @param cadesCertSource
-     * @param certPool        The pool of certificates to be used. Can be null.
-     */
-    public PAdESCertificateSource(final PdfDssDict dssCatalog, final CAdESCertificateSource cadesCertSource, final CertificatePool certPool) {
+		// TODO certificateTokens -> private
+		certificateTokens = new ArrayList<CertificateToken>();
+		if (dssCatalog != null) {
+			final Set<CertificateToken> certList = dssCatalog.getCertList();
+			for (final CertificateToken certToken : certList) {
+				addCertificate(certToken);
+			}
+		}
 
-        super(certPool);
-        this.dssCatalog = dssCatalog;
+		if (cadesCertSource != null) {
+			// We add the CAdES specific certificates to this source.
+			for (final CertificateToken certToken : cadesCertSource.getCertificates()) {
+				addCertificate(certToken);
+			}
+		}
+	}
 
-        certificateTokens = new ArrayList<CertificateToken>();
-        if (dssCatalog != null) {
+	@Override
+	public List<CertificateToken> getEncapsulatedCertificates() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-            final Set<CertificateToken> certList = dssCatalog.getCertList();
-            for (final CertificateToken x509Certificate : certList) {
-                addCertificate(x509Certificate);
-            }
-        }
-
-        if (cadesCertSource != null) {
-            // We add the CAdES specific certificates to this source.
-            for (final CertificateToken certToken : cadesCertSource.getCertificates()) {
-                if (!certificateTokens.contains(certToken)) {
-                    certificateTokens.add(certToken);
-                }
-            }
-        }
-    }
-
-    @Override
-    public List<CertificateToken> getEncapsulatedCertificates() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<CertificateToken> getKeyInfoCertificates() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public List<CertificateToken> getKeyInfoCertificates() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
