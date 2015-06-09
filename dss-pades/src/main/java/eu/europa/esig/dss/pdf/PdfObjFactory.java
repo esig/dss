@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.pdf;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,11 +75,7 @@ public abstract class PdfObjFactory {
 		return newDict(null);
 	}
 
-	public abstract PdfReader newReader(InputStream input) throws IOException;
-
 	public abstract PdfStream newStream(byte[] bytes) throws IOException;
-
-	public abstract PdfWriter newWriter(PdfReader reader, OutputStream output) throws IOException;
 
 	public abstract PDFSignatureService newPAdESSignatureService();
 
