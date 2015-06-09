@@ -8,6 +8,8 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String contactInfo;
 	private String location;
 
+	private int signatureSize = 9472; // default value in pdfbox
+
 	/**
 	 * This attribute is used to create visible signature in PAdES form
 	 */
@@ -21,7 +23,8 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	}
 
 	/**
-	 * @param reason the reason to set (used by PAdES)
+	 * @param reason
+	 *            the reason to set (used by PAdES)
 	 */
 	public void setReason(final String reason) {
 		this.reason = reason;
@@ -35,7 +38,8 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	}
 
 	/**
-	 * @param contactInfo the contactInfo to set (used by PAdES)
+	 * @param contactInfo
+	 *            the contactInfo to set (used by PAdES)
 	 */
 	public void setContactInfo(final String contactInfo) {
 		this.contactInfo = contactInfo;
@@ -55,6 +59,17 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public int getSignatureSize() {
+		return signatureSize;
+	}
+
+	/**
+	 * This setter allows to reserve more than the default size for a signature (9472bytes)
+	 */
+	public void setSignatureSize(int signatureSize) {
+		this.signatureSize = signatureSize;
 	}
 
 }

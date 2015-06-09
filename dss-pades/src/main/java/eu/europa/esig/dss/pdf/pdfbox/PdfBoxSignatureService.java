@@ -162,12 +162,13 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				}
 			};
 
-			if (parameters.getImageParameters() == null) {
-				pdDocument.addSignature(pdSignature, signatureInterface);
-			} else {
-				SignatureOptions options = createSignatureOptions(pdDocument, parameters.getImageParameters());
-				pdDocument.addSignature(pdSignature, signatureInterface, options);
+			SignatureOptions options = new SignatureOptions();
+			options.setPreferedSignatureSize(parameters.getSignatureSize());
+
+			if (parameters.getImageParameters() != null) {
+				fillImageParameters(pdDocument, parameters.getImageParameters(), options);
 			}
+			pdDocument.addSignature(pdSignature, signatureInterface, options);
 
 			saveDocumentIncrementally(parameters, signedFile, fileOutputStream, pdDocument);
 			final byte[] digestValue = digest.digest();
@@ -183,9 +184,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	private SignatureOptions createSignatureOptions(final PDDocument doc, final SignatureImageParameters imgParams) throws IOException {
-		SignatureOptions options = new SignatureOptions();
-
+	private void fillImageParameters(final PDDocument doc, final SignatureImageParameters imgParams, SignatureOptions options) throws IOException {
 		Dimension optimalSize = ImageFactory.getOptimalSize(imgParams);
 		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, ImageFactory.create(imgParams), imgParams.getPage());
 		visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis()).width((float) optimalSize.getWidth()).height((float) optimalSize.getHeight());
@@ -195,8 +194,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 		options.setVisualSignature(signatureProperties);
 		options.setPage(imgParams.getPage());
-
-		return options;
 	}
 
 	private void addExtraDictionaries(final PDDocument doc, final Map.Entry<String, ModelPdfDict>[] extraDictionariesToAddBeforeSign) {
