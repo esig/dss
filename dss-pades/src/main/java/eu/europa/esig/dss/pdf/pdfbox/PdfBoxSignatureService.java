@@ -210,6 +210,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters) {
 
 		final PDSignature signature = new PDSignature();
+		signature.setType(getType());
 		signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
 		signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE); // default filter
 		// sub-filter for basic and PAdES Part 2 signatures

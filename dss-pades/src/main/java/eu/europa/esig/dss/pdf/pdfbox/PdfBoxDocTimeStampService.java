@@ -51,6 +51,11 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
 	}
 
 	@Override
+	protected COSName getType() {
+		return COSName.DOC_TIME_STAMP;
+	}
+
+	@Override
 	public void timestamp(final DSSDocument document, final OutputStream signedStream, final PAdESSignatureParameters parameters, final TSPSource tspSource,
 			final Map.Entry<String, ModelPdfDict>... dictToAdd) throws DSSException {
 
