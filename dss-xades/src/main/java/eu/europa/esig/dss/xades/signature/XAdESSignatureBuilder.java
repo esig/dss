@@ -56,7 +56,6 @@ import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.SignatureBuilder;
@@ -95,11 +94,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected Element signedSignaturePropertiesDom;
 	protected Element signedDataObjectPropertiesDom;
 	protected Element unsignedSignaturePropertiesDom;
-
-	/*
-	 * The object encapsulating the Time Stamp Protocol needed to create the level -T, of the signature
-	 */
-	protected TSPSource tspSource;
 
 	/**
 	 * Creates the signature according to the packaging

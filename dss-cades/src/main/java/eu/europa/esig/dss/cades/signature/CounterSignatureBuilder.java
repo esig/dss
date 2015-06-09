@@ -23,13 +23,11 @@ package eu.europa.esig.dss.cades.signature;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 
@@ -56,8 +54,6 @@ public class CounterSignatureBuilder extends CMSSignedDataBuilder {
 	 * @return the updated signature, in which the countersignature has been embedded
 	 */
 	public CMSSignedData signDocument(final CMSSignedData signedData) {
-
-		final ASN1ObjectIdentifier csIdentifier = OID.id_countersignature;
 
 		//Retrieve the SignerInformation from the countersigned signature
 		final SignerInformationStore originalSignerInfos = cmsSignedData.getSignerInfos();

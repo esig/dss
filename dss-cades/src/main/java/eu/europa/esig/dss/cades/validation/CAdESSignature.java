@@ -387,7 +387,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		if (signingCertificateValidity == null) {
-			LOG.warn("Signing certificate not found: " + signerId);
+			LOG.warn("Signing certificate not found: " + signerId.getIssuer() + " " + signerId.getSerialNumber());
 		} else if (!verifySignedReferencesToSigningCertificate()) {
 			LOG.warn("There is no valid signed reference to the signing certificate: " + signingCertificateValidity.getCertificateToken().getAbbreviation());
 		}
@@ -1374,16 +1374,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-
-		final List<AdvancedSignature> cadesList = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> countersignatures = new ArrayList<AdvancedSignature>();
 		for (final Object signer : signerInformation.getCounterSignatures().getSigners()) {
-
 			final SignerInformation signerInformation = (SignerInformation) signer;
-			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certPool);
-			cadesSignature.setMasterSignature(this);
-			cadesList.add(cadesSignature);
+			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, signerInformation, certPool);
+			countersignature.setMasterSignature(this);
+			countersignatures.add(countersignature);
 		}
-		return cadesList;
+		return countersignatures;
 	}
 
 	@Override

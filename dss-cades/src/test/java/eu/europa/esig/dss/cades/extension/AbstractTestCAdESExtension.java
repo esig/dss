@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
+import java.security.cert.X509CRL;
 import java.util.Date;
+
+import org.bouncycastle.asn1.x509.CRLReason;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -32,7 +35,9 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
+import eu.europa.esig.dss.test.gen.CRLGenerator;
 import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockCRLSource;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -40,10 +45,18 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<CAdESSignatureParameters> {
 
+	private X509CRL generatedCRL;
+
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
 		CertificateService certificateService = new CertificateService();
-		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+
+		MockPrivateKeyEntry issuerEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerEntry);
+		MockPrivateKeyEntry entryUserB = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerEntry);
+
+		CRLGenerator crlGenerator = new CRLGenerator();
+		generatedCRL = crlGenerator.generateCRL(entryUserB.getCertificate().getCertificate(), issuerEntry, new Date(), CRLReason.privilegeWithdrawn);
 
 		DSSDocument document = new InMemoryDocument("Hello world!".getBytes(), "test.bin");
 
@@ -55,10 +68,12 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+
 		CAdESService service = new CAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
+
 		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 		return signedDocument;
@@ -66,7 +81,9 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 
 	@Override
 	protected DocumentSignatureService<CAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
-		CAdESService service = new CAdESService(new CommonCertificateVerifier());
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setCrlSource(new MockCRLSource(generatedCRL));
+		CAdESService service = new CAdESService(certificateVerifier);
 		CertificateService certificateService = new CertificateService();
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
 		return service;
