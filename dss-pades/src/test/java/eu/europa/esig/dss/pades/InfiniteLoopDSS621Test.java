@@ -18,9 +18,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues.DSS667;
+package eu.europa.esig.dss.pades;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -105,9 +106,9 @@ public class InfiniteLoopDSS621Test {
 		for (final AdvancedSignature signature : signatures) {
 			SignatureCryptographicVerification cryptographicVerification = signature.checkSignatureIntegrity();
 			assertTrue(cryptographicVerification.isReferenceDataFound()); // Manual validation looks OK, BC 1.52 ?
-			assertTrue(cryptographicVerification.isReferenceDataIntact());
-			assertTrue(cryptographicVerification.isSignatureIntact());
-			assertTrue(cryptographicVerification.isSignatureValid());
+			assertFalse(cryptographicVerification.isReferenceDataIntact());
+			assertFalse(cryptographicVerification.isSignatureIntact());
+			assertFalse(cryptographicVerification.isSignatureValid());
 			assertTrue(StringUtils.isEmpty(cryptographicVerification.getErrorMessage()));
 			assertTrue(CollectionUtils.isNotEmpty(signature.getSignatureTimestamps()));
 		}
