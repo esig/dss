@@ -401,18 +401,12 @@ public final class DSSUtils {
 	 * @return
 	 * @throws java.security.cert.CertificateEncodingException
 	 */
-	public static String convertToPEM(final X509Certificate cert) throws DSSException {
-
-		try {
-
-			final Base64 encoder = new Base64(64);
-			final byte[] derCert = cert.getEncoded();
-			final String pemCertPre = new String(encoder.encode(derCert));
-			final String pemCert = CERT_BEGIN + pemCertPre + CERT_END;
-			return pemCert;
-		} catch (CertificateEncodingException e) {
-			throw new DSSException(e);
-		}
+	public static String convertToPEM(final CertificateToken cert) throws DSSException {
+		final Base64 encoder = new Base64(64);
+		final byte[] derCert = cert.getEncoded();
+		final String pemCertPre = new String(encoder.encode(derCert));
+		final String pemCert = CERT_BEGIN + pemCertPre + CERT_END;
+		return pemCert;
 	}
 
 	/**
@@ -1307,90 +1301,6 @@ public final class DSSUtils {
 		if (file != null) {
 			file.delete();
 		}
-	}
-
-	/**
-	 *
-	 *
-	 *
-	 *
-	 * @param array        the array to search through
-	 * @param objectToFind the object to find
-	 * @return {@code true} if the array contains the object
-	 */
-	public static boolean contains(Object[] array, Object objectToFind) {
-		return indexOf(array, objectToFind) != INDEX_NOT_FOUND;
-	}
-
-	/**
-	 *
-	 *
-	 *
-	 *
-	 * @param array        the array to search through for the object, may be {@code null}
-	 * @param objectToFind the object to find, may be {@code null}
-	 * @return the index of the object within the array,
-	 * {@link #INDEX_NOT_FOUND} ({@code -1}) if not found or {@code null} array input
-	 */
-	public static int indexOf(Object[] array, Object objectToFind) {
-		return indexOf(array, objectToFind, 0);
-	}
-
-	/**
-	 *
-	 *
-	 *
-	 *
-	 *
-	 * length will return {@link #INDEX_NOT_FOUND} ({@code -1}).</p>
-	 *
-	 * @param array        the array to search through for the object, may be {@code null}
-	 * @param objectToFind the object to find, may be {@code null}
-	 * @param startIndex   the index to start searching at
-	 * @return the index of the object within the array starting at the index,
-	 * {@link #INDEX_NOT_FOUND} ({@code -1}) if not found or {@code null} array input
-	 */
-	public static int indexOf(Object[] array, Object objectToFind, int startIndex) {
-		if (array == null) {
-			return INDEX_NOT_FOUND;
-		}
-		if (startIndex < 0) {
-			startIndex = 0;
-		}
-		if (objectToFind == null) {
-			for (int i = startIndex; i < array.length; i++) {
-				if (array[i] == null) {
-					return i;
-				}
-			}
-		} else if (array.getClass().getComponentType().isInstance(objectToFind)) {
-			for (int i = startIndex; i < array.length; i++) {
-				if (objectToFind.equals(array[i])) {
-					return i;
-				}
-			}
-		}
-		return INDEX_NOT_FOUND;
-	}
-
-	/**
-	 *
-	 * an empty string ("") if {@code null} input.</p>
-	 *
-	 * <pre>
-	 * ObjectUtils.toString(null)         = ""
-	 * ObjectUtils.toString("")           = ""
-	 * ObjectUtils.toString("bat")        = "bat"
-	 * ObjectUtils.toString(Boolean.TRUE) = "true"
-	 * </pre>
-	 *
-	 * @param obj the Object to {@code toString}, may be null
-	 * @return the passed in Object's toString, or nullStr if {@code null} input
-	 * @see String#valueOf(Object)
-	 * @since 2.0
-	 */
-	public static String toString(Object obj) {
-		return obj == null ? "" : obj.toString();
 	}
 
 	/**

@@ -777,7 +777,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			// !!! Log the certificate
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("PEM for certificate: " + certToken.getAbbreviation() + "--->");
-				final String pem = DSSUtils.convertToPEM(certToken.getCertificate());
+				final String pem = DSSUtils.convertToPEM(certToken);
 				LOG.trace("\n" + pem);
 			}
 			dealQCStatement(certToken, xmlCert);
