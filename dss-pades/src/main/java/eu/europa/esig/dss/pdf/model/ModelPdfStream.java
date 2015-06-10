@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pdf.model;
 
 public class ModelPdfStream {
 
-	byte[] bytes;
+	private final byte[] bytes;
 
 	public ModelPdfStream(byte[] bytes) {
 		this.bytes = bytes;

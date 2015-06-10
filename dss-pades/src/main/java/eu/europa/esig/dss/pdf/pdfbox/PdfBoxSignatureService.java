@@ -35,12 +35,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -63,14 +60,15 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.signature.DSSPDFUtils;
 import eu.europa.esig.dss.pades.signature.visible.ImageFactory;
+import eu.europa.esig.dss.pdf.DSSPDFUtils;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 class PdfBoxSignatureService implements PDFSignatureService {
@@ -386,7 +384,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	@Override
-	public void addDictionaries(InputStream inputStream, OutputStream outpuStream, Map<String, PdfDict> extraDictionariesToAddBeforeSign) {
+	public void addDssDictionary(InputStream inputStream, OutputStream outpuStream, ModelPdfDict dssDictionary) {
 		FileInputStream fis = null;
 		PDDocument pdDocument = null;
 		try {
@@ -399,14 +397,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
 
-			if (MapUtils.isNotEmpty(extraDictionariesToAddBeforeSign)) {
+			if (dssDictionary !=null){
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSDictionary();
-				for (Entry<String, PdfDict> pdfDictEntry : extraDictionariesToAddBeforeSign.entrySet()) {
-					final String key = pdfDictEntry.getKey();
-					final PdfBoxDict value = (PdfBoxDict) pdfDictEntry.getValue();
-					cosDictionary.setItem(key, value.getWrapped());
-					cosDictionary.setNeedToBeUpdate(true);
-				}
+				PdfBoxDict value = new PdfBoxDict(dssDictionary);
+				cosDictionary.setItem("DSS", value.getWrapped());
+				cosDictionary.setNeedToBeUpdate(true);
 			}
 
 			if (pdDocument.getDocumentId() == null) {

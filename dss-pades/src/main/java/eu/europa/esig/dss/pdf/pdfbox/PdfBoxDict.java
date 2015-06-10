@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.pdfbox.cos.COSArray;
@@ -36,6 +37,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfStreamArray;
+import eu.europa.esig.dss.pdf.model.ModelPdfArray;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 
 class PdfBoxDict implements PdfDict {
 
@@ -48,6 +51,24 @@ class PdfBoxDict implements PdfDict {
 	public PdfBoxDict(COSDictionary wrapped, PDDocument document) {
 		this.wrapped = wrapped;
 		this.document = document;
+	}
+
+
+	public PdfBoxDict(ModelPdfDict dict) {
+		wrapped = new COSDictionary();
+		for (Entry<String, Object> e : dict.getValues().entrySet()) {
+			if (e.getValue() instanceof Calendar) {
+				add(e.getKey(), (Calendar) e.getValue());
+			} else if (e.getValue() instanceof ModelPdfDict) {
+				add(e.getKey(), new PdfBoxDict((ModelPdfDict) e.getValue()));
+			} else if (e.getValue() instanceof ModelPdfArray) {
+				add(e.getKey(), new PdfBoxArray((ModelPdfArray) e.getValue()));
+			}else if (e.getValue() instanceof String) {
+				wrapped.setItem(e.getKey(), COSName.getPDFName((String) e.getValue()));
+			} else {
+				throw new IllegalArgumentException(e.getValue().getClass().getName());
+			}
+		}
 	}
 
 	public PdfBoxDict(String type) {

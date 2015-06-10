@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,24 +56,6 @@ public abstract class PdfObjFactory {
 		}
 		return INSTANCE;
 	}
-
-	public abstract PdfArray newArray();
-
-	public abstract PdfStreamArray newStreamArray(PdfArray array);
-
-	public abstract PdfDict newDict(String dictType);
-
-	public abstract PdfDict newDirectDict(String dictType);
-
-	public PdfDict newDict() {
-		return newDict(null);
-	}
-
-	public PdfDict newDirectDict() {
-		return newDict(null);
-	}
-
-	public abstract PdfStream newStream(byte[] bytes) throws IOException;
 
 	public abstract PDFSignatureService newPAdESSignatureService();
 

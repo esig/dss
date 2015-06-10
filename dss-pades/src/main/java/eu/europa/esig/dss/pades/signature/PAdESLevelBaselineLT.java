@@ -22,10 +22,8 @@ package eu.europa.esig.dss.pades.signature;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
@@ -43,10 +41,10 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfArray;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.PdfStream;
+import eu.europa.esig.dss.pdf.model.ModelPdfArray;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
+import eu.europa.esig.dss.pdf.model.ModelPdfStream;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -62,11 +60,9 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  */
 class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameters> {
 
-	// the information read from the signatures
-	final PdfObjFactory factory = PdfObjFactory.getInstance();
-	private PdfArray dssCertArray = factory.newArray();
-	private PdfArray dssOcspArray = factory.newArray();
-	private PdfArray dssCrlArray = factory.newArray();
+	private ModelPdfArray dssCertArray = new ModelPdfArray();
+	private ModelPdfArray dssOcspArray = new ModelPdfArray();
+	private ModelPdfArray dssCrlArray = new ModelPdfArray();
 
 	private final CertificateVerifier certificateVerifier;
 	private final TSPSource tspSource;
@@ -100,7 +96,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 			}
 
 			// create DSS dictionary
-			PdfDict dssDictionary = factory.newDict("DSS");
+			ModelPdfDict dssDictionary = new ModelPdfDict("DSS");
 			for (final AdvancedSignature signature : signatures) {
 				if (signature instanceof PAdESSignature) {
 					PAdESSignature pAdESSignature = (PAdESSignature) signature;
@@ -114,11 +110,8 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-			Map<String, PdfDict> dictionariesToAdd = new HashMap<String, PdfDict>();
-			dictionariesToAdd.put("DSS", dssDictionary);
-
-			final PDFSignatureService signatureService = factory.newPAdESSignatureService();
-			signatureService.addDictionaries(document.openStream(), baos, dictionariesToAdd);
+			final PDFSignatureService signatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+			signatureService.addDssDictionary(document.openStream(), baos, dssDictionary);
 
 			final InMemoryDocument inMemoryDocument = new InMemoryDocument(baos.toByteArray());
 			inMemoryDocument.setMimeType(MimeType.PDF);
@@ -128,51 +121,51 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		}
 	}
 
-	private void includeToDssDictionary(PdfDict dssDictionary, SignatureValidationCallBack callback) throws IOException {
+	private void includeToDssDictionary(ModelPdfDict dssDictionary, SignatureValidationCallBack callback) throws IOException {
 
-		PdfDict vriDictionary = ensureNotNull(dssDictionary, "VRI");
+		ModelPdfDict vriDictionary = ensureNotNull(dssDictionary, "VRI");
 
-		PdfDict sigVriDictionary = factory.newDirectDict();
+		ModelPdfDict sigVriDictionary = new ModelPdfDict();
 
 		PAdESSignature signature = callback.getSignature();
 		final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, signature.getCAdESSignature().getCmsSignedData().getEncoded());
 		String hexHash = Hex.encodeHexString(digest).toUpperCase();
 
 		if (CollectionUtils.isNotEmpty(callback.getCertificates())) {
-			PdfArray vriCertArray = factory.newArray();
+			ModelPdfArray vriCertArray = new ModelPdfArray();
 			for (CertificateToken token : callback.getCertificates()) {
-				PdfStream stream = factory.newStream(token.getEncoded());
+				ModelPdfStream stream = new ModelPdfStream(token.getEncoded());
 				vriCertArray.add(stream);
 				dssCertArray.add(stream);
 			}
-			sigVriDictionary.add("Cert", factory.newStreamArray(vriCertArray));
+			sigVriDictionary.add("Cert", vriCertArray);
 		}
 
 		if (CollectionUtils.isNotEmpty(callback.getCrls())) {
-			PdfArray vriCrlArray = factory.newArray();
+			ModelPdfArray vriCrlArray = new ModelPdfArray();
 			for (CRLToken token : callback.getCrls()) {
-				PdfStream stream = factory.newStream(token.getEncoded());
+				ModelPdfStream stream = new ModelPdfStream(token.getEncoded());
 				vriCrlArray.add(stream);
 				dssCrlArray.add(stream);
 			}
-			sigVriDictionary.add("CRL", factory.newStreamArray(vriCrlArray));
+			sigVriDictionary.add("CRL", vriCrlArray);
 		}
 
 		if (CollectionUtils.isNotEmpty(callback.getOcsps())) {
-			PdfArray vriOcspArray = factory.newArray();
+			ModelPdfArray vriOcspArray = new ModelPdfArray();
 			for (OCSPToken token : callback.getOcsps()) {
-				PdfStream stream = factory.newStream(token.getEncoded());
+				ModelPdfStream stream = new ModelPdfStream(token.getEncoded());
 				vriOcspArray.add(stream);
 				dssOcspArray.add(stream);
 			}
-			sigVriDictionary.add("OCSP", factory.newStreamArray(vriOcspArray));
+			sigVriDictionary.add("OCSP", vriOcspArray);
 		}
 
 		vriDictionary.add(hexHash, sigVriDictionary);
 
 	}
 
-	private void addGlobalCertsCrlsOcsps(PdfDict dssDictionary) {
+	private void addGlobalCertsCrlsOcsps(ModelPdfDict dssDictionary) {
 		if (dssCertArray.size() > 0) {
 			dssDictionary.add("Certs", dssCertArray);
 		}
@@ -184,10 +177,10 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		}
 	}
 
-	private PdfDict ensureNotNull(PdfDict dssDictionary, String dictionaryName) {
-		PdfDict dictionary = dssDictionary.getAsDict(dictionaryName);
+	private ModelPdfDict ensureNotNull(ModelPdfDict dssDictionary, String dictionaryName) {
+		ModelPdfDict dictionary = (ModelPdfDict) dssDictionary.getValues().get(dictionaryName);
 		if (dictionary == null) {
-			dictionary = factory.newDict();
+			dictionary = new ModelPdfDict();
 			dssDictionary.add(dictionaryName, dictionary);
 		}
 		return dictionary;

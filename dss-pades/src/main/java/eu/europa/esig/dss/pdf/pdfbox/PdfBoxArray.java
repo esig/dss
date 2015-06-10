@@ -31,6 +31,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfStream;
+import eu.europa.esig.dss.pdf.model.ModelPdfArray;
+import eu.europa.esig.dss.pdf.model.ModelPdfStream;
 
 class PdfBoxArray implements PdfArray {
 
@@ -47,6 +49,17 @@ class PdfBoxArray implements PdfArray {
 	public PdfBoxArray(COSArray wrapped, PDDocument document) {
 		this.wrapped = wrapped;
 		this.document = document;
+	}
+
+	public PdfBoxArray(ModelPdfArray array) {
+		this();
+		for(Object o : array.getValues()) {
+			if(o instanceof ModelPdfStream) {
+				add(new PdfBoxStream((ModelPdfStream) o));
+			} else {
+				throw new IllegalArgumentException(o.getClass().getName());
+			}
+		}
 	}
 
 	@Override

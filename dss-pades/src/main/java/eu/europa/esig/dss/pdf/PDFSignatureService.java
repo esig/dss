@@ -23,12 +23,12 @@ package eu.europa.esig.dss.pdf;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SignatureException;
-import java.util.Map;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
@@ -74,6 +74,6 @@ public interface PDFSignatureService {
 	 */
 	void validateSignatures(final CertificatePool validationCertPool, final DSSDocument document, final SignatureValidationCallback callback) throws DSSException;
 
-	void addDictionaries(InputStream inputStream, OutputStream outpuStream, Map<String, PdfDict> extraDictionariesToAddBeforeSign) throws DSSException;
+	void addDssDictionary(InputStream inputStream, OutputStream outpuStream, ModelPdfDict dssDictionary) throws DSSException;
 
 }

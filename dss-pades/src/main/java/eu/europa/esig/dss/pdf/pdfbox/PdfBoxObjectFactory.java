@@ -20,44 +20,11 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.IOException;
-
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfArray;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.PdfStream;
-import eu.europa.esig.dss.pdf.PdfStreamArray;
 
 public class PdfBoxObjectFactory extends PdfObjFactory {
-
-	@Override
-	public PdfArray newArray() {
-		return new PdfBoxArray();
-	}
-
-	@Override
-	public PdfStreamArray newStreamArray(PdfArray array) {
-		return new PdfBoxStreamArray(array);
-	}
-
-	@Override
-	public PdfDict newDict(String dictType) {
-		return new PdfBoxDict(dictType);
-	}
-
-	@Override
-	public PdfDict newDirectDict(String dictType) {
-		PdfBoxDict pdfBoxDict = new PdfBoxDict(dictType);
-		pdfBoxDict.setDirect(true);
-		return pdfBoxDict;
-	}
-
-	@Override
-	public PdfStream newStream(byte[] bytes) throws IOException {
-		return new PdfBoxStream(bytes);
-	}
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {

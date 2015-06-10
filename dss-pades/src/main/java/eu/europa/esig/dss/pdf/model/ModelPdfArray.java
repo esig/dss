@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class ModelPdfArray {
 		return values.size();
 	}
 
-	public void add(ModelPdfStream stream) throws IOException {
+	public void add(ModelPdfStream stream) {
 		values.add(stream);
 	}
 

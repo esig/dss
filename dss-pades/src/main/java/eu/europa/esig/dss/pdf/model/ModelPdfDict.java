@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.model;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,15 +35,15 @@ public class ModelPdfDict {
 		values.put("Type", dictType);
 	}
 
-	public void add(String key, ModelPdfArray array) throws IOException {
+	public void add(String key, ModelPdfArray array)  {
 		values.put(key, array);
 	}
 
-	public void add(String key, ModelPdfDict dict) throws IOException {
+	public void add(String key, ModelPdfDict dict) {
 		values.put(key, dict);
 	}
 
-	public void add(String key, Calendar cal) throws IOException {
+	public void add(String key, Calendar cal)  {
 		values.put(key, cal);
 	}
 
