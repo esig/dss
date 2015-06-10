@@ -41,6 +41,8 @@ public enum SignatureAlgorithm {
 	RSA_SHA1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1), RSA_SHA224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224), RSA_SHA256(EncryptionAlgorithm.RSA,
 		  DigestAlgorithm.SHA256), RSA_SHA384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384), RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512), RSA_RIPEMD160(
 		  EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160), RSA_MD5(EncryptionAlgorithm.RSA, DigestAlgorithm.MD5), RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
+		  
+	RSA_SSA_PSS(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
 
 	ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1), ECDSA_SHA224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224), ECDSA_SHA256(EncryptionAlgorithm.ECDSA,
 		  DigestAlgorithm.SHA256), ECDSA_SHA384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384), ECDSA_SHA512(EncryptionAlgorithm.ECDSA,
@@ -148,6 +150,9 @@ public enum SignatureAlgorithm {
 		oidAlgorithms.put("1.2.840.113549.2.10", HMAC_SHA384);
 		oidAlgorithms.put("1.2.840.113549.2.11", HMAC_SHA512);
 		oidAlgorithms.put("1.3.6.1.5.5.8.1.4", HMAC_RIPEMD160);
+
+		oidAlgorithms.put("1.2.840.113549.1.1.10", RSA_SSA_PSS);
+		
 		return oidAlgorithms;
 	}
 
