@@ -12,9 +12,9 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
-import eu.europa.esig.dss.pdf.pdfbox.PdfDssDict;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 
 public class PdfSignatureOrDocTimestampInfoComparatorTest {

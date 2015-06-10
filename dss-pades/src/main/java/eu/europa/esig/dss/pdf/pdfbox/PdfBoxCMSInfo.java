@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 

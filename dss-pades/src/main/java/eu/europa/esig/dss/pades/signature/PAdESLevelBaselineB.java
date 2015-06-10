@@ -43,9 +43,7 @@ class PAdESLevelBaselineB {
 		AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
 
 		if (signedAttributes.get(CMSAttributes.contentType) == null) {
-
 			ASN1ObjectIdentifier contentType = (ASN1ObjectIdentifier) params.get(CMSAttributeTableGenerator.CONTENT_TYPE);
-
 			// contentType will be null if we're trying to generate a counter signature.
 			if (contentType != null) {
 				signedAttributes = signedAttributes.add(CMSAttributes.contentType, contentType);
@@ -53,7 +51,6 @@ class PAdESLevelBaselineB {
 		}
 
 		if (signedAttributes.get(CMSAttributes.messageDigest) == null) {
-			// byte[] messageDigest = (byte[]) params.get(CMSAttributeTableGenerator.DIGEST);
 			signedAttributes = signedAttributes.add(CMSAttributes.messageDigest, new DEROctetString(messageDigest));
 		}
 

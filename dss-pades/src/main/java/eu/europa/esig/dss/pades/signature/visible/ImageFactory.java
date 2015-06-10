@@ -45,9 +45,12 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 
-public class ImageFactory {
+public final class ImageFactory {
 
 	private static final int DPI = 300;
+
+	private ImageFactory(){
+	}
 
 	/**
 	 * This method returns the image size with the original parameters (the generation uses DPI)

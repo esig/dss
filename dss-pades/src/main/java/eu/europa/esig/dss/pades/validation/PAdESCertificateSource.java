@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.pdf.pdfbox.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;

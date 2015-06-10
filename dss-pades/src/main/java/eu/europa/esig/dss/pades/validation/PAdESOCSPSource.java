@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
-import eu.europa.esig.dss.pdf.pdfbox.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 
 /**

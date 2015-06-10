@@ -67,6 +67,7 @@ import eu.europa.esig.dss.pades.signature.DSSPDFUtils;
 import eu.europa.esig.dss.pades.signature.visible.ImageFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;

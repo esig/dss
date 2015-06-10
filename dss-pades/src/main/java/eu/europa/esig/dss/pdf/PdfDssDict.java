@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox;
+package eu.europa.esig.dss.pdf;
 
 import java.security.cert.X509CRL;
 import java.util.Collections;
@@ -32,8 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.pdf.PdfArray;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**

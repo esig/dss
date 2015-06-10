@@ -25,13 +25,16 @@ import java.io.IOException;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
  * TODO
  */
-public class PdfSignatureFactory {
+public final class PdfSignatureFactory {
+
+	private PdfSignatureFactory(){}
 
 	// dependency to pdfbox/PDDocument is just for building inner object and pdf object can be closed after
 	public static PdfSignatureInfo createPdfSignatureInfo(CertificatePool validationCertPool, PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent)

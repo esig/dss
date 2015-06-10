@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pades.validation;
 import java.security.cert.X509CRL;
 import java.util.ArrayList;
 
-import eu.europa.esig.dss.pdf.pdfbox.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 
 /**

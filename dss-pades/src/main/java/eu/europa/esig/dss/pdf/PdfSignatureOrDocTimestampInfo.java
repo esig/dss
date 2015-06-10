@@ -24,7 +24,6 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Set;
 
-import eu.europa.esig.dss.pdf.pdfbox.PdfDssDict;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 
 /**

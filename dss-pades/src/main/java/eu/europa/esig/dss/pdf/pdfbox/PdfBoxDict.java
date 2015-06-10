@@ -152,7 +152,7 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	public void setDirect(boolean direct) {
-		wrapped.setDirect(true);
+		wrapped.setDirect(direct);
 	}
 
 	COSDictionary getWrapped() {

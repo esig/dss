@@ -26,16 +26,15 @@ import eu.europa.esig.dss.validation.PartialSignatureScope;
 
 public class PdfByteRangeSignatureScope extends PartialSignatureScope {
 
-    private final int[] byteRange;
+	private final int[] byteRange;
 
-    public PdfByteRangeSignatureScope(final String name, final int[] byteRange) {
-        super(name);
-        this.byteRange = byteRange;
-    }
+	public PdfByteRangeSignatureScope(final String name, final int[] byteRange) {
+		super(name);
+		this.byteRange = byteRange;
+	}
 
-    @Override
-    public String getDescription() {
-        final String byteRange = Arrays.toString(this.byteRange);
-        return "The document byte range: " + byteRange;
-    }
+	@Override
+	public String getDescription() {
+		return "The document byte range: " + Arrays.toString(byteRange);
+	}
 }
