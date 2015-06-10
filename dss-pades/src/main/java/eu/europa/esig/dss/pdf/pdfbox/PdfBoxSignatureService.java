@@ -312,9 +312,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 								isArchiveTimestamp = true;
 							}
 						}
-						signatureInfo = PdfSignatureFactory.createPdfTimestampInfo(validationCertPool, signature, dssDictionary, cms, signedContent, isArchiveTimestamp);
+
+						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, dssDictionary, cms, signedContent, isArchiveTimestamp);
 					} else {
-						signatureInfo = PdfSignatureFactory.createPdfSignatureInfo(validationCertPool, signature, dssDictionary, cms, signedContent);
+						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, dssDictionary, cms, signedContent);
 					}
 
 					if (signatureInfo != null) {
