@@ -89,7 +89,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<storetype>JKS</storetype>
+							<storetype>${keystore.type}</storetype>
 							<keystore>${keystore.path}</keystore>
 							<alias>${keystore.alias}</alias>
 							<storepass>${keystore.store.password}</storepass>
