@@ -22,13 +22,19 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.jaxb.tsl.DigitalIdentityListType;
 import eu.europa.esig.jaxb.tsl.ExtensionType;
 import eu.europa.esig.jaxb.tsl.ExtensionsListType;
 import eu.europa.esig.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
+import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.jaxb.tsl.TSPServiceType;
 
@@ -66,15 +72,35 @@ class CurrentTrustService extends AbstractTrustService {
 		return Collections.emptyList();
 	}
 
+
+
+	@Override
+	Set<String> getCertificateUrls() {
+		Set<String> result = new HashSet<String>();
+		TSPServiceInformationType serviceInformation = service.getServiceInformation();
+		if ((serviceInformation !=null) && (serviceInformation.getSchemeServiceDefinitionURI() !=null) && CollectionUtils.isNotEmpty(serviceInformation.getSchemeServiceDefinitionURI().getURI())) {
+			List<NonEmptyMultiLangURIType> uris = serviceInformation.getSchemeServiceDefinitionURI().getURI();
+			for (NonEmptyMultiLangURIType uri : uris) {
+				String value = uri.getValue();
+				if (isCertificateURI(value)){
+					result.add(value);
+				}
+			}
+		}
+		return result;
+	}
+
+	private boolean isCertificateURI(String value) {
+		return StringUtils.endsWithIgnoreCase(value, ".crt");
+	}
+
 	@Override
 	DigitalIdentityListType getServiceDigitalIdentity() {
-
 		return service.getServiceInformation().getServiceDigitalIdentity();
 	}
 
 	@Override
 	String getStatus() {
-
 		return service.getServiceInformation().getServiceStatus();
 	}
 
