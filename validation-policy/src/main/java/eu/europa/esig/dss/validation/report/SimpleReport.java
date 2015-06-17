@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -177,8 +178,12 @@ public class SimpleReport extends XmlDom {
 	 * @return
 	 */
 	public String getSignatureFormat(final String signatureId) {
-
-		final String indication = getValue("/SimpleReport/Signature[@Id='%s']/@SignatureFormat", signatureId);
+		String indication = StringUtils.EMPTY;
+		XmlDom signature = getElement("/SimpleReport/Signature[@Id='%s']", signatureId);
+		if (signature != null) {
+			indication = signature.getAttribute("SignatureFormat");
+		}
 		return indication;
 	}
+
 }
