@@ -254,6 +254,8 @@ public class XmlDom {
 				String value = nodeList.item(0).getTextContent();
 				return value.trim();
 			}
+		} else {
+			LOG.warn("More than one occurence of path " + xPath_);
 		}
 		return "";
 	}
