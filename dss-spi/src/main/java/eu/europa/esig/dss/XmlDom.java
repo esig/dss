@@ -247,15 +247,11 @@ public class XmlDom {
 
 		NodeList nodeList = getNodeList(rootElement, xPath_);
 		if (nodeList.getLength() == 1) {
-
 			Node node = nodeList.item(0);
 			if (node.getNodeType() != Node.ELEMENT_NODE) {
-
 				String value = nodeList.item(0).getTextContent();
 				return value.trim();
 			}
-		} else {
-			LOG.warn("More than one occurence of path " + xPath_);
 		}
 		return "";
 	}
