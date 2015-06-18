@@ -137,7 +137,9 @@ public class SignatureServiceImpl implements SignatureService {
 				params = new CAdESSignatureParameters();
 				break;
 			case PAdES :
-				params = new PAdESSignatureParameters();
+				PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
+				padesParams.setSignatureSize(9472 * 2); // double reserved space for signature
+				params = padesParams;
 				break;
 			case ASiC_E:
 			case ASiC_S:
