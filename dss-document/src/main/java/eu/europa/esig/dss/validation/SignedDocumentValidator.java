@@ -39,7 +39,6 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
@@ -1152,26 +1151,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		 * If the resulting document is based on TR 102 272 [i.2] (ESI: ASN.1 format for signature policies), use the digest value present in the
 		 * SignPolicyDigest element from the resulting document. Check that the digest algorithm indicated
 		 * in the SignPolicyDigestAlg from the resulting document is equal to the digest algorithm indicated in the property.
-		 * // TODO: (Bob: 2013 Dec 10) ETSI to be notified: it is signPolicyHashAlg and not SignPolicyDigestAlg
 		 */
 		try {
 
 			final ASN1Sequence asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
 			final ASN1Sequence signPolicyHashAlgObject = (ASN1Sequence) asn1Sequence.getObjectAt(0);
 			final AlgorithmIdentifier signPolicyHashAlgIdentifier = AlgorithmIdentifier.getInstance(signPolicyHashAlgObject);
-			final String signPolicyHashAlgOID = signPolicyHashAlgIdentifier.getAlgorithm().getId();
-			signPolicyHashAlgFromPolicy = DigestAlgorithm.forOID(signPolicyHashAlgOID);
+			signPolicyHashAlgFromPolicy = DigestAlgorithm.forOID(signPolicyHashAlgIdentifier.getAlgorithm().getId());
 
-			final ASN1Sequence signPolicyInfo = (ASN1Sequence) asn1Sequence.getObjectAt(1);
-			//signPolicyInfo.getObjectAt(1);
-
-			final ASN1OctetString signPolicyHash = (ASN1OctetString) asn1Sequence.getObjectAt(2);
-			final byte[] policyDigestValueFromPolicy = signPolicyHash.getOctets();
-			policyDigestHexValueFromPolicy = DSSUtils.toHex(policyDigestValueFromPolicy);
-
-			final byte[] hashAlgorithmDEREncoded = DSSASN1Utils.getEncoded(signPolicyHashAlgIdentifier);
-			final byte[] signPolicyInfoDEREncoded = DSSASN1Utils.getEncoded(signPolicyInfo);
-			final byte[] recalculatedDigestValue = DSSUtils.digest(signPolicyHashAlgFromPolicy, hashAlgorithmDEREncoded, signPolicyInfoDEREncoded);
+			byte[] recalculatedDigestValue = DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes);
 			recalculatedDigestHexValue = DSSUtils.toHex(recalculatedDigestValue);
 
 			/**

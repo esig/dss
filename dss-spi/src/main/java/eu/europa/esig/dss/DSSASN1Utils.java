@@ -371,4 +371,22 @@ public final class DSSASN1Utils {
 			throw new DSSException(e);
 		}
 	}
+
+	/**
+	 * This method computes the digest of an ANS1 signature policy (used in CAdES)
+	 *
+	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value without the outer type and length
+	 * fields, and the hashing algorithm shall be as specified in the field sigPolicyHash.
+	 */
+	public static byte[] getAsn1SignaturePolicyDigest(DigestAlgorithm digestAlgorithm, byte[] policyBytes) {
+		ASN1Sequence asn1Seq = DSSASN1Utils.toASN1Primitive(policyBytes);
+
+		ASN1Sequence signPolicyHashAlgObject = (ASN1Sequence) asn1Seq.getObjectAt(0);
+		AlgorithmIdentifier signPolicyHashAlgIdentifier = AlgorithmIdentifier.getInstance(signPolicyHashAlgObject);
+		ASN1Sequence signPolicyInfo = (ASN1Sequence) asn1Seq.getObjectAt(1);
+
+		byte[] hashAlgorithmDEREncoded = getEncoded(signPolicyHashAlgIdentifier);
+		byte[] signPolicyInfoDEREncoded = getEncoded(signPolicyInfo);
+		return DSSUtils.digest(digestAlgorithm, hashAlgorithmDEREncoded, signPolicyInfoDEREncoded);
+	}
 }
