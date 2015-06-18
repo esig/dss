@@ -36,6 +36,7 @@ import java.util.Properties;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
@@ -531,32 +532,43 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 					logger.trace("      ------> " + trustService.getStatus());
 				}
 				for (final Object digitalIdentity : trustService.getDigitalIdentity()) {
-
 					try {
-
-						CertificateToken x509Certificate = null;
+						CertificateToken certificateToken = null;
 						if (digitalIdentity instanceof CertificateToken) {
-
-							x509Certificate = (CertificateToken) digitalIdentity;
+							certificateToken = (CertificateToken) digitalIdentity;
 						} else if (digitalIdentity instanceof X500Principal) {
-
 							final X500Principal x500Principal = (X500Principal) digitalIdentity;
 							final List<CertificateToken> certificateTokens = certPool.get(x500Principal);
 							if (certificateTokens.size() > 0) {
-								x509Certificate = certificateTokens.get(0);
+								certificateToken = certificateTokens.get(0);
 							} else {
 								logger.debug("WARNING: There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
 							}
 						}
-						if (x509Certificate != null) {
-
-							addCertificate(x509Certificate, trustService, trustServiceProvider, trustStatusList.isWellSigned());
+						if (certificateToken != null) {
+							addCertificate(certificateToken, trustService, trustServiceProvider, trustStatusList.isWellSigned());
 						}
 					} catch (DSSException e) {
 						// There is a problem when loading the certificate, we continue with the next one.
 						logger.warn(e.getMessage());
 					}
 				}
+
+				for (String certificateUri : trustService.getCertificateUrls()) {
+					try {
+						logger.debug("Try to load certificate from URI : " + certificateUri);
+						byte[] certBytes = dataLoader.get(certificateUri);
+						if (ArrayUtils.isNotEmpty(certBytes)) {
+							CertificateToken certificateToken = DSSUtils.loadCertificate(certBytes);
+							if (certificateToken != null) {
+								addCertificate(certificateToken, trustService, trustServiceProvider, trustStatusList.isWellSigned());
+							}
+						}
+					} catch (DSSException e) {
+						logger.warn("Unable to add certificate '" + certificateUri + "' : " + e.getMessage());
+					}
+				}
+
 			}
 		}
 	}

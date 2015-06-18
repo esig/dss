@@ -21,8 +21,10 @@
 package eu.europa.esig.dss.tsl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBElement;
@@ -157,6 +159,13 @@ abstract class AbstractTrustService {
 		}
 		service.setExpiredCertsRevocationInfo(expiredCertsRevocationInfo);
 		return service;
+	}
+
+	/**
+	 * In some cases, we can found Certificates URI in SchemeServiceDefinitionURI/URI
+	 */
+	Set<String> getCertificateUrls() {
+		return Collections.emptySet();
 	}
 
 	@SuppressWarnings("rawtypes")
