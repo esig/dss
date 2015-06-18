@@ -46,7 +46,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -61,6 +63,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -71,7 +75,9 @@ import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,9 +89,9 @@ import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager;
 
 /**
- * Implementation of DataLoader for any protocol.<p/>
- * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without having to add the certificate to the JVM TrustStore. It takes into account a proxy management through
- * {@code ProxyPreferenceManager}. The authentication is also supported.
+ * Implementation of DataLoader for any protocol.
+ * <p/>
+ * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without having to add the certificate to the JVM TrustStore. It takes into account a proxy management through {@code ProxyPreferenceManager}. The authentication is also supported.
  */
 public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
@@ -94,6 +100,10 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	public static final int TIMEOUT_CONNECTION = 6000;
 
 	public static final int TIMEOUT_SOCKET = 6000;
+
+	public static final int CONNECTIONS_MAX_TOTAL = 20;
+
+	public static final int CONNECTIONS_MAX_PER_ROUTE = 2;
 
 	public static final String CONTENT_TYPE = "Content-Type";
 
@@ -107,6 +117,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	private int timeoutConnection = TIMEOUT_CONNECTION;
 	private int timeoutSocket = TIMEOUT_SOCKET;
+	private int connectionsMaxTotal = CONNECTIONS_MAX_TOTAL;
+	private int connectionsMaxPerRoute = CONNECTIONS_MAX_PER_ROUTE;
 
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
 
@@ -122,9 +134,10 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
-	 * The  constructor for CommonsDataLoader with defined content-type.
+	 * The constructor for CommonsDataLoader with defined content-type.
 	 *
-	 * @param contentType The content type of each request
+	 * @param contentType
+	 *            The content type of each request
 	 */
 	public CommonsDataLoader(final String contentType) {
 		this.contentType = contentType;
@@ -137,7 +150,14 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		socketFactoryRegistryBuilder = setConnectionManagerSchemeHttp(socketFactoryRegistryBuilder);
 		socketFactoryRegistryBuilder = setConnectionManagerSchemeHttps(socketFactoryRegistryBuilder);
 
-		final HttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistryBuilder.build());
+		final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistryBuilder.build());
+
+		connectionManager.setMaxTotal(getConnectionsMaxTotal());
+		connectionManager.setDefaultMaxPerRoute(getConnectionsMaxPerRoute());
+
+		LOG.debug("PoolingHttpClientConnectionManager: max total: " + connectionManager.getMaxTotal());
+		LOG.debug("PoolingHttpClientConnectionManager: max per route: " + connectionManager.getDefaultMaxPerRoute());
+
 		return connectionManager;
 	}
 
@@ -146,11 +166,11 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) throws DSSException {
-
 		try {
-
 			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(new KeyManager[0], new TrustManager[]{new DefaultTrustManager()}, new SecureRandom());
+			sslContext.init(new KeyManager[0], new TrustManager[] {
+					new DefaultTrustManager()
+			}, new SecureRandom());
 			SSLContext.setDefault(sslContext);
 
 			final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
@@ -232,6 +252,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			int proxyPort = 0;
 			String proxyUser = null;
 			String proxyPassword = null;
+			String proxyExcludedHosts = null;
 
 			if (proxyHTTPS) {
 
@@ -241,6 +262,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 				proxyHost = proxyPreferenceManager.getHttpsHost();
 				proxyUser = proxyPreferenceManager.getHttpsUser();
 				proxyPassword = proxyPreferenceManager.getHttpsPassword();
+				proxyExcludedHosts = proxyPreferenceManager.getHttpsExcludedHosts();
 			} else if (proxyHTTP) { // noinspection ConstantConditions
 
 				LOG.debug("Use proxy http parameters");
@@ -249,6 +271,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 				proxyHost = proxyPreferenceManager.getHttpHost();
 				proxyUser = proxyPreferenceManager.getHttpUser();
 				proxyPassword = proxyPreferenceManager.getHttpPassword();
+				proxyExcludedHosts = proxyPreferenceManager.getHttpExcludedHosts();
 			}
 			if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
 
@@ -260,6 +283,31 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			LOG.debug("proxy host/port: " + proxyHost + ":" + proxyPort);
 			// TODO SSL peer shut down incorrectly when protocol is https
 			final HttpHost proxy = new HttpHost(proxyHost, proxyPort, Protocol.HTTP.getName());
+
+			if (StringUtils.isNotEmpty(proxyExcludedHosts)) {
+				final String[] hosts = proxyExcludedHosts.split("[,; ]");
+
+				HttpRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy) {
+					@Override
+					public HttpRoute determineRoute(final HttpHost host, final HttpRequest request, final HttpContext context) throws HttpException {
+
+						String hostname = (host != null ? host.getHostName() : null);
+
+						if ((hosts != null) && (hostname != null)) {
+							for (String h : hosts) {
+								if (hostname.equalsIgnoreCase(h)) {
+									// bypass proxy for that hostname
+									return new HttpRoute(host);
+								}
+							}
+						}
+						return super.determineRoute(host, request, context);
+					}
+				};
+
+				httpClientBuilder.setRoutePlanner(routePlanner);
+			}
+
 			final HttpClientBuilder httpClientBuilder1 = httpClientBuilder.setProxy(proxy);
 			updated = false;
 			return httpClientBuilder1;
@@ -315,8 +363,10 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * This method is useful only with the cache handling implementation of the {@code DataLoader}.
 	 *
-	 * @param url     to access
-	 * @param refresh if true indicates that the cached data should be refreshed
+	 * @param url
+	 *            to access
+	 * @param refresh
+	 *            if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data
 	 */
 	@Override
@@ -394,7 +444,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * This method retrieves data using HTTP or HTTPS protocol and 'get' method.
 	 *
-	 * @param url to access
+	 * @param url
+	 *            to access
 	 * @return {@code byte} array of obtained data or null
 	 */
 	protected byte[] httpGet(final String url) {
@@ -505,8 +556,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
 		}
-		if (statusCode != HttpStatus.SC_OK) {
 
+		if (statusCode != HttpStatus.SC_OK) {
 			LOG.warn("No content available via url: " + url + " - will use nothing: " + url);
 			return null;
 		}
@@ -522,10 +573,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	protected byte[] getContent(final HttpEntity responseEntity) throws DSSException {
-
 		InputStream content = null;
 		try {
-
 			content = responseEntity.getContent();
 			final byte[] bytes = DSSUtils.toByteArray(content);
 			return bytes;
@@ -548,7 +597,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * Used when the {@code HttpClient} is created.
 	 *
-	 * @param timeoutConnection the value (millis)
+	 * @param timeoutConnection
+	 *            the value (millis)
 	 */
 	public void setTimeoutConnection(final int timeoutConnection) {
 		httpClient = null;
@@ -567,11 +617,50 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * Used when the {@code HttpClient} is created.
 	 *
-	 * @param timeoutSocket the value (millis)
+	 * @param timeoutSocket
+	 *            the value (millis)
 	 */
 	public void setTimeoutSocket(final int timeoutSocket) {
 		httpClient = null;
 		this.timeoutSocket = timeoutSocket;
+	}
+
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @return maximum number of connections
+	 */
+	public int getConnectionsMaxTotal() {
+		return connectionsMaxTotal;
+	}
+
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @param connectionsMaxTotal
+	 *            maximum number of connections
+	 */
+	public void setConnectionsMaxTotal(int connectionsMaxTotal) {
+		this.connectionsMaxTotal = connectionsMaxTotal;
+	}
+
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @return maximum number of connections per one route
+	 */
+	public int getConnectionsMaxPerRoute() {
+		return connectionsMaxPerRoute;
+	}
+
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @param connectionsMaxPerRoute
+	 *            maximum number of connections per one route
+	 */
+	public void setConnectionsMaxPerRoute(int connectionsMaxPerRoute) {
+		this.connectionsMaxPerRoute = connectionsMaxPerRoute;
 	}
 
 	/**
@@ -600,7 +689,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
-	 * @param proxyPreferenceManager the proxyPreferenceManager to set
+	 * @param proxyPreferenceManager
+	 *            the proxyPreferenceManager to set
 	 */
 	public void setProxyPreferenceManager(final ProxyPreferenceManager proxyPreferenceManager) {
 
@@ -615,11 +705,16 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
-	 * @param host     host
-	 * @param port     port
-	 * @param scheme   scheme
-	 * @param login    login
-	 * @param password password
+	 * @param host
+	 *            host
+	 * @param port
+	 *            port
+	 * @param scheme
+	 *            scheme
+	 * @param login
+	 *            login
+	 * @param password
+	 *            password
 	 * @return this for fluent addAuthentication
 	 */
 	public CommonsDataLoader addAuthentication(final String host, final int port, final String scheme, final String login, final String password) {
@@ -634,7 +729,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * This method allows to propagate the authentication information from the current object.
 	 *
-	 * @param commonsDataLoader {@code CommonsDataLoader} to be initialized with authentication information
+	 * @param commonsDataLoader
+	 *            {@code CommonsDataLoader} to be initialized with authentication information
 	 */
 	public void propagateAuthentication(final CommonsDataLoader commonsDataLoader) {
 

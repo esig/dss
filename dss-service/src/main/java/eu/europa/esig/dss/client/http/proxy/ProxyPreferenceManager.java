@@ -33,11 +33,6 @@ import eu.europa.esig.dss.client.http.commons.DSSNotifier;
 /**
  * A proxy preference manager.
  *
- *
- *
- *
- *
- *
  */
 public class ProxyPreferenceManager {
 
@@ -46,6 +41,29 @@ public class ProxyPreferenceManager {
 	private ProxyDao proxyDao;
 
 	Set<DSSNotifier> notifiers = new HashSet<DSSNotifier>();
+
+
+	/**
+	 * Get list of excluded hosts of the HTTP proxy
+	 *
+	 * @return comma separated list of hosts
+	 */
+	public String getHttpExcludedHosts() {
+		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_EXCLUDE);
+		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+	}
+
+
+
+	/**
+	 * Get list of excluded hosts of the HTTPS proxy
+	 *
+	 * @return comma separated list of hosts
+	 */
+	public String getHttpsExcludedHosts() {
+		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_EXCLUDE);
+		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+	}
 
 	/**
 	 * Get a {@link ProxyPreference} by its enum values.
@@ -276,6 +294,28 @@ public class ProxyPreferenceManager {
 	}
 
 	/**
+	 * Set list of excluded hosts of the HTTP proxy
+	 *
+	 * @param list comma separated list of hosts
+	 */
+	public void setHttpExcludedHosts(String list) {
+		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_EXCLUDE);
+		preference.setValue(list);
+		getProxyDao().update(preference);
+	}
+
+	/**
+	 * Set list of excluded hosts of the HTTPS proxy
+	 *
+	 * @param list comma separated list of hosts
+	 */
+	public void setHttpsExcludedHosts(String list) {
+		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_EXCLUDE);
+		preference.setValue(list);
+		getProxyDao().update(preference);
+	}
+
+	/**
 	 * @param proxyDao
 	 */
 	public void setProxyDao(ProxyDao proxyDao) {
@@ -318,6 +358,9 @@ public class ProxyPreferenceManager {
 			case HTTP_USER:
 				setHttpUser(value);
 				break;
+			case HTTP_EXCLUDE:
+				setHttpExcludedHosts(value);
+				break;
 			case HTTPS_ENABLED:
 				setHttpsEnabled(Boolean.valueOf(value));
 				break;
@@ -333,6 +376,9 @@ public class ProxyPreferenceManager {
 				break;
 			case HTTPS_USER:
 				setHttpsUser(value);
+				break;
+			case HTTPS_EXCLUDE:
+				setHttpsExcludedHosts(value);
 				break;
 		}
 	}

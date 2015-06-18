@@ -23,66 +23,87 @@ package eu.europa.esig.dss.client.http.proxy;
 /**
  * Keys for retrieving Proxy preferences information
  *
- *
- *
- *
- *
- *
  */
 public enum ProxyKey {
 
-    HTTPS_HOST("proxy.https.host"), HTTPS_PORT("proxy.https.port"), HTTPS_USER("proxy.https.user"), HTTPS_PASSWORD("proxy.https.password"), HTTPS_ENABLED("proxy.https.enabled"),
+	// HTTPS
+	HTTPS_HOST("proxy.https.host"),
 
-    HTTP_HOST("proxy.http.host"), HTTP_PORT("proxy.http.port"), HTTP_USER("proxy.http.user"), HTTP_PASSWORD("proxy.http.password"), HTTP_ENABLED("proxy.http.enabled");
+	HTTPS_PORT("proxy.https.port"),
 
-    private final String keyName;
+	HTTPS_USER("proxy.https.user"),
 
-    ProxyKey(final String keyName) {
+	HTTPS_PASSWORD("proxy.https.password"),
 
-        this.keyName = keyName.toLowerCase();
-    }
+	HTTPS_EXCLUDE("proxy.https.exclude"),
 
-    /**
-     * This method return {@code ProxyKey} corresponding to the string representation of the keyName.<br/>
-     * If there is no corresponding keyName then null is returned.
-     *
-     * @param key
-     * @return
-     */
-    public static ProxyKey fromKey(final String key) {
+	HTTPS_ENABLED("proxy.https.enabled"),
 
-        final String key_ = key.toLowerCase();
-        if (ProxyKey.HTTP_ENABLED.keyName.equals(key_)) {
-            return ProxyKey.HTTP_ENABLED;
-        } else if (ProxyKey.HTTP_HOST.keyName.equals(key_)) {
-            return ProxyKey.HTTP_HOST;
-        } else if (ProxyKey.HTTP_PASSWORD.keyName.equals(key_)) {
-            return ProxyKey.HTTP_PASSWORD;
-        } else if (ProxyKey.HTTP_PORT.keyName.equals(key_)) {
-            return ProxyKey.HTTP_PORT;
-        } else if (ProxyKey.HTTP_USER.keyName.equals(key_)) {
-            return ProxyKey.HTTP_USER;
-        } else if (ProxyKey.HTTPS_ENABLED.keyName.equals(key_)) {
-            return ProxyKey.HTTPS_ENABLED;
-        } else if (ProxyKey.HTTPS_HOST.keyName.equals(key_)) {
-            return ProxyKey.HTTPS_HOST;
-        } else if (ProxyKey.HTTPS_PASSWORD.keyName.equals(key_)) {
-            return ProxyKey.HTTPS_PASSWORD;
-        } else if (ProxyKey.HTTPS_PORT.keyName.equals(key_)) {
-            return ProxyKey.HTTPS_PORT;
-        } else if (ProxyKey.HTTPS_USER.keyName.equals(key_)) {
-            return ProxyKey.HTTPS_USER;
-        } else {
-            return null;
-        }
-    }
+	//HTTP
+	HTTP_HOST("proxy.http.host"),
 
-    public String getKeyName() {
-        return keyName;
-    }
+	HTTP_PORT("proxy.http.port"),
 
-    @Override
-    public String toString() {
-        return keyName;
-    }
+	HTTP_USER("proxy.http.user"),
+
+	HTTP_PASSWORD("proxy.http.password"),
+
+	HTTP_EXCLUDE("proxy.http.exclude"),
+
+	HTTP_ENABLED("proxy.http.enabled");
+
+
+	private final String keyName;
+
+	ProxyKey(final String keyName) {
+		this.keyName = keyName.toLowerCase();
+	}
+
+	/**
+	 * This method return {@code ProxyKey} corresponding to the string representation of the keyName.<br/>
+	 * If there is no corresponding keyName then null is returned.
+	 *
+	 * @param key
+	 * @return
+	 */
+	public static ProxyKey fromKey(final String key) {
+
+		final String key_ = key.toLowerCase();
+		if (ProxyKey.HTTP_ENABLED.keyName.equals(key_)) {
+			return ProxyKey.HTTP_ENABLED;
+		} else if (ProxyKey.HTTP_HOST.keyName.equals(key_)) {
+			return ProxyKey.HTTP_HOST;
+		} else if (ProxyKey.HTTP_PASSWORD.keyName.equals(key_)) {
+			return ProxyKey.HTTP_PASSWORD;
+		} else if (ProxyKey.HTTP_PORT.keyName.equals(key_)) {
+			return ProxyKey.HTTP_PORT;
+		} else if (ProxyKey.HTTP_USER.keyName.equals(key_)) {
+			return ProxyKey.HTTP_USER;
+		} else if (ProxyKey.HTTP_EXCLUDE.keyName.equals(key_)) {
+			return ProxyKey.HTTP_EXCLUDE;
+		} else if (ProxyKey.HTTPS_ENABLED.keyName.equals(key_)) {
+			return ProxyKey.HTTPS_ENABLED;
+		} else if (ProxyKey.HTTPS_HOST.keyName.equals(key_)) {
+			return ProxyKey.HTTPS_HOST;
+		} else if (ProxyKey.HTTPS_PASSWORD.keyName.equals(key_)) {
+			return ProxyKey.HTTPS_PASSWORD;
+		} else if (ProxyKey.HTTPS_PORT.keyName.equals(key_)) {
+			return ProxyKey.HTTPS_PORT;
+		} else if (ProxyKey.HTTPS_USER.keyName.equals(key_)) {
+			return ProxyKey.HTTPS_USER;
+		} else if (ProxyKey.HTTPS_EXCLUDE.keyName.equals(key_)) {
+			return ProxyKey.HTTPS_EXCLUDE;
+		} else {
+			return null;
+		}
+	}
+
+	public String getKeyName() {
+		return keyName;
+	}
+
+	@Override
+	public String toString() {
+		return keyName;
+	}
 }
