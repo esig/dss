@@ -15,7 +15,7 @@
     <tbody>
         <c:forEach items="${preferences}" var="preference">
             <tr>
-                <td><spring:message code="${preference.proxyKey.keyName}" /></td>
+                <td><a href="<spring:url value="/admin/proxy/edit?key=${preference.proxyKey.keyName}"/>"><spring:message code="${preference.proxyKey.keyName}" /></a></td>
                 <td><a href="<spring:url value="/admin/proxy/edit?key=${preference.proxyKey.keyName}"/>">${preference.value}</a></td>
             </tr>
         </c:forEach>

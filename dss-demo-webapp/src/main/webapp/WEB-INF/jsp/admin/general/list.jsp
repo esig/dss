@@ -13,7 +13,7 @@
     <tbody>
         <c:forEach items="${preferences}" var="preference">
             <tr>
-                <td><spring:message code="${preference.key}" /></td>
+                <td><a href="<spring:url value="/admin/general/edit?key=${preference.key}"/>"><spring:message code="${preference.key}" /></a></td>
                 <td><a href="<spring:url value="/admin/general/edit?key=${preference.key}"/>">${preference.value}</a></td>
             </tr>
         </c:forEach>
