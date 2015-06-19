@@ -32,16 +32,11 @@ import eu.europa.esig.dss.web.model.PreferenceForm;
 import eu.europa.esig.dss.web.model.PreferenceKey;
 
 /**
- * TODO
- *
- *
- *
- *
- *
- *
+ * Validator for PreferenceForm
  */
 @Component
 public class PreferenceFormValidator implements Validator {
+
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return clazz.equals(PreferenceForm.class);

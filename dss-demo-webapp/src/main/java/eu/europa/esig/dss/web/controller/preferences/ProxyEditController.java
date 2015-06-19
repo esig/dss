@@ -36,34 +36,28 @@ import eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager;
 import eu.europa.esig.dss.web.model.PreferenceForm;
 
 /**
- * TODO
- *
- *
- *
- *
- *
+ * Controller for proxi edition
  */
 @Controller
 @RequestMapping(value = "/admin/proxy")
 public class ProxyEditController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProxyEditController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProxyEditController.class);
 
 	@Autowired
 	private ProxyPreferenceManager proxyPreferenceManager;
 
 	/**
-	 * @param webRequest The web request
+	 * @param webRequest
+	 *            The web request
 	 * @return a proxy form bean
 	 */
 	@ModelAttribute("preferenceForm")
 	public final PreferenceForm setupForm(final WebRequest webRequest) {
 
 		final String requestKey = webRequest.getParameter("key");
-		//		System.out.println("#requestKey: " + requestKey);
 		final PreferenceForm form = new PreferenceForm();
 		final ProxyKey proxyKey = ProxyKey.fromKey(requestKey);
-		//		System.out.println("proxyKey: " + proxyKey);
 		final ProxyPreference preference = proxyPreferenceManager.get(proxyKey);
 
 		form.setKey(preference.getProxyKey().getKeyName());
@@ -73,26 +67,26 @@ public class ProxyEditController {
 	}
 
 	/**
-	 * @param model The view model
+	 * @param model
+	 *            The view model
 	 * @return a view name
 	 */
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String showForm(final Model model) {
-
 		return "admin-proxy-edit";
 	}
 
 	/**
-	 * @param form The proxy form bean
+	 * @param form
+	 *            The proxy form bean
 	 * @return a view name
 	 */
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
 	public String updatePreferences(@ModelAttribute("preferenceForm") final PreferenceForm form) {
-
 		final String proxyKeyString = form.getKey();
 		final String proxyValueString = form.getValue();
 		proxyPreferenceManager.update(proxyKeyString, proxyValueString);
-		LOG.trace(">>> Proxy preference updated: " + proxyKeyString + "(" + proxyValueString + ")/" + proxyPreferenceManager);
+		logger.trace(">>> Proxy preference updated: " + proxyKeyString + "(" + proxyValueString + ")/" + proxyPreferenceManager);
 		return "redirect:/admin/proxy";
 	}
 }

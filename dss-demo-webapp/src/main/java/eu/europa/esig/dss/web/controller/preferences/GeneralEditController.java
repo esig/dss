@@ -42,75 +42,69 @@ import eu.europa.esig.dss.web.model.PreferenceKey;
  *
  * General edit controller
  *
- *
- *
- *
- *
- *
  */
 @Controller
 @RequestMapping(value = "/admin/general")
 public class GeneralEditController {
 
-    /**
-     * @see PreferencesDao
-     */
-    @Autowired
-    private PreferencesDao preferencesDao;
+	/**
+	 * @see PreferencesDao
+	 */
+	@Autowired
+	private PreferencesDao preferencesDao;
 
-    /**
-     *
-     * @param webRequest The web request
-     * @return a form bean
-     */
-    @ModelAttribute("preferenceForm")
-    public final PreferenceForm setupForm(final WebRequest webRequest) {
+	/**
+	 *
+	 * @param webRequest The web request
+	 * @return a form bean
+	 */
+	@ModelAttribute("preferenceForm")
+	public final PreferenceForm setupForm(final WebRequest webRequest) {
 
-        final String requestKey = webRequest.getParameter("key");
-        final PreferenceForm form = new PreferenceForm();
-        final Preference preference = preferencesDao.get(PreferenceKey.fromKey(requestKey));
-        form.setKey(preference.getKey());
-        form.setValue(preference.getValue());
+		final String requestKey = webRequest.getParameter("key");
+		final PreferenceForm form = new PreferenceForm();
+		final Preference preference = preferencesDao.get(PreferenceKey.fromKey(requestKey));
+		form.setKey(preference.getKey());
+		form.setValue(preference.getValue());
 
-        return form;
+		return form;
+	}
 
-    }
+	/**
+	 *
+	 * @param model The model attributes
+	 * @return a view name
+	 */
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public String showForm(final Model model) {
+		return "admin-general-edit";
+	}
 
-    /**
-     *
-     * @param model The model attributes
-     * @return a view name
-     */
-    @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public String showForm(final Model model) {
-        return "admin-general-edit";
-    }
+	@Autowired
+	private PreferenceFormValidator preferenceFormValidator;
 
-    @Autowired
-    private PreferenceFormValidator preferenceFormValidator;
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		binder.setValidator(preferenceFormValidator);
+	}
 
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.setValidator(preferenceFormValidator);
-    }
+	/**
+	 *
+	 * @param form a form bean
+	 * @return a view name
+	 */
+	@RequestMapping(value = "/edit", method = RequestMethod.POST)
+	public String updatePreferences(@ModelAttribute("preferenceForm") @Valid final PreferenceForm form, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return "admin-general-edit";
+		}
+		Preference preference = new Preference();
+		preference.setKey(form.getKey());
+		preference.setValue(form.getValue());
 
-    /**
-     *
-     * @param form a form bean
-     * @return a view name
-     */
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String updatePreferences(@ModelAttribute("preferenceForm") @Valid final PreferenceForm form, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "admin-general-edit";
-        }
-        Preference preference = new Preference();
-        preference.setKey(form.getKey());
-        preference.setValue(form.getValue());
+		preferencesDao.update(preference);
 
-        preferencesDao.update(preference);
-
-        return "redirect:/admin/general";
-    }
+		return "redirect:/admin/general";
+	}
 
 }

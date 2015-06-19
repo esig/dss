@@ -36,66 +36,65 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Administration controller
- *
- *
- *
- *
- *
- *
  */
 @Controller
 @RequestMapping(value = "/admin")
 public class AdministrationController {
-    /**
-     * @see eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource
-     */
-    @Autowired
-    private ReloadableTrustedListCertificateSource reloadableTrustedListCertificateSource;
-    /**
-     * @see ProxyPreferenceManager
-     */
-    @Autowired
-    @Qualifier("proxyPreferenceManager")
-    private ProxyPreferenceManager proxyPreferenceManager;
 
-    /**
-     * @see PreferencesDao
-     */
-    @Autowired
-    @Qualifier("preferencesDao")
-    private PreferencesDao preferencesDao;
+	/**
+	 * @see eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource
+	 */
+	@Autowired
+	private ReloadableTrustedListCertificateSource reloadableTrustedListCertificateSource;
 
-    /**
-     * @param model The model attributes
-     * @return a view name
-     */
-    @RequestMapping(value = "/general", method = RequestMethod.GET)
-    public String showGlobal(final Model model) {
-        model.addAttribute("preferences", preferencesDao.getAll());
-        return "admin-general-list";
-    }
+	/**
+	 * @see ProxyPreferenceManager
+	 */
+	@Autowired
+	@Qualifier("proxyPreferenceManager")
+	private ProxyPreferenceManager proxyPreferenceManager;
 
-    /**
-     * @param model The model attributes
-     * @return a view name
-     */
-    @RequestMapping(value = "/proxy", method = RequestMethod.GET)
-    public String showProxy(final Model model) {
-        model.addAttribute("preferences", proxyPreferenceManager.list());
-        return "admin-proxy-list";
-    }
+	/**
+	 * @see PreferencesDao
+	 */
+	@Autowired
+	@Qualifier("preferencesDao")
+	private PreferencesDao preferencesDao;
 
-    /**
-     * @param model The model attributes
-     * @return a view name
-     */
-    @RequestMapping(value = "/tsl-info", method = RequestMethod.GET)
-    public String showSignature(final Model model) {
+	/**
+	 * @param model
+	 *            The model attributes
+	 * @return a view name
+	 */
+	@RequestMapping(value = { "", "/", "/general"}, method = RequestMethod.GET)
+	public String showGlobal(final Model model) {
+		model.addAttribute("preferences", preferencesDao.getAll());
+		return "admin-general-list";
+	}
 
-        final List<CertificateToken> certificates = reloadableTrustedListCertificateSource.getCertificates();
-        model.addAttribute("certs", certificates);
-        model.addAttribute("tsls", reloadableTrustedListCertificateSource.getDiagnosticInfo().entrySet());
-        return "admin-tsl-info";
-    }
+	/**
+	 * @param model
+	 *            The model attributes
+	 * @return a view name
+	 */
+	@RequestMapping(value = "/proxy", method = RequestMethod.GET)
+	public String showProxy(final Model model) {
+		model.addAttribute("preferences", proxyPreferenceManager.list());
+		return "admin-proxy-list";
+	}
+
+	/**
+	 * @param model
+	 *            The model attributes
+	 * @return a view name
+	 */
+	@RequestMapping(value = "/tsl-info", method = RequestMethod.GET)
+	public String showSignature(final Model model) {
+
+		final List<CertificateToken> certificates = reloadableTrustedListCertificateSource.getCertificates();
+		model.addAttribute("certs", certificates);
+		model.addAttribute("tsls", reloadableTrustedListCertificateSource.getDiagnosticInfo().entrySet());
+		return "admin-tsl-info";
+	}
 
 }
