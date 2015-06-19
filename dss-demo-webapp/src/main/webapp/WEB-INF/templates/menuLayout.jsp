@@ -17,7 +17,16 @@
             <a href="<spring:url value="/signature" />" class="list-group-item${currentPage eq '/signature' ? ' active' : ''}"><spring:message code="label.signature.applet" /></a>
             <a href="<spring:url value="/extension" />" class="list-group-item${currentPage eq '/extension' ? ' active' : ''}"><spring:message code="label.extend" /></a>
             <a href="<spring:url value="/validation" />" class="list-group-item${currentPage eq '/validation' ? ' active' : ''}"><spring:message code="label.validate" /></a>
-            <a href="https://joinup.ec.europa.eu/software/tlmanager/release/all" class="list-group-item"><spring:message code="label.tlmanager.tl.eu" /></a>
         </c:otherwise>
     </c:choose>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Useful links</div>
+    <div class="list-group hidden-print">
+        <a href="https://joinup.ec.europa.eu/asset/sd-dss/description" class="list-group-item">Joinup</a>
+        <a href="https://github.com/esig/dss/" class="list-group-item" title="GitHub - Source code">Source code</a>
+        <a href="https://esig-dss.atlassian.net/projects/DSS" class="list-group-item" title="Jira - Issue tracker">Report a bug</a>
+        <a href="https://joinup.ec.europa.eu/software/tlmanager/release/all" class="list-group-item"><spring:message code="label.tlmanager.tl.eu" /></a>
+     </div>     
 </div>

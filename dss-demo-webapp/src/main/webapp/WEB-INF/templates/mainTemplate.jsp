@@ -68,10 +68,7 @@
             <hr />
             <footer>
                 <div class="row">
-                    <div class="col-md-6">
-                        <p><a href="https://joinup.ec.europa.eu/asset/sd-dss/description">Powered by DSS</a></p>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <p class="text-right"><spring:message code="application.title"/> <spring:message code="application.version"/></p>
                     </div>
                 </div>
