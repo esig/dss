@@ -187,8 +187,7 @@ public class SimpleReportBuilder {
 			final List<XmlDom> basicValidationErrorList = basicValidationConclusion.getElements("./Error");
 
 			final boolean noTimestamp = Indication.INDETERMINATE.equals(ltvIndication) && SubIndication.NO_TIMESTAMP.equals(ltvSubIndication);
-			final boolean noValidTimestamp = Indication.INDETERMINATE.equals(ltvIndication) && SubIndication.NO_VALID_TIMESTAMP.equals(ltvSubIndication);
-			if (noTimestamp || noValidTimestamp) {
+			if (noTimestamp) {
 
 				final String basicValidationConclusionIndication = basicValidationConclusion.getValue("./Indication/text()");
 				final String basicValidationConclusionSubIndication = basicValidationConclusion.getValue("./SubIndication/text()");
