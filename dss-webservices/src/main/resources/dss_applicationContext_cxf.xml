@@ -10,29 +10,29 @@
     <!--<import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>-->
 
     <!-- SIGNATURE SERVICE -->
-    <bean id="dss.signing.signatureService" class="eu.europa.ec.markt.dss.ws.impl.SignatureServiceImpl">
+    <bean id="dss.signing.signatureService" class="eu.europa.esig.dss.ws.impl.SignatureServiceImpl">
         <property name="cadesService" ref="cadesService"/>
         <property name="xadesService" ref="xadesService"/>
         <property name="padesService" ref="padesService"/>
         <property name="asicService" ref="asicService"/>
     </bean>
 
-    <bean id="cadesService" class="eu.europa.ec.markt.dss.signature.cades.CAdESService">
+    <bean id="cadesService" class="eu.europa.esig.dss.cades.signature.CAdESService">
         <constructor-arg ref="certificateVerifier"/>
         <property name="tspSource" ref="tspSource"/>
     </bean>
 
-    <bean id="xadesService" class="eu.europa.ec.markt.dss.signature.xades.XAdESService">
+    <bean id="xadesService" class="eu.europa.esig.dss.xades.signature.XAdESService">
         <constructor-arg ref="certificateVerifier"/>
         <property name="tspSource" ref="tspSource"/>
     </bean>
 
-    <bean id="padesService" class="eu.europa.ec.markt.dss.signature.pades.PAdESService">
+    <bean id="padesService" class="eu.europa.esig.dss.pades.signature.PAdESService">
         <constructor-arg ref="certificateVerifier"/>
         <property name="tspSource" ref="tspSource"/>
     </bean>
 
-    <bean id="asicService" class="eu.europa.ec.markt.dss.signature.asic.ASiCService">
+    <bean id="asicService" class="eu.europa.esig.dss.asic.signature.ASiCService">
         <constructor-arg ref="certificateVerifier"/>
         <property name="tspSource" ref="tspSource"/>
     </bean>
@@ -40,7 +40,7 @@
     <jaxws:endpoint id="signatureService" implementor="#dss.signing.signatureService" address="/signatureService"/>
 
     <!-- VALIDATION SERVICE -->
-    <bean id="dss.validation.validationService" class="eu.europa.ec.markt.dss.ws.impl.ValidationServiceImpl">
+    <bean id="dss.validation.validationService" class="eu.europa.esig.dss.ws.impl.ValidationServiceImpl">
         <property name="certificateVerifier" ref="certificateVerifier"/>
     </bean>
 
@@ -48,7 +48,7 @@
     </jaxws:endpoint>
 
     <bean id="certificateVerifier"
-          class="eu.europa.ec.markt.dss.validation102853.CommonCertificateVerifier">
+          class="eu.europa.esig.dss.validation.CommonCertificateVerifier">
         <property name="trustedCertSource" ref="trustedListSource"/>
         <property name="ocspSource" ref="ocspSource"/>
         <property name="crlSource" ref="crlSource"/>

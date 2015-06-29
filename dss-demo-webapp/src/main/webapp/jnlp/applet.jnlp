@@ -13,7 +13,7 @@
 		<jar href="../jar/signature-applet-r5.jar" main="true" />
 	</resources>
 	<applet-desc name="Signature Demo Applet"
-		main-class="eu.europa.ec.markt.dss.applet.main.DSSAppletCore" width="800"
+		main-class="eu.europa.esig.dss.applet.main.DSSAppletCore" width="800"
 		height="600">
 	</applet-desc>
 </jnlp>

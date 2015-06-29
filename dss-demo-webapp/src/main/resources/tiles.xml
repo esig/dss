@@ -6,98 +6,57 @@
 <tiles-definitions>
 
     <definition name="main" template="/WEB-INF/templates/mainTemplate.jsp">
-        <put-attribute name="jsFile" value="app.jsFiles" />
-        <put-attribute name="menu" value="app.menu" />
+    	<put-attribute name="hideMenu" value="false" />
     </definition>
-
-    <definition name="app.jsFiles" template="/WEB-INF/templates/jsLayout.jsp">
-        <put-list-attribute name="jsFiles">
-            <add-attribute value="/scripts/template.js" />
-            <add-attribute value="/scripts/jquery-1.7.2.min.js" />
-        </put-list-attribute>
-    </definition>
-
-    <definition name="app.menu" template="/WEB-INF/templates/menuLayout.jsp">
-        <put-list-attribute name="menus">
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.signature.applet" property="key"/>
-                <set-property value="/signature" property="url"/>
-                <set-property value="/signature" property="startWith"/>
-            </bean>
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.tlmanager.tl.eu" property="key"/>
-                <set-property value="https://joinup.ec.europa.eu/software/tlmanager/release/all" property="url"/>
-                <set-property value="https://joinup.ec.europa.eu/software/tlmanager/release/all" property="startWith"/>
-            </bean>
-        </put-list-attribute>
-    </definition>
-
-    <definition name="app.menu.administration" extends="app.menu">
-        <put-list-attribute name="menus">
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.general" property="key"/>
-                <set-property value="/admin/general" property="url"/>
-                <set-property value="/admin/general" property="startWith"/>
-            </bean>
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.proxy" property="key"/>
-                <set-property value="/admin/proxy" property="url"/>
-                <set-property value="/admin/proxy" property="startWith"/>
-            </bean>
-            <bean classtype="eu.europa.ec.markt.dss.web.tiles.bean.MenuBean">
-                <set-property value="label.tsl" property="key"/>
-                <set-property value="/admin/tsl-info" property="url"/>
-                <set-property value="/admin/tsl-info" property="startWith"/>
-            </bean>
-
-        </put-list-attribute>
-    </definition>
-
+    
     <definition name="home" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/home.jsp" />
     </definition>
 
-    <definition name="login" template="/WEB-INF/templates/mainTemplate.jsp">
-        <put-attribute name="content" value="/WEB-INF/jsp/login.jsp" />
-    </definition>
-
-    <definition name="login-error" template="/WEB-INF/templates/mainTemplate.jsp">
-        <put-attribute name="content" value="/WEB-INF/jsp/login-error.jsp" />
-    </definition>
-
-    <!-- Administration -->
-    <definition name="administration" extends="main">
-        <put-attribute name="menu" value="app.menu.administration" />
-    </definition>
-
-    <definition name="admin-general-list" extends="administration">
-        <put-attribute name="content" value="/WEB-INF/jsp/admin/general/list.jsp" />
-    </definition>
-    <definition name="admin-general-edit" extends="administration">
-        <put-attribute name="content" value="/WEB-INF/jsp/admin/general/form.jsp" />
-    </definition>
-    <definition name="admin-proxy-list" extends="administration">
-        <put-attribute name="content" value="/WEB-INF/jsp/admin/proxy/list.jsp" />
-    </definition>
-    <definition name="admin-proxy-edit" extends="administration">
-        <put-attribute name="content" value="/WEB-INF/jsp/admin/proxy/form.jsp" />
-    </definition>
-    <definition name="admin-tsl-info" extends="administration">
-        <put-attribute name="content" value="/WEB-INF/jsp/tsl-info.jsp" />
-    </definition>
-
-
-    <!-- Signature -->
     <definition name="signature" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/signature.jsp" />
-        <put-attribute name="jsFile" value="app.signature.jsfiles" />
+    </definition>
+    
+    <definition name="extension" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/extension.jsp" />
+    </definition>
+    
+    <definition name="validation" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/validation.jsp" />
     </definition>
 
-    <definition name="app.signature.jsfiles" extends="app.jsFiles">
-        <put-list-attribute name="jsFiles" inherit="true">
-            <!-- <add-attribute value="/scripts/jquery-ui-effects.js" /> -->
-            <add-attribute value="/scripts/detect_browser_version.js" />
-        </put-list-attribute>
+    <definition name="validation_result" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/validation_result.jsp" />
+    </definition>
+
+    <definition name="error" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/error.jsp" />
+    </definition>
+
+    <definition name="login" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/login.jsp" />
+        <put-attribute name="hideMenu" value="true" />
+    </definition>
+    <definition name="login-error" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/login-error.jsp" />
+        <put-attribute name="hideMenu" value="true" />
+    </definition>
+    
+    <!-- Administration -->
+    <definition name="admin-general-list" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/admin/general/list.jsp" />
+    </definition>
+    <definition name="admin-proxy-list" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/admin/proxy/list.jsp" />
+    </definition>
+    <definition name="admin-general-edit" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/admin/form.jsp" />
+    </definition>
+    <definition name="admin-proxy-edit" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/admin/form.jsp" />
+    </definition>
+    <definition name="admin-tsl-info" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/admin/tsl-info.jsp" />
     </definition>
 
 </tiles-definitions>

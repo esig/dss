@@ -12,7 +12,8 @@
     <import resource="classpath:spring/applicationContext-handler.xml"/>
 
     <context:annotation-config/>
-    <context:component-scan base-package="eu.europa.ec.markt.dss"/>
+	<context:component-scan base-package="eu.europa.esig.dss"/>
+	
     <context:property-placeholder location="classpath:datasource.properties"/>
 
 
@@ -44,8 +45,7 @@
         </property>
     </bean>
 
-    <bean id="messageSource"
-          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
             <list merge="true">
                 <value>classpath:i18n/application</value>

@@ -1,4 +1,4 @@
-﻿<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
+﻿<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/diagnostic">
  <Description>constraints_0002_01_C</Description>
  <MainSignature>
   <AcceptablePolicies Level="FAIL">

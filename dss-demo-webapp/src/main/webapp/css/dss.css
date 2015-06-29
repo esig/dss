@@ -1,6 +1,11 @@
-form .error{
-    padding: 1em;
-    text-align: center;
-    font-weight: bolder;
-    color: red;
+.navbar {
+    min-height: 75px;
+}
+
+.navbar-brand {
+    padding: 5px;
+}
+
+.navbar-nav>li>a {
+    line-height: 44px;
 }

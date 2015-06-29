@@ -45,7 +45,7 @@
 			</includes>
 			<outputDirectory>tomcat/webapps</outputDirectory>
 			<!-- Works only if there is one include -->
-			<outputFileNameMapping>dss-webapp.war</outputFileNameMapping>
+			<outputFileNameMapping>ROOT.war</outputFileNameMapping>
 		</dependencySet>
 	</dependencySets>
 

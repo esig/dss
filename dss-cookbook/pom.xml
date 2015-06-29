@@ -5,57 +5,12 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>sd-dss</artifactId>
-        <version>4.4.0</version>
+        <version>4.5.RC1</version>
     </parent>
 
     <name>CookBook</name>
     <description>Module CookBook in the project SD-DSS</description>
     <artifactId>dss-cookbook</artifactId>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jboss.maven.plugins</groupId>
-                <artifactId>maven-jdocbook-plugin</artifactId>
-                <configuration>
-                    <formats>
-                        <format>
-                            <formatName>pdf</formatName>
-                        </format>
-                    </formats>
-                    <sourceDocumentName>cookbook.xml</sourceDocumentName>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jboss.pressgang</groupId>
-                        <artifactId>pressgang-xslt-ns</artifactId>
-                        <version>2.0.1</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jboss.pressgang</groupId>
-                        <artifactId>pressgang-jdocbook-style</artifactId>
-                        <type>jdocbook-style</type>
-                        <version>2.0.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
 
     <repositories>
         <repository>
@@ -71,8 +26,33 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-test</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-webservices-client</artifactId>
         </dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-asic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-cades</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-pades</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-xades</artifactId>
+		</dependency>
         <dependency>
             <groupId>be.fedict.eid-applet</groupId>
             <artifactId>eid-applet-service</artifactId>
@@ -89,5 +69,49 @@
             <version>1.1.3</version>
         </dependency>
     </dependencies>
+
+	<profiles>
+		<profile>
+			<id>jdocbook</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jboss.maven.plugins</groupId>
+						<artifactId>maven-jdocbook-plugin</artifactId>
+						<version>2.3.9</version>
+						<configuration>
+							<formats>
+								<format>
+									<formatName>pdf</formatName>
+								</format>
+							</formats>
+							<sourceDocumentName>cookbook.xml</sourceDocumentName>
+							<masterTranslation>en</masterTranslation>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>org.jboss.pressgang</groupId>
+								<artifactId>pressgang-xslt-ns</artifactId>
+								<version>2.0.1</version>
+							</dependency>
+							<dependency>
+								<groupId>org.jboss.pressgang</groupId>
+								<artifactId>pressgang-jdocbook-style</artifactId>
+								<type>jdocbook-style</type>
+								<version>2.0.1</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

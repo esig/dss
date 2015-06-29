@@ -8,43 +8,41 @@
 	<import resource="classpath:spring/applicationContext-dao.xml"/>
 
 	<context:annotation-config/>
-	<context:component-scan base-package="eu.europa.ec.markt.dss"/>
+	<context:component-scan base-package="eu.europa.esig.dss"/>
 
-	<bean id="proxyPreferenceManager" class="eu.europa.ec.markt.dss.manager.ProxyPreferenceManager">
+	<bean id="proxyPreferenceManager" class="eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager">
 		<property name="proxyDao" ref="proxyDao"/>
 		<!--<property name="proxyDao" ref="proxyFile"/>-->
 	</bean>
 
-	<bean id="dataLoader" class="eu.europa.ec.markt.dss.validation102853.https.CommonsDataLoader">
+	<bean id="dataLoader" class="eu.europa.esig.dss.client.http.commons.CommonsDataLoader">
 		<property name="proxyPreferenceManager" ref="proxyPreferenceManager"/>
 	</bean>
 
-	<bean id="ocspDataLoader" class="eu.europa.ec.markt.dss.validation102853.https.OCSPDataLoader">
+	<bean id="ocspDataLoader" class="eu.europa.esig.dss.client.http.commons.OCSPDataLoader">
 		<property name="proxyPreferenceManager" ref="proxyPreferenceManager"/>
 	</bean>
 
-	<bean id="fileCacheDataLoader" class="eu.europa.ec.markt.dss.validation102853.https.FileCacheDataLoader">
+	<bean id="fileCacheDataLoader" class="eu.europa.esig.dss.client.http.commons.FileCacheDataLoader">
 		<property name="proxyPreferenceManager" ref="proxyPreferenceManager"/>
 		<!-- Per default uses "java.io.tmpdir" property -->
 		<!--<property name="fileCacheDirectory" value="/temp"/>-->
 	</bean>
 
-	<bean id="cacheCrlSource" class="eu.europa.ec.markt.dss.validation102853.crl.OnlineCRLSource">
+	<bean id="cacheCrlSource" class="eu.europa.esig.dss.client.crl.OnlineCRLSource">
 		<property name="dataLoader" ref="dataLoader"/>
 	</bean>
 
-	<bean id="crlSource"
-	      class="eu.europa.ec.markt.dss.validation102853.crl.JdbcCacheCRLSource">
+	<bean id="crlSource" class="eu.europa.esig.dss.client.crl.JdbcCacheCRLSource">
 		<property name="cachedSource" ref="cacheCrlSource"/>
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 
-	<bean id="ocspSource" class="eu.europa.ec.markt.dss.validation102853.ocsp.OnlineOCSPSource">
+	<bean id="ocspSource" class="eu.europa.esig.dss.client.ocsp.OnlineOCSPSource">
 		<property name="dataLoader" ref="ocspDataLoader"/>
 	</bean>
 
-	<bean id="trustedListSource"
-	      class="eu.europa.ec.markt.dss.validation102853.tsl.ReloadableTrustedListCertificateSource">
+	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource">
 		<property name="dataLoader" ref="fileCacheDataLoader"/>
 		<property name="checkSignature" value="false"/>
 		<property name="lotlCertificate" value="classpath://ec.europa.eu.crt"/>
@@ -52,7 +50,7 @@
 		<property name="tslRefreshPolicy" value="WHEN_NECESSARY_OR_INDETERMINATE"/>
 	</bean>
 
-	<bean id="tspSource" class="eu.europa.ec.markt.dss.validation102853.tsp.OnlineTSPSource">
+	<bean id="tspSource" class="eu.europa.esig.dss.client.tsp.OnlineTSPSource">
 		<property name="tspServer" value="http://tsa.belgium.be/connect"/>
 		<property name="dataLoader" ref="dataLoader"/>
 	</bean>

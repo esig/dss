@@ -6,7 +6,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <context:annotation-config/>
-    <context:component-scan base-package="eu.europa.ec.markt.dss"/>
+	<context:component-scan base-package="eu.europa.esig.dss"/>
     <context:property-placeholder location="classpath:datasource.properties"/>
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">

@@ -1,0 +1,1032 @@
+<?xml version="1.0" encoding="UTF-8"?><DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+   <DocumentName>/Users/pvandenbroucke/Developpement/Git/dss-pades/src/test/resources/validation/pades-5-signatures-and-1-document-timestamp.pdf</DocumentName>
+   <Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
+      <DateTime>2011-05-05T09:06:38Z</DateTime>
+      <SignatureFormat>PAdES_BASELINE_T</SignatureFormat>
+      <BasicSignature>
+         <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+         <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+         <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+         <ReferenceDataFound>true</ReferenceDataFound>
+         <ReferenceDataIntact>false</ReferenceDataIntact>
+         <SignatureIntact>false</SignatureIntact>
+         <SignatureValid>false</SignatureValid>
+      </BasicSignature>
+      <SigningCertificate Id="4f807bd663b32fd5f324fcae0854450ff6a2ed0835530dc6d06c9047cfcf7c36">
+         <AttributePresent>true</AttributePresent>
+         <DigestValuePresent>true</DigestValuePresent>
+         <DigestValueMatch>true</DigestValueMatch>
+         <IssuerSerialMatch>true</IssuerSerialMatch>
+      </SigningCertificate>
+      <CertificateChain>
+         <ChainCertificate Id="4f807bd663b32fd5f324fcae0854450ff6a2ed0835530dc6d06c9047cfcf7c36">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+      </CertificateChain>
+      <ContentType>application/pdf</ContentType>
+      <SignatureProductionPlace>
+         <CountryName>Country=SK SLOVAKIA, Locality=Bratislava - Petržalka</CountryName>
+      </SignatureProductionPlace>
+      <CommitmentTypeIndication>
+         <Identifier>1.2.840.113549.1.9.16.6.1</Identifier>
+      </CommitmentTypeIndication>
+      <Policy>
+         <Id>1.3.158.36061701.0.0.1.10.4.0.12</Id>
+         <Url>http://www.nbusr.sk/archive/20100823000000zsignaturepolicy.der</Url>
+         <Notice>[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]</Notice>
+         <Identified>true</Identified>
+         <Status>true</Status>
+         <DigestAlgorithmsEqual>true</DigestAlgorithmsEqual>
+      </Policy>
+      <Timestamps>
+         <Timestamp Id="34335a90343489694c6abe782cb99498530da0fca07b94b220aede0f0749b23a" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2011-05-05T09:07:19Z</ProductionTime>
+            <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
+            <EncodedSignedDataDigestValue>2tIdqT2b4VW5HWV1IZshWI8KCSSIgAwqEGIPFHWOMTA=</EncodedSignedDataDigestValue>
+            <MessageImprintDataFound>true</MessageImprintDataFound>
+            <MessageImprintDataIntact>true</MessageImprintDataIntact>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+            <CertificateChain>
+               <ChainCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+            </CertificateChain>
+            <SignedObjects>
+               <SignedSignature Id="id-e15d323ce2d560672179fb9a907471a8"/>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>T4B71mOzL9XzJPyuCFRFD/ai7Qg1Uw3G0GyQR8/PfDY=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>gRCMRMOH+GZcMq93oPSJDBR0p9tjO0pJwXy/JKyYLYg=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</DigestValue>
+               </DigestAlgAndValue>
+            </SignedObjects>
+         </Timestamp>
+         <Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2011-05-05T11:14:38Z</ProductionTime>
+            <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
+            <EncodedSignedDataDigestValue>eksuYud98sPiAlZ7hDcjO/FOHahAP7lnMplOTvlSMcE=</EncodedSignedDataDigestValue>
+            <MessageImprintDataFound>true</MessageImprintDataFound>
+            <MessageImprintDataIntact>true</MessageImprintDataIntact>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+            <CertificateChain>
+               <ChainCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+            </CertificateChain>
+            <SignedObjects>
+               <SignedSignature Id="id-e15d323ce2d560672179fb9a907471a8"/>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>T4B71mOzL9XzJPyuCFRFD/ai7Qg1Uw3G0GyQR8/PfDY=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>gRCMRMOH+GZcMq93oPSJDBR0p9tjO0pJwXy/JKyYLYg=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</DigestValue>
+               </DigestAlgAndValue>
+            </SignedObjects>
+         </Timestamp>
+      </Timestamps>
+      <SignatureScopes>
+         <SignatureScope name="PDF previous version #15" scope="PdfByteRangeSignatureScope">The document byte range: [0, 91747, 124517, 723]</SignatureScope>
+      </SignatureScopes>
+   </Signature>
+   <Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463">
+      <DateTime>2011-05-05T09:19:40Z</DateTime>
+      <SignatureFormat>PAdES_BASELINE_T</SignatureFormat>
+      <BasicSignature>
+         <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+         <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+         <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+         <ReferenceDataFound>true</ReferenceDataFound>
+         <ReferenceDataIntact>false</ReferenceDataIntact>
+         <SignatureIntact>false</SignatureIntact>
+         <SignatureValid>false</SignatureValid>
+      </BasicSignature>
+      <SigningCertificate Id="63792c6f85f5d489832f8ffc3a0a0af19fdd4659ffa85372eef25469b0566418">
+         <AttributePresent>true</AttributePresent>
+         <DigestValuePresent>true</DigestValuePresent>
+         <DigestValueMatch>true</DigestValueMatch>
+         <IssuerSerialMatch>true</IssuerSerialMatch>
+      </SigningCertificate>
+      <CertificateChain>
+         <ChainCertificate Id="63792c6f85f5d489832f8ffc3a0a0af19fdd4659ffa85372eef25469b0566418">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+      </CertificateChain>
+      <ContentType>application/pdf</ContentType>
+      <SignatureProductionPlace>
+         <CountryName>Country=SK SLOVAKIA, Locality=Bratislava</CountryName>
+      </SignatureProductionPlace>
+      <CommitmentTypeIndication>
+         <Identifier>1.2.840.113549.1.9.16.6.4</Identifier>
+         <Identifier>1.2.840.113549.1.9.16.6.6</Identifier>
+      </CommitmentTypeIndication>
+      <Timestamps>
+         <Timestamp Id="698e8a6f2123434396785a91d54b968ad9f7036097cf732462afb94e1b60d6e8" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2011-05-05T09:19:46Z</ProductionTime>
+            <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
+            <EncodedSignedDataDigestValue>Q+uFHe7o7y9BBuTNcpJU6M5ivN9BUdTtauVO94V8zVk=</EncodedSignedDataDigestValue>
+            <MessageImprintDataFound>true</MessageImprintDataFound>
+            <MessageImprintDataIntact>true</MessageImprintDataIntact>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="93a3a101335fa7324b5711e923074713fbb2bb49b201f9f181db2a7956899e06"/>
+            <CertificateChain>
+               <ChainCertificate Id="93a3a101335fa7324b5711e923074713fbb2bb49b201f9f181db2a7956899e06">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+            </CertificateChain>
+            <SignedObjects>
+               <SignedSignature Id="id-e8350f615330846b508da68f63e53eaa"/>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>Y3ksb4X11ImDL4/8OgoK8Z/dRln/qFNy7vJUabBWZBg=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>cOgwNwtpxnW9mDYuNVMt8ZoLq639wAxnMilNS375onI=</DigestValue>
+               </DigestAlgAndValue>
+            </SignedObjects>
+         </Timestamp>
+         <Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2011-05-05T11:14:38Z</ProductionTime>
+            <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
+            <EncodedSignedDataDigestValue>eksuYud98sPiAlZ7hDcjO/FOHahAP7lnMplOTvlSMcE=</EncodedSignedDataDigestValue>
+            <MessageImprintDataFound>true</MessageImprintDataFound>
+            <MessageImprintDataIntact>true</MessageImprintDataIntact>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+            <CertificateChain>
+               <ChainCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+            </CertificateChain>
+            <SignedObjects>
+               <SignedSignature Id="id-e8350f615330846b508da68f63e53eaa"/>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>Y3ksb4X11ImDL4/8OgoK8Z/dRln/qFNy7vJUabBWZBg=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>cOgwNwtpxnW9mDYuNVMt8ZoLq639wAxnMilNS375onI=</DigestValue>
+               </DigestAlgAndValue>
+            </SignedObjects>
+         </Timestamp>
+      </Timestamps>
+      <SignatureScopes>
+         <SignatureScope name="PDF previous version #10" scope="PdfByteRangeSignatureScope">The document byte range: [0, 126092, 158862, 626]</SignatureScope>
+      </SignatureScopes>
+   </Signature>
+   <Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770">
+      <DateTime>2011-01-11T12:31:44Z</DateTime>
+      <SignatureFormat>PAdES_BASELINE_T</SignatureFormat>
+      <BasicSignature>
+         <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+         <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+         <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+         <ReferenceDataFound>true</ReferenceDataFound>
+         <ReferenceDataIntact>false</ReferenceDataIntact>
+         <SignatureIntact>false</SignatureIntact>
+         <SignatureValid>false</SignatureValid>
+      </BasicSignature>
+      <SigningCertificate Id="5f7db6aa051ca3384fce329513e5474706a2b2c5fa2edcab1ff3984ceec292d7">
+         <AttributePresent>true</AttributePresent>
+         <DigestValuePresent>true</DigestValuePresent>
+         <DigestValueMatch>true</DigestValueMatch>
+         <IssuerSerialMatch>true</IssuerSerialMatch>
+      </SigningCertificate>
+      <CertificateChain>
+         <ChainCertificate Id="5f7db6aa051ca3384fce329513e5474706a2b2c5fa2edcab1ff3984ceec292d7">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="849a6a6f5ad1f26dd487701a15499a31ce4b911a3fffa61502787456d06e9772">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+      </CertificateChain>
+      <ContentType>application/pdf</ContentType>
+      <SignatureProductionPlace>
+         <CountryName>Country=SK SLOVAKIA, Locality=Bratislava</CountryName>
+      </SignatureProductionPlace>
+      <CommitmentTypeIndication>
+         <Identifier>1.2.840.113549.1.9.16.6.4</Identifier>
+         <Identifier>1.2.840.113549.1.9.16.6.6</Identifier>
+      </CommitmentTypeIndication>
+      <Timestamps>
+         <Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2011-05-05T11:14:38Z</ProductionTime>
+            <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
+            <EncodedSignedDataDigestValue>eksuYud98sPiAlZ7hDcjO/FOHahAP7lnMplOTvlSMcE=</EncodedSignedDataDigestValue>
+            <MessageImprintDataFound>true</MessageImprintDataFound>
+            <MessageImprintDataIntact>true</MessageImprintDataIntact>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+            <CertificateChain>
+               <ChainCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+            </CertificateChain>
+            <SignedObjects>
+               <SignedSignature Id="id-4931988d2bb6fd87d0bad415f86e8b73"/>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>X322qgUcozhPzjKVE+VHRwaissX6LtyrH/OYTO7Cktc=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>hJpqb1rR8m3Uh3AaFUmaMc5LkRo//6YVAnh0VtBul3I=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</DigestValue>
+               </DigestAlgAndValue>
+            </SignedObjects>
+         </Timestamp>
+      </Timestamps>
+      <SignatureScopes>
+         <SignatureScope name="PDF previous version #6" scope="PdfByteRangeSignatureScope">The document byte range: [0, 160367, 193137, 642]</SignatureScope>
+      </SignatureScopes>
+   </Signature>
+   <Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71">
+      <DateTime>2011-01-11T12:33:44Z</DateTime>
+      <SignatureFormat>PAdES_BASELINE_T</SignatureFormat>
+      <BasicSignature>
+         <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+         <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+         <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+         <ReferenceDataFound>true</ReferenceDataFound>
+         <ReferenceDataIntact>false</ReferenceDataIntact>
+         <SignatureIntact>false</SignatureIntact>
+         <SignatureValid>false</SignatureValid>
+      </BasicSignature>
+      <SigningCertificate Id="5f7db6aa051ca3384fce329513e5474706a2b2c5fa2edcab1ff3984ceec292d7">
+         <AttributePresent>true</AttributePresent>
+         <DigestValuePresent>true</DigestValuePresent>
+         <DigestValueMatch>true</DigestValueMatch>
+         <IssuerSerialMatch>true</IssuerSerialMatch>
+      </SigningCertificate>
+      <CertificateChain>
+         <ChainCertificate Id="5f7db6aa051ca3384fce329513e5474706a2b2c5fa2edcab1ff3984ceec292d7">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="849a6a6f5ad1f26dd487701a15499a31ce4b911a3fffa61502787456d06e9772">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+      </CertificateChain>
+      <ContentType>application/pdf</ContentType>
+      <SignatureProductionPlace>
+         <CountryName>Country=SK SLOVAKIA, Locality=Bratislava</CountryName>
+      </SignatureProductionPlace>
+      <CommitmentTypeIndication>
+         <Identifier>1.2.840.113549.1.9.16.6.4</Identifier>
+         <Identifier>1.2.840.113549.1.9.16.6.6</Identifier>
+      </CommitmentTypeIndication>
+      <Timestamps>
+         <Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2011-05-05T11:14:38Z</ProductionTime>
+            <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
+            <EncodedSignedDataDigestValue>eksuYud98sPiAlZ7hDcjO/FOHahAP7lnMplOTvlSMcE=</EncodedSignedDataDigestValue>
+            <MessageImprintDataFound>true</MessageImprintDataFound>
+            <MessageImprintDataIntact>true</MessageImprintDataIntact>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+            <CertificateChain>
+               <ChainCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+            </CertificateChain>
+            <SignedObjects>
+               <SignedSignature Id="id-032d9060af5266df45ea7ee8ce33064d"/>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>X322qgUcozhPzjKVE+VHRwaissX6LtyrH/OYTO7Cktc=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>wMBajY2lXq8nqpuRCwpu8Ni73tNGko24cuGCwgc+mAI=</DigestValue>
+               </DigestAlgAndValue>
+            </SignedObjects>
+         </Timestamp>
+      </Timestamps>
+      <SignatureScopes>
+         <SignatureScope name="PDF previous version #3" scope="PdfByteRangeSignatureScope">The document byte range: [0, 194686, 227456, 644]</SignatureScope>
+      </SignatureScopes>
+   </Signature>
+   <Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef">
+      <DateTime>2011-05-05T09:59:50Z</DateTime>
+      <SignatureFormat>PAdES_BASELINE_T</SignatureFormat>
+      <BasicSignature>
+         <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+         <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+         <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+         <ReferenceDataFound>true</ReferenceDataFound>
+         <ReferenceDataIntact>false</ReferenceDataIntact>
+         <SignatureIntact>false</SignatureIntact>
+         <SignatureValid>false</SignatureValid>
+      </BasicSignature>
+      <SigningCertificate Id="6ca650ff093aee46e8542d6f319124d54394424b0341e18dc47c7c46f96f1eff">
+         <AttributePresent>true</AttributePresent>
+         <DigestValuePresent>true</DigestValuePresent>
+         <DigestValueMatch>true</DigestValueMatch>
+         <IssuerSerialMatch>true</IssuerSerialMatch>
+      </SigningCertificate>
+      <CertificateChain>
+         <ChainCertificate Id="6ca650ff093aee46e8542d6f319124d54394424b0341e18dc47c7c46f96f1eff">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="3a67305ae710bb5c3bea33f0e09c21fd4f87eb9772ce9cc4949c53006a648aeb">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+      </CertificateChain>
+      <ContentType>application/pdf</ContentType>
+      <SignatureProductionPlace>
+         <CountryName>Country=SK SLOVAKIA, Locality=Bratislava</CountryName>
+      </SignatureProductionPlace>
+      <CommitmentTypeIndication>
+         <Identifier>1.2.840.113549.1.9.16.6.5</Identifier>
+      </CommitmentTypeIndication>
+      <Policy>
+         <Id>1.3.158.36061701.0.0.1.10.4.0.12</Id>
+         <Url>http://www.nbusr.sk/archive/20100823000000zsignaturepolicy.der</Url>
+         <Notice>[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]</Notice>
+         <Identified>true</Identified>
+         <Status>true</Status>
+         <DigestAlgorithmsEqual>true</DigestAlgorithmsEqual>
+      </Policy>
+      <Timestamps>
+         <Timestamp Id="c1c45e053e489922a031f6bbbb88502f6760bcd8378d465663ba7ef16a75813c" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2011-05-05T11:14:38Z</ProductionTime>
+            <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
+            <EncodedSignedDataDigestValue>eksuYud98sPiAlZ7hDcjO/FOHahAP7lnMplOTvlSMcE=</EncodedSignedDataDigestValue>
+            <MessageImprintDataFound>true</MessageImprintDataFound>
+            <MessageImprintDataIntact>true</MessageImprintDataIntact>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
+            <CertificateChain>
+               <ChainCertificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+               <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+                  <Source>SIGNATURE</Source>
+               </ChainCertificate>
+            </CertificateChain>
+            <SignedObjects>
+               <SignedSignature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d"/>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>bKZQ/wk67kboVC1vMZEk1UOUQksDQeGNxHx8RvlvHv8=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>OmcwWucQu1w76jPw4Jwh/U+H65dyzpzElJxTAGpkius=</DigestValue>
+               </DigestAlgAndValue>
+               <DigestAlgAndValue Category="CERTIFICATE">
+                  <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                  <DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</DigestValue>
+               </DigestAlgAndValue>
+            </SignedObjects>
+         </Timestamp>
+      </Timestamps>
+      <SignatureScopes>
+         <SignatureScope name="PDF previous version #1" scope="PdfByteRangeSignatureScope">The document byte range: [0, 229036, 261806, 601]</SignatureScope>
+      </SignatureScopes>
+   </Signature>
+   <UsedCertificates>
+      <Certificate Id="63792c6f85f5d489832f8ffc3a0a0af19fdd4659ffa85372eef25469b0566418">
+         <SubjectDistinguishedName Format="CANONICAL">cn=peter rybár,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=Peter Rybár,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=snca2,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=SNCA2,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <IssuerCertificate>81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88</IssuerCertificate>
+         <SerialNumber>20715</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>X+MBOZLyz0jl9D9J28oziwdSoXw=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2014-02-17T08:13:33Z</NotAfter>
+         <NotBefore>2011-02-17T08:13:36Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>digitalSignature</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88"/>
+         <CertificateChain>
+            <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81">
+         <SubjectDistinguishedName Format="CANONICAL">cn=time stamp authority 1,ou=sibep,o=narodny bezpecnostny urad,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=Time Stamp Authority 1,OU=SIBEP,O=Narodny bezpecnostny urad,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=snca2,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=SNCA2,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <IssuerCertificate>81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88</IssuerCertificate>
+         <SerialNumber>20596</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>SEOnVlqcp/L3bHNLwuGdJnc7EIM=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2015-11-05T07:40:58Z</NotAfter>
+         <NotBefore>2010-11-05T07:41:01Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>nonRepudiation</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88"/>
+         <CertificateChain>
+            <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="c0c05a8d8da55eaf27aa9b910b0a6ef0d8bbded346928db872e182c2073e9802">
+         <SubjectDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=První certifikační autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=První certifikační autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</IssuerDistinguishedName>
+         <SerialNumber>10500000</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>0kQaqMIDrsqpblAfEk1Sto/kw3U=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2019-09-01T00:00:00Z</NotAfter>
+         <NotBefore>2009-09-01T00:00:00Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>keyCertSign</KeyUsage>
+            <KeyUsage>cRLSign</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <Trusted>false</Trusted>
+         <SelfSigned>true</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="70e830370b69c675bd98362e35532df19a0babadfdc00c6732294d4b7ef9a272">
+         <SubjectDistinguishedName Format="CANONICAL">cn=snca2,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=SNCA2,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=snca2,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=SNCA2,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <SerialNumber>20000</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>7UvvVoJpgCKZOtMexIXy137K+/0=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2025-03-31T07:11:24Z</NotAfter>
+         <NotBefore>2010-04-01T06:26:41Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>keyCertSign</KeyUsage>
+            <KeyUsage>cRLSign</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <Trusted>false</Trusted>
+         <SelfSigned>true</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="4f807bd663b32fd5f324fcae0854450ff6a2ed0835530dc6d06c9047cfcf7c36">
+         <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1310504e4f534b2037353033333037343832,2.5.4.12=#1304496e672e,2.5.4.42=#13055065746572,2.5.4.4=#0c06527962c3a172,cn=peter rybár,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1310504e4f534b2037353033333037343832,2.5.4.12=#1304496e672e,2.5.4.42=#13055065746572,2.5.4.4=#0c06527962c3a172,CN=Peter Rybár,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=snca2,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=SNCA2,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <IssuerCertificate>81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88</IssuerCertificate>
+         <SerialNumber>20709</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>QvsQplL27oh59P7pJvKVjVCLqug=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2011-12-31T21:59:00Z</NotAfter>
+         <NotBefore>2011-01-19T13:42:48Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>nonRepudiation</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88"/>
+         <CertificateChain>
+            <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>true</QCC>
+            <QCSSCD>true</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+         <SubjectDistinguishedName Format="CANONICAL">cn=snca2,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=SNCA2,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <IssuerCertificate>d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f</IssuerCertificate>
+         <SerialNumber>294</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>KH1c/rDwoQXrPeE1gotEI8nIHAA=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2020-04-27T09:05:07Z</NotAfter>
+         <NotBefore>2010-04-27T09:11:01Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>keyCertSign</KeyUsage>
+            <KeyUsage>cRLSign</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f"/>
+         <CertificateChain>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="3a67305ae710bb5c3bea33f0e09c21fd4f87eb9772ce9cc4949c53006a648aeb">
+         <SubjectDistinguishedName Format="CANONICAL">cn=ca disig,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=CA Disig,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <IssuerCertificate>d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f</IssuerCertificate>
+         <SerialNumber>244</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>RACbKK8kSUn1KlcL53Z70lxfvnU=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2019-12-08T12:46:25Z</NotAfter>
+         <NotBefore>2009-12-08T12:47:30Z</NotBefore>
+         <PublicKeySize>4096</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>keyCertSign</KeyUsage>
+            <KeyUsage>cRLSign</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f"/>
+         <CertificateChain>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+         <SubjectDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <SerialNumber>1</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>Ifc7J7u/KBG76rTxeZ592JLz/oU=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2025-11-06T07:29:09Z</NotAfter>
+         <NotBefore>2009-11-06T09:59:39Z</NotBefore>
+         <PublicKeySize>4096</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>keyCertSign</KeyUsage>
+            <KeyUsage>cRLSign</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <Trusted>false</Trusted>
+         <SelfSigned>true</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="5f7db6aa051ca3384fce329513e5474706a2b2c5fa2edcab1ff3984ceec292d7">
+         <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1310504e4f534b2035343037303231393833,2.5.4.5=#130e494341202d203130313530363933,1.2.840.113549.1.9.1=#16166772756e6e65727061766f6c40676d61696c2e636f6d,l=bratislava\, húščavova 1150/1\, 84101,st=bratislavský,cn=ing. pavol grünner,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1310504e4f534b2035343037303231393833,2.5.4.5=#130e494341202d203130313530363933,1.2.840.113549.1.9.1=#16166772756e6e65727061766f6c40676d61696c2e636f6d,L=Bratislava\, Húščavova 1150/1\, 84101,ST=Bratislavský,CN=Ing. Pavol Grünner,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=První certifikační autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</IssuerDistinguishedName>
+         <IssuerCertificate>849a6a6f5ad1f26dd487701a15499a31ce4b911a3fffa61502787456d06e9772</IssuerCertificate>
+         <SerialNumber>10527039</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>9y0xvLdGepUqlOW+mxQkHD5UF0w=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2011-01-28T12:06:28Z</NotAfter>
+         <NotBefore>2010-01-28T12:06:28Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>digitalSignature</KeyUsage>
+            <KeyUsage>nonRepudiation</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="849a6a6f5ad1f26dd487701a15499a31ce4b911a3fffa61502787456d06e9772"/>
+         <CertificateChain>
+            <ChainCertificate Id="849a6a6f5ad1f26dd487701a15499a31ce4b911a3fffa61502787456d06e9772">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>true</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="849a6a6f5ad1f26dd487701a15499a31ce4b911a3fffa61502787456d06e9772">
+         <SubjectDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=První certifikační autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <IssuerCertificate>d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f</IssuerCertificate>
+         <SerialNumber>224</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>v79IS30Frw0fcOYHV9hlraazlYk=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2019-09-01T00:00:00Z</NotAfter>
+         <NotBefore>2009-11-24T11:14:11Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>keyCertSign</KeyUsage>
+            <KeyUsage>cRLSign</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f"/>
+         <CertificateChain>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="6ca650ff093aee46e8542d6f319124d54394424b0341e18dc47c7c46f96f1eff">
+         <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1310504e4f534b2036363132333136323035,c=sk,l=bratislava,ou=testovacie ucely,o=nbu sr,2.5.4.4=#1307436872656e6b6f,2.5.4.42=#13044976616e,cn=ivan chrenko</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1310504e4f534b2036363132333136323035,C=SK,L=Bratislava,OU=testovacie ucely,O=NBU SR,2.5.4.4=#1307436872656e6b6f,2.5.4.42=#13044976616e,CN=Ivan Chrenko</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=ca disig,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=CA Disig,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <IssuerCertificate>3a67305ae710bb5c3bea33f0e09c21fd4f87eb9772ce9cc4949c53006a648aeb</IssuerCertificate>
+         <SerialNumber>16782082</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>PmsYiKbVwUpXipM4wFqFcfvD1vo=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2011-08-09T11:48:41Z</NotAfter>
+         <NotBefore>2010-08-09T11:48:41Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>digitalSignature</KeyUsage>
+            <KeyUsage>nonRepudiation</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="3a67305ae710bb5c3bea33f0e09c21fd4f87eb9772ce9cc4949c53006a648aeb"/>
+         <CertificateChain>
+            <ChainCertificate Id="3a67305ae710bb5c3bea33f0e09c21fd4f87eb9772ce9cc4949c53006a648aeb">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>true</QCC>
+            <QCSSCD>true</QCSSCD>
+         </QCStatement>
+      </Certificate>
+      <Certificate Id="93a3a101335fa7324b5711e923074713fbb2bb49b201f9f181db2a7956899e06">
+         <SubjectDistinguishedName Format="CANONICAL">cn=time stamp authority 3,ou=sibep,o=narodny bezpecnostny urad,c=sk</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=Time Stamp Authority 3,OU=SIBEP,O=Narodny bezpecnostny urad,C=SK</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=snca2,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=SNCA2,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+         <IssuerCertificate>81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88</IssuerCertificate>
+         <SerialNumber>20595</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>1WIvuqlujEmBbKAjE54XeonbTUc=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2015-11-04T13:59:47Z</NotAfter>
+         <NotBefore>2010-11-04T13:59:49Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>nonRepudiation</KeyUsage>
+         </KeyUsageBits>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88"/>
+         <CertificateChain>
+            <ChainCertificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
+               <Source>SIGNATURE</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>false</QCPPlus>
+            <QCC>false</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+      </Certificate>
+   </UsedCertificates>
+</DiagnosticData>

@@ -1,0 +1,251 @@
+﻿<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+	<Description>Our validation process follows ETSI TS 102 853 V1.1.2 (2012-10) standard.</Description>
+	<MainSignature>
+		<StructuralValidation Level="WARN"/>
+		<AcceptablePolicies Level="FAIL">
+			<Id>ANY_POLICY</Id>
+			<Id>IMPLICIT_POLICY</Id>
+			<Id>NO_POLICY</Id>
+			<Id>1.2.3.5.7</Id>
+		</AcceptablePolicies>
+		<ReferenceDataExistence Level="FAIL">true</ReferenceDataExistence>
+		<ReferenceDataIntact Level="FAIL">true</ReferenceDataIntact>
+		<SignatureIntact Level="FAIL">true</SignatureIntact>
+		<SigningCertificate>
+			<Recognition Level="FAIL"/>
+			<AttributePresent Level="FAIL"/>
+			<DigestValuePresent Level="FAIL"/>
+			<DigestValueMatch Level="FAIL">true</DigestValueMatch>
+			<IssuerSerialMatch Level="FAIL">true</IssuerSerialMatch>
+			<Signature Level="FAIL"/>
+			<Expiration Level="FAIL"/>
+			<RevocationDataAvailable Level="FAIL"/>
+			<RevocationDataIsTrusted Level="FAIL"/>
+			<RevocationDataFreshness Level="WARN"/>
+			<ProspectiveCertificateChain Level="FAIL"/>
+			<Revoked Level="FAIL"/>
+			<OnHold Level="FAIL"/>
+			<TSLStatus Level="FAIL"/>
+			<Qualification Level="FAIL"/>
+			<SupportedBySSCD Level="FAIL"/>
+			<IssuedToLegalPerson Level="FAIL"/>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="256">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA256</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
+		</SigningCertificate>
+		<CACertificate>
+			<Signature Level="FAIL"/>
+			<Expiration Level="FAIL"/>
+			<RevocationDataAvailable Level="FAIL"/>
+			<RevocationDataIsTrusted Level="FAIL"/>
+			<RevocationDataFreshness Level="WARN"/>
+			<Revoked Level="FAIL"/>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="128">DSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA256</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
+		</CACertificate>
+		<Cryptographic Level="FAIL">
+			<AcceptableEncryptionAlgo>
+				<Algo>RSA</Algo>
+				<Algo>DSA</Algo>
+				<Algo>ECDSA</Algo>
+			</AcceptableEncryptionAlgo>
+			<MiniPublicKeySize>
+				<Algo Size="1024">RSA</Algo>
+				<Algo Size="128">DSA</Algo>
+				<Algo Size="256">ECDSA</Algo>
+			</MiniPublicKeySize>
+			<AcceptableDigestAlgo>
+				<Algo>SHA256</Algo>
+				<Algo>RIPEMD160</Algo>
+			</AcceptableDigestAlgo>
+		</Cryptographic>
+		<CertificateChain Level="IGNORE">
+			<AcceptableChain>
+				<Certificate>
+					<SubjectDistinguishedName></SubjectDistinguishedName>
+					<SerialNumber></SerialNumber>
+				</Certificate>
+				<Certificate>
+					<SubjectDistinguishedName></SubjectDistinguishedName>
+					<SerialNumber></SerialNumber>
+				</Certificate>
+			</AcceptableChain>
+		</CertificateChain>
+		<MandatedSignedQProperties>
+			<SigningTime Level="FAIL"/>
+			<ContentType Level="FAIL">1.2.840.113549.1.7.1</ContentType>
+			<ContentIdentifier Level="FAIL">*</ContentIdentifier>
+			<ContentHints Level="FAIL">*</ContentHints>
+			<!-- Not yet implemented -->
+			<ContentReference Level="FAIL"/>
+			<CommitmentTypeIndication Level="FAIL">
+				<Identifier>1.2.840.113549.1.9.16.6.1</Identifier>
+				<Identifier>1.2.840.113549.1.9.16.6.4</Identifier>
+				<Identifier>1.2.840.113549.1.9.16.6.5</Identifier>
+				<Identifier>1.2.840.113549.1.9.16.6.6</Identifier>
+			</CommitmentTypeIndication>
+			<SignerLocation>true</SignerLocation>
+			<SignerAttributes>false</SignerAttributes>
+			<ContentTimeStamp>true</ContentTimeStamp>
+		</MandatedSignedQProperties>
+		<MandatedUnsignedQProperties>
+			<CounterSignature>false</CounterSignature>
+			<MandatedSignatureTimeStamp>false</MandatedSignatureTimeStamp>
+			<MandatedLtForm>false</MandatedLtForm>
+			<MandatedArchivalForm>false</MandatedArchivalForm>
+			<SignaturePolicyExtensions>false</SignaturePolicyExtensions>
+		</MandatedUnsignedQProperties>
+		<OnRoles>
+			<ClaimedRoles Attendance="ALL">
+				<Role>supervisor</Role>
+			</ClaimedRoles>
+			<!--
+					<CertifiedRoles>
+						<Role>supervisor</Role>
+					</CertifiedRoles>
+			-->
+		</OnRoles>
+	</MainSignature>
+	<Timestamp>
+		<TimestampDelay Unit="DAYS">0</TimestampDelay>
+		<MessageImprintDataFound Level="FAIL"/>
+		<MessageImprintDataIntact Level="FAIL"/>
+		<Coherence Level="FAIL"/>
+		<SigningCertificate>
+			<Recognition Level="FAIL"/>
+			<DigestValueMatch Level="FAIL">true</DigestValueMatch>
+			<IssuerSerialMatch Level="FAIL">true</IssuerSerialMatch>
+			<Signature Level="FAIL"/>
+			<Expiration Level="FAIL"/>
+			<RevocationDataAvailable Level="FAIL"/>
+			<RevocationDataIsTrusted Level="FAIL"/>
+			<RevocationDataFreshness Level="WARN"/>
+			<ProspectiveCertificateChain Level="FAIL"/>
+			<Revoked Level="FAIL"/>
+			<OnHold Level="FAIL"/>
+			<TSLStatus Level="FAIL"/>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="256">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA256</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
+		</SigningCertificate>
+		<CACertificate>
+			<Signature Level="FAIL"/>
+			<Expiration Level="FAIL"/>
+			<RevocationDataAvailable Level="FAIL"/>
+			<RevocationDataIsTrusted Level="FAIL"/>
+			<RevocationDataFreshness Level="WARN"/>
+			<Revoked Level="FAIL"/>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="256">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA256</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
+		</CACertificate>
+	</Timestamp>
+	<Revocation>
+		<RevocationFreshness Unit="DAYS">9700</RevocationFreshness>
+		<SigningCertificate>
+			<Signature Level="FAIL"/>
+			<Expiration Level="FAIL"/>
+			<RevocationDataAvailable Level="FAIL"/>
+			<RevocationDataIsTrusted Level="FAIL"/>
+			<RevocationDataFreshness Level="WARN"/>
+			<Revoked Level="FAIL"/>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="256">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA256</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
+		</SigningCertificate>
+		<CACertificate>
+			<Signature Level="FAIL"/>
+			<Expiration Level="FAIL"/>
+			<RevocationDataAvailable Level="FAIL"/>
+			<RevocationDataIsTrusted Level="FAIL"/>
+			<RevocationDataFreshness Level="WARN"/>
+			<Revoked Level="FAIL"/>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="256">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA256</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
+		</CACertificate>
+	</Revocation>
+	<Cryptographic>
+		<AlgoExpirationDate Format="yyyy-MM-dd">
+			<Algo Date="2017-02-24">SHA1</Algo>
+			<Algo Date="2035-02-24">SHA256</Algo>
+			<Algo Date="2017-02-24">DSA128</Algo>
+			<Algo Date="2017-02-24">RSA1024</Algo>
+			<Algo Date="2035-02-24">ECDSA256</Algo>
+		</AlgoExpirationDate>
+	</Cryptographic>
+</ConstraintsParameters>

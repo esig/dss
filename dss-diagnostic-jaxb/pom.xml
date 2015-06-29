@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.4.0</version>
+		<version>4.5.RC1</version>
 	</parent>
 	
 	<artifactId>dss-diagnostic-jaxb</artifactId>
-	<name>JAXB TSL Model</name>
+	<name>JAXB Diagnostic Data Model</name>
 	<description>Generated source from XSD for Diagnostic Data.</description>
 
 	<profiles>
@@ -27,7 +27,7 @@
 								</goals>
 								<configuration>
 									<schemaDirectory>src/main/xsd</schemaDirectory>
-									<generatePackage>eu.europa.ec.markt.dss.validation102853.data.diagnostic</generatePackage>
+									<generatePackage>eu.europa.esig.dss.jaxb.diagnostic</generatePackage>
 									<schemaIncludes>
 										<schemaInclude>DiagnosticData.xsd</schemaInclude>
 									</schemaIncludes>

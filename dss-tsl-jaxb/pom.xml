@@ -4,11 +4,24 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.4.0</version>
+		<version>4.5.RC1</version>
 	</parent>
 	<artifactId>dss-tsl-jaxb</artifactId>
 	<name>JAXB TSL Model</name>
 	<description>Generated source from XSD for TSL and XAdES.</description>
+	
+	<dependencies>
+		<dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+        
+		<dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+	</dependencies>
 
 	<profiles>
 		<profile>

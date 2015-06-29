@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><SimpleReport xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+	<Policy>
+		<PolicyName>QES AdESQC TL based</PolicyName>
+		<PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a
+		Qualified Certificate (AdES/QC) or a Qualified electronic
+		Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State
+		Trusted Lists (this includes signer's certificate and certificates used
+		to validate certificate validity status services - CRLs, OCSP, and time-stamps).</PolicyDescription>
+	</Policy>
+	<ValidationTime>2015-04-22T18:58:47Z</ValidationTime>
+	<DocumentName>/Users/pvandenbroucke/Developpement/Git/dss-pades/src/test/resources/validation/pades-5-signatures-and-1-document-timestamp.pdf</DocumentName>
+	<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657" SignatureFormat="PAdES_BASELINE_T">
+		<SigningTime>2011-05-05T09:06:38Z</SigningTime>
+		<SignedBy>Peter Rybár</SignedBy>
+		<Indication>VALID</Indication>
+		<SubIndication>HASH_FAILURE</SubIndication>
+		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+		<SignatureLevel>QES</SignatureLevel>
+		<SignatureScopes>
+			<SignatureScope name="PDF previous version #15" scope="PdfByteRangeSignatureScope">The document byte range: [0, 91747, 124517, 723]</SignatureScope>
+		</SignatureScopes>
+	</Signature>
+	<Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463" SignatureFormat="PAdES_BASELINE_T">
+		<SigningTime>2011-05-05T09:19:40Z</SigningTime>
+		<SignedBy>Peter Rybár</SignedBy>
+		<Indication>INDETERMINATE</Indication>
+		<SubIndication>HASH_FAILURE</SubIndication>
+		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+		<SignatureLevel>AdES</SignatureLevel>
+		<SignatureScopes>
+			<SignatureScope name="PDF previous version #10" scope="PdfByteRangeSignatureScope">The document byte range: [0, 126092, 158862, 626]</SignatureScope>
+		</SignatureScopes>
+	</Signature>
+	<Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770" SignatureFormat="PAdES_BASELINE_T">
+		<SigningTime>2011-01-11T12:31:44Z</SigningTime>
+		<SignedBy>Ing. Pavol Grünner</SignedBy>
+		<Indication>INVALID</Indication>
+		<SubIndication>HASH_FAILURE</SubIndication>
+		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+		<SignatureLevel>AdESqc</SignatureLevel>
+		<SignatureScopes>
+			<SignatureScope name="PDF previous version #6" scope="PdfByteRangeSignatureScope">The document byte range: [0, 160367, 193137, 642]</SignatureScope>
+		</SignatureScopes>
+	</Signature>
+	<Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71" SignatureFormat="PAdES_BASELINE_T">
+		<SigningTime>2011-01-11T12:33:44Z</SigningTime>
+		<SignedBy>Ing. Pavol Grünner</SignedBy>
+		<Indication>INVALID</Indication>
+		<SubIndication>HASH_FAILURE</SubIndication>
+		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+		<SignatureLevel>AdESqc</SignatureLevel>
+		<SignatureScopes>
+			<SignatureScope name="PDF previous version #3" scope="PdfByteRangeSignatureScope">The document byte range: [0, 194686, 227456, 644]</SignatureScope>
+		</SignatureScopes>
+	</Signature>
+	<Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef" SignatureFormat="PAdES_BASELINE_T">
+		<SigningTime>2011-05-05T09:59:50Z</SigningTime>
+		<SignedBy>Ivan Chrenko</SignedBy>
+		<Indication>INVALID</Indication>
+		<SubIndication>HASH_FAILURE</SubIndication>
+		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
+		<SignatureLevel>QES</SignatureLevel>
+		<SignatureScopes>
+			<SignatureScope name="PDF previous version #1" scope="PdfByteRangeSignatureScope">The document byte range: [0, 229036, 261806, 601]</SignatureScope>
+		</SignatureScopes>
+	</Signature>
+	<ValidSignaturesCount>0</ValidSignaturesCount>
+	<SignaturesCount>5</SignaturesCount>
+</SimpleReport>

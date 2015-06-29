@@ -8,19 +8,19 @@
 	<import resource="classpath:spring/applicationContext-datasource.xml"/>
 
 	<context:annotation-config/>
-	<context:component-scan base-package="eu.europa.ec.markt.dss"/>
+	<context:component-scan base-package="eu.europa.esig.dss"/>
 
-	<bean id="proxyDao" class="eu.europa.ec.markt.dss.dao.ProxyJdbcDao">
+	<bean id="proxyDao" class="eu.europa.esig.dss.client.http.proxy.ProxyJdbcDao">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 
 	<!--Property file implementation of proxy preferences-->
 	<!-- Uncomment if you want to use the proxy properties file (comment proxy DAO)-->
-	<!--<bean id="proxyFile" class="eu.europa.ec.markt.dss.dao.ProxyFileDao">-->
+	<!--<bean id="proxyFile" class="eu.europa.esig.dss.web.dao.ProxyFileDao">-->
 	<!--<constructor-arg value="/proxy.properties"/>-->
 	<!--</bean>-->
 
-	<bean id="preferencesDao" class="eu.europa.ec.markt.dss.dao.PreferencesJdbcDao">
+	<bean id="preferencesDao" class="eu.europa.esig.dss.web.dao.PreferencesJdbcDao">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 

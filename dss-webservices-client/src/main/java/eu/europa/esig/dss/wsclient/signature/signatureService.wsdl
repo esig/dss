@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://impl.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://ws.dss.esig.europa.eu/" name="SignatureService" targetNamespace="http://impl.ws.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/wservice/signatureService?wsdl=SignatureService.wsdl" namespace="http://ws.dss.esig.europa.eu/">
+    </wsdl:import>
+  <wsdl:binding name="SignatureServiceSoapBinding" type="ns1:SignatureService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="extendSignature">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="extendSignature">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="extendSignatureResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="DSSException">
+        <soap:fault name="DSSException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="signDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="DSSException">
+        <soap:fault name="DSSException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getDataToSign">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDataToSign">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDataToSignResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="DSSException">
+        <soap:fault name="DSSException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SignatureService">
+    <wsdl:port binding="tns:SignatureServiceSoapBinding" name="SignatureServiceImplPort">
+      <soap:address location="http://localhost:8080/wservice/signatureService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
