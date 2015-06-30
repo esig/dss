@@ -371,7 +371,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Sequence unsignedAttributesHashes = getUnsignedAttributesHashIndex(timestampToken);
 		final ArrayList<DEROctetString> timestampUnsignedAttributesHashesList = Collections.list(unsignedAttributesHashes.getObjects());
 
-		AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(signerInformation);
+		AttributeTable unsignedAttributes = DSSASN1Utils.getUnsignedAttributes(signerInformation);
 		final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
 		for (int i = 0; i < asn1EncodableVector.size(); i++) {
 			final Attribute attribute = (Attribute) asn1EncodableVector.get(i);
@@ -551,7 +551,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Integer version = signerInfo.getVersion();
 		final SignerIdentifier sid = signerInfo.getSID();
 		final AlgorithmIdentifier digestAlgorithm = signerInfo.getDigestAlgorithm();
-		final DERTaggedObject signedAttributes = DSSASN1Utils.getSignedAttributes(signerInformation);
+		final DERTaggedObject signedAttributes = DSSASN1Utils.getDERSignedAttributes(signerInformation);
 		final AlgorithmIdentifier digestEncryptionAlgorithm = signerInfo.getDigestEncryptionAlgorithm();
 		final ASN1OctetString encryptedDigest = signerInfo.getEncryptedDigest();
 

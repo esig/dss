@@ -50,40 +50,40 @@ import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 
 public class CAdESCRLSource extends OfflineCRLSource {
 
-    private final CMSSignedData cmsSignedData;
-    private final SignerInformation signerInformation;
+	private final CMSSignedData cmsSignedData;
+	private final SignerInformation signerInformation;
 
 
-    /**
-     * The default constructor for CAdESCRLSource.
-     *
-     * @param signerInformation
-     */
-    public CAdESCRLSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation) {
-        this.cmsSignedData = cmsSignedData;
-        this.signerInformation = signerInformation;
-        extract();
-    }
+	/**
+	 * The default constructor for CAdESCRLSource.
+	 *
+	 * @param signerInformation
+	 */
+	public CAdESCRLSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation) {
+		this.cmsSignedData = cmsSignedData;
+		this.signerInformation = signerInformation;
+		extract();
+	}
 
-    private void extract() {
+	private void extract() {
 
-        x509CRLList = new ArrayList<X509CRL>();
+		x509CRLList = new ArrayList<X509CRL>();
 
-        // Adds CRLs contained in SignedData
-        final Store crLs = cmsSignedData.getCRLs();
-        final Collection<X509CRLHolder> collection = (Collection<X509CRLHolder>) crLs.getMatches(null);
-        for (final X509CRLHolder x509CRLHolder : collection) {
+		// Adds CRLs contained in SignedData
+		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
+		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
+		for (final X509CRLHolder x509CRLHolder : collection) {
 
-            final X509CRL x509CRL = DSSUtils.toX509CRL(x509CRLHolder);
-            addCRLToken(x509CRL);
-        }
+			final X509CRL x509CRL = DSSUtils.toX509CRL(x509CRLHolder);
+			addCRLToken(x509CRL);
+		}
 
-        // Adds CRLs in -XL ... inside SignerInfo attribute if present
-        if (signerInformation != null) {
+		// Adds CRLs in -XL ... inside SignerInfo attribute if present
+		if (signerInformation != null) {
 
-            final AttributeTable attributes = signerInformation.getUnsignedAttributes();
-            if (attributes != null) {
-                /*
+			final AttributeTable attributes = signerInformation.getUnsignedAttributes();
+			if (attributes != null) {
+				/*
                 ETSI TS 101 733 V2.2.1 (2013-04) page 43
                 6.3.4 revocation-values Attribute Definition
                 This attribute is used to contain the revocation information required for the following forms of extended electronic
@@ -97,22 +97,22 @@ public class CAdESCRLSource extends OfflineCRLSource {
                 crlVals [0] SEQUENCE OF CertificateList OPTIONAL,
                 ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
                 otherRevVals [2] OtherRevVals OPTIONAL}
-                 */
-                final Attribute attribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationValues);
-                if (attribute != null) {
+				 */
+				final Attribute attribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationValues);
+				if (attribute != null) {
 
-                    final ASN1Set attrValues = attribute.getAttrValues();
+					final ASN1Set attrValues = attribute.getAttrValues();
 
-                    final ASN1Encodable attValue = attrValues.getObjectAt(0);
-                    final RevocationValues revValues = RevocationValues.getInstance(attValue);
-                    for (final CertificateList revValue : revValues.getCrlVals()) {
+					final ASN1Encodable attValue = attrValues.getObjectAt(0);
+					final RevocationValues revValues = RevocationValues.getInstance(attValue);
+					for (final CertificateList revValue : revValues.getCrlVals()) {
 
-                        addCRLToken(revValue);
-                    }
-                }
-            }
+						addCRLToken(revValue);
+					}
+				}
+			}
 
-            /* TODO (pades): Read revocation data from from unsigned attribute  1.2.840.113583.1.1.8
+			/* TODO (pades): Read revocation data from from unsigned attribute  1.2.840.113583.1.1.8
               In the PKCS #7 object of a digital signature in a PDF file, identifies a signed attribute
               that "can include all the revocation information that is necessary to carry out revocation
               checks for the signer's certificate and its issuer certificates."
@@ -128,36 +128,36 @@ public class CAdESCRLSource extends OfflineCRLSource {
                 Type OBJECT IDENTIFIER
                 Value OCTET STRING
               }
-            */
+			 */
 
 
-            // TODO: (Bob: 2013 Dec 03) --> NICOLAS: Is there any other container within the CAdES signature with revocation data? (ie: timestamp)
-        }
-    }
+			// TODO: (Bob: 2013 Dec 03) --> NICOLAS: Is there any other container within the CAdES signature with revocation data? (ie: timestamp)
+		}
+	}
 
-    private void addCRLToken(final X509CRL x509CRL) {
+	private void addCRLToken(final X509CRL x509CRL) {
 
-        if (!x509CRLList.contains(x509CRL)) {
+		if (!x509CRLList.contains(x509CRL)) {
 
-            x509CRLList.add(x509CRL);
-        }
-    }
+			x509CRLList.add(x509CRL);
+		}
+	}
 
-    private void addCRLToken(final CertificateList certificateList) {
+	private void addCRLToken(final CertificateList certificateList) {
 
-        final X509CRLObject x509CRLObject = getX509CRLObject(certificateList);
-        if (!x509CRLList.contains(x509CRLObject)) {
+		final X509CRLObject x509CRLObject = getX509CRLObject(certificateList);
+		if (!x509CRLList.contains(x509CRLObject)) {
 
-            x509CRLList.add(x509CRLObject);
-        }
-    }
+			x509CRLList.add(x509CRLObject);
+		}
+	}
 
-    private static X509CRLObject getX509CRLObject(final CertificateList certificateList) throws DSSException {
+	private static X509CRLObject getX509CRLObject(final CertificateList certificateList) throws DSSException {
 
-        try {
-            return new X509CRLObject(certificateList);
-        } catch (CRLException e) {
-            throw new DSSException(e);
-        }
-    }
+		try {
+			return new X509CRLObject(certificateList);
+		} catch (CRLException e) {
+			throw new DSSException(e);
+		}
+	}
 }

@@ -127,7 +127,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(signatureLevel)) {
 
 			// true: Only the last signature will be extended
-			final SignatureExtension extension = getExtensionProfile(parameters, true);
+			final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, true);
 			final DSSDocument extendSignature = extension.extendSignatures(signature, parameters);
 			parameters.reinitDeterministicId();
 			return extendSignature;
@@ -194,7 +194,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final CAdESSignatureParameters parameters) {
 
 		// false: All signature are extended
-		final SignatureExtension extension = getExtensionProfile(parameters, false);
+		final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, false);
 		final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
 		return dssDocument;
 	}
@@ -253,7 +253,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 *            indicates if only the last CSM signature should be extended
 	 * @return {@code SignatureExtension} related to the predefine profile
 	 */
-	private SignatureExtension getExtensionProfile(final CAdESSignatureParameters parameters, final boolean onlyLastCMSSignature) {
+	private SignatureExtension<CAdESSignatureParameters> getExtensionProfile(final CAdESSignatureParameters parameters, final boolean onlyLastCMSSignature) {
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		switch (signatureLevel) {
