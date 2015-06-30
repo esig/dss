@@ -74,7 +74,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility class that contains some XML related method.
+ * Utility class that contains some ASN1 related method.
  *
  */
 public final class DSSASN1Utils {
@@ -131,6 +131,15 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	public static byte[] getEncoded(BasicOCSPResp basicOCSPResp) {
+		try {
+			BasicOCSPResponse basicOCSPResponse = BasicOCSPResponse.getInstance(basicOCSPResp.getEncoded());
+			return getDEREncoded(basicOCSPResponse);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
 	/**
 	 * This method return {@code X509Certificate} representing {@code X509CertificateHolder}. The {@code CertificateParsingException} is transformed in {@code
 	 * DSSException}.
@@ -169,37 +178,17 @@ public final class DSSASN1Utils {
 		}
 	}
 
-	public static byte[] getEncoded(final AlgorithmIdentifier algorithmIdentifier) throws DSSException {
-
+	public static Date toDate(final ASN1UTCTime asn1Date) throws DSSException {
 		try {
-			return algorithmIdentifier.getEncoded(ASN1Encoding.DER);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	public static byte[] getEncoded(final ASN1Sequence signPolicyInfo) throws DSSException {
-
-		try {
-			return signPolicyInfo.getEncoded(ASN1Encoding.DER);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	public static Date toDate(final ASN1UTCTime attrValue) throws DSSException {
-
-		try {
-			return attrValue.getDate();
+			return asn1Date.getDate();
 		} catch (ParseException e) {
 			throw new DSSException(e);
 		}
 	}
 
-	public static Date toDate(final ASN1GeneralizedTime notBeforeTime) throws DSSException {
-
+	public static Date toDate(final ASN1GeneralizedTime asn1Date) throws DSSException {
 		try {
-			return notBeforeTime.getDate();
+			return asn1Date.getDate();
 		} catch (ParseException e) {
 			throw new DSSException(e);
 		}
@@ -400,8 +389,8 @@ public final class DSSASN1Utils {
 		AlgorithmIdentifier signPolicyHashAlgIdentifier = AlgorithmIdentifier.getInstance(signPolicyHashAlgObject);
 		ASN1Sequence signPolicyInfo = (ASN1Sequence) asn1Seq.getObjectAt(1);
 
-		byte[] hashAlgorithmDEREncoded = getEncoded(signPolicyHashAlgIdentifier);
-		byte[] signPolicyInfoDEREncoded = getEncoded(signPolicyInfo);
+		byte[] hashAlgorithmDEREncoded = getDEREncoded(signPolicyHashAlgIdentifier);
+		byte[] signPolicyInfoDEREncoded = getDEREncoded(signPolicyInfo);
 		return DSSUtils.digest(digestAlgorithm, hashAlgorithmDEREncoded, signPolicyInfoDEREncoded);
 	}
 

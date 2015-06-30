@@ -24,7 +24,6 @@ import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -36,7 +35,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -527,14 +525,9 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return cmsSignedData.getSignedContentTypeOID() as DER encoded
 	 */
 	private byte[] getEncodedContentType(final CMSSignedData cmsSignedData) {
-
 		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
 		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-		try {
-			return signedData.getEncapContentInfo().getContentType().getEncoded(ASN1Encoding.DER);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+		return DSSASN1Utils.getDEREncoded(signedData.getEncapContentInfo().getContentType());
 	}
 
 	/**

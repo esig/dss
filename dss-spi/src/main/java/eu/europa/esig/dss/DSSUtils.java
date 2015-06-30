@@ -74,7 +74,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBMPString;
@@ -86,7 +85,6 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
-import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
@@ -1233,16 +1231,6 @@ public final class DSSUtils {
 		}
 	}
 
-	public static byte[] getEncoded(BasicOCSPResp basicOCSPResp) {
-
-		try {
-			final byte[] encoded = BasicOCSPResponse.getInstance(basicOCSPResp.getEncoded()).getEncoded(ASN1Encoding.DER);
-			return encoded;
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
 	/**
 	 * return a unique id for a date and the certificateToken id.
 	 *
@@ -1792,18 +1780,6 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * Returns the file extension based on the position of the '.' in the path. The paths as "xxx.y/toto" are not handled.
-	 *
-	 * @param path to be analysed
-	 * @return the file extension or null
-	 */
-	@Deprecated
-	public static String getFileExtension(final String path) {
-
-		return MimeType.getFileExtension(path);
 	}
 
 	/**
