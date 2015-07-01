@@ -7,6 +7,7 @@ import java.util.Date;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -47,6 +48,7 @@ public class CAdESLevelBWithExpiredCertificate extends AbstractTestSignature {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		signatureParameters.setSignWithExpiredCertificate(true);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();

@@ -205,7 +205,7 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 			// assertEquals(1, seqDigest.size());
 
 			ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier.getInstance(seqDigest.getObjectAt(0));
-			assertEquals(DigestAlgorithm.SHA256.getOid(), oidDigestAlgo);
+			assertEquals(new ASN1ObjectIdentifier(DigestAlgorithm.SHA256.getOid()), oidDigestAlgo);
 
 			ASN1Sequence seqEncapsulatedInfo = ASN1Sequence.getInstance(seq.getObjectAt(2));
 			logger.info("ENCAPSULATED INFO : " + seqEncapsulatedInfo.toString());
