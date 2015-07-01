@@ -58,7 +58,7 @@ public class OCSPRef {
 
 		if (otherHash != null) { // -444
 
-			this.digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm());
+			this.digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());
 			this.digestValue = otherHash.getHashValue();
 		}
 		this.matchOnlyBasicOCSPResponse = matchOnlyBasicOCSPResponse;
@@ -94,7 +94,7 @@ public class OCSPRef {
 			byte[] computedValue = digest.digest();
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Compare " + Hex.encodeHexString(digestValue) + " to computed value " + Hex.encodeHexString(computedValue) + " of " +
-					  "BasicOCSPResp produced at " + ocspResp.getProducedAt());
+						"BasicOCSPResp produced at " + ocspResp.getProducedAt());
 			}
 			return Arrays.equals(digestValue, computedValue);
 		} catch (IOException e) {

@@ -474,4 +474,33 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	/**
+	 * Gets the ASN.1 algorithm identifier structure corresponding to a signature algorithm
+	 *
+	 * @return the AlgorithmIdentifier
+	 */
+	public static AlgorithmIdentifier getAlgorithmIdentifier(SignatureAlgorithm signatureAlgorithm) {
+		final String jceId = signatureAlgorithm.getJCEId();
+		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(jceId);
+		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
+		return algorithmIdentifier;
+	}
+
+	/**
+	 * Gets the ASN.1 algorithm identifier structure corresponding to a digest algorithm
+	 *
+	 * @return the AlgorithmIdentifier
+	 */
+	public static AlgorithmIdentifier getAlgorithmIdentifier(DigestAlgorithm digestAlgorithm) {
+
+		/*
+		 * The recommendation (cf. RFC 3380 section 2.1) is to omit the parameter for SHA-1, but some implementations still expect a
+		 * NULL there. Therefore we always include a NULL parameter even with SHA-1, despite the recommendation, because the RFC
+		 * states that implementations SHOULD support it as well anyway
+		 */
+		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
+		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
+		return algorithmIdentifier;
+	}
+
 }

@@ -411,7 +411,7 @@ public class CAdESLevelBaselineB {
 				sigPolicy = new SignaturePolicyIdentifier();
 			} else { // explicit
 				final ASN1ObjectIdentifier derOIPolicyId = new ASN1ObjectIdentifier(policyId);
-				final ASN1ObjectIdentifier oid = policy.getDigestAlgorithm().getOid();
+				final ASN1ObjectIdentifier oid = new ASN1ObjectIdentifier(policy.getDigestAlgorithm().getOid());
 				final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(oid);
 				OtherHashAlgAndValue otherHashAlgAndValue = new OtherHashAlgAndValue(algorithmIdentifier, new DEROctetString(policy.getDigestValue()));
 
@@ -459,7 +459,7 @@ public class CAdESLevelBaselineB {
 				asn1Encodable = new SigningCertificate(essCertID);
 			} else {
 
-				asn1Encodable = new ESSCertIDv2(digestAlgorithm.getAlgorithmIdentifier(), certHash, issuerSerial);
+				asn1Encodable = new ESSCertIDv2(DSSASN1Utils.getAlgorithmIdentifier(digestAlgorithm), certHash, issuerSerial);
 			}
 			signingCertificates.add(asn1Encodable);
 		}

@@ -26,12 +26,16 @@ import java.util.Map;
 /**
  * Supported signature encryption algorithms.
  *
- *
  */
-
 public enum EncryptionAlgorithm {
 
-	RSA("RSA", "1.2.840.113549.1.1.1", "RSA/ECB/PKCS1Padding"), DSA("DSA", "1.2.840.10040.4.1", "DSA"), ECDSA("ECDSA", "1.2.840.10045.2.1", "ECDSA"), HMAC("HMAC", "", "");
+	RSA("RSA", "1.2.840.113549.1.1.1", "RSA/ECB/PKCS1Padding"),
+
+	DSA("DSA", "1.2.840.10040.4.1", "DSA"),
+
+	ECDSA("ECDSA", "1.2.840.10045.2.1", "ECDSA"),
+
+	HMAC("HMAC", "", "");
 
 	private String name;
 	private String oid;
@@ -42,9 +46,7 @@ public enum EncryptionAlgorithm {
 		private static final Map<String, EncryptionAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
 
 		private static Map<String, EncryptionAlgorithm> registerOIDAlgorithms() {
-
 			Map<String, EncryptionAlgorithm> map = new HashMap<String, EncryptionAlgorithm>();
-
 			for (EncryptionAlgorithm encryptionAlgorithm : values()) {
 				map.put(encryptionAlgorithm.oid, encryptionAlgorithm);
 			}
@@ -73,13 +75,12 @@ public enum EncryptionAlgorithm {
 	 * @return
 	 */
 	public static EncryptionAlgorithm forName(final String name) {
-
 		// To be checked if ECC exists also .
 		if ("EC".equals(name) || "ECC".equals(name)) {
 			return ECDSA;
 		}
-		try {
 
+		try {
 			return valueOf(name);
 		} catch (Exception e) {
 		}
@@ -94,13 +95,12 @@ public enum EncryptionAlgorithm {
 	 * @return
 	 */
 	public static EncryptionAlgorithm forName(final String name, final EncryptionAlgorithm defaultValue) {
-
 		// To be checked if ECC exists also .
 		if ("EC".equals(name) || "ECC".equals(name)) {
 			return ECDSA;
 		}
-		try {
 
+		try {
 			final EncryptionAlgorithm encryptionAlgorithm = valueOf(name);
 			return encryptionAlgorithm;
 		} catch (Exception e) {
@@ -134,4 +134,5 @@ public enum EncryptionAlgorithm {
 	public String getPadding() {
 		return padding;
 	}
+
 }

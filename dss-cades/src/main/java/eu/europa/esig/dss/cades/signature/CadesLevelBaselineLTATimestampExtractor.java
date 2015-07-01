@@ -462,7 +462,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 				final ASN1Sequence asn1Sequence = (ASN1Sequence) asn1Encodable;
 				final ASN1ObjectIdentifier asn1ObjectIdentifier = (ASN1ObjectIdentifier) asn1Sequence.getObjectAt(0);
-				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(asn1ObjectIdentifier);
+				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(asn1ObjectIdentifier.getId());
 				return AlgorithmIdentifier.getInstance(asn1Sequence);
 			} else if (asn1Encodable instanceof DERObjectIdentifier) {
 
@@ -491,7 +491,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		if (OMIT_ALGORITHM_IDENTIFIER_IF_DEFAULT && hashIndexDigestAlgorithm.getOid().equals(DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO.getOid())) {
 			return null;
 		} else {
-			return hashIndexDigestAlgorithm.getAlgorithmIdentifier();
+			return DSSASN1Utils.getAlgorithmIdentifier(hashIndexDigestAlgorithm);
 		}
 	}
 

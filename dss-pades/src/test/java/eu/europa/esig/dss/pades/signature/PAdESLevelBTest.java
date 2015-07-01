@@ -141,7 +141,7 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 
 				ASN1Set digestAlgorithmSet = signedData.getDigestAlgorithms();
 				ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier.getInstance(ASN1Sequence.getInstance(digestAlgorithmSet.getObjectAt(0)).getObjectAt(0));
-				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(oidDigestAlgo);
+				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(oidDigestAlgo.getId());
 				logger.info("DIGEST ALGO : " + digestAlgorithm);
 
 				ContentInfo encapContentInfo = signedData.getEncapContentInfo();

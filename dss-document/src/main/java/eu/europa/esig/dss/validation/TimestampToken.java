@@ -167,7 +167,7 @@ public class TimestampToken extends Token {
 			final String algorithm = issuerToken.getPublicKey().getAlgorithm();
 			final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
 			final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm());
+			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm().getId());
 			algorithmUsedToSignToken = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		}
 		return signatureValid;
@@ -229,7 +229,7 @@ public class TimestampToken extends Token {
 			messageImprintData = data != null;
 			final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
 			final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getHashAlgorithm().getAlgorithm();
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm);
+			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getId());
 
 			final byte[] computedDigest = DSSUtils.digest(digestAlgorithm, data);
 			final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
@@ -277,7 +277,7 @@ public class TimestampToken extends Token {
 	public DigestAlgorithm getSignedDataDigestAlgo() {
 
 		final ASN1ObjectIdentifier oid = timeStamp.getTimeStampInfo().getHashAlgorithm().getAlgorithm();
-		return DigestAlgorithm.forOID(oid);
+		return DigestAlgorithm.forOID(oid.getId());
 	}
 
 	/**

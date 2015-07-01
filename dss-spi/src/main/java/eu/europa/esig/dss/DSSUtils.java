@@ -725,10 +725,10 @@ public final class DSSUtils {
 	 */
 	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
 		try {
-			final String digestAlgorithmOid = digestAlgorithm.getOid().getId();
+			final String digestAlgorithmOid = digestAlgorithm.getOid();
 			final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid);
 			return messageDigest;
-		} catch(NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException e) {
 			throw new DSSException("Digest algorithm error: " + e.getMessage(), e);
 		}
 	}
