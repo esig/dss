@@ -44,7 +44,6 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.Signature;
 import java.security.cert.CRLException;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
@@ -58,6 +57,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
@@ -124,15 +124,8 @@ public final class DSSUtils {
 
 	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
 
-	/**
-	 * FROM: Apache
-	 * The index value when an element is not found in a list or array: {@code -1}.
-	 * This value is returned by methods in this class and can also be used in comparisons with values returned by
-	 * various method from {@link java.util.List}.
-	 */
-	public static final int INDEX_NOT_FOUND = -1;
-
 	private static final CertificateFactory certificateFactory;
+
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -150,10 +143,10 @@ public final class DSSUtils {
 
 			Security.addProvider(securityProvider);
 
-			certificateFactory = CertificateFactory.getInstance("X.509", "BC");
+			certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
 
 			jcaDigestCalculatorProviderBuilder = new JcaDigestCalculatorProviderBuilder();
-			jcaDigestCalculatorProviderBuilder.setProvider("BC");
+			jcaDigestCalculatorProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
 
 		} catch (CertificateException e) {
 			logger.error(e.getMessage(), e);
@@ -293,33 +286,6 @@ public final class DSSUtils {
 		final byte[] decodedBase64 = Base64.decodeBase64(base64String);
 		final byte[] encodeBase64 = Base64.encodeBase64(decodedBase64);
 		return encodeBase64;
-	}
-
-	/**
-	 * Encodes dss document using the base64 algorithm .
-	 *
-	 * @param dssDocument dss document to be encoded
-	 * @return encoded base64 string
-	 */
-	public static String base64Encode(DSSDocument dssDocument) {
-		final byte[] bytes = dssDocument.getBytes();
-		final String base64EncodedBytes = Base64.encodeBase64String(bytes);
-		return base64EncodedBytes;
-	}
-
-	/**
-	 * @param certificate
-	 * @return
-	 */
-	public static String base64Encode(final X509Certificate certificate) throws DSSException {
-
-		try {
-			final byte[] bytes = certificate.getEncoded();
-			final String base64EncodedBytes = Base64.encodeBase64String(bytes);
-			return base64EncodedBytes;
-		} catch (CertificateEncodingException e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**
@@ -895,9 +861,7 @@ public final class DSSUtils {
 
 		try {
 			return new X509CertificateHolder(x509Certificate.getEncoded());
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} catch (CertificateEncodingException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -1324,8 +1288,8 @@ public final class DSSUtils {
 		if (firstX500Principal.equals(secondX500Principal)) {
 			return true;
 		}
-		final HashMap<String, String> firstStringStringHashMap = get(firstX500Principal);
-		final HashMap<String, String> secondStringStringHashMap = get(secondX500Principal);
+		final Map<String, String> firstStringStringHashMap = get(firstX500Principal);
+		final Map<String, String> secondStringStringHashMap = get(secondX500Principal);
 		final boolean containsAll = firstStringStringHashMap.entrySet().containsAll(secondStringStringHashMap.entrySet());
 
 		return containsAll;
@@ -1352,14 +1316,11 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static X500Principal getSubjectX500Principal(final X509Certificate x509Certificate) {
-
 		final X500Principal x500Principal = x509Certificate.getSubjectX500Principal();
 		final String utf8Name = getUtf8String(x500Principal);
-		// System.out.println(">>> " + x500Principal.getName() + "-------" + utf8Name);
 		final X500Principal x500PrincipalNormalized = new X500Principal(utf8Name);
 		return x500PrincipalNormalized;
 	}
-
 
 	/**
 	 * @param x500Principal to be normalized
@@ -1455,9 +1416,8 @@ public final class DSSUtils {
 		}
 	}
 
-	private static HashMap<String, String> get(final X500Principal x500Principal) {
-
-		HashMap<String, String> treeMap = new HashMap<String, String>();
+	private static Map<String, String> get(final X500Principal x500Principal) {
+		Map<String, String> treeMap = new HashMap<String, String>();
 		final byte[] encoded = x500Principal.getEncoded();
 		final ASN1Sequence asn1Sequence = ASN1Sequence.getInstance(encoded);
 		final ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
@@ -1638,85 +1598,6 @@ public final class DSSUtils {
 		}
 	}
 
-	/**
-	 * replaces e.g. "\xc3\xa9" with "é"
-	 *
-	 * @param s the input
-	 * @return the output
-	 */
-	public static String unescapeMultiByteUtf8Literals(final String s) {
-		try {
-			final String q = new String(unescapePython(s.getBytes("UTF-8")), "UTF-8");
-			//			if (!q.equals(s)) {
-			//				LOG.log(Level.SEVERE, "multi byte utf literal found:\n" +
-			//							"  orig = " + s + "\n" +
-			//							"  escp = " + q
-			//				);
-			//			}
-			return q;
-		} catch (Exception e) {
-			//			LOG.log(Level.SEVERE, "Could not unescape multi byte utf literal - will use original input: " + s, e);
-			return s;
-		}
-	}
-
-	private static byte[] unescapePython(final byte[] escaped) throws Exception {
-		// simple state machine iterates over the escaped bytes and converts
-		final byte[] unescaped = new byte[escaped.length];
-		int posTarget = 0;
-		for (int posSource = 0; posSource < escaped.length; posSource++) {
-			// if its not special then just move on
-			if (escaped[posSource] != '\\') {
-				unescaped[posTarget] = escaped[posSource];
-				posTarget++;
-				continue;
-			}
-			// if there is no next byte, throw incorrect encoding error
-			if ((posSource + 1) >= escaped.length) {
-				throw new Exception("String incorrectly escaped, ends with escape character.");
-			}
-			// deal with hex first
-			if (escaped[posSource + 1] == 'x') {
-				// if there's no next byte, throw incorrect encoding error
-				if ((posSource + 3) >= escaped.length) {
-					throw new Exception("String incorrectly escaped, ends early with incorrect hex encoding.");
-				}
-				unescaped[posTarget] = (byte) ((Character.digit(escaped[posSource + 2], 16) << 4) + Character.digit(escaped[posSource + 3], 16));
-				posTarget++;
-				posSource += 3;
-			}
-			// deal with n, then t, then r
-			else if (escaped[posSource + 1] == 'n') {
-				unescaped[posTarget] = '\n';
-				posTarget++;
-				posSource++;
-			} else if (escaped[posSource + 1] == 't') {
-				unescaped[posTarget] = '\t';
-				posTarget++;
-				posSource++;
-			} else if (escaped[posSource + 1] == 'r') {
-				unescaped[posTarget] = '\r';
-				posTarget++;
-				posSource++;
-			} else if (escaped[posSource + 1] == '\\') {
-				unescaped[posTarget] = escaped[posSource + 1];
-				posTarget++;
-				posSource++;
-			} else if (escaped[posSource + 1] == '\'') {
-				unescaped[posTarget] = escaped[posSource + 1];
-				posTarget++;
-				posSource++;
-			} else {
-				// invalid character
-				throw new Exception("String incorrectly escaped, invalid escaped character");
-			}
-		}
-		final byte[] result = new byte[posTarget];
-		System.arraycopy(unescaped, 0, result, 0, posTarget);
-		// return byte array, not string. Callers can convert to string.
-		return result;
-	}
-
 	public static void copyFile(final String path, final File sourceFile, final File destinationFile) throws IOException {
 
 		final File destinationPath = new File(path);
@@ -1740,11 +1621,6 @@ public final class DSSUtils {
 				destination.close();
 			}
 		}
-	}
-
-	public static byte[] toByteArray(final long longValue) {
-
-		return String.valueOf(longValue).getBytes();
 	}
 
 	/**
@@ -1858,22 +1734,6 @@ public final class DSSUtils {
 
 		long diff = date2.getTime() - date1.getTime();
 		return timeUnit.convert(diff, TimeUnit.MILLISECONDS);
-	}
-
-	/**
-	 * This method returns an encoded representation of the {@code X509CertificateHolder}.
-	 *
-	 * @param x509CertificateHolder {@code X509CertificateHolder} to be encoded
-	 * @return array of {@code byte}s
-	 */
-	@Deprecated
-	public static byte[] getEncoded(final X509CertificateHolder x509CertificateHolder) {
-
-		try {
-			return x509CertificateHolder.getEncoded();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**

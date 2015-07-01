@@ -26,84 +26,67 @@ import eu.europa.esig.dss.DSSUtils;
 
 public class CertificateTokenValidationExtraInfo extends TokenValidationExtraInfo {
 
-    /**
-     *
-     */
-    public void infoOCSPSourceIsNull() {
+	/**
+	 * This method adds an information as OCSP source is null
+	 */
+	public void infoOCSPSourceIsNull() {
+		addInfo("The OCSP source is null !");
+	}
 
-        validationInfo.add("The OCSP source is null!");
-    }
+	/**
+	 * This method adds an information as no OCSP URI found
+	 */
+	public void infoNoOcspUriFoundInCertificate() {
+		addInfo("OSCP Uri not found in certificate meta-data !");
+	}
 
-    /**
-     *
-     */
-    public void infoNoOCSPResponse(final String uri) {
+	/**
+	 * This method allows to add an exception message with OCSP
+	 */
+	public void infoOCSPException(final String message) {
+		addInfo("An exception occurred during the OCSP retrieval process : " + message);
+	}
 
-        validationInfo.add("There is no OCSP response! (uri: " + uri + ")");
-    }
+	/**
+	 * This method adds an information as CRL source is null
+	 */
+	public void infoCRLSourceIsNull() {
+		addInfo("The CRL source is null!");
+	}
 
-    /**
-     *
-     */
-    public void infoOCSPException(final Exception e) {
+	/**
+	 * This method adds an information as CRL not found
+	 */
+	public void infoNoCRLInfoFound() {
+		addInfo("No CRL info found !");
+	}
 
-        validationInfo.add("An exception occurred during the OCSP retrieval process: " + e.getMessage());
-    }
+	/**
+	 * This method adds an information as invalid CRL
+	 */
+	public void infoCRLIsNotValid() {
+		addInfo("The CRL is not valid!");
+	}
 
-    /**
-     *
-     */
-    public void infoCRLSourceIsNull() {
+	/**
+	 * This method allows to add an exception message with CRL
+	 */
+	public void infoCRLException(final String message) {
+		addInfo("An exception occurred during the CRL retrieval process : " + message);
+	}
 
-        validationInfo.add("The CRL source is null!");
-    }
+	public void infoTheCertNotValidYet(final Date validationDate, final Date notAfter, final Date notBefore) {
+		final String endDate = DSSUtils.formatInternal(notAfter);
+		final String startDate = DSSUtils.formatInternal(notBefore);
+		final String valDate = DSSUtils.formatInternal(validationDate);
+		addInfo("The certificate is not valid yet! [" + startDate + "-" + endDate + "] on " + valDate);
+	}
 
-    /**
-     *
-     */
-    public void infoNoCRLInfoFound(final String uri) {
-
-        validationInfo.add("No CRL info found! (" + uri + ")");
-    }
-
-    /**
-     *
-     */
-    public void infoCRLSignatureIsNotValid(final String message) {
-
-        validationInfo.add("The CRL signature is not valid: " + message);
-    }
-
-    /**
-     *
-     */
-    public void infoCRLIsNotValid() {
-
-        validationInfo.add("The CRL is not valid!");
-    }
-
-    /**
-     *
-     */
-    public void infoCRLException(final Exception e) {
-
-        validationInfo.add("An exception occurred during the CRL retrieval process: " + e.getMessage());
-    }
-
-    public void infoTheCertNotValidYet(final Date validationDate, final Date notAfter, final Date notBefore) {
-
-        final String endDate = DSSUtils.formatInternal(notAfter);
-        final String startDate = DSSUtils.formatInternal(notBefore);
-        final String valDate = DSSUtils.formatInternal(validationDate);
-        validationInfo.add("The certificate is not valid yet! [" + startDate + "-" + endDate + "] on " + valDate);
-    }
-
-    public void infoTheCertIsExpired(final Date validationDate, final Date notAfter, final Date notBefore) {
-
-        final String endDate = DSSUtils.formatInternal(notAfter);
-        final String startDate = DSSUtils.formatInternal(notBefore);
-        final String valDate = DSSUtils.formatInternal(validationDate);
-        validationInfo.add("The certificate is expired! [" + startDate + "-" + endDate + "] on " + valDate);
-    }
+	public void infoTheCertIsExpired(final Date validationDate, final Date notAfter, final Date notBefore) {
+		final String endDate = DSSUtils.formatInternal(notAfter);
+		final String startDate = DSSUtils.formatInternal(notBefore);
+		final String valDate = DSSUtils.formatInternal(validationDate);
+		addInfo("The certificate is expired! [" + startDate + "-" + endDate + "] on " + valDate);
+	}
 
 }
