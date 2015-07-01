@@ -29,9 +29,9 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.Policy;
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.signature.SignaturePackaging;
-import eu.europa.esig.dss.x509.SignatureForm;
+import eu.europa.esig.dss.SignaturePackaging;
 
 /**
  * Representation of a <i>SignedProperties</i> Element.

@@ -30,6 +30,7 @@
 		<module>dss-cades</module>
 		<module>dss-pades</module>
 		<module>dss-xades</module>
+		<module>dss-model</module>
 	</modules>
 
 	<developers>
@@ -344,6 +345,11 @@
 				<artifactId>dss-xades</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-model</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-jaxb</artifactId>

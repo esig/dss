@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss;
 
-import eu.europa.esig.dss.x509.SignatureForm;
-
 /**
  * Signature profiles (form+level) handled by the SD-DSS framework.
  *

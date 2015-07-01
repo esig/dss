@@ -226,7 +226,7 @@ public enum SignatureAlgorithm {
 	public static SignatureAlgorithm forXML(final String xmlName) {
 		final SignatureAlgorithm algorithm = XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + xmlName);
+			throw new IllegalArgumentException("Unsupported algorithm: " + xmlName);
 		}
 		return algorithm;
 	}
@@ -251,7 +251,7 @@ public enum SignatureAlgorithm {
 	public static SignatureAlgorithm forOID(final String oid) {
 		final SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + oid);
+			throw new IllegalArgumentException("Unsupported algorithm: " + oid);
 		}
 		return algorithm;
 	}
@@ -290,7 +290,7 @@ public enum SignatureAlgorithm {
 	public static SignatureAlgorithm forJAVA(final String javaName) {
 		final SignatureAlgorithm algorithm = JAVA_ALGORITHMS.get(javaName);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + javaName);
+			throw new IllegalArgumentException("Unsupported algorithm: " + javaName);
 		}
 		return algorithm;
 	}

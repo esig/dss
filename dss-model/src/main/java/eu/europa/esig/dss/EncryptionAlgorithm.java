@@ -84,7 +84,7 @@ public enum EncryptionAlgorithm {
 			return valueOf(name);
 		} catch (Exception e) {
 		}
-		throw new DSSException("Unsupported algorithm: " + name);
+		throw new IllegalArgumentException("Unsupported algorithm: " + name);
 	}
 
 	/**

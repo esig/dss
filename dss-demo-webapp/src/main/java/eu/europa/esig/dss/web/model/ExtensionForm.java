@@ -5,9 +5,9 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.signature.SignaturePackaging;
-import eu.europa.esig.dss.x509.SignatureForm;
+import eu.europa.esig.dss.SignaturePackaging;
 
 public class ExtensionForm {
 
