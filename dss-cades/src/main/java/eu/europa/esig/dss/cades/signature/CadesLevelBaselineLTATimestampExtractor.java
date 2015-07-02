@@ -173,7 +173,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 		final ASN1EncodableVector certificatesHashIndexVector = new ASN1EncodableVector();
 
-		final List<CertificateToken> certificateTokens = cadesSignature.getCertificatesWithinSignatureAndTimestamps();
+		final List<CertificateToken> certificateTokens = cadesSignature.getCertificates();
 		for (final CertificateToken certificateToken : certificateTokens) {
 			final byte[] encodedCertificate = certificateToken.getEncoded();
 			final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, encodedCertificate);
