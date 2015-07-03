@@ -13,6 +13,20 @@
 	
 	<artifactId>dss-model</artifactId>
 	<name>DSS Model</name>
-	<description>Data Model for DSS</description>
+	<description>Data Model representation for DSS. All classes should be serializable (REST/SOAP)</description>
 	
+	<dependencies>
+		<!-- No other dependencies than in scope test  -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>

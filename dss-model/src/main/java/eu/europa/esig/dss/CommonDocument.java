@@ -20,12 +20,45 @@
  */
 package eu.europa.esig.dss;
 
+import java.io.StringWriter;
+
 /**
- * Packaging method of the signature
+ * This class implements the default methods.
  *
  */
-public enum SignaturePackaging {
+@SuppressWarnings("serial")
+public abstract class CommonDocument implements DSSDocument {
 
-	ENVELOPED, ENVELOPING, DETACHED
+	protected DSSDocument nextDocument;
 
+	protected MimeType mimeType;
+
+	@Override
+	public MimeType getMimeType() {
+		return mimeType;
+	}
+
+	@Override
+	public void setMimeType(final MimeType mimeType) {
+		this.mimeType = mimeType;
+	}
+
+	@Override
+	public DSSDocument getNextDocument() {
+		return nextDocument;
+	}
+
+	@Override
+	public void setNextDocument(final DSSDocument nextDocument) {
+		this.nextDocument = nextDocument;
+	}
+
+	@Override
+	public String toString() {
+
+		final StringWriter stringWriter = new StringWriter();
+		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : mimeType.getMimeTypeString()).append(" / ").append(getAbsolutePath());
+		final String string = stringWriter.toString();
+		return string;
+	}
 }

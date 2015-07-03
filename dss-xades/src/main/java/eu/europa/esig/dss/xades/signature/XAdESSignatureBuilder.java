@@ -37,7 +37,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -49,6 +48,7 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampInclude;
@@ -634,7 +634,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	private void incorporateSignatureProductionPlace() {
 
-		final BLevelParameters.SignerLocation signatureProductionPlace = params.bLevel().getSignerLocation();
+		final SignerLocation signatureProductionPlace = params.bLevel().getSignerLocation();
 		if (signatureProductionPlace != null) {
 
 			final Element signatureProductionPlaceDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_PRODUCTION_PLACE);

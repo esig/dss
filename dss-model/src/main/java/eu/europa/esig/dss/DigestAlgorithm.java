@@ -93,7 +93,7 @@ public enum DigestAlgorithm {
 		final String c14nName = name.replaceAll("-", "");
 		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(c14nName);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + name + "/" + c14nName);
+			throw new DSSException("Unsupported algorithm: " + name + "/" + c14nName);
 		}
 		return algorithm;
 	}
@@ -123,7 +123,7 @@ public enum DigestAlgorithm {
 	public static DigestAlgorithm forOID(final String oid) {
 		final DigestAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + oid);
+			throw new DSSException("Unsupported algorithm: " + oid);
 		}
 		return algorithm;
 	}
@@ -137,7 +137,7 @@ public enum DigestAlgorithm {
 	public static DigestAlgorithm forXML(final String xmlName) {
 		final DigestAlgorithm algorithm = Registry.XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + xmlName);
+			throw new DSSException("Unsupported algorithm: " + xmlName);
 		}
 		return algorithm;
 	}

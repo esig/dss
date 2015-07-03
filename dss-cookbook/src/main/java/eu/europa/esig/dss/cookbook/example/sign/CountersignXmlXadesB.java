@@ -30,7 +30,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.BLevelParameters.SignerLocation;
+import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;

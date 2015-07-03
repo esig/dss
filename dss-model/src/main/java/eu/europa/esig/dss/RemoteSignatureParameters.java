@@ -20,12 +20,29 @@
  */
 package eu.europa.esig.dss;
 
-/**
- * Packaging method of the signature
- *
- */
-public enum SignaturePackaging {
+import java.util.ArrayList;
+import java.util.List;
 
-	ENVELOPED, ENVELOPING, DETACHED
+@SuppressWarnings("serial")
+public class RemoteSignatureParameters extends AbstractSerializableSignatureParameters {
+
+	private RemoteCertificate signingCertificate;
+	private List<RemoteCertificate> certificateChain = new ArrayList<RemoteCertificate>();
+
+	public RemoteCertificate getSigningCertificate() {
+		return signingCertificate;
+	}
+
+	public void setSigningCertificate(RemoteCertificate signingCertificate) {
+		this.signingCertificate = signingCertificate;
+	}
+
+	public List<RemoteCertificate> getCertificateChain() {
+		return certificateChain;
+	}
+
+	public void setCertificateChain(List<RemoteCertificate> certificateChain) {
+		this.certificateChain = certificateChain;
+	}
 
 }

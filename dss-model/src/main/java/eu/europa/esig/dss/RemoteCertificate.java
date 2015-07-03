@@ -19,49 +19,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss;
+import java.io.Serializable;
+import java.security.cert.X509Certificate;
 
-import java.io.StringWriter;
 
-/**
- * This class implements the default methods.
- *
- *
- *
- *
- *
- */
-public abstract class CommonDocument implements DSSDocument {
+@SuppressWarnings("serial")
+public class RemoteCertificate implements Serializable {
 
-	protected DSSDocument nextDocument;
+	private X509Certificate x509Certificate;
 
-	protected MimeType mimeType;
-
-	@Override
-	public MimeType getMimeType() {
-		return mimeType;
+	public X509Certificate getX509Certificate() {
+		return x509Certificate;
 	}
 
-	@Override
-	public void setMimeType(final MimeType mimeType) {
-		this.mimeType = mimeType;
+	public void setX509Certificate(X509Certificate x509Certificate) {
+		this.x509Certificate = x509Certificate;
 	}
 
-	@Override
-	public DSSDocument getNextDocument() {
-		return nextDocument;
-	}
-
-	@Override
-	public void setNextDocument(final DSSDocument nextDocument) {
-		this.nextDocument = nextDocument;
-	}
-
-	@Override
-	public String toString() {
-
-		final StringWriter stringWriter = new StringWriter();
-		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : mimeType.getMimeTypeString()).append(" / ").append(getAbsolutePath());
-		final String string = stringWriter.toString();
-		return string;
-	}
 }

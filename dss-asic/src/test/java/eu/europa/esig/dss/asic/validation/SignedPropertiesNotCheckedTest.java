@@ -36,7 +36,6 @@ import eu.europa.esig.dss.validation.report.Reports;
 
 /**
  * Unit test added to fix : https://joinup.ec.europa.eu/asset/sd-dss/issue/xades-signedproperties-reference
- *
  * XAdES standard : The generator shall create as many <code>ds:Reference</code> element as signed data objects (each one referencing one of them)
  * plus one ds:Reference element referencing xades:SignedProperties element.
  */

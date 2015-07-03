@@ -60,7 +60,7 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 		ASiCService service = new ASiCService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 		return signedDocument;

@@ -31,13 +31,13 @@ import eu.europa.esig.dss.validation.report.Reports;
 public class CertificatePoolSharingTest {
 
 	@Test
-	public void test() throws Exception{
-		DSSDocument	documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+	public void test() throws Exception {
+		DSSDocument documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
 
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
-		ASiCSignatureParameters	signatureParameters = new ASiCSignatureParameters();
+		ASiCSignatureParameters signatureParameters = new ASiCSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());

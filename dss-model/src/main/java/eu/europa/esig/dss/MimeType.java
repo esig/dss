@@ -27,12 +27,8 @@ import java.util.Map;
 
 /**
  * This class allows to handle different mime types. It also allows to add (define) new mime-type.
- *
- *
- *
- *
- *
  */
+@SuppressWarnings("serial")
 public class MimeType implements Serializable {
 
 	private static Map<String, MimeType> mimeTypes = new HashMap<String, MimeType>();
@@ -48,7 +44,6 @@ public class MimeType implements Serializable {
 	private String mimeTypeString;
 
 	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>() {{
-
 		put("xml", XML);
 		put("pdf", PDF);
 		put("asics", ASICS);
@@ -91,7 +86,6 @@ public class MimeType implements Serializable {
 	 * @param extension      to be defined. Example: "txt", note that there is no point before the extension name.
 	 */
 	public MimeType(final String mimeTypeString, final String extension) {
-
 		this(mimeTypeString);
 		fileExtensions.put(extension, this);
 	}

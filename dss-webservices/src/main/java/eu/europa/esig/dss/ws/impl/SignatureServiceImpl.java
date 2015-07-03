@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -43,6 +42,7 @@ import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
@@ -195,7 +195,7 @@ public class SignatureServiceImpl implements SignatureService {
 	}
 
 	private void setSignerLocation(WSParameters wsParameters, AbstractSignatureParameters params) {
-		final BLevelParameters.SignerLocation signerLocation = wsParameters.getSignerLocation();
+		final SignerLocation signerLocation = wsParameters.getSignerLocation();
 		params.bLevel().setSignerLocation(signerLocation);
 	}
 
