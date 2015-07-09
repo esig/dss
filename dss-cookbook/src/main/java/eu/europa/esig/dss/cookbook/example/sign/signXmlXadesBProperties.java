@@ -30,10 +30,11 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -57,7 +58,7 @@ public class signXmlXadesBProperties extends Cookbook {
 		BLevelParameters bLevelParameters = parameters.bLevel();
 		bLevelParameters.addClaimedSignerRole("My Claimed Role");
 
-		BLevelParameters.SignerLocation signerLocation = new BLevelParameters.SignerLocation();
+		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("Belgium");
 		signerLocation.setStateOrProvince("Luxembourg");
 		signerLocation.setPostalCode("1234");

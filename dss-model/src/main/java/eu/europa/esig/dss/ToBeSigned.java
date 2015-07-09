@@ -20,48 +20,56 @@
  */
 package eu.europa.esig.dss;
 
-import java.io.StringWriter;
+import java.io.Serializable;
+import java.util.Arrays;
 
 /**
- * This class implements the default methods.
- *
- *
- *
- *
- *
+ * Data unit for signing
  */
-public abstract class CommonDocument implements DSSDocument {
+@SuppressWarnings("serial")
+public class ToBeSigned implements Serializable{
 
-	protected DSSDocument nextDocument;
+	private byte[] bytes;
 
-	protected MimeType mimeType;
+	public ToBeSigned() {
+	}
 
-	@Override
-	public MimeType getMimeType() {
-		return mimeType;
+	public ToBeSigned(byte[] bytes) {
+		this.bytes = bytes;
+	}
+
+	public byte[] getBytes() {
+		return bytes;
+	}
+
+	public void setBytes(byte[] bytes) {
+		this.bytes = bytes;
 	}
 
 	@Override
-	public void setMimeType(final MimeType mimeType) {
-		this.mimeType = mimeType;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + Arrays.hashCode(bytes);
+		return result;
 	}
 
 	@Override
-	public DSSDocument getNextDocument() {
-		return nextDocument;
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		ToBeSigned other = (ToBeSigned) obj;
+		if (!Arrays.equals(bytes, other.bytes)) {
+			return false;
+		}
+		return true;
 	}
 
-	@Override
-	public void setNextDocument(final DSSDocument nextDocument) {
-		this.nextDocument = nextDocument;
-	}
-
-	@Override
-	public String toString() {
-
-		final StringWriter stringWriter = new StringWriter();
-		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : mimeType.getMimeTypeString()).append(" / ").append(getAbsolutePath());
-		final String string = stringWriter.toString();
-		return string;
-	}
 }

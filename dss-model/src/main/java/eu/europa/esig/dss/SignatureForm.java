@@ -18,16 +18,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509;
+package eu.europa.esig.dss;
 
 /**
  * Different signature forms.<br>
  * NOTE: ASiC-S is supported only with XAdES; ASiC-E is not supported yet.
  *
- *
  */
-
 public enum SignatureForm {
 
-    XAdES, CAdES, PAdES, ASiC_S, ASiC_E
+	XAdES, CAdES, PAdES, ASiC_S, ASiC_E
+
 }

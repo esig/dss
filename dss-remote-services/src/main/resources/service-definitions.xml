@@ -1,0 +1,31 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="remoteSignatureService" class="eu.europa.esig.dss.signature.RemoteDocumentSignatureServiceImpl">
+        <property name="cadesService" ref="cadesService"/>
+        <property name="xadesService" ref="xadesService"/>
+        <property name="padesService" ref="padesService"/>
+        <property name="asicService" ref="asicService"/>
+    </bean>
+
+    <bean id="cadesService" class="eu.europa.esig.dss.cades.signature.CAdESService">
+        <constructor-arg ref="certificateVerifier"/>
+        <property name="tspSource" ref="tspSource"/>
+    </bean>
+
+    <bean id="xadesService" class="eu.europa.esig.dss.xades.signature.XAdESService">
+        <constructor-arg ref="certificateVerifier"/>
+        <property name="tspSource" ref="tspSource"/>
+    </bean>
+
+    <bean id="padesService" class="eu.europa.esig.dss.pades.signature.PAdESService">
+        <constructor-arg ref="certificateVerifier"/>
+        <property name="tspSource" ref="tspSource"/>
+    </bean>
+
+    <bean id="asicService" class="eu.europa.esig.dss.asic.signature.ASiCService">
+        <constructor-arg ref="certificateVerifier"/>
+        <property name="tspSource" ref="tspSource"/>
+    </bean>
+</beans>

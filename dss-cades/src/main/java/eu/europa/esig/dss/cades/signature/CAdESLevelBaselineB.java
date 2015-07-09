@@ -217,7 +217,7 @@ public class CAdESLevelBaselineB {
 			/*
 			 * In PAdES, the role is in the signature dictionary
 			 */
-			final BLevelParameters.SignerLocation signerLocationParameter = parameters.bLevel().getSignerLocation();
+			final eu.europa.esig.dss.SignerLocation signerLocationParameter = parameters.bLevel().getSignerLocation();
 			if (signerLocationParameter != null) {
 
 				final DERUTF8String country = signerLocationParameter.getCountry() == null ? null : new DERUTF8String(signerLocationParameter.getCountry());

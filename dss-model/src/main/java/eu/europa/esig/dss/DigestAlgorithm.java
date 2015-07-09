@@ -90,7 +90,7 @@ public enum DigestAlgorithm {
 	 * @return
 	 */
 	public static DigestAlgorithm forName(final String name) {
-		final String c14nName = DSSUtils.replaceStrStr(name, "-", "");
+		final String c14nName = name.replaceAll("-", "");
 		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(c14nName);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + name + "/" + c14nName);
@@ -106,7 +106,7 @@ public enum DigestAlgorithm {
 	 * @return
 	 */
 	public static DigestAlgorithm forName(final String name, final DigestAlgorithm defaultValue) {
-		final String c14nName = DSSUtils.replaceStrStr(name, "-", "");
+		final String c14nName = name.replaceAll("-", "");
 		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(c14nName);
 		if (algorithm == null) {
 			return defaultValue;

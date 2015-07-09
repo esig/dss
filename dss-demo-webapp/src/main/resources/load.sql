@@ -1,4 +1,4 @@
-INSERT INTO PREFERENCES (PREF_KEY , PREF_VALUE) values ( 'preference.url.service', 'http://localhost:8080/wservice');
+INSERT INTO PREFERENCES (PREF_KEY , PREF_VALUE) values ( 'preference.url.service', 'http://localhost:8080/services');
 INSERT INTO PREFERENCES (PREF_KEY , PREF_VALUE) values ( 'preference.default.policy.url', null);
 
 INSERT INTO PROXY_PREFERENCES (PROXY_KEY , PROXY_VALUE) values ( 'proxy.http.host', '127.0.0.1');

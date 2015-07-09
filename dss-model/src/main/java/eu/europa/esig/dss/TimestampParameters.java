@@ -20,15 +20,16 @@
  */
 package eu.europa.esig.dss;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.io.Serializable;
 
-import org.apache.commons.lang.StringUtils;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 /**
  * This class represents the parameters provided when generating specific timestamps in a signature, such as an AllDataObjectsTimestamp or an
  * IndividualDataObjectsTimestamp.
  */
-public class TimestampParameters {
+@SuppressWarnings("serial")
+public class TimestampParameters implements Serializable {
 
 	/**
 	 * The digest algorithm to provide to the timestamping authority
@@ -42,7 +43,6 @@ public class TimestampParameters {
 	 * independently of the surrounding XML, was created.
 	 */
 	private String canonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
-
 
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
@@ -61,17 +61,48 @@ public class TimestampParameters {
 	}
 
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
-
-		if (StringUtils.isBlank(canonicalizationMethod)) {
+		if ((canonicalizationMethod == null) || canonicalizationMethod.isEmpty()) {
 			throw new NullPointerException();
 		}
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((canonicalizationMethod == null) ? 0 : canonicalizationMethod.hashCode());
+		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		TimestampParameters other = (TimestampParameters) obj;
+		if (canonicalizationMethod == null) {
+			if (other.canonicalizationMethod != null) {
+				return false;
+			}
+		} else if (!canonicalizationMethod.equals(other.canonicalizationMethod)) {
+			return false;
+		}
+		if (digestAlgorithm != other.digestAlgorithm) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
 	public String toString() {
-		return "TimestampParameters{" +
-			  ", digestAlgorithm=" + digestAlgorithm.getName() +
-			  ", canonicalizationMethod=" + canonicalizationMethod +
-			  "}";
+		return "TimestampParameters{" + ", digestAlgorithm=" + digestAlgorithm.getName() + ", canonicalizationMethod=" + canonicalizationMethod + "}";
 	}
 }

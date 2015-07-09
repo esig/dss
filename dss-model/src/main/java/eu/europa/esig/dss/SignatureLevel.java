@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss;
 
-import eu.europa.esig.dss.x509.SignatureForm;
-
 /**
  * Signature profiles (form+level) handled by the SD-DSS framework.
  *
@@ -32,7 +30,7 @@ public enum SignatureLevel {
 
 	CMS_NOT_ETSI, CAdES_BASELINE_LTA, CAdES_BASELINE_LT, CAdES_BASELINE_T, CAdES_BASELINE_B, CAdES_101733_C, CAdES_101733_X, CAdES_101733_A,
 
-	PDF_NOT_ETSI, PAdES_BASELINE_LTA, PAdES_BASELINE_LT, PAdES_BASELINE_T, PAdES_BASELINE_B, PAdES_102778_LTV,
+	PDF_NOT_ETSI, PAdES_BASELINE_LTA, PAdES_BASELINE_LT, PAdES_BASELINE_T, PAdES_BASELINE_B,
 
 	ASiC_S_BASELINE_LTA, ASiC_S_BASELINE_LT, ASiC_S_BASELINE_T, ASiC_S_BASELINE_B,
 
@@ -79,11 +77,10 @@ public enum SignatureLevel {
 			case CAdES_101733_X:
 				return SignatureForm.CAdES;
 			case PDF_NOT_ETSI:
-			case PAdES_102778_LTV:
 			case PAdES_BASELINE_B:
+			case PAdES_BASELINE_T:
 			case PAdES_BASELINE_LT:
 			case PAdES_BASELINE_LTA:
-			case PAdES_BASELINE_T:
 				return SignatureForm.PAdES;
 			case ASiC_S_BASELINE_B:
 			case ASiC_S_BASELINE_T:

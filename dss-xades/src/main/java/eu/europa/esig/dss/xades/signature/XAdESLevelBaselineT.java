@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static eu.europa.esig.dss.SignatureLevel.XAdES_BASELINE_T;
+import static eu.europa.esig.dss.SignaturePackaging.ENVELOPED;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES141;
-import static eu.europa.esig.dss.signature.SignaturePackaging.ENVELOPED;
 import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
@@ -50,9 +50,9 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificatePool;

@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -39,14 +38,16 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.Policy;
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.ws.DSSWSUtils;
 import eu.europa.esig.dss.ws.SignatureService;
 import eu.europa.esig.dss.ws.WSChainCertificate;
@@ -54,7 +55,6 @@ import eu.europa.esig.dss.ws.WSDSSReference;
 import eu.europa.esig.dss.ws.WSDocument;
 import eu.europa.esig.dss.ws.WSParameters;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.SignatureForm;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -195,7 +195,7 @@ public class SignatureServiceImpl implements SignatureService {
 	}
 
 	private void setSignerLocation(WSParameters wsParameters, AbstractSignatureParameters params) {
-		final BLevelParameters.SignerLocation signerLocation = wsParameters.getSignerLocation();
+		final SignerLocation signerLocation = wsParameters.getSignerLocation();
 		params.bLevel().setSignerLocation(signerLocation);
 	}
 

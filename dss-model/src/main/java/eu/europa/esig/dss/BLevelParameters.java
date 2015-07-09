@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
+@SuppressWarnings("serial")
 public class BLevelParameters implements Serializable {
 
 	/**
@@ -62,10 +61,7 @@ public class BLevelParameters implements Serializable {
 	private String contentHintsType;
 	private String contentHintsDescription;
 
-	/**
-	 * Default constructor
-	 */
-	BLevelParameters() {
+	public BLevelParameters() {
 	}
 
 	/**
@@ -150,97 +146,6 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
-	 * SignerLocation ::= SEQUENCE { -- at least one of the following shall be present
-	 * countryName [0] DirectoryString OPTIONAL,
-	 * -- As used to name a Country in X.500
-	 * localityName [1] DirectoryString OPTIONAL,
-	 * -- As used to name a locality in X.500
-	 * postalAdddress [2] PostalAddress OPTIONAL }
-	 * PostalAddress ::= SEQUENCE SIZE(1..6) OF DirectoryString
-	 */
-	public static class SignerLocation implements Serializable {
-
-		private String country;
-
-		private String locality;
-
-		private List<String> postalAddress = new ArrayList<String>(6);
-
-		/**
-		 * From XAdES standard:
-		 */
-
-		private String postalCode;
-		private String city;
-		private String stateOrProvince;
-
-		public SignerLocation() {
-		}
-
-		public String getCountry() {
-			return country;
-		}
-
-		public void setCountry(final String country) {
-			this.country = country;
-		}
-
-		public String getLocality() {
-			return locality;
-		}
-
-		public void setLocality(final String locality) {
-			this.locality = locality;
-		}
-
-		public List<String> getPostalAddress() {
-			return postalAddress;
-		}
-
-		public void setPostalAddress(final List<String> postalAddress) {
-			this.postalAddress = postalAddress;
-		}
-
-		public String getPostalCode() {
-			return postalCode;
-		}
-
-		public void setPostalCode(String postalCode) {
-			this.postalCode = postalCode;
-		}
-
-		public String getCity() {
-			return city;
-		}
-
-		public void setCity(String city) {
-			this.city = city;
-		}
-
-		public String getStateOrProvince() {
-			return stateOrProvince;
-		}
-
-		public void setStateOrProvince(String stateOrProvince) {
-			this.stateOrProvince = stateOrProvince;
-		}
-
-		/**
-		 * Adds an address item to the complete address.
-		 *
-		 * @param addressItem
-		 */
-		public void addPostalAddress(final String addressItem) {
-
-			if (postalAddress != null) {
-
-				postalAddress = new ArrayList<String>(6);
-			}
-			postalAddress.add(addressItem);
-		}
-	}
-
-	/**
 	 * Set the signing date
 	 *
 	 * @param signingDate the value
@@ -295,7 +200,7 @@ public class BLevelParameters implements Serializable {
 	 * @param claimedSignerRole the value
 	 */
 	public void addClaimedSignerRole(final String claimedSignerRole) {
-		if (StringUtils.isEmpty(claimedSignerRole)) {
+		if ((claimedSignerRole == null) || (claimedSignerRole.length() == 0)) {
 			throw new NullPointerException("claimedSignerRole");
 		}
 		if (claimedSignerRoles == null) {
@@ -314,15 +219,7 @@ public class BLevelParameters implements Serializable {
 	 * @param certifiedSignerRole the value
 	 */
 	public void addCertifiedSignerRole(final String certifiedSignerRole) {
-
-		throw new DSSNotYetImplementedMethodException("eu.europa.esig.dss.BLevelParameters.addCertifiedSignerRole");
-		/*
-        if (certifiedSignerRoles == null) {
-
-            certifiedSignerRoles = new ArrayList<String>();
-        }
-        certifiedSignerRoles.add(certifiedSignerRole);
-		 */
+		throw new DSSException("eu.europa.esig.dss.BLevelParameters.addCertifiedSignerRole");
 	}
 
 	/**
@@ -401,6 +298,125 @@ public class BLevelParameters implements Serializable {
 	 */
 	public void setSignerLocation(final SignerLocation signerLocation) {
 		this.signerLocation = signerLocation;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((certifiedSignerRoles == null) ? 0 : certifiedSignerRoles.hashCode());
+		result = (prime * result) + ((claimedSignerRoles == null) ? 0 : claimedSignerRoles.hashCode());
+		result = (prime * result) + ((commitmentTypeIndication == null) ? 0 : commitmentTypeIndication.hashCode());
+		result = (prime * result) + ((contentHintsDescription == null) ? 0 : contentHintsDescription.hashCode());
+		result = (prime * result) + ((contentHintsType == null) ? 0 : contentHintsType.hashCode());
+		result = (prime * result) + ((contentIdentifierPrefix == null) ? 0 : contentIdentifierPrefix.hashCode());
+		result = (prime * result) + ((contentIdentifierSuffix == null) ? 0 : contentIdentifierSuffix.hashCode());
+		result = (prime * result) + ((signaturePolicy == null) ? 0 : signaturePolicy.hashCode());
+		result = (prime * result) + ((signerLocation == null) ? 0 : signerLocation.hashCode());
+		result = (prime * result) + ((signingCertificateDigestMethod == null) ? 0 : signingCertificateDigestMethod.hashCode());
+		result = (prime * result) + ((signingDate == null) ? 0 : signingDate.hashCode());
+		result = (prime * result) + (trustAnchorBPPolicy ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		BLevelParameters other = (BLevelParameters) obj;
+		if (certifiedSignerRoles == null) {
+			if (other.certifiedSignerRoles != null) {
+				return false;
+			}
+		} else if (!certifiedSignerRoles.equals(other.certifiedSignerRoles)) {
+			return false;
+		}
+		if (claimedSignerRoles == null) {
+			if (other.claimedSignerRoles != null) {
+				return false;
+			}
+		} else if (!claimedSignerRoles.equals(other.claimedSignerRoles)) {
+			return false;
+		}
+		if (commitmentTypeIndication == null) {
+			if (other.commitmentTypeIndication != null) {
+				return false;
+			}
+		} else if (!commitmentTypeIndication.equals(other.commitmentTypeIndication)) {
+			return false;
+		}
+		if (contentHintsDescription == null) {
+			if (other.contentHintsDescription != null) {
+				return false;
+			}
+		} else if (!contentHintsDescription.equals(other.contentHintsDescription)) {
+			return false;
+		}
+		if (contentHintsType == null) {
+			if (other.contentHintsType != null) {
+				return false;
+			}
+		} else if (!contentHintsType.equals(other.contentHintsType)) {
+			return false;
+		}
+		if (contentIdentifierPrefix == null) {
+			if (other.contentIdentifierPrefix != null) {
+				return false;
+			}
+		} else if (!contentIdentifierPrefix.equals(other.contentIdentifierPrefix)) {
+			return false;
+		}
+		if (contentIdentifierSuffix == null) {
+			if (other.contentIdentifierSuffix != null) {
+				return false;
+			}
+		} else if (!contentIdentifierSuffix.equals(other.contentIdentifierSuffix)) {
+			return false;
+		}
+		if (signaturePolicy == null) {
+			if (other.signaturePolicy != null) {
+				return false;
+			}
+		} else if (!signaturePolicy.equals(other.signaturePolicy)) {
+			return false;
+		}
+		if (signerLocation == null) {
+			if (other.signerLocation != null) {
+				return false;
+			}
+		} else if (!signerLocation.equals(other.signerLocation)) {
+			return false;
+		}
+		if (signingCertificateDigestMethod != other.signingCertificateDigestMethod) {
+			return false;
+		}
+		if (signingDate == null) {
+			if (other.signingDate != null) {
+				return false;
+			}
+		} else if (!signingDate.equals(other.signingDate)) {
+			return false;
+		}
+		if (trustAnchorBPPolicy != other.trustAnchorBPPolicy) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "BLevelParameters [trustAnchorBPPolicy=" + trustAnchorBPPolicy + ", signingDate=" + signingDate + ", signingCertificateDigestMethod="
+				+ signingCertificateDigestMethod + ", claimedSignerRoles=" + claimedSignerRoles + ", certifiedSignerRoles=" + certifiedSignerRoles + ", signaturePolicy="
+				+ signaturePolicy + ", contentIdentifierPrefix=" + contentIdentifierPrefix + ", contentIdentifierSuffix=" + contentIdentifierSuffix + ", commitmentTypeIndication="
+				+ commitmentTypeIndication + ", signerLocation=" + signerLocation + ", contentHintsType=" + contentHintsType + ", contentHintsDescription="
+				+ contentHintsDescription + "]";
 	}
 
 }
