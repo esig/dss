@@ -29,7 +29,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.model.wadl.Description;
-import org.apache.cxf.jaxrs.model.wadl.Descriptions;
 import org.apache.cxf.jaxrs.model.wadl.DocTarget;
 
 import eu.europa.esig.dss.DSSException;
@@ -39,27 +38,22 @@ import eu.europa.esig.dss.ToBeSigned;
 @Path("SignatureService")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Description(value = "This REST interface provides operations for the signature creation and for its extension.")
 public interface RestDocumentSignatureService extends Serializable {
 
 	@POST
 	@Path("getDataToSign")
-	@Descriptions({
-		@Description(value = "Retrieves the bytes of the data that need to be signed based on the toSignDocument and parameters.", target = DocTarget.METHOD)
-	})
+	@Description(value = "Retrieves the bytes of the data that need to be signed based on the toSignDocument and parameters.", target = DocTarget.METHOD)
 	ToBeSigned getDataToSign(DataToSignDTO dataToSign) throws DSSException;
 
 	@POST
 	@Path("signDocument")
-	@Descriptions({
-		@Description(value = "Signs the toSignDocument with the provided signatureValue.", target = DocTarget.METHOD)
-	})
+	@Description(value = "Signs the toSignDocument with the provided signatureValue.", target = DocTarget.METHOD)
 	RemoteDocument signDocument(SignDocumentDTO signDocument) throws DSSException;
 
 	@POST
 	@Path("extendDocument")
-	@Descriptions({
-		@Description(value = "Extends the level of the signatures in the toExtendDocument", target = DocTarget.METHOD)
-	})
+	@Description(value = "Extends the level of the signatures in the toExtendDocument", target = DocTarget.METHOD)
 	RemoteDocument extendDocument(ExtendDocumentDTO extendDocument) throws DSSException;
 
 }
