@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -75,12 +76,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.validation.TimestampToken;
@@ -110,7 +108,6 @@ public class CAdESLevelBaselineB {
 	 * The default constructor for CAdESLevelBaselineB.
 	 */
 	public CAdESLevelBaselineB(boolean padesUsage) {
-
 		this.padesUsage = padesUsage;
 	}
 
@@ -120,14 +117,12 @@ public class CAdESLevelBaselineB {
 	 * @return
 	 */
 	public AttributeTable getUnsignedAttributes() {
-
 		return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, ASN1Encodable>());
 	}
 
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
 
 		ASN1EncodableVector signedAttributes = new ASN1EncodableVector();
-
 
 		addSigningCertificateAttribute(parameters, signedAttributes);
 		addSigningTimeAttribute(parameters, signedAttributes);
@@ -141,49 +136,9 @@ public class CAdESLevelBaselineB {
 
 		// mime-type attribute breaks parallel signatures by adding PKCS7 as a mime-type for subsequent signers.
 		// This attribute is not mandatory, so it has been disabled.
-		// signedAttributes = addMimeType(document, signedAttributes);
 
 		final AttributeTable signedAttributesTable = new AttributeTable(signedAttributes);
 		return signedAttributesTable;
-	}
-
-	/**
-	 * 5.11.5 mime-type Attribute
-	 *
-	 * The mime-type attribute is an attribute that lets the signature generator indicate the mime-type of the signed data. It
-	 * is similar in spirit to the contentDescription field of the content-hints attribute, but can be used without a multilayered
-	 * document.
-	 *
-	 * The mime-type attribute shall be a signed attribute.
-	 *
-	 * The following object identifier identifies the mime-type attribute:
-	 * id-aa-ets-mimeType OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0) electronicsignature-
-	 * standard (1733) attributes(2) 1 }
-	 *
-	 * mime-type attribute values have ASN.1 type UTF8String:
-	 *
-	 * mimeType::= UTF8String
-	 *
-	 * The mimeType is used to indicate the encoding of the signed data, in accordance with the rules defined in
-	 * RFC 2045 [6]; see annex F for an example of structured contents and MIME.
-	 * Only a single mime-type attribute shall be present.
-	 *
-	 * The mime-type attribute shall not be used within a countersignature.
-	 *
-	 * @param document
-	 * @param signedAttributes
-	 */
-	private void addMimeType(final DSSDocument document, final ASN1EncodableVector signedAttributes) {
-
-		if (!padesUsage) {
-			final MimeType mimeType = document.getMimeType();
-			if ((mimeType != null) && StringUtils.isNotBlank(mimeType.getMimeTypeString())) {
-
-				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_mimeType,
-						new DERSet(new DERUTF8String(mimeType.getMimeTypeString())));
-				signedAttributes.add(attribute);
-			}
-		}
 	}
 
 	/**
@@ -270,9 +225,7 @@ public class CAdESLevelBaselineB {
 				final ASN1EncodableVector postalAddress = new ASN1EncodableVector();
 				final List<String> postalAddressParameter = signerLocationParameter.getPostalAddress();
 				if (postalAddressParameter != null) {
-
 					for (final String addressLine : postalAddressParameter) {
-
 						postalAddress.add(new DERUTF8String(addressLine));
 					}
 				}
@@ -302,7 +255,7 @@ public class CAdESLevelBaselineB {
 		final BLevelParameters bLevelParameters = parameters.bLevel();
 
 		final List<String> commitmentTypeIndications = bLevelParameters.getCommitmentTypeIndications();
-		if ((commitmentTypeIndications != null) && !commitmentTypeIndications.isEmpty()) {
+		if (CollectionUtils.isNotEmpty(commitmentTypeIndications)) {
 
 			final int size = commitmentTypeIndications.size();
 			ASN1Encodable[] asn1Encodables = new ASN1Encodable[size];
@@ -458,7 +411,7 @@ public class CAdESLevelBaselineB {
 				sigPolicy = new SignaturePolicyIdentifier();
 			} else { // explicit
 				final ASN1ObjectIdentifier derOIPolicyId = new ASN1ObjectIdentifier(policyId);
-				final ASN1ObjectIdentifier oid = policy.getDigestAlgorithm().getOid();
+				final ASN1ObjectIdentifier oid = new ASN1ObjectIdentifier(policy.getDigestAlgorithm().getOid());
 				final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(oid);
 				OtherHashAlgAndValue otherHashAlgAndValue = new OtherHashAlgAndValue(algorithmIdentifier, new DEROctetString(policy.getDigestValue()));
 
@@ -506,7 +459,7 @@ public class CAdESLevelBaselineB {
 				asn1Encodable = new SigningCertificate(essCertID);
 			} else {
 
-				asn1Encodable = new ESSCertIDv2(digestAlgorithm.getAlgorithmIdentifier(), certHash, issuerSerial);
+				asn1Encodable = new ESSCertIDv2(DSSASN1Utils.getAlgorithmIdentifier(digestAlgorithm), certHash, issuerSerial);
 			}
 			signingCertificates.add(asn1Encodable);
 		}

@@ -22,25 +22,22 @@ package eu.europa.esig.dss.token;
 
 /**
  * Class that hold a simple password.
- * 
- *
  *
  */
-
 public class PrefilledPasswordCallback implements PasswordInputCallback {
 
-    private char[] password;
+	private final char[] password;
 
-    /**
-     * The default constructor for PrefillPasswordCallback.
-     */
-    public PrefilledPasswordCallback(char[] password) {
-        this.password = password;
-    }
+	/**
+	 * The default constructor for PrefillPasswordCallback.
+	 */
+	public PrefilledPasswordCallback(char[] password) {
+		this.password = password;
+	}
 
-    @Override
-    public char[] getPassword() {
-        return password;
-    }
+	@Override
+	public char[] getPassword() {
+		return password;
+	}
 
 }

@@ -388,7 +388,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 		if (certToken.isOCSPSigning() && certToken.hasIdPkixOcspNoCheckExtension()) {
 
-			certToken.extraInfo().add("OCSP check not needed: id-pkix-ocsp-nocheck extension present.");
+			certToken.extraInfo().addInfo("OCSP check not needed: id-pkix-ocsp-nocheck extension present.");
 			return null;
 		}
 
@@ -419,13 +419,13 @@ public class SignatureValidationContext implements ValidationContext {
 		final boolean expiredCertOnCRLExtension = issuerCertToken.hasExpiredCertOnCRLExtension();
 		if (expiredCertOnCRLExtension) {
 
-			certificateToken.extraInfo().add("Certificate is expired but the issuer certificate has ExpiredCertOnCRL extension.");
+			certificateToken.extraInfo().addInfo("Certificate is expired but the issuer certificate has ExpiredCertOnCRL extension.");
 			return true;
 		}
 		final Date expiredCertsRevocationFromDate = getExpiredCertsRevocationFromDate(certificateToken);
 		if (expiredCertsRevocationFromDate != null) {
 
-			certificateToken.extraInfo().add("Certificate is expired but the TSL extension 'expiredCertsRevocationInfo' is present: " + expiredCertsRevocationFromDate);
+			certificateToken.extraInfo().addInfo("Certificate is expired but the TSL extension 'expiredCertsRevocationInfo' is present: " + expiredCertsRevocationFromDate);
 			return true;
 		}
 		return false;

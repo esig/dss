@@ -22,18 +22,15 @@ package eu.europa.esig.dss.token;
 
 /**
  * This Callback is created in order to retrieve the password from the user when accessing the Key Store.
- * 
- *
  *
  */
-
 public interface PasswordInputCallback {
 
-    /**
-     * Retrieve the password (from the user)
-     * 
-     * @return
-     */
-    char[] getPassword();
+	/**
+	 * Retrieve the password (from the user)
+	 *
+	 * @return
+	 */
+	char[] getPassword();
 
 }

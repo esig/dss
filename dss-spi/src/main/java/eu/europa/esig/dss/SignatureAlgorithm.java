@@ -24,33 +24,57 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.DERNull;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-
 /**
  * Supported signature algorithms.
  *
- *
  */
-
 public enum SignatureAlgorithm {
 
-	RSA_SHA1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1), RSA_SHA224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224), RSA_SHA256(EncryptionAlgorithm.RSA,
-			DigestAlgorithm.SHA256), RSA_SHA384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384), RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512), RSA_RIPEMD160(
-					EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160), RSA_MD5(EncryptionAlgorithm.RSA, DigestAlgorithm.MD5), RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
+	RSA_SHA1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
 
-					RSA_SSA_PSS(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
+	RSA_SHA224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224),
 
-					ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1), ECDSA_SHA224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224), ECDSA_SHA256(EncryptionAlgorithm.ECDSA,
-							DigestAlgorithm.SHA256), ECDSA_SHA384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384), ECDSA_SHA512(EncryptionAlgorithm.ECDSA,
-									DigestAlgorithm.SHA512), ECDSA_RIPEMD160(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160),
+	RSA_SHA256(EncryptionAlgorithm.RSA,	DigestAlgorithm.SHA256),
 
-									DSA_SHA1(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA1), DSA_SHA256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA256),
+	RSA_SHA384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384),
 
-									HMAC_SHA1(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA1), HMAC_SHA224(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA224), HMAC_SHA256(EncryptionAlgorithm.HMAC,
-											DigestAlgorithm.SHA256), HMAC_SHA384(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA384), HMAC_SHA512(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA512), HMAC_RIPEMD160(
-													EncryptionAlgorithm.HMAC, DigestAlgorithm.RIPEMD160);
+	RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512),
+
+	RSA_RIPEMD160(EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160),
+
+	RSA_MD5(EncryptionAlgorithm.RSA, DigestAlgorithm.MD5),
+
+	RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
+
+	RSA_SSA_PSS(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
+
+	ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1),
+
+	ECDSA_SHA224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224),
+
+	ECDSA_SHA256(EncryptionAlgorithm.ECDSA,	DigestAlgorithm.SHA256),
+
+	ECDSA_SHA384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384),
+
+	ECDSA_SHA512(EncryptionAlgorithm.ECDSA,	DigestAlgorithm.SHA512),
+
+	ECDSA_RIPEMD160(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160),
+
+	DSA_SHA1(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA1),
+
+	DSA_SHA256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA256),
+
+	HMAC_SHA1(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA1),
+
+	HMAC_SHA224(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA224),
+
+	HMAC_SHA256(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA256),
+
+	HMAC_SHA384(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA384),
+
+	HMAC_SHA512(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA512),
+
+	HMAC_RIPEMD160(EncryptionAlgorithm.HMAC, DigestAlgorithm.RIPEMD160);
 
 	private final EncryptionAlgorithm encryptionAlgo;
 
@@ -192,20 +216,16 @@ public enum SignatureAlgorithm {
 	}
 
 	private static Map<SignatureAlgorithm, String> registerJavaAlgorithmsForKey() {
-
 		final Map<SignatureAlgorithm, String> javaAlgorithms = new HashMap<SignatureAlgorithm, String>();
 		for (Entry<String, SignatureAlgorithm> entry : JAVA_ALGORITHMS.entrySet()) {
-
 			javaAlgorithms.put(entry.getValue(), entry.getKey());
 		}
 		return javaAlgorithms;
 	}
 
 	public static SignatureAlgorithm forXML(final String xmlName) {
-
 		final SignatureAlgorithm algorithm = XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
-
 			throw new DSSException("Unsupported algorithm: " + xmlName);
 		}
 		return algorithm;
@@ -221,20 +241,16 @@ public enum SignatureAlgorithm {
 	 * @return {@code SignatureAlgorithm} or default value
 	 */
 	public static SignatureAlgorithm forXML(final String xmlName, final SignatureAlgorithm defaultValue) {
-
 		final SignatureAlgorithm algorithm = XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
-
 			return defaultValue;
 		}
 		return algorithm;
 	}
 
 	public static SignatureAlgorithm forOID(final String oid) {
-
 		final SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-
 			throw new DSSException("Unsupported algorithm: " + oid);
 		}
 		return algorithm;
@@ -272,10 +288,8 @@ public enum SignatureAlgorithm {
 	 * @return
 	 */
 	public static SignatureAlgorithm forJAVA(final String javaName) {
-
 		final SignatureAlgorithm algorithm = JAVA_ALGORITHMS.get(javaName);
 		if (algorithm == null) {
-
 			throw new DSSException("Unsupported algorithm: " + javaName);
 		}
 		return algorithm;
@@ -289,7 +303,6 @@ public enum SignatureAlgorithm {
 	 * @return
 	 */
 	public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
-
 		String digestAlgorithm_ = digestAlgorithm.getName();
 		digestAlgorithm_ = digestAlgorithm_.replace("-", "");
 		final String javaName = digestAlgorithm_ + "with" + encryptionAlgorithm.getName();
@@ -303,7 +316,6 @@ public enum SignatureAlgorithm {
 	 * @param digestAlgorithm
 	 */
 	private SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
-
 		this.encryptionAlgo = encryptionAlgorithm;
 		this.digestAlgo = digestAlgorithm;
 	}
@@ -314,7 +326,6 @@ public enum SignatureAlgorithm {
 	 * @return
 	 */
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
-
 		return encryptionAlgo;
 	}
 
@@ -324,7 +335,6 @@ public enum SignatureAlgorithm {
 	 * @return
 	 */
 	public DigestAlgorithm getDigestAlgorithm() {
-
 		return digestAlgo;
 	}
 
@@ -334,7 +344,6 @@ public enum SignatureAlgorithm {
 	 * @return
 	 */
 	public String getXMLId() {
-
 		return XML_ALGORITHMS_FOR_KEY.get(this);
 	}
 
@@ -344,23 +353,7 @@ public enum SignatureAlgorithm {
 	 * @return
 	 */
 	public String getJCEId() {
-
 		return JAVA_ALGORITHMS_FOR_KEY.get(this);
 	}
 
-	/**
-	 * Gets the ASN.1 algorithm identifier structure corresponding to this digest algorithm
-	 *
-	 * @return the AlgorithmIdentifier
-	 */
-	public AlgorithmIdentifier getAlgorithmIdentifier() {
-
-		final String jceId = getJCEId();
-		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(jceId);
-		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
-		return algorithmIdentifier;
-		//		final String jceId = getJCEId();
-		//		final AlgorithmIdentifier digAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(jceId);
-		//		return digAlgId;
-	}
 }

@@ -22,17 +22,15 @@ package eu.europa.esig.dss.x509;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSEncodingException;
 import eu.europa.esig.dss.DSSEncodingException.MSG;
@@ -45,138 +43,124 @@ import eu.europa.esig.dss.DSSEncodingException.MSG;
 
 public class KeyStoreCertificateSource extends CommonCertificateSource {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(KeyStoreCertificateSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(KeyStoreCertificateSource.class);
 
-    private File keyStoreFile;
+	private File keyStoreFile;
 
-    private String password;
+	private String password;
 
-    private String keyStoreType;
+	private String keyStoreType;
 
-    /**
-     * The default constructor for KeyStoreCertificateSource.
-     *
-     * @param keyStoreFilename
-     * @param password
-     * @param certPool
-     */
-    public KeyStoreCertificateSource(final String keyStoreFilename, final String password, final CertificatePool certPool) {
+	/**
+	 * The default constructor for KeyStoreCertificateSource.
+	 *
+	 * @param keyStoreFilename
+	 * @param password
+	 * @param certPool
+	 */
+	public KeyStoreCertificateSource(final String keyStoreFilename, final String password, final CertificatePool certPool) {
 
-        this(new File(keyStoreFilename), "JKS", password, certPool);
-    }
+		this(new File(keyStoreFilename), "JKS", password, certPool);
+	}
 
-    /**
-     * The default constructor for KeyStoreCertificateSource.
-     *
-     * @param keyStoreFile
-     * @param password
-     * @param certPool
-     */
-    public KeyStoreCertificateSource(final File keyStoreFile, final String password, final CertificatePool certPool) {
+	/**
+	 * The default constructor for KeyStoreCertificateSource.
+	 *
+	 * @param keyStoreFile
+	 * @param password
+	 * @param certPool
+	 */
+	public KeyStoreCertificateSource(final File keyStoreFile, final String password, final CertificatePool certPool) {
 
-        this(keyStoreFile, "JKS", password, certPool);
-    }
+		this(keyStoreFile, "JKS", password, certPool);
+	}
 
-    /**
-     * The default constructor for KeyStoreCertificateSource.
-     *
-     * @param keyStoreFile
-     * @param keyStoreType
-     * @param password
-     * @param certPool
-     */
-    public KeyStoreCertificateSource(final File keyStoreFile, final String keyStoreType, final String password, final CertificatePool certPool) {
+	/**
+	 * The default constructor for KeyStoreCertificateSource.
+	 *
+	 * @param keyStoreFile
+	 * @param keyStoreType
+	 * @param password
+	 * @param certPool
+	 */
+	public KeyStoreCertificateSource(final File keyStoreFile, final String keyStoreType, final String password, final CertificatePool certPool) {
 
-        super(certPool);
-        this.keyStoreFile = keyStoreFile;
-        this.keyStoreType = keyStoreType;
-        this.password = password;
+		super(certPool);
+		this.keyStoreFile = keyStoreFile;
+		this.keyStoreType = keyStoreType;
+		this.password = password;
 
-        this.certificateTokens = populate();
-    }
+		this.certificateTokens = populate();
+	}
 
-    /**
-     * The default constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
-     *
-     * @param keyStoreFilename
-     * @param password
-     */
-    public KeyStoreCertificateSource(final String keyStoreFilename, final String password) {
+	/**
+	 * The default constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
+	 *
+	 * @param keyStoreFilename
+	 * @param password
+	 */
+	public KeyStoreCertificateSource(final String keyStoreFilename, final String password) {
 
-        this(new File(keyStoreFilename), "JKS", password);
-    }
+		this(new File(keyStoreFilename), "JKS", password);
+	}
 
-    /**
-     * The default constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
-     *
-     * @param keyStoreFile
-     * @param password
-     */
-    public KeyStoreCertificateSource(final File keyStoreFile, final String password) {
+	/**
+	 * The default constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
+	 *
+	 * @param keyStoreFile
+	 * @param password
+	 */
+	public KeyStoreCertificateSource(final File keyStoreFile, final String password) {
 
-        this(keyStoreFile, "JKS", password);
-    }
+		this(keyStoreFile, "JKS", password);
+	}
 
-    /**
-     * The default constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
-     *
-     * @param keyStoreFile
-     * @param keyStoreType
-     * @param password
-     */
-    public KeyStoreCertificateSource(final File keyStoreFile, final String keyStoreType, final String password) {
+	/**
+	 * The default constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
+	 *
+	 * @param keyStoreFile
+	 * @param keyStoreType
+	 * @param password
+	 */
+	public KeyStoreCertificateSource(final File keyStoreFile, final String keyStoreType, final String password) {
 
-        super();
-        this.keyStoreFile = keyStoreFile;
-        this.keyStoreType = keyStoreType;
-        this.password = password;
+		super();
+		this.keyStoreFile = keyStoreFile;
+		this.keyStoreType = keyStoreType;
+		this.password = password;
 
-        this.certificateTokens = populate();
-    }
+		this.certificateTokens = populate();
+	}
 
-    private List<CertificateToken> populate() {
+	private List<CertificateToken> populate() {
+		List<CertificateToken> list = new ArrayList<CertificateToken>();
+		try {
+			KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+			keyStore.load(new FileInputStream(keyStoreFile), password.toCharArray());
+			Enumeration<String> aliases = keyStore.aliases();
+			while (aliases.hasMoreElements()) {
+				String alias = aliases.nextElement();
+				final Certificate certificate = keyStore.getCertificate(alias);
+				if (certificate != null) {
+					X509Certificate x509Certificate = (X509Certificate) certificate;
+					LOG.debug("Alias " + alias + " Cert " + x509Certificate.getSubjectDN());
 
-        ArrayList<CertificateToken> list = new ArrayList<CertificateToken>();
-        try {
-
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(new FileInputStream(keyStoreFile), password.toCharArray());
-            Enumeration<String> aliases = keyStore.aliases();
-            while (aliases.hasMoreElements()) {
-
-                String alias = aliases.nextElement();
-                final Certificate certificate = keyStore.getCertificate(alias);
-                if (certificate != null) {
-                    X509Certificate x509Certificate = (X509Certificate) certificate;
-                    LOG.debug("Alias " + alias + " Cert " + x509Certificate.getSubjectDN());
-
-                    CertificateToken certToken = certPool.getInstance(new CertificateToken(x509Certificate), CertificateSourceType.OTHER);
-                    list.add(certToken);
-                }
-                if (keyStore.getCertificateChain(alias) != null) {
-
-                    for (Certificate chainCert : keyStore.getCertificateChain(alias)) {
-
-                        LOG.debug("Alias " + alias + " Cert " + ((X509Certificate) chainCert).getSubjectDN());
-                        CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert), CertificateSourceType.OCSP_RESPONSE);
-                        if (!list.contains(certToken)) {
-
-                            list.add(certToken);
-                        }
-                    }
-                }
-            }
-        } catch (CertificateException e) {
-            throw new DSSEncodingException(MSG.CERTIFICATE_CANNOT_BE_READ, e);
-        } catch (KeyStoreException e) {
-            throw new DSSEncodingException(MSG.CERTIFICATE_CANNOT_BE_READ, e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new DSSEncodingException(MSG.CERTIFICATE_CANNOT_BE_READ, e);
-        } catch (FileNotFoundException e) {
-            throw new DSSEncodingException(MSG.CERTIFICATE_CANNOT_BE_READ, e);
-        } catch (IOException e) {
-            throw new DSSEncodingException(MSG.CERTIFICATE_CANNOT_BE_READ, e);
-        }
-        return list;
-    }
+					CertificateToken certToken = certPool.getInstance(new CertificateToken(x509Certificate), CertificateSourceType.OTHER);
+					list.add(certToken);
+				}
+				if (keyStore.getCertificateChain(alias) != null) {
+					for (Certificate chainCert : keyStore.getCertificateChain(alias)) {
+						LOG.debug("Alias " + alias + " Cert " + ((X509Certificate) chainCert).getSubjectDN());
+						CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert), CertificateSourceType.OCSP_RESPONSE);
+						if (!list.contains(certToken)) {
+							list.add(certToken);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new DSSEncodingException(MSG.CERTIFICATE_CANNOT_BE_READ, e);
+		}
+		return list;
+	}
 }

@@ -91,16 +91,15 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 			return ocspToken;
 		} catch (DSSException e) {
 			logger.error("OCSP DSS Exception: " + e.getMessage(), e);
-			toCheckToken.extraInfo().infoOCSPException(e);
+			toCheckToken.extraInfo().infoOCSPException(e.getMessage());
 			return null;
 		}
 	}
 
 	private boolean extractSigningCertificateFromResponse(OCSPToken ocspToken) {
 		for (final X509CertificateHolder x509CertificateHolder : ocspToken.getBasicOCSPResp().getCerts()) {
-			final byte[] encoded = DSSUtils.getEncoded(x509CertificateHolder);
-			final CertificateToken x509Certificate = DSSUtils.loadCertificate(encoded);
-			final CertificateToken certToken = validationCertPool.getInstance(x509Certificate, CertificateSourceType.OCSP_RESPONSE);
+			CertificateToken certificateToken = DSSUtils.getCertificate(x509CertificateHolder);
+			CertificateToken certToken = validationCertPool.getInstance(certificateToken, CertificateSourceType.OCSP_RESPONSE);
 			if (ocspToken.isSignedBy(certToken)) {
 				return true;
 			}

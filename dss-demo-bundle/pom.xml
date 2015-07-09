@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.5.RC1</version>
+		<version>4.6-SNAPSHOT</version>
 	</parent>
 
 	<name>DSS Package: OOTB Web-Application</name>

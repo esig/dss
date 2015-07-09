@@ -25,32 +25,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TokenValidationExtraInfo implements Serializable{
+public class TokenValidationExtraInfo implements Serializable {
 
-   /*
-    * This is the list of text messages created during the signature validation process. It allows to get more
-    * information about different problems encountered during the curse of this process.
-    */
-   protected ArrayList<String> validationInfo = new ArrayList<String>();
+	/*
+	 * This is the list of text messages created during the signature validation process. It allows to get more
+	 * information about different problems encountered during the curse of this process.
+	 */
+	private List<String> validationInfo = new ArrayList<String>();
 
-   public void infoTheSigningCertNotFound() {
+	public void infoTheSigningCertNotFound() {
+		validationInfo.add("The certificate used to sign this token is not found or not valid!");
+	}
 
-      validationInfo.add("The certificate used to sign this token is not found or not valid!");
-   }
+	public void addInfo(String message) {
+		validationInfo.add(message);
+	}
 
-   public void add(String message) {
-
-      validationInfo.add(message);
-   }
-
-   /**
-    * Returns the additional information gathered during the validation process.
-    * 
-    * @return
-    */
-   public List<String> getValidationInfo() {
-
-      return Collections.unmodifiableList(validationInfo);
-   }
+	/**
+	 * Returns the additional information gathered during the validation process.
+	 *
+	 * @return
+	 */
+	public List<String> getValidationInfo() {
+		return Collections.unmodifiableList(validationInfo);
+	}
 
 }

@@ -36,51 +36,46 @@ import eu.europa.esig.dss.x509.crl.CRLToken;
 
 public class CRLCertificateVerifier implements CertificateStatusVerifier {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CRLCertificateVerifier.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CRLCertificateVerifier.class);
 
-    private final CRLSource crlSource;
+	private final CRLSource crlSource;
 
-    /**
-     * Main constructor.
-     *
-     * @param crlSource the CRL repository used by this CRL trust linker.
-     */
-    public CRLCertificateVerifier(final CRLSource crlSource) {
+	/**
+	 * Main constructor.
+	 *
+	 * @param crlSource the CRL repository used by this CRL trust linker.
+	 */
+	public CRLCertificateVerifier(final CRLSource crlSource) {
 
-        this.crlSource = crlSource;
-    }
+		this.crlSource = crlSource;
+	}
 
-    @Override
-    public RevocationToken check(final CertificateToken certificateToken) {
-
-        try {
-
-            if (crlSource == null) {
-
-                certificateToken.extraInfo().infoCRLSourceIsNull();
-                return null;
-            }
-            final CRLToken crlToken = crlSource.findCrl(certificateToken);
-            if (crlToken == null) {
-
-                if (LOG.isInfoEnabled()) {
-                    LOG.info("No CRL found for: " + certificateToken.getDSSIdAsString());
-                }
-                return null;
-            }
-            if (!crlToken.isValid()) {
-
-                LOG.warn("The CRL is not valid !");
-                certificateToken.extraInfo().infoCRLIsNotValid();
-                return null;
-            }
-            certificateToken.setRevocationToken(crlToken);
-            return crlToken;
-        } catch (final Exception e) {
-
-            LOG.error("Exception when accessing CRL for " + certificateToken.getDSSIdAsString(), e);
-            certificateToken.extraInfo().infoCRLException(e);
-            return null;
-        }
-    }
+	@Override
+	public RevocationToken check(final CertificateToken certificateToken) {
+		try {
+			if (crlSource == null) {
+				certificateToken.extraInfo().infoCRLSourceIsNull();
+				return null;
+			}
+			final CRLToken crlToken = crlSource.findCrl(certificateToken);
+			if (crlToken == null) {
+				if (LOG.isInfoEnabled()) {
+					LOG.info("No CRL found for: " + certificateToken.getDSSIdAsString());
+				}
+				certificateToken.extraInfo().infoNoCRLInfoFound();
+				return null;
+			}
+			if (!crlToken.isValid()) {
+				LOG.warn("The CRL is not valid !");
+				certificateToken.extraInfo().infoCRLIsNotValid();
+				return null;
+			}
+			certificateToken.setRevocationToken(crlToken);
+			return crlToken;
+		} catch (final Exception e) {
+			LOG.error("Exception when accessing CRL for " + certificateToken.getDSSIdAsString(), e);
+			certificateToken.extraInfo().infoCRLException(e.getMessage());
+			return null;
+		}
+	}
 }
