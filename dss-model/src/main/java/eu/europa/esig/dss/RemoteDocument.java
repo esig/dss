@@ -20,20 +20,22 @@
  */
 package eu.europa.esig.dss;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * This class is used to transport a DSSDocument with SOAP and/or REST
  */
 @SuppressWarnings("serial")
-public class RemoteDocument extends CommonDocument {
+public class RemoteDocument implements Serializable {
 
 	private byte[] bytes;
 	private String name = "RemoteDocument";
 	private String absolutePath = "RemoteDocument";
+	private MimeType mimeType;
+
+	public RemoteDocument(){
+	}
 
 	public RemoteDocument(DSSDocument document) {
 		byte[] bytes = document.getBytes();
@@ -41,20 +43,8 @@ public class RemoteDocument extends CommonDocument {
 		this.mimeType = document.getMimeType();
 		this.name = document.getName();
 		this.absolutePath = document.getAbsolutePath();
-
-		DSSDocument nextDssDocument = document.getNextDocument();
-		if (nextDssDocument != null) {
-			this.nextDocument = new RemoteDocument(nextDssDocument);
-		}
 	}
 
-	@Override
-	public InputStream openStream() throws DSSException {
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-		return byteArrayInputStream;
-	}
-
-	@Override
 	public byte[] getBytes() {
 		return bytes;
 	}
@@ -63,7 +53,6 @@ public class RemoteDocument extends CommonDocument {
 		this.bytes = bytes;
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
@@ -72,7 +61,6 @@ public class RemoteDocument extends CommonDocument {
 		this.name = name;
 	}
 
-	@Override
 	public String getAbsolutePath() {
 		return absolutePath;
 	}
@@ -81,19 +69,67 @@ public class RemoteDocument extends CommonDocument {
 		this.absolutePath = absolutePath;
 	}
 
-	@Override
-	public void save(String filePath) throws IOException {
-		throw new DSSException("Not implemented !");
+	public MimeType getMimeType() {
+		return mimeType;
+	}
+
+	public void setMimeType(MimeType mimeType) {
+		this.mimeType = mimeType;
 	}
 
 	@Override
-	public String getDigest(DigestAlgorithm digestAlgorithm) {
-		throw new DSSException("Not implemented !");
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((absolutePath == null) ? 0 : absolutePath.hashCode());
+		result = (prime * result) + Arrays.hashCode(bytes);
+		result = (prime * result) + ((mimeType == null) ? 0 : mimeType.hashCode());
+		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
+		return result;
 	}
 
 	@Override
-	public String getBase64Encoded() {
-		throw new DSSException("Not implemented !");
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		RemoteDocument other = (RemoteDocument) obj;
+		if (absolutePath == null) {
+			if (other.absolutePath != null) {
+				return false;
+			}
+		} else if (!absolutePath.equals(other.absolutePath)) {
+			return false;
+		}
+		if (!Arrays.equals(bytes, other.bytes)) {
+			return false;
+		}
+		if (mimeType == null) {
+			if (other.mimeType != null) {
+				return false;
+			}
+		} else if (!mimeType.equals(other.mimeType)) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "RemoteDocument [bytes=" + Arrays.toString(bytes) + ", name=" + name + ", absolutePath=" + absolutePath + ", mimeType=" + mimeType + "]";
 	}
 
 }

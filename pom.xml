@@ -31,6 +31,9 @@
 		<module>dss-pades</module>
 		<module>dss-xades</module>
 		<module>dss-model</module>
+		<module>dss-rest-client</module>
+		<module>dss-rest</module>
+		<module>dss-remote-services</module>
 	</modules>
 
 	<developers>
@@ -69,6 +72,7 @@
 		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
 		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
 		<xmlsec.version>2.0.2</xmlsec.version>
+		<cxf.version>2.7.16</cxf.version>
 		<junit.version>4.11</junit.version>
 	</properties>
 	
@@ -129,6 +133,20 @@
 							<testFailureIgnore>false</testFailureIgnore>		
 							<includes>
 								<include>eu/**/*Test.java</include>	
+							</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>integration</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skipTests>true</skipTests>
+							<testFailureIgnore>false</testFailureIgnore>		
+							<includes>
+								<include>integration/**/*Test.java</include>	
 							</includes>
 						</configuration>
 					</execution>
@@ -348,6 +366,21 @@
 	        <dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-model</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-remote-services</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-rest</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-rest-client</artifactId>
 				<version>${project.version}</version>
 	        </dependency>
 			<dependency>

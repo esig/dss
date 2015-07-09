@@ -33,7 +33,7 @@ import eu.europa.esig.dss.ToBeSigned;
  *
  *
  */
-public interface RemoteDocumentSignatureService<SP extends AbstractSerializableSignatureParameters> extends Serializable {
+public interface RemoteDocumentSignatureService<DOC, SP extends AbstractSerializableSignatureParameters> extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}. (Added in version 4) When
@@ -61,7 +61,7 @@ public interface RemoteDocumentSignatureService<SP extends AbstractSerializableS
 	 * @return
 	 * @throws DSSException
 	 */
-	ToBeSigned getDataToSign(final DSSDocument toSignDocument, final SP parameters) throws DSSException;
+	ToBeSigned getDataToSign(final DOC toSignDocument, final SP parameters) throws DSSException;
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.
@@ -74,7 +74,7 @@ public interface RemoteDocumentSignatureService<SP extends AbstractSerializableS
 	 * @return
 	 * @throws DSSException
 	 */
-	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, SignatureValue signatureValue) throws DSSException;
+	DSSDocument signDocument(final DOC toSignDocument, final SP parameters, SignatureValue signatureValue) throws DSSException;
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}
@@ -86,7 +86,6 @@ public interface RemoteDocumentSignatureService<SP extends AbstractSerializableS
 	 * @return
 	 * @throws DSSException
 	 */
-	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters) throws DSSException;
-
+	DSSDocument extendDocument(final DOC toExtendDocument, final SP parameters) throws DSSException;
 
 }

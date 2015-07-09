@@ -112,12 +112,21 @@
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 		</dependency>
+		
+		<!-- SOAP -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-webservices</artifactId>
-			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		
+		<!-- REST -->
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-rest</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>

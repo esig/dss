@@ -29,6 +29,9 @@ public class RemoteSignatureParameters extends AbstractSerializableSignaturePara
 	private RemoteCertificate signingCertificate;
 	private List<RemoteCertificate> certificateChain = new ArrayList<RemoteCertificate>();
 
+	public RemoteSignatureParameters() {
+	}
+
 	public RemoteCertificate getSigningCertificate() {
 		return signingCertificate;
 	}

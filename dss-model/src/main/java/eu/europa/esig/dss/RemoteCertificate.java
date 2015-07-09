@@ -20,20 +20,26 @@
  */
 package eu.europa.esig.dss;
 import java.io.Serializable;
-import java.security.cert.X509Certificate;
 
 
 @SuppressWarnings("serial")
 public class RemoteCertificate implements Serializable {
 
-	private X509Certificate x509Certificate;
+	private byte[] encodedCertificate;
 
-	public X509Certificate getX509Certificate() {
-		return x509Certificate;
+	public RemoteCertificate(){
 	}
 
-	public void setX509Certificate(X509Certificate x509Certificate) {
-		this.x509Certificate = x509Certificate;
+	public RemoteCertificate(byte[] encodedCertificate) {
+		this.encodedCertificate = encodedCertificate;
+	}
+
+	public byte[] getEncodedCertificate() {
+		return encodedCertificate;
+	}
+
+	public void setEncodedCertificate(byte[] encodedCertificate) {
+		this.encodedCertificate = encodedCertificate;
 	}
 
 }

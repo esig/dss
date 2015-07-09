@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.AbstractSerializableSignatureParameters;
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
@@ -28,7 +29,7 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  *
  *
  */
-public interface DocumentSignatureService<SP extends AbstractSerializableSignatureParameters> extends RemoteDocumentSignatureService<SP> {
+public interface DocumentSignatureService<SP extends AbstractSerializableSignatureParameters> extends RemoteDocumentSignatureService<DSSDocument, SP> {
 
 	/**
 	 * This setter allows to define the TSP (timestamp provider) source.

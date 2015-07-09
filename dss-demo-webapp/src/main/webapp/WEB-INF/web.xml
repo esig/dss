@@ -44,16 +44,16 @@
 		<servlet-name>Dispatcher</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
+	
+	<!-- SOAP / REST -->
 	<servlet>
 		<servlet-name>CXFServlet</servlet-name>
 		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>CXFServlet</servlet-name>
-		<url-pattern>/wservice/*</url-pattern>
+		<url-pattern>/services/*</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>
