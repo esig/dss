@@ -46,7 +46,9 @@ public enum SignatureAlgorithm {
 
 	RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
 
-	RSA_SSA_PSS(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
+	RSASSA_PSS_SHA1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA1),
+
+	RSASSA_PSS_SHA256(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA256),
 
 	ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1),
 
@@ -97,6 +99,9 @@ public enum SignatureAlgorithm {
 		// Support of not standard AT algorithm name
 		// http://www.rfc-editor.org/rfc/rfc4051.txt --> http://www.rfc-editor.org/errata_search.php?rfc=4051
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more/rsa-ripemd160", RSA_RIPEMD160);
+
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1", RSASSA_PSS_SHA1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1", RSASSA_PSS_SHA256);
 
 		// Following algorithms are not in ETSI TS 102 176-1 V2.0.0:
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-md5", RSA_MD5);
@@ -173,7 +178,9 @@ public enum SignatureAlgorithm {
 		oidAlgorithms.put("1.2.840.113549.2.11", HMAC_SHA512);
 		oidAlgorithms.put("1.3.6.1.5.5.8.1.4", HMAC_RIPEMD160);
 
-		oidAlgorithms.put("1.2.840.113549.1.1.10", RSA_SSA_PSS);
+		oidAlgorithms.put("1.2.840.113549.1.1.10", RSASSA_PSS_SHA1);
+		// There is only one OID defined for RSASSA_PSS encryption
+		// !!! oidAlgorithms.put("1.2.840.113549.1.1.10", RSASSA_PSS_SHA256);
 
 		return oidAlgorithms;
 	}
@@ -192,6 +199,8 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA384withRSA", RSA_SHA384);
 		javaAlgorithms.put("SHA512withRSA", RSA_SHA512);
 		javaAlgorithms.put("RIPEMD160withRSA", RSA_RIPEMD160);
+		javaAlgorithms.put("SHA1withRSAandMGF1", RSASSA_PSS_SHA1);
+		javaAlgorithms.put("SHA256withRSAandMGF1", RSASSA_PSS_SHA256);
 
 		javaAlgorithms.put("MD5withRSA", RSA_MD5);
 		javaAlgorithms.put("MD2withRSA", RSA_MD2);
