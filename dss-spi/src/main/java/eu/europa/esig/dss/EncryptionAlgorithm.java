@@ -35,7 +35,9 @@ public enum EncryptionAlgorithm {
 
 	ECDSA("ECDSA", "1.2.840.10045.2.1", "ECDSA"),
 
-	HMAC("HMAC", "", "");
+	HMAC("HMAC", "", ""),
+
+	RSASSA_PSS("RSASSA_PSS", "1.2.840.113549.1.1.10", "");
 
 	private String name;
 	private String oid;
