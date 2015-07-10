@@ -31,9 +31,11 @@
 		<module>dss-pades</module>
 		<module>dss-xades</module>
 		<module>dss-model</module>
+		<module>dss-remote-services</module>
 		<module>dss-rest-client</module>
 		<module>dss-rest</module>
-		<module>dss-remote-services</module>
+		<module>dss-soap-client</module>
+		<module>dss-soap</module>
 	</modules>
 
 	<developers>
@@ -177,6 +179,45 @@
 								<include>known/issues/**/*Test.java</include>	
 							</includes>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
+				<artifactId>maven-deploy-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>deploy</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -381,6 +422,16 @@
 	        <dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-rest-client</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-soap</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-soap-client</artifactId>
 				<version>${project.version}</version>
 	        </dependency>
 			<dependency>

@@ -38,8 +38,8 @@ public class RemoteDocument implements Serializable {
 	}
 
 	public RemoteDocument(DSSDocument document) {
-		byte[] bytes = document.getBytes();
-		this.bytes = Arrays.copyOf(bytes, bytes.length);
+		byte[] originalBytes = document.getBytes();
+		this.bytes = Arrays.copyOf(originalBytes, originalBytes.length);
 		this.mimeType = document.getMimeType();
 		this.name = document.getName();
 		this.absolutePath = document.getAbsolutePath();

@@ -35,6 +35,11 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	private String deterministicId;
 
 	/**
+	 * The document to be signed
+	 */
+	private DSSDocument detachedContent;
+
+	/**
 	 * This field contains the signing certificate.
 	 */
 	private CertificateToken signingCertificate;
@@ -74,6 +79,26 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 		final String dssId = (signingCertificate == null ? "" : signingCertificate.getDSSId().asXmlId());
 		deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), dssId);
 		return deterministicId;
+	}
+
+	/**
+	 * This method returns the document to sign. In the case of the DETACHED signature this is the detached document.
+	 *
+	 * @return
+	 */
+	public DSSDocument getDetachedContent() {
+		return detachedContent;
+	}
+
+	/**
+	 * When signing this method is internally invoked by the {@code AbstractSignatureService} and the related variable {@code detachedContent} is overwritten by the service
+	 * parameter. In the case of the DETACHED signature this is the detached document. In the case of ASiC-S this is the document to be signed.<p />
+	 * When extending this method must be invoked to indicate the {@code detachedContent}.
+	 *
+	 * @param detachedContent
+	 */
+	public void setDetachedContent(final DSSDocument detachedContent) {
+		this.detachedContent = detachedContent;
 	}
 
 	/**

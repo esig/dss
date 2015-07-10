@@ -166,7 +166,7 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 
 	private void fillParameters(AbstractSignatureParameters parameters, RemoteSignatureParameters remoteParameters) {
 		parameters.setBLevelParams(remoteParameters.bLevel());
-		parameters.setDetachedContent(remoteParameters.getDetachedContent());
+		parameters.setDetachedContent(createDSSDocument(remoteParameters.getDetachedContent()));
 		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
 		parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
 		parameters.setSignatureLevel(remoteParameters.getSignatureLevel());
@@ -190,11 +190,14 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 	}
 
 	private DSSDocument createDSSDocument(RemoteDocument remoteDocument) {
-		InMemoryDocument dssDocument = new InMemoryDocument(remoteDocument.getBytes());
-		dssDocument.setMimeType(remoteDocument.getMimeType());
-		dssDocument.setAbsolutePath(remoteDocument.getAbsolutePath());
-		dssDocument.setName(remoteDocument.getName());
-		return dssDocument;
+		if (remoteDocument != null) {
+			InMemoryDocument dssDocument = new InMemoryDocument(remoteDocument.getBytes());
+			dssDocument.setMimeType(remoteDocument.getMimeType());
+			dssDocument.setAbsolutePath(remoteDocument.getAbsolutePath());
+			dssDocument.setName(remoteDocument.getName());
+			return dssDocument;
+		}
+		return null;
 	}
 
 }

@@ -64,31 +64,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	private TimestampParameters contentTimestampParameters;
 
 	/**
-	 * The document to be signed
-	 */
-	private DSSDocument detachedContent;
-
-	/**
-	 * This method returns the document to sign. In the case of the DETACHED signature this is the detached document.
-	 *
-	 * @return
-	 */
-	public DSSDocument getDetachedContent() {
-		return detachedContent;
-	}
-
-	/**
-	 * When signing this method is internally invoked by the {@code AbstractSignatureService} and the related variable {@code detachedContent} is overwritten by the service
-	 * parameter. In the case of the DETACHED signature this is the detached document. In the case of ASiC-S this is the document to be signed.<p />
-	 * When extending this method must be invoked to indicate the {@code detachedContent}.
-	 *
-	 * @param detachedContent
-	 */
-	public void setDetachedContent(final DSSDocument detachedContent) {
-		this.detachedContent = detachedContent;
-	}
-
-	/**
 	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
 	 *
 	 * @return
@@ -258,8 +233,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 				", bLevelParams=" + bLevelParams +
 				", deterministicId='" + deterministicId + '\'' +
 				", signatureTimestampParameters=" + ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString()) +
-				", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) +
-				", detachedContent=" + detachedContent + '}';
+				", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) +'}';
 	}
 
 	@Override
@@ -269,7 +243,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		result = (prime * result) + ((archiveTimestampParameters == null) ? 0 : archiveTimestampParameters.hashCode());
 		result = (prime * result) + ((bLevelParams == null) ? 0 : bLevelParams.hashCode());
 		result = (prime * result) + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
-		result = (prime * result) + ((detachedContent == null) ? 0 : detachedContent.hashCode());
 		result = (prime * result) + ((deterministicId == null) ? 0 : deterministicId.hashCode());
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = (prime * result) + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
@@ -312,13 +285,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 				return false;
 			}
 		} else if (!contentTimestampParameters.equals(other.contentTimestampParameters)) {
-			return false;
-		}
-		if (detachedContent == null) {
-			if (other.detachedContent != null) {
-				return false;
-			}
-		} else if (!detachedContent.equals(other.detachedContent)) {
 			return false;
 		}
 		if (deterministicId == null) {

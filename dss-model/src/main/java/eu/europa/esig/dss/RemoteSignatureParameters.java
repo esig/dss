@@ -29,6 +29,11 @@ public class RemoteSignatureParameters extends AbstractSerializableSignaturePara
 	private RemoteCertificate signingCertificate;
 	private List<RemoteCertificate> certificateChain = new ArrayList<RemoteCertificate>();
 
+	/**
+	 * The document to be signed
+	 */
+	private RemoteDocument detachedContent;
+
 	public RemoteSignatureParameters() {
 	}
 
@@ -46,6 +51,14 @@ public class RemoteSignatureParameters extends AbstractSerializableSignaturePara
 
 	public void setCertificateChain(List<RemoteCertificate> certificateChain) {
 		this.certificateChain = certificateChain;
+	}
+
+	public RemoteDocument getDetachedContent() {
+		return detachedContent;
+	}
+
+	public void setDetachedContent(RemoteDocument detachedContent) {
+		this.detachedContent = detachedContent;
 	}
 
 }

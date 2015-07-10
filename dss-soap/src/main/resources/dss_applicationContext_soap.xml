@@ -1,0 +1,33 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:cxf="http://cxf.apache.org/core"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    
+    <import resource="classpath:/service-definitions.xml" />
+	
+    <!-- SOAP SIGNATURE SERVICE -->
+    <bean id="soapSignatureService" class="eu.europa.esig.dss.signature.SoapDocumentSignatureServiceImpl">
+    	<property name="service" ref="remoteSignatureService" />
+    </bean>
+
+	<jaxws:endpoint id="jaxwsSignatureService" implementor="#soapSignatureService" address="/SignatureService">
+		<jaxws:features>
+			<cxf:logging />
+		</jaxws:features>
+	</jaxws:endpoint>
+
+    <!-- VALIDATION SERVICE 
+    <bean id="dss.validation.validationService" class="eu.europa.esig.dss.ws.impl.ValidationServiceImpl">
+        <property name="certificateVerifier" ref="certificateVerifier"/>
+    </bean>
+
+    <jaxws:endpoint id="validationService" implementor="#dss.validation.validationService" address="/validationService" />
+
+-->
+</beans>
