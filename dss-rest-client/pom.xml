@@ -8,6 +8,8 @@
   </parent>
   
   <artifactId>dss-rest-client</artifactId>
+  <name>DSS REST Client</name>
+  <description>DSS REST Client contains the REST interfaces</description>
   
   <dependencies>
   	<dependency>

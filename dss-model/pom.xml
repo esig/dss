@@ -13,7 +13,7 @@
 	
 	<artifactId>dss-model</artifactId>
 	<name>DSS Model</name>
-	<description>Data Model representation for DSS. All classes should be serializable (REST/SOAP)</description>
+	<description>DSS Model contains the data model representation for DSS. All classes should be serializable (REST/SOAP)</description>
 	
 	<dependencies>
 		<!-- No other dependencies than in scope test  -->
