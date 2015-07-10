@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
@@ -68,6 +69,8 @@ public class SignatureRestServiceTest {
 
 		assertNotNull(extendedDocument);
 
+		InMemoryDocument iMD = new InMemoryDocument(extendedDocument.getBytes());
+		iMD.save("target/test.xml");
 	}
 
 }

@@ -22,24 +22,14 @@ package eu.europa.esig.dss.applet.wizard.signature;
 
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.SignatureTokenType;
 import eu.europa.esig.dss.applet.main.Parameters;
 import eu.europa.esig.dss.applet.model.SignatureModel;
 import eu.europa.esig.dss.applet.swing.mvc.ControllerException;
 import eu.europa.esig.dss.applet.swing.mvc.wizard.WizardStep;
 import eu.europa.esig.dss.applet.swing.mvc.wizard.WizardView;
-import eu.europa.esig.dss.wsclient.signature.SignaturePackaging;
 
-/**
- *
- * TODO
- *
- *
- *
- *
- *
- *
- */
 public class SignatureStep extends WizardStep<SignatureModel, SignatureWizardController> {
 	/**
 	 *

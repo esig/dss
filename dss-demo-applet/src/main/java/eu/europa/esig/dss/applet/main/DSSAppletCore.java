@@ -27,6 +27,7 @@ import java.net.URL;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.SignatureTokenType;
 import eu.europa.esig.dss.applet.controller.ActivityController;
 import eu.europa.esig.dss.applet.main.Parameters.AppletUsage;
@@ -37,7 +38,6 @@ import eu.europa.esig.dss.applet.swing.mvc.AppletCore;
 import eu.europa.esig.dss.applet.util.DSSStringUtils;
 import eu.europa.esig.dss.applet.wizard.signature.SignatureWizardController;
 import eu.europa.esig.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
-import eu.europa.esig.dss.wsclient.signature.SignaturePackaging;
 
 /**
  * TODO

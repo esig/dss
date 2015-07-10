@@ -28,22 +28,17 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.jgoodies.binding.beans.Model;
 
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.SignatureTokenType;
 import eu.europa.esig.dss.applet.main.FileType;
 import eu.europa.esig.dss.applet.util.FileTypeDetectorUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.wsclient.signature.DigestAlgorithm;
-import eu.europa.esig.dss.wsclient.signature.SignaturePackaging;
 
 /**
  *
  * TODO
- *
- *
- *
- *
- *
  *
  */
 @SuppressWarnings("serial")

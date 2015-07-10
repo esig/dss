@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.signature;
 
+import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
@@ -27,6 +28,16 @@ public class SoapDocumentSignatureServiceImpl implements SoapDocumentSignatureSe
 	@Override
 	public RemoteDocument extendDocument(ExtendDocumentDTO extendDocumentDto) throws DSSException {
 		return new RemoteDocument(service.extendDocument(extendDocumentDto.getToExtendDocument(), extendDocumentDto.getParameters()));
+	}
+
+	@Override
+	public BLevelParameters getBLevel(BLevelParameters level) {
+		return level;
+	}
+
+	@Override
+	public RemoteSignatureParameters getParams(RemoteSignatureParameters params) {
+		return params;
 	}
 
 }

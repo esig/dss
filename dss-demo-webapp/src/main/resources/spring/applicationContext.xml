@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
-    <import resource="classpath:/dss_applicationContext_cxf.xml"/>
+    <import resource="classpath:/dss_applicationContext_soap.xml"/>
 	<import resource="classpath:/dss_applicationContext_rest.xml"/>
 
     <import resource="classpath:spring/applicationContext-handler.xml"/>

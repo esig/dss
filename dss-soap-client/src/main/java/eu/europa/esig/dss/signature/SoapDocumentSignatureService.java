@@ -28,8 +28,10 @@ import javax.jws.WebService;
 
 import org.apache.cxf.annotations.WSDLDocumentation;
 
+import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.ToBeSigned;
 
 /**
@@ -87,5 +89,13 @@ public interface SoapDocumentSignatureService extends Serializable {
 			+ "the set of driving parameters.")
 	@WebResult(name = "response")
 	RemoteDocument extendDocument(@WebParam(name = "extendDocumentDTO") ExtendDocumentDTO extendDocument) throws DSSException;
+
+	@WSDLDocumentation("Test BLevel")
+	@WebResult(name = "response")
+	BLevelParameters getBLevel(@WebParam(name="blevel") BLevelParameters level);
+
+	@WSDLDocumentation("Test params")
+	@WebResult(name = "response")
+	RemoteSignatureParameters getParams(@WebParam(name="params") RemoteSignatureParameters params);
 
 }

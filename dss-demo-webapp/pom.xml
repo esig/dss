@@ -116,7 +116,7 @@
 		<!-- SOAP -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-webservices</artifactId>
+			<artifactId>dss-soap</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		

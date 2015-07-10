@@ -31,16 +31,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.RemoteCertificate;
+import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.applet.controller.ActivityController;
 import eu.europa.esig.dss.applet.controller.DSSWizardController;
 import eu.europa.esig.dss.applet.main.DSSAppletCore;
@@ -60,26 +59,8 @@ import eu.europa.esig.dss.applet.view.signature.SignatureView;
 import eu.europa.esig.dss.applet.view.signature.TokenView;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.wsclient.signature.DigestAlgorithm;
-import eu.europa.esig.dss.wsclient.signature.DssTransform;
-import eu.europa.esig.dss.wsclient.signature.EncryptionAlgorithm;
-import eu.europa.esig.dss.wsclient.signature.Policy;
-import eu.europa.esig.dss.wsclient.signature.SignatureLevel;
-import eu.europa.esig.dss.wsclient.signature.SignaturePackaging;
-import eu.europa.esig.dss.wsclient.signature.WsChainCertificate;
-import eu.europa.esig.dss.wsclient.signature.WsParameters;
-import eu.europa.esig.dss.wsclient.signature.WsdssReference;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- *
- */
 public class SignatureWizardController extends DSSWizardController<SignatureModel> {
 
 	private FileView fileView;
@@ -198,26 +179,25 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		final SignatureTokenConnection tokenConnection = model.getTokenConnection();
 		final DSSPrivateKeyEntry privateKey = model.getSelectedPrivateKey();
 
-		final WsParameters parameters = new WsParameters();
+		final RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 
-		parameters.setSigningCertificateBytes(privateKey.getCertificate().getEncoded());
+		RemoteCertificate signingCertificate = new RemoteCertificate(privateKey.getCertificate().getEncoded());
+		parameters.setSigningCertificate(signingCertificate);
 
-		List<WsChainCertificate> chainCertificateList = parameters.getChainCertificateList();
-		WsChainCertificate certificate = new WsChainCertificate();
-		certificate.setX509Certificate(privateKey.getCertificate().getEncoded());
-		chainCertificateList.add(certificate);
+		List<RemoteCertificate> chainCertificateList = new ArrayList<RemoteCertificate>();
+		chainCertificateList.add(signingCertificate);
+
 		CertificateToken[] certificateChain = privateKey.getCertificateChain();
 		if (ArrayUtils.isNotEmpty(certificateChain)){
 			for (CertificateToken certificateToken : certificateChain) {
-				WsChainCertificate c = new WsChainCertificate();
-				c.setX509Certificate(certificateToken.getEncoded());
-				chainCertificateList.add(c);
+				chainCertificateList.add(new RemoteCertificate(certificateToken.getEncoded()));
 			}
 		}
+		parameters.setCertificateChain(chainCertificateList);
 
-		parameters.setEncryptionAlgorithm(EncryptionAlgorithm.fromValue(privateKey.getEncryptionAlgorithm().name()));
+		parameters.setEncryptionAlgorithm(privateKey.getEncryptionAlgorithm());
 
-		parameters.setSigningDate(DSSXMLUtils.createXMLGregorianCalendar(new Date()));
+		parameters.bLevel().setSigningDate(new Date());
 
 		DigestAlgorithm digestAlgorithm = model.getSignatureDigestAlgorithm();
 		if (digestAlgorithm == null) {
@@ -227,7 +207,7 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		}
 
 		if (model.isTslSignatureCheck()) {
-			prepareTSLSignature(parameters, fileToSign);
+			//	prepareTSLSignature(parameters, fileToSign);
 		} else {
 			prepareCommonSignature(model, parameters);
 		}
@@ -240,12 +220,12 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		IOUtils.closeQuietly(fileOutputStream);
 	}
 
-	private void prepareCommonSignature(SignatureModel model, WsParameters parameters) {
+	private void prepareCommonSignature(SignatureModel model, RemoteSignatureParameters parameters) {
 
 		final String signatureLevelString = model.getLevel();
-		parameters.setSignatureLevel(SignatureLevel.valueOf(signatureLevelString));
+		parameters.setSignatureLevel(SignatureLevel.valueByName(signatureLevelString));
 		parameters.setSignaturePackaging(model.getPackaging());
-
+		/*
 		if (model.isClaimedCheck()) {
 			parameters.getClaimedSignerRole().add(model.getClaimedRole());
 		}
@@ -259,9 +239,9 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 			policy.setDigestAlgorithm(policyDigestAlgorithm);
 			policy.setDigestValue(hashValue);
 			parameters.setSignaturePolicy(policy);
-		}
+		}*/
 	}
-
+	/*
 	private void prepareTSLSignature(WsParameters parameters, File fileToSign) {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
@@ -290,4 +270,5 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 
 		parameters.getReferences().addAll(references);
 	}
+	 */
 }

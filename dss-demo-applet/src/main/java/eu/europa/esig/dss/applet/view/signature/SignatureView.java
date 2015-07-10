@@ -38,6 +38,8 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.component.model.AbstractComboBoxModel;
 import eu.europa.esig.dss.applet.main.FileType;
 import eu.europa.esig.dss.applet.model.FormatType;
@@ -47,29 +49,9 @@ import eu.europa.esig.dss.applet.swing.mvc.wizard.WizardView;
 import eu.europa.esig.dss.applet.util.ComponentFactory;
 import eu.europa.esig.dss.applet.util.ResourceUtils;
 import eu.europa.esig.dss.applet.wizard.signature.SignatureWizardController;
-import eu.europa.esig.dss.wsclient.signature.SignatureLevel;
-import eu.europa.esig.dss.wsclient.signature.SignaturePackaging;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- *
- */
 public class SignatureView extends WizardView<SignatureModel, SignatureWizardController> {
 
-	/**
-	 * TODO
-	 *
-	 *
-	 *
-	 *
-	 *
-	 *
-	 */
 	private final class FormatEventListener implements PropertyChangeListener {
 		/*
 		 * (non-Javadoc)
@@ -82,15 +64,6 @@ public class SignatureView extends WizardView<SignatureModel, SignatureWizardCon
 		}
 	}
 
-	/**
-	 * TODO
-	 *
-	 *
-	 *
-	 *
-	 *
-	 *
-	 */
 	private final class LevelComboBoxModel extends AbstractComboBoxModel {
 
 		/*
@@ -133,15 +106,6 @@ public class SignatureView extends WizardView<SignatureModel, SignatureWizardCon
 		}
 	}
 
-	/**
-	 * TODO
-	 *
-	 *
-	 *
-	 *
-	 *
-	 *
-	 */
 	private final class PackagingEventListener implements PropertyChangeListener {
 		/*
 		 * (non-Javadoc)

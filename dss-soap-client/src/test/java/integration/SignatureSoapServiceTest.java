@@ -1,5 +1,6 @@
 package integration;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -10,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
@@ -67,6 +70,35 @@ public class SignatureSoapServiceTest {
 		RemoteDocument extendedDocument = soapClient.extendDocument(new ExtendDocumentDTO(signedDocument, parameters));
 
 		assertNotNull(extendedDocument);
+
+		InMemoryDocument iMD = new InMemoryDocument(extendedDocument.getBytes());
+		iMD.save("target/test.xml");
+	}
+
+	@Test
+	public void testBLevel() throws Exception {
+		BLevelParameters level = new BLevelParameters();
+
+		Thread.sleep(10000);
+
+		BLevelParameters bLevel = soapClient.getBLevel(level);
+
+		System.out.println(level);
+		System.out.println(bLevel);
+		assertEquals(bLevel, level);
+	}
+
+	@Test
+	public void testParams() throws Exception {
+		RemoteSignatureParameters params = new RemoteSignatureParameters();
+
+		Thread.sleep(10000);
+
+		RemoteSignatureParameters params2 = soapClient.getParams(params);
+
+		System.out.println(params);
+		System.out.println(params2);
+		assertEquals(params, params2);
 
 	}
 

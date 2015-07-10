@@ -27,20 +27,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.JavaPreferencesDAO;
 import eu.europa.esig.dss.applet.SignatureTokenType;
 import eu.europa.esig.dss.applet.UserPreferencesDAO;
 import eu.europa.esig.dss.validation.ValidationResourceManager;
-import eu.europa.esig.dss.wsclient.signature.SignaturePackaging;
 
 /**
  *
  * TODO
- *
- *
- *
- *
- *
  *
  */
 public class Parameters {
