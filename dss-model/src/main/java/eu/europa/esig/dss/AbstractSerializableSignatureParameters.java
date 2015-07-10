@@ -173,7 +173,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		return bLevelParams;
 	}
 
-	public BLevelParameters getbLevelParams() {
+	public BLevelParameters getBLevelParams() {
 		return bLevelParams;
 	}
 
