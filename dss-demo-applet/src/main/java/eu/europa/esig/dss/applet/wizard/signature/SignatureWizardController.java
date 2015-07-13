@@ -31,12 +31,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.SignatureLevel;
@@ -225,21 +227,20 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 		final String signatureLevelString = model.getLevel();
 		parameters.setSignatureLevel(SignatureLevel.valueByName(signatureLevelString));
 		parameters.setSignaturePackaging(model.getPackaging());
-		/*
+
 		if (model.isClaimedCheck()) {
-			parameters.getClaimedSignerRole().add(model.getClaimedRole());
+			parameters.bLevel().addClaimedSignerRole(model.getClaimedRole());
 		}
 
 		if (model.isSignaturePolicyCheck()) {
-
 			final byte[] hashValue = Base64.decodeBase64(model.getSignaturePolicyValue());
 			final Policy policy = new Policy();
 			policy.setId(model.getSignaturePolicyId());
 			final DigestAlgorithm policyDigestAlgorithm = DigestAlgorithm.valueOf(model.getSignaturePolicyAlgo());
 			policy.setDigestAlgorithm(policyDigestAlgorithm);
 			policy.setDigestValue(hashValue);
-			parameters.setSignaturePolicy(policy);
-		}*/
+			parameters.bLevel().setSignaturePolicy(policy);
+		}
 	}
 	/*
 	private void prepareTSLSignature(WsParameters parameters, File fileToSign) {
