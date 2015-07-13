@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -41,6 +42,14 @@ public class ValidationPolicyController {
 		} finally {
 			IOUtils.closeQuietly(is);
 		}
+
+		model.addAttribute("policy", policy);
+
+		return VALIDATION_POLICY_TILE;
+	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	public String save(@ModelAttribute("policy") ConstraintsParameters policy, Model model) {
 
 		model.addAttribute("policy", policy);
 
