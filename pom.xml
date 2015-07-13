@@ -22,6 +22,7 @@
 		<module>dss-demo-applet-package</module>
 		<module>dss-demo-webapp</module>
 		<module>dss-demo-bundle</module>
+		<module>dss-policy-jaxb</module>
 		<module>dss-tsl-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-cookbook</module>
@@ -444,6 +445,11 @@
 				<artifactId>dss-diagnostic-jaxb</artifactId>
 				<version>${project.version}</version>
 	        </dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-policy-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>validation-policy</artifactId>
