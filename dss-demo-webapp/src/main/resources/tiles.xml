@@ -29,6 +29,10 @@
         <put-attribute name="content" value="/WEB-INF/jsp/validation_result.jsp" />
     </definition>
 
+    <definition name="validation-policy" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/validation-policy.jsp" />
+    </definition>
+
     <definition name="error" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/error.jsp" />
     </definition>

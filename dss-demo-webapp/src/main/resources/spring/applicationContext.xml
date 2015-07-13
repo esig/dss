@@ -55,4 +55,12 @@
         </property>
     </bean>
 
+	<bean id="policyMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="packagesToScan">
+			<list>
+				<value>eu.europa.esig.jaxb.policy</value>
+			</list>
+		</property>
+	</bean>
+
 </beans>
