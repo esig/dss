@@ -252,8 +252,8 @@
 		</CACertificate>
 	</Revocation>
 <!--
-	<Cryptographic> 
-			<AlgoExpirationDate Format="yyyy-MM-dd">
+	<Cryptographic Level="FAIL"> 
+		<AlgoExpirationDate Format="yyyy-MM-dd">
 			<Algo Date="2017-02-24">SHA1</Algo>
 			<Algo Date="2035-02-24">SHA224</Algo>
 			<Algo Date="2035-02-24">SHA256</Algo>
