@@ -56,143 +56,21 @@
             <jsp:param name="pathToBind" value="MainSignature.SignatureIntact.Level"/>
         </jsp:include>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><spring:message code="label.policy.signingCertificate" /></h3>
-            </div>
-            <div class="panel-body">
-            
-                <c:set var="signingCertificate" value="${sig.signingCertificate}" />
-
-                <spring:message code="label.policy.recognition" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.recognition.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.Recognition.Level" />
-                </jsp:include>
-
-                <spring:message code="label.policy.attributePresent" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.attributePresent.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.AttributePresent.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.digestValuePresent" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.digestValuePresent.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.DigestValuePresent.Level" />
-                </jsp:include>
-
-                <spring:message code="label.policy.digestValueMatch" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.digestValueMatch.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.DigestValueMatch.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.issuerSerialMatch" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.issuerSerialMatch.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.IssuerSerialMatch.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.signed" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.signed.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.Signed.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.signature" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.signature.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.Signature.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.expiration" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.expiration.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.Expiration.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.revocationDataAvailable" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.revocationDataAvailable.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.RevocationDataAvailable.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.revocationDataIsTrusted" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.revocationDataIsTrusted.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.RevocationDataIsTrusted.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.revocationDataFreshness" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.revocationDataFreshness.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.RevocationDataFreshness.Level" />
-                </jsp:include>
-                
-                <% // TODO keyusage %>
-                
-                <spring:message code="label.policy.revoked" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.revoked.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.Revoked.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.onHold" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.onHold.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.OnHold.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.tslValidity" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.TSLValidity.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.TSLValidity.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.tslStatus" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.TSLStatus.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.TSLStatus.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.qualification" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.qualification.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.Qualification.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.supportedBySSCD" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.supportedBySSCD.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.SupportedBySSCD.Level" />
-                </jsp:include>
-                
-                <spring:message code="label.policy.issuedToLegalPerson" var="translation" />
-                <jsp:include page="policy/level-constraint.jsp">
-                    <jsp:param name="label" value="${translation}" />
-                    <jsp:param name="levelValue" value="${signingCertificate.issuedToLegalPerson.level}" />
-                    <jsp:param name="pathToBind" value="MainSignature.SigningCertificate.IssuedToLegalPerson.Level" />
-                </jsp:include>
-                
-        </c:if>
+        <c:set var="currentCertificate" value="${sig.signingCertificate}" scope="request" />
+        <spring:message code="label.policy.signingCertificate" var="translation" />
+        <jsp:include page="policy/certificate-constraints.jsp">
+            <jsp:param name="title" value="${translation}" />
+            <jsp:param name="pathToBindPrefix" value="MainSignature.SigningCertificate" />
+        </jsp:include> 
+        
+        <c:set var="currentCertificate" value="${sig.CACertificate}" scope="request" />
+        <spring:message code="label.policy.caCertificate" var="translation" />
+        <jsp:include page="policy/certificate-constraints.jsp">
+            <jsp:param name="title" value="${translation}" />
+            <jsp:param name="pathToBindPrefix" value="MainSignature.CACertificate" />
+        </jsp:include> 
+        
+	</c:if>
     
     <input type="submit" />
 </form:form>
