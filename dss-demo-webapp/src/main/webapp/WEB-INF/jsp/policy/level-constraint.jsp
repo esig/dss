@@ -3,9 +3,9 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <div class="form-group">
-    <label class="col-sm-3 control-label">${param.label}</label>
+    <label class="col-sm-4 control-label">${param.label}</label>
 
-    <div class="col-sm-9">
+    <div class="col-sm-8">
         <select class="form-control" name="${param.pathToBind}">
             <option<c:if test="${param.levelValue == 'FAIL'}"> selected="selected"</c:if>>FAIL</option>
             <option<c:if test="${param.levelValue == 'WARN'}"> selected="selected"</c:if>>WARN</option>

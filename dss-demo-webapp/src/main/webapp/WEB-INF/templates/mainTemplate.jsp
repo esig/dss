@@ -13,11 +13,13 @@
 	<title><spring:message code="application.title" /></title>
 
     <!-- Bootstrap -->
+    <link href="<c:url value="/css/jquery-ui.min.css" />" rel="stylesheet" />
     <link href="<c:url value="/css/bootstrap.min.css" />" rel="stylesheet" />
     <link href="<c:url value="/css/bootstrap-theme.min.css" />" rel="stylesheet" />
     <link href="<c:url value="/css/dss.css" />" rel="stylesheet" />
     
     <script type="text/javascript" src="<c:url value="/scripts/jquery-1.11.2.min.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/scripts/jquery-ui.min.js" />"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script type="text/javascript" src="<c:url value="/scripts/bootstrap.min.js" />"></script>
     <script type="text/javascript" src="<c:url value="/scripts/prettify.js" />"></script>

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.validation.ValidationResourceManager;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
@@ -28,6 +30,16 @@ public class ValidationPolicyController {
 
 	@Autowired
 	private Unmarshaller policyMarshaller;
+
+	@ModelAttribute("supportedDigestAlgos")
+	public DigestAlgorithm[] getSupportedDigestAlgos() {
+		return DigestAlgorithm.values();
+	}
+
+	@ModelAttribute("supportedEncryptionAlgos")
+	public EncryptionAlgorithm[] getSupportedEncryptionAlgos() {
+		return EncryptionAlgorithm.values();
+	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showValidationPolicy(Model model) {
