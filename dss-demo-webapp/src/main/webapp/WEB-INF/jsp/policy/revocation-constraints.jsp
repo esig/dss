@@ -3,12 +3,12 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" data-toggle="collapse" data-target="#revocation-block">
         <h3 class="panel-title">
             <spring:message code="label.policy.revocation" />
         </h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body collapse in" id="revocation-block">
     
         <c:set var="currentTimeConstraint" value="${revocation.revocationFreshness}" scope="request" />
         <spring:message code="label.policy.revocationFreshness" var="translation" />

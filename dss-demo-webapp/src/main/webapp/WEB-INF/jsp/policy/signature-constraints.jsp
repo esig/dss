@@ -3,12 +3,12 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" data-toggle="collapse" data-target="#signature-block">
         <h3 class="panel-title">
             <spring:message code="label.policy.title.signature" />
         </h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body collapse in" id="signature-block">
 
         <spring:message code="label.policy.structuralValidation" var="translation" />
         <jsp:include page="level-constraint.jsp">
@@ -58,6 +58,8 @@
             <jsp:param name="title" value="${translation}" />
             <jsp:param name="pathToBindPrefix" value="MainSignature.CACertificate" />
         </jsp:include>
+        
+        
     </div>
 </div>
 <c:remove var="signature" />
