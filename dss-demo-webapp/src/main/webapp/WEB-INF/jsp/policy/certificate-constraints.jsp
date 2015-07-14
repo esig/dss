@@ -87,7 +87,14 @@
             <jsp:param name="levelValue" value="${currentCertificate.revocationDataFreshness.level}" />
             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.RevocationDataFreshness.Level" />
         </jsp:include>
-
+        
+        <spring:message code="label.policy.prospectiveCertificateChain" var="translation" />
+        <jsp:include page="level-constraint.jsp">
+            <jsp:param name="label" value="${translation}" />
+            <jsp:param name="levelValue" value="${currentCertificate.prospectiveCertificateChain.level}" />
+            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.ProspectiveCertificateChain.Level" />
+        </jsp:include>
+        
         <% // TODO keyusage %>
 
         <spring:message code="label.policy.revoked" var="translation" />
@@ -118,6 +125,13 @@
             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.TSLStatus.Level" />
         </jsp:include>
 
+        <spring:message code="label.policy.tslStatusAndValidity" var="translation" />
+        <jsp:include page="level-constraint.jsp">
+            <jsp:param name="label" value="${translation}" />
+            <jsp:param name="levelValue" value="${currentCertificate.TSLStatusAndValidity.level}" />
+            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.TSLStatusAndValidity.Level" />
+        </jsp:include>
+        
         <spring:message code="label.policy.qualification" var="translation" />
         <jsp:include page="level-constraint.jsp">
             <jsp:param name="label" value="${translation}" />

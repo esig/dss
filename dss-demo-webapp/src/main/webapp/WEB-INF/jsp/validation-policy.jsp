@@ -23,60 +23,17 @@
         </div>
     </div>
     
-    <c:set var="sig" value="${policy.mainSignature}" />
     
+        
+        <c:set var="signature" value="${policy.mainSignature}" scope="request" />
+        <jsp:include page="policy/signature-constraints.jsp" />
     
-    <c:if test="${sig != null}">
-    
-        <c:set var="multiValuesConstraint" value="${sig.acceptablePolicies}" scope="request" />
-        <spring:message code="label.policy.acceptablePolicies" var="translation" />
-        <jsp:include page="policy/multi-values-constraint.jsp">
-            <jsp:param name="label" value="${translation}" />
-            <jsp:param value="pathToBind" name="mainSignature.acceptablePolicies"/>
-        </jsp:include>
-        
-        <spring:message code="label.policy.referenceDataExistence" var="translation" />
-        <jsp:include page="policy/level-constraint.jsp">
-            <jsp:param name="label" value="${translation}" />
-            <jsp:param name="levelValue" value="${sig.referenceDataExistence.level}" />
-            <jsp:param name="pathToBind" value="MainSignature.ReferenceDataExistence.Level"/>
-        </jsp:include>
-        
-        <spring:message code="label.policy.referenceDataIntact" var="translation" />
-        <jsp:include page="policy/level-constraint.jsp">
-            <jsp:param name="label" value="${translation}" />
-            <jsp:param name="levelValue" value="${sig.referenceDataIntact.level}" />
-            <jsp:param name="pathToBind" value="MainSignature.ReferenceDataIntact.Level"/>
-        </jsp:include>
-        
-        <spring:message code="label.policy.signatureIntact" var="translation" />
-        <jsp:include page="policy/level-constraint.jsp">
-            <jsp:param name="label" value="${translation}" />
-            <jsp:param name="levelValue" value="${sig.signatureIntact.level}" />
-            <jsp:param name="pathToBind" value="MainSignature.SignatureIntact.Level"/>
-        </jsp:include>
-
-        <c:set var="currentCertificate" value="${sig.signingCertificate}" scope="request" />
-        <spring:message code="label.policy.signingCertificate" var="translation" />
-        <jsp:include page="policy/certificate-constraints.jsp">
-            <jsp:param name="title" value="${translation}" />
-            <jsp:param name="pathToBindPrefix" value="MainSignature.SigningCertificate" />
-        </jsp:include> 
-        
-        <c:set var="currentCertificate" value="${sig.CACertificate}" scope="request" />
-        <spring:message code="label.policy.caCertificate" var="translation" />
-        <jsp:include page="policy/certificate-constraints.jsp">
-            <jsp:param name="title" value="${translation}" />
-            <jsp:param name="pathToBindPrefix" value="MainSignature.CACertificate" />
-        </jsp:include>
-        
         <c:set var="timestamp" value="${policy.timestamp}" scope="request" />
         <jsp:include page="policy/timestamp-constraints.jsp" />
         
         <c:set var="revocation" value="${policy.revocation}" scope="request" />
         <jsp:include page="policy/revocation-constraints.jsp" />
         
-	</c:if>
     
     <input type="submit" />
 </form:form>

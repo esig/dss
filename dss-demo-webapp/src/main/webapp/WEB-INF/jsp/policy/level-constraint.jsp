@@ -7,10 +7,11 @@
 
     <div class="col-sm-8">
         <select class="form-control" name="${param.pathToBind}">
+            <option></option>
             <option<c:if test="${param.levelValue == 'FAIL'}"> selected="selected"</c:if>>FAIL</option>
             <option<c:if test="${param.levelValue == 'WARN'}"> selected="selected"</c:if>>WARN</option>
             <option<c:if test="${param.levelValue == 'INFORM'}"> selected="selected"</c:if>>INFORM</option>
-            <option<c:if test="${param.levelValue == 'IGNORE' || empty param.levelValue}"> selected="selected"</c:if>>IGNORE</option>
+            <option<c:if test="${param.levelValue == 'IGNORE'}"> selected="selected"</c:if>>IGNORE</option>
         </select>
     </div>
 </div>
