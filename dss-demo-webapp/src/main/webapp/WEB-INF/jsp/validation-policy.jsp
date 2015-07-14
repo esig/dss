@@ -68,7 +68,10 @@
         <jsp:include page="policy/certificate-constraints.jsp">
             <jsp:param name="title" value="${translation}" />
             <jsp:param name="pathToBindPrefix" value="MainSignature.CACertificate" />
-        </jsp:include> 
+        </jsp:include>
+        
+        <c:set var="timestamp" value="${policy.timestamp}" scope="request" />
+        <jsp:include page="policy/timestamp-constraints.jsp" />
         
 	</c:if>
     
