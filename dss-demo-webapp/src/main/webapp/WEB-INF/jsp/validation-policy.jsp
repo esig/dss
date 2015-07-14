@@ -73,6 +73,9 @@
         <c:set var="timestamp" value="${policy.timestamp}" scope="request" />
         <jsp:include page="policy/timestamp-constraints.jsp" />
         
+        <c:set var="revocation" value="${policy.revocation}" scope="request" />
+        <jsp:include page="policy/revocation-constraints.jsp" />
+        
 	</c:if>
     
     <input type="submit" />

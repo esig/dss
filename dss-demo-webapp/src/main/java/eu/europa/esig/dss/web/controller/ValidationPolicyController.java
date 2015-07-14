@@ -19,6 +19,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.validation.ValidationResourceManager;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.TimeUnit;
 
 @Controller
 @RequestMapping(value = "/validation-policy")
@@ -39,6 +40,11 @@ public class ValidationPolicyController {
 	@ModelAttribute("supportedEncryptionAlgos")
 	public EncryptionAlgorithm[] getSupportedEncryptionAlgos() {
 		return EncryptionAlgorithm.values();
+	}
+
+	@ModelAttribute("timeUnits")
+	public TimeUnit[] getTimeUnits() {
+		return TimeUnit.values();
 	}
 
 	@RequestMapping(method = RequestMethod.GET)

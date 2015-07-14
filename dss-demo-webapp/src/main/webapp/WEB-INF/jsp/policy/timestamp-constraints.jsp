@@ -9,7 +9,14 @@
         </h3>
     </div>
     <div class="panel-body">
-        <% // TODO TimestampDelay %>
+
+	   <c:set var="currentTimeConstraint" value="${timestamp.timestampDelay}" scope="request" />
+        <spring:message code="label.policy.timestampDelay" var="translation" />
+        <jsp:include page="time-constraint.jsp">
+            <jsp:param name="label" value="${translation}" />
+            <jsp:param name="pathToBindPrefix" value="Timestamp.TimestampDelay" />
+        </jsp:include>
+
 
         <spring:message code="label.policy.messageImprintDataFound" var="translation" />
         <jsp:include page="level-constraint.jsp">
