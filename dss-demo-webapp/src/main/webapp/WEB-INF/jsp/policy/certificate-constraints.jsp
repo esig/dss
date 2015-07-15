@@ -151,6 +151,11 @@
             <jsp:param name="levelValue" value="${currentCertificate.issuedToLegalPerson.level}" />
             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.IssuedToLegalPerson.Level" />
         </jsp:include>
+    
+        <c:set var="cryptographic" value="${currentCertificate.cryptographic}" scope="request" />
+        <jsp:include page="cryptographic-constraints.jsp">
+            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.Cryptographic" />
+        </jsp:include>
     </div>
 </div>
 

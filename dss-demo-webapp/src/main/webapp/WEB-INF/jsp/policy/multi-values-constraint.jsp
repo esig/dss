@@ -4,9 +4,9 @@
 
  <c:if test="${multiValuesConstraint !=null}">
     <div class="form-group">
-        <label class="col-sm-4 control-label">${param.label} : </label>
+        <label class="col-sm-5 control-label">${param.label} : </label>
 
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             <p class="form-control-static">
                 ${multiValuesConstraint.level} <br />
                 <c:if test="${not empty multiValuesConstraint.id}">

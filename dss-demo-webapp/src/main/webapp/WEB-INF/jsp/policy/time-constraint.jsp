@@ -3,9 +3,9 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <div class="form-group">
-    <label class="col-sm-4 control-label">${param.label}</label>
+    <label class="col-sm-5 control-label">${param.label}</label>
 
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <input class="form-control" name="${param.pathToBindPrefix}.value" value="${currentTimeConstraint.value}" />
     </div>
     <div class="col-sm-4">

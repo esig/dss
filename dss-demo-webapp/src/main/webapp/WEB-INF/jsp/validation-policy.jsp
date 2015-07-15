@@ -10,17 +10,17 @@
 <form:form method="post" modelAttribute="policy" cssClass="form-horizontal" id="policyForm">
 
     <div class="form-group">
-        <label class="col-sm-4 control-label"> <spring:message code="label.policy.name" /> :
+        <label class="col-sm-3 control-label"> <spring:message code="label.policy.name" /> :
         </label>
-        <div class="col-sm-8">
+        <div class="col-sm-9">
             <form:input path="name" cssClass="form-control" />
         </div>
     </div>
 
     <div class="form-group">
-        <label class="col-sm-4 control-label"> <spring:message code="label.policy.description" /> :
+        <label class="col-sm-3 control-label"> <spring:message code="label.policy.description" /> :
         </label>
-        <div class="col-sm-8">
+        <div class="col-sm-9">
             <form:textarea path="description" cssClass="form-control" rows="5" />
         </div>
     </div>
@@ -49,6 +49,41 @@
 </form:form>
 
 <script type="text/javascript">
+
+	// This function escape dot,... (required for binding)
+    function escapeString(string) {
+       return string.replace( /(:|\.|\[|\]|,)/g, "\\$1" );
+    }
+
+    $('.encryptionAlgo:checkbox').change(function() {
+
+        var id = $(this).prop('id');
+        
+        if ($(this).prop('checked')) {
+			var idToAppend = id.replace("encryptionAlgo-", "encryptionAlgoSize-");
+			
+			var stringToAdd = '<div class="form-group" id="'+idToAppend+'">'
+									+'<label class="col-sm-2 control-label">'+$(this).val()+'</label>'
+									+'<div class="col-sm-4">'
+										+'<input name="encryptionAlgoSize" type="text" name="'+$(this).val()+'" value="" class="form-control" />'
+									+'</div>'
+								'</div>';
+								
+			var idToAppend = id.replace("encryptionAlgo-", "encryptionAlgoSizes-");
+			var escapedIdToAppend = escapeString(idToAppend);
+			escapedIdToAppend = escapedIdToAppend.substring(0, escapedIdToAppend.lastIndexOf('-'));
+			$('#' + escapedIdToAppend).append(stringToAdd);
+			
+        } else{
+           // remove unchecked algo size
+           var idToRemove = '#' + id.replace("encryptionAlgo-", "encryptionAlgoSize-");
+           idToRemove = escapeString(idToRemove);
+           $(idToRemove).remove();
+        }
+    });
+
+
+
     $("#save-button").click(function() {
         // disable empty levelConstraints
         $("div.levelConstraints select").each(function(index) {
