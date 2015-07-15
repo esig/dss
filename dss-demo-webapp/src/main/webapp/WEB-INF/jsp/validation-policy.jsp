@@ -100,25 +100,29 @@
         // DigestAlgo
 
    		$('.encryptionAlgos').each(function() {
-            $(':checkbox', $(this)).each(function(index) {
+   		    var index =  0;
+            $(':checkbox', $(this)).each(function() {
                 if ($(this).prop('checked')) {
                     var propertyToBind = $(this).prop('id');
                     propertyToBind = propertyToBind.substring('encryptionAlgo-'.length, propertyToBind.lastIndexOf('-')) + '.AcceptableEncryptionAlgo.Algo[' + index + '].value';
 
                     var stringToAdd = '<input name="' + propertyToBind + '" value="' + $(this).val() + '" />';
                     $('#binding').append(stringToAdd);
+                    index++;
                 }
             })
         });
 
    		$('.digestAlgos').each(function() {
-            $(':checkbox', $(this)).each(function(index) {
+   		    var index = 0;
+            $(':checkbox', $(this)).each(function() {
                 if ($(this).prop('checked')) {
                     var propertyToBind = $(this).prop('id');
                     propertyToBind = propertyToBind.substring('digestAlgo-'.length, propertyToBind.lastIndexOf('-')) + '.AcceptableDigestAlgo.Algo[' + index + '].value';
 
                     var stringToAdd = '<input name="' + propertyToBind + '" value="' + $(this).val() + '" />';
                     $('#binding').append(stringToAdd);
+                    index++;
                 }
             })
         });
