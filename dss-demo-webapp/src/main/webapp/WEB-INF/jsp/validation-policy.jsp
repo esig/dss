@@ -7,7 +7,7 @@
     <textarea rows="10" cols="25"><c:out value="${xmlResult}" /></textarea>
 </c:if>
 
-<form:form method="post" modelAttribute="policy" cssClass="form-horizontal">
+<form:form method="post" modelAttribute="policy" cssClass="form-horizontal" id="policyForm">
 
     <div class="form-group">
         <label class="col-sm-4 control-label"> <spring:message code="label.policy.name" /> :
@@ -44,5 +44,20 @@
     <c:set var="revocation" value="${policy.revocation}" scope="request" />
     <jsp:include page="policy/revocation-constraints.jsp" />
 
-    <input type="submit" />
+    <button type="button" id="save-button">Save</button>
+
 </form:form>
+
+<script type="text/javascript">
+    $("#save-button").click(function() {
+        // disable empty levelConstraints
+        $("div.levelConstraints select").each(function(index) {
+            // console.log( index + ": " + $( this ).text() );
+            if ($(this).val() === '' || $(this).val() === null) {
+                $(this).prop('disabled', true);
+            }
+        });
+
+        $("#policyForm").submit();
+    });
+</script>
