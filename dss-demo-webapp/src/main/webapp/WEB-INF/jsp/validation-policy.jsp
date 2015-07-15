@@ -43,6 +43,8 @@
 
     <c:set var="revocation" value="${policy.revocation}" scope="request" />
     <jsp:include page="policy/revocation-constraints.jsp" />
+    
+    <div id="binding" class="hidden"></div>
 
     <button type="button" id="save-button">Save</button>
 
@@ -92,7 +94,36 @@
                 $(this).prop('disabled', true);
             }
         });
+        
+        // bind all cryptographic-constraints
+        $('#binding').empty();
+        // DigestAlgo
 
+   		$('.encryptionAlgos').each(function() {
+            $(':checkbox', $(this)).each(function(index) {
+                if ($(this).prop('checked')) {
+                    var propertyToBind = $(this).prop('id');
+                    propertyToBind = propertyToBind.substring('encryptionAlgo-'.length, propertyToBind.lastIndexOf('-')) + '.AcceptableEncryptionAlgo.Algo[' + index + '].value';
+
+                    var stringToAdd = '<input name="' + propertyToBind + '" value="' + $(this).val() + '" />';
+                    $('#binding').append(stringToAdd);
+                }
+            })
+        });
+
+   		$('.digestAlgos').each(function() {
+            $(':checkbox', $(this)).each(function(index) {
+                if ($(this).prop('checked')) {
+                    var propertyToBind = $(this).prop('id');
+                    propertyToBind = propertyToBind.substring('digestAlgo-'.length, propertyToBind.lastIndexOf('-')) + '.AcceptableDigestAlgo.Algo[' + index + '].value';
+
+                    var stringToAdd = '<input name="' + propertyToBind + '" value="' + $(this).val() + '" />';
+                    $('#binding').append(stringToAdd);
+                }
+            })
+        });
+
+        
         $("#policyForm").submit();
     });
 </script>

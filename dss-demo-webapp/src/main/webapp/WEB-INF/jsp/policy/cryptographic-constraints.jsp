@@ -8,9 +8,9 @@
             <spring:message code="label.policy.cryptographic" />
         </h3>
     </div>
-    <div class="panel-body collapse in cryptographic-block-${param.pathToBind}">
+    <div class="panel-body collapse in cryptographic-block cryptographic-block-${param.pathToBind}">
 
-        <div class="form-group">
+        <div class="form-group encryptionAlgos" >
             <label class="col-sm-5 control-label"><spring:message code="label.policy.acceptableEncryptionAlgo" /></label>
             <div class="col-sm-7">
                 <c:forEach var="supportedAlgo" items="${supportedEncryptionAlgos}" varStatus="loop">
@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group encryptionAlgoSizes">
             <label class="col-sm-5 control-label"><spring:message code="label.policy.miniPublicKeySize" /></label>
             <div class="col-sm-7 encryptionAlgoSizes" id="encryptionAlgoSizes-${param.pathToBind}">
                 <c:forEach var="algo" items="${cryptographic.miniPublicKeySize.algo}">
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group digestAlgos">
             <label class="col-sm-5 control-label"><spring:message code="label.policy.acceptableDigestAlgo" /></label>
             <div class="col-sm-7">
                 <c:forEach var="supportedAlgo" items="${supportedDigestAlgos}" varStatus="loop">
@@ -49,7 +49,7 @@
                             <c:set var="checked" value="checked" />
                         </c:if>
                     </c:forEach>
-                    <input name="digestAlgo" type="checkbox" value="${supportedAlgo}" <c:if test="${not empty checked}"> checked="checked"</c:if> /> ${supportedAlgo} <br />
+                    <input name="digestAlgo" type="checkbox" id="digestAlgo-${param.pathToBind}-${supportedAlgo}"  value="${supportedAlgo}" <c:if test="${not empty checked}"> checked="checked"</c:if> /> ${supportedAlgo} <br />
                 </c:forEach>
             </div>
         </div>
