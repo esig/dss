@@ -1,13 +1,16 @@
 package eu.europa.esig.dss.web.controller;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +33,10 @@ public class ValidationPolicyController {
 	private static final String VALIDATION_POLICY_TILE = "validation-policy";
 
 	@Autowired
-	private Unmarshaller policyMarshaller;
+	private Unmarshaller policyUnmarshaller;
+
+	@Autowired
+	private Marshaller policyMarshaller;
 
 	@ModelAttribute("supportedDigestAlgos")
 	public DigestAlgorithm[] getSupportedDigestAlgos() {
@@ -54,7 +60,7 @@ public class ValidationPolicyController {
 		ConstraintsParameters policy = null;
 		try {
 			is = ValidationPolicyController.class.getResourceAsStream(ValidationResourceManager.defaultPolicyConstraintsLocation);
-			policy = (ConstraintsParameters) policyMarshaller.unmarshal(new StreamSource(is));
+			policy = (ConstraintsParameters) policyUnmarshaller.unmarshal(new StreamSource(is));
 		} catch (Exception e) {
 			logger.error("Unable to parse '" + ValidationResourceManager.defaultPolicyConstraintsLocation + "' : " + e.getMessage(), e);
 		} finally {
@@ -70,6 +76,15 @@ public class ValidationPolicyController {
 	public String save(@ModelAttribute("policy") ConstraintsParameters policy, Model model) {
 
 		model.addAttribute("policy", policy);
+
+		StringWriter writer = new StringWriter();
+		try {
+			policyMarshaller.marshal(policy, new StreamResult(writer));
+		} catch (Exception e) {
+			logger.error("Unable to parse JaxB object : " + e.getMessage(), e);
+		}
+
+		model.addAttribute("xmlResult", writer.toString());
 
 		return VALIDATION_POLICY_TILE;
 	}

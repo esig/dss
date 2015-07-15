@@ -2,14 +2,13 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
-
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" data-toggle="collapse" data-target="#block-${param.pathToBindPrefix}">
         <h3 class="panel-title">
             ${param.title}
         </h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body collapse in" id="block-${param.pathToBindPrefix}">
 
         <spring:message code="label.policy.recognition" var="translation" />
         <jsp:include page="level-constraint.jsp">
