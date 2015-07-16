@@ -88,9 +88,6 @@ public class SignatureModel extends Model {
 	public static final String PROPERTY_CLAIMED_CHECK = "claimedCheck";
 	private boolean claimedCheck;
 
-	public static final String PROPERTY_TSL_SIGNATURE_CHECK = "tslSignatureCheck";
-	private boolean tslSignatureCheck;
-
 	public static final String PROPERTY_SIGNATURE_POLICY_CHECK = "signaturePolicyCheck";
 	private boolean signaturePolicyCheck;
 
@@ -288,27 +285,6 @@ public class SignatureModel extends Model {
 		final String newValue = claimedRole;
 		this.claimedRole = newValue;
 		firePropertyChange(PROPERTY_CLAIMED_ROLE, oldValue, newValue);
-	}
-
-	/**
-	 *
-	 * @return tslSignatureCheck
-	 */
-	public boolean isTslSignatureCheck() {
-		return tslSignatureCheck;
-	}
-
-	/**
-	 *
-	 * @param tslSignatureCheck the tslSignatureCheck to set
-	 */
-	public void setTslSignatureCheck(boolean tslSignatureCheck) {
-		this.tslSignatureCheck = tslSignatureCheck;
-		final boolean oldValue = this.tslSignatureCheck;
-		final boolean newValue = tslSignatureCheck;
-		this.tslSignatureCheck = newValue;
-		firePropertyChange(PROPERTY_TSL_SIGNATURE_CHECK, oldValue, newValue);
-
 	}
 
 	/**

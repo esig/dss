@@ -29,9 +29,7 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.SignatureTokenType;
-import eu.europa.esig.dss.applet.controller.ActivityController;
 import eu.europa.esig.dss.applet.main.Parameters.AppletUsage;
-import eu.europa.esig.dss.applet.model.ActivityModel;
 import eu.europa.esig.dss.applet.model.SignatureModel;
 import eu.europa.esig.dss.applet.swing.mvc.AppletCore;
 import eu.europa.esig.dss.applet.util.DSSStringUtils;
@@ -76,7 +74,7 @@ public class DSSAppletCore extends AppletCore {
 	 */
 	@Override
 	protected void layout(final AppletCore core) {
-		getController(ActivityController.class).display();
+		getController(SignatureWizardController.class).start();
 	}
 
 	/*
@@ -86,7 +84,6 @@ public class DSSAppletCore extends AppletCore {
 	 */
 	@Override
 	protected void registerControllers() {
-		getControllers().put(ActivityController.class, new ActivityController(this, new ActivityModel()));
 		getControllers().put(SignatureWizardController.class, new SignatureWizardController(this, new SignatureModel()));
 	}
 
