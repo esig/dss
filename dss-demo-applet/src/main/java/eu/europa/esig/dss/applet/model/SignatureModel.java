@@ -30,7 +30,7 @@ import com.jgoodies.binding.beans.Model;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.applet.SignatureTokenType;
+import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.applet.main.FileType;
 import eu.europa.esig.dss.applet.util.FileTypeDetectorUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;

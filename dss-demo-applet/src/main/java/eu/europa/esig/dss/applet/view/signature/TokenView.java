@@ -29,7 +29,7 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 
-import eu.europa.esig.dss.applet.SignatureTokenType;
+import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.applet.model.SignatureModel;
 import eu.europa.esig.dss.applet.swing.mvc.AppletCore;
 import eu.europa.esig.dss.applet.swing.mvc.wizard.WizardView;

@@ -28,7 +28,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.applet.SignatureTokenType;
+import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.applet.controller.ActivityController;
 import eu.europa.esig.dss.applet.main.Parameters.AppletUsage;
 import eu.europa.esig.dss.applet.model.ActivityModel;

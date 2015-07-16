@@ -18,16 +18,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.applet;
+package eu.europa.esig.dss;
 
 /**
  * Type of API supported by the application
  *
- *
  */
-
 public enum SignatureTokenType {
 
-    PKCS11, PKCS12, MSCAPI, MOCCA
+	PKCS11, PKCS12, MSCAPI, MOCCA
 
 }
