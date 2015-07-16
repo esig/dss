@@ -145,5 +145,12 @@
         });
         
         $("#policyForm").submit();
+        
+        // enable empty levelConstraints
+        $("div.levelConstraints select").each(function(index) {
+            if ($(this).val() === '' || $(this).val() === null) {
+                $(this).prop('disabled', false);
+            }
+        });
     });
 </script>
