@@ -31,7 +31,6 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.JavaPreferencesDAO;
 import eu.europa.esig.dss.applet.SignatureTokenType;
 import eu.europa.esig.dss.applet.UserPreferencesDAO;
-import eu.europa.esig.dss.validation.ValidationResourceManager;
 
 /**
  *
@@ -323,31 +322,7 @@ public class Parameters {
 	 * @return the defaultPolicyUrl for validation. Can be null.
 	 */
 	public URL getDefaultPolicyUrl() {
-		if (defaultPolicyUrl == null) {
-			return getClass().getResource(ValidationResourceManager.defaultPolicyConstraintsLocation);
-		} else {
-			return defaultPolicyUrl;
-		}
-	}
-
-	/**
-	 * Set the default xsd policy URL for validation. Can be null.
-	 * @param defaultXsdPolicyUrl
-	 */
-	public void setDefaultXsdPolicyUrl(URL defaultXsdPolicyUrl) {
-		this.defaultXsdPolicyUrl = defaultXsdPolicyUrl;
-	}
-
-	/**
-	 *
-	 * @return the defaultXsdPolicyUrl for validation. Can be null.
-	 */
-	public URL getDefaultXsdPolicyUrl() {
-		if (defaultXsdPolicyUrl == null) {
-			return getClass().getResource(ValidationResourceManager.defaultPolicyXsdLocation);
-		} else {
-			return defaultXsdPolicyUrl;
-		}
+		return defaultPolicyUrl;
 	}
 
 	/*

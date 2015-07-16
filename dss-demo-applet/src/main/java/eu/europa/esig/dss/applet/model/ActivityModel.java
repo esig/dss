@@ -30,7 +30,7 @@ import com.jgoodies.binding.beans.Model;
 public class ActivityModel extends Model {
 
 	public enum ActivityAction {
-		SIGN, EDIT_VALIDATION_POLICY
+		SIGN
 	}
 
 	public static final String PROPERTY_ACTIVITY = "action";

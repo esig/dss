@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-document</artifactId>
+			<artifactId>dss-spi</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -39,11 +39,5 @@
 			<artifactId>jgoodies-binding</artifactId>
 		</dependency>
 	
-		<dependency>
-			<groupId>com.sun.xsom</groupId>
-			<artifactId>xsom</artifactId>
-			<version>20110809</version>
-		</dependency>
-
 	</dependencies>
 </project>

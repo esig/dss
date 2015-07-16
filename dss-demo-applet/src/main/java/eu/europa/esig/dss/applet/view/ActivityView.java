@@ -67,13 +67,8 @@ public class ActivityView extends DSSAppletView<ActivityModel, ActivityControlle
 	}
 
 	private static final String I18N_SIGN_DOCUMENT = ResourceUtils.getI18n("SIGN_A_DOCUMENT");
-	private static final String I18N_EDIT_VALIDATION_POLICY =  ResourceUtils.getI18n("EDIT_VALIDATION_POLICY");
-
 
 	private final JRadioButton choice1;
-
-	// validation policy editor
-	private final JRadioButton choice2;
 
 	private final JButton button;
 
@@ -95,7 +90,6 @@ public class ActivityView extends DSSAppletView<ActivityModel, ActivityControlle
 		this.presentationModel = new PresentationModel<ActivityModel>(getModel());
 		final ValueModel activityValue = presentationModel.getModel(ActivityModel.PROPERTY_ACTIVITY);
 		choice1 = ComponentFactory.createRadioButton(I18N_SIGN_DOCUMENT, activityValue, ActivityAction.SIGN);
-		choice2 = ComponentFactory.createRadioButton(I18N_EDIT_VALIDATION_POLICY, activityValue, ActivityAction.EDIT_VALIDATION_POLICY);
 		button = ComponentFactory.createNextButton(true, new NextActionListener());
 		button.setName("next");
 
@@ -103,17 +97,11 @@ public class ActivityView extends DSSAppletView<ActivityModel, ActivityControlle
 		switch (appletUsage) {
 			case ALL: {
 				choices.add(choice1);
-				choices.add(choice2);
 				break;
 			}
 			case SIGN:
 				choices.add(choice1);
 				break;
-			case EDIT_VALIDATION_POLICY: {
-				choices.add(choice2);
-				break;
-			}
-
 		}
 
 	}

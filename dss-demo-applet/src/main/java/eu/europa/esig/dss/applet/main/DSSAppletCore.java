@@ -33,21 +33,10 @@ import eu.europa.esig.dss.applet.controller.ActivityController;
 import eu.europa.esig.dss.applet.main.Parameters.AppletUsage;
 import eu.europa.esig.dss.applet.model.ActivityModel;
 import eu.europa.esig.dss.applet.model.SignatureModel;
-import eu.europa.esig.dss.applet.model.ValidationPolicyModel;
 import eu.europa.esig.dss.applet.swing.mvc.AppletCore;
 import eu.europa.esig.dss.applet.util.DSSStringUtils;
 import eu.europa.esig.dss.applet.wizard.signature.SignatureWizardController;
-import eu.europa.esig.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- *
- */
 @SuppressWarnings("serial")
 public class DSSAppletCore extends AppletCore {
 
@@ -99,7 +88,6 @@ public class DSSAppletCore extends AppletCore {
 	protected void registerControllers() {
 		getControllers().put(ActivityController.class, new ActivityController(this, new ActivityModel()));
 		getControllers().put(SignatureWizardController.class, new SignatureWizardController(this, new SignatureModel()));
-		getControllers().put(ValidationPolicyWizardController.class, new ValidationPolicyWizardController(this, new ValidationPolicyModel()));
 	}
 
 	/*

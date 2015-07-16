@@ -27,7 +27,6 @@ import eu.europa.esig.dss.applet.main.DSSAppletCore;
 import eu.europa.esig.dss.applet.model.ActivityModel;
 import eu.europa.esig.dss.applet.view.ActivityView;
 import eu.europa.esig.dss.applet.wizard.signature.SignatureWizardController;
-import eu.europa.esig.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
 
 /**
  *
@@ -67,9 +66,6 @@ public class ActivityController extends DSSAppletController<ActivityModel> {
 		switch (getModel().getAction()) {
 			case SIGN:
 				getCore().getController(SignatureWizardController.class).start();
-				break;
-			case EDIT_VALIDATION_POLICY:
-				getCore().getController(ValidationPolicyWizardController.class).start();
 				break;
 			default:
 				logger.error("Unknown action : " + getModel().getAction());
