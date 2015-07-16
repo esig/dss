@@ -27,6 +27,7 @@ import java.net.URL;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.SignatureTokenType;
 import eu.europa.esig.dss.applet.main.Parameters.AppletUsage;
@@ -106,7 +107,7 @@ public class DSSAppletCore extends AppletCore {
 
 		final String signatureFormatParam = parameterProvider.getParameter(PARAM_SIGNATURE_FORMAT);
 		if (StringUtils.isNotEmpty(signatureFormatParam)) {
-			parameters.setSignatureFormat(signatureFormatParam);
+			parameters.setSignatureFormat(SignatureForm.valueOf(signatureFormatParam));
 			final String signaturePackagingParam = parameterProvider.getParameter(PARAM_SIGNATURE_PACKAGING);
 			if (StringUtils.isNotEmpty(signaturePackagingParam)) {
 				parameters.setSignaturePackaging(SignaturePackaging.valueOf(signaturePackagingParam));

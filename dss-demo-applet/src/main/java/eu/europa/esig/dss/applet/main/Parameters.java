@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.JavaPreferencesDAO;
 import eu.europa.esig.dss.applet.SignatureTokenType;
@@ -91,7 +92,7 @@ public class Parameters {
 	/**
 	 *
 	 */
-	private String signatureFormat;
+	private SignatureForm signatureFormat;
 	/**
 	 *
 	 */
@@ -146,7 +147,7 @@ public class Parameters {
 		return serviceURL;
 	}
 
-	public String getSignatureFormat() {
+	public SignatureForm getSignatureFormat() {
 		return signatureFormat;
 	}
 
@@ -266,7 +267,7 @@ public class Parameters {
 		this.serviceURL = serviceURL;
 	}
 
-	public void setSignatureFormat(String signatureFormat) {
+	public void setSignatureFormat(SignatureForm signatureFormat) {
 		this.signatureFormat = signatureFormat;
 	}
 
