@@ -23,7 +23,7 @@
 			<RevocationDataFreshness Level="WARN"/>
 			<ProspectiveCertificateChain Level="FAIL"/>
 			<KeyUsage Level="WARN">
-				<Identifier>nonRepudiation</Identifier>
+				<Id>nonRepudiation</Id>
 			</KeyUsage>
 			<Revoked Level="FAIL"/>
 			<OnHold Level="FAIL"/>

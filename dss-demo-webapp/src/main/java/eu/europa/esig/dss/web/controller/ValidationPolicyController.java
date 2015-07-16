@@ -34,6 +34,13 @@ public class ValidationPolicyController {
 		return EncryptionAlgorithm.values();
 	}
 
+	@ModelAttribute("supportedPolicies")
+	public String[] getSupportedPolicies() {
+		return new String[] {
+				"NO_POLICY", "ANY_POLICY"
+		};
+	}
+
 	@ModelAttribute("timeUnits")
 	public TimeUnit[] getTimeUnits() {
 		return TimeUnit.values();
