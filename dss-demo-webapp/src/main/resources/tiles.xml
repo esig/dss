@@ -13,7 +13,7 @@
         <put-attribute name="content" value="/WEB-INF/jsp/home.jsp" />
     </definition>
 
-    <definition name="signature" extends="main">
+    <definition name="signature-applet" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/signature.jsp" />
     </definition>
     

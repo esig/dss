@@ -20,23 +20,14 @@
  */
 package eu.europa.esig.dss.web.controller;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import eu.europa.esig.dss.validation.ValidationResourceManager;
 import eu.europa.esig.dss.web.dao.PreferencesDao;
 import eu.europa.esig.dss.web.model.Preference;
 import eu.europa.esig.dss.web.model.PreferenceKey;
@@ -45,15 +36,13 @@ import eu.europa.esig.dss.web.model.PreferenceKey;
  *
  * Signature controller
  *
- *
- *
- *
- *
+ * With this controller all configurations are in the applet. The applet only calls two webservices (getDataToSign / signDocument)
  *
  */
 @Controller
-@RequestMapping(value = "/signature")
-public class SignatureController {
+@RequestMapping(value = "/signature-applet")
+public class SignatureAppletController {
+
 	/**
 	 * @see PreferencesDao
 	 */
@@ -65,29 +54,10 @@ public class SignatureController {
 	 * @return a view name
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public String showSignature(final Model model, HttpServletRequest request) {
-
-		final Preference serviceUrl = preferencesDao.get(PreferenceKey.SERVICE_URL);
+	public String showSignature(Model model, HttpServletRequest request) {
+		Preference serviceUrl = preferencesDao.get(PreferenceKey.SERVICE_URL);
 		model.addAttribute("prefUrlService", serviceUrl);
-		final Preference preference = preferencesDao.get(PreferenceKey.DEFAULT_POLICY_URL);
-		if (StringUtils.isNotBlank(preference.getValue())) {
-			final String prefDefaultPolicyUrl = serviceUrl.getValue().replaceAll("service", "signature/policy.xml");
-			model.addAttribute("prefDefaultPolicyUrl", prefDefaultPolicyUrl);
-		}
-
-		return "signature";
+		return "signature-applet";
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/policy.xml", produces = MediaType.APPLICATION_XML_VALUE)
-	@ResponseBody
-	public String getDefaultPolicyFile() throws IOException {
-		InputStream inputStream;
-		final String prefDefaultPolicyUrl = preferencesDao.get(PreferenceKey.DEFAULT_POLICY_URL).getValue();
-		if (StringUtils.isNotEmpty(prefDefaultPolicyUrl)) {
-			inputStream = new URL(prefDefaultPolicyUrl).openStream();
-		} else {
-			inputStream = getClass().getResourceAsStream(ValidationResourceManager.defaultPolicyConstraintsLocation);
-		}
-		return IOUtils.toString(inputStream);
-	}
 }
