@@ -27,12 +27,12 @@
 
         <div class="form-group encryptionAlgoSizes">
             <label class="col-sm-5 control-label"><spring:message code="label.policy.miniPublicKeySize" /></label>
-            <div class="col-sm-7 encryptionAlgoSizes" id="encryptionAlgoSizes-${param.pathToBind}">
+            <div class="col-sm-7" id="encryptionAlgoSizes-${param.pathToBind}">
                 <c:forEach var="algo" items="${cryptographic.miniPublicKeySize.algo}">
                     <div class="form-group" id="encryptionAlgoSize-${param.pathToBind}-${algo.value}">
                         <label class="col-sm-2 control-label">${algo.value}</label>
                         <div class="col-sm-4">
-                            <input name="encryptionAlgoSize" type="text" name="${algo.value}" value="${algo.size}" class="form-control" />
+                            <input type="text" id="encryptionAlgoSize-${param.pathToBind}-${algo.value}" name="${algo.value}" value="${algo.size}" class="form-control" />
                         </div>
                     </div>
                 </c:forEach>

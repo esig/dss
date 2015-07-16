@@ -67,7 +67,7 @@
 			var stringToAdd = '<div class="form-group" id="'+idToAppend+'">'
 									+'<label class="col-sm-2 control-label">'+$(this).val()+'</label>'
 									+'<div class="col-sm-4">'
-										+'<input name="encryptionAlgoSize" type="text" name="'+$(this).val()+'" value="" class="form-control" />'
+										+'<input type="text" name="'+$(this).val()+'" value="" class="form-control" id="'+idToAppend+'" />'
 									+'</div>'
 								'</div>';
 								
@@ -126,7 +126,24 @@
                 }
             })
         });
+   		
+   		$('.encryptionAlgoSizes').each(function() {
+   		    var index = 0;
+            $('input', $(this)).each(function() {
+                var algoName = $(this).prop('name');
+                var algoMiniSize = $(this).val();
+                
+                var propertyToBind = $(this).prop('id');
+                propertyToBind = propertyToBind.substring('encryptionAlgoSize-'.length, propertyToBind.lastIndexOf('-')) + '.MiniPublicKeySize.Algo[' + index + ']';
 
+                var stringToAdd = '<input name="' + propertyToBind + '.value" value="' + algoName + '" />';
+                $('#binding').append(stringToAdd);
+                var stringToAdd = '<input name="' + propertyToBind + '.size" value="' + algoMiniSize + '" />';
+                $('#binding').append(stringToAdd);
+                index++;
+            })
+
+        });
         
         $("#policyForm").submit();
     });
