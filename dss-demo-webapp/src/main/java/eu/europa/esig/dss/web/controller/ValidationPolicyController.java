@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.tsl.KeyUsageCondition.KeyUsageBit;
 import eu.europa.esig.dss.validation.ValidationResourceManager;
 import eu.europa.esig.dss.web.service.PolicyJaxbService;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
@@ -36,6 +37,11 @@ public class ValidationPolicyController {
 	@ModelAttribute("timeUnits")
 	public TimeUnit[] getTimeUnits() {
 		return TimeUnit.values();
+	}
+
+	@ModelAttribute("keyUsages")
+	public KeyUsageBit[] getKeyUsages() {
+		return KeyUsageBit.values();
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
