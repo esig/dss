@@ -9,38 +9,10 @@
     <jsp:include page="fields/signedFileField.jsp" />
     
     <jsp:include page="fields/originalFileField.jsp" />
-
-    <div class="form-group">
-        <form:label path="signatureForm" cssClass="col-sm-2 control-label">
-            <spring:message code="label.signature.form" />
-        </form:label>
-        <div class="col-sm-6">
-            <c:forEach var="sigForm" items="${signatureForms}">
-                <label class="radio-inline">
-                    <form:radiobutton path="signatureForm" value="${sigForm}" /> <spring:message code="label.${sigForm}" />
-                </label>
-            </c:forEach>
-        </div>
-        <div class="col-xs-4">
-            <form:errors path="signatureForm" cssClass="text-danger" />
-        </div>
-    </div>
     
-    <div class="form-group">
-        <form:label path="signaturePackaging" cssClass="col-sm-2 control-label">
-            <spring:message code="label.signature.packaging" />
-        </form:label>
-        <div class="col-sm-6">
-            <c:forEach var="sigPack" items="${signaturePackagings}">
-                <label class="radio-inline">
-                    <form:radiobutton path="signaturePackaging" value="${sigPack}" id="signaturePackaging-${sigPack}" /> <spring:message code="label.${sigPack}" />
-                </label>
-            </c:forEach>
-        </div>
-        <div class="col-xs-3">
-            <form:errors path="signaturePackaging" cssClass="text-danger" />
-        </div>
-    </div>
+    <jsp:include page="fields/signatureForm.jsp" />
+    
+    <jsp:include page="fields/signaturePackaging.jsp" />
     
     <div class="form-group">
         <form:label path="signatureLevel" cssClass="col-sm-2 control-label">

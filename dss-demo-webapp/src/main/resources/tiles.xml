@@ -17,6 +17,10 @@
         <put-attribute name="content" value="/WEB-INF/jsp/signature.jsp" />
     </definition>
     
+    <definition name="signature-parameters" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-parameters.jsp" />
+    </definition>
+    
     <definition name="extension" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/extension.jsp" />
     </definition>
