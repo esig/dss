@@ -6,6 +6,8 @@
 <h2><spring:message code="label.signADocument"/></h2>
 <form:form method="post" modelAttribute="signatureDocumentForm" cssClass="form-horizontal" enctype="multipart/form-data">
 
+    <input type="hidden" id="isSign" value="true" />
+
     <div class="form-group">
         <form:label path="documentToSign" cssClass="col-sm-2 control-label">
             <spring:message code="label.to.sign.file" />
@@ -21,6 +23,8 @@
     <jsp:include page="fields/signatureForm.jsp" />
     
     <jsp:include page="fields/signaturePackaging.jsp" />
+    
+    <jsp:include page="fields/signatureLevel.jsp" />
 
     <div class="form-group">
         <form:label path="digestAlgorithm" cssClass="col-sm-2 control-label">
@@ -60,3 +64,5 @@
     </div>   
 
 </form:form>
+
+<script type="text/javascript" src="<c:url value="/scripts/jsSignatureLevel.js" />"></script>
