@@ -3,9 +3,9 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<c:if test="${not empty xmlResult}">
-    <textarea rows="10" cols="120"><c:out value="${xmlResult}" /></textarea>
-</c:if>
+<%-- <c:if test="${not empty xmlResult}"> --%>
+<%--     <textarea rows="10" cols="120"><c:out value="${xmlResult}" /></textarea> --%>
+<%-- </c:if> --%>
 
 <form:form method="post" modelAttribute="policy" cssClass="form-horizontal" id="policyForm">
 

@@ -1,5 +1,12 @@
 package eu.europa.esig.dss.web.controller;
 
+import java.io.ByteArrayInputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +25,8 @@ import eu.europa.esig.jaxb.policy.TimeUnit;
 @Controller
 @RequestMapping(value = "/validation-policy")
 public class ValidationPolicyController {
+
+	private static final Logger logger = LoggerFactory.getLogger(ValidationPolicyController.class);
 
 	private static final String VALIDATION_POLICY_TILE = "validation-policy";
 
@@ -60,10 +69,22 @@ public class ValidationPolicyController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String save(@ModelAttribute("policy") ConstraintsParameters policy, Model model) {
+	public String save(@ModelAttribute("policy") ConstraintsParameters policy, Model model, HttpServletResponse response) {
 
 		model.addAttribute("policy", policy);
-		model.addAttribute("xmlResult", policyJaxbService.marshall(policy));
+		String xmlResult = policyJaxbService.marshall(policy);
+		model.addAttribute("xmlResult", xmlResult);
+
+		try {
+			response.setContentType("application/force-download");
+			response.setHeader("Content-Transfer-Encoding", "binary");
+			response.setHeader("Content-Disposition", "attachment; filename=constraints.xml");
+			IOUtils.copy(new ByteArrayInputStream(xmlResult.getBytes()), response.getOutputStream());
+
+			return null;
+		} catch (Exception e) {
+			logger.error("An error occured while pushing file in response : " + e.getMessage(), e);
+		}
 
 		return VALIDATION_POLICY_TILE;
 	}
