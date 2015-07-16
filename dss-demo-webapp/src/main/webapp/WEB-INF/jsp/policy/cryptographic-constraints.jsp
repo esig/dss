@@ -3,12 +3,12 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" data-toggle="collapse" data-target="#block-${param.id}">
         <h3 class="panel-title">
             <spring:message code="label.policy.cryptographic" />
         </h3>
     </div>
-    <div class="panel-body collapse in cryptographic-block cryptographic-block-${param.pathToBind}">
+    <div class="panel-body collapse in cryptographic-block" id="block-${param.id}">
 
         <div class="form-group encryptionAlgos" >
             <label class="col-sm-5 control-label"><spring:message code="label.policy.acceptableEncryptionAlgo" /></label>

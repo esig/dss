@@ -3,12 +3,12 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" data-target="#block-${param.pathToBindPrefix}">
+    <div class="panel-heading" data-toggle="collapse" data-target="#block-${param.id}">
         <h3 class="panel-title">
             ${param.title}
         </h3>
     </div>
-    <div class="panel-body collapse in" id="block-${param.pathToBindPrefix}">
+    <div class="panel-body collapse in" id="block-${param.id}">
 
         <spring:message code="label.policy.recognition" var="translation" />
         <jsp:include page="level-constraint.jsp">
@@ -154,6 +154,7 @@
     
         <c:set var="cryptographic" value="${currentCertificate.cryptographic}" scope="request" />
         <jsp:include page="cryptographic-constraints.jsp">
+            <jsp:param name="id" value="crypto-${param.id}" />
             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.Cryptographic" />
         </jsp:include>
     </div>

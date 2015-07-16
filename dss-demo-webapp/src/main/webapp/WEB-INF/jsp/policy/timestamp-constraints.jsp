@@ -72,6 +72,7 @@
             <c:set var="currentCertificate" value="${timestamp.signingCertificate}" scope="request" />
             <spring:message code="label.policy.signingCertificate" var="translation" />
             <jsp:include page="certificate-constraints.jsp">
+                <jsp:param name="id" value="signing-cert-timestamp" />
                 <jsp:param name="title" value="${translation}" />
                 <jsp:param name="pathToBindPrefix" value="${param.pathToBindPrefix}.SigningCertificate" />
             </jsp:include> 
@@ -79,6 +80,7 @@
             <c:set var="currentCertificate" value="${timestamp.CACertificate}" scope="request" />
             <spring:message code="label.policy.caCertificate" var="translation" />
             <jsp:include page="certificate-constraints.jsp">
+                <jsp:param name="id" value="ca-cert-timestamp" />
                 <jsp:param name="title" value="${translation}" />
                 <jsp:param name="pathToBindPrefix" value="${param.pathToBindPrefix}.CACertificate" />
             </jsp:include>

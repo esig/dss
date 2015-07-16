@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <c:if test="${not empty xmlResult}">
-    <textarea rows="10" cols="25"><c:out value="${xmlResult}" /></textarea>
+    <textarea rows="10" cols="120"><c:out value="${xmlResult}" /></textarea>
 </c:if>
 
 <form:form method="post" modelAttribute="policy" cssClass="form-horizontal" id="policyForm">
@@ -97,7 +97,6 @@
         
         // bind all cryptographic-constraints
         $('#binding').empty();
-        // DigestAlgo
 
    		$('.encryptionAlgos').each(function() {
    		    var index =  0;
