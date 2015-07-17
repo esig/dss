@@ -28,23 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.x509.CertificateToken;
-
 /**
  * From a validation point of view, a Service is a set of pair ("Qualification Statement", "Condition").
  *
- *
  */
-
 public class ServiceInfo implements Serializable {
 
 	private static final long serialVersionUID = 4903410679096343832L;
-
-	private static final Logger LOG = LoggerFactory.getLogger(ServiceInfo.class);
 
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPName>
@@ -123,31 +113,8 @@ public class ServiceInfo implements Serializable {
 		conditions.add(condition);
 	}
 
-	/**
-	 * Retrieves all the qualifiers for which the corresponding conditionEntry is true.
-	 *
-	 * @param certificateToken
-	 * @return
-	 */
-	public List<String> getQualifiers(CertificateToken certificateToken) {
-
-		LOG.trace("--> GET_QUALIFIERS()");
-		List<String> list = new ArrayList<String>();
-		for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
-
-			List<Condition> conditions = conditionEntry.getValue();
-			LOG.trace("  --> " + conditions);
-			for (final Condition condition : conditions) {
-
-				if (condition.check(certificateToken)) {
-
-					LOG.trace("    --> CONDITION TRUE / " + conditionEntry.getKey());
-					list.add(conditionEntry.getKey());
-					break;
-				}
-			}
-		}
-		return list;
+	public Map<String, List<Condition>> getQualifiersAndConditions() {
+		return qualifiersAndConditions;
 	}
 
 	/**
@@ -338,14 +305,10 @@ public class ServiceInfo implements Serializable {
 			buffer.append(indent).append("ServiceName               \t= ").append(serviceName).append('\n');
 			buffer.append(indent).append("Status                    \t= ").append(status).append('\n');
 			if (statusStartDate != null) {
-
-				final String startDate = DSSUtils.formatInternal(statusStartDate);
-				buffer.append(indent).append("StatusStartDate           \t= ").append(startDate).append('\n');
+				buffer.append(indent).append("StatusStartDate           \t= ").append(statusStartDate).append('\n');
 			}
 			if (statusEndDate != null) {
-
-				final String endDate = DSSUtils.formatInternal(statusEndDate);
-				buffer.append(indent).append("StatusEndDate           \t= ").append(endDate).append('\n');
+				buffer.append(indent).append("StatusEndDate           \t= ").append(statusEndDate).append('\n');
 			}
 			for (final Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
 
@@ -364,9 +327,7 @@ public class ServiceInfo implements Serializable {
 			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
 
 			if (expiredCertsRevocationInfo != null) {
-
-				final String expiredCertsRevocationInfoDate = DSSUtils.formatInternal(expiredCertsRevocationInfo);
-				buffer.append(indent).append("ExpiredCertsRevocationInfo\t= ").append(expiredCertsRevocationInfoDate).append("\n\n");
+				buffer.append(indent).append("ExpiredCertsRevocationInfo\t= ").append(expiredCertsRevocationInfo).append("\n\n");
 			}
 			buffer.append(indent).append("TLWellSigned              \t= ").append(tlWellSigned).append('\n');
 			return buffer.toString();
@@ -394,39 +355,48 @@ public class ServiceInfo implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
+		result = (prime * result)
 				+ ((serviceName == null) ? 0 : serviceName.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((statusStartDate == null) ? 0 : statusStartDate.hashCode());
-		result = prime * result + ((tspName == null) ? 0 : tspName.hashCode());
+		result = (prime * result) + ((tspName == null) ? 0 : tspName.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		ServiceInfo other = (ServiceInfo) obj;
 		if (serviceName == null) {
-			if (other.serviceName != null)
+			if (other.serviceName != null) {
 				return false;
-		} else if (!serviceName.equals(other.serviceName))
+			}
+		} else if (!serviceName.equals(other.serviceName)) {
 			return false;
+		}
 		if (statusStartDate == null) {
-			if (other.statusStartDate != null)
+			if (other.statusStartDate != null) {
 				return false;
-		} else if (!statusStartDate.equals(other.statusStartDate))
+			}
+		} else if (!statusStartDate.equals(other.statusStartDate)) {
 			return false;
+		}
 		if (tspName == null) {
-			if (other.tspName != null)
+			if (other.tspName != null) {
 				return false;
-		} else if (!tspName.equals(other.tspName))
+			}
+		} else if (!tspName.equals(other.tspName)) {
 			return false;
+		}
 		return true;
 	}
-	
+
 }

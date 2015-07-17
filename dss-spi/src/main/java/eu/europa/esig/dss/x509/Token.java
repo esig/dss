@@ -32,6 +32,7 @@ import eu.europa.esig.dss.TokenIdentifier;
  * This is the base class for the different types of tokens (certificate, OCSP, CRL, Timestamp) used in the process of
  * signature validation.
  */
+@SuppressWarnings("serial")
 public abstract class Token implements Serializable {
 
 	/**
@@ -65,9 +66,13 @@ public abstract class Token implements Serializable {
 	 */
 	protected TokenValidationExtraInfo extraInfo;
 
+	/**
+	 * The token identifier to avoid to compute more than one time the digest value
+	 */
+	private TokenIdentifier tokenIdentifier;
+
 	@Override
 	public final boolean equals(Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
@@ -92,7 +97,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public boolean isTrusted() {
-
 		return false;
 	}
 
@@ -103,7 +107,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public boolean isSelfSigned() {
-
 		return false;
 	}
 
@@ -111,7 +114,10 @@ public abstract class Token implements Serializable {
 	 * Returns a DSS unique token identifier. Used by CertificateToken & TimestampToken.
 	 */
 	public TokenIdentifier getDSSId() {
-		return new TokenIdentifier(this);
+		if (tokenIdentifier == null) {
+			tokenIdentifier = new TokenIdentifier(this);
+		}
+		return tokenIdentifier;
 	}
 
 	/**
@@ -120,7 +126,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public X500Principal getIssuerX500Principal() {
-
 		return issuerX500Principal;
 	}
 
@@ -131,7 +136,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public CertificateToken getIssuerToken() {
-
 		return issuerToken;
 	}
 
@@ -165,7 +169,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public List<String> getValidationInfo() {
-
 		return extraInfo.getValidationInfo();
 	}
 
@@ -175,7 +178,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public String getAbbreviation() {
-
 		return "?";
 	}
 
@@ -185,7 +187,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public SignatureAlgorithm getSignatureAlgorithm() {
-
 		return algorithmUsedToSignToken;
 	}
 
@@ -196,7 +197,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public boolean isSignatureValid() {
-
 		return isTrusted() || signatureValid;
 	}
 
@@ -206,7 +206,6 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public TokenValidationExtraInfo extraInfo() {
-
 		return extraInfo;
 	}
 
@@ -220,7 +219,6 @@ public abstract class Token implements Serializable {
 
 	@Override
 	public String toString() {
-
 		return toString("");
 	}
 

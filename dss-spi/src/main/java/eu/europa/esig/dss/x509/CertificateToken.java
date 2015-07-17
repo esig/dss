@@ -43,16 +43,12 @@ import java.util.Map;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSPKUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.OID;
@@ -66,7 +62,7 @@ import eu.europa.esig.dss.tsl.ServiceInfo;
  *
  *
  */
-
+@SuppressWarnings("serial")
 public class CertificateToken extends Token {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateToken.class);
@@ -132,6 +128,10 @@ public class CertificateToken extends Token {
 	 * In the case of the XML signature this is the Id associated with the certificate if any.
 	 */
 	private String xmlId;
+
+	private List<String> policyIdentifiers = null;
+
+	private List<String> qcStatementsIdList = null;
 
 	/**
 	 * This method returns an instance of {@link eu.europa.esig.dss.x509.CertificateToken}.
@@ -483,73 +483,15 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public boolean isOCSPSigning() {
-
 		try {
-
 			List<String> keyPurposes = x509Certificate.getExtendedKeyUsage();
 			if ((keyPurposes != null) && keyPurposes.contains(OID.id_kp_OCSPSigning.getId())) {
-
 				return true;
 			}
 		} catch (CertificateParsingException e) {
-
 			LOG.warn(e.getMessage());
 		}
 		// Responder's certificate not valid for signing OCSP responses.
-		return false;
-	}
-
-	/**
-	 * Indicates if the revocation data should be checked for an OCSP signing certificate.<br>
-	 * http://www.ietf.org/rfc/rfc2560.txt?number=2560<br>
-	 * A CA may specify that an OCSP client can trust a responder for the lifetime of the responder's certificate. The CA
-	 * does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of the
-	 * extension should be NULL.
-	 *
-	 * @return
-	 */
-	public boolean hasIdPkixOcspNoCheckExtension() {
-
-		final byte[] extensionValue = x509Certificate.getExtensionValue(OID.id_pkix_ocsp_no_check.getId());
-		if (extensionValue != null) {
-
-			try {
-
-				final ASN1Primitive derObject = DSSASN1Utils.toASN1Primitive(extensionValue);
-				if (derObject instanceof DEROctetString) {
-
-					final boolean derOctetStringNull = DSSASN1Utils.isDEROctetStringNull((DEROctetString) derObject);
-					return derOctetStringNull;
-				}
-			} catch (Exception e) {
-				LOG.debug("Exception when processing 'id_pkix_ocsp_no_check'", e);
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Indicates if this certificate has an CRL extension expiredCertOnCRL.
-	 *
-	 * @return
-	 */
-	public boolean hasExpiredCertOnCRLExtension() {
-
-		final byte[] extensionValue = x509Certificate.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
-		if (extensionValue != null) {
-
-			try {
-
-				final ASN1Primitive derObject = DSSASN1Utils.toASN1Primitive(extensionValue);
-				if (derObject instanceof DEROctetString) {
-
-					final boolean derOctetStringNull = DSSASN1Utils.isDEROctetStringNull((DEROctetString) derObject);
-					return derOctetStringNull;
-				}
-			} catch (Exception e) {
-				LOG.debug("Exception when processing 'id_ce_expiredCertsOnCRL'", e);
-			}
-		}
 		return false;
 	}
 
@@ -560,7 +502,6 @@ public class CertificateToken extends Token {
 	 */
 	@Override
 	public CertificateTokenValidationExtraInfo extraInfo() {
-
 		return extraInfo;
 	}
 
@@ -616,32 +557,12 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * @return array of {@code byte}s representing the CRL distribution point of the wrapped certificate
-	 */
-	public byte[] getCRLDistributionPoints() {
-
-		final String id = Extension.cRLDistributionPoints.getId();
-		final byte[] extensionValue = x509Certificate.getExtensionValue(id);
-		return extensionValue;
-	}
-
-	/**
 	 * @return true if the wrapped certificate has cRLSign key usage bit set
 	 */
 	public boolean hasCRLSignKeyUsage() {
-
 		final boolean[] keyUsage = x509Certificate.getKeyUsage();
 		final boolean crlSignKeyUsage = (keyUsage != null) || ((keyUsage != null) && keyUsage[6]);
 		return crlSignKeyUsage;
-	}
-
-	/**
-	 * @return the size of the public key of the certificate
-	 */
-	public int getPublicKeyLength() {
-
-		final int publicKeySize = DSSPKUtils.getPublicKeySize(getPublicKey());
-		return publicKeySize;
 	}
 
 	/**
@@ -776,22 +697,17 @@ public class CertificateToken extends Token {
 		}
 	}
 
-	private List<String> policyIdentifiers = null;
-
 	public List<String> getPolicyIdentifiers() {
-
 		if (policyIdentifiers == null) {
-			policyIdentifiers = DSSUtils.getPolicyIdentifiers(x509Certificate);
+			policyIdentifiers = DSSASN1Utils.getPolicyIdentifiers(x509Certificate);
 		}
 		return policyIdentifiers;
 	}
 
-	private List<String> qcStatementsIdList = null;
-
 	public List<String> getQCStatementsIdList() {
 
 		if (qcStatementsIdList == null) {
-			qcStatementsIdList = DSSUtils.getQCStatementsIdList(x509Certificate);
+			qcStatementsIdList = DSSASN1Utils.getQCStatementsIdList(x509Certificate);
 		}
 		return qcStatementsIdList;
 	}

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class TokenValidationExtraInfo implements Serializable {
 
 	/*

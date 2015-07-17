@@ -20,13 +20,22 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.security.cert.CRLException;
+import java.security.cert.X509CRL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.CertificateList;
+import org.bouncycastle.asn1.x509.TBSCertList;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -97,7 +106,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
 		final DefaultAdvancedSignature.RevocationDataForInclusion revocationDataForInclusion = cadesSignature.getRevocationDataForInclusion(validationContext);
 		for (final CRLToken crlToken : revocationDataForInclusion.crlTokens) {
-			final X509CRLHolder x509CRLHolder = crlToken.getX509CrlHolder();
+			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
 			newCrlsStore.add(x509CRLHolder);
 		}
 		crlsStore = new CollectionStore<X509CRLHolder>(newCrlsStore);
@@ -118,6 +127,26 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 				.regenerateCMSSignedData(cmsSignedData, parameters, certificatesStore, attributeCertificatesStore, crlsStore, otherRevocationInfoFormatStoreBasic,
 						otherRevocationInfoFormatStoreOcsp);
 		return cmsSignedData;
+	}
+
+	/**
+	 * @return the a copy of x509crl as a X509CRLHolder
+	 */
+	private X509CRLHolder getX509CrlHolder(CRLToken crlToken) {
+		try {
+			final X509CRL x509crl = crlToken.getX509crl();
+			final TBSCertList tbsCertList = TBSCertList.getInstance(x509crl.getTBSCertList());
+			final AlgorithmIdentifier sigAlgOID = new AlgorithmIdentifier(new ASN1ObjectIdentifier(x509crl.getSigAlgOID()));
+			final byte[] signature = x509crl.getSignature();
+			final DERSequence seq = new DERSequence(new ASN1Encodable[] { tbsCertList, sigAlgOID, new DERBitString(signature) });
+			final CertificateList x509CRL = new CertificateList(seq);
+			// final CertificateList x509CRL = new
+			// CertificateList.getInstance((Object)seq);
+			final X509CRLHolder x509crlHolder = new X509CRLHolder(x509CRL);
+			return x509crlHolder;
+		} catch (CRLException e) {
+			throw new DSSException(e);
+		}
 	}
 
 }

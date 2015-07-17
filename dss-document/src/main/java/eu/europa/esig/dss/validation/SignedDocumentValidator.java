@@ -31,6 +31,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -880,15 +882,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlForKeyUsageBits(certToken, xmlCert);
 
 		if (certToken.isOCSPSigning()) {
-
 			xmlCert.setIdKpOCSPSigning(true);
 		}
-		if (certToken.hasIdPkixOcspNoCheckExtension()) {
-
+		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
 			xmlCert.setIdPkixOcspNoCheck(true);
 		}
-		if (certToken.hasExpiredCertOnCRLExtension()) {
-
+		if (DSSASN1Utils.hasExpiredCertOnCRLExtension(certToken)) {
 			xmlCert.setExpiredCertOnCRL(true);
 		}
 
@@ -997,7 +996,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlTSP.setExpiredCertsRevocationInfo(DSSXMLUtils.createXMLGregorianCalendar(serviceInfo.getExpiredCertsRevocationInfo()));
 
 			// Check of the associated conditions to identify the qualifiers
-			final List<String> qualifiers = serviceInfo.getQualifiers(certToken);
+			final List<String> qualifiers = getQualifiers(serviceInfo, certToken);
 			if (!qualifiers.isEmpty()) {
 
 				final XmlQualifiers xmlQualifiers = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlQualifiers();
@@ -1008,8 +1007,32 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlTSP.setQualifiers(xmlQualifiers);
 			}
 			xmlCert.getTrustedServiceProvider().add(xmlTSP);
-			//			}
 		}
+	}
+
+	/**
+	 * Retrieves all the qualifiers for which the corresponding conditionEntry is true.
+	 *
+	 * @param certificateToken
+	 * @return
+	 */
+	public List<String> getQualifiers(ServiceInfo serviceInfo, CertificateToken certificateToken) {
+
+		LOG.trace("--> GET_QUALIFIERS()");
+		List<String> list = new ArrayList<String>();
+		Map<String, List<Condition>> qualifiersAndConditions = serviceInfo.getQualifiersAndConditions();
+		for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
+			List<Condition> conditions = conditionEntry.getValue();
+			LOG.trace("  --> " + conditions);
+			for (final Condition condition : conditions) {
+				if (condition.check(certificateToken)) {
+					LOG.trace("    --> CONDITION TRUE / " + conditionEntry.getKey());
+					list.add(conditionEntry.getKey());
+					break;
+				}
+			}
+		}
+		return list;
 	}
 
 	/**
@@ -1267,7 +1290,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmString);
 		// signingCertificateValidity can be null in case of a non AdES signature.
 		final CertificateToken signingCertificateToken = certificateValidity == null ? null : certificateValidity.getCertificateToken();
-		final int keyLength = signingCertificateToken == null ? 0 : signingCertificateToken.getPublicKeyLength();
+		final int keyLength = signingCertificateToken == null ? 0 : DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
 		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
 		final DigestAlgorithm digestAlgorithm = signature.getDigestAlgorithm();
 		final String digestAlgorithmString = digestAlgorithm == null ? "?" : digestAlgorithm.getName();

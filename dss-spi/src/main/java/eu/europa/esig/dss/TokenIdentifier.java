@@ -21,8 +21,6 @@
 package eu.europa.esig.dss;
 
 import java.security.MessageDigest;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -41,11 +39,9 @@ public final class TokenIdentifier {
 		}
 		try {
 			DigestAlgorithm algo = DigestAlgorithm.SHA256;
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			MessageDigest md = MessageDigest.getInstance(algo.getName());
 			byte[] digestValue = md.digest(encodedToken);
-
-			Digest digest = new Digest(algo, digestValue);
-			this.tokenDigest = digest;
+			this.tokenDigest = new Digest(algo, digestValue);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
@@ -54,29 +50,12 @@ public final class TokenIdentifier {
 	public TokenIdentifier(final Token token) {
 		this(token.getEncoded());
 	}
-	
+
 	/**
 	 * Return an ID conformant to XML Id
 	 */
 	public String asXmlId() {
 		return Hex.encodeHexString(tokenDigest.getValue());
-	}
-
-	/**
-	 * Return the DSS certificate's unique id for a given
-	 * {@link X509Certificate}.
-	 *
-	 * @param cert
-	 * @return
-	 * @deprecated Use constructor instead
-	 */
-	@Deprecated
-	public static TokenIdentifier getId(final X509Certificate cert) {
-		try {
-			return new TokenIdentifier(cert.getEncoded());
-		} catch (CertificateEncodingException e) {
-			throw new DSSException(e);
-		}
 	}
 
 	@Override
@@ -88,25 +67,30 @@ public final class TokenIdentifier {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
+		result = (prime * result)
 				+ ((tokenDigest == null) ? 0 : tokenDigest.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		TokenIdentifier other = (TokenIdentifier) obj;
 		if (tokenDigest == null) {
-			if (other.tokenDigest != null)
+			if (other.tokenDigest != null) {
 				return false;
-		} else if (!tokenDigest.equals(other.tokenDigest))
+			}
+		} else if (!tokenDigest.equals(other.tokenDigest)) {
 			return false;
+		}
 		return true;
 	}
 

@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -47,6 +49,7 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1UTCTime;
+import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
@@ -55,9 +58,15 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
+import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.PolicyInformation;
+import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
+import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
@@ -72,6 +81,8 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Utility class that contains some ASN1 related method.
@@ -113,7 +124,7 @@ public final class DSSASN1Utils {
 	public static boolean isDEROctetStringNull(final DEROctetString derOctetString) {
 
 		final byte[] derOctetStringBytes = derOctetString.getOctets();
-		final ASN1Primitive asn1Null = DSSASN1Utils.toASN1Primitive(derOctetStringBytes);
+		final ASN1Primitive asn1Null = toASN1Primitive(derOctetStringBytes);
 		return DERNull.INSTANCE.equals(asn1Null);
 	}
 
@@ -369,7 +380,7 @@ public final class DSSASN1Utils {
 			if (encodedSignedAttributes == null) {
 				return null;
 			}
-			final ASN1Set asn1Set = DSSASN1Utils.toASN1Primitive(encodedSignedAttributes);
+			final ASN1Set asn1Set = toASN1Primitive(encodedSignedAttributes);
 			return new DERTaggedObject(false, 0, asn1Set);
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -383,7 +394,7 @@ public final class DSSASN1Utils {
 	 * fields, and the hashing algorithm shall be as specified in the field sigPolicyHash.
 	 */
 	public static byte[] getAsn1SignaturePolicyDigest(DigestAlgorithm digestAlgorithm, byte[] policyBytes) {
-		ASN1Sequence asn1Seq = DSSASN1Utils.toASN1Primitive(policyBytes);
+		ASN1Sequence asn1Seq = toASN1Primitive(policyBytes);
 
 		ASN1Sequence signPolicyHashAlgObject = (ASN1Sequence) asn1Seq.getObjectAt(0);
 		AlgorithmIdentifier signPolicyHashAlgIdentifier = AlgorithmIdentifier.getInstance(signPolicyHashAlgObject);
@@ -501,6 +512,113 @@ public final class DSSASN1Utils {
 		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
 		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
 		return algorithmIdentifier;
+	}
+
+	/**
+	 * Indicates if the revocation data should be checked for an OCSP signing certificate.<br>
+	 * http://www.ietf.org/rfc/rfc2560.txt?number=2560<br>
+	 * A CA may specify that an OCSP client can trust a responder for the lifetime of the responder's certificate. The CA
+	 * does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of the
+	 * extension should be NULL.
+	 *
+	 * @return
+	 */
+	public static boolean hasIdPkixOcspNoCheckExtension(CertificateToken token) {
+		final byte[] extensionValue = token.getCertificate().getExtensionValue(OID.id_pkix_ocsp_no_check.getId());
+		if (extensionValue != null) {
+			try {
+				final ASN1Primitive derObject = toASN1Primitive(extensionValue);
+				if (derObject instanceof DEROctetString) {
+					return isDEROctetStringNull((DEROctetString) derObject);
+				}
+			} catch (Exception e) {
+				LOG.debug("Exception when processing 'id_pkix_ocsp_no_check'", e);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Indicates if this certificate has an CRL extension expiredCertOnCRL.
+	 *
+	 * @return
+	 */
+	public static boolean hasExpiredCertOnCRLExtension(CertificateToken token) {
+		final byte[] extensionValue = token.getCertificate().getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
+		if (extensionValue != null) {
+			try {
+				final ASN1Primitive derObject = toASN1Primitive(extensionValue);
+				if (derObject instanceof DEROctetString) {
+					return isDEROctetStringNull((DEROctetString) derObject);
+				}
+			} catch (Exception e) {
+				LOG.debug("Exception when processing 'id_ce_expiredCertsOnCRL'", e);
+			}
+		}
+		return false;
+	}
+
+	public static List<String> getPolicyIdentifiers(final X509Certificate cert) {
+		final byte[] certificatePolicies = cert.getExtensionValue(Extension.certificatePolicies.getId());
+		if (certificatePolicies == null) {
+			return Collections.emptyList();
+		}
+		ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePolicies);
+		final List<String> policyIdentifiers = new ArrayList<String>();
+		for (int ii = 0; ii < seq.size(); ii++) {
+			final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
+			policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
+
+		}
+		return policyIdentifiers;
+	}
+
+	/**
+	 * @param x509Certificate
+	 * @return
+	 */
+	public static List<String> getQCStatementsIdList(final X509Certificate x509Certificate) {
+		final List<String> extensionIdList = new ArrayList<String>();
+		final byte[] qcStatement = x509Certificate.getExtensionValue(Extension.qCStatements.getId());
+		if (qcStatement != null) {
+			final ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatement);
+			// Sequence of QCStatement
+			for (int ii = 0; ii < seq.size(); ii++) {
+				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
+				extensionIdList.add(statement.getStatementId().getId());
+			}
+		}
+		return extensionIdList;
+	}
+
+	public static List<String> getAccessLocations(final CertificateToken certificate) {
+		final byte[] authInfoAccessExtensionValue = certificate.getCertificate().getExtensionValue(Extension.authorityInfoAccess.getId());
+		if (null == authInfoAccessExtensionValue) {
+			return null;
+		}
+
+		// Parse the extension
+		ASN1Sequence asn1Sequence = null;
+		try {
+			asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(authInfoAccessExtensionValue);
+		} catch (DSSException e) {
+			return null;
+		}
+
+		AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1Sequence);
+		AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
+
+		List<String> locationsUrls = new ArrayList<String>();
+		for (AccessDescription accessDescription : accessDescriptions) {
+			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())){
+				GeneralName gn = accessDescription.getAccessLocation();
+				if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
+					DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
+					locationsUrls.add(str.getString());
+				}
+			}
+		}
+		return locationsUrls;
 	}
 
 }

@@ -8,10 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509CRL;
-import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,24 +23,6 @@ public class DSSUtilsTest {
 	public static void init() {
 		certificateWithAIA = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
 		assertNotNull(certificateWithAIA);
-	}
-
-	@Test
-	public void getPolicies() {
-		List<String> policyIdentifiers = DSSUtils.getPolicyIdentifiers(certificateWithAIA.getCertificate());
-		assertTrue(CollectionUtils.isNotEmpty(policyIdentifiers));
-		assertTrue(policyIdentifiers.contains("1.3.171.1.1.10.8.1"));
-	}
-
-	@Test
-	public void getQCStatementsIdList() {
-		List<String> qcStatementsIdList = DSSUtils.getQCStatementsIdList(certificateWithAIA.getCertificate());
-		assertTrue(CollectionUtils.isEmpty(qcStatementsIdList));
-
-		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
-		qcStatementsIdList = DSSUtils.getQCStatementsIdList(certificate.getCertificate());
-		assertTrue(CollectionUtils.isNotEmpty(qcStatementsIdList));
-		assertTrue(qcStatementsIdList.contains(ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.getId()));
 	}
 
 	@Test

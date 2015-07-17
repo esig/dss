@@ -53,7 +53,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,21 +80,14 @@ import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERT61String;
 import org.bouncycastle.asn1.DERT61UTF8String;
-import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.AccessDescription;
-import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.Certificate;
-import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.bouncycastle.asn1.x509.PolicyInformation;
-import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
-import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
@@ -465,7 +457,7 @@ public final class DSSUtils {
 	 */
 	public static CertificateToken loadIssuerCertificate(final CertificateToken cert, final DataLoader loader) {
 
-		List<String> urls = getAccessLocations(cert);
+		List<String> urls = DSSASN1Utils.getAccessLocations(cert);
 		if (CollectionUtils.isEmpty(urls)) {
 			logger.info("There is no AIA extension for certificate download.");
 			return null;
@@ -521,36 +513,6 @@ public final class DSSUtils {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
-	}
-
-	private static List<String> getAccessLocations(final CertificateToken certificate) {
-		final byte[] authInfoAccessExtensionValue = certificate.getCertificate().getExtensionValue(Extension.authorityInfoAccess.getId());
-		if (null == authInfoAccessExtensionValue) {
-			return null;
-		}
-
-		// Parse the extension
-		ASN1Sequence asn1Sequence = null;
-		try {
-			asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(authInfoAccessExtensionValue);
-		} catch (DSSException e) {
-			return null;
-		}
-
-		AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1Sequence);
-		AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
-
-		List<String> locationsUrls = new ArrayList<String>();
-		for (AccessDescription accessDescription : accessDescriptions) {
-			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())){
-				GeneralName gn = accessDescription.getAccessLocation();
-				if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
-					DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
-					locationsUrls.add(str.getString());
-				}
-			}
-		}
-		return locationsUrls;
 	}
 
 	/**
@@ -609,24 +571,6 @@ public final class DSSUtils {
 		final OCSPResp ocspResp = new OCSPResp(derEncoded);
 		final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 		return basicOCSPResp;
-	}
-
-	public static List<String> getPolicyIdentifiers(final X509Certificate cert) {
-		final byte[] certificatePolicies = cert.getExtensionValue(Extension.certificatePolicies.getId());
-		if (certificatePolicies == null) {
-
-			return Collections.emptyList();
-		}
-		ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(certificatePolicies);
-		final List<String> policyIdentifiers = new ArrayList<String>();
-		for (int ii = 0; ii < seq.size(); ii++) {
-
-			final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
-			// System.out.println("\t----> PolicyIdentifier: " + policyInfo.getPolicyIdentifier().getId());
-			policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
-
-		}
-		return policyIdentifiers;
 	}
 
 	/**
@@ -1621,27 +1565,6 @@ public final class DSSUtils {
 				destination.close();
 			}
 		}
-	}
-
-	/**
-	 * @param x509Certificate
-	 * @return
-	 */
-	public static List<String> getQCStatementsIdList(final X509Certificate x509Certificate) {
-
-		final List<String> extensionIdList = new ArrayList<String>();
-		final byte[] qcStatement = x509Certificate.getExtensionValue(Extension.qCStatements.getId());
-		if (qcStatement != null) {
-
-			final ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatement);
-			// Sequence of QCStatement
-			for (int ii = 0; ii < seq.size(); ii++) {
-
-				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
-				extensionIdList.add(statement.getStatementId().getId());
-			}
-		}
-		return extensionIdList;
 	}
 
 	/**
