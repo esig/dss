@@ -172,12 +172,12 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 		final CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(toCounterSignDocument, xadesSignature, parameters,
 				certificateVerifier);
-		final byte[] dataToSign = counterSignatureBuilder.build();
+		ToBeSigned toBeSigned = new ToBeSigned(counterSignatureBuilder.build());
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		byte[] counterSignatureValue = signingToken.sign(dataToSign, digestAlgorithm, dssPrivateKeyEntry);
+		SignatureValue counterSignatureValue = signingToken.sign(toBeSigned, digestAlgorithm, dssPrivateKeyEntry);
 
-		final DSSDocument counterSignedDocument = counterSignatureBuilder.signDocument(counterSignatureValue);
+		final DSSDocument counterSignedDocument = counterSignatureBuilder.signDocument(counterSignatureValue.getValue());
 		// final XMLDocumentValidator xmlDocumentValidator = (XMLDocumentValidator) validator;
 		// final Document rootElement = xmlDocumentValidator.getRootElement();
 		// final byte[] bytes = DSSXMLUtils.transformDomToByteArray(rootElement);

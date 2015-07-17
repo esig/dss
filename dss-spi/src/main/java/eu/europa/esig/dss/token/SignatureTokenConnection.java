@@ -47,16 +47,6 @@ public interface SignatureTokenConnection {
 	List<DSSPrivateKeyEntry> getKeys() throws DSSException;
 
 	/**
-	 * @param bytes           The array of bytes that need to be signed
-	 * @param digestAlgorithm The digest algorithm to be used before signing
-	 * @param keyEntry        The private key to be used
-	 * @return The array of bytes representing the signature value
-	 * @throws DSSException If there is any problem during the signature process
-	 */
-	@Deprecated
-	byte[] sign(final byte[] bytes, final DigestAlgorithm digestAlgorithm, final DSSPrivateKeyEntry keyEntry) throws DSSException;
-
-	/**
 	 * @param toBeSigned      The data that need to be signed
 	 * @param digestAlgorithm The digest algorithm to be used before signing
 	 * @param keyEntry        The private key to be used

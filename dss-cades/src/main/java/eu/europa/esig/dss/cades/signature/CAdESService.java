@@ -165,8 +165,8 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 			// Generate a signed digest on the contents octets of the signature octet String in the identified SignerInfo value
 			// of the original signature's SignedData
-			byte[] dataToSign = signerInformation.getSignature();
-			byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), privateKeyEntry);
+			ToBeSigned toBeSigned = new ToBeSigned( signerInformation.getSignature());
+			SignatureValue signatureValue = token.sign(toBeSigned, parameters.getDigestAlgorithm(), privateKeyEntry);
 
 			// Set the countersignature builder
 			CounterSignatureBuilder builder = new CounterSignatureBuilder(certificateVerifier);
@@ -174,7 +174,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			builder.setSelector(selector);
 
 			final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
-			final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue);
+			final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
 			SignerInfoGeneratorBuilder signerInformationGeneratorBuilder = builder.getSignerInfoGeneratorBuilder(parameters, true);
 			CMSSignedDataGenerator cmsSignedDataGenerator = builder.createCMSSignedDataGenerator(parameters, customContentSigner,

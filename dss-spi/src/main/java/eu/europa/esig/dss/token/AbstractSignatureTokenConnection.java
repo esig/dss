@@ -40,15 +40,6 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	protected static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
 
 	@Override
-	@Deprecated
-	public byte[] sign(final byte[] bytes, final DigestAlgorithm digestAlgorithm, final DSSPrivateKeyEntry keyEntry) throws DSSException {
-
-		ToBeSigned tbs = new ToBeSigned();
-		tbs.setBytes(bytes);
-		return sign(tbs, digestAlgorithm, keyEntry).getValue();
-	}
-
-	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
 
 		if(!(keyEntry instanceof KSPrivateKeyEntry)) {
