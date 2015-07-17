@@ -61,6 +61,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -369,7 +370,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Sequence unsignedAttributesHashes = getUnsignedAttributesHashIndex(timestampToken);
 		final ArrayList<DEROctetString> timestampUnsignedAttributesHashesList = Collections.list(unsignedAttributesHashes.getObjects());
 
-		AttributeTable unsignedAttributes = DSSASN1Utils.getUnsignedAttributes(signerInformation);
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
 		for (int i = 0; i < asn1EncodableVector.size(); i++) {
 			final Attribute attribute = (Attribute) asn1EncodableVector.get(i);
@@ -544,7 +545,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Integer version = signerInfo.getVersion();
 		final SignerIdentifier sid = signerInfo.getSID();
 		final AlgorithmIdentifier digestAlgorithm = signerInfo.getDigestAlgorithm();
-		final DERTaggedObject signedAttributes = DSSASN1Utils.getDERSignedAttributes(signerInformation);
+		final DERTaggedObject signedAttributes = CMSUtils.getDERSignedAttributes(signerInformation);
 		final AlgorithmIdentifier digestEncryptionAlgorithm = signerInfo.getDigestEncryptionAlgorithm();
 		final ASN1OctetString encryptedDigest = signerInfo.getEncryptedDigest();
 

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.CertificateParsingException;
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,7 +48,6 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERIA5String;
@@ -64,8 +61,6 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
-import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -84,12 +79,7 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.CMSTypedData;
-import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
@@ -181,43 +171,6 @@ public final class DSSASN1Utils {
 		return new String(value.getOctets());
 	}
 
-	/**
-	 * Returns the ASN.1 encoded representation of {@code CMSSignedData}.
-	 *
-	 * @param data
-	 * @return
-	 * @throws DSSException
-	 */
-	public static byte[] getEncoded(final CMSSignedData data) throws DSSException {
-		try {
-			return data.getEncoded();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * This method generate {@code CMSSignedData} using the provided #{@code CMSSignedDataGenerator}, the content and the indication if the content should be encapsulated.
-	 *
-	 * @param generator
-	 * @param content
-	 * @param encapsulate
-	 * @return
-	 * @throws DSSException
-	 */
-	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content,
-			final boolean encapsulate) throws DSSException {
-		try {
-			final CMSSignedData cmsSignedData = generator.generate(content, encapsulate);
-			return cmsSignedData;
-		} catch (CMSException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content) throws DSSException {
-		return generateCMSSignedData(generator, content, false);
-	}
 
 	/**
 	 * Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
@@ -230,23 +183,6 @@ public final class DSSASN1Utils {
 			final byte[] encoded = timeStampToken.getEncoded();
 			return encoded;
 		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * This method generates a bouncycastle {@code TimeStampToken} based on base 64 encoded {@code String}.
-	 *
-	 * @param base64EncodedTimestamp
-	 * @return bouncycastle {@code TimeStampToken}
-	 * @throws DSSException
-	 */
-	public static TimeStampToken createTimeStampToken(final String base64EncodedTimestamp) throws DSSException {
-		try {
-			final byte[] tokenBytes = Base64.decodeBase64(base64EncodedTimestamp);
-			final CMSSignedData signedData = new CMSSignedData(tokenBytes);
-			return new TimeStampToken(signedData);
-		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -333,24 +269,6 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * @param signerInformation {@code SignerInformation}
-	 * @return {@code DERTaggedObject} representing the signed attributes
-	 * @throws DSSException in case of a decoding problem
-	 */
-	public static DERTaggedObject getDERSignedAttributes(final SignerInformation signerInformation) throws DSSException {
-		try {
-			final byte[] encodedSignedAttributes = signerInformation.getEncodedSignedAttributes();
-			if (encodedSignedAttributes == null) {
-				return null;
-			}
-			final ASN1Set asn1Set = toASN1Primitive(encodedSignedAttributes);
-			return new DERTaggedObject(false, 0, asn1Set);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * This method computes the digest of an ANS1 signature policy (used in CAdES)
 	 *
 	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value without the outer type and length
@@ -401,50 +319,19 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method returns the signed content extracted from a CMSTypedData
-	 * @param cmsTypedData
-	 *            {@code CMSTypedData} cannot be null
-	 * @return the signed content extracted from {@code CMSTypedData}
+	 * This method generates a bouncycastle {@code TimeStampToken} based on base 64 encoded {@code String}.
+	 *
+	 * @param base64EncodedTimestamp
+	 * @return bouncycastle {@code TimeStampToken}
+	 * @throws DSSException
 	 */
-	public static byte[] getSignedContent(final CMSTypedData cmsTypedData) {
+	public static TimeStampToken createTimeStampToken(final String base64EncodedTimestamp) throws DSSException {
 		try {
-			final ByteArrayOutputStream originalDocumentData = new ByteArrayOutputStream();
-			cmsTypedData.write(originalDocumentData);
-			return originalDocumentData.toByteArray();
+			final byte[] tokenBytes = Base64.decodeBase64(base64EncodedTimestamp);
+			final CMSSignedData signedData = new CMSSignedData(tokenBytes);
+			return new TimeStampToken(signedData);
 		} catch (Exception e) {
 			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * This method returns the existing unsigned attributes or a new empty attributes hashtable
-	 *
-	 * @param signerInformation
-	 *            the signer information
-	 * @return the existing unsigned attributes or an empty attributes hashtable
-	 */
-	public static AttributeTable getUnsignedAttributes(final SignerInformation signerInformation) {
-		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
-		if (unsignedAttributes == null) {
-			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
-		} else {
-			return unsignedAttributes;
-		}
-	}
-
-	/**
-	 * This method returns the existing signed attributes or a new empty attributes hashtable
-	 *
-	 * @param signerInformation
-	 *            the signer information
-	 * @return the existing signed attributes or an empty attributes {@code Hashtable}
-	 */
-	public static AttributeTable getSignedAttributes(final SignerInformation signerInformation) {
-		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
-		if (signedAttributes == null) {
-			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
-		} else {
-			return signedAttributes;
 		}
 	}
 

@@ -32,7 +32,6 @@ import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -41,6 +40,7 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -105,7 +105,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
 
-		DSSASN1Utils.generateDetachedCMSSignedData(generator, content);
+		CMSUtils.generateDetachedCMSSignedData(generator, content);
 
 		final byte[] dataToSign = customContentSigner.getOutputStream().toByteArray();
 		return new ToBeSigned(dataToSign);
@@ -129,7 +129,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, null);
 
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
-		CMSSignedData data = DSSASN1Utils.generateDetachedCMSSignedData(generator, content);
+		CMSSignedData data = CMSUtils.generateDetachedCMSSignedData(generator, content);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		if (signatureLevel != SignatureLevel.PAdES_BASELINE_B) {
@@ -139,7 +139,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		}
 
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		final byte[] encodedData = DSSASN1Utils.getEncoded(data);
+		final byte[] encodedData = CMSUtils.getEncoded(data);
 		inputStream = toSignDocument.openStream();
 		pdfSignatureService.sign(inputStream, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
 		IOUtils.closeQuietly(inputStream);

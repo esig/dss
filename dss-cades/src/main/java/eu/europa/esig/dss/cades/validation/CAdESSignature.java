@@ -132,6 +132,7 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
@@ -382,7 +383,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final BigInteger signingTokenSerialNumber = signingTokenIssuerSerial.getSerial().getValue();
 		final GeneralNames signingTokenIssuerName = signingTokenIssuerSerial.getIssuer();
 
-		final AttributeTable signedAttributes = DSSASN1Utils.getSignedAttributes(signerInformation);
+		final AttributeTable signedAttributes = CMSUtils.getSignedAttributes(signerInformation);
 		final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
 		if (signingCertificateAttributeV1 != null) {
 
@@ -1034,7 +1035,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (signingCertificateTimestampReferences == null) {
 
 			signingCertificateTimestampReferences = new ArrayList<TimestampReference>();
-			final AttributeTable signedAttributes = DSSASN1Utils.getSignedAttributes(signerInformation);
+			final AttributeTable signedAttributes = CMSUtils.getSignedAttributes(signerInformation);
 			final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
 			if (signingCertificateAttributeV1 != null) {
 
@@ -1547,7 +1548,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private byte[] getOriginalDocumentBytes() throws DSSException {
 		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		if (signedContent != null) {
-			return DSSASN1Utils.getSignedContent(signedContent);
+			return CMSUtils.getSignedContent(signedContent);
 		} else {
 			if (CollectionUtils.isNotEmpty(detachedContents)) {
 				return detachedContents.get(0).getBytes();
@@ -1686,7 +1687,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		v.add(signerInfo.getSID());
 		v.add(signerInfo.getDigestAlgorithm());
 
-		final DERTaggedObject signedAttributes = DSSASN1Utils.getDERSignedAttributes(signerInformation);
+		final DERTaggedObject signedAttributes = CMSUtils.getDERSignedAttributes(signerInformation);
 		if (signedAttributes != null) {
 			v.add(signedAttributes);
 		}
@@ -1706,7 +1707,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * timestampToken
 	 */
 	private ASN1Sequence filterUnauthenticatedAttributes(ASN1Set unauthenticatedAttributes, TimestampToken timestampToken) {
-
 		ASN1EncodableVector result = new ASN1EncodableVector();
 		for (int ii = 0; ii < unauthenticatedAttributes.size(); ii++) {
 
@@ -1787,8 +1787,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel) {
-		final AttributeTable unsignedAttributes = DSSASN1Utils.getUnsignedAttributes(signerInformation);
-		final AttributeTable signedAttributes = DSSASN1Utils.getSignedAttributes(signerInformation);
+		final AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		final AttributeTable signedAttributes = CMSUtils.getSignedAttributes(signerInformation);
 		boolean dataForProfilePresent = true;
 		switch (signatureLevel) {
 			case CAdES_BASELINE_LTA:
