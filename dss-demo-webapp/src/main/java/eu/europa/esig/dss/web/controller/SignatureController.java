@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -49,10 +50,14 @@ import eu.europa.esig.dss.web.model.SignatureDocumentForm;
  *
  */
 @Controller
+@SessionAttributes(value = {
+		"signatureDocumentForm"
+})
 @RequestMapping(value = "/signature")
 public class SignatureController {
 
 	private static final String SIGNATURE_PARAMETERS = "signature-parameters";
+	private static final String SELECT_CERTIFICATE = "select-certificate";
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -79,7 +84,7 @@ public class SignatureController {
 			return SIGNATURE_PARAMETERS;
 		}
 
-		return null;
+		return SELECT_CERTIFICATE;
 	}
 
 
