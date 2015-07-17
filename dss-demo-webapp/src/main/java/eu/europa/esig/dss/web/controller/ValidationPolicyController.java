@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.tsl.KeyUsageCondition.KeyUsageBit;
+import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.validation.ValidationResourceManager;
 import eu.europa.esig.dss.web.service.PolicyJaxbService;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;

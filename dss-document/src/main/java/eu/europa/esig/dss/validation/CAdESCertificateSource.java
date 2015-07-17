@@ -38,8 +38,8 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
@@ -149,7 +149,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 		try {
 			final Collection<X509CertificateHolder> x509CertificateHolders = cmsSignedData.getCertificates().getMatches(null);
 			for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
-				final CertificateToken x509Certificate = DSSUtils.getCertificate(x509CertificateHolder);
+				final CertificateToken x509Certificate = DSSASN1Utils.getCertificate(x509CertificateHolder);
 				final CertificateToken certificateToken = addCertificate(x509Certificate);
 				if (!essCertIDCerts.contains(certificateToken)) {
 					essCertIDCerts.add(certificateToken);

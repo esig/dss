@@ -45,6 +45,7 @@ import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.util.Arrays;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
+import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
@@ -82,14 +83,11 @@ public final class DSSRevocationUtils {
 	 * @return
 	 */
 	public static final OCSPResp fromBasicToResp(final BasicOCSPResp basicOCSPResp) {
-
 		try {
-
 			final byte[] encoded = basicOCSPResp.getEncoded();
 			final OCSPResp ocspResp = fromBasicToResp(encoded);
 			return ocspResp;
 		} catch (IOException e) {
-
 			throw new DSSException(e);
 		}
 	}
@@ -102,7 +100,6 @@ public final class DSSRevocationUtils {
 	 * @return
 	 */
 	public static final OCSPResp fromBasicToResp(final byte[] basicOCSPResp) {
-
 		final OCSPResponseStatus responseStatus = new OCSPResponseStatus(OCSPResponseStatus.SUCCESSFUL);
 		final DEROctetString derBasicOCSPResp = new DEROctetString(basicOCSPResp);
 		final ResponseBytes responseBytes = new ResponseBytes(OCSPObjectIdentifiers.id_pkix_ocsp_basic, derBasicOCSPResp);
@@ -124,9 +121,7 @@ public final class DSSRevocationUtils {
 	 * @return true if revocation token is present in one of the lists
 	 */
 	public static boolean isTokenIn(final RevocationToken revocationToken, final List<BasicOCSPResp> basicOCSPResponses) {
-
-		if (revocationToken instanceof OCSPToken && basicOCSPResponses != null) {
-
+		if ((revocationToken instanceof OCSPToken) && (basicOCSPResponses != null)) {
 			final BasicOCSPResp basicOCSPResp = ((OCSPToken) revocationToken).getBasicOCSPResp();
 			final boolean contains = basicOCSPResponses.contains(basicOCSPResp);
 			return contains;
@@ -199,12 +194,10 @@ public final class DSSRevocationUtils {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	public static CertificateID getOCSPCertificateID(final X509Certificate cert, final X509Certificate issuerCert) throws DSSException {
-
 		try {
-
 			final BigInteger serialNumber = cert.getSerialNumber();
 			final DigestCalculator digestCalculator = DSSUtils.getSHA1DigestCalculator();
-			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(issuerCert);
+			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(new CertificateToken(issuerCert));
 			final CertificateID certificateID = new CertificateID(digestCalculator, x509CertificateHolder, serialNumber);
 			return certificateID;
 		} catch (OCSPException e) {

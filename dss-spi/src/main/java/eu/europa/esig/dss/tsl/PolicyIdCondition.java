@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.List;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -35,7 +36,7 @@ public class PolicyIdCondition extends Condition {
 	/**
 	 * PolicyOid to be checked if present in the certificate's policies
 	 */
-	final private String policyOid;
+	private final String policyOid;
 
 	/**
 	 * The default constructor for PolicyIdCondition.
@@ -43,7 +44,6 @@ public class PolicyIdCondition extends Condition {
 	 * @param policyId
 	 */
 	public PolicyIdCondition(final String policyId) {
-
 		if (policyId == null) {
 			throw new NullPointerException("policyId");
 		}
@@ -54,7 +54,6 @@ public class PolicyIdCondition extends Condition {
 	 * @return the policyOid
 	 */
 	public String getPolicyOid() {
-
 		return policyOid;
 	}
 
@@ -66,7 +65,6 @@ public class PolicyIdCondition extends Condition {
 	 */
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
-
 		if (certificateToken == null) {
 			throw new NullPointerException();
 		}
@@ -74,7 +72,7 @@ public class PolicyIdCondition extends Condition {
 		 * Certificate policies identifier: 2.5.29.32 (IETF RFC 3280)<br>
 		 * Gets all certificate's policies
 		 */
-		List<String> contextPolicyIdentifiers = certificateToken.getPolicyIdentifiers();
+		List<String> contextPolicyIdentifiers = DSSASN1Utils.getPolicyIdentifiers(certificateToken);
 		return contextPolicyIdentifiers.contains(policyOid);
 	}
 

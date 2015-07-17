@@ -93,6 +93,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamps;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
 import eu.europa.esig.dss.tsl.Condition;
+import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.QcStatementCondition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
@@ -173,9 +174,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private final Condition qcpPlus = new PolicyIdCondition(OID.id_etsi_qcp_public_with_sscd.getId());
 
-	private final Condition qcCompliance = new QcStatementCondition(ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance);
+	private final Condition qcCompliance = new QcStatementCondition(ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId());
 
-	private final Condition qcsscd = new QcStatementCondition(ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD);
+	private final Condition qcsscd = new QcStatementCondition(ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId());
 
 	// Single policy document to use with all signatures.
 	private File policyDocument;
@@ -881,7 +882,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		xmlForKeyUsageBits(certToken, xmlCert);
 
-		if (certToken.isOCSPSigning()) {
+		if (DSSASN1Utils.isOCSPSigning(certToken)) {
 			xmlCert.setIdKpOCSPSigning(true);
 		}
 		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
@@ -919,15 +920,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	private void xmlForKeyUsageBits(CertificateToken certToken, XmlCertificate xmlCert) {
-
-		final List<String> keyUsageBits = certToken.getKeyUsageBits();
+		final List<KeyUsageBit> keyUsageBits = certToken.getKeyUsageBits();
 		if (CollectionUtils.isEmpty(keyUsageBits)) {
 			return;
 		}
 		final XmlKeyUsageBits xmlKeyUsageBits = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlKeyUsageBits();
 		final List<String> xmlKeyUsageBitItems = xmlKeyUsageBits.getKeyUsage();
-		for (final String keyUsageBit : keyUsageBits) {
-			xmlKeyUsageBitItems.add(keyUsageBit);
+		for (final KeyUsageBit keyUsageBit : keyUsageBits) {
+			xmlKeyUsageBitItems.add(keyUsageBit.name());
 		}
 		xmlCert.setKeyUsageBits(xmlKeyUsageBits);
 	}

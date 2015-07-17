@@ -360,7 +360,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 			candidatesForSigningCertificate.add(certificateValidity);
 
-			final X509CertificateHolder x509CertificateHolder = certificateToken.getX509CertificateHolder();
+			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
 			final boolean match = signerId.match(x509CertificateHolder);
 			if (match) {
 
@@ -378,7 +378,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	private boolean verifySignedReferencesToSigningCertificate() {
 
-		final IssuerSerial signingTokenIssuerSerial = DSSUtils.getIssuerSerial(signingCertificateValidity.getCertificateToken());
+		final IssuerSerial signingTokenIssuerSerial = DSSASN1Utils.getIssuerSerial(signingCertificateValidity.getCertificateToken());
 		final BigInteger signingTokenSerialNumber = signingTokenIssuerSerial.getSerial().getValue();
 		final GeneralNames signingTokenIssuerName = signingTokenIssuerSerial.getIssuer();
 

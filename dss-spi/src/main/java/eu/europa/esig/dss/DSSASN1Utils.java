@@ -22,20 +22,23 @@ package eu.europa.esig.dss;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.cert.CertificateParsingException;
-import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
+import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -49,21 +52,31 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1UTCTime;
+import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.DERT61String;
+import org.bouncycastle.asn1.DERT61UTF8String;
 import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.DERUTF8String;
+import org.bouncycastle.asn1.DLSequence;
+import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.PolicyInformation;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
@@ -96,7 +109,6 @@ public final class DSSASN1Utils {
 	 * This class is an utility class and cannot be instantiated.
 	 */
 	private DSSASN1Utils() {
-
 	}
 
 	/**
@@ -106,7 +118,6 @@ public final class DSSASN1Utils {
 	 * @return new {@code T extends ASN1Primitive}
 	 */
 	public static <T extends ASN1Primitive> T toASN1Primitive(final byte[] bytes) throws DSSException {
-
 		try {
 			@SuppressWarnings("unchecked") final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
 			return asn1Primitive;
@@ -122,7 +133,6 @@ public final class DSSASN1Utils {
 	 * @return
 	 */
 	public static boolean isDEROctetStringNull(final DEROctetString derOctetString) {
-
 		final byte[] derOctetStringBytes = derOctetString.getOctets();
 		final ASN1Primitive asn1Null = toASN1Primitive(derOctetStringBytes);
 		return DERNull.INSTANCE.equals(asn1Null);
@@ -151,44 +161,6 @@ public final class DSSASN1Utils {
 		}
 	}
 
-	/**
-	 * This method return {@code X509Certificate} representing {@code X509CertificateHolder}. The {@code CertificateParsingException} is transformed in {@code
-	 * DSSException}.
-	 *
-	 * @param certificateHolder {@code X509CertificateHolder}
-	 * @return {@code X509Certificate}.
-	 * @throws DSSException
-	 */
-	public static X509Certificate getCertificate(final X509CertificateHolder certificateHolder) throws DSSException {
-
-		try {
-
-			final X509Certificate certificate = new X509CertificateObject(certificateHolder.toASN1Structure());
-			return certificate;
-		} catch (CertificateParsingException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * This method returns DER encoded array of bytes representing {@code X509Certificate} for given {@code X509CertificateHolder}. The {@code
-	 * IOException} is transformed in {@code DSSException}.
-	 *
-	 * @param certificateHolder {@code X509CertificateHolder}
-	 * @return DER encoded array of bytes representing {@code X509Certificate}.
-	 * @throws DSSException
-	 */
-	public static byte[] getCertificateDEREncoded(final X509CertificateHolder certificateHolder) throws DSSException {
-
-		try {
-
-			final byte[] bytes = certificateHolder.getEncoded();
-			return bytes;
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
 	public static Date toDate(final ASN1UTCTime asn1Date) throws DSSException {
 		try {
 			return asn1Date.getDate();
@@ -206,7 +178,6 @@ public final class DSSASN1Utils {
 	}
 
 	public static String toString(final ASN1OctetString value) {
-
 		return new String(value.getOctets());
 	}
 
@@ -218,7 +189,6 @@ public final class DSSASN1Utils {
 	 * @throws DSSException
 	 */
 	public static byte[] getEncoded(final CMSSignedData data) throws DSSException {
-
 		try {
 			return data.getEncoded();
 		} catch (IOException e) {
@@ -237,7 +207,6 @@ public final class DSSASN1Utils {
 	 */
 	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content,
 			final boolean encapsulate) throws DSSException {
-
 		try {
 			final CMSSignedData cmsSignedData = generator.generate(content, encapsulate);
 			return cmsSignedData;
@@ -257,7 +226,6 @@ public final class DSSASN1Utils {
 	 * @return Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
 	 */
 	public static byte[] getEncoded(final TimeStampToken timeStampToken) throws DSSException {
-
 		try {
 			final byte[] encoded = timeStampToken.getEncoded();
 			return encoded;
@@ -290,7 +258,6 @@ public final class DSSASN1Utils {
 	 * @return {@code BasicOCSPResp}
 	 */
 	public static BasicOCSPResp getBasicOcspResp(final DERSequence otherRevocationInfoMatch) {
-
 		BasicOCSPResp basicOCSPResp = null;
 		try {
 			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(otherRevocationInfoMatch);
@@ -308,7 +275,6 @@ public final class DSSASN1Utils {
 	 * @return {@code OCSPResp}
 	 */
 	public static OCSPResp getOcspResp(final DERSequence otherRevocationInfoMatch) {
-
 		OCSPResp ocspResp = null;
 		try {
 			final OCSPResponse ocspResponse = OCSPResponse.getInstance(otherRevocationInfoMatch);
@@ -326,7 +292,6 @@ public final class DSSASN1Utils {
 	 * @return
 	 */
 	public static BasicOCSPResp getBasicOCSPResp(final OCSPResp ocspResp) {
-
 		BasicOCSPResp basicOCSPResp = null;
 		try {
 			final Object responseObject = ocspResp.getResponseObject();
@@ -350,7 +315,6 @@ public final class DSSASN1Utils {
 	 * @throws DSSException in case of a decoding problem
 	 */
 	public static ASN1Sequence getAsn1SequenceFromDerOctetString(byte[] bytes) throws DSSException {
-
 		ASN1InputStream input = null;
 		try {
 
@@ -374,7 +338,6 @@ public final class DSSASN1Utils {
 	 * @throws DSSException in case of a decoding problem
 	 */
 	public static DERTaggedObject getDERSignedAttributes(final SignerInformation signerInformation) throws DSSException {
-
 		try {
 			final byte[] encodedSignedAttributes = signerInformation.getEncodedSignedAttributes();
 			if (encodedSignedAttributes == null) {
@@ -558,8 +521,8 @@ public final class DSSASN1Utils {
 		return false;
 	}
 
-	public static List<String> getPolicyIdentifiers(final X509Certificate cert) {
-		final byte[] certificatePolicies = cert.getExtensionValue(Extension.certificatePolicies.getId());
+	public static List<String> getPolicyIdentifiers(final CertificateToken certToken) {
+		final byte[] certificatePolicies = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
 		if (certificatePolicies == null) {
 			return Collections.emptyList();
 		}
@@ -577,9 +540,9 @@ public final class DSSASN1Utils {
 	 * @param x509Certificate
 	 * @return
 	 */
-	public static List<String> getQCStatementsIdList(final X509Certificate x509Certificate) {
+	public static List<String> getQCStatementsIdList(final CertificateToken certToken) {
 		final List<String> extensionIdList = new ArrayList<String>();
-		final byte[] qcStatement = x509Certificate.getExtensionValue(Extension.qCStatements.getId());
+		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
 		if (qcStatement != null) {
 			final ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatement);
 			// Sequence of QCStatement
@@ -619,6 +582,188 @@ public final class DSSASN1Utils {
 			}
 		}
 		return locationsUrls;
+	}
+
+	/**
+	 * Indicates that a X509Certificates corresponding private key is used by an authority to sign OCSP-Responses.<br>
+	 * http://www.ietf.org/rfc/rfc3280.txt <br>
+	 * http://tools.ietf.org/pdf/rfc6960.pdf 4.2.2.2<br>
+	 * {iso(1) identified-organization(3) dod(6) internet(1) security(5) mechanisms(5) pkix(7) keyPurpose(3)
+	 * ocspSigning(9)}<br>
+	 * OID: 1.3.6.1.5.5.7.3.9
+	 *
+	 * @return
+	 */
+	public static boolean isOCSPSigning(CertificateToken certToken) {
+		try {
+			List<String> keyPurposes = certToken.getCertificate().getExtendedKeyUsage();
+			if ((keyPurposes != null) && keyPurposes.contains(OID.id_kp_OCSPSigning.getId())) {
+				return true;
+			}
+		} catch (CertificateParsingException e) {
+			LOG.warn(e.getMessage());
+		}
+		// Responder's certificate not valid for signing OCSP responses.
+		return false;
+	}
+
+	/**
+	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code X509Certificate}.
+	 *
+	 * @return a X509CertificateHolder holding this certificate
+	 */
+	public static X509CertificateHolder getX509CertificateHolder(CertificateToken certToken) {
+		try {
+			return new X509CertificateHolder(certToken.getEncoded());
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public static CertificateToken getCertificate(final X509CertificateHolder x509CertificateHolder) {
+		try {
+			final Certificate certificate = x509CertificateHolder.toASN1Structure();
+			final X509CertificateObject x509CertificateObject = new X509CertificateObject(certificate);
+			return new CertificateToken(x509CertificateObject);
+		} catch (CertificateParsingException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * This method returns a new IssuerSerial based on the certificate token
+	 *
+	 * @param certToken
+	 *            the certificate token
+	 * @return a IssuerSerial
+	 */
+	public static IssuerSerial getIssuerSerial(final CertificateToken certToken) {
+		final X500Name issuerX500Name = DSSUtils.getX509CertificateHolder(certToken).getIssuer();
+		final GeneralName generalName = new GeneralName(issuerX500Name);
+		final GeneralNames generalNames = new GeneralNames(generalName);
+		final BigInteger serialNumber = certToken.getCertificate().getSerialNumber();
+		final IssuerSerial issuerSerial = new IssuerSerial(generalNames, serialNumber);
+		return issuerSerial;
+	}
+
+	public static Map<String, String> get(final X500Principal x500Principal) {
+		Map<String, String> treeMap = new HashMap<String, String>();
+		final byte[] encoded = x500Principal.getEncoded();
+		final ASN1Sequence asn1Sequence = ASN1Sequence.getInstance(encoded);
+		final ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
+		for (final ASN1Encodable asn1Encodable : asn1Encodables) {
+
+			final DLSet dlSet = (DLSet) asn1Encodable;
+			for (int ii = 0; ii < dlSet.size(); ii++) {
+
+				final DLSequence dlSequence = (DLSequence) dlSet.getObjectAt(ii);
+				if (dlSequence.size() != 2) {
+
+					throw new DSSException("The DLSequence must contains exactly 2 elements.");
+				}
+				final ASN1Encodable asn1EncodableAttributeType = dlSequence.getObjectAt(0);
+				final String stringAttributeType = getString(asn1EncodableAttributeType);
+				final ASN1Encodable asn1EncodableAttributeValue = dlSequence.getObjectAt(1);
+				final String stringAttributeValue = getString(asn1EncodableAttributeValue);
+				treeMap.put(stringAttributeType, stringAttributeValue);
+			}
+		}
+		return treeMap;
+	}
+
+	public static String getUtf8String(final X500Principal x500Principal) {
+
+		final byte[] encoded = x500Principal.getEncoded();
+		final ASN1Sequence asn1Sequence = ASN1Sequence.getInstance(encoded);
+		final ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
+		final StringBuilder stringBuilder = new StringBuilder();
+		/**
+		 * RFC 4514 LDAP: Distinguished Names
+		 * 2.1.  Converting the RDNSequence
+		 *
+		 * If the RDNSequence is an empty sequence, the result is the empty or
+		 * zero-length string.
+		 *
+		 * Otherwise, the output consists of the string encodings of each
+		 * RelativeDistinguishedName in the RDNSequence (according to Section
+		 * 2.2), starting with the last element of the sequence and moving
+		 * backwards toward the first.
+		 * ...
+		 */
+		for (int ii = asn1Encodables.length - 1; ii >= 0; ii--) {
+
+			final ASN1Encodable asn1Encodable = asn1Encodables[ii];
+
+			final DLSet dlSet = (DLSet) asn1Encodable;
+			for (int jj = 0; jj < dlSet.size(); jj++) {
+
+				final DLSequence dlSequence = (DLSequence) dlSet.getObjectAt(jj);
+				if (dlSequence.size() != 2) {
+
+					throw new DSSException("The DLSequence must contains exactly 2 elements.");
+				}
+				final ASN1Encodable attributeType = dlSequence.getObjectAt(0);
+				final ASN1Encodable attributeValue = dlSequence.getObjectAt(1);
+				String string = getString(attributeValue);
+
+				/**
+				 * RFC 4514               LDAP: Distinguished Names
+				 * ...
+				 * Other characters may be escaped.
+				 *
+				 * Each octet of the character to be escaped is replaced by a backslash
+				 * and two hex digits, which form a single octet in the code of the
+				 * character.  Alternatively, if and only if the character to be escaped
+				 * is one of
+				 *
+				 * ' ', '"', '#', '+', ',', ';', '<', '=', '>', or '\'
+				 * (U+0020, U+0022, U+0023, U+002B, U+002C, U+003B,
+				 * U+003C, U+003D, U+003E, U+005C, respectively)
+				 *
+				 * it can be prefixed by a backslash ('\' U+005C).
+				 * ...
+				 */
+				string = string.replace("\"", "\\\"");
+				string = string.replace("#", "\\#");
+				string = string.replace("+", "\\+");
+				string = string.replace(",", "\\,");
+				string = string.replace(";", "\\;");
+				string = string.replace("<", "\\<");
+				string = string.replace("=", "\\=");
+				string = string.replace(">", "\\>");
+				// System.out.println(">>> " + attributeType.toString() + "=" + attributeValue.getClass().getSimpleName() + "[" + string + "]");
+				if (stringBuilder.length() != 0) {
+					stringBuilder.append(',');
+				}
+				stringBuilder.append(attributeType).append('=').append(string);
+			}
+		}
+		//final X500Name x500Name = X500Name.getInstance(encoded);
+		return stringBuilder.toString();
+	}
+
+	private static String getString(ASN1Encodable attributeValue) {
+		String string;
+		if (attributeValue instanceof DERUTF8String) {
+			string = ((DERUTF8String) attributeValue).getString();
+		} else if (attributeValue instanceof DERPrintableString) {
+			string = ((DERPrintableString) attributeValue).getString();
+		} else if (attributeValue instanceof DERBMPString) {
+			string = ((DERBMPString) attributeValue).getString();
+		} else if (attributeValue instanceof DERT61String) {
+			string = ((DERT61String) attributeValue).getString();
+		} else if (attributeValue instanceof DERIA5String) {
+			string = ((DERIA5String) attributeValue).getString();
+		} else if (attributeValue instanceof ASN1ObjectIdentifier) {
+			string = ((ASN1ObjectIdentifier) attributeValue).getId();
+		} else if (attributeValue instanceof DERT61UTF8String) {
+			string = ((DERT61UTF8String) attributeValue).getString();
+		} else {
+			LOG.error("!!!*******!!! This encoding is unknown: " + attributeValue.getClass().getSimpleName());
+			string = attributeValue.toString();
+			LOG.error("!!!*******!!! value: " + string);
+		}
+		return string;
 	}
 
 }

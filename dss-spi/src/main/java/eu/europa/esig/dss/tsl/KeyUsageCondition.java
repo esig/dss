@@ -24,102 +24,69 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Test if the certificate has a Key usage
- *
- *
  */
-
+@SuppressWarnings("serial")
 public class KeyUsageCondition extends Condition {
 
-    /**
-     * KeyUsage bit values
-     *
-     *
-     *
-     *
-     *
-     *
-     */
-    public static enum KeyUsageBit {
+	private final KeyUsageBit bit;
+	private final boolean value;
 
-        digitalSignature(0), nonRepudiation(1), keyEncipherment(2), dataEncipherment(3), keyAgreement(4), keyCertSign(5), crlSign(6), encipherOnly(
-              7), decipherOnly(8);
+	/**
+	 * The default constructor for KeyUsageCondition.
+	 *
+	 * @param bit
+	 */
+	public KeyUsageCondition(final KeyUsageBit bit, final boolean value) {
+		this.bit = bit;
+		this.value = value;
+	}
 
-        int index;
+	/**
+	 * The default constructor for KeyUsageCondition.
+	 *
+	 * @param value
+	 */
+	public KeyUsageCondition(final String usage, final boolean value) {
+		this(KeyUsageBit.valueOf(usage), value);
+	}
 
-        /**
-         * The default constructor for KeyUsageCondition.KeyUsageBit.
-         */
-        private KeyUsageBit(final int index) {
-            this.index = index;
-        }
-    }
+	/**
+	 * @return the bit
+	 */
+	public KeyUsageBit getBit() {
+		return bit;
+	}
 
-    private final KeyUsageBit bit;
-    private final boolean value;
+	/**
+	 * Checks the condition for the given certificate.
+	 *
+	 * @param certificateToken
+	 *            certificate to be checked
+	 * @return
+	 */
+	@Override
+	public boolean check(final CertificateToken certificateToken) {
+		final boolean keyUsage = certificateToken.checkKeyUsage(bit.getIndex());
+		return keyUsage == value;
+	}
 
-    /**
-     * The default constructor for KeyUsageCondition.
-     *
-     * @param bit
-     */
-    public KeyUsageCondition(final KeyUsageBit bit, final boolean value) {
+	@Override
+	public String toString(String indent) {
+		if (indent == null) {
+			indent = "";
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append(indent).append("KeyUsageCondition: ").append(bit.name()).append("=").append(value).append('\n');
+		return builder.toString();
+	}
 
-        this.bit = bit;
-        this.value = value;
+	@Override
+	public String toString() {
+		try {
+			return toString("");
+		} catch (Exception e) {
+			return super.toString();
+		}
+	}
 
-    }
-
-    /**
-     * The default constructor for KeyUsageCondition.
-     *
-     * @param value
-     */
-    public KeyUsageCondition(final String usage, final boolean value) {
-
-        this(KeyUsageBit.valueOf(usage), value);
-    }
-
-    /**
-     * @return the bit
-     */
-    public KeyUsageBit getBit() {
-
-        return bit;
-    }
-
-    /**
-     * Checks the condition for the given certificate.
-     *
-     * @param certificateToken certificate to be checked
-     * @return
-     */
-    @Override
-    public boolean check(final CertificateToken certificateToken) {
-
-        final boolean keyUsage = certificateToken.checkKeyUsage(bit.index);
-        return keyUsage == value;
-    }
-
-    @Override
-    public String toString(String indent) {
-
-        if (indent == null) {
-            indent = "";
-        }
-        StringBuilder builder = new StringBuilder();
-        builder.append(indent).append("KeyUsageCondition: ").append(bit.name()).append("=").append(value).append('\n');
-        return builder.toString();
-    }
-
-    @Override
-    public String toString() {
-
-        try {
-
-            return toString("");
-        } catch (Exception e) {
-
-            return super.toString();
-        }
-    }
 }

@@ -98,7 +98,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 
 	private boolean extractSigningCertificateFromResponse(OCSPToken ocspToken) {
 		for (final X509CertificateHolder x509CertificateHolder : ocspToken.getBasicOCSPResp().getCerts()) {
-			CertificateToken certificateToken = DSSUtils.getCertificate(x509CertificateHolder);
+			CertificateToken certificateToken = DSSASN1Utils.getCertificate(x509CertificateHolder);
 			CertificateToken certToken = validationCertPool.getInstance(certificateToken, CertificateSourceType.OCSP_RESPONSE);
 			if (ocspToken.isSignedBy(certToken)) {
 				return true;

@@ -450,7 +450,7 @@ public class CAdESLevelBaselineB {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Adding Certificate Hash {} with algorithm {}", Hex.encodeHexString(certHash), digestAlgorithm.getName());
 			}
-			final IssuerSerial issuerSerial = DSSUtils.getIssuerSerial(signingCertificate);
+			final IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(signingCertificate);
 
 			ASN1Encodable asn1Encodable;
 			if (digestAlgorithm == SHA1) {

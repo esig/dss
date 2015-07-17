@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.x509;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +31,6 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
-import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,16 +41,14 @@ import java.util.Map;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 
 /**
@@ -66,16 +62,6 @@ import eu.europa.esig.dss.tsl.ServiceInfo;
 public class CertificateToken extends Token {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateToken.class);
-
-	public static final String DIGITAL_SIGNATURE = "digitalSignature";
-	public static final String NON_REPUDIATION = "nonRepudiation";
-	public static final String KEY_ENCIPHERMENT = "keyEncipherment";
-	public static final String DATA_ENCIPHERMENT = "dataEncipherment";
-	public static final String KEY_AGREEMENT = "keyAgreement";
-	public static final String KEY_CERT_SIGN = "keyCertSign";
-	public static final String CRL_SIGN = "cRLSign";
-	public static final String ENCIPHER_ONLY = "encipherOnly";
-	public static final String DECIPHER_ONLY = "decipherOnly";
 
 	/**
 	 * Encapsulated X509 certificate.
@@ -129,10 +115,6 @@ public class CertificateToken extends Token {
 	 */
 	private String xmlId;
 
-	private List<String> policyIdentifiers = null;
-
-	private List<String> qcStatementsIdList = null;
-
 	/**
 	 * This method returns an instance of {@link eu.europa.esig.dss.x509.CertificateToken}.
 	 *
@@ -140,7 +122,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	static CertificateToken newInstance(X509Certificate cert) {
-
 		return new CertificateToken(cert);
 	}
 
@@ -375,21 +356,6 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code X509Certificate}.
-	 *
-	 * @return a X509CertificateHolder holding this certificate
-	 */
-	public  X509CertificateHolder getX509CertificateHolder() {
-		try {
-			return new X509CertificateHolder(x509Certificate.getEncoded());
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} catch (CertificateEncodingException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * Gets information about the context in which this certificate token was created (TRUSTED_LIST, TRUSTED_STORE, ...).
 	 * This method does not guarantee that the token is trusted or not.
 	 *
@@ -431,9 +397,8 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public X500Principal getSubjectX500Principal() {
-
 		if (subjectX500PrincipalNormalized == null) {
-			subjectX500PrincipalNormalized = DSSUtils.getSubjectX500Principal(x509Certificate);
+			subjectX500PrincipalNormalized = DSSUtils.getSubjectX500Principal(this);
 		}
 		return subjectX500PrincipalNormalized;
 	}
@@ -470,29 +435,6 @@ public class CertificateToken extends Token {
 			throw new DSSException(e);
 		}
 		return signatureValid;
-	}
-
-	/**
-	 * Indicates that a X509Certificates corresponding private key is used by an authority to sign OCSP-Responses.<br>
-	 * http://www.ietf.org/rfc/rfc3280.txt <br>
-	 * http://tools.ietf.org/pdf/rfc6960.pdf 4.2.2.2<br>
-	 * {iso(1) identified-organization(3) dod(6) internet(1) security(5) mechanisms(5) pkix(7) keyPurpose(3)
-	 * ocspSigning(9)}<br>
-	 * OID: 1.3.6.1.5.5.7.3.9
-	 *
-	 * @return
-	 */
-	public boolean isOCSPSigning() {
-		try {
-			List<String> keyPurposes = x509Certificate.getExtendedKeyUsage();
-			if ((keyPurposes != null) && keyPurposes.contains(OID.id_kp_OCSPSigning.getId())) {
-				return true;
-			}
-		} catch (CertificateParsingException e) {
-			LOG.warn(e.getMessage());
-		}
-		// Responder's certificate not valid for signing OCSP responses.
-		return false;
 	}
 
 	/**
@@ -615,9 +557,7 @@ public class CertificateToken extends Token {
 			out.append(indentStr).append(getDSSIdAsString()).append("<--").append(issuerAsString).append(", source=").append(certSource);
 			out.append(", serial=" + x509Certificate.getSerialNumber()).append('\n');
 			// Validity period
-			final String certStartDate = DSSUtils.formatInternal(x509Certificate.getNotBefore());
-			final String certEndDate = DSSUtils.formatInternal(x509Certificate.getNotAfter());
-			out.append(indentStr).append("Validity period    : ").append(certStartDate).append(" - ").append(certEndDate).append('\n');
+			out.append(indentStr).append("Validity period    : ").append(x509Certificate.getNotBefore()).append(" - ").append(x509Certificate.getNotAfter()).append('\n');
 			out.append(indentStr).append("Subject name       : ").append(getSubjectX500Principal()).append('\n');
 			out.append(indentStr).append("Issuer subject name: ").append(getIssuerX500Principal()).append('\n');
 			if (sources.contains(CertificateSourceType.TRUSTED_LIST)) {
@@ -697,21 +637,6 @@ public class CertificateToken extends Token {
 		}
 	}
 
-	public List<String> getPolicyIdentifiers() {
-		if (policyIdentifiers == null) {
-			policyIdentifiers = DSSASN1Utils.getPolicyIdentifiers(x509Certificate);
-		}
-		return policyIdentifiers;
-	}
-
-	public List<String> getQCStatementsIdList() {
-
-		if (qcStatementsIdList == null) {
-			qcStatementsIdList = DSSASN1Utils.getQCStatementsIdList(x509Certificate);
-		}
-		return qcStatementsIdList;
-	}
-
 	/**
 	 * @return return the id associated with the certificate in case of an XML signature, or null
 	 */
@@ -729,45 +654,32 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * This method returns a {@code String} representing the key usages of the certificate.
+	 * This method returns a list {@code KeyUsageBit} representing the key usages of the certificate.
 	 *
-	 * @return {@code List} of {@code String}s of different certificate's key usages
+	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
 	 */
-	public List<String> getKeyUsageBits() {
-
+	public List<KeyUsageBit> getKeyUsageBits() {
 		boolean[] keyUsageArray = x509Certificate.getKeyUsage();
 		if (keyUsageArray == null) {
 			return null;
 		}
-		final List<String> keyUsageBits = new ArrayList<String>();
-		if (keyUsageArray[0]) {
-			keyUsageBits.add(DIGITAL_SIGNATURE);
-		}
-		if (keyUsageArray[1]) {
-			keyUsageBits.add(NON_REPUDIATION);
-		}
-		if (keyUsageArray[2]) {
-			keyUsageBits.add(KEY_ENCIPHERMENT);
-		}
-		if (keyUsageArray[3]) {
-			keyUsageBits.add(DATA_ENCIPHERMENT);
-		}
-		if (keyUsageArray[4]) {
-			keyUsageBits.add(KEY_AGREEMENT);
-		}
-		if (keyUsageArray[5]) {
-			keyUsageBits.add(KEY_CERT_SIGN);
-		}
-		if (keyUsageArray[6]) {
-			keyUsageBits.add(CRL_SIGN);
-		}
-		if (keyUsageArray[7]) {
-			keyUsageBits.add(ENCIPHER_ONLY);
-		}
-		if (keyUsageArray[8]) {
-			keyUsageBits.add(DECIPHER_ONLY);
+
+		final List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
+			if (keyUsageArray[keyUsageBit.getIndex()]){
+				keyUsageBits.add(keyUsageBit);
+			}
 		}
 		return keyUsageBits;
+	}
+
+	/**
+	 * This method returns the full array of booleans KeyUsage of the certificate
+	 *
+	 * @return an array of boolean
+	 */
+	public boolean[] getKeyUsage() {
+		return x509Certificate.getKeyUsage();
 	}
 
 	public byte[] getSignature() {
@@ -798,17 +710,6 @@ public class CertificateToken extends Token {
 
 	public String getSubjectShortName() {
 		return extractCNName(getSubjectX500Principal());
-	}
-
-	/**
-	 * KeyUsage ::= BIT STRING { digitalSignature (0), nonRepudiation (1),
-	 * keyEncipherment (2), dataEncipherment (3), keyAgreement (4), keyCertSign
-	 * (5), cRLSign (6), encipherOnly (7), decipherOnly (8) }
-	 *
-	 * @return
-	 */
-	public boolean[] getKeyUsage() {
-		return x509Certificate.getKeyUsage();
 	}
 
 }

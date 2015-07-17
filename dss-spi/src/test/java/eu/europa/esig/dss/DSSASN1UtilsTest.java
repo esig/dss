@@ -41,18 +41,18 @@ public class DSSASN1UtilsTest {
 
 	@Test
 	public void getPolicies() {
-		List<String> policyIdentifiers = DSSASN1Utils.getPolicyIdentifiers(certificateWithAIA.getCertificate());
+		List<String> policyIdentifiers = DSSASN1Utils.getPolicyIdentifiers(certificateWithAIA);
 		assertTrue(CollectionUtils.isNotEmpty(policyIdentifiers));
 		assertTrue(policyIdentifiers.contains("1.3.171.1.1.10.8.1"));
 	}
 
 	@Test
 	public void getQCStatementsIdList() {
-		List<String> qcStatementsIdList = DSSASN1Utils.getQCStatementsIdList(certificateWithAIA.getCertificate());
+		List<String> qcStatementsIdList = DSSASN1Utils.getQCStatementsIdList(certificateWithAIA);
 		assertTrue(CollectionUtils.isEmpty(qcStatementsIdList));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
-		qcStatementsIdList = DSSASN1Utils.getQCStatementsIdList(certificate.getCertificate());
+		qcStatementsIdList = DSSASN1Utils.getQCStatementsIdList(certificate);
 		assertTrue(CollectionUtils.isNotEmpty(qcStatementsIdList));
 		assertTrue(qcStatementsIdList.contains(ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.getId()));
 	}
