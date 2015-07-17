@@ -46,7 +46,7 @@ public class ValidationPolicyController {
 	@ModelAttribute("supportedPolicies")
 	public String[] getSupportedPolicies() {
 		return new String[] {
-				"NO_POLICY", "ANY_POLICY"
+				"NO_POLICY", "ANY_POLICY", "IMPLICIT_POLICY"
 		};
 	}
 
