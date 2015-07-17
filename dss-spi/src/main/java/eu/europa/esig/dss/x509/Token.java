@@ -21,12 +21,10 @@
 package eu.europa.esig.dss.x509;
 
 import java.io.Serializable;
-import java.security.PublicKey;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
-import eu.europa.esig.dss.DSSPKUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.TokenIdentifier;
 
@@ -233,26 +231,4 @@ public abstract class Token implements Serializable {
 	 */
 	public abstract byte[] getEncoded();
 
-	/**
-	 * This method returns a key length used to sign this token.
-	 *
-	 * @return
-	 */
-	public String getKeyLength() {
-
-		String keyLength = "?";
-		PublicKey issuerPublicKey = null;
-		if (issuerToken != null) {
-
-			issuerPublicKey = issuerToken.getPublicKey();
-		} else if (isSelfSigned()) {
-
-			issuerPublicKey = ((CertificateToken) this).getPublicKey();
-		}
-		if (issuerPublicKey != null) {
-
-			keyLength = String.valueOf(DSSPKUtils.getPublicKeySize(issuerPublicKey));
-		}
-		return keyLength;
-	}
 }

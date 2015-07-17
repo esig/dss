@@ -668,7 +668,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm().getName());
 			xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm().getName());
 		}
-		final String keyLength = timestampToken.getKeyLength();
+		final String keyLength = DSSPKUtils.getPublicKeySize(timestampToken);
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(keyLength);
 
 		final boolean signatureValid = timestampToken.isSignatureValid();
@@ -897,7 +897,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final SignatureAlgorithm signatureAlgorithm = certToken.getSignatureAlgorithm();
 		xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm().getName());
 		xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm().getName());
-		final String keyLength = certToken.getKeyLength();
+		final String keyLength = DSSPKUtils.getPublicKeySize(certToken);
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(keyLength);
 		final boolean signatureIntact = certToken.isSignatureValid();
 		xmlBasicSignatureType.setReferenceDataFound(signatureIntact);
@@ -1039,7 +1039,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final boolean unknownAlgorithm = revocationSignatureAlgo == null;
 			final String encryptionAlgorithmName = unknownAlgorithm ? "?" : revocationSignatureAlgo.getEncryptionAlgorithm().getName();
 			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmName);
-			final String keyLength = revocationToken.getKeyLength();
+			final String keyLength = DSSPKUtils.getPublicKeySize(revocationToken);
 			xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(keyLength);
 
 			final String digestAlgorithmName = unknownAlgorithm ? "?" : revocationSignatureAlgo.getDigestAlgorithm().getName();
