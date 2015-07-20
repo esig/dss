@@ -30,7 +30,6 @@ import org.bouncycastle.tsp.TSPUtil;
 import org.junit.Test;
 
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -40,7 +39,7 @@ public class CertificateServiceTest {
 
 	@Test
 	public void isSelfSigned() throws Exception {
-		DSSPrivateKeyEntry entry = service.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
+		DSSPrivateKeyEntry entry = service.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256, true);
 
 		CertificateToken certificate = entry.getCertificate();
 		certificate.isSignedBy(certificate);

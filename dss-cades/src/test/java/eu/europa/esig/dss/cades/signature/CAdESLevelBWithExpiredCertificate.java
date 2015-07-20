@@ -40,7 +40,7 @@ public class CAdESLevelBWithExpiredCertificate extends AbstractTestSignature {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateExpiredCertificateChain(SignatureAlgorithm.RSA_SHA512);
+		privateKeyEntry = certificateService.generateExpiredCertificateChain(SignatureAlgorithm.RSA_SHA512, false);
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
