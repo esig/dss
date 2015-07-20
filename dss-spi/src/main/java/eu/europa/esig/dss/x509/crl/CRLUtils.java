@@ -67,8 +67,8 @@ public class CRLUtils {
 		final CRLValidity crlValidity = new CRLValidity();
 		crlValidity.setX509CRL(x509CRL);
 
-		final X500Principal x509CRLIssuerX500Principal = DSSUtils.getX500Principal(x509CRL.getIssuerX500Principal());
-		final X500Principal issuerTokenSubjectX500Principal = DSSUtils.getX500Principal(issuerToken.getSubjectX500Principal());
+		final X500Principal x509CRLIssuerX500Principal = DSSUtils.getNormalizedX500Principal(x509CRL.getIssuerX500Principal());
+		final X500Principal issuerTokenSubjectX500Principal = DSSUtils.getNormalizedX500Principal(issuerToken.getSubjectX500Principal());
 		if (x509CRLIssuerX500Principal.equals(issuerTokenSubjectX500Principal)) {
 
 			crlValidity.setIssuerX509PrincipalMatches(true);

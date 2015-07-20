@@ -117,7 +117,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 		final ASN1Primitive derObject = derTaggedObject.getObject();
 		final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
 		final X500Principal x500Principal_ = new X500Principal(derEncoded);
-		final X500Principal x500Principal = DSSUtils.getX500Principal(x500Principal_);
+		final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(x500Principal_);
 		final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
 		for (final CertificateToken issuerCertificateToken : certificateTokens) {
 			if (ocspToken.isSignedBy(issuerCertificateToken)) {

@@ -747,19 +747,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	private CertificateSourceType getCertificateMainSourceType(final CertificateToken issuerToken) {
-
 		CertificateSourceType mainSource = CertificateSourceType.UNKNOWN;
-		final List<CertificateSourceType> sourceList = issuerToken.getSources();
+		final Set<CertificateSourceType> sourceList = issuerToken.getSources();
 		if (sourceList.size() > 0) {
-
 			if (sourceList.contains(CertificateSourceType.TRUSTED_LIST)) {
-
 				mainSource = CertificateSourceType.TRUSTED_LIST;
 			} else if (sourceList.contains(CertificateSourceType.TRUSTED_STORE)) {
-
 				mainSource = CertificateSourceType.TRUSTED_STORE;
 			} else {
-				mainSource = sourceList.get(0);
+				mainSource = sourceList.iterator().next();
 			}
 		}
 		return mainSource;
@@ -920,7 +916,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	private void xmlForKeyUsageBits(CertificateToken certToken, XmlCertificate xmlCert) {
-		final List<KeyUsageBit> keyUsageBits = certToken.getKeyUsageBits();
+		final Set<KeyUsageBit> keyUsageBits = certToken.getKeyUsageBits();
 		if (CollectionUtils.isEmpty(keyUsageBits)) {
 			return;
 		}
@@ -973,7 +969,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			return;
 		}
-		final List<ServiceInfo> services = trustAnchor.getAssociatedTSPS();
+		final Set<ServiceInfo> services = trustAnchor.getAssociatedTSPS();
 		if (services == null) {
 
 			return;

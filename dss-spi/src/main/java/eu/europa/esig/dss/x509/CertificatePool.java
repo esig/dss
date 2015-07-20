@@ -27,11 +27,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,14 +86,12 @@ public class CertificatePool implements Serializable {
 	 */
 	public CertificateToken getInstance(final CertificateToken cert, final CertificateSourceType certSource, final ServiceInfo serviceInfo) {
 
-		final List<ServiceInfo> services = new ArrayList<ServiceInfo>();
+		final Set<ServiceInfo> services = new HashSet<ServiceInfo>();
 		if (serviceInfo != null) {
-
 			services.add(serviceInfo);
 		}
-		final List<CertificateSourceType> sources = new ArrayList<CertificateSourceType>();
+		final Set<CertificateSourceType> sources = new HashSet<CertificateSourceType>();
 		if (certSource != null) {
-
 			sources.add(certSource);
 		}
 		return getInstance(cert, sources, services);
@@ -106,27 +107,27 @@ public class CertificatePool implements Serializable {
 	 * @param services
 	 * @return
 	 */
-	public CertificateToken getInstance(final CertificateToken certificateToAdd, final List<CertificateSourceType> sources, final List<ServiceInfo> services) {
+	public CertificateToken getInstance(final CertificateToken certificateToAdd, final Set<CertificateSourceType> sources, final Set<ServiceInfo> services) {
 
 		if (certificateToAdd == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("The certificate must be filled");
 		}
-		
-		if (sources == null || sources.size() == 0) {
+
+		if (CollectionUtils.isEmpty(sources)) {
 			throw new IllegalStateException("The certificate source type must be set.");
 		}
-		
+
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal() + "|" + certificateToAdd.getSerialNumber());
 		}
-		
+
 		final TokenIdentifier id = certificateToAdd.getDSSId();
 		synchronized (certById) {
 
 			CertificateToken certToken = certById.get(id);
 			if (certToken == null) {
 
-				LOG.debug("Certificate " + certificateToAdd.getDSSId() + " is not in the pool");
+				LOG.debug("Certificate " + id + " is not in the pool");
 				certToken = certificateToAdd;
 				certById.put(id, certToken);
 				final String subjectName = certificateToAdd.getSubjectX500Principal().getName(X500Principal.CANONICAL);
@@ -139,7 +140,7 @@ public class CertificatePool implements Serializable {
 				list.add(certToken);
 			} else {
 
-				LOG.debug("Certificate " + certificateToAdd.getDSSId() + " is already in the pool");
+				LOG.debug("Certificate " + id + " is already in the pool");
 				final X509Certificate foundCertificate = certToken.getCertificate();
 				final byte[] foundCertificateSignature = foundCertificate.getSignature();
 				final byte[] certificateToAddSignature = certificateToAdd.getSignature();
@@ -150,13 +151,10 @@ public class CertificatePool implements Serializable {
 				}
 			}
 			for (final CertificateSourceType sourceType : sources) {
-
 				certToken.addSourceType(sourceType);
 			}
 			if (services != null) {
-
 				for (final ServiceInfo serviceInfo : services) {
-
 					certToken.addServiceInfo(serviceInfo);
 				}
 			}
@@ -170,8 +168,7 @@ public class CertificatePool implements Serializable {
 	 * @return
 	 */
 	public List<CertificateToken> getCertificateTokens() {
-
-		ArrayList<CertificateToken> certificateTokenArrayList = new ArrayList<CertificateToken>(certById.values());
+		List<CertificateToken> certificateTokenArrayList = new ArrayList<CertificateToken>(certById.values());
 		return Collections.unmodifiableList(certificateTokenArrayList);
 	}
 
@@ -181,7 +178,6 @@ public class CertificatePool implements Serializable {
 	 * @return the number of certificates
 	 */
 	public int getNumberOfCertificates() {
-
 		return certById.size();
 	}
 
@@ -196,11 +192,7 @@ public class CertificatePool implements Serializable {
 
 		Collection<CertificateToken> certTokens = certPool.getCertificateTokens();
 		for (CertificateToken certificateToken : certTokens) {
-
-			CertificateToken cert = certificateToken;
-			List<CertificateSourceType> sources = certificateToken.getSources();
-			List<ServiceInfo> services = certificateToken.getAssociatedTSPS();
-			getInstance(cert, sources, services);
+			getInstance(certificateToken, certificateToken.getSources(), certificateToken.getAssociatedTSPS());
 		}
 	}
 

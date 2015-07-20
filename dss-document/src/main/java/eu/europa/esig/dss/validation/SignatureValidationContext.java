@@ -436,7 +436,7 @@ public class SignatureValidationContext implements ValidationContext {
 		final CertificateToken trustAnchor = certificateToken.getTrustAnchor();
 		if (trustAnchor != null) {
 
-			final List<ServiceInfo> serviceInfoList = trustAnchor.getAssociatedTSPS();
+			final Set<ServiceInfo> serviceInfoList = trustAnchor.getAssociatedTSPS();
 			if (serviceInfoList != null) {
 
 				final Date notAfter = certificateToken.getNotAfter();

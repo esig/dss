@@ -979,17 +979,18 @@ public final class DSSUtils {
 	 * @param id
 	 * @return
 	 */
-	public static String getDeterministicId(final Date signingTime, final String id) {
+	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			if (signingTime != null) {
 				baos.write(Long.toString(signingTime.getTime()).getBytes());
 			}
-			baos.write(id.getBytes());
-
+			if (id != null) {
+				baos.write(id.asXmlId().getBytes());
+			}
 			final String deterministicId = "id-" + getMD5Digest(baos);
 			return deterministicId;
-		} catch (IOException e){
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -1073,9 +1074,7 @@ public final class DSSUtils {
 	public static X500Principal getX500Principal(String x509SubjectName) throws DSSException {
 		try {
 			final X500Principal x500Principal = new X500Principal(x509SubjectName);
-			final String utf8String = DSSASN1Utils.getUtf8String(x500Principal);
-			final X500Principal normalizedX500Principal = new X500Principal(utf8String);
-			return normalizedX500Principal;
+			return getNormalizedX500Principal(x500Principal);
 		} catch (IllegalArgumentException e) {
 			throw new DSSException(e);
 		}
@@ -1087,27 +1086,17 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getSubjectX500Principal(final CertificateToken certToken) {
 		final X500Principal x500Principal = certToken.getCertificate().getSubjectX500Principal();
-		final String utf8Name = DSSASN1Utils.getUtf8String(x500Principal);
-		final X500Principal x500PrincipalNormalized = new X500Principal(utf8Name);
-		return x500PrincipalNormalized;
+		return getNormalizedX500Principal(x500Principal);
 	}
 
 	/**
 	 * @param x500Principal to be normalized
 	 * @return {@code X500Principal} normalized
 	 */
-	public static X500Principal getX500Principal(final X500Principal x500Principal) {
+	public static X500Principal getNormalizedX500Principal(final X500Principal x500Principal) {
 		final String utf8Name = DSSASN1Utils.getUtf8String(x500Principal);
 		final X500Principal x500PrincipalNormalized = new X500Principal(utf8Name);
 		return x500PrincipalNormalized;
-	}
-
-	/**
-	 * @param x509Certificate
-	 * @return
-	 */
-	public static String getSubjectX500PrincipalName(final CertificateToken certToken) {
-		return getSubjectX500Principal(certToken).getName();
 	}
 
 	/**
@@ -1117,23 +1106,11 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static X500Principal getIssuerX500Principal(final X509Certificate x509Certificate) {
-		final X500Principal x500Principal = x509Certificate.getIssuerX500Principal();
-		final String utf8Name = DSSASN1Utils.getUtf8String(x500Principal);
-		final X500Principal x500PrincipalNormalized = new X500Principal(utf8Name);
-		return x500PrincipalNormalized;
-	}
-
-	/**
-	 * @param x509Certificate
-	 * @return
-	 */
-	public static String getIssuerX500PrincipalName(final X509Certificate x509Certificate) {
-
-		return getIssuerX500Principal(x509Certificate).getName();
+		final X500Principal issuerX500Principal = x509Certificate.getIssuerX500Principal();
+		return getNormalizedX500Principal(issuerX500Principal);
 	}
 
 	public static InputStream getResource(final String resourcePath) {
-
 		final InputStream resourceAsStream = DSSUtils.class.getClassLoader().getResourceAsStream(resourcePath);
 		return resourceAsStream;
 	}
@@ -1147,7 +1124,6 @@ public final class DSSUtils {
 	 * @return the UTC date base on parameters
 	 */
 	public static Date getUtcDate(final int year, final int month, final int day) {
-
 		final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		calendar.set(year, month, day, 0, 0, 0);
 		final Date date = calendar.getTime();

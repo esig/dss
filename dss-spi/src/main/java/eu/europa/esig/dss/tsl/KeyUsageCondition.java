@@ -66,7 +66,7 @@ public class KeyUsageCondition extends Condition {
 	 */
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
-		final boolean keyUsage = certificateToken.checkKeyUsage(bit.getIndex());
+		final boolean keyUsage = certificateToken.checkKeyUsage(bit);
 		return keyUsage == value;
 	}
 

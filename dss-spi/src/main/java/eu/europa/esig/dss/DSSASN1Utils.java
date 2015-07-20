@@ -38,7 +38,6 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -54,7 +53,6 @@ import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERPrintableString;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERT61String;
 import org.bouncycastle.asn1.DERT61UTF8String;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -62,7 +60,6 @@ import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
-import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -77,9 +74,6 @@ import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPException;
-import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
@@ -122,7 +116,7 @@ public final class DSSASN1Utils {
 	 * @param derOctetString
 	 * @return
 	 */
-	public static boolean isDEROctetStringNull(final DEROctetString derOctetString) {
+	private static boolean isDEROctetStringNull(final DEROctetString derOctetString) {
 		final byte[] derOctetStringBytes = derOctetString.getOctets();
 		final ASN1Primitive asn1Null = toASN1Primitive(derOctetStringBytes);
 		return DERNull.INSTANCE.equals(asn1Null);
@@ -171,7 +165,6 @@ public final class DSSASN1Utils {
 		return new String(value.getOctets());
 	}
 
-
 	/**
 	 * Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
 	 *
@@ -185,62 +178,6 @@ public final class DSSASN1Utils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * This method allows to create a {@code BasicOCSPResp} from a {@code DERSequence}.
-	 *
-	 * @param otherRevocationInfoMatch {@code DERSequence} to convert to {@code BasicOCSPResp}
-	 * @return {@code BasicOCSPResp}
-	 */
-	public static BasicOCSPResp getBasicOcspResp(final DERSequence otherRevocationInfoMatch) {
-		BasicOCSPResp basicOCSPResp = null;
-		try {
-			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(otherRevocationInfoMatch);
-			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
-		} catch (Exception e) {
-			LOG.error("Impossible to create BasicOCSPResp from DERSequence!", e);
-		}
-		return basicOCSPResp;
-	}
-
-	/**
-	 * This method allows to create a {@code OCSPResp} from a {@code DERSequence}.
-	 *
-	 * @param otherRevocationInfoMatch {@code DERSequence} to convert to {@code OCSPResp}
-	 * @return {@code OCSPResp}
-	 */
-	public static OCSPResp getOcspResp(final DERSequence otherRevocationInfoMatch) {
-		OCSPResp ocspResp = null;
-		try {
-			final OCSPResponse ocspResponse = OCSPResponse.getInstance(otherRevocationInfoMatch);
-			ocspResp = new OCSPResp(ocspResponse);
-		} catch (Exception e) {
-			LOG.error("Impossible to create OCSPResp from DERSequence!", e);
-		}
-		return ocspResp;
-	}
-
-	/**
-	 * This method returns the {@code BasicOCSPResp} from a {@code OCSPResp}.
-	 *
-	 * @param ocspResp {@code OCSPResp} to analysed
-	 * @return
-	 */
-	public static BasicOCSPResp getBasicOCSPResp(final OCSPResp ocspResp) {
-		BasicOCSPResp basicOCSPResp = null;
-		try {
-			final Object responseObject = ocspResp.getResponseObject();
-			if (responseObject instanceof BasicOCSPResp) {
-
-				basicOCSPResp = (BasicOCSPResp) responseObject;
-			} else {
-				LOG.warn("Unknown OCSP response type: {}", responseObject.getClass());
-			}
-		} catch (OCSPException e) {
-			LOG.error("Impossible to process OCSPResp!", e);
-		}
-		return basicOCSPResp;
 	}
 
 	/**
@@ -316,23 +253,6 @@ public final class DSSASN1Utils {
 		final String canonicalizedName = stringBuilder.toString();
 		LOG.debug("canonicalizedName: {} ", canonicalizedName);
 		return canonicalizedName;
-	}
-
-	/**
-	 * This method generates a bouncycastle {@code TimeStampToken} based on base 64 encoded {@code String}.
-	 *
-	 * @param base64EncodedTimestamp
-	 * @return bouncycastle {@code TimeStampToken}
-	 * @throws DSSException
-	 */
-	public static TimeStampToken createTimeStampToken(final String base64EncodedTimestamp) throws DSSException {
-		try {
-			final byte[] tokenBytes = Base64.decodeBase64(base64EncodedTimestamp);
-			final CMSSignedData signedData = new CMSSignedData(tokenBytes);
-			return new TimeStampToken(signedData);
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**

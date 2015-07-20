@@ -132,6 +132,7 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -1734,11 +1735,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (signatureId == null) {
 
 			final CertificateToken certificateToken = getSigningCertificateToken();
-			final String dssId = certificateToken == null ? "" : certificateToken.getDSSId().asXmlId();
+			final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
 			// Only used to keep the same signature id between CAdES and PAdES
 			// signature!
 			final Date signingTime = padesSigningTime != null ? padesSigningTime : getSigningTime();
-			signatureId = DSSUtils.getDeterministicId(signingTime, dssId);
+			signatureId = DSSUtils.getDeterministicId(signingTime, identifier);
 		}
 		return signatureId;
 	}

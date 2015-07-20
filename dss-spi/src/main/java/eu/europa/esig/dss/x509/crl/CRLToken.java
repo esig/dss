@@ -90,7 +90,7 @@ public class CRLToken extends RevocationToken {
 		final X509CRL x509crl = crlValidity.getX509CRL();
 		final String sigAlgOID = x509crl.getSigAlgOID();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(sigAlgOID);
-		this.algorithmUsedToSignToken = signatureAlgorithm;
+		this.signatureAlgorithm = signatureAlgorithm;
 		this.issuingTime = x509crl.getThisUpdate();
 		this.nextUpdate = x509crl.getNextUpdate();
 		issuerX500Principal = x509crl.getIssuerX500Principal();
@@ -211,7 +211,7 @@ public class CRLToken extends RevocationToken {
 			indentStr += "\t";
 			out.append(indentStr).append("Version: ").append(crlValidity.getX509CRL().getVersion()).append('\n');
 			out.append(indentStr).append("Issuing time: ").append(issuingTime == null ? "?" : DSSUtils.formatInternal(issuingTime)).append('\n');
-			out.append(indentStr).append("Signature algorithm: ").append(algorithmUsedToSignToken == null ? "?" : algorithmUsedToSignToken)
+			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm)
 			.append('\n');
 			out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
 			if (issuerToken != null) {

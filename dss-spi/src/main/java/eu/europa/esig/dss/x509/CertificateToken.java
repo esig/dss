@@ -32,11 +32,11 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -71,13 +71,13 @@ public class CertificateToken extends Token {
 	/**
 	 * This array contains the different sources for this certificate.
 	 */
-	private List<CertificateSourceType> sources = new ArrayList<CertificateSourceType>();
+	private Set<CertificateSourceType> sources = new HashSet<CertificateSourceType>();
 
 	/**
 	 * If the certificate is part of the trusted list then the the serviceInfo represents the associated trusted service
 	 * provider service. Same certificate can be a part of multiple services.
 	 */
-	private List<ServiceInfo> associatedTSPS = new ArrayList<ServiceInfo>();
+	private Set<ServiceInfo> associatedTSPS = new HashSet<ServiceInfo>();
 
 	/**
 	 * The default algorithm used to compute the digest value of this certificate
@@ -116,6 +116,11 @@ public class CertificateToken extends Token {
 	private String xmlId;
 
 	/**
+	 * The key usage bits used in the certificate
+	 */
+	private Set<KeyUsageBit> keyUsageBits;
+
+	/**
 	 * This method returns an instance of {@link eu.europa.esig.dss.x509.CertificateToken}.
 	 *
 	 * @param cert <code>X509Certificate</code>
@@ -138,10 +143,8 @@ public class CertificateToken extends Token {
 		this.x509Certificate = x509Certificate;
 		this.issuerX500Principal = DSSUtils.getIssuerX500Principal(x509Certificate);
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
-		final String sigAlgOID = x509Certificate.getSigAlgOID();
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(sigAlgOID);
-		this.algorithmUsedToSignToken = signatureAlgorithm;
-		this.digestAlgorithm = algorithmUsedToSignToken.getDigestAlgorithm();
+		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
+		this.digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 
 		super.extraInfo = this.extraInfo = new CertificateTokenValidationExtraInfo();
 	}
@@ -152,13 +155,8 @@ public class CertificateToken extends Token {
 	 * @param certSourceType
 	 */
 	public void addSourceType(final CertificateSourceType certSourceType) {
-
 		if (certSourceType != null) {
-
-			if (!sources.contains(certSourceType)) {
-
-				sources.add(certSourceType);
-			}
+			sources.add(certSourceType);
 		}
 	}
 
@@ -168,13 +166,8 @@ public class CertificateToken extends Token {
 	 * @param serviceInfo
 	 */
 	public void addServiceInfo(final ServiceInfo serviceInfo) {
-
 		if (serviceInfo != null) {
-
-			if (!associatedTSPS.contains(serviceInfo)) {
-
-				associatedTSPS.add(serviceInfo);
-			}
+			associatedTSPS.add(serviceInfo);
 		}
 	}
 
@@ -361,7 +354,7 @@ public class CertificateToken extends Token {
 	 *
 	 * @return
 	 */
-	public List<CertificateSourceType> getSources() {
+	public Set<CertificateSourceType> getSources() {
 		return sources;
 	}
 
@@ -370,7 +363,7 @@ public class CertificateToken extends Token {
 	 *
 	 * @return
 	 */
-	public List<ServiceInfo> getAssociatedTSPS() {
+	public Set<ServiceInfo> getAssociatedTSPS() {
 
 		if (isTrusted()) {
 
@@ -502,19 +495,18 @@ public class CertificateToken extends Token {
 	 * @return true if the wrapped certificate has cRLSign key usage bit set
 	 */
 	public boolean hasCRLSignKeyUsage() {
-		final boolean[] keyUsage = x509Certificate.getKeyUsage();
-		final boolean crlSignKeyUsage = (keyUsage != null) || ((keyUsage != null) && keyUsage[6]);
-		return crlSignKeyUsage;
+		return checkKeyUsage(KeyUsageBit.crlSign);
 	}
 
 	/**
 	 * This method checks if the certificate contains the given key usage bit.
 	 *
-	 * @param index the index of the key usage to be checked.
+	 * @param keyUsageBit the keyUsageBit to be checked.
 	 * @return true if contains
 	 */
-	public boolean checkKeyUsage(final int index) {
-		return x509Certificate.getKeyUsage()[index];
+	public boolean checkKeyUsage(final KeyUsageBit keyUsageBit) {
+		Set<KeyUsageBit> keyUsageBits = getKeyUsageBits();
+		return keyUsageBits.contains(keyUsageBit);
 	}
 
 	@Override
@@ -570,7 +562,7 @@ public class CertificateToken extends Token {
 					indentStr = indentStr.substring(1);
 				}
 			}
-			out.append(indentStr).append("Signature algorithm: ").append(algorithmUsedToSignToken == null ? "?" : algorithmUsedToSignToken).append('\n');
+			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 			if (isTrusted()) {
 
 				out.append(indentStr).append("Signature validity : Signature verification is not needed: trusted certificate\n");
@@ -658,28 +650,19 @@ public class CertificateToken extends Token {
 	 *
 	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
 	 */
-	public List<KeyUsageBit> getKeyUsageBits() {
-		boolean[] keyUsageArray = x509Certificate.getKeyUsage();
-		if (keyUsageArray == null) {
-			return null;
-		}
-
-		final List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
-		for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
-			if (keyUsageArray[keyUsageBit.getIndex()]){
-				keyUsageBits.add(keyUsageBit);
+	public Set<KeyUsageBit> getKeyUsageBits() {
+		if (keyUsageBits == null){
+			boolean[] keyUsageArray = x509Certificate.getKeyUsage();
+			keyUsageBits = new HashSet<KeyUsageBit>();
+			if (keyUsageArray != null) {
+				for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
+					if (keyUsageArray[keyUsageBit.getIndex()]){
+						keyUsageBits.add(keyUsageBit);
+					}
+				}
 			}
 		}
 		return keyUsageBits;
-	}
-
-	/**
-	 * This method returns the full array of booleans KeyUsage of the certificate
-	 *
-	 * @return an array of boolean
-	 */
-	public boolean[] getKeyUsage() {
-		return x509Certificate.getKeyUsage();
 	}
 
 	public byte[] getSignature() {

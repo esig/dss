@@ -59,7 +59,7 @@ public abstract class Token implements Serializable {
 	/*
 	 * The algorithm that was used to sign the token.
 	 */
-	protected SignatureAlgorithm algorithmUsedToSignToken;
+	protected SignatureAlgorithm signatureAlgorithm;
 
 	/*
 	 * Extra information collected during the validation process.
@@ -187,7 +187,7 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public SignatureAlgorithm getSignatureAlgorithm() {
-		return algorithmUsedToSignToken;
+		return signatureAlgorithm;
 	}
 
 	/**
