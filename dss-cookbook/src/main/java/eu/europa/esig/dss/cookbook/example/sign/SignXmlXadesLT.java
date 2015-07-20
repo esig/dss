@@ -69,6 +69,11 @@ public class SignXmlXadesLT extends Cookbook {
 		// same parameter when you invoke the method sign on the token. The default value is SHA256
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
+		// We set the signing certificate
+		parameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		parameters.setCertificateChain(privateKey.getCertificateChain());
+
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 

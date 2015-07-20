@@ -64,6 +64,11 @@ public class SignPdfPadesBVisible extends Cookbook {
 		// We choose the type of the signature packaging (ENVELOPING, DETACHED).
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 
+		// We set the signing certificate
+		parameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		parameters.setCertificateChain(privateKey.getCertificateChain());
+
 		// Initialize visual signature
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		// the origin is the left and top corner of the page

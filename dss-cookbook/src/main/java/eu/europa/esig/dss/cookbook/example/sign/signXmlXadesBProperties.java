@@ -55,6 +55,11 @@ public class signXmlXadesBProperties extends Cookbook {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
+		// We set the signing certificate
+		parameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		parameters.setCertificateChain(privateKey.getCertificateChain());
+
 		BLevelParameters bLevelParameters = parameters.bLevel();
 		bLevelParameters.addClaimedSignerRole("My Claimed Role");
 

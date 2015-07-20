@@ -52,6 +52,11 @@ public class SignXmlXadesBExplicitPolicy extends Cookbook {
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
+		// We set the signing certificate
+		parameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		parameters.setCertificateChain(privateKey.getCertificateChain());
+
 		BLevelParameters bLevelParameters = parameters.bLevel();
 
 		//Get and use the explicit policy

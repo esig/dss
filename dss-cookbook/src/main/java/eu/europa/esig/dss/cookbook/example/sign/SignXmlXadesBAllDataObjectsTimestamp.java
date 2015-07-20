@@ -80,6 +80,11 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		contentTimestampParameters.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 
+		// We set the signing certificate
+		signatureParameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		signatureParameters.setCertificateChain(privateKey.getCertificateChain());
+
 		//Define the contentTimestamp specific parameters
 
 		try{

@@ -65,6 +65,11 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		// same parameter when you invoke the method sign on the token.
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 
+		// We set the signing certificate
+		parameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		parameters.setCertificateChain(privateKey.getCertificateChain());
+
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		// Create CAdES xadesService for signature
