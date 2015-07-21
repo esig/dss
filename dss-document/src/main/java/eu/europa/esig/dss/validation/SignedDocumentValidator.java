@@ -863,7 +863,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			final XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
 			xmlDigestAlgAndValue.setDigestMethod(digestAlgorithm.getName());
-			xmlDigestAlgAndValue.setDigestValue(certToken.getDigestValue(digestAlgorithm));
+			xmlDigestAlgAndValue.setDigestValue(DSSUtils.digest(digestAlgorithm, certToken));
 			xmlCert.getDigestAlgAndValue().add(xmlDigestAlgAndValue);
 		}
 		TokenIdentifier issuerTokenDSSId = certToken.getIssuerTokenDSSId();

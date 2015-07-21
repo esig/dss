@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.token;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
@@ -28,7 +29,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 
@@ -37,6 +39,8 @@ import eu.europa.esig.dss.DSSException;
  *
  */
 public class JKSSignatureToken extends AbstractSignatureTokenConnection {
+
+	private static final Logger logger = LoggerFactory.getLogger(MSCAPISignatureToken.class);
 
 	private char[] password;
 
@@ -56,7 +60,13 @@ public class JKSSignatureToken extends AbstractSignatureTokenConnection {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(ksStream);
+			if (ksStream !=null) {
+				try {
+					ksStream.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
 		}
 	}
 

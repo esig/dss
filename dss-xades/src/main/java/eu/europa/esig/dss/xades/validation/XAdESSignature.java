@@ -1979,8 +1979,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
-		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1.name(),
-				certificateToken.getDigestValue(DigestAlgorithm.SHA1));
+		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1.name(), DSSUtils.digest(DigestAlgorithm.SHA1, certificateToken));
 		return reference;
 	}
 

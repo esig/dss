@@ -22,6 +22,7 @@ package eu.europa.esig.dss.x509;
 
 import java.util.Date;
 
+@SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
 
 	/**
@@ -91,7 +92,6 @@ public abstract class RevocationToken extends Token {
 	 * @return {@code true} if the conditions are meet
 	 */
 	public abstract boolean isValid();
-
 
 	public abstract String getSourceURL();
 

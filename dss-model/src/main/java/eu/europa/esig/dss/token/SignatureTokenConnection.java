@@ -53,6 +53,6 @@ public interface SignatureTokenConnection {
 	 * @return The array of bytes representing the signature value
 	 * @throws DSSException If there is any problem during the signature process
 	 */
-	SignatureValue sign(ToBeSigned toBeSigned, final DigestAlgorithm digestAlgorithm, final DSSPrivateKeyEntry keyEntry) throws DSSException;
+	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 }

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
@@ -76,7 +76,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 
 			final Element certEl = (Element) nodeList.item(ii);
 			try{
-				final BasicOCSPResp basicOCSPResp = DSSUtils.loadOCSPBase64Encoded(certEl.getTextContent());
+				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPBase64Encoded(certEl.getTextContent());
 				list.add(basicOCSPResp);
 			} catch (Exception e){
 				logger.warn("Cannot retrieve OCSP response from '" + certEl.getTextContent() + "' : " + e.getMessage(), e);

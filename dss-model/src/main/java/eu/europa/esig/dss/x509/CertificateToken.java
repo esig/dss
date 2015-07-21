@@ -33,14 +33,11 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,11 +80,6 @@ public class CertificateToken extends Token {
 	 * The default algorithm used to compute the digest value of this certificate
 	 */
 	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
-
-	/**
-	 * Base 64 encoded digest value of this certificate computed for a given digest algorithm.
-	 */
-	private Map<DigestAlgorithm, String> digests;
 
 	/**
 	 * OCSP or CRL revocation data for this token.
@@ -141,7 +133,7 @@ public class CertificateToken extends Token {
 		}
 
 		this.x509Certificate = x509Certificate;
-		this.issuerX500Principal = DSSUtils.getIssuerX500Principal(x509Certificate);
+		this.issuerX500Principal = DSSUtils.getNormalizedX500Principal(x509Certificate.getIssuerX500Principal());
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
 		this.digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
@@ -180,7 +172,6 @@ public class CertificateToken extends Token {
 
 	@Override
 	public String getAbbreviation() {
-
 		return getDSSIdAsString();
 	}
 
@@ -189,7 +180,6 @@ public class CertificateToken extends Token {
 	 *                        of module.
 	 */
 	public void setRevocationToken(RevocationToken revocationToken) {
-
 		this.revocationToken = revocationToken;
 	}
 
@@ -197,7 +187,6 @@ public class CertificateToken extends Token {
 	 * Returns the certificate revocation revocationToken object.
 	 */
 	public RevocationToken getRevocationToken() {
-
 		return revocationToken;
 	}
 
@@ -216,7 +205,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public PublicKey getPublicKey() {
-
 		return x509Certificate.getPublicKey();
 	}
 
@@ -226,7 +214,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public Date getNotAfter() {
-
 		return x509Certificate.getNotAfter();
 	}
 
@@ -236,7 +223,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public Date getNotBefore() {
-
 		return x509Certificate.getNotBefore();
 	}
 
@@ -247,7 +233,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public boolean isExpiredOn(final Date date) {
-
 		if ((x509Certificate == null) || (date == null)) {
 			return true;
 		}
@@ -261,7 +246,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public boolean isValidOn(final Date date) {
-
 		if ((x509Certificate == null) || (date == null)) {
 			return false;
 		}
@@ -281,7 +265,6 @@ public class CertificateToken extends Token {
 	 * @return null if the revocation data cannot be checked, or true or false
 	 */
 	public Boolean isRevoked() {
-
 		if (isTrusted()) {
 			return false;
 		}
@@ -303,7 +286,6 @@ public class CertificateToken extends Token {
 	 */
 	@Override
 	public boolean isTrusted() {
-
 		return sources.contains(CertificateSourceType.TRUSTED_LIST) || sources.contains(CertificateSourceType.TRUSTED_STORE);
 	}
 
@@ -314,9 +296,7 @@ public class CertificateToken extends Token {
 	 */
 	@Override
 	public boolean isSelfSigned() {
-
 		if (selfSigned == null) {
-
 			final String n1 = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
 			final String n2 = x509Certificate.getIssuerX500Principal().getName(X500Principal.CANONICAL);
 			selfSigned = n1.equals(n2);
@@ -330,7 +310,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public X509Certificate getCertificate() {
-
 		return x509Certificate;
 	}
 
@@ -364,9 +343,7 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public Set<ServiceInfo> getAssociatedTSPS() {
-
 		if (isTrusted()) {
-
 			return associatedTSPS;
 		}
 		return null;
@@ -379,7 +356,6 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public BigInteger getSerialNumber() {
-
 		return x509Certificate.getSerialNumber();
 	}
 
@@ -391,14 +367,13 @@ public class CertificateToken extends Token {
 	 */
 	public X500Principal getSubjectX500Principal() {
 		if (subjectX500PrincipalNormalized == null) {
-			subjectX500PrincipalNormalized = DSSUtils.getSubjectX500Principal(this);
+			subjectX500PrincipalNormalized = DSSUtils.getNormalizedX500Principal(x509Certificate.getSubjectX500Principal());;
 		}
 		return subjectX500PrincipalNormalized;
 	}
 
 	@Override
 	public boolean isSignedBy(final CertificateToken issuerToken) {
-
 		signatureValid = false;
 		signatureInvalidityReason = "";
 		try {
@@ -410,16 +385,12 @@ public class CertificateToken extends Token {
 				this.issuerToken = issuerToken;
 			}
 		} catch (InvalidKeyException e) {
-
 			signatureInvalidityReason = "InvalidKeyException - on incorrect key.";
 		} catch (CertificateException e) {
-
 			signatureInvalidityReason = "CertificateException -  on encoding errors.";
 		} catch (NoSuchAlgorithmException e) {
-
 			signatureInvalidityReason = "NoSuchAlgorithmException - on unsupported signature algorithms.";
 		} catch (SignatureException e) {
-
 			signatureInvalidityReason = "SignatureException - on signature errors.";
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("ERROR: {} is not signed by {}: {}", new Object[]{getAbbreviation(), issuerToken.getAbbreviation(), e.getMessage()});
@@ -445,45 +416,17 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Returns the encoded base 64 digest value of the certificate for a given algorithm. Can return null if the
-	 * algorithm is unknown.
-	 *
-	 * @param digestAlgorithm
-	 * @return
-	 */
-	public String getDigestValue(final DigestAlgorithm digestAlgorithm) {
-		if (digests == null) {
-			digests = new HashMap<DigestAlgorithm, String>();
-		}
-		String encodedDigest = digests.get(digestAlgorithm);
-		if (encodedDigest == null) {
-			try {
-				byte[] digest = DSSUtils.digest(digestAlgorithm, x509Certificate.getEncoded());
-				encodedDigest = Base64.encodeBase64String(digest);
-				digests.put(digestAlgorithm, encodedDigest);
-			} catch (Exception e) {
-				throw new DSSException(e);
-			}
-		}
-		return encodedDigest;
-	}
-
-	/**
 	 * Returns the trust anchor associated with the certificate. If it is the self-signed certificate then {@code this} is returned.
 	 *
 	 * @return
 	 */
 	public CertificateToken getTrustAnchor() {
-
 		if (isSelfSigned() && isTrusted()) {
-
 			return this;
 		}
 		CertificateToken issuerCertToken = getIssuerToken();
 		while (issuerCertToken != null) {
-
 			if (issuerCertToken.isTrusted()) {
-
 				return issuerCertToken;
 			}
 			issuerCertToken = issuerCertToken.getIssuerToken();
@@ -504,37 +447,28 @@ public class CertificateToken extends Token {
 
 	@Override
 	public String toString(String indentStr) {
-
 		try {
-
 			final StringBuffer out = new StringBuffer();
 			out.append(indentStr).append("CertificateToken[\n");
 			indentStr += "\t";
 
 			String issuerAsString = "";
 			if (issuerToken == null) {
-
 				if (isSelfSigned()) {
-
 					issuerAsString = "[SELF-SIGNED]";
 				} else {
 					issuerAsString = getIssuerX500Principal().toString();
 				}
 			} else {
-
 				issuerAsString = issuerToken.getDSSIdAsString();
 			}
 			String certSource = "UNKNOWN";
 			if (sources.size() > 0) {
-
 				for (final CertificateSourceType source : sources) {
-
 					final String name = source.name();
 					if ("UNKNOWN".equals(certSource)) {
-
 						certSource = name;
 					} else {
-
 						certSource += "/" + name;
 					}
 				}
@@ -546,9 +480,7 @@ public class CertificateToken extends Token {
 			out.append(indentStr).append("Subject name       : ").append(getSubjectX500Principal()).append('\n');
 			out.append(indentStr).append("Issuer subject name: ").append(getIssuerX500Principal()).append('\n');
 			if (sources.contains(CertificateSourceType.TRUSTED_LIST)) {
-
 				for (ServiceInfo si : associatedTSPS) {
-
 					out.append(indentStr).append("Service Info      :\n");
 					indentStr += "\t";
 					out.append(si.toString(indentStr));
@@ -557,23 +489,17 @@ public class CertificateToken extends Token {
 			}
 			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 			if (isTrusted()) {
-
 				out.append(indentStr).append("Signature validity : Signature verification is not needed: trusted certificate\n");
 			} else {
-
 				if (signatureValid) {
-
 					out.append(indentStr).append("Signature validity : VALID").append('\n');
 				} else {
-
 					if (!signatureInvalidityReason.isEmpty()) {
-
 						out.append(indentStr).append("Signature validity : INVALID").append(" - ").append(signatureInvalidityReason).append('\n');
 					}
 				}
 			}
 			if (revocationToken != null) {
-
 				out.append(indentStr).append("Revocation data[\n");
 				indentStr += "\t";
 				final CertificateToken revocationTokenIssuerToken = revocationToken.getIssuerToken();
@@ -582,27 +508,20 @@ public class CertificateToken extends Token {
 				indentStr = indentStr.substring(1);
 				out.append(indentStr).append("]\n");
 			} else {
-
 				if (isSelfSigned()) {
-
 					out.append(indentStr).append("Verification of revocation data is not necessary: self-signed certificate.\n");
 				} else if (isTrusted()) {
-
 					out.append(indentStr).append("Verification of revocation data is not necessary: trusted certificate.\n");
 				} else {
-
 					out.append(indentStr).append("There is no revocation data available!\n");
 				}
 			}
 			if (issuerToken != null) {
-
 				out.append(indentStr).append("Issuer certificate[\n");
 				indentStr += "\t";
 				if (issuerToken.isSelfSigned()) {
-
 					out.append(indentStr).append(issuerToken.getDSSIdAsString()).append(" SELF-SIGNED");
 				} else {
-
 					out.append(issuerToken.toString(indentStr));
 				}
 				out.append('\n');
@@ -610,14 +529,12 @@ public class CertificateToken extends Token {
 				out.append(indentStr).append("]\n");
 			}
 			for (String info : this.extraInfo.getValidationInfo()) {
-
 				out.append(indentStr).append("- ").append(info).append('\n');
 			}
 			indentStr = indentStr.substring(1);
 			out.append(indentStr).append("]");
 			return out.toString();
 		} catch (Exception e) {
-
 			return e.getMessage();
 		}
 	}

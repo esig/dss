@@ -23,13 +23,10 @@ package eu.europa.esig.dss.tsl;
 /**
  * How the conditions are aggregated.
  *
- *
- *
- *
- *
- *
  */
 public enum MatchingCriteriaIndicator {
-    atLeastOne, all, none
+
+	atLeastOne, all, none
+
 }
 

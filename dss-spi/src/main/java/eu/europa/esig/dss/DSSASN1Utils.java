@@ -25,7 +25,6 @@ import java.math.BigInteger;
 import java.security.cert.CertificateParsingException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -329,16 +328,14 @@ public final class DSSASN1Utils {
 	}
 
 	public static List<String> getPolicyIdentifiers(final CertificateToken certToken) {
+		List<String> policyIdentifiers = new ArrayList<String>();
 		final byte[] certificatePolicies = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
-		if (certificatePolicies == null) {
-			return Collections.emptyList();
-		}
-		ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePolicies);
-		final List<String> policyIdentifiers = new ArrayList<String>();
-		for (int ii = 0; ii < seq.size(); ii++) {
-			final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
-			policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
-
+		if (certificatePolicies != null) {
+			ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePolicies);
+			for (int ii = 0; ii < seq.size(); ii++) {
+				final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
+				policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
+			}
 		}
 		return policyIdentifiers;
 	}

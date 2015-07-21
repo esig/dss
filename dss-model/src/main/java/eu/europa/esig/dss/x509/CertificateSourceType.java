@@ -18,27 +18,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.tsl;
-
-import java.io.Serializable;
-
-import eu.europa.esig.dss.x509.CertificateToken;
+package eu.europa.esig.dss.x509;
 
 /**
- * Represents a condition defined in the trusted list on a certificate.
- *
+ * Standard sources for a certificate
  *
  */
+public enum CertificateSourceType {
 
-public abstract class Condition implements Serializable {
+	TRUSTED_STORE, TRUSTED_LIST, SIGNATURE, OCSP_RESPONSE, OTHER, AIA, UNKNOWN;
 
-    /**
-     * Returns true if the condition is evaluated to true for the given certificate.
-     *
-     * @param certificateToken {@code CertificateToken} to be checked
-     * @return
-     */
-    public abstract boolean check(final CertificateToken certificateToken);
-
-    public abstract String toString(String indent);
 }

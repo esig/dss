@@ -53,6 +53,10 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-xades</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-token</artifactId>
+		</dependency>
         <dependency>
             <groupId>be.fedict.eid-applet</groupId>
             <artifactId>eid-applet-service</artifactId>

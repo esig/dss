@@ -38,6 +38,7 @@
 		<module>dss-soap-client</module>
 		<module>dss-soap</module>
 		<module>dss-light-applet</module>
+		<module>dss-token</module>
 	</modules>
 
 	<developers>
@@ -439,6 +440,11 @@
 	        <dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-light-applet</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-token</artifactId>
 				<version>${project.version}</version>
 	        </dependency>
 			<dependency>

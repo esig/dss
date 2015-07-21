@@ -22,7 +22,7 @@ package eu.europa.esig.dss;
 
 import java.security.MessageDigest;
 
-import org.apache.commons.codec.binary.Hex;
+import javax.xml.bind.DatatypeConverter;
 
 import eu.europa.esig.dss.x509.Token;
 
@@ -33,13 +33,13 @@ public final class TokenIdentifier {
 
 	private Digest tokenDigest;
 
-	private TokenIdentifier(byte[] encodedToken) {
+	TokenIdentifier(byte[] encodedToken) {
 		if (encodedToken == null) {
 			throw new DSSException("The encodedToken cannot be null!");
 		}
 		try {
 			DigestAlgorithm algo = DigestAlgorithm.SHA256;
-			MessageDigest md = MessageDigest.getInstance(algo.getName());
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			byte[] digestValue = md.digest(encodedToken);
 			this.tokenDigest = new Digest(algo, digestValue);
 		} catch (Exception e) {
@@ -55,7 +55,7 @@ public final class TokenIdentifier {
 	 * Return an ID conformant to XML Id
 	 */
 	public String asXmlId() {
-		return Hex.encodeHexString(tokenDigest.getValue());
+		return DatatypeConverter.printHexBinary(tokenDigest.getValue());
 	}
 
 	@Override
@@ -67,8 +67,7 @@ public final class TokenIdentifier {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result)
-				+ ((tokenDigest == null) ? 0 : tokenDigest.hashCode());
+		result = (prime * result) + ((tokenDigest == null) ? 0 : tokenDigest.hashCode());
 		return result;
 	}
 

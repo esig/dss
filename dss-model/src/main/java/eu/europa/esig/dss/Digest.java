@@ -23,7 +23,7 @@ package eu.europa.esig.dss;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.apache.commons.codec.binary.Base64;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * Container for a Digest and his algorithm
@@ -37,40 +37,44 @@ public final class Digest implements Serializable {
 
 	public Digest() {
 	}
-	
+
 	public Digest(DigestAlgorithm algorithm, byte[] value) {
 		this.algorithm = algorithm;
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
-		return algorithm.getName() + ":" + Base64.encodeBase64String(value);
+		return algorithm.getName() + ":" + DatatypeConverter.printBase64Binary(value);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((algorithm == null) ? 0 : algorithm.hashCode());
-		result = prime * result + Arrays.hashCode(value);
+		result = (prime * result) + ((algorithm == null) ? 0 : algorithm.hashCode());
+		result = (prime * result) + Arrays.hashCode(value);
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Digest other = (Digest) obj;
-		if (algorithm != other.algorithm)
+		if (algorithm != other.algorithm) {
 			return false;
-		if (!Arrays.equals(value, other.value))
+		}
+		if (!Arrays.equals(value, other.value)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -82,7 +86,8 @@ public final class Digest implements Serializable {
 	}
 
 	/**
-	 * @param algorithm the algorithm to set
+	 * @param algorithm
+	 *            the algorithm to set
 	 */
 	public void setAlgorithm(DigestAlgorithm algorithm) {
 		this.algorithm = algorithm;
@@ -96,7 +101,8 @@ public final class Digest implements Serializable {
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param value
+	 *            the value to set
 	 */
 	public void setValue(byte[] value) {
 		this.value = value;

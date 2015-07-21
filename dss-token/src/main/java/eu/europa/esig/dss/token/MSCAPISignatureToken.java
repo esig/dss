@@ -62,12 +62,6 @@ public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 		}
 	}
 
-	private PasswordInputCallback callback;
-
-	public MSCAPISignatureToken(PasswordInputCallback callback) {
-		this.callback = callback;
-	}
-
 	@Override
 	public void close() {
 	}

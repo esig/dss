@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.x509;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import eu.europa.esig.dss.DSSUtils;
-
+@SuppressWarnings("serial")
 public class CertificateTokenValidationExtraInfo extends TokenValidationExtraInfo {
 
 	/**
@@ -76,17 +76,22 @@ public class CertificateTokenValidationExtraInfo extends TokenValidationExtraInf
 	}
 
 	public void infoTheCertNotValidYet(final Date validationDate, final Date notAfter, final Date notBefore) {
-		final String endDate = DSSUtils.formatInternal(notAfter);
-		final String startDate = DSSUtils.formatInternal(notBefore);
-		final String valDate = DSSUtils.formatInternal(validationDate);
+		final String endDate = formatInternal(notAfter);
+		final String startDate = formatInternal(notBefore);
+		final String valDate = formatInternal(validationDate);
 		addInfo("The certificate is not valid yet! [" + startDate + "-" + endDate + "] on " + valDate);
 	}
 
 	public void infoTheCertIsExpired(final Date validationDate, final Date notAfter, final Date notBefore) {
-		final String endDate = DSSUtils.formatInternal(notAfter);
-		final String startDate = DSSUtils.formatInternal(notBefore);
-		final String valDate = DSSUtils.formatInternal(validationDate);
+		final String endDate = formatInternal(notAfter);
+		final String startDate = formatInternal(notBefore);
+		final String valDate = formatInternal(validationDate);
 		addInfo("The certificate is expired! [" + startDate + "-" + endDate + "] on " + valDate);
+	}
+
+	private String formatInternal(final Date date) {
+		String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date);
+		return formatedDate;
 	}
 
 }

@@ -38,9 +38,6 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import eu.europa.esig.dss.DSSBadPasswordException;
-import eu.europa.esig.dss.DSSBadPasswordException.MSG;
-import eu.europa.esig.dss.DSSConfigurationException;
 import eu.europa.esig.dss.DSSException;
 
 /**
@@ -123,7 +120,6 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 		this.slotIndex = slotIndex;
 	}
 
-	@SuppressWarnings("restriction")
 	private Provider getProvider() {
 		try {
 			if (_pkcs11Provider == null) {
@@ -144,10 +140,11 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 			}
 			return _pkcs11Provider;
 		} catch (ProviderException ex) {
-			throw new DSSConfigurationException(DSSConfigurationException.MSG.NOT_PKCS11_LIB, ex);
+			throw new DSSException("Not a PKCS#11 library", ex);
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	private void installProvider() {
 
 		/*
@@ -194,7 +191,7 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 			} catch (Exception e) {
 				if (e instanceof sun.security.pkcs11.wrapper.PKCS11Exception) {
 					if ("CKR_PIN_INCORRECT".equals(e.getMessage())) {
-						throw new DSSBadPasswordException(MSG.PKCS11_BAD_PASSWORD, e);
+						throw new DSSException("Bad password for PKCS11", e);
 					}
 				}
 				throw new KeyStoreException("Can't initialize Sun PKCS#11 security provider. Reason: " + e.getMessage(), e);
@@ -213,7 +210,7 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 			try {
 				Security.removeProvider(_pkcs11Provider.getName());
 			} catch (Exception ex) {
-				LOG.error(ex.getMessage(), ex);
+				logger.error(ex.getMessage(), ex);
 			}
 		}
 		this._pkcs11Provider = null;
