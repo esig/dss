@@ -40,6 +40,7 @@ import org.bouncycastle.asn1.x509.ReasonFlags;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -76,9 +77,16 @@ public class CRLUtils {
 		checkCriticalExtensions(x509CRL, crlValidity);
 		checkSignatureValue(x509CRL, issuerToken, crlValidity);
 		if (crlValidity.isSignatureIntact()) {
-			crlValidity.setCrlSignKeyUsage(issuerToken.hasCRLSignKeyUsage());
+			crlValidity.setCrlSignKeyUsage(hasCRLSignKeyUsage(issuerToken));
 		}
 		return crlValidity;
+	}
+
+	/**
+	 * @return true if the certificate has cRLSign key usage bit set
+	 */
+	static boolean hasCRLSignKeyUsage(CertificateToken token) {
+		return token.checkKeyUsage(KeyUsageBit.crlSign);
 	}
 
 	private static void checkSignatureValue(final X509CRL x509CRL, final CertificateToken issuerToken, final CRLValidity crlValidity) {

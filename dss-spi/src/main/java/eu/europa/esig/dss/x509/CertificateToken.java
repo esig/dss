@@ -492,13 +492,6 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * @return true if the wrapped certificate has cRLSign key usage bit set
-	 */
-	public boolean hasCRLSignKeyUsage() {
-		return checkKeyUsage(KeyUsageBit.crlSign);
-	}
-
-	/**
 	 * This method checks if the certificate contains the given key usage bit.
 	 *
 	 * @param keyUsageBit the keyUsageBit to be checked.
