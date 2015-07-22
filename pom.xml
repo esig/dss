@@ -11,6 +11,8 @@
 	<name>Digital Signature Services</name>
 
 	<modules>
+		<module>dss-model</module>
+		<module>dss-token</module>
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-spi</module>
@@ -20,6 +22,8 @@
 		<module>dss-webservices-client</module>
 		<module>dss-demo-applet</module>
 		<module>dss-demo-applet-package</module>
+		<module>dss-light-applet</module>
+		<module>dss-light-applet-package</module>
 		<module>dss-demo-webapp</module>
 		<module>dss-demo-bundle</module>
 		<module>dss-policy-jaxb</module>
@@ -31,14 +35,11 @@
 		<module>dss-cades</module>
 		<module>dss-pades</module>
 		<module>dss-xades</module>
-		<module>dss-model</module>
 		<module>dss-remote-services</module>
 		<module>dss-rest-client</module>
 		<module>dss-rest</module>
 		<module>dss-soap-client</module>
 		<module>dss-soap</module>
-		<module>dss-light-applet</module>
-		<module>dss-token</module>
 	</modules>
 
 	<developers>
@@ -348,6 +349,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-demo-applet-package</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-light-applet-package</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

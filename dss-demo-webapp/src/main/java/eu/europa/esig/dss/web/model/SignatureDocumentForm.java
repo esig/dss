@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.web.model;
 
+import java.util.Date;
+
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 
@@ -12,6 +14,8 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
 
 public class SignatureDocumentForm {
+
+	private Date signingDate;
 
 	private MultipartFile documentToSign;
 
@@ -30,7 +34,17 @@ public class SignatureDocumentForm {
 	@NotNull(message = "{error.token.type.mandatory}")
 	private SignatureTokenType token;
 
+	private String base64Certificate;
+
 	// TODO claimedRoles, policy
+
+	public Date getSigningDate() {
+		return signingDate;
+	}
+
+	public void setSigningDate(Date signingDate) {
+		this.signingDate = signingDate;
+	}
 
 	public MultipartFile getDocumentToSign() {
 		return documentToSign;
@@ -78,6 +92,14 @@ public class SignatureDocumentForm {
 
 	public void setToken(SignatureTokenType token) {
 		this.token = token;
+	}
+
+	public String getBase64Certificate() {
+		return base64Certificate;
+	}
+
+	public void setBase64Certificate(String base64Certificate) {
+		this.base64Certificate = base64Certificate;
 	}
 
 	@AssertTrue(message = "{error.to.sign.file.mandatory}")

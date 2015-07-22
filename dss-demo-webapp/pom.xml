@@ -45,6 +45,24 @@
 							</artifactItems>
 						</configuration>
 					</execution>
+					<execution>
+						<id>copy-light-applet</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+									<artifactId>dss-light-applet-package</artifactId>
+									<type>jar</type>
+									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
+									<destFileName>/jar/light-signature-applet.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -106,7 +124,11 @@
 			<artifactId>dss-demo-applet-package</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-light-applet-package</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		
 		<dependency>
 			<groupId>xalan</groupId>

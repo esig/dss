@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.web.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,15 +43,14 @@ import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.SignatureDocumentForm;
+import eu.europa.esig.dss.web.service.SigningService;
 
 /**
- *
  * Signature controller
- *
  * With this controller all configurations are in the webapp. The applet is only used to get certificates and to sign
- *
  */
 @Controller
 @SessionAttributes(value = {
@@ -58,6 +61,10 @@ public class SignatureController {
 
 	private static final String SIGNATURE_PARAMETERS = "signature-parameters";
 	private static final String SELECT_CERTIFICATE = "select-certificate";
+	private static final String SIGN_DOCUMENT = "sign-document";
+
+	@Autowired
+	private SigningService signingService;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -69,17 +76,20 @@ public class SignatureController {
 	}
 
 	/**
-	 * @param model The model attributes
+	 * @param model
+	 *            The model attributes
 	 * @return a view name
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public String showSignatureParameters(Model model, HttpServletRequest request) {
-		model.addAttribute("signatureDocumentForm", new SignatureDocumentForm());
+		SignatureDocumentForm signatureDocumentForm = new SignatureDocumentForm();
+		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
 		return SIGNATURE_PARAMETERS;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String sendSignatureParameters(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) {
+	public String sendSignatureParameters(HttpServletRequest request, HttpServletResponse response,
+			@ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) {
 		if (result.hasErrors()) {
 			return SIGNATURE_PARAMETERS;
 		}
@@ -87,6 +97,22 @@ public class SignatureController {
 		return SELECT_CERTIFICATE;
 	}
 
+	@RequestMapping(method = RequestMethod.POST, params = "certificate")
+	public String getDataToSign(Model model, HttpServletRequest request, HttpServletResponse response,
+			@ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) {
+		if (result.hasErrors()) {
+			return SIGNATURE_PARAMETERS;
+		}
+
+		signatureDocumentForm.setSigningDate(new Date());
+		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
+
+		ToBeSigned dataToSign = signingService.getDataToSign(signatureDocumentForm);
+
+		model.addAttribute("digest", Base64.encodeBase64String(dataToSign.getBytes()));
+
+		return SIGN_DOCUMENT;
+	}
 
 	@ModelAttribute("signatureForms")
 	public SignatureForm[] getSignatureForms() {

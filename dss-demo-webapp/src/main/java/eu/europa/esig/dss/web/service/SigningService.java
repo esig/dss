@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.web.service;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +9,12 @@ import org.springframework.stereotype.Component;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
@@ -18,6 +23,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.web.model.SignatureDocumentForm;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -42,12 +48,35 @@ public class SigningService {
 		parameters.setSignaturePackaging(packaging);
 		parameters.setSignatureLevel(level);
 
-		if (originalDocument !=null) {
+		if (originalDocument != null) {
 			parameters.setDetachedContent(originalDocument);
 		}
 
 		DSSDocument extendedDoc = service.extendDocument(signedDocument, parameters);
 		return extendedDoc;
+	}
+
+	public ToBeSigned getDataToSign(SignatureDocumentForm form) {
+		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+		service.setTspSource(tspSource);
+
+		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm());
+		parameters.setSignaturePackaging(form.getSignaturePackaging());
+		parameters.setSignatureLevel(form.getSignatureLevel());
+		parameters.setDigestAlgorithm(form.getDigestAlgorithm());
+		parameters.bLevel().setSigningDate(form.getSigningDate());
+		parameters.setSigningCertificate(DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate()));
+
+		ToBeSigned toBeSigned = null;
+		try {
+			DSSDocument toSignDocument = new InMemoryDocument(form.getDocumentToSign().getBytes(), form.getDocumentToSign().getName());
+
+			toBeSigned = service.getDataToSign(toSignDocument, parameters);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		return toBeSigned;
 	}
 
 	@SuppressWarnings("rawtypes")
