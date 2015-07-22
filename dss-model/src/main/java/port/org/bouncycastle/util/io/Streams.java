@@ -12,20 +12,6 @@ public final class Streams {
 	private static int BUFFER_SIZE = 512;
 
 	/**
-	 * Read stream till EOF is encountered.
-	 *
-	 * @param inStr
-	 *            stream to be emptied.
-	 * @throws IOException
-	 *             in case of underlying IOException.
-	 */
-	public static void drain(InputStream inStr) throws IOException {
-		byte[] bs = new byte[BUFFER_SIZE];
-		while (inStr.read(bs, 0, bs.length) >= 0) {
-		}
-	}
-
-	/**
 	 * Read stream fully, returning contents in a byte array.
 	 *
 	 * @param inStr
@@ -37,24 +23,6 @@ public final class Streams {
 	public static byte[] readAll(InputStream inStr) throws IOException {
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		pipeAll(inStr, buf);
-		return buf.toByteArray();
-	}
-
-	/**
-	 * Read from inStr up to a maximum number of bytes, throwing an exception if more the maximum amount
-	 * of requested data is available.
-	 *
-	 * @param inStr
-	 *            stream to be read.
-	 * @param limit
-	 *            maximum number of bytes that can be read.
-	 * @return a byte array representing the contents of inStr.
-	 * @throws IOException
-	 *             in case of underlying IOException, or if limit is reached on inStr still has data in it.
-	 */
-	public static byte[] readAllLimited(InputStream inStr, int limit) throws IOException {
-		ByteArrayOutputStream buf = new ByteArrayOutputStream();
-		pipeAllLimited(inStr, limit, buf);
 		return buf.toByteArray();
 	}
 
@@ -118,29 +86,4 @@ public final class Streams {
 		}
 	}
 
-	/**
-	 * Write up to limit bytes of data from inStr to the destination stream outStr.
-	 *
-	 * @param inStr
-	 *            source input stream.
-	 * @param limit
-	 *            the maximum number of bytes allowed to be read.
-	 * @param outStr
-	 *            destination output stream.
-	 * @throws IOException
-	 *             in case of underlying IOException, or if limit is reached on inStr still has data in it.
-	 */
-	public static long pipeAllLimited(InputStream inStr, long limit, OutputStream outStr) throws IOException {
-		long total = 0;
-		byte[] bs = new byte[BUFFER_SIZE];
-		int numRead;
-		while ((numRead = inStr.read(bs, 0, bs.length)) >= 0) {
-			total += numRead;
-			if (total > limit) {
-				throw new StreamOverflowException("Data Overflow");
-			}
-			outStr.write(bs, 0, numRead);
-		}
-		return total;
-	}
 }

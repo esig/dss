@@ -3,9 +3,9 @@ package port.org.bouncycastle.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Vector;
 
 public final class Strings {
+
 	public static String fromUTF8ByteArray(byte[] bytes) {
 		int i = 0;
 		int length = 0;
@@ -120,68 +120,6 @@ public final class Strings {
 		}
 	}
 
-	/**
-	 * A locale independent version of toUpperCase.
-	 *
-	 * @param string
-	 *            input to be converted
-	 * @return a US Ascii uppercase version
-	 */
-	public static String toUpperCase(String string) {
-		boolean changed = false;
-		char[] chars = string.toCharArray();
-
-		for (int i = 0; i != chars.length; i++) {
-			char ch = chars[i];
-			if (('a' <= ch) && ('z' >= ch)) {
-				changed = true;
-				chars[i] = (char) ((ch - 'a') + 'A');
-			}
-		}
-
-		if (changed) {
-			return new String(chars);
-		}
-
-		return string;
-	}
-
-	/**
-	 * A locale independent version of toLowerCase.
-	 *
-	 * @param string
-	 *            input to be converted
-	 * @return a US ASCII lowercase version
-	 */
-	public static String toLowerCase(String string) {
-		boolean changed = false;
-		char[] chars = string.toCharArray();
-
-		for (int i = 0; i != chars.length; i++) {
-			char ch = chars[i];
-			if (('A' <= ch) && ('Z' >= ch)) {
-				changed = true;
-				chars[i] = (char) ((ch - 'A') + 'a');
-			}
-		}
-
-		if (changed) {
-			return new String(chars);
-		}
-
-		return string;
-	}
-
-	public static byte[] toByteArray(char[] chars) {
-		byte[] bytes = new byte[chars.length];
-
-		for (int i = 0; i != bytes.length; i++) {
-			bytes[i] = (byte) chars[i];
-		}
-
-		return bytes;
-	}
-
 	public static byte[] toByteArray(String string) {
 		byte[] bytes = new byte[string.length()];
 
@@ -192,15 +130,6 @@ public final class Strings {
 		}
 
 		return bytes;
-	}
-
-	public static int toByteArray(String s, byte[] buf, int off) {
-		int count = s.length();
-		for (int i = 0; i < count; ++i) {
-			char c = s.charAt(i);
-			buf[off + i] = (byte) c;
-		}
-		return count;
 	}
 
 	/**
@@ -229,31 +158,6 @@ public final class Strings {
 		}
 
 		return chars;
-	}
-
-	public static String[] split(String input, char delimiter) {
-		Vector v = new Vector();
-		boolean moreTokens = true;
-		String subString;
-
-		while (moreTokens) {
-			int tokenLocation = input.indexOf(delimiter);
-			if (tokenLocation > 0) {
-				subString = input.substring(0, tokenLocation);
-				v.addElement(subString);
-				input = input.substring(tokenLocation + 1);
-			} else {
-				moreTokens = false;
-				v.addElement(input);
-			}
-		}
-
-		String[] res = new String[v.size()];
-
-		for (int i = 0; i != res.length; i++) {
-			res[i] = (String) v.elementAt(i);
-		}
-		return res;
 	}
 
 }
