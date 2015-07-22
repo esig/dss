@@ -38,12 +38,9 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.Normalizer;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.ServiceInfo;
@@ -52,13 +49,9 @@ import eu.europa.esig.dss.tsl.ServiceInfo;
  * Whenever the signature validation process encounters an {@link java.security.cert.X509Certificate} a certificateToken is created.<br>
  * This class encapsulates some frequently used information: a certificate comes from a certain context (Trusted List,
  * CertStore, Signature), has revocation data... To expedite the processing of such information, they are kept in cache.
- *
- *
  */
 @SuppressWarnings("serial")
 public class CertificateToken extends Token {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CertificateToken.class);
 
 	/**
 	 * Encapsulated X509 certificate.
@@ -87,8 +80,7 @@ public class CertificateToken extends Token {
 	private RevocationToken revocationToken;
 
 	/**
-	 * Indicates if the certificate is self-signed. This attribute stays null till the first call to
-	 * {@link #isSelfSigned()} function.
+	 * Indicates if the certificate is self-signed. This attribute stays null till the first call to {@link #isSelfSigned()} function.
 	 */
 	private Boolean selfSigned;
 
@@ -115,7 +107,8 @@ public class CertificateToken extends Token {
 	/**
 	 * This method returns an instance of {@link eu.europa.esig.dss.x509.CertificateToken}.
 	 *
-	 * @param cert <code>X509Certificate</code>
+	 * @param cert
+	 *            <code>X509Certificate</code>
 	 * @return
 	 */
 	static CertificateToken newInstance(X509Certificate cert) {
@@ -125,7 +118,8 @@ public class CertificateToken extends Token {
 	/**
 	 * Creates a CertificateToken wrapping the provided X509Certificate.
 	 *
-	 * @param x509Certificate X509Certificate
+	 * @param x509Certificate
+	 *            X509Certificate
 	 */
 	public CertificateToken(X509Certificate x509Certificate) {
 		if (x509Certificate == null) {
@@ -133,7 +127,7 @@ public class CertificateToken extends Token {
 		}
 
 		this.x509Certificate = x509Certificate;
-		this.issuerX500Principal = DSSUtils.getNormalizedX500Principal(x509Certificate.getIssuerX500Principal());
+		this.issuerX500Principal = Normalizer.getNormalizedX500Principal(x509Certificate.getIssuerX500Principal());
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
 		this.digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
@@ -176,8 +170,9 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * @param revocationToken This is the reference to the CertificateStatus. The object type is used because of the organisation
-	 *                        of module.
+	 * @param revocationToken
+	 *            This is the reference to the CertificateStatus. The object type is used because of the organisation
+	 *            of module.
 	 */
 	public void setRevocationToken(RevocationToken revocationToken) {
 		this.revocationToken = revocationToken;
@@ -192,11 +187,9 @@ public class CertificateToken extends Token {
 
 	/**
 	 * Returns the public key associated with the certificate.<br>
-	 *
 	 * To get the encryption algorithm used with this public key call getAlgorithm() method.<br>
 	 * RFC 2459:<br>
 	 * 4.1.2.7 Subject Public Key Info
-	 *
 	 * This field is used to carry the public key and identify the algorithm with which the key is used. The algorithm is
 	 * identified using the AlgorithmIdentifier structure specified in section 4.1.1.2. The object identifiers for the
 	 * supported algorithms and the methods for encoding the public key materials (public key and parameters) are
@@ -367,7 +360,8 @@ public class CertificateToken extends Token {
 	 */
 	public X500Principal getSubjectX500Principal() {
 		if (subjectX500PrincipalNormalized == null) {
-			subjectX500PrincipalNormalized = DSSUtils.getNormalizedX500Principal(x509Certificate.getSubjectX500Principal());;
+			subjectX500PrincipalNormalized = Normalizer.getNormalizedX500Principal(x509Certificate.getSubjectX500Principal());
+			;
 		}
 		return subjectX500PrincipalNormalized;
 	}
@@ -392,9 +386,6 @@ public class CertificateToken extends Token {
 			signatureInvalidityReason = "NoSuchAlgorithmException - on unsupported signature algorithms.";
 		} catch (SignatureException e) {
 			signatureInvalidityReason = "SignatureException - on signature errors.";
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("ERROR: {} is not signed by {}: {}", new Object[]{getAbbreviation(), issuerToken.getAbbreviation(), e.getMessage()});
-			}
 		} catch (NoSuchProviderException e) { // if there's no default provider.
 			throw new DSSException(e);
 		}
@@ -437,7 +428,8 @@ public class CertificateToken extends Token {
 	/**
 	 * This method checks if the certificate contains the given key usage bit.
 	 *
-	 * @param keyUsageBit the keyUsageBit to be checked.
+	 * @param keyUsageBit
+	 *            the keyUsageBit to be checked.
 	 * @return true if contains
 	 */
 	public boolean checkKeyUsage(final KeyUsageBit keyUsageBit) {
@@ -549,7 +541,8 @@ public class CertificateToken extends Token {
 	/**
 	 * Sets the Id associated with the certificate in case of an XML signature.
 	 *
-	 * @param xmlId id
+	 * @param xmlId
+	 *            id
 	 */
 	public void setXmlId(final String xmlId) {
 		this.xmlId = xmlId;
@@ -561,12 +554,12 @@ public class CertificateToken extends Token {
 	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
 	 */
 	public Set<KeyUsageBit> getKeyUsageBits() {
-		if (keyUsageBits == null){
+		if (keyUsageBits == null) {
 			boolean[] keyUsageArray = x509Certificate.getKeyUsage();
 			keyUsageBits = new HashSet<KeyUsageBit>();
 			if (keyUsageArray != null) {
 				for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
-					if (keyUsageArray[keyUsageBit.getIndex()]){
+					if (keyUsageArray[keyUsageBit.getIndex()]) {
 						keyUsageBits.add(keyUsageBit);
 					}
 				}
