@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This class allows to handle different mime types. It also allows to add (define) new mime-type.
@@ -121,6 +122,15 @@ public class MimeType implements Serializable {
 			return mimeType;
 		}
 		return BINARY;
+	}
+
+	public String getExtension() {
+		for (Entry<String, MimeType> entry : fileExtensions.entrySet()) {
+			if (this.equals(entry.getValue())) {
+				return entry.getKey();
+			}
+		}
+		return "";
 	}
 
 	/**

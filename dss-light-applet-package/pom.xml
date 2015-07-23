@@ -55,8 +55,8 @@
 								<option>-keep public class * extends java.applet.Applet { *; }</option>
 								<option>-dontwarn eu.europa.esig.dss.AbstractSerializableSignatureParameters</option>
 								<option>-dontwarn eu.europa.esig.dss.TimestampParameters</option>
-								<option>-keep class eu.europa.esig.dss.DigestAlgorithm { *; }</option>
-								<option>-keep class eu.europa.esig.dss.EncryptionAlgorithm { *; }</option>
+								<option>-keep enum eu.europa.esig.dss.DigestAlgorithm { *; }</option>
+								<option>-keep enum eu.europa.esig.dss.EncryptionAlgorithm { *; }</option>
 								<option>-keep class eu.europa.esig.dss.token.Pkcs12SignatureToken { *; }</option>
 								<option>-keep class eu.europa.esig.dss.token.MSCAPISignatureToken { *; }</option>
 								<option>-keep class port.org.bouncycastle.asn1.ASN1Set { *; }</option>

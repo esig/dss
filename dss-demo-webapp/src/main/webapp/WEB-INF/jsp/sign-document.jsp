@@ -22,3 +22,19 @@
     var version = '1.6';
     deployJava.runApplet(attributes, parameters, version);
 </script>
+
+<form:form method="post" modelAttribute="signatureDocumentForm" cssClass="form-horizontal" enctype="multipart/form-data">
+    <div class="hidden" id="signature-fields">
+        <input type="hidden" name="sign-document" value="" />
+    </div>
+</form:form>
+
+<script type="text/javascript">
+    function addSignature(encryptionAlgorithm, base64SignatureValue) {
+        $('#signature-fields')
+    		.append('<input type="hidden" name="encryptionAlgorithm" value="'+encryptionAlgorithm+'" />')
+    		.append('<input type="hidden" name="base64SignatureValue" value="'+base64SignatureValue+'" />');
+        
+        $('#signatureDocumentForm').submit();
+    }
+</script>

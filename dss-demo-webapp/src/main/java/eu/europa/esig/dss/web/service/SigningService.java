@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.web.service;
 
-import java.io.IOException;
+import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +9,14 @@ import org.springframework.stereotype.Component;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCService;
@@ -42,7 +45,6 @@ public class SigningService {
 	public DSSDocument extend(SignatureForm signatureForm, SignaturePackaging packaging, SignatureLevel level, DSSDocument signedDocument, DSSDocument originalDocument) {
 
 		DocumentSignatureService service = getSignatureService(signatureForm);
-		service.setTspSource(tspSource);
 
 		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm);
 		parameters.setSignaturePackaging(packaging);
@@ -57,26 +59,49 @@ public class SigningService {
 	}
 
 	public ToBeSigned getDataToSign(SignatureDocumentForm form) {
+		logger.info("Start getDataToSign");
 		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
-		service.setTspSource(tspSource);
 
+		AbstractSignatureParameters parameters = fillParameters(form);
+
+		ToBeSigned toBeSigned = null;
+		try {
+			DSSDocument toSignDocument = new InMemoryDocument(form.getDocumentToSign().getBytes(), form.getDocumentToSign().getName());
+			toBeSigned = service.getDataToSign(toSignDocument, parameters);
+		} catch (Exception e) {
+			logger.error("Unable to execute getDataToSign : " + e.getMessage(), e);
+		}
+		logger.info("End getDataToSign");
+		return toBeSigned;
+	}
+
+	public DSSDocument signDocument(SignatureDocumentForm form) {
+		logger.info("Start signDocument");
+		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+
+		AbstractSignatureParameters parameters = fillParameters(form);
+
+		DSSDocument signedDocument = null;
+		try {
+			DSSDocument toSignDocument = new InMemoryDocument(form.getDocumentToSign().getBytes(), form.getDocumentToSign().getName());
+			SignatureAlgorithm sigAlgorithm = SignatureAlgorithm.getAlgorithm(form.getEncryptionAlgorithm(), form.getDigestAlgorithm());
+			SignatureValue signatureValue = new SignatureValue(sigAlgorithm, DatatypeConverter.parseBase64Binary(form.getBase64SignatureValue()));
+			signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+		} catch (Exception e) {
+			logger.error("Unable to execute signDocument : " + e.getMessage(), e);
+		}
+		logger.info("End signDocument");
+		return signedDocument;
+	}
+
+	private AbstractSignatureParameters fillParameters(SignatureDocumentForm form) {
 		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm());
 		parameters.setSignaturePackaging(form.getSignaturePackaging());
 		parameters.setSignatureLevel(form.getSignatureLevel());
 		parameters.setDigestAlgorithm(form.getDigestAlgorithm());
 		parameters.bLevel().setSigningDate(form.getSigningDate());
 		parameters.setSigningCertificate(DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate()));
-
-		ToBeSigned toBeSigned = null;
-		try {
-			DSSDocument toSignDocument = new InMemoryDocument(form.getDocumentToSign().getBytes(), form.getDocumentToSign().getName());
-
-			toBeSigned = service.getDataToSign(toSignDocument, parameters);
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		return toBeSigned;
+		return parameters;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -97,8 +122,9 @@ public class SigningService {
 				service = new ASiCService(new CommonCertificateVerifier());
 				break;
 			default:
-				logger.error("Unknow signature form : " + signatureForm);
+				throw new DSSException("Unknow signature form : " + signatureForm);
 		}
+		service.setTspSource(tspSource);
 		return service;
 	}
 
