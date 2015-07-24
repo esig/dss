@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" id="token-param">
         <form:label path="token" cssClass="col-sm-2 control-label">
             <spring:message code="label.tokenType" />
         </form:label>
@@ -56,6 +56,42 @@
         </div>
     </div>
     
+    <div class="form-group" id="pkcs-params">
+        <label class="col-sm-2 control-label labelsPKCS11">
+            <spring:message code="label.config.pkcs11" />
+        </label>
+        <label class="col-sm-2 control-label labelsPKCS12">
+            <spring:message code="label.config.pkcs12" />
+        </label>
+        
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-3">
+                    <form:label path="pkcsFile" cssClass="labelsPKCS11"><spring:message code="label.pkcs11.file" /></form:label>
+                    <form:label path="pkcsFile" cssClass="labelsPKCS12"><spring:message code="label.pkcs12.file" /></form:label>
+                </div>
+                <div class="col-sm-4">
+                    <form:input path="pkcsFile" type="file" />
+                </div>
+                <div class="col-sm-3">
+                    <form:errors path="pkcsFile" cssClass="text-danger" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <form:label path="pkcsPassword" cssClass="labelsPKCS11"><spring:message code="label.pkcs11.password" /></form:label>
+                    <form:label path="pkcsPassword" cssClass="labelsPKCS12"><spring:message code="label.pkcs12.password" /></form:label>
+                </div>
+                <div class="col-sm-4">
+                    <form:password path="pkcsPassword"/>
+                </div>
+                <div class="col-sm-3">
+                    <form:errors path="pkcsPasswordValid" cssClass="text-danger" />
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-primary"><spring:message code="label.submit"/></button>
@@ -66,3 +102,30 @@
 </form:form>
 
 <script type="text/javascript" src="<c:url value="/scripts/jsSignatureLevel.js" />"></script>
+
+<script type="text/javascript">
+    var selectedToken = $("input[type='radio'][name='token']:checked");
+    if (selectedToken.length > 0) {
+        displayOrHidePKCSParams(selectedToken.val());
+    } else {
+        displayOrHidePKCSParams("");
+    }
+
+    $("#token-param").on("change", "input[type=radio]", function() {
+		displayOrHidePKCSParams($(this).val());
+    });
+    
+    function displayOrHidePKCSParams(token) {
+        if (token == 'PKCS11') {
+		    $('#pkcs-params').show();
+		    $('.labelsPKCS11').show();
+		    $('.labelsPKCS12').hide();
+		} else if (token == 'PKCS12') {
+		    $('#pkcs-params').show();
+		    $('.labelsPKCS11').hide();
+		    $('.labelsPKCS12').show();
+		} else{
+		    $('#pkcs-params').hide();
+		}
+    }
+</script>

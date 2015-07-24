@@ -172,7 +172,10 @@ public class SignatureController {
 
 	@ModelAttribute("digestAlgos")
 	public DigestAlgorithm[] getDigestAlgorithms() {
-		return DigestAlgorithm.values();
+		DigestAlgorithm[] algos = new DigestAlgorithm[] {
+				DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512
+		};
+		return algos;
 	}
 
 	@ModelAttribute("tokenTypes")

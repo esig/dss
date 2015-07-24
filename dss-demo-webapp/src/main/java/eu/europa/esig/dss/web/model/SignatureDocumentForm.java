@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -35,6 +36,10 @@ public class SignatureDocumentForm {
 
 	@NotNull(message = "{error.token.type.mandatory}")
 	private SignatureTokenType token;
+
+	private MultipartFile pkcsFile;
+
+	private String pkcsPassword;
 
 	private String base64Certificate;
 
@@ -134,9 +139,42 @@ public class SignatureDocumentForm {
 		this.base64SignatureValue = base64SignatureValue;
 	}
 
+	public MultipartFile getPkcsFile() {
+		return pkcsFile;
+	}
+
+	public void setPkcsFile(MultipartFile pkcsFile) {
+		this.pkcsFile = pkcsFile;
+	}
+
+	public String getPkcsPassword() {
+		return pkcsPassword;
+	}
+
+	public void setPkcsPassword(String pkcsPassword) {
+		this.pkcsPassword = pkcsPassword;
+	}
+
 	@AssertTrue(message = "{error.to.sign.file.mandatory}")
 	public boolean isDocumentToSign() {
 		return (documentToSign != null) && (!documentToSign.isEmpty());
 	}
 
+	@AssertTrue(message = "{error.file.mandatory}")
+	public boolean isPkcsFile() {
+		if (SignatureTokenType.PKCS11.equals(token) || SignatureTokenType.PKCS12.equals(token)) {
+			return (pkcsFile != null) && (!pkcsFile.isEmpty());
+		} else {
+			return true;
+		}
+	}
+
+	@AssertTrue(message = "{error.password.mandatory}")
+	public boolean isPkcsPasswordValid() {
+		if (SignatureTokenType.PKCS11.equals(token) || SignatureTokenType.PKCS12.equals(token)) {
+			return StringUtils.isNotEmpty(pkcsPassword);
+		} else {
+			return true;
+		}
+	}
 }
