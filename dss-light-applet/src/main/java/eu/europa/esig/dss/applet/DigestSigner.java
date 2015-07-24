@@ -43,7 +43,7 @@ public class DigestSigner {
 			SignatureValue signatureValue = tokenConnection.sign(toBeSigned, digestAlgorithm, signerKeyEntry);
 			logger.info("Digest signature is finished.");
 			try {
-				jsInvoker.injectSignature(ADD_SIGNATURE, signerKeyEntry.getEncryptionAlgorithm(), DatatypeConverter.printBase64Binary(signatureValue.getValue()));
+				jsInvoker.injectSignature(ADD_SIGNATURE, DatatypeConverter.printBase64Binary(signatureValue.getValue()));
 			} catch (Exception e) {
 				logger.error("Unable to inject the signature : " + e.getMessage(), e);
 			}

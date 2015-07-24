@@ -30,9 +30,8 @@
 </form:form>
 
 <script type="text/javascript">
-    function addSignature(encryptionAlgorithm, base64SignatureValue) {
+    function addSignature(base64SignatureValue) {
         $('#signature-fields')
-    		.append('<input type="hidden" name="encryptionAlgorithm" value="'+encryptionAlgorithm+'" />')
     		.append('<input type="hidden" name="base64SignatureValue" value="'+base64SignatureValue+'" />');
         
         $('#signatureDocumentForm').submit();

@@ -1,13 +1,18 @@
 package eu.europa.esig.dss.web.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -99,8 +104,19 @@ public class SigningService {
 		parameters.setSignaturePackaging(form.getSignaturePackaging());
 		parameters.setSignatureLevel(form.getSignatureLevel());
 		parameters.setDigestAlgorithm(form.getDigestAlgorithm());
+		parameters.setEncryptionAlgorithm(form.getEncryptionAlgorithm());
 		parameters.bLevel().setSigningDate(form.getSigningDate());
 		parameters.setSigningCertificate(DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate()));
+
+		List<String> base64CertificateChain = form.getBase64CertificateChain();
+		if (CollectionUtils.isNotEmpty(base64CertificateChain)) {
+			List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
+			for (String base64Certificate : base64CertificateChain) {
+				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate), true));
+			}
+			parameters.setCertificateChain(certificateChain);
+		}
+
 		return parameters;
 	}
 

@@ -8,8 +8,6 @@ import netscape.javascript.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.EncryptionAlgorithm;
-
 /**
  * This class allows to interact with the browser and to call javascript methods
  */
@@ -23,12 +21,16 @@ public final class JSInvoker {
 		this.jsObject = JSObject.getWindow(applet);
 	}
 
-	public void injectCertificate(String jsFunctionName, String base64Certificate, String readableCertificate) {
-		callMethod(jsFunctionName, base64Certificate, readableCertificate);
+	public void injectCertificate(String jsFunctionName, String base64Certificate, String readableCertificate, String encryptionAlgorithm) {
+		callMethod(jsFunctionName, base64Certificate, readableCertificate, encryptionAlgorithm);
 	}
 
-	public void injectSignature(String jsFunction, EncryptionAlgorithm encryptionAlgorithm, String base64SignatureValue) {
-		callMethod(jsFunction, encryptionAlgorithm.name(), base64SignatureValue);
+	public void injectCertificateChain(String jsFunctionName, String base64Certificate, String chainCertificate) {
+		callMethod(jsFunctionName, base64Certificate, chainCertificate);
+	}
+
+	public void injectSignature(String jsFunction, String base64SignatureValue) {
+		callMethod(jsFunction, base64SignatureValue);
 	}
 
 	private void callMethod(String jsFunctionName, Object... args) {

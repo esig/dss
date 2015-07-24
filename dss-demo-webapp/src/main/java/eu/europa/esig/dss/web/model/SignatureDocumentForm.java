@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.web.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
@@ -36,6 +37,8 @@ public class SignatureDocumentForm {
 	private SignatureTokenType token;
 
 	private String base64Certificate;
+
+	private List<String> base64CertificateChain;
 
 	private EncryptionAlgorithm encryptionAlgorithm;
 
@@ -105,6 +108,14 @@ public class SignatureDocumentForm {
 
 	public void setBase64Certificate(String base64Certificate) {
 		this.base64Certificate = base64Certificate;
+	}
+
+	public List<String> getBase64CertificateChain() {
+		return base64CertificateChain;
+	}
+
+	public void setBase64CertificateChain(List<String> base64CertificateChain) {
+		this.base64CertificateChain = base64CertificateChain;
 	}
 
 	public EncryptionAlgorithm getEncryptionAlgorithm() {

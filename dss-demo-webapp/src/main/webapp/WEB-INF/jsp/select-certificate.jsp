@@ -27,6 +27,8 @@
             <spring:message code="label.select.certificate" />
         </form:label>
         <div class="col-sm-10" id="certificate"></div>
+        <div class="col-sm-10" id="certificateChain"></div>
+        <div class="col-sm-10" id="encryptionAlgo"></div>
     </div>
 
     <div class="form-group">
@@ -40,9 +42,45 @@
 </form:form>
 
 <script type="text/javascript">
-	function addCertificate(base64Certificate, readableCertificate) {
-	    $('#certificate').append('<input type="radio" name="base64Certificate" value="'+base64Certificate+'" /> '+readableCertificate+'<br />');
+    var mapCertificateChain = new Object();
+    var mapEncryptionAlgo = new Object();
+
+	function addCertificate(base64Certificate, readableCertificate, encryptionAlgo) {
+        $('#certificate').append('<input type="radio" name="base64Certificate" value="'+base64Certificate+'" /> ' + readableCertificate + '<br />');
+        mapEncryptionAlgo[base64Certificate] = encryptionAlgo;
 	}
+
+	function addCertificateChain(base64Certificate, chainElement) {
+	    var tab = mapCertificateChain[base64Certificate];
+	    if (tab == null){
+	        tab = [];
+	        mapCertificateChain[base64Certificate] = tab;
+	    }
+	    tab[tab.length] = chainElement;
+
+	    console.log("addCertChain : "+ base64Certificate +" "+ chainElement);
+	    console.log("end addCertChain : "+tab);
+	}
+       
+
+    $("#certificate").on("change", "input[type=radio]", function() {
+        $("#certificateChain").empty();
+        $("#encryptionAlgo").empty();
+        var chain = mapCertificateChain[$(this).val()];
+        var algo = mapEncryptionAlgo[$(this).val()];
+
+        console.log("checked " + chain);
+        if (chain != null) {
+            for (var i = 0; i < chain.length; i++) {
+                console.log("add hidden chain " + chain[i]);
+                $("#certificateChain").append('<input type="hidden" name="base64CertificateChain['+i+']" value="'+chain[i]+'" />');
+            }
+        }
+        
+        if (algo != null) {
+            $("#encryptionAlgo").append('<input type="hidden" name="encryptionAlgorithm" value="'+algo+'" />');
+        }
+    });
 </script>
 
 <jsp:include page="applet-warning.jsp" />

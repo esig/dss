@@ -16,6 +16,7 @@ public class CertificateRetriever {
 	private static final Logger logger = LoggerFactory.getLogger(CertificateRetriever.class);
 
 	private static final String ADD_CERTIFICATE = "addCertificate";
+	private static final String ADD_CERTIFICATE_CHAIN = "addCertificateChain";
 
 	private SignatureTokenConnection tokenConnection;
 	private JSInvoker jsInvoker;
@@ -31,7 +32,6 @@ public class CertificateRetriever {
 			for (DSSPrivateKeyEntry dssPrivateKeyEntry : keys) {
 
 				CertificateToken certificate = dssPrivateKeyEntry.getCertificate();
-
 				String base64Certificate = DatatypeConverter.printBase64Binary(certificate.getEncoded());
 
 				String readableCertificate = certificate.getSubjectDN().getName();
@@ -43,10 +43,22 @@ public class CertificateRetriever {
 
 				logger.info("Certificate found : " + readableCertificate);
 				try {
-					jsInvoker.injectCertificate(ADD_CERTIFICATE, base64Certificate, readableCertificate);
+					jsInvoker.injectCertificate(ADD_CERTIFICATE, base64Certificate, readableCertificate, dssPrivateKeyEntry.getEncryptionAlgorithm().name());
 				} catch (Exception e) {
 					logger.error("Unable to inject the certificate : " + e.getMessage(), e);
 				}
+
+				CertificateToken[] certificateChain = dssPrivateKeyEntry.getCertificateChain();
+				if ((certificateChain != null) && (certificateChain.length > 0)) {
+					for (CertificateToken token : certificateChain) {
+						try {
+							jsInvoker.injectCertificateChain(ADD_CERTIFICATE_CHAIN, base64Certificate, DatatypeConverter.printBase64Binary(token.getEncoded()));
+						} catch (Exception e) {
+							logger.error("Unable to inject the certificate : " + e.getMessage(), e);
+						}
+					}
+				}
+
 			}
 		}
 	}
