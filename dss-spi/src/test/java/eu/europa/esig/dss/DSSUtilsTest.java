@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509CRL;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -41,6 +43,38 @@ public class DSSUtilsTest {
 	public void testLoadIssuerNoAIA() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
 		assertNull(DSSUtils.loadIssuerCertificate(certificate, new NativeHTTPDataLoader()));
+	}
+
+	@Test
+	public void loadCertificate() throws Exception {
+		CertificateToken certificate = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/belgiumrs2.crt"));
+		assertNotNull(certificate);
+
+		FileInputStream fis = new FileInputStream("src/test/resources/belgiumrs2.crt");
+		byte[] byteArray = IOUtils.toByteArray(fis);
+		System.out.println(Base64.encodeBase64String(byteArray));
+		IOUtils.closeQuietly(fis);
+		CertificateToken certificate2 = DSSUtils.loadCertificate(byteArray);
+		assertNotNull(certificate2);
+
+		CertificateToken certificateNew = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/belgiumrs2-new.crt"));
+		assertNotNull(certificateNew);
+
+		FileInputStream fisNew = new FileInputStream("src/test/resources/belgiumrs2-new.crt");
+		byte[] byteArrayNew = IOUtils.toByteArray(fisNew);
+		System.out.println(Base64.encodeBase64String(byteArrayNew));
+		IOUtils.closeQuietly(fisNew);
+		CertificateToken certificate2New = DSSUtils.loadCertificate(byteArrayNew);
+		assertNotNull(certificate2New);
+
+		// String cert =
+		// "PGh0bWw+PGhlYWQ+PHRpdGxlPlJlcXVlc3QgUmVqZWN0ZWQ8L3RpdGxlPjwvaGVhZD48Ym9keT5UaGUgcmVxdWVzdGVkIFVSTCB3YXMgcmVqZWN0ZWQuIFBsZWFzZSBjb25zdWx0IHdpdGggeW91ciBhZG1pbmlzdHJhdG9yLjxicj48YnI+WW91ciBzdXBwb3J0IElEIGlzOiAxMTY1Njg3NjQzMzgzMDI3NjMxNjwvYm9keT48L2h0bWw+";
+		// byte[] decodeBase64 = Base64.decodeBase64(cert);
+		// byte[] decodeBase642 = Base64.decodeBase64(decodeBase64);
+		// CertificateToken certificate3 =
+		// DSSUtils.loadCertificate(base64StringToBase64Binary);
+		// assertNotNull(certificate3);
+
 	}
 
 	@Test
