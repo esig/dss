@@ -37,6 +37,8 @@ public class SignatureDocumentForm {
 	@NotNull(message = "{error.token.type.mandatory}")
 	private SignatureTokenType token;
 
+	private String pkcsPath;
+
 	private MultipartFile pkcsFile;
 
 	private String pkcsPassword;
@@ -139,6 +141,14 @@ public class SignatureDocumentForm {
 		this.base64SignatureValue = base64SignatureValue;
 	}
 
+	public String getPkcsPath() {
+		return pkcsPath;
+	}
+
+	public void setPkcsPath(String pkcsPath) {
+		this.pkcsPath = pkcsPath;
+	}
+
 	public MultipartFile getPkcsFile() {
 		return pkcsFile;
 	}
@@ -162,8 +172,17 @@ public class SignatureDocumentForm {
 
 	@AssertTrue(message = "{error.file.mandatory}")
 	public boolean isPkcsFile() {
-		if (SignatureTokenType.PKCS11.equals(token) || SignatureTokenType.PKCS12.equals(token)) {
+		if (SignatureTokenType.PKCS12.equals(token)) {
 			return (pkcsFile != null) && (!pkcsFile.isEmpty());
+		} else {
+			return true;
+		}
+	}
+
+	@AssertTrue(message = "{error.path.mandatory}")
+	public boolean isPkcsPathValid() {
+		if (SignatureTokenType.PKCS11.equals(token)) {
+			return StringUtils.isNotEmpty(pkcsPath);
 		} else {
 			return true;
 		}
@@ -177,4 +196,5 @@ public class SignatureDocumentForm {
 			return true;
 		}
 	}
+
 }

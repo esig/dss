@@ -25,6 +25,11 @@
         <put-attribute name="content" value="/WEB-INF/jsp/select-certificate.jsp" />
     </definition>
     
+    <!-- PKCS12 doesn't use applet -->
+    <definition name="select-certificate-pkcs12" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/select-certificate-pkcs12.jsp" />
+    </definition>
+    
     <definition name="sign-document" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/sign-document.jsp" />
     </definition>

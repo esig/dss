@@ -119,6 +119,12 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-policy-jaxb</artifactId>
 		</dependency>
+		<!-- PKCS12 is executed on the webapp (not applet) -->
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-token</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-demo-applet-package</artifactId>

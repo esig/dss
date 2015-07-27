@@ -21,8 +21,8 @@ public final class JSInvoker {
 		this.jsObject = JSObject.getWindow(applet);
 	}
 
-	public void injectCertificate(String jsFunctionName, String base64Certificate, String readableCertificate, String encryptionAlgorithm) {
-		callMethod(jsFunctionName, base64Certificate, readableCertificate, encryptionAlgorithm);
+	public void injectCertificate(String jsFunctionName, String base64Certificate, String readableCertificate, String encryptionAlgorithm, String tooltip) {
+		callMethod(jsFunctionName, base64Certificate, readableCertificate, encryptionAlgorithm, tooltip);
 	}
 
 	public void injectCertificateChain(String jsFunctionName, String base64Certificate, String chainCertificate) {

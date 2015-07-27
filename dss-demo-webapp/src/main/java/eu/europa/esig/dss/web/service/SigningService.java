@@ -1,11 +1,15 @@
 package eu.europa.esig.dss.web.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +34,11 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.web.model.SignatureDocumentForm;
+import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -99,6 +106,53 @@ public class SigningService {
 		return signedDocument;
 	}
 
+	public DSSDocument signDocumentPKCS12(SignatureDocumentForm form) {
+		logger.info("Start pkcs12 signature on server side");
+
+		Pkcs12SignatureToken token = null;
+		try {
+			token = new Pkcs12SignatureToken(form.getPkcsPassword(), form.getPkcsFile().getInputStream());
+		} catch (IOException e) {
+			logger.error("Unable to initialize pkcs12 token : " + e.getMessage(), e);
+			return null;
+		}
+
+		List<DSSPrivateKeyEntry> keys = token.getKeys();
+		DSSPrivateKeyEntry selectedKey = null;
+		if (CollectionUtils.isNotEmpty(keys)) {
+			for (DSSPrivateKeyEntry dssPrivateKeyEntry : keys) {
+				if (StringUtils.equals(form.getBase64Certificate(), dssPrivateKeyEntry.getCertificate().getBase64Encoded())) {
+					selectedKey = dssPrivateKeyEntry;
+					CertificateToken[] certificateChain = dssPrivateKeyEntry.getCertificateChain();
+					if (ArrayUtils.isNotEmpty(certificateChain)) {
+						List<String> base64CertificateChain = new ArrayList<String>();
+						for (CertificateToken certToken : certificateChain) {
+							base64CertificateChain.add(certToken.getBase64Encoded());
+						}
+						form.setBase64CertificateChain(base64CertificateChain);
+					}
+					break;
+				}
+			}
+		}
+		form.setSigningDate(new Date());
+
+		AbstractSignatureParameters parameters = fillParameters(form);
+
+		DSSDocument signedDocument = null;
+		try {
+			DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+			DSSDocument toSignDocument = new InMemoryDocument(form.getDocumentToSign().getBytes(), form.getDocumentToSign().getName());
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+			SignatureValue signatureValue = token.sign(dataToSign, form.getDigestAlgorithm(), selectedKey);
+			signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+		} catch (Exception e) {
+			logger.error("Unable to execute signDocumentPKCS12 : " + e.getMessage(), e);
+		}
+		logger.info("End of pkcs12 signature");
+		return signedDocument;
+	}
+
 	private AbstractSignatureParameters fillParameters(SignatureDocumentForm form) {
 		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm());
 		parameters.setSignaturePackaging(form.getSignaturePackaging());
@@ -151,7 +205,9 @@ public class SigningService {
 				parameters = new CAdESSignatureParameters();
 				break;
 			case PAdES:
-				parameters = new PAdESSignatureParameters();
+				PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
+				padesParams.setSignatureSize(9472 * 2); // double reserved space for signature
+				parameters = padesParams;
 				break;
 			case XAdES:
 				parameters = new XAdESSignatureParameters();

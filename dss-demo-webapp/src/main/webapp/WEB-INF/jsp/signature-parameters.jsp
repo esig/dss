@@ -70,10 +70,12 @@
                     <form:label path="pkcsFile" cssClass="labelsPKCS11"><spring:message code="label.pkcs11.file" /></form:label>
                     <form:label path="pkcsFile" cssClass="labelsPKCS12"><spring:message code="label.pkcs12.file" /></form:label>
                 </div>
-                <div class="col-sm-4">
-                    <form:input path="pkcsFile" type="file" />
+                <div class="col-sm-4">              
+                    <form:input path="pkcsPath" cssClass="labelsPKCS11" size="40" />
+                    <form:input path="pkcsFile" cssClass="labelsPKCS12" type="file" />
                 </div>
                 <div class="col-sm-3">
+                    <form:errors path="pkcsPath" cssClass="text-danger" />
                     <form:errors path="pkcsFile" cssClass="text-danger" />
                 </div>
             </div>
@@ -128,4 +130,5 @@
 		    $('#pkcs-params').hide();
 		}
     }
+    
 </script>

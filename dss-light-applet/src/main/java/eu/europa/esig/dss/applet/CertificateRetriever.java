@@ -1,14 +1,14 @@
 package eu.europa.esig.dss.applet;
 
 import java.util.List;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
+import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CertificateRetriever {
@@ -32,18 +32,20 @@ public class CertificateRetriever {
 			for (DSSPrivateKeyEntry dssPrivateKeyEntry : keys) {
 
 				CertificateToken certificate = dssPrivateKeyEntry.getCertificate();
-				String base64Certificate = DatatypeConverter.printBase64Binary(certificate.getEncoded());
 
-				String readableCertificate = certificate.getSubjectDN().getName();
-				final int dnStartIndex = readableCertificate.indexOf("CN=") + 3;
-				if ((dnStartIndex > 0) && (readableCertificate.indexOf(",", dnStartIndex) > 0)) {
-					readableCertificate = readableCertificate.substring(dnStartIndex, readableCertificate.indexOf(",", dnStartIndex)) + " (SN:" + certificate.getSerialNumber()
-							+ ")";
+				String base64Certificate = certificate.getBase64Encoded();
+				String readableCertificate = certificate.getReadableCertificate();
+
+				StringBuffer tooltip = new StringBuffer();
+				Set<KeyUsageBit> keyUsageBits = certificate.getKeyUsageBits();
+				if (keyUsageBits != null) {
+					tooltip.append("Key usage(s) : ");
+					tooltip.append(keyUsageBits);
 				}
 
 				logger.info("Certificate found : " + readableCertificate);
 				try {
-					jsInvoker.injectCertificate(ADD_CERTIFICATE, base64Certificate, readableCertificate, dssPrivateKeyEntry.getEncryptionAlgorithm().name());
+					jsInvoker.injectCertificate(ADD_CERTIFICATE, base64Certificate, readableCertificate, dssPrivateKeyEntry.getEncryptionAlgorithm().name(), tooltip.toString());
 				} catch (Exception e) {
 					logger.error("Unable to inject the certificate : " + e.getMessage(), e);
 				}
@@ -52,7 +54,7 @@ public class CertificateRetriever {
 				if ((certificateChain != null) && (certificateChain.length > 0)) {
 					for (CertificateToken token : certificateChain) {
 						try {
-							jsInvoker.injectCertificateChain(ADD_CERTIFICATE_CHAIN, base64Certificate, DatatypeConverter.printBase64Binary(token.getEncoded()));
+							jsInvoker.injectCertificateChain(ADD_CERTIFICATE_CHAIN, base64Certificate, token.getBase64Encoded());
 						} catch (Exception e) {
 							logger.error("Unable to inject the certificate : " + e.getMessage(), e);
 						}

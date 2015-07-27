@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.bind.DatatypeConverter;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -596,6 +597,19 @@ public class CertificateToken extends Token {
 
 	public String getSubjectShortName() {
 		return extractCNName(getSubjectX500Principal());
+	}
+
+	public String getBase64Encoded() {
+		return DatatypeConverter.printBase64Binary(getEncoded());
+	}
+
+	public String getReadableCertificate() {
+		String readableCertificate = x509Certificate.getSubjectDN().getName();
+		final int dnStartIndex = readableCertificate.indexOf("CN=") + 3;
+		if ((dnStartIndex > 0) && (readableCertificate.indexOf(",", dnStartIndex) > 0)) {
+			readableCertificate = readableCertificate.substring(dnStartIndex, readableCertificate.indexOf(",", dnStartIndex)) + " (SN:" + getSerialNumber() + ")";
+		}
+		return readableCertificate;
 	}
 
 }

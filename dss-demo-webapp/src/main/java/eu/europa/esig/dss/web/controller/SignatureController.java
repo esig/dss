@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.web.controller;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,6 +54,8 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.SignatureDocumentForm;
 import eu.europa.esig.dss.web.service.SigningService;
@@ -71,6 +75,7 @@ public class SignatureController {
 
 	private static final String SIGNATURE_PARAMETERS = "signature-parameters";
 	private static final String SELECT_CERTIFICATE = "select-certificate";
+	private static final String SELECT_CERTIFICATE_PKCS12 = "select-certificate-pkcs12";
 	private static final String SIGN_DOCUMENT = "sign-document";
 	private static final String SIGNATURE_FINISH = "signature-finish";
 
@@ -95,18 +100,33 @@ public class SignatureController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String showSignatureParameters(Model model, HttpServletRequest request) {
 		SignatureDocumentForm signatureDocumentForm = new SignatureDocumentForm();
+		signatureDocumentForm.setPkcsPath("C:\\Windows\\System32\\beidpkcs11.dll");
 		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
 		return SIGNATURE_PARAMETERS;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String sendSignatureParameters(HttpServletRequest request, HttpServletResponse response,
+	public String sendSignatureParameters(Model model, HttpServletRequest request, HttpServletResponse response,
 			@ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) {
+
 		if (result.hasErrors()) {
 			return SIGNATURE_PARAMETERS;
 		}
 
-		return SELECT_CERTIFICATE;
+		if (SignatureTokenType.PKCS12.equals(signatureDocumentForm.getToken())) {
+			try {
+				Pkcs12SignatureToken token = new Pkcs12SignatureToken(signatureDocumentForm.getPkcsPassword(), signatureDocumentForm.getPkcsFile().getInputStream());
+				List<DSSPrivateKeyEntry> keys = token.getKeys();
+				model.addAttribute("keys", keys);
+			} catch (IOException e) {
+				logger.error("Unable to initialize Pkcs12SignatureToken : " + e.getMessage(), e);
+				return SIGNATURE_PARAMETERS;
+			}
+			return SELECT_CERTIFICATE_PKCS12;
+		} else {
+			// certificate selection with applet
+			return SELECT_CERTIFICATE;
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.POST, params = "data-to-sign")
@@ -134,6 +154,20 @@ public class SignatureController {
 		}
 
 		DSSDocument document = signingService.signDocument(signatureDocumentForm);
+		InMemoryDocument signedDocument = new InMemoryDocument(document.getBytes(), document.getName(), document.getMimeType());
+		model.addAttribute("signedDocument", signedDocument);
+
+		return SIGNATURE_FINISH;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, params = "sign-document-pkcs12")
+	public String signDocumentPkcs12(Model model, HttpServletRequest request, HttpServletResponse response,
+			@ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) {
+		if (result.hasErrors()) {
+			return SIGNATURE_PARAMETERS;
+		}
+
+		DSSDocument document = signingService.signDocumentPKCS12(signatureDocumentForm);
 		InMemoryDocument signedDocument = new InMemoryDocument(document.getBytes(), document.getName(), document.getMimeType());
 		model.addAttribute("signedDocument", signedDocument);
 
@@ -180,7 +214,10 @@ public class SignatureController {
 
 	@ModelAttribute("tokenTypes")
 	public SignatureTokenType[] getSignatureTokenTypes() {
-		return SignatureTokenType.values();
+		SignatureTokenType[] tokenTypes = new SignatureTokenType[] {
+				SignatureTokenType.MSCAPI, SignatureTokenType.PKCS11, SignatureTokenType.PKCS12
+		};
+		return tokenTypes;
 	}
 
 }

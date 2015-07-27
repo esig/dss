@@ -49,16 +49,21 @@ public class AppletLoader extends Applet {
 
 		SignatureTokenConnection tokenConnection = null;
 
-		switch (tokenType) {
-			case MSCAPI:
-				tokenConnection = new MSCAPISignatureToken();
-				break;
-			case PKCS11:
-				tokenConnection = new Pkcs11SignatureToken(pkcs11LibPath, pkcs11Pwd);
-				break;
-			default:
-				logger.error("Unsupported token type : " + tokenType);
-				return;
+		try {
+			switch (tokenType) {
+				case MSCAPI:
+					tokenConnection = new MSCAPISignatureToken();
+					break;
+				case PKCS11:
+					tokenConnection = new Pkcs11SignatureToken(pkcs11LibPath, pkcs11Pwd);
+					break;
+				default:
+					logger.error("Unsupported token type : " + tokenType);
+					return;
+			}
+		} catch (Exception e) {
+			logger.error("Cannot initialize the token : " + e.getMessage(), e);
+			return;
 		}
 
 		switch (operation) {
@@ -67,12 +72,12 @@ public class AppletLoader extends Applet {
 				certificateRetriever.injectCertificates();
 				break;
 			case sign_digest:
-				DigestSigner digestSigner = new DigestSigner(tokenConnection, toBeSigned, digestAlgorithm,base64Certificate, jsInvoker);
+				DigestSigner digestSigner = new DigestSigner(tokenConnection, toBeSigned, digestAlgorithm, base64Certificate, jsInvoker);
 				digestSigner.signAndInject();
 				break;
 			default:
 				logger.error("Unsupported operation : " + operation);
-				break;
+				return;
 		}
 
 	}
