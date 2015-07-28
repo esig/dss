@@ -424,8 +424,8 @@ public final class DSSUtils {
 						}
 						return issuerCert;
 					}
-				} catch (DSSException e) {
-					logger.warn("Unable to parse certficate from AIA : " + e.getMessage(), e);
+				} catch (Exception e) {
+					logger.warn("Unable to parse certficate from AIA (url:" + url + ") : " + e.getMessage());
 				}
 			} else {
 				logger.error("Unable to read data from {}.", url);
