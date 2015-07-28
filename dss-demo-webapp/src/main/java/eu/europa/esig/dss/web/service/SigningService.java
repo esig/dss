@@ -36,10 +36,8 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.web.model.SignatureDocumentForm;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -49,7 +47,16 @@ public class SigningService {
 	private static final Logger logger = LoggerFactory.getLogger(SigningService.class);
 
 	@Autowired
-	private TSPSource tspSource;
+	private CAdESService cadesService;
+
+	@Autowired
+	private PAdESService padesService;
+
+	@Autowired
+	private XAdESService xadesService;
+
+	@Autowired
+	private ASiCService asicService;
 
 	@SuppressWarnings({
 		"rawtypes", "unchecked"
@@ -179,22 +186,21 @@ public class SigningService {
 		DocumentSignatureService service = null;
 		switch (signatureForm) {
 			case CAdES:
-				service = new CAdESService(new CommonCertificateVerifier());
+				service = cadesService;
 				break;
 			case PAdES:
-				service = new PAdESService(new CommonCertificateVerifier());
+				service = padesService;
 				break;
 			case XAdES:
-				service = new XAdESService(new CommonCertificateVerifier());
+				service = xadesService;
 				break;
 			case ASiC_S:
 			case ASiC_E:
-				service = new ASiCService(new CommonCertificateVerifier());
+				service = asicService;
 				break;
 			default:
 				throw new DSSException("Unknow signature form : " + signatureForm);
 		}
-		service.setTspSource(tspSource);
 		return service;
 	}
 
