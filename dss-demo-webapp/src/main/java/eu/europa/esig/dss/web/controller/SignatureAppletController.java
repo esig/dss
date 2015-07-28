@@ -57,6 +57,8 @@ public class SignatureAppletController {
 	public String showSignature(Model model, HttpServletRequest request) {
 		Preference serviceUrl = preferencesDao.get(PreferenceKey.SERVICE_URL);
 		model.addAttribute("prefUrlService", serviceUrl);
+		Preference policyUrl = preferencesDao.get(PreferenceKey.DEFAULT_POLICY_URL);
+		model.addAttribute("prefDefaultPolicyUrl", policyUrl);
 		return "signature-applet";
 	}
 

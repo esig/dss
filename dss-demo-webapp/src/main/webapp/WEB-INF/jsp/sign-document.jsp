@@ -43,3 +43,5 @@
         $('#signatureDocumentForm').submit();
     }
 </script>
+
+<jsp:include page="applet-warning.jsp" />

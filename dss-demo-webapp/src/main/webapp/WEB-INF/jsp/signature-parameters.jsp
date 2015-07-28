@@ -31,9 +31,8 @@
             <spring:message code="label.digest.algorithm" />
         </form:label>
         <div class="col-sm-6">
-            <c:forEach var="algo" items="${digestAlgos}" varStatus="loop">
+            <c:forEach var="algo" items="${digestAlgos}">
                 <label class="radio-inline"> <form:radiobutton path="digestAlgorithm" value="${algo}" /> ${algo}</label>
-                <c:if test="${((loop.index+1) % 4) == 0}"><br /></c:if>
             </c:forEach>
         </div>
         <div class="col-xs-4">
@@ -100,7 +99,6 @@
             <button type="reset" class="btn"><spring:message code="label.clear"/></button>
         </div>
     </div>   
-
 </form:form>
 
 <script type="text/javascript" src="<c:url value="/scripts/jsSignatureLevel.js" />"></script>
@@ -130,5 +128,4 @@
 		    $('#pkcs-params').hide();
 		}
     }
-    
 </script>
