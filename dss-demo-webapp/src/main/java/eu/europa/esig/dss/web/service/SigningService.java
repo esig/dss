@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -21,6 +22,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -65,7 +67,7 @@ public class SigningService {
 
 		DocumentSignatureService service = getSignatureService(signatureForm);
 
-		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm);
+		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm, null);
 		parameters.setSignaturePackaging(packaging);
 		parameters.setSignatureLevel(level);
 
@@ -77,6 +79,9 @@ public class SigningService {
 		return extendedDoc;
 	}
 
+	@SuppressWarnings({
+		"rawtypes", "unchecked"
+	})
 	public ToBeSigned getDataToSign(SignatureDocumentForm form) {
 		logger.info("Start getDataToSign");
 		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
@@ -94,6 +99,9 @@ public class SigningService {
 		return toBeSigned;
 	}
 
+	@SuppressWarnings({
+		"rawtypes", "unchecked"
+	})
 	public DSSDocument signDocument(SignatureDocumentForm form) {
 		logger.info("Start signDocument");
 		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
@@ -113,6 +121,9 @@ public class SigningService {
 		return signedDocument;
 	}
 
+	@SuppressWarnings({
+		"rawtypes", "unchecked"
+	})
 	public DSSDocument signDocumentPKCS12(SignatureDocumentForm form) {
 		logger.info("Start pkcs12 signature on server side");
 
@@ -161,12 +172,22 @@ public class SigningService {
 	}
 
 	private AbstractSignatureParameters fillParameters(SignatureDocumentForm form) {
-		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm());
+		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm(), form.getAsicUnderlyingForm());
 		parameters.setSignaturePackaging(form.getSignaturePackaging());
 		parameters.setSignatureLevel(form.getSignatureLevel());
 		parameters.setDigestAlgorithm(form.getDigestAlgorithm());
 		parameters.setEncryptionAlgorithm(form.getEncryptionAlgorithm());
 		parameters.bLevel().setSigningDate(form.getSigningDate());
+
+		if (StringUtils.isNotEmpty(form.getPolicyOid()) && StringUtils.isNotEmpty(form.getPolicyBase64HashValue()) && (form.getPolicyDigestAlgorithm() !=null)) {
+			Policy signaturePolicy = new Policy();
+			signaturePolicy.setId(form.getPolicyOid());
+			signaturePolicy.setDigestAlgorithm(form.getPolicyDigestAlgorithm());
+			signaturePolicy.setDigestValue(Base64.decodeBase64(form.getPolicyBase64HashValue()));
+			parameters.bLevel().setSignaturePolicy(signaturePolicy );
+		}
+
+		parameters.setSignWithExpiredCertificate(form.isSignWithExpiredCertificate());
 		parameters.setSigningCertificate(DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate()));
 
 		List<String> base64CertificateChain = form.getBase64CertificateChain();
@@ -204,7 +225,7 @@ public class SigningService {
 		return service;
 	}
 
-	private AbstractSignatureParameters getSignatureParameters(SignatureForm signatureForm) {
+	private AbstractSignatureParameters getSignatureParameters(SignatureForm signatureForm, SignatureForm underlyingForm) {
 		AbstractSignatureParameters parameters = null;
 		switch (signatureForm) {
 			case CAdES:
@@ -220,7 +241,11 @@ public class SigningService {
 				break;
 			case ASiC_S:
 			case ASiC_E:
-				parameters = new ASiCSignatureParameters();
+				ASiCSignatureParameters asicParameters = new ASiCSignatureParameters();
+				if (underlyingForm != null) {
+					asicParameters.aSiC().setUnderlyingForm(underlyingForm);
+				}
+				parameters = asicParameters;
 				break;
 			default:
 				logger.error("Unknow signature form : " + signatureForm);

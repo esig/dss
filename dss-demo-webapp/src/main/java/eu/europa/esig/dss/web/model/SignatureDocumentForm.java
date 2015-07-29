@@ -20,10 +20,14 @@ public class SignatureDocumentForm {
 
 	private Date signingDate;
 
+	private boolean signWithExpiredCertificate;
+
 	private MultipartFile documentToSign;
 
 	@NotNull(message = "{error.signature.form.mandatory}")
 	private SignatureForm signatureForm;
+
+	private SignatureForm asicUnderlyingForm;
 
 	@NotNull(message = "{error.signature.packaging.mandatory}")
 	private SignaturePackaging signaturePackaging;
@@ -36,6 +40,12 @@ public class SignatureDocumentForm {
 
 	@NotNull(message = "{error.token.type.mandatory}")
 	private SignatureTokenType token;
+
+	private String policyOid;
+
+	private DigestAlgorithm policyDigestAlgorithm;
+
+	private String policyBase64HashValue;
 
 	private String pkcsPath;
 
@@ -61,6 +71,14 @@ public class SignatureDocumentForm {
 		this.signingDate = signingDate;
 	}
 
+	public boolean isSignWithExpiredCertificate() {
+		return signWithExpiredCertificate;
+	}
+
+	public void setSignWithExpiredCertificate(boolean signWithExpiredCertificate) {
+		this.signWithExpiredCertificate = signWithExpiredCertificate;
+	}
+
 	public MultipartFile getDocumentToSign() {
 		return documentToSign;
 	}
@@ -75,6 +93,14 @@ public class SignatureDocumentForm {
 
 	public void setSignatureForm(SignatureForm signatureForm) {
 		this.signatureForm = signatureForm;
+	}
+
+	public SignatureForm getAsicUnderlyingForm() {
+		return asicUnderlyingForm;
+	}
+
+	public void setAsicUnderlyingForm(SignatureForm asicUnderlyingForm) {
+		this.asicUnderlyingForm = asicUnderlyingForm;
 	}
 
 	public SignaturePackaging getSignaturePackaging() {
@@ -107,6 +133,30 @@ public class SignatureDocumentForm {
 
 	public void setToken(SignatureTokenType token) {
 		this.token = token;
+	}
+
+	public String getPolicyOid() {
+		return policyOid;
+	}
+
+	public void setPolicyOid(String policyOid) {
+		this.policyOid = policyOid;
+	}
+
+	public DigestAlgorithm getPolicyDigestAlgorithm() {
+		return policyDigestAlgorithm;
+	}
+
+	public void setPolicyDigestAlgorithm(DigestAlgorithm policyDigestAlgorithm) {
+		this.policyDigestAlgorithm = policyDigestAlgorithm;
+	}
+
+	public String getPolicyBase64HashValue() {
+		return policyBase64HashValue;
+	}
+
+	public void setPolicyBase64HashValue(String policyBase64HashValue) {
+		this.policyBase64HashValue = policyBase64HashValue;
 	}
 
 	public String getBase64Certificate() {
@@ -193,6 +243,15 @@ public class SignatureDocumentForm {
 		if (SignatureTokenType.PKCS11.equals(token) || SignatureTokenType.PKCS12.equals(token)) {
 			return StringUtils.isNotEmpty(pkcsPassword);
 		} else {
+			return true;
+		}
+	}
+
+	@AssertTrue(message = "{error.signature.underlying.form.mandatory}")
+	public boolean isAsicUnderlyingFormValid(){
+		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)){
+			return SignatureForm.CAdES.equals(asicUnderlyingForm) || SignatureForm.XAdES.equals(asicUnderlyingForm);
+		} else{
 			return true;
 		}
 	}

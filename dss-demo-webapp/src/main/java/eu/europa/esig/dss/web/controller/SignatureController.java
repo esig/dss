@@ -100,6 +100,9 @@ public class SignatureController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String showSignatureParameters(Model model, HttpServletRequest request) {
 		SignatureDocumentForm signatureDocumentForm = new SignatureDocumentForm();
+		// default values
+		signatureDocumentForm.setSignWithExpiredCertificate(false);
+		signatureDocumentForm.setAsicUnderlyingForm(SignatureForm.XAdES);
 		signatureDocumentForm.setPkcsPath("C:\\Windows\\System32\\beidpkcs11.dll");
 		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
 		return SIGNATURE_PARAMETERS;

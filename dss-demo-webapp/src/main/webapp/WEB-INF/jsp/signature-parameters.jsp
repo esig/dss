@@ -22,6 +22,23 @@
 
     <jsp:include page="fields/signatureForm.jsp" />
     
+    <div class="form-group" id="underlying-form-block">
+        <form:label path="asicUnderlyingForm" cssClass="col-sm-2 control-label">
+            <spring:message code="label.signature.underlying.form" />
+        </form:label>
+        <div class="col-sm-6">
+            <label class="radio-inline">
+                <form:radiobutton path="asicUnderlyingForm" value="XAdES" /> <spring:message code="label.XAdES" />
+            </label>
+            <label class="radio-inline">
+                <form:radiobutton path="asicUnderlyingForm" value="CAdES" /> <spring:message code="label.CAdES" />
+            </label>
+        </div>
+        <div class="col-xs-4">
+            <form:errors path="asicUnderlyingForm" cssClass="text-danger" />
+        </div>
+    </div>
+    
     <jsp:include page="fields/signaturePackaging.jsp" />
     
     <jsp:include page="fields/signatureLevel.jsp" />
@@ -94,6 +111,49 @@
     </div>
     
     <div class="form-group">
+        <form:label path="documentToSign" cssClass="col-sm-2 control-label">
+            <spring:message code="label.allow.expired.certificate" />
+        </form:label>
+        <div class="col-sm-4">
+            <form:checkbox path="signWithExpiredCertificate" />
+        </div>
+    </div>
+
+    <div class="panel panel-default" style="width: 700px;">
+        <div class="panel-heading" data-toggle="collapse" data-target="#block-policy">
+            <spring:message code="label.policy" />
+        </div>
+        <div class="panel-body collapse in" id="block-policy">
+            <div class="form-group">
+                <form:label path="policyOid" cssClass="col-sm-3 control-label">
+                    <spring:message code="label.policy.oid" />
+                </form:label>
+                <div class="col-sm-4">
+                    <form:input path="policyOid" size="50" />
+                </div>
+            </div>
+            <div class="form-group">
+                <form:label path="policyDigestAlgorithm" cssClass="col-sm-3 control-label">
+                    <spring:message code="label.digest.algorithm" />
+                </form:label>
+                <div class="col-sm-8">
+                    <c:forEach var="algo" items="${digestAlgos}">
+                        <label class="radio-inline"> <form:radiobutton path="policyDigestAlgorithm" value="${algo}" /> ${algo}</label>
+                    </c:forEach>
+                </div>
+            </div>
+            <div class="form-group">
+                <form:label path="policyBase64HashValue" cssClass="col-sm-3 control-label">
+                    <spring:message code="label.policy.hash.value" />
+                </form:label>
+                <div class="col-sm-4">
+                    <form:input path="policyBase64HashValue" size="50" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-primary"><spring:message code="label.submit"/></button>
             <button type="reset" class="btn"><spring:message code="label.clear"/></button>
@@ -128,4 +188,6 @@
 		    $('#pkcs-params').hide();
 		}
     }
+
+    $('.collapse').collapse();
 </script>

@@ -110,7 +110,7 @@ public class CertificateStep extends WizardStep<SignatureModel, SignatureWizardC
 		switch (model.getTokenType()) {
 
 			case MSCAPI: {
-				tokenConnetion = new MSCAPISignatureToken(new PinInputDialog(getController().getCore()));
+				tokenConnetion = new MSCAPISignatureToken();
 				break;
 			}
 			case MOCCA: {

@@ -3,6 +3,10 @@ $('input[name="signaturePackaging"]:radio').attr("disabled", true);
 
 $('#selectSignatureLevel').empty();
 
+if ($("#underlying-form-block").length) {
+    $("#underlying-form-block").hide();
+}
+
 $('input[name="signatureForm"]:radio').change(
         function() {
 
@@ -42,4 +46,12 @@ $('input[name="signatureForm"]:radio').change(
                     });
                 }
             });
+
+            if ($("#underlying-form-block").length) {
+                if ((this.value == 'ASiC_S') || (this.value == 'ASiC_E')) {
+                    $("#underlying-form-block").show();
+                } else {
+                    $("#underlying-form-block").hide();
+                }
+            }
         });
