@@ -27,27 +27,15 @@ import java.net.URL;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.SignatureTokenType;
-import eu.europa.esig.dss.applet.controller.ActivityController;
 import eu.europa.esig.dss.applet.main.Parameters.AppletUsage;
-import eu.europa.esig.dss.applet.model.ActivityModel;
 import eu.europa.esig.dss.applet.model.SignatureModel;
-import eu.europa.esig.dss.applet.model.ValidationPolicyModel;
 import eu.europa.esig.dss.applet.swing.mvc.AppletCore;
 import eu.europa.esig.dss.applet.util.DSSStringUtils;
 import eu.europa.esig.dss.applet.wizard.signature.SignatureWizardController;
-import eu.europa.esig.dss.applet.wizard.validationpolicy.ValidationPolicyWizardController;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- *
- */
 @SuppressWarnings("serial")
 public class DSSAppletCore extends AppletCore {
 
@@ -87,7 +75,7 @@ public class DSSAppletCore extends AppletCore {
 	 */
 	@Override
 	protected void layout(final AppletCore core) {
-		getController(ActivityController.class).display();
+		getController(SignatureWizardController.class).start();
 	}
 
 	/*
@@ -97,9 +85,7 @@ public class DSSAppletCore extends AppletCore {
 	 */
 	@Override
 	protected void registerControllers() {
-		getControllers().put(ActivityController.class, new ActivityController(this, new ActivityModel()));
 		getControllers().put(SignatureWizardController.class, new SignatureWizardController(this, new SignatureModel()));
-		getControllers().put(ValidationPolicyWizardController.class, new ValidationPolicyWizardController(this, new ValidationPolicyModel()));
 	}
 
 	/*
@@ -121,7 +107,7 @@ public class DSSAppletCore extends AppletCore {
 
 		final String signatureFormatParam = parameterProvider.getParameter(PARAM_SIGNATURE_FORMAT);
 		if (StringUtils.isNotEmpty(signatureFormatParam)) {
-			parameters.setSignatureFormat(signatureFormatParam);
+			parameters.setSignatureFormat(SignatureForm.valueOf(signatureFormatParam));
 			final String signaturePackagingParam = parameterProvider.getParameter(PARAM_SIGNATURE_PACKAGING);
 			if (StringUtils.isNotEmpty(signaturePackagingParam)) {
 				parameters.setSignaturePackaging(SignaturePackaging.valueOf(signaturePackagingParam));

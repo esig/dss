@@ -27,11 +27,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.applet.JavaPreferencesDAO;
 import eu.europa.esig.dss.applet.SignatureTokenType;
 import eu.europa.esig.dss.applet.UserPreferencesDAO;
-import eu.europa.esig.dss.validation.ValidationResourceManager;
 
 /**
  *
@@ -92,7 +92,7 @@ public class Parameters {
 	/**
 	 *
 	 */
-	private String signatureFormat;
+	private SignatureForm signatureFormat;
 	/**
 	 *
 	 */
@@ -147,7 +147,7 @@ public class Parameters {
 		return serviceURL;
 	}
 
-	public String getSignatureFormat() {
+	public SignatureForm getSignatureFormat() {
 		return signatureFormat;
 	}
 
@@ -267,7 +267,7 @@ public class Parameters {
 		this.serviceURL = serviceURL;
 	}
 
-	public void setSignatureFormat(String signatureFormat) {
+	public void setSignatureFormat(SignatureForm signatureFormat) {
 		this.signatureFormat = signatureFormat;
 	}
 
@@ -323,31 +323,7 @@ public class Parameters {
 	 * @return the defaultPolicyUrl for validation. Can be null.
 	 */
 	public URL getDefaultPolicyUrl() {
-		if (defaultPolicyUrl == null) {
-			return getClass().getResource(ValidationResourceManager.defaultPolicyConstraintsLocation);
-		} else {
-			return defaultPolicyUrl;
-		}
-	}
-
-	/**
-	 * Set the default xsd policy URL for validation. Can be null.
-	 * @param defaultXsdPolicyUrl
-	 */
-	public void setDefaultXsdPolicyUrl(URL defaultXsdPolicyUrl) {
-		this.defaultXsdPolicyUrl = defaultXsdPolicyUrl;
-	}
-
-	/**
-	 *
-	 * @return the defaultXsdPolicyUrl for validation. Can be null.
-	 */
-	public URL getDefaultXsdPolicyUrl() {
-		if (defaultXsdPolicyUrl == null) {
-			return getClass().getResource(ValidationResourceManager.defaultPolicyXsdLocation);
-		} else {
-			return defaultXsdPolicyUrl;
-		}
+		return defaultPolicyUrl;
 	}
 
 	/*

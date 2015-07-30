@@ -31,26 +31,17 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonModel;
-import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.TreeModel;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -63,12 +54,6 @@ import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * TODO
- *
- *
- *
- *
- *
- *
  */
 public final class ComponentFactory extends BasicComponentFactory {
 
@@ -81,32 +66,15 @@ public final class ComponentFactory extends BasicComponentFactory {
 	private static final Icon ICON_REFRESH;
 	private static final Icon ICON_CANCEL;
 	private static final Icon ICON_FILE;
-	private static final Icon ICON_SAVE_FILE;
-
-	private static final Icon ICON_VALID;
-	private static final Icon ICON_INVALID;
-	private static final Icon ICON_WARNING;
-	private static final Icon ICON_UNSURE;
-	private static final Icon ICON_INFO;
-
 	private static final Icon ICON_SUCCESS;
 
 	static {
-
-		// this.getClass().getResource("/eu/europa/esig/dss/applet/wizard/" + name);
-
 		ICON_NEXT = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/arrow_right.png"));
 		ICON_BACK = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/arrow_left.png"));
 		ICON_CANCEL = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/cancel.png"));
 		ICON_WAIT = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/wait.png"));
 		ICON_REFRESH = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/refresh.png"));
 		ICON_FILE = UIManager.getIcon("FileView.fileIcon");
-		ICON_SAVE_FILE = UIManager.getIcon("FileChooser.floppyDriveIcon");
-		ICON_VALID = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/tick_16.png"));
-		ICON_INVALID = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/block_16.png"));
-		ICON_WARNING = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/warning_16.png"));
-		ICON_UNSURE = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/unsure_16.png"));
-		ICON_INFO = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/report/info_16.png"));
 		ICON_SUCCESS = new ImageIcon(ResourceUtils.class.getResource("/eu/europa/esig/dss/applet/wizard/big_ok.png"));
 	}
 
@@ -134,29 +102,6 @@ public final class ComponentFactory extends BasicComponentFactory {
 		for (final JComponent component : components) {
 			panel.add(component);
 		}
-	}
-
-	/**
-	 * @param text
-	 * @param actionListener
-	 * @return
-	 */
-	public static JCheckBox checkButton(final String text, final ActionListener actionListener) {
-		final JCheckBox check = new JCheckBox(text);
-		check.addActionListener(actionListener);
-		return check;
-	}
-
-	/**
-	 * @param model
-	 * @param actionListener
-	 * @return
-	 */
-	public static JComboBox combo(final ComboBoxModel model, final ActionListener actionListener) {
-		final JComboBox combo = new JComboBox();
-		combo.setModel(model);
-		combo.addActionListener(actionListener);
-		return combo;
 	}
 
 	/**
@@ -227,15 +172,6 @@ public final class ComponentFactory extends BasicComponentFactory {
 	}
 
 	/**
-	 * @param enabled
-	 * @param actionListener
-	 * @return
-	 */
-	public static JButton createClearButton(final boolean enabled, final ActionListener actionListener) {
-		return ComponentFactory.createButton(ResourceUtils.getI18n("CLEAR"), enabled, actionListener);
-	}
-
-	/**
 	 * @param label
 	 * @param enabled
 	 * @param actionListener
@@ -277,24 +213,7 @@ public final class ComponentFactory extends BasicComponentFactory {
 	 * @return
 	 */
 	public static JPanel createPanel() {
-		return createPanel(true);
-	}
-
-	/**
-	 * @param opaque
-	 * @return
-	 */
-	public static JPanel createPanel(final boolean opaque) {
-		return createPanel(new FlowLayout(), opaque);
-	}
-
-	/**
-	 * @param opaque
-	 * @param bgColor
-	 * @return
-	 */
-	public static JPanel createPanel(final boolean opaque, final Color bgColor) {
-		return createPanel(new FlowLayout(), opaque, bgColor);
+		return createPanel(DEFAULT_BACKGROUND);
 	}
 
 	/**
@@ -302,7 +221,7 @@ public final class ComponentFactory extends BasicComponentFactory {
 	 * @return
 	 */
 	public static JPanel createPanel(final Color bgColor) {
-		return createPanel(new FlowLayout(), true, bgColor);
+		return createPanel(new FlowLayout(), bgColor);
 	}
 
 	/**
@@ -310,7 +229,7 @@ public final class ComponentFactory extends BasicComponentFactory {
 	 * @return
 	 */
 	public static JPanel createPanel(final JComponent... components) {
-		final JPanel panel = createPanel(true);
+		final JPanel panel = createPanel();
 		addToPanel(panel, components);
 		return panel;
 	}
@@ -320,27 +239,17 @@ public final class ComponentFactory extends BasicComponentFactory {
 	 * @return
 	 */
 	public static JPanel createPanel(final LayoutManager layout) {
-		return createPanel(layout, true, DEFAULT_BACKGROUND);
-	}
-
-	/**
-	 * @param layout
-	 * @param opaque
-	 * @return
-	 */
-	public static JPanel createPanel(final LayoutManager layout, final boolean opaque) {
-		return createPanel(layout, opaque, DEFAULT_BACKGROUND);
+		return createPanel(layout, DEFAULT_BACKGROUND);
 	}
 
 	/**
 	 * @param layout
 	 * @param bgColor
-	 * @param opaque
 	 * @return
 	 */
-	public static JPanel createPanel(final LayoutManager layout, final boolean opaque, final Color bgColor) {
+	public static JPanel createPanel(final LayoutManager layout, final Color bgColor) {
 		final JPanel panel = new JPanel(layout);
-		panel.setOpaque(opaque);
+		panel.setOpaque(true);
 		panel.setBackground(bgColor);
 		return panel;
 	}
@@ -350,38 +259,10 @@ public final class ComponentFactory extends BasicComponentFactory {
 	 * @return
 	 */
 	public static JPanel createPanel(final PanelBuilder builder) {
-		return createPanel(builder, true);
-	}
-
-	/**
-	 * @param builder
-	 * @param opaque
-	 * @return
-	 */
-	public static JPanel createPanel(final PanelBuilder builder, final boolean opaque) {
-		return createPanel(builder, opaque, DEFAULT_BACKGROUND);
-	}
-
-	/**
-	 * @param builder
-	 * @param opaque
-	 * @param bgColor
-	 * @return
-	 */
-	public static JPanel createPanel(final PanelBuilder builder, final boolean opaque, final Color bgColor) {
 		final JPanel panel = builder.build();
-		panel.setOpaque(opaque);
-		panel.setBackground(bgColor);
+		panel.setOpaque(true);
+		panel.setBackground(DEFAULT_BACKGROUND);
 		return panel;
-	}
-
-	/**
-	 * @param builder
-	 * @param bgColor
-	 * @return
-	 */
-	public static JPanel createPanel(final PanelBuilder builder, final Color bgColor) {
-		return createPanel(builder, true, bgColor);
 	}
 
 	/**
@@ -404,16 +285,6 @@ public final class ComponentFactory extends BasicComponentFactory {
 	 */
 	public static JButton createRefreshButton(final boolean enabled, final ActionListener actionListener) {
 		return ComponentFactory.createButton(ResourceUtils.getI18n("REFRESH"), enabled, actionListener, ICON_REFRESH);
-	}
-
-	/**
-	 * @param label
-	 * @param enabled
-	 * @param actionListener
-	 * @return
-	 */
-	public static JButton createSaveButton(final String label, final boolean enabled, final ActionListener actionListener) {
-		return ComponentFactory.createButton(label, enabled, actionListener, ICON_SAVE_FILE);
 	}
 
 	/**
@@ -458,84 +329,14 @@ public final class ComponentFactory extends BasicComponentFactory {
 	}
 
 	/**
-	 * @param ressourceName
-	 * @return
-	 */
-	public static ImageIcon icon(final String ressourceName) {
-		return new ImageIcon(ComponentFactory.class.getResource(ressourceName));
-	}
-
-	/**
-	 * @return
-	 */
-	public static Icon iconInvalid() {
-		return ICON_INVALID;
-	}
-
-	/**
 	 * @return
 	 */
 	public static Icon iconSuccess() {
 		return ICON_SUCCESS;
 	}
 
-	/**
-	 * @return
-	 */
-	public static Icon iconUnsure() {
-		return ICON_UNSURE;
-	}
-
-	/**
-	 * @return
-	 */
-	public static Icon iconValid() {
-		return ICON_VALID;
-	}
-
 	public static Icon iconWait() {
 		return ICON_WAIT;
-	}
-
-	/**
-	 * @param name
-	 * @param model
-	 * @param cellRenderer
-	 * @return
-	 */
-	public static JList list(final String name, final ListModel model, final ListCellRenderer cellRenderer) {
-		final JList list = new JList();
-		list.setName(name);
-		list.setModel(model);
-		if (cellRenderer != null) {
-			list.setCellRenderer(cellRenderer);
-		}
-		return list;
-	}
-
-	/**
-	 * @param name
-	 * @param model
-	 * @return
-	 */
-	public static JTree tree(final String name, final TreeModel model) {
-		return tree(name, model, null);
-	}
-
-	/**
-	 * @param name
-	 * @param model
-	 * @param cellRenderer
-	 * @return
-	 */
-	public static JTree tree(final String name, final TreeModel model, final TreeCellRenderer cellRenderer) {
-		final JTree tree = new JTree();
-		tree.setName(name);
-		tree.setModel(model);
-		if (cellRenderer != null) {
-			tree.setCellRenderer(cellRenderer);
-		}
-		return tree;
 	}
 
 	/**
@@ -545,7 +346,11 @@ public final class ComponentFactory extends BasicComponentFactory {
 	public static void updateDisplay(final JApplet applet, final Container container) {
 		if (container != null) {
 
-			final PanelBuilder builder = createBuilder(new String[]{"5dlu", "fill:default:grow", "5dlu"}, new String[]{"5dlu", "fill:default:grow", "5dlu"});
+			final PanelBuilder builder = createBuilder(new String[] {
+					"5dlu", "fill:default:grow", "5dlu"
+			}, new String[] {
+					"5dlu", "fill:default:grow", "5dlu"
+			});
 			final CellConstraints cc = new CellConstraints();
 			builder.add(container, cc.xy(2, 2));
 

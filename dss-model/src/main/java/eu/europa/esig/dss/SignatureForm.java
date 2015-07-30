@@ -27,6 +27,11 @@ package eu.europa.esig.dss;
  */
 public enum SignatureForm {
 
-	XAdES, CAdES, PAdES, ASiC_S, ASiC_E
+	XAdES, CAdES, PAdES, ASiC_S, ASiC_E;
+
+	public String getReadable() {
+		String name = this.name();
+		return name.replace('_', '-');
+	}
 
 }

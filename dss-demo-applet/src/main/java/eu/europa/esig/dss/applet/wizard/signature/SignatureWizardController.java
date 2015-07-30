@@ -42,7 +42,6 @@ import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.applet.controller.ActivityController;
 import eu.europa.esig.dss.applet.controller.DSSWizardController;
 import eu.europa.esig.dss.applet.main.DSSAppletCore;
 import eu.europa.esig.dss.applet.model.SignatureModel;
@@ -93,8 +92,6 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 	 */
 	@Override
 	protected void doCancel() {
-
-		getCore().getController(ActivityController.class).display();
 	}
 
 	/**
@@ -208,11 +205,7 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 			parameters.setDigestAlgorithm(digestAlgorithm);
 		}
 
-		if (model.isTslSignatureCheck()) {
-			//	prepareTSLSignature(parameters, fileToSign);
-		} else {
-			prepareCommonSignature(model, parameters);
-		}
+		prepareCommonSignature(model, parameters);
 
 		final DSSDocument signedDocument = SigningUtils.signDocument(serviceURL, fileToSign, parameters, privateKey, tokenConnection);
 		final FileOutputStream fileOutputStream = new FileOutputStream(model.getTargetFile());
@@ -242,34 +235,5 @@ public class SignatureWizardController extends DSSWizardController<SignatureMode
 			parameters.bLevel().setSignaturePolicy(policy);
 		}
 	}
-	/*
-	private void prepareTSLSignature(WsParameters parameters, File fileToSign) {
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 
-		final List<WsdssReference> references = new ArrayList<WsdssReference>();
-
-		WsdssReference dssReference = new WsdssReference();
-		dssReference.setId("xml_ref_id");
-		dssReference.setUri("");
-		dssReference.setContents(SigningUtils.toWsDocument(new FileDocument(fileToSign)));
-		dssReference.setDigestMethodAlgorithm(parameters.getDigestAlgorithm());
-
-		final List<DssTransform> transforms = new ArrayList<DssTransform>();
-
-		DssTransform dssTransform = new DssTransform();
-		dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
-		transforms.add(dssTransform);
-		dssReference.getTransforms().add(dssTransform);
-
-		dssTransform = new DssTransform();
-		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
-		transforms.add(dssTransform);
-		dssReference.getTransforms().add(dssTransform);
-
-		references.add(dssReference);
-
-		parameters.getReferences().addAll(references);
-	}
-	 */
 }
