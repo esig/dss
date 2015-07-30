@@ -34,6 +34,7 @@ import javax.security.auth.x500.X500Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
@@ -386,8 +387,7 @@ public class SignatureValidationContext implements ValidationContext {
 			return null;
 		}
 
-		if (certToken.isOCSPSigning() && certToken.hasIdPkixOcspNoCheckExtension()) {
-
+		if (DSSASN1Utils.isOCSPSigning(certToken) && DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
 			certToken.extraInfo().addInfo("OCSP check not needed: id-pkix-ocsp-nocheck extension present.");
 			return null;
 		}
@@ -416,7 +416,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		final CertificateToken issuerCertToken = certificateToken.getIssuerToken();
 		// issuerCertToken cannot be null
-		final boolean expiredCertOnCRLExtension = issuerCertToken.hasExpiredCertOnCRLExtension();
+		final boolean expiredCertOnCRLExtension = DSSASN1Utils.hasExpiredCertOnCRLExtension(issuerCertToken);
 		if (expiredCertOnCRLExtension) {
 
 			certificateToken.extraInfo().addInfo("Certificate is expired but the issuer certificate has ExpiredCertOnCRL extension.");
@@ -436,7 +436,7 @@ public class SignatureValidationContext implements ValidationContext {
 		final CertificateToken trustAnchor = certificateToken.getTrustAnchor();
 		if (trustAnchor != null) {
 
-			final List<ServiceInfo> serviceInfoList = trustAnchor.getAssociatedTSPS();
+			final Set<ServiceInfo> serviceInfoList = trustAnchor.getAssociatedTSPS();
 			if (serviceInfoList != null) {
 
 				final Date notAfter = certificateToken.getNotAfter();

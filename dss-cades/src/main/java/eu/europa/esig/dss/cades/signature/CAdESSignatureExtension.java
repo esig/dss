@@ -49,6 +49,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
@@ -286,7 +287,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			if (attributesForTimestampToken != null) {
 				// timeStampToken contains one and only one signer
 				final SignerInformation signerInformation = cmsSignedDataTimeStampToken.getSignerInfos().getSigners().iterator().next();
-				AttributeTable unsignedAttributes = DSSASN1Utils.getUnsignedAttributes(signerInformation);
+				AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 				for (final Attribute attributeToAdd : attributesForTimestampToken) {
 					final ASN1ObjectIdentifier attrType = attributeToAdd.getAttrType();
 					final ASN1Encodable objectAt = attributeToAdd.getAttrValues().getObjectAt(0);

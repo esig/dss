@@ -25,46 +25,46 @@ import java.io.Serializable;
 /**
  * This class represents the information concerning the signature production place.
  *
- *
  */
+@SuppressWarnings("serial")
 public class SignatureProductionPlace implements Serializable {
 
-	private String City;
-	private String StateOrProvince;
-	private String PostalCode;
-	private String CountryName;
+	private String city;
+	private String stateOrProvince;
+	private String postalCode;
+	private String countryName;
 	private String address;
 
 	public String getCity() {
-		return City;
+		return city;
 	}
 
 	public void setCity(String city) {
-		City = city;
+		this.city = city;
 	}
 
 	public String getStateOrProvince() {
-		return StateOrProvince;
+		return stateOrProvince;
 	}
 
 	public void setStateOrProvince(String stateOrProvince) {
-		StateOrProvince = stateOrProvince;
+		this.stateOrProvince = stateOrProvince;
 	}
 
 	public String getPostalCode() {
-		return PostalCode;
+		return postalCode;
 	}
 
 	public void setPostalCode(String postalCode) {
-		PostalCode = postalCode;
+		this.postalCode = postalCode;
 	}
 
 	public String getCountryName() {
-		return CountryName;
+		return countryName;
 	}
 
 	public void setCountryName(String countryName) {
-		CountryName = countryName;
+		this.countryName = countryName;
 	}
 
 	public String getAddress() {

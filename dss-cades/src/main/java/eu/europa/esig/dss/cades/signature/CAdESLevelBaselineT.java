@@ -26,10 +26,10 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -52,7 +52,7 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 		cadesSignature.setDetachedContents(parameters.getDetachedContent());
 		assertExtendSignaturePossible(cadesSignature);
 
-		AttributeTable unsignedAttributes = DSSASN1Utils.getUnsignedAttributes(signerInformation);
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		unsignedAttributes = addSignatureTimestampAttribute(signerInformation, unsignedAttributes, parameters);
 
 		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
@@ -66,7 +66,7 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 		if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
 			throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
 		}
-		AttributeTable unsignedAttributes = DSSASN1Utils.getUnsignedAttributes(cadesSignature.getSignerInformation());
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(cadesSignature.getSignerInformation());
 		if (unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp) != null) {
 			throw new DSSException(String.format(exceptionMessage, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
 		}

@@ -77,19 +77,23 @@ public class CertificateService {
 		KeyPair childKeyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 
 		X500Name childSubject = new X500Name("CN=SignerFake,O=DSS-test");
-		CertificateToken child = generateCertificate(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic(), notBefore, notAfter);
+		CertificateToken child = generateRootCertificateWithCrl(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic(), notBefore, notAfter);
 		CertificateToken[] chain = createChildCertificateChain(rootEntry);
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), child, chain, childKeyPair.getPrivate());
 	}
 
-	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
-		MockPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
+	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, boolean rootCrl) throws Exception {
+		MockPrivateKeyEntry rootEntry =  generateSelfSignedCertificate(algorithm, rootCrl);
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
 		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
 
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
+	}
+
+	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
+		return generateCertificateChain(algorithm, true);
 	}
 
 	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, MockPrivateKeyEntry rootEntry) throws Exception {
@@ -99,8 +103,8 @@ public class CertificateService {
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
 
-	public MockPrivateKeyEntry generateExpiredCertificateChain(final SignatureAlgorithm algorithm) throws Exception {
-		MockPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm);
+	public MockPrivateKeyEntry generateExpiredCertificateChain(final SignatureAlgorithm algorithm, boolean rootCrl) throws Exception {
+		MockPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm, rootCrl);
 
 		Date notBefore = new Date(System.currentTimeMillis() - (10 * 24 * 60 * 60 * 1000)); // -10d
 		Date notAfter = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
@@ -108,14 +112,19 @@ public class CertificateService {
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
 
-	public MockPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm) throws Exception {
+	public MockPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm, boolean rootCrl) throws Exception {
 		KeyPair keyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 		X500Name issuer = new X500Name("CN=RootSelfSignedFake,O=DSS-test");
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
 		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
 
-		CertificateToken certificate = generateCertificate(algorithm, issuer, issuer, keyPair.getPrivate(), keyPair.getPublic(), notBefore, notAfter);
+		CertificateToken certificate = null;
+		if (rootCrl) {
+			certificate = generateRootCertificateWithCrl(algorithm, issuer, issuer, keyPair.getPrivate(), keyPair.getPublic(), notBefore, notAfter);
+		} else {
+			certificate = generateRootCertificateWithoutCrl(algorithm, issuer, issuer, keyPair.getPrivate(), keyPair.getPublic(), notBefore, notAfter);
+		}
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), certificate, keyPair.getPrivate());
 	}
@@ -148,44 +157,61 @@ public class CertificateService {
 	 * @throws CertificateException
 	 * @throws IOException
 	 */
-	public CertificateToken generateTspCertificate(final SignatureAlgorithm algorithm, KeyPair keyPair, X500Name issuer, X500Name subject, final Date notBefore,
-			final Date notAfter) throws CertIOException, OperatorCreationException, CertificateException, IOException {
+	public CertificateToken generateTspCertificate(final SignatureAlgorithm algorithm, KeyPair keyPair, X500Name issuer, X500Name subject, final Date notBefore, final Date notAfter)
+			throws CertIOException, OperatorCreationException, CertificateException, IOException {
 		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
 
-		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer, new BigInteger("" + new Random().nextInt(10)
-				+ System.currentTimeMillis()), notBefore, notAfter, subject, keyInfo);
+		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer, new BigInteger("" + new Random().nextInt(10) + System.currentTimeMillis()), notBefore,
+				notAfter, subject, keyInfo);
 
 		certBuilder.addExtension(Extension.extendedKeyUsage, true, new ExtendedKeyUsage(KeyPurposeId.id_kp_timeStamping));
 
-		final ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(
-				keyPair.getPrivate());
+		final ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(keyPair.getPrivate());
 		final X509CertificateHolder holder = certBuilder.build(signer);
 
-		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(
-				new ByteArrayInputStream(holder.getEncoded()));
+		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(new ByteArrayInputStream(holder.getEncoded()));
 
 		return new CertificateToken(cert);
 	}
 
-	public CertificateToken generateCertificate(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer,
-			PrivateKey issuerPrivateKey, PublicKey publicKey, Date notBefore, Date notAfter) throws Exception {
+	public CertificateToken generateRootCertificateWithCrl(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey, PublicKey publicKey, Date notBefore,
+			Date notAfter) throws Exception {
 
 		// generate certificate
 		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
 
-		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer, new BigInteger("" + new Random().nextInt(10)
-				+ System.currentTimeMillis()), notBefore, notAfter, subject, keyInfo);
+		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer, new BigInteger("" + new Random().nextInt(10) + System.currentTimeMillis()), notBefore,
+				notAfter, subject, keyInfo);
 
-		final KeyUsage keyUsage = new KeyUsage(KeyUsage.digitalSignature);
-		certBuilder.addExtension(Extension.keyUsage, true, keyUsage);
+		certBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign));
+
 
 		// Sign the new certificate with the private key of the trusted third
-		final ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(
-				issuerPrivateKey);
+		final ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(issuerPrivateKey);
 		final X509CertificateHolder holder = certBuilder.build(signer);
 
-		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(
-				new ByteArrayInputStream(holder.getEncoded()));
+		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(new ByteArrayInputStream(holder.getEncoded()));
+
+		return new CertificateToken(cert);
+	}
+
+	public CertificateToken generateRootCertificateWithoutCrl(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey, PublicKey publicKey, Date notBefore,
+			Date notAfter) throws Exception {
+
+		// generate certificate
+		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
+
+		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer, new BigInteger("" + new Random().nextInt(10) + System.currentTimeMillis()), notBefore,
+				notAfter, subject, keyInfo);
+
+		certBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign));
+
+
+		// Sign the new certificate with the private key of the trusted third
+		final ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(issuerPrivateKey);
+		final X509CertificateHolder holder = certBuilder.build(signer);
+
+		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(new ByteArrayInputStream(holder.getEncoded()));
 
 		return new CertificateToken(cert);
 	}

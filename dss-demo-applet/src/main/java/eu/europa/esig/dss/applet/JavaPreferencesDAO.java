@@ -22,6 +22,8 @@ package eu.europa.esig.dss.applet;
 
 import java.util.prefs.Preferences;
 
+import eu.europa.esig.dss.SignatureTokenType;
+
 /**
  * Stores the user preferences in the Java Preferences API.
  *

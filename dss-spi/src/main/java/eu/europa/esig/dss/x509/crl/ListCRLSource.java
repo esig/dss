@@ -26,10 +26,6 @@ import java.util.ArrayList;
 /**
  * This class allows to handle a list CRL source.
  *
- *
- *
- *
- *
  */
 public class ListCRLSource extends OfflineCRLSource {
 
@@ -46,7 +42,6 @@ public class ListCRLSource extends OfflineCRLSource {
 	 * @param crlSource
 	 */
 	public ListCRLSource(final OfflineCRLSource crlSource) {
-
 		x509CRLList = new ArrayList<X509CRL>(crlSource.getContainedX509CRLs());
 	}
 
@@ -57,9 +52,7 @@ public class ListCRLSource extends OfflineCRLSource {
 	 * @param offlineCRLSource the source to be added
 	 */
 	public void addAll(final OfflineCRLSource offlineCRLSource) {
-
 		for (X509CRL x509CRL : offlineCRLSource.x509CRLList) {
-
 			if (!x509CRLList.contains(x509CRL)) {
 				x509CRLList.add(x509CRL);
 			}

@@ -27,14 +27,6 @@ import java.security.cert.X509CRLEntry;
 import java.util.Date;
 import java.util.List;
 
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.CertificateList;
-import org.bouncycastle.asn1.x509.TBSCertList;
-import org.bouncycastle.cert.X509CRLHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +90,7 @@ public class CRLToken extends RevocationToken {
 		final X509CRL x509crl = crlValidity.getX509CRL();
 		final String sigAlgOID = x509crl.getSigAlgOID();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(sigAlgOID);
-		this.algorithmUsedToSignToken = signatureAlgorithm;
+		this.signatureAlgorithm = signatureAlgorithm;
 		this.issuingTime = x509crl.getThisUpdate();
 		this.nextUpdate = x509crl.getNextUpdate();
 		issuerX500Principal = x509crl.getIssuerX500Principal();
@@ -145,31 +137,8 @@ public class CRLToken extends RevocationToken {
 		return crlValidity.getX509CRL();
 	}
 
-	/**
-	 * @return the a copy of x509crl as a X509CRLHolder
-	 */
-	public X509CRLHolder getX509CrlHolder() {
-
-		try {
-
-			final X509CRL x509crl = getX509crl();
-			final TBSCertList tbsCertList = TBSCertList.getInstance(x509crl.getTBSCertList());
-			final AlgorithmIdentifier sigAlgOID = new AlgorithmIdentifier(new ASN1ObjectIdentifier(x509crl.getSigAlgOID()));
-			final byte[] signature = x509crl.getSignature();
-			final DERSequence seq = new DERSequence(new ASN1Encodable[] { tbsCertList, sigAlgOID, new DERBitString(signature) });
-			final CertificateList x509CRL = new CertificateList(seq);
-			// final CertificateList x509CRL = new
-			// CertificateList.getInstance((Object)seq);
-			final X509CRLHolder x509crlHolder = new X509CRLHolder(x509CRL);
-			return x509crlHolder;
-		} catch (CRLException e) {
-			throw new DSSException(e);
-		}
-	}
-
 	@Override
 	public String getSourceURL() {
-
 		return sourceURL;
 	}
 
@@ -242,7 +211,7 @@ public class CRLToken extends RevocationToken {
 			indentStr += "\t";
 			out.append(indentStr).append("Version: ").append(crlValidity.getX509CRL().getVersion()).append('\n');
 			out.append(indentStr).append("Issuing time: ").append(issuingTime == null ? "?" : DSSUtils.formatInternal(issuingTime)).append('\n');
-			out.append(indentStr).append("Signature algorithm: ").append(algorithmUsedToSignToken == null ? "?" : algorithmUsedToSignToken)
+			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm)
 			.append('\n');
 			out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
 			if (issuerToken != null) {

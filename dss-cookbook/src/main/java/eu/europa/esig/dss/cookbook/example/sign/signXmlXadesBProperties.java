@@ -67,7 +67,7 @@ public class signXmlXadesBProperties extends Cookbook {
 		signerLocation.setCountry("Belgium");
 		signerLocation.setStateOrProvince("Luxembourg");
 		signerLocation.setPostalCode("1234");
-		signerLocation.setCity("SimCity");
+		signerLocation.setLocality("SimCity");
 		bLevelParameters.setSignerLocation(signerLocation);
 
 		List<String> commitmentTypeIndications = new ArrayList<String>();

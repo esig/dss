@@ -53,6 +53,7 @@ import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUtils;
@@ -72,6 +72,7 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -726,7 +727,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		}
 		final String base64EncodedTimestamp = timestampTokenNode.getTextContent();
-		final TimeStampToken timeStampToken = DSSASN1Utils.createTimeStampToken(base64EncodedTimestamp);
+		final TimeStampToken timeStampToken = createTimeStampToken(base64EncodedTimestamp);
 		final TimestampToken timestampToken = new TimestampToken(timeStampToken, timestampType, certPool);
 		timestampToken.setHashCode(timestampElement.hashCode());
 		setTimestampCanonicalizationMethod(timestampElement, timestampToken);
@@ -740,6 +741,23 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// includes.item(i).getAttributes()));
 		// }
 		return timestampToken;
+	}
+
+	/**
+	 * This method generates a bouncycastle {@code TimeStampToken} based on base 64 encoded {@code String}.
+	 *
+	 * @param base64EncodedTimestamp
+	 * @return bouncycastle {@code TimeStampToken}
+	 * @throws DSSException
+	 */
+	private TimeStampToken createTimeStampToken(final String base64EncodedTimestamp) throws DSSException {
+		try {
+			final byte[] tokenBytes = Base64.decodeBase64(base64EncodedTimestamp);
+			final CMSSignedData signedData = new CMSSignedData(tokenBytes);
+			return new TimeStampToken(signedData);
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
 	}
 
 	public Element getSignatureValue() {
@@ -1857,8 +1875,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			} else {
 
 				final CertificateToken certificateToken = getSigningCertificateToken();
-				final String dssId = (certificateToken == null ? "" : certificateToken.getDSSId().asXmlId());
-				signatureId = DSSUtils.getDeterministicId(getSigningTime(), dssId);
+				TokenIdentifier identifier = (certificateToken == null ? null : certificateToken.getDSSId());
+				signatureId = DSSUtils.getDeterministicId(getSigningTime(), identifier);
 			}
 		}
 		return signatureId;
@@ -1961,8 +1979,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
-		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1.name(),
-				certificateToken.getDigestValue(DigestAlgorithm.SHA1));
+		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1.name(), DSSUtils.digest(DigestAlgorithm.SHA1, certificateToken));
 		return reference;
 	}
 

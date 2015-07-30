@@ -1,8 +1,6 @@
 package eu.europa.esig.dss.web.controller;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.SignatureForm;
@@ -89,73 +84,6 @@ public class ExtensionController {
 	@ModelAttribute("signaturePackagings")
 	public SignaturePackaging[] getSignaturePackagings() {
 		return SignaturePackaging.values();
-	}
-
-	@RequestMapping(value = "/packagingsByForm", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public List<SignaturePackaging> getAllowedPackagingsByForm(@RequestParam("form") SignatureForm signatureForm) {
-		List<SignaturePackaging> packagings = new ArrayList<SignaturePackaging>();
-		if (signatureForm != null) {
-			switch (signatureForm) {
-				case CAdES:
-					packagings.add(SignaturePackaging.ENVELOPING);
-					packagings.add(SignaturePackaging.DETACHED);
-					break;
-				case PAdES:
-					packagings.add(SignaturePackaging.ENVELOPED);
-					break;
-				case XAdES:
-					packagings.add(SignaturePackaging.ENVELOPED);
-					packagings.add(SignaturePackaging.ENVELOPING);
-					packagings.add(SignaturePackaging.DETACHED);
-					break;
-				case ASiC_S:
-				case ASiC_E:
-					packagings.add(SignaturePackaging.DETACHED);
-					break;
-				default:
-					break;
-			}
-		}
-		return packagings;
-	}
-
-	@RequestMapping(value = "/levelsByForm", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public List<SignatureLevel> getAllowedLevelsByForm(@RequestParam("form") SignatureForm signatureForm) {
-		List<SignatureLevel> levels = new ArrayList<SignatureLevel>();
-		if (signatureForm != null) {
-			switch (signatureForm) {
-				case CAdES:
-					levels.add(SignatureLevel.CAdES_BASELINE_T);
-					levels.add(SignatureLevel.CAdES_BASELINE_LT);
-					levels.add(SignatureLevel.CAdES_BASELINE_LTA);
-					break;
-				case PAdES:
-					levels.add(SignatureLevel.PAdES_BASELINE_T);
-					levels.add(SignatureLevel.PAdES_BASELINE_LT);
-					levels.add(SignatureLevel.PAdES_BASELINE_LTA);
-					break;
-				case XAdES:
-					levels.add(SignatureLevel.XAdES_BASELINE_T);
-					levels.add(SignatureLevel.XAdES_BASELINE_LT);
-					levels.add(SignatureLevel.XAdES_BASELINE_LTA);
-					break;
-				case ASiC_S:
-					levels.add(SignatureLevel.ASiC_S_BASELINE_T);
-					levels.add(SignatureLevel.ASiC_S_BASELINE_LT);
-					levels.add(SignatureLevel.ASiC_S_BASELINE_LTA);
-					break;
-				case ASiC_E:
-					levels.add(SignatureLevel.ASiC_E_BASELINE_T);
-					levels.add(SignatureLevel.ASiC_E_BASELINE_LT);
-					levels.add(SignatureLevel.ASiC_E_BASELINE_LTA);
-					break;
-				default:
-					break;
-			}
-		}
-		return levels;
 	}
 
 }

@@ -5,10 +5,16 @@ import java.util.List;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.DigestAlgorithm;
 
 public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	ProfileParameters context;
+
+	/**
+	 * The digest method used to create the digest of the signer's certificate.
+	 */
+	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA1;
 
 	/**
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
@@ -33,6 +39,26 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	private Document rootDocument;
 
+	/**
+	 * This property is a part of the standard:<br>
+	 * 7.2.2 The SigningCertificate element (101 903 V1.4.2 (2010-12) XAdES)<br>
+	 * The digest method indicates the digest algorithm to be used to calculate the CertDigest element that contains the
+	 * digest for each certificate referenced in the sequence.
+	 *
+	 * @param signingCertificateDigestMethod
+	 */
+	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
+		this.signingCertificateDigestMethod = signingCertificateDigestMethod;
+	}
+
+	/**
+	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm).
+	 *
+	 * @return
+	 */
+	public DigestAlgorithm getSigningCertificateDigestMethod() {
+		return signingCertificateDigestMethod;
+	}
 
 	/**
 	 * @return the canonicalization algorithm to be used when dealing with SignedInfo.

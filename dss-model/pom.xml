@@ -17,7 +17,6 @@
 	
 	<dependencies>
 		<!-- No other dependencies than in scope test  -->
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

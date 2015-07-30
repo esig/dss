@@ -40,7 +40,7 @@ public class CRLGeneratorTest {
 
 	@Test
 	public void test() throws Exception {
-		MockPrivateKeyEntry issuerKeyEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry issuerKeyEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256, true);
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerKeyEntry);
 		X509CRL generatedCRL = crlGenerator.generateCRL(privateKeyEntry.getCertificate().getCertificate(), issuerKeyEntry, new Date(), CRLReason.privilegeWithdrawn);
 		assertNotNull(generatedCRL);

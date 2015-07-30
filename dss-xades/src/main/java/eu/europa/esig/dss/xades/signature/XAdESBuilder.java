@@ -224,7 +224,7 @@ public abstract class XAdESBuilder {
 
 			final Element certDigestDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_CERT_DIGEST);
 
-			final DigestAlgorithm signingCertificateDigestMethod = params.bLevel().getSigningCertificateDigestMethod();
+			final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 			incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
 
 			final InMemoryDocument inMemoryCertificate = new InMemoryDocument(certificate.getEncoded());

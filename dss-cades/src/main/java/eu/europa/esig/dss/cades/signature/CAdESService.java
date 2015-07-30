@@ -35,7 +35,6 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -45,6 +44,7 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
@@ -92,7 +92,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(toSignData.getBytes());
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
-		DSSASN1Utils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
+		CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
 		return new ToBeSigned(bytes);
 	}
@@ -120,7 +120,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(toSignData.getBytes());
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
-		final CMSSignedData cmsSignedData = DSSASN1Utils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
+		final CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final CMSSignedDocument signature = new CMSSignedDocument(cmsSignedData);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
@@ -165,8 +165,8 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 			// Generate a signed digest on the contents octets of the signature octet String in the identified SignerInfo value
 			// of the original signature's SignedData
-			byte[] dataToSign = signerInformation.getSignature();
-			byte[] signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), privateKeyEntry);
+			ToBeSigned toBeSigned = new ToBeSigned( signerInformation.getSignature());
+			SignatureValue signatureValue = token.sign(toBeSigned, parameters.getDigestAlgorithm(), privateKeyEntry);
 
 			// Set the countersignature builder
 			CounterSignatureBuilder builder = new CounterSignatureBuilder(certificateVerifier);
@@ -174,7 +174,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			builder.setSelector(selector);
 
 			final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
-			final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue);
+			final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
 			SignerInfoGeneratorBuilder signerInformationGeneratorBuilder = builder.getSignerInfoGeneratorBuilder(parameters, true);
 			CMSSignedDataGenerator cmsSignedDataGenerator = builder.createCMSSignedDataGenerator(parameters, customContentSigner,

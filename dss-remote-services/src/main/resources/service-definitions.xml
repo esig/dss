@@ -8,30 +8,4 @@
 		<property name="asicService" ref="asicService" />
 	</bean>
 
-	<bean id="cadesService" class="eu.europa.esig.dss.cades.signature.CAdESService">
-		<constructor-arg ref="certificateVerifier" />
-		<property name="tspSource" ref="tspSource" />
-	</bean>
-
-	<bean id="xadesService" class="eu.europa.esig.dss.xades.signature.XAdESService">
-		<constructor-arg ref="certificateVerifier" />
-		<property name="tspSource" ref="tspSource" />
-	</bean>
-
-	<bean id="padesService" class="eu.europa.esig.dss.pades.signature.PAdESService">
-		<constructor-arg ref="certificateVerifier" />
-		<property name="tspSource" ref="tspSource" />
-	</bean>
-
-	<bean id="asicService" class="eu.europa.esig.dss.asic.signature.ASiCService">
-		<constructor-arg ref="certificateVerifier" />
-		<property name="tspSource" ref="tspSource" />
-	</bean>
-
-	<bean id="certificateVerifier" class="eu.europa.esig.dss.validation.CommonCertificateVerifier">
-		<property name="trustedCertSource" ref="trustedListSource" />
-		<property name="ocspSource" ref="ocspSource" />
-		<property name="crlSource" ref="crlSource" />
-		<property name="dataLoader" ref="dataLoader" />
-	</bean>
 </beans>

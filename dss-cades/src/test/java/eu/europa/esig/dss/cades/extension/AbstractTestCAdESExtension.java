@@ -51,7 +51,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 	protected DSSDocument getSignedDocument() throws Exception {
 		CertificateService certificateService = new CertificateService();
 
-		MockPrivateKeyEntry issuerEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry issuerEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256, true);
 		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerEntry);
 		MockPrivateKeyEntry entryUserB = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerEntry);
 

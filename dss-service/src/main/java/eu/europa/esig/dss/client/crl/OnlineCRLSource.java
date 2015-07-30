@@ -32,6 +32,7 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.slf4j.Logger;
@@ -174,7 +175,9 @@ public class OnlineCRLSource implements CRLSource {
 	 */
 	public List<String> getCrlUrl(final CertificateToken certificateToken) throws DSSException {
 
-		final byte[] crlDistributionPointsBytes = certificateToken.getCRLDistributionPoints();
+		final String id = Extension.cRLDistributionPoints.getId();
+		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(id);
+
 		if (null == crlDistributionPointsBytes) {
 
 			return null;

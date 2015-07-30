@@ -76,8 +76,8 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 		if (deterministicId != null) {
 			return deterministicId;
 		}
-		final String dssId = (signingCertificate == null ? "" : signingCertificate.getDSSId().asXmlId());
-		deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), dssId);
+		final TokenIdentifier identifier = (signingCertificate == null ? null : signingCertificate.getDSSId());
+		deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), identifier);
 		return deterministicId;
 	}
 

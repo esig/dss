@@ -639,7 +639,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 			final Element signatureProductionPlaceDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_PRODUCTION_PLACE);
 
-			final String city = signatureProductionPlace.getCity();
+			final String city = signatureProductionPlace.getLocality();
 			if (city != null) {
 				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_CITY, city);
 			}

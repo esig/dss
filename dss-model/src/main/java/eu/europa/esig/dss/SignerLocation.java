@@ -30,7 +30,6 @@ public class SignerLocation implements Serializable {
 
 	private List<String> postalAddress = new ArrayList<String>();
 	private String postalCode;
-	private String city;
 	private String locality;
 	private String stateOrProvince;
 	private String country;
@@ -70,14 +69,6 @@ public class SignerLocation implements Serializable {
 		this.postalCode = postalCode;
 	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
 	public String getStateOrProvince() {
 		return stateOrProvince;
 	}
@@ -102,7 +93,6 @@ public class SignerLocation implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((city == null) ? 0 : city.hashCode());
 		result = (prime * result) + ((country == null) ? 0 : country.hashCode());
 		result = (prime * result) + ((locality == null) ? 0 : locality.hashCode());
 		result = (prime * result) + ((postalAddress == null) ? 0 : postalAddress.hashCode());
@@ -123,13 +113,6 @@ public class SignerLocation implements Serializable {
 			return false;
 		}
 		SignerLocation other = (SignerLocation) obj;
-		if (city == null) {
-			if (other.city != null) {
-				return false;
-			}
-		} else if (!city.equals(other.city)) {
-			return false;
-		}
 		if (country == null) {
 			if (other.country != null) {
 				return false;
@@ -170,7 +153,7 @@ public class SignerLocation implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SignerLocation [postalAddress=" + postalAddress + ", postalCode=" + postalCode + ", city=" + city + ", locality=" + locality + ", stateOrProvince="
+		return "SignerLocation [postalAddress=" + postalAddress + ", postalCode=" + postalCode + ", locality=" + locality + ", stateOrProvince="
 				+ stateOrProvince + ", country=" + country + "]";
 	}
 

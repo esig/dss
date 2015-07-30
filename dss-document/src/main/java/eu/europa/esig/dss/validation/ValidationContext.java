@@ -37,11 +37,11 @@ public interface ValidationContext {
 	 *
 	 * @param currentTime {@code Date}
 	 */
-	public void setCurrentTime(final Date currentTime);
+	void setCurrentTime(final Date currentTime);
 
 	void initialize(final CertificateVerifier certificateVerifier);
 
-	public Date getCurrentTime();
+	Date getCurrentTime();
 
 	/**
 	 * Adds a new revocation token to the list of tokes to verify. If the revocation token has already been added then it is ignored.
@@ -69,7 +69,7 @@ public interface ValidationContext {
 	 *
 	 * @throws DSSException
 	 */
-	public abstract void validate() throws DSSException;
+	void validate() throws DSSException;
 
 	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the given document. This list
@@ -77,19 +77,20 @@ public interface ValidationContext {
 	 *
 	 * @return The list of CertificateToken(s)
 	 */
-	public abstract Set<CertificateToken> getProcessedCertificates();
+	Set<CertificateToken> getProcessedCertificates();
 
 	/**
 	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the given document.
 	 *
 	 * @return The list of CertificateToken(s)
 	 */
-	public abstract Set<RevocationToken> getProcessedRevocations();
+	Set<RevocationToken> getProcessedRevocations();
 
 	/**
 	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given document.
 	 *
 	 * @return The list of CertificateToken(s)
 	 */
-	public abstract Set<TimestampToken> getProcessedTimestamps();
+	Set<TimestampToken> getProcessedTimestamps();
+
 }

@@ -29,12 +29,12 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
@@ -74,7 +74,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContent());
-		AttributeTable unsignedAttributes = DSSASN1Utils.getUnsignedAttributes(signerInformation);
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, cmsSignedData, signerInformation, parameters, unsignedAttributes);
 		SignerInformation newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 		return newSignerInformation;
@@ -133,7 +133,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
 		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		if (signedContent != null) {
-			return DSSASN1Utils.getSignedContent(signedContent);
+			return CMSUtils.getSignedContent(signedContent);
 		}
 		final DSSDocument detachedContent = parameters.getDetachedContent();
 		if (detachedContent == null) {
