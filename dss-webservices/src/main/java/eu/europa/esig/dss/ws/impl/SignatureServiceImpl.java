@@ -167,9 +167,6 @@ public class SignatureServiceImpl implements SignatureService {
 
 		setClaimedSignerRole(wsParameters, params);
 
-		setContentIdentifierPrefix(wsParameters, params);
-		setContentIdentifierSuffix(wsParameters, params);
-
 		setCommitmentTypeIndication(wsParameters, params);
 
 		setSignerLocation(wsParameters, params);
@@ -202,16 +199,6 @@ public class SignatureServiceImpl implements SignatureService {
 	private void setCommitmentTypeIndication(WSParameters wsParameters, AbstractSignatureParameters params) {
 		final List<String> commitmentTypeIndication = wsParameters.getCommitmentTypeIndication();
 		params.bLevel().setCommitmentTypeIndications(commitmentTypeIndication);
-	}
-
-	private void setContentIdentifierSuffix(WSParameters wsParameters, AbstractSignatureParameters params) {
-		final String contentIdentifierSuffix = wsParameters.getContentIdentifierSuffix();
-		params.bLevel().setContentIdentifierSuffix(contentIdentifierSuffix);
-	}
-
-	private void setContentIdentifierPrefix(WSParameters wsParameters, AbstractSignatureParameters params) {
-		final String contentIdentifierPrefix = wsParameters.getContentIdentifierPrefix();
-		params.bLevel().setContentIdentifierPrefix(contentIdentifierPrefix);
 	}
 
 	private void setSignedInfoCanonicalizationMethod(WSParameters wsParameters, XAdESSignatureParameters params) {

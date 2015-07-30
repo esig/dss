@@ -110,9 +110,6 @@ public class SerializationTest {
 		List<String> commitmentTypeIndication = new ArrayList<String>();
 		commitmentTypeIndication.add("Test commitment");
 		blevel.setCommitmentTypeIndications(commitmentTypeIndication);
-		blevel.setContentHintsDescription("contentHints");
-		blevel.setContentIdentifierPrefix("Content identifier prefix");
-		blevel.setContentIdentifierSuffix("Content identifier sufix");
 
 		byte[] serialized = serialize(blevel);
 		BLevelParameters unserialized = unserialize(serialized, BLevelParameters.class);
@@ -122,7 +119,6 @@ public class SerializationTest {
 	@Test
 	public void testSerializationSignerLocation() throws Exception {
 		SignerLocation signerLocation = new SignerLocation();
-		signerLocation.setCity("city");
 		signerLocation.setCountry("country");
 		signerLocation.setLocality("locality");
 		List<String> postalAddress = new ArrayList<String>();
@@ -147,9 +143,6 @@ public class SerializationTest {
 		List<String> commitmentTypeIndication = new ArrayList<String>();
 		commitmentTypeIndication.add("Test commitment");
 		testObj.bLevel().setCommitmentTypeIndications(commitmentTypeIndication);
-		testObj.bLevel().setContentHintsDescription("contentHints");
-		testObj.bLevel().setContentIdentifierPrefix("Content identifier prefix");
-		testObj.bLevel().setContentIdentifierSuffix("Content identifier sufix");
 		Policy signaturePolicy = new Policy();
 		signaturePolicy.setDescription("description");
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.MD5);
@@ -160,7 +153,6 @@ public class SerializationTest {
 		signaturePolicy.setSpuri("uri");
 		testObj.bLevel().setSignaturePolicy(signaturePolicy);
 		SignerLocation signerLocation = new SignerLocation();
-		signerLocation.setCity("city");
 		signerLocation.setCountry("country");
 		signerLocation.setLocality("locality");
 		List<String> postalAddress = new ArrayList<String>();
@@ -183,7 +175,6 @@ public class SerializationTest {
 			fail(e.getMessage());
 		}
 	}
-
 
 	private static <T extends Serializable> byte[] serialize(T obj) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

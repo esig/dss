@@ -337,12 +337,10 @@ public class CAdESLevelBaselineB {
 	 * @return
 	 */
 	private void addContentHints(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+		if (StringUtils.isNotBlank(parameters.getContentHintsType())) {
 
-		final BLevelParameters bLevelParameters = parameters.bLevel();
-		if (StringUtils.isNotBlank(bLevelParameters.getContentHintsType())) {
-
-			final ASN1ObjectIdentifier contentHintsType = new ASN1ObjectIdentifier(bLevelParameters.getContentHintsType());
-			final String contentHintsDescriptionString = bLevelParameters.getContentHintsDescription();
+			final ASN1ObjectIdentifier contentHintsType = new ASN1ObjectIdentifier(parameters.getContentHintsType());
+			final String contentHintsDescriptionString = parameters.getContentHintsDescription();
 			final DERUTF8String contentHintsDescription = StringUtils.isBlank(contentHintsDescriptionString) ? null : new DERUTF8String(contentHintsDescriptionString);
 			//		"text/plain";
 			//		"1.2.840.113549.1.7.1";
@@ -376,19 +374,19 @@ public class CAdESLevelBaselineB {
 		if (!padesUsage) {
 
 			final BLevelParameters bLevelParameters = parameters.bLevel();
-			final String contentIdentifierPrefix = bLevelParameters.getContentIdentifierPrefix();
+			final String contentIdentifierPrefix = parameters.getContentIdentifierPrefix();
 			if (StringUtils.isNotBlank(contentIdentifierPrefix)) {
 
 				final String contentIdentifierSuffix;
-				if (StringUtils.isBlank(bLevelParameters.getContentIdentifierSuffix())) {
+				if (StringUtils.isBlank(parameters.getContentIdentifierSuffix())) {
 
 					final Date now = new Date();
 					final String asn1GeneralizedTimeString = new ASN1GeneralizedTime(now).getTimeString();
 					final long randomNumber = new Random(now.getTime()).nextLong();
 					contentIdentifierSuffix = asn1GeneralizedTimeString + randomNumber;
-					bLevelParameters.setContentIdentifierSuffix(contentIdentifierSuffix);
+					parameters.setContentIdentifierSuffix(contentIdentifierSuffix);
 				} else {
-					contentIdentifierSuffix = bLevelParameters.getContentIdentifierSuffix();
+					contentIdentifierSuffix = parameters.getContentIdentifierSuffix();
 				}
 				final String contentIdentifierString = contentIdentifierPrefix + contentIdentifierSuffix;
 				final ContentIdentifier contentIdentifier = new ContentIdentifier(contentIdentifierString.getBytes());

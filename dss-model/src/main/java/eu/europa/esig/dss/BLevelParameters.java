@@ -48,24 +48,13 @@ public class BLevelParameters implements Serializable {
 	@XmlJavaTypeAdapter(value = DateAdapter.class)
 	private Date signingDate = new Date();
 
-	/**
-	 * The digest method used to create the digest of the signer's certificate.
-	 */
-	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA1;
-
 	private List<String> claimedSignerRoles;
 	private List<String> certifiedSignerRoles;
 
 	private Policy signaturePolicy;
 
-	// TODO: move to a CAdES-B specific parameter class
-	private String contentIdentifierPrefix;
-	private String contentIdentifierSuffix;
-
 	private List<String> commitmentTypeIndication;
 	private SignerLocation signerLocation;
-	private String contentHintsType;
-	private String contentHintsDescription;
 
 	public BLevelParameters() {
 	}
@@ -81,7 +70,8 @@ public class BLevelParameters implements Serializable {
 	 * Allows to set the trust anchor policy to use when creating -B and -LT levels.
 	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when building -B level.
 	 *
-	 * @param trustAnchorBPPolicy {@code boolean}
+	 * @param trustAnchorBPPolicy
+	 *            {@code boolean}
 	 */
 	public void setTrustAnchorBPPolicy(boolean trustAnchorBPPolicy) {
 		this.trustAnchorBPPolicy = trustAnchorBPPolicy;
@@ -91,74 +81,17 @@ public class BLevelParameters implements Serializable {
 	 * @return the signature policy to use during the signature creation process
 	 */
 	public Policy getSignaturePolicy() {
-
 		return signaturePolicy;
 	}
 
 	/**
 	 * This setter allows to indicate the signature policy to use.
 	 *
-	 * @param signaturePolicy signature policy to use
+	 * @param signaturePolicy
+	 *            signature policy to use
 	 */
 	public void setSignaturePolicy(final Policy signaturePolicy) {
-
 		this.signaturePolicy = signaturePolicy;
-	}
-
-	/**
-	 * THIS VALUE WILL BE SET AUTOMATICALLY IF LEFT BLANK
-	 *
-	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 *
-	 * 5.10.2 content-identifier Attribute
-	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
-	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
-	 * content-identifier shall be a signed attribute.
-	 * content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
-	 * ESS (RFC 2634 [5]).
-	 *
-	 * The minimal content-identifier attribute should contain a concatenation of user-specific identification
-	 * information (such as a user name or public keying material identification information), a GeneralizedTime string,
-	 * and a random number.
-	 *
-	 * @return
-	 */
-	public String getContentIdentifierSuffix() {
-		return contentIdentifierSuffix;
-	}
-
-	/**
-	 * @param contentIdentifierSuffix
-	 * @see #getContentIdentifierSuffix()
-	 */
-	public void setContentIdentifierSuffix(String contentIdentifierSuffix) {
-		this.contentIdentifierSuffix = contentIdentifierSuffix;
-	}
-
-	public String getContentHintsType() {
-		return contentHintsType;
-	}
-
-	public void setContentHintsType(String contentHintsType) {
-		this.contentHintsType = contentHintsType;
-	}
-
-	public String getContentHintsDescription() {
-		return contentHintsDescription;
-	}
-
-	public void setContentHintsDescription(String contentHintsDescription) {
-		this.contentHintsDescription = contentHintsDescription;
-	}
-
-	/**
-	 * Set the signing date
-	 *
-	 * @param signingDate the value
-	 */
-	public void setSigningDate(final Date signingDate) {
-
-		this.signingDate = signingDate;
 	}
 
 	/**
@@ -171,24 +104,13 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
-	 * This property is a part of the standard:<br>
-	 * 7.2.2 The SigningCertificate element (101 903 V1.4.2 (2010-12) XAdES)<br>
-	 * The digest method indicates the digest algorithm to be used to calculate the CertDigest element that contains the
-	 * digest for each certificate referenced in the sequence.
+	 * Set the signing date
 	 *
-	 * @param signingCertificateDigestMethod
+	 * @param signingDate
+	 *            the value
 	 */
-	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
-		this.signingCertificateDigestMethod = signingCertificateDigestMethod;
-	}
-
-	/**
-	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm).
-	 *
-	 * @return
-	 */
-	public DigestAlgorithm getSigningCertificateDigestMethod() {
-		return signingCertificateDigestMethod;
+	public void setSigningDate(final Date signingDate) {
+		this.signingDate = signingDate;
 	}
 
 	/**
@@ -203,7 +125,8 @@ public class BLevelParameters implements Serializable {
 	/**
 	 * Adds a claimed signer role
 	 *
-	 * @param claimedSignerRole the value
+	 * @param claimedSignerRole
+	 *            the value
 	 */
 	public void addClaimedSignerRole(final String claimedSignerRole) {
 		if ((claimedSignerRole == null) || (claimedSignerRole.length() == 0)) {
@@ -222,7 +145,8 @@ public class BLevelParameters implements Serializable {
 	/**
 	 * Adds a certified signer role
 	 *
-	 * @param certifiedSignerRole the value
+	 * @param certifiedSignerRole
+	 *            the value
 	 */
 	public void addCertifiedSignerRole(final String certifiedSignerRole) {
 		throw new DSSException("eu.europa.esig.dss.BLevelParameters.addCertifiedSignerRole");
@@ -230,7 +154,6 @@ public class BLevelParameters implements Serializable {
 
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 *
 	 * 5.11.1 commitment-type-indication Attribute
 	 * There may be situations where a signer wants to explicitly indicate to a verifier that by signing the data, it illustrates a
 	 * type of commitment on behalf of the signer. The commitment-type-indication attribute conveys such
@@ -246,41 +169,11 @@ public class BLevelParameters implements Serializable {
 
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 *
-	 * 5.10.2 content-identifier Attribute
-	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
-	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
-	 * content-identifier shall be a signed attribute.
-	 * content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
-	 * ESS (RFC 2634 [5]).
-	 *
-	 * The minimal content-identifier attribute should contain a concatenation of user-specific identification
-	 * information (such as a user name or public keying material identification information), a GeneralizedTime string,
-	 * and a random number.
-	 *
-	 * @return
-	 */
-	public String getContentIdentifierPrefix() {
-		return contentIdentifierPrefix;
-	}
-
-	/**
-	 * @param contentIdentifierPrefix
-	 * @see #getContentIdentifierPrefix()
-	 */
-	public void setContentIdentifierPrefix(String contentIdentifierPrefix) {
-		this.contentIdentifierPrefix = contentIdentifierPrefix;
-	}
-
-	/**
-	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 *
 	 * 5.11.2 signer-location Attribute
 	 * The signer-location attribute specifies a mnemonic for an address associated with the signer at a particular
 	 * geographical (e.g. city) location. The mnemonic is registered in the country in which the signer is located and is used in
 	 * the provision of the Public Telegram Service (according to Recommendation ITU-T F.1 [11]).
 	 * The signer-location attribute shall be a signed attribute.
-	 *
 	 * The following object identifier identifies the signer-location attribute:
 	 * id-aa-ets-signerLocation OBJECT IDENTIFIER ::= { iso(1) member-body(2)
 	 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 17}
@@ -300,7 +193,8 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
-	 * @param signerLocation the location to set
+	 * @param signerLocation
+	 *            the location to set
 	 */
 	public void setSignerLocation(final SignerLocation signerLocation) {
 		this.signerLocation = signerLocation;
@@ -313,13 +207,8 @@ public class BLevelParameters implements Serializable {
 		result = (prime * result) + ((certifiedSignerRoles == null) ? 0 : certifiedSignerRoles.hashCode());
 		result = (prime * result) + ((claimedSignerRoles == null) ? 0 : claimedSignerRoles.hashCode());
 		result = (prime * result) + ((commitmentTypeIndication == null) ? 0 : commitmentTypeIndication.hashCode());
-		result = (prime * result) + ((contentHintsDescription == null) ? 0 : contentHintsDescription.hashCode());
-		result = (prime * result) + ((contentHintsType == null) ? 0 : contentHintsType.hashCode());
-		result = (prime * result) + ((contentIdentifierPrefix == null) ? 0 : contentIdentifierPrefix.hashCode());
-		result = (prime * result) + ((contentIdentifierSuffix == null) ? 0 : contentIdentifierSuffix.hashCode());
 		result = (prime * result) + ((signaturePolicy == null) ? 0 : signaturePolicy.hashCode());
 		result = (prime * result) + ((signerLocation == null) ? 0 : signerLocation.hashCode());
-		result = (prime * result) + ((signingCertificateDigestMethod == null) ? 0 : signingCertificateDigestMethod.hashCode());
 		result = (prime * result) + ((signingDate == null) ? 0 : signingDate.hashCode());
 		result = (prime * result) + (trustAnchorBPPolicy ? 1231 : 1237);
 		return result;
@@ -358,34 +247,6 @@ public class BLevelParameters implements Serializable {
 		} else if (!commitmentTypeIndication.equals(other.commitmentTypeIndication)) {
 			return false;
 		}
-		if (contentHintsDescription == null) {
-			if (other.contentHintsDescription != null) {
-				return false;
-			}
-		} else if (!contentHintsDescription.equals(other.contentHintsDescription)) {
-			return false;
-		}
-		if (contentHintsType == null) {
-			if (other.contentHintsType != null) {
-				return false;
-			}
-		} else if (!contentHintsType.equals(other.contentHintsType)) {
-			return false;
-		}
-		if (contentIdentifierPrefix == null) {
-			if (other.contentIdentifierPrefix != null) {
-				return false;
-			}
-		} else if (!contentIdentifierPrefix.equals(other.contentIdentifierPrefix)) {
-			return false;
-		}
-		if (contentIdentifierSuffix == null) {
-			if (other.contentIdentifierSuffix != null) {
-				return false;
-			}
-		} else if (!contentIdentifierSuffix.equals(other.contentIdentifierSuffix)) {
-			return false;
-		}
 		if (signaturePolicy == null) {
 			if (other.signaturePolicy != null) {
 				return false;
@@ -398,9 +259,6 @@ public class BLevelParameters implements Serializable {
 				return false;
 			}
 		} else if (!signerLocation.equals(other.signerLocation)) {
-			return false;
-		}
-		if (signingCertificateDigestMethod != other.signingCertificateDigestMethod) {
 			return false;
 		}
 		if (signingDate == null) {
@@ -418,11 +276,8 @@ public class BLevelParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BLevelParameters [trustAnchorBPPolicy=" + trustAnchorBPPolicy + ", signingDate=" + signingDate + ", signingCertificateDigestMethod="
-				+ signingCertificateDigestMethod + ", claimedSignerRoles=" + claimedSignerRoles + ", certifiedSignerRoles=" + certifiedSignerRoles + ", signaturePolicy="
-				+ signaturePolicy + ", contentIdentifierPrefix=" + contentIdentifierPrefix + ", contentIdentifierSuffix=" + contentIdentifierSuffix + ", commitmentTypeIndication="
-				+ commitmentTypeIndication + ", signerLocation=" + signerLocation + ", contentHintsType=" + contentHintsType + ", contentHintsDescription="
-				+ contentHintsDescription + "]";
+		return "BLevelParameters [trustAnchorBPPolicy=" + trustAnchorBPPolicy + ", signingDate=" + signingDate + ", claimedSignerRoles=" + claimedSignerRoles + ", certifiedSignerRoles=" + certifiedSignerRoles + ", signaturePolicy="
+				+ signaturePolicy + ", commitmentTypeIndication=" + commitmentTypeIndication + ", signerLocation=" + signerLocation + "]";
 	}
 
 }
