@@ -1,4 +1,4 @@
-package known.issues.DSS728;
+package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
