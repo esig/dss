@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -139,18 +140,18 @@ public final class CMSUtils {
 	}
 
 	/**
-	 * This method allows to create a {@code BasicOCSPResp} from a {@code DERSequence}.
+	 * This method allows to create a {@code BasicOCSPResp} from a {@code ASN1Sequence}.
 	 *
 	 * @param otherRevocationInfoMatch {@code DERSequence} to convert to {@code BasicOCSPResp}
 	 * @return {@code BasicOCSPResp}
 	 */
-	public static  BasicOCSPResp getBasicOcspResp(final DERSequence otherRevocationInfoMatch) {
+	public static  BasicOCSPResp getBasicOcspResp(final ASN1Sequence otherRevocationInfoMatch) {
 		BasicOCSPResp basicOCSPResp = null;
 		try {
 			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(otherRevocationInfoMatch);
 			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
 		} catch (Exception e) {
-			logger.error("Impossible to create BasicOCSPResp from DERSequence!", e);
+			logger.error("Impossible to create BasicOCSPResp from ASN1Sequence!", e);
 		}
 		return basicOCSPResp;
 	}

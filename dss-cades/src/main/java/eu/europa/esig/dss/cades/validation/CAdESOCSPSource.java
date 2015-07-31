@@ -27,6 +27,7 @@ import java.util.List;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
@@ -43,6 +44,7 @@ import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 
@@ -160,9 +162,17 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-			final DERSequence otherRevocationInfoMatch = (DERSequence) object;
-			final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
-			addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+			if (object instanceof DERSequence) {
+				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
+				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+			} else if (object instanceof DLSequence) {
+				final DLSequence otherRevocationInfoMatch = (DLSequence) object;
+				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
+				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+			} else {
+				throw new DSSException("Unsupported object type : " + object.getClass());
+			}
 		}
 	}
 
