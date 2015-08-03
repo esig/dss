@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -140,18 +139,20 @@ public final class CMSUtils {
 	}
 
 	/**
-	 * This method allows to create a {@code BasicOCSPResp} from a {@code ASN1Sequence}.
+	 * This method allows to create a {@code BasicOCSPResp} from a {@code DERSequence}.
+	 * The value for response SHALL be the DER encoding of BasicOCSPResponse (RFC 2560).
 	 *
-	 * @param otherRevocationInfoMatch {@code DERSequence} to convert to {@code BasicOCSPResp}
+	 * @param derSequence
+	 *            {@code DERSequence} to convert to {@code BasicOCSPResp}
 	 * @return {@code BasicOCSPResp}
 	 */
-	public static  BasicOCSPResp getBasicOcspResp(final ASN1Sequence otherRevocationInfoMatch) {
+	public static BasicOCSPResp getBasicOcspResp(final DERSequence derSequence) {
 		BasicOCSPResp basicOCSPResp = null;
 		try {
-			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(otherRevocationInfoMatch);
+			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(derSequence);
 			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
 		} catch (Exception e) {
-			logger.error("Impossible to create BasicOCSPResp from ASN1Sequence!", e);
+			logger.error("Impossible to create BasicOCSPResp from DERSequence!", e);
 		}
 		return basicOCSPResp;
 	}
@@ -159,13 +160,14 @@ public final class CMSUtils {
 	/**
 	 * This method allows to create a {@code OCSPResp} from a {@code DERSequence}.
 	 *
-	 * @param otherRevocationInfoMatch {@code DERSequence} to convert to {@code OCSPResp}
+	 * @param derSequence
+	 *            {@code DERSequence} to convert to {@code OCSPResp}
 	 * @return {@code OCSPResp}
 	 */
-	public static  OCSPResp getOcspResp(final DERSequence otherRevocationInfoMatch) {
+	public static OCSPResp getOcspResp(final DERSequence derSequence) {
 		OCSPResp ocspResp = null;
 		try {
-			final OCSPResponse ocspResponse = OCSPResponse.getInstance(otherRevocationInfoMatch);
+			final OCSPResponse ocspResponse = OCSPResponse.getInstance(derSequence);
 			ocspResp = new OCSPResp(ocspResponse);
 		} catch (Exception e) {
 			logger.error("Impossible to create OCSPResp from DERSequence!", e);
@@ -176,15 +178,15 @@ public final class CMSUtils {
 	/**
 	 * This method returns the {@code BasicOCSPResp} from a {@code OCSPResp}.
 	 *
-	 * @param ocspResp {@code OCSPResp} to analysed
+	 * @param ocspResp
+	 *            {@code OCSPResp} to analysed
 	 * @return
 	 */
-	public static  BasicOCSPResp getBasicOCSPResp(final OCSPResp ocspResp) {
+	public static BasicOCSPResp getBasicOCSPResp(final OCSPResp ocspResp) {
 		BasicOCSPResp basicOCSPResp = null;
 		try {
 			final Object responseObject = ocspResp.getResponseObject();
 			if (responseObject instanceof BasicOCSPResp) {
-
 				basicOCSPResp = (BasicOCSPResp) responseObject;
 			} else {
 				logger.warn("Unknown OCSP response type: {}", responseObject.getClass());
