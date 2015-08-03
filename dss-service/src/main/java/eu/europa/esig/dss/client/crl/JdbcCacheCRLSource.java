@@ -59,9 +59,9 @@ public class JdbcCacheCRLSource implements CRLSource {
 	public static final String SQL_INIT_CHECK_EXISTENCE = "SELECT COUNT(*) FROM CACHED_CRL";
 
 	/**
-	 * used in the init method to create the table, if not existing: ID (char20) and DATA (blob)
+	 * used in the init method to create the table, if not existing: ID (char40  = SHA1 length) and DATA (blob)
 	 */
-	public static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(20), DATA LONGVARBINARY)";
+	public static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA LONGVARBINARY)";
 
 	/**
 	 * used in the find method to select the crl via the id
