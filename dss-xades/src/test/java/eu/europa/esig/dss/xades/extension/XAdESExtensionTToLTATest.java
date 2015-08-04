@@ -31,8 +31,7 @@ public class XAdESExtensionTToLTATest extends AbstractTestXAdESExtension {
 
 	@Override
 	protected SignatureLevel getFinalSignatureLevel() {
-		// TODO change XAdES_A to XAdES_BASELINE_LTA after DSS-631 Modify signature level detection XAdES / CAdES
-		return SignatureLevel.XAdES_A;
+		return SignatureLevel.XAdES_BASELINE_LTA;
 	}
 
 }

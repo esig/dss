@@ -328,16 +328,36 @@ public final class DSSXMLUtils {
 	 * @return
 	 */
 	public static int count(final Node xmlNode, final String xPathString) {
-
 		try {
-
 			final XPathExpression xPathExpression = createXPathExpression(xPathString);
 			final Double number = (Double) xPathExpression.evaluate(xmlNode, XPathConstants.NUMBER);
 			return number.intValue();
 		} catch (XPathExpressionException e) {
-
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * Returns true if the xpath query contains something
+	 *
+	 * @param xmlNode
+	 * @param xPathString
+	 * @return
+	 */
+	public static boolean isNotEmpty(final Node xmlNode, final String xPathString) {
+		NodeList nodeList = getNodeList(xmlNode, xPathString);
+		if (nodeList != null) {
+			Node node = nodeList.item(0);
+			if (node != null) {
+				Node child = node.getFirstChild();
+				if (child == null) {
+					return false;
+				} else if (StringUtils.isNotBlank(child.getTextContent()) || ((child.getAttributes() !=null) && (child.getAttributes().getLength() > 0))) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
