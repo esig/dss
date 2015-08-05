@@ -51,10 +51,9 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
  *
  *
  */
-
 public class CAdESOCSPSource extends OfflineOCSPSource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CAdESOCSPSource.class);
+	private static final Logger logger = LoggerFactory.getLogger(CAdESOCSPSource.class);
 
 	private CMSSignedData cmsSignedData;
 	private SignerInformation signerInformation;
@@ -144,15 +143,19 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-			final BasicOCSPResp basicOCSPResp;
-			final DERSequence otherRevocationInfoMatch = (DERSequence) object;
-			if (otherRevocationInfoMatch.size() == 4) {
-				basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
+			if (object instanceof DERSequence) {
+				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+				final BasicOCSPResp basicOCSPResp;
+				if (otherRevocationInfoMatch.size() == 4) {
+					basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
+				} else {
+					final OCSPResp ocspResp = CMSUtils.getOcspResp(otherRevocationInfoMatch);
+					basicOCSPResp = CMSUtils.getBasicOCSPResp(ocspResp);
+				}
+				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 			} else {
-				final OCSPResp ocspResp = CMSUtils.getOcspResp(otherRevocationInfoMatch);
-				basicOCSPResp = CMSUtils.getBasicOCSPResp(ocspResp);
+				logger.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : " + object.getClass().getSimpleName());
 			}
-			addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 		}
 	}
 
@@ -160,9 +163,13 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-			final DERSequence otherRevocationInfoMatch = (DERSequence) object;
-			final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
-			addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+			if (object instanceof DERSequence) {
+				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
+				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+			} else {
+				logger.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : " + object.getClass().getSimpleName());
+			}
 		}
 	}
 
