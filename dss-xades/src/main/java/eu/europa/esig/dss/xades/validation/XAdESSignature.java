@@ -825,8 +825,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public boolean hasLTProfile() {
 		final boolean certValues = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_CERTIFICATE_VALUES);
+
 		final boolean revocationValues = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_REVOCATION_VALUES);
-		return certValues || revocationValues;
+		boolean notEmptyCRL = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUE);
+		boolean notEmptyOCSP = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_OCSP_VALUE);
+
+		return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
 	}
 
 	/**

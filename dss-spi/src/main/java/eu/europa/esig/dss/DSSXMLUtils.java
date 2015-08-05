@@ -345,17 +345,10 @@ public final class DSSXMLUtils {
 	 * @return
 	 */
 	public static boolean isNotEmpty(final Node xmlNode, final String xPathString) {
-		NodeList nodeList = getNodeList(xmlNode, xPathString);
-		if (nodeList != null) {
-			Node node = nodeList.item(0);
-			if (node != null) {
-				Node child = node.getFirstChild();
-				if (child == null) {
-					return false;
-				} else if (StringUtils.isNotBlank(child.getTextContent()) || ((child.getAttributes() !=null) && (child.getAttributes().getLength() > 0))) {
-					return true;
-				}
-			}
+		// xpath suffix allows to skip text nodes and empty lines
+		NodeList nodeList = getNodeList(xmlNode, xPathString + "/child::node()[not(self::text())]");
+		if ((nodeList != null) && (nodeList.getLength() > 0)) {
+			return true;
 		}
 		return false;
 	}
