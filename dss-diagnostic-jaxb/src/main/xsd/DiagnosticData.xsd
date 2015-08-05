@@ -55,10 +55,12 @@
 										<xs:element type="xs:string" name="Id"/>
 										<xs:element type="xs:string" name="Url"/>
 										<xs:element type="xs:string" name="Notice"/>
+										<xs:element type="DigestAlgAndValueType" name="DigestAlgAndValue" minOccurs="0" />
+										<xs:element type="xs:boolean" name="Asn1Processable"/>
 										<xs:element type="xs:boolean" name="Identified"/>
 										<xs:element type="xs:boolean" name="Status"/>
 										<xs:element type="xs:string" name="ProcessingError"/>
-										<xs:element type="xs:boolean" name="DigestAlgorithmsEqual"/>
+										<xs:element type="xs:boolean" name="DigestAlgorithmsEqual" minOccurs="0" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>

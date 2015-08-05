@@ -41,6 +41,7 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
@@ -1111,7 +1112,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			addErrorMessage(xmlSignature, msg);
 		}
 		if (signaturePolicy == null) {
-
 			return;
 		}
 
@@ -1126,6 +1126,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final String notice = signaturePolicy.getNotice();
 		xmlPolicy.setNotice(notice);
+
+		final String policyDigestValueFromSignature = StringUtils.upperCase(signaturePolicy.getDigestValue());
+
+		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
+
+		XmlDigestAlgAndValueType xmlDigestAlgAndValue = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlDigestAlgAndValueType();
+		xmlDigestAlgAndValue.setDigestMethod(signPolicyHashAlgFromSignature.getName());
+		xmlDigestAlgAndValue.setDigestValue(policyDigestValueFromSignature);
+		xmlPolicy.setDigestAlgAndValue(xmlDigestAlgAndValue);
 
 		/**
 		 * ETSI 102 853:
@@ -1144,13 +1153,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		byte[] policyBytes = null;
 		try {
-
 			if (policyDocument == null) {
-
 				final DataLoader dataLoader = certificateVerifier.getDataLoader();
 				policyBytes = dataLoader.get(policyUrl);
 			} else {
-
 				policyBytes = DSSUtils.toByteArray(policyDocument);
 			}
 		} catch (Exception e) {
@@ -1162,73 +1168,90 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			return;
 		}
 
-		DigestAlgorithm signPolicyHashAlgFromPolicy = null;
-		String policyDigestHexValueFromPolicy = null;
-		String recalculatedDigestHexValue = null;
-		/**
-		 * a)
-		 * If the resulting document is based on TR 102 272 [i.2] (ESI: ASN.1 format for signature policies), use the digest value present in the
-		 * SignPolicyDigest element from the resulting document. Check that the digest algorithm indicated
-		 * in the SignPolicyDigestAlg from the resulting document is equal to the digest algorithm indicated in the property.
-		 */
+		boolean isAsn1Processable;
+		ASN1Sequence asn1Sequence = null;
+		try {
+			asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
+			isAsn1Processable = true;
+		} catch (Exception e) {
+			LOG.info("Policy bytes are not asn1 processable : " + e.getMessage());
+			isAsn1Processable = false;
+		}
+		xmlPolicy.setAsn1Processable(isAsn1Processable);
+
 		try {
 
-			final ASN1Sequence asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
-			final ASN1Sequence signPolicyHashAlgObject = (ASN1Sequence) asn1Sequence.getObjectAt(0);
-			final AlgorithmIdentifier signPolicyHashAlgIdentifier = AlgorithmIdentifier.getInstance(signPolicyHashAlgObject);
-			signPolicyHashAlgFromPolicy = DigestAlgorithm.forOID(signPolicyHashAlgIdentifier.getAlgorithm().getId());
+			if (isAsn1Processable) {
+				/**
+				 * a)
+				 * If the resulting document is based on TR 102 272 [i.2] (ESI: ASN.1 format for signature policies), use the digest value present in the
+				 * SignPolicyDigest element from the resulting document. Check that the digest algorithm indicated
+				 * in the SignPolicyDigestAlg from the resulting document is equal to the digest algorithm indicated in the property.
+				 */
 
-			byte[] recalculatedDigestValue = DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes);
-			recalculatedDigestHexValue = DSSUtils.toHex(recalculatedDigestValue);
+				final ASN1Sequence signPolicyHashAlgObject = (ASN1Sequence) asn1Sequence.getObjectAt(0);
+				final AlgorithmIdentifier signPolicyHashAlgIdentifier = AlgorithmIdentifier.getInstance(signPolicyHashAlgObject);
+				DigestAlgorithm signPolicyHashAlgFromPolicy = DigestAlgorithm.forOID(signPolicyHashAlgIdentifier.getAlgorithm().getId());
 
-			/**
-			 * b)
-			 * If the resulting document is based on TR 102 038 [i.3] ((ESI) XML format for signature policies), use the digest value present in
-			 * signPolicyHash element from the resulting document. Check that the digest
-			 * algorithm indicated in the signPolicyHashAlg from the resulting document is equal to the digest algorithm indicated in the attribute.
-			 */
+				/**
+				 * b)
+				 * If the resulting document is based on TR 102 038 [i.3] ((ESI) XML format for signature policies), use the digest value present in
+				 * signPolicyHash element from the resulting document. Check that the digest
+				 * algorithm indicated in the signPolicyHashAlg from the resulting document is equal to the digest algorithm indicated in the attribute.
+				 */
 
-			/**
-			 * c)
-			 * In all other cases, compute the digest using the digesting algorithm indicated in the children of the property/attribute.
-			 */
+				/**
+				 * The use of a zero-sigPolicyHash value is to ensure backwards compatibility with earlier versions of the
+				 * current document. If sigPolicyHash is zero, then the hash value should not be checked against the
+				 * calculated hash value of the signature policy.
+				 */
+				if (!signPolicyHashAlgFromPolicy.equals(signPolicyHashAlgFromSignature)) {
+					xmlPolicy.setProcessingError("The digest algorithm indicated in the SignPolicyHashAlg from the resulting document (" + signPolicyHashAlgFromPolicy
+							+ ") is not equal to the digest " + "algorithm (" + signPolicyHashAlgFromSignature + ").");
+					xmlPolicy.setDigestAlgorithmsEqual(false);
+					xmlPolicy.setStatus(false);
+					return;
+				} else {
+					xmlPolicy.setDigestAlgorithmsEqual(true);
+				}
 
-			String policyDigestValueFromSignature = signaturePolicy.getDigestValue();
-			policyDigestValueFromSignature = policyDigestValueFromSignature.toUpperCase();
+				byte[] recalculatedDigestValue = DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes);
+				String recalculatedDigestHexValue = DSSUtils.toHex(recalculatedDigestValue);
 
-			/**
-			 * The use of a zero-sigPolicyHash value is to ensure backwards compatibility with earlier versions of the
-			 * current document. If sigPolicyHash is zero, then the hash value should not be checked against the
-			 * calculated hash value of the signature policy.
-			 */
+				boolean equal = policyDigestValueFromSignature.equals(recalculatedDigestHexValue);
+				xmlPolicy.setStatus(equal);
+				if (!equal) {
+					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
+					return;
+				}
 
-			final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
-			if (!signPolicyHashAlgFromPolicy.equals(signPolicyHashAlgFromSignature)) {
+				final ASN1OctetString signPolicyHash = (ASN1OctetString) asn1Sequence.getObjectAt(2);
+				final byte[] policyDigestValueFromPolicy = signPolicyHash.getOctets();
+				String policyDigestHexValueFromPolicy = DSSUtils.toHex(policyDigestValueFromPolicy);
+				equal = policyDigestValueFromSignature.equals(policyDigestHexValueFromPolicy );
+				xmlPolicy.setStatus(equal);
+				if (!equal) {
+					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature + ") does not match the digest value from the policy file (" + policyDigestHexValueFromPolicy + ").");
+				}
+			} else {
 
-				xmlPolicy.setProcessingError(
-						"The digest algorithm indicated in the SignPolicyHashAlg from the resulting document (" + signPolicyHashAlgFromPolicy + ") is not equal to the digest " +
-								"algorithm (" + signPolicyHashAlgFromSignature + ").");
-				xmlPolicy.setDigestAlgorithmsEqual(false);
-				xmlPolicy.setStatus(false);
-				return;
+				/**
+				 * c)
+				 * In all other cases, compute the digest using the digesting algorithm indicated in the children of the property/attribute.
+				 */
+
+				byte[] recalculatedDigestValue = DSSUtils.digest(signPolicyHashAlgFromSignature, policyBytes);
+				String recalculatedDigestHexValue = DSSUtils.toHex(recalculatedDigestValue);
+
+				boolean equal = policyDigestValueFromSignature.equals(recalculatedDigestHexValue);
+				xmlPolicy.setStatus(equal);
+				if (!equal) {
+					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
+					return;
+				}
 			}
-			xmlPolicy.setDigestAlgorithmsEqual(true);
 
-			boolean equal = policyDigestValueFromSignature.equals(recalculatedDigestHexValue);
-			xmlPolicy.setStatus(equal);
-			if (!equal) {
 
-				xmlPolicy.setProcessingError(
-						"The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
-				return;
-			}
-			equal = policyDigestValueFromSignature.equals(policyDigestHexValueFromPolicy);
-			xmlPolicy.setStatus(equal);
-			if (!equal) {
-
-				xmlPolicy.setProcessingError(
-						"The policy digest value (" + policyDigestValueFromSignature + ") does not match the digest value from the policy file (" + policyDigestHexValueFromPolicy + ").");
-			}
 		} catch (RuntimeException e) {
 			// When any error (communication) we just set the status to false
 			xmlPolicy.setStatus(false);
