@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.Policy;
@@ -220,7 +219,7 @@ public class SigningService {
 				service = asicService;
 				break;
 			default:
-				throw new DSSException("Unknow signature form : " + signatureForm);
+				logger.error("Unknow signature form : " + signatureForm);
 		}
 		return service;
 	}

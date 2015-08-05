@@ -18,7 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues.DSS631;
+package eu.europa.esig.dss.xades.signature;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.Date;
@@ -38,10 +40,10 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESLevelLTATest extends AbstractTestSignature {
+public class XAdESLevelXLTest extends AbstractTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -60,12 +62,17 @@ public class XAdESLevelLTATest extends AbstractTestSignature {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_XL);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
 
+	}
+
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertEquals(SignatureLevel.XAdES_BASELINE_LT.name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override
@@ -90,7 +97,7 @@ public class XAdESLevelLTATest extends AbstractTestSignature {
 
 	@Override
 	protected boolean isBaselineLTA() {
-		return true;
+		return false;
 	}
 
 	@Override

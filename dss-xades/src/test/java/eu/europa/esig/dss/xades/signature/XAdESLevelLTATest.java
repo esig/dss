@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues.DSS631;
+package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
 import java.util.Date;
@@ -41,7 +41,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESLevelXLTest extends AbstractTestSignature {
+public class XAdESLevelLTATest extends AbstractTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -60,7 +60,7 @@ public class XAdESLevelXLTest extends AbstractTestSignature {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_XL);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
@@ -90,7 +90,7 @@ public class XAdESLevelXLTest extends AbstractTestSignature {
 
 	@Override
 	protected boolean isBaselineLTA() {
-		return false;
+		return true;
 	}
 
 	@Override

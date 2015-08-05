@@ -65,7 +65,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		/* Go up to -X */
 		super.extendSignatureTag();
 
-		if (!xadesSignature.hasXLProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
+		if (!xadesSignature.hasLTProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
 
 			final ValidationContext valContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 

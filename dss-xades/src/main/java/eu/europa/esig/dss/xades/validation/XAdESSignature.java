@@ -108,9 +108,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This array contains all the XAdES signatures levels TODO: do not return redundant levels.
 	 */
-	private static SignatureLevel[] signatureLevels = new SignatureLevel[] { SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B,
-		SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_XL,
-		SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A };
+	private static SignatureLevel[] signatureLevels = new SignatureLevel[] {
+		SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B, SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X,
+		SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA
+	};
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -803,9 +804,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return
 	 */
 	public boolean hasBProfile() {
-
-		final int count = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_SIGNED_SIGNATURE_PROPERTIES);
-		return count > 0;
+		return DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIGNED_SIGNATURE_PROPERTIES);
 	}
 
 	/**
@@ -814,9 +813,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return
 	 */
 	public boolean hasTProfile() {
-
-		final int count = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_SIGNATURE_TIMESTAMP);
-		return count > 0;
+		return DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_TIMESTAMP);
 	}
 
 	/**
@@ -825,9 +822,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return
 	 */
 	public boolean hasCProfile() {
-
-		final boolean certRefs = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_COMPLETE_CERTIFICATE_REFS) > 0;
-		final boolean revocationRefs = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_COMPLETE_REVOCATION_REFS) > 0;
+		final boolean certRefs = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS);
+		final boolean revocationRefs = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS);
 		return certRefs || revocationRefs;
 	}
 
@@ -837,54 +833,34 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return true if the -X extension is present
 	 */
 	public boolean hasXProfile() {
-
-		boolean signAndRefs = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_SIG_AND_REFS_TIMESTAMP) > 0;
-		return signAndRefs;
+		return DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIG_AND_REFS_TIMESTAMP);
 	}
 
 	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -XL profile existence
+	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LT (or -XL) profile existence
 	 *
-	 * @return true if -XL extension is present
-	 */
-	public boolean hasXLProfile() {
-
-		final boolean certValues = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_CERTIFICATE_VALUES) > 0;
-		final boolean revocationValues = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_REVOCATION_VALUES) > 0;
-		return certValues || revocationValues;
-	}
-
-	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LT profile existence
-	 *
-	 * @return true if -LT extension is present
+	 * @return true if -LT (or -XL) extension is present
 	 */
 	public boolean hasLTProfile() {
+		final boolean certValues = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_CERTIFICATE_VALUES);
 
-		return hasXLProfile();
+		final boolean revocationValues = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_REVOCATION_VALUES);
+		boolean notEmptyCRL = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUE);
+		boolean notEmptyOCSP = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_OCSP_VALUE);
+
+		return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
 	}
 
 	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -A profile existence
+	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LTA (or -A) profile existence
 	 *
-	 * @return true if -A extension is present
-	 */
-	public boolean hasAProfile() {
-
-		final boolean archiveTimestamp = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_ARCHIVE_TIMESTAMP) > 0;
-		final boolean archiveTimestamp141 = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_ARCHIVE_TIMESTAMP_141) > 0;
-		final boolean archiveTimestampV2 = DSSXMLUtils.count(signatureElement, xPathQueryHolder.XPATH_COUNT_ARCHIVE_TIMESTAMP_V2) > 0;
-		return archiveTimestamp || archiveTimestamp141 || archiveTimestampV2;
-	}
-
-	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LTA profile existence
-	 *
-	 * @return true if -LTA extension is present
+	 * @return true if -LTA (or -A) extension is present
 	 */
 	public boolean hasLTAProfile() {
-
-		return hasAProfile();
+		final boolean archiveTimestamp = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP);
+		final boolean archiveTimestamp141 = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP_141);
+		final boolean archiveTimestampV2 = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP_V2);
+		return archiveTimestamp || archiveTimestamp141 || archiveTimestampV2;
 	}
 
 	/**
@@ -1997,7 +1973,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			case XML_NOT_ETSI:
 				break;
 			case XAdES_BASELINE_LTA:
-			case XAdES_A:
 				dataForLevelPresent = hasLTAProfile();
 				break;
 			case XAdES_BASELINE_LT:
@@ -2008,9 +1983,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				break;
 			case XAdES_BASELINE_B:
 				dataForLevelPresent &= hasBProfile();
-				break;
-			case XAdES_XL:
-				dataForLevelPresent &= hasXLProfile();
 				break;
 			case XAdES_X:
 				dataForLevelPresent &= hasXProfile();

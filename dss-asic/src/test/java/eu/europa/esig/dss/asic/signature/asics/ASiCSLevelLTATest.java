@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues.DSS631;
+package eu.europa.esig.dss.asic.signature.asics;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,7 +43,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 
-public class ASiCELevelLTATest extends AbstractTestSignature {
+public class ASiCSLevelLTATest extends AbstractTestSignature {
 
 	private DocumentSignatureService<ASiCSignatureParameters> service;
 	private ASiCSignatureParameters signatureParameters;
@@ -62,7 +62,7 @@ public class ASiCELevelLTATest extends AbstractTestSignature {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_LTA);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_LTA);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
@@ -86,7 +86,7 @@ public class ASiCELevelLTATest extends AbstractTestSignature {
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
+		return MimeType.ASICS;
 	}
 
 	@Override

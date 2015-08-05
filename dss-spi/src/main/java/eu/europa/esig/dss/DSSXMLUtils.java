@@ -323,15 +323,29 @@ public final class DSSXMLUtils {
 	 * @return
 	 */
 	public static int count(final Node xmlNode, final String xPathString) {
-
 		try {
-
 			final XPathExpression xPathExpression = createXPathExpression(xPathString);
 			final Double number = (Double) xPathExpression.evaluate(xmlNode, XPathConstants.NUMBER);
 			return number.intValue();
 		} catch (XPathExpressionException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * Returns true if the xpath query contains something
+	 *
+	 * @param xmlNode
+	 * @param xPathString
+	 * @return
+	 */
+	public static boolean isNotEmpty(final Node xmlNode, final String xPathString) {
+		// xpath suffix allows to skip text nodes and empty lines
+		NodeList nodeList = getNodeList(xmlNode, xPathString + "/child::node()[not(self::text())]");
+		if ((nodeList != null) && (nodeList.getLength() > 0)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
