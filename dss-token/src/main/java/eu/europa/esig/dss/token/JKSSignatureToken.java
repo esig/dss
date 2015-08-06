@@ -40,7 +40,7 @@ import eu.europa.esig.dss.DSSException;
  */
 public class JKSSignatureToken extends AbstractSignatureTokenConnection {
 
-	private static final Logger logger = LoggerFactory.getLogger(MSCAPISignatureToken.class);
+	private static final Logger logger = LoggerFactory.getLogger(JKSSignatureToken.class);
 
 	private char[] password;
 
