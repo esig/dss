@@ -28,10 +28,10 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -90,7 +90,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	protected transient DataLoader dataLoader;
 
-	private Map<String, String> diagnosticInfo = new HashMap<String, String>();
+	private List<TSLSimpleReport> diagnosticInfo = new ArrayList<TSLSimpleReport>();
 
 	/**
 	 * Defines if the TL signature must be checked. The default value is true.
@@ -158,13 +158,13 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 *            Indicates if the signature of trusted list is valid
 	 */
 	private synchronized void addCertificate(final CertificateToken x509Certificate, final AbstractTrustService trustedService, final TrustServiceProvider tsProvider,
-			final boolean tlWellSigned) {
+			final boolean tlWellSigned, Set<CertificateToken> countryCerts) {
 
 		try {
 			final ServiceInfo serviceInfo = getServiceInfo(trustedService, tsProvider, tlWellSigned);
 			addCertificate(x509Certificate, serviceInfo);
+			countryCerts.add(x509Certificate);
 		} catch (DSSNotETSICompliantException ex) {
-
 			logger.error("The entry for " + trustedService.getServiceName() + " doesn't respect ETSI specification " + ex.getLocalizedMessage());
 		}
 	}
@@ -207,9 +207,8 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 *
 	 * @return the diagnosticInfo
 	 */
-	public Map<String, String> getDiagnosticInfo() {
-
-		return Collections.unmodifiableMap(diagnosticInfo);
+	public List<TSLSimpleReport> getDiagnosticInfo() {
+		return Collections.unmodifiableList(diagnosticInfo);
 	}
 
 	/**
@@ -250,10 +249,10 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param url
 	 *            of the TSL to load
 	 * @param signingCertList
-	 *            the {@code List} of the possible signing certificates
+	 *            the {@code Set} of the possible signing certificates
 	 * @return {@code TrustStatusList}
 	 */
-	private TrustStatusList getTrustStatusList(final String url, final List<CertificateToken> signingCertList) {
+	private TrustStatusList getTrustStatusList(final String url, final Set<CertificateToken> signingCertList) {
 
 		boolean refresh = shouldRefresh(url);
 		final byte[] bytes = dataLoader.get(url, refresh);
@@ -268,7 +267,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return trustStatusList;
 	}
 
-	private boolean validateTslSignature(final List<CertificateToken> signingCertList, final byte[] bytes) {
+	private boolean validateTslSignature(final Set<CertificateToken> signingCertList, final byte[] bytes) {
 
 		boolean coreValidity = false;
 		if (signingCertList != null) {
@@ -371,7 +370,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return refresh;
 	}
 
-	private XMLDocumentValidator prepareSignatureValidation(final List<CertificateToken> signingCertList, final byte[] bytes) {
+	private XMLDocumentValidator prepareSignatureValidation(final Set<CertificateToken> signingCertList, final byte[] bytes) {
 
 		final CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		for (final CertificateToken x509Certificate : signingCertList) {
@@ -411,7 +410,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 			final String url = pointerToTSL.getTslLocation();
 			final String territory = pointerToTSL.getTerritory();
-			final List<CertificateToken> signingCertList = pointerToTSL.getDigitalIdentity();
+			final Set<CertificateToken> signingCertList = pointerToTSL.getDigitalIdentity();
 			try {
 
 				loadTSL(url, territory, signingCertList);
@@ -429,47 +428,46 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	private TrustStatusList loadLotl() {
+		TSLSimpleReport europeanTSLReport = new TSLSimpleReport();
+		europeanTSLReport.setCountry("EU");
+		europeanTSLReport.setUrl(lotlUrl);
 
 		CertificateToken lotlCert = null;
 		if (checkSignature) {
-
 			lotlCert = readLOTLCertificate();
 		}
 		TrustStatusList lotl;
 		try {
-
 			logger.info("Downloading LOTL from url= {}", lotlUrl);
-			final ArrayList<CertificateToken> x509CertificateList = new ArrayList<CertificateToken>();
-			x509CertificateList.add(lotlCert);
-			lotl = getTrustStatusList(lotlUrl, x509CertificateList);
+			final Set<CertificateToken> lotlCertificates = new HashSet<CertificateToken>();
+			if (lotlCert !=null){
+				lotlCertificates.add(lotlCert);
+			}
+			europeanTSLReport.setCertificates(lotlCertificates);
+			lotl = getTrustStatusList(lotlUrl, lotlCertificates);
+			europeanTSLReport.setLoaded(true);
+			europeanTSLReport.setLoadedDate(new Date());
 		} catch (DSSException e) {
-
+			europeanTSLReport.setLoaded(false);
 			logger.error("The LOTL cannot be loaded: " + e.getMessage(), e);
 			throw e;
 		}
-		diagnosticInfo.put(lotlUrl, "Loaded " + new Date().toString());
+		diagnosticInfo.add(europeanTSLReport);
 		return lotl;
 	}
 
 	private CertificateToken readLOTLCertificate() throws DSSException {
-
 		CertificateToken lotlCert;
 		if (lotlCertificate == null) {
-
-			final String msg = "The LOTL signing certificate property must contain a reference to a certificate.";
-			diagnosticInfo.put(lotlUrl, msg);
-			throw new DSSException(msg);
+			throw new DSSException("The LOTL signing certificate property must contain a reference to a certificate.");
 		}
 		InputStream inputStream = null;
 		try {
-
 			inputStream = getLotlCertificateInputStream();
 			lotlCert = DSSUtils.loadCertificate(inputStream);
 		} catch (DSSException e) {
-			diagnosticInfo.put(lotlUrl, "Cannot read LOTL signing certificate.");
-			throw e;
+			throw new DSSException("Cannot read LOTL signing certificate : " + e.getMessage(), e);
 		} finally {
-
 			IOUtils.closeQuietly(inputStream);
 		}
 		return lotlCert;
@@ -490,28 +488,35 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param territory
 	 *            of the TSL
 	 * @param signingCertList
-	 *            the {@code List} of the possible signing certificates
+	 *            the {@code Set} of the possible signing certificates
 	 */
-	protected void loadTSL(final String url, final String territory, final List<CertificateToken> signingCertList) {
-
+	protected void loadTSL(final String url, final String territory, final Set<CertificateToken> signingCertList) {
 		if (StringUtils.isBlank(url)) {
-
 			logger.error("The URL is blank!");
 			return;
 		}
-		final String trimmedUrl = url.trim();
-		try {
 
-			diagnosticInfo.put(trimmedUrl, "Loading");
+		String trimmedUrl = url.trim();
+
+		TSLSimpleReport countryTSLReport = new TSLSimpleReport();
+		countryTSLReport.setUrl(trimmedUrl);
+		countryTSLReport.setCountry(StringUtils.upperCase(territory));
+
+		try {
 			logger.info("Downloading TrustStatusList for '{}' from url='{}'", territory, trimmedUrl);
 			final TrustStatusList countryTSL = getTrustStatusList(trimmedUrl, signingCertList);
-			loadAllCertificatesFromOneTSL(countryTSL);
+			loadAllCertificatesFromOneTSL(countryTSL, countryTSLReport);
 			logger.info(".... done for '{}'", territory);
-			diagnosticInfo.put(trimmedUrl, "Loaded " + new Date().toString());
+
+			countryTSLReport.setLoaded(true);
+			countryTSLReport.setLoadedDate(new Date());
+
 		} catch (final Exception e) {
 			logger.error("An error occured while loading url " + url + " : " + e.getMessage(), e);
-			diagnosticInfo.put(url, "Unable to load TSL : " + e.getMessage());
+			countryTSLReport.setLoaded(false);
 		}
+
+		diagnosticInfo.add(countryTSLReport);
 	}
 
 	/**
@@ -519,8 +524,12 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * CertificateSource
 	 *
 	 * @param trustStatusList
+	 * @param countryTSLReport
 	 */
-	private void loadAllCertificatesFromOneTSL(final TrustStatusList trustStatusList) {
+	private void loadAllCertificatesFromOneTSL(final TrustStatusList trustStatusList, TSLSimpleReport countryTSLReport) {
+
+		boolean allCertificateLoaded = true;
+		Set<CertificateToken> countryCertificates = new HashSet<CertificateToken>();
 
 		for (final TrustServiceProvider trustServiceProvider : trustStatusList.getTrustServicesProvider()) {
 
@@ -546,11 +555,12 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 							}
 						}
 						if (certificateToken != null) {
-							addCertificate(certificateToken, trustService, trustServiceProvider, trustStatusList.isWellSigned());
+							addCertificate(certificateToken, trustService, trustServiceProvider, trustStatusList.isWellSigned(), countryCertificates);
 						}
 					} catch (DSSException e) {
 						// There is a problem when loading the certificate, we continue with the next one.
 						logger.warn(e.getMessage());
+						allCertificateLoaded = false;
 					}
 				}
 
@@ -561,16 +571,19 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 						if (ArrayUtils.isNotEmpty(certBytes)) {
 							CertificateToken certificateToken = DSSUtils.loadCertificate(certBytes);
 							if (certificateToken != null) {
-								addCertificate(certificateToken, trustService, trustServiceProvider, trustStatusList.isWellSigned());
+								addCertificate(certificateToken, trustService, trustServiceProvider, trustStatusList.isWellSigned(), countryCertificates);
 							}
 						}
 					} catch (DSSException e) {
 						logger.warn("Unable to add certificate '" + certificateUri + "' : " + e.getMessage());
+						allCertificateLoaded = false;
 					}
 				}
 
 			}
 		}
+		countryTSLReport.setAllCertificatesLoaded(allCertificateLoaded);
+		countryTSLReport.setCertificates(countryCertificates);
 	}
 
 	/**

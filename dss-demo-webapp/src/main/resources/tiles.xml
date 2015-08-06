@@ -53,6 +53,10 @@
     <definition name="validation-policy" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/validation-policy.jsp" />
     </definition>
+    
+    <definition name="tsl-info" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/tsl-info.jsp" />
+    </definition>
 
     <definition name="error" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/error.jsp" />
@@ -79,9 +83,6 @@
     </definition>
     <definition name="admin-proxy-edit" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/admin/form.jsp" />
-    </definition>
-    <definition name="admin-tsl-info" extends="main">
-        <put-attribute name="content" value="/WEB-INF/jsp/admin/tsl-info.jsp" />
     </definition>
 
 </tiles-definitions>

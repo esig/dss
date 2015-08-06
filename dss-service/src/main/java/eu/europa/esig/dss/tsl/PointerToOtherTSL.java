@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.tsl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
@@ -134,13 +135,13 @@ class PointerToOtherTSL {
 	 *
 	 * @return
 	 */
-	List<CertificateToken> getDigitalIdentity() {
+	Set<CertificateToken> getDigitalIdentity() {
 
 		if (getServiceDigitalIdentities() == null) {
 
 			return null;
 		}
-		final List<CertificateToken> x509DigitalIdentityList = new ArrayList<CertificateToken>();
+		final Set<CertificateToken> x509DigitalIdentityList = new HashSet<CertificateToken>();
 		for (final DigitalIdentityListType digitalIdentityList : getServiceDigitalIdentities()) {
 
 			final List<DigitalIdentityType> digitalIdList = digitalIdentityList.getDigitalId();

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.tsl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,75 +39,73 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 public class ReloadableTrustedListCertificateSource extends TrustedListsCertificateSource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReloadableTrustedListCertificateSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ReloadableTrustedListCertificateSource.class);
 
-    private TrustedListsCertificateSource currentSource = new TrustedListsCertificateSource();
+	private TrustedListsCertificateSource currentSource = new TrustedListsCertificateSource();
 
-    public ReloadableTrustedListCertificateSource() {
+	public ReloadableTrustedListCertificateSource() {
 
-        super();
-    }
+		super();
+	}
 
-    static class Reloader implements Runnable {
+	static class Reloader implements Runnable {
 
-        private TrustedListsCertificateSource underlyingSource;
+		private TrustedListsCertificateSource underlyingSource;
 
-        Reloader(final TrustedListsCertificateSource underlyingSource) {
+		Reloader(final TrustedListsCertificateSource underlyingSource) {
 
-            this.underlyingSource = underlyingSource;
-        }
+			this.underlyingSource = underlyingSource;
+		}
 
-        @Override
-        public void run() {
+		@Override
+		public void run() {
 
-            try {
+			try {
 
-                LOG.info("--> run(): START LOADING");
-                underlyingSource.init();
-                LOG.info("--> run(): END LOADING");
+				LOG.info("--> run(): START LOADING");
+				underlyingSource.init();
+				LOG.info("--> run(): END LOADING");
 
-            } catch (DSSEncodingException e) {
-                makeATrace(e);
-            }
-        }
+			} catch (DSSEncodingException e) {
+				makeATrace(e);
+			}
+		}
 
-        private static void makeATrace(final Exception e) {
+		private static void makeATrace(final Exception e) {
 
-            LOG.error(e.getMessage(), e);
-        }
-    }
+			LOG.error(e.getMessage(), e);
+		}
+	}
 
-    public synchronized void refresh() {
+	public synchronized void refresh() {
 
-        final TrustedListsCertificateSource newSource = new TrustedListsCertificateSource(this);
-	    final Reloader target = new Reloader(newSource);
-	    final Thread reloader = new Thread(target);
-        LOG.debug("--> refresh(): START");
-        reloader.start();
-        LOG.debug("--> refresh(): END");
+		final TrustedListsCertificateSource newSource = new TrustedListsCertificateSource(this);
+		final Reloader target = new Reloader(newSource);
+		final Thread reloader = new Thread(target);
+		LOG.debug("--> refresh(): START");
+		reloader.start();
+		LOG.debug("--> refresh(): END");
 
-        currentSource = newSource;
-    }
+		currentSource = newSource;
+	}
 
-    public Map<String, String> getDiagnosticInfo() {
+	@Override
+	public List<TSLSimpleReport> getDiagnosticInfo() {
+		return currentSource.getDiagnosticInfo();
+	}
 
-        return currentSource.getDiagnosticInfo();
-    }
+	@Override
+	public CertificatePool getCertificatePool() {
+		return currentSource.getCertificatePool();
+	}
 
-    @Override
-    public CertificatePool getCertificatePool() {
-
-        return currentSource.getCertificatePool();
-    }
-
-    @Override
-    /**
-     * Retrieves the list of all certificate tokens from this source.
-     *
-     * @return
-     */
-    public List<CertificateToken> getCertificates() {
-
-        return currentSource.getCertificatePool().getCertificateTokens();
-    }
+	@Override
+	/**
+	 * Retrieves the list of all certificate tokens from this source.
+	 *
+	 * @return
+	 */
+	public List<CertificateToken> getCertificates() {
+		return currentSource.getCertificatePool().getCertificateTokens();
+	}
 }
