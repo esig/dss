@@ -65,7 +65,6 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature
 		IOUtils.closeQuietly(fis);
 		String computedDigest = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA256, bytes));
 		digestDocument.addDigest(DigestAlgorithm.SHA256, computedDigest);
-		digestDocument.setBase64Encoded(Base64.encodeBase64String(bytes));
 
 		documentToSign = digestDocument;
 
