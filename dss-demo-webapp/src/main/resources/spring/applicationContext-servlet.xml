@@ -18,6 +18,10 @@
     
 	<mvc:annotation-driven />
 	
+	<mvc:interceptors>
+      <bean class="eu.europa.esig.dss.web.interceptor.WebappInterceptor" />
+    </mvc:interceptors> 
+	
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- the maximum file size in bytes -->
         <property name="maxUploadSize" value="52428800"/>

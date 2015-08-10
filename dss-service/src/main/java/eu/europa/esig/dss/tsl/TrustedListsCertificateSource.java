@@ -278,15 +278,13 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 				throw new DSSException("Not ETSI compliant signature. The Xml is not signed.");
 			}
 			final Reports reports = xmlDocumentValidator.validateDocument();
-			final SimpleReport simpleReport = reports.getSimpleReport();
-			final List<String> signatureIdList = simpleReport.getSignatureIdList();
-			final String signatureId = signatureIdList.get(0);
-			final String indication = simpleReport.getIndication(signatureId);
-			coreValidity = "VALID".equals(indication);
-			logger.info("The TSL signature validity: " + coreValidity);
-			if (!coreValidity) {
 
-				logger.info("The TSL signature validity details:\n" + simpleReport);
+			SimpleReport simpleReport = reports.getSimpleReport();
+			String indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
+			coreValidity = "VALID".equals(indication);
+
+			if (!coreValidity) {
+				logger.info("The TSL signature validity details:\n" + simpleReport.toString());
 				throw new DSSException("Not ETSI compliant signature. The signature is not valid.");
 			}
 		}
@@ -432,18 +430,17 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		europeanTSLReport.setCountry("EU");
 		europeanTSLReport.setUrl(lotlUrl);
 
-		CertificateToken lotlCert = null;
-		if (checkSignature) {
-			lotlCert = readLOTLCertificate();
-		}
+		CertificateToken lotlCert = readLOTLCertificate();
+
 		TrustStatusList lotl;
 		try {
 			logger.info("Downloading LOTL from url= {}", lotlUrl);
 			final Set<CertificateToken> lotlCertificates = new HashSet<CertificateToken>();
-			if (lotlCert !=null){
+			if (lotlCert != null) {
 				lotlCertificates.add(lotlCert);
+				europeanTSLReport.setCertificates(lotlCertificates);
+				europeanTSLReport.setAllCertificatesLoaded(true);
 			}
-			europeanTSLReport.setCertificates(lotlCertificates);
 			lotl = getTrustStatusList(lotlUrl, lotlCertificates);
 			europeanTSLReport.setLoaded(true);
 			europeanTSLReport.setLoadedDate(new Date());
