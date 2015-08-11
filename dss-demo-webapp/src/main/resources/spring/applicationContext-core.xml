@@ -7,9 +7,6 @@
 
 	<import resource="classpath:spring/applicationContext-dao.xml"/>
 
-	<context:annotation-config/>
-	<context:component-scan base-package="eu.europa.esig.dss"/>
-
 	<bean id="proxyPreferenceManager" class="eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager">
 		<property name="proxyDao" ref="proxyDao"/>
 		<!--<property name="proxyDao" ref="proxyFile"/>-->
@@ -44,7 +41,7 @@
 
 	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource">
 		<property name="dataLoader" ref="fileCacheDataLoader"/>
-		<property name="checkSignature" value="false"/>
+		<property name="checkSignature" value="true"/>
 		<property name="lotlCertificate" value="classpath://ec.europa.eu.crt"/>
 		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"/>
 		<property name="tslRefreshPolicy" value="WHEN_NECESSARY_OR_INDETERMINATE"/>

@@ -84,5 +84,10 @@
     <definition name="admin-proxy-edit" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/admin/form.jsp" />
     </definition>
+    <definition name="admin-select-certificate" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/admin/certificates/list.jsp" />
+    </definition>
+    
+    
 
 </tiles-definitions>
