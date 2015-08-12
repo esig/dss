@@ -23,7 +23,6 @@ package eu.europa.esig.dss.tsl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +34,6 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -61,6 +59,7 @@ import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 /**
@@ -70,10 +69,6 @@ import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 public class TrustedListsCertificateSource extends CommonTrustedCertificateSource {
 
 	private static final Logger logger = LoggerFactory.getLogger(TrustedListsCertificateSource.class);
-
-	// prefix of a resource to be found on the classpath - Spring notation
-	private static final String CP = "classpath://";
-	private static final String FILE = "file://";
 
 	public static final String TSL_HASH_PROPERTIES = "tsl_hash.properties";
 	public static final String TSL_NEXT_UPDATE_PROPERTIES = "tsl_next_update.properties";
@@ -92,15 +87,14 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private List<TSLSimpleReport> diagnosticInfo = new ArrayList<TSLSimpleReport>();
 
+	private KeyStoreCertificateSource keyStoreCertificateSource;
+
 	/**
 	 * Defines if the TL signature must be checked. The default value is true.
 	 */
 	protected boolean checkSignature = true;
 
-	protected String lotlCertificate;
-
 	static {
-
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
@@ -120,7 +114,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 		this.setDataLoader(trustedListsCertificateSource.dataLoader);
 		this.setCheckSignature(trustedListsCertificateSource.checkSignature);
-		this.setLotlCertificate(trustedListsCertificateSource.lotlCertificate);
+		this.setKeyStoreCertificateSource(trustedListsCertificateSource.keyStoreCertificateSource);
 		this.setLotlUrl(trustedListsCertificateSource.lotlUrl);
 		this.setTslPropertyCacheFolder(trustedListsCertificateSource.tslPropertyCacheFolder);
 		this.setTslRefreshPolicy(trustedListsCertificateSource.tslRefreshPolicy);
@@ -209,38 +203,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 */
 	public List<TSLSimpleReport> getDiagnosticInfo() {
 		return Collections.unmodifiableList(diagnosticInfo);
-	}
-
-	/**
-	 * Gets the LOTL certificate as an inputStream stream
-	 *
-	 * @return the inputStream stream
-	 * @throws DSSException
-	 */
-	private InputStream getLotlCertificateInputStream() throws DSSException {
-
-		InputStream inputStream = null;
-		try {
-
-			if (lotlCertificate.toLowerCase().startsWith(CP)) {
-
-				final String lotlCertificate_ = lotlCertificate.substring(CP.length() - 1);
-				inputStream = getClass().getResourceAsStream(lotlCertificate_);
-			} else if (lotlCertificate.toLowerCase().startsWith(FILE)) {
-
-				final URL url = new File(lotlCertificate.substring(FILE.length())).toURI().toURL();
-				inputStream = url.openStream();
-			} else {
-
-				final URL url = new URL(lotlCertificate);
-				inputStream = url.openStream();
-			}
-			return inputStream;
-		} catch (Exception e) {
-
-			IOUtils.closeQuietly(inputStream);
-			throw new DSSException(e);
-		}
 	}
 
 	/**
@@ -430,17 +392,14 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		europeanTSLReport.setCountry("EU");
 		europeanTSLReport.setUrl(lotlUrl);
 
-		CertificateToken lotlCert = readLOTLCertificate();
+		List<CertificateToken> trustedCertificatesFromKeyStore = keyStoreCertificateSource.getCertificatesFromKeyStore();
 
 		TrustStatusList lotl;
 		try {
 			logger.info("Downloading LOTL from url= {}", lotlUrl);
-			final Set<CertificateToken> lotlCertificates = new HashSet<CertificateToken>();
-			if (lotlCert != null) {
-				lotlCertificates.add(lotlCert);
-				europeanTSLReport.setCertificates(lotlCertificates);
-				europeanTSLReport.setAllCertificatesLoaded(true);
-			}
+			Set<CertificateToken> lotlCertificates = new HashSet<CertificateToken>(trustedCertificatesFromKeyStore);
+			europeanTSLReport.setCertificates(lotlCertificates);
+			europeanTSLReport.setAllCertificatesLoaded(true);
 			lotl = getTrustStatusList(lotlUrl, lotlCertificates);
 			europeanTSLReport.setLoaded(true);
 			europeanTSLReport.setLoadedDate(new Date());
@@ -453,22 +412,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return lotl;
 	}
 
-	private CertificateToken readLOTLCertificate() throws DSSException {
-		CertificateToken lotlCert;
-		if (lotlCertificate == null) {
-			throw new DSSException("The LOTL signing certificate property must contain a reference to a certificate.");
-		}
-		InputStream inputStream = null;
-		try {
-			inputStream = getLotlCertificateInputStream();
-			lotlCert = DSSUtils.loadCertificate(inputStream);
-		} catch (DSSException e) {
-			throw new DSSException("Cannot read LOTL signing certificate : " + e.getMessage(), e);
-		} finally {
-			IOUtils.closeQuietly(inputStream);
-		}
-		return lotlCert;
-	}
 
 	/**
 	 * This method gives the possibility to extend this class and to add other trusted lists. It is invoked systematically from {@code #init()} method.
@@ -594,6 +537,14 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	/**
+	 * This method allows to set a KeyStoreCertificateSource
+	 * @param keyStoreCertificateSource
+	 */
+	public void setKeyStoreCertificateSource(KeyStoreCertificateSource keyStoreCertificateSource) {
+		this.keyStoreCertificateSource = keyStoreCertificateSource;
+	}
+
+	/**
 	 * Defines if the TL signature must be checked.
 	 *
 	 * @param checkSignature
@@ -601,16 +552,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 */
 	public void setCheckSignature(final boolean checkSignature) {
 		this.checkSignature = checkSignature;
-	}
-
-	/**
-	 * The path to the LOTL certificate can be provided in two manners by using {@code classpath://} or {@code file://} prefixes (Spring notation).
-	 *
-	 * @param lotlCertificate
-	 *            the path to the LOTL signing certificate to set
-	 */
-	public void setLotlCertificate(final String lotlCertificate) {
-		this.lotlCertificate = lotlCertificate;
 	}
 
 	/**

@@ -6,6 +6,12 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<import resource="classpath:spring/applicationContext-dao.xml"/>
+	
+    <bean id="dssKeyStore"  class="eu.europa.esig.dss.web.DSSKeyStoreFactoryBean">
+	    <property name="keyStoreType" value="${keystore.type}" />
+	    <property name="keyStoreFilename" value="${keystore.filename}" />
+	    <property name="keyStorePassword" value="${keystore.password}" />
+	</bean>
 
 	<bean id="proxyPreferenceManager" class="eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager">
 		<property name="proxyDao" ref="proxyDao"/>
@@ -42,7 +48,7 @@
 	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource">
 		<property name="dataLoader" ref="fileCacheDataLoader"/>
 		<property name="checkSignature" value="false"/>
-		<property name="lotlCertificate" value="classpath://ec.europa.eu.crt"/>
+		<property name="keyStoreCertificateSource" ref="dssKeyStore"/>
 		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"/>
 		<property name="tslRefreshPolicy" value="WHEN_NECESSARY_OR_INDETERMINATE"/>
 	</bean>

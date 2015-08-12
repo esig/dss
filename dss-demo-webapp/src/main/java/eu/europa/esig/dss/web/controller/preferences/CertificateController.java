@@ -36,7 +36,7 @@ public class CertificateController {
 	public String showCertificates(Model model, HttpServletRequest request) {
 		CertificateForm certificateForm = new CertificateForm();
 		model.addAttribute("certificateForm", certificateForm);
-		model.addAttribute("keystoreCertificates", keystoreService.loadCertificatesFromKeryStore());
+		model.addAttribute("keystoreCertificates", keystoreService.getCertificatesDTOFromKeyStore());
 		return CERTIFICATE_TILE;
 	}
 
@@ -45,7 +45,7 @@ public class CertificateController {
 			@ModelAttribute("certificateForm") @Valid CertificateForm certificateForm, BindingResult result) {
 
 		if (result.hasErrors()) {
-			model.addAttribute("keystoreCertificates", keystoreService.loadCertificatesFromKeryStore());
+			model.addAttribute("keystoreCertificates", keystoreService.getCertificatesDTOFromKeyStore());
 			return CERTIFICATE_TILE;
 		}
 
@@ -53,20 +53,20 @@ public class CertificateController {
 			CertificateToken certificateToken = DSSUtils.loadCertificate(certificateForm.getCertificateFile().getBytes());
 			model.addAttribute("certificateDTO", keystoreService.getCertificateDTO(certificateToken));
 			if (certificateForm.isAddToKeystore()) {
-				keystoreService.addCertificate(certificateToken);
+				keystoreService.addCertificateToKeyStore(certificateToken);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 
-		model.addAttribute("keystoreCertificates", keystoreService.loadCertificatesFromKeryStore());
+		model.addAttribute("keystoreCertificates", keystoreService.getCertificatesDTOFromKeyStore());
 		return CERTIFICATE_TILE;
 	}
 
 	@RequestMapping(method = RequestMethod.POST, params = "delete")
 	public String deleteCertificate(Model model, HttpServletRequest request, HttpServletResponse response) {
-		keystoreService.deleteCertificate(request.getParameter("dssId"));
-		model.addAttribute("keystoreCertificates", keystoreService.loadCertificatesFromKeryStore());
+		keystoreService.deleteCertificateFromKeyStore(request.getParameter("dssId"));
+		model.addAttribute("keystoreCertificates", keystoreService.getCertificatesDTOFromKeyStore());
 		model.addAttribute("certificateForm", new CertificateForm());
 		return CERTIFICATE_TILE;
 	}
