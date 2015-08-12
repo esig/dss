@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class CertificateDTO {
 
+	private String dssId;
 	private String subjetName;
 	private String issuerName;
 	private Date notBefore;
@@ -13,6 +14,14 @@ public class CertificateDTO {
 	private String sha256Hex;
 	private String sha1Base64;
 	private String sha256Base64;
+
+	public String getDssId() {
+		return dssId;
+	}
+
+	public void setDssId(String dssId) {
+		this.dssId = dssId;
+	}
 
 	public String getSubjetName() {
 		return subjetName;

@@ -19,10 +19,6 @@
     <import resource="classpath:spring/applicationContext-core.xml"/>
     
     <context:property-placeholder location="classpath:dss.properties"/>
-
-	<bean id="keystore.source" class="org.springframework.core.io.ClassPathResource">
-		<constructor-arg index="0" value="keystore.jks" />
-	</bean>
     
     <!-- Configure to plugin JSON as request and response in method handler -->
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">

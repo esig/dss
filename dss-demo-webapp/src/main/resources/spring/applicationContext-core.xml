@@ -41,7 +41,7 @@
 
 	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource">
 		<property name="dataLoader" ref="fileCacheDataLoader"/>
-		<property name="checkSignature" value="true"/>
+		<property name="checkSignature" value="false"/>
 		<property name="lotlCertificate" value="classpath://ec.europa.eu.crt"/>
 		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"/>
 		<property name="tslRefreshPolicy" value="WHEN_NECESSARY_OR_INDETERMINATE"/>
