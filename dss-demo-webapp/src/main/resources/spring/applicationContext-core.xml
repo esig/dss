@@ -7,7 +7,7 @@
 
 	<import resource="classpath:spring/applicationContext-dao.xml"/>
 	
-    <bean id="dssKeyStore"  class="eu.europa.esig.dss.web.DSSKeyStoreFactoryBean">
+    <bean id="dssKeyStore" class="eu.europa.esig.dss.web.DSSKeyStoreFactoryBean">
 	    <property name="keyStoreType" value="${keystore.type}" />
 	    <property name="keyStoreFilename" value="${keystore.filename}" />
 	    <property name="keyStorePassword" value="${keystore.password}" />

@@ -10,8 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
@@ -22,14 +20,9 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 
 	private static final String ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER = "DSS_DATA_FOLDER";
 
-	private ResourceLoader resourceLoader;
 	private String keyStoreType;
 	private String keyStoreFilename;
 	private String keyStorePassword;
-
-	public void setResourceLoader(ResourceLoader resourceLoader) {
-		this.resourceLoader = resourceLoader;
-	}
 
 	public void setKeyStoreType(String keyStoreType) {
 		this.keyStoreType = keyStoreType;
@@ -47,7 +40,7 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 	protected KeyStoreCertificateSource createInstance() throws Exception {
 		File keystoreFile = getKeyStoreFile();
 		if (keystoreFile.exists()) {
-			logger.info("Keystore file found");
+			logger.info("Keystore file found (" + keystoreFile.getAbsolutePath() + ")");
 		} else {
 			logger.info("Keystore file not found on server");
 			logger.info("Copying keystore file from the war");
@@ -55,19 +48,16 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 			InputStream is = null;
 			OutputStream os = null;
 			try {
-				Resource resource = resourceLoader.getResource(ResourceLoader.CLASSPATH_URL_PREFIX + keyStoreFilename);
-				is = resource.getInputStream();
+				is = DSSKeyStoreFactoryBean.class.getResourceAsStream("/" + keyStoreFilename);
 				os = new FileOutputStream(keystoreFile);
 				IOUtils.copy(is, os);
 			} catch (Exception e) {
-				logger.error("Unable to copy keystore file : " + e.getMessage(), e);
-				throw new DSSException("Unable to create the keystore on the server");
+				throw new DSSException("Unable to create the keystore on the server : " + e.getMessage(), e);
 			} finally {
 				IOUtils.closeQuietly(is);
 				IOUtils.closeQuietly(os);
 			}
 		}
-
 		return new KeyStoreCertificateSource(keystoreFile, keyStoreType, keyStorePassword);
 	}
 
@@ -76,7 +66,7 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 		return KeyStoreCertificateSource.class;
 	}
 
-	private  File getKeyStoreFile() {
+	private File getKeyStoreFile() {
 		String finalDataFolder = getDssDataFolder();
 
 		File folder = new File(finalDataFolder);
@@ -89,7 +79,7 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 		return keystoreFile;
 	}
 
-	private  String getDssDataFolder() {
+	private String getDssDataFolder() {
 		String dssDataFolder = System.getProperty(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER);
 		if (StringUtils.isNotEmpty(dssDataFolder)) {
 			logger.info(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER + " found as system property : " + dssDataFolder);
@@ -102,7 +92,7 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 			return dssDataFolder;
 		}
 
-		logger.warn(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER + " not defined (return etc)");
+		logger.warn(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER + " not defined (returns 'etc')");
 		return "etc";
 	}
 
