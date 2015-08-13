@@ -12,23 +12,40 @@
 
     <import resource="classpath:/dss_applicationContext_soap.xml"/>
 	<import resource="classpath:/dss_applicationContext_rest.xml"/>
+    
+    <context:annotation-config />
+	<context:component-scan base-package="eu.europa.esig.dss" />
 
-    <import resource="classpath:spring/applicationContext-handler.xml"/>
+    <import resource="classpath:spring/applicationContext-core.xml"/>
+    
+    <context:property-placeholder location="classpath:dss.properties"/>
+    
+    <!-- Configure to plugin JSON as request and response in method handler -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+     
+    <!-- Configure bean to convert JSON to POJO and vice versa -->
+    <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
 
-    <context:annotation-config/>
-	<context:component-scan base-package="eu.europa.esig.dss"/>
-	
-    <context:property-placeholder location="classpath:datasource.properties"/>
-
-
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${datasource.driver.class}"/>
+        <property name="url" value="${datasource.url}"/>
+        <property name="username" value="${datasource.username}"/>
+        <property name="password" value="${datasource.password}"/>
+    </bean>
+    
     <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:structure.sql"/>
         <jdbc:script location="classpath:load.sql"/>
     </jdbc:initialize-database>
 
     <!-- The TrustedLists are reloaded every minute -->
-    <bean id="tlReload"
-          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <bean id="tlReload" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="trustedListSource"/>
         <property name="targetMethod" value="refresh"/>
         <property name="concurrent" value="false"/>

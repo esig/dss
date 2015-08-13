@@ -10,6 +10,7 @@
         <c:when test="${fn:contains(currentPage, 'admin')}">
             <a href="<spring:url value="/admin/general"/>" class="list-group-item${currentPage eq '/admin/general' ? ' active' : ''}"><spring:message code="label.general" /></a>
             <a href="<spring:url value="/admin/proxy"/>" class="list-group-item${currentPage eq '/admin/proxy' ? ' active' : ''}"><spring:message code="label.proxy" /></a>
+            <a href="<spring:url value="/admin/certificates"/>" class="list-group-item${currentPage eq '/admin/certificates' ? ' active' : ''}"><spring:message code="label.certificates" /></a>
         </c:when>
         <%-- NO ADMIN PART --%>
         <c:otherwise>
