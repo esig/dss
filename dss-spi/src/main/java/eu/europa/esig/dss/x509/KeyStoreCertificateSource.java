@@ -43,16 +43,12 @@ import eu.europa.esig.dss.DSSUtils;
 /**
  * Implements a CertificateSource using a JKS KeyStore.
  *
- *
  */
-
 public class KeyStoreCertificateSource extends CommonCertificateSource {
 
 	private static final Logger logger = LoggerFactory.getLogger(KeyStoreCertificateSource.class);
 
 	private static final String DEFAULT_KEYSTORE_TYPE = "JKS";
-
-	private static final Logger LOG = LoggerFactory.getLogger(KeyStoreCertificateSource.class);
 
 	private File keyStoreFile;
 
@@ -141,7 +137,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				final Certificate certificate = keyStore.getCertificate(alias);
 				if (certificate != null) {
 					X509Certificate x509Certificate = (X509Certificate) certificate;
-					LOG.debug("Alias " + alias + " Cert " + x509Certificate.getSubjectDN());
+					logger.debug("Alias " + alias + " Cert " + x509Certificate.getSubjectDN());
 
 					CertificateToken certToken = certPool.getInstance(new CertificateToken(x509Certificate), CertificateSourceType.OTHER);
 					list.add(certToken);
@@ -149,7 +145,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				Certificate[] certificateChain = keyStore.getCertificateChain(alias);
 				if (certificateChain != null) {
 					for (Certificate chainCert : certificateChain) {
-						LOG.debug("Alias " + alias + " Cert " + ((X509Certificate) chainCert).getSubjectDN());
+						logger.debug("Alias " + alias + " Cert " + ((X509Certificate) chainCert).getSubjectDN());
 						CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert), CertificateSourceType.OCSP_RESPONSE);
 						if (!list.contains(certToken)) {
 							list.add(certToken);
