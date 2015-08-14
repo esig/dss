@@ -127,10 +127,10 @@ public final class DSSUtils {
 	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
 
 	/**
-	 * FROM: Apache
-	 * The index value when an element is not found in a list or array: {@code -1}.
-	 * This value is returned by methods in this class and can also be used in comparisons with values returned by
-	 * various method from {@link java.util.List}.
+	 * FROM: Apache The index value when an element is not found in a list or
+	 * array: {@code -1}. This value is returned by methods in this class and
+	 * can also be used in comparisons with values returned by various method
+	 * from {@link java.util.List}.
 	 */
 	public static final int INDEX_NOT_FOUND = -1;
 
@@ -175,7 +175,8 @@ public final class DSSUtils {
 	/**
 	 * Formats a date to use for internal purposes (logging, toString)
 	 *
-	 * @param date the date to be converted
+	 * @param date
+	 *            the date to be converted
 	 * @return the textual representation (a null date will result in "N/A")
 	 */
 	public static String formatInternal(final Date date) {
@@ -185,7 +186,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Formats the given date-time using the default pattern: {@code DSSUtils.DEFAULT_DATE_TIME_FORMAT}
+	 * Formats the given date-time using the default pattern:
+	 * {@code DSSUtils.DEFAULT_DATE_TIME_FORMAT}
 	 *
 	 * @param date
 	 * @return
@@ -200,11 +202,15 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}.
+	 * Converts the given string representation of the date using the
+	 * {@code DEFAULT_DATE_TIME_FORMAT}.
 	 *
-	 * @param dateString the date string representation
+	 * @param dateString
+	 *            the date string representation
 	 * @return the {@code Date}
-	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
+	 * @throws DSSException
+	 *             if the conversion is not possible the {@code DSSException} is
+	 *             thrown.
 	 */
 	public static Date parseDate(final String dateString) throws DSSException {
 
@@ -219,12 +225,17 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Converts the given string representation of the date using the format pattern.
+	 * Converts the given string representation of the date using the format
+	 * pattern.
 	 *
-	 * @param format     the format to use
-	 * @param dateString the date string representation
+	 * @param format
+	 *            the format to use
+	 * @param dateString
+	 *            the date string representation
 	 * @return the {@code Date}
-	 * @throws DSSException if the conversion is not possible the {@code DSSException} is thrown.
+	 * @throws DSSException
+	 *             if the conversion is not possible the {@code DSSException} is
+	 *             thrown.
 	 */
 	public static Date parseDate(final String format, final String dateString) throws DSSException {
 
@@ -239,9 +250,12 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}. If an exception is frown durring the prsing then null is returned.
+	 * Converts the given string representation of the date using the
+	 * {@code DEFAULT_DATE_TIME_FORMAT}. If an exception is frown durring the
+	 * prsing then null is returned.
 	 *
-	 * @param dateString the date string representation
+	 * @param dateString
+	 *            the date string representation
 	 * @return the {@code Date} or null if the parsing is not possible
 	 */
 	public static Date quietlyParseDate(final String dateString) throws DSSException {
@@ -257,9 +271,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Converts an array of bytes into a String representing the hexadecimal values of each byte in order. The returned
-	 * String will be double the length of the passed array, as it takes two characters to represent any given byte. If
-	 * the input array is null then null is returned. The obtained string is converted to uppercase.
+	 * Converts an array of bytes into a String representing the hexadecimal
+	 * values of each byte in order. The returned String will be double the
+	 * length of the passed array, as it takes two characters to represent any
+	 * given byte. If the input array is null then null is returned. The
+	 * obtained string is converted to uppercase.
 	 *
 	 * @param value
 	 * @return
@@ -272,10 +288,13 @@ public final class DSSUtils {
 	/**
 	 * Converts a hexadecimal character to an integer.
 	 *
-	 * @param ch    A character to convert to an integer digit
-	 * @param index The index of the character in the source
+	 * @param ch
+	 *            A character to convert to an integer digit
+	 * @param index
+	 *            The index of the character in the source
 	 * @return An integer
-	 * @throws DSSException Thrown if ch is an illegal hex character
+	 * @throws DSSException
+	 *             Thrown if ch is an illegal hex character
 	 */
 	protected static int toDigit(char ch, int index) throws DSSException {
 		int digit = Character.digit(ch, 16);
@@ -286,7 +305,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method re-encode base 64 encoded string to base 64 encoded byte array.
+	 * This method re-encode base 64 encoded string to base 64 encoded byte
+	 * array.
 	 *
 	 * @param base64String
 	 * @return
@@ -300,7 +320,8 @@ public final class DSSUtils {
 	/**
 	 * Encodes dss document using the base64 algorithm .
 	 *
-	 * @param dssDocument dss document to be encoded
+	 * @param dssDocument
+	 *            dss document to be encoded
 	 * @return encoded base64 string
 	 */
 	public static String base64Encode(DSSDocument dssDocument) {
@@ -327,10 +348,13 @@ public final class DSSUtils {
 	/**
 	 * Writes bytes from a {@code byte[]} to an {@code OutputStream}.
 	 *
-	 * @param data   the byte array to write, do not modify during output,
-	 *               null ignored
-	 * @param output the {@code OutputStream} to write to
-	 * @throws DSSException if output is null or an I/O error occurs
+	 * @param data
+	 *            the byte array to write, do not modify during output, null
+	 *            ignored
+	 * @param output
+	 *            the {@code OutputStream} to write to
+	 * @throws DSSException
+	 *             if output is null or an I/O error occurs
 	 * @since Commons IO 1.1
 	 */
 	public static void write(byte[] data, OutputStream output) throws DSSException {
@@ -382,9 +406,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns a file reference. The file path is normalised (OS independent)
+	 * This method returns a file reference. The file path is normalised (OS
+	 * independent)
 	 *
-	 * @param filePath The path to the file.
+	 * @param filePath
+	 *            The path to the file.
 	 * @return
 	 */
 	public static File getFile(final String filePath) {
@@ -410,12 +436,16 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the given resource.  The certificate must be DER-encoded and may be supplied in binary or printable
-	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and
-	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null} when the
-	 * certificate cannot be loaded.
+	 * This method loads a certificate from the given resource. The certificate
+	 * must be DER-encoded and may be supplied in binary or printable (Base64)
+	 * encoding. If the certificate is provided in Base64 encoding, it must be
+	 * bounded at the beginning by -----BEGIN CERTIFICATE-----, and must be
+	 * bounded at the end by -----END CERTIFICATE-----. It throws an
+	 * {@code DSSException} or return {@code null} when the certificate cannot
+	 * be loaded.
 	 *
-	 * @param path resource location.
+	 * @param path
+	 *            resource location.
 	 * @return
 	 */
 	public static CertificateToken loadCertificate(final String path) throws DSSException {
@@ -425,10 +455,13 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied in binary or printable
-	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and
-	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null} when the
-	 * certificate cannot be loaded.
+	 * This method loads a certificate from the given location. The certificate
+	 * must be DER-encoded and may be supplied in binary or printable (Base64)
+	 * encoding. If the certificate is provided in Base64 encoding, it must be
+	 * bounded at the beginning by -----BEGIN CERTIFICATE-----, and must be
+	 * bounded at the end by -----END CERTIFICATE-----. It throws an
+	 * {@code DSSException} or return {@code null} when the certificate cannot
+	 * be loaded.
 	 *
 	 * @param file
 	 * @return
@@ -441,11 +474,16 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied in binary or printable (Base64) encoding. If the
-	 * certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and must be bounded at the end by -----END CERTIFICATE-----.
-	 * It throws an {@code DSSException} or return {@code null} when the certificate cannot be loaded.
+	 * This method loads a certificate from the given location. The certificate
+	 * must be DER-encoded and may be supplied in binary or printable (Base64)
+	 * encoding. If the certificate is provided in Base64 encoding, it must be
+	 * bounded at the beginning by -----BEGIN CERTIFICATE-----, and must be
+	 * bounded at the end by -----END CERTIFICATE-----. It throws an
+	 * {@code DSSException} or return {@code null} when the certificate cannot
+	 * be loaded.
 	 *
-	 * @param inputStream input stream containing the certificate
+	 * @param inputStream
+	 *            input stream containing the certificate
 	 * @return
 	 */
 	public static CertificateToken loadCertificate(final InputStream inputStream) throws DSSException {
@@ -460,12 +498,16 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the byte array. The certificate must be DER-encoded and may be supplied in binary or printable
-	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and
-	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null} when the
-	 * certificate cannot be loaded.
+	 * This method loads a certificate from the byte array. The certificate must
+	 * be DER-encoded and may be supplied in binary or printable (Base64)
+	 * encoding. If the certificate is provided in Base64 encoding, it must be
+	 * bounded at the beginning by -----BEGIN CERTIFICATE-----, and must be
+	 * bounded at the end by -----END CERTIFICATE-----. It throws an
+	 * {@code DSSException} or return {@code null} when the certificate cannot
+	 * be loaded.
 	 *
-	 * @param input array of bytes containing the certificate
+	 * @param input
+	 *            array of bytes containing the certificate
 	 * @return
 	 */
 	public static CertificateToken loadCertificate(final byte[] input) throws DSSException {
@@ -490,13 +532,18 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads the issuer certificate from the given location (AIA).  The certificate must be DER-encoded and may be supplied in binary or
-	 * printable (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN
-	 * CERTIFICATE-----, and must be bounded at the end by -----END CERTIFICATE-----.  It throws an
-	 * {@code DSSException} or return {@code null} when the certificate cannot be loaded.
+	 * This method loads the issuer certificate from the given location (AIA).
+	 * The certificate must be DER-encoded and may be supplied in binary or
+	 * printable (Base64) encoding. If the certificate is provided in Base64
+	 * encoding, it must be bounded at the beginning by -----BEGIN
+	 * CERTIFICATE-----, and must be bounded at the end by -----END
+	 * CERTIFICATE-----. It throws an {@code DSSException} or return
+	 * {@code null} when the certificate cannot be loaded.
 	 *
-	 * @param cert   certificate for which the issuer should be loaded
-	 * @param loader the loader to use
+	 * @param cert
+	 *            certificate for which the issuer should be loaded
+	 * @param loader
+	 *            the loader to use
 	 * @return
 	 */
 	public static CertificateToken loadIssuerCertificate(final CertificateToken cert, final DataLoader loader) {
@@ -529,8 +576,8 @@ public final class DSSUtils {
 						}
 						return issuerCert;
 					}
-				} catch (DSSException e) {
-					logger.warn("Unable to parse certficate from AIA : " + e.getMessage(), e);
+				} catch (Exception e) {
+					logger.warn("Unable to parse certficate from AIA (url:" + url + ") : " + e.getMessage(), e);
 				}
 			} else {
 				logger.error("Unable to read data from {}.", url);
@@ -543,7 +590,8 @@ public final class DSSUtils {
 	/**
 	 * This method return SKI bytes from certificate or null.
 	 *
-	 * @param x509Certificate {@code X509Certificate}
+	 * @param x509Certificate
+	 *            {@code X509Certificate}
 	 * @return ski bytes from the given certificate
 	 * @throws Exception
 	 */
@@ -578,7 +626,7 @@ public final class DSSUtils {
 
 		List<String> locationsUrls = new ArrayList<String>();
 		for (AccessDescription accessDescription : accessDescriptions) {
-			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())){
+			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())) {
 				GeneralName gn = accessDescription.getAccessLocation();
 				if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
 					DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
@@ -635,7 +683,8 @@ public final class DSSUtils {
 	/**
 	 * This method loads an OCSP response from the given base 64 encoded string.
 	 *
-	 * @param base64Encoded base 64 encoded OCSP response
+	 * @param base64Encoded
+	 *            base 64 encoded OCSP response
 	 * @return {@code BasicOCSPResp}
 	 * @throws IOException
 	 * @throws OCSPException
@@ -658,7 +707,8 @@ public final class DSSUtils {
 		for (int ii = 0; ii < seq.size(); ii++) {
 
 			final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
-			// System.out.println("\t----> PolicyIdentifier: " + policyInfo.getPolicyIdentifier().getId());
+			// System.out.println("\t----> PolicyIdentifier: " +
+			// policyInfo.getPolicyIdentifier().getId());
 			policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
 
 		}
@@ -666,9 +716,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method converts the {@code List} of {@code CertificateToken} to the {@code List} of {@code X509Certificate}.
+	 * This method converts the {@code List} of {@code CertificateToken} to the
+	 * {@code List} of {@code X509Certificate}.
 	 *
-	 * @param certTokens the list of {@code CertificateToken} to be converted
+	 * @param certTokens
+	 *            the list of {@code CertificateToken} to be converted
 	 * @return a list for {@code X509Certificate} based on the input list
 	 */
 	public static List<X509Certificate> getX509Certificates(final List<CertificateToken> certTokens) {
@@ -683,9 +735,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method digests the given string with SHA1 algorithm and encode returned array of bytes as hex string.
+	 * This method digests the given string with SHA1 algorithm and encode
+	 * returned array of bytes as hex string.
 	 *
-	 * @param stringToDigest Everything in the name
+	 * @param stringToDigest
+	 *            Everything in the name
 	 * @return hex encoded digest value
 	 */
 	public static String getSHA1Digest(final String stringToDigest) {
@@ -695,7 +749,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method digests the given {@code InputStream} with SHA1 algorithm and encode returned array of bytes as hex string.
+	 * This method digests the given {@code InputStream} with SHA1 algorithm and
+	 * encode returned array of bytes as hex string.
 	 *
 	 * @param inputStream
 	 * @return
@@ -708,7 +763,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method replaces in a string one pattern by another one without using regexp.
+	 * This method replaces in a string one pattern by another one without using
+	 * regexp.
 	 *
 	 * @param string
 	 * @param oldPattern
@@ -744,8 +800,10 @@ public final class DSSUtils {
 	/**
 	 * This method allows to digest the data with the given algorithm.
 	 *
-	 * @param digestAlgorithm the algorithm to use
-	 * @param data            the data to digest
+	 * @param digestAlgorithm
+	 *            the algorithm to use
+	 * @param data
+	 *            the data to digest
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) throws DSSException {
@@ -764,16 +822,19 @@ public final class DSSUtils {
 			final String digestAlgorithmOid = digestAlgorithm.getOid().getId();
 			final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid);
 			return messageDigest;
-		} catch(NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException e) {
 			throw new DSSException("Digest algorithm error: " + e.getMessage(), e);
 		}
 	}
 
 	/**
-	 * This method allows to digest the data in the {@code InputStream} with the given algorithm.
+	 * This method allows to digest the data in the {@code InputStream} with the
+	 * given algorithm.
 	 *
-	 * @param digestAlgo  the algorithm to use
-	 * @param inputStream the data to digest
+	 * @param digestAlgo
+	 *            the algorithm to use
+	 * @param inputStream
+	 *            the data to digest
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) throws DSSException {
@@ -803,16 +864,25 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method digest and encrypt the given {@code InputStream} with indicated private key and signature algorithm. To find the signature object
-	 * the list of registered security Providers, starting with the most preferred Provider is traversed.
+	 * This method digest and encrypt the given {@code InputStream} with
+	 * indicated private key and signature algorithm. To find the signature
+	 * object the list of registered security Providers, starting with the most
+	 * preferred Provider is traversed.
 	 *
-	 * This method returns an array of bytes representing the signature value. Signature object that implements the specified signature algorithm. It traverses the list of
-	 * registered security Providers, starting with the most preferred Provider. A new Signature object encapsulating the SignatureSpi implementation from the first Provider
-	 * that supports the specified algorithm is returned. The {@code NoSuchAlgorithmException} exception is wrapped in a DSSException.
+	 * This method returns an array of bytes representing the signature value.
+	 * Signature object that implements the specified signature algorithm. It
+	 * traverses the list of registered security Providers, starting with the
+	 * most preferred Provider. A new Signature object encapsulating the
+	 * SignatureSpi implementation from the first Provider that supports the
+	 * specified algorithm is returned. The {@code NoSuchAlgorithmException}
+	 * exception is wrapped in a DSSException.
 	 *
-	 * @param javaSignatureAlgorithm signature algorithm under JAVA form.
-	 * @param privateKey             private key to use
-	 * @param stream                 the data to digest
+	 * @param javaSignatureAlgorithm
+	 *            signature algorithm under JAVA form.
+	 * @param privateKey
+	 *            private key to use
+	 * @param stream
+	 *            the data to digest
 	 * @return digested and encrypted array of bytes
 	 */
 	@Deprecated
@@ -840,16 +910,25 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method digest and encrypt the given {@code InputStream} with indicated private key and signature algorithm. To find the signature object
-	 * the list of registered security Providers, starting with the most preferred Provider is traversed.
+	 * This method digest and encrypt the given {@code InputStream} with
+	 * indicated private key and signature algorithm. To find the signature
+	 * object the list of registered security Providers, starting with the most
+	 * preferred Provider is traversed.
 	 *
-	 * This method returns an array of bytes representing the signature value. Signature object that implements the specified signature algorithm. It traverses the list of
-	 * registered security Providers, starting with the most preferred Provider. A new Signature object encapsulating the SignatureSpi implementation from the first Provider
-	 * that supports the specified algorithm is returned. The {@code NoSuchAlgorithmException} exception is wrapped in a DSSException.
+	 * This method returns an array of bytes representing the signature value.
+	 * Signature object that implements the specified signature algorithm. It
+	 * traverses the list of registered security Providers, starting with the
+	 * most preferred Provider. A new Signature object encapsulating the
+	 * SignatureSpi implementation from the first Provider that supports the
+	 * specified algorithm is returned. The {@code NoSuchAlgorithmException}
+	 * exception is wrapped in a DSSException.
 	 *
-	 * @param javaSignatureAlgorithm signature algorithm under JAVA form.
-	 * @param privateKey             private key to use
-	 * @param bytes                  the data to digest
+	 * @param javaSignatureAlgorithm
+	 *            signature algorithm under JAVA form.
+	 * @param privateKey
+	 *            private key to use
+	 * @param bytes
+	 *            the data to digest
 	 * @return digested and encrypted array of bytes
 	 */
 	@Deprecated
@@ -866,10 +945,13 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Returns the {@code CertificateID} for the given certificate and its issuer's certificate.
+	 * Returns the {@code CertificateID} for the given certificate and its
+	 * issuer's certificate.
 	 *
-	 * @param cert       {@code X509Certificate} for which the id is created
-	 * @param issuerCert {@code X509Certificate} issuer certificate of the {@code cert}
+	 * @param cert
+	 *            {@code X509Certificate} for which the id is created
+	 * @param issuerCert
+	 *            {@code X509Certificate} issuer certificate of the {@code cert}
 	 * @return {@code CertificateID}
 	 * @throws org.bouncycastle.cert.ocsp.OCSPException
 	 */
@@ -888,7 +970,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code X509Certificate}.
+	 * Returns a {@code X509CertificateHolder} encapsulating the given
+	 * {@code X509Certificate}.
 	 *
 	 * @param x509Certificate
 	 * @return a X509CertificateHolder holding this certificate
@@ -918,7 +1001,8 @@ public final class DSSUtils {
 	/**
 	 * This method opens the {@code URLConnection} using the given URL.
 	 *
-	 * @param url URL to be accessed
+	 * @param url
+	 *            URL to be accessed
 	 * @return {@code URLConnection}
 	 */
 	public static URLConnection openURLConnection(final String url) {
@@ -945,10 +1029,13 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which needs to be closed, based on {@code FileInputStream}.
+	 * This method returns an {@code InputStream} which needs to be closed,
+	 * based on {@code FileInputStream}.
 	 *
-	 * @param filePath The path to the file to read
-	 * @return an {@code InputStream} materialized by a {@code FileInputStream} representing the contents of the file
+	 * @param filePath
+	 *            The path to the file to read
+	 * @return an {@code InputStream} materialized by a {@code FileInputStream}
+	 *         representing the contents of the file
 	 * @throws DSSException
 	 */
 	public static InputStream toInputStream(final String filePath) throws DSSException {
@@ -959,10 +1046,13 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which needs to be closed, based on {@code FileInputStream}.
+	 * This method returns an {@code InputStream} which needs to be closed,
+	 * based on {@code FileInputStream}.
 	 *
-	 * @param file {@code File} to read.
-	 * @return an {@code InputStream} materialized by a {@code FileInputStream} representing the contents of the file
+	 * @param file
+	 *            {@code File} to read.
+	 * @return an {@code InputStream} materialized by a {@code FileInputStream}
+	 *         representing the contents of the file
 	 * @throws DSSException
 	 */
 	public static InputStream toInputStream(final File file) throws DSSException {
@@ -980,11 +1070,14 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns the {@code InputStream} based on the given {@code String} and char set. This stream does not need to be closed, it is based on {@code
-	 * ByteArrayInputStream}.
+	 * This method returns the {@code InputStream} based on the given
+	 * {@code String} and char set. This stream does not need to be closed, it
+	 * is based on {@code ByteArrayInputStream}.
 	 *
-	 * @param string  {@code String} to convert
-	 * @param charset char set to use
+	 * @param string
+	 *            {@code String} to convert
+	 * @param charset
+	 *            char set to use
 	 * @return the {@code InputStream} based on {@code ByteArrayInputStream}
 	 */
 	public static InputStream toInputStream(final String string, final String charset) throws DSSException {
@@ -998,9 +1091,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns a {@code FileOutputStream} based on the provided path to the file.
+	 * This method returns a {@code FileOutputStream} based on the provided path
+	 * to the file.
 	 *
-	 * @param path to the file
+	 * @param path
+	 *            to the file
 	 * @return {@code FileOutputStream}
 	 */
 	public static FileOutputStream toFileOutputStream(final String path) throws DSSException {
@@ -1013,9 +1108,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which does not need to be closed, based on {@code ByteArrayInputStream}.
+	 * This method returns an {@code InputStream} which does not need to be
+	 * closed, based on {@code ByteArrayInputStream}.
 	 *
-	 * @param file {@code File} to read
+	 * @param file
+	 *            {@code File} to read
 	 * @return {@code InputStream} based on {@code ByteArrayInputStream}
 	 */
 	public static InputStream toByteArrayInputStream(final File file) {
@@ -1036,7 +1133,8 @@ public final class DSSUtils {
 	/**
 	 * This method returns the byte array representing the contents of the file.
 	 *
-	 * @param file {@code File} to read
+	 * @param file
+	 *            {@code File} to read
 	 * @return an array of {@code byte}
 	 * @throws DSSException
 	 */
@@ -1057,12 +1155,14 @@ public final class DSSUtils {
 	/**
 	 * FROM: Apache
 	 *
-	 * Reads the contents of a file into a byte array.
-	 * The file is always closed.
+	 * Reads the contents of a file into a byte array. The file is always
+	 * closed.
 	 *
-	 * @param file the file to read, must not be {@code null}
+	 * @param file
+	 *            the file to read, must not be {@code null}
 	 * @return the file contents, never {@code null}
-	 * @throws IOException in case of an I/O error
+	 * @throws IOException
+	 *             in case of an I/O error
 	 * @since Commons IO 1.1
 	 */
 	private static byte[] readFileToByteArray(final File file) throws IOException {
@@ -1079,21 +1179,26 @@ public final class DSSUtils {
 	/**
 	 * FROM: Apache
 	 *
-	 * Opens a {@link java.io.FileInputStream} for the specified file, providing better
-	 * error messages than simply calling {@code new FileInputStream(file)}.
+	 * Opens a {@link java.io.FileInputStream} for the specified file, providing
+	 * better error messages than simply calling
+	 * {@code new FileInputStream(file)}.
 	 *
 	 * At the end of the method either the stream will be successfully opened,
 	 * or an exception will have been thrown.
 	 *
-	 * An exception is thrown if the file does not exist.
-	 * An exception is thrown if the file object exists but is a directory.
-	 * An exception is thrown if the file exists but cannot be read.
+	 * An exception is thrown if the file does not exist. An exception is thrown
+	 * if the file object exists but is a directory. An exception is thrown if
+	 * the file exists but cannot be read.
 	 *
-	 * @param file the file to open for input, must not be {@code null}
+	 * @param file
+	 *            the file to open for input, must not be {@code null}
 	 * @return a new {@link java.io.FileInputStream} for the specified file
-	 * @throws java.io.FileNotFoundException if the file does not exist
-	 * @throws IOException                   if the file object is a directory
-	 * @throws IOException                   if the file cannot be read
+	 * @throws java.io.FileNotFoundException
+	 *             if the file does not exist
+	 * @throws IOException
+	 *             if the file object is a directory
+	 * @throws IOException
+	 *             if the file cannot be read
 	 * @since Commons IO 1.3
 	 */
 	private static FileInputStream openInputStream(final File file) throws IOException {
@@ -1140,9 +1245,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method saves the given array of {@code byte} to the provided {@code File}.
+	 * This method saves the given array of {@code byte} to the provided
+	 * {@code File}.
 	 *
-	 * @param bytes to save
+	 * @param bytes
+	 *            to save
 	 * @param file
 	 * @throws DSSException
 	 */
@@ -1162,10 +1269,13 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method saves the given {@code InputStream} to a file representing by the provided path. The {@code InputStream} is not closed.
+	 * This method saves the given {@code InputStream} to a file representing by
+	 * the provided path. The {@code InputStream} is not closed.
 	 *
-	 * @param inputStream {@code InputStream} to save
-	 * @param path        the path to the file to be created
+	 * @param inputStream
+	 *            {@code InputStream} to save
+	 * @param path
+	 *            the path to the file to be created
 	 */
 	public static void saveToFile(final InputStream inputStream, final String path) throws IOException {
 
@@ -1260,17 +1370,18 @@ public final class DSSUtils {
 
 			final String deterministicId = "id-" + getMD5Digest(baos);
 			return deterministicId;
-		} catch (IOException e){
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
 
 	/**
 	 * Returns a Hex encoded of the MD5 digest of ByteArrayOutputStream
+	 * 
 	 * @param baos
 	 * @return
 	 */
-	public static String getMD5Digest(ByteArrayOutputStream baos){
+	public static String getMD5Digest(ByteArrayOutputStream baos) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
 			digest.update(baos.toByteArray());
@@ -1292,8 +1403,9 @@ public final class DSSUtils {
 		// Long.valueOf(new String(bytes)).longValue();
 		ByteBuffer buffer = ByteBuffer.allocate(8);
 		buffer.put(bytes, 0, Long.SIZE / 8);
-		// TODO: (Bob: 2014 Jan 22) To be checked if it is not platform dependent?
-		buffer.flip();//need flip
+		// TODO: (Bob: 2014 Jan 22) To be checked if it is not platform
+		// dependent?
+		buffer.flip();// need flip
 		return buffer.getLong();
 	}
 
@@ -1304,9 +1416,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns the {@code X500Principal} corresponding to the given string or {@code null} if the conversion is not possible.
+	 * This method returns the {@code X500Principal} corresponding to the given
+	 * string or {@code null} if the conversion is not possible.
 	 *
-	 * @param x500PrincipalString a {@code String} representation of the {@code X500Principal}
+	 * @param x500PrincipalString
+	 *            a {@code String} representation of the {@code X500Principal}
 	 * @return {@code X500Principal} or null
 	 */
 	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
@@ -1321,8 +1435,10 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method compares two {@code X500Principal}s. {@code X500Principal.CANONICAL} and {@code X500Principal.RFC2253} forms are compared.
-	 * TODO: (Bob: 2014 Feb 20) To be investigated why the standard equals does not work!?
+	 * This method compares two {@code X500Principal}s.
+	 * {@code X500Principal.CANONICAL} and {@code X500Principal.RFC2253} forms
+	 * are compared. TODO: (Bob: 2014 Feb 20) To be investigated why the
+	 * standard equals does not work!?
 	 *
 	 * @param firstX500Principal
 	 * @param secondX500Principal
@@ -1367,14 +1483,15 @@ public final class DSSUtils {
 
 		final X500Principal x500Principal = x509Certificate.getSubjectX500Principal();
 		final String utf8Name = getUtf8String(x500Principal);
-		// System.out.println(">>> " + x500Principal.getName() + "-------" + utf8Name);
+		// System.out.println(">>> " + x500Principal.getName() + "-------" +
+		// utf8Name);
 		final X500Principal x500PrincipalNormalized = new X500Principal(utf8Name);
 		return x500PrincipalNormalized;
 	}
 
-
 	/**
-	 * @param x500Principal to be normalized
+	 * @param x500Principal
+	 *            to be normalized
 	 * @return {@code X500Principal} normalized
 	 */
 	public static X500Principal getX500Principal(final X500Principal x500Principal) {
@@ -1394,7 +1511,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * The distinguished name is regenerated to avoid problems related to the {@code X500Principal} encoding.
+	 * The distinguished name is regenerated to avoid problems related to the
+	 * {@code X500Principal} encoding.
 	 *
 	 * @param x509Certificate
 	 * @return
@@ -1423,11 +1541,15 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an UTC date base on the year, the month and the day. The year must be encoded as 1978... and not 78
+	 * This method returns an UTC date base on the year, the month and the day.
+	 * The year must be encoded as 1978... and not 78
 	 *
-	 * @param year  the value used to set the YEAR calendar field.
-	 * @param month the month. Month value is 0-based. e.g., 0 for January.
-	 * @param day   the value used to set the DAY_OF_MONTH calendar field.
+	 * @param year
+	 *            the value used to set the YEAR calendar field.
+	 * @param month
+	 *            the month. Month value is 0-based. e.g., 0 for January.
+	 * @param day
+	 *            the value used to set the DAY_OF_MONTH calendar field.
 	 * @return the UTC date base on parameters
 	 */
 	public static Date getUtcDate(final int year, final int month, final int day) {
@@ -1441,8 +1563,10 @@ public final class DSSUtils {
 	/**
 	 * This method adds or subtract the given number of days from the date
 	 *
-	 * @param date {@code Date} to change
-	 * @param days number of days (can be negative)
+	 * @param date
+	 *            {@code Date} to change
+	 * @param days
+	 *            number of days (can be negative)
 	 * @return new {@code Date}
 	 */
 	public static Date getDate(final Date date, int days) {
@@ -1500,8 +1624,7 @@ public final class DSSUtils {
 		final ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
 		final StringBuilder stringBuilder = new StringBuilder();
 		/**
-		 * RFC 4514 LDAP: Distinguished Names
-		 * 2.1.  Converting the RDNSequence
+		 * RFC 4514 LDAP: Distinguished Names 2.1. Converting the RDNSequence
 		 *
 		 * If the RDNSequence is an empty sequence, the result is the empty or
 		 * zero-length string.
@@ -1509,8 +1632,7 @@ public final class DSSUtils {
 		 * Otherwise, the output consists of the string encodings of each
 		 * RelativeDistinguishedName in the RDNSequence (according to Section
 		 * 2.2), starting with the last element of the sequence and moving
-		 * backwards toward the first.
-		 * ...
+		 * backwards toward the first. ...
 		 */
 		for (int ii = asn1Encodables.length - 1; ii >= 0; ii--) {
 
@@ -1528,7 +1650,7 @@ public final class DSSUtils {
 				final ASN1Encodable attributeValue = dlSequence.getObjectAt(1);
 				String string = getString(attributeValue);
 
-				/**
+/**
 				 * RFC 4514               LDAP: Distinguished Names
 				 * ...
 				 * Other characters may be escaped.
@@ -1553,14 +1675,16 @@ public final class DSSUtils {
 				string = string.replace("<", "\\<");
 				string = string.replace("=", "\\=");
 				string = string.replace(">", "\\>");
-				// System.out.println(">>> " + attributeType.toString() + "=" + attributeValue.getClass().getSimpleName() + "[" + string + "]");
+				// System.out.println(">>> " + attributeType.toString() + "=" +
+				// attributeValue.getClass().getSimpleName() + "[" + string +
+				// "]");
 				if (stringBuilder.length() != 0) {
 					stringBuilder.append(',');
 				}
 				stringBuilder.append(attributeType).append('=').append(string);
 			}
 		}
-		//final X500Name x500Name = X500Name.getInstance(encoded);
+		// final X500Name x500Name = X500Name.getInstance(encoded);
 		return stringBuilder.toString();
 	}
 
@@ -1596,14 +1720,17 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method return the unique message id which can be used for translation purpose.
+	 * This method return the unique message id which can be used for
+	 * translation purpose.
 	 *
-	 * @param message the {@code String} message on which the unique id is calculated.
+	 * @param message
+	 *            the {@code String} message on which the unique id is
+	 *            calculated.
 	 * @return the unique id
 	 */
 	public static String getMessageId(final String message) {
 
-		final String message_ = message./*replace('\'', '_').*/toLowerCase().replaceAll("[^a-z_]", " ");
+		final String message_ = message./* replace('\'', '_'). */toLowerCase().replaceAll("[^a-z_]", " ");
 		StringBuilder nameId = new StringBuilder();
 		final StringTokenizer stringTokenizer = new StringTokenizer(message_);
 		while (stringTokenizer.hasMoreElements()) {
@@ -1616,20 +1743,20 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Returns an estimate of the number of bytes that can be read (or
-	 * skipped over) from this input stream without blocking by the next
-	 * invocation of a method for this input stream. The next invocation
-	 * might be the same thread or another thread.  A single read or skip of this
-	 * many bytes will not block, but may read or skip fewer bytes.
+	 * Returns an estimate of the number of bytes that can be read (or skipped
+	 * over) from this input stream without blocking by the next invocation of a
+	 * method for this input stream. The next invocation might be the same
+	 * thread or another thread. A single read or skip of this many bytes will
+	 * not block, but may read or skip fewer bytes.
 	 *
 	 *
-	 * the total number of bytes in the stream, many will not.  It is
-	 * never correct to use the return value of this method to allocate
-	 * a buffer intended to hold all data in this stream.
+	 * the total number of bytes in the stream, many will not. It is never
+	 * correct to use the return value of this method to allocate a buffer
+	 * intended to hold all data in this stream.
 	 *
 	 *
-	 * {@link IOException} if this input stream has been closed by
-	 * invoking the {@link InputStream#close()} method.
+	 * {@link IOException} if this input stream has been closed by invoking the
+	 * {@link InputStream#close()} method.
 	 *
 	 *
 	 * returns {@code 0}.
@@ -1637,9 +1764,10 @@ public final class DSSUtils {
 	 *
 	 *
 	 * @return an estimate of the number of bytes that can be read (or skipped
-	 * over) from this input stream without blocking or {@code 0} when
-	 * it reaches the end of the input stream.
-	 * @throws DSSException if IOException occurs (if an I/O error occurs)
+	 *         over) from this input stream without blocking or {@code 0} when
+	 *         it reaches the end of the input stream.
+	 * @throws DSSException
+	 *             if IOException occurs (if an I/O error occurs)
 	 */
 	public static int available(final InputStream is) throws DSSException {
 
@@ -1653,21 +1781,24 @@ public final class DSSUtils {
 	/**
 	 * replaces e.g. "\xc3\xa9" with "é"
 	 *
-	 * @param s the input
+	 * @param s
+	 *            the input
 	 * @return the output
 	 */
 	public static String unescapeMultiByteUtf8Literals(final String s) {
 		try {
 			final String q = new String(unescapePython(s.getBytes("UTF-8")), "UTF-8");
-			//			if (!q.equals(s)) {
-			//				LOG.log(Level.SEVERE, "multi byte utf literal found:\n" +
-			//							"  orig = " + s + "\n" +
-			//							"  escp = " + q
-			//				);
-			//			}
+			// if (!q.equals(s)) {
+			// LOG.log(Level.SEVERE, "multi byte utf literal found:\n" +
+			// "  orig = " + s + "\n" +
+			// "  escp = " + q
+			// );
+			// }
 			return q;
 		} catch (Exception e) {
-			//			LOG.log(Level.SEVERE, "Could not unescape multi byte utf literal - will use original input: " + s, e);
+			// LOG.log(Level.SEVERE,
+			// "Could not unescape multi byte utf literal - will use original input: "
+			// + s, e);
 			return s;
 		}
 	}
@@ -1781,9 +1912,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method closes the given {@code OutputStream} and throws a {@code DSSException} when the operation fails.
+	 * This method closes the given {@code OutputStream} and throws a
+	 * {@code DSSException} when the operation fails.
 	 *
-	 * @param outputStream {@code OutputStream} to be closed
+	 * @param outputStream
+	 *            {@code OutputStream} to be closed
 	 */
 	public static void close(final OutputStream outputStream) {
 
@@ -1795,9 +1928,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Returns the file extension based on the position of the '.' in the path. The paths as "xxx.y/toto" are not handled.
+	 * Returns the file extension based on the position of the '.' in the path.
+	 * The paths as "xxx.y/toto" are not handled.
 	 *
-	 * @param path to be analysed
+	 * @param path
+	 *            to be analysed
 	 * @return the file extension or null
 	 */
 	@Deprecated
@@ -1824,10 +1959,13 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns the summary of the given exception. The analysis of the stack trace stops when the provided class is found.
+	 * This method returns the summary of the given exception. The analysis of
+	 * the stack trace stops when the provided class is found.
 	 *
-	 * @param exception {@code Exception} to summarize
-	 * @param javaClass {@code Class}
+	 * @param exception
+	 *            {@code Exception} to summarize
+	 * @param javaClass
+	 *            {@code Class}
 	 * @return {@code String} containing the summary message
 	 */
 	public static String getSummaryMessage(final Exception exception, final Class<?> javaClass) {
@@ -1850,11 +1988,15 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Reads maximum {@code headerLength} bytes from {@code dssDocument} to the given {@code byte} array.
+	 * Reads maximum {@code headerLength} bytes from {@code dssDocument} to the
+	 * given {@code byte} array.
 	 *
-	 * @param dssDocument          {@code DSSDocument} to read
-	 * @param headerLength         {@code int}: maximum number of bytes to read
-	 * @param destinationByteArray destination {@code byte} array
+	 * @param dssDocument
+	 *            {@code DSSDocument} to read
+	 * @param headerLength
+	 *            {@code int}: maximum number of bytes to read
+	 * @param destinationByteArray
+	 *            destination {@code byte} array
 	 * @return
 	 */
 	public static int readToArray(final DSSDocument dssDocument, final int headerLength, final byte[] destinationByteArray) {
@@ -1873,9 +2015,12 @@ public final class DSSUtils {
 	/**
 	 * Gets a difference between two dates
 	 *
-	 * @param date1    the oldest date
-	 * @param date2    the newest date
-	 * @param timeUnit the unit in which you want the diff
+	 * @param date1
+	 *            the oldest date
+	 * @param date2
+	 *            the newest date
+	 * @param timeUnit
+	 *            the unit in which you want the diff
 	 * @return the difference value, in the provided unit
 	 */
 	public static long getDateDiff(final Date date1, final Date date2, final TimeUnit timeUnit) {
@@ -1885,9 +2030,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an encoded representation of the {@code X509CertificateHolder}.
+	 * This method returns an encoded representation of the
+	 * {@code X509CertificateHolder}.
 	 *
-	 * @param x509CertificateHolder {@code X509CertificateHolder} to be encoded
+	 * @param x509CertificateHolder
+	 *            {@code X509CertificateHolder} to be encoded
 	 * @return array of {@code byte}s
 	 */
 	@Deprecated
@@ -1901,10 +2048,12 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Concatenates all the arrays into a new array. The new array contains all of the element of each array followed by all of the elements of the next array. When an array is
-	 * returned, it is always a new array.
+	 * Concatenates all the arrays into a new array. The new array contains all
+	 * of the element of each array followed by all of the elements of the next
+	 * array. When an array is returned, it is always a new array.
 	 *
-	 * @param arrays {@code byte} arrays to concatenate
+	 * @param arrays
+	 *            {@code byte} arrays to concatenate
 	 * @return the new {@code byte} array
 	 */
 	public static byte[] concatenate(byte[]... arrays) {

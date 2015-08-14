@@ -6,7 +6,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>4.5.RC1</version>
+	<version>4.5.RC2</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -58,7 +58,6 @@
 	
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
-	
 		<log4j.version>1.2.17</log4j.version>
 		<spring.version>3.2.13.RELEASE</spring.version>
 		<tiles.version>2.2.2</tiles.version>
@@ -591,15 +590,6 @@
 			<url>http://joinup.ec.europa.eu/site/sd-dss/maven2</url>
 		</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>codehaus snapshot repository</id>
-			<url>http://snapshots.repository.codehaus.org/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<distributionManagement>
 		<repository>

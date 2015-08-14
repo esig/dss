@@ -16,9 +16,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SignaturePackaging;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.x509.SignatureForm;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -28,21 +26,28 @@ public class SigningService {
 	private static final Logger logger = LoggerFactory.getLogger(SigningService.class);
 
 	@Autowired
-	private TSPSource tspSource;
+	private CAdESService cadesService;
 
-	@SuppressWarnings({
-		"rawtypes", "unchecked"
-	})
-	public DSSDocument extend(SignatureForm signatureForm, SignaturePackaging packaging, SignatureLevel level, DSSDocument signedDocument, DSSDocument originalDocument) {
+	@Autowired
+	private PAdESService padesService;
+
+	@Autowired
+	private XAdESService xadesService;
+
+	@Autowired
+	private ASiCService asicService;
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public DSSDocument extend(SignatureForm signatureForm, SignaturePackaging packaging, SignatureLevel level, DSSDocument signedDocument,
+			DSSDocument originalDocument) {
 
 		DocumentSignatureService service = getSignatureService(signatureForm);
-		service.setTspSource(tspSource);
 
 		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm);
 		parameters.setSignaturePackaging(packaging);
 		parameters.setSignatureLevel(level);
 
-		if (originalDocument !=null) {
+		if (originalDocument != null) {
 			parameters.setDetachedContent(originalDocument);
 		}
 
@@ -54,21 +59,21 @@ public class SigningService {
 	private DocumentSignatureService getSignatureService(SignatureForm signatureForm) {
 		DocumentSignatureService service = null;
 		switch (signatureForm) {
-			case CAdES:
-				service = new CAdESService(new CommonCertificateVerifier());
-				break;
-			case PAdES:
-				service = new PAdESService(new CommonCertificateVerifier());
-				break;
-			case XAdES:
-				service = new XAdESService(new CommonCertificateVerifier());
-				break;
-			case ASiC_S:
-			case ASiC_E:
-				service = new ASiCService(new CommonCertificateVerifier());
-				break;
-			default:
-				logger.error("Unknow signature form : " + signatureForm);
+		case CAdES:
+			service = cadesService;
+			break;
+		case PAdES:
+			service = padesService;
+			break;
+		case XAdES:
+			service = xadesService;
+			break;
+		case ASiC_S:
+		case ASiC_E:
+			service = asicService;
+			break;
+		default:
+			logger.error("Unknow signature form : " + signatureForm);
 		}
 		return service;
 	}
@@ -76,21 +81,21 @@ public class SigningService {
 	private AbstractSignatureParameters getSignatureParameters(SignatureForm signatureForm) {
 		AbstractSignatureParameters parameters = null;
 		switch (signatureForm) {
-			case CAdES:
-				parameters = new CAdESSignatureParameters();
-				break;
-			case PAdES:
-				parameters = new PAdESSignatureParameters();
-				break;
-			case XAdES:
-				parameters = new XAdESSignatureParameters();
-				break;
-			case ASiC_S:
-			case ASiC_E:
-				parameters = new ASiCSignatureParameters();
-				break;
-			default:
-				logger.error("Unknow signature form : " + signatureForm);
+		case CAdES:
+			parameters = new CAdESSignatureParameters();
+			break;
+		case PAdES:
+			parameters = new PAdESSignatureParameters();
+			break;
+		case XAdES:
+			parameters = new XAdESSignatureParameters();
+			break;
+		case ASiC_S:
+		case ASiC_E:
+			parameters = new ASiCSignatureParameters();
+			break;
+		default:
+			logger.error("Unknow signature form : " + signatureForm);
 		}
 		return parameters;
 	}

@@ -44,137 +44,137 @@ import org.slf4j.LoggerFactory;
  */
 public class ProxyJdbcDao implements ProxyDao {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProxyJdbcDao.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProxyJdbcDao.class);
 
-    private DataSource dataSource;
+	private DataSource dataSource;
 
-    public ProxyJdbcDao() {
+	public ProxyJdbcDao() {
 
-        LOG.info(">>> ProxyJdbcDao");
-    }
+		LOG.info(">>> ProxyJdbcDao");
+	}
 
-    @Override
-    public ProxyPreference get(final ProxyKey proxyKey) {
+	@Override
+	public ProxyPreference get(final ProxyKey proxyKey) {
 
-        final String sql = "select * from PROXY_PREFERENCES where PROXY_KEY = :key";
+		final String sql = "select * from PROXY_PREFERENCES where PROXY_KEY = ?";
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
 
-            connection = getDataSource().getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, proxyKey.getKeyName());
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
+			connection = getDataSource().getConnection();
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, proxyKey.getKeyName());
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
 
-                final ProxyPreference proxyPreference = new ProxyPreference();
-                final String proxyKeyString = resultSet.getString("PROXY_KEY");
-                proxyPreference.setProxyKey(proxyKeyString);
-                proxyPreference.setValue(resultSet.getString("PROXY_VALUE"));
-                return proxyPreference;
-            }
-            return null;
-        } catch (SQLException e) {
-            throw new ProxyDaoException(e);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
+				final ProxyPreference proxyPreference = new ProxyPreference();
+				final String proxyKeyString = resultSet.getString("PROXY_KEY");
+				proxyPreference.setProxyKey(proxyKeyString);
+				proxyPreference.setValue(resultSet.getString("PROXY_VALUE"));
+				return proxyPreference;
+			}
+			return null;
+		} catch (SQLException e) {
+			throw new ProxyDaoException(e);
+		} finally {
+			try {
+				if (resultSet != null) {
+					resultSet.close();
+				}
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
 
-                if (connection != null && !connection.isClosed()) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
+				if ((connection != null) && !connection.isClosed()) {
+					connection.close();
+				}
+			} catch (SQLException e) {
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    @Override
-    public Collection<ProxyPreference> getAll() {
+	@Override
+	public Collection<ProxyPreference> getAll() {
 
-        String sql = "select * from PROXY_PREFERENCES";
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<ProxyPreference> proxyPreferences = new ArrayList<ProxyPreference>();
-        try {
-            connection = getDataSource().getConnection();
-            ps = connection.prepareStatement(sql);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                ProxyPreference pp = new ProxyPreference();
-                pp.setProxyKey(rs.getString("PROXY_KEY"));
-                pp.setValue(rs.getString("PROXY_VALUE"));
-                proxyPreferences.add(pp);
-            }
-        } catch (SQLException e) {
-            throw new ProxyDaoException(e);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
+		String sql = "select * from PROXY_PREFERENCES";
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<ProxyPreference> proxyPreferences = new ArrayList<ProxyPreference>();
+		try {
+			connection = getDataSource().getConnection();
+			ps = connection.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				ProxyPreference pp = new ProxyPreference();
+				pp.setProxyKey(rs.getString("PROXY_KEY"));
+				pp.setValue(rs.getString("PROXY_VALUE"));
+				proxyPreferences.add(pp);
+			}
+		} catch (SQLException e) {
+			throw new ProxyDaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
 
-                if (connection != null && !connection.isClosed()) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
+				if ((connection != null) && !connection.isClosed()) {
+					connection.close();
+				}
+			} catch (SQLException e) {
 
-            }
-        }
-        return proxyPreferences;
-    }
+			}
+		}
+		return proxyPreferences;
+	}
 
-    /**
-     * @param dataSource
-     */
-    public void setDataSource(final DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+	/**
+	 * @param dataSource
+	 */
+	public void setDataSource(final DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
-    private DataSource getDataSource() {
+	private DataSource getDataSource() {
 
-        if (dataSource == null) {
-            throw new IllegalStateException("You must set the datasource to use this class!");
-        }
-        return dataSource;
-    }
+		if (dataSource == null) {
+			throw new IllegalStateException("You must set the datasource to use this class!");
+		}
+		return dataSource;
+	}
 
-    @Override
-    public void update(final ProxyPreference entity) {
+	@Override
+	public void update(final ProxyPreference entity) {
 
-        final String sql = "update PROXY_PREFERENCES set PROXY_VALUE = :value where PROXY_KEY = :key";
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            connection = getDataSource().getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, entity.getValue());
-            preparedStatement.setString(2, entity.getProxyKey().getKeyName());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new ProxyDaoException(e);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
+		final String sql = "update PROXY_PREFERENCES set PROXY_VALUE = ? where PROXY_KEY = ?";
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			connection = getDataSource().getConnection();
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, entity.getValue());
+			preparedStatement.setString(2, entity.getProxyKey().getKeyName());
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			throw new ProxyDaoException(e);
+		} finally {
+			try {
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
 
-                if (connection != null && !connection.isClosed()) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-            }
-        }
-    }
+				if ((connection != null) && !connection.isClosed()) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+			}
+		}
+	}
 }

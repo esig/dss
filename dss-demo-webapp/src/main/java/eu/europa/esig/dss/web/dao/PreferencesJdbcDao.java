@@ -20,122 +20,157 @@
  */
 package eu.europa.esig.dss.web.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
+import eu.europa.esig.dss.client.http.proxy.ProxyDaoException;
 import eu.europa.esig.dss.web.model.Preference;
 import eu.europa.esig.dss.web.model.PreferenceKey;
 
-/**
- * 
- * TODO
- * 
- *
- *
- * 
- *
- *
- */
 public class PreferencesJdbcDao implements PreferencesDao {
 
-    /**
-     * 
-     * @see RowMapper
-     * 
-     *
-     *
-     * 
-     *
-     *
-     */
-    private class PreferenceRowMapper implements RowMapper<Preference> {
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)
-         */
-        @Override
-        public Preference mapRow(ResultSet rs, int row) throws SQLException {
-            final Preference preference = new Preference();
-            preference.setKey(rs.getString(COLUMN_KEY));
-            preference.setValue(rs.getString(COLUMN_VALUE));
-            return preference;
-        }
-    }
+	private DataSource dataSource;
 
-    private static final String TABLE_NAME = "PREFERENCES";
-    private static final String COLUMN_KEY = "PREF_KEY";
-    private static final String COLUMN_VALUE = "PREF_VALUE";
+	/**
+	 * Set the datasource
+	 *
+	 * @param dataSource The datasource
+	 */
+	@Required
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
-    /**
-     * @see JdbcTemplate
-     */
-    private JdbcTemplate jdbcTemplate;
-    /**
-     * @see NamedParameterJdbcTemplate
-     */
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.esig.dss.web.dao.GenericDao#get(java.lang.Object)
-     */
-    @Override
-    public Preference get(PreferenceKey id) {
-        final String query = "select * from " + TABLE_NAME + " where " + COLUMN_KEY + " = :key";
-        final SqlParameterSource namedParameters = new MapSqlParameterSource("key", id);
-        return namedParameterJdbcTemplate.queryForObject(query, namedParameters, new PreferenceRowMapper());
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.esig.dss.web.dao.GenericDao#get(java.lang.Object)
+	 */
+	@Override
+	public Preference get(PreferenceKey id) {
+		final String query = "select * from PREFERENCES where PREF_KEY = ?";
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.esig.dss.web.dao.GenericDao#getAll()
-     */
-    @Override
-    public List<Preference> getAll() {
-        final String query = "select * from " + TABLE_NAME;
-        return jdbcTemplate.query(query, new PreferenceRowMapper());
-    }
+			connection = dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, id.toString());
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
 
-    /**
-     * Set the datasource
-     * 
-     * @param dataSource The datasource
-     */
-    @Required
-    public void setDataSource(final DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
+				final Preference pref = new Preference();
+				pref.setKey(resultSet.getString("PREF_KEY"));
+				pref.setValue(resultSet.getString("PREF_VALUE"));
+				return pref;
+			}
+			return null;
+		} catch (SQLException e) {
+			throw new ProxyDaoException(e);
+		} finally {
+			try {
+				if (resultSet != null) {
+					resultSet.close();
+				}
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europa.esig.dss.web.dao.GenericDao#update(java.lang.Object)
-     */
-    @Override
-    public void update(Preference entity) {
-        final String query = "update " + TABLE_NAME + " set " + COLUMN_VALUE + " = :value where " + COLUMN_KEY
-                + " = :key";
-        final Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("key", entity.getKey());
-        parameters.put("value", entity.getValue());
-        final SqlParameterSource namedParameters = new MapSqlParameterSource(parameters);
-        namedParameterJdbcTemplate.update(query, namedParameters);
-    }
+				if ((connection != null) && !connection.isClosed()) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+
+			}
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.esig.dss.web.dao.GenericDao#getAll()
+	 */
+	@Override
+	public List<Preference> getAll() {
+		final String query = "select * from PREFERENCES";
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Preference> prefs = new ArrayList<Preference>();
+		try {
+			connection = dataSource.getConnection();
+			ps = connection.prepareStatement(query);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				Preference pp = new Preference();
+				pp.setKey(rs.getString("PREF_KEY"));
+				pp.setValue(rs.getString("PREF_VALUE"));
+				prefs.add(pp);
+			}
+		} catch (SQLException e) {
+			throw new ProxyDaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+
+				if ((connection != null) && !connection.isClosed()) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+
+			}
+		}
+		return prefs;
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see eu.europa.esig.dss.web.dao.GenericDao#update(java.lang.Object)
+	 */
+	@Override
+	public void update(Preference entity) {
+		final String query = "update PREFERENCES set PREF_VALUE = ? where PREF_KEY = ?";
+
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			connection = dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, entity.getValue());
+			preparedStatement.setString(2, entity.getKey());
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			throw new ProxyDaoException(e);
+		} finally {
+			try {
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
+
+				if ((connection != null) && !connection.isClosed()) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+			}
+		}
+	}
 
 }

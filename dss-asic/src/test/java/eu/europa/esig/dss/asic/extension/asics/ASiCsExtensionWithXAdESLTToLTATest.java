@@ -18,21 +18,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues.DSS631;
+package eu.europa.esig.dss.asic.extension.asics;
 
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithXAdESExtension;
 
-public class ASiCsExtensionWithXAdESBToLTATest extends AbstractTestASiCwithXAdESExtension {
+public class ASiCsExtensionWithXAdESLTToLTATest extends AbstractTestASiCwithXAdESExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
-		return SignatureLevel.ASiC_S_BASELINE_B;
+		return SignatureLevel.ASiC_S_BASELINE_LT;
 	}
 
 	@Override
 	protected SignatureLevel getOriginalUnderlyingSignatureLevel() {
-		return SignatureLevel.XAdES_BASELINE_B;
+		return SignatureLevel.XAdES_BASELINE_LT;
 	}
 
 	@Override
