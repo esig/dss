@@ -1,13 +1,13 @@
 package eu.europa.esig.dss.tsl;
 
+import java.io.File;
 import java.net.UnknownHostException;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.tsl.TSLRefreshPolicy;
-import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 public class TrustedListCertificateSourceTest {
 
@@ -17,7 +17,8 @@ public class TrustedListCertificateSourceTest {
 		try {
 			TrustedListsCertificateSource source = new TrustedListsCertificateSource();
 			source.setDataLoader(new CommonsDataLoader());
-			source.setLotlCertificate("classpath://ec.europa.eu.crt");
+			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/test/resources/keystore.jks"), "dss-password");
+			source.setKeyStoreCertificateSource(keyStoreCertificateSource );
 			source.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
 			source.setTslRefreshPolicy(TSLRefreshPolicy.NEVER);
 			source.setCheckSignature(false);
