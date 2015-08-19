@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.concurrent.Callable;
 
 import javax.xml.bind.DatatypeConverter;
@@ -23,14 +24,13 @@ public class TSLLoader implements Callable<TSLValidationModel> {
 	private static final Logger logger = LoggerFactory.getLogger(LOTLLoader.class);
 	private static final File TMP_FOLDER = new File(System.getProperty("java.io.tmpdir"));
 
+	private TSLParser parser = new TSLParser();
+
 	private DataLoader dataLoader;
-	private TSLParser parser;
 	private String urlToLoad;
 
-	public TSLLoader(DataLoader dataLoader, TSLParser parser, String urlToLoad) {
-		super();
+	public TSLLoader(DataLoader dataLoader,  String urlToLoad) {
 		this.dataLoader = dataLoader;
-		this.parser = parser;
 		this.urlToLoad = urlToLoad;
 	}
 
@@ -38,6 +38,7 @@ public class TSLLoader implements Callable<TSLValidationModel> {
 	public TSLValidationModel call() throws Exception {
 		String sha1URL = getSHA1(urlToLoad);
 
+		boolean loadedFromInternet = false;
 		InputStream is = null;
 		byte[] byteArray = null;
 		File tempFile = new File(TMP_FOLDER, sha1URL);
@@ -47,6 +48,7 @@ public class TSLLoader implements Callable<TSLValidationModel> {
 			byteArray = IOUtils.toByteArray(new FileInputStream(tempFile));
 		} else {
 			byteArray = dataLoader.get(urlToLoad);
+			loadedFromInternet= true;
 			is = new ByteArrayInputStream(byteArray);
 			FileOutputStream fos = null;
 			try {
@@ -64,6 +66,9 @@ public class TSLLoader implements Callable<TSLValidationModel> {
 		model.setSha1Url(sha1URL);
 		model.setSha1FileContent(getSHA1(byteArray));
 		model.setFilepath(tempFile.getAbsolutePath());
+		if (loadedFromInternet) {
+			model.setLoadedDate(new Date());
+		}
 		return model;
 	}
 

@@ -17,7 +17,7 @@ import eu.europa.esig.dss.tsl.TSLValidationModel;
 public class TSLParserTest {
 
 	@Test
-	public void parse() {
+	public void parseLOTL() {
 		TSLParser parser = new TSLParser();
 		TSLValidationModel model = parser.parseTSL(new File("src/test/resources/LOTL.xml"));
 		assertNotNull(model);
@@ -30,7 +30,7 @@ public class TSLParserTest {
 		for (TSLPointer tslPointer : pointers) {
 			assertTrue(StringUtils.isNotEmpty(tslPointer.getMimeType()));
 			assertTrue(StringUtils.isNotEmpty(tslPointer.getTerritory()));
-			assertTrue(StringUtils.isNotEmpty(tslPointer.getXmlUrl()));
+			assertTrue(StringUtils.isNotEmpty(tslPointer.getUrl()));
 			assertTrue(CollectionUtils.isNotEmpty(tslPointer.getPotentialSigners()));
 		}
 		assertTrue(CollectionUtils.isNotEmpty(model.getDistributionPoints()));

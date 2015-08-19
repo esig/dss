@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" Id="CYTL0001" TSLTag="http://uri.etsi.org/19612/TSLTag">
+   <SchemeInformation>
+      <TSLVersionIdentifier>4</TSLVersionIdentifier>
+      <TSLSequenceNumber>18</TSLSequenceNumber>
+      <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+      <SchemeOperatorName>
+         <Name xml:lang="en">Department of Electronic Communications</Name>
+         <Name xml:lang="el">Τμήμα Ηλεκτρονικών Επικοινωνιών</Name>
+      </SchemeOperatorName>
+      <SchemeOperatorAddress>
+         <PostalAddresses>
+            <PostalAddress xml:lang="el">
+               <StreetAddress>Λεωφόρος Στροβόλου 286</StreetAddress>
+               <Locality>Λευκωσία </Locality>
+               <PostalCode>2048</PostalCode>
+               <CountryName>CY</CountryName>
+            </PostalAddress>
+            <PostalAddress xml:lang="en">
+               <StreetAddress>286 Strovolos Avenue</StreetAddress>
+               <Locality>Nicosia</Locality>
+               <PostalCode>2048</PostalCode>
+               <CountryName>CY</CountryName>
+            </PostalAddress>
+         </PostalAddresses>
+         <ElectronicAddress>
+            <URI xml:lang="en">mailto:tslcyprus@mcw.gov.cy</URI>
+            <URI xml:lang="en">http://www.mcw.gov.cy/dec/tsl/en</URI>
+         </ElectronicAddress>
+      </SchemeOperatorAddress>
+      <SchemeName>
+         <Name xml:lang="en">CY:Supervision/Accreditation Status List of certification services from Certification Service Providers, which are supervised/accredited by the referenced Scheme Operator’s Member State for compliance with the relevant provisions laid down in Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.</Name>
+         <Name xml:lang="el">CY:Κατάλογος κατάστασης εποπτείας/διαπίστευσης των υπηρεσιών πιστοποίησης από παρόχους υπηρεσιών πιστοποίησης οι οποίοι εποπτεύονται/διαπιστεύονται από τον υπεύθυνο σχήματος του εκάστοτε κράτος μέλος ως προς τη συμμόρφωση με τις σχετικές διατάξεις της οδηγίας 1999/93/ΕΚ του Ευρωπαϊκού Κοινοβουλίου και του Συμβουλίου, της 13ης Δεκεμβρίου 1999, σχετικά με το κοινοτικό πλαίσιο για ηλεκτρονικές υπογραφές.</Name>
+      </SchemeName>
+      <SchemeInformationURI>
+         <URI xml:lang="en">http://www.mcw.gov.cy/dec/tsl/en</URI>
+         <URI xml:lang="el">http://www.mcw.gov.cy/dec/tsl/el</URI>
+      </SchemeInformationURI>
+      <StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/StatusDetn/EUappropriate</StatusDeterminationApproach>
+      <SchemeTypeCommunityRules>
+         <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</URI>
+         <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/CY</URI>
+      </SchemeTypeCommunityRules>
+      <SchemeTerritory>CY</SchemeTerritory>
+      <PolicyOrLegalNotice>
+         <TSLLegalNotice xml:lang="en">The applicable legal framework for the present TSL implementation of the Trusted List of supervised/accredited Certification Service Providers for Cyprus is Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures and its implementation in Cyprus laws.</TSLLegalNotice>
+         <TSLLegalNotice xml:lang="el">Το ισχύον νομικό πλαίσιο για την παρούσα εφαρμογή TSL του καταλόγου εμπίστευσης εποπτευόμενων/διαπιστευμένων παρόχων υπηρεσιών πιστοποίησης για τη Κύπρο είναι η οδηγία 1999/93/ΕΚ του Ευρωπαϊκού Κοινοβουλίου και του Συμβουλίου, της 13ης Δεκεμβρίου 1999, σχετικά με το κοινοτικό πλαίσιο για ηλεκτρονικές υπογραφές, καθώς και η εφαρμογή της στη νομοθεσία της Κύπρου.</TSLLegalNotice>
+      </PolicyOrLegalNotice>
+      <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+      <PointersToOtherTSL>
+         <OtherTSLPointer>
+            <ServiceDigitalIdentities>
+               <ServiceDigitalIdentity>
+                  <DigitalId>
+                     <X509Certificate>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</X509Certificate>
+                  </DigitalId>
+                  <DigitalId>
+                     <X509SubjectName>CN=(SIGN) ANNELI ANDRESSON,O=EUROPEAN COMMISSION,C=BE</X509SubjectName>
+                  </DigitalId>
+               </ServiceDigitalIdentity>
+            </ServiceDigitalIdentities>
+            <TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</TSLLocation>
+            <AdditionalInformation>
+               <OtherInformation>
+                  <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeOperatorName>
+                     <Name xml:lang="en">European Commission</Name>
+                  </SchemeOperatorName>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTypeCommunityRules>
+                     <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+                  </SchemeTypeCommunityRules>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTerritory>EU</SchemeTerritory>
+               </OtherInformation>
+               <OtherInformation>
+                  <ns4:MimeType>application/vnd.etsi.tsl+xml</ns4:MimeType>
+               </OtherInformation>
+            </AdditionalInformation>
+         </OtherTSLPointer>
+         <OtherTSLPointer>
+            <ServiceDigitalIdentities>
+               <ServiceDigitalIdentity>
+                  <DigitalId>
+                     <X509Certificate>MIIFFzCCA/+gAwIBAgISESE/HwqWFgw444aZ4vdHq384MA0GCSqGSIb3DQEBBQUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gRzIwHhcNMTMwMzIwMTAwNTA1WhcNMTUwMzIxMTAwNTA1WjBnMQswCQYDVQQGEwJCRTEQMA4GA1UECBMHQmVsZ2l1bTERMA8GA1UEBxMIQnJ1c3NlbHMxHDAaBgNVBAoTE0V1cm9wZWFuIENvbW1pc3Npb24xFTATBgNVBAMTDGVjLmV1cm9wYS5ldTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOyOz37JNZ3ac9PSo9bn9wELcVARSDHYcTOUw0yjhSl5FVA/oDhmy7cdafUg6s1HNsV3631X7OXLFBa2MInUFqIRJlcqIx71AN7C7PY3tENhYIDLcObSfMNeIr4jTdR69Nd/u15GM8ys2sFnmH3ih2uTChVHHmOGrmLcFb4ApZNGiN/qhA2RCCzHI5qYuMHkG23gfraXS4ftwbQCoEXtBbFRrfF+cSJABx7e1xz6Vo+7663keKNDtPujfOQSoHbctMhraDWFDECs2EL83gzLPzX5NOR8Tc8FRv7RC5lfmuAv6Uq/LzCTMB4XRiqfJtgkBo7NEAso5x5yJ0j1yDEjgDMCAwEAAaOCAcUwggHBMA4GA1UdDwEB/wQEAwIFoDBMBgNVHSAERTBDMEEGCSsGAQQBoDIBFDA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAXBgNVHREEEDAOggxlYy5ldXJvcGEuZXUwCQYDVR0TBAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwRQYDVR0fBD4wPDA6oDigNoY0aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9ncy9nc29yZ2FuaXphdGlvbnZhbGcyLmNybDCBlgYIKwYBBQUHAQEEgYkwgYYwRwYIKwYBBQUHMAKGO2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzb3JnYW5pemF0aW9udmFsZzIuY3J0MDsGCCsGAQUFBzABhi9odHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nvcmdhbml6YXRpb252YWxnMjAdBgNVHQ4EFgQUv4UsqLa1HO0++xa/AlEQsJB5cfMwHwYDVR0jBBgwFoAUXUayjcRLdBy77fVztjq3OI91nn4wDQYJKoZIhvcNAQEFBQADggEBACit+R/F48l1NqATvi8Oi07V3kVzsHDTnloYz05DwEjjkmuCiDDs+IPE2MdQbxYiy4C6Wun1U/YEcSya9bIeZJG89Jbdp0Ys58x6v7GDpinLdi9SXqnj8Uoj7XCEVMc0CXhLQnm0ZdIbfury5xMfq0QjfHKMmw1GB1lOTAQlpQ/LGPihDs9PFDOJ2W8l29aqYRwU0B8t5SX1bxS5JocelkSnHr4lF3ZNbwMo9rclhVZKAsVdiNzJLOt2k5Hi4T4M9dDAoPQo/ZnJt/An1MltN9mXuLnQ/1QpyaGhWlzVTjBQ8DYMmbVd9fucJKr1P34O+kAwRw8BiTk9l9L5VbxVroI=</X509Certificate>
+                  </DigitalId>
+                  <DigitalId>
+                     <X509SubjectName>CN=ec.europa.eu,O=European Commission,L=Brussels,ST=Belgium,C=BE</X509SubjectName>
+                  </DigitalId>
+               </ServiceDigitalIdentity>
+            </ServiceDigitalIdentities>
+            <TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-hr.pdf</TSLLocation>
+            <AdditionalInformation>
+               <OtherInformation>
+                  <SchemeOperatorName>
+                     <Name xml:lang="en">European Commission</Name>
+                  </SchemeOperatorName>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTypeCommunityRules>
+                     <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+                  </SchemeTypeCommunityRules>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTerritory>EU</SchemeTerritory>
+               </OtherInformation>
+               <OtherInformation>
+                  <ns4:MimeType>application/pdf</ns4:MimeType>
+               </OtherInformation>
+               <OtherInformation>
+                  <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+               </OtherInformation>
+            </AdditionalInformation>
+         </OtherTSLPointer>
+      </PointersToOtherTSL>
+      <ListIssueDateTime>2015-03-18T22:00:00Z</ListIssueDateTime>
+      <NextUpdate>
+         <dateTime>2015-09-16T21:00:00Z</dateTime>
+      </NextUpdate>
+      <DistributionPoints>
+         <URI>http://www.mcw.gov.cy/dec/tsl/el</URI>
+         <URI>http://www.mcw.gov.cy/dec/tsl/en</URI>
+      </DistributionPoints>
+   </SchemeInformation>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-09B3B789E9A561C706FABC4C29BF795D"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>LfVyE8SCQtAPsEXnKWPgK0x93+YPX7YoyQYrs0iW7Q8=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-09B3B789E9A561C706FABC4C29BF795D"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>0duZoHa94Up6M26WlhN61TyfRSg7t0Y3g6xd+j2GqpA=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-09B3B789E9A561C706FABC4C29BF795D">QFddtEE+IBSW5qHN8x3RnKLnt900cdU9BFHm2AJ18VT3P/0AvwDqJHhrsStCgYQCeBj0Mc+L4gGQ5MTzymBnk60A7YeXi7VqayEyAlLmOu7PGyS6GyQ1l408Ugcl6Ds+zZs7aVxA5ZnH/ntw1p2LH3Fv5EXqTIsgtrPkxDDkPOcx6aEbe8mWOu5Q7WCUlM8xUP9WnXX6RYSwfJTJq5tIFVVW4aqVTcl3WUsYIu+zXcsyus/bA6tS3j9rgBhU1qoRym9rOPPTDvO4nhuVDDddKs2lRXLWgDcoZd2OdhR7rL6A8WNp9ZxlzAUDTBa2O4reyKqmAY/YDKe5kCaFCTo95w==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDeDCCAmCgAwIBAgIFEgFbGzYwDQYJKoZIhvcNAQELBQAwVTELMAkGA1UEBhMCQ1kxMDAuBgNVBAoMJ0RlcGFydG1lbnQgb2YgRWxlY3Ryb25pYyBDb21tdW5pY2F0aW9uczEUMBIGA1UEAwwLVFNMIFNpZ25lcjIwHhcNMTQwNzAxMDAwMDAwWhcNMTgwNzAxMDAwMDAwWjBVMQswCQYDVQQGEwJDWTEwMC4GA1UECgwnRGVwYXJ0bWVudCBvZiBFbGVjdHJvbmljIENvbW11bmljYXRpb25zMRQwEgYDVQQDDAtUU0wgU2lnbmVyMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM2l0vZRrFtdWArytp3quq29byXDB/GbUbm6xKlB63bhyh/SxGDvxDx3PGt1T4b8a89bC0RnmeRpgGRGWwNON2xKnMcDzMYmCi4cmNS7IrTF6GhVbpgLXCsx5JOU+oz0BXE2ASlF3h/r6AuT3oUzGapacNX4LhKtjU8MCuES0xU/V3x0H/FCOu1ziwfnt7wv29wGm39y8h5CTkiAmKxoZThJT49EBnwnBTA09v+5q+qROABNQGYbVkrwyym5hbYEIxHfA5pRMd/QBJhUGL6HhYZQpgzIXjYCaH5+c4U1LqOJoPehW8uocesSnAvpE1lx3JyXkYclBCKO9jVE5UA1c4kCAwEAAaNPME0wHQYDVR0OBBYEFAfjuk4G4S9SC/QxPyHuCFHrN5KaMAkGA1UdEwQCMAAwDgYDVR0PAQH/BAQDAgbAMBEGA1UdIAQKMAgwBgYEVR0gADANBgkqhkiG9w0BAQsFAAOCAQEAjj+4NRRsV840YvUwC2BwiqdvySnaJaDgjSx0+TQjEcpQhffDIsDTV2kZpz8rERzcQnf/W0IYXZ4XvHjjCgPocZp8lcKC8V2bK506C9vdMP7s0aiTQT2Xx8g2V89Z71mM7KFh2aNIHGfjbOZbzlG3aW/qPlQ0LtL7gKLc4LdBbhBbig1b7fCmuk29yAnxRNZ59ql+oCx9bT2axZf0E0BVsp503pVG5g872e+UUAZvc4vAYSFSY4d/wTr4fd1+Oiaq7GuIMdkaM5rdue9Eo5wib9TVG4OWtzTcx8Dgz3UT+lXmkW787EmZpVfnhD1L/SSo8V21uNXpq+qNC9bPkqWyYQ==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-09B3B789E9A561C706FABC4C29BF795D"><xades:SignedProperties Id="xades-id-09B3B789E9A561C706FABC4C29BF795D"><xades:SignedSignatureProperties><xades:SigningTime>2015-03-19T07:11:02Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>2QsvQ9WQTeXWXvpx+MavMhiu+Kk=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=TSL Signer2,O=Department of Electronic Communications,C=CY</ds:X509IssuerName><ds:X509SerialNumber>77332159286</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

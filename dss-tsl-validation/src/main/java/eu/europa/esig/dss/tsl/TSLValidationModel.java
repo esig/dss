@@ -10,11 +10,13 @@ public class TSLValidationModel {
 	private String filepath;
 	private String sha1FileContent;
 
+	private Date loadedDate;
 	private Date issueDate;
 	private Date nextUpdateDate;
 	private int sequenceNumber;
 	private String territory;
 	private List<TSLPointer> pointers;
+	private List<TSLServiceProvider> serviceProviders;
 	private List<String> distributionPoints;
 
 	public String getUrl() {
@@ -47,6 +49,14 @@ public class TSLValidationModel {
 
 	public void setSha1FileContent(String sha1FileContent) {
 		this.sha1FileContent = sha1FileContent;
+	}
+
+	public Date getLoadedDate() {
+		return loadedDate;
+	}
+
+	public void setLoadedDate(Date loadedDate) {
+		this.loadedDate = loadedDate;
 	}
 
 	public Date getIssueDate() {
@@ -95,6 +105,14 @@ public class TSLValidationModel {
 
 	public void setDistributionPoints(List<String> distributionPoints) {
 		this.distributionPoints = distributionPoints;
+	}
+
+	public List<TSLServiceProvider> getServiceProviders() {
+		return serviceProviders;
+	}
+
+	public void setServiceProviders(List<TSLServiceProvider> serviceProviders) {
+		this.serviceProviders = serviceProviders;
 	}
 
 }
