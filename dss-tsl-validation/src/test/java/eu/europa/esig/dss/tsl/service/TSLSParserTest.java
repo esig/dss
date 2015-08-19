@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,11 +17,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
-import eu.europa.esig.dss.tsl.TSLValidationModel;
 
 @RunWith(Parameterized.class)
 public class TSLSParserTest {
@@ -57,15 +58,15 @@ public class TSLSParserTest {
 	}
 
 	@Test
-	public void parseTSL() {
-		TSLParser parser = new TSLParser();
-		TSLValidationModel model = parser.parseTSL(fileToTest);
-		assertNotNull(model);
-		assertNotNull(model.getNextUpdateDate());
-		assertNotNull(model.getIssueDate());
-		assertTrue(StringUtils.isNotEmpty(model.getTerritory()));
-		assertTrue(model.getSequenceNumber() > 0);
-		List<TSLPointer> pointers = model.getPointers();
+	public void parseTSL() throws Exception {
+		TSLParser parser = new TSLParser(new FileInputStream(fileToTest));
+		TSLParserResult result = parser.call();
+		assertNotNull(result);
+		assertNotNull(result.getNextUpdateDate());
+		assertNotNull(result.getIssueDate());
+		assertTrue(StringUtils.isNotEmpty(result.getTerritory()));
+		assertTrue(result.getSequenceNumber() > 0);
+		List<TSLPointer> pointers = result.getPointers();
 		assertTrue(CollectionUtils.isNotEmpty(pointers));
 		for (TSLPointer tslPointer : pointers) {
 			assertTrue(StringUtils.isNotEmpty(tslPointer.getMimeType()));
@@ -74,9 +75,9 @@ public class TSLSParserTest {
 			assertTrue(CollectionUtils.isNotEmpty(tslPointer.getPotentialSigners()));
 		}
 
-		List<TSLServiceProvider> serviceProviders = model.getServiceProviders();
+		List<TSLServiceProvider> serviceProviders = result.getServiceProviders();
 
-		if (countriesWithoutTSP.contains(model.getTerritory())) {
+		if (countriesWithoutTSP.contains(result.getTerritory())) {
 			assertTrue(CollectionUtils.isEmpty(serviceProviders));
 		} else {
 			assertTrue(CollectionUtils.isNotEmpty(serviceProviders));

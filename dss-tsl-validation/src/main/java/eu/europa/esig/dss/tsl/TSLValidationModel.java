@@ -1,23 +1,17 @@
 package eu.europa.esig.dss.tsl;
 
 import java.util.Date;
-import java.util.List;
 
 public class TSLValidationModel {
 
 	private String url;
-	private String sha1Url;
 	private String filepath;
-	private String sha1FileContent;
+	private String sha256FileContent;
 
 	private Date loadedDate;
-	private Date issueDate;
-	private Date nextUpdateDate;
-	private int sequenceNumber;
-	private String territory;
-	private List<TSLPointer> pointers;
-	private List<TSLServiceProvider> serviceProviders;
-	private List<String> distributionPoints;
+
+	private TSLParserResult parseResult;
+	private TSLValidationResult validationResult;
 
 	public String getUrl() {
 		return url;
@@ -25,14 +19,6 @@ public class TSLValidationModel {
 
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	public String getSha1Url() {
-		return sha1Url;
-	}
-
-	public void setSha1Url(String sha1Url) {
-		this.sha1Url = sha1Url;
 	}
 
 	public String getFilepath() {
@@ -43,12 +29,12 @@ public class TSLValidationModel {
 		this.filepath = filepath;
 	}
 
-	public String getSha1FileContent() {
-		return sha1FileContent;
+	public String getSha256FileContent() {
+		return sha256FileContent;
 	}
 
-	public void setSha1FileContent(String sha1FileContent) {
-		this.sha1FileContent = sha1FileContent;
+	public void setSha256FileContent(String sha256FileContent) {
+		this.sha256FileContent = sha256FileContent;
 	}
 
 	public Date getLoadedDate() {
@@ -59,60 +45,20 @@ public class TSLValidationModel {
 		this.loadedDate = loadedDate;
 	}
 
-	public Date getIssueDate() {
-		return issueDate;
+	public TSLParserResult getParseResult() {
+		return parseResult;
 	}
 
-	public void setIssueDate(Date issueDate) {
-		this.issueDate = issueDate;
+	public void setParseResult(TSLParserResult parseResult) {
+		this.parseResult = parseResult;
 	}
 
-	public Date getNextUpdateDate() {
-		return nextUpdateDate;
+	public TSLValidationResult getValidationResult() {
+		return validationResult;
 	}
 
-	public void setNextUpdateDate(Date nextUpdateDate) {
-		this.nextUpdateDate = nextUpdateDate;
-	}
-
-	public int getSequenceNumber() {
-		return sequenceNumber;
-	}
-
-	public void setSequenceNumber(int sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-	}
-
-	public String getTerritory() {
-		return territory;
-	}
-
-	public void setTerritory(String territory) {
-		this.territory = territory;
-	}
-
-	public List<TSLPointer> getPointers() {
-		return pointers;
-	}
-
-	public void setPointers(List<TSLPointer> pointers) {
-		this.pointers = pointers;
-	}
-
-	public List<String> getDistributionPoints() {
-		return distributionPoints;
-	}
-
-	public void setDistributionPoints(List<String> distributionPoints) {
-		this.distributionPoints = distributionPoints;
-	}
-
-	public List<TSLServiceProvider> getServiceProviders() {
-		return serviceProviders;
-	}
-
-	public void setServiceProviders(List<TSLServiceProvider> serviceProviders) {
-		this.serviceProviders = serviceProviders;
+	public void setValidationResult(TSLValidationResult validationResult) {
+		this.validationResult = validationResult;
 	}
 
 }

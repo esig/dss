@@ -5,21 +5,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
+import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
-import eu.europa.esig.dss.tsl.TSLValidationModel;
 
 public class TSLParserTest {
 
 	@Test
-	public void parseLOTL() {
-		TSLParser parser = new TSLParser();
-		TSLValidationModel model = parser.parseTSL(new File("src/test/resources/LOTL.xml"));
+	public void parseLOTL() throws Exception {
+		TSLParser parser = new TSLParser(new FileInputStream(new File("src/test/resources/LOTL.xml")));
+		TSLParserResult model = parser.call();
 		assertNotNull(model);
 		assertNotNull(model.getNextUpdateDate());
 		assertNotNull(model.getIssueDate());

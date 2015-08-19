@@ -1,8 +1,5 @@
 package eu.europa.esig.dss.tsl.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -12,6 +9,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBContext;
@@ -21,7 +19,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -35,11 +32,11 @@ import eu.europa.esig.dss.tsl.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.MatchingCriteriaIndicator;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
+import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
-import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.ecc.CriteriaListType;
 import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
@@ -73,13 +70,15 @@ import eu.europa.esig.jaxb.tsl.TrustStatusListType;
 import eu.europa.esig.jaxb.xades.IdentifierType;
 import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
 
-public class TSLParser {
+public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final Logger logger = LoggerFactory.getLogger(TSLParser.class);
 
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
 
 	private static final JAXBContext jaxbContext;
+
+	private InputStream inputStream;
 
 	static {
 		try {
@@ -89,32 +88,25 @@ public class TSLParser {
 		}
 	}
 
-	public TSLValidationModel parseTSL(File file) {
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(file);
-			return parseTSL(fis);
-		} catch (IOException e) {
-			throw new DSSException("Unable to parse file '" + file.getName() + "' : " + e.getMessage(), e);
-		} finally {
-			IOUtils.closeQuietly(fis);
-		}
+	public TSLParser(InputStream inputStream) {
+		this.inputStream = inputStream;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
-	public TSLValidationModel parseTSL(InputStream is) {
+	public TSLParserResult call() throws Exception {
 		try {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(is);
+			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(inputStream);
 			TrustStatusListType trustStatusList = jaxbElement.getValue();
 			return getTslModel(trustStatusList);
-		} catch (JAXBException e) {
+		} catch (Exception e) {
 			throw new DSSException("Unable to parse inputstream : " + e.getMessage(), e);
 		}
 	}
 
-	private TSLValidationModel getTslModel(TrustStatusListType tsl) {
-		TSLValidationModel tslModel = new TSLValidationModel();
+	private TSLParserResult getTslModel(TrustStatusListType tsl) {
+		TSLParserResult tslModel = new TSLParserResult();
 		tslModel.setTerritory(getTerritory(tsl));
 		tslModel.setSequenceNumber(getSequenceNumber(tsl));
 		tslModel.setIssueDate(getIssueDate(tsl));
@@ -248,7 +240,7 @@ public class TSLParser {
 		for (DigitalIdentityType digitalId : digitalIds) {
 			if (digitalId.getX509Certificate() != null) {
 				try {
-					CertificateToken certificate =  DSSUtils.loadCertificate(digitalId.getX509Certificate());
+					CertificateToken certificate = DSSUtils.loadCertificate(digitalId.getX509Certificate());
 					certificates.add(certificate);
 				} catch (Exception e) {
 					logger.warn("Unable to load certificate : " + e.getMessage(), e);
@@ -482,5 +474,6 @@ public class TSLParser {
 		}
 		return names.getName().get(0).getValue();
 	}
+
 
 }

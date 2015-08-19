@@ -16,7 +16,6 @@ public class TSLService {
 	private Date endDate;
 	private List<CertificateToken> certificates;
 	private List<X500Principal> x500Principals;
-
 	private List<TSLServiceExtension> extensions;
 
 	public String getName() {
