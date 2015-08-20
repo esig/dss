@@ -192,4 +192,10 @@ public class TSLRepository {
 		return Arrays.asList(listFiles);
 	}
 
+	public boolean isOk() {
+		List<TSLValidationModel> filteredList = getTSLValidationModels();
+		Map<String, TSLValidationModel> allData = getAllMapTSLValidationModels();
+		return filteredList.size() == allData.size();
+	}
+
 }

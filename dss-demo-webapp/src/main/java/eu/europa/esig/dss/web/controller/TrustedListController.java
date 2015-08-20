@@ -1,8 +1,7 @@
 package eu.europa.esig.dss.web.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,21 +9,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource;
-import eu.europa.esig.dss.tsl.TSLSimpleReport;
-import eu.europa.esig.dss.web.service.TSLSimpleReportByCountryComparator;
+import eu.europa.esig.dss.tsl.TSLValidationModel;
+import eu.europa.esig.dss.tsl.service.TSLRepository;
 
 @Controller
 public class TrustedListController {
 
 	@Autowired
-	private ReloadableTrustedListCertificateSource reloadableTrustedListCertificateSource;
+	private TSLRepository tslRepository;
 
 	@RequestMapping(value = "/tsl-info", method = RequestMethod.GET)
 	public String showSignature(final Model model) {
-		List<TSLSimpleReport> diagnosticInfo = new ArrayList<TSLSimpleReport>(reloadableTrustedListCertificateSource.getDiagnosticInfo());
-		Collections.sort(diagnosticInfo, new TSLSimpleReportByCountryComparator());
-		model.addAttribute("diagnosticInfo", diagnosticInfo);
+		Map<String, TSLValidationModel> mapTSLValidationModels = tslRepository.getAllMapTSLValidationModels();
+		model.addAttribute("mapValidations", new TreeMap<String, TSLValidationModel>(mapTSLValidationModels));
 		return "tsl-info";
 	}
 

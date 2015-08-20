@@ -554,7 +554,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 		final int statusCode = httpResponse.getStatusLine().getStatusCode();
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
+			LOG.debug(url +" status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
 		}
 
 		if (statusCode != HttpStatus.SC_OK) {

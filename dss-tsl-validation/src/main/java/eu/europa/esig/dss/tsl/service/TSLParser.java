@@ -475,7 +475,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		if (a == null) {
 			a = tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress().get(0);
 		}
-		return a.getStreetAddress() + ", " + a.getPostalCode() + " " + a.getLocality() + ", " + a.getStateOrProvince() + a.getCountryName();
+		return a.getStreetAddress() + ", " + a.getPostalCode() + " " + a.getLocality() + ", " + a.getStateOrProvince() + " - " + a.getCountryName();
 	}
 
 	private String getElectronicAddress(TSPInformationType tspInformation) {
