@@ -558,7 +558,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		}
 
 		if (statusCode != HttpStatus.SC_OK) {
-			LOG.warn("No content available via url: " + url + " - will use nothing: " + url);
+			LOG.warn("No content available via url: " + url);
 			return null;
 		}
 

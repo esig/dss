@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -72,6 +74,36 @@ public class TSLValidationJob {
 
 	public void setFilterTerritories(List<String> filterTerritories) {
 		this.filterTerritories = filterTerritories;
+	}
+
+	@PostConstruct
+	public void initRepository() {
+		logger.info("Initialization of the TSL repository ...");
+		int loadedTSL = 0;
+		List<File> cachedFiles = repository.getStoredFiles();
+		if (CollectionUtils.isNotEmpty(cachedFiles)) {
+			List<Future<TSLParserResult>> futureParseResults = new ArrayList<Future<TSLParserResult>>();
+			for (File file : cachedFiles) {
+				try {
+					FileInputStream fis = new FileInputStream(file);
+					futureParseResults.add(executorService.submit(new TSLParser(fis)));
+				} catch (Exception e) {
+					logger.error("Unable to parse file '" + file.getAbsolutePath() + "' : " + e.getMessage(), e);
+				}
+			}
+
+			for (Future<TSLParserResult> futureParseResult : futureParseResults) {
+				try {
+					TSLParserResult tslParserResult = futureParseResult.get();
+					loadMissingCertificates(tslParserResult);
+					repository.addParsedResultFromCacheToMap(tslParserResult);
+					loadedTSL++;
+				} catch (Exception e) {
+					logger.error("Unable to get parsing result : " + e.getMessage(), e);
+				}
+			}
+		}
+		logger.info(loadedTSL + " loaded TSL from cached files in the repository");
 	}
 
 	public void refresh() {

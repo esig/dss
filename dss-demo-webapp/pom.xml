@@ -117,6 +117,10 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-tsl-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-policy-jaxb</artifactId>
 		</dependency>
 		<!-- PKCS12 is executed on the webapp (not applet) -->

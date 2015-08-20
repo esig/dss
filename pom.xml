@@ -40,6 +40,7 @@
 		<module>dss-rest</module>
 		<module>dss-soap-client</module>
 		<module>dss-soap</module>
+		<module>dss-tsl-validation</module>
 	</modules>
 
 	<developers>
@@ -192,9 +193,8 @@
 				<executions>
 					<execution>
 						<id>attach-sources</id>
-						<phase>deploy</phase>
 						<goals>
-							<goal>jar-no-fork</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -202,15 +202,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>attach-javadocs</id> -->
+<!-- 						<goals> -->
+<!-- 							<goal>jar</goal> -->
+<!-- 						</goals>	 -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
 			</plugin>
 			<plugin>
 				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
@@ -464,6 +463,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-tsl-validation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 	        <dependency>
