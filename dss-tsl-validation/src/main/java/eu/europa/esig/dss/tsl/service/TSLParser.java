@@ -330,11 +330,11 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private List<String> extractCertificatesUrls(TSPServiceInformationType serviceInfo) {
 		List<String> certificateUrls = new ArrayList<String>();
-		if ((serviceInfo.getSchemeServiceDefinitionURI() !=null) && CollectionUtils.isNotEmpty(serviceInfo.getSchemeServiceDefinitionURI().getURI())) {
+		if ((serviceInfo.getSchemeServiceDefinitionURI() != null) && CollectionUtils.isNotEmpty(serviceInfo.getSchemeServiceDefinitionURI().getURI())) {
 			List<NonEmptyMultiLangURIType> uris = serviceInfo.getSchemeServiceDefinitionURI().getURI();
 			for (NonEmptyMultiLangURIType uri : uris) {
 				String value = uri.getValue();
-				if (isCertificateURI(value)){
+				if (isCertificateURI(value)) {
 					certificateUrls.add(value);
 				}
 			}
@@ -475,7 +475,28 @@ public class TSLParser implements Callable<TSLParserResult> {
 		if (a == null) {
 			a = tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress().get(0);
 		}
-		return a.getStreetAddress() + ", " + a.getPostalCode() + " " + a.getLocality() + ", " + a.getStateOrProvince() + " - " + a.getCountryName();
+
+		StringBuffer sb = new StringBuffer();
+		if (StringUtils.isNotEmpty(a.getStreetAddress())) {
+			sb.append(a.getStreetAddress());
+			sb.append(", ");
+		}
+		if (StringUtils.isNotEmpty(a.getPostalCode())) {
+			sb.append(a.getPostalCode());
+			sb.append(", ");
+		}
+		if (StringUtils.isNotEmpty(a.getLocality())) {
+			sb.append(a.getLocality());
+			sb.append(", ");
+		}
+		if (StringUtils.isNotEmpty(a.getStateOrProvince())) {
+			sb.append(a.getStateOrProvince());
+			sb.append(", ");
+		}
+		if (StringUtils.isNotEmpty(a.getCountryName())) {
+			sb.append(a.getCountryName());
+		}
+		return sb.toString();
 	}
 
 	private String getElectronicAddress(TSPInformationType tspInformation) {
@@ -496,6 +517,5 @@ public class TSLParser implements Callable<TSLParserResult> {
 		}
 		return names.getName().get(0).getValue();
 	}
-
 
 }

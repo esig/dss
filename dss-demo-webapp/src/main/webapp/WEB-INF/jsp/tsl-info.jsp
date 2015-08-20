@@ -77,8 +77,10 @@
                             <dl class="dl-horizontal">
                                 <dt>Name :</dt>
                                 <dd>${serviceProvider.name}</dd>
-                                <dt>Trade name :</dt>
-                                <dd>${serviceProvider.tradeName}</dd>
+                                <c:if test="${not empty serviceProvider.tradeName}">
+                                    <dt>Trade name :</dt>
+                                    <dd>${serviceProvider.tradeName}</dd>
+                                </c:if>
                                 <dt>Postal address :</dt>
                                 <dd>${serviceProvider.postalAddress}</dd>
                                 <dt>Electronic address :</dt>
@@ -96,9 +98,9 @@
                                                 <dt>Name :</dt>
                                                 <dd>${service.name}</dd>
                                                 <dt>Status :</dt>
-                                                <dd>${service.status}</dd>
+                                                <dd><a href="${service.status}">${service.status}</a></dd>
                                                 <dt>Type :</dt>
-                                                <dd>${service.type}</dd>
+                                                <dd><a href="${service.type}">${service.type}</a></dd>
                                                 <dt>Start date :</dt>
                                                 <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${service.startDate}" /></dd>
                                                 <c:if test="${service.endDate !=null}">
