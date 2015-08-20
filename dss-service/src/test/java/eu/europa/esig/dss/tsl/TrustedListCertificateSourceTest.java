@@ -18,7 +18,7 @@ public class TrustedListCertificateSourceTest {
 			TrustedListsCertificateSource source = new TrustedListsCertificateSource();
 			source.setDataLoader(new CommonsDataLoader());
 			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/test/resources/keystore.jks"), "dss-password");
-			source.setKeyStoreCertificateSource(keyStoreCertificateSource );
+			source.setKeyStoreCertificateSource(keyStoreCertificateSource);
 			source.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
 			source.setTslRefreshPolicy(TSLRefreshPolicy.NEVER);
 			source.setCheckSignature(false);
@@ -26,7 +26,7 @@ public class TrustedListCertificateSourceTest {
 
 			Assert.assertTrue(source.getCertificates().size() > 0);
 		} catch (Exception e) {
-			if(!(e.getCause() instanceof UnknownHostException)) {
+			if (!(e.getCause() instanceof UnknownHostException)) {
 				throw e;
 			}
 			// Internet failure is not test failure

@@ -90,11 +90,6 @@ public class ReloadableTrustedListCertificateSource extends TrustedListsCertific
 	}
 
 	@Override
-	public List<TSLSimpleReport> getDiagnosticInfo() {
-		return currentSource.getDiagnosticInfo();
-	}
-
-	@Override
 	public CertificatePool getCertificatePool() {
 		return currentSource.getCertificatePool();
 	}

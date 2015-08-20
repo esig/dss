@@ -24,8 +24,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.Security;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -84,8 +82,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	protected String lotlUrl;
 
 	protected transient DataLoader dataLoader;
-
-	private List<TSLSimpleReport> diagnosticInfo = new ArrayList<TSLSimpleReport>();
 
 	private KeyStoreCertificateSource keyStoreCertificateSource;
 
@@ -193,16 +189,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		serviceInfo.setTlWellSigned(tlWellSigned);
 
 		return serviceInfo;
-	}
-
-	/**
-	 * This method returns the diagnostic data concerning the certificates retrieval process from the trusted lists. It can be used for
-	 * debugging purposes.
-	 *
-	 * @return the diagnosticInfo
-	 */
-	public List<TSLSimpleReport> getDiagnosticInfo() {
-		return Collections.unmodifiableList(diagnosticInfo);
 	}
 
 	/**
@@ -361,8 +347,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			logger.info("TSL property cache folder: ", tslPropertyCacheFolder.getAbsolutePath());
 		}
 
-		diagnosticInfo.clear();
-
 		final TrustStatusList lotl = loadLotl();
 		final int size = lotl.getOtherTSLPointers().size();
 
@@ -388,9 +372,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	private TrustStatusList loadLotl() {
-		TSLSimpleReport europeanTSLReport = new TSLSimpleReport();
-		europeanTSLReport.setCountry("EU");
-		europeanTSLReport.setUrl(lotlUrl);
 
 		List<CertificateToken> trustedCertificatesFromKeyStore = keyStoreCertificateSource.getCertificatesFromKeyStore();
 
@@ -398,17 +379,11 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		try {
 			logger.info("Downloading LOTL from url= {}", lotlUrl);
 			Set<CertificateToken> lotlCertificates = new HashSet<CertificateToken>(trustedCertificatesFromKeyStore);
-			europeanTSLReport.setCertificates(lotlCertificates);
-			europeanTSLReport.setAllCertificatesLoaded(true);
 			lotl = getTrustStatusList(lotlUrl, lotlCertificates);
-			europeanTSLReport.setLoaded(true);
-			europeanTSLReport.setLoadedDate(new Date());
 		} catch (DSSException e) {
-			europeanTSLReport.setLoaded(false);
 			logger.error("The LOTL cannot be loaded: " + e.getMessage(), e);
 			throw e;
 		}
-		diagnosticInfo.add(europeanTSLReport);
 		return lotl;
 	}
 
@@ -437,26 +412,15 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		}
 
 		String trimmedUrl = url.trim();
-
-		TSLSimpleReport countryTSLReport = new TSLSimpleReport();
-		countryTSLReport.setUrl(trimmedUrl);
-		countryTSLReport.setCountry(StringUtils.upperCase(territory));
-
 		try {
 			logger.info("Downloading TrustStatusList for '{}' from url='{}'", territory, trimmedUrl);
 			final TrustStatusList countryTSL = getTrustStatusList(trimmedUrl, signingCertList);
-			loadAllCertificatesFromOneTSL(countryTSL, countryTSLReport);
+			loadAllCertificatesFromOneTSL(countryTSL);
 			logger.info(".... done for '{}'", territory);
-
-			countryTSLReport.setLoaded(true);
-			countryTSLReport.setLoadedDate(new Date());
-
 		} catch (final Exception e) {
 			logger.error("An error occured while loading url " + url + " : " + e.getMessage(), e);
-			countryTSLReport.setLoaded(false);
 		}
 
-		diagnosticInfo.add(countryTSLReport);
 	}
 
 	/**
@@ -464,11 +428,8 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * CertificateSource
 	 *
 	 * @param trustStatusList
-	 * @param countryTSLReport
 	 */
-	private void loadAllCertificatesFromOneTSL(final TrustStatusList trustStatusList, TSLSimpleReport countryTSLReport) {
-
-		boolean allCertificateLoaded = true;
+	private void loadAllCertificatesFromOneTSL(final TrustStatusList trustStatusList) {
 		Set<CertificateToken> countryCertificates = new HashSet<CertificateToken>();
 
 		for (final TrustServiceProvider trustServiceProvider : trustStatusList.getTrustServicesProvider()) {
@@ -500,7 +461,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 					} catch (DSSException e) {
 						// There is a problem when loading the certificate, we continue with the next one.
 						logger.warn(e.getMessage());
-						allCertificateLoaded = false;
 					}
 				}
 
@@ -516,14 +476,11 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 						}
 					} catch (DSSException e) {
 						logger.warn("Unable to add certificate '" + certificateUri + "' : " + e.getMessage());
-						allCertificateLoaded = false;
 					}
 				}
 
 			}
 		}
-		countryTSLReport.setAllCertificatesLoaded(allCertificateLoaded);
-		countryTSLReport.setCertificates(countryCertificates);
 	}
 
 	/**
