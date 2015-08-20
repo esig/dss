@@ -19,6 +19,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -54,6 +55,7 @@ import eu.europa.esig.jaxb.tsl.ExtensionsListType;
 import eu.europa.esig.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.jaxb.tsl.NextUpdateType;
+import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.jaxb.tsl.NonEmptyURIListType;
 import eu.europa.esig.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
@@ -319,10 +321,29 @@ public class TSLParser implements Callable<TSLParserResult> {
 		service.setStatus(serviceInfo.getServiceStatus());
 		service.setStartDate(convertToDate(serviceInfo.getStatusStartingTime()));
 		service.setType(serviceInfo.getServiceTypeIdentifier());
+		service.setCertificateUrls(extractCertificatesUrls(serviceInfo));
 		service.setCertificates(extractCertificates(serviceInfo.getServiceDigitalIdentity()));
 		service.setX500Principals(extractX500Principals(serviceInfo.getServiceDigitalIdentity()));
 		service.setExtensions(extractExtensions(serviceInfo.getServiceInformationExtensions()));
 		return service;
+	}
+
+	private List<String> extractCertificatesUrls(TSPServiceInformationType serviceInfo) {
+		List<String> certificateUrls = new ArrayList<String>();
+		if ((serviceInfo.getSchemeServiceDefinitionURI() !=null) && CollectionUtils.isNotEmpty(serviceInfo.getSchemeServiceDefinitionURI().getURI())) {
+			List<NonEmptyMultiLangURIType> uris = serviceInfo.getSchemeServiceDefinitionURI().getURI();
+			for (NonEmptyMultiLangURIType uri : uris) {
+				String value = uri.getValue();
+				if (isCertificateURI(value)){
+					certificateUrls.add(value);
+				}
+			}
+		}
+		return certificateUrls;
+	}
+
+	private boolean isCertificateURI(String value) {
+		return StringUtils.endsWithIgnoreCase(value, ".crt");
 	}
 
 	private TSLService getService(ServiceHistoryInstanceType serviceHistory, Date endDate) {
@@ -332,6 +353,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		service.setType(serviceHistory.getServiceTypeIdentifier());
 		service.setStartDate(convertToDate(serviceHistory.getStatusStartingTime()));
 		service.setEndDate(endDate);
+		service.setCertificateUrls(new ArrayList<String>());
 		service.setCertificates(extractCertificates(serviceHistory.getServiceDigitalIdentity()));
 		service.setX500Principals(extractX500Principals(serviceHistory.getServiceDigitalIdentity()));
 		service.setExtensions(extractExtensions(serviceHistory.getServiceInformationExtensions()));

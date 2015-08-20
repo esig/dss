@@ -14,6 +14,8 @@ public class TSLService {
 	private String type;
 	private Date startDate;
 	private Date endDate;
+	/* Spanish TSL contains certificate urls */
+	private List<String> certificateUrls;
 	private List<CertificateToken> certificates;
 	private List<X500Principal> x500Principals;
 	private List<TSLServiceExtension> extensions;
@@ -56,6 +58,14 @@ public class TSLService {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public List<String> getCertificateUrls() {
+		return certificateUrls;
+	}
+
+	public void setCertificateUrls(List<String> certificateUrls) {
+		this.certificateUrls = certificateUrls;
 	}
 
 	public List<CertificateToken> getCertificates() {
