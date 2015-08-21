@@ -86,7 +86,8 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 
 		TSLValidationResult result = new TSLValidationResult();
 		result.setCountryCode(countryCode);
-		result.setSignatureValid(isValid);
+		result.setIndication(indication);
+		result.setSubIndication(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		if (!isValid) {
 			logger.info("The TSL signature is not valid : \n" + simpleReport.toString());

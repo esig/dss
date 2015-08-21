@@ -16,7 +16,7 @@
     
 	<c:set var="panelStyle" value="" />
     <c:choose>
-        <c:when test="${model.validationResult != null && !model.validationResult.signatureValid}">
+        <c:when test="${model.validationResult != null && !model.validationResult.valid}">
             <c:set var="panelStyle" value="panel-danger" />
         </c:when>
         <c:when test="${model.parseResult != null && model.parseResult.nextUpdateDate != null && model.parseResult.nextUpdateDate le now}">
@@ -43,17 +43,25 @@
                 </c:if>
                 
                 <c:if test="${model.validationResult != null}">
-                    <dt>Signature valid :</dt>
+                    <dt>Indication : </dt>
                     <dd>
                         <c:choose>
-                            <c:when test="${model.validationResult.signatureValid}">
+                            <c:when test="${model.validationResult.valid}">
                                 <span class="glyphicon glyphicon-ok-sign text-success"></span>
+                            </c:when>
+                            <c:when test="${model.validationResult.indeterminate}">
+                                <span class="glyphicon glyphicon-question-sign text-warning"></span>
                             </c:when>
                             <c:otherwise>
                                 <span class="glyphicon glyphicon-remove-sign text-danger"></span>
-                            </c:otherwise>                            
+                            </c:otherwise>
                         </c:choose>
+                        ${model.validationResult.indication}
                     </dd>
+                    <c:if test="${not empty model.validationResult.subIndication}">
+                        <dt>Sub indication : </dt>
+                        <dd>${model.validationResult.subIndication}</dd>
+                    </c:if>
                 </c:if>
                 
                 <c:if test="${model.parseResult !=null}">

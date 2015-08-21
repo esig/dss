@@ -1,9 +1,12 @@
 package eu.europa.esig.dss.tsl;
 
+import eu.europa.esig.dss.validation.policy.rules.Indication;
+
 public class TSLValidationResult {
 
 	private String countryCode;
-	private boolean signatureValid;
+	private String indication;
+	private String subIndication;
 
 	public String getCountryCode() {
 		return countryCode;
@@ -13,12 +16,32 @@ public class TSLValidationResult {
 		this.countryCode = countryCode;
 	}
 
-	public boolean isSignatureValid() {
-		return signatureValid;
+	public String getIndication() {
+		return indication;
 	}
 
-	public void setSignatureValid(boolean signatureValid) {
-		this.signatureValid = signatureValid;
+	public void setIndication(String indication) {
+		this.indication = indication;
+	}
+
+	public String getSubIndication() {
+		return subIndication;
+	}
+
+	public void setSubIndication(String subIndication) {
+		this.subIndication = subIndication;
+	}
+
+	public boolean isValid() {
+		return Indication.VALID.equals(indication);
+	}
+
+	public boolean isIndeterminate() {
+		return Indication.INDETERMINATE.equals(indication);
+	}
+
+	public boolean isInvalid() {
+		return Indication.INVALID.equals(indication);
 	}
 
 }

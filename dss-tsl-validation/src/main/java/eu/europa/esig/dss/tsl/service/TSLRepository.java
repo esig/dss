@@ -45,6 +45,8 @@ public class TSLRepository {
 
 	private boolean allowInvalidSignatures = false;
 
+	private boolean allowIndeterminateSignatures = true;
+
 	private Map<String, TSLValidationModel> tsls = new HashMap<String, TSLValidationModel>();
 
 	private TrustedListsCertificateSource trustedListsCertificateSource;
@@ -59,6 +61,10 @@ public class TSLRepository {
 
 	public void setAllowInvalidSignatures(boolean allowInvalidSignatures) {
 		this.allowInvalidSignatures = allowInvalidSignatures;
+	}
+
+	public void setAllowIndeterminateSignatures(boolean allowIndeterminateSignatures) {
+		this.allowIndeterminateSignatures = allowIndeterminateSignatures;
 	}
 
 	public TrustedListsCertificateSource getTrustedListsCertificateSource() {
@@ -88,7 +94,15 @@ public class TSLRepository {
 			if (!allowInvalidSignatures) {
 				TSLValidationResult validationResult = tslValidationModel.getValidationResult();
 				if (validationResult != null) {
-					if (!validationResult.isSignatureValid()) {
+					if (validationResult.isInvalid()) {
+						continue;
+					}
+				}
+			}
+			if (!allowIndeterminateSignatures) {
+				TSLValidationResult validationResult = tslValidationModel.getValidationResult();
+				if (validationResult != null) {
+					if (validationResult.isIndeterminate()) {
 						continue;
 					}
 				}
@@ -226,7 +240,7 @@ public class TSLRepository {
 			if (true) {
 				boolean tlWellSigned = false;
 				TSLValidationResult validationResult = model.getValidationResult();
-				if (allowInvalidSignatures || ((validationResult != null) && validationResult.isSignatureValid())) {
+				if ((validationResult != null) && validationResult.isValid()) {
 					tlWellSigned = true;
 				}
 
