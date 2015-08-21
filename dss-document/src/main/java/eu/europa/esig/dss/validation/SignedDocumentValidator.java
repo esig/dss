@@ -1132,7 +1132,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
 
 		XmlDigestAlgAndValueType xmlDigestAlgAndValue = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlDigestAlgAndValueType();
-		xmlDigestAlgAndValue.setDigestMethod(signPolicyHashAlgFromSignature.getName());
+		xmlDigestAlgAndValue.setDigestMethod(signPolicyHashAlgFromSignature == null ? "" : signPolicyHashAlgFromSignature.getName());
 		xmlDigestAlgAndValue.setDigestValue(policyDigestValueFromSignature);
 		xmlPolicy.setDigestAlgAndValue(xmlDigestAlgAndValue);
 
