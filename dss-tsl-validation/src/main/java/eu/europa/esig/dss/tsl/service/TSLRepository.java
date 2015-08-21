@@ -17,6 +17,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +101,12 @@ public class TSLRepository {
 		if (validationModel == null) {
 			return false;
 		} else {
+			// TODO Best place ? Download didn't work, we use previous version
+			if (ArrayUtils.isEmpty(resultLoader.getContent())){
+				return true;
+			}
 			validationModel.setUrl(resultLoader.getUrl());
+			validationModel.setLoadedDate(new Date());
 			String lastSha256 = getSHA256(resultLoader.getContent());
 			return StringUtils.equals(lastSha256, validationModel.getSha256FileContent());
 		}
