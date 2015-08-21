@@ -70,6 +70,7 @@
 	<bean id="tslRepository" class="eu.europa.esig.dss.tsl.service.TSLRepository">
 		<property name="allowExpiredTSLs" value="false" />
 		<property name="allowInvalidSignatures" value="false" />
+		<property name="trustedListsCertificateSource" ref="trustedListSource" />
 	</bean>
 
 	<bean id="tslValidationJob" class="eu.europa.esig.dss.tsl.service.TSLValidationJob">

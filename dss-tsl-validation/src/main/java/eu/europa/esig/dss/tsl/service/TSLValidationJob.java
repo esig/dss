@@ -102,12 +102,13 @@ public class TSLValidationJob {
 					logger.error("Unable to get parsing result : " + e.getMessage(), e);
 				}
 			}
+			repository.synchronize();
 		}
 		logger.info(loadedTSL + " loaded TSL from cached files in the repository");
 	}
 
 	public void refresh() {
-
+		logger.debug("TSL Validation Job is starting ...");
 		TSLLoaderResult resultLoaderLOTL = null;
 		Future<TSLLoaderResult> result = executorService.submit(new TSLLoader(dataLoader, EUROPA_COUNTRY_CODE, lotlUrl));
 		try {
@@ -145,6 +146,10 @@ public class TSLValidationJob {
 		}
 
 		analyzeCountryPointers(parseResult.getPointers());
+
+		repository.synchronize();
+
+		logger.debug("TSL Validation Job is finishing ...");
 	}
 
 	private void analyzeCountryPointers(List<TSLPointer> pointers) {

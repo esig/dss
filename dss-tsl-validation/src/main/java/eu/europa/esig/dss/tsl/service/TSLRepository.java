@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.FileUtils;
@@ -27,8 +28,12 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
+import eu.europa.esig.dss.tsl.TSLService;
+import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
+import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 public class TSLRepository {
 
@@ -42,6 +47,8 @@ public class TSLRepository {
 
 	private Map<String, TSLValidationModel> tsls = new HashMap<String, TSLValidationModel>();
 
+	private TrustedListsCertificateSource trustedListsCertificateSource;
+
 	public void setCacheDirectoryPath(String cacheDirectoryPath) {
 		this.cacheDirectoryPath = cacheDirectoryPath;
 	}
@@ -52,6 +59,14 @@ public class TSLRepository {
 
 	public void setAllowInvalidSignatures(boolean allowInvalidSignatures) {
 		this.allowInvalidSignatures = allowInvalidSignatures;
+	}
+
+	public TrustedListsCertificateSource getTrustedListsCertificateSource() {
+		return trustedListsCertificateSource;
+	}
+
+	public void setTrustedListsCertificateSource(TrustedListsCertificateSource trustedListsCertificateSource) {
+		this.trustedListsCertificateSource = trustedListsCertificateSource;
 	}
 
 	public TSLValidationModel getByCountry(String countryIsoCode) {
@@ -102,7 +117,7 @@ public class TSLRepository {
 			return false;
 		} else {
 			// TODO Best place ? Download didn't work, we use previous version
-			if (ArrayUtils.isEmpty(resultLoader.getContent())){
+			if (ArrayUtils.isEmpty(resultLoader.getContent())) {
 				return true;
 			}
 			validationModel.setUrl(resultLoader.getUrl());
@@ -202,6 +217,38 @@ public class TSLRepository {
 		List<TSLValidationModel> filteredList = getTSLValidationModels();
 		Map<String, TSLValidationModel> allData = getAllMapTSLValidationModels();
 		return filteredList.size() == allData.size();
+	}
+
+	void synchronize() {
+		// Retuns valid and not expired depending of configuration
+		List<TSLValidationModel> tslValidationModels = getTSLValidationModels();
+		for (TSLValidationModel model : tslValidationModels) {
+			if (true) {
+				boolean tlWellSigned = false;
+				TSLValidationResult validationResult = model.getValidationResult();
+				if (allowInvalidSignatures || ((validationResult != null) && validationResult.isSignatureValid())) {
+					tlWellSigned = true;
+				}
+
+				TSLParserResult parseResult = model.getParseResult();
+				if (parseResult != null) {
+					List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
+					for (TSLServiceProvider serviceProvider : serviceProviders) {
+						for (TSLService service : serviceProvider.getServices()) {
+							for (CertificateToken certificate : service.getCertificates()) {
+								trustedListsCertificateSource.addCertificate(certificate, serviceProvider, service, tlWellSigned);
+							}
+
+							for (X500Principal x500Principal : service.getX500Principals()) {
+								trustedListsCertificateSource.addCertificate(x500Principal, serviceProvider, service, tlWellSigned);
+							}
+						}
+					}
+				}
+			}
+		}
+		logger.info("Nb of loaded trusted lists : " + tslValidationModels.size());
+		logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 	}
 
 }

@@ -54,6 +54,8 @@ import eu.europa.esig.dss.tsl.ServiceInfo;
 @SuppressWarnings("serial")
 public class CertificateToken extends Token {
 
+	private String dssId;
+
 	/**
 	 * Encapsulated X509 certificate.
 	 */
@@ -162,7 +164,10 @@ public class CertificateToken extends Token {
 	 * Returns a string representation of the unique DSS certificate token identifier.
 	 */
 	public String getDSSIdAsString() {
-		return getDSSId().asXmlId();
+		if (dssId == null) {
+			dssId = getDSSId().asXmlId();
+		}
+		return dssId;
 	}
 
 	@Override
