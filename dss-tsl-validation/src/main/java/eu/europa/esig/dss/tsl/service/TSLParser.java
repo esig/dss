@@ -423,7 +423,6 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private void addPolicyIdConditionsIfPresent(List<PoliciesListType> policySet, CompositeCondition condition) {
 		if (CollectionUtils.isNotEmpty(policySet)) {
-			CompositeCondition policyIdConditions = new CompositeCondition();
 			for (PoliciesListType policiesListType : policySet) {
 				for (ObjectIdentifierType oidType : policiesListType.getPolicyIdentifier()) {
 					IdentifierType identifier = oidType.getIdentifier();
@@ -434,22 +433,19 @@ public class TSLParser implements Callable<TSLParserResult> {
 						id = id.substring(id.lastIndexOf(':') + 1);
 					}
 
-					policyIdConditions.addChild(new PolicyIdCondition(id));
+					condition.addChild(new PolicyIdCondition(id));
 				}
 			}
-			condition.addChild(policyIdConditions);
 		}
 	}
 
 	private void addKeyUsageConditionsIfPresent(List<KeyUsageType> keyUsages, CompositeCondition condition) {
 		if (CollectionUtils.isNotEmpty(keyUsages)) {
-			CompositeCondition keyUsageConditions = new CompositeCondition();
 			for (KeyUsageType keyUsageType : keyUsages) {
 				for (KeyUsageBitType keyUsageBit : keyUsageType.getKeyUsageBit()) {
-					keyUsageConditions.addChild(new KeyUsageCondition(keyUsageBit.getName(), keyUsageBit.isValue()));
+					condition.addChild(new KeyUsageCondition(keyUsageBit.getName(), keyUsageBit.isValue()));
 				}
 			}
-			condition.addChild(keyUsageConditions);
 		}
 	}
 
