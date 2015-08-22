@@ -20,7 +20,7 @@
             <a href="<spring:url value="/validation" />" class="list-group-item${currentPage eq '/validation' ? ' active' : ''}"><spring:message code="label.validate" /></a>
             <a href="<spring:url value="/validation-policy" />" class="list-group-item${currentPage eq '/validation-policy' ? ' active' : ''}"><spring:message code="label.validation-policy" /></a>
             <a href="<spring:url value="/tsl-info"/>" class="list-group-item${currentPage eq '/tsl-info' ? ' active' : ''} ${!lotlOK ? 'list-group-item-warning' : ''}">
-                <spring:message code="label.tsl" />
+	            <spring:message code="label.tsls" />
                 <c:if test="${!lotlOK}">
                     <span class="glyphicon glyphicon-warning-sign pull-right"></span>
                 </c:if>

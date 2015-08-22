@@ -12,10 +12,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -26,12 +29,17 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.tsl.Condition;
+import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLService;
+import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
+import eu.europa.esig.dss.tsl.TSLValidationSummary;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -45,7 +53,7 @@ public class TSLRepository {
 
 	private boolean allowInvalidSignatures = false;
 
-	private boolean allowIndeterminateSignatures = true;
+	private boolean allowIndeterminateSignatures = false;
 
 	private Map<String, TSLValidationModel> tsls = new HashMap<String, TSLValidationModel>();
 
@@ -113,7 +121,7 @@ public class TSLRepository {
 	}
 
 	public Map<String, TSLValidationModel> getAllMapTSLValidationModels() {
-		return Collections.unmodifiableMap(tsls);
+		return Collections.unmodifiableMap(new TreeMap<String, TSLValidationModel>(tsls));
 	}
 
 	public void clearRepository() {
@@ -161,6 +169,7 @@ public class TSLRepository {
 		validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
 		validationModel.setFilepath(storeOnFileSystem(resultLoader.getCountryCode(), resultLoader));
 		validationModel.setLoadedDate(new Date());
+		validationModel.setCertificateSourceSynchronized(false);
 		add(resultLoader.getCountryCode(), validationModel);
 		logger.info("New version of " + resultLoader.getCountryCode() + " TSL is stored in cache");
 		return validationModel;
@@ -234,10 +243,10 @@ public class TSLRepository {
 	}
 
 	void synchronize() {
-		// Retuns valid and not expired depending of configuration
+		// Returns valid and not expired depending of configuration
 		List<TSLValidationModel> tslValidationModels = getTSLValidationModels();
 		for (TSLValidationModel model : tslValidationModels) {
-			if (true) {
+			if (!model.isCertificateSourceSynchronized()) {
 				boolean tlWellSigned = false;
 				TSLValidationResult validationResult = model.getValidationResult();
 				if ((validationResult != null) && validationResult.isValid()) {
@@ -250,19 +259,105 @@ public class TSLRepository {
 					for (TSLServiceProvider serviceProvider : serviceProviders) {
 						for (TSLService service : serviceProvider.getServices()) {
 							for (CertificateToken certificate : service.getCertificates()) {
-								trustedListsCertificateSource.addCertificate(certificate, serviceProvider, service, tlWellSigned);
+								trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, tlWellSigned));
 							}
 
 							for (X500Principal x500Principal : service.getX500Principals()) {
-								trustedListsCertificateSource.addCertificate(x500Principal, serviceProvider, service, tlWellSigned);
+								trustedListsCertificateSource.addX500Principal(x500Principal, getServiceInfo(serviceProvider, service, tlWellSigned));
 							}
 						}
 					}
 				}
+				model.setCertificateSourceSynchronized(true);
 			}
 		}
 		logger.info("Nb of loaded trusted lists : " + tslValidationModels.size());
 		logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
+	}
+
+	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, boolean tlWellSigned) {
+		ServiceInfo serviceInfo = new ServiceInfo();
+
+		serviceInfo.setTspName(serviceProvider.getName());
+		serviceInfo.setTspTradeName(serviceProvider.getTradeName());
+		serviceInfo.setTspPostalAddress(serviceProvider.getPostalAddress());
+		serviceInfo.setTspElectronicAddress(serviceProvider.getElectronicAddress());
+
+		serviceInfo.setServiceName(service.getName());
+		serviceInfo.setType(service.getType());
+		serviceInfo.setStatus(service.getStatus());
+		serviceInfo.setStatusStartDate(service.getStartDate());
+		serviceInfo.setStatusEndDate(service.getEndDate());
+
+		List<TSLServiceExtension> extensions = service.getExtensions();
+		if (CollectionUtils.isNotEmpty(extensions)) {
+			for (TSLServiceExtension tslServiceExtension : extensions) {
+				List<TSLConditionsForQualifiers> conditionsForQualifiers = tslServiceExtension.getConditionsForQualifiers();
+				for (TSLConditionsForQualifiers tslConditionsForQualifiers : conditionsForQualifiers) {
+					Condition condition = tslConditionsForQualifiers.getCondition();
+					for (String qualifier : tslConditionsForQualifiers.getQualifiers()) {
+						serviceInfo.addQualifierAndCondition(qualifier, condition);
+					}
+				}
+			}
+		}
+
+		// TODO
+		// service.setExpiredCertsRevocationInfo(expiredCertsRevocationInfo);
+
+		serviceInfo.setTlWellSigned(tlWellSigned);
+		return serviceInfo;
+	}
+
+	public List<TSLValidationSummary> getSummary() {
+		Map<String, TSLValidationModel> map = getAllMapTSLValidationModels();
+		List<TSLValidationSummary> summaries = new ArrayList<TSLValidationSummary>();
+		for (Entry<String, TSLValidationModel> entry : map.entrySet()) {
+			String country = entry.getKey();
+			TSLValidationModel model = entry.getValue();
+			TSLValidationSummary summary = new TSLValidationSummary();
+			summary.setCountry(country);
+			summary.setLoadedDate(model.getLoadedDate());
+			summary.setTslUrl(model.getUrl());
+
+			TSLParserResult parseResult = model.getParseResult();
+			if (parseResult != null) {
+				summary.setSequenceNumber(parseResult.getSequenceNumber());
+				summary.setIssueDate(parseResult.getIssueDate());
+				summary.setNextUpdateDate(parseResult.getNextUpdateDate());
+
+				int nbServiceProviders = 0;
+				int nbServices = 0;
+				int nbCertificatesAndX500Principals = 0;
+				List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
+				if (serviceProviders != null) {
+					nbServiceProviders = serviceProviders.size();
+					for (TSLServiceProvider tslServiceProvider : serviceProviders) {
+						List<TSLService> services = tslServiceProvider.getServices();
+						if (services != null) {
+							nbServices += services.size();
+							for (TSLService tslService : services) {
+								List<CertificateToken> certificates = tslService.getCertificates();
+								List<X500Principal> x500Principals = tslService.getX500Principals();
+								nbCertificatesAndX500Principals += CollectionUtils.size(certificates);
+								nbCertificatesAndX500Principals += CollectionUtils.size(x500Principals);
+							}
+						}
+					}
+				}
+				summary.setNbServiceProviders(nbServiceProviders);
+				summary.setNbServices(nbServices);
+				summary.setNbCertificatesAndX500Principals(nbCertificatesAndX500Principals);
+			}
+
+			TSLValidationResult validationResult = model.getValidationResult();
+			if (validationResult != null) {
+				summary.setIndication(validationResult.getIndication());
+			}
+
+			summaries.add(summary);
+		}
+		return summaries;
 	}
 
 }

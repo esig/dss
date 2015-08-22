@@ -8,6 +8,7 @@ public class TSLValidationModel {
 	private String filepath;
 	private String sha256FileContent;
 
+	private boolean certificateSourceSynchronized;
 	private Date loadedDate;
 
 	private TSLParserResult parseResult;
@@ -35,6 +36,14 @@ public class TSLValidationModel {
 
 	public void setSha256FileContent(String sha256FileContent) {
 		this.sha256FileContent = sha256FileContent;
+	}
+
+	public boolean isCertificateSourceSynchronized() {
+		return certificateSourceSynchronized;
+	}
+
+	public void setCertificateSourceSynchronized(boolean certificateSourceSynchronized) {
+		this.certificateSourceSynchronized = certificateSourceSynchronized;
 	}
 
 	public Date getLoadedDate() {
