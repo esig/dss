@@ -1,2 +1,8 @@
 <?xml version="1.0"?>
-<test>Hello World !</test>
+<a>
+	<test>Hello World !</test>
+	<b>
+		<g>h</g>
+	</b>
+	<c d="e">f</c>
+</a>

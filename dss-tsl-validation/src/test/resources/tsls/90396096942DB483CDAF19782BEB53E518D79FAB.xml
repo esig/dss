@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" Id="UKTSL06Aug2015" TSLTag="http://uri.etsi.org/19612/TSLTag">
+   <SchemeInformation>
+      <TSLVersionIdentifier>4</TSLVersionIdentifier>
+      <TSLSequenceNumber>7</TSLSequenceNumber>
+      <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+      <SchemeOperatorName>
+         <Name xml:lang="en">tScheme Limited</Name>
+      </SchemeOperatorName>
+      <SchemeOperatorAddress>
+         <PostalAddresses>
+            <PostalAddress xml:lang="en">
+               <StreetAddress>Regus House, Victory Way, Admirals Park</StreetAddress>
+               <Locality>DARTFORD, Kent</Locality>
+               <PostalCode>DA2 6QD</PostalCode>
+               <CountryName>UK</CountryName>
+            </PostalAddress>
+         </PostalAddresses>
+         <ElectronicAddress>
+            <URI xml:lang="en">mailto:TSL_enquiries@tScheme.org</URI>
+            <URI xml:lang="en">http://www.tscheme.org/TSL_contact_form.html</URI>
+         </ElectronicAddress>
+      </SchemeOperatorAddress>
+      <SchemeName>
+         <Name xml:lang="en">UK:Supervision/Accreditation Status List of certification services from Certification Service Providers, which are supervised/accredited by the referenced Scheme Operator’s Member State for compliance with the relevant provisions laid down in Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.</Name>
+      </SchemeName>
+      <SchemeInformationURI>
+         <URI xml:lang="en">http://www.tscheme.org/UK_TSL/Scheme_info.html</URI>
+      </SchemeInformationURI>
+      <StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/StatusDetn/EUappropriate</StatusDeterminationApproach>
+      <SchemeTypeCommunityRules>
+         <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</URI>
+         <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/UK</URI>
+      </SchemeTypeCommunityRules>
+      <SchemeTerritory>UK</SchemeTerritory>
+      <PolicyOrLegalNotice>
+         <TSLLegalNotice xml:lang="en">The applicable legal framework for the present TSL implementation of the Trusted List of supervised/accredited Certification Service Providers for United Kingdom is Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures and its implementation in United Kingdom laws. The supervision/accreditation scheme for all CSPs issuing qualified certificates, non-qualified certificates, or other services related to electronic signature is based upon the Electronic Communications Act 2000 and the Electronic Signature Regulations 2002.</TSLLegalNotice>
+      </PolicyOrLegalNotice>
+      <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+      <PointersToOtherTSL>
+         <OtherTSLPointer>
+            <ServiceDigitalIdentities>
+               <ServiceDigitalIdentity>
+                  <DigitalId>
+                     <X509Certificate>MIIFFzCCA/+gAwIBAgISESE/HwqWFgw444aZ4vdHq384MA0GCSqGSIb3DQEBBQUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gRzIwHhcNMTMwMzIwMTAwNTA1WhcNMTUwMzIxMTAwNTA1WjBnMQswCQYDVQQGEwJCRTEQMA4GA1UECBMHQmVsZ2l1bTERMA8GA1UEBxMIQnJ1c3NlbHMxHDAaBgNVBAoTE0V1cm9wZWFuIENvbW1pc3Npb24xFTATBgNVBAMTDGVjLmV1cm9wYS5ldTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOyOz37JNZ3ac9PSo9bn9wELcVARSDHYcTOUw0yjhSl5FVA/oDhmy7cdafUg6s1HNsV3631X7OXLFBa2MInUFqIRJlcqIx71AN7C7PY3tENhYIDLcObSfMNeIr4jTdR69Nd/u15GM8ys2sFnmH3ih2uTChVHHmOGrmLcFb4ApZNGiN/qhA2RCCzHI5qYuMHkG23gfraXS4ftwbQCoEXtBbFRrfF+cSJABx7e1xz6Vo+7663keKNDtPujfOQSoHbctMhraDWFDECs2EL83gzLPzX5NOR8Tc8FRv7RC5lfmuAv6Uq/LzCTMB4XRiqfJtgkBo7NEAso5x5yJ0j1yDEjgDMCAwEAAaOCAcUwggHBMA4GA1UdDwEB/wQEAwIFoDBMBgNVHSAERTBDMEEGCSsGAQQBoDIBFDA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAXBgNVHREEEDAOggxlYy5ldXJvcGEuZXUwCQYDVR0TBAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwRQYDVR0fBD4wPDA6oDigNoY0aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9ncy9nc29yZ2FuaXphdGlvbnZhbGcyLmNybDCBlgYIKwYBBQUHAQEEgYkwgYYwRwYIKwYBBQUHMAKGO2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzb3JnYW5pemF0aW9udmFsZzIuY3J0MDsGCCsGAQUFBzABhi9odHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nvcmdhbml6YXRpb252YWxnMjAdBgNVHQ4EFgQUv4UsqLa1HO0++xa/AlEQsJB5cfMwHwYDVR0jBBgwFoAUXUayjcRLdBy77fVztjq3OI91nn4wDQYJKoZIhvcNAQEFBQADggEBACit+R/F48l1NqATvi8Oi07V3kVzsHDTnloYz05DwEjjkmuCiDDs+IPE2MdQbxYiy4C6Wun1U/YEcSya9bIeZJG89Jbdp0Ys58x6v7GDpinLdi9SXqnj8Uoj7XCEVMc0CXhLQnm0ZdIbfury5xMfq0QjfHKMmw1GB1lOTAQlpQ/LGPihDs9PFDOJ2W8l29aqYRwU0B8t5SX1bxS5JocelkSnHr4lF3ZNbwMo9rclhVZKAsVdiNzJLOt2k5Hi4T4M9dDAoPQo/ZnJt/An1MltN9mXuLnQ/1QpyaGhWlzVTjBQ8DYMmbVd9fucJKr1P34O+kAwRw8BiTk9l9L5VbxVroI=</X509Certificate>
+                  </DigitalId>
+               </ServiceDigitalIdentity>
+            </ServiceDigitalIdentities>
+            <TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-hr.pdf</TSLLocation>
+            <AdditionalInformation>
+               <OtherInformation>
+                  <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeOperatorName>
+                     <Name xml:lang="en">European Commission</Name>
+                  </SchemeOperatorName>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTypeCommunityRules>
+                     <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+                  </SchemeTypeCommunityRules>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTerritory>EU</SchemeTerritory>
+               </OtherInformation>
+               <OtherInformation>
+                  <ns4:MimeType>application/pdf</ns4:MimeType>
+               </OtherInformation>
+            </AdditionalInformation>
+         </OtherTSLPointer>
+         <OtherTSLPointer>
+            <ServiceDigitalIdentities>
+               <ServiceDigitalIdentity>
+                  <DigitalId>
+                     <X509Certificate>MIIHPDCCBSSgAwIBAgIBcjANBgkqhkiG9w0BAQsFADAxMQswCQYDVQQGEwJFUzERMA8GA1UECgwIRk5NVC1SQ00xDzANBgNVBAMMBklTQSBDQTAeFw0xMTExMTYxNTExMDdaFw0xNTExMTYxNTExMDdaME0xCzAJBgNVBAYTAkJFMRwwGgYDVQQKDBNFVVJPUEVBTiBDT01NSVNTSU9OMSAwHgYDVQQDDBcoU0lHTikgQU5ORUxJIEFORFJFU1NPTjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMw881fbxBn5Eq64Hf6pqEqn0Intg49k5D+E2JBMcyeOMYE4WwuzVqs7fuKMX5mhiFw7llVx42S7GIDnKa6ascF7irISsYTGOtD6dGt8OEOQkG5i24wxT3we63VW1W/PEO0WoRjkPDBqgljnqcLn+WJLr3Yl9fpkxyT+H3pl0jnGkGi7UUKEDuoCglFy9Tb1TE+eVNiGWmfskRy6q9Pioujp2FqrwNm95VAkLFGoNF4iZQda79bgjvAYnA5p4QXgr/5sWZjgsa3Ea9PlRwEvO7C8ndnRE/PTUNwaSmOZsmPH/ksCCnfTDqqehHVnry3K6QIUKhRsoT1m60qv4UKrvrsCAwEAAaOCA0EwggM9MF0GA1UdEQRWMFSBHUFOTkVMSS5BTkRSRVNTT05ARUMuRVVST1BBLkVVpDMwMTEYMBYGCSsGAQQBrGYBAgwJQU5EUkVTU09OMRUwEwYJKwYBBAGsZgEBDAZBTk5FTEkwCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCBkAwHQYDVR0OBBYEFEoUEf+0Oe59fVRs/rW2M0KhmlDsMB8GA1UdIwQYMBaAFEft+GPwma9e/n4OXFjL/uI1N6a9MIHgBgNVHSAEgdgwgdUwgcgGCisGAQQBrGYDBAEwgbkwKQYIKwYBBQUHAgEWHWh0dHA6Ly93d3cuY2VydC5mbm10LmVzL2RwY3MvMIGLBggrBgEFBQcCAjB/DH1RdWFsaWZpZWQgY2VydGlmaWNhdGUuIFVuZGVyIHRoZSB1c2FnZSBjb25kaXRpb25zIGFzc2VydGVkIGluIHRoZSBGTk1ULVJDTSBDUFMgKDEwNiwgSm9yZ2UgSnVhbiBzdHJlZXQsMjgwMDksIE1hZHJpZCwgU3BhaW4pLjAIBgYEAIswAQEwgYYGCCsGAQUFBwEBBHoweDBBBggrBgEFBQcwAYY1aHR0cDovL29jc3BJU0FjYS5jZXJ0LmZubXQuZXMvb2NzcElTQWNhL09jc3BSZXNwb25kZXIwMwYIKwYBBQUHMAKGJ2h0dHA6Ly93d3cuY2VydC5mbm10LmVzL2NlcnRzL0lTQUNBLmNydDBGBggrBgEFBQcBAwQ6MDgwCAYGBACORgEBMAsGBgQAjkYBAwIBDzAVBgYEAI5GAQIwCxMDRVVSAgECAgECMAgGBgQAjkYBBDCBzAYDVR0fBIHEMIHBMIG+oIG7oIG4hoGIbGRhcDovL2xkYXBJU0FjYS5jZXJ0LmZubXQuZXMvQ049Q1JMMixjbj1JU0ElMjBDQSxvPUZOTVQtUkNNLEM9RVM/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdDtiaW5hcnk/YmFzZT9vYmplY3RjbGFzcz1jUkxEaXN0cmlidXRpb25Qb2ludIYraHR0cDovL3d3dy5jZXJ0LmZubXQuZXMvY3Jsc19JU0FjYS9DUkwyLmNybDANBgkqhkiG9w0BAQsFAAOCAgEALIKumRPBo9NIYyzm4LSJklE9CmsirJC89MPcFiC9+vg4YrO9Mmakr8G5ZAVZf+Zr6HgLcIf93/BSgE4UDFD9mAROPDElqx2ppg1+foIvlqg57EiHH2kOS4IYJEJpWCs4IqcBkSKcS5vJ5XVpNJL4elpeMQjsGoqjmkKDr1IeZQVOxOiW/bNhM9Fw6R1aMMLbnziwAgHWDpmIj2Se74HuS3ca0ctm9fAPp/2Y87bgZ1ETs9A6wc4GxYEuGTwh1HPbDB6tgjSnjH0hY3qBITjB8IM0xGvUR9dQkt8Ez4dvyxcaFlyCMfLaeMf8jlJOv4uU1yRRT9wESIj5GcoE43cy1cuvRMifqYhoi3KPojJaLTV7ASy1X0yuBWyg0jGyvE6aTIAu3XGCwdGYB1WnSzEUPJboqcyJydkXXxnBKFchw602pVB0ITUqitGH+Kfix2mQQf+v0RDEWQU3WdADNHc+cqoc7sXkJXkO657dYZT/Ey5MR+gXRm6oK52iXIqjM8kbDqCqAOHVC73u+bUvh0y5B5PjGYuE2K9xK36ooavh5ytF/kY+y0Ju804CRF00b4wKcibGxplOrU1g+ncONNmBHGbsLULXrum8+fsD3O04Mf0t0O9Mt/ZwAZTa8Cwq/0pqOWdRqucV7pq/A7fEnRb5AdBaAzxqrXVaa92NkScAm80=</X509Certificate>
+                  </DigitalId>
+                  <DigitalId>
+                     <X509SubjectName>CN=(SIGN) ANNELI ANDRESSON, O=EUROPEAN COMMISSION, C=BE</X509SubjectName>
+                  </DigitalId>
+               </ServiceDigitalIdentity>
+            </ServiceDigitalIdentities>
+            <TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</TSLLocation>
+            <AdditionalInformation>
+               <OtherInformation>
+                  <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeOperatorName>
+                     <Name xml:lang="en">European Commission</Name>
+                  </SchemeOperatorName>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTypeCommunityRules>
+                     <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+                  </SchemeTypeCommunityRules>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTerritory>EU</SchemeTerritory>
+               </OtherInformation>
+               <OtherInformation>
+                  <ns4:MimeType>application/vnd.etsi.tsl+xml</ns4:MimeType>
+               </OtherInformation>
+            </AdditionalInformation>
+         </OtherTSLPointer>
+      </PointersToOtherTSL>
+      <ListIssueDateTime>2015-08-05T23:00:00Z</ListIssueDateTime>
+      <NextUpdate>
+         <dateTime>2015-12-16T00:00:00Z</dateTime>
+      </NextUpdate>
+      <DistributionPoints>
+         <URI>http://www.tscheme.org/UK_TSL/index.html</URI>
+      </DistributionPoints>
+   </SchemeInformation>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-3674167d5179f5693205d94575e7aca3"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" Type="" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>QT6rF9f4nu3cVk1Q4fohUtlwJbfUOiZqY4F/NU9o0g0=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-3674167d5179f5693205d94575e7aca3"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>6/uXreaKFucRmiSa9DdIhGScDKu5QmHona/wflanvAo=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-3674167d5179f5693205d94575e7aca3">jtCY/33EzN9NcJza8Gm0eBRgygoFukhrwofZGoAq2twKGaXh+Tn42ajxw4OC9RWB3F0Cnwjv8eKEr7HZu2BnWJ/SFdomT4yLDmVYdgWYxl3eeXx43V7oiK/EPmr53Z1caByHP6l8yKkHGkdEe6wk53fedjITT1egD/v8M+OBanLRcoaJvy1fmqTyLxK422lXGnXW/2nOgrPWAbZmZrBJxNiyQZI3bvBikaVrxanZAfCH6WvDwIu2TMtYn4HMFG8xm+pcGg4iOCVqw3/4zBe1tzbMpnKWjEvldkSA3dT3HeRRa23ppmOaXZFXH2N0MhwdgwL48qPYUHWQyg1734vSCA==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDdzCCAl+gAwIBAgIFFATw0YMwDQYJKoZIhvcNAQELBQAwSzELMAkGA1UEBhMCVUsxGDAWBgNVBAoMD3RTY2hlbWUgTGltaXRlZDEMMAoGA1UECwwDUEtJMRQwEgYDVQQDDAtUU0wgU2lnbmluZzAeFw0xNDAyMjAwMDAwMDBaFw0xNzAyMjAwMDAwMDBaMEsxCzAJBgNVBAYTAlVLMRgwFgYDVQQKDA90U2NoZW1lIExpbWl0ZWQxDDAKBgNVBAsMA1BLSTEUMBIGA1UEAwwLVFNMIFNpZ25pbmcwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDKDMc2PgyQPNCRsjk2F/Lt7THy0lDmfFvYDiu8U1+5NN4Cdh/JKq87GlcqUWOK4/CS/evFqWXZQrHMeyFqG17zbTSheCqER0PwuYELgKLRTC9V9vX8GbVQ3Qh/JySDB+yiIR4dXNBku8Gb7zjD0OxykAyHyWlf/4i3T1dpJZpXqMKweT5N7+d2XT+Lzn7iNJA/VN23uYyQf7o4YGdVvvZx5ApxOQx5sSXEtprELYTy7C06QGAiE0Q9x5MjnsNMyWsrZn7T6kWEM0Ks4R/CFOlj5iG3a1kNSSWgVSBfmyW4U5MV2RzOHUFRuZT8q6UfKzP+0QAaQ42X6hbupFwNWMCPAgMBAAGjYjBgMB0GA1UdDgQWBBQUF9oFLo/KTZ+wgaTuLp8QixYGUjAJBgNVHRMEAjAAMA4GA1UdDwEB/wQEAwIGwDARBgNVHSAECjAIMAYGBFUdIAAwEQYDVR0lBAowCAYGBACRNwMAMA0GCSqGSIb3DQEBCwUAA4IBAQCfA8F1bhDJotAv1AqNVh8ApFQZibSBiIDpctqR63DfDQjWupeoAr7TCDEZqOLgDdBTMiOBKgXVGc/p+hmSbxR+EukBix96Q+RfVgGoMwHCb8L3h/g2Gp0QFXDMGltPcXQDAJ4WofFmze7CfO/Bv9vLeGn0Xy1Xou7QjcCMnfGekf3XPX/U8m/tuxm80wlNIn9ZWfPHKoobsj3OerZtI2HgWU1ihDLD+aybZ5Imfk79zFj4ZshAJXDDhDEsCV/XgUTZzg9DJguztve+cnAGdx1x/BomvFEUgkAbSbsmwu9SFKj0nOb6ksvj3yYU0hTZrpIwQlGdxj4wJ5g6OCJFUob5</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-3674167d5179f5693205d94575e7aca3"><xades:SignedProperties Id="xades-id-3674167d5179f5693205d94575e7aca3"><xades:SignedSignatureProperties><xades:SigningTime>2015-08-06T11:45:16Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>F5wVJkeSU+uzOcISYnM4HeJ3OBQ=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=TSL Signing,OU=PKI,O=tScheme Limited,C=UK</ds:X509IssuerName><ds:X509SerialNumber>85982237059</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

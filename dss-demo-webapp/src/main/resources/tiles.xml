@@ -57,6 +57,10 @@
     <definition name="tsl-info" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/tsl-info.jsp" />
     </definition>
+    
+    <definition name="tsl-info-country" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/tsl-info-country.jsp" />
+    </definition>
 
     <definition name="error" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/error.jsp" />

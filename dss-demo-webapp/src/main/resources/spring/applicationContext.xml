@@ -44,7 +44,7 @@
         <jdbc:script location="classpath:load.sql"/>
     </jdbc:initialize-database>
 
-    <!-- The TrustedLists are reloaded every minute -->
+    <!-- The TrustedLists are reloaded every minute 
     <bean id="tlReload" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="trustedListSource"/>
         <property name="targetMethod" value="refresh"/>
@@ -57,14 +57,54 @@
         <property name="repeatInterval" value="3600000"/>
     </bean>
 
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
-          destroy-method="destroy">
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
         <property name="triggers">
             <list>
                 <ref bean="simpleTrigger"/>
             </list>
         </property>
     </bean>
+    -->
+    
+    <!-- New TSL Loader -->
+	<bean id="tslRepository" class="eu.europa.esig.dss.tsl.service.TSLRepository">
+		<property name="allowExpiredTSLs" value="false" />
+		<property name="allowInvalidSignatures" value="false" />
+		<property name="allowIndeterminateSignatures" value="false" />
+		<property name="trustedListsCertificateSource" ref="trustedListSource" />
+	</bean>
+
+	<bean id="tslValidationJob" class="eu.europa.esig.dss.tsl.service.TSLValidationJob">
+		<property name="dataLoader" ref="dataLoader" />
+		<property name="repository" ref="tslRepository" />
+		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml" />
+		<property name="lotlCode" value="EU" />
+		<property name="dssKeyStore" ref="dssKeyStore" />
+		<property name="checkLOTLSignature" value="true" />
+		<property name="checkTSLSignatures" value="true" />
+	</bean>
+
+	<bean id="tslValidationJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="tslValidationJob" />
+		<property name="targetMethod" value="refresh" />
+	</bean>
+
+	<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+		<property name="jobDetail" ref="tslValidationJobDetail" />
+		<property name="startDelay" value="5000" />
+		<property name="repeatInterval" value="300000" /> <!-- 5min -->
+	</bean>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
+		<property name="triggers">
+			<list>
+				<ref bean="simpleTrigger" />
+			</list>
+		</property>
+	</bean>
+    
+    <!-- /New TSL Loader -->
+    
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">

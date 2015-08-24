@@ -1,0 +1,1346 @@
+﻿<?xml version="1.0" encoding="utf-8"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" Id="TrustServiceStatusList-1" TSLTag="http://uri.etsi.org/19612/TSLTag">
+   <SchemeInformation>
+      <TSLVersionIdentifier>4</TSLVersionIdentifier>
+      <TSLSequenceNumber>22</TSLSequenceNumber>
+      <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+      <SchemeOperatorName>
+         <Name xml:lang="en">NASJONAL KOMMUNIKASJONSMYNDIGHET</Name>
+         <Name xml:lang="no">NASJONAL KOMMUNIKASJONSMYNDIGHET</Name>
+      </SchemeOperatorName>
+      <SchemeOperatorAddress>
+         <PostalAddresses>
+            <PostalAddress xml:lang="no">
+               <StreetAddress>Nygård 1</StreetAddress>
+               <Locality>Lillesand</Locality>
+               <PostalCode>4791</PostalCode>
+               <CountryName>NO</CountryName>
+            </PostalAddress>
+            <PostalAddress xml:lang="en">
+               <StreetAddress>Nygård 1</StreetAddress>
+               <Locality>Lillesand</Locality>
+               <PostalCode>4791</PostalCode>
+               <CountryName>NO</CountryName>
+            </PostalAddress>
+         </PostalAddresses>
+         <ElectronicAddress>
+            <URI xml:lang="en">mailto:firmapost@nkom.no</URI>
+            <URI xml:lang="en">http://eng.nkom.no</URI>
+         </ElectronicAddress>
+      </SchemeOperatorAddress>
+      <SchemeName>
+         <Name xml:lang="en">NO:Supervision/Accreditation Status List of certification services from Certification Service Providers, which are supervised/accredited by the referenced Scheme Operator’s Member State for compliance with the relevant provisions laid down in Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.</Name>
+         <Name xml:lang="no">NO:Tilsyn/akkreditering status liste over tjenester fra sertifikatutstedere, som er under tilsyn/godkjent av EØS-medlemsstat til ansvarlig organ i samsvar med de relevante bestemmelser fastsatt i Europaparlaments- og rådsdirektiv 1999/93/EF av 13. desember 1999 om en fellesskapsramme for elektroniske signaturer.</Name>
+      </SchemeName>
+      <SchemeInformationURI>
+         <URI xml:lang="en">http://www.nkom.no/tsl_en</URI>
+         <URI xml:lang="no">http://www.nkom.no/tsl_no</URI>
+      </SchemeInformationURI>
+      <StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/StatusDetn/EUappropriate</StatusDeterminationApproach>
+      <SchemeTypeCommunityRules>
+         <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</URI>
+         <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/NO</URI>
+      </SchemeTypeCommunityRules>
+      <SchemeTerritory>NO</SchemeTerritory>
+      <PolicyOrLegalNotice>
+         <TSLLegalNotice xml:lang="en">The applicable legal framework for the present TSL implementation of the Trusted List of supervised/accredited Certification Service Providers for Norway is Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures and its implementation in Norway laws.</TSLLegalNotice>
+         <TSLLegalNotice xml:lang="no">Gjeldende regelverk for den nåværende TSL implementering av trusted liste over sertifikatutstedere under tilsyn/godkjenning for Norge er Europaparlaments- og rådsdirektiv 1999/93/EF av 13. desember 1999 om en fellesskapsramme for elektroniske signaturer og dets implementering i norsk regelverk.</TSLLegalNotice>
+      </PolicyOrLegalNotice>
+      <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+      <PointersToOtherTSL>
+         <OtherTSLPointer>
+            <ServiceDigitalIdentities>
+               <ServiceDigitalIdentity>
+                  <DigitalId>
+                     <X509Certificate>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</X509Certificate>
+                  </DigitalId>
+                  <DigitalId>
+                     <X509SubjectName>CN=(SIGN) ANNELI ANDRESSON,O=EUROPEAN COMMISSION,C=BE</X509SubjectName>
+                  </DigitalId>
+               </ServiceDigitalIdentity>
+               <ServiceDigitalIdentity>
+                  <DigitalId>
+                     <X509Certificate>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</X509Certificate>
+                  </DigitalId>
+                  <DigitalId>
+                     <X509SubjectName>CN=(SIGN) AGNIESZKA BAJNO,O=EUROPEAN COMMISSION,C=BE</X509SubjectName>
+                  </DigitalId>
+               </ServiceDigitalIdentity>
+               <ServiceDigitalIdentity>
+                  <DigitalId>
+                     <X509Certificate>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</X509Certificate>
+                  </DigitalId>
+                  <DigitalId>
+                     <X509SubjectName>CN=(SIGN) JOLANDA VAN EIJNDTHOVEN,O=EUROPEAN COMMISSION,C=BE</X509SubjectName>
+                  </DigitalId>
+               </ServiceDigitalIdentity>
+            </ServiceDigitalIdentities>
+            <TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</TSLLocation>
+            <AdditionalInformation>
+               <OtherInformation>
+                  <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeOperatorName>
+                     <Name xml:lang="en">European Commission</Name>
+                  </SchemeOperatorName>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTypeCommunityRules>
+                     <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+                  </SchemeTypeCommunityRules>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTerritory>EU</SchemeTerritory>
+               </OtherInformation>
+               <OtherInformation>
+                  <ns3:MimeType>application/vnd.etsi.tsl+xml</ns3:MimeType>
+               </OtherInformation>
+            </AdditionalInformation>
+         </OtherTSLPointer>
+         <OtherTSLPointer>
+            <ServiceDigitalIdentities>
+               <ServiceDigitalIdentity>
+                  <DigitalId>
+                     <X509Certificate>MIIFKzCCBBOgAwIBAgISESFCgSJf+NfOVIYHRWWewAm0MA0GCSqGSIb3DQEBCwUAMGYxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTwwOgYDVQQDEzNHbG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gU0hBMjU2IC0gRzIwHhcNMTUwMzAzMDg1MTAyWhcNMTgwNDIwMTAwNTA1WjBnMQswCQYDVQQGEwJCRTEQMA4GA1UECBMHQmVsZ2l1bTERMA8GA1UEBxMIQnJ1c3NlbHMxHDAaBgNVBAoTE0V1cm9wZWFuIENvbW1pc3Npb24xFTATBgNVBAMTDGVjLmV1cm9wYS5ldTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMFBF1FjO2VA4nIvT3MtXToyfWMNFYRvJc2SIJF3pcZNZcUK9wwNL3j/lOB5+eABCTDShJf8fQgmyEcAU7gXhFw9DFgfnXsmmA1a79zzbs5KWzkmAwEE4lfSYcbJoCuUavD79oaR4v3yv7GZMVab8nXuqWvecwzQWT6sl+rx0ogh1bbeKO9wQ5lbEgRw1MLlyFH2kUieMhjCwO2nQJ9UMTaLu7px4LpZ7tlaVetY7UpMPiGAD34kct1YIoJWJllYbbz7jmALmRAdLvvu5y6Ice4H4j0kDJ/l3zLiVeCiORqrx8ngiiS1LfNSckvz2sbzjVJvXbqxYAEytZQvwxEXdPMCAwEAAaOCAdAwggHMMA4GA1UdDwEB/wQEAwIFoDBJBgNVHSAEQjBAMD4GBmeBDAECAjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAXBgNVHREEEDAOggxlYy5ldXJvcGEuZXUwCQYDVR0TBAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9ncy9nc29yZ2FuaXphdGlvbnZhbHNoYTJnMi5jcmwwgaAGCCsGAQUFBwEBBIGTMIGQME0GCCsGAQUFBzAChkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc29yZ2FuaXphdGlvbnZhbHNoYTJnMnIxLmNydDA/BggrBgEFBQcwAYYzaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzb3JnYW5pemF0aW9udmFsc2hhMmcyMB0GA1UdDgQWBBQ9lw0pOEotT5cKTF8vxu3W6ZCUhzAfBgNVHSMEGDAWgBSW3mHxvRwWKVMcwMx9O4MAQOYafDANBgkqhkiG9w0BAQsFAAOCAQEArSonov8KbE8+5VwewgBHhILHANLIiRmLVJ1siaRXVXL6abmMo8CjW2+VtzAQdnDkzUY6CNATs0y0qkbEcS7fvtvp8QqAiv71+jij6iDT9r9IJ1suNDeQWz6Mng98ecMVsDUzLYieeZXH049tA3hrAnscVRTu7kpT06CGbcJnoNdG7yvxx2Bs9ciVBExrqKMppVHwup23hw/IphHmifPRmXPQ3Fa5FKrqnWJw1BRBLGLOqC1mkj7JuVX108KHlwa5cGiohctnOH9dfyuQPWQecbrobwDgHl4O0Ra+bU/Z4J85YPOB/+F7rOQxRFCpv43zPdg65pNoPppjFDE4TD2bhg==</X509Certificate>
+                  </DigitalId>
+                  <DigitalId>
+                     <X509SubjectName>CN=ec.europa.eu,O=European Commission,L=Brussels,ST=Belgium,C=BE</X509SubjectName>
+                  </DigitalId>
+               </ServiceDigitalIdentity>
+            </ServiceDigitalIdentities>
+            <TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-hr.pdf</TSLLocation>
+            <AdditionalInformation>
+               <OtherInformation>
+                  <SchemeOperatorName>
+                     <Name xml:lang="en">European Commission</Name>
+                  </SchemeOperatorName>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTypeCommunityRules>
+                     <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+                  </SchemeTypeCommunityRules>
+               </OtherInformation>
+               <OtherInformation>
+                  <SchemeTerritory>EU</SchemeTerritory>
+               </OtherInformation>
+               <OtherInformation>
+                  <ns3:MimeType>application/pdf</ns3:MimeType>
+               </OtherInformation>
+               <OtherInformation>
+                  <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+               </OtherInformation>
+            </AdditionalInformation>
+         </OtherTSLPointer>
+      </PointersToOtherTSL>
+      <ListIssueDateTime>2015-05-29T06:00:00Z</ListIssueDateTime>
+      <NextUpdate>
+         <dateTime>2015-11-29T22:00:00Z</dateTime>
+      </NextUpdate>
+      <DistributionPoints>
+         <URI>http://www.nkom.no/TSL/NO_TSL.pdf</URI>
+         <URI>http://www.nkom.no/TSL/NO_TSL.xml</URI>
+      </DistributionPoints>
+   </SchemeInformation>
+   <TrustServiceProviderList>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">ZebSign AS</Name>
+               <Name xml:lang="no">ZebSign AS</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-983163432</Name>
+               <Name xml:lang="en">ZebSign AS-983163432</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>0045 Oslo</StreetAddress>
+                     <Locality>Oslo</Locality>
+                     <PostalCode>0045</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">http://www.zebsign.no</URI>
+                  <URI xml:lang="en">mailto:zebsign@zebsign.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">http://www.zebsign.no</URI>
+               <URI xml:lang="no">http://www.zebsign.no</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=ZebSign Community ID CA 1, O=ZebSign AS-983163432, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>H982rbByf7H1MHZ27OtR7ZnnjW0=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDmTCCAoGgAwIBAgIDAYagMA0GCSqGSIb3DQEBBQUAMFAxCzAJBgNVBAYTAk5PMR0wGwYDVQQKDBRaZWJTaWduIEFTLTk4MzE2MzQzMjEiMCAGA1UEAwwZWmViU2lnbiBDb21tdW5pdHkgSUQgQ0EgMTAeFw0wNjA1MTkxMTA5MjhaFw0xODA1MTkxMDU1MzFaMFAxCzAJBgNVBAYTAk5PMR0wGwYDVQQKDBRaZWJTaWduIEFTLTk4MzE2MzQzMjEiMCAGA1UEAwwZWmViU2lnbiBDb21tdW5pdHkgSUQgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKNOLwdrMIGlZ5C+dEbR7f3284DfENEK2vXKLXz8iT5OgeJX22yPHGF67hcNQWAYIkIXvJZ89aL/C/VrVVQNQCEyxZ7+MqCaI1I4mMZF1i3ecksHefBLwwXrf8t3SIJRVvBu8YtTJVO/831tOIKHNFxqW6jJdueCwdSP24gD5VGY0JipPw8xW+LeVYkCP5cSQJvuPWfGDqA7s0oxtsZdX+LbvGS/I7fdXx/UiBnrDe9mtrGRhUrje0KYRk6KDt7CQrPy+oZ6yu0b3KEwYrZWUvRuXsWuQE2i13PLzuFid+ns/ZT34UtbQgBN6oQMF+MBiUD9/nwQUwvfrPOPXfpCMQsCAwEAAaN8MHowEgYDVR0TAQH/BAgwBgEB/wIBADAUBgNVHSAEDTALMAkGB2CEQgEJCgEwDgYDVR0PAQH/BAQDAgEGMB8GA1UdIwQYMBaAFB/fNq2wcn+x9TB2duzrUe2Z541tMB0GA1UdDgQWBBQf3zatsHJ/sfUwdnbs61HtmeeNbTANBgkqhkiG9w0BAQUFAAOCAQEAY7mSap0Ty/T7xlYFsJ3zxOx5h58Jmq6io1idW8Gj7uzmwNAgeGVkrSTwd6WCRh7VY+WIurX7y/GV/nQa9U3DVsgE6oyVn7YcM7Va5mnSxcU9Nkk6S7FyEBaevSccwWoHNo1tDO1w3zyMLlXn96grj8yudRFN5s7HMIMk7ywnaPv4gty3l3YjiSiU2jzH5QcWGJzfZqYEwwN2S+8gSbsYGGXPo9tmRkrm1+h+dFVxuLeIaOxlvbfb+yiyJSF302W8sTyO3lHNl3sOdpui/klGRV5CcMoml0SA1wfj6JJLsAm0z82PJvOzr0AZlPPfET9WPfL2Y9mtSTyq7qv2V6AGpA==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=ZebSign Community ID CA 1, O=ZebSign AS-983163432, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>H982rbByf7H1MHZ27OtR7ZnnjW0=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2006-05-19T13:09:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Buypass AS</Name>
+               <Name xml:lang="no">Buypass AS</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-983163327</Name>
+               <Name xml:lang="en">Buypass AS-983163327</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 4364 Nydalen</StreetAddress>
+                     <Locality>Oslo</Locality>
+                     <PostalCode>0402</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">http://www.buypass.com</URI>
+                  <URI xml:lang="en">mailto:post@buypass.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">http://www.buypass.com/home/support/ca-documentation-legal</URI>
+               <URI xml:lang="no">http://www.buypass.no/bedrift/kundeservice/dokumentasjon/ca-dokumenter-juridisk</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509Certificate>MIIDUzCCAjugAwIBAgIBAzANBgkqhkiG9w0BAQsFADBLMQswCQYDVQQGEwJOTzEdMBsGA1UECgwUQnV5cGFzcyBBUy05ODMxNjMzMjcxHTAbBgNVBAMMFEJ1eXBhc3MgQ2xhc3MgMyBDQSAxMB4XDTA1MDUwOTE0MTMwM1oXDTE2MDUwOTE0MTMwM1owSzELMAkGA1UEBhMCTk8xHTAbBgNVBAoMFEJ1eXBhc3MgQVMtOTgzMTYzMzI3MR0wGwYDVQQDDBRCdXlwYXNzIENsYXNzIDMgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKSO13TZKWTeXx+HgJHqTjnmGcZEC4DVC69TB4sSveZn8AKxifZgisRbsELRwCGoy+Gb72RRtqfPFfV0gGgEkKBYouZ0plNTVUhjP5JW3SROjvi6K//zNIqeKNc0n6wv1g/xpC+9UrJJhW05NfBEMJNGJPO251P7vGGvqaMU+8IXF4Rs4HyI+MkcVyzwPX6UvCWThOiaAJpFBUJXgPROztmuOfbIUxAMZTpHe2DC1vqRycZxbL2RhzyRhkmr8w+gbCZ2Xhysm3HljbybIR6c1jh+JIAVMYKWsUnTYjdbiAwKYjT+p0h+mbEwi5A3lRyoH6UsjfRVyNvdWQrCrXig9IsCAwEAAaNCMEAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUOBTmyPCppAP0Tj4io1vy1uCtQHQwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCFpYJ6LryjhPCuxwMa6pdG+o9tLL1AgTUUWzJzPlbXKRJPkT60DiLptFhhcqu0/hEDz5hAkWXU6gydQlk3lZQodNLWj9Db+WyYcasAxUSacqSuR/RT7G+myQEJ4Bl+4cBFjTY6McWCNifctCsJMhlNm3puHNytqwRyT2DoICHrURrzfaqnZ0hkNnf26Yhs0BDjWE/R+5SbzqmEVlLGVfZW8QzQMRNEnPkHMg3Ah6doPqjO+1+UAJgeI+dC9epf+iQgGlBdzw3NLYtqbs3fsHu2/40bbOum0qfIQ8MLRyH/421x8g3MeJ7SAUQ8+fU5RzbkZUfnpGLIcH82viL3C9Pg</X509Certificate>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDUzCCAjugAwIBAgIBAjANBgkqhkiG9w0BAQUFADBLMQswCQYDVQQGEwJOTzEdMBsGA1UECgwUQnV5cGFzcyBBUy05ODMxNjMzMjcxHTAbBgNVBAMMFEJ1eXBhc3MgQ2xhc3MgMyBDQSAxMB4XDTA1MDUwOTE0MTMwM1oXDTE1MDUwOTE0MTMwM1owSzELMAkGA1UEBhMCTk8xHTAbBgNVBAoMFEJ1eXBhc3MgQVMtOTgzMTYzMzI3MR0wGwYDVQQDDBRCdXlwYXNzIENsYXNzIDMgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKSO13TZKWTeXx+HgJHqTjnmGcZEC4DVC69TB4sSveZn8AKxifZgisRbsELRwCGoy+Gb72RRtqfPFfV0gGgEkKBYouZ0plNTVUhjP5JW3SROjvi6K//zNIqeKNc0n6wv1g/xpC+9UrJJhW05NfBEMJNGJPO251P7vGGvqaMU+8IXF4Rs4HyI+MkcVyzwPX6UvCWThOiaAJpFBUJXgPROztmuOfbIUxAMZTpHe2DC1vqRycZxbL2RhzyRhkmr8w+gbCZ2Xhysm3HljbybIR6c1jh+JIAVMYKWsUnTYjdbiAwKYjT+p0h+mbEwi5A3lRyoH6UsjfRVyNvdWQrCrXig9IsCAwEAAaNCMEAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUOBTmyPCppAP0Tj4io1vy1uCtQHQwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBBQUAA4IBAQABZ6OMySU9E2NdFm/soT4JXJEVKirZgCFPBdy7pYmrEzMqnji3jG8CcmPHc3ceCQa6Oyh7pEfJYWsICCD8igWKH7y6xsL+z27sEzNxZy5p+qksP2bAEllNC1QCkoS72xLvg3BweMhT+t/Gxv/ciC8HwEmdMldg0/L2mSlf56oBzKwzqBwKu5HEA6BvtjT5htOzdlSY9EqBs1OdTUDs5XcTRa9bqh/YL0yCe/4qxFi7T/ye/QNlGioOw6UgFpRreaaiErS7GqQjel/wroQk5PMr+4okoyeYZdowdXb8GZHo2+ubPzK/QJcHJrrM85SFSnonk8+QQtS4Wxam58tAA915</X509Certificate>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SubjectName>CN=Buypass Class 3 CA 1, O=Buypass AS-983163327, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>OBTmyPCppAP0Tj4io1vy1uCtQHQ=</X509SKI>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2005-05-11T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509Certificate>MIIEyzCCArOgAwIBAgIBHjANBgkqhkiG9w0BAQsFADBOMQswCQYDVQQGEwJOTzEdMBsGA1UECgwUQnV5cGFzcyBBUy05ODMxNjMzMjcxIDAeBgNVBAMMF0J1eXBhc3MgQ2xhc3MgMyBSb290IENBMB4XDTEyMDkyNTA4MDUxOVoXDTMyMDkyNTA4MDUxOVowSzELMAkGA1UEBhMCTk8xHTAbBgNVBAoMFEJ1eXBhc3MgQVMtOTgzMTYzMzI3MR0wGwYDVQQDDBRCdXlwYXNzIENsYXNzIDMgQ0EgMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAON6Gk4TsoAn39gyUXBUfjcLNaq1FLlq2mSqt7l4EUALQfwfw//3jcKPb70rGYD1Mw46shRoL2gFJP3mD5FYe+5pAKqJ1VRdFb/qO/HnYPPBx2vzbEJgOafCuBX6wEMJc0O8cTsv/MqLvW8K88S+ziZcTSXMo95XkYGcYyaQiS5PR1mzATTvA/Xm811oCI8jZD2ZjSQ8KhB8ePaRNJTiOK/xYhqSvU9Un7i83NDSAeliZYW6asJ7g2DUcFWDytHvRJQtvd6tTxn+PUThC+IlgDJc6riJaIhYBqENID6LsBLdkSGIKsxVDsjDOZ3568D1XaRH9Wlo6Hj0792Ncu7AqZUCAwEAAaOBtjCBszAPBgNVHRMBAf8EBTADAQH/MB8GA1UdIwQYMBaAFEe4zf/lb+74suwvTg75JbCOPGvDMB0GA1UdDgQWBBTMw/gHt5xtek71pysdBfmzRxyR0TAOBgNVHQ8BAf8EBAMCAQYwEQYDVR0gBAowCDAGBgRVHSAAMD0GA1UdHwQ2MDQwMqAwoC6GLGh0dHA6Ly9jcmwuYnV5cGFzcy5uby9jcmwvQlBDbGFzczNSb290Q0EuY3JsMA0GCSqGSIb3DQEBCwUAA4ICAQAJEHvXHhjk5VKHDDvh5R3eaNjLNXwK9FQ65TIjkeciZcO53wHqumFBJX0fI7bYOthY1RZQElyefhn9SQlNDiPYrGwfbv94A1RQq8WHFpafUHoGjgmorgHoCRm/JKAjuFvE5NYc1EW2h8rAtg2apNRXe+TrTfLHH4gNYD6+Rd9L7zI6RQRgO11lmaWmC5C6VdBJfOtX/gCjpjOwhb9RXwKdGXlbCgpLlv5dhMcSjgxz7NJW3sjyWIhelt5vr7iK+3Xqe1mTA869l8rb7eDXHpavH/fOQYlHNWDSJQBkA6nbPpYwTy0FWOEdSTrrsb0NLyiF6snEzMyoMIfezj1yZJO+ATnZXeIsnrIRW5kL2BmHG0FJ7Up/zq89trNh8eYFE2wPYKhAM3UZNT0jzLLpabJQEFCqoX3XEPYyAIYJzGbvnCYAPesy88MY9gZBVTCfNuyJr1qrFn2B+fCwwD1ZCOcg3FHr0K601z+v4KWB19T1ui81cNWdadchU3UxH3i5ZJIi8z8abzj8E8l4sl5SD8iyUW58OF+bScx+P+RG2+DPw7uHbqItCYlpl/+YXhKCeGbZ/mI4xHipWuuamnYzZcD1TJ2g+0J9aqLavrBrnhtR0tWS2gmds5G4yNxROB1uQLZPFswq7WjfCUK3A8RrnNGcGPaCOf4BAou0GAiGo8kWwg==</X509Certificate>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SubjectName>CN=Buypass Class 3 CA 3, O=Buypass AS-983163327, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>zMP4B7ecbXpO9acrHQX5s0cckdE=</X509SKI>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2013-01-04T23:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Commfides Norge AS</Name>
+               <Name xml:lang="no">Commfides Norge AS</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-988312495</Name>
+               <Name xml:lang="en">Commfides Norge AS - 988 312 495</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 405</StreetAddress>
+                     <Locality>Lysaker</Locality>
+                     <PostalCode>1327</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">https://www.commfides.com</URI>
+                  <URI xml:lang="en">mailto:kundesenter@commfides.com</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.commfides.com/images/stories/artikler/Installasjon_av_CPN_RootCA_SHA256_Class_3/cn-cp_01_certificate%20policy%20for%20commfides%20sha256%20class3%20person%20high%20and%20employee%20certificates.pdf</URI>
+               <URI xml:lang="no">https://www.commfides.com/e-ID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509Certificate>MIIFADCCA+igAwIBAgIIUkx/+4wXw5swDQYJKoZIhvcNAQELBQAwgZ4xIjAgBgNVBAMTGUNQTiBSb290Q0EgU0hBMjU2IENsYXNzIDMxQDA+BgNVBAsTN0NvbW1maWRlcyBUcnVzdCBFbnZpcm9ubWVudCAoYykgMjAxMSBDb21tZmlkZXMgTm9yZ2UgQVMxKTAnBgNVBAoTIENvbW1maWRlcyBOb3JnZSBBUyAtIDk4OCAzMTIgNDk1MQswCQYDVQQGEwJOTzAeFw0xMTAyMjgwOTE3MzhaFw0yNDEyMzEwOTE3MzhaMIGjMScwJQYDVQQDEx5DUE4gUGVyc29uIEhpZ2ggU0hBMjU2IENMQVNTIDMxQDA+BgNVBAsTN0NvbW1maWRlcyBUcnVzdCBFbnZpcm9ubWVudCAoYykgMjAxMSBDb21tZmlkZXMgTm9yZ2UgQVMxKTAnBgNVBAoTIENvbW1maWRlcyBOb3JnZSBBUyAtIDk4OCAzMTIgNDk1MQswCQYDVQQGEwJOTzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALszd7F/luUhdrrNJx0qb4Ux4KVIMB91AAJWpe7ljBDUgfFM1kFnrny1bMBRYqaKqEaXfr/XeGy+AkXo3ivGEYT/LTkb6s8Wm7v55lawayn7f9ScFujWexTdf3CexaVaS8JH1sGYFKs2SwsmuWKJe3mxPaud5oyP/LAswIOcnt1pzvTu88hlVI5gXmtdt59cfZ2/xQsr06ynlX75KPUjMr3NyYLeKwcZdUQOOOuMtiysaug8MbcEzcp/4tdfHaae9Fl41zU/C3/A8cLOrbVKZ7Z7qRu473KxpPMgDgovciTQFLer0KpcY56tygbzyuvJfqC3xT0FDn7j7BgAgk6UpccCAwEAAaOCATkwggE1MDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AxLmNvbW1maWRlcy5jb20vb2NzcDAdBgNVHQ4EFgQUvq6nr7jW3G1+6pw2+5hsb+2/jsMwDwYDVR0TAQH/BAUwAwEB/zAfBgNVHSMEGDAWgBSWhl/gjBoUw6aC4uOZoWE1ohYY4TAWBgNVHSAEDzANMAsGCWCEQgEdDAEBADB9BgNVHR8EdjB0MDigNqA0hjJodHRwOi8vY3JsMS5jb21tZmlkZXMuY29tL0NvbW1maWRlc1JPT1QtU0hBMjU2LmNybDA4oDagNIYyaHR0cDovL2NybDIuY29tbWZpZGVzLmNvbS9Db21tZmlkZXNST09ULVNIQTI1Ni5jcmwwDgYDVR0PAQH/BAQDAgGGMA0GCSqGSIb3DQEBCwUAA4IBAQAYAWW39NrWBLOv8KefxaicrENbfDajYbxeJ79xfjPKubLw3mSWHluT8Gi3C/7nGDWCBSjWYDm4oW+4+UWKjJu51m/oSGY0lcWz8SjzlVUBvCBSaCOF0UXDMXrcHzqpWNRIWHp1+c0tzbJtd2rJ1ac5SiNGMENx/WYZ1Qt5jUclObMrRiqJNjoxVfVtemxHKJoCwii3iyGkyGY/keq3iNSK3d4cpwEPdm+pj+0Y+DsyvMtLBjDmmsjhcIFqWSLUf00d/ES5Uu4SG92rY7T8ziHGx5mGvI/rxEDvBUJe+EAwj1SXvTFSqSYziZEiDHBsSqSRIlqXFxZpCbeR5ZIHUMJT</X509Certificate>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SubjectName>C=NO, O=Commfides Norge AS - 988 312 495, OU=Commfides Trust Environment (c) 2011 Commfides Norge AS, CN=CPN Person High SHA256 CLASS 3</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>vq6nr7jW3G1+6pw2+5hsb+2/jsM=</X509SKI>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2011-02-28T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509Certificate>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</X509Certificate>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SubjectName>C=NO, O=Commfides Norge AS - 988 312 495, OU=CPN Person-High Certificate Authority, OU=Commfides Trust Environment (C) 2006 Commfides Norge AS, CN=Commfides CPN Person-High CA</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>K1rYUDfoq8Tv+K39u1yRV4+2tpc=</X509SKI>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2008-06-20T11:55:26Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Danske Bank</Name>
+               <Name xml:lang="no">Danske Bank</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-977074010</Name>
+               <Name xml:lang="en">Fokus Bank-977074010</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>7466 TRONDHEIM</StreetAddress>
+                     <Locality>Trondheim</Locality>
+                     <PostalCode>7466</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">http://www.danskebank.no/nb-no/om-banken/InEnglish/Pages/in-english.aspx</URI>
+                  <URI xml:lang="en">mailto:kundesupport@danskebank.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">http://www.danskebank.no/nb-no/om-banken/InEnglish/Pages/in-english.aspx</URI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Fokus Bank Bank CA 2,OU=977074010,O=Fokus Bank,C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>Cx2ElXOq6yKlHXCEJYnXvD2O3A4=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIFsTCCA5mgAwIBAgICAS8wDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MDkyMzA4NTQyNVoXDTIxMDkyMzA4NTQyNVowXDELMAkGA1UEBhMCTk8xEzARBgNVBAoMCkZva3VzIEJhbmsxEjAQBgNVBAsMCTk3NzA3NDAxMDEkMCIGA1UEAwwbQmFua0lEIEZva3VzIEJhbmsgQmFuayBDQSAyMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAtMNFPVm2BeAyKzB3FzCNPm7+0TUIB/9Az6BPpFsO8jSMMtye5TACeZxFnTbpBYAAP+AEzNZTwCWLc9osl4l9VwuGco5QPK5OKkwl2ihBD3vFatOaKyuLH7rcKpjhS+xmd0dD51aQKaeVvJehMBNMTc7sSGnAt8NEMV+7vtHfLKFAEk6fGs+PY6pc8cSLVg2Rf7b6/na8JhiqOdbpDKGhOyzF6kD63nFPvMasIk3w+HNVPPIIPtAztAiL9+Pgrptl6/8y24mrmyvnru1GJcE2UPQu4dHkDPnEyFuGiYru+Hi2jos4T8IC35ETMLZnbcptELqCZV30qtROis9u71W0eHQdiiyVycEBMxDWOUGdO6GuuGyvIClwaJ62Klflxbtf97OVOmJQRQcyP3Tdj3TP4w9x8IA2MPy/g7SZZiUzwMoAZ7v+dw/Nz10OBHRHZpN2GuQzEaqGRut5E23IR25D0mYJYzHBAYDcuMeIedk7Wy+bl9lpWSaGlE1+lNpUDFvC2lE5v0aDkIPZEWSzwtxLo92Ci1MvHyfP48sYKKQgszppw8tRy1gtUGcf8zizwH+SySOJF3KBsQ4kwYkS/lijxspfGGL+gFpbq70UZt1DfvV9Sh8oYJ9NgGCCptmQiRsw4zLvlw9prL/PKrg1lHfrufCIo771k+br4hvJxJjKq4MCAwEAAaN9MHswEgYDVR0TAQH/BAgwBgEB/wIBADAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMA4GA1UdDwEB/wQEAwIBBjAfBgNVHSMEGDAWgBSgbnT1MfCwFH3ifz+mxHxv2YRpXDAdBgNVHQ4EFgQUCx2ElXOq6yKlHXCEJYnXvD2O3A4wDQYJKoZIhvcNAQELBQADggIBACETofAGf46eJq9PyUz+ZvcMoHHe31tDHlhGdwkFfAyKzn1BiyGHZ52HyDS8bi+4BgfyhhaLqpDjELehqz7DxYzg2akTsGuxfhzbRRQWqfg9+9u1N9myjMnQtvqb/ZFtQXKZcwQqRKRfcROTFS+/dfpqnWPXsY6cCTpXnxbxBVTw+w96tvtiVqnwVtGZd5QDRe9CyF1I7chiiIxjTfiw/GHr1m5P4Q0s6fA2fayCOImcP9PreuqBEs610qhIYabw92uLug/JArk5Jb8Lr/eNiYsdsfiVmx8FVFHcMKQ77779NaUA3wqFhrxoEsvbPbWy/qo+McJIeG2uWETgy/Dbj760yPonVDLPCOzniekzOfxa1UfJQOxzGZ7CVBO6pYPqJm7gUG/n2m1AoL31FIvTEpMywVRft1JEMGE1oTjqJLiwNFHFfXvBbvmhyIgrQ1wmDhC6wH2hc7egMe9ysKuOZUqpyrfk2CYz34gDvbT7NsqtYUz2U9jR/XYba9b3jgPV+SIjMqMRzbPm5lLZMdSzyMNYf70U4zggr8L6z7GTO1RiypZGR6g15OnMuJuhp34oDKJ629gyUDdeYujMtn+luFh+fLW/RdyQxervPFd5iAJYZjFMgY1iqS1vJ29j2pZtGWwPJJq9foqIm4JiLQFqJGheybukAIpqolqmGC+Y2OyH</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Fokus Bank Bank CA 1, OU=810969652, O=Fokus Bank ASA, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>j0Srqu3MEr8PWecYQpC8qAPp/3w=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDtzCCAp+gAwIBAgIEPRryUTANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDIwNjI3MTEwOTA1WhcNMTQwNjI0MTEwOTA1WjBgMQswCQYDVQQGEwJOTzEXMBUGA1UEChMORm9rdXMgQmFuayBBU0ExEjAQBgNVBAsTCTgxMDk2OTY1MjEkMCIGA1UEAxMbQmFua0lEIEZva3VzIEJhbmsgQmFuayBDQSAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtVCnnh8A/JJJTLJRTwH+iD78eZRvfRAcDkzZJo24CkXmInJCf0jXSO340ZEef0N9ufmlWaOj8vYiEtbsnsNKGetkUWwT3GMjQkbcUq9mPH4Jm9TiXT+UB3qsPZCvvEJUpKoU3Am6vpMQM3fo331TTmxqlg6eH5FhIGVlfTjNIUZyIAx9o83jC+Un5gMkBonfpRmdyLt9Vs2tURA3O/UNxHzB35kDIDlm+lIYwdYUodjyA9eycngILXMfOZ11Rlbmwpd7NnYMuYw2s2p4I5UucClsUopLntcKqBPM9FefZVtaKpj6bGW3OsAXFVvi11amcuq674oWsBUlUVmnKzzFUwIDAQABo30wezASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBBjAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMB8GA1UdIwQYMBaAFGkkKsWM3wz3sEAx4Im6Goq97337MB0GA1UdDgQWBBSPRKuq7cwSvw9Z5xhCkLyoA+n/fDANBgkqhkiG9w0BAQUFAAOCAQEAFzvTkOJMoGmVg0dR4qV9UIs+ocEoAoAha5RKhE6N4hFFV9/js+K3McJnwLE0SyvbgRlCa8b1C5ip4ZiMyhsjRJwdeZPrxkbwJny6Hzr90iCwPsq340limnhi57eXI4cpfI2IzLsO9ygfy5lo61GjeAGi6hnLI7Ui1fkhx3XCkdTu5OVcDZR7Qfg3o5MX3R0dq5Fh54q6FL2g2RaMbCxBKUCnnzTgZryt03Z5SJdentzNgoKLg+IBGs+MrzCMli6fVEJ5QsR6GI3CLM2XX+GUNpW4ltLZEtjdlN/bqqcpFgVjnYE7FV4wKVAP5KaK+1PGBf2/3y5vbU4fo7jAkLFadw==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID Fokus Bank Bank CA 1, OU=810969652, O=Fokus Bank ASA, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>j0Srqu3MEr8PWecYQpC8qAPp/3w=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2006-02-16T01:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Bankenes ID-tjeneste AS</Name>
+               <Name xml:lang="no">Bankenes ID-tjeneste AS</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-988477052</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 7999</StreetAddress>
+                     <Locality>Bergen</Locality>
+                     <PostalCode>5020</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+                  <URI xml:lang="en">mailto:sparebanken.vest@spv.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Presse-og-nyheter/Nyhetsarkiv/2005/Alliansefrie-banker-samler-krefter</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Bankenes ID-tjeneste Bank CA 2,OU=988477052,O=Bankenes ID-tjeneste AS,C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>seXJcKX+QJsXMEHncVzZT0uiTAs=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIFyDCCA7CgAwIBAgICA4cwDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTEwNDA5MjExMloXDTIxMTEwNDA5MjExMlowczELMAkGA1UEBhMCTk8xIDAeBgNVBAoMF0JhbmtlbmVzIElELXRqZW5lc3RlIEFTMRIwEAYDVQQLDAk5ODg0NzcwNTIxLjAsBgNVBAMMJUJhbmtJRCBCYW5rZW5lcyBJRC10amVuZXN0ZSBCYW5rIENBIDIwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDFwQH8S+tmw1tEs/ima3/znQew+o8/PsugcdkQ841ZeN1qCVWNdofDuMK+lc5DdsAi6JjS44qplQ6lbyYdN+CI+IAxXnHq7e7FeIGFYGzxHdjRyXpCkzRr7qiUki0jmIBc+u6FnkqhDoI4am5TnQc2obKxi079ibnwMDuvzMD8asGmcLdAzJwkCGuSR9MtRHE5q50lRHgqGGww6ynlZz0EeQcd5bsIMDnFzsykEr+THIblGXLsJmt6fZhxhcTTq9687AYoh5Z3YUsHgbFuztpkxbQRrPWDj6ODD6l+3pW4q9uHR0kOcyRWJ3RbCpxhSr5oAmYq8U/uAp8GdiJuJZl9GTCFTFBIEY0bj9vwctbDzGCXhiRGJo2AY9FOIARlfBDRD9CKO5ZkLoEe6VoIEvhvtvGNlwZTjPK3OSNcDeHo+mNa3x18BDYp/UGIux20ZXc0zVF+IyS1okWpOA0KRs4hNqwl84Uhx/pigi2cLFt7Gkqrpok8+qgkRAsqTp848quLPPJ/BsjJm9IFNF/gV+7RL8qxpA+tBT593jUIBSIyI8n2jskXOTbKiKme6b9F+C34n7tCryGqnmXS17mCbUz++LPhe77HELBTqP5/CGsKIP7jQ6WTQ5K9V3kJsWJE6jcL/Xh8EknBQecBLwvXyWcrESu7jz7P3Z+6MdTjwQa9MQIDAQABo30wezASBgNVHRMBAf8ECDAGAQH/AgEAMBUGA1UdIAQOMAwwCgYIYIRCARABAwEwDgYDVR0PAQH/BAQDAgEGMB8GA1UdIwQYMBaAFKBudPUx8LAUfeJ/P6bEfG/ZhGlcMB0GA1UdDgQWBBSx5clwpf5AmxcwQedxXNlPS6JMCzANBgkqhkiG9w0BAQsFAAOCAgEALEvvt80aTKNQRbKgh4x1VKl3FmuofQbUE3lcSGuVrmX7pjHaD8KfeCoxpp+y0lg8cM5n+iZSrGbQQ4AkUZZR1uoh0BQ+CMOmCktaZUc7L7Jjury5PL7mNj4ORoIq2IUOIqRpQ0yyXT/cyWL0kb6ooKWV4JCt+BJQutzwudqoONsUWib5orELlCXWMCHoF2qhsfhojk1dje/AjmreVcSQ2MI9k52pa0HPluKbyCKOq+I6wHh9EoiX2GtRhSz2JZiyaXW4D9PiUKRjkqYzI9KM02Os6Sp4nHWAXvwj+lmK7ooJHN44hnxuPLr3JYRlAdsHmqn+NAKV86jESvOvsXQOYwJ93PF+1W36Vrx5tdPkaO+74t6lCIzsAfRz7tQgqBOAbnzQHcUp5Zis0FM2xRzcOY63sUwDuoSpl6vLA4P77Xw51WIcbWLI40LgwwGYJNIrtLb/JrJAxuidzYIR21zWLE5i7d9+F/yEZPf0iHmEIPkGhvloifMqp6u5nPIVIc998TMKm0oCMf687nlBsdluPsCuP0ayRjXwL3yZHv8mPkgN/EQU9D3G3o461EKKuhgwpU4fj5FwPlnX/hxFLZ+GtRMeXKfkJy21ceywrThHdsrXj35gdOOuytZroRVgXSzNp3G+I8I4EUAURCP+Wp8NE5g7hTFhu54JdYuusxoMWng=</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Bankenes ID-tjeneste Bank CA 1, OU=988477052, O=Bankenes ID-tjeneste AS, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>hjsaV8OpLghMwJoLdpDit5zq4ww=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDyjCCArKgAwIBAgIEQ0ugFTANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDUxMDExMTEyMDUzWhcNMTcxMDA4MTEyMDUzWjBzMQswCQYDVQQGEwJOTzEgMB4GA1UEChMXQmFua2VuZXMgSUQtdGplbmVzdGUgQVMxEjAQBgNVBAsTCTk4ODQ3NzA1MjEuMCwGA1UEAxMlQmFua0lEIEJhbmtlbmVzIElELXRqZW5lc3RlIEJhbmsgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALC0KNU37lsDWWOID2846lucGAB+qzW4PDcMBIQQDlg85dNXaO9NE5OBVLyKrmsrC8TSQvmDLzLH8wGc9WoFVWrpcIE2pfSz4cHQgOg/e+zkfyxIBJJjLLJwZwvn9KI0A38hurvywQCHw6IH09XB267dh3cpUakdjri064pkorEABW4F0tB/UTKfKNjUez77hhhfh5y2LXAYrc48E+sXN+Hp5sqz1p8UvLdGoad1S9fVkSRsFuH6hi/hsViizuePOh9oWUeffju7qiGEwJY1DaIuinsTMpt0hdEnXYgSKcIU2bL6dvcYYacka7EMRH9A3/SHwxiZ6ZoE2bXbJL0e8xMCAwEAAaN9MHswEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAQYwFQYDVR0gBA4wDDAKBghghEIBEAEDATAfBgNVHSMEGDAWgBRpJCrFjN8M97BAMeCJuhqKve99+zAdBgNVHQ4EFgQUhjsaV8OpLghMwJoLdpDit5zq4wwwDQYJKoZIhvcNAQEFBQADggEBAJkNb5PTOrwrxYHRKBo9x++Ew239h5hAwWQ1+z8zG1PKTo4HfyAdfFq8pBdLvnIe6jdLB8VMsxrr/TUO5nGppp9X8ODXSwdU9cK4tvjQSazT4RGpY738aTnDl6laLrbr4UHSXk8mU0z7F6G5I3WX3j1P7WJ815aGOZNDvYxoOQdUsIUMKsvQEZTQD29ieUMPafgOxHWLjJtR9nC3diTMZuimJBCcWhRuBdDsdI63b63NsAPQ4WuLCEkzA2CRd9Ru3IrczTgvIuPBcoV3jHd2YoM0hL+ro9vE2KfyZVYfohcg7kqrs1shSu3+JHmSEizDKwxY6EDyeF1QeQm5oupEfg4=</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID Bankenes ID-tjeneste Bank CA 1, OU=988477052, O=Bankenes ID-tjeneste AS, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>hjsaV8OpLghMwJoLdpDit5zq4ww=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2006-05-22T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">DnB NOR Bank ASA</Name>
+               <Name xml:lang="no">DnB NOR Bank ASA</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-984851006</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>0021 Oslo</StreetAddress>
+                     <Locality>Oslo</Locality>
+                     <PostalCode>0021</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">https://www.dnb.no/en/personal/frontpage.html?la=EN</URI>
+                  <URI xml:lang="en">mailto:07700@dnbnor.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.dnb.no/en/personal/internet-banking-mobile-and-card/internet-banking/bankid.html/</URI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID DnB NOR Bank CA 2,OU=984851006,O=DnB NOR Bank ASA,C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>PQh50HY8R4nhQePkgD+n4A/ElTw=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIFtDCCA5ygAwIBAgICAfcwDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTAwNzA4Mjc1MloXDTIxMTAwNzA4Mjc1MlowXzELMAkGA1UEBhMCTk8xGTAXBgNVBAoMEERuQiBOT1IgQmFuayBBU0ExEjAQBgNVBAsMCTk4NDg1MTAwNjEhMB8GA1UEAwwYQmFua0lEIERuQiBOT1IgQmFuayBDQSAyMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwq2pS7JlMwrLV58tUSxItXVaosvnjpfegaocPSemdGe/VXp+1Knb0VvOr/BzmCLGqlk3TwyaUzGWQF8VgmZOKGUIITLKLXWpCR1dyap3w1QlB22yx7GLwqYZqzUg1mdir21FXepBlYc6E5ydaBNunzmKk4IcmTDgc0fuX+G2ZTnrd384E8gRr4N0voDdBTd+dfvC97aVlKsynwiqKllyZTHspak+uJ6DzOpXgGUeYBcTms057P6rw01EHipkTWMgOe8qFx0N5fgGEcadUr6q+ZbNvTHjH2stPhXqR7rST2Vzv+ZLPLpmJPRdmebig/EOiWGwtgN3qO+nFEhHbvZaXPmKsAf+gE67ott9xdgrqlvllzC0MI81WSUSvPZ0Rp4RYvuSPNNj9iE++3bOihFaTkeVtbFt9iX3jVcR7yxAossk1Dq1No0Ldp/O53ALSjlFWg6e+oq0fsO/dUCKjEKxMtBw5IOk/+fqL87cNbKyWSkxJoLsGqGjxT2TLZhs7Jkq/bGWLCaZJYgwMViS6ZAEseo3P6sDEV1xDR+P4bBLrfouyKLv9lPaaNEIMCfZzxqIb3rjTYUp+zu/uLnTgLBEdXNPPdoAUSfSKOUQgsPTg/LU+xJfHqt66BxV6OCZrfZHPsd69ucaMOJxz1jT7n94iFtxKusfbIumS4UAdFyD6h8CAwEAAaN9MHswEgYDVR0TAQH/BAgwBgEB/wIBADAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMA4GA1UdDwEB/wQEAwIBBjAfBgNVHSMEGDAWgBSgbnT1MfCwFH3ifz+mxHxv2YRpXDAdBgNVHQ4EFgQUPQh50HY8R4nhQePkgD+n4A/ElTwwDQYJKoZIhvcNAQELBQADggIBAGopRrkjhrqLrMY7YVvLNFgVerN9a+dr/ZCBYpG/f45YBj70B4ZylXOOQShu6rytFuFA+1mv7058Cao75q0SQ7BvuunVrH7tZoOr7suV2EgVEd2KVAyQHhc+APKDUjyRPbv3qed2yGsYPQSJFs4IQtqy6ABPEmidoeqGrqx6JufbGWKZl8USWKlZAuALRtQGRxYClTdTN7IKmGW6BkUglqo4/1rN9G3ccXtF+2xmLN+6b3ZiVbkk6/ha/yBWa4QMvj4hUfe8VECnxRdOiTbiYRC1aA48/GwIvvRw/e7A84b9epnq03/w2XHWLp1BYAsNf5Q+VhyCNg7EGJCp2i3lX4N5L049tD8aShPn32AKzryNHGbkmf1C66x9kbWivIqtbKiQeZdDLnoT0uEKr0dC+fIPoOk0f4hI63+44DUsw6nxgatNbguDoW1nfhdwfzknjZKZ7chN+OZrveT+0TpMRvyX11JIsgCjtYsbSvMUIWQJ/3D+vLzFSmxEuoec+ZKehe3h/AsOfkPbPJEW3FLd+zo1wb1Ur6bQC/LruP+6AvYxwkAISQHB1NKgRktYrwXt3C/A9D4E8BmbaP+LBRBO9iJcykMWwpszzeVclBkRzgtbOiReo+zWQ9Zkz/aY4oUC4OPpGCBnj87ebjmdDcgjGW28G1j2a/RnVy7411IwBVlZ</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID DnB NOR Bank CA 1, OU=984851006, O=DnB NOR Bank ASA, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>saiFlVA4JXNe08/xw7Mv0wfJpoU=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDtjCCAp6gAwIBAgIEQDyMiDANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDQwMjI1MTE1MjQwWhcNMTYwMjIyMTE1MjQwWjBfMQswCQYDVQQGEwJOTzEZMBcGA1UEChMQRG5CIE5PUiBCYW5rIEFTQTESMBAGA1UECxMJOTg0ODUxMDA2MSEwHwYDVQQDExhCYW5rSUQgRG5CIE5PUiBCYW5rIENBIDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDOfTQ8FSX9e7TZbsOhE8WRJwh/gvi86ZwFxovyaJo7RjVnVr9OO93D7dWV/nmhimaoeNwyztatA7YE23DOsyxD2gfacEQ7+9HDdJdUDr4sIYhkX8INmcRlUx1t7x5d7yCapVU3rYMx1ozWbgagbEbQ+q+baCp+lO8uijUiXtffx51sXHZw+cF2U9hfz8k44miemlFAkDaMJo6Gd9HhsnKOR99EBpZi66nOKmWikdgCn68SHNAVlmfNBERLR1zUNA1sfSCSE3ZyDBn+k/Or7ILT7ojfxLbKCtjhyyP6U+lZqVePQIhCFhDj0Gb/R1+A6cFv1gMAxe6sPsYjkM93RNalAgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgEGMBUGA1UdIAQOMAwwCgYIYIRCARABAwEwHwYDVR0jBBgwFoAUaSQqxYzfDPewQDHgiboair3vffswHQYDVR0OBBYEFLGohZVQOCVzXtPP8cOzL9MHyaaFMA0GCSqGSIb3DQEBBQUAA4IBAQCAUhHwCNWTqJmiMA+vVc2R6Tayg/ABVMcUANYZnN2FH1uG7diqXrjatPnea8k+IPuHJkSLI0nCTEQT1u+sQjRpa95IuxWtfPHazi7DPeyR0Xz2FN9Q8TZyp9RO+DIXKLqTKr/JZOHBubTxVM5zE8EfDUJa8vbQovmxSx7QzjQJ6UTcrO4HDRRrXnBZN9xxP7F7DE2HGdgjsI6Ng55E8UAB36vOuwzZqd3tSLPeYVLk6HzKG0+FrnrBh7BwSKh1xnJ2X7wIbCBGx6AI3qlKYG6YUBrUEnW8KEjGpEm5HKnQ1GS2KlNUWb598Lz0yRQYumUol0VFpAH3a+9KfnGLuQFA</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID DnB NOR Bank CA 1, OU=984851006, O=DnB NOR Bank ASA, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>saiFlVA4JXNe08/xw7Mv0wfJpoU=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2006-06-28T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Nordea Bank Norge ASA</Name>
+               <Name xml:lang="no">Nordea Bank Norge ASA</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-911044110</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 1166 Sentrum</StreetAddress>
+                     <Locality>Oslo</Locality>
+                     <PostalCode>0107</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">http://www.nordea.no/Privat/Bli+kunde/Bli+kunde+i+Nordea/Become+a+Nordea+customer/1496932.html?WT.svl=footer_common_become-a-customer</URI>
+                  <URI xml:lang="en">mailto:postservice@nordea.com</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Nordea Bank CA 2,OU=911044110,O=Nordea Bank Norge ASA,C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>xSiwAgaOYhswJiVq/zAsOxgX2Aw=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIFuDCCA6CgAwIBAgICAr8wDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTAyMTA4Mjg0OFoXDTIxMTAyMTA4Mjg0OFowYzELMAkGA1UEBhMCTk8xHjAcBgNVBAoMFU5vcmRlYSBCYW5rIE5vcmdlIEFTQTESMBAGA1UECwwJOTExMDQ0MTEwMSAwHgYDVQQDDBdCYW5rSUQgTm9yZGVhIEJhbmsgQ0EgMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOE/v0zr7YCJVO6h5sriFlvULvtVuvr4YI9KLJmG/lvg5tFlP2kexQlnfffzYSp7wuwzWut3slpr09H7XU5p3hO/NFRVe47rMdul1+zIsD4ZZmDmdFExsb9667YVbH6bBpAOADW1wKinj1Mefpv90zlNatqxD88ufy/x6kTYga77PCaYs9IFQTvw+t33B4YBmqJaiqPdqOjEM5hClbqZOIVDn0D1Zh84WgC5/bDR5tr2fGSfeAid7gUZrzZSv/A7ymbFFHXCB74VZs5Ix2dX7rkvUoux4odADSUPibbeM0w5R0s5AdFr0hZ7jCNHM4H3y5jMVP/vQhQMQkCDDBHAO0QCMizKt99zcbYVTvfhf+tnEmkvzxMhZeC/bqCFJEK+7ghZCLb9d6EoUDqdP9XKhSfNeXGyVhgOK8qvsliEaviK/SF9xkLJRFcwSL4PmeR2xZEFzq/mnbNXZxZQlk8DvJ2j0XZZ8/AT6WCu2Nh3NjvScU8GR1pNxnruKvfFrhEbN/ZlvaQSCbEwBDAx8OJBKoRm2I83epMXzO3HLZkwoSwC8DHoJvOFw6K2g/5lY2LT9hRvSg8rSmWN1mhTBKkM5YXQVNxBjgzzqQyt3/bOhPG1GHLM6ON/l3+EAj7hAaXfYJ/X31M2bC0mnWDC9Mb7UZHAt6Xd596R4eluPvZC4Q1HAgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwFQYDVR0gBA4wDDAKBghghEIBEAEDATAOBgNVHQ8BAf8EBAMCAQYwHwYDVR0jBBgwFoAUoG509THwsBR94n8/psR8b9mEaVwwHQYDVR0OBBYEFMUosAIGjmIbMCYlav8wLDsYF9gMMA0GCSqGSIb3DQEBCwUAA4ICAQByQj5e9s9h4EKk3c6AlgMtlz+0aIHy2kA2CzQ7xMeN+dppuar9IcROGHiv37VF4k/lvLA8eo7wkq+DfOvZb1TAgt6Bpgql/70j7WlX9dTDae5XtQfaTx35cjhi/OkLrPmK+pgbUD6LDVNJWy5248r3h5UD6ZiNrnC4JZsewb1+IJzr3itknbmMO1V4WJ1yNvHxDJ1HpQ1lH7M4DBODUnYtQqSiqDgVNBOeDZVtb+BN9lkT7HquuLXDTFHb472gitamW3kMb6fj1xmeILeU4eTS6pR0vWjJjpSH+pneQIHj24c6tnDrZy5SWhl9m9AzNggaEB7tiW4IfBiMlFdC24QxIOBt+L2wTA/6J4QKCJ1EeYcW5yNTjVRD/iXOzECGbdNZ9clm15guFCkhtHI258BR1Jcipnci+/aKJJHGZwqctS12i0L86NijNsDLPOPtMxXJy1+pvIQsi6uehXHshdo8XmT9kIrU9pgj9RqShY1F5swhk88vKnESr9F9KOgs46ZOcLBQO1U1CrbDeAmc9WWR7BbRdZ50SNa4l3Z7GmZuiOPr4PwPMtV5f5z0JjhT2KPoJEMQ3uXxfAOBhgR8a0N3PU7iKUoVdhQYlqG5OBWc9DEAoARqIMLP0g7W0mPYWxgtMXjNW12ltgyDWu2g4uZZlHHH8MNKCO/mii70dgOfmA==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Nordea Bank CA 1, OU=911044110, O=Nordea Bank Norge ASA, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>2upcLVH8f8IzZnxnhjCIbaNO/aY=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDujCCAqKgAwIBAgIEPZwqlzANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDIxMDAzMTEzMTM1WhcNMTQwOTMwMTEzMTM1WjBjMQswCQYDVQQGEwJOTzEeMBwGA1UEChMVTm9yZGVhIEJhbmsgTm9yZ2UgQVNBMRIwEAYDVQQLEwk5MTEwNDQxMTAxIDAeBgNVBAMTF0JhbmtJRCBOb3JkZWEgQmFuayBDQSAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA99XmP4JXjxyudDCCOCsw7R27G/TEr8t6BwyzZmrFoHY5NnaMu5AqsR87YXBl5VxAAgXl9feecqhw9RTaH83TQl7ghQ74DGYb1mipvL+FQ0X+yG49/N6ami4WGqF0ZxgLoTMu0Cunmg7GKI7fWx4QWd1qyaOjC5GMXBshOysszPnubQcpRJgofRYwjaT4EF6aHA4QlzLez7nvKvN89cAM11W8lr54BJjl4emMMTHdEDzE7vx6n2rc+vhU0B+3DM8Mq807syV/xZrCPMMbBrCESdwlz31RqLJAXRRZYXn2oxYJmGPsqxjF4YkmeTUgcSkhwqfutxWR2XRAtS/gIe/VUwIDAQABo30wezASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBBjAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMB8GA1UdIwQYMBaAFGkkKsWM3wz3sEAx4Im6Goq97337MB0GA1UdDgQWBBTa6lwtUfx/wjNmfGeGMIhto079pjANBgkqhkiG9w0BAQUFAAOCAQEAQ5dtIvR5EIhbwt8b38SKwDdgBAd3rXIDWH5L36d8sW15JiP9dczN401++Wi/2JSqBRQtl/qNjTnMjapcgz4iqf4G/TkfDROE4vwLRNP/kMa0P8SfuZJYgDufLFkCA7GFTIVP5BLmvJG2LSSTTa6XLQIn4Cv111iSkBD3AuFdqJKyxWRyy5pCx9EI5JyI6jEzMFJ8J1lg1bBP6tp77nejmycX4GNPj6VSqThkEbNOcbLqqQNMtC0uMly0/z7wkYC1MAOY/vUw69GmhuYmzrBTyeMjC+HQCTLHNCGKPtWuERw3gdfvyQf19g6hCwgJX/YAHwdZdvaYbXxpac5ZMB/U/A==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID Nordea Bank CA 1, OU=911044110, O=Nordea Bank Norge ASA, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>2upcLVH8f8IzZnxnhjCIbaNO/aY=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2006-06-29T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Eika Gruppen AS</Name>
+               <Name xml:lang="no">Eika Gruppen AS</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-979319568</Name>
+               <Name xml:lang="en">Terra Gruppen AS-979319568</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 2349 Solli</StreetAddress>
+                     <Locality>Oslo</Locality>
+                     <PostalCode>0250</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+                  <URI xml:lang="en">mailto:post@eika.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Terra Gruppen Bank CA 2,OU=979319568,O=Terra Gruppen AS,C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>AYZj8PZQANNaZLrFPeiLb/2IL5s=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIFujCCA6KgAwIBAgICBE8wDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTExODA5MjYxMFoXDTIxMTExODA5MjYxMFowZTELMAkGA1UEBhMCTk8xGTAXBgNVBAoMEFRlcnJhIEdydXBwZW4gQVMxEjAQBgNVBAsMCTk3OTMxOTU2ODEnMCUGA1UEAwweQmFua0lEIFRlcnJhIEdydXBwZW4gQmFuayBDQSAyMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAzq0tBXxmZsOlnxw45KIjNtMVxNSFTVv65oYeMDfVEZQmaFU3rSCUKcRQf5TnlIwlOjpLyH9DTBacOnJUEhmrFxDqgbbfGrN38EeHC+yWEpqJLTn7yqfHFPtaNOEbkLneKhyJ/VOfHcX2dOWKSqlAUEJdvysR7sI+TZPxIyIn7lNfGNQWO/EEiYvOLy9SbwV16tx8wx7Z6+RBHoWESgJv75i5S00p/sa1vBBuqjFYuTObWBNPdPaS5mGHmRMrpVFC11KTISp5JWg1tzarFYWycELKSJlsPx3I/oosArtdX26gEvAsm4/bxMgx4ITHgbRchCJhQELCrkVhApU7Egen0+Vn+Q9Zk0QBC931/mWyGzX2xJI7kJtgJOQJqnRyRCV6rpxkisMO3UelDdCZmloPH0BZXdvRJfripB5BSKl522IWw2cr2sjgD1nfDIsVv6c56C4LBwWWVG+HaGBGQp1LO9ZHBBMkrV3Lu/RT5IrRoBxLudBCBnv/XV/NPL4nqJzCKyaXU4faCpkxcsxBg1zIXbyjJg9nCEnEzVpcjPtlwWXXxAAxUT+04Y2pQJVKG5N1wmwC2xmftPDO7c1YMjJQfdefcvk4r53AoCoglYW3iV5OxbbG496kql0t7XiTE6sBKH2NmSXgZFMwLGEcdQCqWCQWmvQRpY0WO6eENLwO+g8CAwEAAaN9MHswEgYDVR0TAQH/BAgwBgEB/wIBADAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMA4GA1UdDwEB/wQEAwIBBjAfBgNVHSMEGDAWgBSgbnT1MfCwFH3ifz+mxHxv2YRpXDAdBgNVHQ4EFgQUAYZj8PZQANNaZLrFPeiLb/2IL5swDQYJKoZIhvcNAQELBQADggIBADJT9j9sUu+kPohiHm7OyNHNYhe0dZz6ICwnzKSfDftbuTbQRrWHwcKt6T/2vZrAZofqUQ3znGvRD035UoIWOwdACEZtB91H729z8qIufSdodUfaImX1ECl25U/pKz/3sEH1U3Gee8RF4HsL9/fW9gBI+s6UsbNJrusrx0Di3WswOJKQ89EdnZpF4Z3yOtogGU6l/ZBk0Hh6WRV8MCNbechf+hcjSjEI/q+Hx+y1Pw06rthc2Vf/P0G51JL6fMFp29Ef9OSPQOutFX8s26lWykU+a0uAD/pz+R0MhbR4M7WOtfNtK6L5iW/WvAGgrxpAuLN7e4VP0HSueXQd4EeTm/O43iv9HUaMBDFrirepEEIixfV+vyToIdG+GMI3O9ioVaPVyE+cMDCkQMAVrMmU29QQ27RQK4xTOoGVBHFQ9rPsyVYE4Ts/7Zg64v+CjBGh3HuxC2/ioRD9hXDd4V13ZRrBPLoPNQi8Iik/dI+jHXW5B+D8zKWtZ4gdSEvlxWMpeOBqjSPmblSivouyo73jT9LOOp6Z0GG90XGcrRyTpBqXrU2AtOhl52W07atPZTFydJTCU9ZMlnaPDT1ay01VLxxr9wmFBrgGu7Jet3tYGSbrNvwYoJuZYGGbNNIv8rIV/gouCxoYHKetUBTkPh4zlNsJepGtRFvIjUOhJ5Tep8Ef</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Terra Gruppen Bank CA 1, OU=979319568, O=Terra Gruppen AS, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>Q9OCttcM9MSgjwoEtqRmqkK55Kg=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDvDCCAqSgAwIBAgIEQDShwTANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDQwMjE5MTE0NTA1WhcNMTYwMjE2MTE0NTA1WjBlMQswCQYDVQQGEwJOTzEZMBcGA1UEChMQVGVycmEgR3J1cHBlbiBBUzESMBAGA1UECxMJOTc5MzE5NTY4MScwJQYDVQQDEx5CYW5rSUQgVGVycmEgR3J1cHBlbiBCYW5rIENBIDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+S66tH7igb+tuhHpy2zCFOZcQxNycqoZKMwrg9CP5Axo9SHCpnXGum5EMT0CZgnWMwN7rsNXNMdEG92jKEouPKbOuHo6zPZT7oLkWMUGc1FJ7w1kPRDhiaXWwOamhAbem8079tChRaBRQq3s2RKozH1EAsH7qGR+DoPV8aBlNdXbQXiMxUZRPvrTDg/m1K2yYeOE+3lCSALdO00zVTFQrXA9mWa+BDnT5WXcnfkwwN8DaHctf+RQKrwUUzXi16HCF45f/VawqBZG4grAATiQeKAjWZUltIAJJXT9QY31hWkK/DdnzN0WdoF7pRDu3tUK1iRWCtEsQ9Jc+FzF+zEfPAgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgEGMBUGA1UdIAQOMAwwCgYIYIRCARABAwEwHwYDVR0jBBgwFoAUaSQqxYzfDPewQDHgiboair3vffswHQYDVR0OBBYEFEPTgrbXDPTEoI8KBLakZqpCueSoMA0GCSqGSIb3DQEBBQUAA4IBAQAiPG6zqna5SZG6bwME/qLOzquRj4EQImIETs/T6kr68EZqbBJQ0SCOio8XbKeyOgIMA7IxlyKKqMHOcyIBM0M/fwRxeDr3A8ttX2yIEQR/NKgPqQI8XQEvZ4BsV/Y1ABCrlMKMRqEBMYhhXeb6iSjYgAu5+Bs/CF4jWTHi3e0kJ1CXawoXk956NS5RCOVSpeZDUuFzBxFOrJTKp0fJbfSa+aM3N5br6JYsgBHZ06zibntDExp6QVDOMapmcq+apGfdvwX35hvP+AheWWnML6Nhsucv9Glnn04rZT98qApUVQMkE/VoAECC6Q54tvPtBhOM5nX6Q26BWWEsoaYucSHL</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID Terra Gruppen Bank CA 1, OU=979319568, O=Terra Gruppen AS, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>Q9OCttcM9MSgjwoEtqRmqkK55Kg=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2006-06-30T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Alliansesamarbeidet SpareBank 1 DA</Name>
+               <Name xml:lang="no">Alliansesamarbeidet SpareBank 1 DA</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-986401598</Name>
+               <Name xml:lang="en">Sparebank 1 Utvikling DA-986401598</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 778 Sentrum</StreetAddress>
+                     <Locality>Oslo</Locality>
+                     <PostalCode>0106</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+                  <URI xml:lang="en">mailto:post@sparebank1.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID SpareBank 1 Bank CA 2,OU=986401598,O=Alliansesamarbeidet SpareBank 1 DA,C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>uc4U8R9tGmJGe8GMK7elunk1wqY=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIFyjCCA7KgAwIBAgICAZMwDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MDkzMDA4MzMwMFoXDTIxMDkzMDA4MzMwMFowdTELMAkGA1UEBhMCTk8xKzApBgNVBAoMIkFsbGlhbnNlc2FtYXJiZWlkZXQgU3BhcmVCYW5rIDEgREExEjAQBgNVBAsMCTk4NjQwMTU5ODElMCMGA1UEAwwcQmFua0lEIFNwYXJlQmFuayAxIEJhbmsgQ0EgMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAJeuiamPt3wBUgZPmmho39h439tEJE9zVYS9KjdkZOjRkAqq+tUwiXfxszr7w3P0swtMyyX1nrZRqt5QbQ6JI7kKH++8Cp5AbbrZipEVwdIsiQ4lz8MbajrCfALAjUU9IgORfR3HqIrrgMyaB8LFftcsFblwOYpyRlKIxurPPXROXCcq23a3ZDnCe6406pCFzWnZmxIG/5BI02Me1Qt/Nk6+P0bC19XFcg5MIBBvLQHk4ywS3jqpDqJpwFKJCFa0bu9qp1F2qsZdcPLFxf+gVI1LlTZJE8AalbAibCeCYbANbek5XMOGY1mRk2xnDlO/4J29VvRFfGx860Crj7gokoqy33BxMkiHZzx1sgtjE18HP/lbFVL2zgkFgzRc85UM6RKq0+ELOww2ythcALC1417iZ2vNsenpPnONK8qiqoaHCaSJmjns3oefdps6iPSB1CNw+vWKmWiX/sfM7JIC6ht/oKOq6FgJRiNL5/NGi2G5pXK08/PF7z+eEZ+6IcWExLVC+9qiA7HyHRpB3RxIYD4UUwIGJaXj9mWxDvedR5MDyhA87c8EOTGMFdrjJ7G1w7sZpvR60CkDBaWTQDD4DR2xr+6NbrCvYzsvtXNwcZqf5yxg29Z42fNkr9mmcbc39HGtCreGHgFTfOBN+5/xHRA8MOvXJIf8qpnTwLibX2fJAgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwFQYDVR0gBA4wDDAKBghghEIBEAEDATAOBgNVHQ8BAf8EBAMCAQYwHwYDVR0jBBgwFoAUoG509THwsBR94n8/psR8b9mEaVwwHQYDVR0OBBYEFLnOFPEfbRpiRnvBjCu3pbp5NcKmMA0GCSqGSIb3DQEBCwUAA4ICAQAvHFCqMzdllVcEcEgdXV0Y5temTOiekQcp6r8qCmSOwRv0UhP+igzRHv6N/iWsUBkImaqlXxUxZUPUSoPtdJQLnHtNUERmW5GHvL5bc2zhlJF0d2o5u8wh/TMdGBKLvbYzmiFBi0DNhv9hg+JIp+Pfi/QrwRHupP9574F8VdD0gEMJGXNPsj6FVcyGuwBH97hkNOUFzsgrhzVmoNn6KCftfOmGEu6qeKmWXZSF+sCPlLVOzBH4NqCPkxfbur5WoBKfe+fHwGk3j1hgG4NXav7lLdr6Wgn8o7QjPt8AUZftrK8xMlF7LYrRONW7zxF2EnHwUXexab9XzU6l1ks1l7kAUiOE7Mi0h5G1b3762Qyvc2O5iibzlfkNuPHCdBgb0rrw1SGSgkXtVsZq4vFTqO0dTN4moTR75I5dVMXCT/wSfkIVx04P01Tg7BIPFuz/AdltX2iSZpH4YNANtSvSCmt5ZwoEeD1g7tud0KR9Bf7Daa6cDGHbMOSxbv8oNE2RCkUcJVdEg2wd7qkguJrlganu0Dq8XJR0w5M9cjPZZ03eR9Q+ViP0iGdvedNpPXwHvgzIdCJuizcYjmUuKWS5A9KzleW2r4QZaEOilyYdDUgfQ0Gkr3n3B19XpYMEvCVHNE9yNF5A1hrAbWEFoirRL2QxXuRFuVWUoBJ5yDLWcx7m4w==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID SpareBank 1 Bank CA 1, OU=986401598, O=SpareBank 1 Utvikling DA, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>ZPGchVPX4l9XcZCjiIyDONA1EJI=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDwjCCAqqgAwIBAgIEQH5o0jANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDQwNDE1MTA0OTU0WhcNMTYwNDEyMTA0OTU0WjBrMQswCQYDVQQGEwJOTzEhMB8GA1UEChMYU3BhcmVCYW5rIDEgVXR2aWtsaW5nIERBMRIwEAYDVQQLEwk5ODY0MDE1OTgxJTAjBgNVBAMTHEJhbmtJRCBTcGFyZUJhbmsgMSBCYW5rIENBIDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC1bEbAFsCtgKyVsyd+8UwFFEwkdiBLvqWz7A1Z/725QLVJPbpWFn/wgzYNaHiQ2BMMrvzYdT9I/6fGvrWSziMxNNvPgqdSRTI5NMQV2NR6T67gAIQ8D9bbcQjXVdeOGH+0p1QXG+H71HoXd6HSDAMLiOgxoIni0LQDtfnHSzSUjCd19iXjQ2poxRXYVjnJSQXTZdLWl3TDvjnL9tdQQXbCwUX+s8tozDgTstEu8S+wuj0iHK0yVA3yiogZsd3qaYusNKACjNQJtDXhjccdh/OcKQzPCsEWItGi3iRvMW7c7vFv1x+4ZIJLSXRtgqODD5KGi5ZnTjIjH2ixvYgiIzupAgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgEGMBUGA1UdIAQOMAwwCgYIYIRCARABAwEwHwYDVR0jBBgwFoAUaSQqxYzfDPewQDHgiboair3vffswHQYDVR0OBBYEFGTxnIVT1+JfV3GQo4iMgzjQNRCSMA0GCSqGSIb3DQEBBQUAA4IBAQCLPCWCIQKap+sXo/HxdxtzrO5zFefi47BAwqH//3JKzL9pfpaodR1uq9wtmcvm8aAzIO+upcC3TCi0p3KSHroUhs8ygF9vON9mdynukZ/UL5PXJO8tjZ0Iuz1JI80qJUckpHEYTt7V6fRZD6tHyMM9Y2B1tNLAitE6xToC/8nNKBlMammbKSwjjuctQDEOcyFSzlIoB0nEde/yHZm2DO1loErzB5Cf4aojVBDK0Z1LhrnaCR3dMccccWdpcgbLP2DBgT1OlWbZBFnakLrO2ZasjIdkVixXtrYshHUWMe3Y/TRGaXS0J0PyUZ8L7Bh812Yx1eJt+b8oxKjbtI24ZrkH</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID SpareBank 1 Bank CA 1, OU=986401598, O=SpareBank 1 Utvikling DA, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>ZPGchVPX4l9XcZCjiIyDONA1EJI=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2006-07-03T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">SEB Privatbanken ASA</Name>
+               <Name xml:lang="no">SEB Privatbanken ASA</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-982582709</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 2333 Solli</StreetAddress>
+                     <Locality>Oslo</Locality>
+                     <PostalCode>0201</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+                  <URI xml:lang="en">mailto:CM.Clientservices@seb.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509Certificate>MIIFtDCCA5ygAwIBAgICAlswDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTAxNDA4MjkwNloXDTIxMTAxNDA4MjkwNlowXzELMAkGA1UEBhMCTk8xHTAbBgNVBAoMFFNFQiBQcml2YXRiYW5rZW4gQVNBMRIwEAYDVQQLDAk5ODI1ODI3MDkxHTAbBgNVBAMMFEJhbmtJRCBTRUIgQmFuayBDQSAyMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArqWxMaE8O5icZCxTXFQsMbBfzN+HTEUeeKuPkuWJcjWNypKug+nzhfCnqbXMcIbmXPv9sjOv4lXbsKFrNmrYncFZK+zSVpjGwaDNqUrXseGlupMapOCUxLBj8DL8KcCYURDFBe5be+Cr1pGjiSbJqnnb3ASMumS9eT3ZMjfN+o1UUH/WshOtilkC6ZFcPEYFVKg7RDvmkj2PfCsmDciqjvIHpVmB2Wwssz6LzDoB9h4bLy4lvOGZUwAcye+T0pH4m6b4NNTQi+TuYtZiOqJHtlOmoVi3IVR1bi7Cu5Rd49XQOdVrrQ7QUxYxaKTiyWiJgCkgkAl+l27HEcpZpzz/ev9wZxaKFaxbSE1BYSZv+LmQVBFW4mWYG/ZyFr4EkWKLdt2Mo93G0l356R6otN3B0lKyJFFbU4ybunwNIk5kB+rzTOWJ/0g0BTM+Jblb+nLPcHlFx0g6LbBGF6BzvfwZypVJyqMKVI9wlWSe4mobksynK2JNVZEpfddrOL0txAwxTAW8hoM5pnNG8IWf2hE+tU2q7r8ph2lQxpRYNCDZxi5JhLW7sI2uAHVcf1lbSSbfwdeYD/3lRPwHPaPMtxmGPoNdPig9CxAFI2zHlKqSL2VSl07brAqRteXR23YP7p0kmF4gLEIu+YBxnThcnWqQO33UXKQ1/+DNMOV7/8yj0W8CAwEAAaN9MHswEgYDVR0TAQH/BAgwBgEB/wIBADAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMA4GA1UdDwEB/wQEAwIBBjAfBgNVHSMEGDAWgBSgbnT1MfCwFH3ifz+mxHxv2YRpXDAdBgNVHQ4EFgQU6NSHQC1bPSZyX119QtsIQ2PtMaYwDQYJKoZIhvcNAQELBQADggIBADzbe+pMJ6u4a+qNTmBnKpi1Z8XvpkioLpEVnpl/VqUSAjs5uG1RvjTnSPp/GHOfwQ7XjASVyrDP6gJYcquvJVXic1TJ2hdI/TsJFJoxk8p5JIHbuSknEYwR0y1cZIrEQgu+FlpEtOZFpXiU3QhnMWMuFaSrrbq24AVhSd2n3QWgtDMhz1DH5gUCboK/aj2twgRpxnUUBGbgzWKLY0oFhM2h/G5ZXGP2W8rV9T+wvT24SeXDlOs9hTbT91lULEkNDE1/Yd8kvSy7K3/o5ie+/OJ7uapLXBFE5bDCvdeqkHYZDzw8tcdApuf3ZueTwdn3i+tdtEymphyCWvEKB9FGn9rGXssh19FlGWTjU53GGo6uHjtIxN8Thm/E8OlHckKTTi7MNmK9jKCbQRxkx7+FGpF8b4s7KIMRJyjYKLrm5ncW/fw+tYsZH7vqAoJTho/rksodBZFMLoZAsuJeMgBiOTB5GIJZ2Kg8BLA7Ty5Hl4cb87FkPJKpxjcAAZda+WY4aOL1TH4Oe+rpF5popGjLycEifYlRPaBNXPutbypGC1yRWe2aMCLD4KZIYbXQvjwsd6f6B82JA6t8dsiHokDzQNvLOu2aGN1PgYsrSUgHVai6m7DRV0eSw3kOVvO5QbdB1D7DacAftzmJHjpjCsKc+iBvGsp7EoQFkRFmo/uUPVMm</X509Certificate>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>6NSHQC1bPSZyX119QtsIQ2PtMaY=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID SEB Bank CA 2,OU=982582709,O=SEB Privatbanken ASA,C=NO</X509SubjectName>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2015-05-28T22:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509Certificate>MIIFtDCCA5ygAwIBAgICAlswDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTAxNDA4MjkwNloXDTIxMTAxNDA4MjkwNlowXzELMAkGA1UEBhMCTk8xHTAbBgNVBAoMFFNFQiBQcml2YXRiYW5rZW4gQVNBMRIwEAYDVQQLDAk5ODI1ODI3MDkxHTAbBgNVBAMMFEJhbmtJRCBTRUIgQmFuayBDQSAyMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArqWxMaE8O5icZCxTXFQsMbBfzN+HTEUeeKuPkuWJcjWNypKug+nzhfCnqbXMcIbmXPv9sjOv4lXbsKFrNmrYncFZK+zSVpjGwaDNqUrXseGlupMapOCUxLBj8DL8KcCYURDFBe5be+Cr1pGjiSbJqnnb3ASMumS9eT3ZMjfN+o1UUH/WshOtilkC6ZFcPEYFVKg7RDvmkj2PfCsmDciqjvIHpVmB2Wwssz6LzDoB9h4bLy4lvOGZUwAcye+T0pH4m6b4NNTQi+TuYtZiOqJHtlOmoVi3IVR1bi7Cu5Rd49XQOdVrrQ7QUxYxaKTiyWiJgCkgkAl+l27HEcpZpzz/ev9wZxaKFaxbSE1BYSZv+LmQVBFW4mWYG/ZyFr4EkWKLdt2Mo93G0l356R6otN3B0lKyJFFbU4ybunwNIk5kB+rzTOWJ/0g0BTM+Jblb+nLPcHlFx0g6LbBGF6BzvfwZypVJyqMKVI9wlWSe4mobksynK2JNVZEpfddrOL0txAwxTAW8hoM5pnNG8IWf2hE+tU2q7r8ph2lQxpRYNCDZxi5JhLW7sI2uAHVcf1lbSSbfwdeYD/3lRPwHPaPMtxmGPoNdPig9CxAFI2zHlKqSL2VSl07brAqRteXR23YP7p0kmF4gLEIu+YBxnThcnWqQO33UXKQ1/+DNMOV7/8yj0W8CAwEAAaN9MHswEgYDVR0TAQH/BAgwBgEB/wIBADAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMA4GA1UdDwEB/wQEAwIBBjAfBgNVHSMEGDAWgBSgbnT1MfCwFH3ifz+mxHxv2YRpXDAdBgNVHQ4EFgQU6NSHQC1bPSZyX119QtsIQ2PtMaYwDQYJKoZIhvcNAQELBQADggIBADzbe+pMJ6u4a+qNTmBnKpi1Z8XvpkioLpEVnpl/VqUSAjs5uG1RvjTnSPp/GHOfwQ7XjASVyrDP6gJYcquvJVXic1TJ2hdI/TsJFJoxk8p5JIHbuSknEYwR0y1cZIrEQgu+FlpEtOZFpXiU3QhnMWMuFaSrrbq24AVhSd2n3QWgtDMhz1DH5gUCboK/aj2twgRpxnUUBGbgzWKLY0oFhM2h/G5ZXGP2W8rV9T+wvT24SeXDlOs9hTbT91lULEkNDE1/Yd8kvSy7K3/o5ie+/OJ7uapLXBFE5bDCvdeqkHYZDzw8tcdApuf3ZueTwdn3i+tdtEymphyCWvEKB9FGn9rGXssh19FlGWTjU53GGo6uHjtIxN8Thm/E8OlHckKTTi7MNmK9jKCbQRxkx7+FGpF8b4s7KIMRJyjYKLrm5ncW/fw+tYsZH7vqAoJTho/rksodBZFMLoZAsuJeMgBiOTB5GIJZ2Kg8BLA7Ty5Hl4cb87FkPJKpxjcAAZda+WY4aOL1TH4Oe+rpF5popGjLycEifYlRPaBNXPutbypGC1yRWe2aMCLD4KZIYbXQvjwsd6f6B82JA6t8dsiHokDzQNvLOu2aGN1PgYsrSUgHVai6m7DRV0eSw3kOVvO5QbdB1D7DacAftzmJHjpjCsKc+iBvGsp7EoQFkRFmo/uUPVMm</X509Certificate>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>6NSHQC1bPSZyX119QtsIQ2PtMaY=</X509SKI>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID SEB Bank CA 2,OU=982582709,O=SEB Privatbanken ASA,C=NO</X509SubjectName>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID SEB Privatbanken Bank CA 1, OU=982582709, O=SEB Privatbanken ASA, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>IWIpkcpSaSwr/4Z6UUiz6tVxmVk=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDwzCCAqugAwIBAgIERRzzaTANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDYwOTI5MTAyMDI1WhcNMTgwOTI2MTAyMDI1WjBsMQswCQYDVQQGEwJOTzEdMBsGA1UEChMUU0VCIFByaXZhdGJhbmtlbiBBU0ExEjAQBgNVBAsTCTk4MjU4MjcwOTEqMCgGA1UEAxMhQmFua0lEIFNFQiBQcml2YXRiYW5rZW4gQmFuayBDQSAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr4TT+d65Ainhjnl/q0K65mMzce32d88W3ItZ1n7xO1V/vOtdY3teMDnZYsp222kQf/deBlJYquURmRguJuLMUbO3G4Pxzv+A2SOlBxshd/xtC4ZROdkWDtpgOM5RfHfuDHX17GwxJef/D16NYBW7Z9mqLz+cSIGxOLjctV2ebuHzzm4ANL9BCnW5ewJGYqk1dqmGN/svk/lk/fIpHKboZnhMP9/ZXR+uZMO8I0awYOV/9zxxoaObnIaNAugcg4d1uuznfxMhltkXk03rftgdMg92Av9g6Lo5GZxGKiGLNNZQiffFw/ShDbe0INmtpqGGlVl/Sn8p0N04O6lF3Dv0KQIDAQABo30wezASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBBjAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMB8GA1UdIwQYMBaAFGkkKsWM3wz3sEAx4Im6Goq97337MB0GA1UdDgQWBBQhYimRylJpLCv/hnpRSLPq1XGZWTANBgkqhkiG9w0BAQUFAAOCAQEAPppABUpCaeSwj6hKq+/xNsBI2iNBuaq2xdsXDA01EJmuDqu/T8pUQXEG+xSRAhQzPcCan6gT+b/xXYw+h4UorbUv6M3Z4LTZf8HmLMi0CqcK2ViXw1PGQ2vdvRfttNW3ZDS+V6Xc7TzwHB1CrfE0G0006c9EB8YjIk0jo3Zd65qdkGjkDcrps3GkXEJ5vw/3lvmbvnDEgeSzqXSIwTlv4tsPvNo+/y2rtV869xLWgYMsHWgEXzCM/fBiddqelvFtGf2PKGSYNjVtz4rDqev1POfo5nS5VPrGk69YYIAYEx0vSQ1Bv2XgZEOj9Y7eUXxnlkwDUmWEZ0LN/I5DPAA8gQ==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID SEB Privatbanken Bank CA 1, OU=982582709, O=SEB Privatbanken ASA, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>IWIpkcpSaSwr/4Z6UUiz6tVxmVk=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2007-03-15T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Handelsbanken NUF</Name>
+               <Name xml:lang="no">Handelsbanken NUF</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-971171324</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 1342 Vika</StreetAddress>
+                     <Locality>Oslo</Locality>
+                     <PostalCode>0113</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+                  <URI xml:lang="en">mailto:utvikling.norge@handelsbanken.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Handelsbanken Bank CA 2,OU=971171324,O=Handelsbanken NUF,C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>iSHNYHhl4Zq1/l/WqlZtcftadtM=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIFuzCCA6OgAwIBAgICA+swDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTExMTA5MjYyN1oXDTIxMTExMTA5MjYyN1owZjELMAkGA1UEBhMCTk8xGjAYBgNVBAoMEUhhbmRlbHNiYW5rZW4gTlVGMRIwEAYDVQQLDAk5NzExNzEzMjQxJzAlBgNVBAMMHkJhbmtJRCBIYW5kZWxzYmFua2VuIEJhbmsgQ0EgMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAO8QQYN4UDhhNqpS6iS5c8wfjHoZ5MtsUtdUFMEmAFPwbMYqZ6znaIbml1RyzLoV8R9HtFqzt7/Cqyu2wKLtx60HsqSD0K6w+X+tLVQA4wa0c5BjNGutU26f+O7BDZKuMnvqrOB3CYamiTTgQ9ED9NoMtIKJ465keVzB74Q2JZFWCq2FpIozMtwXKtDVzGe3PTE5v3Nd3OPcu3QCTTCFIo0Rsm7TFWeGROULas/Jgx9ONd3RvNi7I91ZyDISfnTIUZHW0j3lbI98ELRtul3lxwMSaWpV2QfxzklkvaVL47Cfo0T5Q0ImjNiXgcgQIq36fvX3Pub6wFTF5lb0kW2Q/T1976mEdd6bfD0mVf071XTdCh2TzTUUwjdhir8P+A4bR3CURV8o4VLHOfYYOquILf63xsU5GES94b/H6iAJmIoTAf5cpKR40D8y5WQLjfRkd3UV8Xjw8gWSqsGk5WHExYgY5buPqF1YuN3uoD+79sFzquQrctBdYztEuW7FYwDtGLKZqyU6QrRgfN8/NJcyt4SkiqUoIFa8fbQzMlQEpgAjGeVKKgeo5g1GPk/7z9KDvogjne1DYruCQS2T07rsRTJI5FNhwImiTvtTElgbPLUN4/ezMmMGCYm7k+0rYtUE7LJqkIXnfUPm5YMoE9cjxEJBrjBbocDcHXzJPMDEgpu7AgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwFQYDVR0gBA4wDDAKBghghEIBEAEDATAOBgNVHQ8BAf8EBAMCAQYwHwYDVR0jBBgwFoAUoG509THwsBR94n8/psR8b9mEaVwwHQYDVR0OBBYEFIkhzWB4ZeGatf5f1qpWbXH7WnbTMA0GCSqGSIb3DQEBCwUAA4ICAQAJ9wpUUngx0l4LSwsNSM8ck1Gq2kSBMpaV6dEfDCHD8b1Otl29jVWhmG5qjnQ+phF5x6qr8fAgrgUPyEOcSh2K2p0W9hw1yCgvesAt2oNmP6EjAase0VPaChNMTXOGoVClN/ZEEPyDBSUs0d/0dGDUUfBbpPw7s8mcM+BmSJjZZQOqhp6qvVEyzQrgGtJ29Y92saXxr1tvmdbf9ld2Br2MzFDH/vqyYVocJsdClw/dCZFMIE1CfJL7gRq27IzTkjFbCFuE9wJmtlKkPqAKJADTMV/V5HxTQYjkr+GUycjmCxHDb7SFV0qALED367+mcm9VJQZ1CxMb2AodwN0edO8OI5C4Nlqed8d/v5LaF09puTzSdn2s5ELTCHnR+QWo3xK0I1MuE8u1AvV9euyZOlaC57tBOSuyAokb93q+3Zp+zB2TcExIyJywBoSUb5k9Z8gexi9bT6TOK1KLJQKljVQ50IvBXCEZo0Y7LfMavKXePUonLf4Ks03h+q1vVVn+dRntXguvQxPM5hbodJ/V4HHt+wV950BxBYE3W4KBKjvhuZ6vNOpwA+bOD8Nw8xsneUXwKnWEngCqzGUzlqJQ9IWp7+zQDh3IDvv5leZGMfcL+HQ+YEQQo+Tj1izBNuR7v7pfyZoKujEuou+Y3YU/KVw4HeUh8K6taFTVQaKNfMaK/w==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2015-05-28T22:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID Handelsbanken Bank CA 2,OU=971171324,O=Handelsbanken NUF,C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>iSHNYHhl4Zq1/l/WqlZtcftadtM=</X509SKI>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509Certificate>MIIFuzCCA6OgAwIBAgICA+swDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTExMTA5MjYyN1oXDTIxMTExMTA5MjYyN1owZjELMAkGA1UEBhMCTk8xGjAYBgNVBAoMEUhhbmRlbHNiYW5rZW4gTlVGMRIwEAYDVQQLDAk5NzExNzEzMjQxJzAlBgNVBAMMHkJhbmtJRCBIYW5kZWxzYmFua2VuIEJhbmsgQ0EgMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAO8QQYN4UDhhNqpS6iS5c8wfjHoZ5MtsUtdUFMEmAFPwbMYqZ6znaIbml1RyzLoV8R9HtFqzt7/Cqyu2wKLtx60HsqSD0K6w+X+tLVQA4wa0c5BjNGutU26f+O7BDZKuMnvqrOB3CYamiTTgQ9ED9NoMtIKJ465keVzB74Q2JZFWCq2FpIozMtwXKtDVzGe3PTE5v3Nd3OPcu3QCTTCFIo0Rsm7TFWeGROULas/Jgx9ONd3RvNi7I91ZyDISfnTIUZHW0j3lbI98ELRtul3lxwMSaWpV2QfxzklkvaVL47Cfo0T5Q0ImjNiXgcgQIq36fvX3Pub6wFTF5lb0kW2Q/T1976mEdd6bfD0mVf071XTdCh2TzTUUwjdhir8P+A4bR3CURV8o4VLHOfYYOquILf63xsU5GES94b/H6iAJmIoTAf5cpKR40D8y5WQLjfRkd3UV8Xjw8gWSqsGk5WHExYgY5buPqF1YuN3uoD+79sFzquQrctBdYztEuW7FYwDtGLKZqyU6QrRgfN8/NJcyt4SkiqUoIFa8fbQzMlQEpgAjGeVKKgeo5g1GPk/7z9KDvogjne1DYruCQS2T07rsRTJI5FNhwImiTvtTElgbPLUN4/ezMmMGCYm7k+0rYtUE7LJqkIXnfUPm5YMoE9cjxEJBrjBbocDcHXzJPMDEgpu7AgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwFQYDVR0gBA4wDDAKBghghEIBEAEDATAOBgNVHQ8BAf8EBAMCAQYwHwYDVR0jBBgwFoAUoG509THwsBR94n8/psR8b9mEaVwwHQYDVR0OBBYEFIkhzWB4ZeGatf5f1qpWbXH7WnbTMA0GCSqGSIb3DQEBCwUAA4ICAQAJ9wpUUngx0l4LSwsNSM8ck1Gq2kSBMpaV6dEfDCHD8b1Otl29jVWhmG5qjnQ+phF5x6qr8fAgrgUPyEOcSh2K2p0W9hw1yCgvesAt2oNmP6EjAase0VPaChNMTXOGoVClN/ZEEPyDBSUs0d/0dGDUUfBbpPw7s8mcM+BmSJjZZQOqhp6qvVEyzQrgGtJ29Y92saXxr1tvmdbf9ld2Br2MzFDH/vqyYVocJsdClw/dCZFMIE1CfJL7gRq27IzTkjFbCFuE9wJmtlKkPqAKJADTMV/V5HxTQYjkr+GUycjmCxHDb7SFV0qALED367+mcm9VJQZ1CxMb2AodwN0edO8OI5C4Nlqed8d/v5LaF09puTzSdn2s5ELTCHnR+QWo3xK0I1MuE8u1AvV9euyZOlaC57tBOSuyAokb93q+3Zp+zB2TcExIyJywBoSUb5k9Z8gexi9bT6TOK1KLJQKljVQ50IvBXCEZo0Y7LfMavKXePUonLf4Ks03h+q1vVVn+dRntXguvQxPM5hbodJ/V4HHt+wV950BxBYE3W4KBKjvhuZ6vNOpwA+bOD8Nw8xsneUXwKnWEngCqzGUzlqJQ9IWp7+zQDh3IDvv5leZGMfcL+HQ+YEQQo+Tj1izBNuR7v7pfyZoKujEuou+Y3YU/KVw4HeUh8K6taFTVQaKNfMaK/w==</X509Certificate>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Handelsbanken Bank CA 1, OU=971171324, O=Handelsbanken NUF, C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>LLgshvgaZRlTX0LUYfRqh7qETYw=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIDvTCCAqWgAwIBAgIEROQcejANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDYwODE3MDczNjI2WhcNMTgwODE0MDczNjI2WjBmMQswCQYDVQQGEwJOTzEaMBgGA1UEChMRSGFuZGVsc2JhbmtlbiBOVUYxEjAQBgNVBAsTCTk3MTE3MTMyNDEnMCUGA1UEAxMeQmFua0lEIEhhbmRlbHNiYW5rZW4gQmFuayBDQSAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsrUTyv3XeQ5MKlt8BvAS2NJK73TF5rukEfaEbCOrE/1nQdYWFAU40AKiNT7iSTDNWDQH6//HjP1TUWEPFwUicTjOmlTf9qxpVwhEZiB8SFTDkzda/Fk19eDqs7KeRTmt6pZQ/T6arAp7riyKYAICZY9tOtRVtvI7F2Ska7UhSnanWU7EO8aOmxz0KJxJebNgS/2d+EiI0VaGEgETWVHMBK+PchUqVjDcOxStnOl+mFOkB8bW9lCl3Ok5XHdPurBWOo+jJkrhu4utHWfz3peEUYBFcU42iKtac7eyg6njfPTm7/M85q7NQlpzsE5RzICnGhMhWoMn3DUwEG3vjSVCNwIDAQABo30wezASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBBjAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMB8GA1UdIwQYMBaAFGkkKsWM3wz3sEAx4Im6Goq97337MB0GA1UdDgQWBBQsuCyG+BplGVNfQtRh9GqHuoRNjDANBgkqhkiG9w0BAQUFAAOCAQEAjiovD8aladZoIvXF+btsO+pCf3Uvozy0avYld1p8q4yooOBCtWVaMorqWWgLXw057VHyUOX/RGWvQf2PGBKqo46Q0ITlrtyaZLXK1/3bAAHRWY80keT3u0pUyIi87x6wOxtJghLFxZHjkKEXQsp4vWt76CTdrUqORBwCum22GJT1Vvj78hRp37FKnl5i7UZl22+S9Mb2rJjtXOI2uCQ/chgybGqGUOiLN83HrzmE7aRbs19OTY3vFuD/73UO8ixdv/0IMQqqLKP59XeoXLBlpqzE0IOU+B4y8lCVzE59Gnu+DF9Z/KpZ1ZRrOeemNSbNuPPYblVXIgvjcHtl5uMnwg==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID Handelsbanken Bank CA 1, OU=971171324, O=Handelsbanken NUF, C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>LLgshvgaZRlTX0LUYfRqh7qETYw=</X509SKI>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2007-10-08T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Skandiabanken AB NUF</Name>
+               <Name xml:lang="no">Skandiabanken AB NUF</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-981291220</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Postboks 7077</StreetAddress>
+                     <Locality>Bergen</Locality>
+                     <PostalCode>5020</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+                  <URI xml:lang="en">mailto:kontaktskjema@skandiabanken.no</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">https://www.bankid.no/Dette-er-BankID/BankID-in-English/</URI>
+               <URI xml:lang="no">https://www.bankid.no/Dette-er-BankID/Regler-for-BankID/</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID Skandiabanken Bank CA 2,OU=981291220,O=Skandiabanken AB NUF,C=NO</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>e7gdEue7si38j89BupLkRxLITgs=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509Certificate>MIIFvjCCA6agAwIBAgICAyMwDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTAyODA5MzQyOVoXDTIxMTAyODA5MzQyOVowaTELMAkGA1UEBhMCTk8xHTAbBgNVBAoMFFNrYW5kaWFiYW5rZW4gQUIgTlVGMRIwEAYDVQQLDAk5ODEyOTEyMjAxJzAlBgNVBAMMHkJhbmtJRCBTa2FuZGlhYmFua2VuIEJhbmsgQ0EgMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAMisE40WPc1KviY9lIagmbvCMniap/dCg8r5/bEarxSoXYYQU9lpp5L1OmfwvlU/lSZPkt8cdpK0tORnBFKvhIitC84qRnCcB/OQug3ULyRtc1mL5aKxLCwb50adCt97hSPvGy86QKG6SMxBLMQxjgDZVt/VIDr9f1vvdSs6zXMUUXzLHg4UHqMQ+slY1AsugFVKKf7ePeGN7Lt9Uy+MhzrkErvQ+tlsyTognBUQK9XHBF1wO4WjzvyJuI8eR3xDsgcFcdV8fFOXrBC9MNoqHXFWc6mVq85sACOirQWZgu+x92Fn3rHgOM0ep4zebbsFpMzBKSQg9WA13wnYAIE5ImM0Ucjy3jPKTN8Ld8HB8GULz4e2WZgKQHr+Y3+nYnZp5RWK5ap4xO504ZfeFGjcY5qCDADsB94rWOSNH61FmMDMnb7nNrYMxTC/TGW3/TVbJjPGgz1o2CSwddCtJMpOU+Sne4wRHRBQ94eUWotoToaIzfPos0Pvwnu1u4Q9BEVzUacETsjeqByXRVdHxOCXR/aL77yaTbkdPYvg60WD745uXVBM5pQhfKgn/Kpbi+cP0DKr8w9gfYVEh7HSFDPngJKeBwyRMwSuAO4kSyjyyGxWjoH88tSokyRSjeNSg3U0BRo2T9balxxt3YTCXLzT+F2sew7s+22zf2CBKH9vFvTfAgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwFQYDVR0gBA4wDDAKBghghEIBEAEDATAOBgNVHQ8BAf8EBAMCAQYwHwYDVR0jBBgwFoAUoG509THwsBR94n8/psR8b9mEaVwwHQYDVR0OBBYEFHu4HRLnu7It/I/PQbqS5EcSyE4LMA0GCSqGSIb3DQEBCwUAA4ICAQBTkKus6rHwwrKTtgc0WxCZeHQIg8fA4tCWzFCl2hw4aGC85qh9UvxjRYN1U6t3AgBzjseCEX6/e/Wy983mn98Ybn35sy6/eRDaI9UW+506eWe1FvaIXOFE8islSEReWdRLn2U8iC9Md/VX+yZeSJ1d3HwZoUXE5WwX2AJSRwLfMDpWgwm2i+a9pNJlDYubR2y7OHm+A+/czE2IsGAv7Ueate763tTUM1KhL0+YQGczDUycwYXNt9y0VC0fc4X3I1IqYDfvdxXJ5ZsFOweIgjHRkKF1GCabA936x4agSwkqn4LJeFxtlECjeuURqXiKpJrOiaMkfWC0WMoY/rSk/BSUdt81q0jacve3kEmbpsr9dyT8h1mgYLv2dFxIEpGt/0aZs4CUL82ZMOvQjMMBKbcaVfqi4v4Oe0SBKEttBeTEhMh2HlcIUTtxlSwHxOqiOFsWRNgTgMpppu9v9W6SRPSqaMhS2OJXxV64wwRsvh6+9a1EX6jAKmRFUYsSZQHhwO9lX/72Ppwk4CoxNOC0s4t0qb6baY03VTYNtaOF0KcigaDe6AKvASH1KmQtp0cdsze2JBIZ9XOCI+obnHC1qO8jdKYTV2dKT5lwk/U/4GlMC0WMN+jncJtxQ6LSK41mgLNeCgli1RRQQsJp7mvkkS80vgU2QF6Ybk/CkfNDWGEAVQ==</X509Certificate>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2015-05-28T22:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID Skandiabanken Bank CA 2,OU=981291220,O=Skandiabanken AB NUF,C=NO</X509SubjectName>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SKI>e7gdEue7si38j89BupLkRxLITgs=</X509SKI>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509Certificate>MIIFvjCCA6agAwIBAgICAyMwDQYJKoZIhvcNAQELBQAwXDELMAkGA1UEBhMCTk8xIzAhBgNVBAoMGkZOSCBvZyBTcGFyZWJhbmtmb3JlbmluZ2VuMQ8wDQYDVQQLDAZCYW5rSUQxFzAVBgNVBAMMDkJhbmtJRCBSb290IENBMB4XDTA5MTAyODA5MzQyOVoXDTIxMTAyODA5MzQyOVowaTELMAkGA1UEBhMCTk8xHTAbBgNVBAoMFFNrYW5kaWFiYW5rZW4gQUIgTlVGMRIwEAYDVQQLDAk5ODEyOTEyMjAxJzAlBgNVBAMMHkJhbmtJRCBTa2FuZGlhYmFua2VuIEJhbmsgQ0EgMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAMisE40WPc1KviY9lIagmbvCMniap/dCg8r5/bEarxSoXYYQU9lpp5L1OmfwvlU/lSZPkt8cdpK0tORnBFKvhIitC84qRnCcB/OQug3ULyRtc1mL5aKxLCwb50adCt97hSPvGy86QKG6SMxBLMQxjgDZVt/VIDr9f1vvdSs6zXMUUXzLHg4UHqMQ+slY1AsugFVKKf7ePeGN7Lt9Uy+MhzrkErvQ+tlsyTognBUQK9XHBF1wO4WjzvyJuI8eR3xDsgcFcdV8fFOXrBC9MNoqHXFWc6mVq85sACOirQWZgu+x92Fn3rHgOM0ep4zebbsFpMzBKSQg9WA13wnYAIE5ImM0Ucjy3jPKTN8Ld8HB8GULz4e2WZgKQHr+Y3+nYnZp5RWK5ap4xO504ZfeFGjcY5qCDADsB94rWOSNH61FmMDMnb7nNrYMxTC/TGW3/TVbJjPGgz1o2CSwddCtJMpOU+Sne4wRHRBQ94eUWotoToaIzfPos0Pvwnu1u4Q9BEVzUacETsjeqByXRVdHxOCXR/aL77yaTbkdPYvg60WD745uXVBM5pQhfKgn/Kpbi+cP0DKr8w9gfYVEh7HSFDPngJKeBwyRMwSuAO4kSyjyyGxWjoH88tSokyRSjeNSg3U0BRo2T9balxxt3YTCXLzT+F2sew7s+22zf2CBKH9vFvTfAgMBAAGjfTB7MBIGA1UdEwEB/wQIMAYBAf8CAQAwFQYDVR0gBA4wDDAKBghghEIBEAEDATAOBgNVHQ8BAf8EBAMCAQYwHwYDVR0jBBgwFoAUoG509THwsBR94n8/psR8b9mEaVwwHQYDVR0OBBYEFHu4HRLnu7It/I/PQbqS5EcSyE4LMA0GCSqGSIb3DQEBCwUAA4ICAQBTkKus6rHwwrKTtgc0WxCZeHQIg8fA4tCWzFCl2hw4aGC85qh9UvxjRYN1U6t3AgBzjseCEX6/e/Wy983mn98Ybn35sy6/eRDaI9UW+506eWe1FvaIXOFE8islSEReWdRLn2U8iC9Md/VX+yZeSJ1d3HwZoUXE5WwX2AJSRwLfMDpWgwm2i+a9pNJlDYubR2y7OHm+A+/czE2IsGAv7Ueate763tTUM1KhL0+YQGczDUycwYXNt9y0VC0fc4X3I1IqYDfvdxXJ5ZsFOweIgjHRkKF1GCabA936x4agSwkqn4LJeFxtlECjeuURqXiKpJrOiaMkfWC0WMoY/rSk/BSUdt81q0jacve3kEmbpsr9dyT8h1mgYLv2dFxIEpGt/0aZs4CUL82ZMOvQjMMBKbcaVfqi4v4Oe0SBKEttBeTEhMh2HlcIUTtxlSwHxOqiOFsWRNgTgMpppu9v9W6SRPSqaMhS2OJXxV64wwRsvh6+9a1EX6jAKmRFUYsSZQHhwO9lX/72Ppwk4CoxNOC0s4t0qb6baY03VTYNtaOF0KcigaDe6AKvASH1KmQtp0cdsze2JBIZ9XOCI+obnHC1qO8jdKYTV2dKT5lwk/U/4GlMC0WMN+jncJtxQ6LSK41mgLNeCgli1RRQQsJp7mvkkS80vgU2QF6Ybk/CkfNDWGEAVQ==</X509Certificate>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2011-06-30T22:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509Certificate>MIIDwDCCAqigAwIBAgIER0VnSjANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJOTzEjMCEGA1UEChMaRk5IIG9nIFNwYXJlYmFua2ZvcmVuaW5nZW4xDzANBgNVBAsTBkJhbmtJRDEXMBUGA1UEAxMOQmFua0lEIFJvb3QgQ0EwHhcNMDcxMTIyMTEyNjAyWhcNMTkxMTE5MTEyNjAyWjBpMQswCQYDVQQGEwJOTzEdMBsGA1UEChMUU2thbmRpYUJhbmtlbiBBQiBOVUYxEjAQBgNVBAsTCTk4MTI5MTIyMDEnMCUGA1UEAxMeQmFua0lEIFNrYW5kaWFCYW5rZW4gQmFuayBDQSAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzkpACl0ZpjsuAJZMWmMKMPywRDuVUIsty41ZfvAP5+LotfBUWDgD8MYmpi0sRqRoNzYDbHqmHKUUdb0b2wcGXVQ4Zlq61rPPbq63MySilZa2RbczV/5QJRTfgw/ye3HBQ7cjHZgX6IpPBPlUAtJ/8Sj1zMUm/GRFdfFl4/3S7uHCrtmsV660nsQb0681fd/sbUH4GiO06U4o4nOaEHKb1yOz9pFLjYBE0Jy87dMlQDdXyDDtFVCXBPfd26tclyHq8JLRyycRc945UxSsdWEhPJBfHAciS0Nh4IIPgaPvzPuH+afbYoS5TVhikVz29TMZo14esngRifkFyBl3iJPmiwIDAQABo30wezASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBBjAVBgNVHSAEDjAMMAoGCGCEQgEQAQMBMB8GA1UdIwQYMBaAFGkkKsWM3wz3sEAx4Im6Goq97337MB0GA1UdDgQWBBSNIP1J2RrYu0R1F13XgcoLM7m7IjANBgkqhkiG9w0BAQUFAAOCAQEAGYZnmKfz6rs0dPWpTC5wxeN64afYOGb/Qb5jsFfRKFqLXaeyxRGCwO2klzzzIdRdEZFUhCTjKmX/NJd9THYmNKbSWcgdhWbIa0rEsXL+P7CG/GoKU2t3OvA0lRXWEm0jiZw8bpr1KQoPeJl9vgXc3i3RMNEOYy625kmsP4H/9YpqM7ighaadiXrRMl0qztPX5gJKbHkqVjfjShZa8TWikF4M5z8txlba7nJg6ZPsolfRM9wRTWmVpfBY2vG1HyTfSq48bpVljJ90Xt5Tvf0HIhW/kFRVYJ5AgsdJkvg4GwOgzfKUbYNYQbZE4Kzm48mPaNhKW55nKIN4n87iUtU8zg==</X509Certificate>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>jSD9Sdka2LtEdRdd14HKCzO5uyI=</X509SKI>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SubjectName>CN=BankID SkandiaBanken Bank CA 1, OU=981291220, O=SkandiaBanken AB NUF, C=NO</X509SubjectName>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                  <StatusStartingTime>2011-07-01T00:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+               <ServiceHistory>
+                  <ServiceHistoryInstance>
+                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                     <ServiceName>
+                        <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                        <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                     </ServiceName>
+                     <ServiceDigitalIdentity>
+                        <DigitalId>
+                           <X509SKI>jSD9Sdka2LtEdRdd14HKCzO5uyI=</X509SKI>
+                        </DigitalId>
+                        <DigitalId>
+                           <X509SubjectName>CN=BankID SkandiaBanken Bank CA 1, OU=981291220, O=SkandiaBanken AB NUF, C=NO</X509SubjectName>
+                        </DigitalId>
+                     </ServiceDigitalIdentity>
+                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                     <StatusStartingTime>2008-06-13T00:00:00Z</StatusStartingTime>
+                  </ServiceHistoryInstance>
+               </ServiceHistory>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+      <TrustServiceProvider>
+         <TSPInformation>
+            <TSPName>
+               <Name xml:lang="en">Statoil ASA</Name>
+               <Name xml:lang="no">Statoil ASA</Name>
+            </TSPName>
+            <TSPTradeName>
+               <Name xml:lang="en">NTRNO-923609016</Name>
+               <Name xml:lang="en">Statoil ASA - 923609016</Name>
+            </TSPTradeName>
+            <TSPAddress>
+               <PostalAddresses>
+                  <PostalAddress xml:lang="en">
+                     <StreetAddress>Forusbeen 50</StreetAddress>
+                     <Locality>Stavanger</Locality>
+                     <PostalCode>4035</PostalCode>
+                     <CountryName>NO</CountryName>
+                  </PostalAddress>
+               </PostalAddresses>
+               <ElectronicAddress>
+                  <URI xml:lang="en">http://www.statoil.com/en/Pages/default.aspx</URI>
+                  <URI xml:lang="en">mailto:pma@statoil.com</URI>
+               </ElectronicAddress>
+            </TSPAddress>
+            <TSPInformationURI>
+               <URI xml:lang="en">http://pki.statoil.com/pds/pds.pdf</URI>
+               <URI xml:lang="no">http://pki.statoil.com/pds/pds.pdf</URI>
+            </TSPInformationURI>
+         </TSPInformation>
+         <TSPServices>
+            <TSPService>
+               <ServiceInformation>
+                  <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                  <ServiceName>
+                     <Name xml:lang="en">Certification Authority issuing Qualified Certificates</Name>
+                     <Name xml:lang="no">Sertifikatutsteder som utsteder kvalifiserte sertifikater</Name>
+                  </ServiceName>
+                  <ServiceDigitalIdentity>
+                     <DigitalId>
+                        <X509Certificate>MIIF0jCCA7qgAwIBAgIESuwVdTANBgkqhkiG9w0BAQUFADB3MRMwEQYKCZImiZPyLGQBGRYDY29tMRcwFQYKCZImiZPyLGQBGRYHc3RhdG9pbDELMAkGA1UEBhMCTk8xIDAeBgNVBAoTF1N0YXRvaWwgQVNBIC0gOTIzNjA5MDE2MRgwFgYDVQQDEw9TdGF0b2lsIFJvb3QgQ0EwHhcNMDkxMDMxMTAxNjI0WhcNMjkxMDMxMTA0NjI0WjB3MRMwEQYKCZImiZPyLGQBGRYDY29tMRcwFQYKCZImiZPyLGQBGRYHc3RhdG9pbDELMAkGA1UEBhMCTk8xIDAeBgNVBAoTF1N0YXRvaWwgQVNBIC0gOTIzNjA5MDE2MRgwFgYDVQQDEw9TdGF0b2lsIFJvb3QgQ0EwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDKuGSFazdWAgQOhk9aJulThBQljzoKiw6vUj53X+UV0Kn/qiUPAO1FLwYtLCHHsweYypEgf7PGp9+t8VkEjK+RPSfxAFW4uOUfcaU1jlIbQNv7nO3bTjd2lVV2IlXSDun3Du1lwO+Imnk6csc+wNwEjHmz7+EOReWWXp2vQann80DH6m/gnus482COfm8Rk6MQIQwQxsexSXoFUKzAzBQ4LGA1hJRgRbV1iza4khMjUv7q+vgI8zJ3O05Hi8o8vqOHlzGz73oIn3q6istc7j/PO+mahmZw0V4zM6Ffe6HrDNfQ9VOCChwpou2FRLWeBY3XIcBe8XtDgm189/uU3EpPsNJQ6D0wyG65CEISvN3fGB/XZtOCTj7MudWdm1pu1wQZkox2lx7vq5Go5oCAc08yMIGwnBZHastgc4DdoVGXBp3S4q6rJlUa6MyygCfm1JobmRD2AsHHecnt0+XhC6I1vq/w4b7p2zIYPwLcvO9Wjeh3bGLYMldNjR23olIz9DUBisw4Bm3zO6R6Wx58hKnvfddoJ6TUwKE5DYjLVroRGFWG1n5RwYd8heddJwpaR2UgUgltmXdmNEwnW+Gac7ZHplOHdw0KmMt6kZgLl5fjJpI/Hkz7Vikbw0y042EreBOSumAvCwOiTHhy7rxjiJAjDSQHIYUrGTg9+AmHEc889wIDAQABo2YwZDAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBATAfBgNVHSMEGDAWgBQTzGG8Gmg+X5kwd6lVMCIxkkrD4TAdBgNVHQ4EFgQUE8xhvBpoPl+ZMHepVTAiMZJKw+EwDQYJKoZIhvcNAQEFBQADggIBAJ0qMVAuZ2r7btfEPenoyNJN9jlxeWE89Qvbi5GAxr2j2aOkOCKnbsJQH9Ou/WUl97dX0fhcr5t78ZP+C+E1Z2Hj06CWOoafBE3W8MrteOfDuPdpvwaAcb+ZsWa4ZdDWmPAW9mEHudzU9V7cLmFj0Qd0Q7G6p6yj6gordzuXwFrK0sPlTK9W0bfSsk9pm2i+8AyqQ9J7IuNZFv+oU1rBiQgptX493ejkrGrS9WIKE3bdNVwG5/egi+dfXb4AV4HrIDttxdyUF1/0CgiCi3a4C/oI4siC4np37lR6tjW/k/GhXC18M3HJJHAAWQg3DhHfLzD8TH/Wn+0PcUF1EjNop/nDHwnR2p0bdsM4DXUorK59vrAWdCqz8D02KvmXpX9eSwKSSstXmWnjnPH5rhfcAXl14Tj2mD+nwLHWCxbAwAs2t5ZGlNSvhu6c1oxKo8DB8IK5nAJFMNamZlcX/GEP+jUnWa5D82LYHXVsmOXf02FKQylX+CC2NGkQRX3vdVrfGHj90mGdZ0VIGOSL6HELrorV9oWOvnsw9PyFbeTCsY+eME8w5prw5exrJTs2WN9FWeivvyflC8K0oyl7Q3wHBW1xWpBjdHF2Cf7eKblqbl1kurUwQsJSGERuM6mFudRxR9HelwLfsz7SXINxfTIoNKskjFG2PaBHiuTJ7YL5mDCV</X509Certificate>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SubjectName>CN=Statoil Root CA, O=Statoil ASA - 923609016, C=NO, DC=statoil, DC=com</X509SubjectName>
+                     </DigitalId>
+                     <DigitalId>
+                        <X509SKI>E8xhvBpoPl+ZMHepVTAiMZJKw+E=</X509SKI>
+                     </DigitalId>
+                  </ServiceDigitalIdentity>
+                  <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                  <StatusStartingTime>2009-10-31T11:00:00Z</StatusStartingTime>
+               </ServiceInformation>
+            </TSPService>
+         </TSPServices>
+      </TrustServiceProvider>
+   </TrustServiceProviderList><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1440988638"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="id-LockItSignatureReference-1x2122542392" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>kd+L+OqbU52b9R/nH+8Ss1+n1YR1vaayVp/8PasQ7Lg=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-1371413295"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>3I/eKMBqKCWB8iQSMW5CyD9AGF/9AO8G0mnYObYHj2w=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>Xp45RCs1eUxJVal/UMcszrm7y8YthWwZCKCTMicBSS88vpz1v4XsMh6Jk04T4fBUrUP940Ivbb4vftuHZ4NxcLXSfqtNywQ5JEsM2s83Q9T/AbINo6/Hr7RMN+NwaAY1id+tPqtznPSa4VXfeVM6ymhhXBS+LWjVFiUf3s8yeGCWCt0EUel1l8aihRFlWFVETLIbOIsDW8J/NX1zC1VjVHMltM3DzVPbPFCsq4yK047e0Bfgfvv++J9Z01tHeyrW2YFJyCKNCmi6feO3PNO9nJI8nMfAM8i9oMwXaPAZT47afD6aSPIV5RwqDjEKgIHy596sD4jU6VQlseJNhtk=</ds:SignatureValue><ds:KeyInfo><ds:KeyValue><ds:RSAKeyValue><ds:Modulus>17B5dsooeuRBbfmE6lX0fUbAhEirAlB/5oG2gx3hIcpFdwEoYSI2meqFLqR26vnZW4PDMa+iC/RrH65aiTXbIygsrCM3ZSFhfke2TORxfKzSTgFjcOmCBnmOvNZa8M2g6yCtqibrw44Fpc5XCzCJ7E8NnpoPHPSYMkF80Sh0TNxHzjNb6ibfXC+h75EcQBG+wz/qVaYhboD2ajN7/fnQv9xcwIPKdGfdEoBaL1dsiqjtCu970757Oht2PtrrKc1h1Lf8FZSvHXd0LpE5ucCzFblgk3uWau8dhMKejk8U9RvQ/jI1eS44OhhSK0hXQYdE6sHWqK+EYGxY1sqFjXs=</ds:Modulus><ds:Exponent>AQAB</ds:Exponent></ds:RSAKeyValue></ds:KeyValue><ds:X509Data><ds:X509IssuerSerial><ds:X509IssuerName>CN=Buypass Class 3 CA 3, O=Buypass AS-983163327, C=NO</ds:X509IssuerName><ds:X509SerialNumber>8945554292642484399647855</ds:X509SerialNumber></ds:X509IssuerSerial><ds:X509SubjectName>SERIALNUMBER=974446871, CN=NASJONAL KOMMUNIKASJONSMYNDIGHET, OU=Nett/NE, O=NASJONAL KOMMUNIKASJONSMYNDIGHET, C=NO</ds:X509SubjectName><ds:X509Certificate>MIIE8zCCA9ugAwIBAgILB2ZLeEvsahPcLG8wDQYJKoZIhvcNAQELBQAwSzELMAkGA1UEBhMCTk8xHTAbBgNVBAoMFEJ1eXBhc3MgQVMtOTgzMTYzMzI3MR0wGwYDVQQDDBRCdXlwYXNzIENsYXNzIDMgQ0EgMzAeFw0xNTAxMTMwOTE3NTRaFw0xODAxMTMyMjU5MDBaMIGJMQswCQYDVQQGEwJOTzEpMCcGA1UECgwgTkFTSk9OQUwgS09NTVVOSUtBU0pPTlNNWU5ESUdIRVQxEDAOBgNVBAsMB05ldHQvTkUxKTAnBgNVBAMMIE5BU0pPTkFMIEtPTU1VTklLQVNKT05TTVlORElHSEVUMRIwEAYDVQQFEwk5NzQ0NDY4NzEwggEfMA0GCSqGSIb3DQEBAQUAA4IBDAAwggEHAoH/ANeweXbKKHrkQW35hOpV9H1GwIRIqwJQf+aBtoMd4SHKRXcBKGEiNpnqhS6kdur52VuDwzGvogv0ax+uWok12yMoLKwjN2UhYX5HtkzkcXys0k4BY3DpggZ5jrzWWvDNoOsgraom68OOBaXOVwswiexPDZ6aDxz0mDJBfNEodEzcR84zW+om31wvoe+RHEARvsM/6lWmIW6A9moze/350L/cXMCDynRn3RKAWi9XbIqo7Qrve9O+ezobdj7a6ynNYdS3/BWUrx13dC6RObnAsxW5YJN7lmrvHYTCno5PFPUb0P4yNXkuODoYUitIV0GHROrB1qivhGBsWNbKhY17AgMBAAGjggGaMIIBljAJBgNVHRMEAjAAMB8GA1UdIwQYMBaAFMzD+Ae3nG16TvWnKx0F+bNHHJHRMB0GA1UdDgQWBBRmTbuN0c7EqTSY57PDZomR8/hWKTAOBgNVHQ8BAf8EBAMCBkAwFQYDVR0gBA4wDDAKBghghEIBGgEDBTCBpQYDVR0fBIGdMIGaMC+gLaArhilodHRwOi8vY3JsLmJ1eXBhc3Mubm8vY3JsL0JQQ2xhc3MzQ0EzLmNybDBnoGWgY4ZhbGRhcDovL2xkYXAuYnV5cGFzcy5uby9kYz1CdXlwYXNzLGRjPU5PLENOPUJ1eXBhc3MlMjBDbGFzcyUyMDMlMjBDQSUyMDM/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdDB6BggrBgEFBQcBAQRuMGwwMwYIKwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLmJ1eXBhc3Mubm8vb2NzcC9CUENsYXNzM0NBMzA1BggrBgEFBQcwAoYpaHR0cDovL2NydC5idXlwYXNzLm5vL2NydC9CUENsYXNzM0NBMy5jZXIwDQYJKoZIhvcNAQELBQADggEBALS/sVxRLfnPGbwofV3Lhi8aIK0q6zJiexeNya18eOhhb/uIlFBY1OqsStfYHbG6HeB7kW8uEg2eekUOMZnq7hzVGhH6zl2gwfQijQ4Z2EGzwnMGAxo1ECzCom/U8A2Vedfna6dTJ/Be+wuwH9fAeIkLJ4XIGRTDiB6+5vVyNVx+ABkrUMxLvcFGDu7Tig0tCdhfkTNV604InVAcjVFNb1meyo/TjMmqx6TIYfjqCwi7EaThi3IKEB1Y+yxcU9TCweznyWobBfNOanq55vfemlTZm6+xooo3bAgsCp6AxF6ozVNpkSCRnGNjBICM2IqXiqNnsFwstfhB1zqwsmtaOGs=</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature-1440988638"><xades:SignedProperties Id="SignedProperties-1371413295"><xades:SignedSignatureProperties><xades:SigningTime>2015-05-29T12:35:38.683Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>tN4K4bFcJBVC6uso3Lug6Dmk6Zs4y7h8qXfASbTyog8=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Buypass Class 3 CA 3, O=Buypass AS-983163327, C=NO</ds:X509IssuerName><ds:X509SerialNumber>8945554292642484399647855</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#id-LockItSignatureReference-1x2122542392"><xades:Description>Content-Type: text/xml; charset=UTF-8; name="doc.xml"</xades:Description><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature>
+</TrustServiceStatusList>

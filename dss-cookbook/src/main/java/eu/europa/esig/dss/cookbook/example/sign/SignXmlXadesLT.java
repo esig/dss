@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import java.io.File;
 import java.io.IOException;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -34,9 +35,11 @@ import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
-import eu.europa.esig.dss.tsl.TSLRefreshPolicy;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.tsl.service.TSLRepository;
+import eu.europa.esig.dss.tsl.service.TSLValidationJob;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -79,13 +82,22 @@ public class SignXmlXadesLT extends Cookbook {
 
 		CommonsDataLoader commonsHttpDataLoader = new CommonsDataLoader();
 
-		String lotlUrl = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
+		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.jks"), "dss-password");
+
 		TrustedListsCertificateSource tslCertificateSource = new TrustedListsCertificateSource();
-		tslCertificateSource.setLotlUrl(lotlUrl);
-		tslCertificateSource.setCheckSignature(false);
-		tslCertificateSource.setDataLoader(commonsHttpDataLoader);
-		tslCertificateSource.setTslRefreshPolicy(TSLRefreshPolicy.NEVER);
-		tslCertificateSource.init();
+		tslCertificateSource.setDssKeyStore(keyStoreCertificateSource);
+
+		TSLRepository tslRepository = new TSLRepository();
+		tslRepository.setTrustedListsCertificateSource(tslCertificateSource);
+
+		TSLValidationJob job = new TSLValidationJob();
+		job.setDataLoader(commonsHttpDataLoader);
+		job.setDssKeyStore(keyStoreCertificateSource);
+		job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
+		job.setLotlCode("EU");
+		job.setRepository(tslRepository);
+		job.refresh();
+
 		commonCertificateVerifier.setTrustedCertSource(tslCertificateSource);
 
 		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
