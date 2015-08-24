@@ -120,6 +120,26 @@ public class TSLRepository {
 		return Collections.unmodifiableList(result);
 	}
 
+	private List<TSLValidationModel> getSkippedTSLValidationModels() {
+		List<TSLValidationModel> valids = getTSLValidationModels();
+		Map<String, TSLValidationModel> all = getAllMapTSLValidationModels();
+		List<TSLValidationModel> skippeds = new ArrayList<TSLValidationModel>();
+
+		for (Entry<String, TSLValidationModel> entry : all.entrySet()) {
+			boolean found = false;
+			for (TSLValidationModel valid : valids) {
+				if ((valid.getParseResult() != null) && entry.getKey().equals(valid.getParseResult().getTerritory())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				skippeds.add(entry.getValue());
+			}
+		}
+		return skippeds;
+	}
+
 	public Map<String, TSLValidationModel> getAllMapTSLValidationModels() {
 		return Collections.unmodifiableMap(new TreeMap<String, TSLValidationModel>(tsls));
 	}
@@ -191,6 +211,7 @@ public class TSLRepository {
 			IOUtils.closeQuietly(fis);
 		}
 		validationModel.setParseResult(tslParserResult);
+		validationModel.setCertificateSourceSynchronized(false);
 		add(countryCode, validationModel);
 	}
 
@@ -271,8 +292,40 @@ public class TSLRepository {
 				model.setCertificateSourceSynchronized(true);
 			}
 		}
+
+		List<TSLValidationModel> skippedTSLValidationModels = getSkippedTSLValidationModels();
+		int nbUntrustedCertificates = 0;
+		for (TSLValidationModel model : skippedTSLValidationModels) {
+			if (!model.isCertificateSourceSynchronized()) {
+				TSLParserResult parseResult = model.getParseResult();
+				if (parseResult != null) {
+					List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
+					for (TSLServiceProvider serviceProvider : serviceProviders) {
+						for (TSLService service : serviceProvider.getServices()) {
+							for (CertificateToken certificate : service.getCertificates()) {
+								if (trustedListsCertificateSource.removeCertificate(certificate)) {
+									logger.info(certificate.getAbbreviation() + " is removed from trusted certificates");
+								}
+								nbUntrustedCertificates++;
+							}
+
+							for (X500Principal x500Principal : service.getX500Principals()) {
+								if (trustedListsCertificateSource.removeX500Principal(x500Principal)) {
+									logger.info(x500Principal.getName() + " is removed from trusted certificates");
+								}
+								nbUntrustedCertificates++;
+							}
+						}
+					}
+				}
+				model.setCertificateSourceSynchronized(true);
+			}
+		}
+
 		logger.info("Nb of loaded trusted lists : " + tslValidationModels.size());
 		logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
+		logger.info("Nb of skipped trusted lists : " + skippedTSLValidationModels.size());
+		logger.info("Nb of skipped certificates : " + nbUntrustedCertificates);
 	}
 
 	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, boolean tlWellSigned) {

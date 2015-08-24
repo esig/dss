@@ -29,10 +29,7 @@ import javax.security.auth.x500.X500Principal;
  * The validation of a certificate requires to access some other certificates from multiple sources (Trusted List, Trust
  * Store, the signature itself). This interface provides an abstraction for accessing a certificate, regardless of the
  * source.
- *
- *
  */
-
 public interface CertificateSource extends Serializable {
 
 	/**
@@ -44,7 +41,8 @@ public interface CertificateSource extends Serializable {
 	 * This method allows to manually add any certificate to the source. The type of the source is automatically set par each specific
 	 * implementation.
 	 *
-	 * @param certificate the certificate you have to trust
+	 * @param certificate
+	 *            the certificate you have to trust
 	 * @return the corresponding certificate token
 	 */
 	CertificateToken addCertificate(final CertificateToken certificate);
@@ -53,7 +51,8 @@ public interface CertificateSource extends Serializable {
 	 * This method returns the <code>List</code> of <code>CertificateToken</code>(s) corresponding to the given subject distinguished name.
 	 * The search is performed at the level of source and not at the pool level (The same pool can be shared by many sources).
 	 *
-	 * @param x500Principal subject distinguished names of the certificate to find
+	 * @param x500Principal
+	 *            subject distinguished names of the certificate to find
 	 * @return
 	 */
 	List<CertificateToken> get(final X500Principal x500Principal);
