@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ *
+ * This file is part of the "DSS - Digital Signature Services" project.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.tsl.service;
 
 import java.io.File;
@@ -30,9 +50,10 @@ import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
+/**
+ * This class is job class which allows to launch TSL loading/parsing/validation. An instance of this class can be injected in a Spring quartz job.
+ */
 public class TSLValidationJob {
-
-	private static final String EUROPA_COUNTRY_CODE = "EU";
 
 	private static final Logger logger = LoggerFactory.getLogger(TSLValidationJob.class);
 
@@ -40,6 +61,7 @@ public class TSLValidationJob {
 
 	private DataLoader dataLoader;
 	private TSLRepository repository;
+	private String lotlCode;
 	private String lotlUrl;
 	private KeyStoreCertificateSource dssKeyStore;
 	private boolean checkLOTLSignature = true;
@@ -56,6 +78,10 @@ public class TSLValidationJob {
 
 	public void setRepository(TSLRepository repository) {
 		this.repository = repository;
+	}
+
+	public void setLotlCode(String lotlCode) {
+		this.lotlCode = lotlCode;
 	}
 
 	public void setLotlUrl(String lotlUrl) {
@@ -105,7 +131,7 @@ public class TSLValidationJob {
 				}
 			}
 
-			TSLValidationModel europeanModel = repository.getByCountry(EUROPA_COUNTRY_CODE);
+			TSLValidationModel europeanModel = repository.getByCountry(lotlCode);
 			if (checkLOTLSignature && (europeanModel != null)) {
 				try {
 					TSLValidationResult europeanValidationResult = validateLOTL(europeanModel);
@@ -121,10 +147,9 @@ public class TSLValidationJob {
 				Map<String, TSLValidationModel> map = repository.getAllMapTSLValidationModels();
 				for (Entry<String, TSLValidationModel> entry : map.entrySet()) {
 					String countryCode = entry.getKey();
-					if (!EUROPA_COUNTRY_CODE.equals(countryCode)) {
+					if (!lotlCode.equals(countryCode)) {
 						TSLValidationModel countryModel = entry.getValue();
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, dssKeyStore, getPotentialSigners(pointers,
-								countryCode));
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, dssKeyStore, getPotentialSigners(pointers, countryCode));
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
 				}
@@ -140,7 +165,7 @@ public class TSLValidationJob {
 	public void refresh() {
 		logger.debug("TSL Validation Job is starting ...");
 		TSLLoaderResult resultLoaderLOTL = null;
-		Future<TSLLoaderResult> result = executorService.submit(new TSLLoader(dataLoader, EUROPA_COUNTRY_CODE, lotlUrl));
+		Future<TSLLoaderResult> result = executorService.submit(new TSLLoader(dataLoader, lotlCode, lotlUrl));
 		try {
 			resultLoaderLOTL = result.get();
 		} catch (Exception e) {
@@ -287,7 +312,7 @@ public class TSLValidationJob {
 	}
 
 	private TSLValidationResult validateLOTL(TSLValidationModel validationModel) throws Exception {
-		TSLValidator tslValidator = new TSLValidator(new File(validationModel.getFilepath()), EUROPA_COUNTRY_CODE, dssKeyStore);
+		TSLValidator tslValidator = new TSLValidator(new File(validationModel.getFilepath()), lotlCode, dssKeyStore);
 		Future<TSLValidationResult> future = executorService.submit(tslValidator);
 		return future.get();
 	}

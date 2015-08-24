@@ -13,7 +13,7 @@
 <table class="table">
 	<thead>
 		<tr>
-			<th>Status</th>
+			<th>Signature</th>
 			<th>Country</th>
 			<th>Seq N°</th>	
 			<th>Check date</th>
@@ -39,17 +39,17 @@
 			<tr class="${rowStyle}">
 				<c:choose>
 					<c:when test="${item.indication == 'VALID' }">
-						<td>
+						<td class="text-center">
 							<span class="glyphicon glyphicon-ok-sign text-success"></span>
 						</td>
 					</c:when>
 					<c:when test="${item.indication == 'INDETERMINATE' }">
-						<td class="warning">
+						<td class="warning text-center"">
 							<span class="glyphicon glyphicon-question-sign text-warning"></span>
 						</td>
 					</c:when>
 					<c:when test="${item.indication == 'INVALID' }">
-						<td class="danger">
+						<td class="danger text-center">
 							<span class="glyphicon glyphicon-remove-sign text-danger"></span>
 						</td>
 					</c:when>
@@ -58,8 +58,8 @@
 						</td>
 					</c:otherwise>
 				</c:choose>
-				<td><a href="<spring:url value="/tsl-info/${fn:toLowerCase(item.country)}" />">${item.country}</a></td>	
-				<td>${item.sequenceNumber}</td>
+				<td class="text-center"><a href="<spring:url value="/tsl-info/${fn:toLowerCase(item.country)}" />">${item.country}</a></td>	
+				<td class="text-center">${item.sequenceNumber}</td>
 				<td>
 					<c:if test="${item.loadedDate != null}">
 						<fmt:formatDate pattern="HH:mm:ss" value="${item.loadedDate}" />
@@ -74,7 +74,7 @@
 					<c:if test="${item.nextUpdateDate != null}">
 						<c:choose>
 							<c:when test="${item.nextUpdateDate le now}">
-								<span class="text-danger"><fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${item.nextUpdateDate}" /></span>
+								<span class="text-danger"><strong><fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${item.nextUpdateDate}" /></strong></span>
 							</c:when>
 							<c:otherwise>
 								<fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${item.nextUpdateDate}" />
@@ -82,9 +82,9 @@
 						</c:choose>
 					</c:if>
 				</td>
-				<td>${item.nbServiceProviders}</td>
-				<td>${item.nbServices}</td>
-				<td>${item.nbCertificatesAndX500Principals}</td>
+				<td class="text-center">${item.nbServiceProviders}</td>
+				<td class="text-center">${item.nbServices}</td>
+				<td class="text-center">${item.nbCertificatesAndX500Principals}</td>
 			</tr>		
 		</c:forEach>
 	</tbody>

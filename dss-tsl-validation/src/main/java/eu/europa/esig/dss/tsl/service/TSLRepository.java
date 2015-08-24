@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ *
+ * This file is part of the "DSS - Digital Signature Services" project.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.tsl.service;
 
 import java.io.File;
@@ -43,6 +63,10 @@ import eu.europa.esig.dss.tsl.TSLValidationSummary;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
 
+/**
+ * This class is a repository which allows to store TSL loading/parsing/validation results.
+ *
+ */
 public class TSLRepository {
 
 	private static final Logger logger = LoggerFactory.getLogger(TSLRepository.class);
@@ -73,10 +97,6 @@ public class TSLRepository {
 
 	public void setAllowIndeterminateSignatures(boolean allowIndeterminateSignatures) {
 		this.allowIndeterminateSignatures = allowIndeterminateSignatures;
-	}
-
-	public TrustedListsCertificateSource getTrustedListsCertificateSource() {
-		return trustedListsCertificateSource;
 	}
 
 	public void setTrustedListsCertificateSource(TrustedListsCertificateSource trustedListsCertificateSource) {
@@ -264,63 +284,65 @@ public class TSLRepository {
 	}
 
 	void synchronize() {
-		// Returns valid and not expired depending of configuration
-		List<TSLValidationModel> tslValidationModels = getTSLValidationModels();
-		for (TSLValidationModel model : tslValidationModels) {
-			if (!model.isCertificateSourceSynchronized()) {
-				boolean tlWellSigned = false;
-				TSLValidationResult validationResult = model.getValidationResult();
-				if ((validationResult != null) && validationResult.isValid()) {
-					tlWellSigned = true;
-				}
-
-				TSLParserResult parseResult = model.getParseResult();
-				if (parseResult != null) {
-					List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
-					for (TSLServiceProvider serviceProvider : serviceProviders) {
-						for (TSLService service : serviceProvider.getServices()) {
-							for (CertificateToken certificate : service.getCertificates()) {
-								trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, tlWellSigned));
-							}
-
-							for (X500Principal x500Principal : service.getX500Principals()) {
-								trustedListsCertificateSource.addX500Principal(x500Principal, getServiceInfo(serviceProvider, service, tlWellSigned));
-							}
-						}
+		if (trustedListsCertificateSource != null) {
+			// Returns valid and not expired depending of configuration
+			List<TSLValidationModel> tslValidationModels = getTSLValidationModels();
+			for (TSLValidationModel model : tslValidationModels) {
+				if (!model.isCertificateSourceSynchronized()) {
+					boolean tlWellSigned = false;
+					TSLValidationResult validationResult = model.getValidationResult();
+					if ((validationResult != null) && validationResult.isValid()) {
+						tlWellSigned = true;
 					}
-				}
-				model.setCertificateSourceSynchronized(true);
-			}
-		}
 
-		List<TSLValidationModel> skippedTSLValidationModels = getSkippedTSLValidationModels();
-		for (TSLValidationModel model : skippedTSLValidationModels) {
-			if (!model.isCertificateSourceSynchronized()) {
-				TSLParserResult parseResult = model.getParseResult();
-				if (parseResult != null) {
-					List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
-					for (TSLServiceProvider serviceProvider : serviceProviders) {
-						for (TSLService service : serviceProvider.getServices()) {
-							for (CertificateToken certificate : service.getCertificates()) {
-								if (trustedListsCertificateSource.removeCertificate(certificate)) {
-									logger.info(certificate.getAbbreviation() + " is removed from trusted certificates");
+					TSLParserResult parseResult = model.getParseResult();
+					if (parseResult != null) {
+						List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
+						for (TSLServiceProvider serviceProvider : serviceProviders) {
+							for (TSLService service : serviceProvider.getServices()) {
+								for (CertificateToken certificate : service.getCertificates()) {
+									trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, tlWellSigned));
 								}
-							}
-							for (X500Principal x500Principal : service.getX500Principals()) {
-								if (trustedListsCertificateSource.removeX500Principal(x500Principal)) {
-									logger.info(x500Principal.getName() + " is removed from trusted certificates");
+
+								for (X500Principal x500Principal : service.getX500Principals()) {
+									trustedListsCertificateSource.addX500Principal(x500Principal, getServiceInfo(serviceProvider, service, tlWellSigned));
 								}
 							}
 						}
 					}
+					model.setCertificateSourceSynchronized(true);
 				}
-				model.setCertificateSourceSynchronized(true);
 			}
-		}
 
-		logger.info("Nb of loaded trusted lists : " + tslValidationModels.size());
-		logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
-		logger.info("Nb of skipped trusted lists : " + skippedTSLValidationModels.size());
+			List<TSLValidationModel> skippedTSLValidationModels = getSkippedTSLValidationModels();
+			for (TSLValidationModel model : skippedTSLValidationModels) {
+				if (!model.isCertificateSourceSynchronized()) {
+					TSLParserResult parseResult = model.getParseResult();
+					if (parseResult != null) {
+						List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
+						for (TSLServiceProvider serviceProvider : serviceProviders) {
+							for (TSLService service : serviceProvider.getServices()) {
+								for (CertificateToken certificate : service.getCertificates()) {
+									if (trustedListsCertificateSource.removeCertificate(certificate)) {
+										logger.info(certificate.getAbbreviation() + " is removed from trusted certificates");
+									}
+								}
+								for (X500Principal x500Principal : service.getX500Principals()) {
+									if (trustedListsCertificateSource.removeX500Principal(x500Principal)) {
+										logger.info(x500Principal.getName() + " is removed from trusted certificates");
+									}
+								}
+							}
+						}
+					}
+					model.setCertificateSourceSynchronized(true);
+				}
+			}
+
+			logger.info("Nb of loaded trusted lists : " + tslValidationModels.size());
+			logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
+			logger.info("Nb of skipped trusted lists : " + skippedTSLValidationModels.size());
+		}
 	}
 
 	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, boolean tlWellSigned) {
