@@ -94,6 +94,7 @@ public class SignXmlXadesLT extends Cookbook {
 		job.setDataLoader(commonsHttpDataLoader);
 		job.setDssKeyStore(keyStoreCertificateSource);
 		job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
+		job.setLotlCode("EU");
 		job.setRepository(tslRepository);
 		job.refresh();
 

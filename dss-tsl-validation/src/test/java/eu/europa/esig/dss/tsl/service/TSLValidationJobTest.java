@@ -48,6 +48,7 @@ public class TSLValidationJobTest {
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
 		job.setLotlUrl(LOTL_URL);
+		job.setLotlCode("EU");
 		job.setDssKeyStore(dssKeyStore);
 		job.setRepository(repository);
 
@@ -85,6 +86,7 @@ public class TSLValidationJobTest {
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
 		job.setLotlUrl(LOTL_URL);
+		job.setLotlCode("EU");
 		job.setDssKeyStore(dssKeyStore);
 		job.setRepository(repository);
 		List<String> filterTerritories = new ArrayList<String>();
@@ -111,6 +113,7 @@ public class TSLValidationJobTest {
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
 		job.setLotlUrl(LOTL_URL);
+		job.setLotlCode("EU");
 		job.setDssKeyStore(dssKeyStore);
 		job.setRepository(repository);
 
