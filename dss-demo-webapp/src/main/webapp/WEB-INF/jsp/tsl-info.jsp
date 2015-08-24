@@ -16,12 +16,12 @@
 			<th>Status</th>
 			<th>Country</th>
 			<th>Seq N°</th>	
-			<th>Loading date</th>
+			<th>Check date</th>
 			<th>Issue date</th>
 			<th>Next update</th>
-			<th>Nb of <acronym title="Trusted Service Providers">TSP</acronym></th>
-			<th>Nb of <acronym title="Trusted Services">TS</acronym></th>
-			<th>Nb of <acronym title="Trusted Certificates">Certs</acronym></th>
+			<th>Nb of <abbr title="Trusted Service Providers">TSP</abbr></th>
+			<th>Nb of <abbr title="Trusted Services">TS</abbr></th>
+			<th>Nb of <abbr title="Trusted Certificates">Certs</abbr></th>
 		</tr>
 	</thead>
 	<tbody>

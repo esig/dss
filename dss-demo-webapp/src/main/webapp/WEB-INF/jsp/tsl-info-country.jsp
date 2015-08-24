@@ -22,15 +22,15 @@
 		
 		<c:set var="panelStyle" value="" />
 		<c:choose>
-		    <c:when test="${model.validationResult != null && !model.validationResult.valid}">
+		    <c:when test="${model.validationResult != null && model.validationResult.invalid}">
 		        <c:set var="panelStyle" value="panel-danger" />
 		    </c:when>
-		    <c:when test="${model.parseResult != null && model.parseResult.nextUpdateDate != null && model.parseResult.nextUpdateDate le now}">
+		    <c:when test="${(model.parseResult != null && model.parseResult.nextUpdateDate != null && model.parseResult.nextUpdateDate le now) || (model.validationResult != null && model.validationResult.indeterminate)}">
 		        <c:set var="panelStyle" value="panel-warning" />
 		    </c:when>
-		    <c:otherwise>
+		    <c:when test="${model.validationResult != null && model.validationResult.valid}">
 		        <c:set var="panelStyle" value="panel-success" />
-		    </c:otherwise>
+		    </c:when>
 		</c:choose>
 		
 		
@@ -54,7 +54,7 @@
 		            <dd><a href="${model.url}">${model.url}</a></dd>
 		
 		            <c:if test="${model.loadedDate !=null}">
-		                <dt>Loaded date : </dt>
+		                <dt>Check date : </dt>
 		                <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${model.loadedDate}" /></dd>
 		            </c:if>
 		            
