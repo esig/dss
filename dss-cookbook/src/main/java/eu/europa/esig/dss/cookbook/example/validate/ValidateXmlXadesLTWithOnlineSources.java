@@ -34,8 +34,9 @@ import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.test.mock.MockServiceInfo;
-import eu.europa.esig.dss.tsl.TSLRefreshPolicy;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.tsl.service.TSLRepository;
+import eu.europa.esig.dss.tsl.service.TSLValidationJob;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.DetailedReport;
@@ -78,14 +79,22 @@ public class ValidateXmlXadesLTWithOnlineSources extends Cookbook {
 		File cacheFolder = new File("/temp");
 		fileCacheDataLoader.setFileCacheDirectory(cacheFolder);
 
-		TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
-		certificateSource.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
-		certificateSource.setCheckSignature(true);
-		certificateSource.setDataLoader(fileCacheDataLoader);
-		certificateSource.setTslRefreshPolicy(TSLRefreshPolicy.NEVER);
 		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.jks"), "dss-password");
-		certificateSource.setKeyStoreCertificateSource(keyStoreCertificateSource );
-		certificateSource.init();
+
+
+		TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
+		certificateSource.setDssKeyStore(keyStoreCertificateSource);
+
+		TSLRepository tslRepository = new TSLRepository();
+		tslRepository.setTrustedListsCertificateSource(certificateSource);
+
+		TSLValidationJob job = new TSLValidationJob();
+		job.setDataLoader(new CommonsDataLoader());
+		job.setDssKeyStore(keyStoreCertificateSource);
+		job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
+		job.setRepository(tslRepository);
+
+		job.refresh();
 
 		certificateSource.addCertificate(trustedCertificate, new MockServiceInfo());
 		verifier.setTrustedCertSource(certificateSource);

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.cookbook.mock;
 
-import eu.europa.esig.dss.tsl.TSLRefreshPolicy;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+
 
 /**
  * This is the MOCK source which can load any trusted list.
@@ -29,17 +29,7 @@ import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 public class MockTSLCertificateSource extends TrustedListsCertificateSource {
 
 	public MockTSLCertificateSource() {
-
 		super();
-		this.setTslRefreshPolicy(TSLRefreshPolicy.NEVER);
 	}
 
-	@Override
-	public void loadAdditionalLists(final String... urls) {
-
-		for (final String url : urls) {
-
-			this.loadTSL(url, "MOCK", null);
-		}
-	}
 }
