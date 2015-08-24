@@ -586,6 +586,10 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		parameters.setDetachedContent(originalParameters.getDetachedContent());
 		parameters.setBLevelParams(originalParameters.bLevel());
 		parameters.setDigestAlgorithm(originalParameters.getDigestAlgorithm());
+		parameters.setContentTimestampParameters(originalParameters.getContentTimestampParameters());
+		parameters.setContentTimestamps(originalParameters.getContentTimestamps());
+		parameters.setSignatureTimestampParameters(originalParameters.getSignatureTimestampParameters());
+		parameters.setArchiveTimestampParameters(originalParameters.getArchiveTimestampParameters());
 	}
 
 	private void buildCAdES(final ASiCParameters asicParameters, final DSSDocument signature, final ZipOutputStream outZip) throws DSSException {
