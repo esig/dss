@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -102,6 +104,34 @@ public class TSLValidationJob {
 					logger.error("Unable to get parsing result : " + e.getMessage(), e);
 				}
 			}
+
+			TSLValidationModel europeanModel = repository.getByCountry(EUROPA_COUNTRY_CODE);
+			if (checkLOTLSignature && (europeanModel != null)) {
+				try {
+					TSLValidationResult europeanValidationResult = validateLOTL(europeanModel);
+					europeanModel.setValidationResult(europeanValidationResult);
+				} catch (Exception e) {
+					logger.error("Unable to validate the LOTL : " + e.getMessage(), e);
+				}
+			}
+
+			if (checkTSLSignatures && ((europeanModel != null) && (europeanModel.getParseResult() != null))) {
+				List<TSLPointer> pointers = europeanModel.getParseResult().getPointers();
+				List<Future<TSLValidationResult>> futureValidationResults = new ArrayList<Future<TSLValidationResult>>();
+				Map<String, TSLValidationModel> map = repository.getAllMapTSLValidationModels();
+				for (Entry<String, TSLValidationModel> entry : map.entrySet()) {
+					String countryCode = entry.getKey();
+					if (!EUROPA_COUNTRY_CODE.equals(countryCode)) {
+						TSLValidationModel countryModel = entry.getValue();
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, dssKeyStore, getPotentialSigners(pointers,
+								countryCode));
+						futureValidationResults.add(executorService.submit(tslValidator));
+					}
+				}
+
+				storeValidationResults(futureValidationResults);
+			}
+
 			repository.synchronize();
 		}
 		logger.info(loadedTSL + " loaded TSL from cached files in the repository");
@@ -199,6 +229,10 @@ public class TSLValidationJob {
 			}
 		}
 
+		storeValidationResults(futureValidationResults);
+	}
+
+	private void storeValidationResults(List<Future<TSLValidationResult>> futureValidationResults) {
 		for (Future<TSLValidationResult> futureValidationResult : futureValidationResults) {
 			try {
 				TSLValidationResult tslValidationResult = futureValidationResult.get();
