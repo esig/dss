@@ -294,7 +294,6 @@ public class TSLRepository {
 		}
 
 		List<TSLValidationModel> skippedTSLValidationModels = getSkippedTSLValidationModels();
-		int nbUntrustedCertificates = 0;
 		for (TSLValidationModel model : skippedTSLValidationModels) {
 			if (!model.isCertificateSourceSynchronized()) {
 				TSLParserResult parseResult = model.getParseResult();
@@ -306,14 +305,11 @@ public class TSLRepository {
 								if (trustedListsCertificateSource.removeCertificate(certificate)) {
 									logger.info(certificate.getAbbreviation() + " is removed from trusted certificates");
 								}
-								nbUntrustedCertificates++;
 							}
-
 							for (X500Principal x500Principal : service.getX500Principals()) {
 								if (trustedListsCertificateSource.removeX500Principal(x500Principal)) {
 									logger.info(x500Principal.getName() + " is removed from trusted certificates");
 								}
-								nbUntrustedCertificates++;
 							}
 						}
 					}
@@ -325,7 +321,6 @@ public class TSLRepository {
 		logger.info("Nb of loaded trusted lists : " + tslValidationModels.size());
 		logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 		logger.info("Nb of skipped trusted lists : " + skippedTSLValidationModels.size());
-		logger.info("Nb of skipped certificates : " + nbUntrustedCertificates);
 	}
 
 	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, boolean tlWellSigned) {
