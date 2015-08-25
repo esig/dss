@@ -42,17 +42,16 @@ import eu.europa.esig.dss.DSSException;
 
 /**
  * PKCS11 token with callback
- *
  */
 public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 
 	private Provider _pkcs11Provider;
 
-	private String _pkcs11Path;
+	private final String _pkcs11Path;
 
 	private KeyStore _keyStore;
 
-	final private PasswordInputCallback callback;
+	private final PasswordInputCallback callback;
 
 	private int slotIndex;
 
@@ -65,7 +64,6 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path) {
 		this(pkcs11Path, (PasswordInputCallback) null);
-		this.slotIndex = 0;
 	}
 
 	/**
@@ -90,7 +88,6 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, char[] password) {
 		this(pkcs11Path, new PrefilledPasswordCallback(password));
-		this.slotIndex = 0;
 	}
 
 	/**
@@ -148,10 +145,12 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 	private void installProvider() {
 
 		/*
-            The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive loading of multiple pkcs11 libraries
+		    The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive loading of multiple pkcs11 libraries
 		 */
 		String aPKCS11LibraryFileName = getPkcs11Path();
-		String pkcs11ConfigSettings = "name = SmartCard" + smartCardNameIndex + "\n" + "library = " + aPKCS11LibraryFileName + "\nslotListIndex = " + slotIndex;
+		aPKCS11LibraryFileName = escapePath(aPKCS11LibraryFileName);
+
+		String pkcs11ConfigSettings = "name = SmartCard" + smartCardNameIndex + "\n" + "library = \"" + aPKCS11LibraryFileName + "\"\nslotListIndex = " + slotIndex;
 
 		byte[] pkcs11ConfigBytes = pkcs11ConfigSettings.getBytes();
 		ByteArrayInputStream confStream = new ByteArrayInputStream(pkcs11ConfigBytes);
@@ -161,6 +160,14 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 
 		Security.addProvider(_pkcs11Provider);
 		smartCardNameIndex++;
+	}
+
+	private String escapePath(String pathToEscape) {
+		if (pathToEscape != null) {
+			return pathToEscape.replace("\\", "\\\\");
+		} else {
+			return "";
+		}
 	}
 
 	@SuppressWarnings("restriction")
