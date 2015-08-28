@@ -41,6 +41,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.Normalizer;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
@@ -76,6 +77,8 @@ public class CertificateToken extends Token {
 	 * The default algorithm used to compute the digest value of this certificate
 	 */
 	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
+
+	private EncryptionAlgorithm encryptionAlgorithm;
 
 	/**
 	 * OCSP or CRL revocation data for this token.
@@ -134,6 +137,7 @@ public class CertificateToken extends Token {
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
 		this.digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
+		this.encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
 
 		super.extraInfo = this.extraInfo = new CertificateTokenValidationExtraInfo();
 	}
@@ -410,6 +414,10 @@ public class CertificateToken extends Token {
 
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
+	}
+
+	public EncryptionAlgorithm getEncryptionAlgorithm() {
+		return encryptionAlgorithm;
 	}
 
 	/**
