@@ -41,6 +41,7 @@
 		<module>dss-soap-client</module>
 		<module>dss-soap</module>
 		<module>dss-tsl-validation</module>
+		<module>dss-standalone-app</module>
 	</modules>
 
 	<developers>

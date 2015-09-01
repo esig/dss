@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1">
+	<padding>
+		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+	</padding>
+	<children>
+		<HBox id="hFileChooser" styleClass="hbox-style">
+			<children>
+				<Label text="File to sign" styleClass="label-style" />
+				<Button mnemonicParsing="false" text="Select file..." GridPane.columnIndex="1" />
+			</children>
+		</HBox>
+		<HBox id="hSignatureFormat" styleClass="hbox-style">
+			<children>
+				<Label text="Signature format" styleClass="label-style" />
+				<RadioButton mnemonicParsing="false" text="CAdES">
+					<toggleGroup>
+						<ToggleGroup fx:id="sigFormat" />
+					</toggleGroup>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="PAdES" toggleGroup="$sigFormat" />
+				<RadioButton mnemonicParsing="false" text="XAdES" toggleGroup="$sigFormat" />
+				<RadioButton mnemonicParsing="false" text="ASiC" toggleGroup="$sigFormat" />
+			</children>
+		</HBox>
+		<HBox id="hUnderlyingSignatureFormat" styleClass="hbox-style">
+			<children>
+				<Label text="ASiC underlying format" styleClass="label-style" />
+				<RadioButton mnemonicParsing="false" text="CAdES">
+					<toggleGroup>
+						<ToggleGroup fx:id="asicUnderlyings" />
+					</toggleGroup>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="XAdES" toggleGroup="$asicUnderlyings" />
+			</children>
+		</HBox>
+		<HBox id="hSignaturePackaging" styleClass="hbox-style">
+			<children>
+				<Label text="Packaging" styleClass="label-style" />
+				<RadioButton mnemonicParsing="false" text="Enveloped">
+					<toggleGroup>
+						<ToggleGroup fx:id="sigPackaging" />
+					</toggleGroup>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="Enveloping" toggleGroup="$sigPackaging" />
+				<RadioButton mnemonicParsing="false" text="Detached" toggleGroup="$sigPackaging" />
+			</children>
+		</HBox>
+		<HBox id="hSignatureLevel" styleClass="hbox-style">
+			<children>
+				<Label text="Level" styleClass="label-style" />
+				<ComboBox prefWidth="150.0"  />
+			</children>
+		</HBox>
+		<HBox id="hDigestAlgorithms" styleClass="hbox-style">
+			<children>
+				<Label text="Digest algorithm" styleClass="label-style" />
+				<RadioButton mnemonicParsing="false" text="SHA-1">
+					<toggleGroup>
+						<ToggleGroup fx:id="digestAlgos" />
+					</toggleGroup>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="SHA-224" toggleGroup="$digestAlgos" />
+				<RadioButton mnemonicParsing="false" text="SHA-256" toggleGroup="$digestAlgos" />
+				<RadioButton mnemonicParsing="false" text="SHA-384" toggleGroup="$digestAlgos" />
+				<RadioButton mnemonicParsing="false" text="SHA-512" toggleGroup="$digestAlgos" />         
+			</children>
+		</HBox>
+	</children>
+</VBox>
