@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.europa.esig.dss.standalone.controller.SignatureController">
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 	</padding>
@@ -13,7 +13,7 @@
 		<HBox id="hFileChooser" styleClass="hbox-style">
 			<children>
 				<Label text="File to sign" styleClass="label-style" />
-				<Button mnemonicParsing="false" text="Select file..." GridPane.columnIndex="1" />
+				<Button mnemonicParsing="false" text="Select file..." fx:id="fileSelectButton" />
 			</children>
 		</HBox>
 		<HBox id="hSignatureFormat" styleClass="hbox-style">
@@ -61,15 +61,15 @@
 		<HBox id="hDigestAlgorithms" styleClass="hbox-style">
 			<children>
 				<Label text="Digest algorithm" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="SHA-1">
+				<RadioButton mnemonicParsing="false" text="SHA1">
 					<toggleGroup>
-						<ToggleGroup fx:id="digestAlgos" />
+						<ToggleGroup fx:id="toggleDigestAlgo" />
 					</toggleGroup>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="SHA-224" toggleGroup="$digestAlgos" />
-				<RadioButton mnemonicParsing="false" text="SHA-256" toggleGroup="$digestAlgos" />
-				<RadioButton mnemonicParsing="false" text="SHA-384" toggleGroup="$digestAlgos" />
-				<RadioButton mnemonicParsing="false" text="SHA-512" toggleGroup="$digestAlgos" />         
+				<RadioButton mnemonicParsing="false" text="SHA224" toggleGroup="$toggleDigestAlgo" />
+				<RadioButton mnemonicParsing="false" text="SHA256" toggleGroup="$toggleDigestAlgo" />
+				<RadioButton mnemonicParsing="false" text="SHA384" toggleGroup="$toggleDigestAlgo" />
+				<RadioButton mnemonicParsing="false" text="SHA512" toggleGroup="$toggleDigestAlgo" />         
 			</children>
 		</HBox>
 	</children>
