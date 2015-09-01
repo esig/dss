@@ -21,50 +21,54 @@
 package eu.europa.esig.dss.web.model;
 
 /**
- * 
+ *
  * TODO
- * 
  *
  *
- * 
+ *
+ *
  *
  *
  */
 public enum PreferenceKey {
-    /**
-     * The enum constant url service.
-     */
-    SERVICE_URL("preference.url.service"), DEFAULT_POLICY_URL("preference.default.policy.url");
+	/**
+	 * The enum constant url service.
+	 */
+	SERVICE_URL("preference.url.service"),
 
-    public static PreferenceKey fromKey(String key) {
-        for (final PreferenceKey preferenceKey : values()) {
-            if (preferenceKey.key.equals(key)) {
-                return preferenceKey;
-            }
-        }
-        return null;
-    }
+	JAR_URL("preference.url.jar"),
 
-    private final String key;
+	DEFAULT_POLICY_URL("preference.default.policy.url");
 
-    /**
-     * 
-     * The default constructor for PreferenceKey.
-     * 
-     * @param key
-     */
-    PreferenceKey(final String key) {
-        this.key = key;
-    }
+	public static PreferenceKey fromKey(String key) {
+		for (final PreferenceKey preferenceKey : values()) {
+			if (preferenceKey.key.equals(key)) {
+				return preferenceKey;
+			}
+		}
+		return null;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Enum#toString()
-     */
-    @Override
-    public String toString() {
-        return key;
-    }
+	private final String key;
+
+	/**
+	 *
+	 * The default constructor for PreferenceKey.
+	 *
+	 * @param key
+	 */
+	PreferenceKey(final String key) {
+		this.key = key;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.lang.Enum#toString()
+	 */
+	@Override
+	public String toString() {
+		return key;
+	}
 
 }

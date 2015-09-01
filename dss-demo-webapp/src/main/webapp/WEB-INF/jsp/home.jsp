@@ -6,7 +6,7 @@
 </h2>
 <p>Please see the notes below for the features of the two applications:</p>
 <h3>
-    <spring:message code="label.signature.applet" />
+    Signature
 </h3>
 <ul>
     <li>XAdES detached and enveloping signatures can be used to sign any file.</li>

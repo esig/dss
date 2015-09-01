@@ -20,46 +20,31 @@
  */
 package eu.europa.esig.dss.web.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import eu.europa.esig.dss.web.dao.PreferencesDao;
-import eu.europa.esig.dss.web.model.Preference;
-import eu.europa.esig.dss.web.model.PreferenceKey;
+import eu.europa.esig.dss.web.service.FreemarkerService;
 
-/**
- *
- * Signature controller
- *
- * With this controller all configurations are in the applet. The applet only calls two webservices (getDataToSign / signDocument)
- *
- */
 @Controller
-@RequestMapping(value = "/signature-applet")
 public class SignatureAppletController {
 
-	/**
-	 * @see PreferencesDao
-	 */
 	@Autowired
-	private PreferencesDao preferencesDao;
+	private FreemarkerService freemarkerService;
 
-	/**
-	 * @param model The model attributes
-	 * @return a view name
-	 */
-	@RequestMapping(method = RequestMethod.GET)
-	public String showSignature(Model model, HttpServletRequest request) {
-		Preference serviceUrl = preferencesDao.get(PreferenceKey.SERVICE_URL);
-		model.addAttribute("prefUrlService", serviceUrl);
-		Preference policyUrl = preferencesDao.get(PreferenceKey.DEFAULT_POLICY_URL);
-		model.addAttribute("prefDefaultPolicyUrl", policyUrl);
-		return "signature-applet";
+	@RequestMapping(value = "/standalone-applet.jnlp", method = RequestMethod.GET)
+	public void getJnlp(HttpServletResponse resp) throws Exception {
+		resp.setContentType("application/x-java-jnlp-file");
+		resp.setCharacterEncoding("UTF-8");
+		Writer writer = new OutputStreamWriter(resp.getOutputStream(), Charset.forName("UTF-8"));
+		freemarkerService.generateJNLP(writer);
 	}
 
 }

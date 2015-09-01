@@ -15,7 +15,7 @@
         <%-- NO ADMIN PART --%>
         <c:otherwise>
             <a href="<spring:url value="/signature" />" class="list-group-item${currentPage eq '/signature' ? ' active' : ''}"><spring:message code="label.signature" /></a>
-            <a href="<spring:url value="/signature-applet" />" class="list-group-item${currentPage eq '/signature-applet' ? ' active' : ''}"><spring:message code="label.signature.applet" /></a>
+            <a href="<spring:url value="/standalone-applet.jnlp" />" class="list-group-item${currentPage eq '/signature-applet' ? ' active' : ''}"><spring:message code="label.signature.applet" /></a>
             <a href="<spring:url value="/extension" />" class="list-group-item${currentPage eq '/extension' ? ' active' : ''}"><spring:message code="label.extend" /></a>
             <a href="<spring:url value="/validation" />" class="list-group-item${currentPage eq '/validation' ? ' active' : ''}"><spring:message code="label.validate" /></a>
             <a href="<spring:url value="/validation-policy" />" class="list-group-item${currentPage eq '/validation-policy' ? ' active' : ''}"><spring:message code="label.validation-policy" /></a>

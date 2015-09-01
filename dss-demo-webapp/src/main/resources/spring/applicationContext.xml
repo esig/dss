@@ -43,30 +43,8 @@
         <jdbc:script location="classpath:structure.sql"/>
         <jdbc:script location="classpath:load.sql"/>
     </jdbc:initialize-database>
-
-    <!-- The TrustedLists are reloaded every minute 
-    <bean id="tlReload" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="trustedListSource"/>
-        <property name="targetMethod" value="refresh"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-        <property name="jobDetail" ref="tlReload"/>
-        <property name="startDelay" value="6000"/>
-        <property name="repeatInterval" value="3600000"/>
-    </bean>
-
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
-        <property name="triggers">
-            <list>
-                <ref bean="simpleTrigger"/>
-            </list>
-        </property>
-    </bean>
-    -->
     
-    <!-- New TSL Loader -->
+    <!-- TSL Loader -->
 	<bean id="tslRepository" class="eu.europa.esig.dss.tsl.service.TSLRepository">
 		<property name="allowExpiredTSLs" value="false" />
 		<property name="allowInvalidSignatures" value="false" />
@@ -103,8 +81,11 @@
 		</property>
 	</bean>
     
-    <!-- /New TSL Loader -->
-    
+    <!-- /TSL Loader -->
+
+	<bean id="freeMarkerConfigurationFactory" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+	    <property name="templateLoaderPath" value="classpath:/templates"/>
+	</bean>
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
