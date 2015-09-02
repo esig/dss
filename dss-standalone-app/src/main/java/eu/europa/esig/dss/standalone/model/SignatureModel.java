@@ -25,7 +25,7 @@ public class SignatureModel {
 		this.signatureForm.set(signatureForm);
 	}
 
-	public ObjectProperty<SignatureForm> signatureFormProperty(){
+	public ObjectProperty<SignatureForm> signatureFormProperty() {
 		return signatureForm;
 	}
 
@@ -37,7 +37,7 @@ public class SignatureModel {
 		this.asicUnderlyingForm.set(asicUnderlyingForm);
 	}
 
-	public ObjectProperty<SignatureForm> asicUnderlyingFormProperty(){
+	public ObjectProperty<SignatureForm> asicUnderlyingFormProperty() {
 		return asicUnderlyingForm;
 	}
 
@@ -49,7 +49,7 @@ public class SignatureModel {
 		this.signaturePackaging.set(signaturePackaging);
 	}
 
-	public ObjectProperty<SignaturePackaging> signaturePackagingProperty(){
+	public ObjectProperty<SignaturePackaging> signaturePackagingProperty() {
 		return signaturePackaging;
 	}
 
@@ -61,7 +61,7 @@ public class SignatureModel {
 		this.signatureLevel.set(signatureLevel);
 	}
 
-	public ObjectProperty<SignatureLevel> signatureLevelProperty(){
+	public ObjectProperty<SignatureLevel> signatureLevelProperty() {
 		return signatureLevel;
 	}
 
@@ -73,7 +73,7 @@ public class SignatureModel {
 		this.digestAlgorithm.set(digestAlgorithm);
 	}
 
-	public ObjectProperty<DigestAlgorithm> digestAlgorithmProperty(){
+	public ObjectProperty<DigestAlgorithm> digestAlgorithmProperty() {
 		return digestAlgorithm;
 	}
 
@@ -85,7 +85,7 @@ public class SignatureModel {
 		this.tokenType.set(tokenType);
 	}
 
-	public ObjectProperty<SignatureTokenType> tokenTypeProperty(){
+	public ObjectProperty<SignatureTokenType> tokenTypeProperty() {
 		return tokenType;
 	}
 

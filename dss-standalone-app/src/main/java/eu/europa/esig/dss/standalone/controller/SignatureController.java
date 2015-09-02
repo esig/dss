@@ -20,6 +20,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.standalone.DSSApplication;
+import eu.europa.esig.dss.standalone.fx.TypedToggleGroup;
 import eu.europa.esig.dss.standalone.model.SignatureModel;
 
 public class SignatureController implements Initializable {
@@ -28,10 +29,10 @@ public class SignatureController implements Initializable {
 	private ToggleGroup toogleSigFormat;
 
 	@FXML
-	private ToggleGroup toggleAsicUnderlying;
+	private TypedToggleGroup<SignatureForm> toggleAsicUnderlying;
 
 	@FXML
-	private ToggleGroup toggleSigPackaging;
+	private TypedToggleGroup<SignaturePackaging> toggleSigPackaging;
 
 	@FXML
 	private RadioButton envelopedRadio;
@@ -46,7 +47,7 @@ public class SignatureController implements Initializable {
 	private ComboBox<SignatureLevel> comboLevel;
 
 	@FXML
-	private ToggleGroup toggleDigestAlgo;
+	private TypedToggleGroup<DigestAlgorithm> toggleDigestAlgo;
 
 	@FXML
 	private ToggleGroup toggleSigToken;
@@ -90,39 +91,9 @@ public class SignatureController implements Initializable {
 			}
 		});
 
-		toggleAsicUnderlying.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			@Override
-			public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-				SignatureForm asicUnderlyingForm = null;
-				if (newValue != null) {
-					asicUnderlyingForm = SignatureForm.valueOf((String) newValue.getUserData());
-				}
-				model.setAsicUnderlyingForm(asicUnderlyingForm);
-			}
-		});
-
-
-		toggleSigPackaging.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			@Override
-			public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-				SignaturePackaging packaging = null;
-				if (newValue != null) {
-					packaging = SignaturePackaging.valueOf((String) newValue.getUserData());
-				}
-				model.setSignaturePackaging(packaging);
-			}
-		});
-
-		toggleDigestAlgo.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			@Override
-			public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-				DigestAlgorithm digestAlgo = null;
-				if (newValue != null) {
-					digestAlgo = DigestAlgorithm.valueOf((String) newValue.getUserData());
-				}
-				model.setDigestAlgorithm(digestAlgo);
-			}
-		});
+		toggleAsicUnderlying.getSelectedValueProperty().bindBidirectional(model.asicUnderlyingFormProperty());
+		toggleSigPackaging.getSelectedValueProperty().bindBidirectional(model.signaturePackagingProperty());
+		toggleDigestAlgo.getSelectedValueProperty().bindBidirectional(model.digestAlgorithmProperty());
 
 		comboLevel.valueProperty().addListener(new ChangeListener<SignatureLevel>() {
 			@Override
@@ -146,7 +117,7 @@ public class SignatureController implements Initializable {
 	protected void updateSignatureTokenType(SignatureTokenType tokenType) {
 		model.setTokenType(tokenType);
 
-		if (tokenType !=null) {
+		if (tokenType != null) {
 			switch (tokenType) {
 				case PKCS11:
 					hPkcsFile.setVisible(true);
@@ -170,6 +141,9 @@ public class SignatureController implements Initializable {
 		model.setSignatureForm(signatureForm);
 
 		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)) {
+
+			//			hUnderlyingSignatureFormat.visibleProperty().bind(model.digestAlgorithmProperty().);
+
 			hUnderlyingSignatureFormat.setVisible(true);
 		} else {
 			hUnderlyingSignatureFormat.setVisible(false);

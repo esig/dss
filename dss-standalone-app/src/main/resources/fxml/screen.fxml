@@ -5,6 +5,11 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
+<?import eu.europa.esig.dss.standalone.fx.*?>
+<?import eu.europa.esig.dss.DigestAlgorithm?>
+<?import eu.europa.esig.dss.SignatureForm?>
+<?import eu.europa.esig.dss.SignaturePackaging?>
+
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.europa.esig.dss.standalone.controller.SignatureController">
 	<padding>
 		<Insets bottom="20" left="20" right="20" top="20" />
@@ -33,24 +38,42 @@
 		<HBox fx:id="hUnderlyingSignatureFormat" styleClass="hbox-style" visible="false">
 			<children>
 				<Label text="ASiC underlying format" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="CAdES" userData="CAdES">
+				<RadioButton mnemonicParsing="false" text="CAdES">
 					<toggleGroup>
-						<ToggleGroup fx:id="toggleAsicUnderlying" />
+						<TypedToggleGroup fx:id="toggleAsicUnderlying" />
 					</toggleGroup>
+					<userData>
+						<SignatureForm fx:value="CAdES"/>
+					</userData>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="XAdES" userData="XAdES" toggleGroup="$toggleAsicUnderlying" />
+				<RadioButton mnemonicParsing="false" text="XAdES" toggleGroup="$toggleAsicUnderlying">
+					<userData>
+						<SignatureForm fx:value="XAdES"/>
+					</userData>
+				</RadioButton>
 			</children>
 		</HBox>
 		<HBox fx:id="hSignaturePackaging" styleClass="hbox-style">
 			<children>
 				<Label text="Packaging" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="Enveloped" userData="ENVELOPED" fx:id="envelopedRadio" disable="true">
+				<RadioButton mnemonicParsing="false" text="Enveloped" fx:id="envelopedRadio" disable="true">
 					<toggleGroup>
-						<ToggleGroup fx:id="toggleSigPackaging" />
+						<TypedToggleGroup fx:id="toggleSigPackaging" />
 					</toggleGroup>
+					<userData>
+						<SignaturePackaging fx:value="ENVELOPED"/>
+					</userData>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="Enveloping" userData="ENVELOPING" fx:id="envelopingRadio"  disable="true" toggleGroup="$toggleSigPackaging" />
-				<RadioButton mnemonicParsing="false" text="Detached" userData="DETACHED" fx:id="detachedRadio" disable="true"  toggleGroup="$toggleSigPackaging" />
+				<RadioButton mnemonicParsing="false" text="Enveloping" fx:id="envelopingRadio" disable="true" toggleGroup="$toggleSigPackaging">
+					<userData>
+						<SignaturePackaging fx:value="ENVELOPING"/>
+					</userData>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="Detached" fx:id="detachedRadio" disable="true"  toggleGroup="$toggleSigPackaging">
+					<userData>
+						<SignaturePackaging fx:value="DETACHED"/>
+					</userData>
+				</RadioButton>
 			</children>
 		</HBox>
 		<HBox fx:id="hSignatureLevel" styleClass="hbox-style">
@@ -62,15 +85,34 @@
 		<HBox fx:id="hDigestAlgorithms" styleClass="hbox-style">
 			<children>
 				<Label text="Digest algorithm" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="SHA-1" userData="SHA1">
+				<RadioButton mnemonicParsing="false" text="SHA-1">
 					<toggleGroup>
-						<ToggleGroup fx:id="toggleDigestAlgo" />
+						<TypedToggleGroup fx:id="toggleDigestAlgo" />
 					</toggleGroup>
+					<userData>
+						<DigestAlgorithm fx:value="SHA1"/>
+					</userData>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="SHA-224" userData="SHA224" toggleGroup="$toggleDigestAlgo" />
-				<RadioButton mnemonicParsing="false" text="SHA-256" userData="SHA256" toggleGroup="$toggleDigestAlgo" />
-				<RadioButton mnemonicParsing="false" text="SHA-384" userData="SHA384" toggleGroup="$toggleDigestAlgo" />
-				<RadioButton mnemonicParsing="false" text="SHA-512" userData="SHA512" toggleGroup="$toggleDigestAlgo" />         
+				<RadioButton mnemonicParsing="false" text="SHA-224" toggleGroup="$toggleDigestAlgo">
+					<userData>
+						<DigestAlgorithm fx:value="SHA224"/>
+					</userData>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="SHA-256" toggleGroup="$toggleDigestAlgo">
+					<userData>
+						<DigestAlgorithm fx:value="SHA256"/>
+					</userData>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="SHA-384" toggleGroup="$toggleDigestAlgo">
+					<userData>
+						<DigestAlgorithm fx:value="SHA384"/>
+					</userData>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="SHA-512" toggleGroup="$toggleDigestAlgo">
+					<userData>
+						<DigestAlgorithm fx:value="SHA512"/>
+					</userData>
+				</RadioButton>         
 			</children>
 		</HBox>
 		<HBox fx:id="hSignatureToken" styleClass="hbox-style">
