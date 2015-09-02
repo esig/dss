@@ -10,66 +10,67 @@
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 	</padding>
 	<children>
-		<HBox id="hFileChooser" styleClass="hbox-style">
+		<HBox fx:id="hFileChooser" styleClass="hbox-style">
 			<children>
 				<Label text="File to sign" styleClass="label-style" />
 				<Button mnemonicParsing="false" text="Select file..." fx:id="fileSelectButton" />
 			</children>
 		</HBox>
-		<HBox id="hSignatureFormat" styleClass="hbox-style">
+		<HBox fx:id="hSignatureFormat" styleClass="hbox-style">
 			<children>
 				<Label text="Signature format" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="CAdES">
+				<RadioButton mnemonicParsing="false" text="CAdES" userData="CAdES">
 					<toggleGroup>
-						<ToggleGroup fx:id="sigFormat" />
+						<ToggleGroup fx:id="toogleSigFormat" />
 					</toggleGroup>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="PAdES" toggleGroup="$sigFormat" />
-				<RadioButton mnemonicParsing="false" text="XAdES" toggleGroup="$sigFormat" />
-				<RadioButton mnemonicParsing="false" text="ASiC" toggleGroup="$sigFormat" />
+				<RadioButton mnemonicParsing="false" text="PAdES" userData="PAdES" toggleGroup="$toogleSigFormat" />
+				<RadioButton mnemonicParsing="false" text="XAdES" userData="XAdES" toggleGroup="$toogleSigFormat" />
+				<RadioButton mnemonicParsing="false" text="ASiC-S" userData="ASiC_S" toggleGroup="$toogleSigFormat" />
+				<RadioButton mnemonicParsing="false" text="ASiC-E" userData="ASiC_E" toggleGroup="$toogleSigFormat" />
 			</children>
 		</HBox>
-		<HBox id="hUnderlyingSignatureFormat" styleClass="hbox-style">
+		<HBox fx:id="hUnderlyingSignatureFormat" styleClass="hbox-style" visible="false">
 			<children>
 				<Label text="ASiC underlying format" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="CAdES">
+				<RadioButton mnemonicParsing="false" text="CAdES" userData="CAdES">
 					<toggleGroup>
-						<ToggleGroup fx:id="asicUnderlyings" />
+						<ToggleGroup fx:id="toggleAsicUnderlying" />
 					</toggleGroup>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="XAdES" toggleGroup="$asicUnderlyings" />
+				<RadioButton mnemonicParsing="false" text="XAdES" userData="XAdES" toggleGroup="$toggleAsicUnderlying" />
 			</children>
 		</HBox>
-		<HBox id="hSignaturePackaging" styleClass="hbox-style">
+		<HBox fx:id="hSignaturePackaging" styleClass="hbox-style">
 			<children>
 				<Label text="Packaging" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="Enveloped">
+				<RadioButton mnemonicParsing="false" text="Enveloped" userData="ENVELOPED" fx:id="envelopedRadio" disable="true">
 					<toggleGroup>
-						<ToggleGroup fx:id="sigPackaging" />
+						<ToggleGroup fx:id="toggleSigPackaging" />
 					</toggleGroup>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="Enveloping" toggleGroup="$sigPackaging" />
-				<RadioButton mnemonicParsing="false" text="Detached" toggleGroup="$sigPackaging" />
+				<RadioButton mnemonicParsing="false" text="Enveloping" userData="ENVELOPING" fx:id="envelopingRadio"  disable="true" toggleGroup="$toggleSigPackaging" />
+				<RadioButton mnemonicParsing="false" text="Detached" userData="DETACHED" fx:id="detachedRadio" disable="true"  toggleGroup="$toggleSigPackaging" />
 			</children>
 		</HBox>
-		<HBox id="hSignatureLevel" styleClass="hbox-style">
+		<HBox fx:id="hSignatureLevel" styleClass="hbox-style">
 			<children>
 				<Label text="Level" styleClass="label-style" />
-				<ComboBox prefWidth="150.0"  />
+				<ComboBox prefWidth="200.0" disable="true" fx:id="comboLevel" />
 			</children>
 		</HBox>
-		<HBox id="hDigestAlgorithms" styleClass="hbox-style">
+		<HBox fx:id="hDigestAlgorithms" styleClass="hbox-style">
 			<children>
 				<Label text="Digest algorithm" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="SHA1">
+				<RadioButton mnemonicParsing="false" text="SHA-1" userData="SHA1">
 					<toggleGroup>
 						<ToggleGroup fx:id="toggleDigestAlgo" />
 					</toggleGroup>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="SHA224" toggleGroup="$toggleDigestAlgo" />
-				<RadioButton mnemonicParsing="false" text="SHA256" toggleGroup="$toggleDigestAlgo" />
-				<RadioButton mnemonicParsing="false" text="SHA384" toggleGroup="$toggleDigestAlgo" />
-				<RadioButton mnemonicParsing="false" text="SHA512" toggleGroup="$toggleDigestAlgo" />         
+				<RadioButton mnemonicParsing="false" text="SHA-224" userData="SHA224" toggleGroup="$toggleDigestAlgo" />
+				<RadioButton mnemonicParsing="false" text="SHA-256" userData="SHA256" toggleGroup="$toggleDigestAlgo" />
+				<RadioButton mnemonicParsing="false" text="SHA-384" userData="SHA384" toggleGroup="$toggleDigestAlgo" />
+				<RadioButton mnemonicParsing="false" text="SHA-512" userData="SHA512" toggleGroup="$toggleDigestAlgo" />         
 			</children>
 		</HBox>
 	</children>
