@@ -9,6 +9,8 @@
 <?import eu.europa.esig.dss.DigestAlgorithm?>
 <?import eu.europa.esig.dss.SignatureForm?>
 <?import eu.europa.esig.dss.SignaturePackaging?>
+<?import eu.europa.esig.dss.SignaturePackaging?>
+<?import eu.europa.esig.dss.SignatureTokenType?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.europa.esig.dss.standalone.controller.SignatureController">
 	<padding>
@@ -118,19 +120,31 @@
 		<HBox fx:id="hSignatureToken" styleClass="hbox-style">
 			<children>
 				<Label text="Signature token API" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="PKCS #11" userData="PKCS11">
+				<RadioButton mnemonicParsing="false" text="PKCS #11">
 					<toggleGroup>
-						<ToggleGroup fx:id="toggleSigToken" />
+						<TypedToggleGroup fx:id="toggleSigToken" />
 					</toggleGroup>
+					<userData>
+						<SignatureTokenType fx:value="PKCS11"/>
+					</userData>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="PKCS #12" userData="PKCS12" toggleGroup="$toggleSigToken" />
-				<RadioButton mnemonicParsing="false" text="MS CAPI" userData="MSCAPI" toggleGroup="$toggleSigToken" />
+				<RadioButton mnemonicParsing="false" text="PKCS #12" toggleGroup="$toggleSigToken">
+					<userData>
+						<SignatureTokenType fx:value="PKCS12"/>
+					</userData>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="MS CAPI" toggleGroup="$toggleSigToken">
+					<userData>
+						<SignatureTokenType fx:value="MSCAPI"/>
+					</userData>
+				</RadioButton>
 			</children>
 		</HBox>
 		
 		<HBox fx:id="hPkcsFile" styleClass="hbox-style" visible="false">
 			<children>
-				<Label text="" styleClass="label-style" fx:id="labelPkcsFile" />
+				<Label text="PKCS #11 library" styleClass="label-style" fx:id="labelPkcs11File" />
+				<Label text="Keystore file" styleClass="label-style" fx:id="labelPkcs12File" />
 				<Button mnemonicParsing="false" text="Select file..." fx:id="pkcsFileButton" />
 			</children>
 		</HBox>

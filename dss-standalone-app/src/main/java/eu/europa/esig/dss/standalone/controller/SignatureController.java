@@ -3,6 +3,7 @@ package eu.europa.esig.dss.standalone.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -50,7 +51,7 @@ public class SignatureController implements Initializable {
 	private TypedToggleGroup<DigestAlgorithm> toggleDigestAlgo;
 
 	@FXML
-	private ToggleGroup toggleSigToken;
+	private TypedToggleGroup<SignatureTokenType> toggleSigToken;
 
 	@FXML
 	private HBox hUnderlyingSignatureFormat;
@@ -59,7 +60,10 @@ public class SignatureController implements Initializable {
 	private HBox hPkcsFile;
 
 	@FXML
-	private Label labelPkcsFile;
+	private Label labelPkcs11File;
+
+	@FXML
+	private Label labelPkcs12File;
 
 	@FXML
 	private HBox hPkcsPassword;
@@ -79,6 +83,8 @@ public class SignatureController implements Initializable {
 		hUnderlyingSignatureFormat.managedProperty().bind(hUnderlyingSignatureFormat.visibleProperty());
 		hPkcsFile.managedProperty().bind(hPkcsFile.visibleProperty());
 		hPkcsPassword.managedProperty().bind(hPkcsPassword.visibleProperty());
+		labelPkcs11File.managedProperty().bind(labelPkcs11File.visibleProperty());
+		labelPkcs12File.managedProperty().bind(labelPkcs12File.visibleProperty());
 
 		toogleSigFormat.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			@Override
@@ -102,40 +108,18 @@ public class SignatureController implements Initializable {
 			}
 		});
 
-		toggleSigToken.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			@Override
-			public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-				SignatureTokenType tokenType = null;
-				if (newValue != null) {
-					tokenType = SignatureTokenType.valueOf((String) newValue.getUserData());
-				}
-				updateSignatureTokenType(tokenType);
-			}
-		});
+		toggleSigToken.getSelectedValueProperty().bindBidirectional(model.tokenTypeProperty());
+
+		BooleanBinding isPkcs11Or12 = model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11)
+				.or(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
+
+		hPkcsFile.visibleProperty().bind(isPkcs11Or12);
+		hPkcsPassword.visibleProperty().bind(isPkcs11Or12);
+
+		labelPkcs11File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11));
+		labelPkcs12File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
 	}
 
-	protected void updateSignatureTokenType(SignatureTokenType tokenType) {
-		model.setTokenType(tokenType);
-
-		if (tokenType != null) {
-			switch (tokenType) {
-				case PKCS11:
-					hPkcsFile.setVisible(true);
-					hPkcsPassword.setVisible(true);
-					labelPkcsFile.setText("PKCS #11 library");
-					break;
-				case PKCS12:
-					hPkcsFile.setVisible(true);
-					hPkcsPassword.setVisible(true);
-					labelPkcsFile.setText("Keystore file");
-					break;
-				default:
-					hPkcsFile.setVisible(false);
-					hPkcsPassword.setVisible(false);
-					break;
-			}
-		}
-	}
 
 	protected void updateSignatureForm(SignatureForm signatureForm) {
 		model.setSignatureForm(signatureForm);
