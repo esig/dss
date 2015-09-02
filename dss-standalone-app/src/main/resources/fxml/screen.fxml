@@ -5,9 +5,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.europa.esig.dss.standalone.controller.SignatureController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.europa.esig.dss.standalone.controller.SignatureController">
 	<padding>
-		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+		<Insets bottom="20" left="20" right="20" top="20" />
 	</padding>
 	<children>
 		<HBox fx:id="hFileChooser" styleClass="hbox-style">
@@ -73,5 +73,30 @@
 				<RadioButton mnemonicParsing="false" text="SHA-512" userData="SHA512" toggleGroup="$toggleDigestAlgo" />         
 			</children>
 		</HBox>
+		<HBox fx:id="hSignatureToken" styleClass="hbox-style">
+			<children>
+				<Label text="Signature token API" styleClass="label-style" />
+				<RadioButton mnemonicParsing="false" text="PKCS #11" userData="PKCS11">
+					<toggleGroup>
+						<ToggleGroup fx:id="toggleSigToken" />
+					</toggleGroup>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="PKCS #12" userData="PKCS12" toggleGroup="$toggleSigToken" />
+				<RadioButton mnemonicParsing="false" text="MS CAPI" userData="MSCAPI" toggleGroup="$toggleSigToken" />
+			</children>
+		</HBox>
+		
+		<HBox fx:id="hPkcsFile" styleClass="hbox-style" visible="false">
+			<children>
+				<Label text="" styleClass="label-style" fx:id="labelPkcsFile" />
+				<Button mnemonicParsing="false" text="Select file..." fx:id="pkcsFileButton" />
+			</children>
+		</HBox>
+		<HBox fx:id="hPkcsPassword" styleClass="hbox-style" visible="false">
+			<children>
+				<Label text="Password" styleClass="label-style" />
+			</children>
+		</HBox>
+		
 	</children>
 </VBox>

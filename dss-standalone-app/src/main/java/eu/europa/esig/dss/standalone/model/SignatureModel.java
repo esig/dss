@@ -6,6 +6,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignatureTokenType;
 
 public class SignatureModel {
 
@@ -14,6 +15,7 @@ public class SignatureModel {
 	private ObjectProperty<SignaturePackaging> signaturePackaging = new SimpleObjectProperty<SignaturePackaging>();
 	private ObjectProperty<SignatureLevel> signatureLevel = new SimpleObjectProperty<SignatureLevel>();
 	private ObjectProperty<DigestAlgorithm> digestAlgorithm = new SimpleObjectProperty<DigestAlgorithm>();
+	private ObjectProperty<SignatureTokenType> tokenType = new SimpleObjectProperty<SignatureTokenType>();
 
 	public SignatureForm getSignatureForm() {
 		return signatureForm.get();
@@ -73,6 +75,18 @@ public class SignatureModel {
 
 	public ObjectProperty<DigestAlgorithm> digestAlgorithmProperty(){
 		return digestAlgorithm;
+	}
+
+	public SignatureTokenType getTokenType() {
+		return tokenType.get();
+	}
+
+	public void setTokenType(SignatureTokenType tokenType) {
+		this.tokenType.set(tokenType);
+	}
+
+	public ObjectProperty<SignatureTokenType> tokenTypeProperty(){
+		return tokenType;
 	}
 
 }
