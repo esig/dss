@@ -1,20 +1,23 @@
 package eu.europa.esig.dss.standalone.controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -27,7 +30,10 @@ import eu.europa.esig.dss.standalone.model.SignatureModel;
 public class SignatureController implements Initializable {
 
 	@FXML
-	private ToggleGroup toogleSigFormat;
+	private Button fileSelectButton;
+
+	@FXML
+	private TypedToggleGroup<SignatureForm> toogleSigFormat;
 
 	@FXML
 	private TypedToggleGroup<SignatureForm> toggleAsicUnderlying;
@@ -68,6 +74,15 @@ public class SignatureController implements Initializable {
 	@FXML
 	private HBox hPkcsPassword;
 
+	@FXML
+	private Button pkcsFileButton;
+
+	@FXML
+	private PasswordField pkcsPassword;
+
+	@FXML
+	private Button signButton;
+
 	private DSSApplication dssApplication;
 
 	private SignatureModel model;
@@ -80,59 +95,110 @@ public class SignatureController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		model = new SignatureModel();
 
+		// Allows to collapse items
 		hUnderlyingSignatureFormat.managedProperty().bind(hUnderlyingSignatureFormat.visibleProperty());
 		hPkcsFile.managedProperty().bind(hPkcsFile.visibleProperty());
 		hPkcsPassword.managedProperty().bind(hPkcsPassword.visibleProperty());
 		labelPkcs11File.managedProperty().bind(labelPkcs11File.visibleProperty());
 		labelPkcs12File.managedProperty().bind(labelPkcs12File.visibleProperty());
 
-		toogleSigFormat.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+		fileSelectButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-				SignatureForm signatureForm = null;
-				if (newValue != null) {
-					signatureForm = SignatureForm.valueOf((String) newValue.getUserData());
+			public void handle(ActionEvent event) {
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("File to sign");
+				File fileToSign = fileChooser.showOpenDialog(dssApplication.getStage());
+				model.setFileToSign(fileToSign);
+				if (fileToSign != null) {
+					fileSelectButton.setText(fileToSign.getName());
+				} else {
+					fileSelectButton.setText("Select file...");
 				}
-				updateSignatureForm(signatureForm);
 			}
 		});
 
+		// Enables / disables options with selected signature form
+		toogleSigFormat.getSelectedValueProperty().addListener(new ChangeListener<SignatureForm>() {
+			@Override
+			public void changed(ObservableValue<? extends SignatureForm> observable, SignatureForm oldValue, SignatureForm newValue) {
+				updateSignatureForm(newValue);
+			}
+		});
+
+		// Displays underlying format in case of ASiC
+		BooleanBinding isASiC = model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_S).or(model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_E));
+		hUnderlyingSignatureFormat.visibleProperty().bind(isASiC);
+
+		// Binds values with model
 		toggleAsicUnderlying.getSelectedValueProperty().bindBidirectional(model.asicUnderlyingFormProperty());
 		toggleSigPackaging.getSelectedValueProperty().bindBidirectional(model.signaturePackagingProperty());
 		toggleDigestAlgo.getSelectedValueProperty().bindBidirectional(model.digestAlgorithmProperty());
+		comboLevel.valueProperty().bindBidirectional(model.signatureLevelProperty());
+		toggleSigToken.getSelectedValueProperty().bindBidirectional(model.tokenTypeProperty());
 
-		comboLevel.valueProperty().addListener(new ChangeListener<SignatureLevel>() {
+		toggleSigToken.getSelectedValueProperty().addListener(new ChangeListener<SignatureTokenType>() {
 			@Override
-			public void changed(ObservableValue<? extends SignatureLevel> observable, SignatureLevel oldValue, SignatureLevel newValue) {
-				model.setSignatureLevel(newValue);
+			public void changed(ObservableValue<? extends SignatureTokenType> observable, SignatureTokenType oldValue, SignatureTokenType newValue) {
+				model.setPkcsFile(null);
+				model.setPassword(null);
 			}
 		});
 
-		toggleSigToken.getSelectedValueProperty().bindBidirectional(model.tokenTypeProperty());
+		pkcsFileButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				FileChooser fileChooser = new FileChooser();
+				if (SignatureTokenType.PKCS11.equals(model.getTokenType())) {
+					fileChooser.setTitle("Library");
+				} else if (SignatureTokenType.PKCS12.equals(model.getTokenType())) {
+					fileChooser.setTitle("Keystore");
+				}
+				File pkcsFile = fileChooser.showOpenDialog(dssApplication.getStage());
+				model.setPkcsFile(pkcsFile);
+				if (pkcsFile != null) {
+					pkcsFileButton.setText(pkcsFile.getName());
+				} else {
+					pkcsFileButton.setText("Select file...");
+				}
+			}
+		});
 
-		BooleanBinding isPkcs11Or12 = model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11)
-				.or(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
+		pkcsPassword.textProperty().bindBidirectional(model.passwordProperty());
+
+		BooleanBinding isPkcs11Or12 = model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11).or(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
 
 		hPkcsFile.visibleProperty().bind(isPkcs11Or12);
 		hPkcsPassword.visibleProperty().bind(isPkcs11Or12);
 
 		labelPkcs11File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11));
 		labelPkcs12File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
-	}
 
+		BooleanBinding isMandatoryFieldsEmpty = model.fileToSignProperty().isNull()
+				.or(model.signatureFormProperty().isNull())
+				.or(model.signaturePackagingProperty().isNull())
+				.or(model.digestAlgorithmProperty().isNull())
+				.or(model.tokenTypeProperty().isNull());
+
+		BooleanBinding isUnderlyingEmpty = model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_S).or(model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_E))
+				.and(model.asicUnderlyingFormProperty().isNull());
+
+		BooleanBinding isEmptyFileOrPassword = model.pkcsFileProperty().isNull().or(model.passwordProperty().isEmpty());
+
+		BooleanBinding isPKCSIncomplete = model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11).or(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12))
+				.and(isEmptyFileOrPassword);
+
+		signButton.disableProperty().bind(isMandatoryFieldsEmpty.or(isUnderlyingEmpty).or(isPKCSIncomplete));
+
+		signButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("Signing....");
+			}
+		});
+	}
 
 	protected void updateSignatureForm(SignatureForm signatureForm) {
 		model.setSignatureForm(signatureForm);
-
-		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)) {
-
-			//			hUnderlyingSignatureFormat.visibleProperty().bind(model.digestAlgorithmProperty().);
-
-			hUnderlyingSignatureFormat.setVisible(true);
-		} else {
-			hUnderlyingSignatureFormat.setVisible(false);
-			model.setAsicUnderlyingForm(null);
-		}
 
 		reinitSignaturePackagings();
 
@@ -145,9 +211,8 @@ public class SignatureController implements Initializable {
 					envelopingRadio.setDisable(false);
 					detachedRadio.setDisable(false);
 
-					comboLevel.itemsProperty().set(
-							FXCollections.observableArrayList(SignatureLevel.CAdES_BASELINE_B, SignatureLevel.CAdES_BASELINE_T, SignatureLevel.CAdES_BASELINE_LT,
-									SignatureLevel.CAdES_BASELINE_LTA));
+					comboLevel.getItems().addAll(SignatureLevel.CAdES_BASELINE_B, SignatureLevel.CAdES_BASELINE_T, SignatureLevel.CAdES_BASELINE_LT,
+							SignatureLevel.CAdES_BASELINE_LTA);
 					comboLevel.setValue(SignatureLevel.CAdES_BASELINE_B);
 					break;
 				case PAdES:
@@ -190,7 +255,6 @@ public class SignatureController implements Initializable {
 					break;
 			}
 		}
-
 	}
 
 	private void reinitSignaturePackagings() {

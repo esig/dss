@@ -1,7 +1,11 @@
 package eu.europa.esig.dss.standalone.model;
 
+import java.io.File;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -10,12 +14,28 @@ import eu.europa.esig.dss.SignatureTokenType;
 
 public class SignatureModel {
 
+	private ObjectProperty<File> fileToSign = new SimpleObjectProperty<File>();
 	private ObjectProperty<SignatureForm> signatureForm = new SimpleObjectProperty<SignatureForm>();
 	private ObjectProperty<SignatureForm> asicUnderlyingForm = new SimpleObjectProperty<SignatureForm>();
 	private ObjectProperty<SignaturePackaging> signaturePackaging = new SimpleObjectProperty<SignaturePackaging>();
 	private ObjectProperty<SignatureLevel> signatureLevel = new SimpleObjectProperty<SignatureLevel>();
 	private ObjectProperty<DigestAlgorithm> digestAlgorithm = new SimpleObjectProperty<DigestAlgorithm>();
 	private ObjectProperty<SignatureTokenType> tokenType = new SimpleObjectProperty<SignatureTokenType>();
+
+	private ObjectProperty<File> pkcsFile = new SimpleObjectProperty<File>();
+	private StringProperty password = new SimpleStringProperty();
+
+	public File getFileToSign() {
+		return fileToSign.get();
+	}
+
+	public void setFileToSign(File fileToSign) {
+		this.fileToSign.set(fileToSign);
+	}
+
+	public ObjectProperty<File> fileToSignProperty() {
+		return fileToSign;
+	}
 
 	public SignatureForm getSignatureForm() {
 		return signatureForm.get();
@@ -87,6 +107,30 @@ public class SignatureModel {
 
 	public ObjectProperty<SignatureTokenType> tokenTypeProperty() {
 		return tokenType;
+	}
+
+	public String getPassword() {
+		return password.get();
+	}
+
+	public void setPassword(String password) {
+		this.password.set(password);
+	}
+
+	public StringProperty passwordProperty() {
+		return password;
+	}
+
+	public File getPkcsFile() {
+		return pkcsFile.get();
+	}
+
+	public void setPkcsFile(File pkcsFile) {
+		this.pkcsFile.set(pkcsFile);
+	}
+
+	public ObjectProperty<File> pkcsFileProperty() {
+		return pkcsFile;
 	}
 
 }

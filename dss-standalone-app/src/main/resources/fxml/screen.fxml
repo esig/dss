@@ -12,7 +12,7 @@
 <?import eu.europa.esig.dss.SignaturePackaging?>
 <?import eu.europa.esig.dss.SignatureTokenType?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.europa.esig.dss.standalone.controller.SignatureController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.europa.esig.dss.standalone.controller.SignatureController">
 	<padding>
 		<Insets bottom="20" left="20" right="20" top="20" />
 	</padding>
@@ -26,15 +26,34 @@
 		<HBox fx:id="hSignatureFormat" styleClass="hbox-style">
 			<children>
 				<Label text="Signature format" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="CAdES" userData="CAdES">
+				<RadioButton mnemonicParsing="false" text="CAdES">
 					<toggleGroup>
-						<ToggleGroup fx:id="toogleSigFormat" />
+						<TypedToggleGroup fx:id="toogleSigFormat" />
 					</toggleGroup>
+					<userData>
+						<SignatureForm fx:value="CAdES"/>
+					</userData>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="PAdES" userData="PAdES" toggleGroup="$toogleSigFormat" />
-				<RadioButton mnemonicParsing="false" text="XAdES" userData="XAdES" toggleGroup="$toogleSigFormat" />
-				<RadioButton mnemonicParsing="false" text="ASiC-S" userData="ASiC_S" toggleGroup="$toogleSigFormat" />
-				<RadioButton mnemonicParsing="false" text="ASiC-E" userData="ASiC_E" toggleGroup="$toogleSigFormat" />
+				<RadioButton mnemonicParsing="false" text="PAdES" toggleGroup="$toogleSigFormat">
+					<userData>
+						<SignatureForm fx:value="PAdES"/>
+					</userData>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="XAdES" toggleGroup="$toogleSigFormat">
+					<userData>
+						<SignatureForm fx:value="XAdES"/>
+					</userData>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="ASiC-S" toggleGroup="$toogleSigFormat">
+					<userData>
+						<SignatureForm fx:value="ASiC_S"/>
+					</userData>
+				</RadioButton>
+				<RadioButton mnemonicParsing="false" text="ASiC-E" toggleGroup="$toogleSigFormat">
+					<userData>
+						<SignatureForm fx:value="ASiC_E"/>
+					</userData>
+				</RadioButton>
 			</children>
 		</HBox>
 		<HBox fx:id="hUnderlyingSignatureFormat" styleClass="hbox-style" visible="false">
@@ -140,7 +159,6 @@
 				</RadioButton>
 			</children>
 		</HBox>
-		
 		<HBox fx:id="hPkcsFile" styleClass="hbox-style" visible="false">
 			<children>
 				<Label text="PKCS #11 library" styleClass="label-style" fx:id="labelPkcs11File" />
@@ -151,8 +169,14 @@
 		<HBox fx:id="hPkcsPassword" styleClass="hbox-style" visible="false">
 			<children>
 				<Label text="Password" styleClass="label-style" />
+      			<PasswordField fx:id="pkcsPassword" />
 			</children>
 		</HBox>
-		
+		<HBox fx:id="hSignButton" styleClass="hbox-style">
+			<children>
+				<Label text="" styleClass="label-style" />
+				<Button mnemonicParsing="false" text="Sign" fx:id="signButton" />
+			</children>
+		</HBox>	
 	</children>
 </VBox>

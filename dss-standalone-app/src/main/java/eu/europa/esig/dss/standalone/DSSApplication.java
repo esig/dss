@@ -48,4 +48,8 @@ public class DSSApplication extends Application {
 		launch(DSSApplication.class, args);
 	}
 
+	public Stage getStage() {
+		return stage;
+	}
+
 }
