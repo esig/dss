@@ -8,12 +8,17 @@ import javafx.stage.Stage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eu.europa.esig.dss.standalone.controller.SignatureController;
+import eu.europa.esig.dss.standalone.service.SignatureService;
 
 public class DSSApplication extends Application {
 
 	private static Logger logger = LoggerFactory.getLogger(DSSApplication.class);
+
+	private SignatureService signatureService;
 
 	private Stage stage;
 
@@ -22,8 +27,10 @@ public class DSSApplication extends Application {
 		this.stage = stage;
 		this.stage.setTitle("Digital Signature Service Application");
 
-		initLayout();
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("spring/applicationContext.xml");
+		signatureService = ctx.getBean(SignatureService.class);
 
+		initLayout();
 	}
 
 	private void initLayout() {
@@ -38,7 +45,8 @@ public class DSSApplication extends Application {
 			stage.show();
 
 			SignatureController controller = loader.getController();
-			controller.setApp(this);
+			controller.setStage(stage);
+			controller.setSignatureService(signatureService);
 		} catch (Exception e) {
 			logger.error("Unable to init layout : " + e.getMessage(), e);
 		}
