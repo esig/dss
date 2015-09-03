@@ -3,6 +3,7 @@ package eu.europa.esig.dss.standalone;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -26,6 +27,8 @@ public class DSSApplication extends Application {
 	public void start(Stage stage) {
 		this.stage = stage;
 		this.stage.setTitle("Digital Signature Service Application");
+		this.stage.setResizable(false);
+		this.stage.getIcons().add(new Image("/dss-logo.png"));
 
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("spring/applicationContext.xml");
 		signatureService = ctx.getBean(SignatureService.class);

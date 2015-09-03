@@ -17,9 +17,6 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.RemoteDocumentSignatureService;
 import eu.europa.esig.dss.standalone.model.SignatureModel;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
-import eu.europa.esig.dss.token.MSCAPISignatureToken;
-import eu.europa.esig.dss.token.Pkcs11SignatureToken;
-import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -58,19 +55,6 @@ public class SignatureService {
 		DSSDocument signDocument = remoteSignatureService.signDocument(toSignDocument, parameters, signatureValue);
 
 		return signDocument;
-	}
-
-	public SignatureTokenConnection getToken(SignatureModel model) {
-		switch (model.getTokenType()) {
-			case PKCS11:
-				return new Pkcs11SignatureToken(model.getPkcsFile().getAbsolutePath(), model.getPassword().toCharArray());
-			case PKCS12:
-				return new Pkcs12SignatureToken(model.getPassword().toCharArray(), model.getPkcsFile());
-			case MSCAPI:
-				return new MSCAPISignatureToken();
-			default:
-				throw new IllegalArgumentException("Unsupported token type " + model.getTokenType());
-		}
 	}
 
 }

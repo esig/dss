@@ -39,10 +39,14 @@ import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
+import eu.europa.esig.dss.standalone.fx.FileToStringConverter;
 import eu.europa.esig.dss.standalone.fx.TypedToggleGroup;
 import eu.europa.esig.dss.standalone.model.SignatureModel;
 import eu.europa.esig.dss.standalone.service.SignatureService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.MSCAPISignatureToken;
+import eu.europa.esig.dss.token.Pkcs11SignatureToken;
+import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -134,13 +138,9 @@ public class SignatureController implements Initializable {
 				fileChooser.setTitle("File to sign");
 				File fileToSign = fileChooser.showOpenDialog(stage);
 				model.setFileToSign(fileToSign);
-				if (fileToSign != null) {
-					fileSelectButton.setText(fileToSign.getName());
-				} else {
-					fileSelectButton.setText("Select file...");
-				}
 			}
 		});
+		fileSelectButton.textProperty().bindBidirectional(model.fileToSignProperty(), new FileToStringConverter());
 
 		// Enables / disables options with selected signature form
 		toogleSigFormat.getSelectedValueProperty().addListener(new ChangeListener<SignatureForm>() {
@@ -180,13 +180,9 @@ public class SignatureController implements Initializable {
 				}
 				File pkcsFile = fileChooser.showOpenDialog(stage);
 				model.setPkcsFile(pkcsFile);
-				if (pkcsFile != null) {
-					pkcsFileButton.setText(pkcsFile.getName());
-				} else {
-					pkcsFileButton.setText("Select file...");
-				}
 			}
 		});
+		pkcsFileButton.textProperty().bindBidirectional(model.pkcsFileProperty(), new FileToStringConverter());
 
 		pkcsPassword.textProperty().bindBidirectional(model.passwordProperty());
 
@@ -198,8 +194,11 @@ public class SignatureController implements Initializable {
 		labelPkcs11File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11));
 		labelPkcs12File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
 
-		BooleanBinding isMandatoryFieldsEmpty = model.fileToSignProperty().isNull().or(model.signatureFormProperty().isNull()).or(model.signaturePackagingProperty().isNull())
-				.or(model.digestAlgorithmProperty().isNull()).or(model.tokenTypeProperty().isNull());
+		BooleanBinding isMandatoryFieldsEmpty = model.fileToSignProperty().isNull()
+				.or(model.signatureFormProperty().isNull())
+				.or(model.signaturePackagingProperty().isNull())
+				.or(model.digestAlgorithmProperty().isNull())
+				.or(model.tokenTypeProperty().isNull());
 
 		BooleanBinding isUnderlyingEmpty = model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_S).or(model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_E))
 				.and(model.asicUnderlyingFormProperty().isNull());
@@ -290,7 +289,7 @@ public class SignatureController implements Initializable {
 	}
 
 	private void sign() {
-		SignatureTokenConnection token = signatureService.getToken(model);
+		SignatureTokenConnection token = getToken(model);
 		List<DSSPrivateKeyEntry> keys = token.getKeys();
 
 		DSSDocument signedDocument = null;
@@ -301,7 +300,6 @@ public class SignatureController implements Initializable {
 		} else if (CollectionUtils.size(keys) == 1) {
 			signedDocument = signatureService.sign(model, token, keys.get(0));
 		} else {
-
 			Map<String, DSSPrivateKeyEntry> map = new HashMap<String, DSSPrivateKeyEntry>();
 			for (DSSPrivateKeyEntry dssPrivateKeyEntry : keys) {
 				CertificateToken certificate = dssPrivateKeyEntry.getCertificate();
@@ -320,21 +318,47 @@ public class SignatureController implements Initializable {
 			}
 		}
 
-		if (signedDocument != null) {
-			FileChooser fileChooser = new FileChooser();
-			File fileToSave = fileChooser.showSaveDialog(stage);
-			if (fileToSave != null) {
-				try {
-					FileOutputStream fos = new FileOutputStream(fileToSave);
-					IOUtils.write(signedDocument.getBytes(), fos);
-					IOUtils.closeQuietly(fos);
-				} catch (Exception e) {
-					Alert alert = new Alert(AlertType.ERROR, "Unable to save file : " + e.getMessage(), ButtonType.CLOSE);
-					alert.showAndWait();
-					return;
-				}
+		model.setPassword(null);
 
+		if (signedDocument != null) {
+			save(signedDocument);
+		}
+	}
+
+	private void save(DSSDocument signedDocument) {
+		FileChooser fileChooser = new FileChooser();
+		String name = signedDocument.getName();
+		if (name == null) {
+			name = "";
+		}
+		String finalExtension = signedDocument.getMimeType().getExtension();
+		String finalName = name.substring(0, name.lastIndexOf('.')) + "-signed."+finalExtension;
+
+		fileChooser.setInitialFileName(finalName);
+		File fileToSave = fileChooser.showSaveDialog(stage);
+		if (fileToSave != null) {
+			try {
+				FileOutputStream fos = new FileOutputStream(fileToSave);
+				IOUtils.write(signedDocument.getBytes(), fos);
+				IOUtils.closeQuietly(fos);
+			} catch (Exception e) {
+				Alert alert = new Alert(AlertType.ERROR, "Unable to save file : " + e.getMessage(), ButtonType.CLOSE);
+				alert.showAndWait();
+				return;
 			}
+		}
+	}
+
+	private SignatureTokenConnection getToken(SignatureModel model) {
+		switch (model.getTokenType()) {
+			case PKCS11:
+				return new Pkcs11SignatureToken(model.getPkcsFile().getAbsolutePath(), model.getPassword().toCharArray());
+			case PKCS12:
+				return new Pkcs12SignatureToken(model.getPassword().toCharArray(), model.getPkcsFile());
+			case MSCAPI:
+				return new MSCAPISignatureToken();
+			default:
+				throw new IllegalArgumentException("Unsupported token type " + model.getTokenType());
 		}
 	}
 
