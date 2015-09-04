@@ -54,9 +54,5 @@
 	</bean>
 
     <import resource="classpath:/service-definitions.xml" />
-    
-    <bean id="signatureService" class="eu.europa.esig.dss.standalone.service.SignatureService">
-    	<property name="remoteSignatureService" ref="remoteSignatureService" />
-    </bean>
-    
+        
 </beans>    

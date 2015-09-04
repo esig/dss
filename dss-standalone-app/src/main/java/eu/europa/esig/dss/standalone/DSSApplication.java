@@ -12,14 +12,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.signature.RemoteDocumentSignatureService;
+import eu.europa.esig.dss.signature.RemoteDocumentSignatureServiceImpl;
 import eu.europa.esig.dss.standalone.controller.SignatureController;
-import eu.europa.esig.dss.standalone.service.SignatureService;
 
 public class DSSApplication extends Application {
 
 	private static Logger logger = LoggerFactory.getLogger(DSSApplication.class);
 
-	private SignatureService signatureService;
+	private RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> signatureService;
 
 	private Stage stage;
 
@@ -31,7 +34,7 @@ public class DSSApplication extends Application {
 		this.stage.getIcons().add(new Image("/dss-logo.png"));
 
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("spring/applicationContext.xml");
-		signatureService = ctx.getBean(SignatureService.class);
+		signatureService = ctx.getBean(RemoteDocumentSignatureServiceImpl.class);
 
 		initLayout();
 	}

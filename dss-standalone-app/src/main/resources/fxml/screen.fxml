@@ -176,6 +176,7 @@
 			<children>
 				<Label text="" styleClass="label-style" />
 				<Button mnemonicParsing="false" text="Sign" fx:id="signButton" />
+				<ProgressIndicator fx:id="progressSign" disable="true" progress="0" />
 			</children>
 		</HBox>	
 	</children>

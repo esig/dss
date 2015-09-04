@@ -3,16 +3,14 @@ package eu.europa.esig.dss.standalone.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -21,34 +19,32 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
+import eu.europa.esig.dss.signature.RemoteDocumentSignatureService;
 import eu.europa.esig.dss.standalone.fx.FileToStringConverter;
 import eu.europa.esig.dss.standalone.fx.TypedToggleGroup;
 import eu.europa.esig.dss.standalone.model.SignatureModel;
-import eu.europa.esig.dss.standalone.service.SignatureService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
-import eu.europa.esig.dss.token.MSCAPISignatureToken;
-import eu.europa.esig.dss.token.Pkcs11SignatureToken;
-import eu.europa.esig.dss.token.Pkcs12SignatureToken;
-import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.standalone.task.SigningTask;
 
 public class SignatureController implements Initializable {
 
@@ -106,17 +102,20 @@ public class SignatureController implements Initializable {
 	@FXML
 	private Button signButton;
 
+	@FXML
+	private ProgressIndicator progressSign;
+
 	private Stage stage;
 
 	private SignatureModel model;
 
-	private SignatureService signatureService;
+	private RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> signatureService;
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
 
-	public void setSignatureService(SignatureService signatureService) {
+	public void setSignatureService(RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> signatureService) {
 		this.signatureService = signatureService;
 	}
 
@@ -194,11 +193,8 @@ public class SignatureController implements Initializable {
 		labelPkcs11File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11));
 		labelPkcs12File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
 
-		BooleanBinding isMandatoryFieldsEmpty = model.fileToSignProperty().isNull()
-				.or(model.signatureFormProperty().isNull())
-				.or(model.signaturePackagingProperty().isNull())
-				.or(model.digestAlgorithmProperty().isNull())
-				.or(model.tokenTypeProperty().isNull());
+		BooleanBinding isMandatoryFieldsEmpty = model.fileToSignProperty().isNull().or(model.signatureFormProperty().isNull()).or(model.signaturePackagingProperty().isNull())
+				.or(model.digestAlgorithmProperty().isNull()).or(model.tokenTypeProperty().isNull());
 
 		BooleanBinding isUnderlyingEmpty = model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_S).or(model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_E))
 				.and(model.asicUnderlyingFormProperty().isNull());
@@ -289,53 +285,42 @@ public class SignatureController implements Initializable {
 	}
 
 	private void sign() {
-		SignatureTokenConnection token = getToken(model);
-		List<DSSPrivateKeyEntry> keys = token.getKeys();
+		progressSign.setDisable(false);
 
-		DSSDocument signedDocument = null;
-		if (CollectionUtils.isEmpty(keys)) {
-			Alert alert = new Alert(AlertType.WARNING, "No certificate found", ButtonType.CLOSE);
-			alert.showAndWait();
-			return;
-		} else if (CollectionUtils.size(keys) == 1) {
-			signedDocument = signatureService.sign(model, token, keys.get(0));
-		} else {
-			Map<String, DSSPrivateKeyEntry> map = new HashMap<String, DSSPrivateKeyEntry>();
-			for (DSSPrivateKeyEntry dssPrivateKeyEntry : keys) {
-				CertificateToken certificate = dssPrivateKeyEntry.getCertificate();
-				String text = certificate.getSubjectShortName() + " (" + certificate.getSerialNumber() + ")";
-				map.put(text, dssPrivateKeyEntry);
+		final Service<DSSDocument> service = new Service<DSSDocument>() {
+			@Override
+			protected Task<DSSDocument> createTask() {
+				return new SigningTask(signatureService, model);
 			}
-
-			Set<String> keySet = map.keySet();
-			ChoiceDialog<String> dialog = new ChoiceDialog<String>(keySet.iterator().next(), keySet);
-			dialog.setHeaderText("Select your certificate");
-			Optional<String> result = dialog.showAndWait();
-
-			if (result.isPresent()) {
-				String mapKey = result.get();
-				signedDocument = signatureService.sign(model, token, map.get(mapKey));
+		};
+		service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				save(service.getValue());
 			}
-		}
+		});
+		service.setOnFailed(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Alert alert = new Alert(AlertType.ERROR, "Oops an error occurred : " + service.getMessage(), ButtonType.CLOSE);
+				alert.showAndWait();
+			}
+		});
+
+		progressSign.progressProperty().bind(service.progressProperty());
+		service.start();
 
 		model.setPassword(null);
-
-		if (signedDocument != null) {
-			save(signedDocument);
-		}
 	}
 
 	private void save(DSSDocument signedDocument) {
 		FileChooser fileChooser = new FileChooser();
-		String name = signedDocument.getName();
-		if (name == null) {
-			name = "";
-		}
-		String finalExtension = signedDocument.getMimeType().getExtension();
-		String finalName = name.substring(0, name.lastIndexOf('.')) + "-signed."+finalExtension;
-
-		fileChooser.setInitialFileName(finalName);
+		fileChooser.setInitialFileName(signedDocument.getName());
+		MimeType mimeType = signedDocument.getMimeType();
+		ExtensionFilter extFilter = new ExtensionFilter(mimeType.getMimeTypeString(), "*." + mimeType.getExtension());
+		fileChooser.getExtensionFilters().add(extFilter);
 		File fileToSave = fileChooser.showSaveDialog(stage);
+
 		if (fileToSave != null) {
 			try {
 				FileOutputStream fos = new FileOutputStream(fileToSave);
@@ -346,19 +331,6 @@ public class SignatureController implements Initializable {
 				alert.showAndWait();
 				return;
 			}
-		}
-	}
-
-	private SignatureTokenConnection getToken(SignatureModel model) {
-		switch (model.getTokenType()) {
-			case PKCS11:
-				return new Pkcs11SignatureToken(model.getPkcsFile().getAbsolutePath(), model.getPassword().toCharArray());
-			case PKCS12:
-				return new Pkcs12SignatureToken(model.getPassword().toCharArray(), model.getPkcsFile());
-			case MSCAPI:
-				return new MSCAPISignatureToken();
-			default:
-				throw new IllegalArgumentException("Unsupported token type " + model.getTokenType());
 		}
 	}
 
