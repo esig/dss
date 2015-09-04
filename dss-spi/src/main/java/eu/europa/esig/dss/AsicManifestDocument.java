@@ -40,8 +40,6 @@ public class AsicManifestDocument extends CommonDocument {
 
 	private byte[] bytes;
 
-	private String name;
-
 	private String absolutePath;
 
 	private String signatureUri;
@@ -66,23 +64,13 @@ public class AsicManifestDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() throws DSSException {
-
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 		return byteArrayInputStream;
 	}
 
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
 	public byte[] getBytes() throws DSSException {
 		return bytes;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
 	}
 
 	public void setAbsolutePath(final String absolutePath) {

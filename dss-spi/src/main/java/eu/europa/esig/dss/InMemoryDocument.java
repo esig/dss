@@ -37,10 +37,6 @@ public class InMemoryDocument extends CommonDocument {
 
 	private byte[] bytes;
 
-	private String name;
-
-	private String absolutePath;
-
 	public InMemoryDocument(){
 	}
 
@@ -118,15 +114,6 @@ public class InMemoryDocument extends CommonDocument {
 	}
 
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	@Override
 	public byte[] getBytes() throws DSSException {
 		return bytes;
 	}
@@ -140,6 +127,7 @@ public class InMemoryDocument extends CommonDocument {
 		return absolutePath;
 	}
 
+	@Override
 	public void setAbsolutePath(final String absolutePath) {
 		this.absolutePath = absolutePath;
 	}

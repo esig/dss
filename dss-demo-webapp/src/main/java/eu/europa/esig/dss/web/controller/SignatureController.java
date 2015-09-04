@@ -181,13 +181,11 @@ public class SignatureController {
 	public String downloadSignedFile(@ModelAttribute("signedDocument") InMemoryDocument signedDocument, HttpServletResponse response) {
 		try {
 			MimeType mimeType = signedDocument.getMimeType();
-			String extension = null;
 			if (mimeType != null) {
 				response.setContentType(mimeType.getMimeTypeString());
-				extension = mimeType.getExtension();
 			}
 			response.setHeader("Content-Transfer-Encoding", "binary");
-			response.setHeader("Content-Disposition", "attachment; filename=" + signedDocument.getName() + (extension != null ? "." + extension : ""));
+			response.setHeader("Content-Disposition", "attachment; filename=" + signedDocument.getName());
 			IOUtils.copy(new ByteArrayInputStream(signedDocument.getBytes()), response.getOutputStream());
 
 		} catch (Exception e) {

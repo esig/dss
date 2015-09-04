@@ -54,6 +54,13 @@ public interface DSSDocument extends Serializable {
 	String getName();
 
 	/**
+	 * This method sets the name of the {@code DSSDocument}.
+	 *
+	 * @param name {@code String}
+	 */
+	void setName(String name);
+
+	/**
 	 * Returns the {@code String} representing the absolute path to the encapsulated document.
 	 *
 	 * @return {@code String} representing the absolute path to the encapsulated document.
