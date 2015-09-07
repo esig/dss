@@ -175,16 +175,16 @@ public class ControlTimeSliding {
 				constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 				constraintNode.addChild(NodeName.INFO).setAttribute(AttributeValue.TRUSTED_SERVICE_STATUS, status);
 
-				final boolean underSupervision = InvolvedServiceInfo.isSERVICE_STATUS_UNDERSUPERVISION(NodeName.STATUS);
-				final boolean supervisionInCessation = InvolvedServiceInfo.isSERVICE_STATUS_SUPERVISIONINCESSATION(NodeName.STATUS);
-				final boolean accredited = InvolvedServiceInfo.isSERVICE_STATUS_ACCREDITED(NodeName.STATUS);
+				final boolean underSupervision = InvolvedServiceInfo.isSERVICE_STATUS_UNDERSUPERVISION(status);
+				final boolean supervisionInCessation = InvolvedServiceInfo.isSERVICE_STATUS_SUPERVISIONINCESSATION(status);
+				final boolean accredited = InvolvedServiceInfo.isSERVICE_STATUS_ACCREDITED(status);
 
 				if (!underSupervision && !supervisionInCessation && !accredited) {
 
 					/**
 					 * ...where the trust anchor is broken at a known date by initialising control-time to this date/time.<br>
 					 */
-					if (NodeName.STATUS.isEmpty()) {
+					if (status.isEmpty()) {
 
 						// Trusted service is unknown
 						final String serviceName = InvolvedServiceInfo.getServiceName(certificate);
