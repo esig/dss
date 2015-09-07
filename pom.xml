@@ -42,6 +42,7 @@
 		<module>dss-soap</module>
 		<module>dss-tsl-validation</module>
 		<module>dss-standalone-app</module>
+		<module>dss-standalone-app-package</module>
 	</modules>
 
 	<developers>
@@ -484,6 +485,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>validation-policy</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-standalone-app</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

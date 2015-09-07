@@ -6,6 +6,7 @@
 		<version>4.6-SNAPSHOT</version>
 	</parent>
 	<artifactId>dss-standalone-app</artifactId>
+	<description>DSS Standalone application</description>
 
 	<build>
 		<plugins>
@@ -30,15 +31,16 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  			<artifactId>dss-remote-services</artifactId>
+			<artifactId>dss-remote-services</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  			<artifactId>dss-service</artifactId>
+			<artifactId>dss-service</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-token</artifactId>
 		</dependency>
 	</dependencies>
+
 </project>
