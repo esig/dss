@@ -204,12 +204,42 @@ public class SignatureController implements Initializable {
 		BooleanBinding isPKCSIncomplete = model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11).or(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12))
 				.and(isEmptyFileOrPassword);
 
-		signButton.disableProperty().bind(isMandatoryFieldsEmpty.or(isUnderlyingEmpty).or(isPKCSIncomplete));
+		final BooleanBinding disableSignButton = isMandatoryFieldsEmpty.or(isUnderlyingEmpty).or(isPKCSIncomplete);
+
+		signButton.disableProperty().bind(disableSignButton);
 
 		signButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				sign();
+				progressSign.setDisable(false);
+
+				final Service<DSSDocument> service = new Service<DSSDocument>() {
+					@Override
+					protected Task<DSSDocument> createTask() {
+						return new SigningTask(signatureService, model);
+					}
+				};
+				service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+					@Override
+					public void handle(WorkerStateEvent event) {
+						save(service.getValue());
+						signButton.disableProperty().bind(disableSignButton);
+					}
+				});
+				service.setOnFailed(new EventHandler<WorkerStateEvent>() {
+					@Override
+					public void handle(WorkerStateEvent event) {
+						Alert alert = new Alert(AlertType.ERROR, "Oops an error occurred : " + service.getMessage(), ButtonType.CLOSE);
+						alert.showAndWait();
+						signButton.disableProperty().bind(disableSignButton);
+					}
+				});
+
+				progressSign.progressProperty().bind(service.progressProperty());
+				signButton.disableProperty().bind(service.runningProperty());
+				service.start();
+
+				model.setPassword(null);
 			}
 		});
 	}
@@ -282,35 +312,6 @@ public class SignatureController implements Initializable {
 		envelopingRadio.setSelected(false);
 		envelopedRadio.setSelected(false);
 		detachedRadio.setSelected(false);
-	}
-
-	private void sign() {
-		progressSign.setDisable(false);
-
-		final Service<DSSDocument> service = new Service<DSSDocument>() {
-			@Override
-			protected Task<DSSDocument> createTask() {
-				return new SigningTask(signatureService, model);
-			}
-		};
-		service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				save(service.getValue());
-			}
-		});
-		service.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Alert alert = new Alert(AlertType.ERROR, "Oops an error occurred : " + service.getMessage(), ButtonType.CLOSE);
-				alert.showAndWait();
-			}
-		});
-
-		progressSign.progressProperty().bind(service.progressProperty());
-		service.start();
-
-		model.setPassword(null);
 	}
 
 	private void save(DSSDocument signedDocument) {

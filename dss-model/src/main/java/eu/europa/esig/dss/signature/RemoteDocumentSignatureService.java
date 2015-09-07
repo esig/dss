@@ -71,6 +71,7 @@ public interface RemoteDocumentSignatureService<DOC, SP extends AbstractSerializ
 	 * @param parameters
 	 *            set of the driving signing parameters
 	 * @param signatureValue
+	 *            the signature value to incorporate
 	 * @return
 	 * @throws DSSException
 	 */
