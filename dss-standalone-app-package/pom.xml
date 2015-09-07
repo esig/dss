@@ -52,7 +52,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>attached</goal>
 						</goals>
@@ -94,7 +94,7 @@
 										<argument>-appclass</argument>
 										<argument>eu.europa.esig.dss.standalone.DSSApplication</argument>
 										<argument>-srcfiles</argument>
-										<argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+										<argument>${project.build.directory}/dss-app.jar</argument>
 										<argument>-outdir</argument>
 										<argument>./target</argument>
 										<argument>-outfile</argument>
