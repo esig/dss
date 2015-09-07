@@ -40,64 +40,64 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 
-    private final CertificateToken certificate;
+	private final CertificateToken certificate;
 
-    private final CertificateToken[] certificateChain;
+	private final CertificateToken[] certificateChain;
 
-    private final PrivateKey privateKey;
+	private final PrivateKey privateKey;
 
-    /**
-     * The default constructor for KSPrivateKeyEntry.
-     */
-    public KSPrivateKeyEntry(final PrivateKeyEntry privateKeyEntry) {
+	/**
+	 * The default constructor for KSPrivateKeyEntry.
+	 */
+	public KSPrivateKeyEntry(final PrivateKeyEntry privateKeyEntry) {
 
-        certificate = new CertificateToken((X509Certificate) privateKeyEntry.getCertificate());
-        final List<CertificateToken> x509CertificateList = new ArrayList<CertificateToken>();
-        final Certificate[] simpleCertificateChain = privateKeyEntry.getCertificateChain();
-        for (final Certificate certificate : simpleCertificateChain) {
+		certificate = new CertificateToken((X509Certificate) privateKeyEntry.getCertificate());
+		final List<CertificateToken> x509CertificateList = new ArrayList<CertificateToken>();
+		final Certificate[] simpleCertificateChain = privateKeyEntry.getCertificateChain();
+		for (final Certificate certificate : simpleCertificateChain) {
 
-            x509CertificateList.add(new CertificateToken((X509Certificate) certificate));
-        }
-        final CertificateToken[] certificateChain_ = new CertificateToken[x509CertificateList.size()];
-        certificateChain = x509CertificateList.toArray(certificateChain_);
-        privateKey = privateKeyEntry.getPrivateKey();
-    }
+			x509CertificateList.add(new CertificateToken((X509Certificate) certificate));
+		}
+		final CertificateToken[] certificateChain_ = new CertificateToken[x509CertificateList.size()];
+		certificateChain = x509CertificateList.toArray(certificateChain_);
+		privateKey = privateKeyEntry.getPrivateKey();
+	}
 
-    @Override
-    public CertificateToken getCertificate() {
-        return certificate;
-    }
+	@Override
+	public CertificateToken getCertificate() {
+		return certificate;
+	}
 
-    @Override
-    public CertificateToken[] getCertificateChain() {
-        return certificateChain;
-    }
+	@Override
+	public CertificateToken[] getCertificateChain() {
+		return certificateChain;
+	}
 
-    /**
-     * @return
-     */
-    public PrivateKey getPrivateKey() {
-        return privateKey;
-    }
+	/**
+	 * @return
+	 */
+	public PrivateKey getPrivateKey() {
+		return privateKey;
+	}
 
-    @Override
-    public EncryptionAlgorithm getEncryptionAlgorithm() throws DSSException {
+	@Override
+	public EncryptionAlgorithm getEncryptionAlgorithm() throws DSSException {
 
-        if (privateKey instanceof RSAPrivateKey) {
-            return EncryptionAlgorithm.RSA;
-        } else if (privateKey instanceof DSAPrivateKey) {
-            return EncryptionAlgorithm.DSA;
-        } else if (privateKey instanceof ECPrivateKey) {
-            return EncryptionAlgorithm.ECDSA;
-        } else if (EncryptionAlgorithm.RSA.getName().equals(privateKey.getAlgorithm())) {
-            return EncryptionAlgorithm.RSA;
-        } else if (EncryptionAlgorithm.DSA.getName().equals(privateKey.getAlgorithm())) {
-            return EncryptionAlgorithm.DSA;
-        } else if (EncryptionAlgorithm.ECDSA.getName().equals(privateKey.getAlgorithm())) {
-            return EncryptionAlgorithm.ECDSA;
-        } else {
-            throw new DSSException("Don't find algorithm for PrivateKey of type " + privateKey.getClass());
-        }
-    }
-    
+		if (privateKey instanceof RSAPrivateKey) {
+			return EncryptionAlgorithm.RSA;
+		} else if (privateKey instanceof DSAPrivateKey) {
+			return EncryptionAlgorithm.DSA;
+		} else if (privateKey instanceof ECPrivateKey) {
+			return EncryptionAlgorithm.ECDSA;
+		} else if (EncryptionAlgorithm.RSA.name().equalsIgnoreCase(privateKey.getAlgorithm())) {
+			return EncryptionAlgorithm.RSA;
+		} else if (EncryptionAlgorithm.DSA.name().equalsIgnoreCase(privateKey.getAlgorithm())) {
+			return EncryptionAlgorithm.DSA;
+		} else if (EncryptionAlgorithm.ECDSA.name().equalsIgnoreCase(privateKey.getAlgorithm())) {
+			return EncryptionAlgorithm.ECDSA;
+		} else {
+			throw new DSSException("Don't find algorithm for PrivateKey of type " + privateKey.getClass() + " with algorithm " + privateKey.getAlgorithm());
+		}
+	}
+
 }
