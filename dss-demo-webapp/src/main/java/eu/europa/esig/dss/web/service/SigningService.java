@@ -25,7 +25,6 @@ import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
@@ -62,12 +61,11 @@ public class SigningService {
 	@SuppressWarnings({
 		"rawtypes", "unchecked"
 	})
-	public DSSDocument extend(SignatureForm signatureForm, SignaturePackaging packaging, SignatureLevel level, DSSDocument signedDocument, DSSDocument originalDocument) {
+	public DSSDocument extend(SignatureForm signatureForm, SignatureLevel level, DSSDocument signedDocument, DSSDocument originalDocument) {
 
 		DocumentSignatureService service = getSignatureService(signatureForm);
 
 		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm, null);
-		parameters.setSignaturePackaging(packaging);
 		parameters.setSignatureLevel(level);
 
 		if (originalDocument != null) {
