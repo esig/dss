@@ -34,17 +34,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import eu.europa.esig.dss.web.service.FreemarkerService;
 
 @Controller
-public class SignatureAppletController {
+public class SignatureJNLPWebServicesController {
 
 	@Autowired
 	private FreemarkerService freemarkerService;
 
-	@RequestMapping(value = "/standalone-applet.jnlp", method = RequestMethod.GET)
+	@RequestMapping(value = "/dss-signature.jnlp", method = RequestMethod.GET)
 	public void getJnlp(HttpServletResponse resp) throws Exception {
 		resp.setContentType("application/x-java-jnlp-file");
 		resp.setCharacterEncoding("UTF-8");
 		Writer writer = new OutputStreamWriter(resp.getOutputStream(), Charset.forName("UTF-8"));
 		freemarkerService.generateJNLP(writer);
+	}
+
+	@RequestMapping(value="/signature-jnlp-webservices", method= RequestMethod.GET)
+	public String getInfo() {
+		return "jnlp-webservice-intro";
 	}
 
 }

@@ -63,6 +63,42 @@
 							</artifactItems>
 						</configuration>
 					</execution>
+					<execution>
+						<id>copy-standalone-zip</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+									<artifactId>dss-standalone-app-package</artifactId>
+									<type>zip</type>
+									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
+									<destFileName>/downloads/dss-app.zip</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-standalone-tar-gz</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+									<artifactId>dss-standalone-app-package</artifactId>
+									<type>tar.gz</type>
+									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
+									<destFileName>/downloads/dss-app.tar.gz</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

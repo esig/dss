@@ -68,10 +68,10 @@ import eu.europa.esig.dss.web.service.SigningService;
 @SessionAttributes(value = {
 		"signatureDocumentForm", "signedDocument"
 })
-@RequestMapping(value = "/signature")
-public class SignatureController {
+@RequestMapping(value = "/signature-light-applet")
+public class SignatureLightAppletController {
 
-	private static final Logger logger = LoggerFactory.getLogger(SignatureController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SignatureLightAppletController.class);
 
 	private static final String SIGNATURE_PARAMETERS = "signature-parameters";
 	private static final String SELECT_CERTIFICATE = "select-certificate";

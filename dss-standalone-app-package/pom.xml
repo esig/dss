@@ -52,7 +52,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>prepare-package</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>attached</goal>
 						</goals>
@@ -63,6 +63,7 @@
 						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>
 					<appendAssemblyId>false</appendAssemblyId>
+					<finalName>dss-app</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
