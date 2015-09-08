@@ -175,6 +175,11 @@
 			<artifactId>dss-light-applet-package</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-standalone-app-package</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		
 		<dependency>
 			<groupId>xalan</groupId>

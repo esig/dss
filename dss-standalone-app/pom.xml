@@ -6,7 +6,7 @@
 		<version>4.6-SNAPSHOT</version>
 	</parent>
 	<artifactId>dss-standalone-app</artifactId>
-	<description>DSS Standalone application</description>
+	<name>DSS Standalone application</name>
 
 	<build>
 		<plugins>
