@@ -33,6 +33,10 @@ public abstract class CommonDocument implements DSSDocument {
 
 	protected MimeType mimeType;
 
+	protected String name;
+
+	protected String absolutePath;
+
 	@Override
 	public MimeType getMimeType() {
 		return mimeType;
@@ -44,6 +48,16 @@ public abstract class CommonDocument implements DSSDocument {
 	}
 
 	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
 	public DSSDocument getNextDocument() {
 		return nextDocument;
 	}
@@ -51,6 +65,15 @@ public abstract class CommonDocument implements DSSDocument {
 	@Override
 	public void setNextDocument(final DSSDocument nextDocument) {
 		this.nextDocument = nextDocument;
+	}
+
+	@Override
+	public String getAbsolutePath() {
+		return absolutePath;
+	}
+
+	public void setAbsolutePath(String absolutePath) {
+		this.absolutePath = absolutePath;
 	}
 
 	@Override

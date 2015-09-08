@@ -37,11 +37,13 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
@@ -121,17 +123,15 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(toSignData.getBytes());
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		final CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
-		final CMSSignedDocument signature = new CMSSignedDocument(cmsSignedData);
+		DSSDocument signature = new CMSSignedDocument(cmsSignedData);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(signatureLevel)) {
-
 			// true: Only the last signature will be extended
 			final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, true);
-			final DSSDocument extendSignature = extension.extendSignatures(signature, parameters);
-			parameters.reinitDeterministicId();
-			return extendSignature;
+			signature = extension.extendSignatures(signature, parameters);
 		}
+		signature.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		parameters.reinitDeterministicId();
 		return signature;
 	}
@@ -192,10 +192,10 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 	@Override
 	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final CAdESSignatureParameters parameters) {
-
 		// false: All signature are extended
 		final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, false);
 		final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
+		dssDocument.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 		return dssDocument;
 	}
 

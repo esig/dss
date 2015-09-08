@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,11 +61,8 @@ public class ExtensionController {
 		DSSDocument toExtendDocument = WebAppUtils.toDSSDocument(extensionForm.getSignedFile());
 		DSSDocument extendedDocument = signingService.extend(extensionForm.getSignatureForm(), extensionForm.getSignaturePackaging(), extensionForm.getSignatureLevel(), toExtendDocument, WebAppUtils.toDSSDocument(extensionForm.getOriginalFile()));
 
-		String originalName = toExtendDocument.getName();
-		String extendedFileName = StringUtils.substringBeforeLast(originalName, ".") + "-extended."+StringUtils.substringAfterLast(originalName, ".");
-
 		response.setContentType(extendedDocument.getMimeType().getMimeTypeString());
-		response.setHeader("Content-Disposition", "attachment; filename=" + extendedFileName);
+		response.setHeader("Content-Disposition", "attachment; filename=" + extendedDocument.getName());
 		try {
 			IOUtils.copy(new ByteArrayInputStream(extendedDocument.getBytes()), response.getOutputStream());
 		} catch (Exception e) {

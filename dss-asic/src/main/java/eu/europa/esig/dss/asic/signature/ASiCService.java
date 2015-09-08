@@ -59,6 +59,7 @@ import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
@@ -90,8 +91,6 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	private final static String ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE = META_INF + "signature.p7s";
 	private final static String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = META_INF + "signature001.p7s";
 
-	private final static String ASICS_EXTENSION = ".asics"; // can be ".scs"
-	private final static String ASICE_EXTENSION = ".asice"; // can be ".sce"
 	public final static String ASICS_NS = "asic:XAdESSignatures";
 
 	private DocumentSignatureService underlyingASiCService;
@@ -168,13 +167,13 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			}
 			if (isAsice(asicParameters) && isCAdESForm(asicParameters)) {
 				if (!signingContainer) {
-
 					contextToSignDocument = toSignDocument;
 				} else {
 					contextToSignDocument = parameters.getDetachedContent();
 				}
 			}
 			final InMemoryDocument asicSignature = buildASiCContainer(contextToSignDocument, asicContainer, parameters, signature);
+			asicSignature.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 			parameters.reinitDeterministicId();
 			return asicSignature;
 
@@ -224,7 +223,9 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			}
 			IOUtils.closeQuietly(zipInputStream);
 			IOUtils.closeQuietly(zipOutputStream);
-			return new InMemoryDocument(output.toByteArray(), getName(toExtendDocument.getName(), parameters.aSiC().getContainerForm()), getMimeType(parameters.aSiC().getContainerForm()));
+			DSSDocument asicSignature = new InMemoryDocument(output.toByteArray(), null, getMimeType(parameters.aSiC().getContainerForm()));
+			asicSignature.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+			return asicSignature;
 		} catch(IOException e) {
 			throw new DSSException(e);
 		}
@@ -294,7 +295,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		}
 		DSSUtils.close(zipOutputStream);
 
-		final InMemoryDocument asicContainer = createASiCContainer(asicParameters, outBytes, toSignDocumentName);
+		final InMemoryDocument asicContainer = createASiCContainer(asicParameters, outBytes);
 		return asicContainer;
 	}
 
@@ -371,15 +372,9 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		}
 	}
 
-	private InMemoryDocument createASiCContainer(final ASiCParameters asicParameters, final ByteArrayOutputStream outBytes, final String toSignDocumentName) {
+	private InMemoryDocument createASiCContainer(final ASiCParameters asicParameters, final ByteArrayOutputStream outBytes) {
 		SignatureForm containerForm = asicParameters.getContainerForm();
-		return new InMemoryDocument(outBytes.toByteArray(), getName(toSignDocumentName, containerForm), getMimeType(containerForm));
-	}
-
-	private String getName(String toSignDocumentName, SignatureForm containerForm) {
-		final boolean asics = SignatureForm.ASiC_S.equals(containerForm);
-		final String extension = asics ? ASICS_EXTENSION : ASICE_EXTENSION;
-		return toSignDocumentName != null ? toSignDocumentName + extension : null;
+		return new InMemoryDocument(outBytes.toByteArray(), null, getMimeType(containerForm));
 	}
 
 	private MimeType getMimeType(SignatureForm containerForm) {
@@ -764,4 +759,5 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		}
 		return underlyingASiCService;
 	}
+
 }

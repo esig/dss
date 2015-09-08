@@ -3,7 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<h2><spring:message code="label.signADocument"/></h2>
+<h2>Light applet + Spring MVC</h2>
 <form:form method="post" modelAttribute="signatureDocumentForm" cssClass="form-horizontal" enctype="multipart/form-data">
 
     <input type="hidden" id="isSign" value="true" />
@@ -119,7 +119,7 @@
         </div>
     </div>
 
-    <div class="panel panel-default" style="width: 700px;">
+    <div class="panel panel-default">
         <div class="panel-heading" data-toggle="collapse" data-target="#block-policy">
             <spring:message code="label.policy" />
         </div>
@@ -160,6 +160,23 @@
         </div>
     </div>   
 </form:form>
+
+<div class="panel panel-default">
+  <div class="panel-heading" data-toggle="collapse" data-target="#info">
+    <h3 class="panel-title">More info...</h3>
+  </div>
+  <div class="panel-body collapse in" id="info">
+    <p>This demo is composed of a light applet (160Kb) and a Spring MVC form.</p>
+    <p>The applet is used to interact with SSCD and sign the digest. It interacts with the browser with JavaScript (return of certificate loading and signature computation).</p>
+    <p>The CAdES, PAdES, XAdES and ASiC business logic is on the server side.</p>
+    <p>In case of PKC12 token selection, the signature process will be executed on server side (as it doesn't require to use SSCD).</p>
+    <div class="col-xs-12 col-md-12">
+        <a href="<spring:url value="/images/spring-mvc-light-applet.png"/>" class="thumbnail">
+            <img src="<spring:url value="/images/spring-mvc-light-applet.png"/>" alt="Spring MVC with light applet" class="img-rounded" />
+        </a>
+    </div>
+  </div>
+</div>
 
 <script type="text/javascript" src="<c:url value="/scripts/jsSignatureLevel.js" />"></script>
 

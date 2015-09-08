@@ -53,10 +53,8 @@ public class CMSSignedDocument extends CommonDocument {
 	 * @throws IOException
 	 */
 	public CMSSignedDocument(final CMSSignedData data) throws DSSException {
-
 		this.signedData = data;
 		if (data == null) {
-
 			throw new NullPointerException();
 		}
 		mimeType = MimeType.PKCS7;
@@ -64,7 +62,6 @@ public class CMSSignedDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() throws DSSException {
-
 		final byte[] bytes = getBytes();
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 		return byteArrayInputStream;
@@ -74,21 +71,12 @@ public class CMSSignedDocument extends CommonDocument {
 	 * @return the signedData
 	 */
 	public CMSSignedData getCMSSignedData() {
-
 		return signedData;
 	}
 
 	@Override
-	public String getName() {
-
-		return "CMSSignedDocument";
-	}
-
-	@Override
 	public byte[] getBytes() throws DSSException {
-
 		try {
-
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			final DEROutputStream derOutputStream = new DEROutputStream(output);
 			final byte[] encoded = signedData.getEncoded();
@@ -97,16 +85,13 @@ public class CMSSignedDocument extends CommonDocument {
 			derOutputStream.close();
 			return output.toByteArray();
 		} catch (IOException e) {
-
 			throw new DSSException(e);
 		}
 	}
 
 	@Override
 	public void save(final String filePath) {
-
 		try {
-
 			final FileOutputStream fos = new FileOutputStream(filePath);
 			DSSUtils.write(getBytes(), fos);
 			fos.close();
@@ -119,7 +104,6 @@ public class CMSSignedDocument extends CommonDocument {
 
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
 		final String base64Encode = Base64.encodeBase64String(digestBytes);
 		return base64Encode;
@@ -132,7 +116,7 @@ public class CMSSignedDocument extends CommonDocument {
 
 	@Override
 	public String getAbsolutePath() {
-		return getName();
+		return super.getName();
 	}
 
 }

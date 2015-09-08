@@ -43,6 +43,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @SuppressWarnings("serial")
@@ -177,7 +178,8 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 		parameters.setSignWithExpiredCertificate(remoteParameters.isSignWithExpiredCertificate());
 
 		RemoteCertificate signingCertificate = remoteParameters.getSigningCertificate();
-		parameters.setSigningCertificate(DSSUtils.loadCertificate(signingCertificate.getEncodedCertificate()));
+		CertificateToken loadCertificate = DSSUtils.loadCertificate(signingCertificate.getEncodedCertificate());
+		parameters.setSigningCertificate(loadCertificate);
 
 		List<RemoteCertificate> remoteCertificateChain = remoteParameters.getCertificateChain();
 		if (CollectionUtils.isNotEmpty(remoteCertificateChain)) {

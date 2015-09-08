@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
+import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.model.SignatureDocumentForm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -89,7 +90,7 @@ public class SigningService {
 
 		ToBeSigned toBeSigned = null;
 		try {
-			DSSDocument toSignDocument = new InMemoryDocument(form.getDocumentToSign().getBytes(), form.getDocumentToSign().getName());
+			DSSDocument toSignDocument = WebAppUtils.toDSSDocument(form.getDocumentToSign());
 			toBeSigned = service.getDataToSign(toSignDocument, parameters);
 		} catch (Exception e) {
 			logger.error("Unable to execute getDataToSign : " + e.getMessage(), e);
@@ -109,7 +110,7 @@ public class SigningService {
 
 		DSSDocument signedDocument = null;
 		try {
-			DSSDocument toSignDocument = new InMemoryDocument(form.getDocumentToSign().getBytes(), form.getDocumentToSign().getName());
+			DSSDocument toSignDocument = WebAppUtils.toDSSDocument(form.getDocumentToSign());
 			SignatureAlgorithm sigAlgorithm = SignatureAlgorithm.getAlgorithm(form.getEncryptionAlgorithm(), form.getDigestAlgorithm());
 			SignatureValue signatureValue = new SignatureValue(sigAlgorithm, DatatypeConverter.parseBase64Binary(form.getBase64SignatureValue()));
 			signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);

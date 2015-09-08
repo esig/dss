@@ -38,6 +38,18 @@
         <put-attribute name="content" value="/WEB-INF/jsp/signature-finish.jsp" />
     </definition>
     
+    <definition name="jnlp-webservice-intro" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/jnlp-intro.jsp" />
+    </definition>
+    
+    <definition name="signature-standalone" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-standalone.jsp" />
+    </definition>
+    
+    <definition name="signature-rest" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-rest.jsp" />
+    </definition>
+    
     <definition name="extension" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/extension.jsp" />
     </definition>

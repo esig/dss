@@ -143,7 +143,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 *
 	 * @param encryptionAlgorithm
 	 */
-	@Deprecated
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 
 		this.encryptionAlgorithm = encryptionAlgorithm;

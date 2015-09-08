@@ -31,10 +31,12 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
@@ -112,9 +114,12 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			// The deterministic id is reset between two consecutive signing operations. It prevents having two signatures with the same Id within the
 			// same document.
 			parameters.reinitDeterministicId();
+			dssExtendedDocument.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 			return dssExtendedDocument;
 		}
+
 		parameters.reinitDeterministicId();
+		signedDoc.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		return signedDoc;
 	}
 
@@ -123,8 +128,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		parameters.getContext().setOperationKind(Operation.EXTENDING);
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
-
 			final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
+			dssDocument.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return dssDocument;
 		}
 		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel().name());
