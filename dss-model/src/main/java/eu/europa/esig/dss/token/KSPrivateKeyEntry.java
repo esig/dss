@@ -82,21 +82,14 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() throws DSSException {
-
 		if (privateKey instanceof RSAPrivateKey) {
 			return EncryptionAlgorithm.RSA;
 		} else if (privateKey instanceof DSAPrivateKey) {
 			return EncryptionAlgorithm.DSA;
 		} else if (privateKey instanceof ECPrivateKey) {
 			return EncryptionAlgorithm.ECDSA;
-		} else if (EncryptionAlgorithm.RSA.name().equalsIgnoreCase(privateKey.getAlgorithm())) {
-			return EncryptionAlgorithm.RSA;
-		} else if (EncryptionAlgorithm.DSA.name().equalsIgnoreCase(privateKey.getAlgorithm())) {
-			return EncryptionAlgorithm.DSA;
-		} else if (EncryptionAlgorithm.ECDSA.name().equalsIgnoreCase(privateKey.getAlgorithm())) {
-			return EncryptionAlgorithm.ECDSA;
 		} else {
-			throw new DSSException("Don't find algorithm for PrivateKey of type " + privateKey.getClass() + " with algorithm " + privateKey.getAlgorithm());
+			return EncryptionAlgorithm.forName(privateKey.getAlgorithm());
 		}
 	}
 
