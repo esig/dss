@@ -14,7 +14,7 @@
     <h3 class="panel-title">More info...</h3>
   </div>
   <div class="panel-body collapse in" id="info">
-    <p>This demo uses a JNLP file (to be executed with Java Web Start) and a <a href="<spring:url value="/services/SignatureService?wsdl" />" title="SOAP webservices">SOAP WebServices</a>.</p>
+    <p>This demo uses a JNLP file (to be executed with Java Web Start) and a <a href="<spring:url value="/services/SignatureService?wsdl" />" title="eSignature SOAP webservices">SOAP WebServices</a>.</p>
     <p>The application (Swing technology) allows to set parameters of the signature and interacts with the DSS server (SOAP) and SSCD.</p>
     <p>DSS server offers SOAP and REST WebServices.</p>
     <p>DSS business logic is embedded on the server side (CAdES, PAdES, XAdES, ASiC).</p>

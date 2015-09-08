@@ -22,6 +22,7 @@
                 <a href="<spring:url value="/signature-light-applet" />" class="list-group-item${currentPage eq '/signature-light-applet' ? ' active' : ''}">Light applet + Spring MVC</a>
                 <a href="<spring:url value="/signature-jnlp-webservices" />" class="list-group-item${currentPage eq '/signature-jnlp-webservices' ? ' active' : ''}">JNLP + SOAP WebServices</a>
                 <a href="<spring:url value="/signature-standalone" />" class="list-group-item${currentPage eq '/signature-standalone' ? ' active' : ''}">Standalone application</a>
+                <a href="<spring:url value="/signature-rest" />" class="list-group-item${currentPage eq '/signature-rest' ? ' active' : ''}">REST WebServices</a>
             </div>
         </div>
         <div class="panel panel-default">

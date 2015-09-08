@@ -5,7 +5,7 @@
 <h2>Standalone application</h2>
 
 <p>
-    Download the standalone application <a href="<spring:url value="/downloads/dss-app.zip" />" title="e-signature standalone">(zip)</a> or <a href="<spring:url value="/downloads/dss-app.tar.gz" />" title="e-signature standalone">(tar.gz)</a>
+    Download the standalone application (<a href="<spring:url value="/downloads/dss-app.zip" />" title="e-signature standalone">zip</a>) or (<a href="<spring:url value="/downloads/dss-app.tar.gz" />" title="e-signature standalone">tar.gz</a>)
 </p>
 
 <div class="panel panel-default">
