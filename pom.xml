@@ -24,6 +24,8 @@
 		<module>dss-demo-applet-package</module>
 		<module>dss-light-applet</module>
 		<module>dss-light-applet-package</module>
+		<module>dss-standalone-app</module>
+		<module>dss-standalone-app-package</module>
 		<module>dss-demo-webapp</module>
 		<module>dss-demo-bundle</module>
 		<module>dss-policy-jaxb</module>
@@ -41,8 +43,6 @@
 		<module>dss-soap-client</module>
 		<module>dss-soap</module>
 		<module>dss-tsl-validation</module>
-		<module>dss-standalone-app</module>
-		<module>dss-standalone-app-package</module>
 	</modules>
 
 	<developers>
