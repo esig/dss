@@ -10,41 +10,6 @@
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
-	<modules>
-		<module>dss-model</module>
-		<module>dss-token</module>
-		<module>dss-document</module>
-		<module>dss-service</module>
-		<module>dss-spi</module>
-		<module>dss-test</module>
-		<module>sscd-mocca-adapter</module>
-		<module>dss-webservices</module>
-		<module>dss-webservices-client</module>
-		<module>dss-demo-applet</module>
-		<module>dss-demo-applet-package</module>
-		<module>dss-light-applet</module>
-		<module>dss-light-applet-package</module>
-		<module>dss-standalone-app</module>
-		<module>dss-standalone-app-package</module>
-		<module>dss-demo-webapp</module>
-		<module>dss-demo-bundle</module>
-		<module>dss-policy-jaxb</module>
-		<module>dss-tsl-jaxb</module>
-		<module>dss-diagnostic-jaxb</module>
-		<module>dss-cookbook</module>
-		<module>validation-policy</module>
-		<module>dss-asic</module>
-		<module>dss-cades</module>
-		<module>dss-pades</module>
-		<module>dss-xades</module>
-		<module>dss-remote-services</module>
-		<module>dss-rest-client</module>
-		<module>dss-rest</module>
-		<module>dss-soap-client</module>
-		<module>dss-soap</module>
-		<module>dss-tsl-validation</module>
-	</modules>
-
 	<developers>
 		<developer>
 			<id>naramski</id>
@@ -761,6 +726,91 @@
 	</distributionManagement>
 
 	<profiles>
+		<profile>
+			<id>notJava8</id>
+			
+			<activation>
+				<jdk>[1.6,1.8)</jdk>
+			</activation>
+
+			<!-- Skip dss-standalone-app (JavaFX) -->
+			<modules>
+				<module>dss-model</module>
+				<module>dss-token</module>
+				<module>dss-document</module>
+				<module>dss-service</module>
+				<module>dss-spi</module>
+				<module>dss-test</module>
+				<module>sscd-mocca-adapter</module>
+				<module>dss-webservices</module>
+				<module>dss-webservices-client</module>
+				<module>dss-demo-applet</module>
+				<module>dss-demo-applet-package</module>
+				<module>dss-light-applet</module>
+				<module>dss-light-applet-package</module>
+				<module>dss-demo-webapp</module>
+				<module>dss-demo-bundle</module>
+				<module>dss-policy-jaxb</module>
+				<module>dss-tsl-jaxb</module>
+				<module>dss-diagnostic-jaxb</module>
+				<module>dss-cookbook</module>
+				<module>validation-policy</module>
+				<module>dss-asic</module>
+				<module>dss-cades</module>
+				<module>dss-pades</module>
+				<module>dss-xades</module>
+				<module>dss-remote-services</module>
+				<module>dss-rest-client</module>
+				<module>dss-rest</module>
+				<module>dss-soap-client</module>
+				<module>dss-soap</module>
+				<module>dss-tsl-validation</module>
+			</modules>
+		</profile>
+		
+		<profile>
+			<id>java8</id>
+			
+			<activation>
+				<jdk>[1.8,</jdk>
+			</activation>
+
+			<modules>
+				<module>dss-model</module>
+				<module>dss-token</module>
+				<module>dss-document</module>
+				<module>dss-service</module>
+				<module>dss-spi</module>
+				<module>dss-test</module>
+				<module>sscd-mocca-adapter</module>
+				<module>dss-webservices</module>
+				<module>dss-webservices-client</module>
+				<module>dss-demo-applet</module>
+				<module>dss-demo-applet-package</module>
+				<module>dss-light-applet</module>
+				<module>dss-light-applet-package</module>
+				<module>dss-standalone-app</module>
+				<module>dss-standalone-app-package</module>
+				<module>dss-demo-webapp</module>
+				<module>dss-demo-bundle</module>
+				<module>dss-policy-jaxb</module>
+				<module>dss-tsl-jaxb</module>
+				<module>dss-diagnostic-jaxb</module>
+				<module>dss-cookbook</module>
+				<module>validation-policy</module>
+				<module>dss-asic</module>
+				<module>dss-cades</module>
+				<module>dss-pades</module>
+				<module>dss-xades</module>
+				<module>dss-remote-services</module>
+				<module>dss-rest-client</module>
+				<module>dss-rest</module>
+				<module>dss-soap-client</module>
+				<module>dss-soap</module>
+				<module>dss-tsl-validation</module>
+			</modules>
+		</profile>
+	
 		<profile>
 			<id>delivery</id>
 			<build>
