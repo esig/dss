@@ -40,17 +40,17 @@
 				<c:choose>
 					<c:when test="${item.indication == 'VALID' }">
 						<td class="text-center">
-							<span class="glyphicon glyphicon-ok-sign text-success"></span>
+							<span class="glyphicon glyphicon-ok-sign text-success" title="valid"></span>
 						</td>
 					</c:when>
 					<c:when test="${item.indication == 'INDETERMINATE' }">
 						<td class="warning text-center"">
-							<span class="glyphicon glyphicon-question-sign text-warning"></span>
+							<span class="glyphicon glyphicon-question-sign text-warning" title="indeterminate"></span>
 						</td>
 					</c:when>
 					<c:when test="${item.indication == 'INVALID' }">
 						<td class="danger text-center">
-							<span class="glyphicon glyphicon-remove-sign text-danger"></span>
+							<span class="glyphicon glyphicon-remove-sign text-danger" title="invalid"></span>
 						</td>
 					</c:when>
 					<c:otherwise>
