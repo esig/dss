@@ -1,0 +1,121 @@
+= Digital Signature Service
+
+== Introduction
+
+=== Purpose of the document
+
+This document describes some examples of how to develop in Java using the DSS framework. The aim is to show to the developers, in a progressive manner, the different uses of the framework. It will familiarise them with the code step by step.
+
+=== Scope of the document
+
+This document provides examples of code which allow easy handling of digital signatures. The examples are consistent with the Release 4.1 of SD-DSS framework which can be downloaded via https://joinup.ec.europa.eu/software/sd-dss/release/all
+
+Three main features can be distinguished within the framework :
+
+ * The digital signature;
+ * The extension of a digital signature and;
+ * The validation of a digital signature.
+ 
+On a more detailed manner the following concepts and features are addressed in this document:
+ 
+ * Formats of the signed documents: XML, PDF, DOC, TXT, ZIP...;
+ * Packaging structures: enveloping, enveloped and detached;
+ * Forms of digital signatures: XAdES, CAdES, PAdES and ASiC;
+ * Profiles associated to each form of the digital signature;
+ * Trust management;
+ * Revocation data handling (OCSP and CRL sources);
+ * Certificate chain building;
+ * Signature validation and validation policy;
+ * Validation of the signing certificate.
+
+This is not an exhaustive list of all the possibilities offered by the framework and the proposed examples cover only the most useful features. However, to discover every detail of the operational principles of the framework, the JavaDoc is available within the source code.
+
+Please note that the SD-DSS framework is still under maintenance and new features will be released in the future.
+
+== General framework structure
+
+== Signature's profile simplification
+
+The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus we distinguish the following formats: XAdES, CAdES, PAdES and ASIC. To each one of them a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes their interoperability very difficult. This is the main reason for which new standards commonly called « baseline profiles » were published. Their goal is to limit the number of options and variants thereby making possible a better interoperability between different actors.
+In general can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a comparative table of old and new levels for each format of the signature:
+
+[cols=6]
+|=======================
+2+|XAdES				  2+|CAdES				  2+|PAdES
+|STANDARD 		|BASELINE	|STANDARD 	|BASELINE 	|STANDARD	|BASELINE
+|XAdES-BES 		.2+^.^|XAdES-B	|CAdES-BES 	.2+^.^|CAdES-B 	|PAdES-BES 	.2+^.^|PAdES-B
+|XAdES-EPES					|CAdES-EPES	 			|PAdES-EPES 
+|XAdES-T 		|XAdES-T	|CAdES-T 	|CAdES-T 	|PAdES-T 	|PAdES-T
+|XAdES-XL 		|XAdES-LT	|CAdES-XL 	|CAdES-LT 	|PAdES-XL 	|PAdES-LT
+|XAdES-A 		|XAdES-LTA	|CAdES-A 	|CAdES-LTA 	|PAdES-LTV 	|PAdES-LTA
+|=======================
+
+Note that the new version (v4) of the SD-DSS framework is compatible with the baseline profiles, it is no longer possible to use the standard profiles for signing purpose. The validation of the signature still takes into account the old profiles.
+
+== The XML Signature (XAdES)
+
+The simplest way to address the digital signature passes through the XAdES format. Indeed, it allows to visualize the content of the signature with a simple text editor. Thus it becomes much easier to make the connection between theoretical concepts and their implementation. Before embarking on the use of the SD-DSS framework, it is advisable to read the following documents:
+
+ * XAdES Specifications (cf. [R04])
+ * XAdES Baseline Profile (cf. [R17])
+ * DSS Technical Analysis: Design Model (cf. [R03])
+
+After reading these documents, it is clear that:
+
+ * To electronically sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed. 
+ * To electronically validate a signed document the signer’s certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature must also be provided.
+
+===	XAdES Profiles
+
+The new ETSI standard [17] defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth to denote the level of the signature the word “level” will be used. Follows the list of levels defined in the standard:
+
+ * XAdES-BASELINE-*B*: Basic Electronic Signature
+The lowest and simplest version just containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties. This level combines the old –BES and –EPES levels.
+This form extends the definition of an electronic signature to conform to the identified signature policy.
+ * XAdES-BASELINE-*T*: Signature timestamp
+A timestamp regarding the time of signing is added to protect against repudiation.
+ * XAdES-BASELINE-*LT*: Long Term level
+Certificates and revocation data are embedded to allow verification in future even if their original source is not available. This level is equivalent to the old –XL level.
+ * XAdES-BASELINE-*LTA*: Long Term with Archive timestamp
+By using periodical timestamping (e.g. each year) compromising is prevented which could be caused by weakening previous signatures during a long-time storage period. This level is equivalent to the old –A level.
+
+NOTE: Old levels: -BES, -EPES, -C, -X, -XL, -A are not supported any more when signing.
+
+==== XAdES-BASELINE-B
+
+To start, let's take a simple XML document:
+
+[[xml_example.xml]]
+[source,xml]
+.xml_example.xml
+----
+<?xml version="1.0"?>
+<test>Hello World !</test>
+----
+
+Since this is an XML document, we will use the XAdES signature and more particularly XAdES-BASELINE-B level, which is the lowest level of protection: just satisfying Directive (cf. [R13]) legal requirements for advanced signature. The normal process of signing wants to sign first with the level -B or level-T, and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level. The use of CAdES format for signing an XML document is also possible, but will be discussed later.
+When signing data, the resulting signature needs to be linked with the data to which it applies. This can be done either by creating a data set which combines the signature and the data (e.g. by enveloping the data with the signature or including a signature element in the data set) or placing the signature in a separate resource and having some external means for associating the signature with the data. So, we need to define the packaging of the signature, namely ENVELOPED, ENVELOPING or DETACHED.
+ 
+ * ENVELOPED: when the signature applies to data that surround the rest of the document;
+ * ENVELOPING: when the signed data form a sub-element of the signature itself;
+ * DETACHED: when the signature relates to the external resources separated from it.
+
+For our example we will use ENVELOPED packaging.
+
+To write our Java code, we still need to specify the type of KeyStore to use for signing our document, more simply, where the private key can be found. We can choose between three different connection tokens:
+
+ * PKCS#11, 
+ * PKCS#12,
+ * MS CAPI
+
+The SD-DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries. To use a Java KeyStore please refer to the following paragraphs: #JavaKeyStore, #JKSSignatureToken and #Signing_with_JKSSignatureToken.
+In the package "eu.europa.ec.markt.dss.signature.token" (see [R03] document for further details on the structure of components and packages.), we can find three corresponding Java classes:
+
+ * Pkcs11SignatureToken,
+ * Pkcs12SignatureToken,
+ * MSCAPISignatureToken.
+
+To know more about the use of the different signature tokens, please consult “Management of Signature Tokens” chapter.
+
+In our example the class: "Pkcs12SignatureToken" will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains an X.509 private key accompanying the public key certificate and protected by symmetrical password. The certification chain can also be included in this file. It is possible to generate dummy certificates and their chains with OpenSSL. Please visit http://www.openssl.org/ for more details.
+
