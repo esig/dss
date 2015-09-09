@@ -119,3 +119,11 @@ To know more about the use of the different signature tokens, please consult “
 
 In our example the class: "Pkcs12SignatureToken" will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains an X.509 private key accompanying the public key certificate and protected by symmetrical password. The certification chain can also be included in this file. It is possible to generate dummy certificates and their chains with OpenSSL. Please visit http://www.openssl.org/ for more details.
 
+This is the complete code that allows you to sign our XML document.
+
+:sourcetestdir: ../../test/java
+
+[source,java]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesB.java[]
+----

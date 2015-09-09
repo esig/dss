@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -40,7 +40,11 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
  */
 public class SignXmlXadesB extends Cookbook {
 
-	public static void main(final String[] args) throws DSSException, IOException {
+	@Test
+	public void signXAdESBaselineB() {
+
+
+
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		prepareXmlDoc();
@@ -70,6 +74,7 @@ public class SignXmlXadesB extends Cookbook {
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
 
@@ -84,7 +89,8 @@ public class SignXmlXadesB extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesB.xml");
+		assertNotNull(signedDocument);
+		assertNotNull(signedDocument.getBytes());
 	}
+
 }
