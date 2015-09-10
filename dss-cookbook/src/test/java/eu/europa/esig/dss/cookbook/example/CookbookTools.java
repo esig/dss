@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.cookbook.example;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
-import java.util.Date;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -14,6 +14,10 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.report.Reports;
 
 public class CookbookTools {
 
@@ -28,12 +32,14 @@ public class CookbookTools {
 	static protected DSSDocument toExtendDocument;
 
 	/**
-	 * The object which is in charge of digesting and encrypting the data to sign.
+	 * The object which is in charge of digesting and encrypting the data to
+	 * sign.
 	 */
 	static protected AbstractSignatureTokenConnection signingToken;
 
 	/**
-	 * This object contains the private key associated to the signing certificate.
+	 * This object contains the private key associated to the signing
+	 * certificate.
 	 */
 	static protected DSSPrivateKeyEntry privateKey;
 
@@ -77,12 +83,20 @@ public class CookbookTools {
 	}
 
 	protected static MockTSPSource getMockTSPSource() throws DSSException, Exception {
-		return new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256),new Date());
+		return new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
 	}
 
 	protected void testFinalDocument(DSSDocument signedDocument) {
 		assertNotNull(signedDocument);
 		assertNotNull(signedDocument.getBytes());
+
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 }

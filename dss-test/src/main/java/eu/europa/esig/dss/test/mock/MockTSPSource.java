@@ -62,7 +62,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -112,10 +111,9 @@ public class MockTSPSource implements TSPSource {
 	/**
 	 * The default constructor for MockTSPSource.
 	 */
-	public MockTSPSource(final KSPrivateKeyEntry entry) throws DSSException {
+	public MockTSPSource(final MockPrivateKeyEntry entry) throws DSSException {
 		this(entry.getPrivateKey(), entry.getCertificate(), true, null, "1.234.567.890");
 		LOG.debug("TSP mockup with certificate {}", cert.getDSSId());
-
 	}
 
 	@Override

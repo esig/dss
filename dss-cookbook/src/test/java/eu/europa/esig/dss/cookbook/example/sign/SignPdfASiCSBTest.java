@@ -33,12 +33,12 @@ import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 /**
- * How to sign with ASiC-BASELINE-B
+ * How to sign with ASiC_S_BASELINE_B
  */
-public class SignPdfAsicBTest extends CookbookTools {
+public class SignPdfASiCSBTest extends CookbookTools {
 
 	@Test
-	public void signASiCBaselineB() {
+	public void signASiCSBaselineB() {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

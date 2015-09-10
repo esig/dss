@@ -148,7 +148,8 @@ Please note that the DSS framework is still under maintenance and new features w
 
 == Signature's profile simplification
 
-The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus we distinguish the following formats: XAdES, CAdES, PAdES and ASIC. To each one of them a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes their interoperability very difficult. This is the main reason for which new standards commonly called « baseline profiles » were published. Their goal is to limit the number of options and variants thereby making possible a better interoperability between different actors.
+The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus we distinguish the following formats: XAdES, CAdES, PAdES and ASIC. To each one of them a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes their interoperability very difficult. This is the main reason for which new standards commonly called "baseline profiles" were published. Their goal is to limit the number of options and variants thereby making possible a better interoperability between different actors.
+
 In general can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a comparative table of old and new levels for each format of the signature:
 
 [cols=6]
@@ -174,21 +175,21 @@ The simplest way to address the digital signature passes through the XAdES forma
 After reading these documents, it is clear that:
 
  * To electronically sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed. 
- * To electronically validate a signed document the signer’s certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature must also be provided.
+ * To electronically validate a signed document the signer's certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature must also be provided.
 
 ===	XAdES Profiles
 
-The new ETSI standard [17] defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth to denote the level of the signature the word “level” will be used. Follows the list of levels defined in the standard:
+The new ETSI standard [17] defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth to denote the level of the signature the word "level" will be used. Follows the list of levels defined in the standard:
 
  * XAdES-BASELINE-*B*: Basic Electronic Signature
-The lowest and simplest version just containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties. This level combines the old –BES and –EPES levels.
+The lowest and simplest version just containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties. This level combines the old -BES and -EPES levels.
 This form extends the definition of an electronic signature to conform to the identified signature policy.
  * XAdES-BASELINE-*T*: Signature timestamp
 A timestamp regarding the time of signing is added to protect against repudiation.
  * XAdES-BASELINE-*LT*: Long Term level
-Certificates and revocation data are embedded to allow verification in future even if their original source is not available. This level is equivalent to the old –XL level.
+Certificates and revocation data are embedded to allow verification in future even if their original source is not available. This level is equivalent to the old -XL level.
  * XAdES-BASELINE-*LTA*: Long Term with Archive timestamp
-By using periodical timestamping (e.g. each year) compromising is prevented which could be caused by weakening previous signatures during a long-time storage period. This level is equivalent to the old –A level.
+By using periodical timestamping (e.g. each year) compromising is prevented which could be caused by weakening previous signatures during a long-time storage period. This level is equivalent to the old -A level.
 
 NOTE: Old levels: -BES, -EPES, -C, -X, -XL, -A are not supported any more when signing.
 
@@ -226,7 +227,7 @@ In the package "eu.europa.ec.markt.dss.signature.token", we can find three corre
  * Pkcs12SignatureToken,
  * MSCAPISignatureToken.
 
-To know more about the use of the different signature tokens, please consult “Management of Signature Tokens” chapter.
+To know more about the use of the different signature tokens, please consult "Management of Signature Tokens" chapter.
 
 In our example the class: "Pkcs12SignatureToken" will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains an X.509 private key accompanying the public key certificate and protected by symmetrical password. The certification chain can also be included in this file. It is possible to generate dummy certificates and their chains with OpenSSL. Please visit http://www.openssl.org/ for more details.
 
@@ -249,7 +250,7 @@ What you may notice is that to sign a document we need to:
  * Instantiate the adequate signature service.
  * Carry out the signature process.
  
-The encryption algorithm is determined by the private key and therefore cannot be compelled by the setter of the signature parameters object. It will cause an inconsistency in the signature making its validation impossible. This setter can be used in a particular context where the signing process is distributed on different machines and the private key is known only to the signature value creation process. See clause « Signing process » for more information.
+The encryption algorithm is determined by the private key and therefore cannot be compelled by the setter of the signature parameters object. It will cause an inconsistency in the signature making its validation impossible. This setter can be used in a particular context where the signing process is distributed on different machines and the private key is known only to the signature value creation process. See clause "Signing process" for more information.
 In the case where the private key entry object is not available, it is possible to choose the signing certificate and its certificate chain as in the following example:
 
 [source,java]
@@ -262,7 +263,7 @@ parameters.setCertificateChain(certificateChain);
 
 Integrating the certificate chain in the signature simplifies the build of a prospective certificate chain during the validation process.
 
-By default the framework uses the current date time to set the signing date, but in the case where it is necessary to indicate the different time it is possible to use the setter «setSigningDate(Date) » as in the example:
+By default the framework uses the current date time to set the signing date, but in the case where it is necessary to indicate the different time it is possible to use the setter "setSigningDate(Date)" as in the example:
 
 [source,java]
 ----
@@ -277,7 +278,7 @@ When the specific service is instantiated a certificate verifier must be set. Th
  * the source of OCSP;
  * the source of CRL.
  
-In the current implementation this object is only used when profile –LT or –LTA are created. In the next release it will be used to identify the trust anchor and by the same limit the number of certificates included within the KeyInfo.
+In the current implementation this object is only used when profile -LT or -LTA are created. In the next release it will be used to identify the trust anchor and by the same limit the number of certificates included within the KeyInfo.
 
 ===== Signing process
 
@@ -318,7 +319,7 @@ For this type (XAdES-BASELINE-B) of signature it is possible to identify some ad
  * SignerRole - contains claimed or certified roles assumed by the signer when creating the signature.
  * SignatureProductionPlace - contains the indication of the purported place where the signer claims to have produced the signature.
  * CommitmentTypeIndication - identifies the commitment undertaken by the signer in signing (a) signed data object(s) in the context of the selected signature policy.
- * AllDataObjectsTimeStamp – each time-stamp token within this property covers the full set of references defined in the Signature’s SignedInfo element, excluding references of type “SignedProperties”.
+ * AllDataObjectsTimeStamp - each time-stamp token within this property covers the full set of references defined in the Signature's SignedInfo element, excluding references of type "SignedProperties".
  * IndividualDataObjectsTimeStamp - each time-stamp token within this property covers selected signed data objects.
  * CounterSignature - contains signature(s) produced on the signature.
 
@@ -340,7 +341,7 @@ include::samples/xades-b-properties.xml[]
 
 ===== Handling signature policy
 
-With the new standards the policy handling is linked to –B level. The old –EPES level is not used anymore by the framework. This does not alter the structure of the old signature but only modifies how to control the process of its creation.
+With the new standards the policy handling is linked to -B level. The old -EPES level is not used anymore by the framework. This does not alter the structure of the old signature but only modifies how to control the process of its creation.
 
 The DSS framework allows you to reference a signature policy, which is a set of rules for the creation and validation of an electronic signature. It includes two kinds of text:
  
@@ -363,14 +364,14 @@ This example demonstrates an implicit policy identifier. To implement this alter
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBImplicitPolicyTest.java[tags=demo]
 ----
 
-An XML segment will be added to the signature’s qualified and signed properties:
+An XML segment will be added to the signature's qualified and signed properties:
 
 [source,xml]
 ----
 include::samples/xades-implicit-policy.xml[]
 ----
 
-The next example demonstrates an explicit policy identifier. This is obtained by setting –B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example java.security.MessageDigest class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only. See also chapter 7 for further information.
+The next example demonstrates an explicit policy identifier. This is obtained by setting -B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example java.security.MessageDigest class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only. See also chapter 7 for further information.
 
 [[SignXmlXadesBExplicitPolicyTest.java]]
 [source,java,indent=0]
@@ -390,7 +391,7 @@ include::samples/xades-explicit-policy.xml[]
 
 XAdES-BASELINE-T is a signature for which there exists a trusted time associated to the signature. It provides the initial steps towards providing long term validity and more specifically it provides a protection against repudiation. This extension of the signature can be created as well during the generation process as validation process. However, the case when these validation data are not added during the generation process should no longer occur. The XAdES-BASELINE-T trusted time indications must be created before the signing certificate has been revoked or expired and close to the time that the XAdES signature was produced. The XAdES-BASELINE-T form must be built on a XAdES-BASELINE-B form. The DSS framework allows extending the old -BES and -EPES profiles to the new BASELINE-T profile, indeed there is no difference in the structure of the signature.
 
-To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R11>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example we will use a virtual provider. In a real situation, you can use OnlineTSPSource class encompassing communication with Time Stamping Authority based on RFC 3161 (cf. <<R11>>) or you can implement your own class using TSPSource interface (see “TSP Sources” chapter for more details).
+To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R11>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example we will use a virtual provider. In a real situation, you can use OnlineTSPSource class encompassing communication with Time Stamping Authority based on RFC 3161 (cf. <<R11>>) or you can implement your own class using TSPSource interface (see "TSP Sources" chapter for more details).
 
 [[SignXmlXadesTTest.java]]
 [source,java,indent=0]
@@ -421,7 +422,7 @@ If the timestamp source is not set a NullPointerException is thrown.
 
 ==== XAdES-BASELINE-LT
 
-This level has to prove that the certification path was valid, at the time of the validation of the signature, up to a trust point according to the naming constraints and the certificate policy constraints from the "Signature Validation Policy". It will add to the signature the CertificateValues and RevocationValues unsigned properties. The CertificateValues element contains the full set of certificates that have been used to validate the electronic signature, including the signer's certificate. However, it is not necessary to include one of those certificates, if it is already present in the ds:KeyInfo element of the signature. This is like DSS framework behaves. In order to find a list of all the certificates and the list of all revocation data, an automatic process of signature validation is executed. To carry out this process an object called CertificateVerifier must be passed to the service. The implementer must set some of its properties like par example the source of trusted certificates. The code below shows how to use the default parameters with this object. Please refer to “The Signature Validation” chapter to have the further information. It also includes an example of how to implement this level of signature:
+This level has to prove that the certification path was valid, at the time of the validation of the signature, up to a trust point according to the naming constraints and the certificate policy constraints from the "Signature Validation Policy". It will add to the signature the CertificateValues and RevocationValues unsigned properties. The CertificateValues element contains the full set of certificates that have been used to validate the electronic signature, including the signer's certificate. However, it is not necessary to include one of those certificates, if it is already present in the ds:KeyInfo element of the signature. This is like DSS framework behaves. In order to find a list of all the certificates and the list of all revocation data, an automatic process of signature validation is executed. To carry out this process an object called CertificateVerifier must be passed to the service. The implementer must set some of its properties like par example the source of trusted certificates. The code below shows how to use the default parameters with this object. Please refer to "The Signature Validation" chapter to have the further information. It also includes an example of how to implement this level of signature:
 
 [[SignXmlXadesLTTest.java]]
 [source,java,indent=0]
@@ -443,7 +444,7 @@ In last example the CommonsHttpDataLoader is used to provide the communication l
 
 ==== XAdES-BASELINE-LTA
 
-When the cryptographic data becomes weak and the cryptographic functions become vulnerable the auditor should take steps to maintain the validity of the signature. The XAdES-BASELINE-A form uses a simple approach called “archive validation data”. It adds additional time-stamps for archiving signatures in a way that they are still protected, but also to be able to prove that the signatures were validated at the time when the used cryptographic algorithms were considered safe. The time-stamping process may be repeated every time the protection used becomes weak. Each time-stamp needs to be affixed before either the signing key or the algorithms used by the TSA are no longer secure. XAdES-A form adds the ArchiveTimestamp element within the UnsignedSignatureProperties and may contain several ArchiveTimestamp elements.
+When the cryptographic data becomes weak and the cryptographic functions become vulnerable the auditor should take steps to maintain the validity of the signature. The XAdES-BASELINE-A form uses a simple approach called "archive validation data". It adds additional time-stamps for archiving signatures in a way that they are still protected, but also to be able to prove that the signatures were validated at the time when the used cryptographic algorithms were considered safe. The time-stamping process may be repeated every time the protection used becomes weak. Each time-stamp needs to be affixed before either the signing key or the algorithms used by the TSA are no longer secure. XAdES-A form adds the ArchiveTimestamp element within the UnsignedSignatureProperties and may contain several ArchiveTimestamp elements.
 
 Below is an example of the implementation of this level of signature (but in practice, we will rather extend the signature to this level when there is a risk that the cryptographic functions become vulnerable or when one of certificates arrives to its expiration date):
 
@@ -484,11 +485,11 @@ Independent signatures are parallel signatures where the ordering of the signatu
 
 The -B level contains immutable signed properties. Once this level is created, these properties cannot be changed. 
 
-The levels -T/-LT/-LTA add unsigned properties to the signature. This means that the properties of these levels could be added afterwards to any AdES signature. This addition helps to make the signature more resistant to cryptographic attacks on a longer period of time. The extension of the signature is incremental, i.e. when you want to extend the signature to the level -LT the lower level (-T) will also be added. The whole extension process is implemented by reusing components from signature production. To extend a signature we proceed in the same way as in the case of a signature, except that you have to call the function “extendDocument” instead of the “sign” function. Note that when the document is signed with several signatures then they are all extended.
+The levels -T/-LT/-LTA add unsigned properties to the signature. This means that the properties of these levels could be added afterwards to any AdES signature. This addition helps to make the signature more resistant to cryptographic attacks on a longer period of time. The extension of the signature is incremental, i.e. when you want to extend the signature to the level -LT the lower level (-T) will also be added. The whole extension process is implemented by reusing components from signature production. To extend a signature we proceed in the same way as in the case of a signature, except that you have to call the function "extendDocument" instead of the "sign" function. Note that when the document is signed with several signatures then they are all extended.
 
 === XAdES-BASELINE-T
 
-The XAdES-BASELINE-T trusted time indications have to be created before a certificate has been revoked or expired and close to the time that the XAdES signature was produced. It provides a protection against repudiation. The framework adds the timestamp only if there is no timestamp or there is one but the creation of a new extension of the level-T is deliberate (using another TSA). It is not possible to extend a signature which already incorporates higher level as –LT or –LTA. In the theory it would be possible to add another –T level when the signature has already reached level –LT but the framework prevents this operation. Note that if the signed document contains multiple signatures, then all the signatures will be extended to level –T. It is also possible to sign a document directly at level -T. 
+The XAdES-BASELINE-T trusted time indications have to be created before a certificate has been revoked or expired and close to the time that the XAdES signature was produced. It provides a protection against repudiation. The framework adds the timestamp only if there is no timestamp or there is one but the creation of a new extension of the level-T is deliberate (using another TSA). It is not possible to extend a signature which already incorporates higher level as -LT or -LTA. In the theory it would be possible to add another -T level when the signature has already reached level -LT but the framework prevents this operation. Note that if the signed document contains multiple signatures, then all the signatures will be extended to level -T. It is also possible to sign a document directly at level -T. 
 
 Here is an example of creating an extension of type T:
 
@@ -516,7 +517,7 @@ Some signatures may have been created with an older version of XAdES standard us
 
 When carrying out the validation process of the signature, the choice of query holder to be used is taken by invoking the method: eu.europa.esig.dss.xades.validation.XPathQueryHolder#canUseThisXPathQueryHolder
 
-This choice is made based on the namespace. If the namespace is: http://uri.etsi.org/01903/v1.3.2# then the default query holder is used, if the namespace is http://uri.etsi.org/01903/v1.1.1# the XAdES111XPathQueryHolder is used. The element used to choose the namespace is “QualifyingProperties”.
+This choice is made based on the namespace. If the namespace is: http://uri.etsi.org/01903/v1.3.2# then the default query holder is used, if the namespace is http://uri.etsi.org/01903/v1.1.1# the XAdES111XPathQueryHolder is used. The element used to choose the namespace is "QualifyingProperties".
 
 To implement another query holder the class XPathQueryHolder must be extended, new XPath queries defined and the method canUseThisXPathQueryHolder overridden.
 
@@ -537,7 +538,7 @@ image::sig_validation_process.jpg[]
 
 Note that the current version of the framework during the validation process does not indicate what part of document was signed. However, in the case of the XAdES signature XPath transformations present in the signature will be applied, in the case of CAdES or PAdES signature the whole document must be signed.
 
-At the end of the validation process three reports are created. They contain the different details level concerning the validation result. They provide three kinds of visions of validation process: macroscopic, microscopic and input data. For more information about these reports, please refer to “Simple Report” chapter.
+At the end of the validation process three reports are created. They contain the different details level concerning the validation result. They provide three kinds of visions of validation process: macroscopic, microscopic and input data. For more information about these reports, please refer to "Simple Report" chapter.
 
 Below is the simplest example of the validation of the signature of a document. The first thing to do is instantiating an object named validator, which orchestrates the verification of the different rules. To perform this it is necessary to invoke a static method fromDocument() on the abstract class SignedDocumentValidator. This method returns the object in question whose type is chosen dynamically based on the type of source document. The DSS framework provides four types of validators:
  
@@ -546,9 +547,9 @@ Below is the simplest example of the validation of the signature of a document. 
  * PDFDocumentValidator,
  * ASiCXMLDocumentValidator.
 
-The next step is to create an object that will check the status of a certificate using the Trusted List model (see “EU Trusted Lists of Certification Service Providers” for more information). In our example, this object is instantiated from the TrustedListCertificateVerifier class. In turn, this object needs an OCSP and/or CRL source and a TSL source (which defines how the certificates are retrieved from the Trusted Lists). See chapter “Management of CRL and OCSP Sources” for more information concerning sources.
+The next step is to create an object that will check the status of a certificate using the Trusted List model (see "Trusted Lists of Certification Service Provider" for more information). In our example, this object is instantiated from the TrustedListCertificateVerifier class. In turn, this object needs an OCSP and/or CRL source and a TSL source (which defines how the certificates are retrieved from the Trusted Lists). See chapter "Management of CRL and OCSP Sources" for more information concerning sources.
 
-Note this validation process uses the default validation policy which can be changed by each implementer. To see how to use a customised validation policy, please refer to “5.4”. More information can be found on joinup: https://joinup.ec.europa.eu/asset/sd-dss/topic/how-validate-signature-real-crl-ocsp-and-certificate-sources#comment-15459
+Note this validation process uses the default validation policy which can be changed by each implementer. To see how to use a customised validation policy, please refer to "5.4" More information can be found on joinup: https://joinup.ec.europa.eu/asset/sd-dss/topic/how-validate-signature-real-crl-ocsp-and-certificate-sources#comment-15459
 
 [[ValidateSignedXmlXadesBTest.java]]
 [source,java,indent=0]
@@ -572,7 +573,7 @@ NOTE: In general, the signature must cover the entire document so that the DSS f
 
 ===	EU Trusted Lists of Certification Service Providers
 
-On 16 October 2009 the European Commission adopted a Decision setting out measures facilitating the use of procedures by electronic means through the ‘points of single contact’ under the Services Directive. One of the measures adopted by the Decision consisted in the obligation for Member States to establish and publish by 28.12.2009 their Trusted List of supervised/accredited certification service providers issuing qualified certificates to the public. The objective of this obligation is to enhance cross-border use of electronic signatures by increasing trust in electronic signatures originating from other Member States. The Decision was updated several times since 16.10.2009; the last amendment was made on 01.02.2014. The consolidated version is available here for information.
+On 16 October 2009 the European Commission adopted a Decision setting out measures facilitating the use of procedures by electronic means through the "points of single contact" under the Services Directive. One of the measures adopted by the Decision consisted in the obligation for Member States to establish and publish by 28.12.2009 their Trusted List of supervised/accredited certification service providers issuing qualified certificates to the public. The objective of this obligation is to enhance cross-border use of electronic signatures by increasing trust in electronic signatures originating from other Member States. The Decision was updated several times since 16.10.2009; the last amendment was made on 01.02.2014. The consolidated version is available here for information.
 
 In order to allow access to the trusted lists of all Member States in an easy manner, the European Commission has published a central list with links to national "trusted lists". This central list will now be designated in the document under the abbreviation LOTL.
 
@@ -708,7 +709,7 @@ The extension of a signature of the level PAdES-BASELINE-B up to PAdES-BASELINE-
 
 === PAdES Visible Signature
 
-The framework also allows to create PDF files with visible signature as specified in TS 102 778-6 (cf. <<R03>>). In the SignatureParameters object, there’s a special attribute named ImageParameters. This parameter let you custom the visual signature (with text, with image or with image and text).
+The framework also allows to create PDF files with visible signature as specified in TS 102 778-6 (cf. <<R03>>). In the SignatureParameters object, there's a special attribute named ImageParameters. This parameter let you custom the visual signature (with text, with image or with image and text).
 Below is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
 
 [[SignPdfPadesBVisibleTest.java]]
@@ -728,18 +729,27 @@ The standard defines two types of containers; the first (ASiC-S) allows you to a
 
 For the moment the DSS framework uses only ASIC-S based on XAdES signature type of containers.
 
-This is an example of the source code for signing a document using ASiCS-S based on XAdES-BES:
+This is an example of the source code for signing a document using ASiCS-S based on XAdES-B:
 
-[[SignPdfAsicBTest.java]]
+[[SignPdfASiCSBTest.java]]
 [source,java,indent=0]
-.SignPdfAsicBTest.java
+.SignPdfASiCSBTest.java
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfAsicBTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfASiCSBTest.java[tags=demo]
+----
+
+This is another example of the source code for signing a document using ASiCS-E based on CAdES:
+
+[[SignPdfASiCSEWithCAdESTest.java]]
+[source,java,indent=0]
+.SignPdfASiCSEWithCAdESTest.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfASiCSEWithCAdESTest.java[tags=demo]
 ----
 
 Please note that you need to pass only few parameters to the service. Other parameters, although are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on XAdES and of DETACHED packaging.
 
-It is also possible with the framework DSS to make an extension of an ASICS signature to the level XAdES-BASELINE-T or –LT.
+It is also possible with the framework DSS to make an extension of an ASICS signature to the level XAdES-BASELINE-T or -LT.
 
 == Management of signature tokens
 
