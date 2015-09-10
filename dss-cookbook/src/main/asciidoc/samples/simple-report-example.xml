@@ -1,0 +1,18 @@
+<SimpleReport xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
+	<Policy>
+		<PolicyName>QES AdESQC TL based</PolicyName>
+		<PolicyDescription>Validate electronic signatures and...</PolicyDescription>
+	</Policy>
+	<ValidationTime>2013-11-26T12:18:26Z</ValidationTime>
+	<DocumentName>signature_tobevalidated.xml</DocumentName>
+	<SignatureForm />
+	<Signature Id="signature-id9c" SignatureFormat="XAdES-BASELINE-LTA">
+		<SigningTime>2013-11-26T11:18:24Z</SigningTime>
+		<SignedBy>user a rsa</SignedBy>
+		<Indication>VALID</Indication>
+		<Info Field="TimestampProductionTime">2013-11-26T11:18:24Z</Info>
+		<SignatureLevel>AdES</SignatureLevel>
+	</Signature>
+	<ValidSignaturesCount>1</ValidSignaturesCount>
+	<SignaturesCount>1</SignaturesCount>
+</SimpleReport>
