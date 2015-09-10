@@ -105,39 +105,27 @@
 			                <goal>process-asciidoc</goal>
 			            </goals>
 			            <configuration>
-			                <sourceHighlighter>coderay</sourceHighlighter>
 			                <backend>html</backend>
+			                <sourceHighlighter>coderay</sourceHighlighter>
 			                <attributes>
                                 <toc>left</toc>
-			                    <linkcss>false</linkcss>
                                 <sectanchors>true</sectanchors>
 			                </attributes>
 			            </configuration>
 			        </execution>
 			        <execution>
-			            <id>output-docbook</id>
-			            <phase>generate-resources</phase>
-			            <goals>
-			                <goal>process-asciidoc</goal>
-			            </goals>
-			            <configuration>
-			                <backend>docbook</backend>
-			                <doctype>book</doctype>
-			            </configuration>
-			        </execution>
-			        <execution>
-                        <id>generate-pdf-doc</id>
+                        <id>output-pdf</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>process-asciidoc</goal>
                         </goals>
 						<configuration>
 							<backend>pdf</backend>
+			                <sourceHighlighter>coderay</sourceHighlighter>
 							<attributes>
 								<icons>font</icons>
 								<pagenums />
 								<toc />
-								<idprefix />
 								<idseparator>-</idseparator>
 							</attributes>
 						</configuration>
@@ -148,17 +136,7 @@
 			        <imagesDir>images</imagesDir>
 			        <headerFooter>true</headerFooter>
 			    </configuration>
-				
-				
 			</plugin>
 		</plugins>
-
 	</build>
-
-
-	<!-- <profiles> <profile> <id>jdocbook</id> <build> <plugins> <plugin> <groupId>org.jboss.maven.plugins</groupId> <artifactId>maven-jdocbook-plugin</artifactId> <version>2.3.9</version> 
-		<configuration> <formats> <format> <formatName>pdf</formatName> </format> </formats> <sourceDocumentName>cookbook.xml</sourceDocumentName> <masterTranslation>en</masterTranslation> 
-		</configuration> <dependencies> <dependency> <groupId>org.jboss.pressgang</groupId> <artifactId>pressgang-xslt-ns</artifactId> <version>2.0.1</version> </dependency> <dependency> <groupId>org.jboss.pressgang</groupId> 
-		<artifactId>pressgang-jdocbook-style</artifactId> <type>jdocbook-style</type> <version>2.0.1</version> </dependency> </dependencies> <executions> <execution> <goals> <goal>generate</goal> 
-		</goals> </execution> </executions> </plugin> </plugins> </build> </profile> </profiles> -->
 </project>
