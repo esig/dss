@@ -539,3 +539,352 @@ NOTE: When using the TrustedListsCertificateSource class, for performance reason
 
 NOTE: In general, the signature must cover the entire document so that the DSS framework can validate it. However, for example in the case of a XAdES signature, some transformations can be applied on the XML document. They can include operations such as canonicalization, encoding/decoding, XSLT, XPath, XML schema validation, or XInclude. XPath transforms permit the signer to derive an XML document that omits portions of the source document. Consequently those excluded portions can change without affecting signature validity. Note that the current version of the framework can sign only the entire document.
 
+===	EU Trusted Lists of Certification Service Providers
+
+On 16 October 2009 the European Commission adopted a Decision setting out measures facilitating the use of procedures by electronic means through the ‘points of single contact’ under the Services Directive. One of the measures adopted by the Decision consisted in the obligation for Member States to establish and publish by 28.12.2009 their Trusted List of supervised/accredited certification service providers issuing qualified certificates to the public. The objective of this obligation is to enhance cross-border use of electronic signatures by increasing trust in electronic signatures originating from other Member States. The Decision was updated several times since 16.10.2009; the last amendment was made on 01.02.2014. The consolidated version is available here for information.
+
+In order to allow access to the trusted lists of all Member States in an easy manner, the European Commission has published a central list with links to national "trusted lists". This central list will now be designated in the document under the abbreviation LOTL.
+
+TODO
+
+===	Validation Result Materials
+
+The result of the validation process consists of three elements: 
+
+ * the simple report, 
+ * the detailed report and,
+ * the diagnostic data.
+ 
+All these reports are encoded using XML, which allows the implementer to easily manipulate and extract information for further analysis. You will find below a detailed description of each of these elements.
+
+==== Simple Report 
+
+This is a sample of the simple validation report.
+
+[source,xml]
+.Simple Report 
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<SimpleReport xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
+	<Policy>
+		<PolicyName>QES AdESQC TL based</PolicyName>
+		<PolicyDescription>Validate electronic signatures and...</PolicyDescription>
+	</Policy>
+	<ValidationTime>2013-11-26T12:18:26Z</ValidationTime>
+	<DocumentName>signature_tobevalidated.xml</DocumentName>
+	<SignatureForm/>
+	<Signature Id="signature-id9c" SignatureFormat="XAdES-BASELINE-LTA">
+		<SigningTime>2013-11-26T11:18:24Z</SigningTime>
+		<SignedBy>user a rsa</SignedBy>
+		<Indication>VALID</Indication>
+		<Info Field="TimestampProductionTime">2013-11-26T11:18:24Z</Info>
+		<SignatureLevel>AdES</SignatureLevel>
+	</Signature>
+	<ValidSignaturesCount>1</ValidSignaturesCount>
+	<SignaturesCount>1</SignaturesCount>
+ </SimpleReport>
+----
+
+The result of the validation process is based on very complex rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
+
+==== Detailed Report
+
+This is a sample of the detailed validation report. Its structure is based on the ETSI standard [R15] and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
+
+[source,xml]
+.Detailed Report 
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationData xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
+	<BasicBuildingBlocks>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">
+			<ISC>...
+			<VCI>...
+			<CV>...
+			<SAV>...
+			<XCV>...
+			<Conclusion>
+				<Indication>VALID</Indication>
+			</Conclusion>
+		</Signature>
+	</BasicBuildingBlocks>
+	<BasicValidationData>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">
+			<Conclusion>
+				<Indication>VALID</Indication>
+			</Conclusion>
+		</Signature>
+	</BasicValidationData>
+	<TimestampValidationData>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">
+			<Timestamp Category="SIGNATURE_TIMESTAMP" Id="1">
+				<BasicBuildingBlocks>...
+					<Conclusion>
+						<Indication>VALID</Indication>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+			<Timestamp Category="ARCHIVE_TIMESTAMP" Id="2">
+				<BasicBuildingBlocks>...
+					<Conclusion>
+						<Indication>VALID</Indication>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+		</Signature>
+	</TimestampValidationData>
+	<AdESTValidationData>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">...
+			<Conclusion>
+				<Indication>VALID</Indication>
+				<Info Field="TimestampProductionTime">2013-11-26T11:18:24Z</Info>
+			</Conclusion>
+		</Signature>
+	</AdESTValidationData>
+	<LongTermValidationData>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">...
+		</Signature>
+	</LongTermValidationData>
+</ValidationData>
+----
+
+For example the Basic Building Blocks are divided into five elements:
+
+ * ISC - IDENTIFICATION OF SIGNER’S CERTIFICATE
+ * VCI - VALIDATION CONTEXT INITIALIZATION
+ * XCV - X.509 CERTIFICATE VALIDATION
+ * CV - CRYPTOGRAPHIC VERIFICATION
+ * SAV - SIGNATURE ACCEPTANCE VALIDATION
+ 
+Each block contains a number of rules that are executed sequentially. The rules are driven by the constraints defined in the validation policy. The result of each rule is OK or NOT OK. The process is stopped when the first rule fails. Each block also contains a conclusion. If all rules are met then the conclusion node indicates VALID. Otherwise INVALID or INDETERMINATE indication is returned depending on the ETSI standard definition. 
+
+==== Diagnostic Data
+
+This is a data set constructed from the information contained in the signature itself, but also from information retrieved dynamically as revocation data and information extrapolated as the mathematical validity of a signature. All this information is independent of the applied validation policy. Two different validation policies applied to the same diagnostic data can lead to different results.
+
+This is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
+
+[source,xml]
+.Diagnostic Data
+----
+<DiagnosticData xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
+   <DocumentName>…\XAdES detachedMOAID G2_qual_valid.xml</DocumentName>
+   <Signature Id="Signature-6362c43e-1">
+      <DateTime>2013-12-20T13:34:13Z</DateTime>
+      <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
+      <BasicSignature>
+         <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+         <KeyLengthUsedToSignThisToken>192</KeyLengthUsedToSignThisToken>
+         <DigestAlgoUsedToSignThisToken>RIPEMD160</DigestAlgoUsedToSignThisToken>
+         <ReferenceDataFound>true</ReferenceDataFound>
+         <ReferenceDataIntact>true</ReferenceDataIntact>
+         <SignatureIntact>true</SignatureIntact>
+         <SignatureValid>true</SignatureValid>
+      </BasicSignature>
+      <SigningCertificate Id="24">
+         <DigestValueMatch>true</DigestValueMatch>
+         <IssuerSerialMatch>true</IssuerSerialMatch>
+      </SigningCertificate>
+      <CertificateChain>
+         <ChainCertificate Id="24">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="12">
+            <Source>TRUSTED_LIST</Source>
+         </ChainCertificate>
+      </CertificateChain>
+      <ContentType>text/xml</ContentType>
+      <Policy>
+         <Id/>
+         <Identified>false</Identified>
+         <Status>true</Status>
+         <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+      </Policy>
+   </Signature>
+   <UsedCertificates>
+      <Certificate Id="17">
+         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
+         <IssuerCertificate>0</IssuerCertificate>
+         <SerialNumber>1026306</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>RIPEMD160</DigestMethod>
+            <DigestValue>5HXTKVzoWuDjBgk9RVDJCzQXE+M=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2018-09-11T12:14:19Z</NotAfter>
+         <NotBefore>2013-09-11T14:14:19Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <IdKpOCSPSigning>true</IdKpOCSPSigning>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <Trusted>true</Trusted>
+         <SelfSigned>false</SelfSigned>
+      </Certificate>
+      <Certificate Id="24">
+         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
+         <IssuerCertificate>12</IssuerCertificate>
+         <SerialNumber>397752</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>RIPEMD160</DigestMethod>
+            <DigestValue>5vllGPyjfO0f0mjk2kyVo8lPsGs=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2014-10-13T08:28:09Z</NotAfter>
+         <NotBefore>2009-10-13T08:28:09Z</NotBefore>
+         <PublicKeySize>192</PublicKeySize>
+         <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="12">
+            <DigestValueMatch>true</DigestValueMatch>
+            <IssuerSerialMatch>true</IssuerSerialMatch>
+         </SigningCertificate>
+         <CertificateChain>
+            <ChainCertificate Id="12">
+               <Source>TRUSTED_LIST</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>true</QCPPlus>
+            <QCC>true</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+         <TrustedServiceProvider>
+            <TSPName>A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</TSPName>
+            <TSPServiceName>a-sign-Premium-Sig-02 (key no. 1)</TSPServiceName>
+            <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+            <StartDate>2004-12-14T23:00:00Z</StartDate>
+            <WellSigned>true</WellSigned>
+         </TrustedServiceProvider>
+         <Revocation>
+            <Source>OCSPToken</Source>
+            <SourceAddress>http://ocsp.a-trust.at/ocsp</SourceAddress>
+            <Status>false</Status>
+            <DateTime>2014-01-08T05:23:38Z</DateTime>
+            <Reason>CRLReason: keyCompromise</Reason>
+            <IssuingTime>2014-02-12T10:20:26Z</IssuingTime>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="17">
+               <DigestValueMatch>true</DigestValueMatch>
+               <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+               <ChainCertificate Id="17">
+                  <Source>TRUSTED_LIST</Source>
+               </ChainCertificate>
+            </CertificateChain>
+         </Revocation>
+      </Certificate>
+      <Certificate Id="12">
+         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
+         <IssuerCertificate>0</IssuerCertificate>
+         <SerialNumber>58531</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>RIPEMD160</DigestMethod>
+            <DigestValue>CC+ntcCafY5zsjFmY3gQsbPzrU0=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2014-12-13T23:00:00Z</NotAfter>
+         <NotBefore>2004-12-14T23:00:00Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <Trusted>true</Trusted>
+         <SelfSigned>false</SelfSigned>
+      </Certificate>
+   </UsedCertificates>
+</DiagnosticData>
+----
+
+=== Customised Validation Policy
+
+The validation process may be driven by a set of constraints that are contained in the XML file constraint.xml.
+
+[source,xml]
+.constraint.xml
+----
+include::../../../../validation-policy/src/main/resources/policy/constraint.xml[]
+----
+
+== CAdES signature and validation
+
+To familiarise yourself with this type of signature it is advisable to read the following document:
+
+* CAdES Specifications (cf. [R05])
+
+To implement this form of signature you can use the XAdES examples. You only need to instantiate the CAdES object service and change the SignatureLevel parameter value. Below is an example of the CAdES-Baseline-B signature:
+
+[[SignXmlCadesBTest.java]]
+[source,java,indent=0]
+.SignXmlCadesBTest.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlCadesBTest.java[tags=demo]
+----
+
+== PAdES signature and validation
+
+The standard ISO 32000-1 (cf. [R10]) allows defining a file format for portable electronic documents. It is based on PDF 1.7 of Adobe Systems. Concerning the digital signature it supports three operations: 
+
+ * Adding a digital signature to a document,
+ * Providing a placeholder field for signatures,
+ * Checking signatures for validity.
+
+PAdES defines eight different profiles to be used with advanced electronic signature in the meaning of European Union Directive 1999/93/EC (cf. [R13]):
+
+ * PAdES Basic - PDF signature as specified in ISO 32000-1 (cf. [R10]). The profile is specified in TS 102 778-2 (cf. [R06]).
+ * PAdES-BES Profile - based upon CAdES-BES as specified in TS 101 733 (cf. [R05]) with the option of a signature time-stamp (CAdES-T).
+ * PAdES-EPES profile - based upon CAdES-EPES as specified in TS 101 733 (cf. [R05]). This profile is the same as the PAdES - BES with the addition of a signature policy identifier and optionally a commitment type indication.
+ * PAdES-LTV Profile - This profile supports the long term validation of PDF Signatures and can be used in conjunction with the above-mentioned profiles.
+ * Four other PAdES profiles for XML Content.
+
+To familiarise yourself with this type of signature it is advisable to read the documents referenced above.
+
+Below is an example of code to perform a PAdES-BASELINE-B type signature:
+
+[[SignPdfPadesBTest.java]]
+[source,java,indent=0]
+.SignPdfPadesBTest.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=demo]
+----

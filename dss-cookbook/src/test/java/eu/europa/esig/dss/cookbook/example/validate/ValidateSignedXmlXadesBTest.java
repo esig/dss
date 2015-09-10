@@ -77,7 +77,6 @@ public class ValidateSignedXmlXadesBTest extends CookbookTools {
 
 		// end::demo[]
 
-
 		assertNotNull(reports);
 		assertNotNull(simpleReport);
 	}

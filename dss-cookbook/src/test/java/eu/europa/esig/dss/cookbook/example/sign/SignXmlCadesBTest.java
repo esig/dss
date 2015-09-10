@@ -20,29 +20,30 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESService;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 /**
- * How to sign PDF Document with PAdES-BASELINE-B
+ * How to sign with CAdES-BASELINE-B enveloping signature.
  */
-public class SignPdfPadesB extends Cookbook {
+public class SignXmlCadesBTest extends CookbookTools {
 
-	public static void main(final String[] args) throws IOException {
+	@Test
+	public void signCAdESBaselineB() {
+
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
-		preparePdfDoc();
+		prepareXmlDoc();
 
 		// Get a token connection based on a pkcs12 file commonly used to store private
 		// keys with accompanying public key certificates, protected with a password-based
@@ -53,12 +54,14 @@ public class SignPdfPadesB extends Cookbook {
 		// Return DSSPrivateKeyEntry privateKey *****
 		preparePKCS12TokenAndKey();
 
-		// Preparing parameters for the PAdES signature
-		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
+		// tag::demo[]
+
+		// Preparing parameters for the CAdES signature
+		CAdESSignatureParameters parameters = new CAdESSignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, -LTA).
-		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		// We choose the type of the signature packaging (ENVELOPING, DETACHED).
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		// We set the digest algorithm to use with the signature algorithm. You must use the
 		// same parameter when you invoke the method sign on the token. The default value is
 		// SHA256
@@ -71,8 +74,8 @@ public class SignPdfPadesB extends Cookbook {
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		// Create PAdESService for signature
-		PAdESService service = new PAdESService(commonCertificateVerifier);
+		// Create CAdES xadesService for signature
+		CAdESService service = new CAdESService(commonCertificateVerifier);
 
 		// Get the SignedInfo segment that need to be signed.
 		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
@@ -86,8 +89,8 @@ public class SignPdfPadesB extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		//We use the DSSUtils to Save to file
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedPdfPadesB.pdf");
+		// end::demo[]
 
+		testFinalDocument(signedDocument);
 	}
 }
