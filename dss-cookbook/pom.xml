@@ -110,6 +110,7 @@
 			                <attributes>
                                 <toc>left</toc>
                                 <sectanchors>true</sectanchors>
+                                <linkcss>true</linkcss>
     							<dssVersion>${project.version}</dssVersion>
 			                </attributes>
 			            </configuration>

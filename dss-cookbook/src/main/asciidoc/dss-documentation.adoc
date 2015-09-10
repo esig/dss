@@ -335,7 +335,7 @@ This code adds the following elements into the signature :
 
 [source,xml]
 ----
-include:samples/xades-b-properties.xml[]
+include::samples/xades-b-properties.xml[]
 ----
 
 ===== Handling signature policy
@@ -367,7 +367,7 @@ An XML segment will be added to the signature’s qualified and signed propertie
 
 [source,xml]
 ----
-include:samples/xades-implicit-policy.xml[]
+include::samples/xades-implicit-policy.xml[]
 ----
 
 The next example demonstrates an explicit policy identifier. This is obtained by setting –B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example java.security.MessageDigest class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only. See also chapter 7 for further information.
@@ -383,12 +383,13 @@ The following XML segment will be added to the signature qualified & signed prop
 
 [source,xml]
 ----
-include:samples/xades-explicit-policy.xml[]
+include::samples/xades-explicit-policy.xml[]
 ----
 
 ==== XAdES-BASELINE-T
 
 XAdES-BASELINE-T is a signature for which there exists a trusted time associated to the signature. It provides the initial steps towards providing long term validity and more specifically it provides a protection against repudiation. This extension of the signature can be created as well during the generation process as validation process. However, the case when these validation data are not added during the generation process should no longer occur. The XAdES-BASELINE-T trusted time indications must be created before the signing certificate has been revoked or expired and close to the time that the XAdES signature was produced. The XAdES-BASELINE-T form must be built on a XAdES-BASELINE-B form. The DSS framework allows extending the old -BES and -EPES profiles to the new BASELINE-T profile, indeed there is no difference in the structure of the signature.
+
 To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R11>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example we will use a virtual provider. In a real situation, you can use OnlineTSPSource class encompassing communication with Time Stamping Authority based on RFC 3161 (cf. <<R11>>) or you can implement your own class using TSPSource interface (see “TSP Sources” chapter for more details).
 
 [[SignXmlXadesTTest.java]]
@@ -402,7 +403,7 @@ The SignatureTimeStamp mandated by the XAdES-T form appears as an unsigned prope
 
 [source,xml]
 ----
-include:samples/xades-signature-timestamp.xml[]
+include::samples/xades-signature-timestamp.xml[]
 ----
 
 ===== Use of online TSP source
@@ -433,7 +434,7 @@ The following XML segment will be added to the signature qualified and unsigned 
 
 [source,xml]
 ----
-include:samples/xades-revocation-data.xml[]
+include::samples/xades-revocation-data.xml[]
 ----
 
 NOTE: The use of online sources can significantly increase the execution time of the signing process. For testing purpose you can create your own source of data.
@@ -457,7 +458,7 @@ The following XML segment will be added to the signature qualified and unsigned 
 
 [source,xml]
 ----
-include:samples/xades-archive-timestamp.xml[]
+include::samples/xades-archive-timestamp.xml[]
 ----
 
 === Various settings
@@ -502,7 +503,7 @@ Here is the result of adding a new extension of type-T to an already existing -T
 
 [source,xml]
 ----
-include:samples/xades-extend-t-to-t.xml[]
+include::samples/xades-extend-t-to-t.xml[]
 ----
 
 === XAdES-BASELINE-LT and -LTA
@@ -750,16 +751,37 @@ This design permits also other card providers/adopters to create own implementat
 
 PKCS#11 is widely used to access smart cards and HSMs. Most commercial software uses PKCS#11 to access the signature key of the CA or to enrol user certificates. In the DSS framework, this standard is encapsulated in the class Pkcs11SignatureToken.
 
+[[PKCS11Snippet.java]]
+[source,java,indent=0]
+.PKCS11Snippet.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS11Snippet.java[tags=demo]
+----
+
 === PKCS#12
  
 This standard defines a file format commonly used to store the private key and corresponding public key certificate protecting them by password. 
 
 In order to use this format with the DSS framework you have to go through the class Pkcs12SignatureToken. 
+
+[[PKCS12Snippet.java]]
+[source,java,indent=0]
+.PKCS12Snippet.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS12Snippet.java[tags=demo]
+----
  
 === MS CAPI
 
 If the middleware for communicating with an SSDC provides a CSP based on MS CAPI specification, then to sign the documents you can use MSCAPISignatureToken class.
- 
+
+[[MSCAPISnippet.java]]
+[source,java,indent=0]
+.MSCAPISnippet.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/MSCAPISnippet.java[tags=demo]
+----
+
 === Other Implementations
 
 As you can see, it is easy to add another implementation of the SignatureTokenConnection, thus enabling the framework to use other API than the provided three (PKCS#11, PKCS#12 and MS CAPI). For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
