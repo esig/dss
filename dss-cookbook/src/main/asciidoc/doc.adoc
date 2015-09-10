@@ -888,3 +888,86 @@ Below is an example of code to perform a PAdES-BASELINE-B type signature:
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=demo]
 ----
+
+To add the timestamp to the signature (PAdES-T or LTA), please provide TSP source to the service.
+
+To create PAdES-BASELINE-B level with additional options: signature policy identifier and optionally a commitment type indication, please observe the following example in code 5.
+
+All these parameters are optional. 
+
+ * *SignaturePolicyOID :* The string representation of the OID of the signature policy to use when signing.
+
+ * *SignaturePolicyHashValue :* The value of the hash of the signature policy, computed the same way as in clause 5.8.1 of CAdES (TS 101 733 (cf. [R05])).
+
+ * *SignaturePolicyHashAlgorithm :* The hash function used to compute the value of the SignaturePolicyHashValue entry. Entries must be represented the same way as in table 257 of ISO 32000-1 (cf. [R10]).
+
+ * *SignaturePolicyCommitmentType :* If the SignaturePolicyOID is present, this array defines the commitment types that can be used within the signature policy. An empty string can be used to indicate the default commitment type.
+
+If the SignaturePolicyOID is absent, the three other fields defined above will be ignored. If the SignaturePolicyOID is present but the SignaturePolicyCommitmentType is absent, all commitments defined by the signature policy will be used.
+
+The extension of a signature of the level PAdES-BASELINE-B up to PAdES-BASELINE-LTA profile will add the following features:
+
+ * Addition of validation data to an existing PDF document which may be used to validate earlier signatures within the document (including PDF signatures and time-stamp signatures). 
+ * Addition of a document time-stamp which protects the existing document and any validation data. 
+ * Further validation data and document time-stamp may be added to a document over time to maintain its authenticity and integrity.
+
+=== PAdES Visible Signature
+
+The framework also allows to create PDF files with visible signature as specified in TS 102 778-6 (cf. [R06]). In the SignatureParameters object, there’s a special attribute named ImageParameters. This parameter let you custom the visual signature (with text, with image or with image and text).
+Below is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
+
+[[SignPdfPadesBVisibleTest.java]]
+[source,java,indent=0]
+.SignPdfPadesBVisibleTest.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=demo]
+----
+
+== ASiC signature and validation
+
+When creating a digital signature, the user must choose between different packaging elements, namely enveloping, enveloped or detached. This choice is not obvious, because in one case the signature will alter the signed document and in the other case it is possible to lose the association between the signed document and its signature. That's where the standard ETSI TS 102 918 (cf. [R12]) offers a standardized use of container forms to establish a common way for associating data objects with advanced signatures or time-stamp tokens.
+
+A number of application environments use ZIP based container formats to package sets of files together with meta-information. ASiC technical specification is designed to operate with a range of such ZIP based application environments. Rather than enforcing a single packaging structure, ASiC describes how these package formats can be used to associate advanced electronic signatures with any data objects.
+
+The standard defines two types of containers; the first (ASiC-S) allows you to associate one or more signatures with a single data element. In this case the structure of the signature can be based (in a general way) on a single CAdES signature or on multiple XAdES signatures or finally on a single TST; the second is an extended container (ASiC-E) that includes multiple data objects. Each data object may be signed by one or more signatures which structure is similar to ASiC-S. This second type of container is compatible with OCF, UCF and ODF formats.
+
+For the moment the DSS framework uses only ASIC-S based on XAdES signature type of containers.
+
+This is an example of the source code for signing a document using ASiCS-S based on XAdES-BES:
+
+[[SignPdfAsicBTest.java]]
+[source,java,indent=0]
+.SignPdfAsicBTest.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfAsicBTest.java[tags=demo]
+----
+
+Please note that you need to pass only few parameters to the service. Other parameters, although are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on XAdES and of DETACHED packaging.
+
+It is also possible with the framework DSS to make an extension of an ASICS signature to the level XAdES-BASELINE-T or –LT.
+
+== Management of signature tokens
+
+The DSS framework is able to create signatures from PKCS#11, PKCS#12 and MS CAPI. Java 6 is inherently capable of communicating with these kinds of KeyStores. To be independent of the signing media, DSS framework uses an interface named SignatureTokenConnection to manage different implementations of the signing process. The base implementation is able to sign a stream of the data in one step. That means that all the data to be signed needs to be sent to the SSCD. This is the case for MS CAPI. As to the PKCS#11 and PKCS#12, which give to the developer a finer control in the signature operation, the DSS framework implements the AsyncSignatureTokenConnection abstract class that permits to execute the digest operation and signature operation in two different threads or even two different hardwares.
+
+This design permits also other card providers/adopters to create own implementations. For example, this can be used for a direct connection to the Smartcard through Java 6 PC/SC.
+
+=== PKCS#11
+
+PKCS#11 is widely used to access smart cards and HSMs. Most commercial software uses PKCS#11 to access the signature key of the CA or to enrol user certificates. In the SD-DSS framework, this standard is encapsulated in the class Pkcs11SignatureToken.
+
+=== PKCS#12
+ 
+This standard defines a file format commonly used to store the private key and corresponding public key certificate protecting them by password. 
+
+In order to use this format with the DSS framework you have to go through the class Pkcs12SignatureToken. 
+ 
+=== MS CAPI
+
+If the middleware for communicating with an SSDC provides a CSP based on MS CAPI specification, then to sign the documents you can use MSCAPISignatureToken class.
+ 
+=== Other Implementations
+
+As you can see, it is easy to add another implementation of the SignatureTokenConnection, thus enabling the framework to use other API than the provided three (PKCS#11, PKCS#12 and MS CAPI). For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
+
+ 

@@ -20,25 +20,25 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCService;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 /**
  * How to sign with ASiC-BASELINE-B
  */
-public class SignPdfAsicB extends Cookbook {
+public class SignPdfAsicBTest extends CookbookTools {
 
-	public static void main(final String[] args) throws IOException {
+	@Test
+	public void signASiCBaselineB() {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -52,6 +52,8 @@ public class SignPdfAsicB extends Cookbook {
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
 		preparePKCS12TokenAndKey();
+
+		// tag::demo[]
 
 		// Preparing parameters for the AsicS signature
 		ASiCSignatureParameters parameters = new ASiCSignatureParameters();
@@ -83,7 +85,9 @@ public class SignPdfAsicB extends Cookbook {
 		// We invoke the xadesService to sign the document with the signature value obtained in
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
-		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedPdfAsicB.asic");
+
+		// end::demo[]
+
+		testFinalDocument(signedDocument);
 	}
 }

@@ -22,16 +22,16 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.IOException;
+
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -41,9 +41,11 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 /**
  * How to sign PDF Document with PAdES-BASELINE-B and include a visual representation
  */
-public class SignPdfPadesBVisible extends Cookbook {
+public class SignPdfPadesBVisibleTest extends CookbookTools {
 
-	public static void main(final String[] args) throws IOException {
+	@Test
+	public void signPAdESBaselineBWithVisibleSignature() {
+
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		preparePdfDoc();
@@ -56,6 +58,8 @@ public class SignPdfPadesBVisible extends Cookbook {
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
 		preparePKCS12TokenAndKey();
+
+		// tag::demo[]
 
 		// Preparing parameters for the PAdES signature
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
@@ -101,8 +105,8 @@ public class SignPdfPadesBVisible extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		// We use the DSSUtils to Save to file
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedPdfPadesBVisible.pdf");
+		// end::demo[]
 
+		testFinalDocument(signedDocument);
 	}
 }

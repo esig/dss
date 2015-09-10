@@ -54,7 +54,7 @@ public class ValidateSignedXmlXadesBTest extends CookbookTools {
 		final CertificateToken trustedCertificate = certificateChain[0];
 
 		// Already signed document - Created with the SignXmlXadesB Class
-		DSSDocument document = new FileDocument("target/signedXmlXadesB.xml");
+		DSSDocument document = new FileDocument("src/test/resources/signedXmlXadesB.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
