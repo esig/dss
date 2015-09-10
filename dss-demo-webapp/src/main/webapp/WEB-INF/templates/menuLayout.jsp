@@ -43,6 +43,14 @@
 </c:choose>
 
 <div class="panel panel-default">
+    <div class="panel-heading">Documentation</div>
+    <div class="list-group hidden-print">
+        <a href="<spring:url value="/doc/dss-documentation.html" />" target="_blank" class="list-group-item">HTML</a>
+        <a href="<spring:url value="/doc/dss-documentation.pdf" />" target="_blank" class="list-group-item">PDF</a>
+    </div>
+</div>
+
+<div class="panel panel-default">
     <div class="panel-heading">Useful links</div>
     <div class="list-group hidden-print">
         <a href="https://joinup.ec.europa.eu/asset/sd-dss/description" class="list-group-item">Joinup</a>

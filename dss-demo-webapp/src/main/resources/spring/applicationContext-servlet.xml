@@ -16,6 +16,7 @@
     <mvc:resources mapping="/scripts/**" location="/scripts/" />
     <mvc:resources mapping="/jar/**" location="/jar/" />
     <mvc:resources mapping="/downloads/**" location="/downloads/" />
+    <mvc:resources mapping="/doc/**" location="/doc/" />
     
 	<mvc:annotation-driven />
 	

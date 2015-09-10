@@ -469,6 +469,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cookbook</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-test</artifactId>
 				<version>${project.version}</version>
 				<scope>test</scope>
@@ -748,12 +753,12 @@
 				<module>dss-demo-applet-package</module>
 				<module>dss-light-applet</module>
 				<module>dss-light-applet-package</module>
+				<module>dss-cookbook</module>
 				<module>dss-demo-webapp</module>
 				<module>dss-demo-bundle</module>
 				<module>dss-policy-jaxb</module>
 				<module>dss-tsl-jaxb</module>
 				<module>dss-diagnostic-jaxb</module>
-				<module>dss-cookbook</module>
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-cades</module>
@@ -791,12 +796,12 @@
 				<module>dss-light-applet-package</module>
 				<module>dss-standalone-app</module>
 				<module>dss-standalone-app-package</module>
+				<module>dss-cookbook</module>
 				<module>dss-demo-webapp</module>
 				<module>dss-demo-bundle</module>
 				<module>dss-policy-jaxb</module>
 				<module>dss-tsl-jaxb</module>
 				<module>dss-diagnostic-jaxb</module>
-				<module>dss-cookbook</module>
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-cades</module>

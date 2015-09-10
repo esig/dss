@@ -102,6 +102,31 @@
 				</executions>
 			</plugin>
 			<plugin>
+			    <artifactId>maven-resources-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <id>copy-cookbook</id>
+						<phase>process-resources</phase>
+			            <goals>
+			                <goal>copy-resources</goal>
+			            </goals>
+			            <configuration>
+			                <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/doc</outputDirectory>
+			                <overwrite>true</overwrite>
+			                <resources>
+			                    <resource>
+			                        <directory>../dss-cookbook/target/generated-docs</directory>
+			                        <includes>
+			                            <include>**/*</include>
+			                            <include>*</include>
+			                        </includes>
+			                    </resource>
+			                </resources>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat6-maven-plugin</artifactId>
 	            <configuration>
@@ -178,6 +203,11 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-standalone-app-package</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-cookbook</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		
