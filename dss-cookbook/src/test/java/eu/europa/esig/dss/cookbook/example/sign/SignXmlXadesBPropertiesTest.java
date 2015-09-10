@@ -20,21 +20,20 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
+
 import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -42,29 +41,30 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 /**
  * How to add signed properties to the signature.
  */
-public class signXmlXadesBProperties extends Cookbook {
+public class SignXmlXadesBPropertiesTest extends CookbookTools {
 
-	public static void main(String[] args) throws DSSException, IOException {
+	@Test
+	public void testWithProperties() {
 
 		prepareXmlDoc();
 
 		preparePKCS12TokenAndKey();
+
+		// tag::demo[]
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
-		// We set the signing certificate
 		parameters.setSigningCertificate(privateKey.getCertificate());
-		// We set the certificate chain
 		parameters.setCertificateChain(privateKey.getCertificateChain());
 
 		BLevelParameters bLevelParameters = parameters.bLevel();
 		bLevelParameters.addClaimedSignerRole("My Claimed Role");
 
 		SignerLocation signerLocation = new SignerLocation();
-		signerLocation.setCountry("Belgium");
+		signerLocation.setCountry("BE");
 		signerLocation.setStateOrProvince("Luxembourg");
 		signerLocation.setPostalCode("1234");
 		signerLocation.setLocality("SimCity");
@@ -82,6 +82,8 @@ public class signXmlXadesBProperties extends Cookbook {
 
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesBProperties.xml");
+		// end::demo[]
+
+		testFinalDocument(signedDocument);
 	}
 }

@@ -20,17 +20,13 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -38,15 +34,16 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 /**
  * How to extend with XAdES-BASELINE-T
  */
-public class ExtendSignXmlXadesBToT extends Cookbook {
+public class ExtendSignXmlXadesBToTTest extends CookbookTools {
 
-	public static void main(final String[] args) throws IOException {
+	@Test
+	public void extendXAdESBToT() {
 
-		toExtendDocument = new FileDocument("signedXmlXadesB.xml");
+		// tag::demo[]
+
+		DSSDocument document = new FileDocument("src/test/resources/signedXmlXadesB.xml");
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -57,10 +54,10 @@ public class ExtendSignXmlXadesBToT extends Cookbook {
 			new DSSException("Error during MockTspSource",e);
 		}
 
-		DSSDocument extendedDocument = xadesService.extendDocument(toExtendDocument, parameters);
+		DSSDocument extendedDocument = xadesService.extendDocument(document, parameters);
 
-		//DSSUtils.copy(extendedDocument.openStream(), System.out);
-		InputStream is = new ByteArrayInputStream(extendedDocument.getBytes());
-		DSSUtils.saveToFile(is, "target/extendedSignedXmlXadesBToT.xml");
+		// end::demo[]
+
+		testFinalDocument(extendedDocument);
 	}
 }

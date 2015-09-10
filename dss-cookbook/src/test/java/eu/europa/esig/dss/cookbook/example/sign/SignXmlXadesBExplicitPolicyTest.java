@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.junit.Test;
 
 import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSDocument;
@@ -33,19 +31,24 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 /**
- * How to set implicit policy.
+ * How to set explicit policy.
  */
-public class SignXmlXadesBImplicitPolicy extends Cookbook {
+public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 
-	public static void main(String[] args) throws IOException {
+	@Test
+	public void testWithExplicitPolicy() {
 
 		prepareXmlDoc();
+
+		preparePKCS12TokenAndKey();
+
+		// tag::demo[]
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
@@ -59,8 +62,17 @@ public class SignXmlXadesBImplicitPolicy extends Cookbook {
 
 		BLevelParameters bLevelParameters = parameters.bLevel();
 
+		//Get and use the explicit policy
+		String signaturePolicyId = "http://www.example.com/policy.txt";
+		DigestAlgorithm signaturePolicyHashAlgo = DigestAlgorithm.SHA256;
+		String signaturePolicyDescription = "Policy text to digest";
+		byte[] signaturePolicyDescriptionBytes = signaturePolicyDescription.getBytes();
+		byte[] digestedBytes = DSSUtils.digest(signaturePolicyHashAlgo, signaturePolicyDescriptionBytes);
+
 		Policy policy = new Policy();
-		policy.setId("");
+		policy.setId(signaturePolicyId);
+		policy.setDigestAlgorithm(signaturePolicyHashAlgo);
+		policy.setDigestValue(digestedBytes);
 
 		bLevelParameters.setSignaturePolicy(policy);
 
@@ -81,7 +93,8 @@ public class SignXmlXadesBImplicitPolicy extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		InputStream is = new ByteArrayInputStream(signedDocument.getBytes());
-		DSSUtils.saveToFile(is, "target/signedXmlXadesBImplicitPolicy.xml");
+		// end::demo[]
+
+		testFinalDocument(signedDocument);
 	}
 }

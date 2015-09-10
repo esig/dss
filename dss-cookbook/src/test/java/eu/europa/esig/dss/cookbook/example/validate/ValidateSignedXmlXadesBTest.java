@@ -20,14 +20,13 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.esig.dss.cookbook.sources.AlwaysValidOCSPSource;
 import eu.europa.esig.dss.test.mock.MockServiceInfo;
@@ -41,9 +40,12 @@ import eu.europa.esig.dss.x509.CertificateToken;
 /**
  * How to validate a XAdES-BASELINE-B signature.
  */
-public class ValidateSignedXmlXadesB extends Cookbook {
+public class ValidateSignedXmlXadesBTest extends CookbookTools {
 
-	public static void main(String[] args) throws IOException {
+	@Test
+	public void validateXAdESBaselineB() {
+
+		// tag::demo[]
 
 		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted anchor.
 		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this point.
@@ -58,6 +60,7 @@ public class ValidateSignedXmlXadesB extends Cookbook {
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		AlwaysValidOCSPSource ocspSource = new AlwaysValidOCSPSource();
 		verifier.setOcspSource(ocspSource);
+
 		/**
 		 * This Trusted List Certificates Source points to
 		 * "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"
@@ -72,7 +75,11 @@ public class ValidateSignedXmlXadesB extends Cookbook {
 		Reports reports = validator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
 
-		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
-		DSSUtils.saveToFile(is, "target/validationXmlXadesB.xml");
+		// end::demo[]
+
+
+		assertNotNull(reports);
+		assertNotNull(simpleReport);
 	}
+
 }

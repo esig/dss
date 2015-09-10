@@ -23,9 +23,10 @@ package eu.europa.esig.dss.cookbook.example.sign;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Test;
+
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -34,7 +35,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.tsl.service.TSLRepository;
 import eu.europa.esig.dss.tsl.service.TSLValidationJob;
@@ -46,9 +47,10 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 /**
  * How to sign with XAdES-BASELINE-LT
  */
-public class SignXmlXadesLT extends Cookbook {
+public class SignXmlXadesLTTest extends CookbookTools {
 
-	public static void main(String[] args) throws DSSException, IOException {
+	@Test
+	public void signXAdESBaselineLT() {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -61,6 +63,8 @@ public class SignXmlXadesLT extends Cookbook {
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
 		preparePKCS12TokenAndKey();
+
+		// tag::demo[]
 
 		// Preparing parameters for the XAdES signature
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -110,12 +114,11 @@ public class SignXmlXadesLT extends Cookbook {
 
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
-		try{
+		try {
 			service.setTspSource(getMockTSPSource());
-		}catch (Exception e) {
-			new DSSException("Error during MockTspSource",e);
+		} catch (Exception e) {
+			new DSSException("Error during MockTspSource", e);
 		}
-
 
 		// Get the SignedInfo XML segment that need to be signed.
 		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
@@ -128,7 +131,14 @@ public class SignXmlXadesLT extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesLT.xml");
+		// end::demo[]
+
+		testFinalDocument(signedDocument);
+
+		try {
+			signedDocument.save("src/test/resources/signedXmlXadesLT.xml");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

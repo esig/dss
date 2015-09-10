@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import java.io.ByteArrayInputStream;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
@@ -48,9 +48,12 @@ import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 /**
  * How to validate a XAdES-BASELINE-LT enveloped signature with online sources.
  */
-public class ValidateXmlXadesLTWithOnlineSources extends Cookbook {
+public class ValidateXmlXadesLTWithOnlineSourcesTest extends Cookbook {
 
-	public static void main(String[] args) throws IOException {
+	@Test
+	public void validateXAdESBaselineLTWithOnlineSources() {
+
+		// tag::demo[]
 
 		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted anchor.
 		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this point.
@@ -59,7 +62,7 @@ public class ValidateXmlXadesLTWithOnlineSources extends Cookbook {
 		final CertificateToken trustedCertificate = certificateChain[0];
 
 		// Already signed document
-		DSSDocument document = new FileDocument("target/signedXmlXadesLT.xml");
+		DSSDocument document = new FileDocument("src/test/resources/signedXmlXadesLT.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
@@ -106,13 +109,12 @@ public class ValidateXmlXadesLTWithOnlineSources extends Cookbook {
 
 		Reports reports = validator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
-		DetailedReport detailReport = reports.getDetailedReport();
+		DetailedReport detailedReport = reports.getDetailedReport();
 
-		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
-		DSSUtils.saveToFile(is, "target/validationXmlXadesLT_Online_simpleReport.xml");
+		// end::demo[]
 
-		is = new ByteArrayInputStream(detailReport.toByteArray());
-		DSSUtils.saveToFile(is, "target/validationXmlXadesLT_Online_detailReport.xml");
-
+		assertNotNull(reports);
+		assertNotNull(simpleReport);
+		assertNotNull(detailedReport);
 	}
 }

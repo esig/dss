@@ -21,30 +21,27 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.io.IOException;
-import java.util.Date;
+
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 /**
- * How to sign with XAdES-BASELINE-T
+ * How to sign with XAdES-BASELINE-B
  */
-public class SignXmlXadesT extends Cookbook {
+public class SignXmlXadesBTest extends CookbookTools {
 
-	public static void main(String[] args) throws DSSException, IOException {
+	@Test
+	public void signXAdESBaselineB() {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -55,13 +52,15 @@ public class SignXmlXadesT extends Cookbook {
 		// symmetric key -
 		// Return AbstractSignatureTokenConnection signingToken
 		// and it's first private key entry from the PKCS12 store
-		// Return DSSPrivateKeyEntry privateKey *****
+		// Return DSSPrivateKeyEntry privateKey
 		preparePKCS12TokenAndKey();
+
+		// tag::demo[]
 
 		// Preparing parameters for the XAdES signature
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, -LTA).
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		// We set the digest algorithm to use with the signature algorithm. You must use the
@@ -75,18 +74,9 @@ public class SignXmlXadesT extends Cookbook {
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
-
-		//Set the TimeStamp
-		MockTSPSource mockTSPSource;
-
-		try {
-			mockTSPSource = new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256),new Date());
-			service.setTspSource(mockTSPSource);
-		} catch (Exception e) {
-			new DSSException("Error during MockTspSource",e);
-		}
 
 		// Get the SignedInfo XML segment that need to be signed.
 		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
@@ -99,6 +89,15 @@ public class SignXmlXadesT extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesT.xml");
+		// end::demo[]
+
+		try {
+			signedDocument.save("src/test/resources/signedXmlXadesB.xml");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		testFinalDocument(signedDocument);
 	}
+
 }

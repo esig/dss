@@ -120,8 +120,8 @@
 			    </executions>
 			    <configuration>
 			        <sourceDirectory>src/main/asciidoc</sourceDirectory>
+			        <imagesDir>images</imagesDir>
 			        <headerFooter>true</headerFooter>
-			        <imagesDir>../resources/images</imagesDir>
 			    </configuration>
 				
 				

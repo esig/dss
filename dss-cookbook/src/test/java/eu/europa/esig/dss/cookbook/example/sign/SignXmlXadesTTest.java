@@ -20,18 +20,19 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -39,9 +40,10 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 /**
  * How to sign with XAdES-BASELINE-T
  */
-public class SignXmlXadesTWithOnlineSource extends Cookbook {
+public class SignXmlXadesTTest extends CookbookTools {
 
-	public static void main(String[] args) throws DSSException, IOException {
+	@Test
+	public void signXAdESBaselineT() {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -54,6 +56,8 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
 		preparePKCS12TokenAndKey();
+
+		// tag::demo[]
 
 		// Preparing parameters for the XAdES signature
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -75,10 +79,15 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
 
-		//Set the Timestamp source
-		String tspServer = "http://services.globaltrustfinder.com/adss/tsa";
-		OnlineTSPSource onlineTSPSource = new OnlineTSPSource(tspServer);
-		service.setTspSource(onlineTSPSource);
+		// Set the TimeStamp
+		MockTSPSource mockTSPSource;
+
+		try {
+			mockTSPSource = new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
+			service.setTspSource(mockTSPSource);
+		} catch (Exception e) {
+			new DSSException("Error during MockTspSource", e);
+		}
 
 		// Get the SignedInfo XML segment that need to be signed.
 		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
@@ -91,7 +100,8 @@ public class SignXmlXadesTWithOnlineSource extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesTOnline.xml");
+		// end::demo[]
+
+		testFinalDocument(signedDocument);
 	}
 }
