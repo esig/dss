@@ -3,7 +3,7 @@ package eu.europa.esig.dss.cookbook.example;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URL;
+import java.io.File;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -44,41 +44,24 @@ public class CookbookTools {
 	static protected DSSPrivateKeyEntry privateKey;
 
 	/**
-	 * This method converts the resource path to the absolute path.
-	 *
-	 * @param resourcePath
-	 *            resource path
-	 * @return
-	 */
-	public static String getPathFromResource(final String resourcePath) {
-
-		URL uri = Cookbook.class.getResource(resourcePath);
-		String absolutePath = uri.getPath();
-		return absolutePath;
-	}
-
-	/**
 	 * This method sets the common parameters.
 	 */
 	protected static void prepareXmlDoc() {
-		String toSignFilePath = getPathFromResource("/xml_example.xml");
-		toSignDocument = new FileDocument(toSignFilePath);
+		toSignDocument = new FileDocument(new File("src/main/resources/xml_example.xml"));
 	}
 
 	/**
 	 * This method sets the common parameters.
 	 */
 	protected static void preparePdfDoc() {
-		String toSignFilePath = getPathFromResource("/hello-world.pdf");
-		toSignDocument = new FileDocument(toSignFilePath);
+		toSignDocument = new FileDocument(new File("src/main/resources/hello-world.pdf"));
 	}
 
 	/**
 	 * This method sets the common parameters.
 	 */
 	protected static void preparePKCS12TokenAndKey() {
-		String pkcs12TokenFile = getPathFromResource("/user_a_rsa.p12");
-		signingToken = new Pkcs12SignatureToken("password", pkcs12TokenFile);
+		signingToken = new Pkcs12SignatureToken("password", "src/main/resources/user_a_rsa.p12");
 		privateKey = signingToken.getKeys().get(0);
 	}
 
@@ -94,7 +77,7 @@ public class CookbookTools {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
-		
+
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
