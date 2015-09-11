@@ -60,7 +60,7 @@ public class ExtensionController {
 		DSSDocument extendedDocument = signingService.extend(extensionForm);
 
 		response.setContentType(extendedDocument.getMimeType().getMimeTypeString());
-		response.setHeader("Content-Disposition", "attachment; filename=" + extendedDocument.getName());
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + extendedDocument.getName() + "\"");
 		try {
 			IOUtils.copy(new ByteArrayInputStream(extendedDocument.getBytes()), response.getOutputStream());
 		} catch (Exception e) {

@@ -183,7 +183,7 @@ public class SignatureLightAppletController {
 				response.setContentType(mimeType.getMimeTypeString());
 			}
 			response.setHeader("Content-Transfer-Encoding", "binary");
-			response.setHeader("Content-Disposition", "attachment; filename=" + signedDocument.getName());
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + signedDocument.getName() + "\"");
 			IOUtils.copy(new ByteArrayInputStream(signedDocument.getBytes()), response.getOutputStream());
 
 		} catch (Exception e) {
