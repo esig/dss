@@ -22,6 +22,8 @@ package eu.europa.esig.dss.cookbook.example.validate;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -54,7 +56,7 @@ public class ValidateSignedXmlXadesBTest extends CookbookTools {
 		final CertificateToken trustedCertificate = certificateChain[0];
 
 		// Already signed document - Created with the SignXmlXadesB Class
-		DSSDocument document = new FileDocument("src/test/resources/signedXmlXadesB.xml");
+		DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesB.xml"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();

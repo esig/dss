@@ -32,7 +32,7 @@ import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.tsl.service.TSLRepository;
@@ -48,7 +48,7 @@ import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 /**
  * How to validate a XAdES-BASELINE-LT enveloped signature with online sources.
  */
-public class ValidateXmlXadesLTWithOnlineSourcesTest extends Cookbook {
+public class ValidateXmlXadesLTWithOnlineSourcesTest extends CookbookTools {
 
 	@Test
 	public void validateXAdESBaselineLTWithOnlineSources() {
@@ -62,7 +62,7 @@ public class ValidateXmlXadesLTWithOnlineSourcesTest extends Cookbook {
 		final CertificateToken trustedCertificate = certificateChain[0];
 
 		// Already signed document
-		DSSDocument document = new FileDocument("src/test/resources/signedXmlXadesLT.xml");
+		DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesLT.xml"));
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
