@@ -151,35 +151,35 @@ DSS framework is a multi-modules project which can be builded with Maven.
 dss-model:: Data model used in almost every modules.
 dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
 dss-document:: Common module to sign and validate document. This module doen't contain any implementation.
-dss-asic:: Implementation of the ASiC-S and ASiC-E signature, extension and validation
-dss-cades:: Implementation of the CAdES signature, extension and validation
-dss-pades:: Implementation of the PAdES signature, extension and validation
-dss-xades:: Implementation of the XAdES signature, extension and validation
-dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
+dss-asic:: Implementation of the ASiC-S and ASiC-E signature, extension and validation.
+dss-cades:: Implementation of the CAdES signature, extension and validation.
+dss-pades:: Implementation of the PAdES signature, extension and validation.
+dss-xades:: Implementation of the XAdES signature, extension and validation.
 dss-spi:: Interfaces, util classes to manipulate ASN1, compute digests,... 
-dss-webservices::
-dss-webservices-client:: 
-dss-demo-applet::
-dss-demo-applet-package::
+dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
+dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
+dss-demo-applet:: Applet which allows to sign a document with different formats and tokens. This applet uses SOAP webservices.
+dss-demo-applet-package:: Packaging module for dss-demo-applet.
 dss-light-applet:: Ligth applet which allows to interact with SSCD (load certificates and sign digest).
 dss-light-applet-package:: Packaging module for dss-light-applet.
 dss-standalone-app:: Standalone application which allows to sign a document with different formats and tokens (JavaFX).
-dss-standalone-app-package::
-dss-demo-webapp::
-dss-demo-bundle::
-dss-policy-jaxb::
-dss-tsl-jaxb::
-dss-diagnostic-jaxb::
-validation-policy::
+dss-standalone-app-package:: Packaging module for dss-standalone-app.
+dss-demo-webapp:: Demonstration web application which presents a part of the DSS possibilities.
+dss-demo-bundle:: Packaging module for dss-demo-webapp.
+validation-policy:: Business of the signature's validation.
 dss-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
 dss-rest-client:: Client for the REST webservices.
 dss-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
 dss-soap-client:: Client for the SOAP webservices.
 dss-remote-services:: Common code between dss-rest and dss-soap.
-dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
+dss-webservices:: Old SOAP webservices which allows to sign / extend / validate a signature.
+dss-webservices-client:: Client for dss-webservices.
 sscd-mocca-adapter:: Implementation for MOCCA token.
+dss-policy-jaxb:: JAXB model of the validation policy.
+dss-tsl-jaxb:: JAXB model of the TSL.
+dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
 dss-test:: Mocks and util classes for unit tests.
-dss-cookbook:: Samples and documentation of DSS.
+dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
 
 == Signature's profile simplification
 
