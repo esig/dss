@@ -90,6 +90,8 @@ public class XAdESLevelBWithPolicyTest extends AbstractTestSignature {
 		String xmlContent = new String(byteArray);
 		logger.info(xmlContent);
 		assertTrue(xmlContent.contains("description"));
+		assertTrue(xmlContent.contains(":SigPolicyQualifiers>"));
+		assertTrue(xmlContent.contains(":SigPolicyQualifier>"));
 		assertTrue(xmlContent.contains(HTTP_SPURI_TEST));
 	}
 

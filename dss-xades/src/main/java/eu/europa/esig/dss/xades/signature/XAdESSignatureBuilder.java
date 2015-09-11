@@ -484,7 +484,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				String spuri = signaturePolicy.getSpuri();
 				if (StringUtils.isNotEmpty(spuri)){
 					Element sigPolicyQualifiers = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_QUALIFIERS);
-					Element sigPolicyQualifier = DSSXMLUtils.addElement(documentDom, sigPolicyQualifiers, XAdES, XADES_SIGNATURE_POLICY_QUALIFIERS);
+					Element sigPolicyQualifier = DSSXMLUtils.addElement(documentDom, sigPolicyQualifiers, XAdES, XADES_SIGNATURE_POLICY_QUALIFIER);
 
 					DSSXMLUtils.addTextElement(documentDom, sigPolicyQualifier, XAdES, XADES_SPURI, spuri);
 				}
