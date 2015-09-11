@@ -24,7 +24,6 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
@@ -37,6 +36,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.web.WebAppUtils;
+import eu.europa.esig.dss.web.model.ExtensionForm;
 import eu.europa.esig.dss.web.model.SignatureDocumentForm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -62,12 +62,18 @@ public class SigningService {
 	@SuppressWarnings({
 		"rawtypes", "unchecked"
 	})
-	public DSSDocument extend(SignatureForm signatureForm, SignatureLevel level, DSSDocument signedDocument, DSSDocument originalDocument) {
+	public DSSDocument extend(ExtensionForm extensionForm) {
+
+		SignatureForm signatureForm = extensionForm.getSignatureForm();
+		SignatureForm asicUnderlyingForm = extensionForm.getAsicUnderlyingForm();
+
+		DSSDocument signedDocument = WebAppUtils.toDSSDocument(extensionForm.getSignedFile());
+		DSSDocument originalDocument = WebAppUtils.toDSSDocument(extensionForm.getOriginalFile());
 
 		DocumentSignatureService service = getSignatureService(signatureForm);
 
-		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm, null);
-		parameters.setSignatureLevel(level);
+		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm, asicUnderlyingForm);
+		parameters.setSignatureLevel(extensionForm.getSignatureLevel());
 
 		if (originalDocument != null) {
 			parameters.setDetachedContent(originalDocument);

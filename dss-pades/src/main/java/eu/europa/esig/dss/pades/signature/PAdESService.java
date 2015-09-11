@@ -162,7 +162,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters.getSignatureLevel());
 		if (extension != null) {
 			DSSDocument extended = extension.extendSignatures(original, parameters);
-			extended.setName(DSSUtils.getFinalFileName(original, SigningOperation.SIGN, parameters.getSignatureLevel()));
+			extended.setName(DSSUtils.getFinalFileName(original, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return extended;
 		}
 		return original;

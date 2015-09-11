@@ -191,12 +191,12 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			final DocumentSignatureService specificService = getSpecificService(parameters.aSiC().getUnderlyingForm());
 			specificService.setTspSource(tspSource);
 
-			final AbstractSignatureParameters xadesParameters = getParameters(parameters);
+			final AbstractSignatureParameters underlyingParameters = getParameters(parameters);
 			final DSSDocument detachedContent = parameters.getDetachedContent();
 			final DSSDocument detachedContents = getDetachedContents(subordinatedValidator, detachedContent);
-			xadesParameters.setDetachedContent(detachedContents);
+			underlyingParameters.setDetachedContent(detachedContents);
 			final DSSDocument signature = subordinatedValidator.getDocument();
-			final DSSDocument signedDocument = specificService.extendDocument(signature, xadesParameters);
+			final DSSDocument signedDocument = specificService.extendDocument(signature, underlyingParameters);
 
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			final ZipOutputStream zipOutputStream = new ZipOutputStream(output);
@@ -224,7 +224,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			IOUtils.closeQuietly(zipInputStream);
 			IOUtils.closeQuietly(zipOutputStream);
 			DSSDocument asicSignature = new InMemoryDocument(output.toByteArray(), null, getMimeType(parameters.aSiC().getContainerForm()));
-			asicSignature.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+			asicSignature.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return asicSignature;
 		} catch(IOException e) {
 			throw new DSSException(e);

@@ -18,3 +18,20 @@
         <form:errors path="signatureForm" cssClass="text-danger" />
     </div>
 </div>
+
+<div class="form-group" id="underlying-form-block">
+    <form:label path="asicUnderlyingForm" cssClass="col-sm-2 control-label">
+        <spring:message code="label.signature.underlying.form" />
+    </form:label>
+    <div class="col-sm-6">
+        <label class="radio-inline">
+            <form:radiobutton path="asicUnderlyingForm" value="XAdES" /> <spring:message code="label.XAdES" />
+        </label>
+        <label class="radio-inline">
+            <form:radiobutton path="asicUnderlyingForm" value="CAdES" /> <spring:message code="label.CAdES" />
+        </label>
+    </div>
+    <div class="col-xs-4">
+        <form:errors path="asicUnderlyingForm" cssClass="text-danger" />
+    </div>
+</div>

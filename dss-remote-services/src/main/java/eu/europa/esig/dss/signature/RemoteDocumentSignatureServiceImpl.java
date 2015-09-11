@@ -154,7 +154,9 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 				break;
 			case ASiC_E:
 			case ASiC_S:
-				parameters = new ASiCSignatureParameters();
+				ASiCSignatureParameters aSiCParameters = new ASiCSignatureParameters();
+				aSiCParameters.aSiC().setUnderlyingForm(remoteParameters.getUnderlyingASiCForm());
+				parameters = aSiCParameters;
 				break;
 			default:
 				throw new DSSException("Unsupported signature form : " + signatureForm);

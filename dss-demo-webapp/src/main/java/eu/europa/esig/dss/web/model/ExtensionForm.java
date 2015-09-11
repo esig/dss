@@ -17,6 +17,8 @@ public class ExtensionForm {
 	@NotNull(message = "{error.signature.form.mandatory}")
 	private SignatureForm signatureForm;
 
+	private SignatureForm asicUnderlyingForm;
+
 	@NotNull(message = "{error.signature.level.mandatory}")
 	private SignatureLevel signatureLevel;
 
@@ -44,6 +46,15 @@ public class ExtensionForm {
 		this.signatureForm = signatureForm;
 	}
 
+	public SignatureForm getAsicUnderlyingForm() {
+		return asicUnderlyingForm;
+	}
+
+	public void setAsicUnderlyingForm(SignatureForm asicUnderlyingForm) {
+		this.asicUnderlyingForm = asicUnderlyingForm;
+	}
+
+
 	public SignatureLevel getSignatureLevel() {
 		return signatureLevel;
 	}
@@ -57,4 +68,12 @@ public class ExtensionForm {
 		return (signedFile != null) && (!signedFile.isEmpty());
 	}
 
+	@AssertTrue(message = "{error.signature.underlying.form.mandatory}")
+	public boolean isAsicUnderlyingFormValid(){
+		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)){
+			return SignatureForm.CAdES.equals(asicUnderlyingForm) || SignatureForm.XAdES.equals(asicUnderlyingForm);
+		} else{
+			return true;
+		}
+	}
 }

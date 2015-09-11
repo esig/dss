@@ -23,7 +23,6 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.ExtensionForm;
 import eu.europa.esig.dss.web.service.SigningService;
@@ -58,8 +57,7 @@ public class ExtensionController {
 			return EXTENSION_TILE;
 		}
 
-		DSSDocument toExtendDocument = WebAppUtils.toDSSDocument(extensionForm.getSignedFile());
-		DSSDocument extendedDocument = signingService.extend(extensionForm.getSignatureForm(), extensionForm.getSignatureLevel(), toExtendDocument, WebAppUtils.toDSSDocument(extensionForm.getOriginalFile()));
+		DSSDocument extendedDocument = signingService.extend(extensionForm);
 
 		response.setContentType(extendedDocument.getMimeType().getMimeTypeString());
 		response.setHeader("Content-Disposition", "attachment; filename=" + extendedDocument.getName());

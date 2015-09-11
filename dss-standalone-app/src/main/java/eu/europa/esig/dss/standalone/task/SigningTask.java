@@ -17,6 +17,7 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.RemoteDocumentSignatureService;
@@ -72,6 +73,10 @@ public class SigningTask extends Task<DSSDocument> {
 		bLevelParams.setSigningDate(new Date());
 		parameters.setBLevelParams(bLevelParams);
 
+		if (SignatureForm.ASiC_S.equals(model.getSignatureForm()) || SignatureForm.ASiC_S.equals(model.getSignatureForm())) {
+			parameters.setUnderlyingASiCForm(model.getAsicUnderlyingForm());
+		}
+
 		parameters.setSigningCertificate(new RemoteCertificate(signer.getCertificate().getEncoded()));
 		parameters.setEncryptionAlgorithm(signer.getEncryptionAlgorithm());
 		CertificateToken[] certificateChain = signer.getCertificateChain();
@@ -82,6 +87,7 @@ public class SigningTask extends Task<DSSDocument> {
 			}
 			parameters.setCertificateChain(certificateChainList);
 		}
+
 		return parameters;
 	}
 

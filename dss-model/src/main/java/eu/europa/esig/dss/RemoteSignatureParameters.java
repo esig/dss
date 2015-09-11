@@ -34,6 +34,11 @@ public class RemoteSignatureParameters extends AbstractSerializableSignaturePara
 	 */
 	private RemoteDocument detachedContent;
 
+	/**
+	 *	ASiC Underlying
+	 */
+	private SignatureForm underlyingASiCForm;
+
 	public RemoteSignatureParameters() {
 	}
 
@@ -59,6 +64,14 @@ public class RemoteSignatureParameters extends AbstractSerializableSignaturePara
 
 	public void setDetachedContent(RemoteDocument detachedContent) {
 		this.detachedContent = detachedContent;
+	}
+
+	public SignatureForm getUnderlyingASiCForm() {
+		return underlyingASiCForm;
+	}
+
+	public void setUnderlyingASiCForm(SignatureForm underlyingASiCForm) {
+		this.underlyingASiCForm = underlyingASiCForm;
 	}
 
 }
