@@ -30,10 +30,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	private String xPathLocationString;
 
-	private String toCounterSignSignatureId;
-
-	private String toCounterSignSignatureValueId;
-
 	/**
 	 *	This attribute is used to inject ASiC root (inclusive canonicalization)
 	 */
@@ -110,32 +106,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	public void setXPathLocationString(String xPathLocationString) {
 		this.xPathLocationString = xPathLocationString;
-	}
-
-	/**
-	 * This method returns the Id of the signature to be countersigned.
-	 *
-	 * @return
-	 */
-	public String getToCounterSignSignatureId() {
-		return toCounterSignSignatureId;
-	}
-
-	/**
-	 * This method sets the Id of the signature to be countersigned.
-	 *
-	 * @param toCounterSignSignatureId
-	 */
-	public void setToCounterSignSignatureId(String toCounterSignSignatureId) {
-		this.toCounterSignSignatureId = toCounterSignSignatureId;
-	}
-
-	public String getToCounterSignSignatureValueId() {
-		return toCounterSignSignatureValueId;
-	}
-
-	public void setToCounterSignSignatureValueId(String toCounterSignSignatureValueId) {
-		this.toCounterSignSignatureValueId = toCounterSignSignatureValueId;
 	}
 
 	public Document getRootDocument() {
