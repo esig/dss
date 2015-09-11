@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -57,8 +58,11 @@ public class SignPdfASiCSBTest extends CookbookTools {
 
 		// Preparing parameters for the AsicS signature
 		ASiCSignatureParameters parameters = new ASiCSignatureParameters();
-		// We choose the level of the signature (-B, -T, -LT).
+		// We choose the level of the signature (-B, -T, -LT, LTA).
 		parameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
+		// We choose the underlying format (XAdES or CAdES. XAdES is the default value)
+		parameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
+
 		// We set the digest algorithm to use with the signature algorithm. You must use the
 		// same parameter when you invoke the method sign on the token. The default value is
 		// SHA256

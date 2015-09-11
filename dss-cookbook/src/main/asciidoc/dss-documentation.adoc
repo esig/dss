@@ -128,7 +128,7 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R03]]	R03	|PAdES Specifications													|ETSI TS 102 778 part 1-6	|1.x.x
 |[[R04]]	R04	|ASiC Specifications													|ETSI TS 102 918			|1.1.1
 |[[R05]]	R05	|Document management - Portable document format - Part 1: PDF 1.7		|ISO 32000-1				|1
-|[[R06]]	R06 |XAdES Baseline profiles  												|ETSI TS 103 171			|2.1.1
+|[[R06]]	R06	|XAdES Baseline profiles  												|ETSI TS 103 171			|2.1.1
 |[[R07]]	R07	|CAdES Baseline profiles												|ETSI TS 103 173			|2.2.1
 |[[R08]]	R08	|PAdES Baseline profiles												|ETSI TS 103 172			|2.1.1
 |[[R09]]	R09	|ASiC Baseline profiles													|ETSI TS 103 174			|2.1.1
@@ -145,6 +145,41 @@ Please note that the DSS framework is still under maintenance and new features w
  * https://esig-dss.atlassian.net/projects/DSS[Report a bug] 
 
 == General framework structure
+
+DSS framework is a multi-modules project which can be builded with Maven.
+
+dss-model:: Data model used in almost every modules.
+dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
+dss-document:: Common module to sign and validate document. This module doen't contain any implementation.
+dss-asic:: Implementation of the ASiC-S and ASiC-E signature, extension and validation
+dss-cades:: Implementation of the CAdES signature, extension and validation
+dss-pades:: Implementation of the PAdES signature, extension and validation
+dss-xades:: Implementation of the XAdES signature, extension and validation
+dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
+dss-spi:: Interfaces, util classes to manipulate ASN1, compute digests,... 
+dss-webservices::
+dss-webservices-client:: 
+dss-demo-applet::
+dss-demo-applet-package::
+dss-light-applet:: Ligth applet which allows to interact with SSCD (load certificates and sign digest).
+dss-light-applet-package:: Packaging module for dss-light-applet.
+dss-standalone-app:: Standalone application which allows to sign a document with different formats and tokens (JavaFX).
+dss-standalone-app-package::
+dss-demo-webapp::
+dss-demo-bundle::
+dss-policy-jaxb::
+dss-tsl-jaxb::
+dss-diagnostic-jaxb::
+validation-policy::
+dss-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-rest-client:: Client for the REST webservices.
+dss-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-soap-client:: Client for the SOAP webservices.
+dss-remote-services:: Common code between dss-rest and dss-soap.
+dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
+sscd-mocca-adapter:: Implementation for MOCCA token.
+dss-test:: Mocks and util classes for unit tests.
+dss-cookbook:: Samples and documentation of DSS.
 
 == Signature's profile simplification
 
