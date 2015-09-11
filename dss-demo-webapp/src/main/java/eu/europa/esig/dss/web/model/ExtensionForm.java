@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 
 public class ExtensionForm {
 
@@ -17,9 +16,6 @@ public class ExtensionForm {
 
 	@NotNull(message = "{error.signature.form.mandatory}")
 	private SignatureForm signatureForm;
-
-	@NotNull(message = "{error.signature.packaging.mandatory}")
-	private SignaturePackaging signaturePackaging;
 
 	@NotNull(message = "{error.signature.level.mandatory}")
 	private SignatureLevel signatureLevel;
@@ -46,14 +42,6 @@ public class ExtensionForm {
 
 	public void setSignatureForm(SignatureForm signatureForm) {
 		this.signatureForm = signatureForm;
-	}
-
-	public SignaturePackaging getSignaturePackaging() {
-		return signaturePackaging;
-	}
-
-	public void setSignaturePackaging(SignaturePackaging signaturePackaging) {
-		this.signaturePackaging = signaturePackaging;
 	}
 
 	public SignatureLevel getSignatureLevel() {

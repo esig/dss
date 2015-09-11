@@ -14,8 +14,6 @@
     
     <jsp:include page="fields/signatureForm.jsp" />
     
-    <jsp:include page="fields/signaturePackaging.jsp" />
-    
     <jsp:include page="fields/signatureLevel.jsp" />
     
     <div class="form-group">

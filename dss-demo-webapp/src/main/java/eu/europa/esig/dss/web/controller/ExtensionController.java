@@ -59,7 +59,7 @@ public class ExtensionController {
 		}
 
 		DSSDocument toExtendDocument = WebAppUtils.toDSSDocument(extensionForm.getSignedFile());
-		DSSDocument extendedDocument = signingService.extend(extensionForm.getSignatureForm(), extensionForm.getSignaturePackaging(), extensionForm.getSignatureLevel(), toExtendDocument, WebAppUtils.toDSSDocument(extensionForm.getOriginalFile()));
+		DSSDocument extendedDocument = signingService.extend(extensionForm.getSignatureForm(), extensionForm.getSignatureLevel(), toExtendDocument, WebAppUtils.toDSSDocument(extensionForm.getOriginalFile()));
 
 		response.setContentType(extendedDocument.getMimeType().getMimeTypeString());
 		response.setHeader("Content-Disposition", "attachment; filename=" + extendedDocument.getName());
