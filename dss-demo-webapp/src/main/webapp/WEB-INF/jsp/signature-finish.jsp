@@ -7,5 +7,5 @@
 
 
 <script type="text/javascript">
-	window.location="signature/download";
+	window.location="signature-light-applet/download";
 </script>
