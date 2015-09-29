@@ -38,6 +38,7 @@ public final class XAdESNamespaces {
 	public static String XAdES = XAdES132;
 
 	protected static String XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";
+	protected static String XADES_SIGNING_CERTIFICATE_V2 = "xades:SigningCertificateV2";
 
 	private XAdESNamespaces() {
 	}
@@ -71,5 +72,9 @@ public final class XAdESNamespaces {
 
 	public static String getXADES_SIGNING_CERTIFICATE() {
 		return XADES_SIGNING_CERTIFICATE;
+	}
+	
+	public static String getXADES_SIGNING_CERTIFICATE_V2() {
+		return XADES_SIGNING_CERTIFICATE_V2;
 	}
 }

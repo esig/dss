@@ -33,6 +33,7 @@ public class SignerLocation implements Serializable {
 	private String locality;
 	private String stateOrProvince;
 	private String country;
+	private String street;
 
 	public SignerLocation() {
 	}
@@ -77,6 +78,14 @@ public class SignerLocation implements Serializable {
 		this.stateOrProvince = stateOrProvince;
 	}
 
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
 	/**
 	 * Adds an address item to the complete address.
 	 *
@@ -98,6 +107,7 @@ public class SignerLocation implements Serializable {
 		result = (prime * result) + ((postalAddress == null) ? 0 : postalAddress.hashCode());
 		result = (prime * result) + ((postalCode == null) ? 0 : postalCode.hashCode());
 		result = (prime * result) + ((stateOrProvince == null) ? 0 : stateOrProvince.hashCode());
+		result = (prime * result) + ((street == null) ? 0 : street.hashCode());
 		return result;
 	}
 
@@ -148,13 +158,20 @@ public class SignerLocation implements Serializable {
 		} else if (!stateOrProvince.equals(other.stateOrProvince)) {
 			return false;
 		}
+		if (street == null) {
+			if (other.street != null) {
+				return false;
+			}
+		} else if (!street.equals(other.street)) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "SignerLocation [postalAddress=" + postalAddress + ", postalCode=" + postalCode + ", locality=" + locality + ", stateOrProvince="
-				+ stateOrProvince + ", country=" + country + "]";
+				+ stateOrProvince + ", country=" + country + ", street=" + street + "]";
 	}
 
 }
