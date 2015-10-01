@@ -245,7 +245,7 @@ public abstract class XAdESBuilder {
 				try {
 					final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL_V2);
 					
-					String name = certificate.getCertificate().getSubjectX500Principal().getName();
+					String name = certificate.getCertificate().getIssuerX500Principal().getName();
 					IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(new X500Name(name), certificate.getCertificate().getSerialNumber());
 					byte[] issuer = Base64.encodeBase64(issuerAndSerial.getEncoded());
 					DSSXMLUtils.setTextNode(documentDom, issuerSerialDom, new String(issuer));

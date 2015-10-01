@@ -712,7 +712,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}
-		signatureProductionPlace.setAddress(address.toString());
+		signatureProductionPlace.setStreetAddress(address.toString());
 		// This property is not used in CAdES version of signature
 		// signatureProductionPlace.setStateOrProvince(stateOrProvince);
 		return signatureProductionPlace;
