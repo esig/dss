@@ -408,13 +408,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 * The ../SignedProperties/SignedSignatureProperties/SigningCertificate element MAY contain references and digests values of other
 		 * certificates (that MAY form a chain up to the point of trust).
 		 */
-
-		final NodeList list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT);
-		final int length = list.getLength();
+		boolean isEn319132 = false;
+		NodeList list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT);
+		int length = list.getLength();
+		if(length == 0) {
+			list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT_V2);
+			length = list.getLength();
+			isEn319132 = true;
+		}
 		if (length == 0) {
-			checkSigningCertificateV2();
-			return;
-			/*
 			final CertificateValidity theCertificateValidity = candidates.getTheCertificateValidity();
 			final CertificateToken certificateToken = theCertificateValidity == null ? null : theCertificateValidity.getCertificateToken();
 			// The check need to be done at the level of KeyInfo
@@ -438,7 +440,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					theCertificateValidity.setSigned(element.getNodeName());
 					return;
 				}
-			}*/
+			}
 		}
 		// This Map contains the list of the references to the certificate which
 		// were already checked and which correspond to a certificate.
@@ -485,15 +487,33 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
 				final byte[] recalculatedBase64DigestValue = Base64.encodeBase64(digest);
 				certificateValidity.setDigestEqual(false);
+				BigInteger serialNumber = new BigInteger("0");
 				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
-					final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
-					// This can be allayed when the distinguished name is not
-					// correctly encoded
-					// final String textContent =
-					// DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());
-					final String textContent = issuerNameEl.getTextContent();
-					
-					final X500Principal issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
+					X500Principal issuerName; 
+					if(isEn319132) {
+						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
+						final String textContent = issuerNameEl.getTextContent();
+						ASN1InputStream is = new ASN1InputStream(Base64.decodeBase64(textContent));
+						ASN1Sequence seq = null;
+						try {
+							seq = (ASN1Sequence) is.readObject();
+							is.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(seq); 
+						issuerName = new X500Principal(issuerAndSerial.getName().toString());
+						serialNumber = issuerAndSerial.getSerialNumber().getValue();
+					} else {
+						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
+						// This can be allayed when the distinguished name is not
+						// correctly encoded
+						// final String textContent =
+						// DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());
+						final String textContent = issuerNameEl.getTextContent();
+						
+						issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
+					}
 					final X500Principal candidateIssuerName = certificateToken.getIssuerX500Principal();
 
 					// final boolean issuerNameMatches =
@@ -507,10 +527,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						LOG.info("issuerName         : " + c14nIssuerName);
 					}
 					
-					final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
-					final String serialNumberText = serialNumberEl.getTextContent();
-					// serial number can contain leading and trailing whitespace.
-					final BigInteger serialNumber = new BigInteger(serialNumberText.trim());
+					if(!isEn319132) {
+						final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
+						final String serialNumberText = serialNumberEl.getTextContent();
+						// serial number can contain leading and trailing whitespace.
+						serialNumber = new BigInteger(serialNumberText.trim());
+					}
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
 					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
 
@@ -533,151 +555,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 	
-	/**
-	 * @author axel.abinet
-	 * Check the SigningCertifiacte tag for the version ETSI EN 319 132-1 V1.0.0
-	 */
-	private void checkSigningCertificateV2() {
-		final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
-		/**
-		 * The ../SignedProperties/SignedSignatureProperties/SigningCertificate element MAY contain references and digests values of other
-		 * certificates (that MAY form a chain up to the point of trust).
-		 */
-
-		final NodeList list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT_V2);
-		final int length = list.getLength();
-		if (length == 0) {
-
-			final CertificateValidity theCertificateValidity = candidates.getTheCertificateValidity();
-			final CertificateToken certificateToken = theCertificateValidity == null ? null : theCertificateValidity.getCertificateToken();
-			// The check need to be done at the level of KeyInfo
-			for (final Reference reference : references) {
-
-				final String uri = reference.getURI();
-				if (!uri.startsWith("#")) {
-					continue;
-				}
-
-				final String id = uri.substring(1);
-				final Element element = signatureElement.getOwnerDocument().getElementById(id);
-				// final Element element =
-				// DSSXMLUtils.getElement(signatureElement, "");
-				if (!hasSignatureAsParent(element)) {
-
-					continue;
-				}
-				if ((certificateToken != null) && id.equals(certificateToken.getXmlId())) {
-
-					theCertificateValidity.setSigned(element.getNodeName());
-					return;
-				}
-			}
-		}
-		// This Map contains the list of the references to the certificate which
-		// were already checked and which correspond to a certificate.
-		Map<Element, Boolean> alreadyProcessedElements = new HashMap<Element, Boolean>();
-
-		final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
-		for (final CertificateValidity certificateValidity : certificateValidityList) {
-
-			final CertificateToken certificateToken = certificateValidity.getCertificateToken();
-			for (int ii = 0; ii < length; ii++) {
-
-				certificateValidity.setAttributePresent(true);
-				final Element element = (Element) list.item(ii);
-				if (alreadyProcessedElements.containsKey(element)) {
-					continue;
-				}
-				final Element certDigestElement = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
-				certificateValidity.setDigestPresent(certDigestElement != null);
-
-				final Element digestMethodElement = DSSXMLUtils.getElement(certDigestElement, xPathQueryHolder.XPATH__DIGEST_METHOD);
-				if (digestMethodElement == null) {
-					continue;
-				}
-				final String xmlAlgorithmName = digestMethodElement.getAttribute(XMLE_ALGORITHM);
-				// The default algorithm is used in case of bad encoded
-				// algorithm name
-				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName, DigestAlgorithm.SHA1);
-
-				final Element digestValueElement = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
-				if (digestValueElement == null) {
-					continue;
-				}
-				// That must be a binary comparison
-				final byte[] storedBase64DigestValue = DSSUtils.base64StringToBase64Binary(digestValueElement.getTextContent());
-
-				/**
-				 * Step 1:<br>
-				 * Take the first child of the property and check that the content of ds:DigestValue matches the result of digesting <i>the candidate
-				 * for</i> the signing certificate with the algorithm indicated in ds:DigestMethod. If they do not match, take the next child and
-				 * repeat this step until a matching child element has been found or all children of the element have been checked. If they do match,
-				 * continue with step 2. If the last element is reached without finding any match, the validation of this property shall be taken as
-				 * failed and INVALID/FORMAT_FAILURE is returned.
-				 */
-				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
-				final byte[] recalculatedBase64DigestValue = Base64.encodeBase64(digest);
-				certificateValidity.setDigestEqual(false);
-				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
-					/*
-					final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
-					// This can be allayed when the distinguished name is not
-					// correctly encoded
-					// final String textContent =
-					// DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());*/
-					final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
-					final String textContent = issuerNameEl.getTextContent();
-					ASN1InputStream is = new ASN1InputStream(Base64.decodeBase64(textContent));
-					ASN1Sequence seq = null;
-					try {
-						seq = (ASN1Sequence) is.readObject();
-						is.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(seq); 
-					X500Principal issuerName = new X500Principal(issuerAndSerial.getName().toString());
-					//final X500Principal issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
-					final X500Principal candidateIssuerName = certificateToken.getIssuerX500Principal();
-
-					// final boolean issuerNameMatches =
-					// candidateIssuerName.equals(issuerName);
-					final boolean issuerNameMatches = DSSUtils.x500PrincipalAreEquals(candidateIssuerName, issuerName);
-					if (!issuerNameMatches) {
-
-						final String c14nCandidateIssuerName = candidateIssuerName.getName(X500Principal.CANONICAL);
-						LOG.info("candidateIssuerName: " + c14nCandidateIssuerName);
-						final String c14nIssuerName = issuerName == null ? "" : issuerName.getName(X500Principal.CANONICAL);
-						LOG.info("issuerName         : " + c14nIssuerName);
-					}
-					
-					/*
-					final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
-					final String serialNumberText = serialNumberEl.getTextContent();
-					// serial number can contain leading and trailing whitespace.
-					final BigInteger serialNumber = new BigInteger(serialNumberText.trim());*/
-					final BigInteger serialNumber = issuerAndSerial.getSerialNumber().getValue();
-					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
-					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
-
-					certificateValidity.setDigestEqual(true);
-					certificateValidity.setSerialNumberEqual(serialNumberMatches);
-					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
-					// The certificate was identified
-					alreadyProcessedElements.put(element, true);
-					// If the signing certificate is not set yet then it must be
-					// done now. Actually if the signature is tempered then the
-					// method checkSignatureIntegrity cannot set the signing
-					// certificate.
-					if (candidates.getTheCertificateValidity() == null) {
-
-						candidates.setTheCertificateValidity(certificateValidity);
-					}
-					break;
-				}
-			}
-		}
-	}
 
 	/**
 	 * Checks if the given {@code Element} has as parent the current signature. This is the security check.
@@ -1012,7 +889,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		boolean notEmptyCRL = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUE);
 		boolean notEmptyOCSP = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_OCSP_VALUE);
 
-		return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
+		boolean isLTProfile = revocationValues && (notEmptyCRL || notEmptyOCSP);
+		if(!isLTProfile && certValues) {
+			isLTProfile = hasTProfile();
+		}
+		
+		return isLTProfile;
+		//return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
 	}
 
 	/**
