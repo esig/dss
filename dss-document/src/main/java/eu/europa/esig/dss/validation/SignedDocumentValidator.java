@@ -113,10 +113,8 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.ocsp.ListOCSPSource;
 
-
 /**
  * Validate the signed document. The content of the document is determined automatically. It can be: XML, CAdES(p7m), PDF or ASiC(zip).
- *
  * SignatureScopeFinder can be set using the appropriate setter (ex. setCadesSignatureScopeFinder). By default, this class will use the
  * default SignatureScopeFinder as defined by eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
@@ -216,7 +214,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method guesses the document format and returns an appropriate document validator.
 	 *
-	 * @param dssDocument The instance of {@code DSSDocument} to validate
+	 * @param dssDocument
+	 *            The instance of {@code DSSDocument} to validate
 	 * @return returns the specific instance of SignedDocumentValidator in terms of the document type
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
@@ -297,7 +296,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method allows to provide an external policy document to be used with a given signature id.
 	 *
-	 * @param signatureId    signature id
+	 * @param signatureId
+	 *            signature id
 	 * @param policyDocument
 	 */
 	@Override
@@ -313,7 +313,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This setter allows to indicate the countersignature {@code ValidationPolicy} to be used.
 	 *
-	 * @param countersignatureValidationPolicy {@code ValidationPolicy} to be used
+	 * @param countersignatureValidationPolicy
+	 *            {@code ValidationPolicy} to be used
 	 */
 	public void setCountersignatureValidationPolicy(final ValidationPolicy countersignatureValidationPolicy) {
 		this.countersignatureValidationPolicy = countersignatureValidationPolicy;
@@ -360,7 +361,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Validates the document and all its signatures. The policyDataStream contains the constraint file. If null or empty the default file is used.
 	 *
-	 * @param policyDataStream {@code InputStream}
+	 * @param policyDataStream
+	 *            {@code InputStream}
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
@@ -372,7 +374,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If null or empty the default file is used.
 	 *
-	 * @param validationPolicyDom {@code Document}
+	 * @param validationPolicyDom
+	 *            {@code Document}
 	 * @return
 	 */
 	@Override
@@ -385,7 +388,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If null or empty the default file is used.
 	 *
-	 * @param validationPolicy {@code ValidationPolicy}
+	 * @param validationPolicy
+	 *            {@code ValidationPolicy}
 	 * @return
 	 */
 	@Override
@@ -497,11 +501,21 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		jaxbDiagnosticData = DIAGNOSTIC_DATA_OBJECT_FACTORY.createDiagnosticData();
 
 		String absolutePath = document.getAbsolutePath();
+		String documentName = document.getName();
 		if (StringUtils.isNotEmpty(absolutePath)) {
-			jaxbDiagnosticData.setDocumentName(absolutePath);
+			jaxbDiagnosticData.setDocumentName(removeSpecialCharsForXml(absolutePath));
+		} else if (StringUtils.isNotEmpty(documentName)) {
+			jaxbDiagnosticData.setDocumentName(removeSpecialCharsForXml(documentName));
 		} else {
-			jaxbDiagnosticData.setDocumentName(document.getName());
+			jaxbDiagnosticData.setDocumentName("?");
 		}
+	}
+
+	/**
+	 * Escape special characters which cause problems with jaxb or documentbuilderfactory and namespace aware mode
+	 */
+	private String removeSpecialCharsForXml(String text) {
+		return text.replaceAll("&", "");
 	}
 
 	/**
@@ -524,7 +538,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * For all signatures to be validated this method merges the OCSP sources.
 	 *
-	 * @param allSignatureList {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 * @param allSignatureList
+	 *            {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
 	 * @return {@code ListCRLSource}
 	 */
 	private ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
@@ -540,7 +555,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * For all signatures to be validated this method merges the OCSP sources.
 	 *
-	 * @param allSignatureList {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 * @param allSignatureList
+	 *            {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
 	 * @return {@code ListOCSPSource}
 	 */
 	private ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
@@ -554,8 +570,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * @param allSignatureList  {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
-	 * @param validationContext {@code ValidationContext} is the implementation of the validators for: certificates, timestamps and revocation data.
+	 * @param allSignatureList
+	 *            {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 * @param validationContext
+	 *            {@code ValidationContext} is the implementation of the validators for: certificates, timestamps and revocation data.
 	 */
 	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
 
@@ -572,7 +590,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Main method for validating a signature. The diagnostic data is extracted.
 	 *
-	 * @param signature Signature to be validated (can be XAdES, CAdES, PAdES).
+	 * @param signature
+	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
 	 * @return The JAXB object containing all diagnostic data pertaining to the signature
 	 */
 	private XmlSignature validateSignature(final AdvancedSignature signature) throws DSSException {
@@ -838,8 +857,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method deals with the certificate's details. The retrieved information is transformed to the JAXB object.
 	 *
-	 * @param usedDigestAlgorithms set of different digest algorithms used to compute certificate digest
-	 * @param certToken            current certificate token
+	 * @param usedDigestAlgorithms
+	 *            set of different digest algorithms used to compute certificate digest
+	 * @param certToken
+	 *            current certificate token
 	 * @return
 	 */
 	private XmlCertificate dealCertificateDetails(final Set<DigestAlgorithm> usedDigestAlgorithms, final CertificateToken certToken) {
@@ -868,7 +889,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlCert.getDigestAlgAndValue().add(xmlDigestAlgAndValue);
 		}
 		TokenIdentifier issuerTokenDSSId = certToken.getIssuerTokenDSSId();
-		if(issuerTokenDSSId != null) {
+		if (issuerTokenDSSId != null) {
 			xmlCert.setIssuerCertificate(issuerTokenDSSId.asXmlId());
 		}
 		xmlCert.setNotAfter(DSSXMLUtils.createXMLGregorianCalendar(certToken.getNotAfter()));
@@ -941,8 +962,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method deals with the certificate chain. The retrieved information is transformed to the JAXB object.
 	 *
-	 * @param xmlSignature The JAXB object containing all diagnostic data pertaining to the signature
-	 * @param signingToken {@code CertificateToken} relative to the current signature
+	 * @param xmlSignature
+	 *            The JAXB object containing all diagnostic data pertaining to the signature
+	 * @param signingToken
+	 *            {@code CertificateToken} relative to the current signature
 	 */
 	private void dealCertificateChain(final XmlSignature xmlSignature, final CertificateToken signingToken) {
 
@@ -1098,8 +1121,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method deals with the signature policy. The retrieved information is transformed to the JAXB object.
 	 *
-	 * @param signature    Signature to be validated (can be XAdES, CAdES, PAdES).
-	 * @param xmlSignature The JAXB object containing all diagnostic data pertaining to the signature
+	 * @param signature
+	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
+	 * @param xmlSignature
+	 *            The JAXB object containing all diagnostic data pertaining to the signature
 	 */
 	private void dealPolicy(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
@@ -1221,17 +1246,19 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				boolean equal = policyDigestValueFromSignature.equals(recalculatedDigestHexValue);
 				xmlPolicy.setStatus(equal);
 				if (!equal) {
-					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
+					xmlPolicy.setProcessingError(
+							"The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
 					return;
 				}
 
 				final ASN1OctetString signPolicyHash = (ASN1OctetString) asn1Sequence.getObjectAt(2);
 				final byte[] policyDigestValueFromPolicy = signPolicyHash.getOctets();
 				String policyDigestHexValueFromPolicy = DSSUtils.toHex(policyDigestValueFromPolicy);
-				equal = policyDigestValueFromSignature.equals(policyDigestHexValueFromPolicy );
+				equal = policyDigestValueFromSignature.equals(policyDigestHexValueFromPolicy);
 				xmlPolicy.setStatus(equal);
 				if (!equal) {
-					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature + ") does not match the digest value from the policy file (" + policyDigestHexValueFromPolicy + ").");
+					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature + ") does not match the digest value from the policy file ("
+							+ policyDigestHexValueFromPolicy + ").");
 				}
 			} else {
 
@@ -1246,11 +1273,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				boolean equal = policyDigestValueFromSignature.equals(recalculatedDigestHexValue);
 				xmlPolicy.setStatus(equal);
 				if (!equal) {
-					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
+					xmlPolicy.setProcessingError(
+							"The policy digest value (" + policyDigestValueFromSignature + ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
 					return;
 				}
 			}
-
 
 		} catch (RuntimeException e) {
 			// When any error (communication) we just set the status to false
@@ -1264,8 +1291,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method deals with the basic signature data. The retrieved information is transformed to the JAXB object. The signing certificate token is returned if found.
 	 *
-	 * @param signature    Signature to be validated (can be XAdES, CAdES, PAdES).
-	 * @param xmlSignature The JAXB object containing all diagnostic data pertaining to the signature
+	 * @param signature
+	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
+	 * @param xmlSignature
+	 *            The JAXB object containing all diagnostic data pertaining to the signature
 	 * @return
 	 */
 	private CertificateToken dealSignature(final AdvancedSignature signature, final XmlSignature xmlSignature) {
@@ -1323,7 +1352,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private void performStructuralValidation(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
 		final ValidationPolicy validationPolicy = processExecutor.getValidationPolicy();
-		if (( validationPolicy == null ) || ( validationPolicy.getStructuralValidationConstraint() == null )) {
+		if ((validationPolicy == null) || (validationPolicy.getStructuralValidationConstraint() == null)) {
 			return;
 		}
 		final String structureValid = signature.validateStructure();
@@ -1445,8 +1474,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This method verifies the cryptographic integrity of the signature: the references are identified, their digest is checked and then the signature itself. The result of these
 	 * verifications is transformed to the JAXB representation.
 	 *
-	 * @param signature    Signature to be validated (can be XAdES, CAdES, PAdES).
-	 * @param xmlSignature The JAXB object containing all diagnostic data pertaining to the signature
+	 * @param signature
+	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
+	 * @param xmlSignature
+	 *            The JAXB object containing all diagnostic data pertaining to the signature
 	 */
 	private void performSignatureCryptographicValidation(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
@@ -1467,8 +1498,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This method finds the signing certificate and creates its JAXB object representation. This is the signing certificate used to produce the main signature (signature being
 	 * analysed). If the signingToken is null (the signing certificate was not found) then Id is set to 0.
 	 *
-	 * @param signature    Signature to be validated (can be XAdES, CAdES, PAdES).
-	 * @param xmlSignature The JAXB object containing all diagnostic data pertaining to the signature
+	 * @param signature
+	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
+	 * @param xmlSignature
+	 *            The JAXB object containing all diagnostic data pertaining to the signature
 	 * @return
 	 */
 	private CertificateValidity dealSigningCertificate(final AdvancedSignature signature, final XmlSignature xmlSignature) {
@@ -1498,7 +1531,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method creates the SigningCertificate element for the current token.
 	 *
-	 * @param issuerCertificateToken the issuer certificate of the current token
+	 * @param issuerCertificateToken
+	 *            the issuer certificate of the current token
 	 * @return
 	 */
 	protected XmlSigningCertificateType xmlForSigningCertificate(final CertificateToken issuerCertificateToken) {
@@ -1516,7 +1550,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method allows to define the sequence of the validator related to a document to validate. It's only used with ASiC-E container.
 	 *
-	 * @param validator {@code SignedDocumentValidator} corresponding to the next signature with in the contained.
+	 * @param validator
+	 *            {@code SignedDocumentValidator} corresponding to the next signature with in the contained.
 	 */
 	public void setNextValidator(final DocumentValidator validator) {
 		throw new DSSUnsupportedOperationException("This method is not applicable in this context!");
