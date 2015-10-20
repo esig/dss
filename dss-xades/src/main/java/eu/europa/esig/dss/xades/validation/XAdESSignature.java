@@ -489,21 +489,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				certificateValidity.setDigestEqual(false);
 				BigInteger serialNumber = new BigInteger("0");
 				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
-					X500Principal issuerName; 
+					X500Principal issuerName = null; 
 					if(isEn319132) {
 						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
-						final String textContent = issuerNameEl.getTextContent();
-						ASN1InputStream is = new ASN1InputStream(Base64.decodeBase64(textContent));
-						ASN1Sequence seq = null;
-						try {
-							seq = (ASN1Sequence) is.readObject();
-							is.close();
-						} catch (IOException e) {
-							e.printStackTrace();
+						if(issuerNameEl != null) {
+							final String textContent = issuerNameEl.getTextContent();
+							ASN1InputStream is = new ASN1InputStream(Base64.decodeBase64(textContent));
+							ASN1Sequence seq = null;
+							try {
+								seq = (ASN1Sequence) is.readObject();
+								is.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							//IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(seq);
+							IssuerAndSerialNumber issuerAndSerial = IssuerAndSerialNumber.getInstance(seq);
+							issuerName = new X500Principal(issuerAndSerial.getName().toString());
+							serialNumber = issuerAndSerial.getSerialNumber().getValue();
 						}
-						IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(seq); 
-						issuerName = new X500Principal(issuerAndSerial.getName().toString());
-						serialNumber = issuerAndSerial.getSerialNumber().getValue();
 					} else {
 						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
 						// This can be allayed when the distinguished name is not
