@@ -54,19 +54,18 @@ public class DigestSigner {
 	}
 
 	private DSSPrivateKeyEntry retrieveSignerCertificate() {
-		DSSPrivateKeyEntry signerKeyEntry = null;
 		List<DSSPrivateKeyEntry> keys = tokenConnection.getKeys();
 		if (keys != null) {
 			for (DSSPrivateKeyEntry entry : keys) {
 				CertificateToken certificate = entry.getCertificate();
-				String base64Certificate = DatatypeConverter.printBase64Binary(certificate.getEncoded());
+				String base64Certificate = certificate.getBase64Encoded();
 				if (base64Certificate.equals(base64SignerCertificate)) {
-					signerKeyEntry = entry;
+					return entry;
 				}
-				break;
 			}
 		}
-		return signerKeyEntry;
+		logger.info("Not found in " + keys);
+		return null;
 	}
 
 }
