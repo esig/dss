@@ -29,6 +29,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private List<DSSReference> dssReferences;
 
 	private String xPathLocationString;
+	
+	private boolean en319132 = false;
 
 	/**
 	 *	This attribute is used to inject ASiC root (inclusive canonicalization)
@@ -122,4 +124,13 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 		}
 		return context;
 	}
+
+	public boolean isEn319132() {
+		return en319132;
+	}
+
+	public void setEn319132(boolean en319132) {
+		this.en319132 = en319132;
+	}
+	
 }

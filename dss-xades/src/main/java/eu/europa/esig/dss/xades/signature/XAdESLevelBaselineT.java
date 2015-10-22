@@ -271,7 +271,11 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 					break;
 				case VALIDATION_DATA_TIMESTAMP:
 					// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES, XADES_SIG_AND_REFS_TIME_STAMP);
+					if(params.isEn319132()) {
+						timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES, XADES_SIG_AND_REFS_TIME_STAMP_V2);
+					} else {
+						timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES, XADES_SIG_AND_REFS_TIME_STAMP);
+					}
 					break;
 				case ARCHIVE_TIMESTAMP:
 					// <xades141:ArchiveTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">

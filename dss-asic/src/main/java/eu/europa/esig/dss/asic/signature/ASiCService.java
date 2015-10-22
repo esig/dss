@@ -338,8 +338,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		final Element sigReferenceDom = DSSXMLUtils.addElement(documentDom, asicManifestDom, ASiCNamespaces.ASiC, "asic:SigReference");
 		final String signatureName = getSignatureFileName(asicParameters);
 		sigReferenceDom.setAttribute("URI", signatureName);
-		final String signatureMimeType = getSignatureMimeType(asicParameters);
-		sigReferenceDom.setAttribute("MimeType", signatureMimeType);
+		sigReferenceDom.setAttribute("MimeType", MimeType.PKCS7.getMimeTypeString()); // only CAdES form
 
 		DSSDocument currentDetachedDocument = detachedDocument;
 		do {
@@ -617,16 +616,6 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			} else {
 				return asice ? ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE : ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE;
 			}
-		} else {
-			throw new DSSException("ASiC signature form must be XAdES or CAdES!");
-		}
-	}
-
-	private String getSignatureMimeType(final ASiCParameters asicParameters) {
-		if (isXAdESForm(asicParameters)) {
-			return MimeType.PKCS7.getMimeTypeString();
-		} else if (isCAdESForm(asicParameters)) {
-			return MimeType.PKCS7.getMimeTypeString();
 		} else {
 			throw new DSSException("ASiC signature form must be XAdES or CAdES!");
 		}
