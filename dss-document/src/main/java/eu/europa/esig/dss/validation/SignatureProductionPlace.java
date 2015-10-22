@@ -33,7 +33,7 @@ public class SignatureProductionPlace implements Serializable {
 	private String stateOrProvince;
 	private String postalCode;
 	private String countryName;
-	private String address;
+	private String streetAddress;
 
 	public String getCity() {
 		return city;
@@ -67,11 +67,11 @@ public class SignatureProductionPlace implements Serializable {
 		this.countryName = countryName;
 	}
 
-	public String getAddress() {
-		return address;
+	public String getStreetAddress() {
+		return streetAddress;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
 	}
 }

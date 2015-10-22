@@ -1375,7 +1375,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlSignatureProductionPlace.setCountryName(signatureProductionPlace.getCountryName());
 			xmlSignatureProductionPlace.setStateOrProvince(signatureProductionPlace.getStateOrProvince());
 			xmlSignatureProductionPlace.setPostalCode(signatureProductionPlace.getPostalCode());
-			xmlSignatureProductionPlace.setAddress(signatureProductionPlace.getAddress());
+			xmlSignatureProductionPlace.setAddress(signatureProductionPlace.getStreetAddress());
 			xmlSignatureProductionPlace.setCity(signatureProductionPlace.getCity());
 			xmlSignature.setSignatureProductionPlace(xmlSignatureProductionPlace);
 		}

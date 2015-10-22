@@ -437,28 +437,28 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		incorporateSigningCertificate();
 
 		incorporateSignedDataObjectProperties();
-
-		incorporateSignerRole();
+		
+		incorporatePolicy();
 
 		incorporateSignatureProductionPlace();
 
+		incorporateSignerRole();
+		
 		incorporateCommitmentTypeIndications();
-
-		incorporatePolicy();
 	}
 
 	private void incorporatePolicy() {
 
 		final Policy signaturePolicy = params.bLevel().getSignaturePolicy();
-		if ((signaturePolicy != null) && (signaturePolicy.getId() != null)) {
+		if ((signaturePolicy != null)) {// && (signaturePolicy.getId() != null)) {
 
 			final Element signaturePolicyIdentifierDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_POLICY_IDENTIFIER);
-			final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
-
+			
 			String signaturePolicyId = signaturePolicy.getId();
 			if (StringUtils.isEmpty(signaturePolicyId)) { // implicit
-				DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_IMPLIED);
+				DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_IMPLIED);
 			} else { // explicit
+				final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
 				final Element sigPolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIG_POLICY_ID);
 
 				DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);

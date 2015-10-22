@@ -53,6 +53,9 @@ import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
@@ -405,11 +408,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 * The ../SignedProperties/SignedSignatureProperties/SigningCertificate element MAY contain references and digests values of other
 		 * certificates (that MAY form a chain up to the point of trust).
 		 */
-
-		final NodeList list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT);
-		final int length = list.getLength();
+		boolean isEn319132 = false;
+		NodeList list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT);
+		int length = list.getLength();
+		if(length == 0) {
+			list = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT_V2);
+			length = list.getLength();
+			isEn319132 = true;
+		}
 		if (length == 0) {
-
 			final CertificateValidity theCertificateValidity = candidates.getTheCertificateValidity();
 			final CertificateToken certificateToken = theCertificateValidity == null ? null : theCertificateValidity.getCertificateToken();
 			// The check need to be done at the level of KeyInfo
@@ -480,15 +487,36 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
 				final byte[] recalculatedBase64DigestValue = Base64.encodeBase64(digest);
 				certificateValidity.setDigestEqual(false);
+				BigInteger serialNumber = new BigInteger("0");
 				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
-
-					final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
-					// This can be allayed when the distinguished name is not
-					// correctly encoded
-					// final String textContent =
-					// DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());
-					final String textContent = issuerNameEl.getTextContent();
-					final X500Principal issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
+					X500Principal issuerName = null; 
+					if(isEn319132) {
+						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
+						if(issuerNameEl != null) {
+							final String textContent = issuerNameEl.getTextContent();
+							ASN1InputStream is = new ASN1InputStream(Base64.decodeBase64(textContent));
+							ASN1Sequence seq = null;
+							try {
+								seq = (ASN1Sequence) is.readObject();
+								is.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							//IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(seq);
+							IssuerAndSerialNumber issuerAndSerial = IssuerAndSerialNumber.getInstance(seq);
+							issuerName = new X500Principal(issuerAndSerial.getName().toString());
+							serialNumber = issuerAndSerial.getSerialNumber().getValue();
+						}
+					} else {
+						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
+						// This can be allayed when the distinguished name is not
+						// correctly encoded
+						// final String textContent =
+						// DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());
+						final String textContent = issuerNameEl.getTextContent();
+						
+						issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
+					}
 					final X500Principal candidateIssuerName = certificateToken.getIssuerX500Principal();
 
 					// final boolean issuerNameMatches =
@@ -501,11 +529,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						final String c14nIssuerName = issuerName == null ? "" : issuerName.getName(X500Principal.CANONICAL);
 						LOG.info("issuerName         : " + c14nIssuerName);
 					}
-
-					final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
-					final String serialNumberText = serialNumberEl.getTextContent();
-					// serial number can contain leading and trailing whitespace.
-					final BigInteger serialNumber = new BigInteger(serialNumberText.trim());
+					
+					if(!isEn319132) {
+						final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
+						final String serialNumberText = serialNumberEl.getTextContent();
+						// serial number can contain leading and trailing whitespace.
+						serialNumber = new BigInteger(serialNumberText.trim());
+					}
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
 					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
 
@@ -527,6 +557,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 	}
+	
 
 	/**
 	 * Checks if the given {@code Element} has as parent the current signature. This is the security check.
@@ -617,10 +648,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public SignatureProductionPlace getSignatureProductionPlace() {
 
-		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_PRODUCTION_PLACE);
+		NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_PRODUCTION_PLACE);
 		if ((nodeList.getLength() == 0) || (nodeList.item(0) == null)) {
-
-			return null;
+			nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_PRODUCTION_PLACE_V2);
+			if ((nodeList.getLength() == 0) || (nodeList.item(0) == null)) {
+				return null;	
+			}
 		}
 		final SignatureProductionPlace signatureProductionPlace = new SignatureProductionPlace();
 		final NodeList list = nodeList.item(0).getChildNodes();
@@ -641,6 +674,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			} else if (XPathQueryHolder.XMLE_COUNTRY_NAME.equals(name)) {
 
 				signatureProductionPlace.setCountryName(nodeValue);
+			} else if (XPathQueryHolder.XMLE_STREET_ADDRESS.equals(name)) {
+
+				signatureProductionPlace.setStreetAddress(nodeValue);
 			}
 		}
 		return signatureProductionPlace;
@@ -649,10 +685,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public String[] getClaimedSignerRoles() {
 
-		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CLAIMED_ROLE);
+		NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CLAIMED_ROLE);
 		if (nodeList.getLength() == 0) {
-
-			return null;
+			nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CLAIMED_ROLE_V2);
+			if(nodeList.getLength() == 0) {
+				return null;
+			}
 		}
 		final String[] roles = new String[nodeList.getLength()];
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
@@ -671,10 +709,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 * use="optional"/> <xsd:attribute name="Encoding" type="xsd:anyURI" use="optional"/> </xsd:extension> </xsd:simpleContent> </xsd:complexType>
 		 * <!-- End EncapsulatedPKIDataType -->
 		 */
-		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERTIFIED_ROLE);
+		NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERTIFIED_ROLE);
 		if (nodeList.getLength() == 0) {
-
-			return null;
+			nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERTIFIED_ROLE_V2);
+			if(nodeList.getLength() == 0) {
+				return null; 
+			}
 		}
 		final List<CertifiedRole> roles = new ArrayList<CertifiedRole>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
@@ -787,7 +827,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public NodeList getSigAndRefsTimeStamp() {
-		return DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIG_AND_REFS_TIMESTAMP);
+		NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIG_AND_REFS_TIMESTAMP);
+		if(nodeList == null || nodeList.getLength() == 0) {
+			nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIG_AND_REFS_TIMESTAMP_V2);
+		}
+		return nodeList;
 	}
 
 	public Element getCertificateValues() {
@@ -848,7 +892,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		boolean notEmptyCRL = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUE);
 		boolean notEmptyOCSP = DSSXMLUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_OCSP_VALUE);
 
-		return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
+		boolean isLTProfile = revocationValues && (notEmptyCRL || notEmptyOCSP);
+		if(!isLTProfile && certValues) {
+			isLTProfile = hasTProfile();
+		}
+		
+		return isLTProfile;
+		//return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
 	}
 
 	/**
@@ -1154,7 +1204,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 				timestampToken.setTimestampedReferences(getSignatureTimestampedReferences());
 				signatureTimestamps.add(timestampToken);
-			} else if (XMLE_REFS_ONLY_TIME_STAMP.equals(localName)) {
+			} else if (XMLE_REFS_ONLY_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP_V2.equals(localName)) {
 
 				timestampToken = makeTimestampToken((Element) node, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
 				if (timestampToken == null) {
@@ -1162,7 +1212,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 				timestampToken.setTimestampedReferences(getTimestampedReferences());
 				refsOnlyTimestamps.add(timestampToken);
-			} else if (XMLE_SIG_AND_REFS_TIME_STAMP.equals(localName)) {
+			}  else if (XMLE_SIG_AND_REFS_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP_V2.equals(localName)) {
 
 				timestampToken = makeTimestampToken((Element) node, TimestampType.VALIDATION_DATA_TIMESTAMP);
 				if (timestampToken == null) {
