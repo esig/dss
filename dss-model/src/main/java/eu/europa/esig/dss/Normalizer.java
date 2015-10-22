@@ -107,6 +107,13 @@ public final class Normalizer {
 			string = ((ASN1ObjectIdentifier) attributeValue).getId();
 		} else if (attributeValue instanceof DERT61UTF8String) {
 			string = ((DERT61UTF8String) attributeValue).getString();
+		} else if (attributeValue instanceof DLSequence) {
+			StringBuffer buffer = new StringBuffer();
+			DLSequence sequence = (DLSequence) attributeValue;
+			for(int i = 0; i<sequence.size(); i++) {
+				buffer.append(getString(sequence.getObjectAt(1)));
+			}
+			string = buffer.toString();
 		} else {
 			throw new DSSException("Unknown encoding ; " + attributeValue.getClass().getSimpleName());
 		}

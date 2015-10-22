@@ -74,6 +74,18 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		if (processedRevocationTokens.isEmpty()) {
 
 			return;
+		} 
+		
+		boolean containsCrlToken = false;
+		for(RevocationToken revocationToken : processedRevocationTokens) {
+			containsCrlToken = revocationToken instanceof CRLToken;
+			if(containsCrlToken) {
+				break;
+			}
+		}
+		
+		if(!containsCrlToken) {
+			return;
 		}
 		// <xades:CRLRefs>
 		// ...<xades:CRLRef>
@@ -104,15 +116,15 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				final InMemoryDocument inMemoryDocument = new InMemoryDocument(revocationToken.getEncoded());
 				incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, inMemoryDocument);
 
-				// final Element crlIdentifierDom = DSSXMLUtils.addElement(documentDom, crlRefDom, XAdESNamespaces.XAdES, "xades:CRLIdentifier");
+				final Element crlIdentifierDom = DSSXMLUtils.addElement(documentDom, crlRefDom, XAdESNamespaces.XAdES, "xades:CRLIdentifier");
 				// crlIdentifierDom.setAttribute("URI",".crl");
 				final String issuerX500PrincipalName = crl.getIssuerX500Principal().getName();
-				DSSXMLUtils.addTextElement(documentDom, crlRefDom, XAdESNamespaces.XAdES, "xades:Issuer", issuerX500PrincipalName);
+				DSSXMLUtils.addTextElement(documentDom, crlIdentifierDom, XAdESNamespaces.XAdES, "xades:Issuer", issuerX500PrincipalName);
 
 				final Date thisUpdate = crl.getThisUpdate();
 				XMLGregorianCalendar xmlGregorianCalendar = DSSXMLUtils.createXMLGregorianCalendar(thisUpdate);
 				final String thisUpdateAsXmlFormat = xmlGregorianCalendar.toXMLFormat();
-				DSSXMLUtils.addTextElement(documentDom, crlRefDom, XAdESNamespaces.XAdES, "xades:IssueTime", thisUpdateAsXmlFormat);
+				DSSXMLUtils.addTextElement(documentDom, crlIdentifierDom, XAdESNamespaces.XAdES, "xades:IssueTime", thisUpdateAsXmlFormat);
 
 				// DSSXMLUtils.addTextElement(documentDom, crlRefDom, XAdESNamespaces.XAdES, "xades:Number", ???);
 			}
@@ -130,6 +142,20 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			return;
 		}
+		
+		boolean containsOCSPToken = false;
+		for(RevocationToken revocationToken : processedRevocationTokens) {
+			containsOCSPToken = revocationToken instanceof OCSPToken;
+			if(containsOCSPToken) {
+				break;
+			}
+		}
+		
+		if(!containsOCSPToken) {
+			return;
+		}
+		
+		
 		// ...<xades:CRLRefs/>
 		// ...<xades:OCSPRefs>
 		// ......<xades:OCSPRef>

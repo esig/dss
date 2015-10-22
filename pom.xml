@@ -32,6 +32,14 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>abinet</id>
+			<name>Axel Abinet</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+		
 	</developers>
 	
 	<properties>

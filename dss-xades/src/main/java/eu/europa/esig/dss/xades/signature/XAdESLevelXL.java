@@ -126,8 +126,8 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 			final Element revocationValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
 
-			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
 			incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
+			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
 		}
 	}
 
