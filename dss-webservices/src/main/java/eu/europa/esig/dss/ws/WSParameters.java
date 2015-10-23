@@ -24,14 +24,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.Policy;
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.signature.SignaturePackaging;
-import eu.europa.esig.dss.x509.SignatureForm;
+import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignerLocation;
 
 /**
  * Representation of a <i>SignedProperties</i> Element.
@@ -86,7 +86,7 @@ public class WSParameters {
 	private String contentIdentifierSuffix;
 
 	private List<String> commitmentTypeIndication;
-	private BLevelParameters.SignerLocation signerLocation;
+	private SignerLocation signerLocation;
 
 	private DigestAlgorithm timestampDigestAlgorithm;
 
@@ -304,11 +304,11 @@ public class WSParameters {
 		this.commitmentTypeIndication = commitmentTypeIndication;
 	}
 
-	public BLevelParameters.SignerLocation getSignerLocation() {
+	public SignerLocation getSignerLocation() {
 		return signerLocation;
 	}
 
-	public void setSignerLocation(BLevelParameters.SignerLocation signerLocation) {
+	public void setSignerLocation(SignerLocation signerLocation) {
 		this.signerLocation = signerLocation;
 	}
 

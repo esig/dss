@@ -85,6 +85,8 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
+		//		reports.print();
+
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		checkOriginalLevel(diagnosticData);
@@ -92,13 +94,18 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 		DSSDocument extendedDocument = extendSignature(signedDocument);
 
+		//		extendedDocument.save("target/xades.xml");
+
 		assertNotNull(extendedDocument);
 		assertNotNull(extendedDocument.getMimeType());
 		assertNotNull(extendedDocument.getBytes());
+		assertNotNull(extendedDocument.getName());
 
 		validator = SignedDocumentValidator.fromDocument(extendedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		reports = validator.validateDocument();
+
+		//		reports.print();
 
 		diagnosticData = reports.getDiagnosticData();
 
@@ -113,9 +120,11 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extensionParameters);
 		assertNotNull(extendedDocument);
+
+		//		extendedDocument.save("target/pdf.pdf");
+
 		return extendedDocument;
 	}
-
 
 	protected abstract SP getExtensionParameters();
 

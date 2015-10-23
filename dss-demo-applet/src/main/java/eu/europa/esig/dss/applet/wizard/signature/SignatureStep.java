@@ -22,24 +22,15 @@ package eu.europa.esig.dss.applet.wizard.signature;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.applet.SignatureTokenType;
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.applet.main.Parameters;
 import eu.europa.esig.dss.applet.model.SignatureModel;
 import eu.europa.esig.dss.applet.swing.mvc.ControllerException;
 import eu.europa.esig.dss.applet.swing.mvc.wizard.WizardStep;
 import eu.europa.esig.dss.applet.swing.mvc.wizard.WizardView;
-import eu.europa.esig.dss.wsclient.signature.SignaturePackaging;
 
-/**
- *
- * TODO
- *
- *
- *
- *
- *
- *
- */
 public class SignatureStep extends WizardStep<SignatureModel, SignatureWizardController> {
 	/**
 	 *
@@ -126,7 +117,7 @@ public class SignatureStep extends WizardStep<SignatureModel, SignatureWizardCon
 		final Parameters parameters = getController().getParameter();
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
 		final String level = parameters.getSignatureLevel();
-		final String format = parameters.getSignatureFormat();
+		final SignatureForm format = parameters.getSignatureFormat();
 
 		if (format != null) {
 			model.setFormat(format);
@@ -147,7 +138,7 @@ public class SignatureStep extends WizardStep<SignatureModel, SignatureWizardCon
 	@Override
 	protected boolean isValid() {
 		final SignatureModel model = getModel();
-		return StringUtils.isNotEmpty(model.getFormat()) && (model.getPackaging() != null) && StringUtils.isNotEmpty(model.getLevel());
+		return (model.getFormat() != null) && (model.getPackaging() != null) && StringUtils.isNotEmpty(model.getLevel());
 	}
 
 }

@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><tsl:TrustServiceStatusList xmlns:tsl="http://uri.etsi.org/02231/v2#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="TrustServiceStatusList-1" TSLTag="http://uri.etsi.org/19612/TSLTag">
+    <tsl:SchemeInformation>
+        <tsl:TSLVersionIdentifier>4</tsl:TSLVersionIdentifier>
+        <tsl:TSLSequenceNumber>24</tsl:TSLSequenceNumber>
+        <tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</tsl:TSLType>
+        <tsl:SchemeOperatorName>
+            <tsl:Name xml:lang="en">ILNAS</tsl:Name>
+            <tsl:Name xml:lang="fr">ILNAS</tsl:Name>
+            <tsl:Name xml:lang="fr">Institut Luxembourgeois de la Normalisation, de l'Accréditation, de la Sécurité et qualité des produits et services</tsl:Name>
+            <tsl:Name xml:lang="de">ILNAS</tsl:Name>
+        </tsl:SchemeOperatorName>
+        <tsl:SchemeOperatorAddress>
+            <tsl:PostalAddresses>
+                <tsl:PostalAddress xml:lang="en">
+                    <tsl:StreetAddress>1, Avenue du Swing</tsl:StreetAddress>
+                    <tsl:Locality>Belvaux</tsl:Locality>
+                    <tsl:PostalCode>L-4367</tsl:PostalCode>
+                    <tsl:CountryName>LU</tsl:CountryName>
+                </tsl:PostalAddress>
+                <tsl:PostalAddress xml:lang="fr">
+                    <tsl:StreetAddress>1, Avenue du Swing</tsl:StreetAddress>
+                    <tsl:Locality>Belvaux</tsl:Locality>
+                    <tsl:PostalCode>L-4367</tsl:PostalCode>
+                    <tsl:CountryName>LU</tsl:CountryName>
+                </tsl:PostalAddress>
+                <tsl:PostalAddress xml:lang="de">
+                    <tsl:StreetAddress>1, Avenue du Swing</tsl:StreetAddress>
+                    <tsl:Locality>Belvaux</tsl:Locality>
+                    <tsl:PostalCode>L-4367</tsl:PostalCode>
+                    <tsl:CountryName>LU</tsl:CountryName>
+                </tsl:PostalAddress>
+            </tsl:PostalAddresses>
+            <tsl:ElectronicAddress>
+                <tsl:URI xml:lang="en">mailto:confiance-numerique@ilnas.etat.lu</tsl:URI>
+                <tsl:URI xml:lang="fr">mailto:confiance-numerique@ilnas.etat.lu</tsl:URI>
+                <tsl:URI xml:lang="de">mailto:confiance-numerique@ilnas.etat.lu</tsl:URI>
+                <tsl:URI xml:lang="fr">http://www.portail-qualite.public.lu/fr/confiance-numerique/index.html</tsl:URI>
+                <tsl:URI xml:lang="en">http://www.portail-qualite.public.lu/fr/confiance-numerique/prestataires-services-confiance/liste-confiance/scheme-information/index.html</tsl:URI>
+            </tsl:ElectronicAddress>
+        </tsl:SchemeOperatorAddress>
+        <tsl:SchemeName>
+            <tsl:Name xml:lang="en">LU:Supervision/Accreditation Status List of certification services from Certification Service Providers, which are supervised/accredited by the referenced Scheme Operator’s Member State for compliance with the relevant provisions laid down in Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.</tsl:Name>
+        </tsl:SchemeName>
+        <tsl:SchemeInformationURI>
+            <tsl:URI xml:lang="en">http://www.portail-qualite.public.lu/fr/confiance-numerique/prestataires-services-confiance/liste-confiance/scheme-information/index.html</tsl:URI>
+        </tsl:SchemeInformationURI>
+        <tsl:StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/StatusDetn/EUappropriate</tsl:StatusDeterminationApproach>
+        <tsl:SchemeTypeCommunityRules>
+            <tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</tsl:URI>
+            <tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/LU</tsl:URI>
+        </tsl:SchemeTypeCommunityRules>
+        <tsl:SchemeTerritory>LU</tsl:SchemeTerritory>
+        <tsl:PolicyOrLegalNotice>
+            <tsl:TSLLegalNotice xml:lang="en">The applicable legal framework for the present TSL implementation of the Trusted List of supervised/accredited Certification Service Providers for Luxembourg is Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures and its implementation in Luxembourgish laws. The accreditation scheme for all CSPs issuing qualified, non-qualified certificates, or other services related to electronic signature is based upon the Law of 14 August 2000, and Grand-Ducal Regulations of 1st June 2001 and 21 December 2004.</tsl:TSLLegalNotice>
+        </tsl:PolicyOrLegalNotice>
+        <tsl:HistoricalInformationPeriod>65535</tsl:HistoricalInformationPeriod>
+        <tsl:PointersToOtherTSL>
+            <tsl:OtherTSLPointer>
+                <tsl:ServiceDigitalIdentities>
+                    <tsl:ServiceDigitalIdentity>
+                        <tsl:DigitalId>
+                            <tsl:X509Certificate>MIIFKzCCBBOgAwIBAgISESFCgSJf+NfOVIYHRWWewAm0MA0GCSqGSIb3DQEBCwUAMGYxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTwwOgYDVQQDEzNHbG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gU0hBMjU2IC0gRzIwHhcNMTUwMzAzMDg1MTAyWhcNMTgwNDIwMTAwNTA1WjBnMQswCQYDVQQGEwJCRTEQMA4GA1UECBMHQmVsZ2l1bTERMA8GA1UEBxMIQnJ1c3NlbHMxHDAaBgNVBAoTE0V1cm9wZWFuIENvbW1pc3Npb24xFTATBgNVBAMTDGVjLmV1cm9wYS5ldTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMFBF1FjO2VA4nIvT3MtXToyfWMNFYRvJc2SIJF3pcZNZcUK9wwNL3j/lOB5+eABCTDShJf8fQgmyEcAU7gXhFw9DFgfnXsmmA1a79zzbs5KWzkmAwEE4lfSYcbJoCuUavD79oaR4v3yv7GZMVab8nXuqWvecwzQWT6sl+rx0ogh1bbeKO9wQ5lbEgRw1MLlyFH2kUieMhjCwO2nQJ9UMTaLu7px4LpZ7tlaVetY7UpMPiGAD34kct1YIoJWJllYbbz7jmALmRAdLvvu5y6Ice4H4j0kDJ/l3zLiVeCiORqrx8ngiiS1LfNSckvz2sbzjVJvXbqxYAEytZQvwxEXdPMCAwEAAaOCAdAwggHMMA4GA1UdDwEB/wQEAwIFoDBJBgNVHSAEQjBAMD4GBmeBDAECAjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAXBgNVHREEEDAOggxlYy5ldXJvcGEuZXUwCQYDVR0TBAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9ncy9nc29yZ2FuaXphdGlvbnZhbHNoYTJnMi5jcmwwgaAGCCsGAQUFBwEBBIGTMIGQME0GCCsGAQUFBzAChkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc29yZ2FuaXphdGlvbnZhbHNoYTJnMnIxLmNydDA/BggrBgEFBQcwAYYzaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzb3JnYW5pemF0aW9udmFsc2hhMmcyMB0GA1UdDgQWBBQ9lw0pOEotT5cKTF8vxu3W6ZCUhzAfBgNVHSMEGDAWgBSW3mHxvRwWKVMcwMx9O4MAQOYafDANBgkqhkiG9w0BAQsFAAOCAQEArSonov8KbE8+5VwewgBHhILHANLIiRmLVJ1siaRXVXL6abmMo8CjW2+VtzAQdnDkzUY6CNATs0y0qkbEcS7fvtvp8QqAiv71+jij6iDT9r9IJ1suNDeQWz6Mng98ecMVsDUzLYieeZXH049tA3hrAnscVRTu7kpT06CGbcJnoNdG7yvxx2Bs9ciVBExrqKMppVHwup23hw/IphHmifPRmXPQ3Fa5FKrqnWJw1BRBLGLOqC1mkj7JuVX108KHlwa5cGiohctnOH9dfyuQPWQecbrobwDgHl4O0Ra+bU/Z4J85YPOB/+F7rOQxRFCpv43zPdg65pNoPppjFDE4TD2bhg==</tsl:X509Certificate>
+                        </tsl:DigitalId>
+                    </tsl:ServiceDigitalIdentity>
+                </tsl:ServiceDigitalIdentities>
+                <tsl:TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-hr.pdf</tsl:TSLLocation>
+                <tsl:AdditionalInformation>
+                    <tsl:OtherInformation>
+                        <tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</tsl:TSLType>
+                    </tsl:OtherInformation>
+                    <tsl:OtherInformation>
+                        <tsl:SchemeOperatorName>
+                            <tsl:Name xml:lang="en">European Commission</tsl:Name>
+                        </tsl:SchemeOperatorName>
+                    </tsl:OtherInformation>
+                    <tsl:OtherInformation>
+                        <tsl:SchemeTypeCommunityRules>
+                            <tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</tsl:URI>
+                        </tsl:SchemeTypeCommunityRules>
+                    </tsl:OtherInformation>
+                    <tsl:OtherInformation>
+                        <tsl:SchemeTerritory>EU</tsl:SchemeTerritory>
+                    </tsl:OtherInformation>
+                    <tsl:OtherInformation>
+                        <tslx:MimeType xmlns:tslx="http://uri.etsi.org/02231/v2/additionaltypes#">application/pdf</tslx:MimeType>
+                    </tsl:OtherInformation>
+                </tsl:AdditionalInformation>
+            </tsl:OtherTSLPointer>
+            <tsl:OtherTSLPointer>
+                <tsl:ServiceDigitalIdentities>
+                    <tsl:ServiceDigitalIdentity>
+                        <tsl:DigitalId>
+                            <tsl:X509Certificate>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</tsl:X509Certificate>
+                        </tsl:DigitalId>
+                    </tsl:ServiceDigitalIdentity>
+                    <tsl:ServiceDigitalIdentity>
+                        <tsl:DigitalId>
+                            <tsl:X509Certificate>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</tsl:X509Certificate>
+                        </tsl:DigitalId>
+                    </tsl:ServiceDigitalIdentity>
+                    <tsl:ServiceDigitalIdentity>
+                        <tsl:DigitalId>
+                            <tsl:X509Certificate>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</tsl:X509Certificate>
+                        </tsl:DigitalId>
+                    </tsl:ServiceDigitalIdentity>
+                </tsl:ServiceDigitalIdentities>
+                <tsl:TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</tsl:TSLLocation>
+                <tsl:AdditionalInformation>
+                    <tsl:OtherInformation>
+                        <tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</tsl:TSLType>
+                    </tsl:OtherInformation>
+                    <tsl:OtherInformation>
+                        <tsl:SchemeOperatorName>
+                            <tsl:Name xml:lang="en">European Commission</tsl:Name>
+                        </tsl:SchemeOperatorName>
+                    </tsl:OtherInformation>
+                    <tsl:OtherInformation>
+                        <tsl:SchemeTypeCommunityRules>
+                            <tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</tsl:URI>
+                        </tsl:SchemeTypeCommunityRules>
+                    </tsl:OtherInformation>
+                    <tsl:OtherInformation>
+                        <tsl:SchemeTerritory>EU</tsl:SchemeTerritory>
+                    </tsl:OtherInformation>
+                    <tsl:OtherInformation>
+                        <tslx:MimeType xmlns:tslx="http://uri.etsi.org/02231/v2/additionaltypes#">application/vnd.etsi.tsl+xml</tslx:MimeType>
+                    </tsl:OtherInformation>
+                </tsl:AdditionalInformation>
+            </tsl:OtherTSLPointer>
+        </tsl:PointersToOtherTSL>
+        <tsl:ListIssueDateTime>2015-08-12T00:00:00Z</tsl:ListIssueDateTime>
+        <tsl:NextUpdate>
+            <tsl:dateTime>2016-02-11T00:00:00Z</tsl:dateTime>
+        </tsl:NextUpdate>
+        <tsl:DistributionPoints>
+            <tsl:URI>http://www.portail-qualite.public.lu/fr/publications/confiance-numerique/liste-confiance-nationale/tsl-xml/TSL-XML.xml</tsl:URI>
+        </tsl:DistributionPoints>
+    </tsl:SchemeInformation>
+    <tsl:TrustServiceProviderList>
+        <tsl:TrustServiceProvider>
+            <tsl:TSPInformation>
+                <tsl:TSPName>
+                    <tsl:Name xml:lang="en">LuxTrust S.A.</tsl:Name>
+                </tsl:TSPName>
+                <tsl:TSPTradeName>
+                    <tsl:Name xml:lang="en">VATLU-20976985</tsl:Name>
+                    <tsl:Name xml:lang="fr">TVALU-20976985</tsl:Name>
+                </tsl:TSPTradeName>
+                <tsl:TSPAddress>
+                    <tsl:PostalAddresses>
+                        <tsl:PostalAddress xml:lang="en">
+                            <tsl:StreetAddress>IVY Building - 13-15 Parc d'Activités</tsl:StreetAddress>
+                            <tsl:Locality>Capellen</tsl:Locality>
+                            <tsl:PostalCode>L-8308</tsl:PostalCode>
+                            <tsl:CountryName>LU</tsl:CountryName>
+                        </tsl:PostalAddress>
+                        <tsl:PostalAddress xml:lang="fr">
+                            <tsl:StreetAddress>IVY Building - 13-15 Parc d'Activités</tsl:StreetAddress>
+                            <tsl:Locality>Capellen</tsl:Locality>
+                            <tsl:PostalCode>L-8308</tsl:PostalCode>
+                            <tsl:CountryName>LU</tsl:CountryName>
+                        </tsl:PostalAddress>
+                        <tsl:PostalAddress xml:lang="de">
+                            <tsl:StreetAddress>IVY Building - 13-15 Parc d'Activités</tsl:StreetAddress>
+                            <tsl:Locality>Capellen</tsl:Locality>
+                            <tsl:PostalCode>L-8308</tsl:PostalCode>
+                            <tsl:CountryName>LU</tsl:CountryName>
+                        </tsl:PostalAddress>
+                    </tsl:PostalAddresses>
+                    <tsl:ElectronicAddress>
+                        <tsl:URI xml:lang="en">mailto:info@luxtrust.lu</tsl:URI>
+                        <tsl:URI xml:lang="fr">mailto:info@luxtrust.lu</tsl:URI>
+                        <tsl:URI xml:lang="de">mailto:info@luxtrust.lu</tsl:URI>
+                        <tsl:URI xml:lang="en">https://www.luxtrust.lu/en</tsl:URI>
+                        <tsl:URI xml:lang="fr">https://www.luxtrust.lu/fr</tsl:URI>
+                        <tsl:URI xml:lang="de">https://www.luxtrust.lu/de</tsl:URI>
+                    </tsl:ElectronicAddress>
+                </tsl:TSPAddress>
+                <tsl:TSPInformationURI>
+                    <tsl:URI xml:lang="en">https://www.luxtrust.lu/en/repository</tsl:URI>
+                    <tsl:URI xml:lang="fr">https://www.luxtrust.lu/fr/repository</tsl:URI>
+                    <tsl:URI xml:lang="de">https://www.luxtrust.lu/de/repository</tsl:URI>
+                </tsl:TSPInformationURI>
+            </tsl:TSPInformation>
+            <tsl:TSPServices>
+                <tsl:TSPService>
+                    <tsl:ServiceInformation>
+                        <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                        <tsl:ServiceName>
+                            <tsl:Name xml:lang="en">LuxTrust Qualified Certification Authority</tsl:Name>
+                        </tsl:ServiceName>
+                        <tsl:ServiceDigitalIdentity>
+                            <tsl:DigitalId>
+                                <tsl:X509SubjectName>CN=LuxTrust Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                            </tsl:DigitalId>
+                            <tsl:DigitalId>
+                                <tsl:X509Certificate>MIID8DCCAtigAwIBAgICA+swDQYJKoZIhvcNAQEFBQAwQDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xGTAXBgNVBAMTEEx1eFRydXN0IHJvb3QgQ0EwHhcNMDgwNjA1MDkyNTI0WhcNMTYxMDE4MTA0MDM0WjBFMQswCQYDVQQGEwJMVTEWMBQGA1UEChMNTHV4VHJ1c3QgUy5BLjEeMBwGA1UEAxMVTHV4VHJ1c3QgUXVhbGlmaWVkIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAybFXzA+8RNnvlCd+sZ8BnH6WO3LmaLi419Ygd9VBYcIwLmMx9KgAKF3u4B87Hee5NL4Xvhm/B9DuDUH5OGZ3P2Dwf7putVEvATvW8jzYq6CzarUthzb9ux+KTdTT+d4y6tkgVggy9DBe+bz635oZm2PPQT9kzoR48RBN730KA/MJIa0Sa7ZDphL37WHSA4/TWh9F1/LBRVGC0F4Mg1hU/u+kovF5mTuUK+ncU7+FS0cQRhAD+C4WfLI/WuzuE+T6ZuZ6Iqg6+vqgf6iKwL6iVZmwKkJPvV3+3Wgy3zq5tpDvsIGj4kXd1riQGKsEeDfN8y71DG3OdBqF1Yd7ue7ziwIDAQABo4HuMIHrMA8GA1UdEwQIMAYBAf8CAQAwQgYDVR0gBDswOTA3BggrgSsBAQEBADArMCkGCCsGAQUFBwIBFh1odHRwOi8vcmVwb3NpdG9yeS5sdXh0cnVzdC5sdTARBglghkgBhvhCAQEEBAMCAAcwDgYDVR0PAQH/BAQDAgHGMB8GA1UdIwQYMBaAFN2K1zDx+ZFx6UdwDCXlrKGN34wlMDEGA1UdHwQqMCgwJqAkoCKGIGh0dHA6Ly9jcmwubHV4dHJ1c3QubHUvTFRSQ0EuY3JsMB0GA1UdDgQWBBSNkKMH3RoTd5lMkqtNQ94/zSlkBTANBgkqhkiG9w0BAQUFAAOCAQEAapxOpigXTejGgHBWMAwDBMdZQHpPyoCmw32OIj1qqezO5nDnjG5gfJni/rp5IFMpV//xmCkjqyO92PyYbcHNSUpP1SjCkyn10e6ipmzpXK0MbgFvIPglAgA5dXxTNf0Q77eWu36fz5VKQEmJzqoXTccq4nuLL9rLZ88YUlczMaWscETIZCB4kecKVyqHf4+T0JucZqX7zzfpiVyTr2M+OGl9qiOmKwBGkzseJt+MgYWrskJADKDZMr4bQxkxnhzCSQoraX7DugxM0fH47MitCc74uZrWIJ6qQjCLBtKzxUGy7B3pYOjLlThr7S64cd12yuR+NjHAFZ2DTXwxKg/FQg==</tsl:X509Certificate>
+                            </tsl:DigitalId>
+                        </tsl:ServiceDigitalIdentity>
+                        <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                        <tsl:StatusStartingTime>2013-10-13T00:00:00Z</tsl:StatusStartingTime>
+                    </tsl:ServiceInformation>
+                    <tsl:ServiceHistory>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Qualified Certification Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2013-10-12T23:59:59Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Qualified Certification Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2009-10-13T00:00:00Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Qualified Certification Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2008-07-29T00:00:00Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                    </tsl:ServiceHistory>
+                </tsl:TSPService>
+                <tsl:TSPService>
+                    <tsl:ServiceInformation>
+                        <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</tsl:ServiceTypeIdentifier>
+                        <tsl:ServiceName>
+                            <tsl:Name xml:lang="en">LuxTrust Time Stamping Authority</tsl:Name>
+                        </tsl:ServiceName>
+                        <tsl:ServiceDigitalIdentity>
+                            <tsl:DigitalId>
+                                <tsl:X509SubjectName>CN=LuxTrust Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                            </tsl:DigitalId>
+                            <tsl:DigitalId>
+                                <tsl:X509Certificate>MIID8DCCAtigAwIBAgICA+swDQYJKoZIhvcNAQEFBQAwQDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xGTAXBgNVBAMTEEx1eFRydXN0IHJvb3QgQ0EwHhcNMDgwNjA1MDkyNTI0WhcNMTYxMDE4MTA0MDM0WjBFMQswCQYDVQQGEwJMVTEWMBQGA1UEChMNTHV4VHJ1c3QgUy5BLjEeMBwGA1UEAxMVTHV4VHJ1c3QgUXVhbGlmaWVkIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAybFXzA+8RNnvlCd+sZ8BnH6WO3LmaLi419Ygd9VBYcIwLmMx9KgAKF3u4B87Hee5NL4Xvhm/B9DuDUH5OGZ3P2Dwf7putVEvATvW8jzYq6CzarUthzb9ux+KTdTT+d4y6tkgVggy9DBe+bz635oZm2PPQT9kzoR48RBN730KA/MJIa0Sa7ZDphL37WHSA4/TWh9F1/LBRVGC0F4Mg1hU/u+kovF5mTuUK+ncU7+FS0cQRhAD+C4WfLI/WuzuE+T6ZuZ6Iqg6+vqgf6iKwL6iVZmwKkJPvV3+3Wgy3zq5tpDvsIGj4kXd1riQGKsEeDfN8y71DG3OdBqF1Yd7ue7ziwIDAQABo4HuMIHrMA8GA1UdEwQIMAYBAf8CAQAwQgYDVR0gBDswOTA3BggrgSsBAQEBADArMCkGCCsGAQUFBwIBFh1odHRwOi8vcmVwb3NpdG9yeS5sdXh0cnVzdC5sdTARBglghkgBhvhCAQEEBAMCAAcwDgYDVR0PAQH/BAQDAgHGMB8GA1UdIwQYMBaAFN2K1zDx+ZFx6UdwDCXlrKGN34wlMDEGA1UdHwQqMCgwJqAkoCKGIGh0dHA6Ly9jcmwubHV4dHJ1c3QubHUvTFRSQ0EuY3JsMB0GA1UdDgQWBBSNkKMH3RoTd5lMkqtNQ94/zSlkBTANBgkqhkiG9w0BAQUFAAOCAQEAapxOpigXTejGgHBWMAwDBMdZQHpPyoCmw32OIj1qqezO5nDnjG5gfJni/rp5IFMpV//xmCkjqyO92PyYbcHNSUpP1SjCkyn10e6ipmzpXK0MbgFvIPglAgA5dXxTNf0Q77eWu36fz5VKQEmJzqoXTccq4nuLL9rLZ88YUlczMaWscETIZCB4kecKVyqHf4+T0JucZqX7zzfpiVyTr2M+OGl9qiOmKwBGkzseJt+MgYWrskJADKDZMr4bQxkxnhzCSQoraX7DugxM0fH47MitCc74uZrWIJ6qQjCLBtKzxUGy7B3pYOjLlThr7S64cd12yuR+NjHAFZ2DTXwxKg/FQg==</tsl:X509Certificate>
+                            </tsl:DigitalId>
+                        </tsl:ServiceDigitalIdentity>
+                        <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                        <tsl:StatusStartingTime>2013-10-13T00:00:00Z</tsl:StatusStartingTime>
+                    </tsl:ServiceInformation>
+                    <tsl:ServiceHistory>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Time Stamping Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2013-10-12T23:59:59Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Time Stamping Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2009-10-13T00:00:00Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                    </tsl:ServiceHistory>
+                </tsl:TSPService>
+                <tsl:TSPService>
+                    <tsl:ServiceInformation>
+                        <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                        <tsl:ServiceName>
+                            <tsl:Name xml:lang="en">LuxTrust Global Qualified Certification Authority</tsl:Name>
+                        </tsl:ServiceName>
+                        <tsl:ServiceDigitalIdentity>
+                            <tsl:DigitalId>
+                                <tsl:X509SubjectName>CN=LuxTrust Global Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                            </tsl:DigitalId>
+                            <tsl:DigitalId>
+                                <tsl:X509Certificate>MIID5zCCAs+gAwIBAgICDJcwDQYJKoZIhvcNAQELBQAwRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MB4XDTExMTEyMjA5MzQyNFoXDTE3MTEyMjA5MzQyNFowTDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IFMuQS4xJTAjBgNVBAMTHEx1eFRydXN0IEdsb2JhbCBRdWFsaWZpZWQgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCo0Cl9yek22xZb2PNZN0gIgx26qgQChKJ3az/r+qhAv/d/jVBLZy5mQvKRQFrvnLZp5gY5RzrgIcMyZxCwCitQ+MyLPiUYZ4mg/lUrHfOfhWRjYaJY4Dz+M69icdzAsKuVrfsurJ/UEmaIkGvgjBzeCd0qd8BXYnnt6GAT9bAsJ7Vh8lDyTho4D1mbude6jmupBTRNqW1TqnuzeJcooI8JAWkWZ0X4gGXzG0iZlC4irIlB/aaQiJoo+8QVr511T+zAJSJv2CpPS68dpL7AZBTw7/fhsyF84HcBf4tCH7Qhl9zFrdaWGdqrZiebSM4SeTBAnuuKUdYuuZyjoAHFnjj3AgMBAAGjgdowgdcwDwYDVR0TBAgwBgEB/wIBADBDBgNVHSAEPDA6MDgGCCuBKwEBAQoDMCwwKgYIKwYBBQUHAgEWHmh0dHBzOi8vcmVwb3NpdG9yeS5sdXh0cnVzdC5sdTALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUFxWFiQkvJIdvPx0b5PKWeYNIE84wMgYDVR0fBCswKTAnoCWgI4YhaHR0cDovL2NybC5sdXh0cnVzdC5sdS9MVEdSQ0EuY3JsMB0GA1UdDgQWBBQ0Fhvx02RnYkyjNLwNs1OkfKHxFzANBgkqhkiG9w0BAQsFAAOCAQEAGPCWTo1SQy6Kmpwin+GaWVW9h2JO3Qwr6qVwZAQHXPhZGQTD+ghIxN949SGyoMmkGTvJjOSaIs8qJ5lGtDWJuy056rN5FCc2P+0qYofpGdNgSkyRY3xtuKteEPcoi+eFBphY+dlilSPXm3j6Vp/6BRb70Zd35O1Zic95ZUNCxDDVkaDbuN9tjGIBKhnq/ExtpheEdZJPjppVXpsBrCUUpJ0A9oSSFOQewwKSMD/vJKF32M9A2TlRd62XdHeNJrahdU/tO55f9tz3ekl/aKoS2khJxMfBvdvlw2Yc2g02g5rYsBxrSphph6IjqIkALM95jbm9T2Xo2CSROTAtprdhKw==</tsl:X509Certificate>
+                            </tsl:DigitalId>
+                        </tsl:ServiceDigitalIdentity>
+                        <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                        <tsl:StatusStartingTime>2013-10-13T00:00:00Z</tsl:StatusStartingTime>
+                    </tsl:ServiceInformation>
+                    <tsl:ServiceHistory>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Global Qualified Certification Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Global Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2013-10-12T23:59:59Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Global Qualified Certification Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Global Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2012-11-30T00:00:00Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Global Qualified Certification Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Global Qualified CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2012-08-01T00:00:00Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                    </tsl:ServiceHistory>
+                </tsl:TSPService>
+                <tsl:TSPService>
+                    <tsl:ServiceInformation>
+                        <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</tsl:ServiceTypeIdentifier>
+                        <tsl:ServiceName>
+                            <tsl:Name xml:lang="en">LuxTrust Global Time Stamping Authority</tsl:Name>
+                        </tsl:ServiceName>
+                        <tsl:ServiceDigitalIdentity>
+                            <tsl:DigitalId>
+                                <tsl:X509SubjectName>CN=LuxTrust Global Timestamping CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                            </tsl:DigitalId>
+                            <tsl:DigitalId>
+                                <tsl:X509Certificate>MIID6jCCAtKgAwIBAgICDtswDQYJKoZIhvcNAQELBQAwRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MB4XDTEyMDgyODEzMDc0N1oXDTIxMDMxNzA5NTEzN1owTzELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IFMuQS4xKDAmBgNVBAMTH0x1eFRydXN0IEdsb2JhbCBUaW1lc3RhbXBpbmcgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC62E7tAeIGoLM3xRc4SNpdb9+MeejLq91VPecvB8sVHi4SkMUTIebWG13HJqGLKcn9paO650PehXWEbgm2aUKRNSimM74pNBhYB0sa0rQui8npZbp1x5ilDwqiTkJ1iFtV5bYrH8hJ0QpX6u4clUEmO9h/Ao/4eXW2wS8hShwDgc0eNu+4SRoXM+ngPrqZetKYD6bEVFw0PSLfCJpGx82JU6/7+Ml0vB6Y/JMcU6xH5u6XdUyayjIvBmKYGSBRCeL7YrJKnBs8hCurHf8pmAlTDdR481dYkIWgKYY6xq4V5IuDSICRcAH2WURQcjyFi/s6kxJMvzuAbH8oxuy8HFyNAgMBAAGjgdowgdcwDwYDVR0TBAgwBgEB/wIBADBDBgNVHSAEPDA6MDgGCCuBKwEBAQoIMCwwKgYIKwYBBQUHAgEWHmh0dHBzOi8vcmVwb3NpdG9yeS5sdXh0cnVzdC5sdTALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUFxWFiQkvJIdvPx0b5PKWeYNIE84wMgYDVR0fBCswKTAnoCWgI4YhaHR0cDovL2NybC5sdXh0cnVzdC5sdS9MVEdSQ0EuY3JsMB0GA1UdDgQWBBT1vyLGHf7yBoMjXV7CJZGUGR08hzANBgkqhkiG9w0BAQsFAAOCAQEAWRIoTruey0uMSs3+g0yT3IefiTtU10fqOuyOmK8q3MUjmWhwX06CJIbWuTAQ6X4oAEGS0A0TWVHgYuGZwSefMz/CAsDUtmIz9EgS6bsFVoF+fTA68BGOT9vBlEndC3tKTjUn0R0ukWkTjX5gSxFPS9fJlPWPpBv4XPIiMMH4cpy1dUj5QRF26xxynJGbx1Uf3uxlJbp6S8+P2mmKFaUp01NMxwFaRyE3g8KJOVJhAurO/8QrDUQH48+HimlMVzxAVhZ/r5ux6auyNafqsjcQ0xkMgRKqPtNZQ5LChbGZyRxO6Itg+JH4CaOkB8mwwVyzJNzEgbArJreC4sBajUdjVw==</tsl:X509Certificate>
+                            </tsl:DigitalId>
+                        </tsl:ServiceDigitalIdentity>
+                        <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                        <tsl:StatusStartingTime>2013-10-13T00:00:00Z</tsl:StatusStartingTime>
+                    </tsl:ServiceInformation>
+                    <tsl:ServiceHistory>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Global Time Stamping Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Global Timestamping CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2013-10-12T23:59:59Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Global Time Stamping Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Global Timestamping CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2012-11-30T00:00:00Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">LuxTrust Global Time Stamping Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=LuxTrust Global Timestamping CA,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2012-10-03T00:00:00Z</tsl:StatusStartingTime>
+                        </tsl:ServiceHistoryInstance>
+                    </tsl:ServiceHistory>
+                </tsl:TSPService>
+                <tsl:TSPService>
+                    <tsl:ServiceInformation>
+                        <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                        <tsl:ServiceName>
+                            <tsl:Name xml:lang="en">LuxTrust Global Qualified Certification Authority 2</tsl:Name>
+                        </tsl:ServiceName>
+                        <tsl:ServiceDigitalIdentity>
+                            <tsl:DigitalId>
+                                <tsl:X509SubjectName>CN=LuxTrust Global Qualified CA 2,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                            </tsl:DigitalId>
+                            <tsl:DigitalId>
+                                <tsl:X509Certificate>MIID6TCCAtGgAwIBAgICEsMwDQYJKoZIhvcNAQELBQAwRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MB4XDTE0MDUyODEzMDkxOFoXDTIwMDUyODEzMDkxOFowTjELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IFMuQS4xJzAlBgNVBAMTHkx1eFRydXN0IEdsb2JhbCBRdWFsaWZpZWQgQ0EgMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMRaetIHqOXl0cMdtVuB3StPlDTeneHMgenp4W/5u4GimFETER3Msj9C6JeAg9H63Az/JpPdGjVWpREZ4goR29Y2Ys1S0kyW9ONFKwyDHm2tU6nyTnx9hVNDDkA4DMNZuf3UIo3J7xaTae1u5ALlIh+g4aPeiYtB4XZlJPGvy3mmQ6020jqQWgeCRVCl91p1HLu6oPZ6xp+wy2qWzhzn7jo81Y8S2g+cD/qen2jphIae8PRLtEjuMLREcu/Rt03PDfxxi2usnSb1djQImYEL/R6I7VgK+UkNXYy+vasXOqWclZ7oMeA6iMt4WkjEKWsKf60eFlVW8J66vA//IdY7IUsCAwEAAaOB2jCB1zAPBgNVHRMECDAGAQH/AgEAMEMGA1UdIAQ8MDowOAYIK4ErAQEBCgMwLDAqBggrBgEFBQcCARYeaHR0cHM6Ly9yZXBvc2l0b3J5Lmx1eHRydXN0Lmx1MAsGA1UdDwQEAwIBBjAfBgNVHSMEGDAWgBQXFYWJCS8kh28/HRvk8pZ5g0gTzjAyBgNVHR8EKzApMCegJaAjhiFodHRwOi8vY3JsLmx1eHRydXN0Lmx1L0xUR1JDQS5jcmwwHQYDVR0OBBYEFO+Wv31lOlW00nD4DOxK4vMnBppSMA0GCSqGSIb3DQEBCwUAA4IBAQCBkOXfYtTOMb853+Oq49NENBFTcjqohYLyvc/w8gisbbe8OPdRfLam+PAkYKfyoy77R78E8Ypg5R9ASxqFt5lEgFADE022+lqs5GNpOVIoit+WCtC4k19SkyOvypqZZApEEfc1VxadqhwwsdJRTt+aVhuItuUo4GGNGTub+y/bs6IGUpNnuWibrqevc2jaG9YYQPGfu9WUtj5znQ+0VdH6wPXfumhHag4Ipl8aBh5kXYEDFpgINdIfbBNq3ULKHNdzdCZj5bJZVxxbW1qC0BQ1UD1o2KoiLQy9G15UErAQHx1BbVGA+eSbZe7Fpy1Va3K0z76usMSSOBf7YlJ7e0Hq</tsl:X509Certificate>
+                            </tsl:DigitalId>
+                        </tsl:ServiceDigitalIdentity>
+                        <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                        <tsl:StatusStartingTime>2014-11-19T00:00:00Z</tsl:StatusStartingTime>
+                    </tsl:ServiceInformation>
+                </tsl:TSPService>
+                <tsl:TSPService>
+                    <tsl:ServiceInformation>
+                        <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                        <tsl:ServiceName>
+                            <tsl:Name xml:lang="en">LuxTrust Global Qualified Certification Authority 3</tsl:Name>
+                        </tsl:ServiceName>
+                        <tsl:ServiceDigitalIdentity>
+                            <tsl:DigitalId>
+                                <tsl:X509SubjectName>CN=LuxTrust Global Qualified CA 3,O=LuxTrust S.A.,C=LU</tsl:X509SubjectName>
+                            </tsl:DigitalId>
+                            <tsl:DigitalId>
+                                <tsl:X509Certificate>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</tsl:X509Certificate>
+                            </tsl:DigitalId>
+                        </tsl:ServiceDigitalIdentity>
+                        <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                        <tsl:StatusStartingTime>2015-08-12T00:00:00Z</tsl:StatusStartingTime>
+                    </tsl:ServiceInformation>
+                </tsl:TSPService>
+            </tsl:TSPServices>
+        </tsl:TrustServiceProvider>
+        <tsl:TrustServiceProvider>
+            <tsl:TSPInformation>
+                <tsl:TSPName>
+                    <tsl:Name xml:lang="en">SeMarket Certification Authority S.A. </tsl:Name>
+                </tsl:TSPName>
+                <tsl:TSPTradeName>
+                    <tsl:Name xml:lang="en">NTRLU-B0132166</tsl:Name>
+                    <tsl:Name xml:lang="en">SeMarket CA S.A.</tsl:Name>
+                </tsl:TSPTradeName>
+                <tsl:TSPAddress>
+                    <tsl:PostalAddresses>
+                        <tsl:PostalAddress xml:lang="en">
+                            <tsl:StreetAddress>Parc d'Activités "Syrdall", 6</tsl:StreetAddress>
+                            <tsl:Locality>Munsbach</tsl:Locality>
+                            <tsl:PostalCode>L-5365</tsl:PostalCode>
+                            <tsl:CountryName>LU</tsl:CountryName>
+                        </tsl:PostalAddress>
+                    </tsl:PostalAddresses>
+                    <tsl:ElectronicAddress>
+                        <tsl:URI xml:lang="en">mailto:confiance-numerique@ilnas.etat.lu</tsl:URI>
+                        <tsl:URI xml:lang="fr">mailto:confiance-numerique@ilnas.etat.lu</tsl:URI>
+                        <tsl:URI xml:lang="de">mailto:confiance-numerique@ilnas.etat.lu</tsl:URI>
+                        <tsl:URI xml:lang="en">http://www.portail-qualite.public.lu/fr/confiance-numerique/prestataires-services-confiance/liste-confiance/se-market/index.html</tsl:URI>
+                    </tsl:ElectronicAddress>
+                </tsl:TSPAddress>
+                <tsl:TSPInformationURI>
+                    <tsl:URI xml:lang="en">http://www.portail-qualite.public.lu/fr/confiance-numerique/prestataires-services-confiance/liste-confiance/se-market/index.html</tsl:URI>
+                </tsl:TSPInformationURI>
+            </tsl:TSPInformation>
+            <tsl:TSPServices>
+                <tsl:TSPService>
+                    <tsl:ServiceInformation>
+                        <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                        <tsl:ServiceName>
+                            <tsl:Name xml:lang="en">SeMarket Qualified Certification Authority</tsl:Name>
+                        </tsl:ServiceName>
+                        <tsl:ServiceDigitalIdentity>
+                            <tsl:DigitalId>
+                                <tsl:X509SubjectName>CN=SeMarket CA Root,O=SeMarket CA S.A.,C=LU</tsl:X509SubjectName>
+                            </tsl:DigitalId>
+                            <tsl:DigitalId>
+                                <tsl:X509Certificate>MIIDUjCCAjqgAwIBAgIQAPwW+ck6S1YDODOUWMrr0DANBgkqhkiG9w0BAQUFADBDMQswCQYDVQQGEwJMVTEZMBcGA1UEChMQU2VNYXJrZXQgQ0EgUy5BLjEZMBcGA1UEAxMQU2VNYXJrZXQgQ0EgUm9vdDAeFw0wODA3MjMxMDAwMzNaFw0yNDA3MjMwOTUzMDhaMEMxCzAJBgNVBAYTAkxVMRkwFwYDVQQKExBTZU1hcmtldCBDQSBTLkEuMRkwFwYDVQQDExBTZU1hcmtldCBDQSBSb290MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt8rPRP9UGxVAFjWzD5ClKdSc9xZZkVldNaynwBwuk2y6BLYc9mxIDIEQ+MGMVfu1bYuWxeDDry4HmNNqGmyFVyvgEekwwYF3hOAkP+wYGo2li4BWJsJrRWgA2Lg7YdBJ7TCFat/Gk9kdsNOnuBHw3ZXI6fq8ejNBRk2ffOHbIMp60D064b0fDHL5wRCOgztxX0iCoStZHRgKYhDyfbQlZfESmeXkG7sfatuqIs1GxbfxqIQ7VgZexdDtJh8gFAiZLDUtoB3d+LCPgc2I57NMkBWrGHo+HxNq5BRwSWOfwZIcTHGyQHYKBdfx6qbkFqP+/aYgbxOx10unzMLyywfYDQIDAQABo0IwQDAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQU87dhyhzwq6SpDcQJ4Zq6g48MkOAwDQYJKoZIhvcNAQEFBQADggEBAHa6r27PR3/cVpW8i7GpQfeNgQvcl3GLwhRAjIrUathJI/J1ECSY4uxamKmzYKukKE+aWgVC0uVRvPwzytdjwcLqI8lzROk6ZjD4tinlkA18nySp95sexb8be5f3n5MQzuIvfM+iD2KAVme+zigRmiRqXOijKoOsO5VmCV2WOfcd6u07Sp6BFffbzpg4AJCDHLDeQmpkQmV7GzXSxA38ufNKf+gPGzsLqYoxL/MmeAUUDFgAWKb4WdqhbBsOd1Y0LSMBn/MjD1u+JURsoWzrz1gVo7/RK0iBWqAolppb0oMFwrSKg1QqM3DaJRjG0PBmSaNHXBbZMcEeXi0afD5r6+k=</tsl:X509Certificate>
+                            </tsl:DigitalId>
+                        </tsl:ServiceDigitalIdentity>
+                        <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionrevoked</tsl:ServiceStatus>
+                        <tsl:StatusStartingTime>2009-09-11T00:00:00Z</tsl:StatusStartingTime>
+                        <tsl:SchemeServiceDefinitionURI>
+                            <tsl:URI xml:lang="en">http://www.portail-qualite.public.lu/fr/confiance-numerique/prestataires-services-confiance/liste-confiance/se-market/index.html</tsl:URI>
+                        </tsl:SchemeServiceDefinitionURI>
+                        <tsl:ServiceInformationExtensions>
+                            <tsl:Extension Critical="true">
+                                <ecc:Qualifications xmlns:ecc="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#">
+<ecc:QualificationElement>
+<ecc:Qualifiers>
+<ecc:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD"/>
+</ecc:Qualifiers>
+<ecc:CriteriaList assert="all">
+<ecc:PolicySet>
+<ecc:PolicyIdentifier>
+<xades:Identifier xmlns:xades="http://uri.etsi.org/01903/v1.3.2#">1.3.6.1.4.1.25969.8.2.1</xades:Identifier>
+<xades:Description xmlns:xades="http://uri.etsi.org/01903/v1.3.2#">Qualified certificates including such Policy OID have the corresponding private key residing in an SSCD.</xades:Description>
+</ecc:PolicyIdentifier>
+</ecc:PolicySet>
+</ecc:CriteriaList>
+</ecc:QualificationElement>
+</ecc:Qualifications>
+                            </tsl:Extension>
+                        </tsl:ServiceInformationExtensions>
+                    </tsl:ServiceInformation>
+                    <tsl:ServiceHistory>
+                        <tsl:ServiceHistoryInstance>
+                            <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                            <tsl:ServiceName>
+                                <tsl:Name xml:lang="en">SeMarket Qualified Certification Authority</tsl:Name>
+                            </tsl:ServiceName>
+                            <tsl:ServiceDigitalIdentity>
+                                <tsl:DigitalId>
+                                    <tsl:X509SubjectName>CN=SeMarket CA Root,O=SeMarket CA S.A.,C=LU</tsl:X509SubjectName>
+                                </tsl:DigitalId>
+                            </tsl:ServiceDigitalIdentity>
+                            <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                            <tsl:StatusStartingTime>2007-11-27T00:00:00Z</tsl:StatusStartingTime>
+                            <tsl:ServiceInformationExtensions>
+                                <tsl:Extension Critical="true">
+                                    <ecc:Qualifications xmlns:ecc="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#">
+<ecc:QualificationElement>
+<ecc:Qualifiers>
+<ecc:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD"/>
+</ecc:Qualifiers>
+<ecc:CriteriaList assert="all">
+<ecc:PolicySet>
+<ecc:PolicyIdentifier>
+<xades:Identifier xmlns:xades="http://uri.etsi.org/01903/v1.3.2#">1.3.6.1.4.1.25969.8.2.1</xades:Identifier>
+<xades:Description xmlns:xades="http://uri.etsi.org/01903/v1.3.2#">Qualified certificates including such Policy OID have the corresponding private key residing in an SSCD.</xades:Description>
+</ecc:PolicyIdentifier>
+</ecc:PolicySet>
+</ecc:CriteriaList>
+</ecc:QualificationElement>
+</ecc:Qualifications>
+                                </tsl:Extension>
+                            </tsl:ServiceInformationExtensions>
+                        </tsl:ServiceHistoryInstance>
+                    </tsl:ServiceHistory>
+                </tsl:TSPService>
+            </tsl:TSPServices>
+        </tsl:TrustServiceProvider>
+    </tsl:TrustServiceProviderList>
+    
+<ds:Signature Id="Signature-1">
+<ds:SignedInfo Id="SignedInfo">
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#TrustServiceStatusList-1">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>BDnbUo9UPsmgXZXGyLZY2jQIsYxcw/Xhb/3uaZHKWfc=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="SignedProperties-Reference" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>KCG2NoL9pTJslk7lB4E1x+gBO6NJJ6/aiEGfCQ4nn8Y=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>EOHHPaFUN/y/P+mAKGk2lTv4umuS5njgyCSic5cjbPld5m0jqOrtDFRYycw6XruYjQztXkh3RwJ6
+YlW/FQzgdHtrEee/WX9ZFM4Hwd+rQvnrx0/okrL+DlrOFrfbBG/UdLGRuArfzt+fQzn/ygt8IplF
++InHM7gYL3zjuqQwuRv2kvgJgsWFjiZ3qGpw554EqcJf8+rhiCOAAXi56t3Xx3QlGX/UGuHbSaFZ
+lKSmUYzyJLb827X/luBg5tktFH9nY413v7lRCpXz4SYS32w5EdKWr/asqmIK4622f2ipRJ/eaoRT
+TEFXFtVJlMtptudwx51NSSP81DfQWXKFkcjn4Q==</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIF+DCCBOCgAwIBAgIDCrXJMA0GCSqGSIb3DQEBCwUAMEwxCzAJBgNVBAYTAkxVMRYwFAYDVQQK
+Ew1MdXhUcnVzdCBTLkEuMSUwIwYDVQQDExxMdXhUcnVzdCBHbG9iYWwgUXVhbGlmaWVkIENBMB4X
+DTE0MDIxOTA4NTk0OVoXDTE3MDIxOTA4NTk0OVowgfwxCzAJBgNVBAYTAkxVMQswCQYDVQQHEwJM
+VTEOMAwGA1UEChMFSUxOQVMxEzARBgNVBAsTCkxVMjI5NTk0NjMxITAfBgNVBAsTGERpZ2l0YWwg
+dHJ1c3QgZGVwYXJ0bWVudDETMBEGA1UEAxMKQWxhaW4gV2FobDENMAsGA1UEBBMEV2FobDEOMAwG
+A1UEKhMFQWxhaW4xHTAbBgNVBAUTFDExMTA1ODg3NzUwMDMxNTcwMTI3MScwJQYJKoZIhvcNAQkB
+FhhhbGFpbi53YWhsQGlsbmFzLmV0YXQubHUxHDAaBgNVBAwTE1Byb2Zlc3Npb25hbCBQZXJzb24w
+ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4gbOHXYhqHTbSC9C/YMYeY82K6PP8CsVg
+bK8RH7i8T+870jmrbfgQyK5/voNJrp76lZpBny3fO5LwfzdMmmcsO8WPcpnQ/DTQhPoYkgkKSWwK
+pmrtSGeOyGkM2zcVgwBsyER8Nmm3ySqsBUDrVi5fsT587QQvj+gihslTD1dhkvPSQtCsmUjhCOHz
+X9G5AxSr/0RNtJIGysQDs9/8RuZL8A/+FjYIUAbkLLvFzmTK6NVqroWfU0o1QZ3i8j3Am144q/hZ
+HcyNkB/jG/gsuxnskOMlUa2GbyffCPJlxnb7Ca1FgMl52kGIASFx6Li1T3ubP5y/6qSslP/kVnwJ
+efRJAgMBAAGjggIwMIICLDAMBgNVHRMBAf8EAjAAMGEGCCsGAQUFBwEBBFUwUzAjBggrBgEFBQcw
+AYYXaHR0cDovL29jc3AubHV4dHJ1c3QubHUwLAYIKwYBBQUHMAKGIGh0dHA6Ly9jYS5sdXh0cnVz
+dC5sdS9MVEdRQ0EuY3J0MIIBHgYDVR0gBIIBFTCCAREwggEDBggrgSsBAQoDATCB9jCBxwYIKwYB
+BQUHAgIwgboagbdMdXhUcnVzdCBRdWFsaWZpZWQgQ2VydGlmaWNhdGUgb24gU1NDRCBDb21wbGlh
+bnQgd2l0aCBFVFNJIFRTIDEwMSA0NTYgUUNQKyBjZXJ0aWZpY2F0ZSBwb2xpY3kuIEtleSBHZW5l
+cmF0aW9uIGJ5IENTUC4gU29sZSBBdXRob3Jpc2VkIFVzYWdlOiBTdXBwb3J0IG9mIFF1YWxpZmll
+ZCBFbGVjdHJvbmljIFNpZ25hdHVyZS4wKgYIKwYBBQUHAgEWHmh0dHBzOi8vcmVwb3NpdG9yeS5s
+dXh0cnVzdC5sdTAIBgYEAIswAQEwIgYIKwYBBQUHAQMEFjAUMAgGBgQAjkYBATAIBgYEAI5GAQQw
+CwYDVR0PBAQDAgZAMB8GA1UdIwQYMBaAFDQWG/HTZGdiTKM0vA2zU6R8ofEXMDIGA1UdHwQrMCkw
+J6AloCOGIWh0dHA6Ly9jcmwubHV4dHJ1c3QubHUvTFRHUUNBLmNybDARBgNVHQ4ECgQIR2vHCdq/
+rJAwDQYJKoZIhvcNAQELBQADggEBAAUwL95Qob7946jCFDjS1lA8tYTduCpWwHgfj/hCkJZBRv3b
+PD5Q+UxbEca+R6lXyAaym5olPw+8wRZbsVYxmC7UuESltk3+BqmsLLCCdHDuY6A9pXrB8rtfHbKM
+6l7cutaqCF2UXIysXaNqFxl0rRbV+GvGZBrUbcaZWKXaVyYpLkSxOwcux9penyG7xPuV94hxVZeX
+FmVBwzQwxJZpOJVMcTGV/h83TU5eRj5Sm38RFAXik60I1CJfw/oNOmqnJdVdLh72gMad2zNECzqx
+PwAWWcxlm8sccjBq5UEZNsFOZsTUrC2S7ERMb8OoiMCF/FeGawkBZk644/DATAXfTj4=
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object><xades:QualifyingProperties Target="#Signature-1" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"><xades:SignedProperties Id="SignedProperties"><xades:SignedSignatureProperties><xades:SigningTime>2015-08-12T09:13:21Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>WQU/TsJc0+vWzKkkes+91/zrZPASva2UxFZZQfzECjI=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=LuxTrust Global Qualified CA,O=LuxTrust S.A.,C=LU</ds:X509IssuerName><ds:X509SerialNumber>701897</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignatureProductionPlace><xades:City>Luxembourg</xades:City><xades:CountryName>Luxembourg</xades:CountryName></xades:SignatureProductionPlace></xades:SignedSignatureProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object>
+</ds:Signature></tsl:TrustServiceStatusList>

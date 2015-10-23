@@ -36,9 +36,9 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -90,6 +90,8 @@ public class XAdESLevelBWithPolicyTest extends AbstractTestSignature {
 		String xmlContent = new String(byteArray);
 		logger.info(xmlContent);
 		assertTrue(xmlContent.contains("description"));
+		assertTrue(xmlContent.contains(":SigPolicyQualifiers>"));
+		assertTrue(xmlContent.contains(":SigPolicyQualifier>"));
 		assertTrue(xmlContent.contains(HTTP_SPURI_TEST));
 	}
 

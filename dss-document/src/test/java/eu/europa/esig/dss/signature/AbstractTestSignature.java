@@ -76,9 +76,13 @@ public abstract class AbstractTestSignature {
 	public void signAndVerify() throws IOException {
 		final DSSDocument signedDocument = sign();
 
+		assertNotNull(signedDocument.getName());
+		assertNotNull(signedDocument.getBytes());
+		assertNotNull(signedDocument.getMimeType());
+
 		logger.info("=================== VALIDATION =================");
 
-		// signedDocument.save("target/cades-b.bin");
+		//		signedDocument.save("target/xades.xml");
 
 		if (logger.isDebugEnabled()) {
 			try {

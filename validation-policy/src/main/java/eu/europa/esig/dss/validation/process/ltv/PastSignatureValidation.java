@@ -41,13 +41,9 @@ import eu.europa.esig.dss.validation.process.subprocess.EtsiPOEExtraction;
 
 /**
  * 9.2.4 Past signature validation process<br>
- *
  * 9.2.4.1 Description<br>
- *
  * This process is used when validation of a signature (or a time-stamp token) fails at the current time with an
  * INDETERMINATE status such that the provided proofs of existence may help to go to a determined status.
- *
- *
  */
 public class PastSignatureValidation {
 
@@ -80,9 +76,7 @@ public class PastSignatureValidation {
 
 	/**
 	 * This method carry out the Past Signature Validation process.
-	 *
 	 * 9.2.1.2 Input<br>
-	 *
 	 * - Signature or time-stamp token . Mandatory<br>
 	 * - Target certificate ............ Mandatory<br>
 	 * - X.509 Validation Parameters ... Mandatory<br>
@@ -92,7 +86,8 @@ public class PastSignatureValidation {
 	 * - Cryptographic Constraints ..... Optional<br>
 	 *
 	 * @param params
-	 * @param signature                      Can be the document or the timestamp signature
+	 * @param signature
+	 *            Can be the document or the timestamp signature
 	 * @param currentTimeSignatureConclusion
 	 * @param context
 	 */
@@ -124,7 +119,6 @@ public class PastSignatureValidation {
 
 		/**
 		 * 9.2.4.4 Processing<br>
-		 *
 		 * 1) Perform the past certificate validation process with the following inputs:<br>
 		 * - the signature,<br>
 		 * - the target certificate,<br>
@@ -199,7 +193,8 @@ public class PastSignatureValidation {
 			 * -- If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE or INDETERMINATE/
 			 * REVOKED_CA_NO_POE, return VALID.<br>
 			 */
-			if (Indication.INDETERMINATE.equals(currentTimeIndication) && (SubIndication.REVOKED_NO_POE.equals(currentTimeSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(currentTimeSubIndication))) {
+			if (Indication.INDETERMINATE.equals(currentTimeIndication)
+					&& (SubIndication.REVOKED_NO_POE.equals(currentTimeSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(currentTimeSubIndication))) {
 
 				conclusion.setIndication(Indication.VALID);
 				return conclusion;
@@ -212,12 +207,11 @@ public class PastSignatureValidation {
 				/**
 				 * say best-signature-time is the lowest time at which there exists a POE for the signature value in the set
 				 * of POEs:<br>
-				 *
 				 * --- a) If best-signature-time is before the issuance date of the signer's certificate (notBefore field),
 				 * terminate with INVALID/NOT_YET_VALID.<br>
 				 */
 
-				final int signingCertId = getSigningCertificateId(signature);
+				final String signingCertId = signature.getValue("./SigningCertificate/@Id");
 				final XmlDom signingCert = params.getCertificate(signingCertId);
 				final Date notBefore = signingCert.getTimeValue("./NotBefore/text()");
 
@@ -291,18 +285,6 @@ public class PastSignatureValidation {
 		conclusion.setIndication(currentTimeIndication);
 		conclusion.setSubIndication(currentTimeSubIndication);
 		return conclusion;
-	}
-
-	/**
-	 * This method returns the signing certificate.
-	 *
-	 * @param signature
-	 * @return
-	 */
-	private static int getSigningCertificateId(final XmlDom signature) {
-
-		final int signingCertId = signature.getIntValue("./SigningCertificate/@Id");
-		return signingCertId;
 	}
 
 	/**

@@ -20,13 +20,22 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.security.cert.CRLException;
+import java.security.cert.X509CRL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.CertificateList;
+import org.bouncycastle.asn1.x509.TBSCertList;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -37,7 +46,6 @@ import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
@@ -72,7 +80,6 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		// add a LT level or replace an existing LT level
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContent());
-		assertExtendSignaturePossible(cadesSignature, parameters);
 		if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
 			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
 		}
@@ -86,29 +93,29 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		cadesSignature.setDetachedContents(parameters.getDetachedContent());
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
 
-		Store certificatesStore = cmsSignedData.getCertificates();
+		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
 		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
 		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
 		for (final CertificateToken certificateToken : certificates) {
-			final X509CertificateHolder x509CertificateHolder = certificateToken.getX509CertificateHolder();
+			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
 			newCertificateStore.add(x509CertificateHolder);
 		}
-		certificatesStore = new CollectionStore(newCertificateStore);
+		certificatesStore = new CollectionStore<X509CertificateHolder>(newCertificateStore);
 
-		Store crlsStore = cmsSignedData.getCRLs();
+		Store<X509CRLHolder> crlsStore = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
 		final DefaultAdvancedSignature.RevocationDataForInclusion revocationDataForInclusion = cadesSignature.getRevocationDataForInclusion(validationContext);
 		for (final CRLToken crlToken : revocationDataForInclusion.crlTokens) {
-			final X509CRLHolder x509CRLHolder = crlToken.getX509CrlHolder();
+			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
 			newCrlsStore.add(x509CRLHolder);
 		}
-		crlsStore = new CollectionStore(newCrlsStore);
+		crlsStore = new CollectionStore<X509CRLHolder>(newCrlsStore);
 
 		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));
 		for (final OCSPToken ocspToken : revocationDataForInclusion.ocspTokens) {
 			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
-			newOtherRevocationInfoFormatStore.add(DSSASN1Utils.toASN1Primitive(DSSUtils.getEncoded(basicOCSPResp)));
+			newOtherRevocationInfoFormatStore.add(DSSASN1Utils.toASN1Primitive(DSSASN1Utils.getEncoded(basicOCSPResp)));
 		}
 		otherRevocationInfoFormatStoreBasic = new CollectionStore(newOtherRevocationInfoFormatStore);
 
@@ -123,13 +130,23 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	}
 
 	/**
-	 * @param cadesSignature
-	 * @param parameters
+	 * @return the a copy of x509crl as a X509CRLHolder
 	 */
-	private void assertExtendSignaturePossible(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) throws DSSException {
-		//        if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
-		//            final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
-		//            throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
-		//        }
+	private X509CRLHolder getX509CrlHolder(CRLToken crlToken) {
+		try {
+			final X509CRL x509crl = crlToken.getX509crl();
+			final TBSCertList tbsCertList = TBSCertList.getInstance(x509crl.getTBSCertList());
+			final AlgorithmIdentifier sigAlgOID = new AlgorithmIdentifier(new ASN1ObjectIdentifier(x509crl.getSigAlgOID()));
+			final byte[] signature = x509crl.getSignature();
+			final DERSequence seq = new DERSequence(new ASN1Encodable[] { tbsCertList, sigAlgOID, new DERBitString(signature) });
+			final CertificateList x509CRL = new CertificateList(seq);
+			// final CertificateList x509CRL = new
+			// CertificateList.getInstance((Object)seq);
+			final X509CRLHolder x509crlHolder = new X509CRLHolder(x509CRL);
+			return x509crlHolder;
+		} catch (CRLException e) {
+			throw new DSSException(e);
+		}
 	}
+
 }

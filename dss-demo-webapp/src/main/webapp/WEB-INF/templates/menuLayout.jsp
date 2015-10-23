@@ -3,22 +3,51 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
-<div class="list-group hidden-print">
-    <c:set var="currentPage" value="${requestScope['javax.servlet.forward.servlet_path']}" />
-    <c:choose> 
-        <%-- ADMIN PART --%>
-        <c:when test="${fn:contains(currentPage, 'admin')}">
+<c:set var="currentPage" value="${requestScope['javax.servlet.forward.servlet_path']}" />
+
+<c:choose> 
+    <%-- ADMIN PART --%>
+    <c:when test="${fn:contains(currentPage, 'admin')}">
+        <div class="list-group hidden-print">
             <a href="<spring:url value="/admin/general"/>" class="list-group-item${currentPage eq '/admin/general' ? ' active' : ''}"><spring:message code="label.general" /></a>
             <a href="<spring:url value="/admin/proxy"/>" class="list-group-item${currentPage eq '/admin/proxy' ? ' active' : ''}"><spring:message code="label.proxy" /></a>
-            <a href="<spring:url value="/admin/tsl-info"/>" class="list-group-item${currentPage eq '/admin/tsl-info' ? ' active' : ''}"><spring:message code="label.tsl" /></a>
-        </c:when>
-        <%-- NO ADMIN PART --%>
-        <c:otherwise>
-            <a href="<spring:url value="/signature" />" class="list-group-item${currentPage eq '/signature' ? ' active' : ''}"><spring:message code="label.signature.applet" /></a>
-            <a href="<spring:url value="/extension" />" class="list-group-item${currentPage eq '/extension' ? ' active' : ''}"><spring:message code="label.extend" /></a>
-            <a href="<spring:url value="/validation" />" class="list-group-item${currentPage eq '/validation' ? ' active' : ''}"><spring:message code="label.validate" /></a>
-        </c:otherwise>
-    </c:choose>
+            <a href="<spring:url value="/admin/certificates"/>" class="list-group-item${currentPage eq '/admin/certificates' ? ' active' : ''}"><spring:message code="label.certificates" /></a>
+        </div>
+    </c:when>
+    <%-- NO ADMIN PART --%>
+    <c:otherwise>
+        <div class="panel panel-default">
+            <div class="panel-heading">e-Signature</div>
+            <div class="list-group hidden-print">
+                <a href="<spring:url value="/signature-light-applet" />" class="list-group-item${currentPage eq '/signature-light-applet' ? ' active' : ''}">Light applet + Spring MVC</a>
+                <a href="<spring:url value="/signature-jnlp-webservices" />" class="list-group-item${currentPage eq '/signature-jnlp-webservices' ? ' active' : ''}">JNLP + SOAP WebServices</a>
+                <a href="<spring:url value="/signature-standalone" />" class="list-group-item${currentPage eq '/signature-standalone' ? ' active' : ''}">Standalone application</a>
+                <a href="<spring:url value="/signature-rest" />" class="list-group-item${currentPage eq '/signature-rest' ? ' active' : ''}">REST WebServices</a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Server side</div>
+            <div class="list-group hidden-print">
+                <a href="<spring:url value="/extension" />" class="list-group-item${currentPage eq '/extension' ? ' active' : ''}"><spring:message code="label.extend" /></a>
+                <a href="<spring:url value="/validation" />" class="list-group-item${currentPage eq '/validation' ? ' active' : ''}"><spring:message code="label.validate" /></a>
+                <a href="<spring:url value="/validation-policy" />" class="list-group-item${currentPage eq '/validation-policy' ? ' active' : ''}"><spring:message code="label.validation-policy" /></a>
+                <a href="<spring:url value="/tsl-info"/>" class="list-group-item${currentPage eq '/tsl-info' ? ' active' : ''} ${!lotlOK ? 'list-group-item-warning' : ''}">
+    	            <spring:message code="label.tsls" />
+                    <c:if test="${!lotlOK}">
+                        <span class="glyphicon glyphicon-warning-sign pull-right"></span>
+                    </c:if>
+                </a>
+            </div>
+        </div>
+    </c:otherwise>
+</c:choose>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Documentation</div>
+    <div class="list-group hidden-print">
+        <a href="<spring:url value="/doc/dss-documentation.html" />" target="_blank" class="list-group-item">HTML</a>
+        <a href="<spring:url value="/doc/dss-documentation.pdf" />" target="_blank" class="list-group-item">PDF</a>
+    </div>
 </div>
 
 <div class="panel panel-default">

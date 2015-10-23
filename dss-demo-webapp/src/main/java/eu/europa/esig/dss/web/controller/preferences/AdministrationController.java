@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.web.controller.preferences;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -30,9 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager;
-import eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource;
 import eu.europa.esig.dss.web.dao.PreferencesDao;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Administration controller
@@ -41,11 +37,6 @@ import eu.europa.esig.dss.x509.CertificateToken;
 @RequestMapping(value = "/admin")
 public class AdministrationController {
 
-	/**
-	 * @see eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource
-	 */
-	@Autowired
-	private ReloadableTrustedListCertificateSource reloadableTrustedListCertificateSource;
 
 	/**
 	 * @see ProxyPreferenceManager
@@ -83,18 +74,6 @@ public class AdministrationController {
 		return "admin-proxy-list";
 	}
 
-	/**
-	 * @param model
-	 *            The model attributes
-	 * @return a view name
-	 */
-	@RequestMapping(value = "/tsl-info", method = RequestMethod.GET)
-	public String showSignature(final Model model) {
 
-		final List<CertificateToken> certificates = reloadableTrustedListCertificateSource.getCertificates();
-		model.addAttribute("certs", certificates);
-		model.addAttribute("tsls", reloadableTrustedListCertificateSource.getDiagnosticInfo().entrySet());
-		return "admin-tsl-info";
-	}
 
 }

@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.5.0</version>
+		<version>4.6.RC1</version>
 	</parent>
 
 	<artifactId>dss-spi</artifactId>
@@ -16,6 +16,11 @@
 	<description>DSS Service Provider Interface contains the contract interface shared between the applet and the server-side of DSS.</description>
 
 	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-model</artifactId>
+		</dependency>
+	
 		<dependency>
 			<groupId>org.apache.santuario</groupId>
 			<artifactId>xmlsec</artifactId>
@@ -27,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcmail-jdk15on</artifactId>
+			<artifactId>bcpkix-jdk15on</artifactId>
 		</dependency>
 		
 		<dependency>

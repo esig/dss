@@ -21,12 +21,15 @@
 package eu.europa.esig.dss.client.http.commons;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -68,6 +71,7 @@ import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.auth.BasicScheme;
@@ -126,6 +130,10 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	private boolean updated;
 
+	private String sslKeystorePath;
+	private String sslKeystoreType = KeyStore.getDefaultType();
+	private String sslKeystorePassword = StringUtils.EMPTY;
+
 	/**
 	 * The default constructor for CommonsDataLoader.
 	 */
@@ -145,7 +153,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	private HttpClientConnectionManager getConnectionManager() throws DSSException {
 
-		LOG.debug("HTTPS TrustStore undefined, using default");
 		RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder = RegistryBuilder.create();
 		socketFactoryRegistryBuilder = setConnectionManagerSchemeHttp(socketFactoryRegistryBuilder);
 		socketFactoryRegistryBuilder = setConnectionManagerSchemeHttps(socketFactoryRegistryBuilder);
@@ -167,11 +174,23 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) throws DSSException {
 		try {
-			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(new KeyManager[0], new TrustManager[] {
-					new DefaultTrustManager()
-			}, new SecureRandom());
-			SSLContext.setDefault(sslContext);
+
+			SSLContext sslContext = null;
+			if (StringUtils.isEmpty(sslKeystorePath)){
+				LOG.debug("Use default SSL configuration");
+				sslContext = SSLContext.getInstance("TLS");
+				sslContext.init(new KeyManager[0], new TrustManager[] {
+						new DefaultTrustManager()
+				}, new SecureRandom());
+				SSLContext.setDefault(sslContext);
+			} else{
+				LOG.debug("Use specific SSL configuration with keystore");
+				FileInputStream fis = new FileInputStream(new File(sslKeystorePath));
+				KeyStore keystore  = KeyStore.getInstance(sslKeystoreType);
+				keystore.load(fis, sslKeystorePassword.toCharArray());
+				IOUtils.closeQuietly(fis);
+				sslContext = SSLContexts.custom().loadTrustMaterial(keystore).useTLS().build();
+			}
 
 			final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
@@ -554,11 +573,11 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 		final int statusCode = httpResponse.getStatusLine().getStatusCode();
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
+			LOG.debug(url +" status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
 		}
 
 		if (statusCode != HttpStatus.SC_OK) {
-			LOG.warn("No content available via url: " + url + " - will use nothing: " + url);
+			LOG.warn("No content available via url: " + url);
 			return null;
 		}
 
@@ -702,6 +721,18 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 				LOG.trace(">>> SET: " + proxyPreferenceManager);
 			}
 		}
+	}
+
+	public void setSslKeystorePath(String sslKeystorePath) {
+		this.sslKeystorePath = sslKeystorePath;
+	}
+
+	public void setSslKeystoreType(String sslKeystoreType) {
+		this.sslKeystoreType = sslKeystoreType;
+	}
+
+	public void setSslKeystorePassword(String sslKeystorePassword) {
+		this.sslKeystorePassword = sslKeystorePassword;
 	}
 
 	/**

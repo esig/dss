@@ -67,11 +67,11 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -205,7 +205,7 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 			// assertEquals(1, seqDigest.size());
 
 			ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier.getInstance(seqDigest.getObjectAt(0));
-			assertEquals(DigestAlgorithm.SHA256.getOid(), oidDigestAlgo);
+			assertEquals(new ASN1ObjectIdentifier(DigestAlgorithm.SHA256.getOid()), oidDigestAlgo);
 
 			ASN1Sequence seqEncapsulatedInfo = ASN1Sequence.getInstance(seq.getObjectAt(2));
 			logger.info("ENCAPSULATED INFO : " + seqEncapsulatedInfo.toString());

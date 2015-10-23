@@ -33,7 +33,6 @@ import eu.europa.esig.dss.validation.report.Reports;
 
 /**
  * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-663
- *
  */
 public class ASiCEWithMalformedOCSPTest {
 

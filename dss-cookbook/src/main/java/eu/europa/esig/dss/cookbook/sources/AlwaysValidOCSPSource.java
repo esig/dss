@@ -57,8 +57,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonCertificateSource;
 import eu.europa.esig.dss.x509.OCSPToken;
@@ -90,7 +90,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 	 */
 	public AlwaysValidOCSPSource() {
 
-		this("/ocsp.p12", "password");
+		this("src/main/resources/ocsp.p12", "password");
 	}
 
 	/**
@@ -105,8 +105,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 		try {
 
 			final KeyStore keyStore = KeyStore.getInstance("PKCS12");
-			final String pathFromResource = Cookbook.getPathFromResource(signerPkcs12Name);
-			final FileInputStream fileInputStream = new FileInputStream(pathFromResource);
+			final FileInputStream fileInputStream = new FileInputStream(signerPkcs12Name);
 			keyStore.load(fileInputStream, password.toCharArray());
 			final String alias = keyStore.aliases().nextElement();
 			signingCert = (X509Certificate) keyStore.getCertificate(alias);
@@ -167,7 +166,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			X509Certificate issuerCert = issuerCertificateToken.getCertificate();
 			final OCSPReq ocspReq = generateOCSPRequest(issuerCert, serialNumber);
 
-			final DigestCalculator digestCalculator = DSSUtils.getSHA1DigestCalculator();
+			final DigestCalculator digestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
 			final BasicOCSPRespBuilder basicOCSPRespBuilder = new JcaBasicOCSPRespBuilder(issuerCert.getPublicKey(), digestCalculator);
 			final Extension extension = ocspReq.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
 			if (extension != null) {
@@ -220,7 +219,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 
 		try {
 
-			final DigestCalculator digestCalculator = DSSUtils.getSHA1DigestCalculator();
+			final DigestCalculator digestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
 			// Generate the id for the certificate we are looking for
 			CertificateID id = new CertificateID(digestCalculator, new X509CertificateHolder(issuerCert.getEncoded()), serialNumber);
 

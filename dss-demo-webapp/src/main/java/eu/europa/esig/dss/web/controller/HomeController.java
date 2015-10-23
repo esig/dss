@@ -25,25 +25,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 
  * Home controller
- * 
- *
- *
- * 
- *
- *
  */
 @Controller
 public class HomeController {
-    /**
-     * 
-     * @param model The model attributes
-     * @return The view name.
-     */
-    @RequestMapping(value = "/home")
-    public final String showHome(final Model model) {
-        return "home";
-    }
+	/**
+	 *
+	 * @param model The model attributes
+	 * @return The view name.
+	 */
+	@RequestMapping(value = "/home")
+	public final String showHome(final Model model) {
+		return "home";
+	}
 
 }

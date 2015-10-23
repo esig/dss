@@ -125,7 +125,7 @@ public class OnlineOCSPSource implements OCSPSource {
 				if (logger.isDebugEnabled()) {
 					logger.info("No OCSP location found for " + dssIdAsString);
 				}
-				certificateToken.extraInfo().infoNoOCSPResponse(ocspAccessLocation);
+				certificateToken.extraInfo().infoNoOcspUriFoundInCertificate();
 				return null;
 			}
 

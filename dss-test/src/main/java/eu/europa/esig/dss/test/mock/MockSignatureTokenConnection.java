@@ -48,27 +48,22 @@ public class MockSignatureTokenConnection extends AbstractSignatureTokenConnecti
 	}
 
 	@Override
-	public byte[] sign(byte[] bytes, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
 
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
+		logger.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
 
 		try {
 			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
 			signature.initSign(((MockPrivateKeyEntry)keyEntry).getPrivateKey());
-			signature.update(bytes);
+			signature.update(toBeSigned.getBytes());
 			final byte[] signatureValue = signature.sign();
-			return signatureValue;
+			return new SignatureValue(signatureAlgorithm, signatureValue);
 		} catch(Exception e) {
 			throw new DSSException(e);
 		}
-	}
-
-	@Override
-	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
-		return null;
 	}
 
 }

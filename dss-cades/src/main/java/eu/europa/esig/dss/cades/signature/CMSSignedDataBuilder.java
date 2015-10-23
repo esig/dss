@@ -53,6 +53,7 @@ import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.ChainCertificate;
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
@@ -106,7 +107,7 @@ public class CMSSignedDataBuilder {
 
 			final CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
 
-			final X509CertificateHolder certHolder = signingCertificate.getX509CertificateHolder();
+			final X509CertificateHolder certHolder = DSSASN1Utils.getX509CertificateHolder(signingCertificate);
 			final SignerInfoGenerator signerInfoGenerator = signerInfoGeneratorBuilder.build(contentSigner, certHolder);
 
 			generator.addSignerInfoGenerator(signerInfoGenerator);
@@ -125,7 +126,7 @@ public class CMSSignedDataBuilder {
 				final Collection<X509CertificateHolder> certificatesMatches = certificates.getMatches(null);
 				for (final X509CertificateHolder certificatesMatch : certificatesMatches) {
 
-					final CertificateToken x509Certificate = DSSUtils.getCertificate(certificatesMatch);
+					final CertificateToken x509Certificate = DSSASN1Utils.getCertificate(certificatesMatch);
 					newCertificateChain.add(x509Certificate);
 				}
 			}

@@ -37,9 +37,8 @@ public class InMemoryDocument extends CommonDocument {
 
 	private byte[] bytes;
 
-	private String name;
-
-	private String absolutePath;
+	public InMemoryDocument(){
+	}
 
 	/**
 	 * Creates dss document that retains the data in memory
@@ -115,19 +114,20 @@ public class InMemoryDocument extends CommonDocument {
 	}
 
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
 	public byte[] getBytes() throws DSSException {
 		return bytes;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
+	public void setBytes(byte[] bytes) {
+		this.bytes = bytes;
 	}
 
+	@Override
+	public String getAbsolutePath() {
+		return absolutePath;
+	}
+
+	@Override
 	public void setAbsolutePath(final String absolutePath) {
 		this.absolutePath = absolutePath;
 	}
@@ -146,11 +146,6 @@ public class InMemoryDocument extends CommonDocument {
 	}
 
 	@Override
-	public String getAbsolutePath() {
-		return absolutePath;
-	}
-
-	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, bytes);
 		final String base64Encode = Base64.encodeBase64String(digestBytes);
@@ -161,4 +156,5 @@ public class InMemoryDocument extends CommonDocument {
 	public String getBase64Encoded() {
 		return Base64.encodeBase64String(bytes);
 	}
+
 }

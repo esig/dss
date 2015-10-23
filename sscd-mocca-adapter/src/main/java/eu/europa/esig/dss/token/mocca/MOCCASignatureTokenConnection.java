@@ -198,16 +198,6 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 
 	}
 
-	@Override
-	@Deprecated
-	public byte[] sign(byte[] bytes, DigestAlgorithm digestAlgo, DSSPrivateKeyEntry keyEntry) throws DSSException {
-
-		ToBeSigned tbs = new ToBeSigned();
-		tbs.setBytes(bytes);
-
-		return sign(tbs, digestAlgo, keyEntry).getValue();
-	}
-
 	/**
 	 * The ECDSA_SIG structure consists of two BIGNUMs for the r and s value of a ECDSA signature (see X9.62 or FIPS
 	 * 186-2).<br>

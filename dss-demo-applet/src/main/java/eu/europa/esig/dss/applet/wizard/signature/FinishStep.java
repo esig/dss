@@ -25,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.applet.SignatureTokenType;
+import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.applet.model.SignatureModel;
 import eu.europa.esig.dss.applet.swing.mvc.ControllerException;
 import eu.europa.esig.dss.applet.swing.mvc.wizard.WizardStep;

@@ -26,12 +26,12 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 /**
@@ -63,6 +63,11 @@ public class SignPdfPadesBDetached extends Cookbook {
 		// same parameter when you invoke the method sign on the token. The default value is
 		// SHA256
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+		// We set the signing certificate
+		parameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		parameters.setCertificateChain(privateKey.getCertificateChain());
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();

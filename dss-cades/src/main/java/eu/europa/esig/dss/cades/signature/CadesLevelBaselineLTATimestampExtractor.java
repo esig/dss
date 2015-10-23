@@ -24,7 +24,6 @@ import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -36,7 +35,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -63,6 +61,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -175,7 +174,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 		final ASN1EncodableVector certificatesHashIndexVector = new ASN1EncodableVector();
 
-		final List<CertificateToken> certificateTokens = cadesSignature.getCertificatesWithinSignatureAndTimestamps();
+		final List<CertificateToken> certificateTokens = cadesSignature.getCertificates();
 		for (final CertificateToken certificateToken : certificateTokens) {
 			final byte[] encodedCertificate = certificateToken.getEncoded();
 			final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, encodedCertificate);
@@ -371,7 +370,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Sequence unsignedAttributesHashes = getUnsignedAttributesHashIndex(timestampToken);
 		final ArrayList<DEROctetString> timestampUnsignedAttributesHashesList = Collections.list(unsignedAttributesHashes.getObjects());
 
-		AttributeTable unsignedAttributes = CAdESSignature.getUnsignedAttributes(signerInformation);
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
 		for (int i = 0; i < asn1EncodableVector.size(); i++) {
 			final Attribute attribute = (Attribute) asn1EncodableVector.get(i);
@@ -464,7 +463,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 				final ASN1Sequence asn1Sequence = (ASN1Sequence) asn1Encodable;
 				final ASN1ObjectIdentifier asn1ObjectIdentifier = (ASN1ObjectIdentifier) asn1Sequence.getObjectAt(0);
-				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(asn1ObjectIdentifier);
+				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(asn1ObjectIdentifier.getId());
 				return AlgorithmIdentifier.getInstance(asn1Sequence);
 			} else if (asn1Encodable instanceof DERObjectIdentifier) {
 
@@ -493,7 +492,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		if (OMIT_ALGORITHM_IDENTIFIER_IF_DEFAULT && hashIndexDigestAlgorithm.getOid().equals(DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO.getOid())) {
 			return null;
 		} else {
-			return hashIndexDigestAlgorithm.getAlgorithmIdentifier();
+			return DSSASN1Utils.getAlgorithmIdentifier(hashIndexDigestAlgorithm);
 		}
 	}
 
@@ -527,14 +526,9 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return cmsSignedData.getSignedContentTypeOID() as DER encoded
 	 */
 	private byte[] getEncodedContentType(final CMSSignedData cmsSignedData) {
-
 		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
 		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-		try {
-			return signedData.getEncapContentInfo().getContentType().getEncoded(ASN1Encoding.DER);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+		return DSSASN1Utils.getDEREncoded(signedData.getEncapContentInfo().getContentType());
 	}
 
 	/**
@@ -551,7 +545,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Integer version = signerInfo.getVersion();
 		final SignerIdentifier sid = signerInfo.getSID();
 		final AlgorithmIdentifier digestAlgorithm = signerInfo.getDigestAlgorithm();
-		final DERTaggedObject signedAttributes = DSSASN1Utils.getSignedAttributes(signerInformation);
+		final DERTaggedObject signedAttributes = CMSUtils.getDERSignedAttributes(signerInformation);
 		final AlgorithmIdentifier digestEncryptionAlgorithm = signerInfo.getDigestEncryptionAlgorithm();
 		final ASN1OctetString encryptedDigest = signerInfo.getEncryptedDigest();
 

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -29,29 +28,21 @@ import org.apache.commons.io.IOUtils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.cookbook.sources.JavaKeyStoreTool;
-import eu.europa.esig.dss.signature.SignaturePackaging;
-import eu.europa.esig.dss.token.JKSSignatureToken;
-import eu.europa.esig.dss.token.KSPrivateKeyEntry;
+import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class SigningApplication {
+public class SigningApplication extends Cookbook {
 
 	public static void main(String[] args) throws IOException {
 
-		//GET THE LOCATION OF YOUR JKS FILE
-		String location = "yourFile.jks";
-		JavaKeyStoreTool jks = new JavaKeyStoreTool(location, "password");
+		preparePKCS12TokenAndKey();
 
-		JKSSignatureToken signingToken = new JKSSignatureToken(new FileInputStream(location), "password");
-
-		KSPrivateKeyEntry privateKey = jks.getPrivateKey("dss", "password");
-
-		DSSDocument toBeSigned = new FileDocument("src/test/resources/xml_example.xml");
+		DSSDocument toBeSigned = new FileDocument("src/main/resources/xml_example.xml");
 
 		XAdESSignatureParameters params = new XAdESSignatureParameters();
 

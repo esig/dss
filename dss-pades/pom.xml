@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.5.0</version>
+		<version>4.6.RC1</version>
 	</parent>
 
 	<artifactId>dss-pades</artifactId>

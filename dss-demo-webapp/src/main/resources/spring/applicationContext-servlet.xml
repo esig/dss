@@ -10,17 +10,24 @@
     <context:component-scan base-package="eu.europa.esig.dss"/>
 
     <mvc:resources mapping="/jnlp/**" location="/jnlp/" />
-    <mvc:resources mapping="/css/**" location="/css/"/>
-    <mvc:resources mapping="/fonts/**" location="/fonts/"/>
-    <mvc:resources mapping="/images/**" location="/images/"/>
-    <mvc:resources mapping="/scripts/**" location="/scripts/"/>
-    <mvc:resources mapping="/jar/**" location="/jar/"/>
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/fonts/**" location="/fonts/" />
+    <mvc:resources mapping="/images/**" location="/images/" />
+    <mvc:resources mapping="/scripts/**" location="/scripts/" />
+    <mvc:resources mapping="/jar/**" location="/jar/" />
+    <mvc:resources mapping="/downloads/**" location="/downloads/" />
+    <mvc:resources mapping="/doc/**" location="/doc/" />
     
 	<mvc:annotation-driven />
+	
+	<mvc:interceptors>
+      <bean class="eu.europa.esig.dss.web.interceptor.WebappInterceptor" />
+    </mvc:interceptors> 
 	
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- the maximum file size in bytes -->
         <property name="maxUploadSize" value="52428800"/>
+        <property name="maxInMemorySize" value="52428800"/>
     </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
@@ -34,16 +41,12 @@
         </property>
     </bean>
     
-     <!-- Configure to plugin JSON as request and response in method handler -->
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-        <property name="messageConverters">
-            <list>
-                <ref bean="jsonMessageConverter"/>
-            </list>
-        </property>
-    </bean>
-     
-    <!-- Configure bean to convert JSON to POJO and vice versa -->
-    <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
-
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:dss.properties</value>
+			</list>
+		</property>
+	</bean>
+    
 </beans>

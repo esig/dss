@@ -6,9 +6,12 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<import resource="classpath:spring/applicationContext-dao.xml"/>
-
-	<context:annotation-config/>
-	<context:component-scan base-package="eu.europa.esig.dss"/>
+	
+    <bean id="dssKeyStore" class="eu.europa.esig.dss.web.DSSKeyStoreFactoryBean">
+	    <property name="keyStoreType" value="${keystore.type}" />
+	    <property name="keyStoreFilename" value="${keystore.filename}" />
+	    <property name="keyStorePassword" value="${keystore.password}" />
+	</bean>
 
 	<bean id="proxyPreferenceManager" class="eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager">
 		<property name="proxyDao" ref="proxyDao"/>
@@ -42,44 +45,40 @@
 		<property name="dataLoader" ref="ocspDataLoader"/>
 	</bean>
 
-	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.ReloadableTrustedListCertificateSource">
-		<property name="dataLoader" ref="fileCacheDataLoader"/>
-		<property name="checkSignature" value="false"/>
-		<property name="lotlCertificate" value="classpath://ec.europa.eu.crt"/>
-		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"/>
-		<property name="tslRefreshPolicy" value="WHEN_NECESSARY_OR_INDETERMINATE"/>
+	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.TrustedListsCertificateSource">
+		<property name="dssKeyStore" ref="dssKeyStore" />
 	</bean>
 
 	<bean id="tspSource" class="eu.europa.esig.dss.client.tsp.OnlineTSPSource">
 		<property name="tspServer" value="http://tsa.belgium.be/connect"/>
 		<property name="dataLoader" ref="dataLoader"/>
 	</bean>
+	
+	<bean id="cadesService" class="eu.europa.esig.dss.cades.signature.CAdESService">
+		<constructor-arg ref="certificateVerifier" />
+		<property name="tspSource" ref="tspSource" />
+	</bean>
 
-	    <bean id="cadesService" class="eu.europa.esig.dss.cades.signature.CAdESService">
-        <constructor-arg ref="certificateVerifier"/>
-        <property name="tspSource" ref="tspSource"/>
-    </bean>
+	<bean id="xadesService" class="eu.europa.esig.dss.xades.signature.XAdESService">
+		<constructor-arg ref="certificateVerifier" />
+		<property name="tspSource" ref="tspSource" />
+	</bean>
 
-    <bean id="xadesService" class="eu.europa.esig.dss.xades.signature.XAdESService">
-        <constructor-arg ref="certificateVerifier"/>
-        <property name="tspSource" ref="tspSource"/>
-    </bean>
+	<bean id="padesService" class="eu.europa.esig.dss.pades.signature.PAdESService">
+		<constructor-arg ref="certificateVerifier" />
+		<property name="tspSource" ref="tspSource" />
+	</bean>
 
-    <bean id="padesService" class="eu.europa.esig.dss.pades.signature.PAdESService">
-        <constructor-arg ref="certificateVerifier"/>
-        <property name="tspSource" ref="tspSource"/>
-    </bean>
+	<bean id="asicService" class="eu.europa.esig.dss.asic.signature.ASiCService">
+		<constructor-arg ref="certificateVerifier" />
+		<property name="tspSource" ref="tspSource" />
+	</bean>
 
-    <bean id="asicService" class="eu.europa.esig.dss.asic.signature.ASiCService">
-        <constructor-arg ref="certificateVerifier"/>
-        <property name="tspSource" ref="tspSource"/>
-    </bean>
-    
-    <bean id="certificateVerifier" class="eu.europa.esig.dss.validation.CommonCertificateVerifier">
-        <property name="trustedCertSource" ref="trustedListSource"/>
-        <property name="ocspSource" ref="ocspSource"/>
-        <property name="crlSource" ref="crlSource"/>
-        <property name="dataLoader" ref="dataLoader"/>
-    </bean>
+	<bean id="certificateVerifier" class="eu.europa.esig.dss.validation.CommonCertificateVerifier">
+		<property name="trustedCertSource" ref="trustedListSource" />
+		<property name="ocspSource" ref="ocspSource" />
+		<property name="crlSource" ref="crlSource" />
+		<property name="dataLoader" ref="dataLoader" />
+	</bean>
 
 </beans>

@@ -1,0 +1,51 @@
+<ValidationData xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
+	<BasicBuildingBlocks>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">
+			<ISC>...
+			<VCI>...
+			<CV>...
+			<SAV>...
+			<XCV>...
+			<Conclusion>
+				<Indication>VALID</Indication>
+			</Conclusion>
+		</Signature>
+	</BasicBuildingBlocks>
+	<BasicValidationData>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">
+			<Conclusion>
+				<Indication>VALID</Indication>
+			</Conclusion>
+		</Signature>
+	</BasicValidationData>
+	<TimestampValidationData>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">
+			<Timestamp Category="SIGNATURE_TIMESTAMP" Id="1">
+				<BasicBuildingBlocks>...
+					<Conclusion>
+						<Indication>VALID</Indication>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+			<Timestamp Category="ARCHIVE_TIMESTAMP" Id="2">
+				<BasicBuildingBlocks>...
+					<Conclusion>
+						<Indication>VALID</Indication>
+					</Conclusion>
+				</BasicBuildingBlocks>
+			</Timestamp>
+		</Signature>
+	</TimestampValidationData>
+	<AdESTValidationData>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">...
+			<Conclusion>
+				<Indication>VALID</Indication>
+				<Info Field="TimestampProductionTime">2013-11-26T11:18:24Z</Info>
+			</Conclusion>
+		</Signature>
+	</AdESTValidationData>
+	<LongTermValidationData>
+		<Signature Id="signature-id9ca819444e4476b476ee29c96943db82">...
+		</Signature>
+	</LongTermValidationData>
+</ValidationData>

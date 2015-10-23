@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static eu.europa.esig.dss.SignatureLevel.XAdES_BASELINE_T;
+import static eu.europa.esig.dss.SignaturePackaging.ENVELOPED;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES141;
-import static eu.europa.esig.dss.signature.SignaturePackaging.ENVELOPED;
 import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
@@ -50,9 +50,9 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -271,7 +271,11 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 					break;
 				case VALIDATION_DATA_TIMESTAMP:
 					// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-					timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES, XADES_SIG_AND_REFS_TIME_STAMP);
+					if(params.isEn319132()) {
+						timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES, XADES_SIG_AND_REFS_TIME_STAMP_V2);
+					} else {
+						timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES, XADES_SIG_AND_REFS_TIME_STAMP);
+					}
 					break;
 				case ARCHIVE_TIMESTAMP:
 					// <xades141:ArchiveTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">

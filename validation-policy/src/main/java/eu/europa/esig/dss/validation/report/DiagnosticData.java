@@ -406,9 +406,9 @@ public class DiagnosticData extends XmlDom {
 	 * @param timestampId timestamp id
 	 * @return signing certificate id
 	 */
-	public int getTimestampSigningCertificateId(final String timestampId) {
+	public String getTimestampSigningCertificateId(final String timestampId) {
 
-		final int signingCertificateId = getIntValue("/DiagnosticData/Signature/Timestamps/Timestamp[@Id='%s']/SigningCertificate/@Id", timestampId);
+		final String signingCertificateId = getValue("/DiagnosticData/Signature/Timestamps/Timestamp[@Id='%s']/SigningCertificate/@Id", timestampId);
 		return signingCertificateId;
 	}
 

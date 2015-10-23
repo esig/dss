@@ -1,42 +1,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-        <artifactId>sd-dss</artifactId>
-        <version>4.5.0</version>
-    </parent>
+	<parent>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>4.6.RC1</version>
+	</parent>
 
-    <name>CookBook</name>
-    <description>Module CookBook in the project SD-DSS</description>
-    <artifactId>dss-cookbook</artifactId>
+	<name>CookBook</name>
+	<description>Module CookBook in the project SD-DSS</description>
+	<artifactId>dss-cookbook</artifactId>
 
-    <repositories>
-        <repository>
-            <id>e-contract</id>
-            <url>https://www.e-contract.be/maven2</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-document</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-service</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-test</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-webservices-client</artifactId>
-        </dependency>
+	<repositories>
+		<repository>
+			<id>e-contract</id>
+			<url>https://www.e-contract.be/maven2</url>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-document</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-tsl-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-test</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-webservices-client</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-asic</artifactId>
@@ -53,65 +57,94 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-xades</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>be.fedict.eid-applet</groupId>
-            <artifactId>eid-applet-service</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fedict.eid-applet</groupId>
-            <artifactId>eid-applet-shared</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fedict.eid-applet</groupId>
-            <artifactId>eid-applet-package</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-    </dependencies>
-
-	<profiles>
-		<profile>
-			<id>jdocbook</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.jboss.maven.plugins</groupId>
-						<artifactId>maven-jdocbook-plugin</artifactId>
-						<version>2.3.9</version>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-token</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>be.fedict.eid-applet</groupId>
+			<artifactId>eid-applet-service</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>be.fedict.eid-applet</groupId>
+			<artifactId>eid-applet-shared</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>be.fedict.eid-applet</groupId>
+			<artifactId>eid-applet-package</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>1.5.2.1</version>
+				<dependencies>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj-pdf</artifactId>
+                        <version>1.5.0-alpha.9</version>
+                    </dependency>
+                    <dependency>
+					    <groupId>org.jruby</groupId>
+					    <artifactId>jruby-complete</artifactId>
+					    <version>9.0.1.0</version>
+					</dependency>
+				</dependencies>
+				<executions>
+			        <execution>
+			            <id>output-html</id>
+			            <phase>generate-resources</phase>
+			            <goals>
+			                <goal>process-asciidoc</goal>
+			            </goals>
+			            <configuration>
+			                <backend>html</backend>
+			                <sourceHighlighter>coderay</sourceHighlighter>
+			                <attributes>
+                                <toc>left</toc>
+                                <sectanchors>true</sectanchors>
+                                <linkcss>true</linkcss>
+    							<dssVersion>${project.version}</dssVersion>
+			                </attributes>
+			            </configuration>
+			        </execution>
+			        <execution>
+                        <id>output-pdf</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
 						<configuration>
-							<formats>
-								<format>
-									<formatName>pdf</formatName>
-								</format>
-							</formats>
-							<sourceDocumentName>cookbook.xml</sourceDocumentName>
-							<masterTranslation>en</masterTranslation>
+							<backend>pdf</backend>
+			                <sourceHighlighter>coderay</sourceHighlighter>
+							<attributes>
+								<icons>font</icons>
+								<pagenums />
+								<toc />
+								<idseparator>-</idseparator>
+    							<dssVersion>${project.version}</dssVersion>
+							</attributes>
 						</configuration>
-						<dependencies>
-							<dependency>
-								<groupId>org.jboss.pressgang</groupId>
-								<artifactId>pressgang-xslt-ns</artifactId>
-								<version>2.0.1</version>
-							</dependency>
-							<dependency>
-								<groupId>org.jboss.pressgang</groupId>
-								<artifactId>pressgang-jdocbook-style</artifactId>
-								<type>jdocbook-style</type>
-								<version>2.0.1</version>
-							</dependency>
-						</dependencies>
-						<executions>
-							<execution>
-								<goals>
-									<goal>generate</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
+					</execution>
+			    </executions>
+			    <configuration>
+			        <sourceDirectory>src/main/asciidoc</sourceDirectory>
+			        <imagesDir>images</imagesDir>
+			        <headerFooter>true</headerFooter>
+			    </configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

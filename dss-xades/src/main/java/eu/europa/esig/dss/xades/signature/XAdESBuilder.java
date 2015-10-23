@@ -23,9 +23,13 @@ package eu.europa.esig.dss.xades.signature;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.asn1.pkcs.IssuerAndSerialNumber;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -38,6 +42,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -72,6 +77,7 @@ public abstract class XAdESBuilder {
 	public static final String XADES_CERT_DIGEST = "xades:CertDigest";
 	public static final String XADES_CERTIFICATE_VALUES = "xades:CertificateValues";
 	public static final String XADES_CERTIFIED_ROLES = "xades:CertifiedRoles";
+	public static final String XADES_CERTIFIED_ROLES_V2 = "xades:CertifiedRolesV2";
 	public static final String XADES_CERTIFIED_ROLE = "xades:CertifiedRole";
 	public static final String XADES_CITY = "xades:City";
 	public static final String XADES_CLAIMED_ROLES = "xades:ClaimedRoles";
@@ -87,10 +93,12 @@ public abstract class XAdESBuilder {
 	public static final String XADES_INCLUDE = "xades:Include";
 	public static final String XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP = "xades:IndividualDataObjectsTimeStamp";
 	public static final String XADES_ISSUER_SERIAL = "xades:IssuerSerial";
+	public static final String XADES_ISSUER_SERIAL_V2 = "xades:IssuerSerialV2";
 	public static final String XADES_MIME_TYPE = "xades:MimeType";
 	public static final String XADES_POSTAL_CODE = "xades:PostalCode";
 	public static final String XADES_QUALIFYING_PROPERTIES = "xades:QualifyingProperties";
 	public static final String XADES_SIG_AND_REFS_TIME_STAMP = "xades:SigAndRefsTimeStamp";
+	public static final String XADES_SIG_AND_REFS_TIME_STAMP_V2 = "xades:SigAndRefsTimeStampV2";
 	public static final String XADES_SIG_POLICY_HASH = "xades:SigPolicyHash";
 	public static final String XADES_SIG_POLICY_ID = "xades:SigPolicyId";
 	public static final String XADES_SIGNATURE_POLICY_ID = "xades:SignaturePolicyId";
@@ -100,13 +108,16 @@ public abstract class XAdESBuilder {
 	public static final String XADES_SIGNATURE_POLICY_QUALIFIER = "xades:SigPolicyQualifier";
 	public static final String XADES_SPURI = "xades:SPURI";
 	public static final String XADES_SIGNATURE_PRODUCTION_PLACE = "xades:SignatureProductionPlace";
+	public static final String XADES_SIGNATURE_PRODUCTION_PLACE_V2 = "xades:SignatureProductionPlaceV2";
 	public static final String XADES_SIGNATURE_TIME_STAMP = "xades:SignatureTimeStamp";
 	public static final String XADES_SIGNED_DATA_OBJECT_PROPERTIES = "xades:SignedDataObjectProperties";
 	public static final String XADES_SIGNED_PROPERTIES = "xades:SignedProperties";
 	public static final String XADES_SIGNED_SIGNATURE_PROPERTIES = "xades:SignedSignatureProperties";
+	public static final String XADES_STREET_ADDRESS = "xades:StreetAddress";
 	public static final String XADES_UNSIGNED_PROPERTIES = "xades:UnsignedProperties";
 	public static final String XADES_UNSIGNED_SIGNATURE_PROPERTIES = "xades:UnsignedSignatureProperties";
 	public static final String XADES_SIGNER_ROLE = "xades:SignerRole";
+	public static final String XADES_SIGNER_ROLE_V2 = "xades:SignerRoleV2";
 	public static final String XADES_SIGNING_TIME = "xades:SigningTime";
 	public static final String XADES_STATE_OR_PROVINCE = "xades:StateOrProvince";
 
@@ -224,22 +235,36 @@ public abstract class XAdESBuilder {
 
 			final Element certDigestDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_CERT_DIGEST);
 
-			final DigestAlgorithm signingCertificateDigestMethod = params.bLevel().getSigningCertificateDigestMethod();
+			final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 			incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
 
 			final InMemoryDocument inMemoryCertificate = new InMemoryDocument(certificate.getEncoded());
 			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, inMemoryCertificate);
+			
+			if(params.isEn319132()) {
+				try {
+					final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL_V2);
+					
+					String name = certificate.getCertificate().getIssuerX500Principal().getName();
+					IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(new X500Name(name), certificate.getCertificate().getSerialNumber());
+					byte[] issuer = Base64.encodeBase64(issuerAndSerial.getEncoded());
+					DSSXMLUtils.setTextNode(documentDom, issuerSerialDom, new String(issuer));
+				}catch(IOException e) {
+					throw new RuntimeException(e);
+				}
+				
+			} else {
+				final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
 
-			final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
+				final Element x509IssuerNameDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
+				final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
+				DSSXMLUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
 
-			final Element x509IssuerNameDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
-			final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
-			DSSXMLUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
-
-			final Element x509SerialNumberDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
-			final BigInteger serialNumber = certificate.getSerialNumber();
-			final String serialNumberString = new String(serialNumber.toString());
-			DSSXMLUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
+				final Element x509SerialNumberDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
+				final BigInteger serialNumber = certificate.getSerialNumber();
+				final String serialNumberString = new String(serialNumber.toString());
+				DSSXMLUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
+			}
 		}
 	}
 }

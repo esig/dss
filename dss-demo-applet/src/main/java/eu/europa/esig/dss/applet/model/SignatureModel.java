@@ -28,22 +28,18 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.jgoodies.binding.beans.Model;
 
-import eu.europa.esig.dss.applet.SignatureTokenType;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.applet.main.FileType;
 import eu.europa.esig.dss.applet.util.FileTypeDetectorUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.wsclient.signature.DigestAlgorithm;
-import eu.europa.esig.dss.wsclient.signature.SignaturePackaging;
 
 /**
  *
  * TODO
- *
- *
- *
- *
- *
  *
  */
 @SuppressWarnings("serial")
@@ -71,7 +67,7 @@ public class SignatureModel extends Model {
 	private SignatureTokenType tokenType;
 
 	public static final String PROPERTY_FORMAT = "format";
-	private String format;
+	private SignatureForm format;
 
 	public static final String PROPERTY_PACKAGING = "packaging";
 	private SignaturePackaging packaging;
@@ -92,9 +88,6 @@ public class SignatureModel extends Model {
 
 	public static final String PROPERTY_CLAIMED_CHECK = "claimedCheck";
 	private boolean claimedCheck;
-
-	public static final String PROPERTY_TSL_SIGNATURE_CHECK = "tslSignatureCheck";
-	private boolean tslSignatureCheck;
 
 	public static final String PROPERTY_SIGNATURE_POLICY_CHECK = "signaturePolicyCheck";
 	private boolean signaturePolicyCheck;
@@ -142,7 +135,7 @@ public class SignatureModel extends Model {
 	/**
 	 * @return the format
 	 */
-	public String getFormat() {
+	public SignatureForm getFormat() {
 		return format;
 	}
 
@@ -296,32 +289,11 @@ public class SignatureModel extends Model {
 	}
 
 	/**
-	 *
-	 * @return tslSignatureCheck
-	 */
-	public boolean isTslSignatureCheck() {
-		return tslSignatureCheck;
-	}
-
-	/**
-	 *
-	 * @param tslSignatureCheck the tslSignatureCheck to set
-	 */
-	public void setTslSignatureCheck(boolean tslSignatureCheck) {
-		this.tslSignatureCheck = tslSignatureCheck;
-		final boolean oldValue = this.tslSignatureCheck;
-		final boolean newValue = tslSignatureCheck;
-		this.tslSignatureCheck = newValue;
-		firePropertyChange(PROPERTY_TSL_SIGNATURE_CHECK, oldValue, newValue);
-
-	}
-
-	/**
 	 * @param format the format to set
 	 */
-	public void setFormat(final String format) {
-		final String oldValue = this.format;
-		final String newValue = format;
+	public void setFormat(final SignatureForm format) {
+		final SignatureForm oldValue = this.format;
+		final SignatureForm newValue = format;
 		this.format = newValue;
 		firePropertyChange(PROPERTY_FORMAT, oldValue, newValue);
 	}

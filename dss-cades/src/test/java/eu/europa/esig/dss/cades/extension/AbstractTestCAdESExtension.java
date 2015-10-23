@@ -28,13 +28,13 @@ import org.bouncycastle.asn1.x509.CRLReason;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CRLGenerator;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockCRLSource;
@@ -51,7 +51,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 	protected DSSDocument getSignedDocument() throws Exception {
 		CertificateService certificateService = new CertificateService();
 
-		MockPrivateKeyEntry issuerEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
+		MockPrivateKeyEntry issuerEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256, true);
 		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerEntry);
 		MockPrivateKeyEntry entryUserB = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerEntry);
 

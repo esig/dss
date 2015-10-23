@@ -73,10 +73,10 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -141,7 +141,7 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 
 				ASN1Set digestAlgorithmSet = signedData.getDigestAlgorithms();
 				ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier.getInstance(ASN1Sequence.getInstance(digestAlgorithmSet.getObjectAt(0)).getObjectAt(0));
-				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(oidDigestAlgo);
+				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(oidDigestAlgo.getId());
 				logger.info("DIGEST ALGO : " + digestAlgorithm);
 
 				ContentInfo encapContentInfo = signedData.getEncapContentInfo();

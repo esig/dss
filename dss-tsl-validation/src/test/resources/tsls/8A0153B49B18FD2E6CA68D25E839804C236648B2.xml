@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?><tsl:TrustServiceStatusList Id="id_for_enveloped_signing_of_the_entire_list" TSLTag="http://uri.etsi.org/19612/TSLTag" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:tsl="http://uri.etsi.org/02231/v2#">
+	<tsl:SchemeInformation>
+		<tsl:TSLVersionIdentifier>4</tsl:TSLVersionIdentifier> 
+		<tsl:TSLSequenceNumber>17</tsl:TSLSequenceNumber> 	
+		<tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</tsl:TSLType> 
+		<tsl:SchemeOperatorName>
+			<tsl:Name xml:lang="en">Finnish Communications Regulatory Authority</tsl:Name>
+			<tsl:Name xml:lang="en">FICORA</tsl:Name>
+			<tsl:Name xml:lang="fi">FICORA - Viestintavirasto</tsl:Name>
+		</tsl:SchemeOperatorName>
+		<tsl:SchemeOperatorAddress>
+			<tsl:PostalAddresses>
+				<tsl:PostalAddress xml:lang="en">
+					<tsl:StreetAddress>Itamerenkatu 3A</tsl:StreetAddress> 
+					<tsl:Locality>Helsinki</tsl:Locality> 
+					<tsl:PostalCode>00181</tsl:PostalCode> 
+					<tsl:CountryName>FI</tsl:CountryName>
+				</tsl:PostalAddress>
+			</tsl:PostalAddresses>
+			<tsl:ElectronicAddress>
+				<tsl:URI xml:lang="en">mailto:kirjaamo@ficora.fi</tsl:URI>
+				<tsl:URI xml:lang="en">http://www.viestintavirasto.fi/en/index.html</tsl:URI>		   
+			</tsl:ElectronicAddress>
+		</tsl:SchemeOperatorAddress>	
+ 
+		<tsl:SchemeName>
+			<tsl:Name xml:lang="en">FI:Supervision/Accreditation Status List of certification services from Certification Service Providers, 
+which are supervised/accredited by the referenced Scheme Operator’s Member State for compliance with the relevant 
+provisions laid down in Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a 
+Community framework for electronic signatures.</tsl:Name> 
+		
+		</tsl:SchemeName>
+		<tsl:SchemeInformationURI>
+			<tsl:URI xml:lang="en">https://www.viestintavirasto.fi/en/informationsecurity/electronicidentificationandsignature/registerofcertificationauthoritiesprovidingqualifiedcertificates.html</tsl:URI> 
+		</tsl:SchemeInformationURI>
+		<tsl:StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/StatusDetn/EUappropriate</tsl:StatusDeterminationApproach> 
+		<tsl:SchemeTypeCommunityRules>
+			<tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</tsl:URI> 
+			<tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/FI</tsl:URI> 
+		</tsl:SchemeTypeCommunityRules>
+		<tsl:SchemeTerritory>FI</tsl:SchemeTerritory> 
+		<tsl:PolicyOrLegalNotice>
+			<tsl:TSLLegalNotice xml:lang="en">The applicable legal framework for the present TSL implementation of the Trusted List of supervised/accredited Certification Service Providers for Finland is Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures and its implementation in Finland laws.</tsl:TSLLegalNotice> 
+			<tsl:TSLLegalNotice xml:lang="fi">Tämän Suomen valvottuja/akkreditoituja varmennepalvelujen tarjoajia koskevan luotetun luettelon TSL- toteutuksen suhteen noudatettava lakikehys on Euroopan parlamentin ja neuvoston direktiivi 1999/93/EY, annettu 13 päivänä joulukuuta 1999, sähköisiä allekirjoituksia koskevista yhteisön puitteista sekä sen implementointi Suomen laissa.</tsl:TSLLegalNotice>
+		</tsl:PolicyOrLegalNotice>
+		<tsl:HistoricalInformationPeriod>65535</tsl:HistoricalInformationPeriod> 
+		<tsl:PointersToOtherTSL>
+		<tsl:OtherTSLPointer>
+		<tsl:ServiceDigitalIdentities>
+		<tsl:ServiceDigitalIdentity>
+		<tsl:DigitalId><tsl:X509SubjectName>C=BE, ST=Belgium, L=Brussels, O=European Commission, CN=ec.europa.eu</tsl:X509SubjectName></tsl:DigitalId>
+		<tsl:DigitalId>
+		<tsl:X509Certificate>
+MIIFFzCCA/+gAwIBAgISESE/HwqWFgw444aZ4vdHq384MA0GCSqGSIb3DQEBBQUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gRzIwHhcNMTMwMzIwMTAwNTA1WhcNMTUwMzIxMTAwNTA1WjBnMQswCQYDVQQGEwJCRTEQMA4GA1UECBMHQmVsZ2l1bTERMA8GA1UEBxMIQnJ1c3NlbHMxHDAaBgNVBAoTE0V1cm9wZWFuIENvbW1pc3Npb24xFTATBgNVBAMTDGVjLmV1cm9wYS5ldTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOyOz37JNZ3ac9PSo9bn9wELcVARSDHYcTOUw0yjhSl5FVA/oDhmy7cdafUg6s1HNsV3631X7OXLFBa2MInUFqIRJlcqIx71AN7C7PY3tENhYIDLcObSfMNeIr4jTdR69Nd/u15GM8ys2sFnmH3ih2uTChVHHmOGrmLcFb4ApZNGiN/qhA2RCCzHI5qYuMHkG23gfraXS4ftwbQCoEXtBbFRrfF+cSJABx7e1xz6Vo+7663keKNDtPujfOQSoHbctMhraDWFDECs2EL83gzLPzX5NOR8Tc8FRv7RC5lfmuAv6Uq/LzCTMB4XRiqfJtgkBo7NEAso5x5yJ0j1yDEjgDMCAwEAAaOCAcUwggHBMA4GA1UdDwEB/wQEAwIFoDBMBgNVHSAERTBDMEEGCSsGAQQBoDIBFDA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAXBgNVHREEEDAOggxlYy5ldXJvcGEuZXUwCQYDVR0TBAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwRQYDVR0fBD4wPDA6oDigNoY0aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9ncy9nc29yZ2FuaXphdGlvbnZhbGcyLmNybDCBlgYIKwYBBQUHAQEEgYkwgYYwRwYIKwYBBQUHMAKGO2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzb3JnYW5pemF0aW9udmFsZzIuY3J0MDsGCCsGAQUFBzABhi9odHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nvcmdhbml6YXRpb252YWxnMjAdBgNVHQ4EFgQUv4UsqLa1HO0++xa/AlEQsJB5cfMwHwYDVR0jBBgwFoAUXUayjcRLdBy77fVztjq3OI91nn4wDQYJKoZIhvcNAQEFBQADggEBACit+R/F48l1NqATvi8Oi07V3kVzsHDTnloYz05DwEjjkmuCiDDs+IPE2MdQbxYiy4C6Wun1U/YEcSya9bIeZJG89Jbdp0Ys58x6v7GDpinLdi9SXqnj8Uoj7XCEVMc0CXhLQnm0ZdIbfury5xMfq0QjfHKMmw1GB1lOTAQlpQ/LGPihDs9PFDOJ2W8l29aqYRwU0B8t5SX1bxS5JocelkSnHr4lF3ZNbwMo9rclhVZKAsVdiNzJLOt2k5Hi4T4M9dDAoPQo/ZnJt/An1MltN9mXuLnQ/1QpyaGhWlzVTjBQ8DYMmbVd9fucJKr1P34O+kAwRw8BiTk9l9L5VbxVroI=</tsl:X509Certificate>
+		</tsl:DigitalId>
+		</tsl:ServiceDigitalIdentity>
+		</tsl:ServiceDigitalIdentities>
+		<tsl:TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-hr.pdf</tsl:TSLLocation>
+		<tsl:AdditionalInformation xmlns:tslx="http://uri.etsi.org/02231/v2/additionaltypes#">
+		<tsl:OtherInformation>
+		<tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</tsl:TSLType>
+		</tsl:OtherInformation>
+		<tsl:OtherInformation>
+		<tsl:SchemeOperatorName>
+		<tsl:Name xml:lang="en">European Commission</tsl:Name>
+		</tsl:SchemeOperatorName>
+		</tsl:OtherInformation>
+		<tsl:OtherInformation>
+		<tsl:SchemeTypeCommunityRules>
+		<tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</tsl:URI>
+		</tsl:SchemeTypeCommunityRules>
+		</tsl:OtherInformation>
+		<tsl:OtherInformation>
+		<tsl:SchemeTerritory>EU</tsl:SchemeTerritory>
+		</tsl:OtherInformation>
+		<tsl:OtherInformation>
+		<tslx:MimeType>application/pdf</tslx:MimeType>
+		</tsl:OtherInformation>
+		</tsl:AdditionalInformation>
+		</tsl:OtherTSLPointer>
+		<tsl:OtherTSLPointer>
+		<tsl:ServiceDigitalIdentities>
+		<tsl:ServiceDigitalIdentity>
+		<tsl:DigitalId><tsl:X509SubjectName>C=BE, O=EUROPEAN COMMISSION, CN=(SIGN) ANNELI ANDRESSON</tsl:X509SubjectName></tsl:DigitalId>
+		<tsl:DigitalId><tsl:X509SKI>ShQR/7Q57n19VGz+tbYzQqGaUOw=</tsl:X509SKI></tsl:DigitalId>
+		<tsl:DigitalId>
+		<tsl:X509Certificate>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</tsl:X509Certificate>
+		</tsl:DigitalId>
+		</tsl:ServiceDigitalIdentity>
+		<tsl:ServiceDigitalIdentity>
+		<tsl:DigitalId><tsl:X509SubjectName>T=Professional Person,EMAILADDRESS=Karel.De-Vriendt@ec.europa.eu,SERIALNUMBER=10100332110004749378,GIVENNAME=Karel Lodewijk M,SURNAME=De Vriendt,CN=Karel Lodewijk M De Vriendt,OU=NA,O=European Commission,L=BE,C=BE</tsl:X509SubjectName></tsl:DigitalId>
+		<tsl:DigitalId><tsl:X509SKI>TAM7JV7chXk=</tsl:X509SKI></tsl:DigitalId>
+		<tsl:DigitalId>
+		<tsl:X509Certificate>MIIFnDCCBISgAwIBAgIDAVZhMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNVBAYTAkxVMRYwFAYDVQQKEw1MdXhUcnVzdCBTLkEuMR4wHAYDVQQDExVMdXhUcnVzdCBRdWFsaWZpZWQgQ0EwHhcNMDkxMjIzMTAzNTU2WhcNMTIxMjIzMTAzNTU2WjCCAQYxCzAJBgNVBAYTAkJFMQswCQYDVQQHEwJCRTEcMBoGA1UEChMTRXVyb3BlYW4gQ29tbWlzc2lvbjELMAkGA1UECxMCTkExJDAiBgNVBAMTG0thcmVsIExvZGV3aWprIE0gRGUgVnJpZW5kdDETMBEGA1UEBBMKRGUgVnJpZW5kdDEZMBcGA1UEKhMQS2FyZWwgTG9kZXdpamsgTTEdMBsGA1UEBRMUMTAxMDAzMzIxMTAwMDQ3NDkzNzgxLDAqBgkqhkiG9w0BCQEWHUthcmVsLkRlLVZyaWVuZHRAZWMuZXVyb3BhLmV1MRwwGgYDVQQMExNQcm9mZXNzaW9uYWwgUGVyc29uMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC96JBqnjCmAk43LDuZDMu5lNGK7/UQnJBLDkUqN2Jb/STQSBJnRJchCY9DnKtqYG9cuSZDRxvIUkssqO/WpFu/I5fO9I4mvLGD9h4ot8/GkRntbEl3CnMlRKZJkAdcSHwuqnuNpfaZ4yGGIPslRy9pbRkfXSeeneJAo0Ixiu3QJwIDAQABo4ICVDCCAlAwDAYDVR0TAQH/BAIwADBgBggrBgEFBQcBAQRUMFIwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLmx1eHRydXN0Lmx1MCsGCCsGAQUFBzAChh9odHRwOi8vY2EubHV4dHJ1c3QubHUvTFRRQ0EuY3J0MIIBHQYDVR0gBIIBFDCCARAwggECBggrgSsBAQIEATCB9TCBxwYIKwYBBQUHAgIwgboagbdMdXhUcnVzdCBRdWFsaWZpZWQgQ2VydGlmaWNhdGUgb24gQ0NTRCBjb21wbGlhbnQgd2l0aCBFVFNJIFRTIDEwMSA0NTYgUUNQKyBjZXJ0aWZpY2F0ZSBwb2xpY3kuIEtleSBHZW5lcmF0aW9uIGJ5IENTUC4gU29sZSBBdXRob3Jpc2VkIFVzYWdlOiBTdXBwb3J0IG9mIFF1YWxpZmllZCBFbGVjdHJvbmljIFNpZ25hdHVyZS4wKQYIKwYBBQUHAgEWHWh0dHA6Ly9yZXBvc2l0b3J5Lmx1eHRydXN0Lmx1MAgGBgQAizABATA2BggrBgEFBQcBAwQqMCgwCAYGBACORgEBMBIGBgQAjkYBAjAIEwACAQACAQAwCAYGBACORgEEMBEGCWCGSAGG+EIBAQQEAwIFIDALBgNVHQ8EBAMCBkAwHwYDVR0jBBgwFoAUjZCjB90aE3eZTJKrTUPeP80pZAUwMQYDVR0fBCowKDAmoCSgIoYgaHR0cDovL2NybC5sdXh0cnVzdC5sdS9MVFFDQS5jcmwwEQYDVR0OBAoECEwDOyVe3IV5MA0GCSqGSIb3DQEBBQUAA4IBAQBStS9gFx5BmEv5VciG7qEPR5VzqEpBElkjXDYe68Dw7Ol1nCt51CSuAB2/UcTkfCDh6022H7+EtiUpdM6GH/7qDqZdjqYpQznbu4xkrGTMLrTA1lalhgWugGQIpmCg69kiXns/AXcuJVQSR3mA3BMvJrN5PNaALoguynWCrxRHPTUS3pT5J93jCn90ZPAGhxELRxMdZuFZ2UAn8D8XLUxiz0IK9yqdysJiLzWsQazUkZ+lzDG0mPomyRkl3LzEK8HXO3HKGr+2n760N+StYyjwywP/kS/3LoPQWfUfjWQE8jDiTgodZT4ewVSxuNrBH5Ls29aBi0YsT9NYstznKgaR</tsl:X509Certificate>
+		</tsl:DigitalId>
+		</tsl:ServiceDigitalIdentity>
+		</tsl:ServiceDigitalIdentities>
+		<tsl:TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</tsl:TSLLocation>
+		<tsl:AdditionalInformation xmlns:tslx="http://uri.etsi.org/02231/v2/additionaltypes#">
+		<tsl:OtherInformation>
+		<tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</tsl:TSLType>
+		</tsl:OtherInformation>
+		<tsl:OtherInformation>
+		<tsl:SchemeOperatorName>
+		<tsl:Name xml:lang="en">European Commission</tsl:Name>
+		</tsl:SchemeOperatorName>
+		</tsl:OtherInformation>
+		<tsl:OtherInformation>
+		<tsl:SchemeTypeCommunityRules>
+		<tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</tsl:URI>
+		</tsl:SchemeTypeCommunityRules>
+		</tsl:OtherInformation>
+		<tsl:OtherInformation>
+		<tsl:SchemeTerritory>EU</tsl:SchemeTerritory>
+		</tsl:OtherInformation>
+		<tsl:OtherInformation>
+		<tslx:MimeType>application/vnd.etsi.tsl+xml</tslx:MimeType>
+		</tsl:OtherInformation>
+		</tsl:AdditionalInformation>
+		</tsl:OtherTSLPointer>
+		</tsl:PointersToOtherTSL>		
+		
+		<tsl:ListIssueDateTime>2015-03-24T11:00:00</tsl:ListIssueDateTime> 
+	 
+		<tsl:NextUpdate>
+			<tsl:dateTime>2015-09-23T11:00:00</tsl:dateTime> 
+		</tsl:NextUpdate>
+		<tsl:DistributionPoints>
+			<tsl:URI>https://www.viestintavirasto.fi/attachments/TSL-Ficora.xml</tsl:URI> 
+			<tsl:URI>https://www.viestintavirasto.fi/attachments/HumanReadable_TSL-Ficora.xml.pdf</tsl:URI> 
+		</tsl:DistributionPoints>
+
+	</tsl:SchemeInformation>
+		<tsl:TrustServiceProviderList>
+		<tsl:TrustServiceProvider>
+			<tsl:TSPInformation>
+				<tsl:TSPName>
+					<tsl:Name xml:lang="en">Population Register Centre</tsl:Name> 
+					<tsl:Name xml:lang="fi">Vaestorekisterikeskus</tsl:Name>
+					<tsl:Name xml:lang="fi">VRK</tsl:Name>
+				</tsl:TSPName>
+				<tsl:TSPTradeName>
+					<tsl:Name xml:lang="en">NTRFI-0245437-2</tsl:Name>
+					<tsl:Name xml:lang="en">Vaestorekisterikeskus CA</tsl:Name>
+				</tsl:TSPTradeName>
+				<tsl:TSPAddress>
+					<tsl:PostalAddresses>
+						<tsl:PostalAddress xml:lang="en">
+						<tsl:StreetAddress>P.O.Box 123</tsl:StreetAddress> 
+						<tsl:Locality>Helsinki</tsl:Locality> 
+						<tsl:PostalCode>00531</tsl:PostalCode> 
+						<tsl:CountryName>FI</tsl:CountryName> 
+						</tsl:PostalAddress>
+					</tsl:PostalAddresses>
+			
+					<tsl:ElectronicAddress>
+						<tsl:URI xml:lang="en">mailto:kirjaamo@vrk.fi</tsl:URI> 
+						<tsl:URI xml:lang="en">http://www.vrk.fi/en</tsl:URI> 
+					</tsl:ElectronicAddress>
+				</tsl:TSPAddress>
+				<tsl:TSPInformationURI>
+					<tsl:URI xml:lang="en">http://fineid.fi/?site=10</tsl:URI> 
+				</tsl:TSPInformationURI>
+			</tsl:TSPInformation>
+		  
+			<tsl:TSPServices>
+				<tsl:TSPService>
+					<tsl:ServiceInformation>
+						<tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier> 
+						<tsl:ServiceName>
+							<tsl:Name xml:lang="en">VRK Gov. CA for Citizen Qualified Certificates</tsl:Name> 
+						</tsl:ServiceName>
+						<tsl:ServiceDigitalIdentity>
+							<tsl:DigitalId>
+								<tsl:X509Certificate>MIIFjDCCBHSgAwIBAgIDAYiZMA0GCSqGSIb3DQEBBQUAMIGjMQswCQYDVQQGEwJGSTEQMA4GA1UECBMHRmlubGFuZDEhMB8GA1UEChMYVmFlc3RvcmVraXN0ZXJpa2Vza3VzIENBMSkwJwYDVQQLEyBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSBTZXJ2aWNlczEZMBcGA1UECxMQVmFybWVubmVwYWx2ZWx1dDEZMBcGA1UEAxMQVlJLIEdvdi4gUm9vdCBDQTAeFw0wMzAxMTAxMjU5MDVaFw0xOTAxMDkxMjU4MzBaMIGhMQswCQYDVQQGEwJGSTEQMA4GA1UECBMHRmlubGFuZDEhMB8GA1UEChMYVmFlc3RvcmVraXN0ZXJpa2Vza3VzIENBMSQwIgYDVQQLExtWYWx0aW9uIGthbnNhbGFpc3Zhcm1lbnRlZXQxNzA1BgNVBAMTLlZSSyBHb3YuIENBIGZvciBDaXRpemVuIFF1YWxpZmllZCBDZXJ0aWZpY2F0ZXMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC5Aj527olxDHOtkQQU+BG1FUs0xOy8Qw2z3NmgV7yOkYRwi/C7aAbvaye712q8APGiDa+Pf0N/XzQNynWWyzC2krv+fQq5YjGypRbnvciAtGbJQSXBoX58eV6sd5CWLKGMo1gHxsXNU6L9v9XlSWLUH4xbYvQt+oxfptgJbK5E+71OYC8DL0KU6xmlEfuPNQZ1Rf3pqqlEfmQjP24ubcgy3ZAHVTFBh7rT66pw+L5zAVPYBCyUG7rdXHS9hulRa4Y8w3BFRBxbChHsc7tuKk9kQmNGhQAJ7CdJx3V5kPsrxnuztOunimeBKoB5X3wgvk9f64n60Jp0qumnY4l9V6oZAgMBAAGjggHHMIIBwzASBgNVHRMBAf8ECDAGAQH/AgEAMBEGCWCGSAGG+EIBAQQEAwIBBjCBywYDVR0gBIHDMIHAMIG9BgkqgXaEBQEKAQEwga8wgYQGCCsGAQUFBwICMHgadlZhcm1lbm5lcG9saXRpaWtrYSBvbiBzYWF0YXZpbGxhIC0gQ2VydGlmaWthdCBwb2xpY3kgZmlubnMgLSBDZXJ0aWZpY2F0ZSBwb2xpY3kgaXMgYXZhaWxhYmxlIGh0dHA6Ly93d3cuZmluZWlkLmZpL2NwczEwJgYIKwYBBQUHAgEWGmh0dHA6Ly93d3cuZmluZWlkLmZpL2NwczEvMEIGCCsGAQUFBwEBBDYwNDAyBggrBgEFBQcwAoYmaHR0cDovL3Byb3h5LmZpbmVpZC5maS9jYS92cmtyb290Yy5jcnQwDgYDVR0PAQH/BAQDAgHGMB8GA1UdIwQYMBaAFNvp4ZvS0SQL/KvjoGfqrpxLd/SwMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly9wcm94eS5maW5laWQuZmkvYXJsL3Zya3Jvb3RhLmNybDAdBgNVHQ4EFgQUiFpvHUJHgob91+kNslfPTVAoBBcwDQYJKoZIhvcNAQEFBQADggEBAEXit6ypQO+0RbVTK57SKT1jsqE8dUiwL8oevvdBiFpR4HxEZZy8e/OGAvF3Hc/Hjc8cOjlsYToqztg16cOFI4vHZ+yC8rWh4TpuWgvkS80h//jcweAayp6E/Z0z928vTNILBD34YJQvpU4u7jyhSaY3tzybKjlSAo5lahiI32a9MNZXGoNv+j+MKq1NJkpgpy6/VEa5Z4RdRx43/EZhs45WvxTfER+nUC1loQngFKOSjdWG3GhOAh13nM9jYASBtC7ONddvoByfzwUOQ+BOf08R2bvZA+2CDFI8PuYqxCFvBMCpQSCdVL6tEYxeWIQb+uIQsfAEfjC3AQuTNh/UiW8=</tsl:X509Certificate> 				  
+							</tsl:DigitalId>
+						</tsl:ServiceDigitalIdentity>
+						<tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus> 
+						<tsl:StatusStartingTime>2003-03-31T12:00:00</tsl:StatusStartingTime> 
+					</tsl:ServiceInformation>
+			  
+					<tsl:ServiceHistory>
+	 <!-- 
+								Intentionally left empty! See justification below.
+								"In the case where historical information is
+								intended to be retained but the service has no history prior to the current
+								status (i.e. a first recorded status or history information not retained by the
+								scheme operator) this field SHALL be empty." 
+							
+
+	  --> 
+					</tsl:ServiceHistory>
+				</tsl:TSPService>
+
+				<tsl:TSPService>
+					<tsl:ServiceInformation>
+						<tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier> 
+						<tsl:ServiceName>
+							<tsl:Name xml:lang="en">VRK Gov. CA for Citizen Qualified Certificates - G2</tsl:Name> 
+						</tsl:ServiceName>
+						<tsl:ServiceDigitalIdentity>
+							<tsl:DigitalId>
+								<tsl:X509Certificate>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</tsl:X509Certificate> 				  
+							</tsl:DigitalId>
+						</tsl:ServiceDigitalIdentity>
+						<tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus> 
+						<tsl:StatusStartingTime>2014-01-08T12:00:00</tsl:StatusStartingTime> 
+					</tsl:ServiceInformation>
+			  
+					<tsl:ServiceHistory>
+	 <!-- 
+								Intentionally left empty! See justification below.
+								"In the case where historical information is
+								intended to be retained but the service has no history prior to the current
+								status (i.e. a first recorded status or history information not retained by the
+								scheme operator) this field SHALL be empty." 
+							
+
+	  --> 
+					</tsl:ServiceHistory>
+				</tsl:TSPService>
+				
+				<tsl:TSPService>
+					<tsl:ServiceInformation>
+						<tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier> 
+						<tsl:ServiceName>
+							<tsl:Name xml:lang="en">VRK CA for Qualified Certificates</tsl:Name> 
+						</tsl:ServiceName>
+						<tsl:ServiceDigitalIdentity>
+							<tsl:DigitalId>
+								<tsl:X509Certificate>MIIFejCCBGKgAwIBAgIDAYiaMA0GCSqGSIb3DQEBBQUAMIGjMQswCQYDVQQGEwJGSTEQMA4GA1UECBMHRmlubGFuZDEhMB8GA1UEChMYVmFlc3RvcmVraXN0ZXJpa2Vza3VzIENBMSkwJwYDVQQLEyBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSBTZXJ2aWNlczEZMBcGA1UECxMQVmFybWVubmVwYWx2ZWx1dDEZMBcGA1UEAxMQVlJLIEdvdi4gUm9vdCBDQTAeFw0wMzAxMTQwNzU3MDJaFw0xOTAxMTMwNzU2MTBaMIGPMQswCQYDVQQGEwJGSTEQMA4GA1UECBMHRmlubGFuZDEhMB8GA1UEChMYVmFlc3RvcmVraXN0ZXJpa2Vza3VzIENBMR8wHQYDVQQLExZPcmdhbmlzYWF0aW92YXJtZW50ZWV0MSowKAYDVQQDEyFWUksgQ0EgZm9yIFF1YWxpZmllZCBDZXJ0aWZpY2F0ZXMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCxGO4peMUc0UklH4cTBXBs8I3/BpGUvNYMSvN9wkMe8zJxW7eLuOAuNrbQUdLE57hzOOjYY67LP2zGyWCU5codtdpT+M+qTgdohtGZwPw1FyNOp1aiDjjVLCBBKEzxfVWrglzmf4zPIF1jJBKspUuJtjWkdtqcNCeb9ZPV8J9yS6+V7TTUGv63VCx48AfkWegKRHrBJxtby07P4liRpoQgZ4uYy2sD3rHuQnv3ukbx3VxtMKHLAGwzQa/yBPGcFha5IeWnONTx+3YrJYTysKvtE7z302tQvpl+WFTsOXKhsM7/TEf+EerUqY7P36H/qUvyFsvvzotRP858s4r3eQlRAgMBAAGjggHHMIIBwzASBgNVHRMBAf8ECDAGAQH/AgEAMBEGCWCGSAGG+EIBAQQEAwIBBjCBywYDVR0gBIHDMIHAMIG9BgkqgXaEBQEKAQIwga8wgYQGCCsGAQUFBwICMHgadlZhcm1lbm5lcG9saXRpaWtrYSBvbiBzYWF0YXZpbGxhIC0gQ2VydGlmaWthdCBwb2xpY3kgZmlubnMgLSBDZXJ0aWZpY2F0ZSBwb2xpY3kgaXMgYXZhaWxhYmxlIGh0dHA6Ly93d3cuZmluZWlkLmZpL2NwczIwJgYIKwYBBQUHAgEWGmh0dHA6Ly93d3cuZmluZWlkLmZpL2NwczIvMEIGCCsGAQUFBwEBBDYwNDAyBggrBgEFBQcwAoYmaHR0cDovL3Byb3h5LmZpbmVpZC5maS9jYS92cmtyb290Yy5jcnQwDgYDVR0PAQH/BAQDAgHGMB8GA1UdIwQYMBaAFNvp4ZvS0SQL/KvjoGfqrpxLd/SwMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly9wcm94eS5maW5laWQuZmkvYXJsL3Zya3Jvb3RhLmNybDAdBgNVHQ4EFgQUVBoCN4+OY9+P8DAjSqj8Z1fwU6gwDQYJKoZIhvcNAQEFBQADggEBAF9FRZ3uzOv7VtEy/AudyUgNXmqgt7a2hns6jjGUegvZThpHESJ3SAz1dtIXbmQ1XM0j8CKb5GRmgBMMbqXgWVEuvw6Jikh0If9TYMtnw0y5QDZig1rmCvwZnz/LR9IkcqU7MdaWFDPOQzDfnZX90cerh+bn9DuHhcZ3xtiy9OwXOVpp8w8rcoVY4+3A1Sn1QmNsEsuxZDoKZiwNZn87IKRj5h5okh3Tsu8XXtV+Lc4bQnY2mtDA0vMgZ9KJlM6NwrXOc4f9unALJkyX3Ygd2DfvrIKOJlKIm7/c91Xc9vBW8uGlFDOyzdhhcDYt30Gb1eBcLxxSdkcuIFcIq7cMyvE=</tsl:X509Certificate> 				  
+
+							</tsl:DigitalId>
+						</tsl:ServiceDigitalIdentity>
+						<tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus> 
+						<tsl:StatusStartingTime>2003-03-31T12:00:00</tsl:StatusStartingTime> 
+					</tsl:ServiceInformation>
+					<tsl:ServiceHistory>
+	 <!-- 
+								Intentionally left empty! See justification below.
+								"In the case where historical information is
+								intended to be retained but the service has no history prior to the current
+								status (i.e. a first recorded status or history information not retained by the
+								scheme operator) this field SHALL be empty." 
+							
+
+	  --> 
+					</tsl:ServiceHistory>
+				</tsl:TSPService>
+				
+				<tsl:TSPService>
+					<tsl:ServiceInformation>
+						<tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier> 
+						<tsl:ServiceName>
+							<tsl:Name xml:lang="en">VRK CA for Qualified Certificates - G2</tsl:Name> 
+						</tsl:ServiceName>
+						<tsl:ServiceDigitalIdentity>
+							<tsl:DigitalId>
+								<tsl:X509Certificate>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</tsl:X509Certificate> 				  
+
+							</tsl:DigitalId>
+						</tsl:ServiceDigitalIdentity>
+						<tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus> 
+						<tsl:StatusStartingTime>2014-01-08T12:00:00</tsl:StatusStartingTime> 
+					</tsl:ServiceInformation>
+					<tsl:ServiceHistory>
+	 <!-- 
+								Intentionally left empty! See justification below.
+								"In the case where historical information is
+								intended to be retained but the service has no history prior to the current
+								status (i.e. a first recorded status or history information not retained by the
+								scheme operator) this field SHALL be empty." 
+							
+
+	  --> 
+					</tsl:ServiceHistory>
+				</tsl:TSPService>
+				
+				<tsl:TSPService>
+					<tsl:ServiceInformation>
+						<tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier> 
+						<tsl:ServiceName>
+							<tsl:Name xml:lang="en">VRK CA for Healthcare Professionals Qualified Certificates</tsl:Name> 
+						</tsl:ServiceName>
+						<tsl:ServiceDigitalIdentity>
+							<tsl:DigitalId>
+								<tsl:X509Certificate>MIIFjDCCBHSgAwIBAgIDAaZVMA0GCSqGSIb3DQEBBQUAMIGjMQswCQYDVQQGEwJGSTEQMA4GA1UECBMHRmlubGFuZDEhMB8GA1UEChMYVmFlc3RvcmVraXN0ZXJpa2Vza3VzIENBMSkwJwYDVQQLEyBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSBTZXJ2aWNlczEZMBcGA1UECxMQVmFybWVubmVwYWx2ZWx1dDEZMBcGA1UEAxMQVlJLIEdvdi4gUm9vdCBDQTAeFw0xMDEwMjcxMTQxMjZaFw0yMzEyMTcxOTU5NTlaMIG0MQswCQYDVQQGEwJGSTEQMA4GA1UECBMHRmlubGFuZDEhMB8GA1UEChMYVmFlc3RvcmVraXN0ZXJpa2Vza3VzIENBMSswKQYDVQQLEyJUZXJ2ZXlkZW5odW9sbG9uIGFtbWF0dGl2YXJtZW50ZWV0MUMwQQYDVQQDEzpWUksgQ0EgZm9yIEhlYWx0aGNhcmUgUHJvZmVzc2lvbmFscyBRdWFsaWZpZWQgQ2VydGlmaWNhdGVzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr+HbiIMhxbvT7n7lF4DpnO1ICRXEUleN6eo//szmbvONfNaJtjKlz6rYGMlH1m3DNVlCn5RVHkXb9pNCxXYoqBV00RO/Ry7nEy0dB/ZVlck80CUIHtK5sYC9RKe0YSa3xQKA5xhPFcy6wxmE6jeqs0r32S+qvbUU5VejHTfU+cTghwLiE0XLwBTjK5cX8S8gGHsZvgJUvID/g94l6AaOC3xOVSezGWW2VJicMUl1n/dNpjQsyten03TRjGWI5Tg27wNZvGbQZjwuXWkb+NzAG7lcq4WzCb9Sp/dG+G5AAeU/JWt7fmabQxxFSjv7sg0koJCxWkRdhXkNRL332qRQYwIDAQABo4IBtDCCAbAwEgYDVR0TAQH/BAgwBgEB/wIBADCBywYDVR0gBIHDMIHAMIG9BgkqgXaEBQEKAQcwga8wgYQGCCsGAQUFBwICMHgadlZhcm1lbm5lcG9saXRpaWtrYSBvbiBzYWF0YXZpbGxhIC0gQ2VydGlmaWthdCBwb2xpY3kgZmlubnMgLSBDZXJ0aWZpY2F0ZSBwb2xpY3kgaXMgYXZhaWxhYmxlIGh0dHA6Ly93d3cuZmluZWlkLmZpL2NwczYwJgYIKwYBBQUHAgEWGmh0dHA6Ly93d3cuZmluZWlkLmZpL2NwczYvMEIGCCsGAQUFBwEBBDYwNDAyBggrBgEFBQcwAoYmaHR0cDovL3Byb3h5LmZpbmVpZC5maS9jYS92cmtyb290Yy5jcnQwDgYDVR0PAQH/BAQDAgHGMB8GA1UdIwQYMBaAFNvp4ZvS0SQL/KvjoGfqrpxLd/SwMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly9wcm94eS5maW5laWQuZmkvYXJsL3Zya3Jvb3RhLmNybDAdBgNVHQ4EFgQUzRt/1lZfBvUKKTJe6i1snCZYABIwDQYJKoZIhvcNAQEFBQADggEBAGGkQW99duGBicXk4r2Q9tspbIHDbvum7+ARNjxNuTtMlXOEQzXhA98Ai33fY6WOq1MMV9wTuNfjacvTB5H0hWjmMSWEqOCS/Xvt1Mn/+hWvRu1el6eRf9euAfMJmFxsS3fwcdrY4g/O4yuM2dc/mb8Ziyz33mm7p0qGYcMZxqADcUnczezPf2CV/qZHaxGS7if0sEoNC04KnPg/4WbcqzbwrPaGTd/m+TX4DhY4SyehMCbI3yxwuOK2VHkGKDPRDo2zH5yHL+0MxCu9N7wMuq3n5WxbVL/B+Bv+6ccLYL0H6c+3SIkpESiNU9Gx2TJf/PcO37Nbj/RN0jY4UZPRed4=</tsl:X509Certificate> 				  
+							</tsl:DigitalId>
+						</tsl:ServiceDigitalIdentity>
+						<tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus> 
+						<tsl:StatusStartingTime>2010-12-01T12:00:00</tsl:StatusStartingTime> 
+					</tsl:ServiceInformation>
+			  
+					<tsl:ServiceHistory>
+	 <!-- 
+								Intentionally left empty! See justification below.
+								"In the case where historical information is
+								intended to be retained but the service has no history prior to the current
+								status (i.e. a first recorded status or history information not retained by the
+								scheme operator) this field SHALL be empty." 
+							
+
+	  --> 
+					</tsl:ServiceHistory>
+				</tsl:TSPService>
+			
+			</tsl:TSPServices>
+		</tsl:TrustServiceProvider>
+	</tsl:TrustServiceProviderList><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-872119070"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="id-LockItSignatureReference-1x673616707" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>mpxzYCBRAEaX9usYQMEnjVzC87LGf2qCJlrK4scs7wc=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-91315720"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>saTLEiJF/+b1iduig7U6RQAws/F5bEFwmQNg2PxKt98=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>1UouvQyWaEXl2a9Ou2P034uy9kqN6C+fRl7ST6MDCj66IluvTD0DGDt0A7QPl2aKBKGvkJoprHgtJE2ej39hIR+v+qENvuxU8uebuL66oZIM9/n4XWOi0UjgML5wgOtbye0bdFjX6KRDuz5mWXafdvSPhk/eOxowN1HZbbCogskApFAPE1Z9gQB3qUOO3iikAFz1c6GHiOzzqRelCk25hws9GB1yfWLG+BvipZAeJy3qHcnIFMAiw2bXlPLNwsAjKK/3NsCOk3z57pIl02RP/e2l7e7ysW6ooJ1LypSdqYtB52oNYK08nc+mKpbfNHZiCHEriaZq074lFGb+TzmD0AYXI4eItrRQaFq+o5u/QjGsQKdWqDyxmKoGicU4IrDPbkOVs9YWAnTVVfAKmPhayzYsCZpk0gfv3L2NA3bWvmgXoJ6P9C2kOWt5Xv+bk3GPlCJgSnE012NDJiW1eHyMaKmhWfz+wkmMdNV5loXQQfCq6ZCWG3UhKs8no1sCyuQmn0lv4COtRTOXIsSOjcdtgHMpPBVOFPqR1deglhbKi7ig1c4wT86BjGuIjPirjTlCpo+mQAgVOpc+lO49S8NVjGWPsJ1MesbkrUhW467J7UgoFCNTaV4EbYJqxI6Dglm6nltd75ocYfO+pxQggOHAPWxkI6htYEsaQWwDRGTLTzk=</ds:SignatureValue><ds:KeyInfo><ds:KeyValue><ds:RSAKeyValue><ds:Modulus>5QUbwN9eKnU6DcU1pV5xC/AcK1OwBNBZGEHVsJfT3vPt/qc2dctb0xoAzVV+apurWhrTMisCwrmeB11LNbVdS5ihOBh5uPUeSI3MQqHBslJiEDswJWBBtPO6Jf51bht21cjjr/ziA/P3a49d0L0poZDl7XxyqNJnhfx4hhzvaEwbIUKXYQgwsXD/hEYfdqXgnJ9V3Tv3wiFnRHyMX8j739JLXYwEMnkROz1LrEQHVXz6aVusdvtnTIxcDeqS/nok8PEF+/ZpuOw1UfZ8ab84bzvCap4huzqIPRnUBf5BiuwFO4JiavpqfqZfEvXaaKMYPyW5saRsnHh3iFrZqhL+K3CP37rQYyelvMbDCrvAYW/5vBcfaIlwqmH/957AwbQp4RfMzcVuuV+bKnMcwvI9Vq0zTCGXSFLKM2eLllbHVR5wvddx5j4PYmY+trdHegaxDHvjj8o/ftipcdsARNiaByvu19yNx1rm0zasUVdmKXE088vzaA5VbMyYdIEMsGmIr3IhA3kzLn6UbQF9tTXcMw8ddtMfNFnmYO8ojSz/XHZ8XBWlA/+iVYqsY031OvCbx7aOX/0OMIAdcLQn1Nvy0Mo6C162RoBKDIbzgMEM69LUYy/UaG9JHIIUfayV2d5pSiXI2BQBU4irrMUDFsmdNEqsNFVpU52KzLQuNq/5GlM=</ds:Modulus><ds:Exponent>AQAB</ds:Exponent></ds:RSAKeyValue></ds:KeyValue><ds:X509Data><ds:X509IssuerSerial><ds:X509IssuerName>CN=Finnish Communications Regulatory Authority, O=Finnish Communications Regulatory Authority, L=Helsinki, C=FI</ds:X509IssuerName><ds:X509SerialNumber>89499496282</ds:X509SerialNumber></ds:X509IssuerSerial><ds:X509SubjectName>CN=Finnish Communications Regulatory Authority, O=Finnish Communications Regulatory Authority, L=Helsinki, C=FI</ds:X509SubjectName><ds:X509Certificate>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</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature-872119070"><xades:SignedProperties Id="SignedProperties-91315720"><xades:SignedSignatureProperties><xades:SigningTime>2015-03-24T10:07:33.720Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>0KRuOf0wvTzmjfdL5Tf21lpx7+6m2UNwO3o7787f8Ds=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Finnish Communications Regulatory Authority, O=Finnish Communications Regulatory Authority, L=Helsinki, C=FI</ds:X509IssuerName><ds:X509SerialNumber>89499496282</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#id-LockItSignatureReference-1x673616707"><xades:Description>Content-Type: text/xml; charset=UTF-8; name="doc.xml"</xades:Description><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature>
+</tsl:TrustServiceStatusList>

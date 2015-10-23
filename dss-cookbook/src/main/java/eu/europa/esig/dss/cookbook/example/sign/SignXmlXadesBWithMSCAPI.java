@@ -28,10 +28,10 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.MSCAPISignatureToken;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -49,7 +49,7 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		prepareXmlDoc();
 
 		// Creation of MS-CAPI signature token
-		signingToken = new MSCAPISignatureToken(null);
+		signingToken = new MSCAPISignatureToken();
 		List<DSSPrivateKeyEntry> list = signingToken.getKeys();
 		// Chose the right private key entry from store. The index will depend of the number of the certificates on your card.
 		System.out.println(signingToken.getKeys().size());
@@ -64,6 +64,11 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		// We set the digest algorithm to use with the signature algorithm. You must use the
 		// same parameter when you invoke the method sign on the token.
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
+
+		// We set the signing certificate
+		parameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		parameters.setCertificateChain(privateKey.getCertificateChain());
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();

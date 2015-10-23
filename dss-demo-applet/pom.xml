@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.5.0</version>
+		<version>4.6.RC1</version>
 	</parent>
 
 	<artifactId>dss-demo-applet</artifactId>
@@ -18,11 +18,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-document</artifactId>
+			<artifactId>dss-spi</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-webservices-client</artifactId>
+			<artifactId>dss-soap-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-token</artifactId>
 		</dependency>
 
 		<dependency>
@@ -39,11 +43,5 @@
 			<artifactId>jgoodies-binding</artifactId>
 		</dependency>
 	
-		<dependency>
-			<groupId>com.sun.xsom</groupId>
-			<artifactId>xsom</artifactId>
-			<version>20110809</version>
-		</dependency>
-
 	</dependencies>
 </project>

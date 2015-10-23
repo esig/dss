@@ -35,10 +35,10 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -62,7 +62,7 @@ public class DigestStabilityTest {
 		ToBeSigned dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 
-		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid().getId());
+		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid());
 		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
 		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
@@ -82,7 +82,7 @@ public class DigestStabilityTest {
 		ToBeSigned dataToSign1 = getDataToSign(toBeSigned1, privateKeyEntry, signingDate);
 		ToBeSigned dataToSign2 = getDataToSign(toBeSigned2, privateKeyEntry, signingDate);
 
-		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid().getId());
+		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid());
 		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
 		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
@@ -102,7 +102,7 @@ public class DigestStabilityTest {
 		signingDate = new Date();
 		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 
-		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid().getId());
+		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid());
 		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
 		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 

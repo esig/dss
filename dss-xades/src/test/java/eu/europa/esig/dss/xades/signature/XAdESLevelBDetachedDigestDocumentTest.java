@@ -38,9 +38,9 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -65,7 +65,6 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature
 		IOUtils.closeQuietly(fis);
 		String computedDigest = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA256, bytes));
 		digestDocument.addDigest(DigestAlgorithm.SHA256, computedDigest);
-		digestDocument.setBase64Encoded(Base64.encodeBase64String(bytes));
 
 		documentToSign = digestDocument;
 

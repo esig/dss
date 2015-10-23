@@ -64,9 +64,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
-import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +80,6 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * Utility class that contains some XML related method.
@@ -294,7 +291,6 @@ public final class DSSXMLUtils {
 			final NodeList evaluated = (NodeList) expr.evaluate(xmlNode, XPathConstants.NODESET);
 			return evaluated;
 		} catch (XPathExpressionException e) {
-
 			throw new DSSException(e);
 		}
 	}
@@ -315,7 +311,6 @@ public final class DSSXMLUtils {
 			final String string = (String) xPathExpression.evaluate(xmlNode, XPathConstants.STRING);
 			return string.trim();
 		} catch (XPathExpressionException e) {
-
 			throw new DSSException(e);
 		}
 	}
@@ -374,11 +369,7 @@ public final class DSSXMLUtils {
 
 			final byte[] bytes = buffer.toByteArray();
 			return bytes;
-		} catch (ClassNotFoundException e) {
-			throw new DSSException(e);
-		} catch (InstantiationException e) {
-			throw new DSSException(e);
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -582,23 +573,14 @@ public final class DSSXMLUtils {
 	 *
 	 * @param inputStream The inputStream stream representing the dssDocument to be created.
 	 * @return
-	 * @throws SAXException
-	 * @throws IOException
+	 * @throws DSSException
 	 */
 	public static Document buildDOM(final InputStream inputStream) throws DSSException {
-
 		try {
 			ensureDocumentBuilder();
-
 			final Document rootElement = dbFactory.newDocumentBuilder().parse(inputStream);
 			return rootElement;
-		} catch (SAXParseException e) {
-			throw new DSSException(e);
-		} catch (SAXException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} catch (ParserConfigurationException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
 			IOUtils.closeQuietly(inputStream);
@@ -613,10 +595,8 @@ public final class DSSXMLUtils {
 	 * @throws DSSException
 	 */
 	public static Document buildDOM(final DSSDocument dssDocument) throws DSSException {
-
 		final InputStream input = dssDocument.openStream();
 		try {
-
 			final Document doc = buildDOM(input);
 			return doc;
 		} finally {
@@ -648,9 +628,7 @@ public final class DSSXMLUtils {
 	 * @throws DSSException if any error is encountered
 	 */
 	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
-
 		try {
-
 			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
 			return c14n.canonicalize(toCanonicalizeBytes);
 		} catch (Exception e) {
@@ -666,15 +644,11 @@ public final class DSSXMLUtils {
 	 * @return array of canonicalized bytes
 	 */
 	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
-
 		try {
-
 			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
 			final byte[] canonicalized = c14n.canonicalizeSubtree(node);
 			return canonicalized;
-		} catch (InvalidCanonicalizerException e) {
-			throw new DSSException(e);
-		} catch (CanonicalizationException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -687,15 +661,11 @@ public final class DSSXMLUtils {
 	 * @return array of canonicalized bytes
 	 */
 	public static byte[] canonicalizeXPathNodeSet(final String canonicalizationMethod, final Set<Node> nodeList) {
-
 		try {
-
 			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
 			final byte[] canonicalized = c14n.canonicalizeXPathNodeSet(nodeList);
 			return canonicalized;
-		} catch (InvalidCanonicalizerException e) {
-			throw new DSSException(e);
-		} catch (CanonicalizationException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -865,8 +835,7 @@ public final class DSSXMLUtils {
 			xmlGregorianCalendar = xmlGregorianCalendar.normalize(); // to UTC = Zulu
 			return xmlGregorianCalendar;
 		} catch (DatatypeConfigurationException e) {
-
-			// LOG.warn("Unable to properly convert a Date to an XMLGregorianCalendar",e);
+			LOG.warn("Unable to properly convert a Date to an XMLGregorianCalendar " + e.getMessage(), e);
 		}
 		return null;
 	}
@@ -954,9 +923,7 @@ public final class DSSXMLUtils {
 	 * @return {@code String} representation of the node
 	 */
 	public static String xmlToString(final Node node) {
-
 		try {
-
 			final Source source = new DOMSource(node);
 			final StringWriter stringWriter = new StringWriter();
 			final Result result = new StreamResult(stringWriter);
@@ -964,9 +931,7 @@ public final class DSSXMLUtils {
 			final Transformer transformer = factory.newTransformer();
 			transformer.transform(source, result);
 			return stringWriter.getBuffer().toString();
-		} catch (TransformerConfigurationException e) {
-			throw new DSSException(e);
-		} catch (TransformerException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}

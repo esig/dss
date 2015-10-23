@@ -22,63 +22,46 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.List;
 
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Condition that check a specific QCStatement
- *
- *
  */
 public class QcStatementCondition extends Condition {
 
 	private static final long serialVersionUID = -5504958938057542907L;
 
-	private String qcStatementId = null;
+	private String qcStatementASN1Id = null;
 
 	/**
 	 * The default constructor for QcStatementCondition.
 	 *
 	 * @param qcStatementId
 	 */
-	public QcStatementCondition(final String qcStatementId) {
-
-		this.qcStatementId = qcStatementId;
-	}
-
-	/**
-	 * The default constructor for QcStatementCondition.
-	 *
-	 * @param qcStatementId
-	 */
-	public QcStatementCondition(final ASN1ObjectIdentifier qcStatementId) {
-
-		this(qcStatementId.getId());
+	public QcStatementCondition(final String qcStatementASN1Id) {
+		this.qcStatementASN1Id = qcStatementASN1Id;
 	}
 
 	/**
 	 * Checks the condition for the given certificate.
 	 *
-	 * @param x509Certificate certificate to be checked
+	 * @param certToken
+	 *            certificate to be checked
 	 * @return
 	 */
 	@Override
-	public boolean check(final CertificateToken x509Certificate) {
-
-		final List<String> extensionIdList = x509Certificate.getQCStatementsIdList();
-		return extensionIdList.contains(qcStatementId);
+	public boolean check(final CertificateToken certToken) {
+		List<String> extensionIdList = DSSASN1Utils.getQCStatementsIdList(certToken);
+		return extensionIdList.contains(qcStatementASN1Id);
 	}
 
 	@Override
 	public String toString(String indent) {
-
 		if (indent == null) {
 			indent = "";
 		}
-		return indent + "QcStatementCondition{" +
-		"qcStatementId='" + qcStatementId + '\'' +
-		'}';
+		return indent + "QcStatementCondition{" + "qcStatementId='" + qcStatementASN1Id + '\'' + '}';
 	}
 
 	@Override

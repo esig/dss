@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><tsl:TrustServiceStatusList xmlns:tsl="http://uri.etsi.org/02231/v2#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ecc="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:tslx="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Id="id_for_enveloped_signing_of_the_entire_list" TSLTag="http://uri.etsi.org/02231/TSLTag">
+   <tsl:SchemeInformation>
+      <tsl:TSLVersionIdentifier>4</tsl:TSLVersionIdentifier>
+      <tsl:TSLSequenceNumber>12</tsl:TSLSequenceNumber>
+      <tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</tsl:TSLType>
+      <tsl:SchemeOperatorName>
+         <tsl:Name xml:lang="en">Swedish Post and Telecom Agency (PTS)</tsl:Name>
+         <tsl:Name xml:lang="sv">Post- och telestyrelsen (PTS)</tsl:Name>
+      </tsl:SchemeOperatorName>
+      <tsl:SchemeOperatorAddress>
+         <tsl:PostalAddresses>
+            <tsl:PostalAddress xml:lang="en">
+               <tsl:StreetAddress>Box 5398</tsl:StreetAddress>
+               <tsl:Locality>Stockholm</tsl:Locality>
+               <tsl:PostalCode>10249</tsl:PostalCode>
+               <tsl:CountryName>SE</tsl:CountryName>
+            </tsl:PostalAddress>
+         </tsl:PostalAddresses>
+         <tsl:ElectronicAddress>
+            <tsl:URI xml:lang="en">mailto:pts@pts.se</tsl:URI>
+            <tsl:URI xml:lang="en">http://www.pts.se</tsl:URI>
+         </tsl:ElectronicAddress>
+      </tsl:SchemeOperatorAddress>
+      <tsl:SchemeName>
+         <tsl:Name xml:lang="en">SE:Supervision/Accreditation Status List of certification services from Certification Service Providers, which are supervised/accredited by the referenced Scheme Operatar´s Member State for compliance with the relevant provisions laid down in Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.</tsl:Name>
+      </tsl:SchemeName>
+      <tsl:SchemeInformationURI>
+         <tsl:URI xml:lang="en">http://www.pts.se/en-gb/Industry/Internet/Electronic-signatures/Trusted-Service-Status-List-TSL/</tsl:URI>
+      </tsl:SchemeInformationURI>
+      <tsl:StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/StatusDetn/EUappropriate</tsl:StatusDeterminationApproach>
+      <tsl:SchemeTypeCommunityRules>
+         <tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</tsl:URI>
+         <tsl:URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/SE</tsl:URI>
+      </tsl:SchemeTypeCommunityRules>
+      <tsl:SchemeTerritory>SE</tsl:SchemeTerritory>
+      <tsl:PolicyOrLegalNotice>
+         <tsl:TSLLegalNotice xml:lang="en">The applicable legal framework for the present TSL implementation of the Trusted List of supervised/accredited Certification Service Providers for Sweden is Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures and its implementation in Swedish] laws.’</tsl:TSLLegalNotice>
+      </tsl:PolicyOrLegalNotice>
+      <tsl:HistoricalInformationPeriod>65535</tsl:HistoricalInformationPeriod>
+      <tsl:PointersToOtherTSL>
+         <tsl:OtherTSLPointer>
+            <tsl:ServiceDigitalIdentities>
+               <tsl:ServiceDigitalIdentity>
+                  <tsl:DigitalId>
+                     <tsl:X509Certificate>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</tsl:X509Certificate>
+                  </tsl:DigitalId>
+               </tsl:ServiceDigitalIdentity>
+               <tsl:ServiceDigitalIdentity>
+                  <tsl:DigitalId>
+                     <tsl:X509Certificate>MIIFnDCCBISgAwIBAgIDAVZhMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNVBAYTAkxVMRYwFAYDVQQKEw1MdXhUcnVzdCBTLkEuMR4wHAYDVQQDExVMdXhUcnVzdCBRdWFsaWZpZWQgQ0EwHhcNMDkxMjIzMTAzNTU2WhcNMTIxMjIzMTAzNTU2WjCCAQYxCzAJBgNVBAYTAkJFMQswCQYDVQQHEwJCRTEcMBoGA1UEChMTRXVyb3BlYW4gQ29tbWlzc2lvbjELMAkGA1UECxMCTkExJDAiBgNVBAMTG0thcmVsIExvZGV3aWprIE0gRGUgVnJpZW5kdDETMBEGA1UEBBMKRGUgVnJpZW5kdDEZMBcGA1UEKhMQS2FyZWwgTG9kZXdpamsgTTEdMBsGA1UEBRMUMTAxMDAzMzIxMTAwMDQ3NDkzNzgxLDAqBgkqhkiG9w0BCQEWHUthcmVsLkRlLVZyaWVuZHRAZWMuZXVyb3BhLmV1MRwwGgYDVQQMExNQcm9mZXNzaW9uYWwgUGVyc29uMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC96JBqnjCmAk43LDuZDMu5lNGK7/UQnJBLDkUqN2Jb/STQSBJnRJchCY9DnKtqYG9cuSZDRxvIUkssqO/WpFu/I5fO9I4mvLGD9h4ot8/GkRntbEl3CnMlRKZJkAdcSHwuqnuNpfaZ4yGGIPslRy9pbRkfXSeeneJAo0Ixiu3QJwIDAQABo4ICVDCCAlAwDAYDVR0TAQH/BAIwADBgBggrBgEFBQcBAQRUMFIwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLmx1eHRydXN0Lmx1MCsGCCsGAQUFBzAChh9odHRwOi8vY2EubHV4dHJ1c3QubHUvTFRRQ0EuY3J0MIIBHQYDVR0gBIIBFDCCARAwggECBggrgSsBAQIEATCB9TCBxwYIKwYBBQUHAgIwgboagbdMdXhUcnVzdCBRdWFsaWZpZWQgQ2VydGlmaWNhdGUgb24gQ0NTRCBjb21wbGlhbnQgd2l0aCBFVFNJIFRTIDEwMSA0NTYgUUNQKyBjZXJ0aWZpY2F0ZSBwb2xpY3kuIEtleSBHZW5lcmF0aW9uIGJ5IENTUC4gU29sZSBBdXRob3Jpc2VkIFVzYWdlOiBTdXBwb3J0IG9mIFF1YWxpZmllZCBFbGVjdHJvbmljIFNpZ25hdHVyZS4wKQYIKwYBBQUHAgEWHWh0dHA6Ly9yZXBvc2l0b3J5Lmx1eHRydXN0Lmx1MAgGBgQAizABATA2BggrBgEFBQcBAwQqMCgwCAYGBACORgEBMBIGBgQAjkYBAjAIEwACAQACAQAwCAYGBACORgEEMBEGCWCGSAGG+EIBAQQEAwIFIDALBgNVHQ8EBAMCBkAwHwYDVR0jBBgwFoAUjZCjB90aE3eZTJKrTUPeP80pZAUwMQYDVR0fBCowKDAmoCSgIoYgaHR0cDovL2NybC5sdXh0cnVzdC5sdS9MVFFDQS5jcmwwEQYDVR0OBAoECEwDOyVe3IV5MA0GCSqGSIb3DQEBBQUAA4IBAQBStS9gFx5BmEv5VciG7qEPR5VzqEpBElkjXDYe68Dw7Ol1nCt51CSuAB2/UcTkfCDh6022H7+EtiUpdM6GH/7qDqZdjqYpQznbu4xkrGTMLrTA1lalhgWugGQIpmCg69kiXns/AXcuJVQSR3mA3BMvJrN5PNaALoguynWCrxRHPTUS3pT5J93jCn90ZPAGhxELRxMdZuFZ2UAn8D8XLUxiz0IK9yqdysJiLzWsQazUkZ+lzDG0mPomyRkl3LzEK8HXO3HKGr+2n760N+StYyjwywP/kS/3LoPQWfUfjWQE8jDiTgodZT4ewVSxuNrBH5Ls29aBi0YsT9NYstznKgaR</tsl:X509Certificate>
+                  </tsl:DigitalId>
+               </tsl:ServiceDigitalIdentity>
+            </tsl:ServiceDigitalIdentities>
+            <tsl:TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</tsl:TSLLocation>
+            <tsl:AdditionalInformation>
+               <tsl:OtherInformation>
+                  <tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</tsl:TSLType>
+               </tsl:OtherInformation>
+               <tsl:OtherInformation>
+                  <tsl:SchemeOperatorName>
+                     <tsl:Name xml:lang="en">European Commission</tsl:Name>
+                  </tsl:SchemeOperatorName>
+               </tsl:OtherInformation>
+               <tsl:OtherInformation>
+                  <tsl:SchemeTypeCommunityRules>
+                     <tsl:URI>http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/schemerules/CompiledList</tsl:URI>
+                  </tsl:SchemeTypeCommunityRules>
+               </tsl:OtherInformation>
+               <tsl:OtherInformation>
+                  <tsl:SchemeTerritory>EU</tsl:SchemeTerritory>
+               </tsl:OtherInformation>
+               <tsl:OtherInformation>
+                  <tslx:MimeType>application/vnd.etsi.tsl+xml</tslx:MimeType>
+               </tsl:OtherInformation>
+            </tsl:AdditionalInformation>
+         </tsl:OtherTSLPointer>
+         <tsl:OtherTSLPointer>
+            <tsl:ServiceDigitalIdentities>
+               <tsl:ServiceDigitalIdentity>
+                  <tsl:DigitalId>
+                     <tsl:X509Certificate>MIIFnDCCBISgAwIBAgIDAVZhMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNVBAYTAkxVMRYwFAYDVQQKEw1MdXhUcnVzdCBTLkEuMR4wHAYDVQQDExVMdXhUcnVzdCBRdWFsaWZpZWQgQ0EwHhcNMDkxMjIzMTAzNTU2WhcNMTIxMjIzMTAzNTU2WjCCAQYxCzAJBgNVBAYTAkJFMQswCQYDVQQHEwJCRTEcMBoGA1UEChMTRXVyb3BlYW4gQ29tbWlzc2lvbjELMAkGA1UECxMCTkExJDAiBgNVBAMTG0thcmVsIExvZGV3aWprIE0gRGUgVnJpZW5kdDETMBEGA1UEBBMKRGUgVnJpZW5kdDEZMBcGA1UEKhMQS2FyZWwgTG9kZXdpamsgTTEdMBsGA1UEBRMUMTAxMDAzMzIxMTAwMDQ3NDkzNzgxLDAqBgkqhkiG9w0BCQEWHUthcmVsLkRlLVZyaWVuZHRAZWMuZXVyb3BhLmV1MRwwGgYDVQQMExNQcm9mZXNzaW9uYWwgUGVyc29uMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC96JBqnjCmAk43LDuZDMu5lNGK7/UQnJBLDkUqN2Jb/STQSBJnRJchCY9DnKtqYG9cuSZDRxvIUkssqO/WpFu/I5fO9I4mvLGD9h4ot8/GkRntbEl3CnMlRKZJkAdcSHwuqnuNpfaZ4yGGIPslRy9pbRkfXSeeneJAo0Ixiu3QJwIDAQABo4ICVDCCAlAwDAYDVR0TAQH/BAIwADBgBggrBgEFBQcBAQRUMFIwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLmx1eHRydXN0Lmx1MCsGCCsGAQUFBzAChh9odHRwOi8vY2EubHV4dHJ1c3QubHUvTFRRQ0EuY3J0MIIBHQYDVR0gBIIBFDCCARAwggECBggrgSsBAQIEATCB9TCBxwYIKwYBBQUHAgIwgboagbdMdXhUcnVzdCBRdWFsaWZpZWQgQ2VydGlmaWNhdGUgb24gQ0NTRCBjb21wbGlhbnQgd2l0aCBFVFNJIFRTIDEwMSA0NTYgUUNQKyBjZXJ0aWZpY2F0ZSBwb2xpY3kuIEtleSBHZW5lcmF0aW9uIGJ5IENTUC4gU29sZSBBdXRob3Jpc2VkIFVzYWdlOiBTdXBwb3J0IG9mIFF1YWxpZmllZCBFbGVjdHJvbmljIFNpZ25hdHVyZS4wKQYIKwYBBQUHAgEWHWh0dHA6Ly9yZXBvc2l0b3J5Lmx1eHRydXN0Lmx1MAgGBgQAizABATA2BggrBgEFBQcBAwQqMCgwCAYGBACORgEBMBIGBgQAjkYBAjAIEwACAQACAQAwCAYGBACORgEEMBEGCWCGSAGG+EIBAQQEAwIFIDALBgNVHQ8EBAMCBkAwHwYDVR0jBBgwFoAUjZCjB90aE3eZTJKrTUPeP80pZAUwMQYDVR0fBCowKDAmoCSgIoYgaHR0cDovL2NybC5sdXh0cnVzdC5sdS9MVFFDQS5jcmwwEQYDVR0OBAoECEwDOyVe3IV5MA0GCSqGSIb3DQEBBQUAA4IBAQBStS9gFx5BmEv5VciG7qEPR5VzqEpBElkjXDYe68Dw7Ol1nCt51CSuAB2/UcTkfCDh6022H7+EtiUpdM6GH/7qDqZdjqYpQznbu4xkrGTMLrTA1lalhgWugGQIpmCg69kiXns/AXcuJVQSR3mA3BMvJrN5PNaALoguynWCrxRHPTUS3pT5J93jCn90ZPAGhxELRxMdZuFZ2UAn8D8XLUxiz0IK9yqdysJiLzWsQazUkZ+lzDG0mPomyRkl3LzEK8HXO3HKGr+2n760N+StYyjwywP/kS/3LoPQWfUfjWQE8jDiTgodZT4ewVSxuNrBH5Ls29aBi0YsT9NYstznKgaR</tsl:X509Certificate>
+                  </tsl:DigitalId>
+               </tsl:ServiceDigitalIdentity>
+            </tsl:ServiceDigitalIdentities>
+            <tsl:TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</tsl:TSLLocation>
+            <tsl:AdditionalInformation>
+               <tsl:OtherInformation>
+                  <tsl:SchemeOperatorName>
+                     <tsl:Name xml:lang="sv">Europeiska Kommissionen</tsl:Name>
+                     <tsl:Name xml:lang="en">European Commission</tsl:Name>
+                  </tsl:SchemeOperatorName>
+               </tsl:OtherInformation>
+               <tsl:OtherInformation>
+                  <tsl:SchemeTypeCommunityRules>
+                     <tsl:URI>http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/schemerules/CompiledList</tsl:URI>
+                  </tsl:SchemeTypeCommunityRules>
+               </tsl:OtherInformation>
+               <tsl:OtherInformation>
+                  <tsl:SchemeTerritory>EU</tsl:SchemeTerritory>
+               </tsl:OtherInformation>
+               <tsl:OtherInformation>
+                  <tslx:MimeType>application/vnd.etsi.tsl+xml</tslx:MimeType>
+               </tsl:OtherInformation>
+               <tsl:OtherInformation>
+                  <tsl:TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</tsl:TSLType>
+               </tsl:OtherInformation>
+            </tsl:AdditionalInformation>
+         </tsl:OtherTSLPointer>
+      </tsl:PointersToOtherTSL>
+      <tsl:ListIssueDateTime>2015-06-23T05:00:00Z</tsl:ListIssueDateTime>
+      <tsl:NextUpdate>
+         <tsl:dateTime>2015-12-18T13:00:00Z</tsl:dateTime>
+      </tsl:NextUpdate>
+      <tsl:DistributionPoints>
+         <tsl:URI>http://http://www.pts.se/upload/Ovrigt/Internet/Branschinformation/Trusted%20List%20SE%20MR.xml</tsl:URI>
+      </tsl:DistributionPoints>
+   </tsl:SchemeInformation>
+   <tsl:TrustServiceProviderList>
+      <tsl:TrustServiceProvider>
+         <tsl:TSPInformation>
+            <tsl:TSPName>
+               <tsl:Name xml:lang="en">SignGuard Europe AB</tsl:Name>
+            </tsl:TSPName>
+            <tsl:TSPTradeName>
+               <tsl:Name xml:lang="en">NTRSE-556633-0220</tsl:Name>
+               <tsl:Name xml:lang="en">SignGuard</tsl:Name>
+            </tsl:TSPTradeName>
+            <tsl:TSPAddress>
+               <tsl:PostalAddresses>
+                  <tsl:PostalAddress xml:lang="en">
+                     <tsl:StreetAddress>Båtbyggargatan 6</tsl:StreetAddress>
+                     <tsl:Locality>Stockholm</tsl:Locality>
+                     <tsl:PostalCode>112 68</tsl:PostalCode>
+                     <tsl:CountryName>SE</tsl:CountryName>
+                  </tsl:PostalAddress>
+               </tsl:PostalAddresses>
+               <tsl:ElectronicAddress>
+                  <tsl:URI xml:lang="en">mailto:info@signguard.se</tsl:URI>
+                  <tsl:URI xml:lang="en">https://www.signguard.se/contact.aspx</tsl:URI>
+               </tsl:ElectronicAddress>
+            </tsl:TSPAddress>
+            <tsl:TSPInformationURI>
+               <tsl:URI xml:lang="en">https://www.signguard.se/pki/documents.aspx</tsl:URI>
+            </tsl:TSPInformationURI>
+         </tsl:TSPInformation>
+         <tsl:TSPServices>
+            <tsl:TSPService>
+               <tsl:ServiceInformation>
+                  <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</tsl:ServiceTypeIdentifier>
+                  <tsl:ServiceName>
+                     <tsl:Name xml:lang="en">SignGuard Europe AB - qualified certificate service</tsl:Name>
+                  </tsl:ServiceName>
+                  <tsl:ServiceDigitalIdentity>
+                     <tsl:DigitalId>
+                        <tsl:X509Certificate>MIIFNjCCBB6gAwIBAgIBCjANBgkqhkiG9w0BAQUFADBhMQswCQYDVQQGEwJTRTEcMBoGA1UEChMTU2lnbmd1YXJkIEV1cm9wZSBBQjEZMBcGA1UECxMQU2lnbmd1YXJkUm9vdENBMTEZMBcGA1UEAxMQU2lnbmd1YXJkUm9vdENBMTAeFw0wODA2MDYxMzE0NTlaFw0xODA2MDQxMzE0NTlaMHExCzAJBgNVBAYTAlNFMRwwGgYDVQQKExNTaWduZ3VhcmQgRXVyb3BlIEFCMRwwGgYDVQQLExNRdWFsaWZpZWRVc2VyQ0EyMDA4MSYwJAYDVQQDEx1TaWduZ3VhcmQgUXVhbGlmaWVkVXNlckNBMjAwODCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMxB3GofmVIZU4XV+ACNaShLq9/es8M0HTbH2U/NTJ3N0kSps481K/YUCWr1hvFE4uDUmGsPBFJ32yxBZzRCaG3PPb3+jRy0GIvusOPV84i00PBEg6DskqdFOzNjYyqBRcuevMSe90aeZ0XlppRQe+sIGvSpRfgLHVDls+2wLGdCOqqOtJidWuZAhSP8NPHS0JB3oPdOGvxqHGOrbbV2I7NwlLzrAl+YKFNMzV1vcGrE0QLh1SkS8C2Q/LrSdc90LrsalX/MJf4Yl9v8Iq2R4gdSkF5t8fpVVfAgBFRz85bl/vSmqL4/NQizbaNvvdpSwFN5fynwWi9hcOG3nPWiM9UCAwEAAaOCAecwggHjMA8GA1UdEwEB/wQFMAMBAf8wQQYJYIZIAYb4QgENBDQWMk9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlIGZvciBTaWduZ3VhcmRSb290Q0ExMA4GA1UdDwEB/wQEAwIBBjBPBgNVHR8ESDBGMESgQqBAhj5sZGFwOi8vcGtpLnNpZ25ndWFyZC5zZS9jbj1TaWduZ3VhcmRSb290Q0ExLGRjPXNpZ25ndWFyZCxkYz1zZTCBgwYDVR0jBHwweoAUrZ3K4PM91yAXfYcjeNTkSdowT56hX6RdMFsxCzAJBgNVBAYTAlNFMRMwEQYDVQQHEwpHb3RoZW5idXJnMRwwGgYDVQQKExNTaWduZ3VhcmQgRXVyb3BlIEFCMRkwFwYDVQQDExBTaWduZ3VhcmQgUm9vdENBggEBMB0GA1UdDgQWBBQHlSDwmeK5eiBFZptfEDmBLtTLLjA7BglghkgBhvhCAQgELhYsaHR0cDovL3d3dy5zaWduZ3VhcmQuc2UvcG9saWNpZXMvcG9saWN5Lmh0bWwwSgYDVR0gBEMwQTA/BgEAMDowOAYIKwYBBQUHAgEWLGh0dHA6Ly93d3cuc2lnbmd1YXJkLnNlL3BvbGljaWVzL3BvbGljeS5odG1sMA0GCSqGSIb3DQEBBQUAA4IBAQCmBtj656kVLL7u2+/uoU7j9iyjei7cA5JYQrSQBbZelVj9ygtOOpSCt+TMG+l6fQFSsD4xxWW1dIzwhH7uJJVdDwk2Y9QHxV9pa7H7URotcFhGqVf6FdreV9/PuO5Cke3/3KKpAWv7L43A7jMlje95ykCdCpDm6Lp20MIfQLUivqEjVcH8NPmj1kZOpJDFGLiIlg/mnEpKTdqmfYtd5Q+b6oTkU9X168zxr+WPtYs+xBregJc7E28T2SWSMAJLeHR4GosyQC5IYGBs5ec9+/FyczhK8GX6fjYwZy0XJtHf1ZpCSZuwyIV0B+7kGW6rJC/F58oo3+g1Sio1e4IGT/GG</tsl:X509Certificate>
+                     </tsl:DigitalId>
+                  </tsl:ServiceDigitalIdentity>
+                  <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                  <tsl:StatusStartingTime>2008-06-11T12:00:00Z</tsl:StatusStartingTime>
+                  <tsl:ServiceInformationExtensions>
+                     <tsl:Extension Critical="true">
+                        <ecc:Qualifications>
+                           <ecc:QualificationElement>
+                              <ecc:Qualifiers>
+                                 <ecc:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD"/>
+                              </ecc:Qualifiers>
+                              <ecc:CriteriaList assert="none">
+                                 <ecc:KeyUsage>
+                                    <ecc:KeyUsageBit name="digitalSignature">false</ecc:KeyUsageBit>
+                                    <ecc:KeyUsageBit name="nonRepudiation">true</ecc:KeyUsageBit>
+                                    <ecc:KeyUsageBit name="keyEncipherment">false</ecc:KeyUsageBit>
+                                    <ecc:KeyUsageBit name="dataEncipherment">false</ecc:KeyUsageBit>
+                                    <ecc:KeyUsageBit name="keyAgreement">false</ecc:KeyUsageBit>
+                                    <ecc:KeyUsageBit name="keyCertSign">false</ecc:KeyUsageBit>
+                                    <ecc:KeyUsageBit name="crlSign">false</ecc:KeyUsageBit>
+                                    <ecc:KeyUsageBit name="encipherOnly">false</ecc:KeyUsageBit>
+                                    <ecc:KeyUsageBit name="decipherOnly">false</ecc:KeyUsageBit>
+                                 </ecc:KeyUsage>
+                              </ecc:CriteriaList>
+                           </ecc:QualificationElement>
+                        </ecc:Qualifications>
+                     </tsl:Extension>
+                  </tsl:ServiceInformationExtensions>
+               </tsl:ServiceInformation>
+            </tsl:TSPService>
+            <tsl:TSPService>
+               <tsl:ServiceInformation>
+                  <tsl:ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP</tsl:ServiceTypeIdentifier>
+                  <tsl:ServiceName>
+                     <tsl:Name xml:lang="en">SignGuard Europe AB – Qualified OCSP Service</tsl:Name>
+                  </tsl:ServiceName>
+                  <tsl:ServiceDigitalIdentity>
+                     <tsl:DigitalId>
+                        <tsl:X509Certificate>MIIDlzCCAn+gAwIBAgIBDTANBgkqhkiG9w0BAQUFADBhMQswCQYDVQQGEwJTRTEcMBoGA1UEChMTU2lnbmd1YXJkIEV1cm9wZSBBQjEZMBcGA1UECxMQU2lnbmd1YXJkUm9vdENBMTEZMBcGA1UEAxMQU2lnbmd1YXJkUm9vdENBMTAeFw0wODExMDYxNDE3MTRaFw0xODExMDQxNDE3MTRaMIGLMQswCQYDVQQGEwJTRTEcMBoGA1UEChMTU2lnbmd1YXJkIEV1cm9wZSBBQjEeMBwGA1UECxMVQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRwwGgYDVQQDExNTaWduZ3VhcmQgT0NTUC0xOlBOMSAwHgYJKoZIhvcNAQkBFhFvY3NwQHNpZ25ndWFyZC5zZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMEoiYxFse6cGSCgLiYLIZDgTzFR7Xhh0Fgp4WlgoHeYYkB74E7ZFcKP6Dv4GgQLYbX+zGtjxP2kD7yfXXD3lxkGQZ6OJWXexBoKkmEvJlRtCZzEHGpIuPG03vOh2LYpee6Fn45v2cYQViCQSWIeEfyL9pYy3bvZ/yfPJ8eR2CJ6YZSTzR13G4s7D9z4LE142vI+y+iUWmrdmy+0NwxBuXbqJwn4ogS9+pjnvhmqs2duXbIbScHvx58oZiD/AXXgp5/RpvTamC9vhyTWUDFqeQ5g2HUWY+M2AkGUI0VGGgy0M9fMlp85jAwQjrtY8wowPJbDbPXkHoLufSp0OZUjbyMCAwEAAaMvMC0wEwYDVR0lBAwwCgYIKwYBBQUHAwkwCQYDVR0TBAIwADALBgNVHQ8EBAMCBkAwDQYJKoZIhvcNAQEFBQADggEBAFkUazUmM82mH8Fo4AnKJBVE2OiE0nXiFTMEmD3e+pjyJikspVDR6mq3AVoieLni9MbqwqvgGwpId9/OtDLyuFZRTaRjWVBkuiu++kxUGLWXKsP0fn9ot6HAwwF2S9pQVw99Ps+rTpAtDAdpSEVjOJfJZ8RbCEG+SpRiLpeMHo+OQh46tgZ2Nmzm51KWAv+ziaauW9UwqIfMkY4KvCWLxV4j0QO+r5iQiRWztvIeTTZIkIjHIfZNTFYDSM5AC3JobYql0jFFTREk76gH6Cl/zyZuWsuZ6jlL8+ajh0Mcd/OZN+Sg2Dr2+BNpO5lQ1ULaex6okW2FgiyAi9gMH+0ApRc=</tsl:X509Certificate>
+                     </tsl:DigitalId>
+                  </tsl:ServiceDigitalIdentity>
+                  <tsl:ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</tsl:ServiceStatus>
+                  <tsl:StatusStartingTime>2008-06-11T12:00:00Z</tsl:StatusStartingTime>
+               </tsl:ServiceInformation>
+            </tsl:TSPService>
+         </tsl:TSPServices>
+      </tsl:TrustServiceProvider>
+   </tsl:TrustServiceProviderList>
+<ds:Signature xmlns="http://uri.etsi.org/01903/v1.3.2#" Id="sigId-id57e7fd7c678e5cb81c31e22cf3361f44" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116"><ds:XPath>not(ancestor-or-self::ds:Signature)</ds:XPath></ds:Transform></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>KxMNreXGFF5edzcssWmLWElpRTa161DzHSTUpuksApc=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id57e7fd7c678e5cb81c31e22cf3361f44"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>3sRXe9r28Gs4vn4lstGIKhozWvg97yvskfLk2+N01y0=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id57e7fd7c678e5cb81c31e22cf3361f44">AJccfSI0VoF+dZLkoCxIOFqm5i1CzZrflyp4XXh5p9eEdctbg5A84uLmoy+oC1y6Yn83JuFNyqu4W7GYSW4UxEbv8dqOnyniq4P5e59mQHvmbEDukNMXV4Ypy9ML+nGOsppPaNjbL34VyhiX23J0qeyuIy9YKKYEXd64mhqzk2Mxa+wGLorJmaMLm7BNjSHG270ZtHc0s6743dFh4T3ksd/BoyI31iWkmsDy7yjGzDZX1lzmfd+RLAWrBtoS5EZtsjrbw3s9WF0XSjuOQGPEcjyI2siB87VtjXwz05ltR8wnQSSG0EHCysU7VJTqdkUXAIep3EClktuQ7R4rqZ93yQ==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDyTCCArGgAwIBAgIJALk/nqk36SvuMA0GCSqGSIb3DQEBCwUAMIGVMS4wLAYDVQQKEyVTd2VkaXNoIFBvc3QgYW5kIFRlbGVjb20gQWdlbmN5IChQVFMpMRIwEAYDVQQHEwlTdG9ja2hvbG0xEjAQBgNVBAgTCVN0b2NraG9sbTELMAkGA1UEBhMCU0UxLjAsBgNVBAMTJVN3ZWRpc2ggUG9zdCBhbmQgVGVsZWNvbSBBZ2VuY3kgKFBUUykwHhcNMTQwMjA0MTE1OTEyWhcNMTcwMjAzMTE1OTEyWjCBlTEuMCwGA1UEChMlU3dlZGlzaCBQb3N0IGFuZCBUZWxlY29tIEFnZW5jeSAoUFRTKTESMBAGA1UEBxMJU3RvY2tob2xtMRIwEAYDVQQIEwlTdG9ja2hvbG0xCzAJBgNVBAYTAlNFMS4wLAYDVQQDEyVTd2VkaXNoIFBvc3QgYW5kIFRlbGVjb20gQWdlbmN5IChQVFMpMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArvBzVAFdzuT6LPDTqpo3dI8+zcH8UMA7uKubCsFmdiaeH643j1nfuUzbjQvQG+K6qrB3IRYec0zvWb6SnP58hTBHxvOf0eeRD7vxXomfeCO0FfhQnpBlCOAo8WDcFfYxCpUE1enyT02AhOkI0XRMibAP6EKWIjUvehKHBPi+OpfrDhxrMshrvV0+Cv/d07RevBNvXXmTUugaoo2q0/whl26rcawdEr3GbdxpNYonlzkwhKn5kNP/6Wo0xujxDX/6ZD6evFE2XS/ogPNqg6jOJifzglpIQx0fWyGYMKBiuz44K3SS1oCwiW6cIZlShvvwtQqOewE3zKp76LFDJlNZUQIDAQABoxowGDAJBgNVHRMEAjAAMAsGA1UdDwQEAwIGQDANBgkqhkiG9w0BAQsFAAOCAQEAdwopbzGOmPRe7d966zesuzckXA6eo1EgePlmaUTKkudZAKEODRwp0Cei+i2PKnTyZF1xY+BxEVcrVmU0syCDegv94qsnthJtx4QZmIlWVPBVq2AGDe+htnjD6QHzisuN5WNEH9g7JeUQmlXAsObPNxeldL++jp7/J9pWsD5WHlol0EbF5k4uYx8SlLfPQptXJFRckzA2P+JsJ/eg1GKF9RvP5N2PAC2mQDkyvl3D561Q3Vga1gU5Jl0idnzQhggcyyRTYOXxb9ZwDKpHvSUdIaAIDRe6626IGf4azK9Rflqppfo3YoiUpq5bkEx44377ho6RjnqMIYvOo348ZbcAJQ==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><QualifyingProperties Target="#sigId-id57e7fd7c678e5cb81c31e22cf3361f44"><SignedProperties Id="xades-id57e7fd7c678e5cb81c31e22cf3361f44"><SignedSignatureProperties><SigningTime>2015-06-23T05:31:23Z</SigningTime><SigningCertificate><Cert><CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>Q2AnVgYIhCFhReC2fePzekRIVMk=</ds:DigestValue></CertDigest><IssuerSerial><ds:X509IssuerName>CN=Swedish Post and Telecom Agency (PTS),C=SE,ST=Stockholm,L=Stockholm,O=Swedish Post and Telecom Agency (PTS)</ds:X509IssuerName><ds:X509SerialNumber>13348562270174129134</ds:X509SerialNumber></IssuerSerial></Cert></SigningCertificate></SignedSignatureProperties><SignedDataObjectProperties><DataObjectFormat ObjectReference="#xml_ref_id"><MimeType>text/xml</MimeType></DataObjectFormat></SignedDataObjectProperties></SignedProperties></QualifyingProperties></ds:Object></ds:Signature></tsl:TrustServiceStatusList>

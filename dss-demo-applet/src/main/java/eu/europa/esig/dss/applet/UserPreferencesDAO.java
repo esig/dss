@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.applet;
 
+import eu.europa.esig.dss.SignatureTokenType;
+
 /**
  * Abstraction used to retrieve preferences from user.
  * 

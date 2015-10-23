@@ -60,9 +60,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -112,10 +111,9 @@ public class MockTSPSource implements TSPSource {
 	/**
 	 * The default constructor for MockTSPSource.
 	 */
-	public MockTSPSource(final KSPrivateKeyEntry entry) throws DSSException {
+	public MockTSPSource(final MockPrivateKeyEntry entry) throws DSSException {
 		this(entry.getPrivateKey(), entry.getCertificate(), true, null, "1.234.567.890");
 		LOG.debug("TSP mockup with certificate {}", cert.getDSSId());
-
 	}
 
 	@Override
@@ -163,7 +161,7 @@ public class MockTSPSource implements TSPSource {
 			sigInfoGeneratorBuilder.setUnsignedAttributeGenerator(unsignedAttributeGenerator);
 			final SignerInfoGenerator sig = sigInfoGeneratorBuilder.build(sigGen, certHolder);
 
-			final DigestCalculator sha1DigestCalculator = DSSUtils.getSHA1DigestCalculator();
+			final DigestCalculator sha1DigestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
 
 			final TimeStampTokenGenerator tokenGenerator = new TimeStampTokenGenerator(sig, sha1DigestCalculator, policyOid);
 			final Set<X509Certificate> singleton = new HashSet<X509Certificate>();

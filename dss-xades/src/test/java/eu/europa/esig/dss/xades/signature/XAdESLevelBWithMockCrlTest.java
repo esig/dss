@@ -35,9 +35,9 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.gen.CRLGenerator;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockCRLSource;
@@ -65,7 +65,7 @@ public class XAdESLevelBWithMockCrlTest extends AbstractTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		CertificateService certificateService = new CertificateService();
-		issuerEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256);
+		issuerEntry = certificateService.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256, true);
 		signerEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256, issuerEntry);
 
 		CRLGenerator crlGenerator = new CRLGenerator();

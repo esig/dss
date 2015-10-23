@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,20 +91,9 @@ public class DigestDocument extends FileDocument {
 		return base64EncodeDigest;
 	}
 
-	/**
-	 * This method allows to set the base 64 encoded file
-	 */
-	public void setBase64Encoded(String base64Encoded) {
-		this.base64Encoded = base64Encoded;
-	}
-
 	@Override
 	public String getBase64Encoded() {
-		if (StringUtils.isEmpty(base64Encoded)) {
-			logger.warn("Inefficient DigestDocument : base64 encoded is missing (use setBase64Encoded method)");
-			return super.getBase64Encoded();
-		} else {
-			return base64Encoded;
-		}
+		throw new DSSUnsupportedOperationException("Cannot get a base64 encoded from a DigestDocument");
 	}
+
 }

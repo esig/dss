@@ -33,12 +33,12 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.cookbook.timestamp.TimestampService;
-import eu.europa.esig.dss.signature.SignaturePackaging;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
@@ -79,6 +79,11 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		contentTimestampParameters.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
+
+		// We set the signing certificate
+		signatureParameters.setSigningCertificate(privateKey.getCertificate());
+		// We set the certificate chain
+		signatureParameters.setCertificateChain(privateKey.getCertificateChain());
 
 		//Define the contentTimestamp specific parameters
 

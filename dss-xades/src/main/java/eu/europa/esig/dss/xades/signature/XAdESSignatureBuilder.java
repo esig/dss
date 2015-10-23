@@ -37,7 +37,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -49,6 +48,7 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampInclude;
@@ -437,28 +437,28 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		incorporateSigningCertificate();
 
 		incorporateSignedDataObjectProperties();
-
-		incorporateSignerRole();
+		
+		incorporatePolicy();
 
 		incorporateSignatureProductionPlace();
 
+		incorporateSignerRole();
+		
 		incorporateCommitmentTypeIndications();
-
-		incorporatePolicy();
 	}
 
 	private void incorporatePolicy() {
 
 		final Policy signaturePolicy = params.bLevel().getSignaturePolicy();
-		if ((signaturePolicy != null) && (signaturePolicy.getId() != null)) {
+		if ((signaturePolicy != null)) {// && (signaturePolicy.getId() != null)) {
 
 			final Element signaturePolicyIdentifierDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_POLICY_IDENTIFIER);
-			final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
-
+			
 			String signaturePolicyId = signaturePolicy.getId();
 			if (StringUtils.isEmpty(signaturePolicyId)) { // implicit
-				DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_IMPLIED);
+				DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_IMPLIED);
 			} else { // explicit
+				final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
 				final Element sigPolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIG_POLICY_ID);
 
 				DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);
@@ -484,7 +484,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				String spuri = signaturePolicy.getSpuri();
 				if (StringUtils.isNotEmpty(spuri)){
 					Element sigPolicyQualifiers = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_QUALIFIERS);
-					Element sigPolicyQualifier = DSSXMLUtils.addElement(documentDom, sigPolicyQualifiers, XAdES, XADES_SIGNATURE_POLICY_QUALIFIERS);
+					Element sigPolicyQualifier = DSSXMLUtils.addElement(documentDom, sigPolicyQualifiers, XAdES, XADES_SIGNATURE_POLICY_QUALIFIER);
 
 					DSSXMLUtils.addTextElement(documentDom, sigPolicyQualifier, XAdES, XADES_SPURI, spuri);
 				}
@@ -516,8 +516,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </SigningCertificate>
 	 */
 	private void incorporateSigningCertificate() {
-
-		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XAdESNamespaces.getXADES_SIGNING_CERTIFICATE());
+		String signingCertificate = XAdESNamespaces.getXADES_SIGNING_CERTIFICATE();
+		if(params.isEn319132()) {
+			signingCertificate = XAdESNamespaces.getXADES_SIGNING_CERTIFICATE_V2();
+		}
+		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, signingCertificate);
 
 		final List<CertificateToken> certificates = new ArrayList<CertificateToken>();
 		final List<ChainCertificate> certificateChain = params.getCertificateChain();
@@ -607,16 +610,28 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final List<String> claimedSignerRoles = params.bLevel().getClaimedSignerRoles();
 		final List<String> certifiedSignerRoles = params.bLevel().getCertifiedSignerRoles();
 		if ((claimedSignerRoles != null) || (certifiedSignerRoles != null)) {
-
-			final Element signerRoleDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNER_ROLE);
-
+			
+			final Element signerRoleDom;
+			
+			if(params.isEn319132()) {
+				signerRoleDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNER_ROLE_V2);
+			} else {
+				signerRoleDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNER_ROLE);
+			}
+			
 			if (CollectionUtils.isNotEmpty(claimedSignerRoles)) {
 				final Element claimedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CLAIMED_ROLES);
 				addRoles(claimedSignerRoles, claimedRolesDom, XADES_CLAIMED_ROLE);
 			}
 
 			if (CollectionUtils.isNotEmpty(certifiedSignerRoles)) {
-				final Element certifiedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CERTIFIED_ROLES);
+				final Element certifiedRolesDom;
+				if(params.isEn319132()) {
+					certifiedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CERTIFIED_ROLES_V2);
+				} else {
+					certifiedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CERTIFIED_ROLES);
+				}
+				
 				addRoles(certifiedSignerRoles, certifiedRolesDom, XADES_CERTIFIED_ROLE);
 			}
 		}
@@ -634,16 +649,28 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	private void incorporateSignatureProductionPlace() {
 
-		final BLevelParameters.SignerLocation signatureProductionPlace = params.bLevel().getSignerLocation();
+		final SignerLocation signatureProductionPlace = params.bLevel().getSignerLocation();
 		if (signatureProductionPlace != null) {
-
-			final Element signatureProductionPlaceDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_PRODUCTION_PLACE);
-
-			final String city = signatureProductionPlace.getCity();
+			
+			final Element signatureProductionPlaceDom;
+			if(params.isEn319132()) {
+				signatureProductionPlaceDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_PRODUCTION_PLACE_V2);
+			} else {
+				signatureProductionPlaceDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_PRODUCTION_PLACE);
+			}
+			
+			final String city = signatureProductionPlace.getLocality();
 			if (city != null) {
 				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_CITY, city);
 			}
-
+			
+			if(params.isEn319132()) {
+				final String streetAddress = signatureProductionPlace.getStreet();
+				if(streetAddress != null) {
+					DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_STREET_ADDRESS, streetAddress);
+				}
+			}
+			
 			final String postalCode = signatureProductionPlace.getPostalCode();
 			if (postalCode != null) {
 				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_POSTAL_CODE, postalCode);

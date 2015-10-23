@@ -5,10 +5,16 @@ import java.util.List;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.DigestAlgorithm;
 
 public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	ProfileParameters context;
+
+	/**
+	 * The digest method used to create the digest of the signer's certificate.
+	 */
+	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA1;
 
 	/**
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
@@ -23,16 +29,34 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private List<DSSReference> dssReferences;
 
 	private String xPathLocationString;
-
-	private String toCounterSignSignatureId;
-
-	private String toCounterSignSignatureValueId;
+	
+	private boolean en319132 = false;
 
 	/**
 	 *	This attribute is used to inject ASiC root (inclusive canonicalization)
 	 */
 	private Document rootDocument;
 
+	/**
+	 * This property is a part of the standard:<br>
+	 * 7.2.2 The SigningCertificate element (101 903 V1.4.2 (2010-12) XAdES)<br>
+	 * The digest method indicates the digest algorithm to be used to calculate the CertDigest element that contains the
+	 * digest for each certificate referenced in the sequence.
+	 *
+	 * @param signingCertificateDigestMethod
+	 */
+	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
+		this.signingCertificateDigestMethod = signingCertificateDigestMethod;
+	}
+
+	/**
+	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm).
+	 *
+	 * @return
+	 */
+	public DigestAlgorithm getSigningCertificateDigestMethod() {
+		return signingCertificateDigestMethod;
+	}
 
 	/**
 	 * @return the canonicalization algorithm to be used when dealing with SignedInfo.
@@ -86,32 +110,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 		this.xPathLocationString = xPathLocationString;
 	}
 
-	/**
-	 * This method returns the Id of the signature to be countersigned.
-	 *
-	 * @return
-	 */
-	public String getToCounterSignSignatureId() {
-		return toCounterSignSignatureId;
-	}
-
-	/**
-	 * This method sets the Id of the signature to be countersigned.
-	 *
-	 * @param toCounterSignSignatureId
-	 */
-	public void setToCounterSignSignatureId(String toCounterSignSignatureId) {
-		this.toCounterSignSignatureId = toCounterSignSignatureId;
-	}
-
-	public String getToCounterSignSignatureValueId() {
-		return toCounterSignSignatureValueId;
-	}
-
-	public void setToCounterSignSignatureValueId(String toCounterSignSignatureValueId) {
-		this.toCounterSignSignatureValueId = toCounterSignSignatureValueId;
-	}
-
 	public Document getRootDocument() {
 		return rootDocument;
 	}
@@ -126,4 +124,13 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 		}
 		return context;
 	}
+
+	public boolean isEn319132() {
+		return en319132;
+	}
+
+	public void setEn319132(boolean en319132) {
+		this.en319132 = en319132;
+	}
+	
 }

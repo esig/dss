@@ -13,8 +13,41 @@
         <put-attribute name="content" value="/WEB-INF/jsp/home.jsp" />
     </definition>
 
-    <definition name="signature" extends="main">
+    <definition name="signature-applet" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/signature.jsp" />
+    </definition>
+    
+    <definition name="signature-parameters" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-parameters.jsp" />
+    </definition>
+    
+    <definition name="select-certificate" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/select-certificate.jsp" />
+    </definition>
+    
+    <!-- PKCS12 doesn't use applet -->
+    <definition name="select-certificate-pkcs12" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/select-certificate-pkcs12.jsp" />
+    </definition>
+    
+    <definition name="sign-document" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/sign-document.jsp" />
+    </definition>
+    
+    <definition name="signature-finish" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-finish.jsp" />
+    </definition>
+    
+    <definition name="jnlp-webservice-intro" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/jnlp-intro.jsp" />
+    </definition>
+    
+    <definition name="signature-standalone" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-standalone.jsp" />
+    </definition>
+    
+    <definition name="signature-rest" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-rest.jsp" />
     </definition>
     
     <definition name="extension" extends="main">
@@ -27,6 +60,18 @@
 
     <definition name="validation_result" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/validation_result.jsp" />
+    </definition>
+
+    <definition name="validation-policy" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/validation-policy.jsp" />
+    </definition>
+    
+    <definition name="tsl-info" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/tsl-info.jsp" />
+    </definition>
+    
+    <definition name="tsl-info-country" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/tsl-info-country.jsp" />
     </definition>
 
     <definition name="error" extends="main">
@@ -55,8 +100,10 @@
     <definition name="admin-proxy-edit" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/admin/form.jsp" />
     </definition>
-    <definition name="admin-tsl-info" extends="main">
-        <put-attribute name="content" value="/WEB-INF/jsp/admin/tsl-info.jsp" />
+    <definition name="admin-select-certificate" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/admin/certificates/list.jsp" />
     </definition>
+    
+    
 
 </tiles-definitions>

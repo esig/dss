@@ -30,6 +30,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -105,7 +106,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 			if (issuerToken.equals(crlValidity.getIssuerToken()) && crlValidity.isValid()) {
 
 				final Date thisUpdate = x509CRL.getThisUpdate();
-				if (!certificateToken.hasExpiredCertOnCRLExtension()) {
+				if (!DSSASN1Utils.hasExpiredCertOnCRLExtension(certificateToken)) {
 
 					if (thisUpdate.before(certificateToken.getNotBefore()) || thisUpdate.after(certificateToken.getNotAfter())) {
 

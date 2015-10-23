@@ -1,0 +1,168 @@
+<DiagnosticData xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
+   <DocumentName>…\XAdES detachedMOAID G2_qual_valid.xml</DocumentName>
+   <Signature Id="Signature-6362c43e-1">
+      <DateTime>2013-12-20T13:34:13Z</DateTime>
+      <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
+      <BasicSignature>
+         <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+         <KeyLengthUsedToSignThisToken>192</KeyLengthUsedToSignThisToken>
+         <DigestAlgoUsedToSignThisToken>RIPEMD160</DigestAlgoUsedToSignThisToken>
+         <ReferenceDataFound>true</ReferenceDataFound>
+         <ReferenceDataIntact>true</ReferenceDataIntact>
+         <SignatureIntact>true</SignatureIntact>
+         <SignatureValid>true</SignatureValid>
+      </BasicSignature>
+      <SigningCertificate Id="24">
+         <DigestValueMatch>true</DigestValueMatch>
+         <IssuerSerialMatch>true</IssuerSerialMatch>
+      </SigningCertificate>
+      <CertificateChain>
+         <ChainCertificate Id="24">
+            <Source>SIGNATURE</Source>
+         </ChainCertificate>
+         <ChainCertificate Id="12">
+            <Source>TRUSTED_LIST</Source>
+         </ChainCertificate>
+      </CertificateChain>
+      <ContentType>text/xml</ContentType>
+      <Policy>
+         <Id/>
+         <Identified>false</Identified>
+         <Status>true</Status>
+         <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+      </Policy>
+   </Signature>
+   <UsedCertificates>
+      <Certificate Id="17">
+         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
+         <IssuerCertificate>0</IssuerCertificate>
+         <SerialNumber>1026306</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>RIPEMD160</DigestMethod>
+            <DigestValue>5HXTKVzoWuDjBgk9RVDJCzQXE+M=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2018-09-11T12:14:19Z</NotAfter>
+         <NotBefore>2013-09-11T14:14:19Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <IdKpOCSPSigning>true</IdKpOCSPSigning>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <Trusted>true</Trusted>
+         <SelfSigned>false</SelfSigned>
+      </Certificate>
+      <Certificate Id="24">
+         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
+         <IssuerCertificate>12</IssuerCertificate>
+         <SerialNumber>397752</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>RIPEMD160</DigestMethod>
+            <DigestValue>5vllGPyjfO0f0mjk2kyVo8lPsGs=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2014-10-13T08:28:09Z</NotAfter>
+         <NotBefore>2009-10-13T08:28:09Z</NotBefore>
+         <PublicKeySize>192</PublicKeySize>
+         <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="12">
+            <DigestValueMatch>true</DigestValueMatch>
+            <IssuerSerialMatch>true</IssuerSerialMatch>
+         </SigningCertificate>
+         <CertificateChain>
+            <ChainCertificate Id="12">
+               <Source>TRUSTED_LIST</Source>
+            </ChainCertificate>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <QCStatement>
+            <QCP>false</QCP>
+            <QCPPlus>true</QCPPlus>
+            <QCC>true</QCC>
+            <QCSSCD>false</QCSSCD>
+         </QCStatement>
+         <TrustedServiceProvider>
+            <TSPName>A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</TSPName>
+            <TSPServiceName>a-sign-Premium-Sig-02 (key no. 1)</TSPServiceName>
+            <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+            <StartDate>2004-12-14T23:00:00Z</StartDate>
+            <WellSigned>true</WellSigned>
+         </TrustedServiceProvider>
+         <Revocation>
+            <Source>OCSPToken</Source>
+            <SourceAddress>http://ocsp.a-trust.at/ocsp</SourceAddress>
+            <Status>false</Status>
+            <DateTime>2014-01-08T05:23:38Z</DateTime>
+            <Reason>CRLReason: keyCompromise</Reason>
+            <IssuingTime>2014-02-12T10:20:26Z</IssuingTime>
+            <BasicSignature>
+               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+               <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+               <ReferenceDataFound>true</ReferenceDataFound>
+               <ReferenceDataIntact>true</ReferenceDataIntact>
+               <SignatureIntact>true</SignatureIntact>
+               <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="17">
+               <DigestValueMatch>true</DigestValueMatch>
+               <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+               <ChainCertificate Id="17">
+                  <Source>TRUSTED_LIST</Source>
+               </ChainCertificate>
+            </CertificateChain>
+         </Revocation>
+      </Certificate>
+      <Certificate Id="12">
+         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
+         <IssuerCertificate>0</IssuerCertificate>
+         <SerialNumber>58531</SerialNumber>
+         <DigestAlgAndValue>
+            <DigestMethod>RIPEMD160</DigestMethod>
+            <DigestValue>CC+ntcCafY5zsjFmY3gQsbPzrU0=</DigestValue>
+         </DigestAlgAndValue>
+         <NotAfter>2014-12-13T23:00:00Z</NotAfter>
+         <NotBefore>2004-12-14T23:00:00Z</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <Trusted>true</Trusted>
+         <SelfSigned>false</SelfSigned>
+      </Certificate>
+   </UsedCertificates>
+</DiagnosticData>

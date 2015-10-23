@@ -8,19 +8,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509CRL;
-import java.util.List;
+import java.security.cert.X509Certificate;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class DSSUtilsTest {
+
+	private static final Logger logger = LoggerFactory.getLogger(DSSUtilsTest.class);
 
 	private static CertificateToken certificateWithAIA;
 
@@ -28,24 +30,6 @@ public class DSSUtilsTest {
 	public static void init() {
 		certificateWithAIA = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
 		assertNotNull(certificateWithAIA);
-	}
-
-	@Test
-	public void getPolicies() {
-		List<String> policyIdentifiers = DSSUtils.getPolicyIdentifiers(certificateWithAIA.getCertificate());
-		assertTrue(CollectionUtils.isNotEmpty(policyIdentifiers));
-		assertTrue(policyIdentifiers.contains("1.3.171.1.1.10.8.1"));
-	}
-
-	@Test
-	public void getQCStatementsIdList() {
-		List<String> qcStatementsIdList = DSSUtils.getQCStatementsIdList(certificateWithAIA.getCertificate());
-		assertTrue(CollectionUtils.isEmpty(qcStatementsIdList));
-
-		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
-		qcStatementsIdList = DSSUtils.getQCStatementsIdList(certificate.getCertificate());
-		assertTrue(CollectionUtils.isNotEmpty(qcStatementsIdList));
-		assertTrue(qcStatementsIdList.contains(ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.getId()));
 	}
 
 	@Test
@@ -73,7 +57,7 @@ public class DSSUtilsTest {
 
 		FileInputStream fis = new FileInputStream("src/test/resources/belgiumrs2.crt");
 		byte[] byteArray = IOUtils.toByteArray(fis);
-		System.out.println(Base64.encodeBase64String(byteArray));
+		logger.info(Base64.encodeBase64String(byteArray));
 		IOUtils.closeQuietly(fis);
 		CertificateToken certificate2 = DSSUtils.loadCertificate(byteArray);
 		assertNotNull(certificate2);
@@ -83,7 +67,7 @@ public class DSSUtilsTest {
 
 		FileInputStream fisNew = new FileInputStream("src/test/resources/belgiumrs2-new.crt");
 		byte[] byteArrayNew = IOUtils.toByteArray(fisNew);
-		System.out.println(Base64.encodeBase64String(byteArrayNew));
+		logger.info(Base64.encodeBase64String(byteArrayNew));
 		IOUtils.closeQuietly(fisNew);
 		CertificateToken certificate2New = DSSUtils.loadCertificate(byteArrayNew);
 		assertNotNull(certificate2New);
@@ -128,5 +112,41 @@ public class DSSUtilsTest {
 		assertNotNull(childCert2);
 		assertFalse(childCert2.isSelfSigned());
 		assertTrue(childCert2.isSignedBy(issuerCert));
+	}
+
+	@Test
+	public void loadRootCA2NotSelfSign() throws Exception {
+
+		String certBase64 = "MIIDjjCCAnagAwIBAgIIKv++n6Lw6YcwDQYJKoZIhvcNAQEFBQAwKDELMAkGA1UEBhMCQkUxGTAXBgNVBAMTEEJlbGdpdW0gUm9vdCBDQTIwHhcNMDcxMDA0MTAwMDAwWhcNMjExMjE1MDgwMDAwWjAoMQswCQYDVQQGEwJCRTEZMBcGA1UEAxMQQmVsZ2l1bSBSb290IENBMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMZzQh6S/3UPi790hqc/7bIYLS2X+an7mEoj39WN4IzGMhwWLQdC1i22bi+n9fzGhYJdld61IgDMqFNAn68KNaJ6x+HK92AQZw6nUHMXU5WfIp8MXW+2QbyM69odRr2nlL/zGsvU+40OHjPIltfsjFPekx40HopQcSZYtF3CiInaYNKJIT/e1wEYNm7hLHADBGXvmAYrXR5i3FVr/mZkIV/4L+HXmymvb82fqgxG0YjFnaKVn6w/Fa7yYd/vw2uaItgscf1YHewApDgglVrH1Tdjuk+bqv5WRi5j2Qsj1Yr6tSPwiRuhFA0m2kHwOI8w7QUmecFLTqG4flVSOmlGhHUCAwEAAaOBuzCBuDAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zBCBgNVHSAEOzA5MDcGBWA4CQEBMC4wLAYIKwYBBQUHAgEWIGh0dHA6Ly9yZXBvc2l0b3J5LmVpZC5iZWxnaXVtLmJlMB0GA1UdDgQWBBSFiuv0xbu+DlkDlN7WgAEV4xCcOTARBglghkgBhvhCAQEEBAMCAAcwHwYDVR0jBBgwFoAUhYrr9MW7vg5ZA5Te1oABFeMQnDkwDQYJKoZIhvcNAQEFBQADggEBAFHYhd27V2/MoGy1oyCcUwnzSgEMdL8rs5qauhjyC4isHLMzr87lEwEnkoRYmhC598wUkmt0FoqW6FHvv/pKJaeJtmMrXZRY0c8RcrYeuTlBFk0pvDVTC9rejg7NqZV3JcqUWumyaa7YwBO+mPyWnIR/VRPmPIfjvCCkpDZoa01gZhz5v6yAlGYuuUGK02XThIAC71AdXkbc98m6tTR8KvPG2F9fVJ3bTc0R5/0UAoNmXsimABKgX77OFP67H6dh96tK8QYUn8pJQsKpvO2FsauBQeYNxUJpU4c5nUwfAA4+Bw11V0SoU7Q2dmSZ3G7rPUZuFF1eR1ONeE3gJ7uOhXY=";
+		CertificateToken rootCA2 = DSSUtils.loadCertificateFromBase64EncodedString(certBase64);
+		logger.info(rootCA2.toString());
+		logger.info(rootCA2.getCertificate().toString());
+		//		assertFalse(rootCA2.isSelfSigned());
+
+		X509Certificate certificate = rootCA2.getCertificate();
+		certificate.verify(certificate.getPublicKey());
+	}
+
+	@Test
+	public void testRootCA2s() {
+
+		CertificateToken selfSign = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrca2-self-sign.crt"));
+		CertificateToken signed = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2-signed.crt"));
+
+		CertificateToken tsa = DSSUtils.loadCertificate(new File("src/test/resources/TSA_BE.cer"));
+
+		logger.info(selfSign.toString());
+
+		logger.info(signed.toString());
+
+		logger.info(tsa.toString());
+		logger.info(tsa.getCertificate().toString());
+
+		assertTrue(selfSign.isSelfSigned());
+		assertFalse(signed.isSelfSigned());
+
+		assertTrue(tsa.isSignedBy(signed));
+		assertTrue(tsa.isSignedBy(selfSign));
+
 	}
 }

@@ -134,7 +134,7 @@ public class OnlineTSPSource implements TSPSource {
 				tsqGenerator.setReqPolicy(policyOid);
 			}
 
-			ASN1ObjectIdentifier asn1ObjectIdentifier = digestAlgorithm.getOid();
+			ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
 			TimeStampRequest timeStampRequest = null;
 			if (nonceSource == null) {
 				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest);

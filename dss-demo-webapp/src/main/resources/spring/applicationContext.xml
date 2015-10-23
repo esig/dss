@@ -3,47 +3,89 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-       http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <import resource="classpath:/dss_applicationContext_cxf.xml"/>
+    <import resource="classpath:/dss_applicationContext_soap.xml"/>
+	<import resource="classpath:/dss_applicationContext_rest.xml"/>
+    
+    <context:annotation-config />
+	<context:component-scan base-package="eu.europa.esig.dss" />
 
-    <import resource="classpath:spring/applicationContext-handler.xml"/>
+    <import resource="classpath:spring/applicationContext-core.xml"/>
+    
+    <context:property-placeholder location="classpath:dss.properties"/>
+    
+    <!-- Configure to plugin JSON as request and response in method handler -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+     
+    <!-- Configure bean to convert JSON to POJO and vice versa -->
+    <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
 
-    <context:annotation-config/>
-	<context:component-scan base-package="eu.europa.esig.dss"/>
-	
-    <context:property-placeholder location="classpath:datasource.properties"/>
-
-
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${datasource.driver.class}"/>
+        <property name="url" value="${datasource.url}"/>
+        <property name="username" value="${datasource.username}"/>
+        <property name="password" value="${datasource.password}"/>
+    </bean>
+    
     <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:structure.sql"/>
         <jdbc:script location="classpath:load.sql"/>
     </jdbc:initialize-database>
+    
+    <!-- TSL Loader -->
+	<bean id="tslRepository" class="eu.europa.esig.dss.tsl.service.TSLRepository">
+		<property name="allowExpiredTSLs" value="false" />
+		<property name="allowInvalidSignatures" value="false" />
+		<property name="allowIndeterminateSignatures" value="false" />
+		<property name="trustedListsCertificateSource" ref="trustedListSource" />
+	</bean>
 
-    <!-- The TrustedLists are reloaded every minute -->
-    <bean id="tlReload"
-          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="trustedListSource"/>
-        <property name="targetMethod" value="refresh"/>
-        <property name="concurrent" value="false"/>
-    </bean>
+	<bean id="tslValidationJob" class="eu.europa.esig.dss.tsl.service.TSLValidationJob">
+		<property name="dataLoader" ref="dataLoader" />
+		<property name="repository" ref="tslRepository" />
+		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml" />
+		<property name="lotlCode" value="EU" />
+		<property name="dssKeyStore" ref="dssKeyStore" />
+		<property name="checkLOTLSignature" value="true" />
+		<property name="checkTSLSignatures" value="true" />
+	</bean>
 
-    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-        <property name="jobDetail" ref="tlReload"/>
-        <property name="startDelay" value="6000"/>
-        <property name="repeatInterval" value="3600000"/>
-    </bean>
+	<bean id="tslValidationJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="tslValidationJob" />
+		<property name="targetMethod" value="refresh" />
+	</bean>
 
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
-          destroy-method="destroy">
-        <property name="triggers">
-            <list>
-                <ref bean="simpleTrigger"/>
-            </list>
-        </property>
-    </bean>
+	<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+		<property name="jobDetail" ref="tslValidationJobDetail" />
+		<property name="startDelay" value="5000" />
+		<property name="repeatInterval" value="300000" /> <!-- 5min -->
+	</bean>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
+		<property name="triggers">
+			<list>
+				<ref bean="simpleTrigger" />
+			</list>
+		</property>
+	</bean>
+    
+    <!-- /TSL Loader -->
+
+	<bean id="freeMarkerConfigurationFactory" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+	    <property name="templateLoaderPath" value="classpath:/templates"/>
+	</bean>
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
@@ -53,5 +95,24 @@
             </list>
         </property>
     </bean>
+
+	<bean id="policyMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="packagesToScan">
+			<list>
+				<value>eu.europa.esig.jaxb.policy</value>
+			</list>
+		</property>
+
+		<property name="marshallerProperties">
+			<map>
+				<entry>
+					<key>
+						<util:constant static-field="javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT" />
+					</key>
+					<value type="java.lang.Boolean">true</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
 
 </beans>

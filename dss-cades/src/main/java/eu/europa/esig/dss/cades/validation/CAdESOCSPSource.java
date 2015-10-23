@@ -43,7 +43,7 @@ import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 
 /**
@@ -51,10 +51,9 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
  *
  *
  */
-
 public class CAdESOCSPSource extends OfflineOCSPSource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CAdESOCSPSource.class);
+	private static final Logger logger = LoggerFactory.getLogger(CAdESOCSPSource.class);
 
 	private CMSSignedData cmsSignedData;
 	private SignerInformation signerInformation;
@@ -99,7 +98,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
                 crlVals [0] SEQUENCE OF CertificateList OPTIONAL,
                 ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
                 otherRevVals [2] OtherRevVals OPTIONAL}
-                */
+				 */
 				if (attribute != null) {
 
 					final ASN1Set attrValues = attribute.getAttrValues();
@@ -114,13 +113,13 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 					 "The syntax and semantics of the other revocation values (OtherRevVals) are outside the scope of the present
                     document. The definition of the syntax of the other form of revocation information is as identified by
                     OtherRevRefType."
-                    */
+					 */
 				}
 
 			}
 		}
 
-        /* TODO (pades): Read revocation data from from unsigned attribute  1.2.840.113583.1.1.8
+		/* TODO (pades): Read revocation data from from unsigned attribute  1.2.840.113583.1.1.8
           In the PKCS #7 object of a digital signature in a PDF file, identifies a signed attribute
           that "can include all the revocation information that is necessary to carry out revocation
           checks for the signer's certificate and its issuer certificates."
@@ -136,46 +135,48 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
             Type OBJECT IDENTIFIER
             Value OCTET STRING
           }
-        */
+		 */
 		return basicOCSPResps;
 	}
 
 	private void addBasicOcspRespFrom_id_ri_ocsp_response(final List<BasicOCSPResp> basicOCSPResps) {
-
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-
-			final BasicOCSPResp basicOCSPResp;
-			final DERSequence otherRevocationInfoMatch = (DERSequence) object;
-			if (otherRevocationInfoMatch.size() == 4) {
-
-				basicOCSPResp = DSSASN1Utils.getBasicOcspResp(otherRevocationInfoMatch);
+			if (object instanceof DERSequence) {
+				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+				final BasicOCSPResp basicOCSPResp;
+				if (otherRevocationInfoMatch.size() == 4) {
+					basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
+				} else {
+					final OCSPResp ocspResp = CMSUtils.getOcspResp(otherRevocationInfoMatch);
+					basicOCSPResp = CMSUtils.getBasicOCSPResp(ocspResp);
+				}
+				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 			} else {
-
-				final OCSPResp ocspResp = DSSASN1Utils.getOcspResp(otherRevocationInfoMatch);
-				basicOCSPResp = DSSASN1Utils.getBasicOCSPResp(ocspResp);
+				logger.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : " + object.getClass().getSimpleName());
 			}
-			addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 		}
 	}
 
 	private void addBasicOcspRespFrom_id_pkix_ocsp_basic(final List<BasicOCSPResp> basicOCSPResps) {
-
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-
-			final DERSequence otherRevocationInfoMatch = (DERSequence) object;
-			final BasicOCSPResp basicOCSPResp = DSSASN1Utils.getBasicOcspResp(otherRevocationInfoMatch);
-			addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+			if (object instanceof DERSequence) {
+				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
+				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+			} else {
+				logger.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : " + object.getClass().getSimpleName());
+			}
 		}
 	}
 
 	private void addBasicOcspResp(final List<BasicOCSPResp> basicOCSPResps, final BasicOCSPResp basicOCSPResp) {
-
 		if (basicOCSPResp != null) {
 			basicOCSPResps.add(basicOCSPResp);
 		}
 	}
+
 }

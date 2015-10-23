@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.x509.SignatureForm;
+import eu.europa.esig.dss.SignatureForm;
 
 /**
  * This class regroups the signature parameters related to ASiC form.

@@ -50,16 +50,14 @@ public class FileDocument extends CommonDocument {
 	 * @param file {@code File}
 	 */
 	public FileDocument(final File file) {
-
 		if (file == null) {
-
 			throw new NullPointerException();
 		}
 		if (!file.exists()) {
-
 			throw new DSSException("File Not Found: " + file.getAbsolutePath());
 		}
 		this.file = file;
+		this.name = file.getName();
 		this.mimeType = MimeType.fromFileName(file.getName());
 	}
 
@@ -75,11 +73,6 @@ public class FileDocument extends CommonDocument {
 
 	public File getParentFile() {
 		return file.getParentFile();
-	}
-
-	@Override
-	public String getName() {
-		return file.getName();
 	}
 
 	@Override
