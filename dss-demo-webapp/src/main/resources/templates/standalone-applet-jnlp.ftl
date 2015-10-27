@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.0+" href="standalone-applet.jnlp">
+<jnlp spec="1.0+" href="dss-signature.jnlp">
 	<information>
 		<title>DSS Demo Application</title>
-		<vendor>Nowina Solutions toto</vendor>
 		<offline-allowed />
 	</information>
 	<security>
