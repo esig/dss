@@ -931,7 +931,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			final Element element = (Element) node;
 			final TimestampToken timestampToken = makeTimestampToken(element, timestampType);
-			if (timestampToken != null) {
+			//TODO : Strange code 
+			if (timestampToken == null) {
 				continue;
 			}
 			if (timestampToken.getTimestampIncludes() == null) {
