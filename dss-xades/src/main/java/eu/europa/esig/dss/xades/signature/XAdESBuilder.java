@@ -28,8 +28,14 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.pkcs.IssuerAndSerialNumber;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.GeneralName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -246,7 +252,13 @@ public abstract class XAdESBuilder {
 					final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL_V2);
 					
 					String name = certificate.getCertificate().getIssuerX500Principal().getName();
-					IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(new X500Name(name), certificate.getCertificate().getSerialNumber());
+					//IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(new X500Name(name), certificate.getCertificate().getSerialNumber());
+					GeneralName generalName = new GeneralName(4, name);
+					ASN1Integer serial = new ASN1Integer(certificate.getCertificate().getSerialNumber());
+					ASN1EncodableVector vector = new ASN1EncodableVector();
+					vector.add(new DERSequence(generalName));
+					vector.add(serial);
+					ASN1Sequence issuerAndSerial = new DERSequence(vector);
 					byte[] issuer = Base64.encodeBase64(issuerAndSerial.getEncoded());
 					DSSXMLUtils.setTextNode(documentDom, issuerSerialDom, new String(issuer));
 				}catch(IOException e) {

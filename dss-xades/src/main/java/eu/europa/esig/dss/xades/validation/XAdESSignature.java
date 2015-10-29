@@ -54,8 +54,13 @@ import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1TaggedObject;
 import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
@@ -497,15 +502,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 							ASN1InputStream is = new ASN1InputStream(Base64.decodeBase64(textContent));
 							ASN1Sequence seq = null;
 							try {
-								seq = (ASN1Sequence) is.readObject();
+								seq = (ASN1Sequence) is.readObject();								
 								is.close();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-							//IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(seq);
-							IssuerAndSerialNumber issuerAndSerial = IssuerAndSerialNumber.getInstance(seq);
+							
+							ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
+							GeneralName name= GeneralName.getInstance(obj.getObjectAt(0));
+							ASN1Integer serial = (ASN1Integer) seq.getObjectAt(1);
+							issuerName = new X500Principal(name.getName().toString());
+							serialNumber = serial.getValue();
+							
+							/*IssuerAndSerialNumber issuerAndSerial = IssuerAndSerialNumber.getInstance(seq);
 							issuerName = new X500Principal(issuerAndSerial.getName().toString());
-							serialNumber = issuerAndSerial.getSerialNumber().getValue();
+							serialNumber = issuerAndSerial.getSerialNumber().getValue();*/
+							
 						}
 					} else {
 						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
