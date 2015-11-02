@@ -31,7 +31,7 @@ public class TSLValidationJobTest {
 
 	@Before
 	public void init() {
-		dssKeyStore = new KeyStoreCertificateSource(new File("src/test/resources/keystore.jks"), "dss-password");
+		dssKeyStore = new KeyStoreCertificateSource(new File("src/test/resources/keystore.p12"), "PKCS12", "dss-password");
 	}
 
 	@Test

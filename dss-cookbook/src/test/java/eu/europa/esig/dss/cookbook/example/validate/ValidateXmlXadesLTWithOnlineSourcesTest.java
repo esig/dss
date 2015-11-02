@@ -82,8 +82,7 @@ public class ValidateXmlXadesLTWithOnlineSourcesTest extends CookbookTools {
 		File cacheFolder = new File("/temp");
 		fileCacheDataLoader.setFileCacheDirectory(cacheFolder);
 
-		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.jks"), "dss-password");
-
+		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12", "dss-password");
 
 		TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
 		certificateSource.setDssKeyStore(keyStoreCertificateSource);
