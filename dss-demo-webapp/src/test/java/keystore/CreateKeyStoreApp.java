@@ -1,5 +1,6 @@
 package keystore;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -7,7 +8,7 @@ import java.io.OutputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.util.Enumeration;
-import java.util.UUID;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -16,39 +17,45 @@ import org.apache.commons.io.IOUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 public class CreateKeyStoreApp {
 
-	private static final String KEYSTORE_FILEPATH = "target/keystore.jks";
+	private static final String KEYSTORE_TYPE = "PKCS12";
+	private static final String KEYSTORE_FILEPATH = "target/keystore.p12";
 	private static final String KEYSTORE_PASSWORD = "dss-password";
 
 	public static void main(String[] args) throws Exception {
 
-		createKeyStore();
+		KeyStore store = createKeyStore();
 
-		KeyStore store = KeyStore.getInstance("JKS");
-		store.load(new FileInputStream(KEYSTORE_FILEPATH), KEYSTORE_PASSWORD.toCharArray());
+		addCertificate(store, "europa1", "src/test/resources/keystore/ec.europa.eu.crt");
+		addCertificate(store, "europa2", "src/test/resources/keystore/ec.europa.eu.2.crt");
+		addCertificate(store, "europa3", "src/test/resources/keystore/ec.europa.eu.3.crt");
 
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
-
-		addCertificate(store, "src/test/resources/keystore/ec.europa.eu.crt");
-		addCertificate(store, "src/test/resources/keystore/ec.europa.eu.2.crt");
-		addCertificate(store, "src/test/resources/keystore/ec.europa.eu.3.crt");
-
 		store.store(fos, KEYSTORE_PASSWORD.toCharArray());
 
 		IOUtils.closeQuietly(fos);
 
 		readKeyStore();
+
+		System.out.println("****************");
+
+		KeyStoreCertificateSource certificateSource = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+		List<CertificateToken> certificatesFromKeyStore = certificateSource.getCertificatesFromKeyStore();
+		for (CertificateToken certificateToken : certificatesFromKeyStore) {
+			System.out.println(certificateToken);
+		}
 	}
 
-	private static void addCertificate(KeyStore store, String filepath) throws Exception {
+	private static void addCertificate(KeyStore store, String alias, String filepath) throws Exception {
 		InputStream fis = new FileInputStream(filepath);
 		CertificateToken europanCert = DSSUtils.loadCertificate(fis);
 		System.out.println("Adding certificate " + filepath);
 		displayCertificateDigests(europanCert);
 
-		store.setCertificateEntry(UUID.randomUUID().toString(), europanCert.getCertificate());
+		store.setCertificateEntry(alias, europanCert.getCertificate());
 		IOUtils.closeQuietly(fis);
 	}
 
@@ -70,7 +77,7 @@ public class CreateKeyStoreApp {
 	private static void readKeyStore() throws Exception {
 
 		InputStream fis= new FileInputStream(KEYSTORE_FILEPATH);
-		KeyStore store = KeyStore.getInstance("JKS");
+		KeyStore store = KeyStore.getInstance(KEYSTORE_TYPE);
 		store.load(fis, KEYSTORE_PASSWORD.toCharArray());
 
 		Enumeration<String> aliases = store.aliases();
@@ -86,13 +93,15 @@ public class CreateKeyStoreApp {
 		IOUtils.closeQuietly(fis);
 	}
 
-	private static void createKeyStore() throws Exception {
-		KeyStore trustStore = KeyStore.getInstance("JKS");
+	private static KeyStore createKeyStore() throws Exception {
+		KeyStore trustStore = KeyStore.getInstance(KEYSTORE_TYPE);
 		trustStore.load(null, KEYSTORE_PASSWORD.toCharArray());
 
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		trustStore.store(fos, KEYSTORE_PASSWORD.toCharArray());
 		IOUtils.closeQuietly(fos);
+
+		return trustStore;
 	}
 
 }

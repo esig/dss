@@ -85,7 +85,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 
 		CommonsDataLoader commonsHttpDataLoader = new CommonsDataLoader();
 
-		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.jks"), "dss-password");
+		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12", "dss-password");
 
 		TrustedListsCertificateSource tslCertificateSource = new TrustedListsCertificateSource();
 		tslCertificateSource.setDssKeyStore(keyStoreCertificateSource);
