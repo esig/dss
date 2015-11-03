@@ -219,8 +219,9 @@
 					<version>2.5</version>
 					<configuration>
 						<encoding>${project.encoding}</encoding>
-						<nonFilteredFileExtensions>
-				          <nonFilteredFileExtension>jks</nonFilteredFileExtension> <!-- Avoid to modify keystore -->
+						<nonFilteredFileExtensions><!-- Avoid to modify keystore -->
+				          <nonFilteredFileExtension>jks</nonFilteredFileExtension> 
+				          <nonFilteredFileExtension>p12</nonFilteredFileExtension>
 				        </nonFilteredFileExtensions>
 					</configuration>
 				</plugin>
