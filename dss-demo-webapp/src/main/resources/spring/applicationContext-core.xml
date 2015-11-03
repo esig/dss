@@ -8,9 +8,9 @@
 	<import resource="classpath:spring/applicationContext-dao.xml"/>
 	
     <bean id="dssKeyStore" class="eu.europa.esig.dss.web.DSSKeyStoreFactoryBean">
-	    <property name="keyStoreType" value="${keystore.type}" />
-	    <property name="keyStoreFilename" value="${keystore.filename}" />
-	    <property name="keyStorePassword" value="${keystore.password}" />
+	    <property name="keyStoreType" value="${dss.keystore.type}" />
+	    <property name="keyStoreFilename" value="${dss.keystore.filename}" />
+	    <property name="keyStorePassword" value="${dss.keystore.password}" />
 	</bean>
 
 	<bean id="proxyPreferenceManager" class="eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager">
