@@ -760,7 +760,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			for (final TimestampInclude include : includes) {
 
 				final Element timestampIncludeElement = documentDom.createElementNS(XAdES, XADES_INCLUDE);
-				timestampIncludeElement.setAttribute(URI, "#" + include.getURI());
+				String uri = include.getURI();
+				if(!uri.startsWith("#")) {
+					uri = "#" + uri;
+				}
+				timestampIncludeElement.setAttribute(URI, uri);
 				timestampIncludeElement.setAttribute(REFERENCED_DATA, "true");
 				timestampElement.appendChild(timestampIncludeElement);
 			}
