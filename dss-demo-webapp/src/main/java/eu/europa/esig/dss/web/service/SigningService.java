@@ -192,7 +192,9 @@ public class SigningService {
 		}
 
 		parameters.setSignWithExpiredCertificate(form.isSignWithExpiredCertificate());
-		parameters.setSigningCertificate(DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate()));
+		CertificateToken signingCertificate = DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate());
+		parameters.setSigningCertificate(signingCertificate);
+		parameters.setEncryptionAlgorithm(signingCertificate.getEncryptionAlgorithm());
 
 		List<String> base64CertificateChain = form.getBase64CertificateChain();
 		if (CollectionUtils.isNotEmpty(base64CertificateChain)) {
