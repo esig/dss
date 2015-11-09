@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
@@ -25,7 +24,7 @@ public class PolicySPURITest {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-728/CADES-B-DETACHED-withpolicy1586434883385020407.cades");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(new CommonsDataLoader());
+		certificateVerifier.setDataLoader(new MockDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(new FileDocument("src/test/resources/validation/dss-728/InfoSelladoTiempo.pdf"));
