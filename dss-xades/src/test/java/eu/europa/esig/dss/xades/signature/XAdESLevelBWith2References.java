@@ -41,7 +41,7 @@ public class XAdESLevelBWith2References {
 	private static String FILE2 = "src/test/resources/sampleISO.xml";
 	
 	@Test
-	public void test() throws Exception {
+	public void test1() throws Exception {
 		List<DSSReference> refs = new ArrayList<DSSReference>();
 		DSSDocument doc1 = new FileDocument(FILE1);
 		DSSDocument doc2 = new FileDocument(FILE2);
@@ -88,6 +88,41 @@ public class XAdESLevelBWith2References {
 		SignatureValue value = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, toSign1);
 		DSSDocument result = service.signDocument(doc1, signatureParameters, value);
 		//result.save("src/test/resources/test.xml");
+		
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument();
+		reports.print();
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertEquals(1, CollectionUtils.size(diagnosticData.getSignatureIdList()));
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		assertEquals(privateKeyEntry.getCertificateChain().length, signatureCertificateChain.size() - 1);
+		assertEquals(signatureParameters.getSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Test
+	public void test2() throws Exception {
+		DSSDocument doc1 = new FileDocument(FILE1);
+		DSSDocument doc2 = new FileDocument(FILE2);
+		doc1.setNextDocument(doc2);
+		
+		CertificateService certificateService = new CertificateService();
+		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
+		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		XAdESService service = new XAdESService(certificateVerifier);
+		
+		ToBeSigned toSign1 = service.getDataToSign(doc1, signatureParameters);
+		SignatureValue value = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, toSign1);
+		DSSDocument result = service.signDocument(doc1, signatureParameters, value);
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());

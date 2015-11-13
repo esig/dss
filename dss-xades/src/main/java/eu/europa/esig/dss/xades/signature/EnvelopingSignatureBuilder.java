@@ -103,7 +103,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 			references.add(reference);
 			
 			referenceId++;
-			document = detachedDocument.getNextDocument();
+			document = document.getNextDocument();
 		} while(document != null);
 
 		return references;
