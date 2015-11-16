@@ -326,17 +326,7 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-demo-applet</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-demo-applet-package</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-light-applet-package</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -424,11 +414,6 @@
 	        <dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-soap-client</artifactId>
-				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-light-applet</artifactId>
 				<version>${project.version}</version>
 	        </dependency>
 	        <dependency>
@@ -794,10 +779,6 @@
 				<module>sscd-mocca-adapter</module>
 				<module>dss-webservices</module>
 				<module>dss-webservices-client</module>
-				<module>dss-demo-applet</module>
-				<module>dss-demo-applet-package</module>
-				<module>dss-light-applet</module>
-				<module>dss-light-applet-package</module>
 				<module>dss-standalone-app</module>
 				<module>dss-standalone-app-package</module>
 				<module>dss-cookbook</module>

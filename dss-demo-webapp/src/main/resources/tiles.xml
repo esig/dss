@@ -104,6 +104,13 @@
         <put-attribute name="content" value="/WEB-INF/jsp/admin/certificates/list.jsp" />
     </definition>
     
+    <!-- Nexu -->
+    <definition name="nexu-signature-parameters" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/nexu-signature-parameters.jsp" />
+    </definition>
+    <definition name="nexu-signature-process" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/nexu-signature-process.jsp" />
+    </definition>
     
 
 </tiles-definitions>

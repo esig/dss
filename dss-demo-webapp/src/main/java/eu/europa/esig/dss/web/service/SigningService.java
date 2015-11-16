@@ -37,6 +37,7 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.model.ExtensionForm;
+import eu.europa.esig.dss.web.model.NexuSignatureDocumentForm;
 import eu.europa.esig.dss.web.model.SignatureDocumentForm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -102,11 +103,53 @@ public class SigningService {
 		logger.info("End getDataToSign");
 		return toBeSigned;
 	}
+	
+	@SuppressWarnings({
+		"rawtypes", "unchecked"
+	})
+	public ToBeSigned getDataToSign(NexuSignatureDocumentForm form) {
+		logger.info("Start getDataToSign");
+		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+
+		AbstractSignatureParameters parameters = fillParameters(form);
+
+		ToBeSigned toBeSigned = null;
+		try {
+			DSSDocument toSignDocument = WebAppUtils.toDSSDocument(form.getDocumentToSign());
+			toBeSigned = service.getDataToSign(toSignDocument, parameters);
+		} catch (Exception e) {
+			logger.error("Unable to execute getDataToSign : " + e.getMessage(), e);
+		}
+		logger.info("End getDataToSign");
+		return toBeSigned;
+	}
 
 	@SuppressWarnings({
 		"rawtypes", "unchecked"
 	})
 	public DSSDocument signDocument(SignatureDocumentForm form) {
+		logger.info("Start signDocument");
+		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+
+		AbstractSignatureParameters parameters = fillParameters(form);
+
+		DSSDocument signedDocument = null;
+		try {
+			DSSDocument toSignDocument = WebAppUtils.toDSSDocument(form.getDocumentToSign());
+			SignatureAlgorithm sigAlgorithm = SignatureAlgorithm.getAlgorithm(form.getEncryptionAlgorithm(), form.getDigestAlgorithm());
+			SignatureValue signatureValue = new SignatureValue(sigAlgorithm, DatatypeConverter.parseBase64Binary(form.getBase64SignatureValue()));
+			signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+		} catch (Exception e) {
+			logger.error("Unable to execute signDocument : " + e.getMessage(), e);
+		}
+		logger.info("End signDocument");
+		return signedDocument;
+	}
+	
+	@SuppressWarnings({
+		"rawtypes", "unchecked"
+	})
+	public DSSDocument signDocument(NexuSignatureDocumentForm form) {
 		logger.info("Start signDocument");
 		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
 
@@ -192,6 +235,30 @@ public class SigningService {
 		}
 
 		parameters.setSignWithExpiredCertificate(form.isSignWithExpiredCertificate());
+		CertificateToken signingCertificate = DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate());
+		parameters.setSigningCertificate(signingCertificate);
+		parameters.setEncryptionAlgorithm(signingCertificate.getEncryptionAlgorithm());
+
+		List<String> base64CertificateChain = form.getBase64CertificateChain();
+		if (CollectionUtils.isNotEmpty(base64CertificateChain)) {
+			List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
+			for (String base64Certificate : base64CertificateChain) {
+				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate), true));
+			}
+			parameters.setCertificateChain(certificateChain);
+		}
+
+		return parameters;
+	}
+	
+	private AbstractSignatureParameters fillParameters(NexuSignatureDocumentForm form) {
+		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm(), form.getAsicUnderlyingForm());
+		parameters.setSignaturePackaging(form.getSignaturePackaging());
+		parameters.setSignatureLevel(form.getSignatureLevel());
+		parameters.setDigestAlgorithm(form.getDigestAlgorithm());
+		parameters.setEncryptionAlgorithm(form.getEncryptionAlgorithm());
+		parameters.bLevel().setSigningDate(form.getSigningDate());
+
 		CertificateToken signingCertificate = DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate());
 		parameters.setSigningCertificate(signingCertificate);
 		parameters.setEncryptionAlgorithm(signingCertificate.getEncryptionAlgorithm());

@@ -397,7 +397,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return manifest;
 	}
 
-	private static boolean isASiCManifest(String entryName) {
+	public static boolean isASiCManifest(String entryName) {
 
 		final boolean manifest = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER + "ASiCManifest");
 		return manifest;
