@@ -28,24 +28,6 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-									<artifactId>dss-demo-applet-package</artifactId>
-									<type>jar</type>
-									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/jar/signature-applet-r5.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-					<execution>
 						<id>copy-standalone-zip</id>
 						<phase>process-resources</phase>
 						<goals>
