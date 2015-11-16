@@ -1,4 +1,4 @@
-package known.issues.DSS650;
+package eu.europa.esig.dss.asic.extension.asice;
 
 import java.io.File;
 import java.util.Date;
@@ -49,12 +49,11 @@ public class ASiCeSignAndExtendTest {
 		Reports reports = validator.validateDocument();
 
 		reports.print();
-
+		extend(signDocument);
 	}
 
-	@Test
-	public void extend() throws Exception {
-		DSSDocument docToExtend = new FileDocument(new File("target/asic-e-cades-b.asice"));
+	public void extend(DSSDocument docToExtend) throws Exception {
+		//DSSDocument docToExtend = new FileDocument(new File("target/asic-e-cades-b.asice"));
 
 		ASiCService service = new ASiCService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();

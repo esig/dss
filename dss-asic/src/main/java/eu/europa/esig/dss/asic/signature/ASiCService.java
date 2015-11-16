@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -32,12 +34,14 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.swing.event.ListSelectionEvent;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -474,18 +478,26 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 				currentDocument = currentDocument.getNextDocument();
 			} while (currentDocument != null);
 		} else {
-
 			originalDocument = null;
 			DSSDocument lastDocument = null;
 			for (final DSSDocument currentDocument : detachedContents) {
-
-				if (originalDocument == null) {
+				if(ASiCContainerValidator.isASiCManifest(currentDocument.getName())) {
+					originalDocument = currentDocument;
+					lastDocument = currentDocument;
+				}
+			}
+			if(originalDocument!= null) {
+				detachedContents.remove(originalDocument);
+			}
+			for (final DSSDocument currentDocument : detachedContents) {
+				if (originalDocument == null ) {
 					originalDocument = currentDocument;
 				} else {
 					lastDocument.setNextDocument(currentDocument);
 				}
 				lastDocument = currentDocument;
 			}
+			
 		}
 		return originalDocument;
 	}
