@@ -17,11 +17,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.DetailedReport;
@@ -34,7 +36,7 @@ import eu.europa.esig.dss.web.service.XSLTService;
 
 @Controller
 @SessionAttributes({
-	"simpleReportXml", "detailedReportXml"
+	"simpleReportXml", "detailedReportXml", "reportsList"
 })
 @RequestMapping(value = "/validation")
 public class ValidationController {
@@ -46,6 +48,7 @@ public class ValidationController {
 
 	private static final String SIMPLE_REPORT_ATTRIBUTE = "simpleReportXml";
 	private static final String DETAILED_REPORT_ATTRIBUTE = "detailedReportXml";
+	private static final String REPORTS_LIST = "reportsList";
 
 	@Autowired
 	private CertificateVerifier certificateVerifier;
@@ -101,7 +104,52 @@ public class ValidationController {
 		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, detailedReport);
 		model.addAttribute("detailedReport", xsltService.generateDetailedReport(detailedReport));
 		model.addAttribute("diagnosticTree", reports.getDiagnosticData().toString());
+		
+		List<String> reportsNameList = new ArrayList<String>();
+		List<Reports> reportsList = new ArrayList<Reports>();
+		while(reports != null) {
+			XmlDom dom = reports.getDiagnosticData().getElement("//DocumentName");
+			reportsNameList.add(dom.getText());
+			reportsList.add(reports);
+			reports = reports.getNextReports();
+		}
+		model.addAttribute(REPORTS_LIST, reportsList);
+		model.addAttribute("reports", reportsNameList);
 
+		return VALIDATION_RESULT_TILE;
+	}
+	
+	@RequestMapping(value = "/report", method = RequestMethod.GET)
+	public String getReports(@RequestParam("name") String reportFileName, HttpSession session, Model model) {
+		Reports reports = null;
+		List<Reports> reportsList = (List<Reports>) session.getAttribute(REPORTS_LIST);
+		List<String> reportsNameList = new ArrayList<String>();
+		for(Reports report : reportsList) {
+			XmlDom dom = report.getDiagnosticData().getElement("//DocumentName");
+			String name = dom.getText().substring(dom.getText().lastIndexOf("/")+1);
+			if(name.equals(reportFileName)) {
+				reportsNameList.add(dom.getText());
+				reports = report;
+			}
+		}
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, simpleReport);
+		model.addAttribute("simpleReport", xsltService.generateSimpleReport(simpleReport));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, detailedReport);
+		model.addAttribute("detailedReport", xsltService.generateDetailedReport(detailedReport));
+		model.addAttribute("diagnosticTree", reports.getDiagnosticData().toString());
+		
+		for(Reports report : reportsList) {
+			if(report != reports) {
+				XmlDom dom = report.getDiagnosticData().getElement("//DocumentName");
+				reportsNameList.add(dom.getText());
+			}
+		}
+		model.addAttribute("reports", reportsNameList);
+		
 		return VALIDATION_RESULT_TILE;
 	}
 

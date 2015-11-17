@@ -1,6 +1,29 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> 
+
+<c:if test="${fn:length(reports) gt 1}">
+	<div id="reportSelectorPanel">
+		<div class="panel-heading clearfix">
+		   <div class="pull-left">
+		   		<table>
+			   		<tr>
+				   		<td style="padding:0 0 0 0;">Report of </td>
+				   		<td style="padding:0 15px 0 10px;">
+						<select class="form-control" id="reportSelector" onchange="signatureFileNameChange()">
+							<c:forEach var="report" items="${reports}">
+								<option value="${fn:substringAfter(report, '/')}">${fn:substringAfter(report, '/')}</option>
+							</c:forEach>
+						</select>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</c:if>
+
 
 <ul class="nav nav-tabs nav-justified hidden-print" id="tabsResult">
     <li role="presentation" class="active"><a href="#simple-report"><spring:message code="label.simple.report" /></a></li>
@@ -9,6 +32,7 @@
 </ul>
 
 <div class="tab-content" style="margin-top: 10px">
+
     <div role="tabpanel" class="tab-pane fade in active" id="simple-report">
         <div class="btn-group pull-right hidden-print" role="toolbar" style="margin : 4px;">
             <button type="button" class="btn btn-default" onclick="window.print();">
@@ -45,4 +69,11 @@
     });
     
     $('.collapse').collapse();
+    
+    function signatureFileNameChange() {
+    	var select = document.getElementById("reportSelector");
+    	var value = select.options[select.selectedIndex].value;
+    	var url = "/dss-demo-webapp/validation/report?name="+value;
+    	window.location.href = url;
+    }
 </script>
