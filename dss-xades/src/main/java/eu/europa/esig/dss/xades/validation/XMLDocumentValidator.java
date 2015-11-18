@@ -23,11 +23,14 @@ package eu.europa.esig.dss.xades.validation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.util.encoders.Base64;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -51,6 +54,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	
 	private static final byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
 	private static final byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
+	private static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -154,28 +158,90 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public DSSDocument removeSignature(final String signatureId) throws DSSException {
+	public DSSDocument getOriginalDocument(final String signatureId) throws DSSException {
 
 		if (StringUtils.isBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
-		// TODO (31/07/2014): Checks on signature packaging to be added
 		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-
+			
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
 			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
+			
 			if (signatureId.equals(idIdentifier)) {
-
-				signatureEl.getParentNode().removeChild(signatureEl);
-				// TODO (31/07/2014): Save the modified document
-				final Node documentElement = rootElement.getDocumentElement();
-				final byte[] documentBytes = DSSXMLUtils.serializeNode(documentElement);
-				final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-				return inMemoryDocument;
+				XAdESSignature signature = (XAdESSignature) signatures.get(ii);
+				if(getSignatureObjects(signatureEl).isEmpty() && signature.getReferences().isEmpty()) {
+					throw new DSSException("The signature must be enveloped or enveloping!");
+				} else if(isEnveloping(signatureEl)) {
+					List<Element> references = getSignatureObjects(signatureEl);
+					DSSDocument firstDocument = null;
+					DSSDocument inMemoryDocument = null;
+					for(Element element : references) {
+						String content = element.getTextContent();
+						content = isBase64Encoded(content) ? new String(Base64.decode(content)) : content;
+						if(inMemoryDocument == null) {
+							inMemoryDocument = new InMemoryDocument(content.getBytes());
+							firstDocument = inMemoryDocument;
+						} else {
+							DSSDocument document = new InMemoryDocument(content.getBytes());
+							inMemoryDocument.setNextDocument(document);
+							inMemoryDocument = document;
+						}
+					}
+					return firstDocument;
+				} else {
+					signatureEl.getParentNode().removeChild(signatureEl);
+					final Node documentElement = rootElement.getDocumentElement();
+					byte[] documentBytes = DSSXMLUtils.serializeNode(documentElement);
+					documentBytes = isBase64Encoded(documentBytes) ? Base64.decode(documentBytes) : documentBytes;
+					final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+					return inMemoryDocument;
+				}
 			}
 		}
 		throw new DSSException("The signature with the given id was not found!");
+	}
+	
+	private boolean isBase64Encoded(byte[] array) {
+		return isBase64Encoded(new String(array));
+	}
+	
+	private boolean isBase64Encoded(String text) {
+		Pattern pattern = Pattern.compile(BASE64_REGEX);
+		Matcher matcher = pattern.matcher(text);
+		return matcher.matches();
+	}
+	
+	private boolean isEnveloping(Element signatureEl) {
+		final NodeList objectNodeList = signatureEl.getChildNodes();
+		int objectTagNumber = 0;
+		for(int i = 0; i<objectNodeList.getLength(); i++) {
+			String nodeName = objectNodeList.item(i).getNodeName();
+			if(nodeName.equals("ds:Object")) {
+				objectTagNumber ++;
+			}
+		}
+		return objectTagNumber >= 2;
+	}
+	
+	private List<Element> getSignatureObjects(Element signatureEl) {
+
+		final NodeList list = DSSXMLUtils.getNodeList(signatureEl, XPathQueryHolder.XPATH_OBJECT);
+		final List<Element> references = new ArrayList<Element>(list.getLength());
+		for (int ii = 0; ii < list.getLength(); ii++) {
+
+			final Node node = list.item(ii);
+			final Element element = (Element) node;
+			XPathQueryHolder queryHolder = new XPathQueryHolder();
+			if (DSSXMLUtils.getElement(element, queryHolder.XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES) != null) {
+				// ignore signed properties
+				continue;
+			}
+			references.add(element);
+		}
+		return references;
 	}
 
 	/**

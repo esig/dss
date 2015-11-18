@@ -163,12 +163,10 @@ public interface DocumentValidator {
 	DocumentValidator getSubordinatedValidator();
 
 	/**
-	 * This method allows the removal of the signature from the given signed document.
-	 * - With XAdES signature this operation is only possible for ENVELOPED signatures;
-	 * - With ASiC signature this operation is only possible for XAdES kind of container;
+	 * This method returns the signed document without his signature
 	 *
 	 * @param signatureId the id of the signature to be removed.
 	 * @throws DSSException the exception is thrown when the removal is not possible.
 	 */
-	DSSDocument removeSignature(final String signatureId) throws DSSException;
+	DSSDocument getOriginalDocument(final String signatureId) throws DSSException;
 }

@@ -42,6 +42,7 @@ import eu.europa.esig.dss.AsicManifestDocument;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotETSICompliantException;
+import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -531,42 +532,8 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return validatedSignatures;
 	}
 
-	/**
-	 * This is an experimental implementation for Aho's contribution. It is likely to be changed. The current implementation does not work with CAdES signatures.
-	 *
-	 * @param signatureId the id of the signature to be removed.
-	 * @return the {@code DSSDocument} with removed given signature
-	 * @throws DSSException
-	 */
 	@Override
-	public DSSDocument removeSignature(final String signatureId) throws DSSException {
-
-		if (StringUtils.isBlank(signatureId)) {
-			throw new NullPointerException("signatureId");
-		}
-
-		for (int i = 0; i < signatures.size(); i++) {
-
-			final DSSDocument signature = signatures.get(i);
-			final Document root = DSSXMLUtils.buildDOM(signature);
-			final Element signatureEl = (Element) root.getDocumentElement().getFirstChild();
-			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
-			if (signatureId.equals(idIdentifier)) {
-
-				signatures.remove(i);
-				final Document signatureDOM = DSSXMLUtils.createDocument(ASiCNamespaces.ASiC, ASiCService.ASICS_NS);
-				for (int j = 0; j < signatures.size(); j++) {
-
-					final Document doc = DSSXMLUtils.buildDOM(signature);
-					final Node signatureElement = doc.getDocumentElement().getFirstChild();
-
-					final Element newElement = signatureDOM.getDocumentElement();
-					signatureDOM.adoptNode(signatureElement);
-					newElement.appendChild(signatureElement);
-				}
-				return new InMemoryDocument(DSSXMLUtils.serializeNode(signatureDOM));
-			}
-		}
-		throw new DSSException("The signature with the given id was not found!");
+	public DSSDocument getOriginalDocument(final String signatureId) throws DSSException {
+		throw new DSSUnsupportedOperationException("This method is not applicable for this kind of signatures!");
 	}
 }
