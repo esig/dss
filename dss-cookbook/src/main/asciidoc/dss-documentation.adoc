@@ -1,3 +1,4 @@
+:toc: left
 = Digital Signature Service
 version : {dssVersion} - {docdate}
 
@@ -762,7 +763,26 @@ A number of application environments use ZIP based container formats to package 
 
 The standard defines two types of containers; the first (ASiC-S) allows you to associate one or more signatures with a single data element. In this case the structure of the signature can be based (in a general way) on a single CAdES signature or on multiple XAdES signatures or finally on a single TST; the second is an extended container (ASiC-E) that includes multiple data objects. Each data object may be signed by one or more signatures which structure is similar to ASiC-S. This second type of container is compatible with OCF, UCF and ODF formats.
 
-For the moment the DSS framework uses only ASIC-S based on XAdES signature type of containers.
+For the moment the DSS framework has some restriction on the containers you can generate, depending on the input file. If the input file is already an ASiC container, the output container must be the same type of container based on the same type of signature. If the input is any other file, the output does not have any restriction.
+
+|===
+|Input |Output
+
+|ASiC-S CAdES
+|ASiC-S CAdES
+
+|ASiC-S XAdES
+|ASiC-S XAdES
+
+|ASiC-E CAdES
+|ASiC-E CAdES
+
+|ASiC-E XAdES
+|ASiC-E XAdES
+
+|Binary
+|ASiC-S CAdES, ASiC-S XAdES, ASiC-E CAdES, ASiC-E XAdES
+|===
 
 This is an example of the source code for signing a document using ASiCS-S based on XAdES-B:
 

@@ -213,7 +213,7 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 			return result;
 
 		} catch (XPathExpressionException e) {
-			throw new ResourceResolverException("malformed XPath inside XPointer expression", e, uriNodeValue, baseUri);
+			throw new ResourceResolverException(e, "malformed XPath inside XPointer expression", uriNodeValue, baseUri);
 		}
 	}
 }

@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.asic.signature;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -34,14 +33,12 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.swing.event.ListSelectionEvent;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -54,6 +51,7 @@ import eu.europa.esig.dss.ASiCNamespaces;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -112,9 +110,15 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 	@Override
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final ASiCSignatureParameters parameters) throws DSSException {
-
+		try { 
+			if(!canBeSigned(toSignDocument, parameters)) { // First verify if the file can be signed
+				throw new DSSUnsupportedOperationException("You can only sign an ASiC container by using the same type of container and of signature");
+			}
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+		
 		final ASiCParameters asicParameters = parameters.aSiC();
-
 
 		// toSignDocument can be a simple file or an ASiC container
 		final DSSDocument contextToSignDocument = prepare(toSignDocument, parameters);
@@ -151,6 +155,10 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final ASiCSignatureParameters parameters, SignatureValue signatureValue) throws DSSException {
 		try {
+			
+			if(!canBeSigned(toSignDocument, parameters)) {
+				throw new DSSUnsupportedOperationException("You can only sign an ASiC container by using the same type of container and of signature");
+			}
 			assertSigningDateInCertificateValidityRange(parameters);
 
 			// Signs the toSignDocument first
@@ -760,5 +768,31 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		}
 		return underlyingASiCService;
 	}
-
+	
+	private boolean canBeSigned(DSSDocument toSignDocument, ASiCSignatureParameters parameters) throws IOException {
+		boolean isMimetypeCorrect = true;
+		boolean isSignatureTypeCorrect = true;
+		if(isArchive(toSignDocument)) {
+			isMimetypeCorrect = toSignDocument.getMimeType().getMimeTypeString().equals(getMimeTypeBytes(parameters.aSiC()));
+			ByteArrayInputStream stream = new ByteArrayInputStream(toSignDocument.getBytes());
+			ZipInputStream zip = new ZipInputStream(stream);
+			ZipEntry entry = zip.getNextEntry();
+			while(entry != null) {
+				if(entry.getName().startsWith("META-INF") && entry.getName().contains("signature")) {
+					if(isCAdESForm(parameters.aSiC())) {
+						isSignatureTypeCorrect = entry.getName().endsWith(".p7m");
+					} else {
+						isSignatureTypeCorrect = entry.getName().endsWith(".xml");
+					}
+				} 
+				entry = zip.getNextEntry();
+			}
+			zip.close();
+		}
+		return (isMimetypeCorrect && isSignatureTypeCorrect);
+	}
+	
+	private boolean isArchive(DSSDocument doc) {
+		return (doc.getName().endsWith(".zip") || doc.getName().endsWith(".bdoc") || doc.getName().endsWith(".asice") || doc.getName().endsWith(".asics"));
+	}
 }

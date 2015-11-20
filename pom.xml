@@ -53,7 +53,7 @@
 		<bouncycastle.version>1.52</bouncycastle.version>
 		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
 		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
-		<xmlsec.version>2.0.2</xmlsec.version>
+		<xmlsec.version>2.0.5</xmlsec.version>
 		<cxf.version>2.7.16</cxf.version>
 		<junit.version>4.11</junit.version>
 		<commons-collecions.version>3.2.2</commons-collecions.version>
