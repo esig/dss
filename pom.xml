@@ -56,6 +56,7 @@
 		<xmlsec.version>2.0.2</xmlsec.version>
 		<cxf.version>2.7.16</cxf.version>
 		<junit.version>4.11</junit.version>
+		<commons-collecions.version>3.2.2</commons-collecions.version>
 	</properties>
 	
 	<build>
@@ -487,7 +488,7 @@
 			<dependency>
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
-				<version>3.2</version>
+				<version>${commons-collecions.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
