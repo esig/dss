@@ -780,7 +780,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			while(entry != null) {
 				if(entry.getName().startsWith("META-INF") && entry.getName().contains("signature")) {
 					if(isCAdESForm(parameters.aSiC())) {
-						isSignatureTypeCorrect = entry.getName().endsWith(".p7m");
+						isSignatureTypeCorrect = (entry.getName().endsWith(".p7m") || entry.getName().endsWith(".p7s"));
 					} else {
 						isSignatureTypeCorrect = entry.getName().endsWith(".xml");
 					}
