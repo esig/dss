@@ -125,6 +125,9 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		parameters.aSiC().setEnclosedSignature(asicParameters.getEnclosedSignature());
 
 		final AbstractSignatureParameters underlyingParameters = getParameters(parameters);
+		if(isAsice(asicParameters) && isCAdESForm(asicParameters)) {
+			underlyingParameters.setDetachedContent(null);
+		}
 		final DocumentSignatureService underlyingService = getSpecificService(parameters.aSiC().getUnderlyingForm());
 		return underlyingService.getDataToSign(contextToSignDocument, underlyingParameters);
 	}
@@ -168,6 +171,9 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			parameters.aSiC().setEnclosedSignature(asicParameters.getEnclosedSignature());
 
 			AbstractSignatureParameters underlyingParameters = getParameters(parameters);
+			if(isAsice(asicParameters) && isCAdESForm(asicParameters)) {
+				underlyingParameters.setDetachedContent(null);
+			}
 			final DocumentSignatureService underlyingService = getSpecificService(parameters.aSiC().getUnderlyingForm());
 			final DSSDocument signature = underlyingService.signDocument(contextToSignDocument, underlyingParameters, signatureValue);
 
@@ -293,7 +299,9 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 			copyZipContent(signDocument, zipOutputStream);
 		} else {
-
+			if(signDocument != null && isCAdESForm(asicParameters)) {
+				copyMETAINFContent(signDocument, zipOutputStream);
+			}
 			storeZipComment(asicParameters, zipOutputStream, toSignDocumentName);
 
 			storeMimetype(asicParameters, zipOutputStream);
@@ -322,6 +330,18 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		}
 		IOUtils.closeQuietly(zipInputStream);
 	}
+	
+	private void copyMETAINFContent(DSSDocument toSignAsicContainer, ZipOutputStream zipOutputStream) throws IOException {
+		final InputStream inputStream = toSignAsicContainer.openStream();
+		final ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+		for (ZipEntry entry = getNextZipEntry(zipInputStream); entry != null; entry = getNextZipEntry(zipInputStream)) {
+			if(entry.getName().contains("META-INF/")) {
+				createZipEntry(zipOutputStream, entry);
+				IOUtils.copy(zipInputStream, zipOutputStream);
+			}
+		}
+		IOUtils.closeQuietly(zipInputStream);
+	}
 
 	private void storeAsicManifest(ASiCSignatureParameters parameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
 
@@ -329,7 +349,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 		final String signatureName = getSignatureFileName(asicParameters);
 		final int indexOfSignature = signatureName.indexOf("signature");
-		String suffix = signatureName.substring(indexOfSignature + "signature".length());
+		String suffix = signatureName.substring(indexOfSignature);
 		final int lastIndexOf = suffix.lastIndexOf(".");
 		suffix = suffix.substring(0, lastIndexOf);
 		final String asicManifestZipEntryName = META_INF + "ASiCManifest" + suffix + ".xml";
@@ -438,16 +458,16 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 					final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 					buildAsicManifest(underlyingParameter, underlyingParameter.getDetachedContent(), outputStream);
 					contextToSignDocument = new InMemoryDocument(outputStream.toByteArray(), "AsicManifestXXX.xml", MimeType.XML);
-					underlyingParameter.setDetachedContent(null);
+					//underlyingParameter.setDetachedContent(null);
 				} else {
 					contextToSignDocument = underlyingParameter.getDetachedContent();
 				}
 			} else {
 				contextToSignDocument = copyDetachedContent(underlyingParameter, subordinatedValidator);
 			}
-			if (!asice && (subordinatedValidator instanceof ASiCCMSDocumentValidator)) {
+			/*if (!asice && (subordinatedValidator instanceof ASiCCMSDocumentValidator)) {
 				contextToSignDocument = contextSignature;
-			}
+			}*/
 		} else {
 			if (asice && cadesForm) {
 				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -631,10 +651,20 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 				return asice ? ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE : ZIP_ENTRY_ASICS_METAINF_XADES_SIGNATURE;
 			}
 		} else if (isCAdESForm(asicParameters)) {
-			if (asice && (enclosedSignature != null)) {
-				return META_INF + asicParameters.getSignatureFileName();
+//			if (asice && (enclosedSignature != null)) {
+//				return META_INF + asicParameters.getSignatureFileName();
+//			} else {
+//			return (asice || enclosedSignature!=null) ? ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE : ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE;
+//		}
+			if(enclosedSignature!=null) {
+				String result = ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.substring(0, ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.lastIndexOf('.')-1);
+				result = result + "2";
+				result += ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.substring(ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.lastIndexOf('.'), ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.length());
+				return result;
+			} else if(asice) {
+				return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE;
 			} else {
-				return asice ? ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE : ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE;
+				return ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE;
 			}
 		} else {
 			throw new DSSException("ASiC signature form must be XAdES or CAdES!");
@@ -778,7 +808,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			ZipInputStream zip = new ZipInputStream(stream);
 			ZipEntry entry = zip.getNextEntry();
 			while(entry != null) {
-				if(entry.getName().startsWith("META-INF") && entry.getName().contains("signature")) {
+				if(entry.getName().startsWith("META-INF") && entry.getName().contains("signature") && !entry.getName().contains("Manifest")){
 					if(isCAdESForm(parameters.aSiC())) {
 						isSignatureTypeCorrect = (entry.getName().endsWith(".p7m") || entry.getName().endsWith(".p7s"));
 					} else {

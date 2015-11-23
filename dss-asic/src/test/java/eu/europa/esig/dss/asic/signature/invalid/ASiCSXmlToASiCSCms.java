@@ -73,7 +73,7 @@ public class ASiCSXmlToASiCSCms {
 		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 
 	}
 }
