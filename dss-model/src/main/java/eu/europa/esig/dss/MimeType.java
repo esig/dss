@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * This class allows to handle different mime types. It also allows to add (define) new mime-type.
+ * This class allows to handle different mime types. It also allows to add
+ * (define) new mime-type.
  */
 @SuppressWarnings("serial")
 public class MimeType implements Serializable {
@@ -44,17 +45,20 @@ public class MimeType implements Serializable {
 
 	private String mimeTypeString;
 
-	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>() {{
-		put("xml", XML);
-		put("pdf", PDF);
-		put("asics", ASICS);
-		put("scs", ASICS);
-		put("asice", ASICE);
-		put("bdoc", ASICE); // estonian bdoc file type is handled as asic-e document
-		put("sce", ASICE);
-		put("txt", TEXT);
-		put("zip", ASICE); // plugtest and CZ
-	}};
+	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>() {
+		{
+			put("xml", XML);
+			put("pdf", PDF);
+			put("asics", ASICS);
+			put("scs", ASICS);
+			put("asice", ASICE);
+			put("bdoc", ASICE); // estonian bdoc file type is handled as asic-e
+								// document
+			put("sce", ASICE);
+			put("txt", TEXT);
+			put("zip", ASICE); // plugtest and CZ
+		}
+	};
 
 	/**
 	 * This constructor is used only by the web-services.
@@ -65,7 +69,9 @@ public class MimeType implements Serializable {
 	/**
 	 * The default constructor for MimeType.
 	 *
-	 * @param mimeTypeString is a string identifier composed of two parts: a "type" and a "subtype"
+	 * @param mimeTypeString
+	 *            is a string identifier composed of two parts: a "type" and a
+	 *            "subtype"
 	 */
 	private MimeType(final String mimeTypeString) {
 
@@ -73,18 +79,24 @@ public class MimeType implements Serializable {
 			throw new DSSException("'" + mimeTypeString + "' is not conformant mime-type string!");
 		}
 		if (mimeTypes.get(mimeTypeString) != null) {
-			throw new DSSException("'" + mimeTypeString + "' corresponding MimeType exists already! Use #fromMimeTypeString method to obtain the corresponding object.");
+			throw new DSSException("'" + mimeTypeString
+					+ "' corresponding MimeType exists already! Use #fromMimeTypeString method to obtain the corresponding object.");
 		}
 		this.mimeTypeString = mimeTypeString;
 		mimeTypes.put(mimeTypeString, this);
 	}
 
 	/**
-	 * This constructor allows to create a new MimeType related to given file extension. Be careful, if the file extension has already an associated {@code MimeType} then this
-	 * relation will be lost.
+	 * This constructor allows to create a new MimeType related to given file
+	 * extension. Be careful, if the file extension has already an associated
+	 * {@code MimeType} then this relation will be lost.
 	 *
-	 * @param mimeTypeString is a string identifier composed of two parts: a "type" and a "subtype"
-	 * @param extension      to be defined. Example: "txt", note that there is no point before the extension name.
+	 * @param mimeTypeString
+	 *            is a string identifier composed of two parts: a "type" and a
+	 *            "subtype"
+	 * @param extension
+	 *            to be defined. Example: "txt", note that there is no point
+	 *            before the extension name.
 	 */
 	public MimeType(final String mimeTypeString, final String extension) {
 		this(mimeTypeString);
@@ -101,7 +113,9 @@ public class MimeType implements Serializable {
 	/**
 	 * This setter is used by the web-services.
 	 *
-	 * @param mimeTypeString is a string identifier composed of two parts: a "type" and a "subtype"
+	 * @param mimeTypeString
+	 *            is a string identifier composed of two parts: a "type" and a
+	 *            "subtype"
 	 */
 	public void setMimeTypeString(String mimeTypeString) {
 		this.mimeTypeString = mimeTypeString;
@@ -110,7 +124,8 @@ public class MimeType implements Serializable {
 	/**
 	 * This method returns the mime-type extrapolated from the file name.
 	 *
-	 * @param fileName the file name to be analysed
+	 * @param fileName
+	 *            the file name to be analysed
 	 * @return the extrapolated mime-type of the file name
 	 */
 	public static MimeType fromFileName(final String fileName) {
@@ -124,9 +139,9 @@ public class MimeType implements Serializable {
 		return BINARY;
 	}
 
-	public String getExtension() {
+	public static String getExtension(MimeType mimeType) {
 		for (Entry<String, MimeType> entry : fileExtensions.entrySet()) {
-			if (this.equals(entry.getValue())) {
+			if (mimeType.equals(entry.getValue())) {
 				return entry.getKey();
 			}
 		}
@@ -134,9 +149,11 @@ public class MimeType implements Serializable {
 	}
 
 	/**
-	 * Returns the file extension based on the position of the '.' in the path. The paths as "xxx.y/toto" are not handled.
+	 * Returns the file extension based on the position of the '.' in the path.
+	 * The paths as "xxx.y/toto" are not handled.
 	 *
-	 * @param path to be analysed
+	 * @param path
+	 *            to be analysed
 	 * @return the file extension or null
 	 */
 	public static String getFileExtension(final String path) {
@@ -152,7 +169,8 @@ public class MimeType implements Serializable {
 	/**
 	 * This method returns the mime-type extrapolated from the file.
 	 *
-	 * @param file the file to be analysed
+	 * @param file
+	 *            the file to be analysed
 	 * @return the extrapolated mime-type of the file
 	 */
 	public static MimeType fromFile(final File file) {
@@ -163,9 +181,12 @@ public class MimeType implements Serializable {
 	}
 
 	/**
-	 * This method returns the first representation of the {@code MimeType} corresponding to the given mime-type string.
+	 * This method returns the first representation of the {@code MimeType}
+	 * corresponding to the given mime-type string.
 	 *
-	 * @param mimeTypeString is a string identifier composed of two parts: a "type" and a "subtype"
+	 * @param mimeTypeString
+	 *            is a string identifier composed of two parts: a "type" and a
+	 *            "subtype"
 	 * @return the extrapolated mime-type from the {@code String}
 	 */
 	public static MimeType fromMimeTypeString(final String mimeTypeString) {
@@ -178,9 +199,12 @@ public class MimeType implements Serializable {
 	}
 
 	/**
-	 * This method allows to define a new relationship between a file extension and a {@code MimeType}.
+	 * This method allows to define a new relationship between a file extension
+	 * and a {@code MimeType}.
 	 *
-	 * @param extension to be defined. Example: "txt", note that there is no point before the extension name.
+	 * @param extension
+	 *            to be defined. Example: "txt", note that there is no point
+	 *            before the extension name.
 	 */
 	public void defineFileExtension(final String extension) {
 		fileExtensions.put(extension, this);
@@ -190,8 +214,7 @@ public class MimeType implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result)
-				+ ((mimeTypeString == null) ? 0 : mimeTypeString.hashCode());
+		result = (prime * result) + ((mimeTypeString == null) ? 0 : mimeTypeString.hashCode());
 		return result;
 	}
 
