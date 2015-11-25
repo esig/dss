@@ -28,6 +28,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -47,7 +48,9 @@ import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -67,9 +70,20 @@ public class CertificateService {
 	}
 
 	public KeyPair generateKeyPair(final EncryptionAlgorithm algorithm) throws GeneralSecurityException {
-		KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm.getName());
-		keyGenerator.initialize(2048);
-		return keyGenerator.generateKeyPair();
+		if(algorithm == EncryptionAlgorithm.ECDSA) {
+			return generateECDSAKeyPair();
+		} else {
+			KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm.getName());
+			keyGenerator.initialize(2048);
+			return keyGenerator.generateKeyPair();
+		}
+	}
+	
+	private KeyPair generateECDSAKeyPair() throws GeneralSecurityException {
+		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("prime256v1");
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA");
+		generator.initialize(ecSpec, new SecureRandom());
+		return generator.generateKeyPair();
 	}
 
 	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final MockPrivateKeyEntry rootEntry, Date notBefore, Date notAfter) throws Exception {
