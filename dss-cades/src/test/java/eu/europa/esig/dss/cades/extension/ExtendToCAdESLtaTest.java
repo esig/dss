@@ -1,6 +1,6 @@
-package known.issues.DSS646;
+package eu.europa.esig.dss.cades.extension;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -41,10 +42,12 @@ public class ExtendToCAdESLtaTest {
 		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		// The ordering of attributes inside the SET is wrong. The attributes must be ordering by their tags and lenght
+		// Since all the attributes have the same tag, the lenght decide the order, and the messageDigest should be before the signingTime
+		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId())); 
 	}
 
-	@Test
+	@Test(expected = DSSException.class)
 	public void testExtend() throws  Exception {
 		CertificateService certificateService = new CertificateService();
 

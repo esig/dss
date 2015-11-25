@@ -1,4 +1,4 @@
-package known.issues.DSS666;
+package eu.europa.esig.dss.asic.signature.asice;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
