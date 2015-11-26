@@ -52,7 +52,6 @@ public class GetOriginalDocumentTest {
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		signedDocument.save("C://Users/axel.abinet/Desktop/ble.xml");
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
