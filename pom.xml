@@ -210,8 +210,8 @@
 					<version>3.1</version>
 					<configuration>
 						<encoding>${project.encoding}</encoding>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>${project.source.version}</source>
+						<target>${project.source.version}</target>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -722,6 +722,10 @@
 			<activation>
 				<jdk>[1.6,1.8)</jdk>
 			</activation>
+			
+			<properties>
+			<project.source.version>1.6</project.source.version>
+			</properties>
 
 			<!-- Skip dss-standalone-app (JavaFX) -->
 			<modules>
@@ -760,6 +764,10 @@
 			<activation>
 				<jdk>[1.8,</jdk>
 			</activation>
+			
+			<properties>
+			<project.source.version>1.8</project.source.version>
+			</properties>
 
 			<modules>
 				<module>dss-model</module>
