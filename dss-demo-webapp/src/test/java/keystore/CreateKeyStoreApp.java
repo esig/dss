@@ -32,7 +32,7 @@ public class CreateKeyStoreApp {
 
 		addCertificate(store, "europa1", "src/test/resources/keystore/ec.europa.eu.crt");
 		addCertificate(store, "europa2", "src/test/resources/keystore/ec.europa.eu.2.crt");
-		addCertificate(store, "europa3", "src/test/resources/keystore/ec.europa.eu.3.crt");
+		//		addCertificate(store, "europa3", "src/test/resources/keystore/ec.europa.eu.3.crt");
 		addCertificate(store, "europa4", "src/test/resources/keystore/ec.europa.eu.4.crt");
 		addCertificate(store, "europa5", "src/test/resources/keystore/ec.europa.eu.5.crt");
 		addCertificate(store, "europa6", "src/test/resources/keystore/ec.europa.eu.6.crt");
@@ -56,8 +56,8 @@ public class CreateKeyStoreApp {
 	private static void addCertificate(KeyStore store, String alias, String filepath) throws Exception {
 		InputStream fis = new FileInputStream(filepath);
 		CertificateToken europanCert = DSSUtils.loadCertificate(fis);
-		if (europanCert.isExpiredOn(new Date())){
-			throw new RuntimeException("Alias "+alias+" is expired");
+		if (europanCert.isExpiredOn(new Date())) {
+			throw new RuntimeException("Alias " + alias + " is expired");
 		}
 		System.out.println("Adding certificate " + filepath);
 		displayCertificateDigests(europanCert);
@@ -84,7 +84,7 @@ public class CreateKeyStoreApp {
 
 	private static void readKeyStore() throws Exception {
 
-		InputStream fis= new FileInputStream(KEYSTORE_FILEPATH);
+		InputStream fis = new FileInputStream(KEYSTORE_FILEPATH);
 		KeyStore store = KeyStore.getInstance(KEYSTORE_TYPE);
 		store.load(fis, KEYSTORE_PASSWORD.toCharArray());
 
