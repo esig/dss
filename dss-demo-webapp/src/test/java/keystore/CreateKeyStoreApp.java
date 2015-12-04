@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -32,6 +33,9 @@ public class CreateKeyStoreApp {
 		addCertificate(store, "europa1", "src/test/resources/keystore/ec.europa.eu.crt");
 		addCertificate(store, "europa2", "src/test/resources/keystore/ec.europa.eu.2.crt");
 		addCertificate(store, "europa3", "src/test/resources/keystore/ec.europa.eu.3.crt");
+		addCertificate(store, "europa4", "src/test/resources/keystore/ec.europa.eu.4.crt");
+		addCertificate(store, "europa5", "src/test/resources/keystore/ec.europa.eu.5.crt");
+		addCertificate(store, "europa6", "src/test/resources/keystore/ec.europa.eu.6.crt");
 
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		store.store(fos, KEYSTORE_PASSWORD.toCharArray());
@@ -52,6 +56,9 @@ public class CreateKeyStoreApp {
 	private static void addCertificate(KeyStore store, String alias, String filepath) throws Exception {
 		InputStream fis = new FileInputStream(filepath);
 		CertificateToken europanCert = DSSUtils.loadCertificate(fis);
+		if (europanCert.isExpiredOn(new Date())){
+			throw new RuntimeException("Alias "+alias+" is expired");
+		}
 		System.out.println("Adding certificate " + filepath);
 		displayCertificateDigests(europanCert);
 
@@ -62,6 +69,7 @@ public class CreateKeyStoreApp {
 	private static void displayCertificateDigests(CertificateToken europanCert) {
 		byte[] digestSHA256 = DSSUtils.digest(DigestAlgorithm.SHA256, europanCert.getEncoded());
 		byte[] digestSHA1 = DSSUtils.digest(DigestAlgorithm.SHA1, europanCert.getEncoded());
+		System.out.println(europanCert.getSubjectShortName());
 		System.out.println("SHA256 digest (Hex) : " + getPrintableHex(digestSHA256));
 		System.out.println("SHA1 digest (Hex) : " + getPrintableHex(digestSHA1));
 		System.out.println("SHA256 digest (Base64) : " + Base64.encodeBase64String(digestSHA256));
