@@ -23,13 +23,15 @@ package eu.europa.esig.dss.x509.crl;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.CertificateToken;
 
+import java.io.Serializable;
+
 /**
  * The validation of a certificate requires the access to some CRLs. This information can be found online, in a cache or even in
  * the signature itself. This interface provides an abstraction of a CRL data source.
  *
  *
  */
-public interface CRLSource {
+public interface CRLSource extends Serializable {
 
 	/**
 	 * Finds the CRL(s) for the requested certificate. If found:<br />
