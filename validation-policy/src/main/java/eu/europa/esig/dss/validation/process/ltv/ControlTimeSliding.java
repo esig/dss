@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
@@ -218,7 +218,7 @@ public class ControlTimeSliding {
 			}
 
 			final Date revocationIssuingTime = certificate.getTimeValue("./Revocation/IssuingTime/text()");
-			final String formatedRevocationIssuingTime = DSSUtils.formatDate(revocationIssuingTime);
+			final String formatedRevocationIssuingTime = DateUtils.formatDate(revocationIssuingTime);
 
 			constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 			constraintNode.addChild(NodeName.INFO).setAttribute(AttributeName.REVOCATION_ISSUING_TIME, formatedRevocationIssuingTime);
@@ -296,7 +296,7 @@ public class ControlTimeSliding {
 				final Date revocationDate = certificate.getTimeValue("./Revocation/DateTime/text()");
 				controlTime = revocationDate;
 
-				final String formatedRevocationDate = DSSUtils.formatDate(revocationDate);
+				final String formatedRevocationDate = DateUtils.formatDate(revocationDate);
 				constraintNode.addChild(NodeName.INFO, NodeValue.CTS_CTSTRT_LABEL);
 				constraintNode.addChild(NodeName.INFO).setAttribute(AttributeName.REVOCATION_TIME, formatedRevocationDate);
 			} else {
@@ -364,7 +364,7 @@ public class ControlTimeSliding {
 		 */
 
 		conclusion.setIndication(Indication.VALID);
-		conclusion.addInfo().setAttribute(AttributeValue.CONTROL_TIME, DSSUtils.formatDate(controlTime));
+		conclusion.addInfo().setAttribute(AttributeValue.CONTROL_TIME, DateUtils.formatDate(controlTime));
 
 		return conclusion;
 	}
@@ -375,7 +375,7 @@ public class ControlTimeSliding {
 
 	private void addControlTime(XmlNode constraintNode) {
 
-		String formatedControlTime = DSSUtils.formatDate(controlTime);
+		String formatedControlTime = DateUtils.formatDate(controlTime);
 		constraintNode.addChild(NodeName.INFO).setAttribute(AttributeValue.CONTROL_TIME, formatedControlTime);
 	}
 
@@ -401,7 +401,7 @@ public class ControlTimeSliding {
 		if ((algoExpirationDate != null) && controlTime.after(algoExpirationDate)) {
 
 			controlTime = algoExpirationDate;
-			final String formatedCertAlgoExpirationDate = DSSUtils.formatDate(algoExpirationDate);
+			final String formatedCertAlgoExpirationDate = DateUtils.formatDate(algoExpirationDate);
 			infoContainerNode.addChild(NodeName.INFO, message);
 			infoContainerNode.addChild(NodeName.INFO).setAttribute(AttributeValue.ALGORITHM_EXPIRATION_DATE, formatedCertAlgoExpirationDate);
 		}
@@ -415,7 +415,7 @@ public class ControlTimeSliding {
 		if ((algoExpirationDate != null) && controlTime.after(algoExpirationDate)) {
 
 			controlTime = algoExpirationDate;
-			final String formatedCertAlgoExpirationDate = DSSUtils.formatDate(algoExpirationDate);
+			final String formatedCertAlgoExpirationDate = DateUtils.formatDate(algoExpirationDate);
 			infoContainerNode.addChild(NodeName.INFO, message);
 			infoContainerNode.addChild(NodeName.INFO).setAttribute(AttributeValue.ALGORITHM_EXPIRATION_DATE, formatedCertAlgoExpirationDate);
 		}

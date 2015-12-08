@@ -29,7 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 
@@ -113,10 +113,9 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 
 			final String expirationDateString = algoExpirationDateDom.getValue("./Algo[@Name='%s']/text()", algorithm);
 			if (expirationDateString.isEmpty()) {
-
 				throw new DSSException(String.format("The the expiration date is not defined for '%s' algorithm!", algorithm));
 			}
-			date = DSSUtils.parseDate(expirationDateFormat, expirationDateString);
+			date = DateUtils.parseDate(expirationDateFormat, expirationDateString);
 			algorithmExpirationDate.put(algorithm, date);
 		}
 		return date;

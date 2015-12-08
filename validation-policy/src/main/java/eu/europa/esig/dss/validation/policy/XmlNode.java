@@ -38,8 +38,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.XmlUtils;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 
 public class XmlNode {
@@ -78,7 +78,7 @@ public class XmlNode {
 			throw new DSSException("The node name is not correct: " + name);
 		}
 		this.name = name;
-		if (messageTag != null && !messageTag.equals(MessageTag.EMPTY)) {
+		if ((messageTag != null) && !messageTag.equals(MessageTag.EMPTY)) {
 
 			this.value = messageTag.getMessage();
 			this.attributes.put(MessageTag.NAME_ID, messageTag.name());
@@ -90,7 +90,7 @@ public class XmlNode {
 
 	public void addChild(final XmlNode child) {
 
-      /* if (!children.contains(child)) */
+		/* if (!children.contains(child)) */
 		children.add(child);
 	}
 
@@ -341,7 +341,7 @@ public class XmlNode {
 	public Document toDocument() {
 
 		final InputStream inputStream = getInputStream();
-		final Document document = DSSXMLUtils.buildDOM(inputStream);
+		final Document document = XmlUtils.buildDOM(inputStream);
 		return document;
 	}
 

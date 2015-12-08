@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
@@ -120,8 +120,8 @@ public class CertificateExpirationConstraint extends Constraint {
 		final boolean certValidity = (currentTime.compareTo(notBefore) >= 0) && (currentTime.compareTo(notAfter) <= 0);
 		if ((expiredCertsRevocationInfo == null) && !certValidity) {
 
-			final String formatedNotBefore = DSSUtils.formatDate(notBefore);
-			final String formatedNotAfter = DSSUtils.formatDate(notAfter);
+			final String formatedNotBefore = DateUtils.formatDate(notBefore);
+			final String formatedNotAfter = DateUtils.formatDate(notAfter);
 			if (warn()) {
 
 				node.addChild(NodeName.STATUS, NodeValue.WARN);
@@ -145,7 +145,7 @@ public class CertificateExpirationConstraint extends Constraint {
 		}
 		if (expiredCertsRevocationInfo != null) {
 
-			final String formatedExpiredCertsRevocationInfo = DSSUtils.formatDate(expiredCertsRevocationInfo);
+			final String formatedExpiredCertsRevocationInfo = DateUtils.formatDate(expiredCertsRevocationInfo);
 			node.addChild(NodeName.INFO).setAttribute(AttributeValue.EXPIRED_CERTS_REVOCATION_INFO, formatedExpiredCertsRevocationInfo);
 		}
 		return true;

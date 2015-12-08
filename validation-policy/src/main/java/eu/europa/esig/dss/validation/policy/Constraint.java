@@ -88,11 +88,9 @@ public class Constraint {
 	 * @param level the constraint level string.
 	 */
 	public Constraint(final String level) throws DSSException {
-
 		try {
 			this.level = Level.valueOf(level.trim().toUpperCase());
 		} catch (IllegalArgumentException e) {
-
 			throw new DSSException("The validation policy configuration file should be checked: " + e.getMessage(), e);
 		}
 	}

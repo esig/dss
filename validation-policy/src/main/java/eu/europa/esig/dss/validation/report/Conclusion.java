@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.XmlNode;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
@@ -478,7 +478,7 @@ public class Conclusion {
 		for (final XmlNode child : children) {
 
 			final String value = child.getValue();
-			final String messageId = DSSUtils.getMessageId(value);
+			final String messageId = getMessageId(value);
 			final Info info = new Info(messageId, value);
 			final Map<String, String> attributes = child.getAttributes();
 			for (final Entry<String, String> entry : attributes.entrySet()) {
@@ -489,6 +489,26 @@ public class Conclusion {
 			}
 			infoList.add(info);
 		}
+	}
+
+	/**
+	 * This method return the unique message id which can be used for translation purpose.
+	 *
+	 * @param message
+	 *            the {@code String} message on which the unique id is calculated.
+	 * @return the unique id
+	 */
+	private String getMessageId(final String message) {
+		final String message_ = message./*replace('\'', '_').*/toLowerCase().replaceAll("[^a-z_]", " ");
+		StringBuilder nameId = new StringBuilder();
+		final StringTokenizer stringTokenizer = new StringTokenizer(message_);
+		while (stringTokenizer.hasMoreElements()) {
+
+			final String word = (String) stringTokenizer.nextElement();
+			nameId.append(word.charAt(0));
+		}
+		final String nameIdString = nameId.toString();
+		return nameIdString.toUpperCase();
 	}
 
 	public void copyBasicInfo(final XmlNode xmlNode) {

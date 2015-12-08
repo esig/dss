@@ -23,7 +23,6 @@ package eu.europa.esig.dss.validation.process.subprocess;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
@@ -52,6 +51,10 @@ import eu.europa.esig.dss.validation.report.Conclusion;
  * NOTE: If the signature is compliant with the CD 2011/130/EU, this process will never return INDETERMINATE, since the signer's certificate is present in the signature.
  */
 public class IdentificationOfTheSignersCertificate {
+
+	private static final String XMLE_X509CERTIFICATE = "X509Certificate";
+	private static final String XMLE_X509DATA = "X509Data";
+	private static final String XMLE_KEYINFO = "KeyInfo";
 
 	/**
 	 * The following variables are used only in order to simplify the writing of the rules!
@@ -220,7 +223,7 @@ public class IdentificationOfTheSignersCertificate {
 	private boolean checkSignedSigningCertificateConstraint(final Constraint constraint, final Conclusion conclusion, final String signedElement) {
 
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISCS);
-		final boolean signed = XPathQueryHolder.XMLE_X509CERTIFICATE.equals(signedElement) || XPathQueryHolder.XMLE_X509DATA.equals(signedElement) || XPathQueryHolder.XMLE_KEYINFO
+		final boolean signed = XMLE_X509CERTIFICATE.equals(signedElement) || XMLE_X509DATA.equals(signedElement) || XMLE_KEYINFO
 				.equals(signedElement);
 		constraint.setValue(signed);
 		constraint.setIndications(Indication.INVALID, SubIndication.FORMAT_FAILURE, MessageTag.BBB_ICS_ISCS_ANS);

@@ -23,18 +23,14 @@ package eu.europa.esig.dss.validation.report;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.jce.X509Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.CertificateQualification;
@@ -74,7 +70,8 @@ public class SimpleReportBuilder {
 	/**
 	 * This method generates the validation simpleReport.
 	 *
-	 * @param params validation process parameters
+	 * @param params
+	 *            validation process parameters
 	 * @return the object representing {@code SimpleReport}
 	 */
 	public SimpleReport build(final ProcessParameters params) {
@@ -116,7 +113,7 @@ public class SimpleReportBuilder {
 	private void addValidationTime(final ProcessParameters params, final XmlNode report) {
 
 		final Date validationTime = params.getCurrentTime();
-		report.addChild(NodeName.VALIDATION_TIME, DSSUtils.formatDate(validationTime));
+		report.addChild(NodeName.VALIDATION_TIME, DateUtils.formatDate(validationTime));
 	}
 
 	private void addDocumentName(final XmlNode report) {
@@ -143,9 +140,11 @@ public class SimpleReportBuilder {
 	}
 
 	/**
-	 * @param params              validation process parameters
+	 * @param params
+	 *            validation process parameters
 	 * @param simpleReport
-	 * @param diagnosticSignature the diagnosticSignature element in the diagnostic data
+	 * @param diagnosticSignature
+	 *            the diagnosticSignature element in the diagnostic data
 	 * @throws DSSException
 	 */
 	private void addSignature(final ProcessParameters params, final XmlNode simpleReport, final XmlDom diagnosticSignature) throws DSSException {
@@ -282,21 +281,9 @@ public class SimpleReportBuilder {
 
 		String signedBy = "?";
 		if (signCert != null) {
-
-			final String dn = signCert.getValue("./SubjectDistinguishedName[@Format='RFC2253']/text()");
-			final X509Principal principal = new X509Principal(dn);
-			final Vector<?> values = principal.getValues(new ASN1ObjectIdentifier("2.5.4.3"));
-			if ((values != null) && (values.size() > 0)) {
-
-				final String string = (String) values.get(0);
-				if (StringUtils.isNotBlank(string)) {
-					signedBy = DSSUtils.replaceStrStr(string, "&", "&amp;");
-				}
-				if (StringUtils.isEmpty(signedBy)) {
-					signedBy = DSSUtils.replaceStrStr(dn, "&", "&amp;");
-				}
-			}
+			signedBy= signCert.getValue("./SubjectDistinguishedName[@Format='RFC2253']/text()");
 		}
+		// TODO extract "2.5.4.3"
 		signatureNode.addChild(NodeName.SIGNED_BY, signedBy);
 	}
 
@@ -356,7 +343,35 @@ public class SimpleReportBuilder {
 		signatureNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE);
 		signatureNode.addChild(NodeName.SUB_INDICATION, SubIndication.UNEXPECTED_ERROR);
 
-		final String message = DSSUtils.getSummaryMessage(exception, SimpleReportBuilder.class);
+		final String message = getSummaryMessage(exception, SimpleReportBuilder.class);
 		signatureNode.addChild(NodeName.INFO, message);
+	}
+
+	/**
+	 * This method returns the summary of the given exception. The analysis of the stack trace stops when the provided class is found.
+	 *
+	 * @param exception
+	 *            {@code Exception} to summarize
+	 * @param javaClass
+	 *            {@code Class}
+	 * @return {@code String} containing the summary message
+	 */
+	private static String getSummaryMessage(final Exception exception, final Class<?> javaClass) {
+
+		final String javaClassName = javaClass.getName();
+		final StackTraceElement[] stackTrace = exception.getStackTrace();
+		String message = "See log file for full stack trace.\n";
+		message += exception.toString() + '\n';
+		for (StackTraceElement element : stackTrace) {
+
+			final String className = element.getClassName();
+			if (className.equals(javaClassName)) {
+
+				message += element.toString() + '\n';
+				break;
+			}
+			message += element.toString() + '\n';
+		}
+		return message;
 	}
 }

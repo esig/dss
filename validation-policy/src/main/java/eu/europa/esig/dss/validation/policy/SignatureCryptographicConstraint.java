@@ -28,8 +28,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSNotApplicableMethodException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
@@ -39,7 +39,6 @@ import eu.europa.esig.dss.validation.report.Conclusion;
 
 /**
  * This class represents a signature cryptographic constraints and indicates their level: IGNORE, INFORM, WARN, FAIL.
- *
  * This constraint is composed of:
  * - Encryption algorithm constraint;
  * - Digest algorithm constraint;
@@ -108,8 +107,10 @@ public class SignatureCryptographicConstraint extends Constraint {
 		/**
 		 * Constructor for a Pair.
 		 *
-		 * @param first  the first object in the Pair
-		 * @param second the second object in the pair
+		 * @param first
+		 *            the first object in the Pair
+		 * @param second
+		 *            the second object in the pair
 		 */
 		public Pair(String first, String second) {
 			this.first = first;
@@ -121,7 +122,8 @@ public class SignatureCryptographicConstraint extends Constraint {
 	 * This is the default constructor. It takes a level of the constraint as parameter. The string representing the level is trimmed and capitalized. If there is no corresponding
 	 * {@code Level} then the {@code Level.IGNORE} is set and a warning is logged.
 	 *
-	 * @param level the constraint level string.
+	 * @param level
+	 *            the constraint level string.
 	 */
 	public SignatureCryptographicConstraint(final String level, final String context, final String subContext) {
 
@@ -133,11 +135,12 @@ public class SignatureCryptographicConstraint extends Constraint {
 	/**
 	 * This method is not applicable in the context of this class.
 	 *
-	 * @param value the simple value of the constraint to set.
+	 * @param value
+	 *            the simple value of the constraint to set.
 	 */
 	@Override
 	public void setValue(final String value) {
-		throw new DSSNotApplicableMethodException(getClass());
+		throw new DSSException("Not supported operation : " + getClass());
 	}
 
 	public String getEncryptionAlgorithm() {
@@ -303,7 +306,7 @@ public class SignatureCryptographicConstraint extends Constraint {
 		final Pair[] pairs = new Pair[subContextPresent ? 4 : 3];
 		pairs[0] = new Pair(AttributeValue.ALGORITHM, algorithm);
 		pairs[1] = new Pair(AttributeName.CONTEXT, context);
-		pairs[2] = new Pair(AttributeValue.ALGORITHM_EXPIRATION_DATE, algorithmExpirationDate == null ? "?" : DSSUtils.formatDate(algorithmExpirationDate));
+		pairs[2] = new Pair(AttributeValue.ALGORITHM_EXPIRATION_DATE, algorithmExpirationDate == null ? "?" : DateUtils.formatDate(algorithmExpirationDate));
 		if (subContextPresent) {
 			pairs[3] = new Pair(AttributeName.SUB_CONTEXT, subContext);
 		}

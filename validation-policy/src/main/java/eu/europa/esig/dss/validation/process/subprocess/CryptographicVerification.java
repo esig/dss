@@ -96,7 +96,6 @@ public class CryptographicVerification {
 	}
 
 	private void isInitialised() {
-
 		if (constraintData == null) {
 			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}

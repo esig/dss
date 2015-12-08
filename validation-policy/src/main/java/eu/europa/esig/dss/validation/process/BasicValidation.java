@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -274,7 +274,7 @@ public class BasicValidation {
 						// TODO: to be adapted to "./Info[@Field='TimestampProductionTime']/text()"
 						final Date bestSignatureTime = adestConclusion.getTimeValue("./Info/@BestSignatureTime");
 
-						final Date expirationDate = DSSUtils.parseDate(DSSUtils.DEFAULT_DATE_FORMAT, expirationDateString);
+						final Date expirationDate = DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, expirationDateString);
 						if (expirationDate.before(bestSignatureTime)) {
 
 							ok = false;

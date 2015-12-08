@@ -79,7 +79,6 @@ public final class RuleUtils {
 			}
 			throw new DSSException("Unknown time unit: " + toUnit + ".");
 		} catch (Exception e) {
-
 			throw new DSSException("Error during the duration conversion: " + e.getMessage(), e);
 		}
 	}
@@ -113,7 +112,7 @@ public final class RuleUtils {
 	 */
 	public static boolean contains1(final String id, final List<String> idList) {
 
-		if (id != null && idList != null) {
+		if ((id != null) && (idList != null)) {
 			for (final String idFromList : idList) {
 				if (idFromList.equals(id)) {
 					return true;
@@ -124,9 +123,7 @@ public final class RuleUtils {
 	}
 
 	public static long convertToLong(final String value) {
-
 		try {
-
 			return Long.parseLong(value);
 		} catch (Exception e) {
 			throw new DSSException(e);

@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.BasicValidationProcessValidConstraint;
 import eu.europa.esig.dss.validation.policy.Constraint;
@@ -302,7 +302,7 @@ public class AdESTValidation {
 			timestampXmlNode = signatureXmlNode.addChild(NodeName.TIMESTAMP);
 			timestampXmlNode.setAttribute(AttributeName.ID, timestampId);
 			timestampXmlNode.setAttribute(AttributeName.TYPE, timestampTypeString);
-			timestampXmlNode.setAttribute(AttributeName.GENERATION_TIME, DSSUtils.formatDate(productionTime));
+			timestampXmlNode.setAttribute(AttributeName.GENERATION_TIME, DateUtils.formatDate(productionTime));
 
 			final Conclusion timestampConclusion = new Conclusion();
 
@@ -380,7 +380,7 @@ public class AdESTValidation {
 
 		// This validation process returns VALID
 		signatureConclusion.setIndication(Indication.VALID);
-		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DateUtils.formatDate(bestSignatureTime);
 		signatureConclusion.addInfo(MessageTag.EMPTY).setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 
 		return signatureConclusion;
@@ -619,7 +619,7 @@ public class AdESTValidation {
 		constraint.setIndications(Indication.INDETERMINATE, null, MessageTag.ADEST_ROTVPIIC_ANS);
 		constraint.setSubIndication1(SubIndication.NO_VALID_TIMESTAMP);
 		constraint.setSubIndication2(SubIndication.NO_TIMESTAMP);
-		final String formattedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
+		final String formattedBestSignatureTime = DateUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formattedBestSignatureTime);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -647,7 +647,7 @@ public class AdESTValidation {
 		final Date revocationDate = bvpConclusion.getTimeValue("./Error/@RevocationTime");
 		final boolean before = bestSignatureTime.before(revocationDate);
 		constraint.setValue(before);
-		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DateUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
@@ -679,10 +679,10 @@ public class AdESTValidation {
 		constraint.create(signatureXmlNode, MessageTag.TSV_IBSTAIDOSC);
 		constraint.setIndications(Indication.INVALID, SubIndication.NOT_YET_VALID, MessageTag.TSV_IBSTAIDOSC_ANS);
 		final String formatedNotBefore = bvpConclusion.getValue("./Error/@NotBefore");
-		final Date notBeforeTime = DSSUtils.parseDate(formatedNotBefore);
+		final Date notBeforeTime = DateUtils.parseDate(formatedNotBefore);
 		final boolean notBefore = !bestSignatureTime.before(notBeforeTime);
 		constraint.setValue(notBefore);
-		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DateUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		constraint.setAttribute(AttributeValue.NOT_BEFORE, formatedNotBefore);
 		// TODO: (Bob: 2014 Mar 16)
@@ -717,7 +717,7 @@ public class AdESTValidation {
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.OUT_OF_BOUNDS_NO_POE, MessageTag.TSV_ISCNVABST_ANS);
 		// false is always returned: this corresponds to: Otherwise, terminate with INDETERMINATE/OUT_OF_BOUNDS_NO_POE.
 		constraint.setValue(false);
-		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DateUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
@@ -754,7 +754,7 @@ public class AdESTValidation {
 			final String algorithmExpirationDateString = error.getAttribute("AlgorithmExpirationDate");
 			if (StringUtils.isNotBlank(algorithmExpirationDateString)) {
 
-				final Date algorithmExpirationDate = DSSUtils.parseDate(DSSUtils.DEFAULT_DATE_FORMAT, algorithmExpirationDateString);
+				final Date algorithmExpirationDate = DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, algorithmExpirationDateString);
 				if (!algorithmExpirationDate.before(bestSignatureTime)) {
 
 					ok = true;
@@ -762,7 +762,7 @@ public class AdESTValidation {
 			}
 		}
 		constraint.setValue(ok);
-		final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
+		final String formatedBestSignatureTime = DateUtils.formatDate(bestSignatureTime);
 		constraint.setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 		// TODO: (Bob: 2014 Mar 16)
 		//        final XmlDom errorXmlDom = bvpConclusion.getElement("./Error");
@@ -858,8 +858,8 @@ public class AdESTValidation {
 
 		constraint.setValue(ok);
 
-		final String formattedLatestContentTimestampProductionDate = DSSUtils.formatDate(latestContent);
-		final String formattedEarliestSignatureTimestampProductionDate = DSSUtils.formatDate(earliestSignature);
+		final String formattedLatestContentTimestampProductionDate = DateUtils.formatDate(latestContent);
+		final String formattedEarliestSignatureTimestampProductionDate = DateUtils.formatDate(earliestSignature);
 		constraint.setAttribute(AttributeValue.LATEST_CONTENT_TIMESTAMP_PRODUCTION_TIME, formattedLatestContentTimestampProductionDate);
 		constraint.setAttribute(AttributeValue.EARLIEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME, formattedEarliestSignatureTimestampProductionDate);
 
@@ -939,7 +939,7 @@ public class AdESTValidation {
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.ADEST_ISTPTDABST_ANS);
 		final Long timestampDelay = constraintData.getTimestampDelayTime();
 		final String signingTime = signatureXmlDom.getValue("./DateTime/text()");
-		final Date date = DSSUtils.quietlyParseDate(signingTime);
+		final Date date = DateUtils.quietlyParseDate(signingTime);
 		constraint.setValue((date.getTime() + timestampDelay) > bestSignatureTime.getTime());
 		constraint.setConclusionReceiver(conclusion);
 

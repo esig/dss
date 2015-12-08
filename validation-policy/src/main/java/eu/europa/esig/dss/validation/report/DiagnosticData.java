@@ -37,10 +37,6 @@ import eu.europa.esig.dss.x509.TimestampType;
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the validation policy to be applied.
  *
- *
- *
- *
- *
  */
 public class DiagnosticData extends XmlDom {
 

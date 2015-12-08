@@ -23,10 +23,6 @@ package eu.europa.esig.dss.x509;
 /**
  * Source of the timestamp
  *
- *
- *
- *
- *
  */
 public enum TimestampType {
 

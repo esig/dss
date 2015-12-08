@@ -26,7 +26,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.CertificateExpirationConstraint;
@@ -406,7 +406,7 @@ public class X509CertificateValidation {
 
 		if (revocationFreshnessToBeChecked && !revocationIssuingTimeString.isEmpty()) {
 
-			final Date revocationIssuingTime = DSSUtils.parseDate(revocationIssuingTimeString);
+			final Date revocationIssuingTime = DateUtils.parseDate(revocationIssuingTimeString);
 			final long revocationDeltaTime = currentTime.getTime() - revocationIssuingTime.getTime();
 
 			if (revocationDeltaTime <= constraintData.getMaxRevocationFreshness()) {
@@ -496,7 +496,7 @@ public class X509CertificateValidation {
 
 		final String formatedDate = xmlDom.getValue(xPathQuery + "/text()");
 		try {
-			return DSSUtils.parseDate(formatedDate);
+			return DateUtils.parseDate(formatedDate);
 		} catch (DSSException e) {
 			return null;
 		}

@@ -334,7 +334,6 @@ public class ProcessParameters {
 	 */
 	public void setCurrentTime(final Date currentTime) {
 		if (this.currentTime != null) {
-
 			throw new DSSException(ExceptionMessage.EXCEPTION_CTVSBIOO);
 		}
 		this.currentTime = currentTime;

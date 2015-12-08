@@ -26,7 +26,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -157,7 +157,7 @@ public class PastSignatureValidation {
 		}
 		if (controlTime != null) {
 
-			final String formatedControlTime = DSSUtils.formatDate(controlTime);
+			final String formatedControlTime = DateUtils.formatDate(controlTime);
 			returnedPcvIndication.setAttribute(AttributeValue.CONTROL_TIME, formatedControlTime);
 		}
 
@@ -186,7 +186,7 @@ public class PastSignatureValidation {
 
 		if (ok) {
 
-			final String formatedBestSignatureTime = DSSUtils.formatDate(bestSignatureTime);
+			final String formatedBestSignatureTime = DateUtils.formatDate(bestSignatureTime);
 			constraintNode.addChild(NodeName.INFO).setAttribute(AttributeValue.BEST_SIGNATURE_TIME, formatedBestSignatureTime);
 
 			/**
@@ -255,7 +255,7 @@ public class PastSignatureValidation {
 						poeExists = false;
 						continue;
 					}
-					final Date expirationDate = DSSUtils.parseDate(DSSUtils.DEFAULT_DATE_FORMAT, expirationDateString);
+					final Date expirationDate = DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, expirationDateString);
 					final String context = info.getValue("./@Context");
 					if (NodeName.SIGNATURE.equals(context)) {
 

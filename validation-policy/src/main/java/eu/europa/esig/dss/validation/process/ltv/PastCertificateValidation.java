@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -377,7 +377,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		}
 		constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 		final Date controlTime = ctsConclusion.getControlTime();
-		final String formatedControlTime = DSSUtils.formatDate(controlTime);
+		final String formatedControlTime = DateUtils.formatDate(controlTime);
 		constraintNode.addChild(NodeName.INFO).setAttribute(AttributeValue.CONTROL_TIME, formatedControlTime);
 		/**
 		 * 4) Apply the Chain Constraints to the chain. Certificate meta-data has to be taken into account when checking

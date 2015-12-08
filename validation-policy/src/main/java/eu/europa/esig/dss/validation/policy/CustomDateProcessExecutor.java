@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DateUtils;
 
 /**
  * This class allows to associate a specific date to the validation process.
@@ -47,7 +47,6 @@ public class CustomDateProcessExecutor extends CustomProcessExecutor {
 	 * @param day   the value used to set the DAY_OF_MONTH calendar field.
 	 */
 	public CustomDateProcessExecutor(int year, int month, int day) {
-
-		currentTime = DSSUtils.getUtcDate(year, month - 1, day);
+		currentTime = DateUtils.getUtcDate(year, month - 1, day);
 	}
 }
