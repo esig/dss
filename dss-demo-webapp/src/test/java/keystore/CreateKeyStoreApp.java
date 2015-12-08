@@ -32,7 +32,7 @@ public class CreateKeyStoreApp {
 
 		addCertificate(store, "europa1", "src/test/resources/keystore/ec.europa.eu.crt");
 		addCertificate(store, "europa2", "src/test/resources/keystore/ec.europa.eu.2.crt");
-		addCertificate(store, "europa3", "src/test/resources/keystore/ec.europa.eu.3.crt");
+		//		addCertificate(store, "europa3", "src/test/resources/keystore/ec.europa.eu.3.crt");
 		addCertificate(store, "europa4", "src/test/resources/keystore/ec.europa.eu.4.crt");
 		addCertificate(store, "europa5", "src/test/resources/keystore/ec.europa.eu.5.crt");
 		addCertificate(store, "europa6", "src/test/resources/keystore/ec.europa.eu.6.crt");
