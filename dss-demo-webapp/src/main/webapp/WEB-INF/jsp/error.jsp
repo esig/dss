@@ -3,14 +3,14 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <div class="alert alert-danger" role="alert">
-	<strong>An error occurred ! </strong> <c:out value="${exception.message}" />
+	<strong>An error occurred ! </strong> <c:out value="${exception.message}" escapeXml="true" />
 </div>
 
 <!--
-  Failed URL: ${url}
-  Exception:  ${exception.message}
+  Failed URL: <c:out value="${url}" escapeXml="true" />
+  Exception:  <c:out value="${exception.message}" escapeXml="true" />
   
   <c:forEach var="ste" items="${exception.stackTrace}">
-  	${ste} 
+  	<c:out value="${ste}" escapeXml="true" />
   </c:forEach>
 -->
