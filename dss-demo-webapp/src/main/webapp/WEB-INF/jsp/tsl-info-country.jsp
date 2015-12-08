@@ -11,7 +11,7 @@
 
 <c:choose>
 	<c:when test="${model == null}">
-		No info found for country "${country}"
+		No info found for country "<c:out value="${country}"/>"
 	
 	</c:when>
 	<c:otherwise>
@@ -46,12 +46,12 @@
 						</c:forEach>
 					</select>
 				</div>
-		        <h3 class="panel-title" style="padding-top: 7.5px;">${countryCode}</h3>
+		        <h3 class="panel-title" style="padding-top: 7.5px;"><c:out value="${countryCode}" /></h3>
 		    </div>
 		    <div class="panel-body">
 		        <dl class="dl-horizontal">
 		            <dt>Url : </dt>
-		            <dd><a href="${model.url}">${model.url}</a></dd>
+		            <dd><a href="<c:out value="${model.url}" />"><c:out value="${model.url}"/></a></dd>
 		
 		            <c:if test="${model.loadedDate !=null}">
 		                <dt>Check date : </dt>
@@ -72,17 +72,17 @@
 		                            <span class="glyphicon glyphicon-remove-sign text-danger"></span>
 		                        </c:otherwise>
 		                    </c:choose>
-		                    ${model.validationResult.indication}
+		                    <c:out value="${model.validationResult.indication}"/>
 		                </dd>
 		                <c:if test="${not empty model.validationResult.subIndication}">
 		                    <dt>Sub indication : </dt>
-		                    <dd>${model.validationResult.subIndication}</dd>
+		                    <dd><c:out value="${model.validationResult.subIndication}" /></dd>
 		                </c:if>
 		            </c:if>
 		            
 		            <c:if test="${model.parseResult !=null}">
 		                <dt>Sequence number :</dt>
-		                <dd>${model.parseResult.sequenceNumber}</dd>
+		                <dd><c:out value="${model.parseResult.sequenceNumber}"/></dd>
 		                <dt>Issue date : </dt>
 		                <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${model.parseResult.issueDate}" /></dd>
 		                <dt>Next update date : </dt>
@@ -100,15 +100,15 @@
 		                    <c:forEach var="serviceProvider" items="${model.parseResult.serviceProviders}" varStatus="sp">
 		                        <dl class="dl-horizontal">
 		                            <dt>Name :</dt>
-		                            <dd>${serviceProvider.name}</dd>
+		                            <dd><c:out value="${serviceProvider.name} "/></dd>
 		                            <c:if test="${not empty serviceProvider.tradeName}">
 		                                <dt>Trade name :</dt>
-		                                <dd>${serviceProvider.tradeName}</dd>
+		                                <dd><c:out value="${serviceProvider.tradeName} "/></dd>
 		                            </c:if>
 		                            <dt>Postal address :</dt>
-		                            <dd>${serviceProvider.postalAddress}</dd>
+		                            <dd><c:out value="${serviceProvider.postalAddress}" /></dd>
 		                            <dt>Electronic address :</dt>
-		                            <dd><a href="${serviceProvider.electronicAddress}" title="${serviceProvider.name}">${serviceProvider.electronicAddress}</a></dd>
+		                            <dd><a href="<c:out value="${serviceProvider.electronicAddress}"/>" title="<c:out value="${serviceProvider.name}"/>"><c:out value="${serviceProvider.electronicAddress}" /></a></dd>
 		                        </dl>
 		                        <c:if test="${not empty serviceProvider.services}">
 		                            <div class="panel panel-default">
@@ -120,11 +120,11 @@
 		                                    <c:forEach var="service" items="${serviceProvider.services}" varStatus="ser">
 		                                        <dl class="dl-horizontal">
 		                                            <dt>Name :</dt>
-		                                            <dd>${service.name}</dd>
+		                                            <dd><c:out value="${service.name}"/></dd>
 		                                            <dt>Status :</dt>
-		                                            <dd><a href="${service.status}">${service.status}</a></dd>
+		                                            <dd><a href="<c:out value="${service.status}" />"><c:out value="${service.status}"/></a></dd>
 		                                            <dt>Type :</dt>
-		                                            <dd><a href="${service.type}">${service.type}</a></dd>
+		                                            <dd><a href="<c:out value="${service.type}" />"><c:out value="${service.type}" /></a></dd>
 		                                            <dt>Start date :</dt>
 		                                            <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${service.startDate}" /></dd>
 		                                            <c:if test="${service.endDate !=null}">
@@ -143,11 +143,11 @@
 		                                                    <c:forEach var="token" items="${service.certificates}">
 		                                                        <dl class="dl-horizontal">
 		                                                            <dt><spring:message code="label.service" /> :</dt>
-		                                                            <dd>${token.certificate.subjectDN.name}</dd>
+		                                                            <dd><c:out value="${token.certificate.subjectDN.name}" /></dd>
 		                                                            <dt><spring:message code="label.issuer" /> :</dt>
-		                                                            <dd>${token.certificate.issuerDN.name}</dd>
+		                                                            <dd><c:out value="${token.certificate.issuerDN.name}" /></dd>
 		                                                            <dt>Serial number</dt>
-		                                                            <dd>${token.serialNumber}</dd>
+		                                                            <dd><c:out value="${token.serialNumber}" /></dd>
 		                                                            <dt><spring:message code="label.validity_start" /></dt>
 		                                                            <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${token.certificate.notBefore}" /></dd>
 		                                                            <dt><spring:message code="label.validity_end" /></dt>
@@ -168,7 +168,7 @@
 		                                                    <c:forEach var="x500" items="${service.x500Principals}">
 		                                                        <dl class="dl-horizontal">
 		                                                            <dt><spring:message code="label.service" /> :</dt>
-		                                                            <dd>${x500.name}</dd>
+		                                                            <dd><c:out value="${x500.name}" /></dd>
 		                                                        </dl>
 		                                                    </c:forEach>
 		                                                </div>
@@ -192,7 +192,7 @@
 		                <div class="panel-body">
 		                    <ul>
 		                        <c:forEach var="item" items="${model.parseResult.pointers}">
-		                            <li><a href="${item.url}">${item.url}</a></li>
+		                            <li><a href="<c:out value="${item.url}" />"><c:out value="${item.url}" /></a></li>
 		                        </c:forEach>
 		                    </ul>
 		                </div>

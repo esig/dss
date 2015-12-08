@@ -3,12 +3,12 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" data-target="#block-${param.id}">
+    <div class="panel-heading" data-toggle="collapse" data-target="#block-<c:out value="${param.id}" />">
         <h3 class="panel-title">
-            ${param.title}
+            <c:out value="${param.title}" />
         </h3>
     </div>
-    <div class="panel-body collapse in" id="block-${param.id}">
+    <div class="panel-body collapse in" id="block-<c:out value="${param.id}" />">
 
         <c:if test="${param.id != 'content-timestamp'}">
             <c:set var="currentTimeConstraint" value="${timestamp.timestampDelay}" scope="request" />
