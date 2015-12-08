@@ -2,7 +2,6 @@ package eu.europa.esig.dss.web.controller;
 
 import java.io.ByteArrayInputStream;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -37,7 +35,6 @@ import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
-import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.DataToSignParams;
@@ -53,15 +50,15 @@ import eu.europa.esig.dss.web.service.SigningService;
 })
 @RequestMapping(value = "/nexu")
 public class NexuController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(NexuController.class);
-	
+
 	private static final String SIGNATURE_PARAMETERS = "nexu-signature-parameters";
 	private static final String SIGNATURE_PROCESS = "nexu-signature-process";
-	
+
 	@Autowired
 	private SigningService signingService;
-	
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(SignatureForm.class, new EnumPropertyEditor(SignatureForm.class));
@@ -78,9 +75,9 @@ public class NexuController {
 		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
 		return SIGNATURE_PARAMETERS;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
-	public String sendSignatureParameters(Model model, HttpServletRequest response, 
+	public String sendSignatureParameters(Model model, HttpServletRequest response,
 			@ModelAttribute("signatureDocumentForm") @Valid NexuSignatureDocumentForm signatureDocumentForm, BindingResult result) {
 		if(result.hasErrors()) {
 			for(ObjectError error : result.getAllErrors()) {
@@ -91,7 +88,7 @@ public class NexuController {
 		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
 		return SIGNATURE_PROCESS;
 	}
-	
+
 	@RequestMapping(value = "/get-data-to-sign", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public GetDataToSignResponse getDataToSign(Model model, @RequestBody @Valid DataToSignParams params, @ModelAttribute("signatureDocumentForm") @Valid NexuSignatureDocumentForm signatureDocumentForm, BindingResult result) {
@@ -107,7 +104,7 @@ public class NexuController {
 		responseJson.setDataToSign(DatatypeConverter.printBase64Binary(dataToSign.getBytes()));
 		return responseJson;
 	}
-	
+
 	@RequestMapping(value = "/sign-document", method = RequestMethod.POST)
 	@ResponseBody
 	public SignDocumentResponse signDocument(Model model, @RequestBody @Valid SignatureValueAsString signatureValue,
@@ -123,7 +120,7 @@ public class NexuController {
 		signedDocumentResponse.setUrlToDownload("download");
 		return signedDocumentResponse;
 	}
-	
+
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
 	public String downloadSignedFile(@ModelAttribute("signedDocument") InMemoryDocument signedDocument, HttpServletResponse response) {
 		try {
@@ -131,7 +128,7 @@ public class NexuController {
 			String extension = null;
 			if (mimeType != null) {
 				response.setContentType(mimeType.getMimeTypeString());
-				extension = mimeType.getExtension();
+				extension = MimeType.getExtension(mimeType);
 			}
 			response.setHeader("Content-Transfer-Encoding", "binary");
 			response.setHeader("Content-Disposition", "attachment; filename=" + signedDocument.getName() + (extension != null ? "." + extension : ""));
@@ -143,7 +140,7 @@ public class NexuController {
 
 		return null;
 	}
-	
+
 	@ModelAttribute("signatureForms")
 	public SignatureForm[] getSignatureForms() {
 		return SignatureForm.values();
