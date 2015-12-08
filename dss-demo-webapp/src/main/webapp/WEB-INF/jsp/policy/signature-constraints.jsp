@@ -3,12 +3,12 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" data-target="#block-${param.id}">
+    <div class="panel-heading" data-toggle="collapse" data-target="#block-<c:out value="${param.id}" />">
         <h3 class="panel-title">
-            ${param.title}
+            <c:out value="${param.title}" />
         </h3>
     </div>
-    <div class="panel-body collapse in" id="block-${param.id}">
+    <div class="panel-body collapse in" id="block-<c:out value="${param.id}" />">
 
         <c:if test="${param.id != 'countersignature'}">
             <spring:message code="label.policy.structuralValidation" var="translation" />
@@ -22,7 +22,7 @@
                 <label class="col-sm-5 control-label"><spring:message code="label.policy.acceptablePolicies" /></label>
 
                 <div class="col-sm-7" style="margin-bottom: 15px;">
-                    <select class="form-control" name="${param.pathToBindPrefix}.AcceptablePolicies.Level">
+                    <select class="form-control" name="<c:out value="${param.pathToBindPrefix}" />.AcceptablePolicies.Level">
                         <option></option>
                         <option <c:if test="${signature.acceptablePolicies.level == 'FAIL'}"> selected="selected"</c:if>>FAIL</option>
                         <option <c:if test="${signature.acceptablePolicies.level == 'WARN'}"> selected="selected"</c:if>>WARN</option>
@@ -39,7 +39,7 @@
                                 <c:set var="checked" value="true" />
                             </c:if>
                         </c:forEach>
-                        <input type="checkbox" name="${param.pathToBindPrefix}.AcceptablePolicies.Id[${loop.index}]" value="${supportedPolicy}" <c:if test="${checked == true}"> checked="checked"</c:if> /> ${supportedPolicy}<br />
+                        <input type="checkbox" name="<c:out value="${param.pathToBindPrefix} "/>.AcceptablePolicies.Id[${loop.index}]" value="<c:out value="${supportedPolicy}" />" <c:if test="${checked == true}"> checked="checked"</c:if> /> <c:out value="${supportedPolicy} "/><br />
                     </c:forEach>
                 </div>
             </div>
@@ -89,8 +89,6 @@
             <c:set var="unsignedAttributes" value="${signature.mandatedUnsignedQProperties}" scope="request" />
             <jsp:include page="unsigned-attributes-constraints.jsp" />
             
-<%--             <c:set var="cryptographic" value="${signature.cryptographic}" scope="request" /> --%>
-<%--             <jsp:include page="cryptographic-constraints.jsp" /> --%>
         </c:if>
     </div>
 </div>

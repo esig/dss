@@ -7,7 +7,7 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <span class="badge pull-right">${fn:length(keystoreCertificates)} Cert(s)</span>
+        <span class="badge pull-right"><c:out value="${fn:length(keystoreCertificates)}" /> Cert(s)</span>
         <h3 class="panel-title">
             <spring:message code="label.trusted.certificates.from.OJ" />
         </h3>
@@ -16,29 +16,29 @@
         <c:if test="${keystoreCertificates !=null}">
             <c:forEach var="certificateDTO" items="${keystoreCertificates}">
                 <form method="post">
-                    <input type="hidden" name="dssId" value="${certificateDTO.dssId}" />
+                    <input type="hidden" name="dssId" value="<c:out value="${certificateDTO.dssId}" />" />
                     <button type="submit" class="btn btn-default pull-right" aria-label="Left Align" name="delete">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                     </button>
                 </form>
                 <dl class="dl-horizontal">
                     <dt><spring:message code="label.service" /></dt>
-                    <dd>${certificateDTO.subjetName}</dd>
+                    <dd><c:out value="${certificateDTO.subjetName}" /></dd>
                     <dt><spring:message code="label.issuer" /></dt>
-                    <dd>${certificateDTO.issuerName}</dd>
+                    <dd><c:out value="${certificateDTO.issuerName}" /></dd>
                     <dt><spring:message code="label.validity_start" /></dt>
                     <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${certificateDTO.notBefore}" /></dd>
                     <dt><spring:message code="label.validity_end" /></dt>
                     <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${certificateDTO.notAfter}" /></dd>
 
                     <dt>SHA-256 (Hex)</dt>
-                    <dd>${certificateDTO.sha256Hex}</dd>
+                    <dd><c:out value="${certificateDTO.sha256Hex}" /></dd>
                     <dt>SHA-1 (Hex)</dt>
-                    <dd>${certificateDTO.sha1Hex}</dd>
+                    <dd><c:out value="${certificateDTO.sha1Hex}" /></dd>
                     <dt>SHA-256 (Base64)</dt>
-                    <dd>${certificateDTO.sha256Base64}</dd>
+                    <dd><c:out value="${certificateDTO.sha256Base64}" /></dd>
                     <dt>SHA-1 (Base64)</dt>
-                    <dd>${certificateDTO.sha1Base64}</dd>
+                    <dd><c:out value="${certificateDTO.sha1Base64} "/></dd>
                 </dl>
             </c:forEach>
         </c:if>
@@ -79,9 +79,9 @@
                 <dl class="dl-horizontal">
                 
                     <dt><spring:message code="label.service" /></dt>
-                    <dd>${certificateDTO.subjetName}</dd>
+                    <dd><c:out value="${certificateDTO.subjetName}" /></dd>
                     <dt><spring:message code="label.issuer" /></dt>
-                    <dd>${certificateDTO.issuerName}</dd>
+                    <dd><c:out value="${certificateDTO.issuerName}" /></dd>
                     
                     <dt><spring:message code="label.validity_start" /></dt>
                     <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${certificateDTO.notBefore}" /></dd>
@@ -89,13 +89,13 @@
                     <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${certificateDTO.notAfter}" /></dd>
                     
                     <dt>SHA-256 (Hex)</dt>
-                    <dd>${certificateDTO.sha256Hex}</dd>
+                    <dd><c:out value="${certificateDTO.sha256Hex}" /></dd>
                     <dt>SHA-1 (Hex)</dt>
-                    <dd>${certificateDTO.sha1Hex}</dd>
+                    <dd><c:out value="${certificateDTO.sha1Hex}" /></dd>
                     <dt>SHA-256 (Base64)</dt>
-                    <dd>${certificateDTO.sha256Base64}</dd>
+                    <dd><c:out value="${certificateDTO.sha256Base64}" /></dd>
                     <dt>SHA-1 (Base64)</dt>
-                    <dd>${certificateDTO.sha1Base64}</dd>
+                    <dd><c:out value="${certificateDTO.sha1Base64}" /></dd>
                 </dl>
             
             </c:if>

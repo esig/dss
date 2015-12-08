@@ -14,7 +14,7 @@
         <c:forEach items="${preferences}" var="preference">
             <tr>
                 <td><a href="<spring:url value="/admin/general/edit?key=${preference.key}"/>"><spring:message code="${preference.key}" /></a></td>
-                <td><a href="<spring:url value="/admin/general/edit?key=${preference.key}"/>">${preference.value}</a></td>
+                <td><a href="<spring:url value="/admin/general/edit?key=${preference.key}"/>"><c:out value="${preference.value}" /></a></td>
             </tr>
         </c:forEach>
     </tbody>
