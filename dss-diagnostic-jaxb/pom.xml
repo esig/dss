@@ -10,6 +10,13 @@
 	<artifactId>dss-diagnostic-jaxb</artifactId>
 	<name>JAXB Diagnostic Data Model</name>
 	<description>Generated source from XSD for Diagnostic Data.</description>
+	
+	<dependencies>
+		<dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-api</artifactId>
+		</dependency>
+	</dependencies>
 
 	<profiles>
 		<profile>

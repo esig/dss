@@ -5,5 +5,23 @@
 // Generated on: 2015.12.09 at 02:54:39 PM CET 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://dss.esig.europa.eu/validation/diagnostic", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+
 package eu.europa.esig.dss.jaxb.diagnostic;
+
+import java.util.Date;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+public class Adapter1
+    extends XmlAdapter<String, Date>
+{
+
+
+    public Date unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.DateAdapter.parse(value));
+    }
+
+    public String marshal(Date value) {
+        return (eu.europa.esig.dss.jaxb.DateAdapter.print(value));
+    }
+
+}
