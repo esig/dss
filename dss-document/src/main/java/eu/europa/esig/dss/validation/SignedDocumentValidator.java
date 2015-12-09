@@ -55,7 +55,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSPKUtils;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.OID;
@@ -274,7 +273,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		this.certificateVerifier = certificateVerifier;
 		validationCertPool = certificateVerifier.createValidationPool();
-		
+
 		//If ASiC, the certificateVerifier must be given to the subordinate validator
 		DocumentValidator subordinateValidator = getSubordinatedValidator();
 		while(subordinateValidator != null) {
@@ -683,7 +682,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlTimestampToken.setId(timestampToken.getDSSId().asXmlId());
 		final TimestampType timestampType = timestampToken.getTimeStampType();
 		xmlTimestampToken.setType(timestampType.name());
-		xmlTimestampToken.setProductionTime(DSSXMLUtils.createXMLGregorianCalendar(timestampToken.getGenerationTime()));
+		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
 
 		xmlTimestampToken.setSignedDataDigestAlgo(timestampToken.getSignedDataDigestAlgo().getName());
 		xmlTimestampToken.setEncodedSignedDataDigestValue(timestampToken.getEncodedSignedDataDigestValue());
@@ -899,8 +898,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (issuerTokenDSSId != null) {
 			xmlCert.setIssuerCertificate(issuerTokenDSSId.asXmlId());
 		}
-		xmlCert.setNotAfter(DSSXMLUtils.createXMLGregorianCalendar(certToken.getNotAfter()));
-		xmlCert.setNotBefore(DSSXMLUtils.createXMLGregorianCalendar(certToken.getNotBefore()));
+		xmlCert.setNotAfter(certToken.getNotAfter());
+		xmlCert.setNotBefore(certToken.getNotBefore());
 		final PublicKey publicKey = certToken.getPublicKey();
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
 		xmlCert.setPublicKeyEncryptionAlgo(DSSPKUtils.getPublicKeyEncryptionAlgo(publicKey));
@@ -1018,9 +1017,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			final Date statusStartDate = serviceInfo.getStatusStartDate();
 			xmlTSP.setStatus(serviceInfo.getStatus());
-			xmlTSP.setStartDate(DSSXMLUtils.createXMLGregorianCalendar(statusStartDate));
-			xmlTSP.setEndDate(DSSXMLUtils.createXMLGregorianCalendar(serviceInfo.getStatusEndDate()));
-			xmlTSP.setExpiredCertsRevocationInfo(DSSXMLUtils.createXMLGregorianCalendar(serviceInfo.getExpiredCertsRevocationInfo()));
+			xmlTSP.setStartDate(statusStartDate);
+			xmlTSP.setEndDate(serviceInfo.getStatusEndDate());
+			xmlTSP.setExpiredCertsRevocationInfo(serviceInfo.getExpiredCertsRevocationInfo());
 
 			// Check of the associated conditions to identify the qualifiers
 			final List<String> qualifiers = getQualifiers(serviceInfo, certToken);
@@ -1077,10 +1076,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final Boolean revocationTokenStatus = revocationToken.getStatus();
 			// revocationTokenStatus can be null when OCSP return Unknown. In this case we set status to false.
 			xmlRevocation.setStatus(revocationTokenStatus == null ? false : revocationTokenStatus);
-			xmlRevocation.setDateTime(DSSXMLUtils.createXMLGregorianCalendar(revocationToken.getRevocationDate()));
+			xmlRevocation.setDateTime(revocationToken.getRevocationDate());
 			xmlRevocation.setReason(revocationToken.getReason());
-			xmlRevocation.setIssuingTime(DSSXMLUtils.createXMLGregorianCalendar(revocationToken.getIssuingTime()));
-			xmlRevocation.setNextUpdate(DSSXMLUtils.createXMLGregorianCalendar(revocationToken.getNextUpdate()));
+			xmlRevocation.setIssuingTime(revocationToken.getIssuingTime());
+			xmlRevocation.setNextUpdate(revocationToken.getNextUpdate());
 			xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
 			xmlRevocation.setSourceAddress(revocationToken.getSourceURL());
 
@@ -1315,7 +1314,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		performStructuralValidation(signature, xmlSignature);
 		performSignatureCryptographicValidation(signature, xmlSignature);
 		xmlSignature.setId(signature.getId());
-		xmlSignature.setDateTime(DSSXMLUtils.createXMLGregorianCalendar(signature.getSigningTime()));
+		xmlSignature.setDateTime(signature.getSigningTime());
 		final SignatureLevel dataFoundUpToLevel = signature.getDataFoundUpToLevel();
 		final String value = dataFoundUpToLevel == null ? "UNKNOWN" : dataFoundUpToLevel.name();
 		xmlSignature.setSignatureFormat(value);
@@ -1404,8 +1403,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				final XmlCertifiedRolesType xmlCertifiedRolesType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlCertifiedRolesType();
 
 				xmlCertifiedRolesType.setCertifiedRole(certifiedRole.getRole());
-				xmlCertifiedRolesType.setNotBefore(DSSXMLUtils.createXMLGregorianCalendar(certifiedRole.getNotBefore()));
-				xmlCertifiedRolesType.setNotAfter(DSSXMLUtils.createXMLGregorianCalendar(certifiedRole.getNotAfter()));
+				xmlCertifiedRolesType.setNotBefore(certifiedRole.getNotBefore());
+				xmlCertifiedRolesType.setNotAfter(certifiedRole.getNotAfter());
 				xmlSignature.getCertifiedRoles().add(xmlCertifiedRolesType);
 			}
 		}
