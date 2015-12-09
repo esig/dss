@@ -101,20 +101,23 @@
 	</xs:complexType>
 	
 	<xs:complexType name="CryptographicConstraint">
-		<xs:sequence>
-			<xs:element name="AcceptableEncryptionAlgo" type="tns:ListAlgo" minOccurs="0" />
-			<xs:element name="MiniPublicKeySize" type="tns:ListAlgo" minOccurs="0" />
-			<xs:element name="AcceptableDigestAlgo" type="tns:ListAlgo" minOccurs="0" />
-			<xs:element name="AlgoExpirationDate" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-					<xs:attribute name="Format" type="xs:string" />
-				</xs:complexType>
-			</xs:element>
-		</xs:sequence>
-		<xs:attribute type="tns:level" name="Level"/>
+  		<xs:complexContent>
+			<xs:extension base="tns:LevelConstraint">
+				<xs:sequence>
+					<xs:element name="AcceptableEncryptionAlgo" type="tns:ListAlgo" minOccurs="0" />
+					<xs:element name="MiniPublicKeySize" type="tns:ListAlgo" minOccurs="0" />
+					<xs:element name="AcceptableDigestAlgo" type="tns:ListAlgo" minOccurs="0" />
+					<xs:element name="AlgoExpirationDate" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+							<xs:attribute name="Format" type="xs:string" />
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="ListAlgo">
@@ -137,10 +140,13 @@
 	</xs:complexType>
 
 	<xs:complexType name="MultiValuesConstraint">
-		<xs:sequence>
-			<xs:element type="xs:string" name="Id" maxOccurs="unbounded" minOccurs="0" />
-		</xs:sequence>
-		<xs:attribute type="tns:level" name="Level" />
+  		<xs:complexContent>
+			<xs:extension base="tns:LevelConstraint">
+				<xs:sequence>
+					<xs:element type="xs:string" name="Id" maxOccurs="unbounded" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="TimeConstraint">
