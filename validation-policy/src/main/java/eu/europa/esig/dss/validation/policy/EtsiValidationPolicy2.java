@@ -34,6 +34,7 @@ import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
@@ -636,12 +637,10 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 
 	@Override
 	public LevelConstraint getTimestampDelaySigningTimePropertyConstraint() {
-
 		final Long timestampDelay = getTimestampDelayTime();
 		if ((timestampDelay != null) && (timestampDelay > 0)) {
-
-			final Constraint constraint = new Constraint("FAIL");
-			constraint.setExpectedValue(TRUE);
+			LevelConstraint constraint = new LevelConstraint();
+			constraint.setLevel(Level.FAIL);
 			return constraint;
 		}
 		return null;

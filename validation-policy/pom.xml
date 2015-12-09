@@ -16,6 +16,10 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
   			<artifactId>dss-policy-jaxb</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+  			<artifactId>dss-diagnostic-jaxb</artifactId>
+		</dependency>
 
 		<dependency>
 		  <groupId>org.slf4j</groupId>
