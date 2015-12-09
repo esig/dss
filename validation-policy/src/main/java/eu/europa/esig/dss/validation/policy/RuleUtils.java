@@ -183,4 +183,11 @@ public final class RuleUtils {
 		}
 		return found;
 	}
+
+	public static Long convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, String value) {
+		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
+		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
+		return to.convert(convertToLong(value), from);
+	}
+
 }
