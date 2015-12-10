@@ -23,22 +23,24 @@ package eu.europa.esig.dss.validation.report;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.TSLConstant;
-import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
@@ -53,7 +55,7 @@ import eu.europa.esig.dss.x509.TimestampType;
  */
 public class DiagnosticDataWrapper {
 
-	private DiagnosticData diagnosticData;
+	private final DiagnosticData diagnosticData;
 
 	public DiagnosticDataWrapper(final DiagnosticData diagnosticData) {
 		this.diagnosticData = diagnosticData;
@@ -120,9 +122,8 @@ public class DiagnosticDataWrapper {
 	 * @return The {@code DigestAlgorithm} of the first signature
 	 */
 	public DigestAlgorithm getSignatureDigestAlgorithm() {
-		final String signatureDigestAlgorithmName = getValue("/DiagnosticData/Signature[1]/BasicSignature/DigestAlgoUsedToSignThisToken/text()");
-		final DigestAlgorithm signatureDigestAlgorithm = DigestAlgorithm.forName(signatureDigestAlgorithmName, null);
-		return signatureDigestAlgorithm;
+		XmlSignature xmlSignature = getFirstSignatureNullSafe();
+		return getDigestAlgorithm(xmlSignature);
 	}
 
 	/**
@@ -134,11 +135,15 @@ public class DiagnosticDataWrapper {
 	 */
 	public DigestAlgorithm getSignatureDigestAlgorithm(final String signatureId) {
 		XmlSignature xmlSignature = getSignatureByIdNullSafe(signatureId);
+		return getDigestAlgorithm(xmlSignature);
+	}
 
-		xmlSignature.getBasicSignature().getDigestAlgoUsedToSignThisToken()
-		final String signatureDigestAlgorithmName = getValue("/DiagnosticData/Signature[@Id='%s']/BasicSignature/DigestAlgoUsedToSignThisToken/text()", signatureId);
-		final DigestAlgorithm signatureDigestAlgorithm = DigestAlgorithm.forName(signatureDigestAlgorithmName);
-		return signatureDigestAlgorithm;
+	private DigestAlgorithm getDigestAlgorithm(XmlSignature xmlSignature) {
+		String signatureDigestAlgorithmName = StringUtils.EMPTY;
+		if (xmlSignature.getBasicSignature() != null) {
+			signatureDigestAlgorithmName = xmlSignature.getBasicSignature().getDigestAlgoUsedToSignThisToken();
+		}
+		return DigestAlgorithm.forName(signatureDigestAlgorithmName, null);
 	}
 
 	/**
@@ -147,10 +152,8 @@ public class DiagnosticDataWrapper {
 	 * @return The {@code EncryptionAlgorithm} of the first signature
 	 */
 	public EncryptionAlgorithm getSignatureEncryptionAlgorithm() {
-
-		final String signatureEncryptionAlgorithmName = getValue("/DiagnosticData/Signature[1]/BasicSignature/EncryptionAlgoUsedToSignThisToken/text()");
-		final EncryptionAlgorithm signatureEncryptionAlgorithm = EncryptionAlgorithm.forName(signatureEncryptionAlgorithmName, null);
-		return signatureEncryptionAlgorithm;
+		XmlSignature xmlSignature = getFirstSignatureNullSafe();
+		return getEncryptionAlgorithm(xmlSignature);
 	}
 
 	/**
@@ -161,10 +164,16 @@ public class DiagnosticDataWrapper {
 	 * @return The {@code DigestAlgorithm} for the given signature
 	 */
 	public EncryptionAlgorithm getSignatureEncryptionAlgorithm(final String signatureId) {
+		XmlSignature xmlSignature = getSignatureByIdNullSafe(signatureId);
+		return getEncryptionAlgorithm(xmlSignature);
+	}
 
-		final String signatureEncryptionAlgorithmName = getValue("/DiagnosticData/Signature[@Id='%s']/BasicSignature/EncryptionAlgoUsedToSignThisToken/text()", signatureId);
-		final EncryptionAlgorithm signatureEncryptionAlgorithm = EncryptionAlgorithm.forName(signatureEncryptionAlgorithmName);
-		return signatureEncryptionAlgorithm;
+	private EncryptionAlgorithm getEncryptionAlgorithm(XmlSignature xmlSignature) {
+		String signatureEncryptionAlgorithmName = StringUtils.EMPTY;
+		if (xmlSignature.getBasicSignature() != null) {
+			signatureEncryptionAlgorithmName = xmlSignature.getBasicSignature().getEncryptionAlgoUsedToSignThisToken();
+		}
+		return EncryptionAlgorithm.forName(signatureEncryptionAlgorithmName, null);
 	}
 
 	/**
@@ -233,9 +242,8 @@ public class DiagnosticDataWrapper {
 	}
 
 	public String getPolicyId() {
-
-		final String policyId = getValue("/DiagnosticData/Signature[1]/Policy/Id/text()");
-		return policyId;
+		XmlSignature xmlSignature = getFirstSignatureNullSafe();
+		return getPolicyId(xmlSignature);
 	}
 
 	/**
@@ -246,9 +254,16 @@ public class DiagnosticDataWrapper {
 	 * @return the policy identifier
 	 */
 	public String getPolicyId(final String signatureId) {
+		XmlSignature xmlSignature = getSignatureByIdNullSafe(signatureId);
+		return getPolicyId(xmlSignature);
+	}
 
-		final String policyId = getValue("/DiagnosticData/Signature[@Id='%s']/Policy/Id/text()", signatureId);
-		return policyId;
+	private String getPolicyId(XmlSignature xmlSignature) {
+		XmlPolicy policy = xmlSignature.getPolicy();
+		if (policy != null) {
+			return policy.getId();
+		}
+		return StringUtils.EMPTY;
 	}
 
 	/**
@@ -607,11 +622,11 @@ public class DiagnosticDataWrapper {
 	 * @return true if QCWithSSCD qualification is present
 	 */
 	public boolean hasCertificateQCWithSSCDQualification(final String dssCertificateId) {
-
-		final String condition = "contains('" + TSLConstant.QC_WITH_SSCD + "', '" + TSLConstant.QC_WITH_SSCD_119612 + "')";
-		final String qualification = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier[" + condition + "]/text()",
-				dssCertificateId);
-		return !qualification.isEmpty();
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		List<String> expectedQualifications = new ArrayList<String>();
+		expectedQualifications.add(TSLConstant.QC_WITH_SSCD);
+		expectedQualifications.add(TSLConstant.QC_WITH_SSCD_119612);
+		return hasQualification(xmlCertificate, expectedQualifications);
 	}
 
 	/**
@@ -622,11 +637,11 @@ public class DiagnosticDataWrapper {
 	 * @return true if QCNoSSCD qualification is present
 	 */
 	public boolean hasCertificateQCNoSSCDQualification(final String dssCertificateId) {
-
-		final String condition = "contains('" + TSLConstant.QC_NO_SSCD + "', '" + TSLConstant.QC_NO_SSCD_119612 + "')";
-		final String qualification = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier[" + condition + "]/text()",
-				dssCertificateId);
-		return !qualification.isEmpty();
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		List<String> expectedQualifications = new ArrayList<String>();
+		expectedQualifications.add(TSLConstant.QC_NO_SSCD);
+		expectedQualifications.add(TSLConstant.QC_NO_SSCD_119612);
+		return hasQualification(xmlCertificate, expectedQualifications);
 	}
 
 	/**
@@ -637,11 +652,11 @@ public class DiagnosticDataWrapper {
 	 * @return true if QCSSCDStatusAsInCert qualification is present
 	 */
 	public boolean hasCertificateQCSSCDStatusAsInCertQualification(final String dssCertificateId) {
-
-		final String condition = "contains('" + TSLConstant.QCSSCD_STATUS_AS_IN_CERT + "', '" + TSLConstant.QCSSCD_STATUS_AS_IN_CERT_119612 + "')";
-		final String qualification = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier[" + condition + "]/text()",
-				dssCertificateId);
-		return !qualification.isEmpty();
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		List<String> expectedQualifications = new ArrayList<String>();
+		expectedQualifications.add(TSLConstant.QCSSCD_STATUS_AS_IN_CERT);
+		expectedQualifications.add(TSLConstant.QCSSCD_STATUS_AS_IN_CERT_119612);
+		return hasQualification(xmlCertificate, expectedQualifications);
 	}
 
 	/**
@@ -652,11 +667,28 @@ public class DiagnosticDataWrapper {
 	 * @return true if QCForLegalPerson qualification is present
 	 */
 	public boolean hasCertificateQCForLegalPersonQualification(final String dssCertificateId) {
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		List<String> expectedQualifications = new ArrayList<String>();
+		expectedQualifications.add(TSLConstant.QC_FOR_LEGAL_PERSON);
+		expectedQualifications.add(TSLConstant.QC_FOR_LEGAL_PERSON_119612);
+		return hasQualification(xmlCertificate, expectedQualifications);
+	}
 
-		final String condition = "contains('" + TSLConstant.QC_FOR_LEGAL_PERSON + "', '" + TSLConstant.QC_FOR_LEGAL_PERSON_119612 + "')";
-		final String qualification = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier[" + condition + "]/text()",
-				dssCertificateId);
-		return !qualification.isEmpty();
+	private boolean hasQualification(XmlCertificate xmlCertificate, List<String> expectedQualifications) {
+		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
+		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+			for (XmlTrustedServiceProviderType xmlTrustedServiceProvider : trustedServiceProviders) {
+				XmlQualifiers qualifiers = xmlTrustedServiceProvider.getQualifiers();
+				if ((qualifiers != null) && CollectionUtils.isNotEmpty(qualifiers.getQualifier())) {
+					for (String qualifier : qualifiers.getQualifier()) {
+						if (expectedQualifications.contains(qualifier)) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -667,33 +699,53 @@ public class DiagnosticDataWrapper {
 	 * @return TSPServiceName
 	 */
 	public String getCertificateTSPServiceName(final String dssCertificateId) {
-
-		final String tspServiceName = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/TSPServiceName/text()", dssCertificateId);
-		return tspServiceName;
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
+		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+				return trustedServiceProvider.getTSPServiceName(); // TODO correct ?? return first one
+			}
+		}
+		return StringUtils.EMPTY;
 	}
 
 	public String getCertificateTSPServiceStatus(final String dssCertificateId) {
-
-		final String TSPServiceStatus = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Status/text()", dssCertificateId);
-		return TSPServiceStatus;
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
+		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+				return trustedServiceProvider.getStatus(); // TODO correct ?? return first one
+			}
+		}
+		return StringUtils.EMPTY;
 	}
 
-	public String getCertificateTSPServiceStartDate(final String dssCertificateId) {
-
-		final String TSPServiceStartDate = getValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/StartDate/text()", dssCertificateId);
-		return TSPServiceStartDate;
+	public Date getCertificateTSPServiceStartDate(final String dssCertificateId) {
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
+		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+				return trustedServiceProvider.getStartDate(); // TODO correct ?? return first one
+			}
+		}
+		return null;
 	}
 
 	public List<String> getCertificateTSPServiceQualifiers(final String dssCertificateId) {
-
-		List<String> tspServiceQualifiers = new ArrayList<String>();
-		final List<XmlDom> TSPServiceQualifiers = getElements("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/Qualifiers/Qualifier",
-				dssCertificateId);
-
-		for (XmlDom tspServiceQualifier : TSPServiceQualifiers) {
-			tspServiceQualifiers.add(tspServiceQualifier.getText());
+		Set<String> result = new HashSet<String>();
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
+		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+			for (XmlTrustedServiceProviderType xmlTrustedServiceProvider : trustedServiceProviders) {
+				XmlQualifiers qualifiers = xmlTrustedServiceProvider.getQualifiers();
+				if ((qualifiers != null) && CollectionUtils.isNotEmpty(qualifiers.getQualifier())) {
+					for (String qualifier : qualifiers.getQualifier()) {
+						result.add(qualifier);
+					}
+				}
+			}
 		}
-		return tspServiceQualifiers;
+		return new ArrayList<String>(result);
 	}
 
 	/**
@@ -770,21 +822,6 @@ public class DiagnosticDataWrapper {
 	public String getErrorMessage(final String signatureId) {
 		XmlSignature xmlSignature = getSignatureByIdNullSafe(signatureId);
 		return xmlSignature.getErrorMessage();
-	}
-
-	public List<String> getTrueQCStatements() {
-
-		List<String> trueQcStatements = new ArrayList<String>();
-		final List<XmlDom> qcStatements = getElements("/DiagnosticData/UsedCertificates/Certificate/QCStatement");
-		for (XmlDom qcStatement : qcStatements) {
-			NodeList qcNodes = qcStatement.getRootElement().getChildNodes();
-			for (int i = 0; i < qcNodes.getLength(); ++i) {
-				if (qcNodes.item(i).getTextContent().toLowerCase().equals("true")) {
-					trueQcStatements.add(qcNodes.item(i).getNodeName());
-				}
-			}
-		}
-		return trueQcStatements;
 	}
 
 	private XmlSignature getFirstSignatureNullSafe() {
