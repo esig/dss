@@ -327,7 +327,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			final InputStream inputStream = mimeType.openStream();
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			IOUtils.copy(inputStream, byteArrayOutputStream);
-			final String mimeTypeString = byteArrayOutputStream.toString("UTF-8");
+			final String mimeTypeString = StringUtils.trim(byteArrayOutputStream.toString("UTF-8"));
 			final MimeType asicMimeType = MimeType.fromMimeTypeString(mimeTypeString);
 			return asicMimeType;
 		} catch(IOException e) {
