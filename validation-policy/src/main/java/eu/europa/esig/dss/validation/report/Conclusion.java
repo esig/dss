@@ -36,6 +36,7 @@ import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
  * This class represents the conclusion (result) of the process, with at least the Indication, SubIndication (if any)...
@@ -45,8 +46,8 @@ import eu.europa.esig.dss.validation.policy.rules.NodeName;
  */
 public class Conclusion {
 
-	private String indication;
-	private String subIndication;
+	private Indication indication;
+	private SubIndication subIndication;
 
 	private XmlNode validationData;
 
@@ -323,7 +324,7 @@ public class Conclusion {
 	/**
 	 * @return the indication returned by the validation process.
 	 */
-	public String getIndication() {
+	public Indication getIndication() {
 		return indication;
 	}
 
@@ -332,7 +333,7 @@ public class Conclusion {
 	 *
 	 * @param indication to set
 	 */
-	public void setIndication(final String indication) {
+	public void setIndication(final Indication indication) {
 		this.indication = indication;
 	}
 
@@ -340,7 +341,7 @@ public class Conclusion {
 	 * @param indication    the indication to set
 	 * @param subIndication the sub-indication to set
 	 */
-	public void setIndication(final String indication, final String subIndication) {
+	public void setIndication(final Indication indication, final SubIndication subIndication) {
 		this.indication = indication;
 		this.subIndication = subIndication;
 	}
@@ -348,14 +349,14 @@ public class Conclusion {
 	/**
 	 * @return the sub-indication returned by the validation process
 	 */
-	public String getSubIndication() {
+	public SubIndication getSubIndication() {
 		return subIndication;
 	}
 
 	/**
 	 * @param subIndication the sub-indication to set
 	 */
-	public void setSubIndication(final String subIndication) {
+	public void setSubIndication(final SubIndication subIndication) {
 		this.subIndication = subIndication;
 	}
 
@@ -742,10 +743,9 @@ public class Conclusion {
 	public XmlNode toXmlNode() {
 
 		final XmlNode conclusion = new XmlNode(NodeName.CONCLUSION);
-		conclusion.addChild(NodeName.INDICATION, indication);
+		conclusion.addChild(NodeName.INDICATION, indication.name());
 		if (subIndication != null) {
-
-			conclusion.addChild(NodeName.SUB_INDICATION, subIndication);
+			conclusion.addChild(NodeName.SUB_INDICATION, subIndication.name());
 		}
 		infoToXmlNode(conclusion);
 		warningToXmlNode(conclusion);
@@ -788,12 +788,12 @@ public class Conclusion {
 
 		final String indication = conclusionXmlDom.getValue("./Indication/text()");
 		if (!indication.isEmpty()) {
-			this.indication = indication;
+			this.indication = Indication.valueOf(indication);
 		}
 
 		final String subIndication = conclusionXmlDom.getValue("./SubIndication/text()");
 		if (!subIndication.isEmpty()) {
-			this.subIndication = subIndication;
+			this.subIndication = SubIndication.valueOf(subIndication);
 		}
 
 		final List<XmlDom> errors = conclusionXmlDom.getElements("./Error");

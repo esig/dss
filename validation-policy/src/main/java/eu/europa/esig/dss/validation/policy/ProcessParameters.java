@@ -24,9 +24,10 @@ import java.util.Date;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.process.POEExtraction;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
 
 /**
  * This class stores the references to data exchanged and manipulated by different sub validation processes.
@@ -38,7 +39,7 @@ public class ProcessParameters {
 	 * from the signature(s) being validated. This data is independent of the form of source signature (PDF, XAdES,
 	 * PAdES, ASiC).
 	 */
-	protected DiagnosticData diagnosticData;
+	protected DiagnosticDataWrapper diagnosticData;
 
 	/**
 	 * This is the policy data to be used by the validation process. This data are not mandatory but in this case the
@@ -80,7 +81,7 @@ public class ProcessParameters {
 	 * Represents the current main signature DOM element being validated. This element provides general information used
 	 * in validation process like the list of used certificates.
 	 */
-	protected XmlDom signatureContext;
+	protected XmlSignature signatureContext;
 
 	/**
 	 * Represents the current signature DOM element being validated:<br>
@@ -133,7 +134,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public XmlDom getDiagnosticData() {
+	public DiagnosticDataWrapper getDiagnosticData() {
 		return diagnosticData;
 	}
 
@@ -142,7 +143,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public void setDiagnosticData(final DiagnosticData diagnosticData) {
+	public void setDiagnosticData(final DiagnosticDataWrapper diagnosticData) {
 		this.diagnosticData = diagnosticData;
 	}
 
@@ -344,7 +345,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public XmlDom getSignatureContext() {
+	public XmlSignature getSignatureContext() {
 		return signatureContext;
 	}
 
@@ -353,7 +354,7 @@ public class ProcessParameters {
 	 *
 	 * @param signature
 	 */
-	public void setSignatureContext(final XmlDom signature) {
+	public void setSignatureContext(final XmlSignature signature) {
 		this.signatureContext = signature;
 	}
 
@@ -402,16 +403,6 @@ public class ProcessParameters {
 
 	public void setCertPool(final XmlDom certPool) {
 		this.certPool = certPool;
-	}
-
-	/**
-	 * @param id the {@code int} SD-DSS certificate unique identifier
-	 * @return the {@code XmlDom} representing the corresponding certificate or null.
-	 */
-
-	public XmlDom getCertificate(int id) {
-
-		return getCertificate(String.valueOf(id));
 	}
 
 	/**

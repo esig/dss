@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +29,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.Conclusion;
 
 /**
@@ -69,9 +73,8 @@ public class Constraint {
 	 * This field represents the list of acceptable identifiers
 	 */
 	protected List<String> identifiers;
-	protected String indication;
-
-	protected String subIndication;
+	protected Indication indication;
+	protected SubIndication subIndication;
 
 	protected MessageTag failureMessageTag;
 	protected Map<String, String> messageAttributes = new HashMap<String, String>();
@@ -225,8 +228,7 @@ public class Constraint {
 			if (StringUtils.isNotBlank(expectedValue) && !expectedValue.equals("true") && !expectedValue.equals("false")) {
 				node.addChild(NodeName.INFO).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 			}
-			if (StringUtils.isNotBlank(indication)) {
-
+			if (indication != null) {
 				conclusion.setIndication(indication, subIndication);
 			}
 			conclusion.addError(failureMessageTag, messageAttributes);
@@ -291,7 +293,7 @@ public class Constraint {
 	 * @param subIndication     to return when failure
 	 * @param failureMessageTag is the answer to be done in case of the constraint failure.
 	 */
-	public void setIndications(final String indication, final String subIndication, final MessageTag failureMessageTag) {
+	public void setIndications(final Indication indication, final SubIndication subIndication, final MessageTag failureMessageTag) {
 
 		this.indication = indication;
 		this.subIndication = subIndication;
@@ -332,6 +334,17 @@ public class Constraint {
 	public Constraint setAttribute(final String attributeName, final String attributeValue) {
 
 		messageAttributes.put(attributeName, attributeValue);
+		return this;
+	}
+
+	/**
+	 * This method allows to add an attribute to the answer node (to the message).
+	 *
+	 * @param attributeName  the attribute name
+	 * @param attributeValue the attribute value
+	 */
+	public Constraint setAttribute(final String attributeName, final Date attributeValue) {
+		messageAttributes.put(attributeName, DateUtils.formatDate(attributeValue));
 		return this;
 	}
 

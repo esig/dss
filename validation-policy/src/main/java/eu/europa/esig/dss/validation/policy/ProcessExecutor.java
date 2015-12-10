@@ -22,8 +22,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
 
-import org.w3c.dom.Document;
-
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 
 /**
@@ -39,11 +38,11 @@ public interface ProcessExecutor {
 	Date getCurrentTime();
 
 	/**
-	 * This method allows to set the {@code eu.europa.esig.dss.validation.report.DiagnosticData} that is used during the validation process execution.
+	 * This method allows to set the {@code eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData} that is used during the validation process execution.
 	 *
 	 * @param diagnosticDataDom
 	 */
-	void setDiagnosticDataDom(final Document diagnosticDataDom);
+	void setDiagnosticData(final DiagnosticData diagnosticData);
 
 	/**
 	 * This method allows to set the validation policy that is used during the validation process execution.

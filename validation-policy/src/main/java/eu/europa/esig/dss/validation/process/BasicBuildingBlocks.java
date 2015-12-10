@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
@@ -40,6 +41,7 @@ import eu.europa.esig.dss.validation.process.subprocess.SignatureAcceptanceValid
 import eu.europa.esig.dss.validation.process.subprocess.ValidationContextInitialisation;
 import eu.europa.esig.dss.validation.process.subprocess.X509CertificateValidation;
 import eu.europa.esig.dss.validation.report.Conclusion;
+import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
 
 /**
  * This class creates the validation data (Basic Building Blocks) for all signatures.
@@ -54,7 +56,7 @@ public class BasicBuildingBlocks {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BasicBuildingBlocks.class);
 
-	private XmlDom diagnosticData;
+	private DiagnosticDataWrapper diagnosticData;
 
 	private void prepareParameters(final ProcessParameters params) {
 
@@ -85,16 +87,14 @@ public class BasicBuildingBlocks {
 
 		final XmlNode basicBuildingBlocksNode = mainNode.addChild(NodeName.BASIC_BUILDING_BLOCKS);
 
-		final List<XmlDom> signatures = diagnosticData.getElements("/DiagnosticData/Signature");
+		final List<XmlSignature> signatures = diagnosticData.getSignatures();
 
-		for (final XmlDom signature : signatures) {
+		for (final XmlSignature signature : signatures) {
 
-			final String type = signature.getValue("./@Type");
+			final String type = signature.getType();
 			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
-
 				params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
 			} else {
-
 				params.setCurrentValidationPolicy(params.getValidationPolicy());
 			}
 
@@ -111,7 +111,7 @@ public class BasicBuildingBlocks {
 			 * 5. Basic Building Blocks
 			 */
 
-			final String signatureId = signature.getValue("./@Id");
+			final String signatureId = signature.getId();
 			final XmlNode signatureNode = basicBuildingBlocksNode.addChild(NodeName.SIGNATURE);
 			signatureNode.setAttribute(AttributeName.ID, signatureId);
 			/**

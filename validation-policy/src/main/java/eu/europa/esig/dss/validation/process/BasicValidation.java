@@ -257,8 +257,8 @@ public class BasicValidation {
 			final String adestIndication = adestConclusion.getValue("./Indication/text()");
 			if (!Indication.VALID.equals(adestIndication)) {
 
-				conclusionNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE);
-				conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE);
+				conclusionNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE.name());
+				conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.name());
 				return false;
 			}
 			boolean ok = true;
@@ -288,12 +288,12 @@ public class BasicValidation {
 			}
 			if (ok) {
 
-				conclusionNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE);
-				conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.EXPIRED);
+				conclusionNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE.name());
+				conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.EXPIRED.name());
 			} else {
 
-				conclusionNode.addChild(NodeName.INDICATION, Indication.INVALID);
-				conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE);
+				conclusionNode.addChild(NodeName.INDICATION, Indication.INVALID.name());
+				conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.name());
 			}
 			return false;
 		}
@@ -340,8 +340,8 @@ public class BasicValidation {
 
 					if (bestSignatureTime.after(revocationTime)) {
 
-						conclusionNode.addChild(NodeName.INDICATION, Indication.INVALID);
-						conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.REVOKED);
+						conclusionNode.addChild(NodeName.INDICATION, Indication.INVALID.name());
+						conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.REVOKED.name());
 						return false;
 					}
 				}
@@ -371,8 +371,8 @@ public class BasicValidation {
 
 					if (bestSignatureTime.after(notAfter)) {
 
-						conclusionNode.addChild(NodeName.INDICATION, Indication.INVALID);
-						conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.EXPIRED);
+						conclusionNode.addChild(NodeName.INDICATION, Indication.INVALID.name());
+						conclusionNode.addChild(NodeName.SUB_INDICATION, SubIndication.EXPIRED.name());
 						return false;
 					}
 				}

@@ -22,14 +22,13 @@ package eu.europa.esig.dss.validation.process;
 
 import java.util.Comparator;
 
-import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 
-public class TimestampComparator implements Comparator<XmlDom> {
+public class TimestampComparator implements Comparator<XmlTimestampType> {
 
-   @Override
-   public int compare(XmlDom o1, XmlDom o2) {
-
-      return o2.getTimeValue("./ProductionTime/text()").compareTo(o1.getTimeValue("./ProductionTime/text()"));
-   }
+	@Override
+	public int compare(XmlTimestampType o1, XmlTimestampType o2) {
+		return o2.getProductionTime().compareTo(o1.getProductionTime());
+	}
 
 }

@@ -28,7 +28,7 @@ public class Reports {
 	/**
 	 * This variable contains the reference to the diagnostic data object.
 	 */
-	protected DiagnosticData diagnosticData;
+	protected DiagnosticDataWrapper diagnosticData;
 
 	/**
 	 * This is the detailed report of the validation.
@@ -52,7 +52,7 @@ public class Reports {
 	 * @param detailedReport {@code DetailedReport}
 	 * @param simpleReport   {@code SimpleReport}
 	 */
-	public Reports(final DiagnosticData diagnosticData, final DetailedReport detailedReport, final SimpleReport simpleReport) {
+	public Reports(final DiagnosticDataWrapper diagnosticData, final DetailedReport detailedReport, final SimpleReport simpleReport) {
 
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
@@ -64,7 +64,7 @@ public class Reports {
 	 *
 	 * @return {@code DiagnosticData}
 	 */
-	public DiagnosticData getDiagnosticData() {
+	public DiagnosticDataWrapper getDiagnosticData() {
 		return diagnosticData;
 	}
 

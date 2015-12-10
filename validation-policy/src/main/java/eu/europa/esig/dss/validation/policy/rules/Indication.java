@@ -23,10 +23,10 @@ package eu.europa.esig.dss.validation.policy.rules;
 /**
  * The list of possible values for indications.
  */
-public interface Indication {
+public enum Indication {
 
-	String VALID = "VALID";
-	String INDETERMINATE = "INDETERMINATE";
-	String INVALID = "INVALID";
+	VALID,
+	INDETERMINATE,
+	INVALID
 
 }

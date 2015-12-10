@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 public final class RuleUtils {
 
@@ -148,11 +149,9 @@ public final class RuleUtils {
 		return signatureAlgo;
 	}
 
-	public static boolean in(final String value, final String... values) {
-
+	public static boolean in(final SubIndication value, final SubIndication... values) {
 		final boolean contains = Arrays.asList(values).contains(value);
 		return contains;
-
 	}
 
 	public static String toString(List<String> strings) {

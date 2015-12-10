@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
@@ -91,7 +92,7 @@ public class PastSignatureValidation {
 	 * @param currentTimeSignatureConclusion
 	 * @param context
 	 */
-	public PastSignatureValidationConclusion run(final ProcessParameters params, final XmlDom signature, final XmlDom currentTimeSignatureConclusion, final String context) {
+	public PastSignatureValidationConclusion run(final ProcessParameters params, final XmlTimestampType signature, final XmlDom currentTimeSignatureConclusion, final String context) {
 
 		this.contextName = context;
 		prepareParameters(params);
@@ -106,11 +107,11 @@ public class PastSignatureValidation {
 		return conclusion;
 	}
 
-	private PastSignatureValidationConclusion process(final ProcessParameters params, final XmlDom signature, final XmlDom currentTimeSignatureConclusion) {
+	private PastSignatureValidationConclusion process(final ProcessParameters params, final XmlTimestampType signature, final XmlDom currentTimeSignatureConclusion) {
 
 		final PastSignatureValidationConclusion conclusion = new PastSignatureValidationConclusion();
 
-		final String signatureId = signature.getValue("./@Id");
+		final String signatureId = signature.getId();
 
 		pastSignatureValidationData.setAttribute(AttributeName.ID, signatureId);
 

@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
@@ -140,7 +141,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 	 * @param signatureXmlDom {@code XmlDom} representation of the signature to validate
 	 * @return {@code PastCertificateValidationConclusion} including information collected during the validation process.
 	 */
-	public PastCertificateValidationConclusion run(final ProcessParameters params, final XmlDom signatureXmlDom, final String context) {
+	public PastCertificateValidationConclusion run(final ProcessParameters params, final XmlTimestampType signatureXmlDom, final String context) {
 
 		this.contextName = context;
 		prepareParameters(params);
@@ -366,7 +367,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		// From 1):
 		// a) If no new chain can be built, abort the processing with the current status and the last chain built.
 
-		final String ctsConclusionIndication = ctsConclusion.getIndication();
+		final Indication ctsConclusionIndication = ctsConclusion.getIndication();
 		if (!Indication.VALID.equals(ctsConclusionIndication)) {
 
 			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);

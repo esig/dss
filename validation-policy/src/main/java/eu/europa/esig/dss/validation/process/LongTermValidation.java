@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -43,6 +45,7 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ltv.PastSignatureValidation;
 import eu.europa.esig.dss.validation.process.ltv.PastSignatureValidationConclusion;
 import eu.europa.esig.dss.validation.process.subprocess.EtsiPOEExtraction;
+import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -90,7 +93,7 @@ public class LongTermValidation {
 	 *
 	 * @return
 	 */
-	private XmlDom diagnosticData;
+	private DiagnosticDataWrapper diagnosticData;
 
 	private XmlDom timestampValidationData; // Basic Building Blocks for timestamps
 
@@ -165,19 +168,18 @@ public class LongTermValidation {
 
 		XmlNode longTermValidationData = mainNode.addChild(NodeName.LONG_TERM_VALIDATION_DATA);
 
-		final List<XmlDom> signatures = diagnosticData.getElements("/DiagnosticData/Signature");
+		final List<XmlSignature> signatures = diagnosticData.getSignatures();
 
-		for (final XmlDom signature : signatures) {
+		for (final XmlSignature signature : signatures) {
 
-			final String signatureId = signature.getValue("./@Id");
-			final String type = signature.getValue("./@Type");
+			final String signatureId = signature.getId();
+			final String type = signature.getType();
 			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
-
 				params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
 			} else {
-
 				params.setCurrentValidationPolicy(params.getValidationPolicy());
 			}
+
 			final XmlDom signatureTimestampValidationData = timestampValidationData.getElement("./Signature[@Id='%s']", signatureId);
 			final XmlDom adestSignatureValidationData = adestValidationData.getElement("/AdESTValidationData/Signature[@Id='%s']", signatureId);
 
@@ -190,7 +192,7 @@ public class LongTermValidation {
 				final boolean valid = process(params, signature, signatureTimestampValidationData, adestSignatureValidationData);
 				if (valid) {
 
-					conclusionNode.addFirstChild(NodeName.INDICATION, Indication.VALID);
+					conclusionNode.addFirstChild(NodeName.INDICATION, Indication.VALID.name());
 				}
 			} catch (Exception e) {
 
@@ -214,7 +216,7 @@ public class LongTermValidation {
 	 * @param adestSignatureValidationData
 	 * @return
 	 */
-	private boolean process(ProcessParameters params, XmlDom signature, XmlDom signatureTimestampValidationData, XmlDom adestSignatureValidationData) {
+	private boolean process(ProcessParameters params, XmlSignature signature, XmlDom signatureTimestampValidationData, XmlDom adestSignatureValidationData) {
 
 		/**
 		 * 1) POE initialisation: Add a POE for each object in the signature at the current time to the set of POEs.<br>
@@ -237,8 +239,8 @@ public class LongTermValidation {
 		// --> This is done in the prepareParameters(ProcessParameters params) method.
 
 		final XmlDom adestSignatureConclusion = adestSignatureValidationData.getElement("./Conclusion");
-		final String adestSignatureIndication = adestSignatureConclusion.getValue("./Indication/text()");
-		final String adestSignatureSubIndication = adestSignatureConclusion.getValue("./SubIndication/text()");
+		final Indication adestSignatureIndication = Indication.valueOf(adestSignatureConclusion.getValue("./Indication/text()"));
+		final SubIndication adestSignatureSubIndication = SubIndication.valueOf( adestSignatureConclusion.getValue("./SubIndication/text()"));
 
 		/**
 		 * - If the validation outputs VALID<br>
@@ -286,13 +288,13 @@ public class LongTermValidation {
 
 			conclusionNode.addChildrenOf(adestSignatureConclusion);
 			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
-			constraintNode.addChild(NodeName.INFO, adestSignatureIndication).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
-			constraintNode.addChild(NodeName.INFO, adestSignatureSubIndication).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
+			constraintNode.addChild(NodeName.INFO, adestSignatureIndication.name()).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
+			constraintNode.addChild(NodeName.INFO, adestSignatureSubIndication.name()).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
 			return false;
 		}
 		constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
-		constraintNode.addChild(NodeName.INFO, adestSignatureIndication).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
-		constraintNode.addChild(NodeName.INFO, adestSignatureSubIndication).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
+		constraintNode.addChild(NodeName.INFO, adestSignatureIndication.name()).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
+		constraintNode.addChild(NodeName.INFO, adestSignatureSubIndication.name()).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
 
 		/**
 		 * 3) If there is at least one long-term-validation attribute with a poeValue, process them, starting from the
@@ -322,9 +324,8 @@ public class LongTermValidation {
 		 * one, as follows: perform the time-stamp validation process (see clause 7):
 		 */
 		final XmlNode archiveTimestampsNode = signatureNode.addChild("ArchiveTimestamps");
-		final List<XmlDom> archiveTimestamps = signature.getElements("./Timestamps/Timestamp[@Type='%s']", TimestampType.ARCHIVE_TIMESTAMP);
+		final List<XmlTimestampType> archiveTimestamps = diagnosticData.getTimestampList(signature.getId(), TimestampType.ARCHIVE_TIMESTAMP);
 		if (archiveTimestamps.size() > 0) {
-
 			dealWithTimestamp(archiveTimestampsNode, signatureTimestampValidationData, archiveTimestamps);
 		}
 
@@ -334,9 +335,8 @@ public class LongTermValidation {
 		 */
 
 		final XmlNode refsOnlyTimestampsNode = signatureNode.addChild("RefsOnlyTimestamps");
-		final List<XmlDom> refsOnlyTimestamps = signature.getElements("./Timestamps/Timestamp[@Type='%s']", TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+		final List<XmlTimestampType> refsOnlyTimestamps = diagnosticData.getTimestampList(signature.getId(), TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
 		if (refsOnlyTimestamps.size() > 0) {
-
 			dealWithTimestamp(refsOnlyTimestampsNode, signatureTimestampValidationData, refsOnlyTimestamps);
 		}
 
@@ -346,9 +346,8 @@ public class LongTermValidation {
 		 */
 
 		final XmlNode sigAndRefsTimestampsNode = signatureNode.addChild("SigAndRefsTimestamps");
-		final List<XmlDom> sigAndRefsTimestamps = signature.getElements("./Timestamps/Timestamp[@Type='%s']", TimestampType.VALIDATION_DATA_TIMESTAMP);
+		final List<XmlTimestampType> sigAndRefsTimestamps = diagnosticData.getTimestampList(signature.getId(), TimestampType.VALIDATION_DATA_TIMESTAMP);
 		if (sigAndRefsTimestamps.size() > 0) {
-
 			dealWithTimestamp(sigAndRefsTimestampsNode, signatureTimestampValidationData, sigAndRefsTimestamps);
 		}
 		/**
@@ -357,9 +356,8 @@ public class LongTermValidation {
 		 */
 
 		final XmlNode timestampsNode = signatureNode.addChild("Timestamps");
-		final List<XmlDom> timestamps = signature.getElements("./Timestamps/Timestamp[@Type='%s']", TimestampType.SIGNATURE_TIMESTAMP);
+		final List<XmlTimestampType> timestamps = diagnosticData.getTimestampList(signature.getId(), TimestampType.SIGNATURE_TIMESTAMP);
 		if (timestamps.size() > 0) {
-
 			dealWithTimestamp(timestampsNode, signatureTimestampValidationData, timestamps);
 		}
 		/**
@@ -383,12 +381,12 @@ public class LongTermValidation {
 		if (!Indication.VALID.equals(psvConclusion.getIndication())) {
 
 			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
-			constraintNode.addChild(NodeName.INFO, psvConclusion.getIndication()).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
-			constraintNode.addChild(NodeName.INFO, psvConclusion.getSubIndication()).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
+			constraintNode.addChild(NodeName.INFO, psvConclusion.getIndication().name()).setAttribute(AttributeName.FIELD, NodeName.INDICATION);
+			constraintNode.addChild(NodeName.INFO, psvConclusion.getSubIndication().name()).setAttribute(AttributeName.FIELD, NodeName.SUB_INDICATION);
 			psvConclusion.infoToXmlNode(constraintNode);
 
-			conclusionNode.addChild(NodeName.INDICATION, psvConclusion.getIndication());
-			conclusionNode.addChild(NodeName.SUB_INDICATION, psvConclusion.getSubIndication());
+			conclusionNode.addChild(NodeName.INDICATION, psvConclusion.getIndication().name());
+			conclusionNode.addChild(NodeName.SUB_INDICATION, psvConclusion.getSubIndication().name());
 			psvConclusion.infoToXmlNode(conclusionNode);
 			return false;
 		}
@@ -409,12 +407,11 @@ public class LongTermValidation {
 	 * @param timestamps
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	private void dealWithTimestamp(final XmlNode processNode, final XmlDom signatureTimestampValidationData, final List<XmlDom> timestamps) throws DSSException {
-
+	private void dealWithTimestamp(final XmlNode processNode, final XmlDom signatureTimestampValidationData, final List<XmlTimestampType> timestamps) throws DSSException {
 		Collections.sort(timestamps, new TimestampComparator());
-		for (final XmlDom timestamp : timestamps) {
+		for (final XmlTimestampType timestamp : timestamps) {
 
-			final String timestampId = timestamp.getValue("./@Id");
+			final String timestampId = timestamp.getId();
 			try {
 
 				/**
@@ -429,7 +426,7 @@ public class LongTermValidation {
 				XmlNode constraintNode = addConstraint(processNode, MessageTag.ADEST_IMIVC);
 				// constraintNode.setAttribute("Id", timestampId);
 
-				final boolean messageImprintDataIntact = timestamp.getBoolValue(ValidationXPathQueryHolder.XP_MESSAGE_IMPRINT_DATA_INTACT);
+				final boolean messageImprintDataIntact = timestamp.isMessageImprintDataIntact();
 				if (!messageImprintDataIntact) {
 
 					constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
@@ -516,14 +513,12 @@ public class LongTermValidation {
 	 * @return
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	private boolean extractPOEs(final XmlDom timestamp) throws DSSException {
-
-		final String digestAlgorithm = RuleUtils.canonicalizeDigestAlgo(timestamp.getValue("./SignedDataDigestAlgo/text()"));
+	private boolean extractPOEs(final XmlTimestampType timestamp) throws DSSException {
+		final String digestAlgorithm = RuleUtils.canonicalizeDigestAlgo(timestamp.getSignedDataDigestAlgo());
 		final Date algorithmExpirationDate = params.getCurrentValidationPolicy().getAlgorithmExpirationDate(digestAlgorithm);
-		final Date timestampProductionTime = timestamp.getTimeValue("./ProductionTime/text()");
+		final Date timestampProductionTime = timestamp.getProductionTime();
 		if ((algorithmExpirationDate == null) || timestampProductionTime.before(algorithmExpirationDate)) {
-
-			poe.addPOE(timestamp, params.getCertPool());
+			poe.addPOE(timestamp, diagnosticData);
 			return true;
 		}
 		return false;

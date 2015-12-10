@@ -37,6 +37,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
@@ -305,7 +306,7 @@ public class DiagnosticDataWrapper {
 		return result;
 	}
 
-	private List<XmlTimestampType> getTimestampList(final String signatureId, final TimestampType timestampType) {
+	public List<XmlTimestampType> getTimestampList(final String signatureId, final TimestampType timestampType) {
 		List<XmlTimestampType> result = new ArrayList<XmlTimestampType>();
 		XmlSignature xmlSignature = getSignatureByIdNullSafe(signatureId);
 		XmlTimestamps timestamps = xmlSignature.getTimestamps();
@@ -314,6 +315,18 @@ public class DiagnosticDataWrapper {
 				if (StringUtils.equals(timestampType.name(), xmlTsp.getType())) {
 					result.add(xmlTsp);
 				}
+			}
+		}
+		return result;
+	}
+
+	public List<XmlTimestampType> getTimestampList(final String signatureId) {
+		List<XmlTimestampType> result = new ArrayList<XmlTimestampType>();
+		XmlSignature xmlSignature = getSignatureByIdNullSafe(signatureId);
+		XmlTimestamps timestamps = xmlSignature.getTimestamps();
+		if ((timestamps != null) && CollectionUtils.isNotEmpty(timestamps.getTimestamp())) {
+			for (XmlTimestampType xmlTsp : timestamps.getTimestamp()) {
+				result.add(xmlTsp);
 			}
 		}
 		return result;
@@ -861,7 +874,7 @@ public class DiagnosticDataWrapper {
 		return new XmlTimestampType();
 	}
 
-	private XmlCertificate getUsedCertificateByIdNullSafe(String id) {
+	public XmlCertificate getUsedCertificateByIdNullSafe(String id) {
 		XmlUsedCertificates usedCertificates = diagnosticData.getUsedCertificates();
 		if ((usedCertificates != null) && CollectionUtils.isNotEmpty(usedCertificates.getCertificate())) {
 			for (XmlCertificate xmlCertificate : usedCertificates.getCertificate()) {
@@ -871,6 +884,27 @@ public class DiagnosticDataWrapper {
 			}
 		}
 		return new XmlCertificate();
+	}
+
+	public XmlCertificate getUsedCertificateByDigest(String digestMethod, String digestValue) {
+		XmlUsedCertificates usedCertificates = diagnosticData.getUsedCertificates();
+		if ((usedCertificates != null) && CollectionUtils.isNotEmpty(usedCertificates.getCertificate())) {
+			for (XmlCertificate xmlCertificate : usedCertificates.getCertificate()) {
+				List<XmlDigestAlgAndValueType> digestAlgAndValues = xmlCertificate.getDigestAlgAndValue();
+				if (CollectionUtils.isNotEmpty(digestAlgAndValues)) {
+					for (XmlDigestAlgAndValueType digestAlgAndValue : digestAlgAndValues) {
+						if (StringUtils.equals(digestMethod, digestAlgAndValue.getDigestMethod()) && StringUtils.equals(digestValue, digestAlgAndValue.getDigestValue())) {
+							return xmlCertificate;
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public List<XmlSignature> getSignatures() {
+		return diagnosticData.getSignature();
 	}
 
 }

@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.Conclusion;
+import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 
 /**
@@ -66,7 +67,7 @@ public class ValidationContextInitialisation {
 	/**
 	 * See {@link ProcessParameters#getDiagnosticData()}
 	 */
-	private XmlDom diagnosticData;
+	private DiagnosticDataWrapper diagnosticData;
 
 	/**
 	 * See {@link ProcessParameters#getCurrentValidationPolicy()}

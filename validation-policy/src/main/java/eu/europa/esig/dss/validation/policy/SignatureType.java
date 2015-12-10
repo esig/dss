@@ -20,16 +20,26 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- *
- */
 public enum SignatureType {
 
-	QES, AdES, AdESqc, NA
+	/**
+	 * Qualified Electronic Signature
+	 */
+	QES,
+
+	/**
+	 * Advanced Electronic Signature
+	 */
+	AdES,
+
+	/**
+	 * Advanced Electronic Signature supported by a Qualified Certificate
+	 */
+	AdESqc,
+
+	/**
+	 * Not Applicable
+	 */
+	NA
+
 }

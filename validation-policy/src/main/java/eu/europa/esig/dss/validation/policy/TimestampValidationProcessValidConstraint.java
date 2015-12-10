@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
  * This class represents the timestamp validation process validity constraints.
@@ -29,8 +30,8 @@ import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 public class TimestampValidationProcessValidConstraint extends Constraint {
 
 	private int validTimestampCount;
-	private String subIndication1;
-	private String subIndication2;
+	private SubIndication subIndication1;
+	private SubIndication subIndication2;
 
 	/**
 	 * This is the default constructor. It takes a level of the constraint as parameter. The string representing the level is trimmed and capitalized. If there is no corresponding
@@ -81,19 +82,19 @@ public class TimestampValidationProcessValidConstraint extends Constraint {
 		return validTimestampCount;
 	}
 
-	public void setSubIndication1(final String subIndication1) {
+	public void setSubIndication1(final SubIndication subIndication1) {
 		this.subIndication1 = subIndication1;
 	}
 
-	public String getSubIndication1() {
+	public SubIndication getSubIndication1() {
 		return subIndication1;
 	}
 
-	public void setSubIndication2(final String subIndication2) {
+	public void setSubIndication2(final SubIndication subIndication2) {
 		this.subIndication2 = subIndication2;
 	}
 
-	public String getSubIndication2() {
+	public SubIndication getSubIndication2() {
 		return subIndication2;
 	}
 }
