@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -40,7 +41,6 @@ import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.ValidationXPathQueryHolder;
 import eu.europa.esig.dss.validation.process.dss.ForLegalPerson;
 import eu.europa.esig.dss.validation.process.dss.QualifiedCertificate;
 import eu.europa.esig.dss.validation.process.dss.SSCD;
@@ -106,7 +106,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 	 * @param params
 	 */
 	private void prepareParameters(final ProcessParameters params) {
-
+		this.diagnosticData = params.getDiagnosticData();
 		this.constraintData = params.getCurrentValidationPolicy();
 		isInitialised();
 	}
@@ -198,12 +198,9 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		XmlNode constraintNode = addConstraint(MessageTag.BBB_XCV_CCCBB);
 
 		final String trustedAnchorId = certificateChainXmlDom.getValue("./ChainCertificate[last()]/@Id");
-		final XmlDom trustedAnchor = params.getCertificate(trustedAnchorId);
-		boolean isLastTrusted = false;
-		if (trustedAnchor != null) {
 
-			isLastTrusted = trustedAnchor.getBoolValue("./Trusted/text()");
-		}
+		XmlCertificate trustedAnchor = diagnosticData.getUsedCertificateByIdNullSafe(trustedAnchorId);
+		boolean isLastTrusted = trustedAnchor.isTrusted();
 		if (!isLastTrusted) {
 
 			constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
@@ -231,24 +228,20 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		for (XmlDom certToken : certChain) {
 
 			final String certificateId = certToken.getValue("./@Id");
-			final XmlDom certificate = params.getCertificate(certificateId);
+			final XmlCertificate certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 
-			final boolean isTrusted = certificate.getBoolValue("./Trusted/text()");
+			final boolean isTrusted = certificate.isTrusted();
 
-			final Date notBefore = certificate.getTimeValue("./NotBefore/text()");
-			final Date notAfter = certificate.getTimeValue("./NotAfter/text()");
+			final Date notBefore = certificate.getNotBefore();
+			final Date notAfter = certificate.getNotAfter();
 			if (intersectionNotAfter == null) {
-
 				intersectionNotAfter = notAfter;
 			} else if (intersectionNotAfter.after(notAfter)) {
-
 				intersectionNotAfter = notAfter;
 			}
 			if (intersectionNotBefore == null) {
-
 				intersectionNotBefore = notBefore;
 			} else if (intersectionNotBefore.before(notBefore)) {
-
 				intersectionNotBefore = notBefore;
 			}
 			if (intersectionNotAfter.before(intersectionNotBefore)) {
@@ -320,7 +313,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 			 * - - (4) The certificate issuer name is the working_issuer_name.<br>
 			 *
 			 */
-			final boolean isSignatureIntact = certificate.getBoolValue(ValidationXPathQueryHolder.XP_SIGNATURE_VALID);
+			final boolean isSignatureIntact = (certificate.getBasicSignature() != null) && certificate.getBasicSignature().isSignatureValid();
 			if (!isSignatureIntact) {
 
 				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
@@ -395,21 +388,21 @@ public class PastCertificateValidation extends X509CertificateValidation {
 			 * intended use.
 			 */
 
-			final XmlDom signingCertificate = params.getCertificate(signingCertificateId);
+			XmlCertificate signingCertificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
 
-			final QualifiedCertificate qc = new QualifiedCertificate(constraintData);
+			final QualifiedCertificate qc = new QualifiedCertificate(params);
 			boolean isQC = qc.run(signingCertificate);
 			if (!checkSigningCertificateQualificationConstraint(conclusion, isQC)) {
 				return conclusion;
 			}
 
-			final SSCD sscd = new SSCD(constraintData);
+			final SSCD sscd = new SSCD(params);
 			final Boolean isSSCD = sscd.run(signingCertificate);
 			if (!checkSigningCertificateSupportedBySSCDConstraint(conclusion, isSSCD)) {
 				return conclusion;
 			}
 
-			final ForLegalPerson forLegalPerson = new ForLegalPerson(constraintData);
+			final ForLegalPerson forLegalPerson = new ForLegalPerson(params);
 			final Boolean isForLegalPerson = forLegalPerson.run(signingCertificate);
 			if (!checkSigningCertificateIssuedToLegalPersonConstraint(conclusion, isForLegalPerson)) {
 				return conclusion;

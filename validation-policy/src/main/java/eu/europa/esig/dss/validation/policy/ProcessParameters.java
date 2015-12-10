@@ -125,8 +125,6 @@ public class ProcessParameters {
 	 */
 	private XmlDom ltvData;
 
-	private XmlDom certPool;
-
 	private POEExtraction poe;
 
 	/**
@@ -392,27 +390,6 @@ public class ProcessParameters {
 	 */
 	public void setContextName(final String contextElement) {
 		this.contextName = contextElement;
-	}
-
-	/**
-	 * @return the {@code XmlDom} object representing the pool of the certificates used in the validation process.
-	 */
-	public XmlDom getCertPool() {
-		return certPool;
-	}
-
-	public void setCertPool(final XmlDom certPool) {
-		this.certPool = certPool;
-	}
-
-	/**
-	 * @param id the {@code String} SD-DSS certificate unique identifier
-	 * @return Returns the {@code XmlDom} representing the corresponding certificate or null.
-	 */
-
-	public XmlDom getCertificate(final String id) {
-
-		return certPool == null ? certPool : certPool.getElement("./Certificate[@Id='%s']", id);
 	}
 
 	public POEExtraction getPOE() {

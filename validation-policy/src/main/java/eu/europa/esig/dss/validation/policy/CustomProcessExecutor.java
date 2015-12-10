@@ -114,8 +114,6 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		processParams.setValidationPolicy(validationPolicy);
 		processParams.setCountersignatureValidationPolicy(countersignatureValidationPolicy);
 		processParams.setCurrentTime(currentTime);
-		final XmlDom usedCertificates = diagnosticData.getElement("/DiagnosticData/UsedCertificates");
-		processParams.setCertPool(usedCertificates);
 
 		final XmlNode mainNode = new XmlNode(NodeName.VALIDATION_DATA);
 		mainNode.setNameSpace(XmlDom.NAMESPACE);

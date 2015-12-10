@@ -62,6 +62,10 @@ public class DiagnosticDataWrapper {
 		this.diagnosticData = diagnosticData;
 	}
 
+	public String getDocumentName() {
+		return diagnosticData.getDocumentName();
+	}
+
 	/**
 	 * This method returns the list of the signature id. The result is stored in the local variable.
 	 *
@@ -584,6 +588,10 @@ public class DiagnosticDataWrapper {
 	 */
 	public boolean isCertificateQCP(final String dssCertificateId) {
 		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return isCertificateQCP(xmlCertificate);
+	}
+
+	public boolean isCertificateQCP(XmlCertificate xmlCertificate) {
 		XmlQCStatement qcStatement = xmlCertificate.getQCStatement();
 		return (qcStatement != null) && qcStatement.isQCP();
 	}
@@ -597,6 +605,10 @@ public class DiagnosticDataWrapper {
 	 */
 	public boolean isCertificateQCPPlus(final String dssCertificateId) {
 		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return isCertificateQCPPlus(xmlCertificate);
+	}
+
+	public boolean isCertificateQCPPlus(XmlCertificate xmlCertificate) {
 		XmlQCStatement qcStatement = xmlCertificate.getQCStatement();
 		return (qcStatement != null) && qcStatement.isQCPPlus();
 	}
@@ -610,6 +622,10 @@ public class DiagnosticDataWrapper {
 	 */
 	public boolean isCertificateQCC(final String dssCertificateId) {
 		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return isCertificateQCC(xmlCertificate);
+	}
+
+	public boolean isCertificateQCC(XmlCertificate xmlCertificate) {
 		XmlQCStatement qcStatement = xmlCertificate.getQCStatement();
 		return (qcStatement != null) && qcStatement.isQCC();
 	}
@@ -623,6 +639,10 @@ public class DiagnosticDataWrapper {
 	 */
 	public boolean isCertificateQCSSCD(final String dssCertificateId) {
 		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return isCertificateQCSSCD(xmlCertificate);
+	}
+
+	public boolean isCertificateQCSSCD(XmlCertificate xmlCertificate) {
 		XmlQCStatement qcStatement = xmlCertificate.getQCStatement();
 		return (qcStatement != null) && qcStatement.isQCSSCD();
 	}
@@ -713,6 +733,10 @@ public class DiagnosticDataWrapper {
 	 */
 	public String getCertificateTSPServiceName(final String dssCertificateId) {
 		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return getCertificateTSPServiceName(xmlCertificate);
+	}
+
+	public String getCertificateTSPServiceName(XmlCertificate xmlCertificate) {
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
 		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
 			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
@@ -722,8 +746,22 @@ public class DiagnosticDataWrapper {
 		return StringUtils.EMPTY;
 	}
 
+	public String getCertificateTSPServiceType(XmlCertificate xmlCertificate) {
+		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
+		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+				return trustedServiceProvider.getTSPServiceType(); // TODO correct ?? return first one
+			}
+		}
+		return StringUtils.EMPTY;
+	}
+
 	public String getCertificateTSPServiceStatus(final String dssCertificateId) {
 		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return getCertificateTSPServiceStatus(xmlCertificate);
+	}
+
+	public String getCertificateTSPServiceStatus(final XmlCertificate xmlCertificate) {
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
 		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
 			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
@@ -744,9 +782,28 @@ public class DiagnosticDataWrapper {
 		return null;
 	}
 
-	public List<String> getCertificateTSPServiceQualifiers(final String dssCertificateId) {
-		Set<String> result = new HashSet<String>();
+	public Date getCertificateTSPServiceEndDate(final String dssCertificateId) {
 		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return getCertificateTSPServiceEndDate(xmlCertificate);
+	}
+
+	public Date getCertificateTSPServiceEndDate(XmlCertificate xmlCertificate) {
+		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
+		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+				return trustedServiceProvider.getEndDate(); // TODO correct ?? return first one
+			}
+		}
+		return null;
+	}
+
+	public List<String> getCertificateTSPServiceQualifiers(final String dssCertificateId) {
+		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return getCertificateTSPServiceQualifiers(xmlCertificate);
+	}
+
+	public List<String> getCertificateTSPServiceQualifiers(XmlCertificate xmlCertificate) {
+		Set<String> result = new HashSet<String>();
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
 		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
 			for (XmlTrustedServiceProviderType xmlTrustedServiceProvider : trustedServiceProviders) {
@@ -905,6 +962,31 @@ public class DiagnosticDataWrapper {
 
 	public List<XmlSignature> getSignatures() {
 		return diagnosticData.getSignature();
+	}
+
+	public boolean isRevocationDataExists(XmlCertificate certificate) {
+		return (certificate != null) && (certificate.getRevocation() != null);
+	}
+
+	public Date getRevocationIssuingDate(XmlCertificate certificate) {
+		if ((certificate != null) && (certificate.getRevocation() != null)) {
+			return certificate.getRevocation().getIssuingTime();
+		}
+		return null;
+	}
+
+	public boolean isRevoked(XmlCertificate certificate) {
+		if ((certificate != null) && (certificate.getRevocation() != null)) {
+			return certificate.getRevocation().isStatus();
+		}
+		return false;
+	}
+
+	public Date getRevocationDate(XmlCertificate certificate) {
+		if ((certificate != null) && (certificate.getRevocation() != null)) {
+			return certificate.getRevocation().getDateTime();
+		}
+		return null;
 	}
 
 }

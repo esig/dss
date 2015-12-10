@@ -34,6 +34,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
@@ -50,7 +51,6 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.dss.InvolvedServiceInfo;
 
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
@@ -115,14 +115,12 @@ public class SimpleReportBuilder {
 	}
 
 	private void addValidationTime(final ProcessParameters params, final XmlNode report) {
-
 		final Date validationTime = params.getCurrentTime();
 		report.addChild(NodeName.VALIDATION_TIME, DateUtils.formatDate(validationTime));
 	}
 
 	private void addDocumentName(final XmlNode report) {
-
-		final String documentName = diagnosticData.getValue("/DiagnosticData/DocumentName/text()");
+		final String documentName = diagnosticData.getDocumentName();
 		report.addChild(NodeName.DOCUMENT_NAME, documentName);
 	}
 
@@ -273,7 +271,7 @@ public class SimpleReportBuilder {
 	}
 
 	private void addSigningTime(final XmlSignature diagnosticSignature, final XmlNode signatureNode) {
-		signatureNode.addChild(NodeName.SIGNING_TIME, diagnosticSignature.getDateTime());
+		signatureNode.addChild(NodeName.SIGNING_TIME, DateUtils.formatDate(diagnosticSignature.getDateTime()));
 	}
 
 	private void addSignatureFormat(final XmlSignature diagnosticSignature, final XmlNode signatureNode) {
@@ -306,28 +304,45 @@ public class SimpleReportBuilder {
 	 * @param signCert
 	 * @return
 	 */
-	private SignatureType getSignatureType(final  String certificateId) {
+	private SignatureType getSignatureType(final String certificateId) {
 
+		XmlCertificate xmlCertificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 		final CertificateQualification certQualification = new CertificateQualification();
-		certQualification.setQcp(signCert.getBoolValue("./QCStatement/QCP/text()"));
-		certQualification.setQcpp(signCert.getBoolValue("./QCStatement/QCPPlus/text()"));
-		certQualification.setQcc(signCert.getBoolValue("./QCStatement/QCC/text()"));
-		certQualification.setQcsscd(signCert.getBoolValue("./QCStatement/QCSSCD/text()"));
+		certQualification.setQcp(diagnosticData.isCertificateQCP(xmlCertificate));
+		certQualification.setQcpp(diagnosticData.isCertificateQCPPlus(xmlCertificate));
+		certQualification.setQcc(diagnosticData.isCertificateQCC(xmlCertificate));
+		certQualification.setQcsscd(diagnosticData.isCertificateQCSSCD(xmlCertificate));
 
 		final TLQualification trustedListQualification = new TLQualification();
 
-		final String caqc = InvolvedServiceInfo.getServiceTypeIdentifier(signCert);
+		final String caqc = diagnosticData.getCertificateTSPServiceType(xmlCertificate);
 
-		final List<String> qualifiers = InvolvedServiceInfo.getQualifiers(signCert);
+		final List<String> qualifiers = diagnosticData.getCertificateTSPServiceQualifiers(xmlCertificate);
 
 		trustedListQualification.setCaqc(TSLConstant.CA_QC.equals(caqc));
-		trustedListQualification.setQcCNoSSCD(InvolvedServiceInfo.isQC_NO_SSCD(qualifiers));
-		trustedListQualification.setQcForLegalPerson(InvolvedServiceInfo.isQC_FOR_LEGAL_PERSON(qualifiers));
-		trustedListQualification.setQcSSCDAsInCert(InvolvedServiceInfo.isQCSSCD_STATUS_AS_IN_CERT(qualifiers));
-		trustedListQualification.setQcWithSSCD(qualifiers.contains(TSLConstant.QC_WITH_SSCD) || qualifiers.contains(TSLConstant.QC_WITH_SSCD_119612));
+		trustedListQualification.setQcCNoSSCD(isQcNoSSCD(qualifiers));
+		trustedListQualification.setQcForLegalPerson(isQcForLegalPerson(qualifiers));
+		trustedListQualification.setQcSSCDAsInCert(isQcSscdStatusAsInCert(qualifiers));
+		trustedListQualification.setQcWithSSCD(isQcWithSSCD(qualifiers));
 
 		final SignatureType signatureType = SignatureQualification.getSignatureType(certQualification, trustedListQualification);
 		return signatureType;
+	}
+
+	private boolean isQcNoSSCD(final List<String> qualifiers) {
+		return qualifiers.contains(TSLConstant.QC_NO_SSCD) || qualifiers.contains(TSLConstant.QC_NO_SSCD_119612);
+	}
+
+	private boolean isQcForLegalPerson(final List<String> qualifiers) {
+		return qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON) || qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON_119612);
+	}
+
+	private boolean isQcSscdStatusAsInCert(final List<String> qualifiers) {
+		return qualifiers.contains(TSLConstant.QCSSCD_STATUS_AS_IN_CERT) || qualifiers.contains(TSLConstant.QCSSCD_STATUS_AS_IN_CERT_119612);
+	}
+
+	private boolean isQcWithSSCD(final List<String> qualifiers) {
+		return qualifiers.contains(TSLConstant.QC_WITH_SSCD) || qualifiers.contains(TSLConstant.QC_WITH_SSCD_119612);
 	}
 
 	/**
@@ -341,8 +356,8 @@ public class SimpleReportBuilder {
 		signatureNode.removeChild(NodeName.INDICATION);
 		signatureNode.removeChild(NodeName.SUB_INDICATION);
 
-		signatureNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE);
-		signatureNode.addChild(NodeName.SUB_INDICATION, SubIndication.UNEXPECTED_ERROR);
+		signatureNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE.name());
+		signatureNode.addChild(NodeName.SUB_INDICATION, SubIndication.UNEXPECTED_ERROR.name());
 
 		final String message = getSummaryMessage(exception, SimpleReportBuilder.class);
 		signatureNode.addChild(NodeName.INFO, message);

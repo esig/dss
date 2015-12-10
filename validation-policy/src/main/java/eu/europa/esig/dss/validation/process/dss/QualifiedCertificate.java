@@ -23,54 +23,49 @@ package eu.europa.esig.dss.validation.process.dss;
 import java.util.List;
 
 import eu.europa.esig.dss.TSLConstant;
-import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.validation.policy.ProcessParameters;
+import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
 
 /**
  * A.2 Constraints on X.509 Certificate meta-data
- *
  * The QualifiedCertificate constraint is to be applied to the signer's certificate before considering it as valid for
  * the intended use.
- *
- *
  */
 public class QualifiedCertificate {
 
-	private ValidationPolicy constraintData;
+	private final ProcessParameters params;
 
 	/**
-	 * The default constructor with the policy object.
+	 * The default constructor with the params.
 	 *
-	 * @param constraintData
+	 * @param params
 	 */
-	public QualifiedCertificate(final ValidationPolicy constraintData) {
-
-		super();
-		this.constraintData = constraintData;
+	public QualifiedCertificate(final ProcessParameters params) {
+		this.params = params;
 	}
 
 	/**
 	 * The QualifiedCertificate constraint is to be applied to the main signature or timestamp signer's certificate
 	 * before considering it as valid for the intended use.
-	 *
 	 * //@param isTimestamp indicates if this is a timestamp signing certificate or main signature signing certificate.
 	 *
-	 * @param cert the certificate to be processed
+	 * @param cert
+	 *            the certificate to be processed
 	 * @return
 	 */
-	public boolean run(final XmlDom cert) {
-
+	public boolean run(final XmlCertificate cert) {
 		return process(cert);
 	}
 
 	/**
 	 * Generalised implementation independent of the context (SigningCertificate or TimestampSigningCertificate).
 	 *
-	 * @param certificate The certificate to be processed
+	 * @param certificate
+	 *            The certificate to be processed
 	 * @return
 	 */
-	private boolean process(final XmlDom certificate) {
-
+	private boolean process(final XmlCertificate certificate) {
 		if (certificate == null) {
 			return false;
 		}
@@ -84,23 +79,22 @@ public class QualifiedCertificate {
 		 * • QcCompliance extension being set in the signer's certificate in accordance with TS 101 862 [5];
 		 */
 
-		final boolean isQCC = certificate.getBoolValue("./QCStatement/QCC/text()");
-
 		/**
 		 * • QCP+ or QCP certificate policy OID being indicated in the signer's certificate policies extension (i.e.
 		 * 0.4.0.1456.1.1 or 0.4.0.1456.1.2);
 		 */
 
-		final boolean isQCP = certificate.getBoolValue("./QCStatement/QCP/text()");
+		DiagnosticDataWrapper diagnosticData = params.getDiagnosticData();
 
-		final boolean isQCPPlus = certificate.getBoolValue("./QCStatement/QCPPlus/text()");
+		boolean isQCC = diagnosticData.isCertificateQCC(certificate);
+		boolean isQCP = diagnosticData.isCertificateQCP(certificate);
+		boolean isQCPPlus = diagnosticData.isCertificateQCPPlus(certificate);
 
 		/**
 		 * • The content of a Trusted service Status List;<br>
 		 * • The content of a Trusted List through information provided in the Sie field of the applicable service entry;
 		 */
-
-		final List<String> qualifiers = InvolvedServiceInfo.getQualifiers(certificate);
+		final List<String> qualifiers = diagnosticData.getCertificateTSPServiceQualifiers(certificate);
 		final boolean isSIE = qualifiers.contains(TSLConstant.QC_STATEMENT) || qualifiers.contains(TSLConstant.QC_STATEMENT_119612);
 
 		/**

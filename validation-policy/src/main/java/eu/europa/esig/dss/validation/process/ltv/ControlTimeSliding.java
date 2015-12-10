@@ -25,9 +25,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DateUtils;
+import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -39,31 +45,27 @@ import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.ValidationXPathQueryHolder;
-import eu.europa.esig.dss.validation.process.dss.InvolvedServiceInfo;
 import eu.europa.esig.dss.validation.process.subprocess.EtsiPOEExtraction;
+import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
 
 /**
  * 9.2.2 Control-time sliding process<br>
- *
  * 9.2.2.1 Description<br>
- *
  * This process will slide the control-time from the current-time to some date in the past each time it encounters a
  * certificate proven to be revoked.
- *
- *
- *
- *         // Summary:<br>
- *         // - When the service status is not UNDERSUPERVISION then the closing date of this status need to be found.
- *         The class which handle this information need to be updated.<br>
- *         // The CRL extension expiredCertOnCRL should be taken into account during the revocation information
- *         retrieval.<br>
- *         // NOTE 4 is not completely taken into account.<br>
- *         // --> Closed
+ * // Summary:<br>
+ * // - When the service status is not UNDERSUPERVISION then the closing date of this status need to be found.
+ * The class which handle this information need to be updated.<br>
+ * // The CRL extension expiredCertOnCRL should be taken into account during the revocation information
+ * retrieval.<br>
+ * // NOTE 4 is not completely taken into account.<br>
+ * // --> Closed
  */
 public class ControlTimeSliding {
 
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(PastCertificateValidation.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ControlTimeSliding.class);
+
+	private DiagnosticDataWrapper diagnosticData;
 
 	private ValidationPolicy constraintData;
 
@@ -75,8 +77,8 @@ public class ControlTimeSliding {
 	private XmlNode controlTimeSlidingData;
 
 	private void prepareParameters(final ProcessParameters params) {
-
 		this.constraintData = params.getCurrentValidationPolicy();
+		this.diagnosticData = params.getDiagnosticData();
 		this.poe = (EtsiPOEExtraction) params.getPOE();
 		isInitialised(params);
 	}
@@ -92,7 +94,6 @@ public class ControlTimeSliding {
 
 	/**
 	 * 9.2.2.4 Processing<br>
-	 *
 	 * The following steps shall be performed:<br>
 	 *
 	 * @param params
@@ -155,11 +156,10 @@ public class ControlTimeSliding {
 			final XmlNode certificateNode = controlTimeSlidingData.addChild(AttributeValue.CERTIFICATE, StringUtils.EMPTY);
 			certificateNode.setAttribute(AttributeValue.CERTIFICATE_ID, String.valueOf(certificateId));
 
-			final XmlDom certificate = params.getCertificate(certificateId);
+			XmlCertificate certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 
-			final boolean isTrusted = certificate.getBoolValue("./Trusted/text()");
+			final boolean isTrusted = certificate.isTrusted();
 			if (isTrusted) {
-
 				continue;
 			}
 
@@ -171,13 +171,13 @@ public class ControlTimeSliding {
 				 */
 				final XmlNode constraintNode = addConstraint(MessageTag.CTS_WITSS);
 
-				final String status = InvolvedServiceInfo.getStatus(certificate);
+				final String status = diagnosticData.getCertificateTSPServiceStatus(certificate);
 				constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 				constraintNode.addChild(NodeName.INFO).setAttribute(AttributeValue.TRUSTED_SERVICE_STATUS, status);
 
-				final boolean underSupervision = InvolvedServiceInfo.isSERVICE_STATUS_UNDERSUPERVISION(status);
-				final boolean supervisionInCessation = InvolvedServiceInfo.isSERVICE_STATUS_SUPERVISIONINCESSATION(status);
-				final boolean accredited = InvolvedServiceInfo.isSERVICE_STATUS_ACCREDITED(status);
+				final boolean underSupervision = isServiceStatusUndersupervision(status);
+				final boolean supervisionInCessation = isServiceStatusSupervisionInCessation(status);
+				final boolean accredited = isServiceStatusAccredited(status);
 
 				if (!underSupervision && !supervisionInCessation && !accredited) {
 
@@ -185,13 +185,12 @@ public class ControlTimeSliding {
 					 * ...where the trust anchor is broken at a known date by initialising control-time to this date/time.<br>
 					 */
 					if (status.isEmpty()) {
-
 						// Trusted service is unknown
-						final String serviceName = InvolvedServiceInfo.getServiceName(certificate);
+						final String serviceName = diagnosticData.getCertificateTSPServiceName(certificate);
 						LOG.warn("The status of the service is unknown: (serviceName: " + serviceName + ")");
 					} else {
 
-						final Date statusEndDate = InvolvedServiceInfo.getEndDate(certificate);
+						final Date statusEndDate = diagnosticData.getCertificateTSPServiceEndDate(certificate);
 						controlTime = statusEndDate;
 						addControlTime(constraintNode);
 					}
@@ -202,13 +201,12 @@ public class ControlTimeSliding {
 			 * - - 􀀀 The revocation status information is consistent with the rules conditioning its use to check the
 			 * revocation status of the considered certificate. For instance, in the case of a CRL, it shall satisfy the
 			 * checks described in (see clause 6.3).<br>
-			 *
 			 * TODO: 20130704 by bielecro: To notify ETSI --> (see clause 6.3) is not the right clause.<br>
 			 */
 
 			XmlNode constraintNode = addConstraint(MessageTag.CTS_DRIE);
 
-			final boolean revocationExists = certificate.exists("./Revocation");
+			final boolean revocationExists = diagnosticData.isRevocationDataExists(certificate);
 			if (!revocationExists) {
 
 				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
@@ -217,14 +215,14 @@ public class ControlTimeSliding {
 				return conclusion;
 			}
 
-			final Date revocationIssuingTime = certificate.getTimeValue("./Revocation/IssuingTime/text()");
+			final Date revocationIssuingTime = diagnosticData.getRevocationIssuingDate(certificate);
 			final String formatedRevocationIssuingTime = DateUtils.formatDate(revocationIssuingTime);
 
 			constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 			constraintNode.addChild(NodeName.INFO).setAttribute(AttributeName.REVOCATION_ISSUING_TIME, formatedRevocationIssuingTime);
 
-			final Date notAfterTime = certificate.getTimeValue("./NotAfter/text()");
-			final Date notBeforeTime = certificate.getTimeValue("./NotBefore/text()");
+			final Date notAfterTime = certificate.getNotAfter();
+			final Date notBeforeTime = certificate.getNotBefore();
 
 			/**
 			 * (See NOTE 2)<br>
@@ -286,14 +284,14 @@ public class ControlTimeSliding {
 			constraintNode = addConstraint(MessageTag.CTS_SCT);
 			addControlTime(constraintNode);
 
-			final boolean revoked = !certificate.getBoolValue("./Revocation/Status/text()");
+			final boolean revoked = !diagnosticData.isRevoked(certificate); // TODO correct ????
 			/**
 			 * - - 􀀀 If the certificate is marked as revoked in the revocation status information, set control-time to the
 			 * revocation date.<br>
 			 */
 			if (revoked) {
 
-				final Date revocationDate = certificate.getTimeValue("./Revocation/DateTime/text()");
+				final Date revocationDate = diagnosticData.getRevocationDate(certificate);
 				controlTime = revocationDate;
 
 				final String formatedRevocationDate = DateUtils.formatDate(revocationDate);
@@ -312,7 +310,8 @@ public class ControlTimeSliding {
 					controlTime = revocationIssuingTime;
 					constraintNode.addChild(NodeName.INFO, NodeValue.CTS_CTSTRIT_LABEL);
 					final XmlNode xmlNode = constraintNode.addChild(NodeName.INFO, MessageTag.BBB_XCV_IRIF_ANS);
-					xmlNode.setAttribute(AttributeValue.CERTIFICATE_ID, String.valueOf(certificateId)).setAttribute(AttributeName.REVOCATION_ISSUING_TIME, formatedRevocationIssuingTime);
+					xmlNode.setAttribute(AttributeValue.CERTIFICATE_ID, String.valueOf(certificateId)).setAttribute(AttributeName.REVOCATION_ISSUING_TIME,
+							formatedRevocationIssuingTime);
 				}
 
 				/**
@@ -325,12 +324,12 @@ public class ControlTimeSliding {
 			 * lowest time up to which the listed algorithms were considered reliable.<br>
 			 */
 
-			checkDigestAlgoExpirationDate(certificate, constraintNode, NodeValue.CTS_CTSTETOCSA_LABEL);
-			checkEncryptionAlgoExpirationDate(certificate, constraintNode, NodeValue.CTS_CTSTETOCSA_LABEL);
+			checkDigestAlgoExpirationDate(certificate.getBasicSignature(), constraintNode, NodeValue.CTS_CTSTETOCSA_LABEL);
+			checkEncryptionAlgoExpirationDate(certificate.getBasicSignature(), constraintNode, NodeValue.CTS_CTSTETOCSA_LABEL);
 
-			final XmlDom revocation = certificate.getElement("./Revocation");
-			checkDigestAlgoExpirationDate(revocation, constraintNode, NodeValue.CTS_CTSTETORSA_LABEL);
-			checkEncryptionAlgoExpirationDate(revocation, constraintNode, NodeValue.CTS_CTSTETORSA_LABEL);
+			final XmlRevocationType revocation = certificate.getRevocation();
+			checkDigestAlgoExpirationDate(revocation.getBasicSignature(), constraintNode, NodeValue.CTS_CTSTETORSA_LABEL);
+			checkEncryptionAlgoExpirationDate(revocation.getBasicSignature(), constraintNode, NodeValue.CTS_CTSTETORSA_LABEL);
 
 			/**
 			 * 3) Continue with the next certificate in the chain or, if no further certificate exists, terminate with
@@ -342,20 +341,17 @@ public class ControlTimeSliding {
 		 * trusted at the current date/time. The algorithm can capture the very exotic case where the trust anchor is
 		 * broken (or becomes untrusted for any other reason) at a known date by initialising control-time to this
 		 * date/time.<br>
-		 *
 		 * NOTE 2: The rational of step 2-a) is to check that the revocation status information is "in-scope" for the
 		 * given certificate. In other words, the rationale is to check that the revocation status information is reliable
 		 * to be used to ascertain the revocation status of the given certificate. For instance, this includes the fact
 		 * the certificate is not expired at the issuance date of the revocation status information, unless the issuing CA
 		 * states that its issues revocation information status for expired certificates (for instance, using the CRL
 		 * extension expiredCertOnCRL).<br>
-		 *
 		 * NOTE 3: If the certificate (or the revocation status information) was authentic, but the signature has been
 		 * faked exploiting weaknesses of the algorithms used, this is assumed only to be possible after the date the
 		 * algorithms are declared to be no longer acceptable. Therefore, the owner of the original key pair is assumed to
 		 * having been under control of his key up to that date. This is the rational of sliding control-time in step
 		 * 2-d).<br>
-		 *
 		 * NOTE 4: For more readability, the algorithm above implicitly assumes that the revocation information status is
 		 * signed by the certificate's issuer which is the most traditional revocation setting but not the only one. The
 		 * same algorithm can be adapted to the cases where the revocation information status has its own certificate
@@ -390,11 +386,10 @@ public class ControlTimeSliding {
 		return constraintNode;
 	}
 
-	private void checkEncryptionAlgoExpirationDate(final XmlDom token, final XmlNode infoContainerNode, final String message) {
-
-		String encryptionAlgo = token.getValue(ValidationXPathQueryHolder.XP_ENCRYPTION_ALGO_USED_TO_SIGN_THIS_TOKEN);
+	private void checkEncryptionAlgoExpirationDate(final XmlBasicSignatureType basicSignature, final XmlNode infoContainerNode, final String message) {
+		String encryptionAlgo = basicSignature.getEncryptionAlgoUsedToSignThisToken();
 		encryptionAlgo = RuleUtils.canonicalizeEncryptionAlgo(encryptionAlgo);
-		final String encryptionKeyLength = token.getValue(ValidationXPathQueryHolder.XP_KEY_LENGTH_USED_TO_SIGN_THIS_TOKEN);
+		final String encryptionKeyLength = basicSignature.getKeyLengthUsedToSignThisToken();
 		final String algoWithKeyLength = encryptionAlgo + encryptionKeyLength;
 
 		final Date algoExpirationDate = constraintData.getAlgorithmExpirationDate(algoWithKeyLength);
@@ -407,9 +402,8 @@ public class ControlTimeSliding {
 		}
 	}
 
-	private void checkDigestAlgoExpirationDate(final XmlDom token, final XmlNode infoContainerNode, final String message) {
-
-		String digestAlgo = token.getValue(ValidationXPathQueryHolder.XP_DIGEST_ALGO_USED_TO_SIGN_THIS_TOKEN);
+	private void checkDigestAlgoExpirationDate(final XmlBasicSignatureType basicSignature, final XmlNode infoContainerNode, final String message) {
+		String digestAlgo = basicSignature.getDigestAlgoUsedToSignThisToken();
 		digestAlgo = RuleUtils.canonicalizeSignatureAlgo(digestAlgo);
 		final Date algoExpirationDate = constraintData.getAlgorithmExpirationDate(digestAlgo);
 		if ((algoExpirationDate != null) && controlTime.after(algoExpirationDate)) {
@@ -419,5 +413,17 @@ public class ControlTimeSliding {
 			infoContainerNode.addChild(NodeName.INFO, message);
 			infoContainerNode.addChild(NodeName.INFO).setAttribute(AttributeValue.ALGORITHM_EXPIRATION_DATE, formatedCertAlgoExpirationDate);
 		}
+	}
+
+	private boolean isServiceStatusUndersupervision(final String status) {
+		return TSLConstant.SERVICE_STATUS_UNDERSUPERVISION.equals(status) || TSLConstant.SERVICE_STATUS_UNDERSUPERVISION_119612.equals(status);
+	}
+
+	private boolean isServiceStatusSupervisionInCessation(final String status) {
+		return TSLConstant.SERVICE_STATUS_SUPERVISIONINCESSATION.equals(status) || TSLConstant.SERVICE_STATUS_SUPERVISIONINCESSATION_119612.equals(status);
+	}
+
+	private boolean isServiceStatusAccredited(final String status) {
+		return TSLConstant.SERVICE_STATUS_ACCREDITED.equals(status) || TSLConstant.SERVICE_STATUS_ACCREDITED_119612.equals(status);
 	}
 }
