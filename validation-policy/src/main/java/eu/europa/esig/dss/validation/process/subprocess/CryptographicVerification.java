@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.subprocess;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -31,7 +31,6 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.ValidationXPathQueryHolder;
 import eu.europa.esig.dss.validation.report.Conclusion;
 
 /**
@@ -80,7 +79,7 @@ public class CryptographicVerification {
 	 */
 	private ValidationPolicy constraintData;
 
-	private XmlDom contextElement;
+	private TokenProxy contextElement;
 
 	/**
 	 * This node is used to add the constraint nodes.
@@ -172,7 +171,7 @@ public class CryptographicVerification {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_CV_IRDOF);
-		final boolean referenceDataFound = contextElement.getBoolValue(ValidationXPathQueryHolder.XP_REFERENCE_DATA_FOUND);
+		final boolean referenceDataFound = contextElement.isReferenceDataFound();
 		constraint.setValue(referenceDataFound);
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.SIGNED_DATA_NOT_FOUND, MessageTag.BBB_CV_IRDOF_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -194,7 +193,7 @@ public class CryptographicVerification {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_CV_IRDOI);
-		final boolean referenceDataIntact = contextElement.getBoolValue(ValidationXPathQueryHolder.XP_REFERENCE_DATA_INTACT);
+		final boolean referenceDataIntact = contextElement.isReferenceDataIntact();
 		constraint.setValue(referenceDataIntact);
 		constraint.setIndications(Indication.INVALID, SubIndication.HASH_FAILURE, MessageTag.BBB_CV_IRDOI_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -218,7 +217,7 @@ public class CryptographicVerification {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_CV_ISI);
-		final boolean signatureIntact = contextElement.getBoolValue(ValidationXPathQueryHolder.XP_SIGNATURE_INTACT);
+		final boolean signatureIntact = contextElement.isSignatureIntact();
 		constraint.setValue(signatureIntact);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CRYPTO_FAILURE, MessageTag.BBB_CV_ISI_ANS);
 		constraint.setConclusionReceiver(conclusion);

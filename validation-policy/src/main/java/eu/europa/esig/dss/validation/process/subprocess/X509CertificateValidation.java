@@ -33,11 +33,11 @@ import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlKeyUsageBits;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.CertificateExpirationConstraint;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
@@ -83,22 +83,17 @@ public class X509CertificateValidation {
 	/**
 	 * See {@link ProcessParameters#getSignatureContext()}
 	 */
-	private XmlDom signatureContext;
+	private XmlSignature signatureContext;
 
 	/**
 	 * See {@link ProcessParameters#getContextElement()}
 	 */
-	protected XmlTimestampType contextElement;
+	protected TokenProxy contextElement;
 
 	/**
 	 * // TODO: (Bob: 2014 Mar 12)
 	 */
 	private String contextName;
-
-	/**
-	 * See {@link ProcessParameters#getSigningCertificateId()}
-	 */
-	private String signingCertificateId;
 
 	/**
 	 * See {@link ProcessParameters#getSigningCertificate()}
@@ -119,7 +114,6 @@ public class X509CertificateValidation {
 		this.contextElement = params.getContextElement();
 		this.currentTime = params.getCurrentTime();
 
-		this.signingCertificateId = params.getSigningCertificateId();
 		this.signingCertificate = params.getSigningCertificate();
 
 		isInitialised(params);
@@ -218,9 +212,9 @@ public class X509CertificateValidation {
 		 * The validation shall include revocation checking for each certificate in the chain:
 		 */
 
-		XmlCertificateChainType certificateChain = contextElement.getCertificateChain();
-		if ((certificateChain != null) && CollectionUtils.isNotEmpty(certificateChain.getChainCertificate())) {
-			for (XmlChainCertificate item : certificateChain.getChainCertificate()) {
+		List<XmlChainCertificate> certificateChain = contextElement.getCertificateChain();
+		if (CollectionUtils.isNotEmpty(certificateChain)) {
+			for (XmlChainCertificate item : certificateChain) {
 				final String certificateId = item.getId();
 				XmlCertificate xmlCertificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 
@@ -231,7 +225,7 @@ public class X509CertificateValidation {
 
 				final String subContext;
 				// The case of other certificates then the signing certificate:
-				if (!signingCertificateId.equals(certificateId)) {
+				if (!signingCertificate.getId().equals(certificateId)) {
 
 					subContext = NodeName.CA_CERTIFICATE;
 					// The check is already done for the signing certificate.
@@ -298,7 +292,7 @@ public class X509CertificateValidation {
 					final Date revocationDatetime = revocation.getDateTime();
 
 					// The case of the signing certificate:
-					if (signingCertificateId.equals(certificateId)) {
+					if (signingCertificate.getId().equals(certificateId)) {
 
 						if (!checkSigningCertificateRevokedConstraint(conclusion, certificateId, revocationStatus, revocationReason, revocationDatetime, subContext)) {
 							return conclusion;
@@ -379,10 +373,10 @@ public class X509CertificateValidation {
 		 * 5) Apply the cryptographic constraints to the chain. If the chain does not match these constraints, set the
 		 * current status to INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE and go to step 2.
 		 */
-		final String lastChainCertId = contextElement.getValue("./CertificateChain/ChainCertificate[last()]/@Id");
-		for (final XmlDom certToken : certificateChainXmlDom) {
+		final String lastChainCertId = contextElement.getLastChainCertificateId();
+		for (final XmlChainCertificate certToken : certificateChain) {
 
-			final String certificateId = certToken.getValue("./@Id");
+			final String certificateId = certToken.getId();
 			if (certificateId.equals(lastChainCertId) && trustedProspectiveCertificateChain) {
 
 				/**
@@ -393,7 +387,7 @@ public class X509CertificateValidation {
 			}
 
 			final XmlCertificate certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
-			final String subContext = certificateId.equals(signingCertificateId) ? NodeName.SIGNING_CERTIFICATE : NodeName.CA_CERTIFICATE;
+			final String subContext = certificateId.equals(signingCertificate.getId()) ? NodeName.SIGNING_CERTIFICATE : NodeName.CA_CERTIFICATE;
 
 			// certificate signature cryptographic constraints validation
 			if (!checkCertificateCryptographicConstraint(conclusion, certificate.getBasicSignature(), contextName, subContext)) {
@@ -475,15 +469,9 @@ public class X509CertificateValidation {
 	}
 
 	protected boolean isTrustedProspectiveCertificateChain(final ProcessParameters params) {
-
-		final String lastChainCertId = contextElement.getValue("./CertificateChain/ChainCertificate[last()]/@Id");
-		final XmlDom lastChainCertificate = params.getCertificate(lastChainCertId);
-		boolean lastChainCertificateTrusted = false;
-		if (lastChainCertificate != null) {
-
-			lastChainCertificateTrusted = lastChainCertificate.getBoolValue("./Trusted/text()");
-		}
-		return lastChainCertificateTrusted;
+		final String lastChainCertId = contextElement.getLastChainCertificateId();
+		final XmlCertificate lastChainCertificate = diagnosticData.getUsedCertificateByIdNullSafe(lastChainCertId);
+		return lastChainCertificate.isTrusted();
 	}
 
 	/**
@@ -744,7 +732,7 @@ public class X509CertificateValidation {
 	 */
 	private boolean checkSigningCertificateTSLValidityConstraint(final Conclusion conclusion, String certificateId, final XmlCertificate xmlCertificate) {
 
-		final String trustedSource = certificateXmlDom.getValue("./CertificateChain/ChainCertificate[last()]/Source/text()");
+		final String trustedSource = xmlCertificate.getValue("./CertificateChain/ChainCertificate[last()]/Source/text()");
 		if (CertificateSourceType.TRUSTED_STORE.name().equals(trustedSource)) {
 			return true;
 		}

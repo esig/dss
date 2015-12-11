@@ -28,7 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
@@ -92,7 +93,7 @@ public class PastSignatureValidation {
 	 * @param currentTimeSignatureConclusion
 	 * @param context
 	 */
-	public PastSignatureValidationConclusion run(final ProcessParameters params, final XmlTimestampType signature, final XmlDom currentTimeSignatureConclusion, final String context) {
+	public PastSignatureValidationConclusion run(final ProcessParameters params, final TokenProxy token, final XmlDom currentTimeSignatureConclusion, final String context) {
 
 		this.contextName = context;
 		prepareParameters(params);
@@ -101,22 +102,22 @@ public class PastSignatureValidation {
 		pastSignatureValidationData = new XmlNode(NodeName.PAST_SIGNATURE_VALIDATION_DATA);
 		pastSignatureValidationData.setNameSpace(XmlDom.NAMESPACE);
 
-		final PastSignatureValidationConclusion conclusion = process(params, signature, currentTimeSignatureConclusion);
+		final PastSignatureValidationConclusion conclusion = process(params, token, currentTimeSignatureConclusion);
 
 		conclusion.setValidationData(pastSignatureValidationData);
 		return conclusion;
 	}
 
-	private PastSignatureValidationConclusion process(final ProcessParameters params, final XmlTimestampType signature, final XmlDom currentTimeSignatureConclusion) {
+	private PastSignatureValidationConclusion process(final ProcessParameters params, final TokenProxy token, final XmlDom currentTimeSignatureConclusion) {
 
 		final PastSignatureValidationConclusion conclusion = new PastSignatureValidationConclusion();
 
-		final String signatureId = signature.getId();
+		final String signatureId = token.getId();
 
 		pastSignatureValidationData.setAttribute(AttributeName.ID, signatureId);
 
-		final String currentTimeIndication = currentTimeSignatureConclusion.getValue("./Indication/text()");
-		final String currentTimeSubIndication = currentTimeSignatureConclusion.getValue("./SubIndication/text()");
+		final Indication currentTimeIndication =  Indication.valueOf(currentTimeSignatureConclusion.getValue("./Indication/text()"));
+		final SubIndication currentTimeSubIndication = SubIndication.valueOf(currentTimeSignatureConclusion.getValue("./SubIndication/text()"));
 
 		/**
 		 * 9.2.4.4 Processing<br>
@@ -132,7 +133,7 @@ public class PastSignatureValidation {
 
 		// --> run the past certificate validation
 		final PastCertificateValidation pcv = new PastCertificateValidation();
-		final PastCertificateValidationConclusion pcvConclusion = pcv.run(params, signature, contextName);
+		final PastCertificateValidationConclusion pcvConclusion = pcv.run(params, token, contextName);
 
 		pastSignatureValidationData.addChild(pcvConclusion.getValidationData());
 
@@ -150,11 +151,10 @@ public class PastSignatureValidation {
 
 			returnedPcvIndication = constraintNode.addChild(NodeName.ERROR, MessageTag.PSV_IPCVC_ANS);
 		}
-		returnedPcvIndication.setAttribute(NodeName.INDICATION, pcvConclusion.getIndication());
-		final String pcvSubIndication = pcvConclusion.getSubIndication();
+		returnedPcvIndication.setAttribute(NodeName.INDICATION, pcvConclusion.getIndication().name());
+		final SubIndication pcvSubIndication = pcvConclusion.getSubIndication();
 		if (pcvSubIndication != null) {
-
-			returnedPcvIndication.setAttribute(NodeName.SUB_INDICATION, pcvSubIndication);
+			returnedPcvIndication.setAttribute(NodeName.SUB_INDICATION, pcvSubIndication.name());
 		}
 		if (controlTime != null) {
 
@@ -211,10 +211,9 @@ public class PastSignatureValidation {
 				 * --- a) If best-signature-time is before the issuance date of the signer's certificate (notBefore field),
 				 * terminate with INVALID/NOT_YET_VALID.<br>
 				 */
-
-				final String signingCertId = signature.getValue("./SigningCertificate/@Id");
-				final XmlDom signingCert = params.getCertificate(signingCertId);
-				final Date notBefore = signingCert.getTimeValue("./NotBefore/text()");
+				final String signingCertId = token.getSigningCertificateId();
+				final XmlCertificate signingCert =  params.getDiagnosticData().getUsedCertificateByIdNullSafe(signingCertId);
+				final Date notBefore = signingCert.getNotBefore();
 
 				if (bestSignatureTime.before(notBefore)) {
 

@@ -30,7 +30,8 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
@@ -141,7 +142,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 	 * @param signatureXmlDom {@code XmlDom} representation of the signature to validate
 	 * @return {@code PastCertificateValidationConclusion} including information collected during the validation process.
 	 */
-	public PastCertificateValidationConclusion run(final ProcessParameters params, final XmlTimestampType signatureXmlDom, final String context) {
+	public PastCertificateValidationConclusion run(final ProcessParameters params, final TokenProxy token, final String context) {
 
 		this.contextName = context;
 		prepareParameters(params);
@@ -150,7 +151,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		validationDataXmlNode = new XmlNode(NodeName.PAST_CERT_VALIDATION_DATA);
 		validationDataXmlNode.setNameSpace(XmlDom.NAMESPACE);
 
-		contextElement = signatureXmlDom;
+		contextElement = token;
 
 		final PastCertificateValidationConclusion conclusion = process(params);
 
@@ -169,7 +170,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 		final PastCertificateValidationConclusion conclusion = new PastCertificateValidationConclusion();
 
-		final XmlDom certificateChainXmlDom = contextElement.getElement("./CertificateChain");
+		final List<XmlChainCertificate> certificateChain = contextElement.getCertificateChain();
 
 		/**
 		 * 9.2.1.4 Processing<br>
@@ -186,7 +187,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 		// The current status is not used in this implementation because the DSS framework build just one chain.
 
-		final String signingCertificateId = certificateChainXmlDom.getValue("./ChainCertificate[1]/@Id");
+		final String signingCertificateId = contextElement.getFirstChainCertificateId();
 
 		validationDataXmlNode.setAttribute(AttributeValue.CERTIFICATE_ID, signingCertificateId);
 
@@ -197,7 +198,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 		XmlNode constraintNode = addConstraint(MessageTag.BBB_XCV_CCCBB);
 
-		final String trustedAnchorId = certificateChainXmlDom.getValue("./ChainCertificate[last()]/@Id");
+		final String trustedAnchorId = contextElement.getLastChainCertificateId();
 
 		XmlCertificate trustedAnchor = diagnosticData.getUsedCertificateByIdNullSafe(trustedAnchorId);
 		boolean isLastTrusted = trustedAnchor.isTrusted();
@@ -222,12 +223,11 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		 * - a date from the intersection of the validity intervals of all the certificates in the prospective chain.<br>
 		 * <b>The validation shall not include revocation checking</b>:<br>
 		 */
-		final List<XmlDom> certChain = certificateChainXmlDom.getElements("./ChainCertificate");
 		Date intersectionNotBefore = null;
 		Date intersectionNotAfter = null;
-		for (XmlDom certToken : certChain) {
+		for (XmlChainCertificate certToken : certificateChain) {
 
-			final String certificateId = certToken.getValue("./@Id");
+			final String certificateId = certToken.getId();
 			final XmlCertificate certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 
 			final boolean isTrusted = certificate.isTrusted();
@@ -345,7 +345,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		 */
 
 		final ControlTimeSliding controlTimeSliding = new ControlTimeSliding();
-		final ControlTimeSlidingConclusion ctsConclusion = controlTimeSliding.run(params, certificateChainXmlDom);
+		final ControlTimeSlidingConclusion ctsConclusion = controlTimeSliding.run(params, certificateChain);
 
 		validationDataXmlNode.addChild(ctsConclusion.getValidationData());
 

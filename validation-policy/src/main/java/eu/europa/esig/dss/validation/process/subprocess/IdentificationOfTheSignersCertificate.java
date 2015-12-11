@@ -24,6 +24,8 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -76,7 +78,7 @@ public class IdentificationOfTheSignersCertificate {
 	/**
 	 * See {@link ProcessParameters#getContextElement()}
 	 */
-	private XmlDom contextElement;
+	private TokenProxy contextElement;
 
 	/**
 	 * This node is used to add the constraint nodes.
@@ -147,23 +149,21 @@ public class IdentificationOfTheSignersCertificate {
 		final Conclusion conclusion = new Conclusion();
 
 		// The signing certificate Id and the signing certificate are reset.
-		params.setSigningCertificateId(null);
 		params.setSigningCertificate(null);
 
-		final String signingCertificateId = contextElement.getValue("./SigningCertificate/@Id");
-		final XmlDom signingCertificateXmlDom = params.getCertificate(signingCertificateId);
-		final boolean signingCertificateRecognised = signingCertificateXmlDom != null;
+		final String signingCertificateId = contextElement.getSigningCertificateId();
+		XmlCertificate xmlCertificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
+		final boolean signingCertificateRecognised = xmlCertificate != null;
 		if (!checkRecognitionConstraint(conclusion, signingCertificateRecognised, signingCertificateId)) {
 			return conclusion;
 		}
 		/**
 		 * The signing certificate Id and the signing certificate are saved for further use.
 		 */
-		params.setSigningCertificateId(signingCertificateId);
-		params.setSigningCertificate(signingCertificateXmlDom);
+		params.setSigningCertificate(xmlCertificate);
 
 		Constraint constraint = null;
-		final String signedElement = contextElement.getValue("./SigningCertificate/Signed/text()");
+		final String signedElement = contextElement.getSigningCertificateSigned();
 		if (StringUtils.isNotEmpty(signedElement)) {
 
 			constraint = params.getCurrentValidationPolicy().getSigningCertificateSignedConstraint(contextName);
@@ -240,7 +240,7 @@ public class IdentificationOfTheSignersCertificate {
 			return true;
 		}
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISASCP);
-		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/AttributePresent/text()");
+		final boolean digestValueMatch = contextElement.isAttributePresent();
 		constraint.setValue(digestValueMatch);
 		constraint.setIndications(Indication.INVALID, SubIndication.FORMAT_FAILURE, MessageTag.BBB_ICS_ISASCP_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -261,7 +261,7 @@ public class IdentificationOfTheSignersCertificate {
 			return true;
 		}
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISACDP);
-		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/DigestValuePresent/text()");
+		final boolean digestValueMatch = contextElement.isDigestValuePresent();
 		constraint.setValue(digestValueMatch);
 		constraint.setIndications(Indication.INVALID, SubIndication.FORMAT_FAILURE, MessageTag.BBB_ICS_ISACDP_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -308,7 +308,7 @@ public class IdentificationOfTheSignersCertificate {
 			return true;
 		}
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ICDVV);
-		final boolean digestValueMatch = contextElement.getBoolValue("./SigningCertificate/DigestValueMatch/text()");
+		final boolean digestValueMatch = contextElement.isDigestValueMatch();
 		constraint.setValue(digestValueMatch);
 		constraint.setIndications(Indication.INVALID, SubIndication.FORMAT_FAILURE, MessageTag.BBB_ICS_ICDVV_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -344,7 +344,7 @@ public class IdentificationOfTheSignersCertificate {
 			return true;
 		}
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_AIDNASNE);
-		final boolean issuerSerialMatch = contextElement.getBoolValue("./SigningCertificate/IssuerSerialMatch/text()");
+		final boolean issuerSerialMatch = contextElement.isIssuerSerialMatch();
 		constraint.setValue(issuerSerialMatch);
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
 		constraint.setConclusionReceiver(conclusion);

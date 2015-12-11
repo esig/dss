@@ -29,8 +29,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.validation.SignatureWrapper;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -228,7 +231,7 @@ public class LongTermValidation {
 		// --> This is not done in the 102853 implementation. The DSS user can extend the signature by adding his own
 		// code.
 
-		final List<XmlDom> certificates = params.getCertPool().getElements("./Certificate");
+		final List<XmlCertificate> certificates = params.getDiagnosticData().getUsedCertificates();
 		//!! poe.initialisePOE(signature, certificates, params.getCurrentTime());
 
 		/**
@@ -368,7 +371,7 @@ public class LongTermValidation {
 
 		final PastSignatureValidation pastSignatureValidation = new PastSignatureValidation();
 
-		final PastSignatureValidationConclusion psvConclusion = pastSignatureValidation.run(params, signature, adestSignatureConclusion, NodeName.MAIN_SIGNATURE);
+		final PastSignatureValidationConclusion psvConclusion = pastSignatureValidation.run(params, new SignatureWrapper(signature), adestSignatureConclusion, NodeName.MAIN_SIGNATURE);
 
 		signatureNode.addChild(psvConclusion.getValidationData());
 		/**
@@ -468,7 +471,7 @@ public class LongTermValidation {
 					 */
 
 					final PastSignatureValidation psvp = new PastSignatureValidation();
-					final PastSignatureValidationConclusion psvConclusion = psvp.run(params, timestamp, timestampConclusion, NodeName.TIMESTAMP);
+					final PastSignatureValidationConclusion psvConclusion = psvp.run(params, new TimestampWrapper(timestamp), timestampConclusion, NodeName.TIMESTAMP);
 
 					processNode.addChild(psvConclusion.getValidationData());
 

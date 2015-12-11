@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
@@ -95,7 +96,7 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * See {@link ProcessParameters#getSignatureContext()}
 	 */
-	private XmlDom signatureContext;
+	private XmlSignature signatureContext;
 
 	/**
 	 * This node is used to add the constraint nodes.
@@ -395,8 +396,8 @@ public class SignatureAcceptanceValidation {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPSTP);
-		final String signingTime = signatureContext.getValue("./DateTime/text()");
-		constraint.setValue(StringUtils.isNotBlank(signingTime));
+		final Date signingTime = signatureContext.getDateTime();
+		constraint.setValue(signingTime != null);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPSTP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -416,7 +417,7 @@ public class SignatureAcceptanceValidation {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPCTP);
-		final String contentType = signatureContext.getValue("./ContentType/text()");
+		final String contentType = signatureContext.getContentType();
 		constraint.setValue(contentType);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTP_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -437,7 +438,7 @@ public class SignatureAcceptanceValidation {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPCHP);
-		final String contentHints = signatureContext.getValue("./ContentHints/text()");
+		final String contentHints = signatureContext.getContentHints();
 		constraint.setValue(contentHints);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCHP_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -458,7 +459,7 @@ public class SignatureAcceptanceValidation {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPCIP);
-		final String contentIdentifier = signatureContext.getValue("./ContentIdentifier/text()");
+		final String contentIdentifier = signatureContext.getContentIdentifier();
 		constraint.setValue(contentIdentifier);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCIP_ANS);
 		//constraint.setAttribute()

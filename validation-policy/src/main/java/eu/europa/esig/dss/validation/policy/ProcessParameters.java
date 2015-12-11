@@ -24,7 +24,9 @@ import java.util.Date;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.process.POEExtraction;
 import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
@@ -64,18 +66,11 @@ public class ProcessParameters {
 	protected Date currentTime;
 
 	/**
-	 * This variable contains the Signing Certificate Id. It is initialised by
-	 * IdentificationOfTheSignersCertificate sub process.
-	 * This variable is different for each context.
-	 */
-	private String signingCertificateId;
-
-	/**
 	 * This variable contains the Signing Certificate Node from diagnostic data. It is initialised by
 	 * IdentificationOfTheSignersCertificate sub process.
 	 * This variable is different for each context.
 	 */
-	private XmlDom signingCertificate;
+	private XmlCertificate signingCertificate;
 
 	/**
 	 * Represents the current main signature DOM element being validated. This element provides general information used
@@ -88,12 +83,7 @@ public class ProcessParameters {
 	 * in the case of main signature validation {@code contextElement} is the signature element being validated;<br>
 	 * in case of Timestamp signature validation {@code contextElement} is the timestamp element being validated.
 	 */
-	protected XmlDom contextElement;
-
-	/**
-	 * Indicates the current validation element like: MainSignature, SigningCertificate...
-	 */
-	protected String contextName;
+	protected TokenProxy contextElement;
 
 	/**
 	 * This {@code XmlDom} is returned by the Basic Building Blocks process (see BasicBuildingBlocks) and
@@ -190,29 +180,11 @@ public class ProcessParameters {
 	}
 
 	/**
-	 * See {@link #signingCertificateId}
-	 *
-	 * @return
-	 */
-	public String getSigningCertificateId() {
-		return signingCertificateId;
-	}
-
-	/**
-	 * See {@link #signingCertificateId}
-	 *
-	 * @return
-	 */
-	public void setSigningCertificateId(final String signingCertificateId) {
-		this.signingCertificateId = signingCertificateId;
-	}
-
-	/**
 	 * See {@link #signingCertificate}
 	 *
 	 * @return
 	 */
-	public XmlDom getSigningCertificate() {
+	public XmlCertificate getSigningCertificate() {
 		return signingCertificate;
 	}
 
@@ -221,7 +193,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public void setSigningCertificate(final XmlDom signingCertificate) {
+	public void setSigningCertificate(final XmlCertificate signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}
 
@@ -361,7 +333,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public XmlDom getContextElement() {
+	public TokenProxy getContextElement() {
 		return contextElement;
 	}
 
@@ -370,26 +342,8 @@ public class ProcessParameters {
 	 *
 	 * @param contextElement
 	 */
-	public void setContextElement(final XmlDom contextElement) {
+	public void setContextElement(final TokenProxy contextElement) {
 		this.contextElement = contextElement;
-	}
-
-	/**
-	 * See {@link #contextElement}
-	 *
-	 * @return
-	 */
-	public String getContextName() {
-		return contextName;
-	}
-
-	/**
-	 * See {@link #contextElement}
-	 *
-	 * @param contextElement
-	 */
-	public void setContextName(final String contextElement) {
-		this.contextName = contextElement;
 	}
 
 	public POEExtraction getPOE() {
@@ -400,20 +354,4 @@ public class ProcessParameters {
 		this.poe = poe;
 	}
 
-	@Override
-	public String toString() {
-
-		try {
-
-			StringBuilder builder = new StringBuilder();
-			builder.append("currentTime: ").append(currentTime).append("\n");
-			builder.append("signingCertificateId: ").append(signingCertificateId).append("\n");
-			builder.append("contextName: ").append(contextName).append("\n");
-
-			return builder.toString();
-		} catch (Exception e) {
-
-			return super.toString();
-		}
-	}
 }

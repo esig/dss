@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.TSLConstant;
-import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
@@ -98,7 +98,7 @@ public class ControlTimeSliding {
 	 *
 	 * @param params
 	 */
-	public ControlTimeSlidingConclusion run(final ProcessParameters params, final XmlDom certificateChain) {
+	public ControlTimeSlidingConclusion run(final ProcessParameters params, final List<XmlChainCertificate> certificateChain) {
 
 		prepareParameters(params);
 		LOG.debug(this.getClass().getSimpleName() + ": start.");
@@ -121,38 +121,25 @@ public class ControlTimeSliding {
 	}
 
 	/**
-	 * This method returns the certificate id. This id is extracted either from the ChainCertificate, or Certificate.
-	 *
-	 * @param xmlDomObject
-	 * @return
-	 */
-	private String getCertificateId(final XmlDom xmlDomObject) {
-		final String certificateId = xmlDomObject.getValue("./@Id");
-		return certificateId;
-	}
-
-	/**
 	 * @param params
 	 * @param certificateChain
 	 * @return
 	 */
-	private ControlTimeSlidingConclusion process(final ProcessParameters params, final XmlDom certificateChain) {
+	private ControlTimeSlidingConclusion process(final ProcessParameters params, final List<XmlChainCertificate> certificateChainList) {
 
 		final ControlTimeSlidingConclusion conclusion = new ControlTimeSlidingConclusion();
 
-		final String signingCertificateId = certificateChain.getValue("./ChainCertificate[1]/@Id");
+		final String signingCertificateId = certificateChainList.get(0).getId();
 
-		final List<XmlDom> chainCertificates = certificateChain.getElements("./ChainCertificate");
-
-		Collections.reverse(chainCertificates);
+		Collections.reverse(certificateChainList);
 
 		/**
 		 * 2) For each certificate in the chain starting from the first certificate (the certificate issued by the trust
 		 * anchor), do the following:<br>
 		 */
-		for (final XmlDom chainCertificate : chainCertificates) {
+		for (final XmlChainCertificate chainCertificate : certificateChainList) {
 
-			final String certificateId = getCertificateId(chainCertificate);
+			final String certificateId = chainCertificate.getId();
 			final XmlNode certificateNode = controlTimeSlidingData.addChild(AttributeValue.CERTIFICATE, StringUtils.EMPTY);
 			certificateNode.setAttribute(AttributeValue.CERTIFICATE_ID, String.valueOf(certificateId));
 

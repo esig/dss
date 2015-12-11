@@ -989,4 +989,9 @@ public class DiagnosticDataWrapper {
 		return null;
 	}
 
+	public List<XmlCertificate> getUsedCertificates() {
+		XmlUsedCertificates usedCertificates = diagnosticData.getUsedCertificates();
+		return usedCertificates.getCertificate();
+	}
+
 }

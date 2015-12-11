@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.subprocess;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyConstraint;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -45,11 +44,11 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
  * signature. The constraints and parameters may be initialized from any of the sources listed in clauses 4.2, 4.3 and 4.4.<br/>
  * 5.2.2 Inputs<br/>
  * Table 4: Inputs to the VCI process<br/>
- * - Input                          Requirement<br/>
- * - Signature                      Mandatory<br/>
- * - Signature Validation Policies  Optional<br/>
- * - Trusted-status Service Lists   Optional<br/>
- * - Local configuration            Optional<br/>
+ * - Input Requirement<br/>
+ * - Signature Mandatory<br/>
+ * - Signature Validation Policies Optional<br/>
+ * - Trusted-status Service Lists Optional<br/>
+ * - Local configuration Optional<br/>
  * 5.2.3 Outputs<br/>
  * In case of failure, the process outputs INDETERMINATE or INVALID with an indication explaining the reason(s) of failure.<br/>
  * In case of success, the process outputs the following:<br/>
@@ -60,7 +59,6 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
  * - Chain Constraints<br/>
  * - Cryptographic Constraints<br/>
  * - Signature Constraints<br/>
- *
  */
 public class ValidationContextInitialisation {
 
@@ -77,7 +75,7 @@ public class ValidationContextInitialisation {
 	/**
 	 * See {@link ProcessParameters#getSignatureContext()}
 	 */
-	private XmlDom signatureContext;
+	private XmlSignature signatureContext;
 
 	/**
 	 * This node is used to add the constraint nodes.
@@ -106,8 +104,10 @@ public class ValidationContextInitialisation {
 	/**
 	 * This method prepares the execution of the VCI process.
 	 *
-	 * @param params      validation process parameters
-	 * @param processNode the parent process {@code XmlNode} to use to include the validation information
+	 * @param params
+	 *            validation process parameters
+	 * @param processNode
+	 *            the parent process {@code XmlNode} to use to include the validation information
 	 * @return the {@code Conclusion} which indicates the result of the process
 	 */
 	public Conclusion run(final ProcessParameters params, final XmlNode processNode) {
@@ -134,7 +134,8 @@ public class ValidationContextInitialisation {
 	/**
 	 * This method implements VCI process.
 	 *
-	 * @param params validation process parameters
+	 * @param params
+	 *            validation process parameters
 	 * @return the {@code Conclusion} which indicates the result of the process
 	 */
 	private Conclusion process(final ProcessParameters params) {
@@ -143,28 +144,28 @@ public class ValidationContextInitialisation {
 
 		/**
 		 * 5.2.4 Processing
-         If the validation constraints and parameters have been initialized using an allowed set of signature validation policies
-         [i.2], [i.3] and if the signature has been created under one of these policies and also contains a commitment type
-         indication property/attribute, the specific commitment defined in the policy shall be selected using this attribute. The
-         clauses below describe the processing of these properties/attributes. The processing of additional sources for
-         initialization (e.g. local configuration) is out of the scope of the present document.
-         This implies that a signature policy referenced in a signature shall be known to the verifier and listed in the set of
-         acceptable policies. If the policy is unknown to the verifier, accepting a commitment type is not possible and may even
-         be dangerous. In this case, the SVA shall return INVALID/UNKNOWN_COMMITMENT_TYPE.
-         If the SVA cannot access a formal policy, the policy is not able to parse the policy file or the SVA cannot process the
-         policy for any other reason, it shall return INVALID/POLICY_PROCESSING_ERROR with an appropriate indication.
-         If the SVA cannot identify the policy to use, it shall return INDETERMINATE/ NO_POLICY.
-         5.2.4.1 Processing commitment type indication
-         If this signed property is present, it allows identifying the commitment type and thus affects all rules for validation,
-         which depend on the commitment type that shall be used in the validation context initialization.
-         ETSI
-         21 ETSI TS 102 853 V1.1.2 (2012-10)
-         5.2.4.1.1 XAdES Processing
-         If the signature is a XAdES signature, the SVA shall check that each xades:ObjectReference element within
-         the xades:CommitmentTypeIndication actually references a ds:Reference element present in the
-         signature. If any of these elements does not refer to one of the ds:Reference elements, then the SVA shall assume
-         that a format failure has occurred during the verification and return INVALID/FORMAT_FAILURE with an indication
-         that the validation failed to an invalid commitment type property.
+		 * If the validation constraints and parameters have been initialized using an allowed set of signature validation policies
+		 * [i.2], [i.3] and if the signature has been created under one of these policies and also contains a commitment type
+		 * indication property/attribute, the specific commitment defined in the policy shall be selected using this attribute. The
+		 * clauses below describe the processing of these properties/attributes. The processing of additional sources for
+		 * initialization (e.g. local configuration) is out of the scope of the present document.
+		 * This implies that a signature policy referenced in a signature shall be known to the verifier and listed in the set of
+		 * acceptable policies. If the policy is unknown to the verifier, accepting a commitment type is not possible and may even
+		 * be dangerous. In this case, the SVA shall return INVALID/UNKNOWN_COMMITMENT_TYPE.
+		 * If the SVA cannot access a formal policy, the policy is not able to parse the policy file or the SVA cannot process the
+		 * policy for any other reason, it shall return INVALID/POLICY_PROCESSING_ERROR with an appropriate indication.
+		 * If the SVA cannot identify the policy to use, it shall return INDETERMINATE/ NO_POLICY.
+		 * 5.2.4.1 Processing commitment type indication
+		 * If this signed property is present, it allows identifying the commitment type and thus affects all rules for validation,
+		 * which depend on the commitment type that shall be used in the validation context initialization.
+		 * ETSI
+		 * 21 ETSI TS 102 853 V1.1.2 (2012-10)
+		 * 5.2.4.1.1 XAdES Processing
+		 * If the signature is a XAdES signature, the SVA shall check that each xades:ObjectReference element within
+		 * the xades:CommitmentTypeIndication actually references a ds:Reference element present in the
+		 * signature. If any of these elements does not refer to one of the ds:Reference elements, then the SVA shall assume
+		 * that a format failure has occurred during the verification and return INVALID/FORMAT_FAILURE with an indication
+		 * that the validation failed to an invalid commitment type property.
 		 */
 
 		/**
@@ -221,7 +222,8 @@ public class ValidationContextInitialisation {
 	 * requirements by law or if being more constrained only be discovered in well known or pre-agreed
 	 * (driving) application contexts.
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkSignaturePolicyIdentifier(final Conclusion conclusion) {
@@ -234,14 +236,15 @@ public class ValidationContextInitialisation {
 		}
 
 		constraint.create(subProcessNode, MessageTag.BBB_VCI_ISPK);
-		String policyId = signatureContext.getValue("./Policy/Id/text()");
-		if (StringUtils.isBlank(policyId)) {
-			policyId = SignaturePolicy.NO_POLICY;
+		XmlPolicy policy = signatureContext.getPolicy();
+		if (policy != null) {
+			constraint.setIdentifier(policy.getId());
+			// TODO ??? constraint.setPolicyValidity(signatureContext.getBoolValue("./Policy/Status/text()"));
+			constraint.setProcessingError(policy.getProcessingError());
+			constraint.setNotice(policy.getNotice());
+		} else {
+			constraint.setIdentifier(SignaturePolicy.NO_POLICY);
 		}
-		constraint.setIdentifier(policyId);
-		constraint.setPolicyValidity(signatureContext.getBoolValue("./Policy/Status/text()"));
-		constraint.setProcessingError(signatureContext.getValue("./Policy/ProcessingError/text()"));
-		constraint.setNotice(signatureContext.getValue("./Policy/Notice/text()"));
 
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
 		constraint.setConclusionReceiver(conclusion);

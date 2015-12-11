@@ -31,6 +31,7 @@ import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.SignatureCryptographicConstraint;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -140,8 +141,7 @@ public class TimestampValidation {
 
 				// This defines the context of the execution of the following processes. The same sub-processes are used for
 				// signature and timestamp validation.
-				params.setContextName(NodeName.TIMESTAMP);
-				params.setContextElement(timestamp);
+				params.setContextElement(new TimestampWrapper(timestamp));
 
 				final String timestampId = timestamp.getId();
 				final String timestampType = timestamp.getType();
