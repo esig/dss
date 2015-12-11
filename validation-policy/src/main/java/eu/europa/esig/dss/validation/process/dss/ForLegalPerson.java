@@ -23,9 +23,7 @@ package eu.europa.esig.dss.validation.process.dss;
 import java.util.List;
 
 import eu.europa.esig.dss.TSLConstant;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.validation.policy.ProcessParameters;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.CertificateWrapper;
 
 /**
  * This class checks if the signer's certificate used in validating the signature is mandated to be issued by a
@@ -33,16 +31,13 @@ import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
  */
 public class ForLegalPerson {
 
-	private final ProcessParameters params;
-
 	/**
 	 * The default constructor with the policy object.
 	 *
 	 * @param params
 	 * @param constraintData
 	 */
-	public ForLegalPerson(ProcessParameters params) {
-		this.params = params;
+	public ForLegalPerson() {
 	}
 
 	/**
@@ -54,7 +49,7 @@ public class ForLegalPerson {
 	 *            the cert to be processed
 	 * @return
 	 */
-	public Boolean run(final XmlCertificate cert) {
+	public Boolean run(final CertificateWrapper cert) {
 		return process(cert);
 	}
 
@@ -65,11 +60,9 @@ public class ForLegalPerson {
 	 *            the cert to be processed
 	 * @return
 	 */
-	private boolean process(final XmlCertificate cert) {
+	private boolean process(final CertificateWrapper cert) {
 
-		DiagnosticDataWrapper diagnosticData = params.getDiagnosticData();
-
-		final List<String> qualifiers = diagnosticData.getCertificateTSPServiceQualifiers(cert);
+		final List<String> qualifiers = cert.getCertificateTSPServiceQualifiers();
 
 		/**
 		 * Mandates the signer's certificate used in validating the signature to be issued by a certificate authority

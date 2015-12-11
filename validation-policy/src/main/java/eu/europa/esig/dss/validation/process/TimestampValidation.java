@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.SignatureCryptographicConstraint;
@@ -71,7 +69,6 @@ public class TimestampValidation {
 	private Date currentTime;
 
 	private void prepareParameters(final ProcessParameters params) {
-
 		this.diagnosticData = params.getDiagnosticData();
 		this.currentTime = params.getCurrentTime();
 		isInitialised(params);
@@ -109,11 +106,11 @@ public class TimestampValidation {
 		prepareParameters(params);
 		LOG.debug(this.getClass().getSimpleName() + ": start.");
 
-		final List<XmlSignature> signatures = diagnosticData.getSignatures();
+		final List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 
 		final XmlNode timestampValidationDataNode = mainNode.addChild(NodeName.TIMESTAMP_VALIDATION_DATA);
 
-		for (final XmlSignature signature : signatures) {
+		for (final SignatureWrapper signature : signatures) {
 
 			final String type = signature.getType();
 			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
@@ -124,7 +121,7 @@ public class TimestampValidation {
 			constraintData = params.getCurrentValidationPolicy();
 
 			final String signatureId = signature.getId();
-			List<XmlTimestampType> timestamps = diagnosticData.getTimestampList(signatureId);
+			List<TimestampWrapper> timestamps = signature.getTimestampList();
 			if (timestamps.isEmpty()) {
 				continue;
 			}
@@ -135,13 +132,13 @@ public class TimestampValidation {
 			final XmlNode signatureNode = timestampValidationDataNode.addChild(NodeName.SIGNATURE);
 			signatureNode.setAttribute(AttributeName.ID, signatureId);
 
-			for (final XmlTimestampType timestamp : timestamps) {
+			for (final TimestampWrapper timestamp : timestamps) {
 
 				final Conclusion conclusion = new Conclusion();
 
 				// This defines the context of the execution of the following processes. The same sub-processes are used for
 				// signature and timestamp validation.
-				params.setContextElement(new TimestampWrapper(timestamp));
+				params.setContextElement(timestamp);
 
 				final String timestampId = timestamp.getId();
 				final String timestampType = timestamp.getType();
@@ -236,7 +233,7 @@ public class TimestampValidation {
 	 *            the parent process {@code XmlNode} to use to include the validation information
 	 * @return the {@code Conclusion} which indicates the result of the process
 	 */
-	private Conclusion runSAV(final XmlTimestampType timestamp, final XmlNode processNode) {
+	private Conclusion runSAV(final TimestampWrapper timestamp, final XmlNode processNode) {
 
 		/**
 		 * 5.5 Signature Acceptance Validation (SAV)
@@ -268,7 +265,7 @@ public class TimestampValidation {
 	 * @param subProcessNode
 	 * @return the {@code Conclusion} which indicates the result of the process.
 	 */
-	private Conclusion processSAV(final XmlTimestampType timestamp, final XmlNode subProcessNode) {
+	private Conclusion processSAV(final TimestampWrapper timestamp, final XmlNode subProcessNode) {
 
 		final Conclusion conclusion = new Conclusion();
 
@@ -277,12 +274,9 @@ public class TimestampValidation {
 
 			signatureConstraint.create(subProcessNode, MessageTag.ASCCM);
 			signatureConstraint.setCurrentTime(currentTime);
-			XmlBasicSignatureType basicSignature = timestamp.getBasicSignature();
-			if (basicSignature != null) {
-				signatureConstraint.setEncryptionAlgorithm(basicSignature.getEncryptionAlgoUsedToSignThisToken());
-				signatureConstraint.setDigestAlgorithm(basicSignature.getDigestAlgoUsedToSignThisToken());
-				signatureConstraint.setKeyLength(basicSignature.getKeyLengthUsedToSignThisToken());
-			}
+			signatureConstraint.setEncryptionAlgorithm(timestamp.getEncryptionAlgoUsedToSignThisToken());
+			signatureConstraint.setDigestAlgorithm(timestamp.getDigestAlgoUsedToSignThisToken());
+			signatureConstraint.setKeyLength(timestamp.getKeyLengthUsedToSignThisToken());
 			signatureConstraint.setIndications(Indication.INDETERMINATE, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.EMPTY);
 			signatureConstraint.setConclusionReceiver(conclusion);
 
@@ -297,12 +291,10 @@ public class TimestampValidation {
 
 			signingCertificateConstraint.create(subProcessNode, MessageTag.ASCCM);
 			signingCertificateConstraint.setCurrentTime(currentTime);
-			XmlBasicSignatureType basicSignature = timestamp.getBasicSignature();
-			if (basicSignature != null) { // TODO correct ? twice the same operations
-				signingCertificateConstraint.setEncryptionAlgorithm(basicSignature.getEncryptionAlgoUsedToSignThisToken());
-				signingCertificateConstraint.setDigestAlgorithm(basicSignature.getDigestAlgoUsedToSignThisToken());
-				signingCertificateConstraint.setKeyLength(basicSignature.getKeyLengthUsedToSignThisToken());
-			}
+			// TODO correct ? twice the same operations
+			signingCertificateConstraint.setEncryptionAlgorithm(timestamp.getEncryptionAlgoUsedToSignThisToken());
+			signingCertificateConstraint.setDigestAlgorithm(timestamp.getDigestAlgoUsedToSignThisToken());
+			signingCertificateConstraint.setKeyLength(timestamp.getKeyLengthUsedToSignThisToken());
 			signingCertificateConstraint.setIndications(Indication.INDETERMINATE, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.EMPTY);
 			signingCertificateConstraint.setConclusionReceiver(conclusion);
 

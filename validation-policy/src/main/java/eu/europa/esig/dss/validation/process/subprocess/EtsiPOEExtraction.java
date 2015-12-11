@@ -37,7 +37,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.process.POEExtraction;
@@ -157,7 +157,7 @@ public class EtsiPOEExtraction extends POEExtraction {
 	 * @param timestamp
 	 * @param certPool
 	 */
-	public void addPOE(final XmlTimestampType timestamp, final DiagnosticDataWrapper diagnosticData) {
+	public void addPOE(final TimestampWrapper timestamp, final DiagnosticDataWrapper diagnosticData) {
 
 		final Date date = timestamp.getProductionTime();
 		if (date == null) {

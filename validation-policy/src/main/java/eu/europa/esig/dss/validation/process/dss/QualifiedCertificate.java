@@ -23,9 +23,7 @@ package eu.europa.esig.dss.validation.process.dss;
 import java.util.List;
 
 import eu.europa.esig.dss.TSLConstant;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.validation.policy.ProcessParameters;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.CertificateWrapper;
 
 /**
  * A.2 Constraints on X.509 Certificate meta-data
@@ -34,15 +32,12 @@ import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
  */
 public class QualifiedCertificate {
 
-	private final ProcessParameters params;
-
 	/**
 	 * The default constructor with the params.
 	 *
 	 * @param params
 	 */
-	public QualifiedCertificate(final ProcessParameters params) {
-		this.params = params;
+	public QualifiedCertificate() {
 	}
 
 	/**
@@ -54,7 +49,7 @@ public class QualifiedCertificate {
 	 *            the certificate to be processed
 	 * @return
 	 */
-	public boolean run(final XmlCertificate cert) {
+	public boolean run(final CertificateWrapper cert) {
 		return process(cert);
 	}
 
@@ -65,7 +60,7 @@ public class QualifiedCertificate {
 	 *            The certificate to be processed
 	 * @return
 	 */
-	private boolean process(final XmlCertificate certificate) {
+	private boolean process(final CertificateWrapper certificate) {
 		if (certificate == null) {
 			return false;
 		}
@@ -84,17 +79,15 @@ public class QualifiedCertificate {
 		 * 0.4.0.1456.1.1 or 0.4.0.1456.1.2);
 		 */
 
-		DiagnosticDataWrapper diagnosticData = params.getDiagnosticData();
-
-		boolean isQCC = diagnosticData.isCertificateQCC(certificate);
-		boolean isQCP = diagnosticData.isCertificateQCP(certificate);
-		boolean isQCPPlus = diagnosticData.isCertificateQCPPlus(certificate);
+		boolean isQCC = certificate.isCertificateQCC();
+		boolean isQCP = certificate.isCertificateQCP();
+		boolean isQCPPlus = certificate.isCertificateQCPPlus();
 
 		/**
 		 * • The content of a Trusted service Status List;<br>
 		 * • The content of a Trusted List through information provided in the Sie field of the applicable service entry;
 		 */
-		final List<String> qualifiers = diagnosticData.getCertificateTSPServiceQualifiers(certificate);
+		final List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 		final boolean isSIE = qualifiers.contains(TSLConstant.QC_STATEMENT) || qualifiers.contains(TSLConstant.QC_STATEMENT_119612);
 
 		/**

@@ -1,7 +1,10 @@
 package eu.europa.esig.dss.validation;
 
+import java.util.Date;
+
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 
@@ -11,6 +14,11 @@ public class TimestampWrapper extends AsbtractTokenProxy {
 
 	public TimestampWrapper(XmlTimestampType timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	@Override
+	public String getId() {
+		return timestamp.getId();
 	}
 
 	@Override
@@ -28,9 +36,28 @@ public class TimestampWrapper extends AsbtractTokenProxy {
 		return timestamp.getSigningCertificate();
 	}
 
-	@Override
-	public String getId() {
-		return timestamp.getId();
+	public String getType() {
+		return timestamp.getType();
+	}
+
+	public Date getProductionTime() {
+		return timestamp.getProductionTime();
+	}
+
+	public boolean isMessageImprintDataFound() {
+		return timestamp.isMessageImprintDataFound();
+	}
+
+	public boolean isMessageImprintDataIntact() {
+		return timestamp.isMessageImprintDataIntact();
+	}
+
+	public String getSignedDataDigestAlgo() {
+		return timestamp.getSignedDataDigestAlgo();
+	}
+
+	public XmlSignedObjectsType getSignedObjects() {
+		return timestamp.getSignedObjects();
 	}
 
 }

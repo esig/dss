@@ -23,24 +23,20 @@ package eu.europa.esig.dss.validation.process.dss;
 import java.util.List;
 
 import eu.europa.esig.dss.TSLConstant;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.validation.policy.ProcessParameters;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.CertificateWrapper;
 
 /**
  * This class checks if the signing certificate is mandated to be supported by SSCD device.
  */
 public class SSCD {
 
-	private final ProcessParameters params;
 
 	/**
 	 * The default constructor with the policy object.
 	 *
 	 * @param constraintData
 	 */
-	public SSCD(final ProcessParameters params) {
-		this.params = params;
+	public SSCD() {
 	}
 
 	/**
@@ -52,7 +48,7 @@ public class SSCD {
 	 *            the certificate to be processed
 	 * @return
 	 */
-	public boolean run(final XmlCertificate cert) {
+	public boolean run(final CertificateWrapper cert) {
 		return process(cert);
 	}
 
@@ -63,7 +59,7 @@ public class SSCD {
 	 *            the certificate to be processed
 	 * @return
 	 */
-	private boolean process(final XmlCertificate certificate) {
+	private boolean process(final CertificateWrapper certificate) {
 		if (certificate == null) {
 			return false;
 		}
@@ -74,15 +70,14 @@ public class SSCD {
 		 * TS 101 862 [5];
 		 */
 
-		DiagnosticDataWrapper diagnosticData = params.getDiagnosticData();
 
-		final boolean qcSSCD = diagnosticData.isCertificateQCSSCD(certificate);
+		final boolean qcSSCD = certificate.isCertificateQCSSCD();
 
 		/**
 		 * • QCP+ certificate policy OID being indicated in the signer's certificate policies extension (i.e.
 		 * 0.4.0.1456.1.1);
 		 */
-		final boolean qcpPlus = diagnosticData.isCertificateQCPPlus(certificate);
+		final boolean qcpPlus = certificate.isCertificateQCPPlus();
 
 		/**
 		 * • The content of a Trusted service Status List;<br>
@@ -90,7 +85,7 @@ public class SSCD {
 		 * or
 		 */
 
-		final List<String> qualifiers = diagnosticData.getCertificateTSPServiceQualifiers(certificate);
+		final List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 
 		final boolean sie = qualifiers.contains(TSLConstant.QC_WITH_SSCD) || qualifiers.contains(TSLConstant.QC_WITH_SSCD_119612);
 		// TODO To be clarified with Olivier D.

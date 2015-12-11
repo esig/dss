@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -212,7 +212,7 @@ public class PastSignatureValidation {
 				 * terminate with INVALID/NOT_YET_VALID.<br>
 				 */
 				final String signingCertId = token.getSigningCertificateId();
-				final XmlCertificate signingCert =  params.getDiagnosticData().getUsedCertificateByIdNullSafe(signingCertId);
+				final CertificateWrapper signingCert =  params.getDiagnosticData().getUsedCertificateByIdNullSafe(signingCertId);
 				final Date notBefore = signingCert.getNotBefore();
 
 				if (bestSignatureTime.before(notBefore)) {

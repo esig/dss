@@ -29,9 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
@@ -53,22 +50,17 @@ import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * 9.3 Long Term Validation Process<br>
- *
  * 9.3.1 Description<br>
- *
  * An AdES-A (Archival Electronic Signature) is built on an XL signature (EXtended Long Electronic Signature). Several
  * unsigned attributes may be present in such signatures:<br>
- *
  * • Time-stamp(s) on the signature value (AdES-T).<br>
  * • Attributes with references of validation data (AdES-C).<br>
  * • Time-stamp(s) on the references of validation data (AdES-XT2).<br>
  * • Time-stamp(s) on the references of validation data, the signature value and the signature time stamp (AdES-XT1).<br>
  * • Attributes with the values of validation data (AdES-XL).<br>
  * • Archive time-stamp(s) on the whole signature except the last archive time-stamp (AdES-A).<br>
- *
  * The process described in this clause is able to validate any of the forms above but also any basic form (namely BES
  * and EPES).<br>
- *
  * The process handles the AdES signature as a succession of layers of signatures. Starting from the most external layer
  * (e.g. the last archive-time-stamp) to the most inner layer (the signature value to validate), the process performs
  * the basic signature validation algorithm (see clause 8 for the signature itself and clause 7 for the time-stamps). If
@@ -76,13 +68,10 @@ import eu.europa.esig.dss.x509.TimestampType;
  * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, we perform the past certificate validation which will output a
  * control-time in the past. The layer is accepted as VALID, provided we have a proof of existence before this
  * control-time.<br>
- *
  * The process does not necessarily fail when an intermediate time-stamp gives the status INVALID or INDETERMINATE
  * unless some validation constraints force the process to do so. If the validity of the signature can be ascertained
  * despite some time-stamps which were ignored due to INVALID (or INDETERLINATE) status, the SVA shall report this
  * information to the DA. What the DA does with this information is out of the scope of the present document.
- *
- *
  */
 public class LongTermValidation {
 
@@ -143,7 +132,6 @@ public class LongTermValidation {
 
 	/**
 	 * This method lunches the long term validation process.
-	 *
 	 * 9.3.2 Input<br>
 	 * Signature ..................... Mandatory<br>
 	 * Signed data object (s) ........ Optional<br>
@@ -152,11 +140,9 @@ public class LongTermValidation {
 	 * Local configuration ........... Optional<br>
 	 * A set of POEs ................. Optional<br>
 	 * Signer's Certificate .......... Optional<br>
-	 *
 	 * 9.3.3 Output<br>
 	 * The main output of this signature validation process is a status indicating the validity of the signature. This
 	 * status may be accompanied by additional information (see clause 4).<br>
-	 *
 	 * 9.3.4 Processing<br>
 	 * The following steps shall be performed:
 	 *
@@ -171,9 +157,9 @@ public class LongTermValidation {
 
 		XmlNode longTermValidationData = mainNode.addChild(NodeName.LONG_TERM_VALIDATION_DATA);
 
-		final List<XmlSignature> signatures = diagnosticData.getSignatures();
+		final List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 
-		for (final XmlSignature signature : signatures) {
+		for (final SignatureWrapper signature : signatures) {
 
 			final String signatureId = signature.getId();
 			final String type = signature.getType();
@@ -210,7 +196,6 @@ public class LongTermValidation {
 
 	/**
 	 * 9.3.4 Processing<br>
-	 *
 	 * The following steps shall be performed:<br>
 	 *
 	 * @param params
@@ -219,11 +204,10 @@ public class LongTermValidation {
 	 * @param adestSignatureValidationData
 	 * @return
 	 */
-	private boolean process(ProcessParameters params, XmlSignature signature, XmlDom signatureTimestampValidationData, XmlDom adestSignatureValidationData) {
+	private boolean process(ProcessParameters params, SignatureWrapper signature, XmlDom signatureTimestampValidationData, XmlDom adestSignatureValidationData) {
 
 		/**
 		 * 1) POE initialisation: Add a POE for each object in the signature at the current time to the set of POEs.<br>
-		 *
 		 * NOTE 1: The set of POE in the input may have been initialised from external sources (e.g. provided from an
 		 * external archiving system). These POEs will be used without additional processing.<br>
 		 */
@@ -231,7 +215,6 @@ public class LongTermValidation {
 		// --> This is not done in the 102853 implementation. The DSS user can extend the signature by adding his own
 		// code.
 
-		final List<XmlCertificate> certificates = params.getDiagnosticData().getUsedCertificates();
 		//!! poe.initialisePOE(signature, certificates, params.getCurrentTime());
 
 		/**
@@ -243,7 +226,7 @@ public class LongTermValidation {
 
 		final XmlDom adestSignatureConclusion = adestSignatureValidationData.getElement("./Conclusion");
 		final Indication adestSignatureIndication = Indication.valueOf(adestSignatureConclusion.getValue("./Indication/text()"));
-		final SubIndication adestSignatureSubIndication = SubIndication.valueOf( adestSignatureConclusion.getValue("./SubIndication/text()"));
+		final SubIndication adestSignatureSubIndication = SubIndication.valueOf(adestSignatureConclusion.getValue("./SubIndication/text()"));
 
 		/**
 		 * - If the validation outputs VALID<br>
@@ -251,7 +234,6 @@ public class LongTermValidation {
 		 * 9.<br>
 		 * - - Otherwise, go to step 3.<br>
 		 * TODO: 20130702 by bielecro: To notify ETSI --> There is no step 9.
-		 *
 		 */
 
 		XmlNode constraintNode = addConstraint(signatureNode, MessageTag.PSV_IATVC);
@@ -272,21 +254,18 @@ public class LongTermValidation {
 		 * -- INDETERMINATE/OUT_OF_BOUNDS_NO_POE or<br>
 		 * -- INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE,<br>
 		 * go to the next step.<br>
-		 *
 		 * - In all other cases, fail with returned code and information.<br>
-		 *
 		 * NOTE 2: We go to the LTV part of the validation process in the cases INDETERMINATE/REVOKED_NO_POE,
 		 * INDETERMINATE/REVOKED_CA_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NO_POE and INDETERMINATE/
 		 * CRYPTO_CONSTRAINTS_FAILURE_NO_POE because additional proof of existences may help to go from INDETERMINATE to a
 		 * determined status.<br>
-		 *
 		 * NOTE 3: Performing the LTV part of the algorithm even when the basic validation gives VALID may be useful in
 		 * the case the SVA is controlled by an archiving service. In such cases, it may be necessary to ensure that any
 		 * LTV attribute/property present in the signature is actually valid before making a decision about the archival
 		 * of the signature.<br>
 		 */
-		final boolean finalStatus = Indication.INDETERMINATE.equals(adestSignatureIndication) && (RuleUtils
-				.in(adestSignatureSubIndication, SubIndication.REVOKED_NO_POE, SubIndication.REVOKED_CA_NO_POE, SubIndication.OUT_OF_BOUNDS_NO_POE, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE));
+		final boolean finalStatus = Indication.INDETERMINATE.equals(adestSignatureIndication) && (RuleUtils.in(adestSignatureSubIndication, SubIndication.REVOKED_NO_POE,
+				SubIndication.REVOKED_CA_NO_POE, SubIndication.OUT_OF_BOUNDS_NO_POE, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE));
 		if (!finalStatus) {
 
 			conclusionNode.addChildrenOf(adestSignatureConclusion);
@@ -327,7 +306,7 @@ public class LongTermValidation {
 		 * one, as follows: perform the time-stamp validation process (see clause 7):
 		 */
 		final XmlNode archiveTimestampsNode = signatureNode.addChild("ArchiveTimestamps");
-		final List<XmlTimestampType> archiveTimestamps = diagnosticData.getTimestampList(signature.getId(), TimestampType.ARCHIVE_TIMESTAMP);
+		final List<TimestampWrapper> archiveTimestamps = signature.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
 		if (archiveTimestamps.size() > 0) {
 			dealWithTimestamp(archiveTimestampsNode, signatureTimestampValidationData, archiveTimestamps);
 		}
@@ -338,7 +317,7 @@ public class LongTermValidation {
 		 */
 
 		final XmlNode refsOnlyTimestampsNode = signatureNode.addChild("RefsOnlyTimestamps");
-		final List<XmlTimestampType> refsOnlyTimestamps = diagnosticData.getTimestampList(signature.getId(), TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+		final List<TimestampWrapper> refsOnlyTimestamps = signature.getTimestampListByType(TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
 		if (refsOnlyTimestamps.size() > 0) {
 			dealWithTimestamp(refsOnlyTimestampsNode, signatureTimestampValidationData, refsOnlyTimestamps);
 		}
@@ -349,7 +328,7 @@ public class LongTermValidation {
 		 */
 
 		final XmlNode sigAndRefsTimestampsNode = signatureNode.addChild("SigAndRefsTimestamps");
-		final List<XmlTimestampType> sigAndRefsTimestamps = diagnosticData.getTimestampList(signature.getId(), TimestampType.VALIDATION_DATA_TIMESTAMP);
+		final List<TimestampWrapper> sigAndRefsTimestamps = signature.getTimestampListByType(TimestampType.VALIDATION_DATA_TIMESTAMP);
 		if (sigAndRefsTimestamps.size() > 0) {
 			dealWithTimestamp(sigAndRefsTimestampsNode, signatureTimestampValidationData, sigAndRefsTimestamps);
 		}
@@ -359,7 +338,7 @@ public class LongTermValidation {
 		 */
 
 		final XmlNode timestampsNode = signatureNode.addChild("Timestamps");
-		final List<XmlTimestampType> timestamps = diagnosticData.getTimestampList(signature.getId(), TimestampType.SIGNATURE_TIMESTAMP);
+		final List<TimestampWrapper> timestamps = signature.getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
 		if (timestamps.size() > 0) {
 			dealWithTimestamp(timestampsNode, signatureTimestampValidationData, timestamps);
 		}
@@ -371,7 +350,7 @@ public class LongTermValidation {
 
 		final PastSignatureValidation pastSignatureValidation = new PastSignatureValidation();
 
-		final PastSignatureValidationConclusion psvConclusion = pastSignatureValidation.run(params, new SignatureWrapper(signature), adestSignatureConclusion, NodeName.MAIN_SIGNATURE);
+		final PastSignatureValidationConclusion psvConclusion = pastSignatureValidation.run(params, signature, adestSignatureConclusion, NodeName.MAIN_SIGNATURE);
 
 		signatureNode.addChild(psvConclusion.getValidationData());
 		/**
@@ -410,9 +389,9 @@ public class LongTermValidation {
 	 * @param timestamps
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	private void dealWithTimestamp(final XmlNode processNode, final XmlDom signatureTimestampValidationData, final List<XmlTimestampType> timestamps) throws DSSException {
+	private void dealWithTimestamp(final XmlNode processNode, final XmlDom signatureTimestampValidationData, final List<TimestampWrapper> timestamps) throws DSSException {
 		Collections.sort(timestamps, new TimestampComparator());
-		for (final XmlTimestampType timestamp : timestamps) {
+		for (final TimestampWrapper timestamp : timestamps) {
 
 			final String timestampId = timestamp.getId();
 			try {
@@ -420,7 +399,6 @@ public class LongTermValidation {
 				/**
 				 * FROM ADES-T (ETSI error ?!)
 				 * 4) Signature time-stamp validation: Perform the following steps:
-				 *
 				 * a) Message imprint verification: For each time-stamp token in the set of signature time-stamp tokens, do the
 				 * message imprint verification as specified in clauses 8.4.1 or 8.4.2 depending on the type of the signature.
 				 * If the verification fails, remove the token from the set.
@@ -471,7 +449,7 @@ public class LongTermValidation {
 					 */
 
 					final PastSignatureValidation psvp = new PastSignatureValidation();
-					final PastSignatureValidationConclusion psvConclusion = psvp.run(params, new TimestampWrapper(timestamp), timestampConclusion, NodeName.TIMESTAMP);
+					final PastSignatureValidationConclusion psvConclusion = psvp.run(params, timestamp, timestampConclusion, NodeName.TIMESTAMP);
 
 					processNode.addChild(psvConclusion.getValidationData());
 
@@ -498,7 +476,6 @@ public class LongTermValidation {
 					 */
 					/**
 					 * 􀀀 Otherwise, fail with the returned indication/sub-indication and associated explanations.<br>
-					 *
 					 * NOTE 4: If the signature is PAdES, document time-stamps replace archive-time-stamp attributes and the
 					 * process "Extraction from a PDF document time-stamp" replaces the process
 					 * "Extraction from an archive-time-stamp".<br>
@@ -516,7 +493,7 @@ public class LongTermValidation {
 	 * @return
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	private boolean extractPOEs(final XmlTimestampType timestamp) throws DSSException {
+	private boolean extractPOEs(final TimestampWrapper timestamp) throws DSSException {
 		final String digestAlgorithm = RuleUtils.canonicalizeDigestAlgo(timestamp.getSignedDataDigestAlgo());
 		final Date algorithmExpirationDate = params.getCurrentValidationPolicy().getAlgorithmExpirationDate(digestAlgorithm);
 		final Date timestampProductionTime = timestamp.getProductionTime();

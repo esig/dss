@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.TSLConstant;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
+import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.RevocationWrapper;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -143,7 +143,7 @@ public class ControlTimeSliding {
 			final XmlNode certificateNode = controlTimeSlidingData.addChild(AttributeValue.CERTIFICATE, StringUtils.EMPTY);
 			certificateNode.setAttribute(AttributeValue.CERTIFICATE_ID, String.valueOf(certificateId));
 
-			XmlCertificate certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
+			CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 
 			final boolean isTrusted = certificate.isTrusted();
 			if (isTrusted) {
@@ -158,7 +158,7 @@ public class ControlTimeSliding {
 				 */
 				final XmlNode constraintNode = addConstraint(MessageTag.CTS_WITSS);
 
-				final String status = diagnosticData.getCertificateTSPServiceStatus(certificate);
+				final String status = certificate.getCertificateTSPServiceStatus();
 				constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 				constraintNode.addChild(NodeName.INFO).setAttribute(AttributeValue.TRUSTED_SERVICE_STATUS, status);
 
@@ -173,11 +173,11 @@ public class ControlTimeSliding {
 					 */
 					if (status.isEmpty()) {
 						// Trusted service is unknown
-						final String serviceName = diagnosticData.getCertificateTSPServiceName(certificate);
+						final String serviceName = certificate.getCertificateTSPServiceName();
 						LOG.warn("The status of the service is unknown: (serviceName: " + serviceName + ")");
 					} else {
 
-						final Date statusEndDate = diagnosticData.getCertificateTSPServiceEndDate(certificate);
+						final Date statusEndDate = certificate.getCertificateTSPServiceEndDate();
 						controlTime = statusEndDate;
 						addControlTime(constraintNode);
 					}
@@ -193,16 +193,17 @@ public class ControlTimeSliding {
 
 			XmlNode constraintNode = addConstraint(MessageTag.CTS_DRIE);
 
-			final boolean revocationExists = diagnosticData.isRevocationDataExists(certificate);
+			final boolean revocationExists = certificate.isRevocationDataAvailable();
 			if (!revocationExists) {
-
 				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
 				conclusion.setIndication(Indication.INDETERMINATE);
 				conclusion.setSubIndication(SubIndication.NO_POE);
 				return conclusion;
 			}
 
-			final Date revocationIssuingTime = diagnosticData.getRevocationIssuingDate(certificate);
+			RevocationWrapper revocationData = certificate.getRevocationData();
+
+			final Date revocationIssuingTime = revocationData.getIssuingTime();
 			final String formatedRevocationIssuingTime = DateUtils.formatDate(revocationIssuingTime);
 
 			constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
@@ -271,14 +272,14 @@ public class ControlTimeSliding {
 			constraintNode = addConstraint(MessageTag.CTS_SCT);
 			addControlTime(constraintNode);
 
-			final boolean revoked = !diagnosticData.isRevoked(certificate); // TODO correct ????
+			final boolean revoked = !certificate.isRevoked(); // TODO correct ????
 			/**
 			 * - - 􀀀 If the certificate is marked as revoked in the revocation status information, set control-time to the
 			 * revocation date.<br>
 			 */
 			if (revoked) {
 
-				final Date revocationDate = diagnosticData.getRevocationDate(certificate);
+				final Date revocationDate = revocationData.getDateTime();
 				controlTime = revocationDate;
 
 				final String formatedRevocationDate = DateUtils.formatDate(revocationDate);
@@ -311,12 +312,12 @@ public class ControlTimeSliding {
 			 * lowest time up to which the listed algorithms were considered reliable.<br>
 			 */
 
-			checkDigestAlgoExpirationDate(certificate.getBasicSignature(), constraintNode, NodeValue.CTS_CTSTETOCSA_LABEL);
-			checkEncryptionAlgoExpirationDate(certificate.getBasicSignature(), constraintNode, NodeValue.CTS_CTSTETOCSA_LABEL);
+			checkDigestAlgoExpirationDate(certificate, constraintNode, NodeValue.CTS_CTSTETOCSA_LABEL);
+			checkEncryptionAlgoExpirationDate(certificate, constraintNode, NodeValue.CTS_CTSTETOCSA_LABEL);
 
-			final XmlRevocationType revocation = certificate.getRevocation();
-			checkDigestAlgoExpirationDate(revocation.getBasicSignature(), constraintNode, NodeValue.CTS_CTSTETORSA_LABEL);
-			checkEncryptionAlgoExpirationDate(revocation.getBasicSignature(), constraintNode, NodeValue.CTS_CTSTETORSA_LABEL);
+			final RevocationWrapper revocation = certificate.getRevocationData();
+			checkDigestAlgoExpirationDate(revocation, constraintNode, NodeValue.CTS_CTSTETORSA_LABEL);
+			checkEncryptionAlgoExpirationDate(revocation, constraintNode, NodeValue.CTS_CTSTETORSA_LABEL);
 
 			/**
 			 * 3) Continue with the next certificate in the chain or, if no further certificate exists, terminate with
@@ -373,10 +374,10 @@ public class ControlTimeSliding {
 		return constraintNode;
 	}
 
-	private void checkEncryptionAlgoExpirationDate(final XmlBasicSignatureType basicSignature, final XmlNode infoContainerNode, final String message) {
-		String encryptionAlgo = basicSignature.getEncryptionAlgoUsedToSignThisToken();
+	private void checkEncryptionAlgoExpirationDate(final TokenProxy token, final XmlNode infoContainerNode, final String message) {
+		String encryptionAlgo = token.getEncryptionAlgoUsedToSignThisToken();
 		encryptionAlgo = RuleUtils.canonicalizeEncryptionAlgo(encryptionAlgo);
-		final String encryptionKeyLength = basicSignature.getKeyLengthUsedToSignThisToken();
+		final String encryptionKeyLength = token.getKeyLengthUsedToSignThisToken();
 		final String algoWithKeyLength = encryptionAlgo + encryptionKeyLength;
 
 		final Date algoExpirationDate = constraintData.getAlgorithmExpirationDate(algoWithKeyLength);
@@ -389,8 +390,8 @@ public class ControlTimeSliding {
 		}
 	}
 
-	private void checkDigestAlgoExpirationDate(final XmlBasicSignatureType basicSignature, final XmlNode infoContainerNode, final String message) {
-		String digestAlgo = basicSignature.getDigestAlgoUsedToSignThisToken();
+	private void checkDigestAlgoExpirationDate(final TokenProxy token, final XmlNode infoContainerNode, final String message) {
+		String digestAlgo = token.getDigestAlgoUsedToSignThisToken();
 		digestAlgo = RuleUtils.canonicalizeSignatureAlgo(digestAlgo);
 		final Date algoExpirationDate = constraintData.getAlgorithmExpirationDate(digestAlgo);
 		if ((algoExpirationDate != null) && controlTime.after(algoExpirationDate)) {

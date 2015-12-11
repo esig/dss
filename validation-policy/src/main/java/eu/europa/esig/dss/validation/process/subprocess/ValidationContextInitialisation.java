@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.subprocess;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyConstraint;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -75,7 +75,7 @@ public class ValidationContextInitialisation {
 	/**
 	 * See {@link ProcessParameters#getSignatureContext()}
 	 */
-	private XmlSignature signatureContext;
+	private SignatureWrapper signatureContext;
 
 	/**
 	 * This node is used to add the constraint nodes.

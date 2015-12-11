@@ -22,12 +22,12 @@ package eu.europa.esig.dss.validation.process;
 
 import java.util.Comparator;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 
-public class TimestampComparator implements Comparator<XmlTimestampType> {
+public class TimestampComparator implements Comparator<TimestampWrapper> {
 
 	@Override
-	public int compare(XmlTimestampType o1, XmlTimestampType o2) {
+	public int compare(TimestampWrapper o1, TimestampWrapper o2) {
 		return o2.getProductionTime().compareTo(o1.getProductionTime());
 	}
 

@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -86,9 +85,9 @@ public class BasicBuildingBlocks {
 
 		final XmlNode basicBuildingBlocksNode = mainNode.addChild(NodeName.BASIC_BUILDING_BLOCKS);
 
-		final List<XmlSignature> signatures = diagnosticData.getSignatures();
+		final List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 
-		for (final XmlSignature signature : signatures) {
+		for (final SignatureWrapper signature : signatures) {
 
 			final String type = signature.getType();
 			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
@@ -104,7 +103,7 @@ public class BasicBuildingBlocks {
 			 * In this case signatureContext and contextElement are equal, but this is not the case for
 			 * TimestampsBasicBuildingBlocks
 			 */
-			params.setContextElement(new SignatureWrapper(signature));
+			params.setContextElement(signature);
 
 			/**
 			 * 5. Basic Building Blocks

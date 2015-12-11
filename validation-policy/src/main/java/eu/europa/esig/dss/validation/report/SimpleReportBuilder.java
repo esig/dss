@@ -259,7 +259,7 @@ public class SimpleReportBuilder {
 
 	private void addSignatureScope(final XmlNode signatureNode, final XmlSignatureScopes signatureScopes) {
 		if (signatureScopes != null) {
-			signatureNode.addChild(signatureScopes);
+			//		//TODO	signatureNode.addChild(signatureScopes);
 		}
 	}
 

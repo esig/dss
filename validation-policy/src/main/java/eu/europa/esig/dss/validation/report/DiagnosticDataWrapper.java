@@ -20,12 +20,9 @@
  */
 package eu.europa.esig.dss.validation.report;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -40,7 +37,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -49,6 +45,8 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamps;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
+import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -310,20 +308,6 @@ public class DiagnosticDataWrapper {
 		return result;
 	}
 
-	public List<XmlTimestampType> getTimestampList(final String signatureId, final TimestampType timestampType) {
-		List<XmlTimestampType> result = new ArrayList<XmlTimestampType>();
-		XmlSignature xmlSignature = getSignatureByIdNullSafe(signatureId);
-		XmlTimestamps timestamps = xmlSignature.getTimestamps();
-		if ((timestamps != null) && CollectionUtils.isNotEmpty(timestamps.getTimestamp())) {
-			for (XmlTimestampType xmlTsp : timestamps.getTimestamp()) {
-				if (StringUtils.equals(timestampType.name(), xmlTsp.getType())) {
-					result.add(xmlTsp);
-				}
-			}
-		}
-		return result;
-	}
-
 	public List<XmlTimestampType> getTimestampList(final String signatureId) {
 		List<XmlTimestampType> result = new ArrayList<XmlTimestampType>();
 		XmlSignature xmlSignature = getSignatureByIdNullSafe(signatureId);
@@ -522,13 +506,8 @@ public class DiagnosticDataWrapper {
 	 * @return certificate validity
 	 */
 	public boolean isValidCertificate(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		final boolean signatureValid = (xmlCertificate.getBasicSignature() != null) && xmlCertificate.getBasicSignature().isSignatureValid();
-		final boolean revocationValid = (xmlCertificate.getRevocation() != null) && xmlCertificate.getRevocation().isStatus();
-		final boolean trusted = xmlCertificate.isTrusted();
-
-		final boolean validity = signatureValid && (trusted ? true : revocationValid);
-		return validity;
+		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return certificate.isValidCertificate();
 	}
 
 	/**
@@ -574,77 +553,8 @@ public class DiagnosticDataWrapper {
 	 * @return serial number
 	 */
 	public String getCertificateSerialNumber(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		BigInteger serialNumber = xmlCertificate.getSerialNumber();
-		return serialNumber == null ? StringUtils.EMPTY : serialNumber.toString();
-	}
-
-	/**
-	 * This method indicates if the certificate is QCP.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return true if QCP
-	 */
-	public boolean isCertificateQCP(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return isCertificateQCP(xmlCertificate);
-	}
-
-	public boolean isCertificateQCP(XmlCertificate xmlCertificate) {
-		XmlQCStatement qcStatement = xmlCertificate.getQCStatement();
-		return (qcStatement != null) && qcStatement.isQCP();
-	}
-
-	/**
-	 * This method indicates if the certificate is QCPPlus.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return true if QCPPlus
-	 */
-	public boolean isCertificateQCPPlus(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return isCertificateQCPPlus(xmlCertificate);
-	}
-
-	public boolean isCertificateQCPPlus(XmlCertificate xmlCertificate) {
-		XmlQCStatement qcStatement = xmlCertificate.getQCStatement();
-		return (qcStatement != null) && qcStatement.isQCPPlus();
-	}
-
-	/**
-	 * This method indicates if the certificate is QCC.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return true if QCC
-	 */
-	public boolean isCertificateQCC(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return isCertificateQCC(xmlCertificate);
-	}
-
-	public boolean isCertificateQCC(XmlCertificate xmlCertificate) {
-		XmlQCStatement qcStatement = xmlCertificate.getQCStatement();
-		return (qcStatement != null) && qcStatement.isQCC();
-	}
-
-	/**
-	 * This method indicates if the certificate is QCSSCD.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return true if QCSSCD
-	 */
-	public boolean isCertificateQCSSCD(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return isCertificateQCSSCD(xmlCertificate);
-	}
-
-	public boolean isCertificateQCSSCD(XmlCertificate xmlCertificate) {
-		XmlQCStatement qcStatement = xmlCertificate.getQCStatement();
-		return (qcStatement != null) && qcStatement.isQCSSCD();
+		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return certificate.getSerialNumber();
 	}
 
 	/**
@@ -732,18 +642,8 @@ public class DiagnosticDataWrapper {
 	 * @return TSPServiceName
 	 */
 	public String getCertificateTSPServiceName(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return getCertificateTSPServiceName(xmlCertificate);
-	}
-
-	public String getCertificateTSPServiceName(XmlCertificate xmlCertificate) {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getTSPServiceName(); // TODO correct ?? return first one
-			}
-		}
-		return StringUtils.EMPTY;
+		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return certificate.getCertificateTSPServiceName();
 	}
 
 	public String getCertificateTSPServiceType(XmlCertificate xmlCertificate) {
@@ -757,65 +657,27 @@ public class DiagnosticDataWrapper {
 	}
 
 	public String getCertificateTSPServiceStatus(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return getCertificateTSPServiceStatus(xmlCertificate);
-	}
-
-	public String getCertificateTSPServiceStatus(final XmlCertificate xmlCertificate) {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getStatus(); // TODO correct ?? return first one
-			}
-		}
-		return StringUtils.EMPTY;
+		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return certificate.getCertificateTSPServiceStatus();
 	}
 
 	public Date getCertificateTSPServiceStartDate(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getStartDate(); // TODO correct ?? return first one
-			}
-		}
-		return null;
+		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return certificate.getCertificateTSPServiceStartDate();
 	}
 
 	public Date getCertificateTSPServiceEndDate(final String dssCertificateId) {
+		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
+		return certificate.getCertificateTSPServiceEndDate();
+	}
+
+	public List<XmlTrustedServiceProviderType> getCertificateTSPService(final String dssCertificateId) {
 		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return getCertificateTSPServiceEndDate(xmlCertificate);
+		return getCertificateTSPService(xmlCertificate);
 	}
 
-	public Date getCertificateTSPServiceEndDate(XmlCertificate xmlCertificate) {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getEndDate(); // TODO correct ?? return first one
-			}
-		}
-		return null;
-	}
-
-	public List<String> getCertificateTSPServiceQualifiers(final String dssCertificateId) {
-		XmlCertificate xmlCertificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return getCertificateTSPServiceQualifiers(xmlCertificate);
-	}
-
-	public List<String> getCertificateTSPServiceQualifiers(XmlCertificate xmlCertificate) {
-		Set<String> result = new HashSet<String>();
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType xmlTrustedServiceProvider : trustedServiceProviders) {
-				XmlQualifiers qualifiers = xmlTrustedServiceProvider.getQualifiers();
-				if ((qualifiers != null) && CollectionUtils.isNotEmpty(qualifiers.getQualifier())) {
-					for (String qualifier : qualifiers.getQualifier()) {
-						result.add(qualifier);
-					}
-				}
-			}
-		}
-		return new ArrayList<String>(result);
+	public List<XmlTrustedServiceProviderType> getCertificateTSPService(XmlCertificate xmlCertificate) {
+		return xmlCertificate.getTrustedServiceProvider();
 	}
 
 	/**
@@ -931,16 +793,16 @@ public class DiagnosticDataWrapper {
 		return new XmlTimestampType();
 	}
 
-	public XmlCertificate getUsedCertificateByIdNullSafe(String id) {
+	public CertificateWrapper getUsedCertificateByIdNullSafe(String id) {
 		XmlUsedCertificates usedCertificates = diagnosticData.getUsedCertificates();
 		if ((usedCertificates != null) && CollectionUtils.isNotEmpty(usedCertificates.getCertificate())) {
 			for (XmlCertificate xmlCertificate : usedCertificates.getCertificate()) {
 				if (StringUtils.equals(id, xmlCertificate.getId())) {
-					return xmlCertificate;
+					return new CertificateWrapper(xmlCertificate);
 				}
 			}
 		}
-		return new XmlCertificate();
+		return new CertificateWrapper(new XmlCertificate()); // TODO improve ?
 	}
 
 	public XmlCertificate getUsedCertificateByDigest(String digestMethod, String digestValue) {
@@ -960,8 +822,15 @@ public class DiagnosticDataWrapper {
 		return null;
 	}
 
-	public List<XmlSignature> getSignatures() {
-		return diagnosticData.getSignature();
+	public List<SignatureWrapper> getSignatures() {
+		List<SignatureWrapper> result = new ArrayList<SignatureWrapper>();
+		List<XmlSignature> signatures = diagnosticData.getSignature();
+		if (CollectionUtils.isNotEmpty(signatures)) {
+			for (XmlSignature xmlSignature : signatures) {
+				result.add(new SignatureWrapper(xmlSignature));
+			}
+		}
+		return result;
 	}
 
 	public boolean isRevocationDataExists(XmlCertificate certificate) {
@@ -971,20 +840,6 @@ public class DiagnosticDataWrapper {
 	public Date getRevocationIssuingDate(XmlCertificate certificate) {
 		if ((certificate != null) && (certificate.getRevocation() != null)) {
 			return certificate.getRevocation().getIssuingTime();
-		}
-		return null;
-	}
-
-	public boolean isRevoked(XmlCertificate certificate) {
-		if ((certificate != null) && (certificate.getRevocation() != null)) {
-			return certificate.getRevocation().isStatus();
-		}
-		return false;
-	}
-
-	public Date getRevocationDate(XmlCertificate certificate) {
-		if ((certificate != null) && (certificate.getRevocation() != null)) {
-			return certificate.getRevocation().getDateTime();
 		}
 		return null;
 	}

@@ -127,7 +127,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		final SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(validationPolicy, diagnosticData);
 		simpleReport = simpleReportBuilder.build(processParams);
 
-		final Reports reports = new Reports(diagnosticData, detailedReport, simpleReport);
+		final Reports reports = new Reports(diagnosticDataJaxb, detailedReport, simpleReport);
 		return reports;
 	}
 

@@ -23,11 +23,13 @@ package eu.europa.esig.dss.validation.process.subprocess;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
@@ -41,30 +43,26 @@ import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.ValidationXPathQueryHolder;
 import eu.europa.esig.dss.validation.report.Conclusion;
+import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
-
 
 /**
  * 5.5 Signature Acceptance Validation (SAV)
  * 5.5.1 Description
  * This building block covers any additional verification that shall be performed on the attributes/properties of the signature.
- *
  * 5.5.2 Inputs
  * Table 10: Inputs to the SVA process
- * - Input                                Requirement
- * - Signature                            Mandatory
- * - Cryptographic verification output    Optional
- * - Cryptographic Constraints            Optional
- * - Signature Constraints                Optional
- *
+ * - Input Requirement
+ * - Signature Mandatory
+ * - Cryptographic verification output Optional
+ * - Cryptographic Constraints Optional
+ * - Signature Constraints Optional
  * 5.5.3 Outputs
  * The process outputs one of the following indications:
  * Table 11: Outputs of the SVA process
  * - Indication: VALID
  * - Description: The signature is conformant with the validation constraints.
- *
  * - Indication: INVALID.SIG_CONSTRAINTS_FAILURE
  * - Description: The signature is not conformant with the validation constraints.
  * - Additional data items: The process shall output:
@@ -75,7 +73,6 @@ import eu.europa.esig.dss.x509.TimestampType;
  * - Additional data items: The process shall output:
  * • A list of algorithms, together with the size of the key, if applicable, that have been used in validation of the signature but no longer are considered reliable together
  * with a time up to which each of the listed algorithms were considered secure.
- *
  */
 public class SignatureAcceptanceValidation {
 
@@ -96,18 +93,21 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * See {@link ProcessParameters#getSignatureContext()}
 	 */
-	private XmlSignature signatureContext;
+	private SignatureWrapper signatureContext;
 
 	/**
 	 * This node is used to add the constraint nodes.
 	 */
 	private XmlNode subProcessNode;
 
+	private DiagnosticDataWrapper diagnosticData;
+
 	private void prepareParameters(final ProcessParameters params) {
 
 		this.constraintData = params.getCurrentValidationPolicy();
 		this.signatureContext = params.getSignatureContext();
 		this.currentTime = params.getCurrentTime();
+		this.diagnosticData = params.getDiagnosticData();
 
 		isInitialised();
 	}
@@ -129,22 +129,20 @@ public class SignatureAcceptanceValidation {
 	 * 5.5.4 Processing
 	 * This process consists in checking the Signature and Cryptographic Constraints against the signature. The
 	 * general principle is as follows: perform the following for each constraint:
-	 *
 	 * • If the constraint necessitates processing a property/attribute in the signature, perform the processing of
 	 * the property/attribute as specified from clause 5.5.4.1 to 5.5.4.8.
-	 *
 	 * 5.5.4.1 Processing AdES properties/attributes This clause describes the application of Signature Constraints on
 	 * the content of the signature including the processing on signed and unsigned properties/attributes.
 	 * Constraint XML description:
 	 * <SigningCertificateChainConstraint><br>
 	 * <MandatedSignedQProperties>
-	 *
 	 * Indicates the mandated signed qualifying properties that are mandated to be present in the signature.
-	 *
 	 * This method prepares the execution of the SAV process.
 	 *
-	 * @param params      validation process parameters
-	 * @param processNode the parent process {@code XmlNode} to use to include the validation information
+	 * @param params
+	 *            validation process parameters
+	 * @param processNode
+	 *            the parent process {@code XmlNode} to use to include the validation information
 	 * @return the {@code Conclusion} which indicates the result of the process
 	 */
 	public Conclusion run(final ProcessParameters params, final XmlNode processNode) {
@@ -170,7 +168,8 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * This method implement SAV process.
 	 *
-	 * @param params validation process parameters
+	 * @param params
+	 *            validation process parameters
 	 * @return the {@code Conclusion} which indicates the result of the process
 	 */
 	private Conclusion process(final ProcessParameters params) {
@@ -185,7 +184,7 @@ public class SignatureAcceptanceValidation {
 		/**
 		 * 5.5.4.1 Processing AdES properties/attributes
 		 * This clause describes the application of Signature Constraints on the content of the signature including the processing
-		 *on signed and unsigned properties/attributes.
+		 * on signed and unsigned properties/attributes.
 		 */
 		// signing-time
 		if (!checkSigningTimeConstraint(conclusion)) {
@@ -234,9 +233,7 @@ public class SignatureAcceptanceValidation {
 
 		/**
 		 * <MandatedUnsignedQProperties>
-		 *
 		 * ../..
-		 *
 		 * <OnRoles>
 		 */
 		if (!checkClaimedRoleConstraint(conclusion)) {
@@ -253,15 +250,12 @@ public class SignatureAcceptanceValidation {
 		 * Should one or more certificates in the certification path not be referenced by this property, the verifier shall assume that
 		 * the verification is successful unless the signature policy mandates that references to all the certificates in the
 		 * certification path "shall" be present.
-		 *
 		 * // TODO: (Bob: 2014 Mar 07) This is not yet implemented.
-		 *
 		 * 5.5.4.3 Processing claimed signing time
 		 * If the signature constraints contain constraints regarding this property, the verifying application shall
 		 * follow its rules for checking this signed property. Otherwise, the verifying application shall make the value
 		 * of this property/attribute available to its DA, so that it may decide additional suitable processing, which is
 		 * out of the scope of the present document.
-		 *
 		 * ../..
 		 */
 
@@ -279,29 +273,28 @@ public class SignatureAcceptanceValidation {
 		 */
 
 		/**
-		 5.5.4.7 Processing Countersignatures
-		 If the signature constraints define specific constraints for countersignature attributes, the SVA shall check that they are
-		 satisfied. To do so, the SVA shall do the following steps for each countersignature attribute:
-		 1) Perform the validation process for AdES-BES/EPES using the countersignature in the property/attribute and
-		 the signature value octet string of the signature as the signed data object.
-		 2) Apply the constraints for countersignature attributes to the result returned in the previous step. If any check
-		 fails, return INVALID/SIG_CONSTRAINTS_FAILURE with an explanation of the unverified constraint.
-		 If the signature constraints do not contain any constraint on countersignatures, the SVA may still verify the
-		 countersignature and provide the results in the validation report. However, it shall not consider the signature validation
-		 to having failed if the countersignature could not be verified.
+		 * 5.5.4.7 Processing Countersignatures
+		 * If the signature constraints define specific constraints for countersignature attributes, the SVA shall check that they are
+		 * satisfied. To do so, the SVA shall do the following steps for each countersignature attribute:
+		 * 1) Perform the validation process for AdES-BES/EPES using the countersignature in the property/attribute and
+		 * the signature value octet string of the signature as the signed data object.
+		 * 2) Apply the constraints for countersignature attributes to the result returned in the previous step. If any check
+		 * fails, return INVALID/SIG_CONSTRAINTS_FAILURE with an explanation of the unverified constraint.
+		 * If the signature constraints do not contain any constraint on countersignatures, the SVA may still verify the
+		 * countersignature and provide the results in the validation report. However, it shall not consider the signature validation
+		 * to having failed if the countersignature could not be verified.
 		 */
 
 		/**
-		 *
-		 5.5.4.8 Processing signer attributes/roles
-		 If the signature constraints define specific constraints for certified attributes/roles, the SVA shall perform the following
-		 checks:
-		 1) The SVA shall verify the validity of the attribute certificate(s) present in this property/attribute following the
-		 rules established in [6].
-		 2) The SVA shall check that the attribute certificate(s) actually match the rules specified in the input constraints.
-		 If the signature rules do not specify rules for certified attributes/roles, the SVA shall make the value of this
-		 property/attribute available to its DA so that it may decide additional suitable processing, which is out of the scope of
-		 the present document.
+		 * 5.5.4.8 Processing signer attributes/roles
+		 * If the signature constraints define specific constraints for certified attributes/roles, the SVA shall perform the following
+		 * checks:
+		 * 1) The SVA shall verify the validity of the attribute certificate(s) present in this property/attribute following the
+		 * rules established in [6].
+		 * 2) The SVA shall check that the attribute certificate(s) actually match the rules specified in the input constraints.
+		 * If the signature rules do not specify rules for certified attributes/roles, the SVA shall make the value of this
+		 * property/attribute available to its DA so that it may decide additional suitable processing, which is out of the scope of
+		 * the present document.
 		 */
 
 		// TODO: (Bob: 2014 Mar 23) To be converted to the WARNING system
@@ -323,7 +316,8 @@ public class SignatureAcceptanceValidation {
 
 				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
 				conclusion.setIndication(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE);
-				conclusion.addError(MessageTag.BBB_SAV_ICERRM_ANS).setAttribute(AttributeName.CERTIFIED_ROLES, certifiedRolesString).setAttribute(AttributeName.REQUESTED_ROLES, requestedCertifiedRolesString);
+				conclusion.addError(MessageTag.BBB_SAV_ICERRM_ANS).setAttribute(AttributeName.CERTIFIED_ROLES, certifiedRolesString).setAttribute(AttributeName.REQUESTED_ROLES,
+						requestedCertifiedRolesString);
 				return conclusion;
 			}
 			constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
@@ -355,7 +349,8 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * Check of structural validation (only for XAdES signature: XSD schema validation)
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkStructuralValidationConstraint(final Conclusion conclusion) {
@@ -365,9 +360,9 @@ public class SignatureAcceptanceValidation {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISSV);
-		final boolean structureValid = signatureContext.getBoolValue("./StructuralValidation/Valid/text()");
+		final boolean structureValid = signatureContext.isStructuralValidationValid();
 		constraint.setValue(structureValid);
-		final String message = signatureContext.getValue("./StructuralValidation/Message/text()");
+		final String message = signatureContext.getStructuralValidationMessage();
 		if (StringUtils.isNotBlank(message)) {
 			constraint.setAttribute("Log", message);
 		}
@@ -379,14 +374,14 @@ public class SignatureAcceptanceValidation {
 
 	/**
 	 * Check of signing-time
-	 *
 	 * 5.5.4.3 Processing claimed signing time
 	 * If the signature constraints contain constraints regarding this property, the verifying application shall follow its rules for
 	 * checking this signed property.
 	 * Otherwise, the verifying application shall make the value of this property/attribute available to its DA, so that it may
 	 * decide additional suitable processing, which is out of the scope of the present document.
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkSigningTimeConstraint(final Conclusion conclusion) {
@@ -407,7 +402,8 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * Check of content-type (signed property)
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkContentTypeConstraint(final Conclusion conclusion) {
@@ -428,7 +424,8 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * Check of content-hints
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkContentHintsConstraint(final Conclusion conclusion) {
@@ -449,7 +446,8 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * Check of content-identifier
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkContentIdentifierConstraint(final Conclusion conclusion) {
@@ -471,7 +469,8 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * Check of commitment-type-indication
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkCommitmentTypeIndicationConstraint(final Conclusion conclusion) {
@@ -482,7 +481,7 @@ public class SignatureAcceptanceValidation {
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPXTIP);
 		// TODO: A set of commitments must be checked
-		final String commitmentTypeIndicationIdentifier = signatureContext.getValue("./CommitmentTypeIndication/Identifier[1]/text()");
+		final String commitmentTypeIndicationIdentifier = signatureContext.getCommitmentTypeIndication().getIdentifier().get(0);
 		constraint.setValue(commitmentTypeIndicationIdentifier);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPXTIP_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -492,14 +491,14 @@ public class SignatureAcceptanceValidation {
 
 	/**
 	 * Check of signer-location
-	 *
 	 * 5.5.4.5 Processing indication of production place of the signature
 	 * If the signature constraints contain constraints regarding this property, the verifying application shall follow its rules for
 	 * checking this signed property.
 	 * Otherwise, the verifying application shall make the value of this property/attribute available to its DA, so that it may
 	 * decide additional suitable processing, which is out of the scope of the present document.
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkSignerLocationConstraint(final Conclusion conclusion) {
@@ -509,31 +508,35 @@ public class SignatureAcceptanceValidation {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPSLP);
-		String signatureProductionPlace = signatureContext.getValue("./SignatureProductionPlace/text()");
-		final XmlDom signProductionPlaceXmlDom = signatureContext.getElement("./SignatureProductionPlace");
-		if (signProductionPlaceXmlDom != null) {
-
-			final List<XmlDom> elements = signProductionPlaceXmlDom.getElements("./*");
-			for (final XmlDom element : elements) {
-
-				if (!signatureProductionPlace.isEmpty()) {
-
-					signatureProductionPlace += "; ";
-				}
-				signatureProductionPlace += element.getName() + ": " + element.getText();
-			}
+		XmlSignatureProductionPlace signatureProductionPlace = signatureContext.getSignatureProductionPlace();
+		StringBuffer result = new StringBuffer();
+		if (signatureProductionPlace != null) {
+			add(result, "Address", signatureProductionPlace.getAddress());
+			add(result, "City", signatureProductionPlace.getCity());
+			add(result, "PostalCode", signatureProductionPlace.getPostalCode());
+			add(result, "StateOrProvince", signatureProductionPlace.getStateOrProvince());
+			add(result, "CountryName", signatureProductionPlace.getCountryName());
 		}
-		constraint.setValue(signatureProductionPlace);
+		constraint.setValue(result.toString());
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPSLP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
 	}
 
+	private void add(StringBuffer result, String name, String value) {
+		result.append(name);
+		result.append(": ");
+		if (StringUtils.isNotEmpty(value)) {
+			result.append(value);
+		}
+	}
+
 	/**
 	 * Check of content-time-stamp: verifies whether a content-timestamp (or similar) element is present
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkContentTimeStampConstraints(final Conclusion conclusion) {
@@ -545,11 +548,12 @@ public class SignatureAcceptanceValidation {
 		constraint1.create(subProcessNode, MessageTag.BBB_SAV_ISQPCTSIP);
 
 		//get count of all possible content timestamps
-		long count = signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.CONTENT_TIMESTAMP);
-		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
-		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 
-		final String countValue = count <= 0 ? "" : String.valueOf(count);
+		List<String> ids = diagnosticData.getTimestampIdList(signatureContext.getId(), TimestampType.CONTENT_TIMESTAMP);
+		ids.addAll(diagnosticData.getTimestampIdList(signatureContext.getId(),  TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+		ids.addAll(diagnosticData.getTimestampIdList(signatureContext.getId(),  TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+
+		final String countValue = CollectionUtils.isEmpty(ids) ? "" : String.valueOf(ids.size());
 		constraint1.setValue(countValue);
 		constraint1.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);
 		constraint1.setConclusionReceiver(conclusion);
@@ -588,11 +592,13 @@ public class SignatureAcceptanceValidation {
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPCTSIP);
 
 		//get all possible content timestamps
-		long count = signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.CONTENT_TIMESTAMP);
-		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
-		count += signatureContext.getCountValue("count(./Timestamps/Timestamp[@Type='%s'])", TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 
-		final String countValue = count <= 0 ? "" : String.valueOf(count);
+		List<String> ids = diagnosticData.getTimestampIdList(signatureContext.getId(), TimestampType.CONTENT_TIMESTAMP);
+		ids.addAll(diagnosticData.getTimestampIdList(signatureContext.getId(),  TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+		ids.addAll(diagnosticData.getTimestampIdList(signatureContext.getId(),  TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+
+		final String countValue = CollectionUtils.isEmpty(ids) ? "" : String.valueOf(ids.size());
+
 		constraint.setValue(countValue);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);
 		constraint.setConclusionReceiver(conclusion);
@@ -603,7 +609,8 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * Check of unsigned qualifying property: claimed roles
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkClaimedRoleConstraint(final Conclusion conclusion) {
@@ -636,7 +643,8 @@ public class SignatureAcceptanceValidation {
 	/**
 	 * Check of: main signature cryptographic verification
 	 *
-	 * @param conclusion the conclusion to use to add the result of the check.
+	 * @param conclusion
+	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkMainSignatureCryptographicConstraint(final Conclusion conclusion) {
@@ -647,9 +655,9 @@ public class SignatureAcceptanceValidation {
 		}
 		constraint.create(subProcessNode, MessageTag.ASCCM);
 		constraint.setCurrentTime(currentTime);
-		constraint.setEncryptionAlgorithm(signatureContext.getValue(ValidationXPathQueryHolder.XP_ENCRYPTION_ALGO_USED_TO_SIGN_THIS_TOKEN));
-		constraint.setDigestAlgorithm(signatureContext.getValue(ValidationXPathQueryHolder.XP_DIGEST_ALGO_USED_TO_SIGN_THIS_TOKEN));
-		constraint.setKeyLength(signatureContext.getValue(ValidationXPathQueryHolder.XP_KEY_LENGTH_USED_TO_SIGN_THIS_TOKEN));
+		constraint.setEncryptionAlgorithm(signatureContext.getEncryptionAlgoUsedToSignThisToken());
+		constraint.setDigestAlgorithm(signatureContext.getDigestAlgoUsedToSignThisToken());
+		constraint.setKeyLength(signatureContext.getKeyLengthUsedToSignThisToken());
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, MessageTag.EMPTY);
 		constraint.setConclusionReceiver(conclusion);
 

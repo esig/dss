@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
@@ -148,19 +148,19 @@ public class IdentificationOfTheSignersCertificate {
 
 		final Conclusion conclusion = new Conclusion();
 
-		// The signing certificate Id and the signing certificate are reset.
+		// The signing certificate is reset.
 		params.setSigningCertificate(null);
 
 		final String signingCertificateId = contextElement.getSigningCertificateId();
-		XmlCertificate xmlCertificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
-		final boolean signingCertificateRecognised = xmlCertificate != null;
-		if (!checkRecognitionConstraint(conclusion, signingCertificateRecognised, signingCertificateId)) {
+		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
+		final boolean signingCertificateRecognised = certificate != null;
+		if (!checkRecognitionConstraint(conclusion, signingCertificateRecognised, certificate)) {
 			return conclusion;
 		}
 		/**
-		 * The signing certificate Id and the signing certificate are saved for further use.
+		 * The signing certificate is saved for further use.
 		 */
-		params.setSigningCertificate(xmlCertificate);
+		params.setSigningCertificate(certificate);
 
 		Constraint constraint = null;
 		final String signedElement = contextElement.getSigningCertificateSigned();
@@ -203,16 +203,15 @@ public class IdentificationOfTheSignersCertificate {
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 
-	private boolean checkRecognitionConstraint(final Conclusion conclusion, final boolean signingCertificateRecognised, String signingCertificateId) {
-
+	private boolean checkRecognitionConstraint(final Conclusion conclusion, final boolean signingCertificateRecognised, CertificateWrapper signingCertificate) {
 		final Constraint constraint = params.getCurrentValidationPolicy().getSigningCertificateRecognitionConstraint(contextName);
 		if (constraint == null) {
 			return true;
 		}
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_ISCI);
 		constraint.setValue(signingCertificateRecognised);
-		if (StringUtils.isNotBlank(signingCertificateId) && !signingCertificateId.equals("0")) {
-			constraint.setAttribute(AttributeValue.CERTIFICATE_ID, signingCertificateId);
+		if (signingCertificate !=null) {
+			constraint.setAttribute(AttributeValue.CERTIFICATE_ID, signingCertificate.getId());
 		}
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_ISCI_ANS);
 		constraint.setConclusionReceiver(conclusion);

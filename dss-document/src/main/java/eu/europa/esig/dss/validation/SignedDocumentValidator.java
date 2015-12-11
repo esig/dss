@@ -422,7 +422,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
 
 		final Document diagnosticDataDom = ValidationResourceManager.convert(jaxbDiagnosticData);
-		executor.setDiagnosticDataDom(diagnosticDataDom);
+		executor.setDiagnosticData(jaxbDiagnosticData);
 		Date date2 = null;
 		if (LOG.isTraceEnabled()) {
 

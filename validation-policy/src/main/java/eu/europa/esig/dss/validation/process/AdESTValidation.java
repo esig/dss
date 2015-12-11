@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.validation.SignatureWrapper;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.BasicValidationProcessValidConstraint;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
@@ -110,30 +110,15 @@ public class AdESTValidation {
 	 */
 	private XmlNode signatureXmlNode;
 
-	/**
-	 * Represents the {@code XmlDom} of the signature currently being validated
-	 */
-	private XmlSignature signatureJaxb;
-
-	/**
-	 * Represents the identifier of the signature currently being validated
-	 */
-	private String signatureId;
 
 	/**
 	 * Represents the {@code XmlDom} of the timestamp currently being validated
 	 */
 	private XmlNode timestampXmlNode;
 
-	/**
-	 * Represents the identifier of the timestamp currently being validated
-	 */
-	private String timestampId;
-
 	private Date bestSignatureTime;
 
 	private void prepareParameters(final XmlNode mainNode, final ProcessParameters params) {
-
 		this.diagnosticData = params.getDiagnosticData();
 		this.currentTime = params.getCurrentTime();
 		isInitialised(mainNode, params);
@@ -209,12 +194,9 @@ public class AdESTValidation {
 		 * NOTE 1: Best-signature-time is an internal variable for the algorithm denoting the earliest time when it can be
 		 * proven that a signature has existed.
 		 */
-		final List<XmlSignature> signatures = diagnosticData.getSignatures();
-		for (final XmlSignature signature : signatures) {
-			signatureJaxb = signature;
-			signatureId = signature.getId();
+		final List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		for (final SignatureWrapper signature : signatures) {
 			final String type = signature.getType();
-
 			if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
 				params.setCurrentValidationPolicy(params.getCountersignatureValidationPolicy());
 			} else {
@@ -223,12 +205,12 @@ public class AdESTValidation {
 
 			constraintData = params.getCurrentValidationPolicy();
 			signatureXmlNode = adestValidationData.addChild(NodeName.SIGNATURE);
-			signatureXmlNode.setAttribute(AttributeName.ID, signatureId);
+			signatureXmlNode.setAttribute(AttributeName.ID, signature.getId());
 
 			// current time
 			bestSignatureTime = currentTime;
 
-			final Conclusion conclusion = process();
+			final Conclusion conclusion = process(signature);
 
 			final XmlNode conclusionXmlNode = conclusion.toXmlNode();
 			signatureXmlNode.addChild(conclusionXmlNode);
@@ -245,11 +227,11 @@ public class AdESTValidation {
 	 *
 	 * @return the {@code Conclusion} which indicates the result of the process
 	 */
-	private Conclusion process() {
+	private Conclusion process(SignatureWrapper signature) {
 
 		final Conclusion signatureConclusion = new Conclusion();
 
-		bvpConclusion = basicValidationData.getElement("/" + NodeName.BASIC_VALIDATION_DATA + "/Signature[@Id='%s']/Conclusion", signatureId);
+		bvpConclusion = basicValidationData.getElement("/" + NodeName.BASIC_VALIDATION_DATA + "/Signature[@Id='%s']/Conclusion", signature.getId());
 		bvpIndication = Indication.valueOf(bvpConclusion.getValue("./Indication/text()"));
 		bvpSubIndication = SubIndication.valueOf(bvpConclusion.getValue("./SubIndication/text()"));
 
@@ -267,18 +249,15 @@ public class AdESTValidation {
 		// This is the list of acceptable timestamps
 		final List<String> rightTimestamps = new ArrayList<String>();
 
-		final List<XmlTimestampType> timestampIds = diagnosticData.getTimestampList(signatureJaxb.getId(), TimestampType.SIGNATURE_TIMESTAMP);
-		timestampIds.addAll(diagnosticData.getTimestampList(signatureJaxb.getId(), TimestampType.CONTENT_TIMESTAMP));
-		timestampIds.addAll(diagnosticData.getTimestampList(signatureJaxb.getId(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
-		timestampIds.addAll(diagnosticData.getTimestampList(signatureJaxb.getId(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+		final List<TimestampWrapper> timestamps = signature.getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
+		timestamps.addAll(signature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP));
+		timestamps.addAll(signature.getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+		timestamps.addAll(signature.getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
 
 		boolean found = false;
 		int noContentTimestampCount = 0;
 
-		for (final XmlTimestampType timestamp : timestampIds) {
-
-			// timestampX
-			timestampId = timestamp.getId();
+		for (final TimestampWrapper timestamp : timestamps) {
 			final String timestampTypeString = timestamp.getType();
 			final TimestampType timestampType = TimestampType.valueOf(timestampTypeString);
 			final boolean contentTimestamp = isContentTimestamp(timestampType);
@@ -289,7 +268,7 @@ public class AdESTValidation {
 			}
 
 			timestampXmlNode = signatureXmlNode.addChild(NodeName.TIMESTAMP);
-			timestampXmlNode.setAttribute(AttributeName.ID, timestampId);
+			timestampXmlNode.setAttribute(AttributeName.ID, timestamp.getId());
 			timestampXmlNode.setAttribute(AttributeName.TYPE, timestampTypeString);
 			timestampXmlNode.setAttribute(AttributeName.GENERATION_TIME, DateUtils.formatDate(productionTime));
 
@@ -302,11 +281,9 @@ public class AdESTValidation {
 				continue;
 			}
 			if (contentTimestamp) {
-
-				checkTimestampValidationProcessConstraint();
+				checkTimestampValidationProcessConstraint(signature, timestamp);
 			} else {
-
-				found = checkTimestampValidationProcessConstraint(rightTimestamps, found, productionTime);
+				found = checkTimestampValidationProcessConstraint(rightTimestamps, found, productionTime, signature, timestamp);
 			}
 		}
 
@@ -355,15 +332,15 @@ public class AdESTValidation {
 			}
 		}
 
-		if (!checkTimestampCoherenceConstraint(signatureConclusion)) {
+		if (!checkTimestampCoherenceConstraint(signatureConclusion, signature)) {
 			return signatureConclusion;
 		}
 
-		if (!checkSigningTimeProperty(signatureConclusion)) {
+		if (!checkSigningTimeProperty(signatureConclusion, signature)) {
 			return signatureConclusion;
 		}
 
-		if (!checkTimestampDelay(signatureConclusion)) {
+		if (!checkTimestampDelay(signatureConclusion, signature)) {
 			return signatureConclusion;
 		}
 
@@ -380,9 +357,9 @@ public class AdESTValidation {
 				|| (TimestampType.CONTENT_TIMESTAMP == timestampType);
 	}
 
-	private Date getLatestTimestampProductionDate(final List<XmlTimestampType> timestamps, final TimestampType selectedTimestampType) {
+	private Date getLatestTimestampProductionDate(final List<TimestampWrapper> timestamps, final TimestampType selectedTimestampType) {
 		Date latestProductionTime = null;
-		for (final XmlTimestampType timestamp : timestamps) {
+		for (final TimestampWrapper timestamp : timestamps) {
 			final String timestampType = timestamp.getType();
 			if (!selectedTimestampType.name().equals(timestampType)) {
 				continue;
@@ -411,9 +388,9 @@ public class AdESTValidation {
 	 *            the production {@code Date} of the current timestamp
 	 * @return
 	 */
-	private boolean checkTimestampValidationProcessConstraint(final List<String> rightTimestamps, final boolean found, final Date productionTime) {
+	private boolean checkTimestampValidationProcessConstraint(final List<String> rightTimestamps, final boolean found, final Date productionTime,SignatureWrapper signature, TimestampWrapper timestamp) {
 
-		final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signatureId, timestampId);
+		final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signature.getId(), timestamp.getId());
 		final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
 		final String tsvpIndication = tsvpConclusion.getValue("./Indication/text()");
 		final String tsvpSubIndication = tsvpConclusion.getValue("./SubIndication/text()");
@@ -433,7 +410,7 @@ public class AdESTValidation {
 
 				bestSignatureTime = productionTime;
 				constraintNode.addChild(NodeName.INFO, MessageTag.ADEST_ITVPC_INFO_1);
-				rightTimestamps.add(timestampId);
+				rightTimestamps.add(timestamp.getId());
 				return true;
 			} else {
 
@@ -454,9 +431,9 @@ public class AdESTValidation {
 	 *
 	 * @return
 	 */
-	private void checkTimestampValidationProcessConstraint() {
+	private void checkTimestampValidationProcessConstraint(SignatureWrapper signature, TimestampWrapper timestamp) {
 
-		final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signatureId, timestampId);
+		final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signature.getId(), timestamp.getId());
 		final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
 		final String tsvpIndication = tsvpConclusion.getValue("./Indication/text()");
 
@@ -471,9 +448,9 @@ public class AdESTValidation {
 		}
 	}
 
-	private Date getEarliestTimestampProductionTime(final List<XmlTimestampType> timestamps, final TimestampType selectedTimestampType) {
+	private Date getEarliestTimestampProductionTime(final List<TimestampWrapper> timestamps, final TimestampType selectedTimestampType) {
 		Date earliestProductionTime = null;
-		for (final XmlTimestampType timestamp : timestamps) {
+		for (final TimestampWrapper timestamp : timestamps) {
 			final String timestampType = timestamp.getType();
 			if (!selectedTimestampType.name().equals(timestampType)) {
 				continue;
@@ -544,8 +521,7 @@ public class AdESTValidation {
 	 * @param timestamp
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
-	private boolean checkMessageImprintDataFoundConstraint(final Conclusion conclusion, final XmlTimestampType timestamp) {
-
+	private boolean checkMessageImprintDataFoundConstraint(final Conclusion conclusion, final TimestampWrapper timestamp) {
 		final Constraint constraint = constraintData.getMessageImprintDataFoundConstraint();
 		if (constraint == null) {
 			return true;
@@ -567,7 +543,7 @@ public class AdESTValidation {
 	 * @param timestamp
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
-	private boolean checkMessageImprintDataIntactConstraint(final Conclusion conclusion, final XmlTimestampType timestamp) {
+	private boolean checkMessageImprintDataIntactConstraint(final Conclusion conclusion, final TimestampWrapper timestamp) {
 
 		final Constraint constraint = constraintData.getMessageImprintDataIntactConstraint();
 		if (constraint == null) {
@@ -766,19 +742,19 @@ public class AdESTValidation {
 	 *            the conclusion to use to add the result of the check.
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
-	private boolean checkTimestampCoherenceConstraint(final Conclusion conclusion) {
+	private boolean checkTimestampCoherenceConstraint(final Conclusion conclusion, SignatureWrapper signature) {
 
 		final Constraint constraint = constraintData.getTimestampCoherenceConstraint();
 		if (constraint == null) {
 			return true;
 		}
 
-		final List<XmlTimestampType> timestamps = diagnosticData.getTimestampList(signatureId);
+		final List<TimestampWrapper> timestamps = signature.getTimestampList();
 
 		for (int index = timestamps.size() - 1; index >= 0; index--) {
-			final XmlTimestampType timestamp = timestamps.get(index);
+			final TimestampWrapper timestamp = timestamps.get(index);
 			String timestampId = timestamp.getId();
-			final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signatureId, timestampId);
+			final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signature.getId(), timestampId);
 			final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
 			final String tsvpIndication = tsvpConclusion.getValue("./Indication/text()");
 			if (!Indication.VALID.equals(tsvpIndication)) {
@@ -880,9 +856,10 @@ public class AdESTValidation {
 	 *
 	 * @param conclusion
 	 *            the conclusion to use to add the result of the check.
+	 * @param signature
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
-	private boolean checkSigningTimeProperty(final Conclusion conclusion) {
+	private boolean checkSigningTimeProperty(final Conclusion conclusion, SignatureWrapper signature) {
 
 		final Constraint constraint = constraintData.getTimestampDelaySigningTimePropertyConstraint();
 		if (constraint == null) {
@@ -890,7 +867,7 @@ public class AdESTValidation {
 		}
 		constraint.create(signatureXmlNode, MessageTag.BBB_SAV_ISQPSTP);
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.CLAIMED_SIGNING_TIME_ABSENT, MessageTag.ADEST_VFDTAOCST_ANS);
-		final Date signingTime = signatureJaxb.getDateTime();
+		final Date signingTime = signature.getDateTime();
 		constraint.setValue(signingTime != null);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -906,9 +883,10 @@ public class AdESTValidation {
 	 *
 	 * @param conclusion
 	 *            the conclusion to use to add the result of the check.
+	 * @param signature
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
-	private boolean checkTimestampDelay(final Conclusion conclusion) {
+	private boolean checkTimestampDelay(final Conclusion conclusion, SignatureWrapper signature) {
 
 		final Constraint constraint = constraintData.getTimestampDelaySigningTimePropertyConstraint();
 		if (constraint == null) {
@@ -917,7 +895,7 @@ public class AdESTValidation {
 		constraint.create(signatureXmlNode, MessageTag.ADEST_ISTPTDABST);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.ADEST_ISTPTDABST_ANS);
 		final Long timestampDelay = constraintData.getTimestampDelayTime();
-		final Date signingTime = signatureJaxb.getDateTime();
+		final Date signingTime = signature.getDateTime();
 		if (signingTime != null) {
 			constraint.setValue((signingTime.getTime() + timestampDelay) > bestSignatureTime.getTime());
 		} else {

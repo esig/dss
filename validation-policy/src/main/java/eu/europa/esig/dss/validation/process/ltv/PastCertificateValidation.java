@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
+import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.XmlNode;
@@ -200,7 +200,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 
 		final String trustedAnchorId = contextElement.getLastChainCertificateId();
 
-		XmlCertificate trustedAnchor = diagnosticData.getUsedCertificateByIdNullSafe(trustedAnchorId);
+		CertificateWrapper trustedAnchor = diagnosticData.getUsedCertificateByIdNullSafe(trustedAnchorId);
 		boolean isLastTrusted = trustedAnchor.isTrusted();
 		if (!isLastTrusted) {
 
@@ -228,7 +228,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 		for (XmlChainCertificate certToken : certificateChain) {
 
 			final String certificateId = certToken.getId();
-			final XmlCertificate certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
+			final CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 
 			final boolean isTrusted = certificate.isTrusted();
 
@@ -313,7 +313,7 @@ public class PastCertificateValidation extends X509CertificateValidation {
 			 * - - (4) The certificate issuer name is the working_issuer_name.<br>
 			 *
 			 */
-			final boolean isSignatureIntact = (certificate.getBasicSignature() != null) && certificate.getBasicSignature().isSignatureValid();
+			final boolean isSignatureIntact = certificate.isSignatureIntact();
 			if (!isSignatureIntact) {
 
 				constraintNode.addChild(NodeName.STATUS, NodeValue.KO);
@@ -388,21 +388,21 @@ public class PastCertificateValidation extends X509CertificateValidation {
 			 * intended use.
 			 */
 
-			XmlCertificate signingCertificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
+			CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
 
-			final QualifiedCertificate qc = new QualifiedCertificate(params);
+			final QualifiedCertificate qc = new QualifiedCertificate();
 			boolean isQC = qc.run(signingCertificate);
 			if (!checkSigningCertificateQualificationConstraint(conclusion, isQC)) {
 				return conclusion;
 			}
 
-			final SSCD sscd = new SSCD(params);
+			final SSCD sscd = new SSCD();
 			final Boolean isSSCD = sscd.run(signingCertificate);
 			if (!checkSigningCertificateSupportedBySSCDConstraint(conclusion, isSSCD)) {
 				return conclusion;
 			}
 
-			final ForLegalPerson forLegalPerson = new ForLegalPerson(params);
+			final ForLegalPerson forLegalPerson = new ForLegalPerson();
 			final Boolean isForLegalPerson = forLegalPerson.run(signingCertificate);
 			if (!checkSigningCertificateIssuedToLegalPersonConstraint(conclusion, isForLegalPerson)) {
 				return conclusion;

@@ -558,9 +558,8 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 
 	@Override
 	public BasicValidationProcessValidConstraint getBasicValidationProcessConclusionConstraint() {
-
 		final BasicValidationProcessValidConstraint constraint = new BasicValidationProcessValidConstraint("FAIL");
-		constraint.setExpectedValue(TRUE);
+		constraint.setExpectedValue("TRUE"); //TODO
 		return constraint;
 	}
 
@@ -584,9 +583,8 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 
 	@Override
 	public TimestampValidationProcessValidConstraint getTimestampValidationProcessConstraint() {
-
 		final TimestampValidationProcessValidConstraint constraint = new TimestampValidationProcessValidConstraint("FAIL");
-		constraint.setExpectedValue(TRUE);
+		constraint.setExpectedValue("TRUE"); // TODO
 		return constraint;
 	}
 

@@ -24,8 +24,8 @@ import java.util.Date;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.process.POEExtraction;
@@ -70,13 +70,13 @@ public class ProcessParameters {
 	 * IdentificationOfTheSignersCertificate sub process.
 	 * This variable is different for each context.
 	 */
-	private XmlCertificate signingCertificate;
+	private CertificateWrapper signingCertificate;
 
 	/**
 	 * Represents the current main signature DOM element being validated. This element provides general information used
 	 * in validation process like the list of used certificates.
 	 */
-	protected XmlSignature signatureContext;
+	protected SignatureWrapper signatureContext;
 
 	/**
 	 * Represents the current signature DOM element being validated:<br>
@@ -184,7 +184,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public XmlCertificate getSigningCertificate() {
+	public CertificateWrapper getSigningCertificate() {
 		return signingCertificate;
 	}
 
@@ -193,7 +193,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public void setSigningCertificate(final XmlCertificate signingCertificate) {
+	public void setSigningCertificate(final CertificateWrapper signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}
 
@@ -315,7 +315,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public XmlSignature getSignatureContext() {
+	public SignatureWrapper getSignatureContext() {
 		return signatureContext;
 	}
 
@@ -324,7 +324,7 @@ public class ProcessParameters {
 	 *
 	 * @param signature
 	 */
-	public void setSignatureContext(final XmlSignature signature) {
+	public void setSignatureContext(final SignatureWrapper signature) {
 		this.signatureContext = signature;
 	}
 
