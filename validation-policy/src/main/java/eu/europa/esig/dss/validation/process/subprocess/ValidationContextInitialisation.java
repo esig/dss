@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.process.subprocess;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyConstraint;
@@ -236,12 +235,11 @@ public class ValidationContextInitialisation {
 		}
 
 		constraint.create(subProcessNode, MessageTag.BBB_VCI_ISPK);
-		XmlPolicy policy = signatureContext.getPolicy();
-		if (policy != null) {
-			constraint.setIdentifier(policy.getId());
+		if (signatureContext.isPolicyPresent()) {
+			constraint.setIdentifier(signatureContext.getPolicyId());
 			// TODO ??? constraint.setPolicyValidity(signatureContext.getBoolValue("./Policy/Status/text()"));
-			constraint.setProcessingError(policy.getProcessingError());
-			constraint.setNotice(policy.getNotice());
+			constraint.setProcessingError(signatureContext.getPolicyProcessingError());
+			constraint.setNotice(signatureContext.getPolicyNotice());
 		} else {
 			constraint.setIdentifier(SignaturePolicy.NO_POLICY);
 		}

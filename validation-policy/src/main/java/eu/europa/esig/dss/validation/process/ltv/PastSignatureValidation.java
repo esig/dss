@@ -117,7 +117,7 @@ public class PastSignatureValidation {
 		pastSignatureValidationData.setAttribute(AttributeName.ID, signatureId);
 
 		final Indication currentTimeIndication =  Indication.valueOf(currentTimeSignatureConclusion.getValue("./Indication/text()"));
-		final SubIndication currentTimeSubIndication = SubIndication.valueOf(currentTimeSignatureConclusion.getValue("./SubIndication/text()"));
+		final SubIndication currentTimeSubIndication = SubIndication.forName(currentTimeSignatureConclusion.getValue("./SubIndication/text()"));
 
 		/**
 		 * 9.2.4.4 Processing<br>

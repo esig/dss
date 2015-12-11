@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
@@ -181,7 +183,7 @@ public class SignaturePolicyConstraint extends Constraint {
 		node.addChild(NodeName.STATUS, NodeValue.OK);
 		final XmlNode info = node.addChild(NodeName.INFO);
 		info.setAttribute(NodeName.IDENTIFIER, identifier);
-		if (!notice.isEmpty()) {
+		if (StringUtils.isNotEmpty(notice)) {
 
 			info.setAttribute(NodeName.NOTICE, notice);
 		}

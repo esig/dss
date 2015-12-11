@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,9 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRolesType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlClaimedRoles;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
@@ -81,7 +85,7 @@ public class SignatureWrapper extends AsbtractTokenProxy {
 	public List<TimestampWrapper> getTimestampList() {
 		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
 		XmlTimestamps timestamps = signature.getTimestamps();
-		if ((timestamps.getTimestamp() != null) && CollectionUtils.isNotEmpty(timestamps.getTimestamp())) {
+		if ((timestamps != null) && CollectionUtils.isNotEmpty(timestamps.getTimestamp())) {
 			for (XmlTimestampType timestamp : timestamps.getTimestamp()) {
 				tsps.add(new TimestampWrapper(timestamp));
 			}
@@ -224,6 +228,53 @@ public class SignatureWrapper extends AsbtractTokenProxy {
 
 	public XmlSignatureScopes getSignatureScopes() {
 		return signature.getSignatureScopes();
+	}
+
+	public List<String> getCertifiedRoles() {
+		List<String> result = new ArrayList<String>();
+		List<XmlCertifiedRolesType> certifiedRoles = signature.getCertifiedRoles();
+		if (CollectionUtils.isNotEmpty(certifiedRoles)) {
+			for (XmlCertifiedRolesType certifiedRole : certifiedRoles) {
+				result.add(certifiedRole.getCertifiedRole());
+			}
+		}
+		return result;
+	}
+
+	public List<String> getCommitmentTypeIdentifiers() {
+		XmlCommitmentTypeIndication commitmentTypeIndication = signature.getCommitmentTypeIndication();
+		if ((commitmentTypeIndication != null) && CollectionUtils.isNotEmpty(commitmentTypeIndication.getIdentifier())) {
+			return commitmentTypeIndication.getIdentifier();
+		}
+		return Collections.emptyList();
+	}
+
+	public List<String> getClaimedRoles() {
+		XmlClaimedRoles claimedRoles = signature.getClaimedRoles();
+		if ((claimedRoles != null) && CollectionUtils.isNotEmpty(claimedRoles.getClaimedRole())) {
+			return claimedRoles.getClaimedRole();
+		}
+		return Collections.emptyList();
+	}
+
+	public boolean isPolicyPresent() {
+		return signature.getPolicy() !=null;
+	}
+
+	public String getPolicyProcessingError() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy !=null){
+			return policy.getProcessingError();
+		}
+		return StringUtils.EMPTY;
+	}
+
+	public String getPolicyNotice() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy !=null){
+			return policy.getNotice();
+		}
+		return StringUtils.EMPTY;
 	}
 
 }

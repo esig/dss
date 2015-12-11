@@ -148,6 +148,16 @@ public class CertificateWrapper extends AsbtractTokenProxy {
 		return null;
 	}
 
+	public Date getCertificateTSPServiceExpiredCertsRevocationInfo() {
+		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
+		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+				return trustedServiceProvider.getExpiredCertsRevocationInfo(); // TODO correct ?? return first one
+			}
+		}
+		return null;
+	}
+
 	public String getCertificateTSPServiceName() {
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
 		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {

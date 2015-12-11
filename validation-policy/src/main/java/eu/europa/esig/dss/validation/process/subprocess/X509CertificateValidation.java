@@ -27,7 +27,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
@@ -428,7 +427,7 @@ public class X509CertificateValidation {
 		constraint.setCurrentTime(currentTime);
 		constraint.setNotAfter(signingCertificate.getNotAfter());
 		constraint.setNotBefore(signingCertificate.getNotBefore());
-		constraint.setExpiredCertsRevocationInfo(getDate(signingCertificate, "./TrustedServiceProvider/ExpiredCertsRevocationInfo"));
+		constraint.setExpiredCertsRevocationInfo(signingCertificate.getCertificateTSPServiceExpiredCertsRevocationInfo());
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.OUT_OF_BOUNDS_NO_POE, MessageTag.BBB_XCV_ICTIVRSC_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -462,25 +461,6 @@ public class X509CertificateValidation {
 		final String lastChainCertId = contextElement.getLastChainCertificateId();
 		final CertificateWrapper lastChainCertificate = diagnosticData.getUsedCertificateByIdNullSafe(lastChainCertId);
 		return lastChainCertificate.isTrusted();
-	}
-
-	/**
-	 * Retrieves the {@code Date} from an {@code XmlNode} using the XPath query.
-	 *
-	 * @param xmlDom
-	 *            {@code XmlDom} containing the desired date.
-	 * @param xPathQuery
-	 *            XPath query to run
-	 * @return {@code Date} or null if the XPath query returns no element or if the date conversion is impossible.
-	 */
-	private Date getDate(final XmlDom xmlDom, final String xPathQuery) {
-
-		final String formatedDate = xmlDom.getValue(xPathQuery + "/text()");
-		try {
-			return DateUtils.parseDate(formatedDate);
-		} catch (DSSException e) {
-			return null;
-		}
 	}
 
 	/**

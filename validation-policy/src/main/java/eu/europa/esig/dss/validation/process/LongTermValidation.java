@@ -226,7 +226,7 @@ public class LongTermValidation {
 
 		final XmlDom adestSignatureConclusion = adestSignatureValidationData.getElement("./Conclusion");
 		final Indication adestSignatureIndication = Indication.valueOf(adestSignatureConclusion.getValue("./Indication/text()"));
-		final SubIndication adestSignatureSubIndication = SubIndication.valueOf(adestSignatureConclusion.getValue("./SubIndication/text()"));
+		final SubIndication adestSignatureSubIndication = SubIndication.forName(adestSignatureConclusion.getValue("./SubIndication/text()"));
 
 		/**
 		 * - If the validation outputs VALID<br>

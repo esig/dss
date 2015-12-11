@@ -98,9 +98,6 @@ public class AdESTValidation {
 
 	private XmlDom timestampValidationData; // Basic Building Blocks for timestamps
 
-	// local helper variable
-	private XmlNode conclusionNode;
-
 	private XmlDom bvpConclusion;
 	private Indication bvpIndication;
 	private SubIndication bvpSubIndication;
@@ -233,7 +230,7 @@ public class AdESTValidation {
 
 		bvpConclusion = basicValidationData.getElement("/" + NodeName.BASIC_VALIDATION_DATA + "/Signature[@Id='%s']/Conclusion", signature.getId());
 		bvpIndication = Indication.valueOf(bvpConclusion.getValue("./Indication/text()"));
-		bvpSubIndication = SubIndication.valueOf(bvpConclusion.getValue("./SubIndication/text()"));
+		bvpSubIndication = SubIndication.forName(bvpConclusion.getValue("./SubIndication/text()"));
 
 		if (!checkBasicValidationProcessConclusionConstraint(signatureConclusion)) {
 			return signatureConclusion;

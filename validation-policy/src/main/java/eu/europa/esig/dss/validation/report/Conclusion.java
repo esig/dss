@@ -793,7 +793,7 @@ public class Conclusion {
 
 		final String subIndication = conclusionXmlDom.getValue("./SubIndication/text()");
 		if (!subIndication.isEmpty()) {
-			this.subIndication = SubIndication.valueOf(subIndication);
+			this.subIndication = SubIndication.forName(subIndication);
 		}
 
 		final List<XmlDom> errors = conclusionXmlDom.getElements("./Error");

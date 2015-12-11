@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 public final class RuleUtils {
@@ -82,26 +81,6 @@ public final class RuleUtils {
 		} catch (Exception e) {
 			throw new DSSException("Error during the duration conversion: " + e.getMessage(), e);
 		}
-	}
-
-	/**
-	 * @param id
-	 * @param idList
-	 * @return
-	 */
-	public static boolean contains(final String id, final List<XmlDom> idList) {
-
-		boolean found = false;
-		for (XmlDom xmlDom : idList) {
-
-			String value = xmlDom.getValue("./text()");
-			if (value.equals(id)) {
-
-				found = true;
-				break;
-			}
-		}
-		return found;
 	}
 
 	/**

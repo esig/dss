@@ -30,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
-import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
@@ -43,11 +42,6 @@ import eu.europa.esig.dss.validation.report.Conclusion;
  * This class represents a constraint and indicates its level: IGNORE, INFORM, WARN, FAIL.
  */
 public class Constraint {
-
-	/**
-	 * Diagnostic data containing all static information
-	 */
-	protected XmlDom diagnosticData;
 
 	/**
 	 * This field represents the {@code XmlNode} of the constraint
@@ -80,7 +74,12 @@ public class Constraint {
 	protected Map<String, String> messageAttributes = new HashMap<String, String>();
 	protected Conclusion conclusion;
 
-	public static enum Level {IGNORE, INFORM, WARN, FAIL}
+	public static enum Level {
+		IGNORE,
+		INFORM,
+		WARN,
+		FAIL
+	}
 
 	private Level level;
 
@@ -88,7 +87,8 @@ public class Constraint {
 	 * This is the default constructor. It takes a level of the constraint as parameter. The string representing the level is trimmed and capitalized. If there is no corresponding
 	 * {@code Level} then the {@code DSSException} is raised.
 	 *
-	 * @param level the constraint level string.
+	 * @param level
+	 *            the constraint level string.
 	 */
 	public Constraint(final String level) throws DSSException {
 		try {
@@ -101,8 +101,10 @@ public class Constraint {
 	/**
 	 * This method creates the constraint {@code XmlNode}.
 	 *
-	 * @param parentNode Represents the parent {@code XmlNode} to which the constraint node should be attached.
-	 * @param messageTag is the message describing the constraint.
+	 * @param parentNode
+	 *            Represents the parent {@code XmlNode} to which the constraint node should be attached.
+	 * @param messageTag
+	 *            is the message describing the constraint.
 	 * @return the {@code XmlNode} representing the current constraint in the validation process
 	 */
 	public XmlNode create(final XmlNode parentNode, final MessageTag messageTag) {
@@ -115,9 +117,12 @@ public class Constraint {
 	/**
 	 * This method creates the constraint {@code XmlNode}. This method should be used when the message describing the constraint comports dynamic parameters.
 	 *
-	 * @param parentNode Represents the parent {@code XmlNode} to which the constraint node should be attached.
-	 * @param messageTag is the message describing the constraint.
-	 * @param parameters the dynamic parameters to integrate into the message.
+	 * @param parentNode
+	 *            Represents the parent {@code XmlNode} to which the constraint node should be attached.
+	 * @param messageTag
+	 *            is the message describing the constraint.
+	 * @param parameters
+	 *            the dynamic parameters to integrate into the message.
 	 * @return the {@code XmlNode} representing the current constraint in the validation process.
 	 */
 	public XmlNode create(final XmlNode parentNode, final MessageTag messageTag, final String parameters) {
@@ -129,30 +134,16 @@ public class Constraint {
 	}
 
 	/**
-	 * @return {@code XmlDom} representing encapsulated diagnostic data
-	 */
-	public XmlDom getDiagnosticData() {
-		return diagnosticData;
-	}
-
-	/**
-	 * Allows to link the diagnostic data to the {@code Constraint}
-	 *
-	 * @param diagnosticData {@code XmlDom} representing diagnostic data
-	 */
-	public void setDiagnosticData(final XmlDom diagnosticData) {
-		this.diagnosticData = diagnosticData;
-	}
-
-	/**
-	 * @param value the simple value of the constraint to set.
+	 * @param value
+	 *            the simple value of the constraint to set.
 	 */
 	public void setValue(final String value) {
 		this.value = value;
 	}
 
 	/**
-	 * @param booleanValue the simple value of the constraint to set. The {@code boolean} is converted to its {@code String} representation.
+	 * @param booleanValue
+	 *            the simple value of the constraint to set. The {@code boolean} is converted to its {@code String} representation.
 	 */
 	public void setValue(final boolean booleanValue) {
 		this.value = String.valueOf(booleanValue);
@@ -161,7 +152,8 @@ public class Constraint {
 	/**
 	 * Sets the list of real values.
 	 *
-	 * @param stringList {@code List} of {@code String}s
+	 * @param stringList
+	 *            {@code List} of {@code String}s
 	 */
 	public void setValue(final List<String> stringList) {
 
@@ -180,7 +172,8 @@ public class Constraint {
 	}
 
 	/**
-	 * @param expectedValue the simple expected value of the constraint to set.
+	 * @param expectedValue
+	 *            the simple expected value of the constraint to set.
 	 */
 	public void setExpectedValue(final String expectedValue) {
 		this.expectedValue = expectedValue;
@@ -273,7 +266,8 @@ public class Constraint {
 			if (warn()) {
 
 				node.addChild(NodeName.STATUS, NodeValue.WARN);
-				node.addChild(NodeName.WARNING, failureMessageTag, messageAttributes).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue).setAttribute(AttributeName.CONSTRAINT_VALUE, value);
+				node.addChild(NodeName.WARNING, failureMessageTag, messageAttributes).setAttribute(AttributeName.EXPECTED_VALUE, expectedValue)
+				.setAttribute(AttributeName.CONSTRAINT_VALUE, value);
 				conclusion.addWarning(failureMessageTag, messageAttributes);
 				return true;
 			}
@@ -289,9 +283,12 @@ public class Constraint {
 	}
 
 	/**
-	 * @param indication        to return when failure
-	 * @param subIndication     to return when failure
-	 * @param failureMessageTag is the answer to be done in case of the constraint failure.
+	 * @param indication
+	 *            to return when failure
+	 * @param subIndication
+	 *            to return when failure
+	 * @param failureMessageTag
+	 *            is the answer to be done in case of the constraint failure.
 	 */
 	public void setIndications(final Indication indication, final SubIndication subIndication, final MessageTag failureMessageTag) {
 
@@ -303,7 +300,8 @@ public class Constraint {
 	/**
 	 * This method should be called when the failure of the constraint does not cause the failure of the process.
 	 *
-	 * @param failureMessageTag is the answer to be done in case of the constraint failure.
+	 * @param failureMessageTag
+	 *            is the answer to be done in case of the constraint failure.
 	 */
 	public void setIndications(final MessageTag failureMessageTag) {
 
@@ -315,7 +313,8 @@ public class Constraint {
 	}
 
 	/**
-	 * @param identifiers the {@code List} of identifiers to set.
+	 * @param identifiers
+	 *            the {@code List} of identifiers to set.
 	 */
 	public void setIdentifiers(final List<String> identifiers) {
 		this.identifiers = identifiers;
@@ -328,8 +327,10 @@ public class Constraint {
 	/**
 	 * This method allows to add an attribute to the answer node (to the message).
 	 *
-	 * @param attributeName  the attribute name
-	 * @param attributeValue the attribute value
+	 * @param attributeName
+	 *            the attribute name
+	 * @param attributeValue
+	 *            the attribute value
 	 */
 	public Constraint setAttribute(final String attributeName, final String attributeValue) {
 
@@ -340,8 +341,10 @@ public class Constraint {
 	/**
 	 * This method allows to add an attribute to the answer node (to the message).
 	 *
-	 * @param attributeName  the attribute name
-	 * @param attributeValue the attribute value
+	 * @param attributeName
+	 *            the attribute name
+	 * @param attributeValue
+	 *            the attribute value
 	 */
 	public Constraint setAttribute(final String attributeName, final Date attributeValue) {
 		messageAttributes.put(attributeName, DateUtils.formatDate(attributeValue));

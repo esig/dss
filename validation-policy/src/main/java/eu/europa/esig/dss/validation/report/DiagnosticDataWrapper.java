@@ -329,6 +329,11 @@ public class DiagnosticDataWrapper {
 		return timestamp.getSigningCertificateId();
 	}
 
+	public String getTimestampType(String timestampId) {
+		TimestampWrapper timestamp = getTimestampByIdNullSafe(timestampId);
+		return timestamp.getType();
+	}
+
 	/**
 	 * This method indicates if the certificate signature is valid and the revocation status is valid.
 	 *

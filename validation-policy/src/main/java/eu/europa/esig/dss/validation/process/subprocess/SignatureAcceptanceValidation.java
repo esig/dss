@@ -27,7 +27,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.Constraint;
@@ -44,7 +43,6 @@ import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.Conclusion;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -100,20 +98,16 @@ public class SignatureAcceptanceValidation {
 	 */
 	private XmlNode subProcessNode;
 
-	private DiagnosticDataWrapper diagnosticData;
 
 	private void prepareParameters(final ProcessParameters params) {
-
 		this.constraintData = params.getCurrentValidationPolicy();
 		this.signatureContext = params.getSignatureContext();
 		this.currentTime = params.getCurrentTime();
-		this.diagnosticData = params.getDiagnosticData();
 
 		isInitialised();
 	}
 
 	private void isInitialised() {
-
 		if (constraintData == null) {
 			throw new DSSException(String.format(ExceptionMessage.EXCEPTION_TCOPPNTBI, getClass().getSimpleName(), "validationPolicy"));
 		}
@@ -306,8 +300,7 @@ public class SignatureAcceptanceValidation {
 			final List<String> requestedCertifiedRoles = constraintData.getCertifiedRoles();
 			final String requestedCertifiedRolesString = RuleUtils.toString(requestedCertifiedRoles);
 
-			final List<XmlDom> certifiedRolesXmlDom = signatureContext.getElements("./CertifiedRoles/CertifiedRole");
-			final List<String> certifiedRoles = XmlDom.convertToStringList(certifiedRolesXmlDom);
+			final List<String> certifiedRoles = signatureContext.getCertifiedRoles();
 			final String certifiedRolesString = RuleUtils.toString(certifiedRoles);
 
 			boolean contains = RuleUtils.contains(requestedCertifiedRoles, certifiedRoles);
@@ -481,8 +474,8 @@ public class SignatureAcceptanceValidation {
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPXTIP);
 		// TODO: A set of commitments must be checked
-		final String commitmentTypeIndicationIdentifier = signatureContext.getCommitmentTypeIndication().getIdentifier().get(0);
-		constraint.setValue(commitmentTypeIndicationIdentifier);
+		final List<String> commitmentTypeIdentifiers = signatureContext.getCommitmentTypeIdentifiers();
+		constraint.setValue(commitmentTypeIdentifiers);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPXTIP_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
@@ -579,33 +572,6 @@ public class SignatureAcceptanceValidation {
 	}
 
 	/**
-	 * @param conclusion
-	 * @return
-	 */
-	private boolean checkContentTimestampImprintFoundConstraint(final Conclusion conclusion) {
-
-		final Constraint constraint = constraintData.getContentTimestampPresenceConstraint();
-		if (constraint == null) {
-			return true;
-		}
-		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPCTSIP);
-
-		//get all possible content timestamps
-
-		List<TimestampWrapper> tsps = signatureContext.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-		tsps.addAll(signatureContext.getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
-		tsps.addAll(signatureContext.getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
-
-		final String countValue = CollectionUtils.isEmpty(tsps) ? "" : String.valueOf(tsps.size());
-
-		constraint.setValue(countValue);
-		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);
-		constraint.setConclusionReceiver(conclusion);
-
-		return constraint.check();
-	}
-
-	/**
 	 * Check of unsigned qualifying property: claimed roles
 	 *
 	 * @param conclusion
@@ -613,14 +579,12 @@ public class SignatureAcceptanceValidation {
 	 * @return false if the check failed and the process should stop, true otherwise.
 	 */
 	private boolean checkClaimedRoleConstraint(final Conclusion conclusion) {
-
 		final Constraint constraint = constraintData.getClaimedRoleConstraint();
 		if (constraint == null) {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ICRM);
-		final List<XmlDom> claimedRolesXmlDom = signatureContext.getElements("./ClaimedRoles/ClaimedRole");
-		final List<String> claimedRoles = XmlDom.convertToStringList(claimedRolesXmlDom);
+		final List<String> claimedRoles = signatureContext.getClaimedRoles();
 		// TODO (Bob) to be implemented fro each claimed role. Attendance must be taken into account.
 		final String attendance = constraintData.getCertifiedRolesAttendance();
 		String claimedRole = null;
