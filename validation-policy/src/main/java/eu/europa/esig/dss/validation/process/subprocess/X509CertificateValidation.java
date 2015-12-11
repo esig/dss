@@ -720,7 +720,7 @@ public class X509CertificateValidation {
 		constraint.create(validationDataXmlNode, MessageTag.CTS_IIDOCWVPOTS);
 
 		final Date certificateValidFrom = certificate.getNotBefore();
-		List<XmlTrustedServiceProviderType> tspList = diagnosticData.getCertificateTSPService(xmlCertificate);
+		List<XmlTrustedServiceProviderType> tspList = certificate.getCertificateTSPService();
 		boolean found = false;
 		for (final XmlTrustedServiceProviderType trustedServiceProvider : tspList) {
 
@@ -767,7 +767,7 @@ public class X509CertificateValidation {
 		}
 		constraint.create(validationDataXmlNode, MessageTag.CTS_WITSS);
 
-		List<XmlTrustedServiceProviderType> tspList = diagnosticData.getCertificateTSPService(certificate);
+		List<XmlTrustedServiceProviderType> tspList = certificate.getCertificateTSPService();
 		boolean acceptableStatus = false;
 		String status = StringUtils.EMPTY;
 		for (final XmlTrustedServiceProviderType trustedServiceProvider : tspList) {
@@ -813,7 +813,7 @@ public class X509CertificateValidation {
 
 		final Date certificateValidFrom = certificate.getNotBefore();
 
-		final List<XmlTrustedServiceProviderType> tspList = diagnosticData.getCertificateTSPService(certificate);
+		final List<XmlTrustedServiceProviderType> tspList = certificate.getCertificateTSPService();
 		boolean found = false;
 		for (final XmlTrustedServiceProviderType trustedServiceProvider : tspList) {
 

@@ -34,10 +34,9 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
+import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.policy.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.SignatureQualification;
@@ -66,7 +65,6 @@ public class SimpleReportBuilder {
 	private int validSignatureCount = 0;
 
 	public SimpleReportBuilder(final ValidationPolicy constraintData, final DiagnosticDataWrapper diagnosticData) {
-
 		this.constraintData = constraintData;
 		this.diagnosticData = diagnosticData;
 	}
@@ -125,12 +123,11 @@ public class SimpleReportBuilder {
 	}
 
 	private void addSignatures(final ProcessParameters params, final XmlNode simpleReport) throws DSSException {
-
-		final List<XmlSignature> signatures = diagnosticData.getSignatures();
+		final List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
-		for (final XmlSignature signatureXmlDom : signatures) {
-			addSignature(params, simpleReport, signatureXmlDom);
+		for (final SignatureWrapper signature : signatures) {
+			addSignature(params, simpleReport, signature);
 		}
 	}
 
@@ -144,33 +141,26 @@ public class SimpleReportBuilder {
 	 * @param params
 	 *            validation process parameters
 	 * @param simpleReport
-	 * @param diagnosticSignature
+	 * @param signature
 	 *            the diagnosticSignature element in the diagnostic data
 	 * @throws DSSException
 	 */
-	private void addSignature(final ProcessParameters params, final XmlNode simpleReport, final XmlSignature diagnosticSignature) throws DSSException {
+	private void addSignature(final ProcessParameters params, final XmlNode simpleReport, final SignatureWrapper signature) throws DSSException {
 
 		totalSignatureCount++;
 
 		final XmlNode signatureNode = simpleReport.addChild(NodeName.SIGNATURE);
 
-		final String signatureId = diagnosticSignature.getId();
+		final String signatureId = signature.getId();
 		signatureNode.setAttribute(AttributeName.ID, signatureId);
 
-		final String type = diagnosticSignature.getType();
-		addCounterSignature(diagnosticSignature, signatureNode, type);
+		final String type = signature.getType();
+		addCounterSignature(signature, signatureNode, type);
 		try {
 
-			addSigningTime(diagnosticSignature, signatureNode);
-			addSignatureFormat(diagnosticSignature, signatureNode);
-
-			String certificateId = StringUtils.EMPTY;
-			XmlSigningCertificateType signingCertificate = diagnosticSignature.getSigningCertificate();
-			if (signingCertificate != null) {
-				certificateId = signingCertificate.getId();
-			}
-
-			addSignedBy(signatureNode, certificateId);
+			addSigningTime(signature, signatureNode);
+			addSignatureFormat(signature, signatureNode);
+			addSignedBy(signature, signatureNode);
 
 			XmlDom bvData = params.getBvData();
 			final XmlDom basicValidationConclusion = bvData.getElement("/BasicValidationData/Signature[@Id='%s']/Conclusion", signatureId);
@@ -222,7 +212,7 @@ public class SimpleReportBuilder {
 				signatureNode.addChild(NodeName.SUB_INDICATION, subIndication);
 			}
 			if (basicValidationConclusion != null) {
-				String errorMessage = diagnosticSignature.getErrorMessage();
+				String errorMessage = signature.getErrorMessage();
 				if (StringUtils.isNotEmpty(errorMessage)) {
 					errorMessage = StringEscapeUtils.escapeXml(errorMessage);
 					final XmlNode xmlNode = new XmlNode(NodeName.INFO, errorMessage);
@@ -237,9 +227,9 @@ public class SimpleReportBuilder {
 			addBasicInfo(signatureNode, basicValidationWarningList);
 			addBasicInfo(signatureNode, infoList);
 
-			addSignatureProfile(signatureNode, certificateId);
+			addSignatureProfile(signature, signatureNode);
 
-			final XmlSignatureScopes signatureScopes = diagnosticSignature.getSignatureScopes();
+			final XmlSignatureScopes signatureScopes = signature.getSignatureScopes();
 			addSignatureScope(signatureNode, signatureScopes);
 		} catch (Exception e) {
 
@@ -248,9 +238,8 @@ public class SimpleReportBuilder {
 		}
 	}
 
-	private void addCounterSignature(XmlSignature diagnosticSignature, XmlNode signatureNode, String type) {
+	private void addCounterSignature(SignatureWrapper diagnosticSignature, XmlNode signatureNode, String type) {
 		if (AttributeValue.COUNTERSIGNATURE.equals(type)) {
-
 			signatureNode.setAttribute(AttributeName.TYPE, AttributeValue.COUNTERSIGNATURE);
 			final String parentId = diagnosticSignature.getParentId();
 			signatureNode.setAttribute(AttributeName.PARENT_ID, parentId);
@@ -259,7 +248,7 @@ public class SimpleReportBuilder {
 
 	private void addSignatureScope(final XmlNode signatureNode, final XmlSignatureScopes signatureScopes) {
 		if (signatureScopes != null) {
-			//		//TODO	signatureNode.addChild(signatureScopes);
+			//TODO	signatureNode.addChild(signatureScopes);
 		}
 	}
 
@@ -270,16 +259,17 @@ public class SimpleReportBuilder {
 		}
 	}
 
-	private void addSigningTime(final XmlSignature diagnosticSignature, final XmlNode signatureNode) {
+	private void addSigningTime(final SignatureWrapper diagnosticSignature, final XmlNode signatureNode) {
 		signatureNode.addChild(NodeName.SIGNING_TIME, DateUtils.formatDate(diagnosticSignature.getDateTime()));
 	}
 
-	private void addSignatureFormat(final XmlSignature diagnosticSignature, final XmlNode signatureNode) {
+	private void addSignatureFormat(final SignatureWrapper diagnosticSignature, final XmlNode signatureNode) {
 		signatureNode.setAttribute(NodeName.SIGNATURE_FORMAT, diagnosticSignature.getSignatureFormat());
 	}
 
-	private void addSignedBy(final XmlNode signatureNode, final String certificateId) {
+	private void addSignedBy(final SignatureWrapper diagnosticSignature, final XmlNode signatureNode) {
 		String signedBy = "?";
+		String certificateId = diagnosticSignature.getSigningCertificateId();
 		if (StringUtils.isNotEmpty(certificateId)) {
 			signedBy = diagnosticData.getCertificateDN(certificateId);
 		}
@@ -290,8 +280,9 @@ public class SimpleReportBuilder {
 	/**
 	 * Here we determine the type of the signature.
 	 */
-	private void addSignatureProfile(XmlNode signatureNode, String certificateId) {
+	private void addSignatureProfile(SignatureWrapper signature, XmlNode signatureNode) {
 		SignatureType signatureType = SignatureType.NA;
+		String certificateId = signature.getSigningCertificateId();
 		if (certificateId != null) {
 			signatureType = getSignatureType(certificateId);
 		}
@@ -306,18 +297,18 @@ public class SimpleReportBuilder {
 	 */
 	private SignatureType getSignatureType(final String certificateId) {
 
-		XmlCertificate xmlCertificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
+		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 		final CertificateQualification certQualification = new CertificateQualification();
-		certQualification.setQcp(diagnosticData.isCertificateQCP(xmlCertificate));
-		certQualification.setQcpp(diagnosticData.isCertificateQCPPlus(xmlCertificate));
-		certQualification.setQcc(diagnosticData.isCertificateQCC(xmlCertificate));
-		certQualification.setQcsscd(diagnosticData.isCertificateQCSSCD(xmlCertificate));
+		certQualification.setQcp(certificate.isCertificateQCP());
+		certQualification.setQcpp(certificate.isCertificateQCPPlus());
+		certQualification.setQcc(certificate.isCertificateQCC());
+		certQualification.setQcsscd(certificate.isCertificateQCSSCD());
 
 		final TLQualification trustedListQualification = new TLQualification();
 
-		final String caqc = diagnosticData.getCertificateTSPServiceType(xmlCertificate);
+		final String caqc = certificate.getCertificateTSPServiceType();
 
-		final List<String> qualifiers = diagnosticData.getCertificateTSPServiceQualifiers(xmlCertificate);
+		final List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 
 		trustedListQualification.setCaqc(TSLConstant.CA_QC.equals(caqc));
 		trustedListQualification.setQcCNoSSCD(isQcNoSSCD(qualifiers));

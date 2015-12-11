@@ -9,7 +9,9 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
@@ -96,6 +98,132 @@ public class SignatureWrapper extends AsbtractTokenProxy {
 			}
 		}
 		return result;
+	}
+
+	public boolean isSignatureProductionPlacePresent() {
+		return signature.getSignatureProductionPlace() != null;
+	}
+
+	public String getAddress() {
+		return signature.getSignatureProductionPlace().getAddress();
+	}
+
+	public String getCity() {
+		return signature.getSignatureProductionPlace().getCity();
+	}
+
+	public String getCountryName() {
+		return signature.getSignatureProductionPlace().getCountryName();
+	}
+
+	public String getPostalCode() {
+		return signature.getSignatureProductionPlace().getPostalCode();
+	}
+
+	public String getStateOrProvince() {
+		return signature.getSignatureProductionPlace().getStateOrProvince();
+	}
+
+	public String getSignatureFormat() {
+		return signature.getSignatureFormat();
+	}
+
+	public String getErrorMessage() {
+		return signature.getErrorMessage();
+	}
+
+	public boolean isSigningCertificateIdentified() {
+		XmlSigningCertificateType signingCertificate = signature.getSigningCertificate();
+		if (signingCertificate != null) {
+			return signingCertificate.isDigestValueMatch() && signingCertificate.isIssuerSerialMatch();
+		}
+		return false;
+	}
+
+	public String getPolicyId() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.getId();
+		}
+		return StringUtils.EMPTY;
+	}
+
+	public boolean isBLevelTechnicallyValid() {
+		return (signature.getBasicSignature() != null) && signature.getBasicSignature().isSignatureValid();
+	}
+
+	public boolean isThereXLevel() {
+		List<TimestampWrapper> timestampLevelX = getTimestampLevelX();
+		return CollectionUtils.isNotEmpty(timestampLevelX);
+	}
+
+	public boolean isXLevelTechnicallyValid() {
+		List<TimestampWrapper> timestamps = getTimestampLevelX();
+		return isTimestampValid(timestamps);
+	}
+
+	private List<TimestampWrapper> getTimestampLevelX() {
+		List<TimestampWrapper> timestamps = getTimestampListByType(TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+		timestamps.addAll(getTimestampListByType(TimestampType.VALIDATION_DATA_TIMESTAMP));
+		return timestamps;
+	}
+
+	public boolean isThereALevel() {
+		List<TimestampWrapper> timestampList = getArchiveTimestamps();
+		return CollectionUtils.isNotEmpty(timestampList);
+	}
+
+	public boolean isALevelTechnicallyValid() {
+		List<TimestampWrapper> timestampList = getArchiveTimestamps();
+		return isTimestampValid(timestampList);
+	}
+
+	private List<TimestampWrapper> getArchiveTimestamps() {
+		return getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
+	}
+
+	public boolean isThereTLevel() {
+		List<TimestampWrapper> timestamps = getSignatureTimestamps();
+		return CollectionUtils.isNotEmpty(timestamps);
+	}
+
+	public boolean isTLevelTechnicallyValid() {
+		List<TimestampWrapper> timestampList = getSignatureTimestamps();
+		return isTimestampValid(timestampList);
+	}
+
+	private List<TimestampWrapper> getSignatureTimestamps() {
+		return getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
+	}
+
+	private boolean isTimestampValid(List<TimestampWrapper> timestampList) {
+		for (final TimestampWrapper timestamp : timestampList) {
+			final boolean signatureValid = timestamp.isSignatureValid();
+			final boolean messageImprintIntact = timestamp.isMessageImprintDataIntact();
+			if (signatureValid && messageImprintIntact) { // TODO correct ?  return true if at least 1 TSP OK
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public List<String> getTimestampIdsList() {
+		List<String> result = new ArrayList<String>();
+		List<TimestampWrapper> timestamps = getTimestampList();
+		if (CollectionUtils.isNotEmpty(timestamps)) {
+			for (TimestampWrapper tsp : timestamps) {
+				result.add(tsp.getId());
+			}
+		}
+		return result;
+	}
+
+	public String getParentId() {
+		return signature.getParentId();
+	}
+
+	public XmlSignatureScopes getSignatureScopes() {
+		return signature.getSignatureScopes();
 	}
 
 }

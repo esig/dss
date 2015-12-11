@@ -1,10 +1,13 @@
 package eu.europa.esig.dss.validation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
@@ -21,6 +24,18 @@ public abstract class AsbtractTokenProxy implements TokenProxy {
 	@Override
 	public List<XmlChainCertificate> getCertificateChain() {
 		return getCurrentCertificateChain().getChainCertificate();
+	}
+
+	@Override
+	public List<String> getCertificateChainIds() {
+		List<String> result = new ArrayList<String>();
+		List<XmlChainCertificate> certificateChain = getCertificateChain();
+		if (CollectionUtils.isNotEmpty(certificateChain)) {
+			for (XmlChainCertificate xmlChainCertificate : certificateChain) {
+				result.add(xmlChainCertificate.getId());
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -49,8 +64,20 @@ public abstract class AsbtractTokenProxy implements TokenProxy {
 	}
 
 	@Override
+	public DigestAlgorithm getDigestAlgorithm() {
+		String signatureDigestAlgorithmName = getDigestAlgoUsedToSignThisToken();
+		return DigestAlgorithm.forName(signatureDigestAlgorithmName, null);
+	}
+
+	@Override
 	public String getEncryptionAlgoUsedToSignThisToken() {
 		return getCurrentBasicSignature().getEncryptionAlgoUsedToSignThisToken();
+	}
+
+	@Override
+	public EncryptionAlgorithm getEncryptionAlgorithm() {
+		String encryptionAlgoUsedToSignThisToken = getEncryptionAlgoUsedToSignThisToken();
+		return EncryptionAlgorithm.forName(encryptionAlgoUsedToSignThisToken, null);
 	}
 
 	@Override

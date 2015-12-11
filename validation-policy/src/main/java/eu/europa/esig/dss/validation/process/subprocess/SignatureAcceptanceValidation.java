@@ -28,8 +28,8 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignatureWrapper;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.Constraint;
 import eu.europa.esig.dss.validation.policy.ProcessParameters;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
@@ -508,14 +508,13 @@ public class SignatureAcceptanceValidation {
 			return true;
 		}
 		constraint.create(subProcessNode, MessageTag.BBB_SAV_ISQPSLP);
-		XmlSignatureProductionPlace signatureProductionPlace = signatureContext.getSignatureProductionPlace();
 		StringBuffer result = new StringBuffer();
-		if (signatureProductionPlace != null) {
-			add(result, "Address", signatureProductionPlace.getAddress());
-			add(result, "City", signatureProductionPlace.getCity());
-			add(result, "PostalCode", signatureProductionPlace.getPostalCode());
-			add(result, "StateOrProvince", signatureProductionPlace.getStateOrProvince());
-			add(result, "CountryName", signatureProductionPlace.getCountryName());
+		if (signatureContext.isSignatureProductionPlacePresent()) {
+			add(result, "Address", signatureContext.getAddress());
+			add(result, "City", signatureContext.getCity());
+			add(result, "PostalCode", signatureContext.getPostalCode());
+			add(result, "StateOrProvince", signatureContext.getStateOrProvince());
+			add(result, "CountryName", signatureContext.getCountryName());
 		}
 		constraint.setValue(result.toString());
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPSLP_ANS);
@@ -549,11 +548,11 @@ public class SignatureAcceptanceValidation {
 
 		//get count of all possible content timestamps
 
-		List<String> ids = diagnosticData.getTimestampIdList(signatureContext.getId(), TimestampType.CONTENT_TIMESTAMP);
-		ids.addAll(diagnosticData.getTimestampIdList(signatureContext.getId(),  TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
-		ids.addAll(diagnosticData.getTimestampIdList(signatureContext.getId(),  TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+		List<TimestampWrapper> tsps = signatureContext.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
+		tsps.addAll(signatureContext.getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+		tsps.addAll(signatureContext.getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
 
-		final String countValue = CollectionUtils.isEmpty(ids) ? "" : String.valueOf(ids.size());
+		final String countValue = CollectionUtils.isEmpty(tsps) ? "" : String.valueOf(tsps.size());
 		constraint1.setValue(countValue);
 		constraint1.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);
 		constraint1.setConclusionReceiver(conclusion);
@@ -593,11 +592,11 @@ public class SignatureAcceptanceValidation {
 
 		//get all possible content timestamps
 
-		List<String> ids = diagnosticData.getTimestampIdList(signatureContext.getId(), TimestampType.CONTENT_TIMESTAMP);
-		ids.addAll(diagnosticData.getTimestampIdList(signatureContext.getId(),  TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
-		ids.addAll(diagnosticData.getTimestampIdList(signatureContext.getId(),  TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+		List<TimestampWrapper> tsps = signatureContext.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
+		tsps.addAll(signatureContext.getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+		tsps.addAll(signatureContext.getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
 
-		final String countValue = CollectionUtils.isEmpty(ids) ? "" : String.valueOf(ids.size());
+		final String countValue = CollectionUtils.isEmpty(tsps) ? "" : String.valueOf(tsps.size());
 
 		constraint.setValue(countValue);
 		constraint.setIndications(Indication.INVALID, SubIndication.SIG_CONSTRAINTS_FAILURE, MessageTag.BBB_SAV_ISQPCTSIP_ANS);

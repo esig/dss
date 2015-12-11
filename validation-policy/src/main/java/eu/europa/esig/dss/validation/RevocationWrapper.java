@@ -55,4 +55,8 @@ public class RevocationWrapper extends AsbtractTokenProxy {
 		return revocation.getDateTime();
 	}
 
+	public String getSource() {
+		return revocation.getSource();
+	}
+
 }

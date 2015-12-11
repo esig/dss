@@ -33,10 +33,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
+import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
@@ -176,9 +176,9 @@ public class EtsiPOEExtraction extends POEExtraction {
 		if (CollectionUtils.isNotEmpty(digestAlgAndValues)) {
 			for (XmlDigestAlgAndValueType digestAlgAndValue : digestAlgAndValues) {
 				if (StringUtils.equalsIgnoreCase(AttributeValue.CERTIFICATE, digestAlgAndValue.getCategory())) {
-					XmlCertificate xmlCertificate = diagnosticData.getUsedCertificateByDigest(digestAlgAndValue.getDigestMethod(), digestAlgAndValue.getDigestValue());
-					if (xmlCertificate != null) {
-						addCertificatePoe(xmlCertificate.getId(), date);
+					CertificateWrapper certificate = getUsedCertificateByDigest(diagnosticData, digestAlgAndValue.getDigestMethod(), digestAlgAndValue.getDigestValue());
+					if (certificate != null) {
+						addCertificatePoe(certificate.getId(), date);
 					} else {
 						LOG.error(String.format("The certificate with digest value:%S is not found.", digestAlgAndValue.getDigestValue()));
 					}
@@ -189,6 +189,23 @@ public class EtsiPOEExtraction extends POEExtraction {
 				//				}
 			}
 		}
+	}
+
+	public CertificateWrapper getUsedCertificateByDigest(DiagnosticDataWrapper diagnosticData, String digestMethod, String digestValue) {
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		if (CollectionUtils.isNotEmpty(usedCertificates)) {
+			for (CertificateWrapper certificate : usedCertificates) {
+				List<XmlDigestAlgAndValueType> digestAlgAndValues = certificate.getDigestAlgAndValue();
+				if (CollectionUtils.isNotEmpty(digestAlgAndValues)) {
+					for (XmlDigestAlgAndValueType digestAlgAndValue : digestAlgAndValues) {
+						if (StringUtils.equals(digestMethod, digestAlgAndValue.getDigestMethod()) && StringUtils.equals(digestValue, digestAlgAndValue.getDigestValue())) {
+							return certificate;
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
