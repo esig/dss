@@ -258,12 +258,12 @@ public class SignatureWrapper extends AsbtractTokenProxy {
 	}
 
 	public boolean isPolicyPresent() {
-		return signature.getPolicy() !=null;
+		return signature.getPolicy() != null;
 	}
 
 	public String getPolicyProcessingError() {
 		XmlPolicy policy = signature.getPolicy();
-		if (policy !=null){
+		if (policy != null) {
 			return policy.getProcessingError();
 		}
 		return StringUtils.EMPTY;
@@ -271,10 +271,42 @@ public class SignatureWrapper extends AsbtractTokenProxy {
 
 	public String getPolicyNotice() {
 		XmlPolicy policy = signature.getPolicy();
-		if (policy !=null){
+		if (policy != null) {
 			return policy.getNotice();
 		}
 		return StringUtils.EMPTY;
+	}
+
+	public String getPolicyUrl() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.getUrl();
+		}
+		return StringUtils.EMPTY;
+	}
+
+	public boolean isPolicyAsn1Processable() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.isAsn1Processable();
+		}
+		return false;
+	}
+
+	public boolean isPolicyIdentified() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.isIdentified();
+		}
+		return false;
+	}
+
+	public boolean isPolicyStatus() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.isStatus();
+		}
+		return false;
 	}
 
 }

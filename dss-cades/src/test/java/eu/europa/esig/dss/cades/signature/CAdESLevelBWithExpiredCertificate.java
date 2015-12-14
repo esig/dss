@@ -59,9 +59,9 @@ public class CAdESLevelBWithExpiredCertificate extends AbstractTestSignature {
 	@Override
 	protected void verifySimpleReport(SimpleReport simpleReport) {
 		super.verifySimpleReport(simpleReport);
-		String indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
+		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		assertEquals(Indication.INDETERMINATE, indication);
-		String subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
+		SubIndication subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, subIndication);
 	}
 

@@ -79,8 +79,8 @@ public class ValidateDetached extends Cookbook {
 
 		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
 		DSSUtils.saveToFile(is, "target/validationDetached_simpleReport.xml");
-		is = new ByteArrayInputStream(diagnosticData.toByteArray());
-		DSSUtils.saveToFile(is, "target/validationDetached_diagnosticReport.xml");
+		//		TODO is = new ByteArrayInputStream(diagnosticData.toByteArray());
+		//		DSSUtils.saveToFile(is, "target/validationDetached_diagnosticReport.xml");
 
 		//System.out.println(diagnosticData);
 	}

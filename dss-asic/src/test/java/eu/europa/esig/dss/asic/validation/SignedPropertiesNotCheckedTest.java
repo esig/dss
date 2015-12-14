@@ -23,11 +23,14 @@ package eu.europa.esig.dss.asic.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DetailedReport;
@@ -41,8 +44,6 @@ import eu.europa.esig.dss.validation.report.Reports;
  */
 public class SignedPropertiesNotCheckedTest {
 
-	private static final String REFERENCE_DATA_FOUND_PATH = "/DiagnosticData/Signature[@Id='%s']/BasicSignature/ReferenceDataFound/text()";
-
 	@Test
 	public void testNoSignedProperties() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/join-up/xades_no-signedpropref.asice_.zip");
@@ -51,7 +52,8 @@ public class SignedPropertiesNotCheckedTest {
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertFalse(diagnosticData.getBoolValue(REFERENCE_DATA_FOUND_PATH, diagnosticData.getFirstSignatureId()));
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertFalse(signatures.get(0).isReferenceDataFound());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getBasicBuildingBlocksSubIndication(diagnosticData.getFirstSignatureId()));

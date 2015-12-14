@@ -22,11 +22,14 @@ package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
@@ -39,8 +42,6 @@ import eu.europa.esig.dss.validation.report.Reports;
  */
 public class SignedPropertiesNotCheckedTest {
 
-	private static final String REFERENCE_DATA_FOUND_PATH = "/DiagnosticData/Signature[@Id='%s']/BasicSignature/ReferenceDataFound/text()";
-
 	@Test
 	public void testWithSignedProperties() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-signed.xml");
@@ -51,7 +52,8 @@ public class SignedPropertiesNotCheckedTest {
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.getBoolValue(REFERENCE_DATA_FOUND_PATH, diagnosticData.getFirstSignatureId()));
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertTrue(signatures.get(0).isReferenceDataFound());
 	}
 
 }

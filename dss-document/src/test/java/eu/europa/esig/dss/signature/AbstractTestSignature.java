@@ -23,14 +23,11 @@ package eu.europa.esig.dss.signature;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -164,8 +161,7 @@ public abstract class AbstractTestSignature {
 	}
 
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
-		assertEquals(getPrivateKeyEntry().getCertificate().getDigestAlgorithm(),
-				diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
+		assertEquals(getPrivateKeyEntry().getCertificate().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
 	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
@@ -255,16 +251,9 @@ public abstract class AbstractTestSignature {
 		Date signatureDate = diagnosticData.getSignatureDate();
 		Date originalSigningDate = getSignatureParameters().bLevel().getSigningDate();
 
-		try {
-			// Time in GMT
-			SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-			dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-			SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-			Date originalGMTDate = dateFormatLocal.parse(dateFormatGmt.format(originalSigningDate));
+		// Date in signed documents is truncated
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
 
-			assertEquals(originalGMTDate, signatureDate);
-		} catch (ParseException e) {
-			fail("Cannot check the signing date");
-		}
+		assertEquals(dateFormat.format(originalSigningDate), dateFormat.format(signatureDate));
 	}
 }

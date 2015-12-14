@@ -23,10 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.DetailedReport;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.web.WebAppUtils;
@@ -103,13 +103,13 @@ public class ValidationController {
 		DetailedReport detailedReport = reports.getDetailedReport();
 		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, detailedReport);
 		model.addAttribute("detailedReport", xsltService.generateDetailedReport(detailedReport));
-		model.addAttribute("diagnosticTree", reports.getDiagnosticData().toString());
-		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		model.addAttribute("diagnosticTree", diagnosticData);
+
 		List<String> reportsNameList = new ArrayList<String>();
 		List<Reports> reportsList = new ArrayList<Reports>();
 		while(reports != null) {
-			XmlDom dom = reports.getDiagnosticData().getElement("//DocumentName");
-			reportsNameList.add(dom.getText());
+			reportsNameList.add(diagnosticData.getDocumentName());
 			reportsList.add(reports);
 			reports = reports.getNextReports();
 		}
@@ -118,21 +118,22 @@ public class ValidationController {
 
 		return VALIDATION_RESULT_TILE;
 	}
-	
+
 	@RequestMapping(value = "/report", method = RequestMethod.GET)
 	public String getReports(@RequestParam("name") String reportFileName, HttpSession session, Model model) {
 		Reports reports = null;
 		List<Reports> reportsList = (List<Reports>) session.getAttribute(REPORTS_LIST);
 		List<String> reportsNameList = new ArrayList<String>();
 		for(Reports report : reportsList) {
-			XmlDom dom = report.getDiagnosticData().getElement("//DocumentName");
-			String name = dom.getText().substring(dom.getText().lastIndexOf("/")+1);
+			DiagnosticData diagnosticData = report.getDiagnosticData();
+			String documentName = diagnosticData.getDocumentName();
+			String name = documentName.substring(documentName.lastIndexOf("/")+1);
 			if(name.equals(reportFileName)) {
-				reportsNameList.add(dom.getText());
+				reportsNameList.add(documentName);
 				reports = report;
 			}
 		}
-		
+
 		SimpleReport simpleReport = reports.getSimpleReport();
 		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, simpleReport);
 		model.addAttribute("simpleReport", xsltService.generateSimpleReport(simpleReport));
@@ -141,15 +142,15 @@ public class ValidationController {
 		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, detailedReport);
 		model.addAttribute("detailedReport", xsltService.generateDetailedReport(detailedReport));
 		model.addAttribute("diagnosticTree", reports.getDiagnosticData().toString());
-		
+
 		for(Reports report : reportsList) {
 			if(report != reports) {
-				XmlDom dom = report.getDiagnosticData().getElement("//DocumentName");
-				reportsNameList.add(dom.getText());
+				DiagnosticData diagnosticData = report.getDiagnosticData();
+				reportsNameList.add(diagnosticData.getDocumentName());
 			}
 		}
 		model.addAttribute("reports", reportsNameList);
-		
+
 		return VALIDATION_RESULT_TILE;
 	}
 

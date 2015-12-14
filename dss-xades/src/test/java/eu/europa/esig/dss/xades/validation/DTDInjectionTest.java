@@ -3,12 +3,14 @@ package eu.europa.esig.dss.xades.validation;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
@@ -26,8 +28,9 @@ public class DTDInjectionTest {
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		String value = diagnosticData.getValue("/DiagnosticData/Signature[@Id='Signature']/ClaimedRoles/ClaimedRole/text()");
-		assertTrue(StringUtils.equals("&test1;", value) || StringUtils.isEmpty(value));
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		List<String> claimedRoles = signatures.get(0).getClaimedRoles();
+		assertTrue(CollectionUtils.isEmpty(claimedRoles) || claimedRoles.contains("&test1;") || claimedRoles.contains(""));
 	}
 
 }
