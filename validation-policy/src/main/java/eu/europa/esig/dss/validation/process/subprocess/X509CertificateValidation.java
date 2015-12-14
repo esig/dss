@@ -52,7 +52,7 @@ import eu.europa.esig.dss.validation.process.dss.ForLegalPerson;
 import eu.europa.esig.dss.validation.process.dss.QualifiedCertificate;
 import eu.europa.esig.dss.validation.process.dss.SSCD;
 import eu.europa.esig.dss.validation.report.Conclusion;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
@@ -65,7 +65,7 @@ public class X509CertificateValidation {
 	/**
 	 * See {@link ProcessParameters#getDiagnosticData()}
 	 */
-	protected DiagnosticDataWrapper diagnosticData;
+	protected DiagnosticData diagnosticData;
 
 	/**
 	 * See {@link ProcessParameters#getCurrentValidationPolicy()}

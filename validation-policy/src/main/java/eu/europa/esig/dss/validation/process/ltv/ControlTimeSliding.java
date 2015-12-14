@@ -46,7 +46,7 @@ import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.subprocess.EtsiPOEExtraction;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * 9.2.2 Control-time sliding process<br>
@@ -65,7 +65,7 @@ public class ControlTimeSliding {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ControlTimeSliding.class);
 
-	private DiagnosticDataWrapper diagnosticData;
+	private DiagnosticData diagnosticData;
 
 	private ValidationPolicy constraintData;
 

@@ -41,7 +41,7 @@ import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.process.POEExtraction;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * 9.2.3 POE extraction<br>
@@ -157,7 +157,7 @@ public class EtsiPOEExtraction extends POEExtraction {
 	 * @param timestamp
 	 * @param certPool
 	 */
-	public void addPOE(final TimestampWrapper timestamp, final DiagnosticDataWrapper diagnosticData) {
+	public void addPOE(final TimestampWrapper timestamp, final DiagnosticData diagnosticData) {
 
 		final Date date = timestamp.getProductionTime();
 		if (date == null) {
@@ -191,7 +191,7 @@ public class EtsiPOEExtraction extends POEExtraction {
 		}
 	}
 
-	public CertificateWrapper getUsedCertificateByDigest(DiagnosticDataWrapper diagnosticData, String digestMethod, String digestValue) {
+	public CertificateWrapper getUsedCertificateByDigest(DiagnosticData diagnosticData, String digestMethod, String digestValue) {
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		if (CollectionUtils.isNotEmpty(usedCertificates)) {
 			for (CertificateWrapper certificate : usedCertificates) {

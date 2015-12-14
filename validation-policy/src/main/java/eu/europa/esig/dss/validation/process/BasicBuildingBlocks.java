@@ -41,7 +41,7 @@ import eu.europa.esig.dss.validation.process.subprocess.SignatureAcceptanceValid
 import eu.europa.esig.dss.validation.process.subprocess.ValidationContextInitialisation;
 import eu.europa.esig.dss.validation.process.subprocess.X509CertificateValidation;
 import eu.europa.esig.dss.validation.report.Conclusion;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * This class creates the validation data (Basic Building Blocks) for all signatures.
@@ -56,7 +56,7 @@ public class BasicBuildingBlocks {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BasicBuildingBlocks.class);
 
-	private DiagnosticDataWrapper diagnosticData;
+	private DiagnosticData diagnosticData;
 
 	private void prepareParameters(final ProcessParameters params) {
 

@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.process.subprocess.CryptographicVerificatio
 import eu.europa.esig.dss.validation.process.subprocess.IdentificationOfTheSignersCertificate;
 import eu.europa.esig.dss.validation.process.subprocess.X509CertificateValidation;
 import eu.europa.esig.dss.validation.report.Conclusion;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * 7 Validation Process for Time-Stamps<br>
@@ -60,7 +60,7 @@ public class TimestampValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampValidation.class);
 
-	private DiagnosticDataWrapper diagnosticData;
+	private DiagnosticData diagnosticData;
 	private ValidationPolicy constraintData;
 
 	/**

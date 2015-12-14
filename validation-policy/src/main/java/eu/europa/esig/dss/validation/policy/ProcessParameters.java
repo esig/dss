@@ -29,7 +29,7 @@ import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.ExceptionMessage;
 import eu.europa.esig.dss.validation.process.POEExtraction;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * This class stores the references to data exchanged and manipulated by different sub validation processes.
@@ -41,7 +41,7 @@ public class ProcessParameters {
 	 * from the signature(s) being validated. This data is independent of the form of source signature (PDF, XAdES,
 	 * PAdES, ASiC).
 	 */
-	protected DiagnosticDataWrapper diagnosticData;
+	protected DiagnosticData diagnosticData;
 
 	/**
 	 * This is the policy data to be used by the validation process. This data are not mandatory but in this case the
@@ -122,7 +122,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public DiagnosticDataWrapper getDiagnosticData() {
+	public DiagnosticData getDiagnosticData() {
 		return diagnosticData;
 	}
 
@@ -131,7 +131,7 @@ public class ProcessParameters {
 	 *
 	 * @return
 	 */
-	public void setDiagnosticData(final DiagnosticDataWrapper diagnosticData) {
+	public void setDiagnosticData(final DiagnosticData diagnosticData) {
 		this.diagnosticData = diagnosticData;
 	}
 

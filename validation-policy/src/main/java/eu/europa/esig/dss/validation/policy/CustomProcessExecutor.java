@@ -27,11 +27,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.process.LongTermValidation;
 import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.validation.report.SimpleReportBuilder;
@@ -43,9 +42,9 @@ public class CustomProcessExecutor implements ProcessExecutor {
 
 	protected static final Logger LOG = LoggerFactory.getLogger(CustomProcessExecutor.class);
 
-	protected DiagnosticData diagnosticDataJaxb;
+	protected  eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb;
 
-	protected DiagnosticDataWrapper diagnosticData;
+	protected DiagnosticData diagnosticData;
 
 	/**
 	 * Wrapper for the validation policy constraints
@@ -83,7 +82,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	}
 
 	@Override
-	public void setDiagnosticData(final DiagnosticData diagnosticDataJaxb) {
+	public void setDiagnosticData(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
 		this.diagnosticDataJaxb = diagnosticDataJaxb;
 	}
 
@@ -109,7 +108,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	public Reports execute() {
 
 		processParams = new ProcessParameters();
-		diagnosticData = new DiagnosticDataWrapper(diagnosticDataJaxb);
+		diagnosticData = new DiagnosticData(diagnosticDataJaxb);
 		processParams.setDiagnosticData(diagnosticData);
 		processParams.setValidationPolicy(validationPolicy);
 		processParams.setCountersignatureValidationPolicy(countersignatureValidationPolicy);

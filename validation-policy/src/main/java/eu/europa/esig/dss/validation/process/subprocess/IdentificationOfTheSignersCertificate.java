@@ -36,7 +36,7 @@ import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.Conclusion;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * 5.1 Identification of the Signer's Certificate (ISC)
@@ -68,7 +68,7 @@ public class IdentificationOfTheSignersCertificate {
 	/**
 	 * See {@link ProcessParameters#getDiagnosticData()}
 	 */
-	private DiagnosticDataWrapper diagnosticData;
+	private DiagnosticData diagnosticData;
 
 	/**
 	 * // TODO: (Bob: 2014 Mar 12)

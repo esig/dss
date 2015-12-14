@@ -59,12 +59,12 @@ public class SimpleReportBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(SimpleReportBuilder.class);
 
 	private final ValidationPolicy constraintData;
-	private final DiagnosticDataWrapper diagnosticData;
+	private final DiagnosticData diagnosticData;
 
 	private int totalSignatureCount = 0;
 	private int validSignatureCount = 0;
 
-	public SimpleReportBuilder(final ValidationPolicy constraintData, final DiagnosticDataWrapper diagnosticData) {
+	public SimpleReportBuilder(final ValidationPolicy constraintData, final DiagnosticData diagnosticData) {
 		this.constraintData = constraintData;
 		this.diagnosticData = diagnosticData;
 	}

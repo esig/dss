@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ltv.PastSignatureValidation;
 import eu.europa.esig.dss.validation.process.ltv.PastSignatureValidationConclusion;
 import eu.europa.esig.dss.validation.process.subprocess.EtsiPOEExtraction;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -85,7 +85,7 @@ public class LongTermValidation {
 	 *
 	 * @return
 	 */
-	private DiagnosticDataWrapper diagnosticData;
+	private DiagnosticData diagnosticData;
 
 	private XmlDom timestampValidationData; // Basic Building Blocks for timestamps
 

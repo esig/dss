@@ -49,7 +49,7 @@ import eu.europa.esig.dss.validation.policy.rules.NodeName;
 import eu.europa.esig.dss.validation.policy.rules.NodeValue;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.Conclusion;
-import eu.europa.esig.dss.validation.report.DiagnosticDataWrapper;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -72,7 +72,7 @@ public class AdESTValidation {
 	 *
 	 * @return
 	 */
-	private DiagnosticDataWrapper diagnosticData;
+	private DiagnosticData diagnosticData;
 
 	/**
 	 * See {@link eu.europa.esig.dss.validation.policy.ProcessParameters#getValidationPolicy()}
