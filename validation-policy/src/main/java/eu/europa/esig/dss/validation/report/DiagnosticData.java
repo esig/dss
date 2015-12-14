@@ -43,9 +43,12 @@ import eu.europa.esig.dss.validation.TimestampWrapper;
  */
 public class DiagnosticData {
 
-	private final  eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData;
+	private final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData;
 
-	public DiagnosticData(final  eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData) {
+	private List<SignatureWrapper> foundSignatures;
+	private List<CertificateWrapper> usedCertificates;
+
+	public DiagnosticData(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData) {
 		this.diagnosticData = diagnosticData;
 	}
 
@@ -563,11 +566,11 @@ public class DiagnosticData {
 	}
 
 	public CertificateWrapper getUsedCertificateByIdNullSafe(String id) {
-		List<CertificateWrapper> usedCertificates = getUsedCertificates();
-		if (CollectionUtils.isNotEmpty(usedCertificates)) {
-			for (CertificateWrapper certificateWrapper : usedCertificates) {
-				if (StringUtils.equals(id, certificateWrapper.getId())) {
-					return certificateWrapper;
+		List<CertificateWrapper> certificates = getUsedCertificates();
+		if (CollectionUtils.isNotEmpty(certificates)) {
+			for (CertificateWrapper certificate : certificates) {
+				if (StringUtils.equals(id, certificate.getId())) {
+					return certificate;
 				}
 			}
 		}
@@ -575,25 +578,29 @@ public class DiagnosticData {
 	}
 
 	public List<SignatureWrapper> getSignatures() {
-		List<SignatureWrapper> result = new ArrayList<SignatureWrapper>();
-		List<XmlSignature> signatures = diagnosticData.getSignature();
-		if (CollectionUtils.isNotEmpty(signatures)) {
-			for (XmlSignature xmlSignature : signatures) {
-				result.add(new SignatureWrapper(xmlSignature));
+		if (foundSignatures == null) {
+			foundSignatures = new ArrayList<SignatureWrapper>();
+			List<XmlSignature> xmlSignatures = diagnosticData.getSignature();
+			if (CollectionUtils.isNotEmpty(xmlSignatures)) {
+				for (XmlSignature xmlSignature : xmlSignatures) {
+					foundSignatures.add(new SignatureWrapper(xmlSignature));
+				}
 			}
 		}
-		return result;
+		return foundSignatures;
 	}
 
 	public List<CertificateWrapper> getUsedCertificates() {
-		List<CertificateWrapper> certificates = new ArrayList<CertificateWrapper>();
-		XmlUsedCertificates usedCertificates = diagnosticData.getUsedCertificates();
-		if ((usedCertificates != null) && CollectionUtils.isNotEmpty(usedCertificates.getCertificate())) {
-			for (XmlCertificate certificate : usedCertificates.getCertificate()) {
-				certificates.add(new CertificateWrapper(certificate));
+		if (usedCertificates == null) {
+			usedCertificates = new ArrayList<CertificateWrapper>();
+			XmlUsedCertificates xmlCertificates = diagnosticData.getUsedCertificates();
+			if ((xmlCertificates != null) && CollectionUtils.isNotEmpty(xmlCertificates.getCertificate())) {
+				for (XmlCertificate certificate : xmlCertificates.getCertificate()) {
+					usedCertificates.add(new CertificateWrapper(certificate));
+				}
 			}
 		}
-		return certificates;
+		return usedCertificates;
 	}
 
 }
