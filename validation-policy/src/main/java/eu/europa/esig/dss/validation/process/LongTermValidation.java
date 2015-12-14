@@ -418,7 +418,7 @@ public class LongTermValidation {
 				constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
 
 				final XmlDom timestampConclusion = signatureTimestampValidationData.getElement("./Timestamp[@Id='%s']/BasicBuildingBlocks/Conclusion", timestampId);
-				final String timestampIndication = timestampConclusion.getValue("./Indication/text()");
+				final Indication timestampIndication = Indication.valueOf(timestampConclusion.getValue("./Indication/text()"));
 
 				/**
 				 * a) If VALID is returned and the cryptographic hash function used in the time-stamp

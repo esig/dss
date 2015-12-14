@@ -161,7 +161,7 @@ public class BasicValidation {
 		 * TODO: (***) The ICS process can also return INVALID.FORMAT_FAILURE. This is not mentioned in the BVP process.
 		 */
 		final XmlDom iscConclusion = signature.getElement("./ISC/Conclusion");
-		final String iscIndication = iscConclusion.getValue("./Indication/text()");
+		final Indication iscIndication = Indication.valueOf(iscConclusion.getValue("./Indication/text()"));
 
 		if (!Indication.VALID.equals(iscIndication)) {
 
@@ -175,7 +175,7 @@ public class BasicValidation {
 		 */
 
 		final XmlDom vciConclusion = signature.getElement("./VCI/Conclusion");
-		final String vciIndication = vciConclusion.getValue("./Indication/text()");
+		final Indication vciIndication = Indication.valueOf(vciConclusion.getValue("./Indication/text()"));
 
 		if (!Indication.VALID.equals(vciIndication)) {
 
@@ -199,7 +199,7 @@ public class BasicValidation {
 		 * --> We do this first to not be oblige to redo it at LTV process.
 		 */
 		final XmlDom cvConclusion = signature.getElement("./CV/Conclusion");
-		final String cvIndication = cvConclusion.getValue("./Indication/text()");
+		final Indication cvIndication = Indication.valueOf(cvConclusion.getValue("./Indication/text()"));
 		if (!Indication.VALID.equals(cvIndication)) {
 
 			conclusionNode.addChildrenOf(cvConclusion);
@@ -240,8 +240,8 @@ public class BasicValidation {
 
 			throw new DSSException(ExceptionMessage.EXCEPTION_TWUEIVP);
 		}
-		final String savIndication = savConclusion.getValue("./Indication/text()");
-		final String savSubIndication = savConclusion.getValue("./SubIndication/text()");
+		final Indication savIndication = Indication.valueOf(savConclusion.getValue("./Indication/text()"));
+		final SubIndication savSubIndication = SubIndication.forName(savConclusion.getValue("./SubIndication/text()"));
 
 		if (Indication.INDETERMINATE.equals(savIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(savSubIndication)) {
 
@@ -254,7 +254,7 @@ public class BasicValidation {
 			// To carry out content-timestamp AdES-T validation process.
 
 			final XmlDom adestConclusion = contentTimestampsAdESTValidationData.getElement("/ContentTimestampsAdesTValidationData/Signature[@Id='%s']/Conclusion", signatureId);
-			final String adestIndication = adestConclusion.getValue("./Indication/text()");
+			final Indication adestIndication = Indication.valueOf(adestConclusion.getValue("./Indication/text()"));
 			if (!Indication.VALID.equals(adestIndication)) {
 
 				conclusionNode.addChild(NodeName.INDICATION, Indication.INDETERMINATE.name());
@@ -315,8 +315,8 @@ public class BasicValidation {
 		 * in step 2:<br>
 		 */
 		final XmlDom xcvConclusion = signature.getElement("./XCV/Conclusion");
-		final String xcvIndication = xcvConclusion.getValue("./Indication/text()");
-		final String xcvSubIndication = xcvConclusion.getValue("./SubIndication/text()");
+		final Indication xcvIndication = Indication.valueOf(xcvConclusion.getValue("./Indication/text()"));
+		final SubIndication xcvSubIndication = SubIndication.forName(xcvConclusion.getValue("./SubIndication/text()"));
 
 		/**
 		 * 􀀀 If the process returns VALID, go to the next step.
@@ -332,7 +332,7 @@ public class BasicValidation {
 			if (contentTimestamps != null) {
 
 				final XmlDom adestConclusion = contentTimestampsAdESTValidationData.getElement("/ContentTimestampsAdesTValidationData/Signature[@Id='%s']/Conclusion", signatureId);
-				final String adestIndication = adestConclusion.getValue("./Indication/text()");
+				final Indication adestIndication = Indication.valueOf(adestConclusion.getValue("./Indication/text()"));
 				if (Indication.VALID.equals(adestIndication)) {
 
 					final Date revocationTime = xcvConclusion.getTimeValue("./Info/@RevocationTime");
@@ -363,7 +363,7 @@ public class BasicValidation {
 
 				final XmlDom adestConclusionDom = contentTimestampsAdESTValidationData
 						.getElement("/ContentTimestampsAdesTValidationData/Signature[@Id='%s']/Conclusion", signatureId);
-				final String adestIndication = adestConclusionDom.getValue("./Indication/text()");
+				final Indication adestIndication = Indication.valueOf(adestConclusionDom.getValue("./Indication/text()"));
 				if (Indication.VALID.equals(adestIndication)) {
 
 					final Date bestSignatureTime = adestConclusionDom.getTimeValue("./Info/@BestSignatureTime");

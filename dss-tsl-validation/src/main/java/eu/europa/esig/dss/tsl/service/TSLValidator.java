@@ -104,7 +104,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 
 		Reports reports = xmlDocumentValidator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
-		String indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
+		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		boolean isValid = Indication.VALID.equals(indication);
 
 		TSLValidationResult result = new TSLValidationResult();

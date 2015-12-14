@@ -166,12 +166,12 @@ public class SimpleReportBuilder {
 			final XmlDom basicValidationConclusion = bvData.getElement("/BasicValidationData/Signature[@Id='%s']/Conclusion", signatureId);
 			final XmlDom ltvDom = params.getLtvData();
 			final XmlDom ltvConclusion = ltvDom.getElement("/LongTermValidationData/Signature[@Id='%s']/Conclusion", signatureId);
-			final String ltvIndication = ltvConclusion.getValue("./Indication/text()");
-			final String ltvSubIndication = ltvConclusion.getValue("./SubIndication/text()");
+			final Indication ltvIndication = Indication.valueOf(ltvConclusion.getValue("./Indication/text()"));
+			final SubIndication ltvSubIndication = SubIndication.forName(ltvConclusion.getValue("./SubIndication/text()"));
 			final List<XmlDom> ltvInfoList = ltvConclusion.getElements("./Info");
 
-			String indication = ltvIndication;
-			String subIndication = ltvSubIndication;
+			Indication indication = ltvIndication;
+			SubIndication subIndication = ltvSubIndication;
 			List<XmlDom> infoList = new ArrayList<XmlDom>();
 			infoList.addAll(ltvInfoList);
 
@@ -182,8 +182,8 @@ public class SimpleReportBuilder {
 			final boolean noTimestamp = Indication.INDETERMINATE.equals(ltvIndication) && SubIndication.NO_TIMESTAMP.equals(ltvSubIndication);
 			if (noTimestamp) {
 
-				final String basicValidationConclusionIndication = basicValidationConclusion.getValue("./Indication/text()");
-				final String basicValidationConclusionSubIndication = basicValidationConclusion.getValue("./SubIndication/text()");
+				final Indication basicValidationConclusionIndication = Indication.valueOf(basicValidationConclusion.getValue("./Indication/text()"));
+				final SubIndication basicValidationConclusionSubIndication = SubIndication.forName(basicValidationConclusion.getValue("./SubIndication/text()"));
 				indication = basicValidationConclusionIndication;
 				subIndication = basicValidationConclusionSubIndication;
 				infoList = basicValidationInfoList;
@@ -203,13 +203,12 @@ public class SimpleReportBuilder {
 					}
 				}
 			}
-			signatureNode.addChild(NodeName.INDICATION, indication);
+			signatureNode.addChild(NodeName.INDICATION, indication.name());
 			if (Indication.VALID.equals(indication)) {
 				validSignatureCount++;
 			}
-			if (!subIndication.isEmpty()) {
-
-				signatureNode.addChild(NodeName.SUB_INDICATION, subIndication);
+			if (subIndication !=null) {
+				signatureNode.addChild(NodeName.SUB_INDICATION, subIndication.name());
 			}
 			if (basicValidationConclusion != null) {
 				String errorMessage = signature.getErrorMessage();

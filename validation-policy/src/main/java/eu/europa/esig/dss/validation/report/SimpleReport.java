@@ -32,6 +32,7 @@ import org.w3c.dom.Node;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.SignatureType;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
  * A SimpleReport holder to fetch properties from a XmlDom simpleReport.
@@ -61,10 +62,8 @@ public class SimpleReport extends XmlDom {
 	 * @param signatureId DSS unique identifier of the signature
 	 * @return
 	 */
-	public String getIndication(final String signatureId) {
-
-		final String indication = getValue("/SimpleReport/Signature[@Id='%s']/Indication/text()", signatureId);
-		return indication;
+	public Indication getIndication(final String signatureId) {
+		return Indication.valueOf(getValue("/SimpleReport/Signature[@Id='%s']/Indication/text()", signatureId));
 	}
 
 	/**
@@ -73,10 +72,8 @@ public class SimpleReport extends XmlDom {
 	 * @param signatureId DSS unique identifier of the signature
 	 * @return
 	 */
-	public String getSubIndication(final String signatureId) {
-
-		final String subIndication = getValue("/SimpleReport/Signature[@Id='%s']/SubIndication/text()", signatureId);
-		return subIndication;
+	public SubIndication getSubIndication(final String signatureId) {
+		return SubIndication.forName(getValue("/SimpleReport/Signature[@Id='%s']/SubIndication/text()", signatureId));
 	}
 
 	/**
@@ -85,7 +82,7 @@ public class SimpleReport extends XmlDom {
 	 */
 	public boolean isSignatureValid(final String signatureId) {
 
-		final String indicationValue = getIndication(signatureId);
+		final Indication indicationValue = getIndication(signatureId);
 		return Indication.VALID.equals(indicationValue);
 	}
 

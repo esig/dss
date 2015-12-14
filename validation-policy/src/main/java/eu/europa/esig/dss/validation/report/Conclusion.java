@@ -786,15 +786,8 @@ public class Conclusion {
 
 	public void copyConclusion(final XmlDom conclusionXmlDom) {
 
-		final String indication = conclusionXmlDom.getValue("./Indication/text()");
-		if (!indication.isEmpty()) {
-			this.indication = Indication.valueOf(indication);
-		}
-
-		final String subIndication = conclusionXmlDom.getValue("./SubIndication/text()");
-		if (!subIndication.isEmpty()) {
-			this.subIndication = SubIndication.forName(subIndication);
-		}
+		this.indication = Indication.valueOf(conclusionXmlDom.getValue("./Indication/text()"));
+		this.subIndication = SubIndication.forName(conclusionXmlDom.getValue("./SubIndication/text()"));
 
 		final List<XmlDom> errors = conclusionXmlDom.getElements("./Error");
 		addErrors(errors);

@@ -28,6 +28,7 @@ import org.w3c.dom.Document;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -87,24 +88,20 @@ public class DetailedReport extends XmlDom {
 	 * Returns the validation INDICATION of the basic building blocks for the given signature id.
 	 *
 	 * @param signatureId {@code String} id of the signature
-	 * @return related {@code String} indication
+	 * @return related {@code Indication} indication
 	 */
-	public String getBasicBuildingBlocksIndication(final String signatureId) {
-
-		final String indication = getValue("/ValidationData/BasicBuildingBlocks/Signature[@Id='%s']/Conclusion/Indication/text()", signatureId);
-		return indication;
+	public Indication getBasicBuildingBlocksIndication(final String signatureId) {
+		return Indication.valueOf(getValue("/ValidationData/BasicBuildingBlocks/Signature[@Id='%s']/Conclusion/Indication/text()", signatureId));
 	}
 
 	/**
 	 * Returns the validation SUB_INDICATION of the basic building blocks for the given signature id.
 	 *
 	 * @param signatureId {@code String} id of the signature
-	 * @return related {@code String} sub-indication
+	 * @return related {@code Indication} sub-indication
 	 */
-	public String getBasicBuildingBlocksSubIndication(final String signatureId) {
-
-		final String indication = getValue("/ValidationData/BasicBuildingBlocks/Signature[@Id='%s']/Conclusion/SubIndication/text()", signatureId);
-		return indication;
+	public SubIndication getBasicBuildingBlocksSubIndication(final String signatureId) {
+		return SubIndication.forName(getValue("/ValidationData/BasicBuildingBlocks/Signature[@Id='%s']/Conclusion/SubIndication/text()", signatureId));
 	}
 
 	/**
@@ -133,26 +130,22 @@ public class DetailedReport extends XmlDom {
 	 * Returns the validation INDICATION of the timestamp validation for the given signature id.
 	 *
 	 * @param signatureId {@code String} id of the signature
-	 * @return related {@code String} indication
+	 * @return related {@code Indication} indication
 	 */
-	public String getTimestampValidationIndication(final String signatureId, final String timestampId) {
-
-		final String indication = getValue("/ValidationData/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']/BasicBuildingBlocks/Conclusion/Indication/text()",
-				signatureId, timestampId);
-		return indication;
+	public Indication getTimestampValidationIndication(final String signatureId, final String timestampId) {
+		return Indication.valueOf(getValue("/ValidationData/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']/BasicBuildingBlocks/Conclusion/Indication/text()",
+				signatureId, timestampId));
 	}
 
 	/**
 	 * Returns the validation SUB_INDICATION of the timestamp validation for the given signature id.
 	 *
 	 * @param signatureId {@code String} id of the signature
-	 * @return related {@code String} sub-indication
+	 * @return related {@code SubIndication} sub-indication
 	 */
-	public String getTimestampValidationSubIndication(final String signatureId, final String timestampId) {
-
-		final String indication = getValue("/ValidationData/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']/BasicBuildingBlocks/Conclusion/SubIndication/text()",
-				signatureId, timestampId);
-		return indication;
+	public SubIndication getTimestampValidationSubIndication(final String signatureId, final String timestampId) {
+		return SubIndication.forName(getValue("/ValidationData/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']/BasicBuildingBlocks/Conclusion/SubIndication/text()",
+				signatureId, timestampId));
 	}
 
 	/**
@@ -169,24 +162,20 @@ public class DetailedReport extends XmlDom {
 	 * Returns the validation INDICATION of the long term validation for the given signature id.
 	 *
 	 * @param signatureId {@code String} id of the signature
-	 * @return related {@code String} indication
+	 * @return related {@code Indication} indication
 	 */
-	public String getLongTermValidationIndication(final String signatureId) {
-
-		final String indication = getValue("/ValidationData/LongTermValidationData/Signature[@Id='%s']/Conclusion/Indication/text()", signatureId);
-		return indication;
+	public Indication getLongTermValidationIndication(final String signatureId) {
+		return Indication.valueOf(getValue("/ValidationData/LongTermValidationData/Signature[@Id='%s']/Conclusion/Indication/text()", signatureId));
 	}
 
 	/**
 	 * Returns the validation SUB_INDICATION of the long term validation for the given signature id.
 	 *
 	 * @param signatureId {@code String} id of the signature
-	 * @return related {@code String} sub-indication
+	 * @return related {@code SubIndication} sub-indication
 	 */
-	public String getLongTermValidationSubIndication(final String signatureId) {
-
-		final String indication = getValue("/ValidationData/LongTermValidationData/Signature[@Id='%s']/Conclusion/SubIndication/text()", signatureId);
-		return indication;
+	public SubIndication getLongTermValidationSubIndication(final String signatureId) {
+		return SubIndication.forName(getValue("/ValidationData/LongTermValidationData/Signature[@Id='%s']/Conclusion/SubIndication/text()", signatureId));
 	}
 
 	/**
@@ -204,12 +193,10 @@ public class DetailedReport extends XmlDom {
 	 * This method returns the indication related to the AdESTValidation of a given signature.
 	 *
 	 * @param signatureId {@code String} id of the signature
-	 * @return found {@code String} indication
+	 * @return found {@code Indication} indication
 	 */
-	public String getAdESTValidationIndication(final String signatureId) {
-
-		final String indication = getValue("/ValidationData/AdESTValidationData/Signature[@Id='%s']/Conclusion/Indication/text()", signatureId);
-		return indication;
+	public Indication getAdESTValidationIndication(final String signatureId) {
+		return Indication.valueOf(getValue("/ValidationData/AdESTValidationData/Signature[@Id='%s']/Conclusion/Indication/text()", signatureId));
 	}
 
 	/**
@@ -218,10 +205,8 @@ public class DetailedReport extends XmlDom {
 	 * @param signatureId {@code String} id of the signature
 	 * @return found {@code String} sub-indication
 	 */
-	public String getAdESTValidationSubIndication(final String signatureId) {
-
-		final String subIndication = getValue("/ValidationData/AdESTValidationData/Signature[@Id='%s']/Conclusion/SubIndication/text()", signatureId);
-		return subIndication;
+	public SubIndication getAdESTValidationSubIndication(final String signatureId) {
+		return SubIndication.forName(getValue("/ValidationData/AdESTValidationData/Signature[@Id='%s']/Conclusion/SubIndication/text()", signatureId));
 	}
 
 	/**
@@ -317,7 +302,7 @@ public class DetailedReport extends XmlDom {
 		for (final XmlDom indicationDom : indications) {
 
 			final String indication = indicationDom.getText();
-			valid = valid && Indication.VALID.equals(indication);
+			valid = valid && Indication.VALID.name().equals(indication);
 		}
 		return valid;
 	}

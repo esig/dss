@@ -389,8 +389,8 @@ public class AdESTValidation {
 
 		final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signature.getId(), timestamp.getId());
 		final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
-		final String tsvpIndication = tsvpConclusion.getValue("./Indication/text()");
-		final String tsvpSubIndication = tsvpConclusion.getValue("./SubIndication/text()");
+		final Indication tsvpIndication = Indication.valueOf(tsvpConclusion.getValue("./Indication/text()"));
+		final SubIndication tsvpSubIndication = SubIndication.forName(tsvpConclusion.getValue("./SubIndication/text()"));
 
 		final XmlNode constraintNode = addConstraint(timestampXmlNode, MessageTag.ADEST_ITVPC);
 
@@ -432,7 +432,7 @@ public class AdESTValidation {
 
 		final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signature.getId(), timestamp.getId());
 		final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
-		final String tsvpIndication = tsvpConclusion.getValue("./Indication/text()");
+		final Indication tsvpIndication = Indication.valueOf(tsvpConclusion.getValue("./Indication/text()"));
 
 		final XmlNode constraintNode = addConstraint(timestampXmlNode, MessageTag.ADEST_ITVPC);
 
@@ -753,7 +753,7 @@ public class AdESTValidation {
 			String timestampId = timestamp.getId();
 			final XmlDom tspvData = timestampValidationData.getElement("/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']", signature.getId(), timestampId);
 			final XmlDom tsvpConclusion = tspvData.getElement("./BasicBuildingBlocks/Conclusion");
-			final String tsvpIndication = tsvpConclusion.getValue("./Indication/text()");
+			final Indication tsvpIndication = Indication.valueOf(tsvpConclusion.getValue("./Indication/text()"));
 			if (!Indication.VALID.equals(tsvpIndication)) {
 
 				timestamps.remove(index);
