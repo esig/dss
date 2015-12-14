@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -88,14 +87,9 @@ public class Constraint {
 	 * {@code Level} then the {@code DSSException} is raised.
 	 *
 	 * @param level
-	 *            the constraint level string.
 	 */
-	public Constraint(final String level) throws DSSException {
-		try {
-			this.level = Level.valueOf(level.trim().toUpperCase());
-		} catch (IllegalArgumentException e) {
-			throw new DSSException("The validation policy configuration file should be checked: " + e.getMessage(), e);
-		}
+	public Constraint(final Level level) {
+		this.level = level;
 	}
 
 	/**

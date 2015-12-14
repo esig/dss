@@ -39,8 +39,7 @@ public class TimestampValidationProcessValidConstraint extends Constraint {
 	 *
 	 * @param level the constraint level string.
 	 */
-	public TimestampValidationProcessValidConstraint(final String level) {
-
+	public TimestampValidationProcessValidConstraint(final Level level) {
 		super(level);
 	}
 

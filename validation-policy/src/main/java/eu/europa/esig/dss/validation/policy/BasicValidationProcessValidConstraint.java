@@ -37,7 +37,7 @@ public class BasicValidationProcessValidConstraint extends Constraint {
 	 *
 	 * @param level the constraint level string.
 	 */
-	public BasicValidationProcessValidConstraint(final String level) {
+	public BasicValidationProcessValidConstraint(final Level level) {
 
 		super(level);
 	}

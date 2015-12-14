@@ -61,7 +61,7 @@ public class CertificateExpirationConstraint extends Constraint {
 	 *
 	 * @param level the constraint level string.
 	 */
-	public CertificateExpirationConstraint(final String level) {
+	public CertificateExpirationConstraint(final Level level) {
 
 		super(level);
 	}

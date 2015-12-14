@@ -31,6 +31,7 @@ import org.w3c.dom.Document;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.validation.policy.Constraint.Level;
 import eu.europa.esig.dss.validation.policy.rules.AttributeName;
 
 /**
@@ -127,7 +128,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue("/ConstraintsParameters/MainSignature/AcceptablePolicies/@Level");
 		if (StringUtils.isNotBlank(level)) {
 
-			final SignaturePolicyConstraint constraint = new SignaturePolicyConstraint(level);
+			final SignaturePolicyConstraint constraint = new SignaturePolicyConstraint(Level.valueOf(level));
 
 			final List<XmlDom> policyList = getElements("/ConstraintsParameters/MainSignature/AcceptablePolicies/Id");
 			final List<String> identifierList = XmlDom.convertToStringList(policyList);
@@ -180,7 +181,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/@Level");
 		if (StringUtils.isNotBlank(level)) {
 
-			final Constraint constraint = new Constraint(level);
+			final Constraint constraint = new Constraint(Level.valueOf(level));
 			final List<XmlDom> commitmentTypeIndications = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/Identifier");
 			final List<String> identifierList = XmlDom.convertToStringList(commitmentTypeIndications);
 			constraint.setExpectedValue(identifierList.toString());
@@ -196,7 +197,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/SignerLocation/@Level");
 		if (StringUtils.isNotBlank(level)) {
 
-			final Constraint constraint = new Constraint(level);
+			final Constraint constraint = new Constraint(Level.valueOf(level));
 			return constraint;
 		}
 		return null;
@@ -208,7 +209,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/@Level");
 		if (StringUtils.isNotBlank(level)) {
 
-			final Constraint constraint = new Constraint(level);
+			final Constraint constraint = new Constraint(Level.valueOf(level));
 			return constraint;
 		}
 		return null;
@@ -220,7 +221,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/@Level");
 		if (StringUtils.isNotBlank(level)) {
 
-			final Constraint constraint = new Constraint(level);
+			final Constraint constraint = new Constraint(Level.valueOf(level));
 			final List<XmlDom> claimedRoles = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/Role");
 			final List<String> claimedRoleList = XmlDom.convertToStringList(claimedRoles);
 			constraint.setExpectedValue(claimedRoleList.toString());
@@ -311,7 +312,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue(rootXPathQuery + "/@Level");
 		if (StringUtils.isNotBlank(level)) {
 
-			final SignatureCryptographicConstraint constraint = new SignatureCryptographicConstraint(level, context, subContext);
+			final SignatureCryptographicConstraint constraint = new SignatureCryptographicConstraint(Level.valueOf(level), context, subContext);
 
 			final List<XmlDom> encryptionAlgoList = getElements(rootXPathQuery + "/AcceptableEncryptionAlgo/Algo");
 			final List<String> encryptionAlgoStringList = XmlDom.convertToStringList(encryptionAlgoList);
@@ -340,7 +341,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue("/ConstraintsParameters/%s/SigningCertificate/KeyUsage/@Level", context);
 		if (StringUtils.isNotBlank(level)) {
 
-			final Constraint constraint = new Constraint(level);
+			final Constraint constraint = new Constraint(Level.valueOf(level));
 			final List<XmlDom> keyUsages = getElements("/ConstraintsParameters/%s/SigningCertificate/KeyUsage/Identifier", context);
 			final List<String> identifierList = XmlDom.convertToStringList(keyUsages);
 			constraint.setExpectedValue(identifierList.toString());
@@ -356,7 +357,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue(String.format("/ConstraintsParameters/%s/%s/Expiration/@Level", context, subContext));
 		if (StringUtils.isNotBlank(level)) {
 
-			final CertificateExpirationConstraint constraint = new CertificateExpirationConstraint(level);
+			final CertificateExpirationConstraint constraint = new CertificateExpirationConstraint(Level.valueOf(level));
 			return constraint;
 		}
 		return null;
@@ -445,7 +446,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue("/ConstraintsParameters/MainSignature/CertificateChain/@Level");
 		if (StringUtils.isNotBlank(level)) {
 
-			final Constraint constraint = new Constraint(level);
+			final Constraint constraint = new Constraint(Level.valueOf(level));
 			return constraint;
 		}
 		return null;
@@ -541,7 +542,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final String level = getValue(XP_ROOT + "/@Level");
 		if (StringUtils.isNotBlank(level)) {
 
-			final Constraint constraint = new Constraint(level);
+			final Constraint constraint = new Constraint(Level.valueOf(level));
 			String expectedValue = getValue(XP_ROOT + "/text()");
 			if (StringUtils.isBlank(expectedValue)) {
 				expectedValue = defaultExpectedValue ? TRUE : FALSE;
@@ -555,7 +556,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 	@Override
 	public BasicValidationProcessValidConstraint getBasicValidationProcessConclusionConstraint() {
 
-		final BasicValidationProcessValidConstraint constraint = new BasicValidationProcessValidConstraint("FAIL");
+		final BasicValidationProcessValidConstraint constraint = new BasicValidationProcessValidConstraint(Level.FAIL);
 		constraint.setExpectedValue(TRUE);
 		return constraint;
 	}
@@ -576,8 +577,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 
 	@Override
 	public TimestampValidationProcessValidConstraint getTimestampValidationProcessConstraint() {
-
-		final TimestampValidationProcessValidConstraint constraint = new TimestampValidationProcessValidConstraint("FAIL");
+		final TimestampValidationProcessValidConstraint constraint = new TimestampValidationProcessValidConstraint(Level.FAIL);
 		constraint.setExpectedValue(TRUE);
 		return constraint;
 	}
@@ -624,7 +624,7 @@ public class EtsiValidationPolicy extends ValidationPolicy {
 		final Long timestampDelay = getTimestampDelayTime();
 		if ((timestampDelay != null) && (timestampDelay > 0)) {
 
-			final Constraint constraint = new Constraint("FAIL");
+			final Constraint constraint = new Constraint(Level.FAIL);
 			constraint.setExpectedValue(TRUE);
 			return constraint;
 		}

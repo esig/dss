@@ -77,7 +77,7 @@ public class LongTermValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LongTermValidation.class);
 
-	ProcessParameters params;
+	private ProcessParameters params;
 
 	// Primary inputs
 	/**

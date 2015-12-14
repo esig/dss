@@ -558,7 +558,7 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 
 	@Override
 	public BasicValidationProcessValidConstraint getBasicValidationProcessConclusionConstraint() {
-		final BasicValidationProcessValidConstraint constraint = new BasicValidationProcessValidConstraint("FAIL");
+		final BasicValidationProcessValidConstraint constraint = new BasicValidationProcessValidConstraint(eu.europa.esig.dss.validation.policy.Constraint.Level.FAIL);
 		constraint.setExpectedValue("TRUE"); //TODO
 		return constraint;
 	}
@@ -583,7 +583,7 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 
 	@Override
 	public TimestampValidationProcessValidConstraint getTimestampValidationProcessConstraint() {
-		final TimestampValidationProcessValidConstraint constraint = new TimestampValidationProcessValidConstraint("FAIL");
+		final TimestampValidationProcessValidConstraint constraint = new TimestampValidationProcessValidConstraint(eu.europa.esig.dss.validation.policy.Constraint.Level.FAIL);
 		constraint.setExpectedValue("TRUE"); // TODO
 		return constraint;
 	}

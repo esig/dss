@@ -64,8 +64,7 @@ public class SignaturePolicyConstraint extends Constraint {
 	 *
 	 * @param level the constraint level string.
 	 */
-	public SignaturePolicyConstraint(final String level) {
-
+	public SignaturePolicyConstraint(final Level level) {
 		super(level);
 	}
 
