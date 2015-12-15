@@ -14,7 +14,6 @@ import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 
 @ContextConfiguration("/spring/applicationContext.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,11 +27,10 @@ public class FOPServiceTest {
 		InputStream is = FOPServiceTest.class.getResourceAsStream("/simple-report-5-signatures.xml");
 
 		Document document = DSSXMLUtils.buildDOM(is);
-		SimpleReport report = new SimpleReport(document);
-		assertNotNull(report);
+		assertNotNull(document);
 
 		FileOutputStream fos = new FileOutputStream("target/simpleReportFiveSignature.pdf");
-		service.generateSimpleReport(report, fos);
+		service.generateSimpleReport(document, fos);
 	}
 
 	@Test

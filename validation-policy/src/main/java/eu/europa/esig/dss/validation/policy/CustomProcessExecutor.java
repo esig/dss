@@ -32,7 +32,6 @@ import eu.europa.esig.dss.validation.process.LongTermValidation;
 import eu.europa.esig.dss.validation.report.DetailedReport;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.validation.report.SimpleReportBuilder;
 
 /**
@@ -62,7 +61,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	 * The simple validation report, contains only the most important information like validation date, signer from DN,
 	 * indication, sub-indication...
 	 */
-	protected SimpleReport simpleReport;
+	protected eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport;
 
 	/**
 	 * The detailed report contains all information collected during the validation process.

@@ -10,6 +10,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -20,6 +21,7 @@ import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
 import org.apache.pdfbox.io.IOUtils;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.validation.report.DetailedReport;
@@ -56,11 +58,19 @@ public class FOPService {
 		IOUtils.closeQuietly(detailedIS);
 	}
 
+	@Deprecated
 	public void generateSimpleReport(SimpleReport report, OutputStream os) throws Exception {
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, os);
 		Result res = new SAXResult(fop.getDefaultHandler());
 		Transformer transformer = templateSimpleReport.newTransformer();
 		transformer.transform(new StreamSource(new StringReader(report.toString())), res);
+	}
+
+	public void generateSimpleReport(Document dom, OutputStream os) throws Exception {
+		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, os);
+		Result res = new SAXResult(fop.getDefaultHandler());
+		Transformer transformer = templateSimpleReport.newTransformer();
+		transformer.transform(new DOMSource(dom), res);
 	}
 
 	public void generateDetailedReport(DetailedReport report, OutputStream os) throws Exception {

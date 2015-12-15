@@ -100,6 +100,16 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * This method returns the signature format for the first signature.
+	 *
+	 * @return The signature format
+	 */
+	public String getSignatureFormat() {
+		SignatureWrapper signature = getFirstSignatureNullSafe();
+		return signature.getSignatureFormat();
+	}
+
+	/**
 	 * This method returns the signature format for the given signature.
 	 *
 	 * @param signatureId
@@ -601,6 +611,10 @@ public class DiagnosticData {
 			}
 		}
 		return usedCertificates;
+	}
+
+	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getJaxbModel() {
+		return diagnosticData;
 	}
 
 }

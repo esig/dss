@@ -40,7 +40,9 @@ public class Reports {
 	/**
 	 * This is the simple report generated at the end of the validation process.
 	 */
-	protected SimpleReport simpleReport;
+	protected eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport;
+
+	protected SimpleReport simpleReportWrapper;
 
 	/**
 	 * This variable defines the sequence of the reports related to a document to validate. It's only used with ASiC-E container.
@@ -57,11 +59,12 @@ public class Reports {
 	 * @param simpleReport
 	 *            {@code SimpleReport}
 	 */
-	public Reports(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb, final DetailedReport detailedReport, final SimpleReport simpleReport) {
+	public Reports(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb, final DetailedReport detailedReport, final eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport) {
 		this.diagnosticData = diagnosticDataJaxb;
 		this.diagnosticDataWrapper = new DiagnosticData(diagnosticDataJaxb);
 		this.detailedReport = detailedReport;
 		this.simpleReport = simpleReport;
+		this.simpleReportWrapper = new SimpleReport(simpleReport);
 	}
 
 	/**
@@ -78,7 +81,7 @@ public class Reports {
 	}
 
 	public SimpleReport getSimpleReport() {
-		return simpleReport;
+		return simpleReportWrapper;
 	}
 
 	/**

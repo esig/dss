@@ -17,7 +17,6 @@ import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 
 @ContextConfiguration("/spring/applicationContext.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,10 +34,9 @@ public class XSLTServiceTest {
 				.getResourceAsStream("/simple-report-5-signatures.xml");
 
 		Document document = DSSXMLUtils.buildDOM(is);
-		SimpleReport report = new SimpleReport(document);
-		assertNotNull(report);
+		assertNotNull(document);
 
-		String htmlSimpleReport = service.generateSimpleReport(report);
+		String htmlSimpleReport = service.generateSimpleReport(document);
 		assertTrue(StringUtils.isNotEmpty(htmlSimpleReport));
 		logger.info("Simple report html : " + htmlSimpleReport);
 	}
