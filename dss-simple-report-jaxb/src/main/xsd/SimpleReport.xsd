@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/diagnostic" xmlns="http://dss.esig.europa.eu/validation/diagnostic"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="SimpleReport">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Policy">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element type="xs:string" name="PolicyName" />
+							<xs:element type="xs:string" name="PolicyDescription" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element type="xs:dateTime" name="ValidationTime" />
+				<xs:element type="xs:string" name="DocumentName" />
+				<xs:element type="Signature" name="Signatures" maxOccurs="unbounded" minOccurs="0" />
+				<xs:element type="xs:int" name="ValidSignaturesCount" />
+				<xs:element type="xs:int" name="SignaturesCount" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="Signature">
+		<xs:sequence>
+			<xs:element type="xs:dateTime" name="SigningTime" />
+			<xs:element type="xs:string" name="SignedBy" />
+			<xs:element type="xs:string" name="Indication" />
+			<xs:element type="xs:string" name="SignatureLevel" />
+			<xs:element type="xs:string" name="SubIndication" />
+			<xs:element type="xs:string" name="Errors" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="xs:string" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="xs:string" name="Infos" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute type="xs:string" name="Id" use="required" />
+		<xs:attribute type="xs:string" name="Type" use="optional" />
+		<xs:attribute type="xs:string" name="ParentId" use="optional" />
+		<xs:attribute type="xs:string" name="SignatureFormat" use="required" />
+	</xs:complexType>
+</xs:schema>
