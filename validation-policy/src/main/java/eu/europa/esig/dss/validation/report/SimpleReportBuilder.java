@@ -30,7 +30,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
-import eu.europa.esig.dss.jaxb.simplereport.ObjectFactory;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
@@ -52,8 +51,6 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
  */
 public class SimpleReportBuilder {
 
-	private static final ObjectFactory SIMPLE_REPORT_OBJECT_FACTORY = new ObjectFactory();
-
 	private final ValidationPolicy constraintData;
 	private final DiagnosticData diagnosticData;
 
@@ -74,7 +71,7 @@ public class SimpleReportBuilder {
 	 */
 	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport build(final ProcessParameters params) {
 
-		SimpleReport simpleReport = SIMPLE_REPORT_OBJECT_FACTORY.createSimpleReport();
+		SimpleReport simpleReport = new SimpleReport();
 
 		addPolicyNode(simpleReport);
 		addValidationTime(params, simpleReport);
