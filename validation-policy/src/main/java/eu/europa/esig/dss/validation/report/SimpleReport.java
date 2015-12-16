@@ -63,7 +63,7 @@ public class SimpleReport {
 	public Indication getIndication(final String signatureId) {
 		XmlSignature signature = getSignatureById(signatureId);
 		if (signature != null) {
-			return Indication.valueOf(signature.getIndication());
+			return signature.getIndication();
 		}
 		return null;
 	}
@@ -78,7 +78,7 @@ public class SimpleReport {
 	public SubIndication getSubIndication(final String signatureId) {
 		XmlSignature signature = getSignatureById(signatureId);
 		if (signature != null) {
-			return SubIndication.forName(signature.getSubIndication());
+			return signature.getSubIndication();
 		}
 		return null;
 	}

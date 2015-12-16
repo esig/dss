@@ -26,9 +26,9 @@
 		<xs:sequence>
 			<xs:element type="xs:dateTime" name="SigningTime" />
 			<xs:element type="xs:string" name="SignedBy" />
-			<xs:element type="xs:string" name="Indication" />
+			<xs:element type="Indication" name="Indication" />
 			<xs:element type="xs:string" name="SignatureLevel" />
-			<xs:element type="xs:string" name="SubIndication" />
+			<xs:element type="SubIndication" name="SubIndication" />
 			<xs:element type="xs:string" name="Errors" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="xs:string" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="xs:string" name="Infos" minOccurs="0" maxOccurs="unbounded" />
@@ -38,4 +38,44 @@
 		<xs:attribute type="xs:string" name="ParentId" use="optional" />
 		<xs:attribute type="xs:string" name="SignatureFormat" use="required" />
 	</xs:complexType>
+		
+	<xs:simpleType name="Indication" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VALID" />
+			<xs:enumeration value="INDETERMINATE" />
+			<xs:enumeration value="INVALID" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="SubIndication" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_SIGNER_CERTIFICATE_FOUND" />
+			<xs:enumeration value="FORMAT_FAILURE" />
+			<xs:enumeration value="NO_POLICY" />
+			<xs:enumeration value="POLICY_PROCESSING_ERROR" />
+			<xs:enumeration value="OUT_OF_BOUNDS_NO_POE" />
+			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND" />
+			<xs:enumeration value="TRY_LATER" />
+			<xs:enumeration value="REVOKED_NO_POE" />
+			<xs:enumeration value="REVOKED_CA_NO_POE" />
+			<xs:enumeration value="CHAIN_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="CRYPTO_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="CRYPTO_CONSTRAINTS_FAILURE_NO_POE" />
+			<xs:enumeration value="SIGNED_DATA_NOT_FOUND" />
+			<xs:enumeration value="HASH_FAILURE" />
+			<xs:enumeration value="SIG_CRYPTO_FAILURE" />
+			<xs:enumeration value="SIG_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="NO_VALID_TIMESTAMP" />
+			<xs:enumeration value="NO_TIMESTAMP" />
+			<xs:enumeration value="NOT_YET_VALID" />
+			<xs:enumeration value="TIMESTAMP_ORDER_FAILURE" />
+			<xs:enumeration value="REVOKED" />
+			<xs:enumeration value="EXPIRED" />
+			<xs:enumeration value="NO_POE" />
+			<xs:enumeration value="CLAIMED_SIGNING_TIME_ABSENT" />
+			<xs:enumeration value="UNEXPECTED_ERROR" />
+			<xs:enumeration value="INDETERMINATE" />
+			<xs:enumeration value="INVALID" />
+		</xs:restriction>
+	</xs:simpleType>
 </xs:schema>

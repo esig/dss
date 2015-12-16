@@ -169,12 +169,12 @@ public class SimpleReportBuilder {
 				}
 			}
 		}
-		xmlSignature.setIndication(indication.name());
+		xmlSignature.setIndication(indication);
 		if (Indication.VALID.equals(indication)) {
 			validSignatureCount++;
 		}
 		if (subIndication != null) {
-			xmlSignature.setSubIndication(subIndication.name());
+			xmlSignature.setSubIndication(subIndication);
 		}
 		if (basicValidationConclusion != null) {
 			String errorMessage = signature.getErrorMessage();

@@ -8,20 +8,20 @@
 
 package eu.europa.esig.dss.jaxb.simplereport;
 
-import java.util.Date;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
-public class Adapter1
-    extends XmlAdapter<String, Date>
+public class Adapter3
+    extends XmlAdapter<String, SubIndication>
 {
 
 
-    public Date unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.DateParser.parse(value));
+    public SubIndication unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.parse(value));
     }
 
-    public String marshal(Date value) {
-        return (eu.europa.esig.dss.jaxb.parsers.DateParser.print(value));
+    public String marshal(SubIndication value) {
+        return (eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.print(value));
     }
 
 }
