@@ -429,6 +429,11 @@
 			</dependency>
 	        <dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-common-validation-jaxb</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-diagnostic-jaxb</artifactId>
 				<version>${project.version}</version>
 	        </dependency>
@@ -747,9 +752,11 @@
 				<module>dss-demo-webapp</module>
 				<module>dss-demo-bundle</module>
 				<module>dss-policy-jaxb</module>
+				<module>dss-common-validation-jaxb</module>
 				<module>dss-tsl-jaxb</module>
 				<module>dss-diagnostic-jaxb</module>
 				<module>dss-simple-report-jaxb</module>
+				<module>dss-detailed-report-jaxb</module>
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-cades</module>
@@ -791,9 +798,11 @@
 				<module>dss-demo-webapp</module>
 				<module>dss-demo-bundle</module>
 				<module>dss-policy-jaxb</module>
+				<module>dss-common-validation-jaxb</module>
 				<module>dss-tsl-jaxb</module>
 				<module>dss-diagnostic-jaxb</module>
 				<module>dss-simple-report-jaxb</module>
+				<module>dss-detailed-report-jaxb</module>
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-cades</module>

@@ -269,6 +269,14 @@ public class SignatureWrapper extends AsbtractTokenProxy {
 		return StringUtils.EMPTY;
 	}
 
+	public boolean getPolicyStatus() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.isStatus();
+		}
+		return false;
+	}
+
 	public String getPolicyNotice() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {

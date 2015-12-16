@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation.policy.rules;
 
-import org.apache.commons.lang.StringUtils;
-
-import eu.europa.esig.dss.DSSException;
-
 public enum SubIndication {
 
 	NO_SIGNER_CERTIFICATE_FOUND,
@@ -63,12 +59,8 @@ public enum SubIndication {
 	 * SubIndication can be null
 	 */
 	public static SubIndication forName(String value) {
-		if (StringUtils.isNotEmpty(value)) {
-			try {
-				return SubIndication.valueOf(value);
-			} catch (IllegalArgumentException e) {
-				throw new DSSException("Unsupported SubIndication : " + value);
-			}
+		if ((value != null) && !value.isEmpty()) {
+			return SubIndication.valueOf(value);
 		}
 		return null;
 	}

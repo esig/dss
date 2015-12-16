@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb;
+package eu.europa.esig.dss.jaxb.parsers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -6,9 +6,9 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DateAdapter {
+public class DateParser {
 
-	private static final Logger logger = LoggerFactory.getLogger(DateAdapter.class);
+	private static final Logger logger = LoggerFactory.getLogger(DateParser.class);
 
 	private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss.SSS";
 

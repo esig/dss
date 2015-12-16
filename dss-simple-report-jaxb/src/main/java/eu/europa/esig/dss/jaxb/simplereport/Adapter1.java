@@ -17,11 +17,11 @@ public class Adapter1
 
 
     public Date unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.DateAdapter.parse(value));
+        return (eu.europa.esig.dss.jaxb.parsers.DateParser.parse(value));
     }
 
     public String marshal(Date value) {
-        return (eu.europa.esig.dss.jaxb.DateAdapter.print(value));
+        return (eu.europa.esig.dss.jaxb.parsers.DateParser.print(value));
     }
 
 }

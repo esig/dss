@@ -237,7 +237,7 @@ public class ValidationContextInitialisation {
 		constraint.create(subProcessNode, MessageTag.BBB_VCI_ISPK);
 		if (signatureContext.isPolicyPresent()) {
 			constraint.setIdentifier(signatureContext.getPolicyId());
-			// TODO ??? constraint.setPolicyValidity(signatureContext.getBoolValue("./Policy/Status/text()"));
+			constraint.setPolicyValidity(signatureContext.getPolicyStatus());
 			constraint.setProcessingError(signatureContext.getPolicyProcessingError());
 			constraint.setNotice(signatureContext.getPolicyNotice());
 		} else {
