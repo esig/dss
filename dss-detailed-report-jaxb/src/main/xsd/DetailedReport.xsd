@@ -5,22 +5,43 @@
 	<xs:element name="ValidationData">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" />
-				<!-- <xs:element type="BasicValidationData" name="BasicValidationData" /> -->
-				<!-- <xs:element type="TimestampValidationData" name="TimestampValidationData" /> -->
-				<!-- <xs:element type="AdESTValidationData" name="AdESTValidationData" /> -->
-				<!-- <xs:element type="LongTermValidationData" name="LongTermValidationData" /> -->
+				<xs:element type="BasicSignaturesValidation" name="BasicSignaturesValidation" />
+				<xs:element type="TimestampsValidation" name="TimestampsValidation" />
+				<!-- <xs:element type="LongTermDataValidation" name="LongTermDataValidation" /> -->
+				<!-- <xs:element type="ArchivalDataValidation " name="ArchivalDataValidation " /> -->
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:complexType name="BasicBuildingBlocks">
+	<xs:complexType name="BasicSignaturesValidation">
 		<xs:sequence>
-			<xs:element type="Signature" name="Signature" maxOccurs="unbounded" />
+			<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="TimestampsValidation">
+		<xs:sequence>
+			<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Signature">
+		<xs:choice>
+			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" />
+			<xs:element type="Timestamp" name="Timestamps" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="Timestamp">
+		<xs:sequence>
+			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Type" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="BasicBuildingBlocks">
 		<xs:sequence>
 			<xs:element type="ISC" name="ISC" />
 			<xs:element type="VCI" name="VCI" />
@@ -75,6 +96,7 @@
 		<xs:sequence>
 			<xs:element type="Indication" name="Indication" />
 			<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
+			<xs:element type="Error" name="Error" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -86,13 +108,33 @@
 		</xs:simpleContent>
 	</xs:complexType>
 
+	<xs:complexType name="Error">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="NameId" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="Info">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Identifier" type="xs:string" use="optional" />
+				<xs:attribute name="CertificateId" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
 	<xs:simpleType name="Status" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OK" />
 			<xs:enumeration value="NOT OK" />
+			<xs:enumeration value="IGNORED" />
+			<xs:enumeration value="INFORMATION" />
+			<xs:enumeration value="WARNING" />
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="Indication" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="VALID" />
@@ -100,7 +142,7 @@
 			<xs:enumeration value="INVALID" />
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="SubIndication" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NO_SIGNER_CERTIFICATE_FOUND" />
@@ -132,5 +174,5 @@
 			<xs:enumeration value="INVALID" />
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 </xs:schema>
