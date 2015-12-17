@@ -20,6 +20,29 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  * This building block is responsible for identifying the signing certificate that will be used to validate the signature.
  * In case of success, the output shall be the signing certificate.
  * In case the signing certificate cannot be identified, the output shall be the indication INDETERMINATE and the sub-indication NO_SIGNING_CERTIFICATE_FOUND.
+ *
+ * The common way to unambiguously identify the signing certificate is by using a property/attribute of the signature
+ * containing a reference to it (see clause 4.2.5.2). The certificate can either be found in the signature or it can be obtained
+ * using external sources. The signing certificate can also be provided by the DA. If no certificate can be retrieved, the
+ * building block shall return the indication INDETERMINATE and the sub-indication
+ * NO_SIGNING_CERTIFICATE_FOUND.
+ * The signing certificate shall be checked against all references present in the signature attributes, since one of these
+ * references is a reference to the signing certificate (see clause 4.2.5.2). The following steps are performed:
+ * 1) If the signature format used contains a way to directly identify the reference to the signers' certificate in the
+ * attribute, the building block shall check that the digest of the certificate referenced matches the result of
+ * digesting the signing certificate with the algorithm indicated; if they match, the building block shall return the
+ * signing certificate. Otherwise, the building block shall go to step 2.
+ * 2) The building block shall take the first reference and shall check that the digest of the certificate referenced
+ * matches the result of digesting the signing certificate with the algorithm indicated. If they do not match, the
+ * building block shall take the next element and shall repeat this step until a matching element has been found or
+ * all elements have been checked. If they do match, the building block shall continue with step 3. If the last
+ * element is reached without finding any match, the validation of this property shall be taken as failed and the
+ * building block shall return the indication INDETERMINATE with the sub-indication
+ * NO_SIGNING_CERTIFICATE_FOUND.
+ * 3) If the issuer and the serial number are additionally present in that reference, the details of the issuer's name and
+ * the serial number of the IssuerSerial element may be compared with those indicated in the signing certificate:
+ * if they do not match, an additional warning shall be returned with the output.
+ * 4) The building block shall return the signing certificate
  */
 public class IdentificationOfTheSigningCertificate extends AbstractBasicBuildingBlock<XmlISC> {
 
@@ -37,6 +60,7 @@ public class IdentificationOfTheSigningCertificate extends AbstractBasicBuilding
 		this.validationPolicy = validationPolicy;
 	}
 
+	@Override
 	public void initChain() {
 		ChainItem<XmlISC> item = firstItem = signingCertificateRecognition();
 		item = item.setNextItem(signingCertificateSigned());
@@ -76,6 +100,7 @@ public class IdentificationOfTheSigningCertificate extends AbstractBasicBuilding
 		return new IssuerSerialMatchCheck(result, token, constraint);
 	}
 
+	@Override
 	public XmlISC execute() {
 		firstItem.execute();
 		return result;
