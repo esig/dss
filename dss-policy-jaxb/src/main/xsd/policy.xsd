@@ -93,11 +93,15 @@
 	</xs:complexType>
 
 	<xs:complexType name="RevocationConstraints">
-		<xs:sequence>
-			<xs:element name="RevocationFreshness" type="tns:TimeConstraint" minOccurs="0" />
-			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
-			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
-		</xs:sequence>
+  		<xs:complexContent>
+			<xs:extension base="tns:LevelConstraint">
+				<xs:sequence>
+					<xs:element name="RevocationFreshness" type="tns:TimeConstraint" minOccurs="0" />
+					<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
+					<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="CryptographicConstraint">
