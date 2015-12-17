@@ -26,6 +26,7 @@ import java.util.List;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
+import eu.europa.esig.jaxb.policy.RevocationConstraints;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. This is the base class used to implement a specific validation
@@ -382,5 +383,7 @@ public interface ValidationPolicy2 {
 	LevelConstraint getContentTimestampImprintIntactConstraint();
 
 	LevelConstraint getContentTimestampImprintFoundConstraint();
+
+	RevocationConstraints getRevocationConstraint();
 
 }

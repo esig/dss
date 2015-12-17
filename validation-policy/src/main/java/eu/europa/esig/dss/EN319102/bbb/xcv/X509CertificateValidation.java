@@ -10,9 +10,13 @@ import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateSignatureValidCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.IntermediateCertificateRevoked;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.KeyUsageCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationDataAvailableCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationDataTrustedCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationFreshnessCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateRevokedCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.validation.CertificateWrapper;
@@ -22,6 +26,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy2.SubContext;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
+import eu.europa.esig.jaxb.policy.RevocationConstraints;
 
 /**
  * 5.2.6 X.509 certificate validation
@@ -69,6 +74,19 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 
 				item = item.setNextItem(revocationDataAvailable(certificate, currentSubContext));
 
+				item = item.setNextItem(revocationDataTrusted(certificate, currentSubContext));
+
+				item = item.setNextItem(revocationFreshness(certificate));
+
+				if (SubContext.SIGNING_CERT.equals(currentSubContext)) { // TODO Why ??
+					item = item.setNextItem(signingCertificateRevoked(certificate, currentSubContext));
+
+				} else {
+
+					item = item.setNextItem(intermediateCertificateRevoked(certificate, currentSubContext));
+
+				}
+
 			}
 		}
 	}
@@ -78,25 +96,45 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, constraint);
 	}
 
-	private ChainItem<XmlXCV> certificateExpiration(CertificateWrapper certificate, SubContext subcontext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateExpirationConstraint(Context.MAIN_SIGNATURE, subcontext);
+	private ChainItem<XmlXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateExpirationConstraint(Context.MAIN_SIGNATURE, subContext);
 		return new CertificateExpirationCheck(result, certificate, currentTime, constraint);
 	}
 
-	private ChainItem<XmlXCV> keyUsage(CertificateWrapper certificate, SubContext currentSubContext) {
+	private ChainItem<XmlXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
 		// TODO multi context
 		MultiValuesConstraint constraint = validationPolicy.getSigningCertificateKeyUsageConstraint(Context.MAIN_SIGNATURE);
 		return new KeyUsageCheck(result, certificate, constraint);
 	}
 
-	private ChainItem<XmlXCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subcontext) {
-		LevelConstraint constraint = validationPolicy.getCertificateSignatureConstraint(Context.MAIN_SIGNATURE, subcontext);
+	private ChainItem<XmlXCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSignatureConstraint(Context.MAIN_SIGNATURE, subContext);
 		return new CertificateSignatureValidCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> revocationDataAvailable(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getRevocationDataAvailableConstraint(Context.MAIN_SIGNATURE, subContext);
 		return new RevocationDataAvailableCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> revocationDataTrusted(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getRevocationDataIsTrustedConstraint(Context.MAIN_SIGNATURE, subContext);
+		return new RevocationDataTrustedCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> revocationFreshness(CertificateWrapper certificate) {
+		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraint();
+		return new RevocationFreshnessCheck(result, certificate, currentTime, revocationConstraints);
+	}
+
+	private ChainItem<XmlXCV> signingCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(Context.MAIN_SIGNATURE, subContext);
+		return new SigningCertificateRevokedCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> intermediateCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(Context.MAIN_SIGNATURE, subContext);
+		return new IntermediateCertificateRevoked(result, certificate, constraint);
 	}
 
 	@Override

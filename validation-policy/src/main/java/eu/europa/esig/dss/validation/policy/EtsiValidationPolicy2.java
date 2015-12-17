@@ -89,6 +89,11 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	}
 
 	@Override
+	public RevocationConstraints getRevocationConstraint() {
+		return policy.getRevocation();
+	}
+
+	@Override
 	public Date getAlgorithmExpirationDate(final String algorithm, Context context, SubContext subContext) {
 		CryptographicConstraint signatureCryptographicConstraint = getSignatureCryptographicConstraint(context, subContext);
 		if (signatureCryptographicConstraint != null) {

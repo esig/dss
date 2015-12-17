@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 public final class RuleUtils {
 
@@ -166,6 +167,10 @@ public final class RuleUtils {
 		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
 		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
 		return to.convert(convertToLong(value), from);
+	}
+
+	public static long convertDuration(TimeConstraint revocationFreshness) {
+		return convertDuration(revocationFreshness.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, revocationFreshness.getValue());
 	}
 
 }
