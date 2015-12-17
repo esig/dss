@@ -444,6 +444,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+	  			<artifactId>dss-detailed-report-jaxb</artifactId>
+	  			<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-simple-report-jaxb</artifactId>
 				<version>${project.version}</version>
 			</dependency>

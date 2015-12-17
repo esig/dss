@@ -1,0 +1,157 @@
+package eu.europa.esig.dss.EN319102.bbb;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.jaxb.detailedreport.XmlAbstractBasicBuildingBlock;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlError;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.MessageTag;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.jaxb.policy.Level;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
+
+public abstract class ChainItem<T extends XmlAbstractBasicBuildingBlock> {
+
+	private static final Logger logger = LoggerFactory.getLogger(ChainItem.class);
+
+	private ChainItem<T> nextItem;
+
+	private T result;
+
+	private final LevelConstraint constraint;
+
+	protected ChainItem(T result, LevelConstraint constraint) {
+		this.result = result;
+		this.constraint = constraint;
+	}
+
+	public ChainItem<T> setNextItem(ChainItem<T> nextItem) {
+		this.nextItem = nextItem;
+		return nextItem;
+	}
+
+	public void execute() {
+		if (constraint == null) {
+			logger.info("Check skipped : constraint not defined");
+			callNext();
+		}
+
+		switch (constraint.getLevel()) {
+			case IGNORE:
+				ignore();
+				break;
+			case FAIL:
+				fail();
+				break;
+			case INFORM:
+			case WARN:
+				informOrWarn(constraint.getLevel());
+				break;
+			default:
+				logger.warn("Unknown level : " + constraint.getLevel());
+				break;
+		}
+	}
+
+	protected abstract boolean process();
+
+	protected abstract MessageTag getMessageTag();
+
+	protected abstract MessageTag getErrorMessageTag();
+
+	protected abstract Indication getFailedIndicationForConclusion();
+
+	protected abstract SubIndication getFailedSubIndicationForConclusion();
+
+	private void recordIgnore() {
+		recordConstraint(XmlStatus.IGNORED);
+	}
+
+	private void recordValid() {
+		recordConstraint(XmlStatus.OK);
+	}
+
+	private void recordInvalid() {
+		recordConstraint(XmlStatus.NOT_OK);
+	}
+
+	private void recordConclusion() {
+		XmlConclusion conclusion = new XmlConclusion();
+		conclusion.setIndication(getFailedIndicationForConclusion());
+		conclusion.setSubIndication(getFailedSubIndicationForConclusion());
+		XmlError errorMessage = new XmlError();
+		MessageTag errorMessageTag = getErrorMessageTag();
+		errorMessage.setNameId(errorMessageTag.name());
+		errorMessage.setValue(errorMessageTag.getMessage());
+		conclusion.setError(errorMessage);
+		result.setConclusion(conclusion);
+	}
+
+	private void recordInfosOrWarns(Level level) {
+		if (Level.INFORM.equals(level)) {
+			recordConstraint(XmlStatus.INFORMATION);
+		} else if (Level.WARN.equals(level)) {
+			recordConstraint(XmlStatus.WARNING);
+		}
+	}
+
+	private void recordConstraint(XmlStatus status) {
+		XmlConstraint constraint = new XmlConstraint();
+		constraint.setName(buildConstraintName());
+		constraint.setStatus(status);
+		addConstraint(constraint);
+	}
+
+	private void addConstraint(XmlConstraint constraint) {
+		result.getConstraints().add(constraint);
+	}
+
+	private XmlName buildConstraintName() {
+		MessageTag tag = getMessageTag();
+		XmlName name = new XmlName();
+		name.setNameId(tag.name());
+		name.setValue(tag.getMessage());
+		return name;
+	}
+
+	/**
+	 * This method skips next elements
+	 */
+	private void fail() {
+		boolean valid = process();
+		if (valid) {
+			recordValid();
+			callNext();
+		} else {
+			recordInvalid();
+			recordConclusion();
+		}
+	}
+
+	private void informOrWarn(Level level) {
+		boolean valid = process();
+		if (valid) {
+			recordValid();
+		} else {
+			recordInfosOrWarns(level);
+		}
+		callNext();
+	}
+
+	private void ignore() {
+		recordIgnore();
+		callNext();
+	}
+
+	private void callNext() {
+		if (nextItem != null) {
+			nextItem.execute();
+		}
+	}
+
+}
