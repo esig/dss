@@ -17,8 +17,11 @@ import eu.europa.esig.dss.EN319102.bbb.xcv.checks.ProspectiveCertificateChainChe
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationDataTrustedCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationFreshnessCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateIssuedToLegalPersonCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateOnHoldCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateQualifiedCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateRevokedCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateSupportedBySSCDCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLStatusAndValidityCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLStatusCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLValidityCheck;
@@ -45,15 +48,18 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 	private final CertificateWrapper currentCertificate;
 	private final Date currentTime;
 
+	private final Context context;
 	private final ValidationPolicy2 validationPolicy;
 
 	private ChainItem<XmlXCV> firstItem;
 	private XmlXCV result = new XmlXCV();
 
-	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, ValidationPolicy2 validationPolicy) {
+	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, Context context, ValidationPolicy2 validationPolicy) {
 		this.diagnosticData = diagnosticData;
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
+
+		this.context = context;
 		this.validationPolicy = validationPolicy;
 	}
 
@@ -108,36 +114,63 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 
 			}
 		}
+
+		// These constraints apply only to the main signature
+		if (Context.MAIN_SIGNATURE.equals(context)) {
+			item = item.setNextItem(signingCertificateQualified(currentCertificate));
+
+			item = item.setNextItem(signingCertificateSupportedBySSCD(currentCertificate));
+
+			item = item.setNextItem(signingCertificateIssuedToLegalPerson(currentCertificate));
+		}
+
+		if (CollectionUtils.isNotEmpty(certificateChainList)) {
+			String lastChainCertId = currentCertificate.getLastChainCertificateId();
+			for (XmlChainCertificate chainCertificate : certificateChainList) {
+				CertificateWrapper chainItem = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
+
+				/**
+				 * The trusted anchor is not checked. In the case of a certificate chain consisting of a single certificate
+				 * which is trusted we need to set this variable to true.
+				 */
+				if (StringUtils.equals(lastChainCertId, chainCertificate.getId()) &&  chainItem.isTrusted()){
+					continue;
+				}
+
+				SubContext currentSubContext = StringUtils.equals(chainItem.getId(), currentCertificate.getId()) ? SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+				item = item.setNextItem(certificateCryptographic(chainItem, context, currentSubContext));
+			}
+		}
 	}
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
-		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
 		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, constraint);
 	}
 
 	private ChainItem<XmlXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateExpirationConstraint(Context.MAIN_SIGNATURE, subContext);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateExpirationConstraint(context, subContext);
 		return new CertificateExpirationCheck(result, certificate, currentTime, constraint);
 	}
 
 	private ChainItem<XmlXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
 		// TODO multi context
-		MultiValuesConstraint constraint = validationPolicy.getSigningCertificateKeyUsageConstraint(Context.MAIN_SIGNATURE);
+		MultiValuesConstraint constraint = validationPolicy.getSigningCertificateKeyUsageConstraint(context);
 		return new KeyUsageCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateSignatureConstraint(Context.MAIN_SIGNATURE, subContext);
+		LevelConstraint constraint = validationPolicy.getCertificateSignatureConstraint(context, subContext);
 		return new CertificateSignatureValidCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> revocationDataAvailable(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getRevocationDataAvailableConstraint(Context.MAIN_SIGNATURE, subContext);
+		LevelConstraint constraint = validationPolicy.getRevocationDataAvailableConstraint(context, subContext);
 		return new RevocationDataAvailableCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> revocationDataTrusted(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getRevocationDataIsTrustedConstraint(Context.MAIN_SIGNATURE, subContext);
+		LevelConstraint constraint = validationPolicy.getRevocationDataIsTrustedConstraint(context, subContext);
 		return new RevocationDataTrustedCheck(result, certificate, constraint);
 	}
 
@@ -147,38 +180,53 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 	}
 
 	private ChainItem<XmlXCV> signingCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(Context.MAIN_SIGNATURE, subContext);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(context, subContext);
 		return new SigningCertificateRevokedCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> intermediateCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(Context.MAIN_SIGNATURE, subContext);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(context, subContext);
 		return new IntermediateCertificateRevoked(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateOnHold(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateOnHoldConstraint(Context.MAIN_SIGNATURE, subContext);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateOnHoldConstraint(context, subContext);
 		return new SigningCertificateOnHoldCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateInTSLValidity(CertificateWrapper certificate) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLValidityConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLValidityConstraint(context);
 		return new SigningCertificateTSLValidityCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateTSLStatus(CertificateWrapper certificate) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLStatusConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLStatusConstraint(context);
 		return new SigningCertificateTSLStatusCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateTSLStatusAndValidity(CertificateWrapper certificate) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLStatusAndValidityConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLStatusAndValidityConstraint(context);
 		return new SigningCertificateTSLStatusAndValidityCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> certificateCryptographic(TokenProxy token, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getSignatureCryptographicConstraint(context, subcontext);
 		return new CertificateCryptographicCheck(result, token, currentTime, cryptographicConstraint);
+	}
+
+	private ChainItem<XmlXCV> signingCertificateQualified(CertificateWrapper certificate) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateQualificationConstraint();
+		return new SigningCertificateQualifiedCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> signingCertificateSupportedBySSCD(CertificateWrapper certificate) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateSupportedBySSCDConstraint();
+		return new SigningCertificateSupportedBySSCDCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> signingCertificateIssuedToLegalPerson(CertificateWrapper certificate) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateIssuedToLegalPersonConstraint();
+		return new SigningCertificateIssuedToLegalPersonCheck(result, certificate, constraint);
 	}
 
 	@Override
