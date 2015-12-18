@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,7 +59,6 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.signature.visible.ImageFactory;
 import eu.europa.esig.dss.pdf.DSSPDFUtils;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -181,9 +179,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	private void fillImageParameters(final PDDocument doc, final SignatureImageParameters imgParams, SignatureOptions options) throws IOException {
-		Dimension optimalSize = ImageFactory.getOptimalSize(imgParams);
-		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, ImageFactory.create(imgParams), imgParams.getPage());
-		visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis()).width((float) optimalSize.getWidth()).height((float) optimalSize.getHeight());
+
+		//DSS-747. Using the DPI resolultion to convert java size to dot
+		ImageAndResolution ires = ImageUtils.create(imgParams);
+
+		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, ires.getInputStream(), imgParams.getPage());
+		visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis());
+
+		visibleSig.width(ires.toXPoint(visibleSig.getWidth())).height(ires.toYPoint(visibleSig.getHeight()));
 
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 		signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
