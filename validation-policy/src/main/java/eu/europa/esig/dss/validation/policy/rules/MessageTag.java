@@ -60,7 +60,7 @@ public enum MessageTag {
 	ASCCM("Are signature cryptographic constraints met?"),
 	ASCCM_ANS_1("The encryption algorithm not authorised!"),
 	ASCCM_ANS_2("The digest algorithm not authorised!"),
-	ASCCM_ANS_3("The public key size is to small!"),
+	ASCCM_ANS_3("The public key size is too small!"),
 	ASCCM_ANS_4("The algorithm expiration date not found!"),
 	ASCCM_ANS_5("The algorithm is expired!"),
 

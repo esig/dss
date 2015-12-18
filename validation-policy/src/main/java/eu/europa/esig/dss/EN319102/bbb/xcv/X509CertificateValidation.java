@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.IntermediateCertificateRevoked;
@@ -24,10 +25,12 @@ import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLValidityC
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy2;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy2.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy2.SubContext;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
@@ -100,6 +103,9 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 
 				}
 
+				// check cryptographic constraints for the revocation token
+				item = item.setNextItem(certificateCryptographic(certificate.getRevocationData(), Context.REVOCATION, currentSubContext));
+
 			}
 		}
 	}
@@ -168,6 +174,11 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 	private ChainItem<XmlXCV> signingCertificateTSLStatusAndValidity(CertificateWrapper certificate) {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLStatusAndValidityConstraint(Context.MAIN_SIGNATURE);
 		return new SigningCertificateTSLStatusAndValidityCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> certificateCryptographic(TokenProxy token, Context context, SubContext subcontext) {
+		CryptographicConstraint cryptographicConstraint = validationPolicy.getSignatureCryptographicConstraint(context, subcontext);
+		return new CertificateCryptographicCheck(result, token, currentTime, cryptographicConstraint);
 	}
 
 	@Override
