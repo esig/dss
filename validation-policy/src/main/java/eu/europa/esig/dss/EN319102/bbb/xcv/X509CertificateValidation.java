@@ -16,7 +16,11 @@ import eu.europa.esig.dss.EN319102.bbb.xcv.checks.ProspectiveCertificateChainChe
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationDataTrustedCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationFreshnessCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateOnHoldCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateRevokedCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLStatusAndValidityCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLStatusCheck;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLValidityCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.validation.CertificateWrapper;
@@ -79,7 +83,16 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 				item = item.setNextItem(revocationFreshness(certificate));
 
 				if (SubContext.SIGNING_CERT.equals(currentSubContext)) { // TODO Why ??
+
 					item = item.setNextItem(signingCertificateRevoked(certificate, currentSubContext));
+
+					item = item.setNextItem(signingCertificateOnHold(certificate, currentSubContext));
+
+					item = item.setNextItem(signingCertificateInTSLValidity(certificate));
+
+					item = item.setNextItem(signingCertificateTSLStatus(certificate));
+
+					item = item.setNextItem(signingCertificateTSLStatusAndValidity(certificate));
 
 				} else {
 
@@ -135,6 +148,26 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 	private ChainItem<XmlXCV> intermediateCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(Context.MAIN_SIGNATURE, subContext);
 		return new IntermediateCertificateRevoked(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> signingCertificateOnHold(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateOnHoldConstraint(Context.MAIN_SIGNATURE, subContext);
+		return new SigningCertificateOnHoldCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> signingCertificateInTSLValidity(CertificateWrapper certificate) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLValidityConstraint(Context.MAIN_SIGNATURE);
+		return new SigningCertificateTSLValidityCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> signingCertificateTSLStatus(CertificateWrapper certificate) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLStatusConstraint(Context.MAIN_SIGNATURE);
+		return new SigningCertificateTSLStatusCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlXCV> signingCertificateTSLStatusAndValidity(CertificateWrapper certificate) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateTSLStatusAndValidityConstraint(Context.MAIN_SIGNATURE);
+		return new SigningCertificateTSLStatusAndValidityCheck(result, certificate, constraint);
 	}
 
 	@Override
