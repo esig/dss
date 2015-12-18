@@ -111,6 +111,7 @@
 		<MandatedSignedQProperties>
 			<SigningTime Level="FAIL" />
 			<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
+			<ContentHints Level="FAIL" value="*" />
 			<ContentTimeStamp>
 				<MessageImprintDataFound Level="FAIL" />
 				<MessageImprintDataIntact Level="FAIL" />

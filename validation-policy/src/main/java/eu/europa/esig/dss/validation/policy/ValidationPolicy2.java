@@ -99,9 +99,9 @@ public interface ValidationPolicy2 {
 	/**
 	 * Indicates if the signed property: content-hints should be checked. If ContentHints element is absent within the constraint file then null is returned.
 	 *
-	 * @return {@code LevelConstraint} if ContentHints element is present in the constraint file, null otherwise.
+	 * @return {@code ValueConstraint} if ContentHints element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getContentHintsConstraint();
+	ValueConstraint getContentHintsConstraint();
 
 	/**
 	 * Indicates if the signed property: content-identifier should be checked. If ContentIdentifier element is absent within the constraint file then null is returned.

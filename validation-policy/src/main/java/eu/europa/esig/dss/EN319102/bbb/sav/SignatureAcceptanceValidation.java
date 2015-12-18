@@ -2,13 +2,15 @@ package eu.europa.esig.dss.EN319102.bbb.sav;
 
 import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentHintsCheck;
+import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy2;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV)
@@ -16,18 +18,14 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  */
 public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<XmlSAV> {
 
-	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper signature;
-
 	private final ValidationPolicy2 validationPolicy;
 
 	private ChainItem<XmlSAV> firstItem;
 	private XmlSAV result = new XmlSAV();
 
-	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, SignatureWrapper signature, ValidationPolicy2 validationPolicy) {
-		this.diagnosticData = diagnosticData;
+	public SignatureAcceptanceValidation(SignatureWrapper signature, ValidationPolicy2 validationPolicy) {
 		this.signature = signature;
-
 		this.validationPolicy = validationPolicy;
 	}
 
@@ -37,6 +35,9 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 
 		item = item.setNextItem(signingTime());
 
+		item = item.setNextItem(contentType());
+
+		item = item.setNextItem(contentHints());
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {
@@ -47,6 +48,16 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	private ChainItem<XmlSAV> signingTime() {
 		LevelConstraint constraint = validationPolicy.getSigningTimeConstraint();
 		return new SigningTimeCheck(result, signature, constraint);
+	}
+
+	private ChainItem<XmlSAV> contentType() {
+		ValueConstraint constraint = validationPolicy.getContentTypeConstraint();
+		return new ContentTypeCheck(result, signature, constraint);
+	}
+
+	private ChainItem<XmlSAV> contentHints() {
+		ValueConstraint constraint = validationPolicy.getContentHintsConstraint();
+		return new ContentHintsCheck(result, signature, constraint);
 	}
 
 	@Override

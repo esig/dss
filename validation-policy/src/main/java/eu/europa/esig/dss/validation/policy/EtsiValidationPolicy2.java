@@ -171,10 +171,14 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	}
 
 	@Override
-	public LevelConstraint getContentHintsConstraint() {
-		// TODO ?
-		//		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentHints";
-		//		return getBasicConstraint(XP_ROOT, true);
+	public ValueConstraint getContentHintsConstraint() {
+		SignatureConstraints mainSignature = policy.getMainSignature();
+		if (mainSignature != null) {
+			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
+			if (mandatedSignedQProperties != null) {
+				return mandatedSignedQProperties.getContentHints();
+			}
+		}
 		return null;
 	}
 
