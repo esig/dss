@@ -9,11 +9,11 @@ import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class IntermediateCertificateRevoked extends ChainItem<XmlXCV> {
+public class IntermediateCertificateRevokedCheck extends ChainItem<XmlXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public IntermediateCertificateRevoked(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public IntermediateCertificateRevokedCheck(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
 	}

@@ -11,7 +11,7 @@ import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateSignatureValidCheck;
-import eu.europa.esig.dss.EN319102.bbb.xcv.checks.IntermediateCertificateRevoked;
+import eu.europa.esig.dss.EN319102.bbb.xcv.checks.IntermediateCertificateRevokedCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.KeyUsageCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.RevocationDataAvailableCheck;
@@ -186,7 +186,7 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 
 	private ChainItem<XmlXCV> intermediateCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(context, subContext);
-		return new IntermediateCertificateRevoked(result, certificate, constraint);
+		return new IntermediateCertificateRevokedCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateOnHold(CertificateWrapper certificate, SubContext subContext) {
