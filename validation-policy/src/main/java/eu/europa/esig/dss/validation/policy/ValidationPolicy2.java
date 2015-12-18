@@ -27,6 +27,7 @@ import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
+import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. This is the base class used to implement a specific validation
@@ -91,9 +92,9 @@ public interface ValidationPolicy2 {
 	/**
 	 * Indicates if the signed property: content-type should be checked. If ContentType element is absent within the constraint file then null is returned.
 	 *
-	 * @return {@code LevelConstraint} if ContentType element is present in the constraint file, null otherwise.
+	 * @return {@code ValueConstraint} if ContentType element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getContentTypeConstraint();
+	ValueConstraint getContentTypeConstraint();
 
 	/**
 	 * Indicates if the signed property: content-hints should be checked. If ContentHints element is absent within the constraint file then null is returned.
@@ -105,9 +106,9 @@ public interface ValidationPolicy2 {
 	/**
 	 * Indicates if the signed property: content-identifier should be checked. If ContentIdentifier element is absent within the constraint file then null is returned.
 	 *
-	 * @return {@code LevelConstraint} if ContentIdentifier element is present in the constraint file, null otherwise.
+	 * @return {@code ValueConstraint} if ContentIdentifier element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getContentIdentifierConstraint();
+	ValueConstraint getContentIdentifierConstraint();
 
 	/**
 	 * Indicates if the signed property: commitment-type-indication should be checked. If CommitmentTypeIndication element is absent within the constraint file then null is

@@ -34,9 +34,9 @@
 	<xs:complexType name="SignedAttributesConstraints">
 		<xs:sequence>
 			<xs:element name="SigningTime" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="ContentType" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="ContentIdentifier" type="tns:LevelConstraint" minOccurs="0" />
-<!-- 		<xs:element name="CommitmentTypeIndication" type="tns:LevelConstraint" minOccurs="0" /> -->
+			<xs:element name="ContentType" type="tns:ValueConstraint" minOccurs="0" />
+			<xs:element name="ContentIdentifier" type="tns:ValueConstraint" minOccurs="0" />
+<!-- 			<xs:element name="CommitmentTypeIndication" type="tns:LevelConstraint" minOccurs="0" /> -->
 			<xs:element name="SignerLocation" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="ClaimedRoles" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="CertifiedRoles" type="tns:LevelConstraint" minOccurs="0" />
@@ -151,6 +151,14 @@
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValueConstraint" mixed="true">
+  		<xs:complexContent>
+			<xs:extension base="tns:LevelConstraint">
+			<xs:attribute type="xs:string" name="value" />
+			</xs:extension>
+  		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="TimeConstraint">

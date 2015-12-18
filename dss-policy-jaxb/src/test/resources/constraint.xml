@@ -1,8 +1,10 @@
 <ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/diagnostic">
 	<Description>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a
-		Qualified Certificate (AdES/QC) or a Qualified electronic
+		Qualified Certificate (AdES/QC) or a Qualified
+		electronic
 		Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State
-		Trusted Lists (this includes signer's certificate and certificates used
+		Trusted Lists (this includes signer's
+		certificate and certificates used
 		to validate certificate validity status services - CRLs, OCSP, and time-stamps).
 	</Description>
 	<MainSignature>
@@ -44,7 +46,7 @@
 					<Algo>ECDSA</Algo>
 				</AcceptableEncryptionAlgo>
 				<MiniPublicKeySize>
-	                <Algo Size="128">DSA</Algo>
+					<Algo Size="128">DSA</Algo>
 					<Algo Size="1024">RSA</Algo>
 					<Algo Size="192">ECDSA</Algo>
 				</MiniPublicKeySize>
@@ -72,9 +74,9 @@
 					<Algo>ECDSA</Algo>
 				</AcceptableEncryptionAlgo>
 				<MiniPublicKeySize>
-	                <Algo Size="128">DSA</Algo>
+					<Algo Size="128">DSA</Algo>
 					<Algo Size="1024">RSA</Algo>
-	                <Algo Size="192">ECDSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
 				</MiniPublicKeySize>
 				<AcceptableDigestAlgo>
 					<Algo>SHA1</Algo>
@@ -93,7 +95,7 @@
 				<Algo>ECDSA</Algo>
 			</AcceptableEncryptionAlgo>
 			<MiniPublicKeySize>
-	            <Algo Size="128">DSA</Algo>
+				<Algo Size="128">DSA</Algo>
 				<Algo Size="1024">RSA</Algo>
 				<Algo Size="192">ECDSA</Algo>
 			</MiniPublicKeySize>
@@ -108,19 +110,19 @@
 		</Cryptographic>
 		<MandatedSignedQProperties>
 			<SigningTime Level="FAIL" />
-            <ContentTimeStamp>
-                <MessageImprintDataFound Level="FAIL" />
-                <MessageImprintDataIntact Level="FAIL" />
-            </ContentTimeStamp>
-			<!--<ContentType Level="FAIL">1.2.840.113549.1.7.1</ContentType>-->
+			<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
+			<ContentTimeStamp>
+				<MessageImprintDataFound Level="FAIL" />
+				<MessageImprintDataIntact Level="FAIL" />
+			</ContentTimeStamp>
 		</MandatedSignedQProperties>
-        <MandatedUnsignedQProperties>
-            <CounterSignature>
-                <ReferenceDataExistence Level="FAIL" />
-                <ReferenceDataIntact Level="FAIL" />
-                <SignatureIntact Level="FAIL" />
-            </CounterSignature>
-        </MandatedUnsignedQProperties>
+		<MandatedUnsignedQProperties>
+			<CounterSignature>
+				<ReferenceDataExistence Level="FAIL" />
+				<ReferenceDataIntact Level="FAIL" />
+				<SignatureIntact Level="FAIL" />
+			</CounterSignature>
+		</MandatedUnsignedQProperties>
 	</MainSignature>
 	<Timestamp>
 		<TimestampDelay Unit="DAYS">0</TimestampDelay>
@@ -149,7 +151,7 @@
 					<Algo>ECDSA</Algo>
 				</AcceptableEncryptionAlgo>
 				<MiniPublicKeySize>
-	                <Algo Size="128">DSA</Algo>
+					<Algo Size="128">DSA</Algo>
 					<Algo Size="1024">RSA</Algo>
 					<Algo Size="192">ECDSA</Algo>
 				</MiniPublicKeySize>
@@ -177,7 +179,7 @@
 					<Algo>ECDSA</Algo>
 				</AcceptableEncryptionAlgo>
 				<MiniPublicKeySize>
-	                <Algo Size="128">DSA</Algo>
+					<Algo Size="128">DSA</Algo>
 					<Algo Size="1024">RSA</Algo>
 					<Algo Size="192">ECDSA</Algo>
 				</MiniPublicKeySize>
@@ -208,7 +210,7 @@
 					<Algo>ECDSA</Algo>
 				</AcceptableEncryptionAlgo>
 				<MiniPublicKeySize>
-	                <Algo Size="128">DSA</Algo>
+					<Algo Size="128">DSA</Algo>
 					<Algo Size="1024">RSA</Algo>
 					<Algo Size="192">ECDSA</Algo>
 				</MiniPublicKeySize>
@@ -236,7 +238,7 @@
 					<Algo>ECDSA</Algo>
 				</AcceptableEncryptionAlgo>
 				<MiniPublicKeySize>
-	                <Algo Size="128">DSA</Algo>
+					<Algo Size="128">DSA</Algo>
 					<Algo Size="1024">RSA</Algo>
 					<Algo Size="192">ECDSA</Algo>
 				</MiniPublicKeySize>
@@ -251,24 +253,8 @@
 			</Cryptographic>
 		</CACertificate>
 	</Revocation>
-<!--
-	<Cryptographic Level="FAIL"> 
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2015-02-24">RSA1024</Algo>
-			<Algo Date="2015-02-24">RSA1536</Algo>
-			<Algo Date="2020-02-24">RSA2048</Algo>
-			<Algo Date="2020-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-		</AlgoExpirationDate> 
-	</Cryptographic>	
--->
+	<!-- <Cryptographic Level="FAIL"> <AlgoExpirationDate Format="yyyy-MM-dd"> <Algo Date="2017-02-24">SHA1</Algo> <Algo Date="2035-02-24">SHA224</Algo> <Algo Date="2035-02-24">SHA256</Algo> 
+		<Algo Date="2035-02-24">SHA384</Algo> <Algo Date="2035-02-24">SHA512</Algo> <Algo Date="2017-02-24">RIPEMD160</Algo> <Algo Date="2017-02-24">DSA128</Algo> <Algo Date="2015-02-24">RSA1024</Algo> 
+		<Algo Date="2015-02-24">RSA1536</Algo> <Algo Date="2020-02-24">RSA2048</Algo> <Algo Date="2020-02-24">RSA3072</Algo> <Algo Date="2035-02-24">RSA4096</Algo> <Algo Date="2035-02-24">ECDSA192</Algo> 
+		<Algo Date="2035-02-24">ECDSA256</Algo> </AlgoExpirationDate> </Cryptographic> -->
 </ConstraintsParameters>

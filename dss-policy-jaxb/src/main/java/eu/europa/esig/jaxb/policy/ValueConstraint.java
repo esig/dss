@@ -11,21 +11,20 @@ package eu.europa.esig.jaxb.policy;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for LevelConstraint complex type.
+ * <p>Java class for ValueConstraint complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="LevelConstraint">
+ * &lt;complexType name="ValueConstraint">
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="Level" type="{http://dss.esig.europa.eu/validation/diagnostic}level" />
- *     &lt;/restriction>
+ *     &lt;extension base="{http://dss.esig.europa.eu/validation/diagnostic}LevelConstraint">
+ *       &lt;attribute name="value" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -33,40 +32,36 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LevelConstraint")
-@XmlSeeAlso({
-    RevocationConstraints.class,
-    CryptographicConstraint.class,
-    ValueConstraint.class,
-    MultiValuesConstraint.class
-})
-public class LevelConstraint {
+@XmlType(name = "ValueConstraint")
+public class ValueConstraint
+    extends LevelConstraint
+{
 
-    @XmlAttribute(name = "Level")
-    protected Level level;
+    @XmlAttribute(name = "value")
+    protected String value;
 
     /**
-     * Gets the value of the level property.
+     * Gets the value of the value property.
      * 
      * @return
      *     possible object is
-     *     {@link Level }
+     *     {@link String }
      *     
      */
-    public Level getLevel() {
-        return level;
+    public String getValue() {
+        return value;
     }
 
     /**
-     * Sets the value of the level property.
+     * Sets the value of the value property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Level }
+     *     {@link String }
      *     
      */
-    public void setLevel(Level value) {
-        this.level = value;
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

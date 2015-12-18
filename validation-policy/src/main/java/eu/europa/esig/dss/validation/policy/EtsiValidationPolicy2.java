@@ -43,6 +43,7 @@ import eu.europa.esig.jaxb.policy.SignedAttributesConstraints;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 import eu.europa.esig.jaxb.policy.TimeUnit;
 import eu.europa.esig.jaxb.policy.TimestampConstraints;
+import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. It
@@ -158,7 +159,7 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	}
 
 	@Override
-	public LevelConstraint getContentTypeConstraint() {
+	public ValueConstraint getContentTypeConstraint() {
 		SignatureConstraints mainSignature = policy.getMainSignature();
 		if (mainSignature != null) {
 			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
@@ -178,7 +179,7 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	}
 
 	@Override
-	public LevelConstraint getContentIdentifierConstraint() {
+	public ValueConstraint getContentIdentifierConstraint() {
 		SignatureConstraints mainSignature = policy.getMainSignature();
 		if (mainSignature != null) {
 			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
