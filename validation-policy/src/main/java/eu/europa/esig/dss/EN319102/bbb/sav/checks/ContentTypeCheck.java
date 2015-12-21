@@ -1,8 +1,6 @@
 package eu.europa.esig.dss.EN319102.bbb.sav.checks;
 
-import org.apache.commons.lang.StringUtils;
-
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.bbb.AbstractValueCheckItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -10,9 +8,7 @@ import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
 
-public class ContentTypeCheck extends ChainItem<XmlSAV> {
-
-	private static final String ALL_VALUE = "*";
+public class ContentTypeCheck extends AbstractValueCheckItem<XmlSAV> {
 
 	private final SignatureWrapper signature;
 	private final ValueConstraint constraint;
@@ -26,16 +22,8 @@ public class ContentTypeCheck extends ChainItem<XmlSAV> {
 	@Override
 	protected boolean process() {
 		String contentType = signature.getContentType();
-		if (StringUtils.isEmpty(contentType)) {
-			return false;
-		}
-
 		String expectedValue = constraint.getValue();
-		if (ALL_VALUE.equals(expectedValue)) {
-			return true;
-		} else {
-			return StringUtils.equals(expectedValue, contentType);
-		}
+		return processValueCheck(contentType, expectedValue);
 	}
 
 	@Override

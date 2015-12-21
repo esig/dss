@@ -8,12 +8,12 @@ import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
 
-public class ContentHintsCheck extends AbstractValueCheckItem<XmlSAV> {
+public class ContentIdentifierCheck extends AbstractValueCheckItem<XmlSAV> {
 
 	private final SignatureWrapper signature;
 	private final ValueConstraint constraint;
 
-	public ContentHintsCheck(XmlSAV result, SignatureWrapper signature, ValueConstraint constraint) {
+	public ContentIdentifierCheck(XmlSAV result, SignatureWrapper signature, ValueConstraint constraint) {
 		super(result, constraint);
 		this.signature = signature;
 		this.constraint = constraint;
@@ -21,19 +21,19 @@ public class ContentHintsCheck extends AbstractValueCheckItem<XmlSAV> {
 
 	@Override
 	protected boolean process() {
-		String contentType = signature.getContentHints();
-		String expectedValue = constraint.getValue();
-		return processValueCheck(contentType, expectedValue);
+		String contentIdentifier = signature.getContentIdentifier();
+		String expected = constraint.getValue();
+		return processValueCheck(contentIdentifier, expected);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_SAV_ISQPCHP;
+		return MessageTag.BBB_SAV_ISQPCIP;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_SAV_ISQPCHP_ANS;
+		return MessageTag.BBB_SAV_ISQPCIP_ANS;
 	}
 
 	@Override

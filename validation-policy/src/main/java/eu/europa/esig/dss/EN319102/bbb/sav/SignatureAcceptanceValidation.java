@@ -3,6 +3,7 @@ package eu.europa.esig.dss.EN319102.bbb.sav;
 import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentHintsCheck;
+import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
@@ -33,11 +34,19 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	public void initChain() {
 		ChainItem<XmlSAV> item = firstItem = structuralValidation();
 
+		// signing-time
 		item = item.setNextItem(signingTime());
 
+		// content-type
 		item = item.setNextItem(contentType());
 
+		// content-hints
 		item = item.setNextItem(contentHints());
+
+		// TODO content-reference
+
+		// content-identifier
+		item = item.setNextItem(contentIdentifier());
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {
@@ -58,6 +67,11 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	private ChainItem<XmlSAV> contentHints() {
 		ValueConstraint constraint = validationPolicy.getContentHintsConstraint();
 		return new ContentHintsCheck(result, signature, constraint);
+	}
+
+	private ChainItem<XmlSAV> contentIdentifier() {
+		ValueConstraint constraint = validationPolicy.getContentIdentifierConstraint();
+		return new ContentIdentifierCheck(result, signature, constraint);
 	}
 
 	@Override
