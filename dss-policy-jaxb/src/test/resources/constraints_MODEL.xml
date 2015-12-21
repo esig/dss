@@ -94,7 +94,7 @@
 				</Certificate>
 			</AcceptableChain>
 		</CertificateChain>
-		<MandatedSignedQProperties>
+		<SignedAttributes>
 			<SigningTime Level="FAIL"/>
 			<ContentType Level="FAIL">1.2.840.113549.1.7.1</ContentType>
 			<ContentIdentifier Level="FAIL">*</ContentIdentifier>
@@ -110,14 +110,14 @@
 			<SignerLocation>true</SignerLocation>
 			<SignerAttributes>false</SignerAttributes>
 			<ContentTimeStamp>true</ContentTimeStamp>
-		</MandatedSignedQProperties>
-		<MandatedUnsignedQProperties>
-			<CounterSignature>false</CounterSignature>
+		</SignedAttributes>
+		<UnsignedAttributes>
+			<CounterSignature Level="FAIL" />
 			<MandatedSignatureTimeStamp>false</MandatedSignatureTimeStamp>
 			<MandatedLtForm>false</MandatedLtForm>
 			<MandatedArchivalForm>false</MandatedArchivalForm>
 			<SignaturePolicyExtensions>false</SignaturePolicyExtensions>
-		</MandatedUnsignedQProperties>
+		</UnsignedAttributes>
 		<OnRoles>
 			<ClaimedRoles Attendance="ALL">
 				<Role>supervisor</Role>

@@ -114,9 +114,9 @@ public interface ValidationPolicy2 {
 	 * Indicates if the signed property: commitment-type-indication should be checked. If CommitmentTypeIndication element is absent within the constraint file then null is
 	 * returned, otherwise the list of identifiers is initialised.
 	 *
-	 * @return {@code LevelConstraint} if CommitmentTypeIndication element is present in the constraint file, null otherwise.
+	 * @return {@code MultiValuesConstraint} if CommitmentTypeIndication element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getCommitmentTypeIndicationConstraint();
+	MultiValuesConstraint getCommitmentTypeIndicationConstraint();
 
 	/**
 	 * Indicates if the signed property: signer-location should be checked. If SignerLocation element is absent within the constraint file then null is returned.
@@ -130,7 +130,7 @@ public interface ValidationPolicy2 {
 	 *
 	 * @return {@code LevelConstraint} if ContentTimeStamp element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getContentTimestampPresenceConstraint();
+	LevelConstraint getContentTimestampConstraint();
 
 	/**
 	 * Indicates if the signed property: content-time-stamp should be checked. If ClaimedRoles element is absent within the constraint file then null is returned.
@@ -380,10 +380,6 @@ public interface ValidationPolicy2 {
 	 * @return
 	 */
 	LevelConstraint getTimestampDelaySigningTimePropertyConstraint();
-
-	LevelConstraint getContentTimestampImprintIntactConstraint();
-
-	LevelConstraint getContentTimestampImprintFoundConstraint();
 
 	RevocationConstraints getRevocationConstraint();
 

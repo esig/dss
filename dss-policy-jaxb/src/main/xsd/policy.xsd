@@ -26,8 +26,8 @@
 			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
 			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
 			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
-			<xs:element name="MandatedSignedQProperties" type="tns:SignedAttributesConstraints" minOccurs="0" />
-			<xs:element name="MandatedUnsignedQProperties" type="tns:UnsignedAttributesConstraints" minOccurs="0" />
+			<xs:element name="SignedAttributes" type="tns:SignedAttributesConstraints" minOccurs="0" />
+			<xs:element name="UnsignedAttributes" type="tns:UnsignedAttributesConstraints" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -41,13 +41,13 @@
 			<xs:element name="SignerLocation" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="ClaimedRoles" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="CertifiedRoles" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="ContentTimeStamp" type="tns:TimestampConstraints" minOccurs="0" />
+			<xs:element name="ContentTimeStamp" type="tns:LevelConstraint" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="UnsignedAttributesConstraints">
 		<xs:sequence>
-			<xs:element name="CounterSignature" type="tns:SignatureConstraints" minOccurs="0" />
+			<xs:element name="CounterSignature" type="tns:LevelConstraint" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 

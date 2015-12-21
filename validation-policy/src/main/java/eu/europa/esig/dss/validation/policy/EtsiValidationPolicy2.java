@@ -150,9 +150,9 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	public LevelConstraint getSigningTimeConstraint() {
 		SignatureConstraints mainSignature = policy.getMainSignature();
 		if (mainSignature != null) {
-			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
-			if (mandatedSignedQProperties != null) {
-				return mandatedSignedQProperties.getSigningTime();
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSigningTime();
 			}
 		}
 		return null;
@@ -162,9 +162,9 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	public ValueConstraint getContentTypeConstraint() {
 		SignatureConstraints mainSignature = policy.getMainSignature();
 		if (mainSignature != null) {
-			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
-			if (mandatedSignedQProperties != null) {
-				return mandatedSignedQProperties.getContentType();
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getContentType();
 			}
 		}
 		return null;
@@ -174,9 +174,9 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	public ValueConstraint getContentHintsConstraint() {
 		SignatureConstraints mainSignature = policy.getMainSignature();
 		if (mainSignature != null) {
-			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
-			if (mandatedSignedQProperties != null) {
-				return mandatedSignedQProperties.getContentHints();
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getContentHints();
 			}
 		}
 		return null;
@@ -186,27 +186,23 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	public ValueConstraint getContentIdentifierConstraint() {
 		SignatureConstraints mainSignature = policy.getMainSignature();
 		if (mainSignature != null) {
-			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
-			if (mandatedSignedQProperties != null) {
-				return mandatedSignedQProperties.getContentIdentifier();
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getContentIdentifier();
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public LevelConstraint getCommitmentTypeIndicationConstraint() {
-		// TODO
-		//		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/@Level");
-		//		if (StringUtils.isNotBlank(level)) {
-		//
-		//			final Constraint constraint = new Constraint(level);
-		//			final List<XmlDom> commitmentTypeIndications = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/Identifier");
-		//			final List<String> identifierList = XmlDom.convertToStringList(commitmentTypeIndications);
-		//			constraint.setExpectedValue(identifierList.toString());
-		//			constraint.setIdentifiers(identifierList);
-		//			return constraint;
-		//		}
+	public MultiValuesConstraint getCommitmentTypeIndicationConstraint() {
+		SignatureConstraints mainSignature = policy.getMainSignature();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getCommitmentTypeIndication();
+			}
+		}
 		return null;
 	}
 
@@ -214,23 +210,11 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	public LevelConstraint getSignerLocationConstraint() {
 		SignatureConstraints mainSignature = policy.getMainSignature();
 		if (mainSignature != null) {
-			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
-			if (mandatedSignedQProperties != null) {
-				return mandatedSignedQProperties.getSignerLocation();
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSignerLocation();
 			}
 		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getContentTimestampPresenceConstraint() {
-		//	TODO desynchro
-		//		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/@Level");
-		//		if (StringUtils.isNotBlank(level)) {
-		//
-		//			final Constraint constraint = new Constraint(level);
-		//			return constraint;
-		//		}
 		return null;
 	}
 
@@ -655,30 +639,12 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	}
 
 	@Override
-	public LevelConstraint getContentTimestampImprintIntactConstraint() {
+	public LevelConstraint getContentTimestampConstraint() {
 		SignatureConstraints mainSignature = policy.getMainSignature();
 		if (mainSignature != null) {
-			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
-			if (mandatedSignedQProperties != null) {
-				TimestampConstraints contentTimeStamp = mandatedSignedQProperties.getContentTimeStamp();
-				if (contentTimeStamp != null) {
-					return contentTimeStamp.getMessageImprintDataIntact();
-				}
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getContentTimestampImprintFoundConstraint() {
-		SignatureConstraints mainSignature = policy.getMainSignature();
-		if (mainSignature != null) {
-			SignedAttributesConstraints mandatedSignedQProperties = mainSignature.getMandatedSignedQProperties();
-			if (mandatedSignedQProperties != null) {
-				TimestampConstraints contentTimeStamp = mandatedSignedQProperties.getContentTimeStamp();
-				if (contentTimeStamp != null) {
-					return contentTimeStamp.getMessageImprintDataFound();
-				}
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getContentTimeStamp();
 			}
 		}
 		return null;

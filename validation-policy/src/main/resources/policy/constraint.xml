@@ -104,21 +104,15 @@
 				<Algo>RIPEMD160</Algo>
 			</AcceptableDigestAlgo>
 		</Cryptographic>
-		<MandatedSignedQProperties>
+		<SignedAttributes>
 			<SigningTime Level="FAIL" />
 <!-- 			<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" /> -->
-			<ContentTimeStamp>
-				<MessageImprintDataFound Level="FAIL" />
-				<MessageImprintDataIntact Level="FAIL" />
-			</ContentTimeStamp>
-		</MandatedSignedQProperties>
-		<MandatedUnsignedQProperties>
-			<CounterSignature>
-				<ReferenceDataExistence Level="FAIL" />
-				<ReferenceDataIntact Level="FAIL" />
-				<SignatureIntact Level="FAIL" />
-			</CounterSignature>
-		</MandatedUnsignedQProperties>
+<!-- 			<ContentIdentifier Level="FAIL" value="*" /> -->
+<!-- 			<ContentTimeStamp Level="FAIL" /> -->
+		</SignedAttributes>
+		<UnsignedAttributes>
+			<CounterSignature Level="FAIL" />
+		</UnsignedAttributes>
 	</MainSignature>
 	<Timestamp>
 		<TimestampDelay Unit="DAYS">0</TimestampDelay>

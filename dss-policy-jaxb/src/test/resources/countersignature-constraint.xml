@@ -103,9 +103,9 @@
 				<Algo>RIPEMD160</Algo>
 			</AcceptableDigestAlgo>
 		</Cryptographic>
-		<MandatedSignedQProperties>
+		<SignedAttributes>
 			<SigningTime Level="WARN" />
-		</MandatedSignedQProperties>
+		</SignedAttributes>
 	</MainSignature>
 	<Timestamp>
 		<TimestampDelay Unit="DAYS">0</TimestampDelay>
