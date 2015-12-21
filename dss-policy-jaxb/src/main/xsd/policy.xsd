@@ -37,7 +37,7 @@
 			<xs:element name="ContentType" type="tns:ValueConstraint" minOccurs="0" />
 			<xs:element name="ContentHints" type="tns:ValueConstraint" minOccurs="0" />
 			<xs:element name="ContentIdentifier" type="tns:ValueConstraint" minOccurs="0" />
-<!-- 			<xs:element name="CommitmentTypeIndication" type="tns:LevelConstraint" minOccurs="0" /> -->
+			<xs:element name="CommitmentTypeIndication" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="SignerLocation" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="ClaimedRoles" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="CertifiedRoles" type="tns:LevelConstraint" minOccurs="0" />

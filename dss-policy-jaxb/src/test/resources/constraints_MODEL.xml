@@ -102,10 +102,10 @@
 			<!-- Not yet implemented -->
 			<ContentReference Level="FAIL"/>
 			<CommitmentTypeIndication Level="FAIL">
-				<Identifier>1.2.840.113549.1.9.16.6.1</Identifier>
-				<Identifier>1.2.840.113549.1.9.16.6.4</Identifier>
-				<Identifier>1.2.840.113549.1.9.16.6.5</Identifier>
-				<Identifier>1.2.840.113549.1.9.16.6.6</Identifier>
+				<Id>1.2.840.113549.1.9.16.6.1</Id>
+				<Id>1.2.840.113549.1.9.16.6.4</Id>
+				<Id>1.2.840.113549.1.9.16.6.5</Id>
+				<Id>1.2.840.113549.1.9.16.6.6</Id>
 			</CommitmentTypeIndication>
 			<SignerLocation>true</SignerLocation>
 			<SignerAttributes>false</SignerAttributes>
