@@ -580,6 +580,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		parameters.setDetachedContent(originalParameters.getDetachedContent());
 		parameters.setBLevelParams(originalParameters.bLevel());
 		parameters.setDigestAlgorithm(originalParameters.getDigestAlgorithm());
+		parameters.setEncryptionAlgorithm(originalParameters.getEncryptionAlgorithm());
 		parameters.setContentTimestampParameters(originalParameters.getContentTimestampParameters());
 		parameters.setContentTimestamps(originalParameters.getContentTimestamps());
 		parameters.setSignatureTimestampParameters(originalParameters.getSignatureTimestampParameters());
