@@ -9,3 +9,7 @@
 	-fx-pref-width : 180;
 	-fx-min-width : 180;
 }
+
+.warningLabel {
+	-fx-text-fill: #FF8000;
+}

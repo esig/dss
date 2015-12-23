@@ -71,6 +71,9 @@ public class SignatureController implements Initializable {
 
 	@FXML
 	private ComboBox<SignatureLevel> comboLevel;
+	
+	@FXML
+	private Label warningLabel;
 
 	@FXML
 	private TypedToggleGroup<DigestAlgorithm> toggleDigestAlgo;
@@ -129,7 +132,7 @@ public class SignatureController implements Initializable {
 		hPkcsPassword.managedProperty().bind(hPkcsPassword.visibleProperty());
 		labelPkcs11File.managedProperty().bind(labelPkcs11File.visibleProperty());
 		labelPkcs12File.managedProperty().bind(labelPkcs12File.visibleProperty());
-
+		
 		fileSelectButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
