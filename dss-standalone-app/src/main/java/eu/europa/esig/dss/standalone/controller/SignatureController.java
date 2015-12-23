@@ -228,6 +228,7 @@ public class SignatureController implements Initializable {
 					public void handle(WorkerStateEvent event) {
 						save(service.getValue());
 						signButton.disableProperty().bind(disableSignButton);
+						model.setPassword(null);
 					}
 				});
 				service.setOnFailed(new EventHandler<WorkerStateEvent>() {
@@ -236,14 +237,13 @@ public class SignatureController implements Initializable {
 						Alert alert = new Alert(AlertType.ERROR, "Oops an error occurred : " + service.getMessage(), ButtonType.CLOSE);
 						alert.showAndWait();
 						signButton.disableProperty().bind(disableSignButton);
+						model.setPassword(null);
 					}
 				});
 
 				progressSign.progressProperty().bind(service.progressProperty());
 				signButton.disableProperty().bind(service.runningProperty());
 				service.start();
-
-				model.setPassword(null);
 			}
 		});
 	}
