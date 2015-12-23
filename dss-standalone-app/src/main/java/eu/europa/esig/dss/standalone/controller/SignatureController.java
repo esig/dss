@@ -114,6 +114,11 @@ public class SignatureController implements Initializable {
 
 	private RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> signatureService;
 
+	static {
+		// Fix a freeze in Windows 10, JDK 8 and touchscreen 
+		System.setProperty("glass.accessible.force", "false");
+	}
+	
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
