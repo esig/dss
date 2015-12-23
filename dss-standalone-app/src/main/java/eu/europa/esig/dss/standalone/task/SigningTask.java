@@ -73,7 +73,7 @@ public class SigningTask extends Task<DSSDocument> {
 		bLevelParams.setSigningDate(new Date());
 		parameters.setBLevelParams(bLevelParams);
 
-		if (SignatureForm.ASiC_S.equals(model.getSignatureForm()) || SignatureForm.ASiC_S.equals(model.getSignatureForm())) {
+		if (SignatureForm.ASiC_S.equals(model.getSignatureForm()) || SignatureForm.ASiC_E.equals(model.getSignatureForm())) {
 			parameters.setUnderlyingASiCForm(model.getAsicUnderlyingForm());
 		}
 
