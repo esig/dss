@@ -178,6 +178,7 @@
 				<Button mnemonicParsing="false" text="Sign" fx:id="signButton" />
 				<ProgressIndicator fx:id="progressSign" disable="true" progress="0" />
 			</children>
-		</HBox>	
+		</HBox>
+		<Label fx:id="warningLabel" styleClass="warningLabel" text="This application doesn't load the trusted lists and trusted certificates. &#10;If you sign without the complete certificate chain, some data can be missed."/>	
 	</children>
 </VBox>
