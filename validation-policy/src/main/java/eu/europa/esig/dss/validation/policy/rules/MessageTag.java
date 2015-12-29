@@ -66,9 +66,9 @@ public enum MessageTag {
 
 	BBB_SAV_ISSV("Is the structure of the signature valid?"),
 	BBB_SAV_ISSV_ANS("The structure of the signature is not valid!"),
-	BBB_SAV_ICERRM("Is the certified role mandated?"),
+	BBB_SAV_ICERRM("Is the requested certified role present?"),
 	BBB_SAV_ICERRM_ANS("The requested certified role is not present!"),
-	BBB_SAV_ICRM("The requested claimed role is not present!"),
+	BBB_SAV_ICRM("Is the requested claimed role present?"),
 	BBB_SAV_ICRM_ANS("The requested claimed role is not present!"),
 	BBB_SAV_ISQPCTP("Is signed qualifying property: 'content-type' present?"),
 	BBB_SAV_ISQPCTP_ANS("The signed qualifying property: 'content-type' is not present!"),

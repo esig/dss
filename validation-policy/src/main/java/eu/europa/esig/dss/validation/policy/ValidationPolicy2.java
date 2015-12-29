@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
-import java.util.List;
 
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -133,32 +132,18 @@ public interface ValidationPolicy2 {
 	LevelConstraint getContentTimestampConstraint();
 
 	/**
-	 * Indicates if the signed property: content-time-stamp should be checked. If ClaimedRoles element is absent within the constraint file then null is returned.
+	 * Indicates if the unsigned property: claimed-role should be checked. If ClaimedRoles element is absent within the constraint file then null is returned.
 	 *
-	 * @return {@code LevelConstraint} if ClaimedRoles element is present in the constraint file, null otherwise.
+	 * @return {@code MultiValuesConstraint} if ClaimedRoles element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getClaimedRoleConstraint();
+	MultiValuesConstraint getClaimedRoleConstraint();
 
 	/**
 	 * Return the mandated signer role.
 	 *
 	 * @return
 	 */
-	List<String> getClaimedRoles();
-
-	/**
-	 * Indicates if the presence of the Signer Role is mandatory.
-	 *
-	 * @return
-	 */
-	boolean shouldCheckIfCertifiedRoleIsPresent();
-
-	/**
-	 * Return the mandated signer role.
-	 *
-	 * @return
-	 */
-	List<String> getCertifiedRoles();
+	MultiValuesConstraint getCertifiedRolesConstraint();
 
 	/**
 	 * Returns the name of the policy.

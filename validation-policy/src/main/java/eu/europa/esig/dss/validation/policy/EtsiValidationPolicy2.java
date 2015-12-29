@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -237,51 +236,27 @@ public class EtsiValidationPolicy2 implements ValidationPolicy2 {
 	}
 
 	@Override
-	public LevelConstraint getClaimedRoleConstraint() {
-		// TODO
-		// final String level =
-		// getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/@Level");
-		// if (StringUtils.isNotBlank(level)) {
-		//
-		// final Constraint constraint = new Constraint(level);
-		// final List<XmlDom> claimedRoles =
-		// getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/Role");
-		// final List<String> claimedRoleList =
-		// XmlDom.convertToStringList(claimedRoles);
-		// constraint.setExpectedValue(claimedRoleList.toString());
-		// constraint.setIdentifiers(claimedRoleList);
-		// return constraint;
-		// }
+	public MultiValuesConstraint getClaimedRoleConstraint() {
+		SignatureConstraints mainSignature = policy.getMainSignature();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributes = mainSignature.getSignedAttributes();
+			if (signedAttributes != null) {
+				return signedAttributes.getClaimedRoles();
+			}
+		}
 		return null;
 	}
 
 	@Override
-	public List<String> getClaimedRoles() {
-		// TODO ?
-		// final List<XmlDom> list =
-		// getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/Role");
-		// final List<String> claimedRoles = XmlDom.convertToStringList(list);
-		// return claimedRoles;
-		return Collections.emptyList();
-	}
-
-	@Override
-	public boolean shouldCheckIfCertifiedRoleIsPresent() {
-		// TODO ?
-		// final long count =
-		// getCountValue("count(/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CertifiedRoles/Role)");
-		// return count > 0;
-		return false;
-	}
-
-	@Override
-	public List<String> getCertifiedRoles() {
-		// TODO ?
-		// final List<XmlDom> list =
-		// getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CertifiedRoles/Role");
-		// final List<String> claimedRoles = XmlDom.convertToStringList(list);
-		// return claimedRoles;
-		return Collections.emptyList();
+	public MultiValuesConstraint getCertifiedRolesConstraint() {
+		SignatureConstraints mainSignature = policy.getMainSignature();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributes = mainSignature.getSignedAttributes();
+			if (signedAttributes != null) {
+				return signedAttributes.getCertifiedRoles();
+			}
+		}
+		return null;
 	}
 
 	@Override
