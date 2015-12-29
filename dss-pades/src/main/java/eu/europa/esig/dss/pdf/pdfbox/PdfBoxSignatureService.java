@@ -70,6 +70,7 @@ import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;
 import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 class PdfBoxSignatureService implements PDFSignatureService {
 
@@ -196,7 +197,21 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 		final PDSignature signature = new PDSignature();
 		signature.setType(getType());
-		signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
+//		signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
+		Date date = parameters.bLevel().getSigningDate();
+		String encodedDate = " " + Hex.encodeHexString(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
+		CertificateToken token = parameters.getSigningCertificate();
+		if(token == null) {
+			signature.setName("Unknown signer" + encodedDate);
+		} else {
+			if(parameters.getSigningCertificate().getSubjectShortName() != null) {
+				String shortName = parameters.getSigningCertificate().getSubjectShortName() + encodedDate;
+				signature.setName(shortName);
+			} else {
+				signature.setName("Unknown signer" + encodedDate);
+			}
+		}
+		
 		signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE); // default filter
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(getSubFilter());
