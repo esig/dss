@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.EN319102.bbb.sav;
 
+import java.util.Date;
+
 import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.CertifiedRolesCheck;
@@ -16,7 +18,9 @@ import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy2;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy2.Context;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
@@ -29,15 +33,16 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
 public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<XmlSAV> {
 
 	private final DiagnosticData diagnosticData;
+	private final Date currentTime;
 	private final SignatureWrapper signature;
 	private final ValidationPolicy2 validationPolicy;
 
 	private ChainItem<XmlSAV> firstItem;
 	private XmlSAV result = new XmlSAV();
 
-	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, SignatureWrapper signature,
-			ValidationPolicy2 validationPolicy) {
+	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, ValidationPolicy2 validationPolicy) {
 		this.diagnosticData = diagnosticData;
+		this.currentTime = currentTime;
 		this.signature = signature;
 		this.validationPolicy = validationPolicy;
 	}
@@ -79,6 +84,9 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 
 		// certified-roles
 		item = item.setNextItem(certifiedRoles());
+
+		// cryptographic check
+		item = item.setNextItem(mainSignatureCryptographic());
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {
@@ -134,6 +142,11 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	private ChainItem<XmlSAV> certifiedRoles() {
 		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint();
 		return new CertifiedRolesCheck(result, signature, constraint);
+	}
+
+	private ChainItem<XmlSAV> mainSignatureCryptographic() {
+		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(Context.MAIN_SIGNATURE);
+		return new SignatureCryptographicCheck(result, signature, currentTime, constraint);
 	}
 
 	@Override
