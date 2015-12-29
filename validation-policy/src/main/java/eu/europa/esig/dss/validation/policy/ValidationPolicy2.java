@@ -383,4 +383,6 @@ public interface ValidationPolicy2 {
 
 	RevocationConstraints getRevocationConstraint();
 
+	LevelConstraint getCounterSignatureConstraint();
+
 }

@@ -84,6 +84,8 @@ public enum MessageTag {
 	BBB_SAV_ISQPSTP_ANS("The signed qualifying property: 'signing-time' is not present!"),
 	BBB_SAV_ISQPXTIP("Is signed qualifying property: 'commitment-type-indication' present?"),
 	BBB_SAV_ISQPXTIP_ANS("The signed qualifying property: 'commitment-type-indication' is not present!"),
+	BBB_SAV_IUQPCSP("Is unsigned qualifying property: 'countersignature' present?"),
+	BBB_SAV_IUQPCSP_ANS("The unsigned qualifying property: 'countersignature' is not present!"),
 
 	BBB_VCI_ISPK("Is the signature policy known?"),
 	BBB_VCI_ISPK_ANS_1("The signature policy is mandatory!"),

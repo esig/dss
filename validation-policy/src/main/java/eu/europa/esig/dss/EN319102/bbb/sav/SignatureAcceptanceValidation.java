@@ -7,6 +7,7 @@ import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentHintsCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTimestampCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTypeCheck;
+import eu.europa.esig.dss.EN319102.bbb.sav.checks.CounterSignatureCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
@@ -65,6 +66,9 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 
 		// content-timestamp
 		item = item.setNextItem(contentTimestamp());
+		
+		// countersignature
+		item = item.setNextItem(countersignature());
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {
@@ -105,6 +109,11 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	private ChainItem<XmlSAV> contentTimestamp() {
 		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint();
 		return new ContentTimestampCheck(result, diagnosticData, signature, constraint);
+	}
+	
+	private ChainItem<XmlSAV> countersignature() {
+		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint();
+		return new CounterSignatureCheck(result, diagnosticData, signature, constraint);
 	}
 
 	@Override
