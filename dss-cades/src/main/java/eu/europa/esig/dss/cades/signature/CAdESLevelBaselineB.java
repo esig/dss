@@ -34,9 +34,11 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.pkcs_9_at_signing
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.CollectionUtils;
@@ -435,7 +437,9 @@ public class CAdESLevelBaselineB {
 	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		final List<ChainCertificate> chainCertificateList = parameters.getCertificateChain();
+		final Set<ChainCertificate> chainCertificateList = new HashSet<ChainCertificate>();
+		chainCertificateList.add(new ChainCertificate(parameters.getSigningCertificate(), true));
+		chainCertificateList.addAll(parameters.getCertificateChain());
 		final List<ASN1Encodable> signingCertificates = new ArrayList<ASN1Encodable>();
 		for (final ChainCertificate chainCertificate : chainCertificateList) {
 

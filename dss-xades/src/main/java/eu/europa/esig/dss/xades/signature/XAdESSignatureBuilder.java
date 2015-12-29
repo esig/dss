@@ -25,7 +25,9 @@ import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -53,6 +55,7 @@ import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.model.CertificateChain;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -259,7 +262,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final boolean trustAnchorBPPolicy = params.bLevel().isTrustAnchorBPPolicy();
 		final CertificatePool certificatePool = getCertificatePool();
 		boolean firstCertificate = true; // The signing certificate can be directly in the TSL
-		for (final ChainCertificate chainCertificate : params.getCertificateChain()) {
+		Set<ChainCertificate> certificateChains = new HashSet<>();
+		ChainCertificate chain = new ChainCertificate(params.getSigningCertificate(), true);
+		certificateChains.add(chain);
+		certificateChains.addAll(params.getCertificateChain());
+		for (final ChainCertificate chainCertificate : certificateChains) {
 
 			final CertificateToken x509Certificate = chainCertificate.getX509Certificate();
 			if (trustAnchorBPPolicy && (certificatePool != null)) {
@@ -522,8 +529,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, signingCertificate);
 
-		final List<CertificateToken> certificates = new ArrayList<CertificateToken>();
-		final List<ChainCertificate> certificateChain = params.getCertificateChain();
+		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
+		final Set<ChainCertificate> certificateChain = params.getCertificateChain();
+		certificates.add(params.getSigningCertificate());
 		for (final ChainCertificate chainCertificate : certificateChain) {
 			if (chainCertificate.isSignedAttribute()) {
 				certificates.add(chainCertificate.getX509Certificate());

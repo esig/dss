@@ -53,16 +53,15 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest {
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		DSSDocument firstSignedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
-		signatureParameters.bLevel().setSigningDate(new Date());
-		dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
-		DSSDocument secondSignedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(firstSignedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		String firstId = reports.getSimpleReport().getFirstSignatureId();
 		
+		signatureParameters.bLevel().setSigningDate(new Date());
+		dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
+		DSSDocument secondSignedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		validator = SignedDocumentValidator.fromDocument(secondSignedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());

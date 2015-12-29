@@ -22,7 +22,9 @@ package eu.europa.esig.dss.ws.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.jws.WebService;
 
@@ -233,7 +235,7 @@ public class SignatureServiceImpl implements SignatureService {
 		final CertificateToken x509SigningCertificate = DSSUtils.loadCertificate(signingCertBytes);
 		params.setSigningCertificate(x509SigningCertificate);
 
-		final List<ChainCertificate> chainCertificates = new ArrayList<ChainCertificate>();
+		final Set<ChainCertificate> chainCertificates = new HashSet<ChainCertificate>();
 		chainCertificates.add(new ChainCertificate(x509SigningCertificate, true));
 		final List<WSChainCertificate> wsChainCertificateList = wsParameters.getChainCertificateList();
 		if (CollectionUtils.isNotEmpty(wsChainCertificateList)) {

@@ -26,6 +26,7 @@ import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -233,7 +234,7 @@ public abstract class XAdESBuilder {
 	 * @param signingCertificateDom DOM parent element
 	 * @param certificates          {@code List} of the certificates to be incorporated
 	 */
-	protected void incorporateCertificateRef(final Element signingCertificateDom, final List<CertificateToken> certificates) {
+	protected void incorporateCertificateRef(final Element signingCertificateDom, final Set<CertificateToken> certificates) {
 
 		for (final CertificateToken certificate : certificates) {
 

@@ -130,7 +130,9 @@ public class CMSSignedDataBuilder {
 					newCertificateChain.add(x509Certificate);
 				}
 			}
-			final List<ChainCertificate> certificateChain = parameters.getCertificateChain();
+			final Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
+			certificateChain.add(new ChainCertificate(parameters.getSigningCertificate(), true));
+			certificateChain.addAll(parameters.getCertificateChain());
 			for (final ChainCertificate chainCertificate : certificateChain) {
 
 				final CertificateToken x509Certificate = chainCertificate.getX509Certificate();
