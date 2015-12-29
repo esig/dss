@@ -12,6 +12,7 @@ import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTimestampCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.CounterSignatureCheck;
+import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignatureCryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
