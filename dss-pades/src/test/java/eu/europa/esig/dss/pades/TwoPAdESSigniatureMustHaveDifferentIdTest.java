@@ -25,9 +25,9 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.report.Reports;
 
-public class TwoPAdESSigniatureMustHaveDifferentId {
+public class TwoPAdESSigniatureMustHaveDifferentIdTest {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TwoPAdESSigniatureMustHaveDifferentId.class);
+	private static final Logger logger = LoggerFactory.getLogger(TwoPAdESSigniatureMustHaveDifferentIdTest.class);
 
 	@Test
 	public void test() throws Exception {
