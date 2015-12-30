@@ -39,8 +39,8 @@ import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
 
 /**
- * 5.2.6 X.509 certificate validation
- * This building block validates the signing certificate at current time.
+ * 5.2.6 X.509 certificate validation This building block validates the signing
+ * certificate at current time.
  */
 public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV> {
 
@@ -51,20 +51,22 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 	private final Context context;
 	private final ValidationPolicy validationPolicy;
 
-	private ChainItem<XmlXCV> firstItem;
-	private XmlXCV result = new XmlXCV();
+	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, Context context,
+			ValidationPolicy validationPolicy) {
 
-	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, Context context, ValidationPolicy validationPolicy) {
+		super.result = new XmlXCV();
+
 		this.diagnosticData = diagnosticData;
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
 
 		this.context = context;
 		this.validationPolicy = validationPolicy;
+
 	}
 
 	@Override
-	public void initChain() {
+	protected void initChain() {
 		ChainItem<XmlXCV> item = firstItem = certificateExpiration(currentCertificate, SubContext.SIGNING_CERT);
 		item = item.setNextItem(prospectiveCertificateChain());
 
@@ -76,7 +78,8 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 
 				SubContext currentSubContext = SubContext.SIGNING_CERT;
 
-				if (!StringUtils.equals(currentCertificate.getId(), certificate.getId())) { // CA Certificate
+				if (!StringUtils.equals(currentCertificate.getId(), certificate.getId())) { // CA
+																							// Certificate
 					currentSubContext = SubContext.CA_CERTIFICATE;
 					item = item.setNextItem(certificateExpiration(certificate, currentSubContext));
 				}
@@ -91,7 +94,9 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 
 				item = item.setNextItem(revocationFreshness(certificate));
 
-				if (SubContext.SIGNING_CERT.equals(currentSubContext)) { // TODO Why ??
+				if (SubContext.SIGNING_CERT.equals(currentSubContext)) { // TODO
+																			// Why
+																			// ??
 
 					item = item.setNextItem(signingCertificateRevoked(certificate, currentSubContext));
 
@@ -130,14 +135,16 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 				CertificateWrapper chainItem = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
 
 				/**
-				 * The trusted anchor is not checked. In the case of a certificate chain consisting of a single certificate
-				 * which is trusted we need to set this variable to true.
+				 * The trusted anchor is not checked. In the case of a
+				 * certificate chain consisting of a single certificate which is
+				 * trusted we need to set this variable to true.
 				 */
-				if (StringUtils.equals(lastChainCertId, chainCertificate.getId()) &&  chainItem.isTrusted()){
+				if (StringUtils.equals(lastChainCertId, chainCertificate.getId()) && chainItem.isTrusted()) {
 					continue;
 				}
 
-				SubContext currentSubContext = StringUtils.equals(chainItem.getId(), currentCertificate.getId()) ? SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+				SubContext currentSubContext = StringUtils.equals(chainItem.getId(), currentCertificate.getId()) ? SubContext.SIGNING_CERT
+						: SubContext.CA_CERTIFICATE;
 				item = item.setNextItem(certificateCryptographic(chainItem, context, currentSubContext));
 			}
 		}
@@ -227,12 +234,6 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 	private ChainItem<XmlXCV> signingCertificateIssuedToLegalPerson(CertificateWrapper certificate) {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateIssuedToLegalPersonConstraint();
 		return new SigningCertificateIssuedToLegalPersonCheck(result, certificate, constraint);
-	}
-
-	@Override
-	public XmlXCV execute() {
-		firstItem.execute();
-		return result;
 	}
 
 }

@@ -38,10 +38,10 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	private final SignatureWrapper signature;
 	private final ValidationPolicy validationPolicy;
 
-	private ChainItem<XmlSAV> firstItem;
-	private XmlSAV result = new XmlSAV();
-
 	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, ValidationPolicy validationPolicy) {
+
+		super.result = new XmlSAV();
+
 		this.diagnosticData = diagnosticData;
 		this.currentTime = currentTime;
 		this.signature = signature;
@@ -49,7 +49,7 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	}
 
 	@Override
-	public void initChain() {
+	protected void initChain() {
 		ChainItem<XmlSAV> item = firstItem = structuralValidation();
 
 		// signing-time
@@ -148,12 +148,6 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	private ChainItem<XmlSAV> mainSignatureCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(Context.MAIN_SIGNATURE);
 		return new SignatureCryptographicCheck(result, signature, currentTime, constraint);
-	}
-
-	@Override
-	public XmlSAV execute() {
-		firstItem.execute();
-		return result;
 	}
 
 }

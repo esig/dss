@@ -20,28 +20,22 @@ public class ValidationContextInitialization extends AbstractBasicBuildingBlock<
 	private final SignatureWrapper signature;
 	private final ValidationPolicy validationPolicy;
 
-	private ChainItem<XmlVCI> firstItem;
-	private XmlVCI result = new XmlVCI();
-
 	public ValidationContextInitialization(SignatureWrapper signature, ValidationPolicy validationPolicy) {
+
+		super.result = new XmlVCI();
+
 		this.signature = signature;
 		this.validationPolicy = validationPolicy;
 	}
 
 	@Override
-	public void initChain() {
+	protected void initChain() {
 		firstItem = signaturePolicyIdentifier();
 	}
 
 	private ChainItem<XmlVCI> signaturePolicyIdentifier() {
 		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint();
 		return new SignaturePolicyIdentifierCheck(result, constraint, signature);
-	}
-
-	@Override
-	public XmlVCI execute() {
-		firstItem.execute();
-		return result;
 	}
 
 }

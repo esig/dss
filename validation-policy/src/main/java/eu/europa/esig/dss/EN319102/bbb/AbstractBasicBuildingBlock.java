@@ -4,8 +4,16 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlAbstractBasicBuildingBlock;
 
 public abstract class AbstractBasicBuildingBlock<T extends XmlAbstractBasicBuildingBlock> {
 
-	public abstract void initChain();
+	protected T result;
 
-	public abstract T execute();
+	protected ChainItem<T> firstItem;
+
+	public T execute() {
+		initChain();
+		firstItem.execute();
+		return result;
+	}
+
+	protected abstract void initChain();
 
 }
