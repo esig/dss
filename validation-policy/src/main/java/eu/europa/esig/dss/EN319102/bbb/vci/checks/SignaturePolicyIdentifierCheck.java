@@ -10,21 +10,19 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class SignaturePolicyIdentifierCheck extends ChainItem<XmlVCI> {
-	
+
 	private final SignatureWrapper signature;
-	private final LevelConstraint constraint;
 
 	public SignaturePolicyIdentifierCheck(XmlVCI result, LevelConstraint constraint, SignatureWrapper signature) {
 		super(result, constraint);
 		this.signature = signature;
-		this.constraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
-		if(signature.getPolicyId().equals(SignaturePolicy.IMPLICIT_POLICY)) {
+		if (SignaturePolicy.IMPLICIT_POLICY.equals(signature.getPolicyId())) {
 			return true;
-		} else if(signature.isPolicyPresent()) {
+		} else if (signature.isPolicyPresent()) {
 			return signature.getPolicyStatus();
 		} else {
 			return false;

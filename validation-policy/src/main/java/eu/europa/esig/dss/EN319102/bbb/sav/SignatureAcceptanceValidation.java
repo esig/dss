@@ -16,10 +16,10 @@ import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignatureCryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy2;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy2.Context;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -36,12 +36,12 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	private final DiagnosticData diagnosticData;
 	private final Date currentTime;
 	private final SignatureWrapper signature;
-	private final ValidationPolicy2 validationPolicy;
+	private final ValidationPolicy validationPolicy;
 
 	private ChainItem<XmlSAV> firstItem;
 	private XmlSAV result = new XmlSAV();
 
-	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, ValidationPolicy2 validationPolicy) {
+	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, ValidationPolicy validationPolicy) {
 		this.diagnosticData = diagnosticData;
 		this.currentTime = currentTime;
 		this.signature = signature;

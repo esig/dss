@@ -8,10 +8,10 @@ import eu.europa.esig.dss.EN319102.bbb.isc.checks.IssuerSerialMatchCheck;
 import eu.europa.esig.dss.EN319102.bbb.isc.checks.SigningCertificateAttributePresentCheck;
 import eu.europa.esig.dss.EN319102.bbb.isc.checks.SigningCertificateRecognitionCheck;
 import eu.europa.esig.dss.EN319102.bbb.isc.checks.SigningCertificateSignedCheck;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.validation.TokenProxy;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy2;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy2.Context;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
@@ -49,12 +49,12 @@ public class IdentificationOfTheSigningCertificate extends AbstractBasicBuilding
 	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
 
-	private final ValidationPolicy2 validationPolicy;
+	private final ValidationPolicy validationPolicy;
 
 	private ChainItem<XmlISC> firstItem;
 	private XmlISC result = new XmlISC();
 
-	public IdentificationOfTheSigningCertificate(DiagnosticData diagnosticData, TokenProxy token, ValidationPolicy2 validationPolicy) {
+	public IdentificationOfTheSigningCertificate(DiagnosticData diagnosticData, TokenProxy token, ValidationPolicy validationPolicy) {
 		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.validationPolicy = validationPolicy;

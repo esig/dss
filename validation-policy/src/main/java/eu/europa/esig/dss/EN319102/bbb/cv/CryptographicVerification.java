@@ -5,9 +5,9 @@ import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.EN319102.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.EN319102.bbb.cv.checks.SignatureIntactCheck;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.validation.TokenProxy;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy2;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
@@ -33,12 +33,12 @@ public class CryptographicVerification extends AbstractBasicBuildingBlock<XmlCV>
 
 	private final TokenProxy token;
 
-	private final ValidationPolicy2 validationPolicy;
+	private final ValidationPolicy validationPolicy;
 
 	private ChainItem<XmlCV> firstItem;
 	private XmlCV result = new XmlCV();
 
-	public CryptographicVerification(TokenProxy token, ValidationPolicy2 validationPolicy) {
+	public CryptographicVerification(TokenProxy token, ValidationPolicy validationPolicy) {
 		this.token = token;
 		this.validationPolicy = validationPolicy;
 	}

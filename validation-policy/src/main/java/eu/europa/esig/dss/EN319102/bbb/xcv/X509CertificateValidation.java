@@ -25,13 +25,13 @@ import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateSupportedByS
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLStatusAndValidityCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLStatusCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.SigningCertificateTSLValidityCheck;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy2;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy2.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy2.SubContext;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -49,12 +49,12 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 	private final Date currentTime;
 
 	private final Context context;
-	private final ValidationPolicy2 validationPolicy;
+	private final ValidationPolicy validationPolicy;
 
 	private ChainItem<XmlXCV> firstItem;
 	private XmlXCV result = new XmlXCV();
 
-	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, Context context, ValidationPolicy2 validationPolicy) {
+	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, Context context, ValidationPolicy validationPolicy) {
 		this.diagnosticData = diagnosticData;
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
