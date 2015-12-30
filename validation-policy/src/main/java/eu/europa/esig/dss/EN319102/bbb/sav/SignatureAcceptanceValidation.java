@@ -2,7 +2,6 @@ package eu.europa.esig.dss.EN319102.bbb.sav;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ClaimedRolesCheck;
@@ -12,7 +11,7 @@ import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTimestampCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.CounterSignatureCheck;
-import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignatureCryptographicCheck;
+import eu.europa.esig.dss.EN319102.bbb.sav.checks.TokenCryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
@@ -31,20 +30,10 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
  * additional verification to be performed on the signature itself or on the
  * attributes of the signature ETSI EN 319 132-1
  */
-public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<XmlSAV> {
-
-	private final DiagnosticData diagnosticData;
-	private final Date currentTime;
-	private final SignatureWrapper signature;
-	private final ValidationPolicy validationPolicy;
+public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<SignatureWrapper> {
 
 	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, ValidationPolicy validationPolicy) {
-		super(new XmlSAV());
-
-		this.diagnosticData = diagnosticData;
-		this.currentTime = currentTime;
-		this.signature = signature;
-		this.validationPolicy = validationPolicy;
+		super(diagnosticData, signature, currentTime, validationPolicy);
 	}
 
 	@Override
@@ -91,62 +80,62 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 
 	private ChainItem<XmlSAV> structuralValidation() {
 		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint();
-		return new StructuralValidationCheck(result, signature, constraint);
+		return new StructuralValidationCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signingTime() {
 		LevelConstraint constraint = validationPolicy.getSigningTimeConstraint();
-		return new SigningTimeCheck(result, signature, constraint);
+		return new SigningTimeCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentType() {
 		ValueConstraint constraint = validationPolicy.getContentTypeConstraint();
-		return new ContentTypeCheck(result, signature, constraint);
+		return new ContentTypeCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentHints() {
 		ValueConstraint constraint = validationPolicy.getContentHintsConstraint();
-		return new ContentHintsCheck(result, signature, constraint);
+		return new ContentHintsCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentIdentifier() {
 		ValueConstraint constraint = validationPolicy.getContentIdentifierConstraint();
-		return new ContentIdentifierCheck(result, signature, constraint);
+		return new ContentIdentifierCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> commitmentTypeIndications() {
 		MultiValuesConstraint constraint = validationPolicy.getCommitmentTypeIndicationConstraint();
-		return new CommitmentTypeIndicationsCheck(result, signature, constraint);
+		return new CommitmentTypeIndicationsCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signerLocation() {
 		LevelConstraint constraint = validationPolicy.getSignerLocationConstraint();
-		return new SignerLocationCheck(result, signature, constraint);
+		return new SignerLocationCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentTimestamp() {
 		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint();
-		return new ContentTimestampCheck(result, diagnosticData, signature, constraint);
+		return new ContentTimestampCheck(result, diagnosticData, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> countersignature() {
 		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint();
-		return new CounterSignatureCheck(result, diagnosticData, signature, constraint);
+		return new CounterSignatureCheck(result, diagnosticData, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> claimedRoles() {
 		MultiValuesConstraint constraint = validationPolicy.getClaimedRoleConstraint();
-		return new ClaimedRolesCheck(result, signature, constraint);
+		return new ClaimedRolesCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> certifiedRoles() {
 		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint();
-		return new CertifiedRolesCheck(result, signature, constraint);
+		return new CertifiedRolesCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> mainSignatureCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(Context.MAIN_SIGNATURE);
-		return new SignatureCryptographicCheck(result, signature, currentTime, constraint);
+		return new TokenCryptographicCheck(result, token, currentTime, constraint);
 	}
 
 }

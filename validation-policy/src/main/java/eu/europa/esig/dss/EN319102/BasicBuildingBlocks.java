@@ -4,7 +4,9 @@ import java.util.Date;
 
 import eu.europa.esig.dss.EN319102.bbb.cv.CryptographicVerification;
 import eu.europa.esig.dss.EN319102.bbb.isc.IdentificationOfTheSigningCertificate;
+import eu.europa.esig.dss.EN319102.bbb.sav.AbstractAcceptanceValidation;
 import eu.europa.esig.dss.EN319102.bbb.sav.SignatureAcceptanceValidation;
+import eu.europa.esig.dss.EN319102.bbb.sav.TimestampAcceptanceValidation;
 import eu.europa.esig.dss.EN319102.bbb.vci.ValidationContextInitialization;
 import eu.europa.esig.dss.EN319102.bbb.xcv.X509CertificateValidation;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
@@ -18,6 +20,8 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.SignatureWrapper;
+import eu.europa.esig.dss.validation.TimestampWrapper;
+import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
@@ -28,15 +32,17 @@ import eu.europa.esig.dss.validation.report.DiagnosticData;
 public class BasicBuildingBlocks {
 
 	private final DiagnosticData diagnosticData;
-	private final SignatureWrapper signature;
+	private final TokenProxy token;
 	private final ValidationPolicy policy;
 	private final Date currentTime;
+	private final Context context;
 
-	public BasicBuildingBlocks(DiagnosticData diagnosticData, SignatureWrapper signature, Date currentTime, ValidationPolicy policy) {
+	public BasicBuildingBlocks(DiagnosticData diagnosticData, TokenProxy token, Date currentTime, ValidationPolicy policy, Context context) {
 		this.diagnosticData = diagnosticData;
-		this.signature = signature;
+		this.token = token;
 		this.currentTime = currentTime;
 		this.policy = policy;
+		this.context = context;
 	}
 
 	public XmlBasicBuildingBlocks execute() {
@@ -82,13 +88,15 @@ public class BasicBuildingBlocks {
 		 * 
 		 * otherwise go to the next step.
 		 */
-		XmlVCI vci = executeValidationContextInitialization();
-		result.setVCI(vci);
+		if (Context.MAIN_SIGNATURE.equals(context)) {
+			XmlVCI vci = executeValidationContextInitialization();
+			result.setVCI(vci);
 
-		XmlConclusion vciConclusion = vci.getConclusion();
-		if (Indication.INDETERMINATE.equals(vciConclusion.getIndication())) {
-			result.setConclusion(vciConclusion);
-			return result;
+			XmlConclusion vciConclusion = vci.getConclusion();
+			if (Indication.INDETERMINATE.equals(vciConclusion.getIndication())) {
+				result.setConclusion(vciConclusion);
+				return result;
+			}
 		}
 
 		/**
@@ -208,30 +216,35 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {
-		IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(diagnosticData, signature, policy);
+		IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(diagnosticData, token, policy);
 		return isc.execute();
 	}
 
 	private XmlVCI executeValidationContextInitialization() {
-		ValidationContextInitialization vci = new ValidationContextInitialization(signature, policy);
+		ValidationContextInitialization vci = new ValidationContextInitialization((SignatureWrapper) token, policy);
 		return vci.execute();
 	}
 
 	private XmlCV executeCryptographicVerification() {
-		CryptographicVerification cv = new CryptographicVerification(signature, policy);
+		CryptographicVerification cv = new CryptographicVerification(token, policy);
 		return cv.execute();
 	}
 
 	private XmlXCV executeX509CertificateValidation() {
 		// Not null because of ISC
-		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(signature.getSigningCertificateId());
-		X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, Context.MAIN_SIGNATURE, policy);
+		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(token.getSigningCertificateId());
+		X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, context, policy);
 		return xcv.execute();
 	}
 
 	private XmlSAV executeSignatureAcceptanceValidation() {
-		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(diagnosticData, currentTime, signature, policy);
-		return sav.execute();
+		AbstractAcceptanceValidation<?> aav = null;
+		if (Context.MAIN_SIGNATURE.equals(context)) {
+			aav = new SignatureAcceptanceValidation(diagnosticData, currentTime, (SignatureWrapper) token, policy);
+		} else if (Context.TIMESTAMP.equals(context)) {
+			aav = new TimestampAcceptanceValidation(diagnosticData, currentTime, (TimestampWrapper) token, policy);
+		}
+		return aav.execute();
 	}
 
 	void executeFormatChecking() {

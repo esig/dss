@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicSignaturesValidation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
@@ -46,28 +47,17 @@ public class ValidationProcessForBasicSignatures {
 					currentPolicy = countersignaturePolicy;
 				}
 
-				BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, signature, currentTime, currentPolicy);
+				BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, signature, currentTime, currentPolicy, Context.MAIN_SIGNATURE);
 				XmlBasicBuildingBlocks basicBuildingBlocks = bbb.execute();
 
 				XmlSignature signatureAnalysis = new XmlSignature();
+				signatureAnalysis.setId(signature.getId());
 				signatureAnalysis.setBasicBuildingBlocks(basicBuildingBlocks);
 				result.getSignatures().add(signatureAnalysis);
 			}
 		}
 
 		return result;
-	}
-
-	/**
-	 * 5.3.4 7) The Basic Signature validation process shall return the success
-	 * indication PASSED. In addition, the Basic Signature validation process
-	 * should return additional information extracted from the signature and/or
-	 * used by the intermediate steps. In particular, the SVA should provide to
-	 * the DA all information related to signed and unsigned attributes,
-	 * including those which were not processed during the validation process.
-	 */
-	void dataExtraction() {
-
 	}
 
 }

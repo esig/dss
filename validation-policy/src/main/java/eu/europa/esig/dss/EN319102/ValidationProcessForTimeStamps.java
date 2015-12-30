@@ -1,32 +1,75 @@
 package eu.europa.esig.dss.EN319102;
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlTimestamp;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlTimestampsValidation;
+import eu.europa.esig.dss.validation.SignatureWrapper;
+import eu.europa.esig.dss.validation.TimestampWrapper;
+import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
+
 /**
  * 5.4 Validation process for time-stamps
  */
 public class ValidationProcessForTimeStamps {
 
-	private ValidationProcessForBasicSignatures processBasicSignatures;
+	private final DiagnosticData diagnosticData;
 
-	/**
-	 * 5.4.4 1) Token signature validation: the building block shall perform the validation process for Basic Signatures as per
-	 * clause 5.3 with the time-stamp token. In all the steps of this process, the building block shall take into account
-	 * that the signature to validate is a time-stamp token (e.g. to select TSA trust-anchors). If this step returns
-	 * PASSED, the building block shall go to the next step. Otherwise, the building block shall return the indication
-	 * and information returned by the validation process.
-	 */
-	void executeValidationProcessForBasicSignaturesOnTimestamp() {
-		processBasicSignatures.executeValidationProcessForBasicSignatures();
+	private final ValidationPolicy mainPolicy;
+	private final ValidationPolicy countersignaturePolicy;
+
+	private final Date currentTime;
+
+	public ValidationProcessForTimeStamps(DiagnosticData diagnosticData, ValidationPolicy mainPolicy, ValidationPolicy countersignaturePolicy,
+			Date currentTime) {
+		this.diagnosticData = diagnosticData;
+		this.mainPolicy = mainPolicy;
+		this.countersignaturePolicy = countersignaturePolicy;
+		this.currentTime = currentTime;
 	}
 
-	/**
-	 * Data extraction: in addition to the data items returned in step 1, the building block:
-	 * - shall return the generation time and the message imprint present in the TSTInfo field of the time-stamp
-	 * token; and
-	 * - may return other data items present in the TSTInfo field of the time-stamp token.
-	 * These items may be used by the building block in the process of validating the AdES signature.
-	 */
-	void dataExtraction() {
+	public XmlTimestampsValidation execute() {
 
+		XmlTimestampsValidation result = new XmlTimestampsValidation();
+
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		if (CollectionUtils.isNotEmpty(signatures)) {
+			for (SignatureWrapper signature : signatures) {
+				XmlSignature signatureAnalysis = new XmlSignature();
+				signatureAnalysis.setId(signature.getId());
+
+				ValidationPolicy currentPolicy = mainPolicy;
+				if (AttributeValue.COUNTERSIGNATURE.equals(signature.getType())) {
+					currentPolicy = countersignaturePolicy;
+				}
+
+				List<TimestampWrapper> timestampList = signature.getTimestampList();
+				if (CollectionUtils.isNotEmpty(timestampList)) {
+					for (TimestampWrapper tsp : timestampList) {
+
+						BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, tsp, currentTime, currentPolicy, Context.TIMESTAMP);
+						XmlBasicBuildingBlocks basicBuildingBlocks = bbb.execute();
+
+						XmlTimestamp timestampAnalysis = new XmlTimestamp();
+						timestampAnalysis.setId(tsp.getId());
+						timestampAnalysis.setType(tsp.getType());
+						timestampAnalysis.setBasicBuildingBlocks(basicBuildingBlocks);
+						signatureAnalysis.getTimestamps().add(timestampAnalysis);
+					}
+				}
+				result.getSignatures().add(signatureAnalysis);
+			}
+		}
+
+		return result;
 	}
 
 }
