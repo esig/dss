@@ -21,8 +21,7 @@ public class ValidationContextInitialization extends AbstractBasicBuildingBlock<
 	private final ValidationPolicy validationPolicy;
 
 	public ValidationContextInitialization(SignatureWrapper signature, ValidationPolicy validationPolicy) {
-
-		super.result = new XmlVCI();
+		super(new XmlVCI());
 
 		this.signature = signature;
 		this.validationPolicy = validationPolicy;

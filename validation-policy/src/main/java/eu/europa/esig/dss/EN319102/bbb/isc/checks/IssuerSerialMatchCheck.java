@@ -39,6 +39,6 @@ public class IssuerSerialMatchCheck extends ChainItem<XmlISC> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.NO_SIGNER_CERTIFICATE_FOUND;
+		return SubIndication.NO_SIGNING_CERTIFICATE_FOUND;
 	}
 }

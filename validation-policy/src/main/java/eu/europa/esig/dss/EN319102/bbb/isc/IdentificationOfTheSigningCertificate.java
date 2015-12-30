@@ -62,8 +62,7 @@ public class IdentificationOfTheSigningCertificate extends AbstractBasicBuilding
 	private final ValidationPolicy validationPolicy;
 
 	public IdentificationOfTheSigningCertificate(DiagnosticData diagnosticData, TokenProxy token, ValidationPolicy validationPolicy) {
-
-		super.result = new XmlISC();
+		super(new XmlISC());
 
 		this.diagnosticData = diagnosticData;
 		this.token = token;

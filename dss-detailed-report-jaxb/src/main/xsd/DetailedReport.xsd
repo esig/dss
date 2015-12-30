@@ -145,7 +145,7 @@
 
 	<xs:simpleType name="SubIndication" final="restriction">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="NO_SIGNER_CERTIFICATE_FOUND" />
+			<xs:enumeration value="NO_SIGNING_CERTIFICATE_FOUND" />
 			<xs:enumeration value="FORMAT_FAILURE" />
 			<xs:enumeration value="NO_POLICY" />
 			<xs:enumeration value="POLICY_PROCESSING_ERROR" />

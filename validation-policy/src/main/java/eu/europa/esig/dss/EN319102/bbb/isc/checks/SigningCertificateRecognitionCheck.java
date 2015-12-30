@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.EN319102.bbb.isc.checks;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.validation.CertificateWrapper;
@@ -25,7 +27,7 @@ public class SigningCertificateRecognitionCheck extends ChainItem<XmlISC> {
 	protected boolean process() {
 		String signingCertificateId = token.getSigningCertificateId();
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
-		return certificate != null;
+		return StringUtils.equals(signingCertificateId, certificate.getId());
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public class SigningCertificateRecognitionCheck extends ChainItem<XmlISC> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.NO_SIGNER_CERTIFICATE_FOUND;
+		return SubIndication.NO_SIGNING_CERTIFICATE_FOUND;
 	}
 
 }

@@ -39,8 +39,7 @@ public class SignatureAcceptanceValidation extends AbstractBasicBuildingBlock<Xm
 	private final ValidationPolicy validationPolicy;
 
 	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, ValidationPolicy validationPolicy) {
-
-		super.result = new XmlSAV();
+		super(new XmlSAV());
 
 		this.diagnosticData = diagnosticData;
 		this.currentTime = currentTime;

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.policy.rules;
 
 public enum SubIndication {
 
-	NO_SIGNER_CERTIFICATE_FOUND,
+	NO_SIGNING_CERTIFICATE_FOUND,
 	FORMAT_FAILURE,
 	NO_POLICY,
 	POLICY_PROCESSING_ERROR,

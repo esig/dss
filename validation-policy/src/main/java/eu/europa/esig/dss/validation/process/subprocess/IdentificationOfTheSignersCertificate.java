@@ -213,7 +213,7 @@ public class IdentificationOfTheSignersCertificate {
 		if (signingCertificate !=null) {
 			constraint.setAttribute(AttributeValue.CERTIFICATE_ID, signingCertificate.getId());
 		}
-		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_ISCI_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNING_CERTIFICATE_FOUND, MessageTag.BBB_ICS_ISCI_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();
@@ -345,7 +345,7 @@ public class IdentificationOfTheSignersCertificate {
 		constraint.create(validationDataXmlNode, MessageTag.BBB_ICS_AIDNASNE);
 		final boolean issuerSerialMatch = contextElement.isIssuerSerialMatch();
 		constraint.setValue(issuerSerialMatch);
-		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNING_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

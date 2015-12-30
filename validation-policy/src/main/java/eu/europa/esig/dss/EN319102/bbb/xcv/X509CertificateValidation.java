@@ -53,8 +53,7 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 
 	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, Context context,
 			ValidationPolicy validationPolicy) {
-
-		super.result = new XmlXCV();
+		super(new XmlXCV());
 
 		this.diagnosticData = diagnosticData;
 		this.currentCertificate = currentCertificate;

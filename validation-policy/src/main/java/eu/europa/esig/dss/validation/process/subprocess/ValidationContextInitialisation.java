@@ -244,7 +244,7 @@ public class ValidationContextInitialisation {
 			constraint.setIdentifier(SignaturePolicy.NO_POLICY);
 		}
 
-		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNER_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
+		constraint.setIndications(Indication.INDETERMINATE, SubIndication.NO_SIGNING_CERTIFICATE_FOUND, MessageTag.BBB_ICS_AIDNASNE_ANS);
 		constraint.setConclusionReceiver(conclusion);
 
 		return constraint.check();

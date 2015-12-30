@@ -39,8 +39,7 @@ public class CryptographicVerification extends AbstractBasicBuildingBlock<XmlCV>
 	private final ValidationPolicy validationPolicy;
 
 	public CryptographicVerification(TokenProxy token, ValidationPolicy validationPolicy) {
-
-		super.result = new XmlCV();
+		super(new XmlCV());
 
 		this.token = token;
 		this.validationPolicy = validationPolicy;
