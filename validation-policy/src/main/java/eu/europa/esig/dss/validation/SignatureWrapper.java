@@ -22,7 +22,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamps;
 import eu.europa.esig.dss.x509.TimestampType;
 
-public class SignatureWrapper extends AsbtractTokenProxy {
+public class SignatureWrapper extends AbstractTokenProxy {
 
 	private final XmlSignature signature;
 

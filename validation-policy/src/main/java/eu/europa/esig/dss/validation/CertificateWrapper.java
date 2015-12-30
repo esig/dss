@@ -22,7 +22,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 
-public class CertificateWrapper extends AsbtractTokenProxy {
+public class CertificateWrapper extends AbstractTokenProxy {
 
 	private final XmlCertificate certificate;
 

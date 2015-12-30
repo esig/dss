@@ -13,7 +13,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 
-public abstract class AsbtractTokenProxy implements TokenProxy {
+public abstract class AbstractTokenProxy implements TokenProxy {
 
 	protected abstract XmlBasicSignatureType getCurrentBasicSignature();
 

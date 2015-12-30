@@ -7,7 +7,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 
-public class RevocationWrapper extends AsbtractTokenProxy {
+public class RevocationWrapper extends AbstractTokenProxy {
 
 	private final XmlRevocationType revocation;
 

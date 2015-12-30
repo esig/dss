@@ -8,7 +8,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 
-public class TimestampWrapper extends AsbtractTokenProxy {
+public class TimestampWrapper extends AbstractTokenProxy {
 
 	private final XmlTimestampType timestamp;
 
