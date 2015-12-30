@@ -7,6 +7,7 @@ import java.io.File;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -71,7 +72,7 @@ public class CookbookTools {
 
 	protected void testFinalDocument(DSSDocument signedDocument) {
 		assertNotNull(signedDocument);
-		assertNotNull(signedDocument.getBytes());
+		assertNotNull(DSSUtils.toByteArray(signedDocument));
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());

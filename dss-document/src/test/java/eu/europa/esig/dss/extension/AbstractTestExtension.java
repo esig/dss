@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.security.GeneralSecurityException;
 import java.security.Signature;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
@@ -98,7 +99,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 		assertNotNull(extendedDocument);
 		assertNotNull(extendedDocument.getMimeType());
-		assertNotNull(extendedDocument.getBytes());
+		assertNotNull(IOUtils.toByteArray(extendedDocument.openStream()));
 		assertNotNull(extendedDocument.getName());
 
 		validator = SignedDocumentValidator.fromDocument(extendedDocument);

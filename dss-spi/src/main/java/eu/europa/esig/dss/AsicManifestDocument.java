@@ -68,7 +68,6 @@ public class AsicManifestDocument extends CommonDocument {
 		return byteArrayInputStream;
 	}
 
-	@Override
 	public byte[] getBytes() throws DSSException {
 		return bytes;
 	}
@@ -107,7 +106,6 @@ public class AsicManifestDocument extends CommonDocument {
 		return base64Encode;
 	}
 
-	@Override
 	public String getBase64Encoded() {
 		return Base64.encodeBase64String(bytes);
 	}

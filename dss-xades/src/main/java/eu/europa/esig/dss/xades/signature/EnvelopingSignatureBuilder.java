@@ -32,6 +32,7 @@ import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -138,7 +139,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		for (final DSSReference reference : references) {
 
 			// <ds:Object>
-			final String base64EncodedOriginalDocument = reference.getContents().getBase64Encoded();
+			final String base64EncodedOriginalDocument = Base64.encodeBase64String(DSSUtils.toByteArray(reference.getContents()));
 			final Element objectDom = DSSXMLUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
 			final String id = reference.getUri().substring(1);
 			objectDom.setAttribute(ID, id);

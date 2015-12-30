@@ -149,13 +149,13 @@ public class SignatureLightAppletController {
 
 	@RequestMapping(method = RequestMethod.POST, params = "sign-document")
 	public String signDocument(Model model, HttpServletRequest request, HttpServletResponse response,
-			@ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) {
+			@ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) throws IOException {
 		if (result.hasErrors()) {
 			return SIGNATURE_PARAMETERS;
 		}
 
 		DSSDocument document = signingService.signDocument(signatureDocumentForm);
-		InMemoryDocument signedDocument = new InMemoryDocument(document.getBytes(), document.getName(), document.getMimeType());
+		InMemoryDocument signedDocument = new InMemoryDocument(IOUtils.toByteArray(document.openStream()), document.getName(), document.getMimeType());
 		model.addAttribute("signedDocument", signedDocument);
 
 		return SIGNATURE_FINISH;
@@ -163,13 +163,13 @@ public class SignatureLightAppletController {
 
 	@RequestMapping(method = RequestMethod.POST, params = "sign-document-pkcs12")
 	public String signDocumentPkcs12(Model model, HttpServletRequest request, HttpServletResponse response,
-			@ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) {
+			@ModelAttribute("signatureDocumentForm") @Valid SignatureDocumentForm signatureDocumentForm, BindingResult result) throws IOException {
 		if (result.hasErrors()) {
 			return SIGNATURE_PARAMETERS;
 		}
 
 		DSSDocument document = signingService.signDocumentPKCS12(signatureDocumentForm);
-		InMemoryDocument signedDocument = new InMemoryDocument(document.getBytes(), document.getName(), document.getMimeType());
+		InMemoryDocument signedDocument = new InMemoryDocument(IOUtils.toByteArray(document.openStream()), document.getName(), document.getMimeType());
 		model.addAttribute("signedDocument", signedDocument);
 
 		return SIGNATURE_FINISH;

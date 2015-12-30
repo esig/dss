@@ -39,6 +39,7 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTi
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +56,7 @@ import java.util.Set;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -867,7 +869,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			// Detached signatures have either no encapContentInfo in
 			// signedData, or it exists but has no eContent
-			final byte[] originalDocumentBytes = getOriginalDocumentBytes();
+			byte[] originalDocumentBytes;
+			try {
+				originalDocumentBytes = IOUtils.toByteArray(getOriginalDocumentStream());
+			} catch (IOException e) {
+				throw new DSSException(e);
+			}
 			if (originalDocumentBytes != null) {
 
 				return originalDocumentBytes;
@@ -1540,21 +1547,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(this);
 		final Attribute atsHashIndexAttribute = timestampExtractor.getVerifiedAtsHashIndex(signerInformation, timestampToken);
 
-		byte[] originalDocumentBytes = getOriginalDocumentBytes();
+		InputStream originalDocumentBytes = getOriginalDocumentStream();
 		final DigestAlgorithm signedDataDigestAlgorithm = timestampToken.getSignedDataDigestAlgo();
 		byte[] archiveTimestampData = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentBytes, signedDataDigestAlgorithm);
 		return archiveTimestampData;
 	}
 
-	private byte[] getOriginalDocumentBytes() throws DSSException {
+	private InputStream getOriginalDocumentStream() throws DSSException {
 		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		if (signedContent != null) {
-			return CMSUtils.getSignedContent(signedContent);
+			return new ByteArrayInputStream(CMSUtils.getSignedContent(signedContent));
 		} else {
 			if (CollectionUtils.isNotEmpty(detachedContents)) {
-				return detachedContents.get(0).getBytes();
+				return detachedContents.get(0).openStream();
 			}
-			return DSSUtils.EMPTY_BYTE_ARRAY;
+			return new ByteArrayInputStream(DSSUtils.EMPTY_BYTE_ARRAY);
 		}
 	}
 
@@ -1608,9 +1615,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				 * Detached signatures have either no encapContentInfo in
 				 * signedData, or it exists but has no eContent
 				 */
-				if (getOriginalDocumentBytes() != null) {
+				if (getOriginalDocumentStream() != null) {
 					data.write(content.toASN1Primitive().getEncoded());
-					data.write(getOriginalDocumentBytes());
+					IOUtils.copy(getOriginalDocumentStream(), data);
 				} else {
 					throw new DSSException("Signature is detached and no original data provided.");
 				}

@@ -2,6 +2,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import java.util.Date;
 
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.util.encoders.Base64;
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,8 +55,8 @@ public class GetOriginalDocumentTest {
 		Reports reports = validator.validateDocument();
 		
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
-		String firstDocument = new String(document.getBytes());
-		String secondDocument = new String(removeResult.getBytes());
+		String firstDocument = new String(IOUtils.toByteArray(document.openStream()));
+		String secondDocument = new String(IOUtils.toByteArray(removeResult.openStream()));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 	
@@ -86,7 +87,7 @@ public class GetOriginalDocumentTest {
 		
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
 		String firstDocument = new String(HELLO_WORLD.getBytes());
-		String secondDocument = new String(removeResult.getBytes());
+		String secondDocument = new String(IOUtils.toByteArray(removeResult.openStream()));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 	

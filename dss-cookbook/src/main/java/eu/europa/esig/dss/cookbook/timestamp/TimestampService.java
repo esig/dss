@@ -129,7 +129,7 @@ public class TimestampService {
 	 */
 	public TimestampToken generateCAdESContentTimestampAsTimestampToken(final XAdESSignatureParameters externalParameters) {
 
-		final byte[] bytes = externalParameters.getDetachedContent().getBytes();
+		final byte[] bytes = DSSUtils.toByteArray(externalParameters.getDetachedContent());
 		final TimestampToken token = generateTimestampToken(TimestampType.CONTENT_TIMESTAMP, externalParameters, bytes);
 		return token;
 	}

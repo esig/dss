@@ -54,13 +54,13 @@ public class GetOriginalDocumentTest {
 		
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
 		
-		InputStream is = new ByteArrayInputStream(document.getBytes());
+		InputStream is = document.openStream();
 		PDDocument pdf = new PDDocument();
 		PDFTextStripper stripper = new PDFTextStripper();
 		pdf.load(is, true);
 		String firstDocument = stripper.getText(pdf);
 		
-		is = new ByteArrayInputStream(removeResult.getBytes());
+		is = removeResult.openStream();
 		pdf.load(is, true);
 		String secondDocument = stripper.getText(pdf);
 		
@@ -95,13 +95,13 @@ public class GetOriginalDocumentTest {
 		Reports reports = validator.validateDocument();
 		
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
-		InputStream is = new ByteArrayInputStream(document.getBytes());
+		InputStream is = document.openStream();
 		PDDocument pdf = new PDDocument();
 		PDFTextStripper stripper = new PDFTextStripper();
 		pdf.load(is, true);
 		String firstDocument = stripper.getText(pdf);
 		
-		is = new ByteArrayInputStream(removeResult.getBytes());
+		is = removeResult.openStream();
 		pdf.load(is, true);
 		String secondDocument = stripper.getText(pdf);
 		
