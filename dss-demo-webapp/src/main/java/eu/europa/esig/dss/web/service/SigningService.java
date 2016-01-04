@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -243,9 +242,9 @@ public class SigningService {
 
 		List<String> base64CertificateChain = form.getBase64CertificateChain();
 		if (CollectionUtils.isNotEmpty(base64CertificateChain)) {
-			Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
+			Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 			for (String base64Certificate : base64CertificateChain) {
-				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate), true));
+				certificateChain.add(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate));
 			}
 			parameters.setCertificateChain(certificateChain);
 		}
@@ -267,9 +266,9 @@ public class SigningService {
 
 		List<String> base64CertificateChain = form.getBase64CertificateChain();
 		if (CollectionUtils.isNotEmpty(base64CertificateChain)) {
-			Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
+			Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 			for (String base64Certificate : base64CertificateChain) {
-				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate), true));
+				certificateChain.add(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate));
 			}
 			parameters.setCertificateChain(certificateChain);
 		}

@@ -52,7 +52,6 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.util.Store;
 
-import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -112,7 +111,7 @@ public class CMSSignedDataBuilder {
 
 			generator.addSignerInfoGenerator(signerInfoGenerator);
 
-			final Set<CertificateToken> newCertificateChain = new HashSet<CertificateToken>();
+			final Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 
 			if (originalSignedData != null) {
 
@@ -127,19 +126,14 @@ public class CMSSignedDataBuilder {
 				for (final X509CertificateHolder certificatesMatch : certificatesMatches) {
 
 					final CertificateToken x509Certificate = DSSASN1Utils.getCertificate(certificatesMatch);
-					newCertificateChain.add(x509Certificate);
+					certificateChain.add(x509Certificate);
 				}
 			}
-			final Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
-			certificateChain.add(new ChainCertificate(parameters.getSigningCertificate(), true));
+			certificateChain.add(parameters.getSigningCertificate());
 			certificateChain.addAll(parameters.getCertificateChain());
-			for (final ChainCertificate chainCertificate : certificateChain) {
 
-				final CertificateToken x509Certificate = chainCertificate.getX509Certificate();
-				newCertificateChain.add(x509Certificate);
-			}
 			final boolean trustAnchorBPPolicy = parameters.bLevel().isTrustAnchorBPPolicy();
-			final Store jcaCertStore = getJcaCertStore(newCertificateChain, trustAnchorBPPolicy);
+			final Store jcaCertStore = getJcaCertStore(certificateChain, trustAnchorBPPolicy);
 			generator.addCertificates(jcaCertStore);
 			return generator;
 		} catch (CMSException e) {

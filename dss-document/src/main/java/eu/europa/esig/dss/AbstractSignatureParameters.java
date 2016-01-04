@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +48,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * This field contains the {@code List} of chain of certificates. It includes the signing certificate.
 	 */
-	private Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
+	private Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 
 	/*
 	 * This parameter is here because that's a signed attribute. It must be computed before getDataToSign/signDocument
@@ -127,7 +126,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 *
 	 * @return the value
 	 */
-	public Set<ChainCertificate> getCertificateChain() {
+	public Set<CertificateToken> getCertificateChain() {
 		return certificateChain;
 	}
 
@@ -146,7 +145,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 * @param certificateChain
 	 *            the {@code List} of {@code ChainCertificate}s
 	 */
-	public void setCertificateChain(final Set<ChainCertificate> certificateChain) {
+	public void setCertificateChain(final Set<CertificateToken> certificateChain) {
 		this.certificateChain = certificateChain;
 	}
 
@@ -159,8 +158,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	public void setCertificateChain(final CertificateToken... certificateChainArray) {
 		for (final CertificateToken certificate : certificateChainArray) {
 			if (certificate != null) {
-				final ChainCertificate chainCertificate = new ChainCertificate(certificate, false);
-				certificateChain.add(chainCertificate);
+				certificateChain.add(certificate);
 			}
 		}
 	}

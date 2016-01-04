@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -235,16 +234,13 @@ public class SignatureServiceImpl implements SignatureService {
 		final CertificateToken x509SigningCertificate = DSSUtils.loadCertificate(signingCertBytes);
 		params.setSigningCertificate(x509SigningCertificate);
 
-		final Set<ChainCertificate> chainCertificates = new HashSet<ChainCertificate>();
-		chainCertificates.add(new ChainCertificate(x509SigningCertificate, true));
+		final Set<CertificateToken> chainCertificates = new HashSet<CertificateToken>();
+		chainCertificates.add(x509SigningCertificate);
 		final List<WSChainCertificate> wsChainCertificateList = wsParameters.getChainCertificateList();
 		if (CollectionUtils.isNotEmpty(wsChainCertificateList)) {
 			for (final WSChainCertificate wsChainCertificate : wsChainCertificateList) {
 				final CertificateToken x509Certificate = DSSUtils.loadCertificate(wsChainCertificate.getX509Certificate());
-				final ChainCertificate chainCertificate = new ChainCertificate(x509Certificate, wsChainCertificate.isSignedAttribute());
-				if (!chainCertificates.contains(chainCertificate)) {
-					chainCertificates.add(chainCertificate);
-				}
+				chainCertificates.add(x509Certificate);
 			}
 		}
 		params.setCertificateChain(chainCertificates);

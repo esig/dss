@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.signature;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +38,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -55,7 +53,6 @@ import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.validation.model.CertificateChain;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -262,13 +259,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final boolean trustAnchorBPPolicy = params.bLevel().isTrustAnchorBPPolicy();
 		final CertificatePool certificatePool = getCertificatePool();
 		boolean firstCertificate = true; // The signing certificate can be directly in the TSL
-		Set<ChainCertificate> certificateChains = new HashSet<>();
-		ChainCertificate chain = new ChainCertificate(params.getSigningCertificate(), true);
-		certificateChains.add(chain);
+		Set<CertificateToken> certificateChains = new HashSet<CertificateToken>();
+		certificateChains.add(params.getSigningCertificate());
 		certificateChains.addAll(params.getCertificateChain());
-		for (final ChainCertificate chainCertificate : certificateChains) {
-
-			final CertificateToken x509Certificate = chainCertificate.getX509Certificate();
+		for (final CertificateToken x509Certificate : certificateChains) {
 			if (trustAnchorBPPolicy && (certificatePool != null)) {
 
 				if (!certificatePool.get(x509Certificate.getSubjectX500Principal()).isEmpty()) {
@@ -530,13 +524,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final Element signingCertificateDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, signingCertificate);
 
 		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
-		final Set<ChainCertificate> certificateChain = params.getCertificateChain();
 		certificates.add(params.getSigningCertificate());
-		for (final ChainCertificate chainCertificate : certificateChain) {
-			if (chainCertificate.isSignedAttribute()) {
-				certificates.add(chainCertificate.getX509Certificate());
-			}
-		}
 		incorporateCertificateRef(signingCertificateDom, certificates);
 	}
 

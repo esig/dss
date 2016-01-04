@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -187,9 +186,9 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 
 		List<RemoteCertificate> remoteCertificateChain = remoteParameters.getCertificateChain();
 		if (CollectionUtils.isNotEmpty(remoteCertificateChain)) {
-			Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
+			Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 			for (RemoteCertificate remoteCertificate : remoteCertificateChain) {
-				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificate(remoteCertificate.getEncodedCertificate()), true));
+				certificateChain.add(DSSUtils.loadCertificate(remoteCertificate.getEncodedCertificate()));
 			}
 			parameters.setCertificateChain(certificateChain);
 		}

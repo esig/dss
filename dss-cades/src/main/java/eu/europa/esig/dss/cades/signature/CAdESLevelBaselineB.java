@@ -76,7 +76,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.BLevelParameters;
-import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -437,16 +436,16 @@ public class CAdESLevelBaselineB {
 	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
 
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		final Set<ChainCertificate> chainCertificateList = new HashSet<ChainCertificate>();
-		chainCertificateList.add(new ChainCertificate(parameters.getSigningCertificate(), true));
-		chainCertificateList.addAll(parameters.getCertificateChain());
+		final Set<CertificateToken> chainCertificateList = new HashSet<CertificateToken>();
+		chainCertificateList.add(parameters.getSigningCertificate());
+//		chainCertificateList.addAll(parameters.getCertificateChain());
 		final List<ASN1Encodable> signingCertificates = new ArrayList<ASN1Encodable>();
-		for (final ChainCertificate chainCertificate : chainCertificateList) {
+		for (final CertificateToken signingCertificate : chainCertificateList) {
 
-			if (!chainCertificate.isSignedAttribute()) {
-				continue;
-			}
-			final CertificateToken signingCertificate = chainCertificate.getX509Certificate();
+//			if (!chainCertificate.isSignedAttribute()) {
+//				continue;
+//			}
+//			final CertificateToken signingCertificate = chainCertificate.getX509Certificate();
 			final byte[] encoded = signingCertificate.getEncoded();
 			final byte[] certHash = DSSUtils.digest(digestAlgorithm, encoded);
 			if (LOG.isDebugEnabled()) {
