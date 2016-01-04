@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -389,7 +391,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public String getId() {
 		String cadesId = cadesSignature.getId();
-		return cadesId + getDigestOfByteRange();
+		return cadesId + getDiestSignedContent();
 	}
 
 	private String getDigestOfByteRange() {
@@ -399,6 +401,11 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 			baos.write(i);
 		}
 		return DSSUtils.getMD5Digest(baos);
+	}
+	
+	private String getDiestSignedContent() {
+		byte[] signedDocumentBytes = pdfSignatureInfo.getSignedDocumentBytes();
+		return Hex.encodeHexString(DSSUtils.digest(DigestAlgorithm.SHA1, signedDocumentBytes));
 	}
 
 	@Override
