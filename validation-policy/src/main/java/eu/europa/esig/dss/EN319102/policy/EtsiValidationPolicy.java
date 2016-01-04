@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DateUtils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
+import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
@@ -521,28 +522,28 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getReferenceDataExistenceConstraint() {
-		SignatureConstraints mainSignature = policy.getMainSignature();
-		if (mainSignature != null) {
-			return mainSignature.getReferenceDataExistence();
+	public LevelConstraint getReferenceDataExistenceConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getReferenceDataExistence();
 		}
 		return null;
 	}
 
 	@Override
-	public LevelConstraint getReferenceDataIntactConstraint() {
-		SignatureConstraints mainSignature = policy.getMainSignature();
-		if (mainSignature != null) {
-			return mainSignature.getReferenceDataIntact();
+	public LevelConstraint getReferenceDataIntactConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getReferenceDataIntact();
 		}
 		return null;
 	}
 
 	@Override
-	public LevelConstraint getSignatureIntactConstraint() {
-		SignatureConstraints mainSignature = policy.getMainSignature();
-		if (mainSignature != null) {
-			return mainSignature.getSignatureIntact();
+	public LevelConstraint getSignatureIntactConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getSignatureIntact();
 		}
 		return null;
 	}
@@ -662,39 +663,39 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	private CertificateConstraints getCertificateConstraints(Context context, SubContext subContext) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			if (SubContext.SIGNING_CERT.equals(subContext)) {
+				return basicSignatureConstraints.getSigningCertificate();
+			} else if (SubContext.CA_CERTIFICATE.equals(subContext)) {
+				return basicSignatureConstraints.getCACertificate();
+			}
+
+		}
+		return null;
+	}
+
+	private BasicSignatureConstraints getBasicSignatureConstraintsByContext(Context context) {
 		switch (context) {
 		case MAIN_SIGNATURE:
 			SignatureConstraints mainSignature = policy.getMainSignature();
 			if (mainSignature != null) {
-				if (SubContext.SIGNING_CERT.equals(subContext)) {
-					return mainSignature.getSigningCertificate();
-				} else if (SubContext.CA_CERTIFICATE.equals(subContext)) {
-					return mainSignature.getCACertificate();
-				}
+				return mainSignature.getBasicSignatureConstraints();
 			}
 			break;
 		case TIMESTAMP:
 			TimestampConstraints timestampConstraints = policy.getTimestamp();
 			if (timestampConstraints != null) {
-				if (SubContext.SIGNING_CERT.equals(subContext)) {
-					return timestampConstraints.getSigningCertificate();
-				} else if (SubContext.CA_CERTIFICATE.equals(subContext)) {
-					return timestampConstraints.getCACertificate();
-				}
+				return timestampConstraints.getBasicSignatureConstraints();
 			}
 			break;
 		case REVOCATION:
 			RevocationConstraints revocationConstraints = policy.getRevocation();
 			if (revocationConstraints != null) {
-				if (SubContext.SIGNING_CERT.equals(subContext)) {
-					return revocationConstraints.getSigningCertificate();
-				} else if (SubContext.CA_CERTIFICATE.equals(subContext)) {
-					return revocationConstraints.getCACertificate();
-				}
+				return revocationConstraints.getBasicSignatureConstraints();
 			}
-			break;
 		default:
-			logger.warn("Unsupported context " + context + " subcontext " + subContext);
+			logger.warn("Unsupported context " + context);
 			break;
 		}
 		return null;

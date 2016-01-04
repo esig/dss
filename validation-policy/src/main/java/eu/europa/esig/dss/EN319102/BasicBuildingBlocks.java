@@ -216,7 +216,7 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {
-		IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(diagnosticData, token, policy);
+		IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(diagnosticData, token, context, policy);
 		return isc.execute();
 	}
 
@@ -226,7 +226,7 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlCV executeCryptographicVerification() {
-		CryptographicVerification cv = new CryptographicVerification(token, policy);
+		CryptographicVerification cv = new CryptographicVerification(token, context, policy);
 		return cv.execute();
 	}
 

@@ -20,11 +20,7 @@
 		<xs:sequence>
 			<xs:element name="StructuralValidation" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="AcceptablePolicies" type="tns:MultiValuesConstraint" minOccurs="0" />
-			<xs:element name="ReferenceDataExistence" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="ReferenceDataIntact" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="SignatureIntact" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
-			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
+			<xs:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0" />
 			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
 			<xs:element name="SignedAttributes" type="tns:SignedAttributesConstraints" minOccurs="0" />
 			<xs:element name="UnsignedAttributes" type="tns:UnsignedAttributesConstraints" minOccurs="0" />
@@ -48,6 +44,42 @@
 	<xs:complexType name="UnsignedAttributesConstraints">
 		<xs:sequence>
 			<xs:element name="CounterSignature" type="tns:LevelConstraint" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TimestampConstraints">
+		<xs:sequence>
+			<xs:element name="TimestampDelay" type="tns:TimeConstraint" minOccurs="0" />
+			<xs:element name="MessageImprintDataFound" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="MessageImprintDataIntact" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="RevocationTimeAgainstBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="SigningCertificateValidityAtBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="AlgorithmReliableAtBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="Coherence" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="RevocationConstraints">
+  		<xs:complexContent>
+			<xs:extension base="tns:LevelConstraint">
+				<xs:sequence>
+					<xs:element name="RevocationFreshness" type="tns:TimeConstraint" minOccurs="0" />
+					<xs:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="BasicSignatureConstraints">
+		<xs:sequence>
+			<xs:element name="ReferenceDataExistence" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="ReferenceDataIntact" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="SignatureIntact" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="SignatureValid" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
+			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -76,33 +108,6 @@
 			<xs:element name="IssuedToLegalPerson" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
 		</xs:sequence>
-	</xs:complexType>
-	
-	<xs:complexType name="TimestampConstraints">
-		<xs:sequence>
-			<xs:element name="TimestampDelay" type="tns:TimeConstraint" minOccurs="0" />
-			<xs:element name="MessageImprintDataFound" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="MessageImprintDataIntact" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="RevocationTimeAgainstBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="SigningCertificateValidityAtBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="AlgorithmReliableAtBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="Coherence" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
-			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="RevocationConstraints">
-  		<xs:complexContent>
-			<xs:extension base="tns:LevelConstraint">
-				<xs:sequence>
-					<xs:element name="RevocationFreshness" type="tns:TimeConstraint" minOccurs="0" />
-					<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
-					<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="CryptographicConstraint">

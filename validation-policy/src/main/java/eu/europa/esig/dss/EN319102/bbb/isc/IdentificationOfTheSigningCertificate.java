@@ -59,13 +59,15 @@ public class IdentificationOfTheSigningCertificate extends AbstractBasicBuilding
 	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
 
+	private final Context context;
 	private final ValidationPolicy validationPolicy;
 
-	public IdentificationOfTheSigningCertificate(DiagnosticData diagnosticData, TokenProxy token, ValidationPolicy validationPolicy) {
+	public IdentificationOfTheSigningCertificate(DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
 		super(new XmlISC());
 
 		this.diagnosticData = diagnosticData;
 		this.token = token;
+		this.context = context;
 		this.validationPolicy = validationPolicy;
 	}
 
@@ -80,32 +82,32 @@ public class IdentificationOfTheSigningCertificate extends AbstractBasicBuilding
 	}
 
 	private ChainItem<XmlISC> signingCertificateSigned() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateSignedConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateSignedConstraint(context);
 		return new SigningCertificateSignedCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> signingCertificateRecognition() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRecognitionConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRecognitionConstraint(context);
 		return new SigningCertificateRecognitionCheck(result, token, diagnosticData, constraint);
 	}
 
 	private ChainItem<XmlISC> signingCertificateAttributePresent() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(context);
 		return new SigningCertificateAttributePresentCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> digestValuePresent() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValuePresentConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValuePresentConstraint(context);
 		return new DigestValuePresentCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> digestValueMatch() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValueMatchConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValueMatchConstraint(context);
 		return new DigestValueMatchCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> issuerSerialMatch() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateIssuerSerialMatchConstraint(Context.MAIN_SIGNATURE);
+		LevelConstraint constraint = validationPolicy.getSigningCertificateIssuerSerialMatchConstraint(context);
 		return new IssuerSerialMatchCheck(result, token, constraint);
 	}
 

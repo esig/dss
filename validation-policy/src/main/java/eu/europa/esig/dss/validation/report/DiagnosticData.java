@@ -39,7 +39,8 @@ import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 
 /**
- * This class represents all static data extracted by the process analysing the signature. They are independent from the validation policy to be applied.
+ * This class represents all static data extracted by the process analysing the signature. They are independent from the
+ * validation policy to be applied.
  */
 public class DiagnosticData {
 
@@ -318,7 +319,8 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * Indicates if the -A (-LTA) level is technically valid. It means that the signature of the archive timestamps are valid and their imprint is valid too.
+	 * Indicates if the -A (-LTA) level is technically valid. It means that the signature of the archive timestamps are
+	 * valid and their imprint is valid too.
 	 *
 	 * @param signatureId
 	 *            The identifier of the signature.
@@ -615,6 +617,17 @@ public class DiagnosticData {
 
 	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getJaxbModel() {
 		return diagnosticData;
+	}
+
+	public String getSignatureIdByTimestampId(String tspId) {
+		List<SignatureWrapper> signatures = getSignatures();
+		for (SignatureWrapper signatureWrapper : signatures) {
+			List<String> timestampIdsList = signatureWrapper.getTimestampIdsList();
+			if (timestampIdsList.contains(tspId)) {
+				return signatureWrapper.getId();
+			}
+		}
+		return null;
 	}
 
 }

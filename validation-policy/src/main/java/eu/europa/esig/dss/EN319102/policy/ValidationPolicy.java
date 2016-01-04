@@ -395,21 +395,21 @@ public interface ValidationPolicy {
 	 *         context element is present in the constraint file, null
 	 *         otherwise.
 	 */
-	LevelConstraint getReferenceDataExistenceConstraint();
+	LevelConstraint getReferenceDataExistenceConstraint(Context context);
 
 	/**
 	 * @return {@code ReferenceDataIntact} if ReferenceDataIntact for a given
 	 *         context element is present in the constraint file, null
 	 *         otherwise.
 	 */
-	LevelConstraint getReferenceDataIntactConstraint();
+	LevelConstraint getReferenceDataIntactConstraint(Context context);
 
 	/**
 	 * @return {@code ReferenceDataIntact} if SignatureIntact for a given
 	 *         context element is present in the constraint file, null
 	 *         otherwise.
 	 */
-	LevelConstraint getSignatureIntactConstraint();
+	LevelConstraint getSignatureIntactConstraint(Context context);
 
 	// BasicValidationProcessValidConstraint
 	// getBasicValidationProcessConclusionConstraint();
