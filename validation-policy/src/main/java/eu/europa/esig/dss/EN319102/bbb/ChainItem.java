@@ -3,9 +3,9 @@ package eu.europa.esig.dss.EN319102.bbb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlAbstractBasicBuildingBlock;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlError;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
@@ -15,7 +15,7 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public abstract class ChainItem<T extends XmlAbstractBasicBuildingBlock> {
+public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ChainItem.class);
 
@@ -42,19 +42,19 @@ public abstract class ChainItem<T extends XmlAbstractBasicBuildingBlock> {
 		}
 
 		switch (constraint.getLevel()) {
-			case IGNORE:
-				ignore();
-				break;
-			case FAIL:
-				fail();
-				break;
-			case INFORM:
-			case WARN:
-				informOrWarn(constraint.getLevel());
-				break;
-			default:
-				logger.warn("Unknown level : " + constraint.getLevel());
-				break;
+		case IGNORE:
+			ignore();
+			break;
+		case FAIL:
+			fail();
+			break;
+		case INFORM:
+		case WARN:
+			informOrWarn(constraint.getLevel());
+			break;
+		default:
+			logger.warn("Unknown level : " + constraint.getLevel());
+			break;
 		}
 	}
 

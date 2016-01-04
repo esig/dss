@@ -10,7 +10,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlAbstractBasicBuildingBlock;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
@@ -20,7 +20,7 @@ import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.ListAlgo;
 
-public abstract class AbstractCryptographicCheck<T extends XmlAbstractBasicBuildingBlock> extends ChainItem<T> {
+public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractCryptographicCheck.class);
 

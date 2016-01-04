@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.EN319102.bbb;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlAbstractBasicBuildingBlock;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 
-public abstract class AbstractBasicBuildingBlock<T extends XmlAbstractBasicBuildingBlock> {
+public abstract class AbstractBasicBuildingBlock<T extends XmlConstraintsConclusion> {
 
 	protected final T result;
 

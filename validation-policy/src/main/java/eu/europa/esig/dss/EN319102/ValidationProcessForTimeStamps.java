@@ -61,11 +61,12 @@ public class ValidationProcessForTimeStamps {
 						XmlTimestamp timestampAnalysis = new XmlTimestamp();
 						timestampAnalysis.setId(tsp.getId());
 						timestampAnalysis.setType(tsp.getType());
+						timestampAnalysis.setSignatureId(signature.getId());
 						timestampAnalysis.setBasicBuildingBlocks(basicBuildingBlocks);
-						signatureAnalysis.getTimestamps().add(timestampAnalysis);
+
+						result.getTimestamps().add(timestampAnalysis);
 					}
 				}
-				result.getSignatures().add(signatureAnalysis);
 			}
 		}
 

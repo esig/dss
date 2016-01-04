@@ -7,7 +7,7 @@
 			<xs:sequence>
 				<xs:element type="BasicSignaturesValidation" name="BasicSignaturesValidation" />
 				<xs:element type="TimestampsValidation" name="TimestampsValidation" />
-				<!-- <xs:element type="LongTermDataValidation" name="LongTermDataValidation" /> -->
+				<xs:element type="LongTermDataValidation" name="LongTermDataValidation" />
 				<!-- <xs:element type="ArchivalDataValidation " name="ArchivalDataValidation " /> -->
 			</xs:sequence>
 		</xs:complexType>
@@ -21,38 +21,53 @@
 
 	<xs:complexType name="TimestampsValidation">
 		<xs:sequence>
-			<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Timestamp" name="Timestamps" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="LongTermDataValidation">
+		<xs:sequence>
+			<xs:element type="LongTermData" name="LongTermData" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Signature">
-		<xs:choice>
+		<xs:sequence>
 			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" />
-			<xs:element type="Timestamp" name="Timestamps" minOccurs="0" maxOccurs="unbounded" />
-		</xs:choice>
+		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="Timestamp">
-		<xs:sequence>
+		<xs:choice>
 			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" />
-		</xs:sequence>
+			<xs:element type="ConstraintsConclusion" name="Constraints" maxOccurs="unbounded" />
+		</xs:choice>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="Type" type="xs:string" use="required" />
+		<xs:attribute name="SignatureId" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="LongTermData">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="SignatureId" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="BasicBuildingBlocks">
 		<xs:sequence>
-			<xs:element type="ISC" name="ISC" />
-			<xs:element type="VCI" name="VCI" />
-			<xs:element type="CV" name="CV" />
-			<xs:element type="SAV" name="SAV" />
-			<xs:element type="XCV" name="XCV" />
+			<xs:element type="ISC" name="ISC" minOccurs="0" />
+			<xs:element type="VCI" name="VCI" minOccurs="0" />
+			<xs:element type="CV" name="CV" minOccurs="0" />
+			<xs:element type="SAV" name="SAV"  minOccurs="0" />
+			<xs:element type="XCV" name="XCV"  minOccurs="0" />
 			<xs:element type="Conclusion" name="Conclusion" />
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="AbstractBasicBuildingBlock" abstract="true">
+	<xs:complexType name="ConstraintsConclusion">
 		<xs:sequence>
 			<xs:element type="Constraint" name="Constraints" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="Conclusion" name="Conclusion" minOccurs="1" maxOccurs="1" />
@@ -61,27 +76,27 @@
 
 	<xs:complexType name="ISC">
 		<xs:complexContent>
-			<xs:extension base="AbstractBasicBuildingBlock" />
+			<xs:extension base="ConstraintsConclusion" />
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="VCI">
 		<xs:complexContent>
-			<xs:extension base="AbstractBasicBuildingBlock" />
+			<xs:extension base="ConstraintsConclusion" />
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="CV">
 		<xs:complexContent>
-			<xs:extension base="AbstractBasicBuildingBlock" />
+			<xs:extension base="ConstraintsConclusion" />
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="SAV">
 		<xs:complexContent>
-			<xs:extension base="AbstractBasicBuildingBlock" />
+			<xs:extension base="ConstraintsConclusion" />
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="XCV">
 		<xs:complexContent>
-			<xs:extension base="AbstractBasicBuildingBlock" />
+			<xs:extension base="ConstraintsConclusion" />
 		</xs:complexContent>
 	</xs:complexType>
 

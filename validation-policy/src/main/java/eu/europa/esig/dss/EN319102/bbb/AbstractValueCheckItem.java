@@ -2,10 +2,10 @@ package eu.europa.esig.dss.EN319102.bbb;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlAbstractBasicBuildingBlock;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public abstract class AbstractValueCheckItem<T extends XmlAbstractBasicBuildingBlock> extends ChainItem<T> {
+public abstract class AbstractValueCheckItem<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private static final String ALL_VALUE = "*";
 

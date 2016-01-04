@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlAbstractBasicBuildingBlock;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
-public abstract class AbstractMultiValuesCheckItem<T extends XmlAbstractBasicBuildingBlock> extends ChainItem<T> {
+public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	protected AbstractMultiValuesCheckItem(T result, MultiValuesConstraint constraint) {
 		super(result, constraint);
