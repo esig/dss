@@ -3,7 +3,9 @@ package eu.europa.esig.dss.web.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -241,7 +243,7 @@ public class SigningService {
 
 		List<String> base64CertificateChain = form.getBase64CertificateChain();
 		if (CollectionUtils.isNotEmpty(base64CertificateChain)) {
-			List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
+			Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
 			for (String base64Certificate : base64CertificateChain) {
 				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate), true));
 			}
@@ -265,7 +267,7 @@ public class SigningService {
 
 		List<String> base64CertificateChain = form.getBase64CertificateChain();
 		if (CollectionUtils.isNotEmpty(base64CertificateChain)) {
-			List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
+			Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
 			for (String base64Certificate : base64CertificateChain) {
 				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate), true));
 			}

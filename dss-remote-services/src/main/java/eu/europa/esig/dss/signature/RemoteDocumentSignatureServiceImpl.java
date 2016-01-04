@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.signature;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -185,7 +187,7 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 
 		List<RemoteCertificate> remoteCertificateChain = remoteParameters.getCertificateChain();
 		if (CollectionUtils.isNotEmpty(remoteCertificateChain)) {
-			List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
+			Set<ChainCertificate> certificateChain = new HashSet<ChainCertificate>();
 			for (RemoteCertificate remoteCertificate : remoteCertificateChain) {
 				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificate(remoteCertificate.getEncodedCertificate()), true));
 			}
