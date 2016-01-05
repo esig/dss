@@ -9,8 +9,11 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EN319102.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.validation.AbstractTokenProxy;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 
@@ -23,8 +26,6 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	private DiagnosticData diagnosticData;
 
 	private ValidationPolicy policy;
-
-	private Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
 
 	@Override
 	public void getCurrentTime(Date currentDate) {
@@ -53,41 +54,55 @@ public class CustomProcessExecutor implements ProcessExecutor {
 
 		diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 
-		executeAllBasicBuildingBlocks();
+		DetailedReport detailedReport = new DetailedReport();
+
+		Map<String, XmlBasicBuildingBlocks> bbbs = executeAllBasicBuildingBlocks();
+
+		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
+
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			XmlSignature signatureAnalysis = new XmlSignature();
+
+			// validation process
+
+			detailedReport.getSignatures().add(signatureAnalysis);
+		}
 
 		return null;
 	}
 
-	private void executeAllBasicBuildingBlocks() {
+	private Map<String, XmlBasicBuildingBlocks> executeAllBasicBuildingBlocks() {
+		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
 		switch (validationLevel) {
 		case ARCHIVAL_DATA:
-			process(diagnosticData.getAllArchiveTimestamps(), Context.TIMESTAMP);
-			process(diagnosticData.getAllRevocationData(), Context.REVOCATION);
-			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP);
-			process(diagnosticData.getAllSignatures(), Context.SIGNATURE);
-			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE);
+			process(diagnosticData.getAllArchiveTimestamps(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
+			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		case LONG_TERM_DATA:
-			process(diagnosticData.getAllRevocationData(), Context.REVOCATION);
-			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP);
-			process(diagnosticData.getAllSignatures(), Context.SIGNATURE);
-			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE);
+			process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
+			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		case TIMESTAMPS:
-			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP);
-			process(diagnosticData.getAllSignatures(), Context.SIGNATURE);
-			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE);
+			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		case BASIC_SIGNATURES:
-			process(diagnosticData.getAllSignatures(), Context.SIGNATURE);
-			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE);
+			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		default:
 			throw new DSSException("Unsupported validation level " + validationLevel);
 		}
+		return bbbs;
 	}
 
-	private void process(Set<? extends AbstractTokenProxy> tokensToProcess, Context context) {
+	private void process(Set<? extends AbstractTokenProxy> tokensToProcess, Context context, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		for (AbstractTokenProxy token : tokensToProcess) {
 			BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, token, currentDate, policy, context);
 			XmlBasicBuildingBlocks result = bbb.execute();
