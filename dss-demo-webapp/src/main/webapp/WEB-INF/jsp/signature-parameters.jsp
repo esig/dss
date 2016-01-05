@@ -90,6 +90,11 @@
                     <form:errors path="pkcsPasswordValid" cssClass="text-danger" />
                 </div>
             </div>
+            <div class="row">
+            	<div class="col-sm-9">
+            		<form:label path="pkcsFile" cssClass="text-danger labelsPKCS12"><spring:message code="label.pkcs12.warning" /></form:label>
+            	</div>
+            </div>
         </div>
     </div>
     
