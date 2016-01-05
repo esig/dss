@@ -8,6 +8,7 @@ import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 /**
  * 5.2.4 Validation context initialization This building block initializes the
@@ -37,7 +38,7 @@ public class ValidationContextInitialization extends AbstractBasicBuildingBlock<
 	}
 
 	private ChainItem<XmlVCI> signaturePolicyIdentifier() {
-		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint(context);
+		MultiValuesConstraint constraint = validationPolicy.getSignaturePolicyConstraint(context);
 		return new SignaturePolicyIdentifierCheck(result, constraint, signature);
 	}
 
