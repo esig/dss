@@ -14,12 +14,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ISC complex type.
+ * <p>Java class for ValidationProcessLongTermData complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ISC">
+ * &lt;complexType name="ValidationProcessLongTermData">
  *   &lt;complexContent>
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/diagnostic}ConstraintsConclusion">
  *     &lt;/extension>
@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ISC")
-public class XmlISC
+@XmlType(name = "ValidationProcessLongTermData")
+public class XmlValidationProcessLongTermData
     extends XmlConstraintsConclusion
 {
 

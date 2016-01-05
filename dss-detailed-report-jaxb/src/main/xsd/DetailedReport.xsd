@@ -2,69 +2,37 @@
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/diagnostic" xmlns="http://dss.esig.europa.eu/validation/diagnostic"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xs:element name="ValidationData">
+	<xs:element name="DetailedReport">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element type="BasicSignaturesValidation" name="BasicSignaturesValidation" />
-				<xs:element type="TimestampsValidation" name="TimestampsValidation" />
-				<xs:element type="LongTermDataValidation" name="LongTermDataValidation" />
-				<!-- <xs:element type="ArchivalDataValidation " name="ArchivalDataValidation " /> -->
+				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:complexType name="BasicSignaturesValidation">
-		<xs:sequence>
-			<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="TimestampsValidation">
-		<xs:sequence>
-			<xs:element type="Timestamp" name="Timestamps" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="LongTermDataValidation">
-		<xs:sequence>
-			<xs:element type="LongTermData" name="LongTermData" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
 	<xs:complexType name="Signature">
 		<xs:sequence>
-			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" />
+			<xs:element type="ValidationProcessBasicSignatures" name="ValidationProcessBasicSignatures"  minOccurs="0" />
+			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
-	</xs:complexType>
-
-	<xs:complexType name="Timestamp">
-		<xs:choice>
-			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" />
-			<xs:element type="ConstraintsConclusion" name="Constraints" maxOccurs="unbounded" />
-		</xs:choice>
-		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="Type" type="xs:string" use="required" />
-		<xs:attribute name="SignatureId" type="xs:string" use="required" />
-	</xs:complexType>
-
-	<xs:complexType name="LongTermData">
-		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="SignatureId" type="xs:string" use="required" />
-			</xs:extension>
-		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="BasicBuildingBlocks">
 		<xs:sequence>
 			<xs:element type="ISC" name="ISC" minOccurs="0" />
 			<xs:element type="VCI" name="VCI" minOccurs="0" />
-			<xs:element type="CV" name="CV" minOccurs="0" />
-			<xs:element type="SAV" name="SAV"  minOccurs="0" />
-			<xs:element type="XCV" name="XCV"  minOccurs="0" />
+			<xs:element type="CV"  name="CV"  minOccurs="0" />
+			<xs:element type="SAV" name="SAV" minOccurs="0" />
+			<xs:element type="XCV" name="XCV" minOccurs="0" />
 			<xs:element type="Conclusion" name="Conclusion" />
 		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Type" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="ConstraintsConclusion">
@@ -72,6 +40,30 @@
 			<xs:element type="Constraint" name="Constraints" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="Conclusion" name="Conclusion" minOccurs="1" maxOccurs="1" />
 		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ValidationProcessBasicSignatures">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessTimestamps">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessLongTermData">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessArchivalData">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ISC">
@@ -99,7 +91,7 @@
 			<xs:extension base="ConstraintsConclusion" />
 		</xs:complexContent>
 	</xs:complexType>
-
+	
 	<xs:complexType name="Constraint">
 		<xs:sequence>
 			<xs:element type="Name" name="Name" />
