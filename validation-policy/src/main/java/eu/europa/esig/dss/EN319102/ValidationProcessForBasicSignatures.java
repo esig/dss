@@ -21,16 +21,13 @@ public class ValidationProcessForBasicSignatures {
 
 	private final DiagnosticData diagnosticData;
 
-	private final ValidationPolicy mainPolicy;
-	private final ValidationPolicy countersignaturePolicy;
+	private final ValidationPolicy policy;
 
 	private final Date currentTime;
 
-	public ValidationProcessForBasicSignatures(DiagnosticData diagnosticData, ValidationPolicy mainPolicy, ValidationPolicy countersignaturePolicy,
-			Date currentTime) {
+	public ValidationProcessForBasicSignatures(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
 		this.diagnosticData = diagnosticData;
-		this.mainPolicy = mainPolicy;
-		this.countersignaturePolicy = countersignaturePolicy;
+		this.policy = policy;
 		this.currentTime = currentTime;
 	}
 
@@ -42,12 +39,12 @@ public class ValidationProcessForBasicSignatures {
 		if (CollectionUtils.isNotEmpty(signatures)) {
 			for (SignatureWrapper signature : signatures) {
 
-				ValidationPolicy currentPolicy = mainPolicy;
+				Context currentContext = Context.SIGNATURE;
 				if (AttributeValue.COUNTERSIGNATURE.equals(signature.getType())) {
-					currentPolicy = countersignaturePolicy;
+					currentContext = Context.COUNTER_SIGNATURE;
 				}
 
-				BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, signature, currentTime, currentPolicy, Context.MAIN_SIGNATURE);
+				BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, signature, currentTime, policy, currentContext);
 				XmlBasicBuildingBlocks basicBuildingBlocks = bbb.execute();
 
 				XmlSignature signatureAnalysis = new XmlSignature();

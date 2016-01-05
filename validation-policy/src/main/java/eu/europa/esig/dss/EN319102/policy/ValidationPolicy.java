@@ -36,7 +36,7 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
 public interface ValidationPolicy {
 
 	public enum Context {
-		MAIN_SIGNATURE, TIMESTAMP, REVOCATION
+		SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, REVOCATION
 	};
 
 	public enum SubContext {
@@ -74,7 +74,7 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if SigningTime element is present in the
 	 *         constraint file, null otherwise.
 	 */
-	MultiValuesConstraint getSignaturePolicyConstraint();
+	MultiValuesConstraint getSignaturePolicyConstraint(Context context);
 
 	/**
 	 * Indicates if the structural validation should be checked. If
@@ -84,7 +84,7 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if StructuralValidation element is
 	 *         present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getStructuralValidationConstraint();
+	LevelConstraint getStructuralValidationConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: signing-time should be checked. If
@@ -226,7 +226,7 @@ public interface ValidationPolicy {
 	 *         AcceptableEncryptionAlgo for a given context element is present
 	 *         in the constraint file, null otherwise.
 	 */
-	CryptographicConstraint getSignatureCryptographicConstraint(Context context, SubContext subContext);
+	CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @param context
@@ -252,7 +252,7 @@ public interface ValidationPolicy {
 	 *         for a given context element is present in the constraint file,
 	 *         null otherwise.
 	 */
-	LevelConstraint getProspectiveCertificateChainConstraint(final Context context);
+	LevelConstraint getProspectiveCertificateChainConstraint(Context context);
 
 	/**
 	 * @param context
@@ -328,13 +328,13 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if CertificateChain for a given context
 	 *         element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getChainConstraint();
+	LevelConstraint getChainConstraint(Context context);
 
 	/**
 	 * @return {@code LevelConstraint} if Qualification for a given context
 	 *         element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateQualificationConstraint();
+	LevelConstraint getSigningCertificateQualificationConstraint(Context context);
 
 	/**
 	 * Indicates if the end user certificate used in validating the signature is
@@ -344,14 +344,14 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if SupportedBySSCD for a given context
 	 *         element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateSupportedBySSCDConstraint();
+	LevelConstraint getSigningCertificateSupportedBySSCDConstraint(Context context);
 
 	/**
 	 * @return {@code LevelConstraint} if IssuedToLegalPerson for a given
 	 *         context element is present in the constraint file, null
 	 *         otherwise.
 	 */
-	LevelConstraint getSigningCertificateIssuedToLegalPersonConstraint();
+	LevelConstraint getSigningCertificateIssuedToLegalPersonConstraint(Context context);
 
 	/**
 	 * @return {@code LevelConstraint} if Recognition for a given context

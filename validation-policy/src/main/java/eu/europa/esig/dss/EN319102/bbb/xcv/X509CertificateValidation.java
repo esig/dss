@@ -120,7 +120,7 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 		}
 
 		// These constraints apply only to the main signature
-		if (Context.MAIN_SIGNATURE.equals(context)) {
+		if (Context.SIGNATURE.equals(context)) {
 			item = item.setNextItem(signingCertificateQualified(currentCertificate));
 
 			item = item.setNextItem(signingCertificateSupportedBySSCD(currentCertificate));
@@ -216,22 +216,22 @@ public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV
 	}
 
 	private ChainItem<XmlXCV> certificateCryptographic(TokenProxy token, Context context, SubContext subcontext) {
-		CryptographicConstraint cryptographicConstraint = validationPolicy.getSignatureCryptographicConstraint(context, subcontext);
+		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
 		return new CertificateCryptographicCheck(result, token, currentTime, cryptographicConstraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateQualified(CertificateWrapper certificate) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateQualificationConstraint();
+		LevelConstraint constraint = validationPolicy.getSigningCertificateQualificationConstraint(context);
 		return new SigningCertificateQualifiedCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateSupportedBySSCD(CertificateWrapper certificate) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateSupportedBySSCDConstraint();
+		LevelConstraint constraint = validationPolicy.getSigningCertificateSupportedBySSCDConstraint(context);
 		return new SigningCertificateSupportedBySSCDCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateIssuedToLegalPerson(CertificateWrapper certificate) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateIssuedToLegalPersonConstraint();
+		LevelConstraint constraint = validationPolicy.getSigningCertificateIssuedToLegalPersonConstraint(context);
 		return new SigningCertificateIssuedToLegalPersonCheck(result, certificate, constraint);
 	}
 

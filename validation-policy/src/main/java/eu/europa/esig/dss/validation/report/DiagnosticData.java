@@ -619,15 +619,4 @@ public class DiagnosticData {
 		return diagnosticData;
 	}
 
-	public String getSignatureIdByTimestampId(String tspId) {
-		List<SignatureWrapper> signatures = getSignatures();
-		for (SignatureWrapper signatureWrapper : signatures) {
-			List<String> timestampIdsList = signatureWrapper.getTimestampIdsList();
-			if (timestampIdsList.contains(tspId)) {
-				return signatureWrapper.getId();
-			}
-		}
-		return null;
-	}
-
 }

@@ -24,7 +24,7 @@ public class JaxbPolicyTest {
 	public void testUnmarshalling() throws Exception {
 		ConstraintsParameters constraintsParameters = unmarshal(new File("src/test/resources/constraint.xml"));
 
-		Algo algo = constraintsParameters.getMainSignature().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
+		Algo algo = constraintsParameters.getSignatureConstraints().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
 		assertNotNull(algo);
 		String algoName = algo.getValue();
 		assertEquals("DSA", algoName);
@@ -40,14 +40,9 @@ public class JaxbPolicyTest {
 		unmarshal(new File("src/test/resources/constraint-core-validation.xml"));
 	}
 
-	// TODO	@Test
+	// TODO @Test
 	public void testUnmarshalModel() throws Exception {
 		unmarshal(new File("src/test/resources/constraints_MODEL.xml"));
-	}
-
-	@Test
-	public void testUnmarshalCountersignature() throws Exception {
-		unmarshal(new File("src/test/resources/countersignature-constraint.xml"));
 	}
 
 	public ConstraintsParameters unmarshal(File file) throws Exception {

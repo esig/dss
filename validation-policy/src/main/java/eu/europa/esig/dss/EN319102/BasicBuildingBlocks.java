@@ -88,7 +88,7 @@ public class BasicBuildingBlocks {
 		 * 
 		 * otherwise go to the next step.
 		 */
-		if (Context.MAIN_SIGNATURE.equals(context)) {
+		if (Context.SIGNATURE.equals(context)) {
 			XmlVCI vci = executeValidationContextInitialization();
 			result.setVCI(vci);
 
@@ -221,7 +221,7 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlVCI executeValidationContextInitialization() {
-		ValidationContextInitialization vci = new ValidationContextInitialization((SignatureWrapper) token, policy);
+		ValidationContextInitialization vci = new ValidationContextInitialization((SignatureWrapper) token, context, policy);
 		return vci.execute();
 	}
 
@@ -239,8 +239,8 @@ public class BasicBuildingBlocks {
 
 	private XmlSAV executeSignatureAcceptanceValidation() {
 		AbstractAcceptanceValidation<?> aav = null;
-		if (Context.MAIN_SIGNATURE.equals(context)) {
-			aav = new SignatureAcceptanceValidation(diagnosticData, currentTime, (SignatureWrapper) token, policy);
+		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
+			aav = new SignatureAcceptanceValidation(diagnosticData, currentTime, (SignatureWrapper) token, context, policy);
 		} else if (Context.TIMESTAMP.equals(context)) {
 			aav = new TimestampAcceptanceValidation(diagnosticData, currentTime, (TimestampWrapper) token, policy);
 		}

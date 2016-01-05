@@ -4,6 +4,7 @@ import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.vci.checks.SignaturePolicyIdentifierCheck;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -18,12 +19,15 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 public class ValidationContextInitialization extends AbstractBasicBuildingBlock<XmlVCI> {
 
 	private final SignatureWrapper signature;
+
+	private final Context context;
 	private final ValidationPolicy validationPolicy;
 
-	public ValidationContextInitialization(SignatureWrapper signature, ValidationPolicy validationPolicy) {
+	public ValidationContextInitialization(SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
 		super(new XmlVCI());
 
 		this.signature = signature;
+		this.context = context;
 		this.validationPolicy = validationPolicy;
 	}
 
@@ -33,7 +37,7 @@ public class ValidationContextInitialization extends AbstractBasicBuildingBlock<
 	}
 
 	private ChainItem<XmlVCI> signaturePolicyIdentifier() {
-		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint();
+		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint(context);
 		return new SignaturePolicyIdentifierCheck(result, constraint, signature);
 	}
 

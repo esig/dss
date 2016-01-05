@@ -11,10 +11,10 @@ import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTimestampCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.CounterSignatureCheck;
-import eu.europa.esig.dss.EN319102.bbb.sav.checks.TokenCryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
+import eu.europa.esig.dss.EN319102.bbb.sav.checks.TokenCryptographicCheck;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
@@ -32,8 +32,12 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
  */
 public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<SignatureWrapper> {
 
-	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, ValidationPolicy validationPolicy) {
+	private final Context context;
+
+	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, Context context,
+			ValidationPolicy validationPolicy) {
 		super(diagnosticData, signature, currentTime, validationPolicy);
+		this.context = context;
 	}
 
 	@Override
@@ -79,7 +83,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {
-		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint();
+		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint(context);
 		return new StructuralValidationCheck(result, token, constraint);
 	}
 
@@ -134,7 +138,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	}
 
 	private ChainItem<XmlSAV> mainSignatureCryptographic() {
-		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(Context.MAIN_SIGNATURE);
+		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
 		return new TokenCryptographicCheck(result, token, currentTime, constraint);
 	}
 
