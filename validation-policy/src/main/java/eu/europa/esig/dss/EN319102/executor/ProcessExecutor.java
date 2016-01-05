@@ -18,26 +18,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.EN319102.policy;
+package eu.europa.esig.dss.EN319102.executor;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 
 /**
- * This interface allows to define how the validation process should be carried
- * out.
+ * This interface allows to define how the validation process should be carried out.
  */
 public interface ProcessExecutor {
 
 	/**
-	 * This method returns the {@code Date} against which the validation process
-	 * is carried out.
+	 * This method allows to set the {@code Date} that is used
+	 * during the validation process execution.
 	 *
-	 * @return
+	 * @param diagnosticData
 	 */
-	Date getCurrentTime();
+	void getCurrentTime(Date currentDate);
 
 	/**
 	 * This method allows to set the
@@ -46,7 +46,7 @@ public interface ProcessExecutor {
 	 *
 	 * @param diagnosticData
 	 */
-	void setDiagnosticData(final DiagnosticData diagnosticData);
+	void setDiagnosticData(DiagnosticData diagnosticData);
 
 	/**
 	 * This method allows to set the validation policy that is used during the
@@ -55,21 +55,16 @@ public interface ProcessExecutor {
 	 * @param validationPolicy
 	 *            the representation of the validation policy.
 	 */
-	void setValidationPolicy(final ValidationPolicy validationPolicy);
+	void setValidationPolicy(ValidationPolicy validationPolicy);
 
 	/**
-	 * @return {@code ValidationPolicy} which is used to validate the signatures
-	 */
-	ValidationPolicy getValidationPolicy();
-
-	/**
-	 * This method allows to set the validation policy that is used during the
-	 * validation process execution to validate the countersignatures.
+	 * This method allows to set the validation level that is used during the
+	 * validation process execution.
 	 *
-	 * @param validationPolicy
-	 *            the representation of the validation policy.
+	 * @param validationLevel
+	 *            the validation level.
 	 */
-	void setCountersignatureValidationPolicy(ValidationPolicy validationPolicy);
+	void setValidationLevel(ValidationLevel validationLevel);
 
 	/**
 	 * This method allows to run the validation process.

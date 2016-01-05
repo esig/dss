@@ -79,7 +79,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		item = item.setNextItem(certifiedRoles());
 
 		// cryptographic check
-		item = item.setNextItem(mainSignatureCryptographic());
+		item = item.setNextItem(signatureCryptographic());
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {
@@ -137,7 +137,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		return new CertifiedRolesCheck(result, token, constraint);
 	}
 
-	private ChainItem<XmlSAV> mainSignatureCryptographic() {
+	private ChainItem<XmlSAV> signatureCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
 		return new TokenCryptographicCheck(result, token, currentTime, constraint);
 	}

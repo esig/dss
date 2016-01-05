@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.EN319102;
+package eu.europa.esig.dss.EN319102.bbb;
 
 import java.util.Date;
 

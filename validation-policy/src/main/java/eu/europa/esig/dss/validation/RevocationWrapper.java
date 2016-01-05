@@ -2,6 +2,8 @@ package eu.europa.esig.dss.validation;
 
 import java.util.Date;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
@@ -17,7 +19,7 @@ public class RevocationWrapper extends AbstractTokenProxy {
 
 	@Override
 	public String getId() {
-		return "no id for revocation";
+		throw new NotImplementedException();
 	}
 
 	@Override

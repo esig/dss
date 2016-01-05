@@ -22,7 +22,9 @@ package eu.europa.esig.dss.validation.report;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,8 +37,11 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
 import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.RevocationWrapper;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
+import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
+import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the
@@ -613,6 +618,77 @@ public class DiagnosticData {
 			}
 		}
 		return usedCertificates;
+	}
+
+	/**
+	 * This method returns signatures (not countersignatures)
+	 * 
+	 * @return
+	 */
+	public Set<SignatureWrapper> getAllSignatures() {
+		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
+		List<SignatureWrapper> mixedSignatures = getSignatures();
+		for (SignatureWrapper signatureWrapper : mixedSignatures) {
+			if (!AttributeValue.COUNTERSIGNATURE.equals(signatureWrapper.getType())) {
+				signatures.add(signatureWrapper);
+			}
+		}
+		return signatures;
+	}
+
+	/**
+	 * This method returns counter-signatures (not signatures)
+	 * 
+	 * @return
+	 */
+	public Set<SignatureWrapper> getAllCounterSignatures() {
+		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
+		List<SignatureWrapper> mixedSignatures = getSignatures();
+		for (SignatureWrapper signatureWrapper : mixedSignatures) {
+			if (AttributeValue.COUNTERSIGNATURE.equals(signatureWrapper.getType())) {
+				signatures.add(signatureWrapper);
+			}
+		}
+		return signatures;
+	}
+
+	public Set<RevocationWrapper> getAllRevocationData() {
+		Set<RevocationWrapper> revocationData = new HashSet<RevocationWrapper>();
+		List<CertificateWrapper> certificates = getUsedCertificates();
+		if (CollectionUtils.isNotEmpty(certificates)) {
+			for (CertificateWrapper certificate : certificates) {
+				RevocationWrapper data = certificate.getRevocationData();
+				if (data != null) {
+					revocationData.add(data);
+				}
+			}
+		}
+		return revocationData;
+	}
+
+	public Set<TimestampWrapper> getAllTimestampsNotArchival() {
+		Set<TimestampWrapper> notArchivalTimestamps = new HashSet<TimestampWrapper>();
+		List<SignatureWrapper> signatures = getSignatures();
+		if (CollectionUtils.isNotEmpty(signatures)) {
+			for (SignatureWrapper signatureWrapper : signatures) {
+				notArchivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP));
+				notArchivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP));
+				notArchivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+				notArchivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+			}
+		}
+		return notArchivalTimestamps;
+	}
+
+	public Set<TimestampWrapper> getAllArchiveTimestamps() {
+		Set<TimestampWrapper> archiveTimestamps = new HashSet<TimestampWrapper>();
+		List<SignatureWrapper> signatures = getSignatures();
+		if (CollectionUtils.isNotEmpty(signatures)) {
+			for (SignatureWrapper signatureWrapper : signatures) {
+				archiveTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP));
+			}
+		}
+		return archiveTimestamps;
 	}
 
 	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getJaxbModel() {
