@@ -17,8 +17,7 @@ public class CounterSignatureCheck extends ChainItem<XmlSAV> {
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper signature;
 
-	public CounterSignatureCheck(XmlSAV result, DiagnosticData diagnosticData, SignatureWrapper signature,
-			LevelConstraint constraint) {
+	public CounterSignatureCheck(XmlSAV result, DiagnosticData diagnosticData, SignatureWrapper signature, LevelConstraint constraint) {
 		super(result, constraint);
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;
@@ -31,8 +30,7 @@ public class CounterSignatureCheck extends ChainItem<XmlSAV> {
 
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		for (SignatureWrapper signatureWrapper : signatures) {
-			if (AttributeValue.COUNTERSIGNATURE.equals(signatureWrapper.getType())
-					&& currentSignatureId.equals(signatureWrapper.getParentId())) {
+			if (AttributeValue.COUNTERSIGNATURE.equals(signatureWrapper.getType()) && currentSignatureId.equals(signatureWrapper.getParentId())) {
 				foundCountersignature = true;
 				break;
 			}

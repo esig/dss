@@ -9,6 +9,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EN319102.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.validation.AbstractTokenProxy;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
@@ -23,7 +24,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 
 	private ValidationPolicy policy;
 
-	private Map<String, BasicBuildingBlocks> bbbs = new HashMap<String, BasicBuildingBlocks>();
+	private Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
 
 	@Override
 	public void getCurrentTime(Date currentDate) {
@@ -87,8 +88,11 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	}
 
 	private void process(Set<? extends AbstractTokenProxy> tokensToProcess, Context context) {
-		// TODO Auto-generated method stub
-
+		for (AbstractTokenProxy token : tokensToProcess) {
+			BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, token, currentDate, policy, context);
+			XmlBasicBuildingBlocks result = bbb.execute();
+			bbbs.put(token.getId(), result);
+		}
 	}
 
 }
