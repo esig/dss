@@ -26,7 +26,7 @@ public class SignatureAcceptanceValidationTest {
 	private static final Logger logger = LoggerFactory.getLogger(SignatureAcceptanceValidationTest.class);
 
 	@Test
-	public void testWithBasicDataAndBasicPolicy() throws Exception {
+	public void testWithBasicDataButCertifiedRolesAsInformLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 		
 		LevelConstraint failLevel = new LevelConstraint();
@@ -62,5 +62,25 @@ public class SignatureAcceptanceValidationTest {
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ICERRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
+	}
+	
+	@Test
+	public void testWithBasicDataButCertifiedRolesAsWarn() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getCertifiedRolesConstraint().setLevel(Level.WARN);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
 	}
 }
