@@ -6,6 +6,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidationType;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 public class TestDiagnosticDataGenerator {
@@ -67,6 +68,9 @@ public class TestDiagnosticDataGenerator {
 		signature.setSigningCertificate(data.getUsedCertificates().getCertificate().get(0).getSigningCertificate());
 		signature.setBasicSignature(generateBasicSignatureType());
 		signature.setCertificateChain(data.getUsedCertificates().getCertificate().get(0).getCertificateChain());
+		XmlStructuralValidationType structure = new XmlStructuralValidationType();
+		structure.setValid(true);
+		signature.setStructuralValidation(structure);
 		data.addXmlSignature(signature);
 		
 		return data;
