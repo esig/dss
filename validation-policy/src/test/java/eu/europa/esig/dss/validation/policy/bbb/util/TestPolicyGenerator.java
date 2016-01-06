@@ -13,8 +13,12 @@ import eu.europa.esig.jaxb.policy.ListAlgo;
 import eu.europa.esig.jaxb.policy.SignatureConstraints;
 
 public class TestPolicyGenerator {
-
+	
 	public static ValidationPolicy generatePolicy() {
+		return generatePolicy(true);
+	}
+
+	public static ValidationPolicy generatePolicy(boolean policyMandatory) {
 		LevelConstraint failLevel = new LevelConstraint();
 		failLevel.setLevel(Level.FAIL);
 		
@@ -33,7 +37,9 @@ public class TestPolicyGenerator {
 		TestMultiValueConstraint multi = new TestMultiValueConstraint();
 		multi.setLevel(Level.FAIL);
 		multi.addConstraint("ANY_POLICY");
-		multi.addConstraint("NO_POLICY");
+		if(policyMandatory) {
+			multi.addConstraint("NO_POLICY");
+		}
 		constraints.setAcceptablePolicies(multi);
 		
 		
