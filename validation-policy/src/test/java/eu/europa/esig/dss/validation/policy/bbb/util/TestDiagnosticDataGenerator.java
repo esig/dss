@@ -62,6 +62,7 @@ public class TestDiagnosticDataGenerator {
 		productionPlace.setPostalCode("L-1630");
 		
 		XmlSignature signature = new XmlSignature();
+		
 		signature.setId("TestId");
 		signature.setDateTime(new Date());
 		signature.setSignatureProductionPlace(productionPlace);
@@ -72,6 +73,7 @@ public class TestDiagnosticDataGenerator {
 		structure.setValid(true);
 		signature.setStructuralValidation(structure);
 		data.addXmlSignature(signature);
+		
 		
 		return data;
 	}
