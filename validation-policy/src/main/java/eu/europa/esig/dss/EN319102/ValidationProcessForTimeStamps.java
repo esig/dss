@@ -1,63 +1,72 @@
 package eu.europa.esig.dss.EN319102;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-
-import eu.europa.esig.dss.EN319102.bbb.BasicBuildingBlocks;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTimestamp;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTimestampsValidation;
-import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.TimestampWrapper;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 
 /**
  * 5.4 Validation process for time-stamps
  */
 public class ValidationProcessForTimeStamps {
 
-	private final DiagnosticData diagnosticData;
+	private final XmlBasicBuildingBlocks timestampBBB;
 
-	private final SignatureWrapper signature;
-
-	// Only tsps with correct imprints
-	private final List<TimestampWrapper> timestampList;
-
-	private final ValidationPolicy policy;
-
-	private final Date currentTime;
-
-	public ValidationProcessForTimeStamps(DiagnosticData diagnosticData, SignatureWrapper signature, List<TimestampWrapper> timestampList,
-			ValidationPolicy policy, Date currentTime) {
-		this.diagnosticData = diagnosticData;
-		this.signature = signature;
-		this.timestampList = timestampList;
-		this.policy = policy;
-		this.currentTime = currentTime;
+	public ValidationProcessForTimeStamps(XmlBasicBuildingBlocks timestampBBB) {
+		this.timestampBBB = timestampBBB;
 	}
 
-	public XmlTimestampsValidation execute() {
-		XmlTimestampsValidation result = new XmlTimestampsValidation();
+	public XmlValidationProcessTimestamps execute() {
+		XmlValidationProcessTimestamps result = new XmlValidationProcessTimestamps();
 
-		if (CollectionUtils.isNotEmpty(timestampList)) {
-			for (TimestampWrapper tsp : timestampList) {
+		/*
+		 * 1) Token signature validation: the building block shall perform the validation process for Basic Signatures
+		 * as per clause 5.3 with the time-stamp token. In all the steps of this process, the building block shall take
+		 * into account that the signature to validate is a time-stamp token (e.g. to select TSA trust-anchors). If this
+		 * step
+		 * returns PASSED, the building block shall go to the next step. Otherwise, the building block shall return the
+		 * indication and information returned by the validation process.
+		 */
 
-				BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, tsp, currentTime, policy, Context.TIMESTAMP);
-				XmlBasicBuildingBlocks basicBuildingBlocks = bbb.execute();
+		// Format check is skipped
 
-				XmlTimestamp timestampAnalysis = new XmlTimestamp();
-				timestampAnalysis.setId(tsp.getId());
-				timestampAnalysis.setType(tsp.getType());
-				timestampAnalysis.setSignatureId(signature.getId());
-				timestampAnalysis.setBasicBuildingBlocks(basicBuildingBlocks);
-
-				result.getTimestamps().add(timestampAnalysis);
-			}
+		XmlISC isc = timestampBBB.getISC();
+		XmlConclusion iscConclusion = isc.getConclusion();
+		if (!Indication.VALID.equals(iscConclusion.getIndication())) {
+			result.setConclusion(iscConclusion);
+			return result;
 		}
+
+		// VCI is skipped
+
+		XmlCV cv = timestampBBB.getCV();
+		XmlConclusion cvConclusion = cv.getConclusion();
+		if (!Indication.VALID.equals(cvConclusion.getIndication())) {
+			result.setConclusion(cvConclusion);
+			return result;
+		}
+
+		XmlXCV xcv = timestampBBB.getXCV();
+		XmlConclusion xcvConclusion = xcv.getConclusion();
+		if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
+			result.setConclusion(xcvConclusion);
+			return result;
+		}
+
+		XmlSAV sav = timestampBBB.getSAV();
+		XmlConclusion savConclusion = sav.getConclusion();
+		if (!Indication.VALID.equals(savConclusion.getIndication())) {
+			result.setConclusion(savConclusion);
+			return result;
+		}
+
+		XmlConclusion conclusion = new XmlConclusion();
+		conclusion.setIndication(Indication.VALID);
+		result.setConclusion(conclusion);
 
 		return result;
 	}
