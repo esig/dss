@@ -22,7 +22,8 @@ public class SigningCertificateOnHoldCheck extends ChainItem<XmlXCV> {
 	@Override
 	protected boolean process() {
 		RevocationWrapper revocationData = certificate.getRevocationData();
-		return (revocationData != null) && !revocationData.isStatus() && CRLReasonEnum.certificateHold.name().equals(revocationData.getReason());
+		boolean isOnHold = (revocationData != null) && !revocationData.isStatus() && CRLReasonEnum.certificateHold.name().equals(revocationData.getReason());
+		return !isOnHold;
 	}
 
 	@Override
