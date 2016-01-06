@@ -1,5 +1,11 @@
 package eu.europa.esig.dss.EN319102;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
@@ -8,18 +14,28 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.SignatureWrapper;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * 5.3 Validation process for Basic Signatures
  */
 public class ValidationProcessForBasicSignatures {
 
-	private final XmlBasicBuildingBlocks signatureBBB;
+	private final DiagnosticData diagnosticData;
 
-	public ValidationProcessForBasicSignatures(XmlBasicBuildingBlocks signatureBBB) {
+	private final XmlBasicBuildingBlocks signatureBBB;
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
+	public ValidationProcessForBasicSignatures(DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB, Map<String, XmlBasicBuildingBlocks> bbbs) {
+		this.diagnosticData = diagnosticData;
 		this.signatureBBB = signatureBBB;
+		this.bbbs = bbbs;
 	}
 
 	public XmlValidationProcessBasicSignatures execute() {
@@ -123,8 +139,56 @@ public class ValidationProcessForBasicSignatures {
 		 */
 		XmlXCV xcv = signatureBBB.getXCV();
 		XmlConclusion xcvConclusion = xcv.getConclusion();
-		// TODO not correct !!
-		if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
+		if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
+			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
+			List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
+			if (CollectionUtils.isNotEmpty(contentTimestamps)) {
+				boolean failed = false;
+				Date revocationDate = getRevocationDateForSigningCertificate(currentSignature);
+				for (TimestampWrapper timestamp : contentTimestamps) {
+					if (isValidTimestamp(timestamp)) {
+						Date tspProductionTime = timestamp.getProductionTime();
+						if (tspProductionTime.after(revocationDate)) {
+							failed = true;
+							break;
+						}
+					}
+				}
+
+				if (failed) {
+					XmlConclusion conclusion = new XmlConclusion();
+					conclusion.setIndication(Indication.INVALID);
+					conclusion.setSubIndication(SubIndication.REVOKED);
+					result.setConclusion(conclusion);
+					return result;
+				}
+			}
+		} else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
+				&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
+			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
+			List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
+			if (CollectionUtils.isNotEmpty(contentTimestamps)) {
+				boolean failed = false;
+				Date expirationDate = getExpirationDateForSigningCertificate(currentSignature);
+				for (TimestampWrapper timestamp : contentTimestamps) {
+					if (isValidTimestamp(timestamp)) {
+						Date tspProductionTime = timestamp.getProductionTime();
+						if (tspProductionTime.after(expirationDate)) {
+							failed = true;
+							break;
+						}
+					}
+				}
+
+				if (failed) {
+					XmlConclusion conclusion = new XmlConclusion();
+					conclusion.setIndication(Indication.INDETERMINATE);
+					conclusion.setSubIndication(SubIndication.EXPIRED);
+					result.setConclusion(conclusion);
+					return result;
+				}
+			}
+		} else if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
 			result.setConclusion(xcvConclusion);
 			return result;
 		}
@@ -161,7 +225,30 @@ public class ValidationProcessForBasicSignatures {
 		XmlConclusion savConclusion = sav.getConclusion();
 		if (Indication.INDETERMINATE.equals(savConclusion.getIndication())
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(savConclusion.getSubIndication())) {
-			// TODO not correct !!
+
+			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
+			List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
+			if (CollectionUtils.isNotEmpty(contentTimestamps)) {
+				boolean failed = false;
+				for (TimestampWrapper timestamp : contentTimestamps) {
+					if (isValidTimestamp(timestamp)) {
+						failed = true;
+						break;
+					}
+				}
+
+				if (failed) {
+					XmlConclusion conclusion = new XmlConclusion();
+					conclusion.setIndication(Indication.INVALID);
+					conclusion.setSubIndication(SubIndication.CRYPTO_CONSTRAINTS_FAILURE);
+					result.setConclusion(conclusion);
+					return result;
+				}
+			}
+
+		} else if (!Indication.VALID.equals(savConclusion.getIndication())) {
+			result.setConclusion(savConclusion);
+			return result;
 		}
 
 		/**
@@ -176,6 +263,28 @@ public class ValidationProcessForBasicSignatures {
 		result.setConclusion(conclusion);
 
 		return result;
+	}
+
+	private boolean isValidTimestamp(TimestampWrapper timestamp) {
+		XmlBasicBuildingBlocks timestampBasicBuildingBlocks = bbbs.get(timestamp.getId());
+		return (timestampBasicBuildingBlocks != null && timestampBasicBuildingBlocks.getConclusion() != null)
+				&& Indication.VALID.equals(timestampBasicBuildingBlocks.getConclusion().getIndication());
+	}
+
+	private Date getRevocationDateForSigningCertificate(SignatureWrapper currentSignature) {
+		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		if (signingCertificate != null && signingCertificate.getRevocationData() != null) {
+			return signingCertificate.getRevocationData().getDateTime();
+		}
+		return null;
+	}
+
+	private Date getExpirationDateForSigningCertificate(SignatureWrapper currentSignature) {
+		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		if (signingCertificate != null) {
+			return signingCertificate.getNotAfter();
+		}
+		return null;
 	}
 
 }

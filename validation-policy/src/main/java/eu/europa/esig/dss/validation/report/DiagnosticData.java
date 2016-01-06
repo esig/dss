@@ -557,6 +557,18 @@ public class DiagnosticData {
 		return new SignatureWrapper(new XmlSignature()); // TODO improve ?
 	}
 
+	public SignatureWrapper getSignatureById(String id) {
+		List<SignatureWrapper> signatures = getSignatures();
+		if (CollectionUtils.isNotEmpty(signatures)) {
+			for (SignatureWrapper xmlSignature : signatures) {
+				if (StringUtils.equals(id, xmlSignature.getId())) {
+					return xmlSignature;
+				}
+			}
+		}
+		return null;
+	}
+
 	private SignatureWrapper getSignatureByIdNullSafe(String id) {
 		List<SignatureWrapper> signatures = getSignatures();
 		if (CollectionUtils.isNotEmpty(signatures)) {
@@ -592,6 +604,18 @@ public class DiagnosticData {
 			}
 		}
 		return new CertificateWrapper(new XmlCertificate()); // TODO improve ?
+	}
+
+	public CertificateWrapper getUsedCertificateById(String id) {
+		List<CertificateWrapper> certificates = getUsedCertificates();
+		if (CollectionUtils.isNotEmpty(certificates)) {
+			for (CertificateWrapper certificate : certificates) {
+				if (StringUtils.equals(id, certificate.getId())) {
+					return certificate;
+				}
+			}
+		}
+		return null;
 	}
 
 	public List<SignatureWrapper> getSignatures() {
