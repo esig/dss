@@ -39,22 +39,23 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		if (constraint == null) {
 			logger.info("Check skipped : constraint not defined");
 			callNext();
-		}
+		} else {
 
-		switch (constraint.getLevel()) {
-		case IGNORE:
-			ignore();
-			break;
-		case FAIL:
-			fail();
-			break;
-		case INFORM:
-		case WARN:
-			informOrWarn(constraint.getLevel());
-			break;
-		default:
-			logger.warn("Unknown level : " + constraint.getLevel());
-			break;
+			switch (constraint.getLevel()) {
+			case IGNORE:
+				ignore();
+				break;
+			case FAIL:
+				fail();
+				break;
+			case INFORM:
+			case WARN:
+				informOrWarn(constraint.getLevel());
+				break;
+			default:
+				logger.warn("Unknown level : " + constraint.getLevel());
+				break;
+			}
 		}
 	}
 
