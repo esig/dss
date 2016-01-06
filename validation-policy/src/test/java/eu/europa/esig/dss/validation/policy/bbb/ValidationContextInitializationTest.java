@@ -2,9 +2,12 @@ package eu.europa.esig.dss.validation.policy.bbb;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.EN319102.bbb.vci.ValidationContextInitialization;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestPolicyGenerator;
@@ -15,6 +18,8 @@ import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ValidationContextInitializationTest {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ValidationContextInitializationTest.class);
 
 	@Test
 	public void testWithBasicData() throws Exception {
@@ -25,6 +30,10 @@ public class ValidationContextInitializationTest {
 		
 		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlVCI vci = verification.execute();
+		
+		for(XmlConstraint constraint : vci.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
 		
 		Assert.assertEquals(Indication.VALID, vci.getConclusion().getIndication());
 	}
@@ -38,6 +47,11 @@ public class ValidationContextInitializationTest {
 		
 		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy(false));
 		XmlVCI vci = verification.execute();
+		
+		for(XmlConstraint constraint : vci.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
 		Assert.assertEquals(Indication.INDETERMINATE, vci.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.NO_POLICY, vci.getConclusion().getSubIndication());
 	}
@@ -51,6 +65,11 @@ public class ValidationContextInitializationTest {
 		
 		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy(false));
 		XmlVCI vci = verification.execute();
+		
+		for(XmlConstraint constraint : vci.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
 		Assert.assertEquals(Indication.VALID, vci.getConclusion().getIndication());
 	}
 }
