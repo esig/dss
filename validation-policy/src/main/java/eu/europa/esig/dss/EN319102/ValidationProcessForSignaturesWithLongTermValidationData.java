@@ -7,6 +7,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.validation.bs.ValidationProcessForBasicSignatures;
+import eu.europa.esig.dss.EN319102.validation.tsp.ValidationProcessForTimeStamps;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicSignaturesValidation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;

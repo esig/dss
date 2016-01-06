@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.EN319102;
+package eu.europa.esig.dss.EN319102.validation.bs.checks;
 
 import java.util.Date;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
@@ -18,41 +19,45 @@ import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-/**
- * 5.3 Validation process for Basic Signatures
- */
-public class ValidationProcessForBasicSignatures {
+public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessBasicSignatures> {
 
 	private final DiagnosticData diagnosticData;
 
 	private final XmlBasicBuildingBlocks signatureBBB;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-	public ValidationProcessForBasicSignatures(DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB, Map<String, XmlBasicBuildingBlocks> bbbs) {
+	private Indication indication;
+	private SubIndication subIndication;
+
+	public SignatureBasicBuildingBlocksCheck(XmlValidationProcessBasicSignatures result, DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB,
+			Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
+		super(result, constraint);
+
 		this.diagnosticData = diagnosticData;
 		this.signatureBBB = signatureBBB;
 		this.bbbs = bbbs;
 	}
 
-	public XmlValidationProcessBasicSignatures execute() {
-		XmlValidationProcessBasicSignatures result = new XmlValidationProcessBasicSignatures();
+	@Override
+	protected boolean process() {
 
-		/**
-		 * 5.3.4 1) The Basic Signature validation process shall perform the format checking as per clause 5.2.2.
-		 * 
-		 * If the process returns PASSED, the Basic Signature validation process shall continue with the next
-		 * step.
-		 * 
-		 * Otherwise the Basic Signature validation process shall return the indication INDETERMINATE with the
-		 * sub-indication FORMAT_FAILURE.
+		/*
+		 * 1) Token signature validation: the building block shall perform the validation process for Basic Signatures
+		 * as per clause 5.3 with the time-stamp token. In all the steps of this process, the building block shall take
+		 * into account that the signature to validate is a time-stamp token (e.g. to select TSA trust-anchors). If this
+		 * step
+		 * returns PASSED, the building block shall go to the next step. Otherwise, the building block shall return the
+		 * indication and information returned by the validation process.
 		 */
 		// TODO
 
-		/**
+		/*
 		 * 5.3.4 2) The Basic Signature validation process shall perform the identification of the signing certificate
 		 * (as per clause 5.2.3) with the signature and the signing certificate, if provided as a parameter.
 		 * 
@@ -66,11 +71,12 @@ public class ValidationProcessForBasicSignatures {
 		XmlConclusion iscConclusion = isc.getConclusion();
 		if (Indication.INDETERMINATE.equals(iscConclusion.getIndication())
 				&& SubIndication.NO_SIGNING_CERTIFICATE_FOUND.equals(iscConclusion.getSubIndication())) {
-			result.setConclusion(iscConclusion);
-			return result;
+			indication = iscConclusion.getIndication();
+			subIndication = iscConclusion.getSubIndication();
+			return false;
 		}
 
-		/**
+		/*
 		 * 5.3.4 3) The Basic Signature validation process shall perform the Validation Context Initialization as per
 		 * clause 5.2.4.
 		 * 
@@ -82,11 +88,12 @@ public class ValidationProcessForBasicSignatures {
 		XmlVCI vci = signatureBBB.getVCI();
 		XmlConclusion vciConclusion = vci.getConclusion();
 		if (Indication.INDETERMINATE.equals(vciConclusion.getIndication())) {
-			result.setConclusion(vciConclusion);
-			return result;
+			indication = vciConclusion.getIndication();
+			subIndication = vciConclusion.getSubIndication();
+			return false;
 		}
 
-		/**
+		/*
 		 * 5.3.4 4) The Basic Signature validation process shall perform the Cryptographic Verification process as per
 		 * clause 5.2.7 with the following inputs:
 		 * 
@@ -103,11 +110,12 @@ public class ValidationProcessForBasicSignatures {
 		XmlCV cv = signatureBBB.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
 		if (!Indication.VALID.equals(cvConclusion.getIndication())) {
-			result.setConclusion(cvConclusion);
-			return result;
+			indication = cvConclusion.getIndication();
+			subIndication = cvConclusion.getSubIndication();
+			return false;
 		}
 
-		/**
+		/*
 		 * 5.3.4 5) The Basic Signature validation process shall perform the X.509 Certificate Validation as per clause
 		 * 5.2.6 with the following inputs:
 		 * 
@@ -156,11 +164,9 @@ public class ValidationProcessForBasicSignatures {
 				}
 
 				if (failed) {
-					XmlConclusion conclusion = new XmlConclusion();
-					conclusion.setIndication(Indication.INVALID);
-					conclusion.setSubIndication(SubIndication.REVOKED);
-					result.setConclusion(conclusion);
-					return result;
+					indication = Indication.INVALID;
+					subIndication = SubIndication.REVOKED;
+					return false;
 				}
 			}
 		} else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
@@ -181,19 +187,18 @@ public class ValidationProcessForBasicSignatures {
 				}
 
 				if (failed) {
-					XmlConclusion conclusion = new XmlConclusion();
-					conclusion.setIndication(Indication.INDETERMINATE);
-					conclusion.setSubIndication(SubIndication.EXPIRED);
-					result.setConclusion(conclusion);
-					return result;
+					indication = Indication.INDETERMINATE;
+					subIndication = SubIndication.EXPIRED;
+					return false;
 				}
 			}
 		} else if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
-			result.setConclusion(xcvConclusion);
-			return result;
+			indication = xcvConclusion.getIndication();
+			subIndication = xcvConclusion.getSubIndication();
+			return false;
 		}
 
-		/**
+		/*
 		 * 5.3.4 6) The Basic Signature validation process shall perform the Signature Acceptance Validation process as
 		 * per clause 5.2.8 with the following inputs:
 		 * a) The signature.
@@ -238,31 +243,19 @@ public class ValidationProcessForBasicSignatures {
 				}
 
 				if (failed) {
-					XmlConclusion conclusion = new XmlConclusion();
-					conclusion.setIndication(Indication.INVALID);
-					conclusion.setSubIndication(SubIndication.CRYPTO_CONSTRAINTS_FAILURE);
-					result.setConclusion(conclusion);
-					return result;
+					indication = Indication.INVALID;
+					subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
+					return false;
 				}
 			}
 
 		} else if (!Indication.VALID.equals(savConclusion.getIndication())) {
-			result.setConclusion(savConclusion);
-			return result;
+			indication = savConclusion.getIndication();
+			subIndication = savConclusion.getSubIndication();
+			return false;
 		}
 
-		/**
-		 * 5.3.4 7) The Basic Signature validation process shall return the success indication PASSED.
-		 * In addition, the Basic Signature validation process should return additional information extracted from the
-		 * signature and/or used by the intermediate steps.
-		 * In particular, the SVA should provide to the DA all information related to signed and unsigned attributes,
-		 * including those which were not processed during the validation process.
-		 */
-		XmlConclusion conclusion = new XmlConclusion();
-		conclusion.setIndication(Indication.VALID);
-		result.setConclusion(conclusion);
-
-		return result;
+		return true;
 	}
 
 	private boolean isValidTimestamp(TimestampWrapper timestamp) {
@@ -285,6 +278,26 @@ public class ValidationProcessForBasicSignatures {
 			return signingCertificate.getNotAfter();
 		}
 		return null;
+	}
+
+	@Override
+	protected MessageTag getMessageTag() {
+		return MessageTag.ADEST_ROBVPIIC;
+	}
+
+	@Override
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.ADEST_ROBVPIIC_ANS;
+	}
+
+	@Override
+	protected Indication getFailedIndicationForConclusion() {
+		return indication;
+	}
+
+	@Override
+	protected SubIndication getFailedSubIndicationForConclusion() {
+		return subIndication;
 	}
 
 }

@@ -704,6 +704,18 @@ public class DiagnosticData {
 		return notArchivalTimestamps;
 	}
 
+	public Set<TimestampWrapper> getAllTimestampsNotArchival(String signatureId) {
+		Set<TimestampWrapper> notArchivalTimestamps = new HashSet<TimestampWrapper>();
+		SignatureWrapper signature = getSignatureById(signatureId);
+		if (signature != null) {
+			notArchivalTimestamps.addAll(signature.getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP));
+			notArchivalTimestamps.addAll(signature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP));
+			notArchivalTimestamps.addAll(signature.getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+			notArchivalTimestamps.addAll(signature.getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+		}
+		return notArchivalTimestamps;
+	}
+
 	public Set<TimestampWrapper> getAllArchiveTimestamps() {
 		Set<TimestampWrapper> archiveTimestamps = new HashSet<TimestampWrapper>();
 		List<SignatureWrapper> signatures = getSignatures();

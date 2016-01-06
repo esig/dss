@@ -34,6 +34,7 @@ public enum MessageTag {
 	ADEST_ITVPC_INFO_1("The best-signature-time was set to the generation time of the timestamp."),
 	ADEST_ITVPC_ANS_2("Timestamp validation is not conclusive!"),
 	ADEST_ROBVPIIC("Is the result of the Basic Validation Process conclusive?"),
+	ADEST_ROBVPIIC_ANS("The result of the Basic validation process is not conclusive!"),
 	ADEST_ROTVPIIC("Is the result of the timestamps validation process conclusive?"),
 	ADEST_ROTVPIIC_ANS("The result of the timestamps validation process is not conclusive!"),
 

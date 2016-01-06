@@ -9,11 +9,14 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EN319102.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.validation.bs.ValidationProcessForBasicSignatures;
+import eu.europa.esig.dss.EN319102.validation.tsp.ValidationProcessForTimeStamps;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.validation.AbstractTokenProxy;
 import eu.europa.esig.dss.validation.SignatureWrapper;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 
@@ -61,9 +64,25 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
 
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
-			XmlSignature signatureAnalysis = new XmlSignature();
 
-			// validation process
+			ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, bbbs.get(signature.getId()), bbbs);
+
+			XmlSignature signatureAnalysis = new XmlSignature();
+			signatureAnalysis.setId(signature.getId());
+			signatureAnalysis.setType(signature.getType());
+			signatureAnalysis.setValidationProcessBasicSignatures(vpfbs.execute());
+
+			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
+				Set<TimestampWrapper> allTimestampsNotArchival = diagnosticData.getAllTimestampsNotArchival(signature.getId());
+				for (TimestampWrapper tsp : allTimestampsNotArchival) {
+					ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(bbbs.get(tsp.getId()));
+					signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
+				}
+			}
+
+			if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
+
+			}
 
 			detailedReport.getSignatures().add(signatureAnalysis);
 		}
