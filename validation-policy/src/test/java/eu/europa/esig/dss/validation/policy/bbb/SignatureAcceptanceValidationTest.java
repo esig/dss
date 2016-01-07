@@ -86,4 +86,165 @@ public class SignatureAcceptanceValidationTest {
 		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(12, sav.getConstraints().size());
 	}
+	
+	@Test
+	public void testWithBasicDataButClaimedRolesAsFailLevel() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getClaimedRoleConstraint().setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(MessageTag.BBB_SAV_ICRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(10, sav.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithBasicDataButContentTypeAsFailLevel() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getContentTypeConstraint().setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(3, sav.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithBasicDataButContentHintsAsFailLevel() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getContentHintsConstraint().setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCHP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(4, sav.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithBasicDataButContentIdentifierAsFailLevel() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getContentIdentifierConstraint().setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(5, sav.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithBasicDataButCommitmentTypeIndicationAsFailLevel() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getCommitmentTypeIndicationConstraint().setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPXTIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(6, sav.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithBasicDataButContentTimestampAsFailLevel() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getContentTimestampConstraint().setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTSIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(8, sav.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithBasicDataButCounterSignatureAsFailLevel() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getCounterSignatureConstraint().setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(MessageTag.BBB_SAV_IUQPCSP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(9, sav.getConstraints().size());
+	}
 }

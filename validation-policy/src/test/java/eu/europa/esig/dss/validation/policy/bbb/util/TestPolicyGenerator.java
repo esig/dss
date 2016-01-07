@@ -69,7 +69,13 @@ public class TestPolicyGenerator {
 		signedConstraints.setContentTimeStamp(infoLeveLConstraint());
 		signedConstraints.setSigningTime(warnLeveLConstraint());
 		signedConstraints.setContentHints(vConstraint);
+		vConstraint = new ValueConstraint();
+		vConstraint.setValue("*");;
+		vConstraint.setLevel(Level.INFORM);
 		signedConstraints.setContentIdentifier(vConstraint);
+		vConstraint = new ValueConstraint();
+		vConstraint.setValue("*");;
+		vConstraint.setLevel(Level.INFORM);
 		signedConstraints.setContentType(vConstraint);
 		signedConstraints.setSignerLocation(infoLeveLConstraint());
 		
