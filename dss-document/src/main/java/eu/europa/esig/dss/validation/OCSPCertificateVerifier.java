@@ -109,7 +109,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 
 	private	void extractSigningCertificateFormResponderId(OCSPToken ocspToken) {
 		final RespID responderId = ocspToken.getBasicOCSPResp().getResponderId();
-		final ResponderID responderIdAsASN1Object = responderId.toASN1Object();
+		final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
 		final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
 		if (2 == derTaggedObject.getTagNo()) {
 			throw new DSSException("Certificate's key hash management not implemented yet!");

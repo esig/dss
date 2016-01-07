@@ -184,7 +184,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				final Element responderIDDom = DSSXMLUtils.addElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XAdES, "xades:ResponderID");
 
 				final RespID responderId = basicOcspResp.getResponderId();
-				final ResponderID responderIdAsASN1Object = responderId.toASN1Object();
+				final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
 				final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
 				if (2 == derTaggedObject.getTagNo()) {
 
