@@ -97,7 +97,7 @@ public class TestPolicyGenerator {
 		certConstraint.setDigestValueMatch(failLeveLConstraint());
 		certConstraint.setDigestValuePresent(failLeveLConstraint());
 		certConstraint.setExpiration(failLeveLConstraint());
-		certConstraint.setIssuerSerialMatch(warnLeveLConstraint());
+		certConstraint.setIssuerSerialMatch(failLeveLConstraint());
 		certConstraint.setIssuedToLegalPerson(infoLeveLConstraint());
 		certConstraint.setOnHold(failLeveLConstraint());
 		certConstraint.setProspectiveCertificateChain(failLeveLConstraint());
@@ -108,7 +108,7 @@ public class TestPolicyGenerator {
 		certConstraint.setRevocationDataFreshness(warnLeveLConstraint());
 		certConstraint.setRevoked(failLeveLConstraint());
 		certConstraint.setSignature(failLeveLConstraint());
-		certConstraint.setSigned(warnLeveLConstraint());
+		certConstraint.setSigned(failLeveLConstraint());
 		certConstraint.setTSLStatusAndValidity(failLeveLConstraint());
 		certConstraint.setTSLStatus(warnLeveLConstraint());
 		certConstraint.setTSLValidity(warnLeveLConstraint());

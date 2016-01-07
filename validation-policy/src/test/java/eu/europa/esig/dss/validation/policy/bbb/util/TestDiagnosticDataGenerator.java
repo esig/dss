@@ -21,6 +21,39 @@ public class TestDiagnosticDataGenerator {
 		TestDiagnosticData data = generateBasicData();
 		
 		data.getUsedCertificates().getCertificate().get(0).getSigningCertificate().setDigestValuePresent(false);
+		data.getUsedCertificates().getCertificate().get(0).getSigningCertificate().setDigestValueMatch(false);
+		
+		return new DiagnosticData(data);
+	}
+	
+	public static DiagnosticData generateDiagnosticDataWithDigestValueOfTheCertificateNotMatch() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getUsedCertificates().getCertificate().get(0).getSigningCertificate().setDigestValueMatch(false);
+		
+		return new DiagnosticData(data);
+	}
+	
+	public static DiagnosticData generateDiagnosticDataSigningCertificateNotFound() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getUsedCertificates().getCertificate().get(0).getSigningCertificate().setAttributePresent(false);
+		
+		return new DiagnosticData(data);
+	}
+	
+	public static DiagnosticData generateDiagnosticDataSigningCertificateNotPresent() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		data.getSignature().get(0).setSigningCertificate(null);
+		data.getUsedCertificates().getCertificate().get(0).setSigningCertificate(null);
+		
+		return new DiagnosticData(data);
+	}
+	
+	public static DiagnosticData generateDiagnosticDataWithIssuerSerialOfTheCertificateNotMatch() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getUsedCertificates().getCertificate().get(0).getSigningCertificate().setIssuerSerialMatch(false);
 		
 		return new DiagnosticData(data);
 	}
