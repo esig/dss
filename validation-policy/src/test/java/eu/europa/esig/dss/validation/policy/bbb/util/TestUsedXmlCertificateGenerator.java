@@ -35,6 +35,7 @@ public class TestUsedXmlCertificateGenerator {
 		certType.setDigestValueMatch(true);
 		certType.setDigestValuePresent(true);
 		certType.setId(cert.getId());
+		certType.setSigned("X509Certificate");
 		
 		cert.setSigningCertificate(certType);
 		

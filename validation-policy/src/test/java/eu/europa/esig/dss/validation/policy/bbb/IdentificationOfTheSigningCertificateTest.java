@@ -57,4 +57,80 @@ public class IdentificationOfTheSigningCertificateTest {
 		Assert.assertEquals(SubIndication.FORMAT_FAILURE, isc.getConclusion().getSubIndication());
 		Assert.assertEquals(4, isc.getConstraints().size());
 	}
+	
+	@Test
+	public void testWithDigestNotMatch() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithDigestValueOfTheCertificateNotMatch();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlISC isc = verification.execute();
+		
+		for(XmlConstraint constraint : isc.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, isc.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.FORMAT_FAILURE, isc.getConclusion().getSubIndication());
+		Assert.assertEquals(5, isc.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithIssuerSerialNotMatch() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithIssuerSerialOfTheCertificateNotMatch();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlISC isc = verification.execute();
+		
+		for(XmlConstraint constraint : isc.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, isc.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, isc.getConclusion().getSubIndication());
+		Assert.assertEquals(6, isc.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithNullSigningCertificate() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataSigningCertificateNotFound();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlISC isc = verification.execute();
+		
+		for(XmlConstraint constraint : isc.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, isc.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.FORMAT_FAILURE, isc.getConclusion().getSubIndication());
+		Assert.assertEquals(3, isc.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithNoSigningCertificateFound() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataSigningCertificateNotPresent();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlISC isc = verification.execute();
+		
+		for(XmlConstraint constraint : isc.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, isc.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, isc.getConclusion().getSubIndication());
+		Assert.assertEquals(1, isc.getConstraints().size());
+	}
 }
