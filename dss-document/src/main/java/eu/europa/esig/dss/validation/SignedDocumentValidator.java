@@ -1082,6 +1082,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlRevocation.setNextUpdate(revocationToken.getNextUpdate());
 			xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
 			xmlRevocation.setSourceAddress(revocationToken.getSourceURL());
+			xmlRevocation.setId(revocationToken.getDSSId().asXmlId());
 
 			final XmlBasicSignatureType xmlBasicSignatureType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
 			final SignatureAlgorithm revocationSignatureAlgo = revocationToken.getSignatureAlgorithm();

@@ -19,7 +19,7 @@ public class RevocationWrapper extends AbstractTokenProxy {
 
 	@Override
 	public String getId() {
-		throw new NotImplementedException();
+		return revocation.getId();
 	}
 
 	@Override

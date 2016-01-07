@@ -292,5 +292,6 @@
 
 			<xs:element type="InfoType" name="Info" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute type="xs:string" name="Id" use="required"/>
 	</xs:complexType>
 </xs:schema>
