@@ -67,6 +67,22 @@ public class TestDiagnosticDataGenerator {
 		return new DiagnosticData(data);
 	}
 	
+	public static DiagnosticData generateDiagnosticDataWithNoRevocationData() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getUsedCertificates().getCertificate().get(0).setRevocation(null);
+		
+		return new DiagnosticData(data);
+	}
+	
+	public static DiagnosticData generateDiagnosticDataWithRevocationDataNotTrusted() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getUsedCertificates().getCertificate().get(0).getRevocation().getCertificateChain().getChainCertificate().get(0).setSource(null);
+		
+		return new DiagnosticData(data);
+	}
+	
 	public static DiagnosticData generateDiagnosticDataWithRevokedSigningCertificate() throws Exception {
 		TestDiagnosticData data = generateBasicData();
 		
@@ -106,6 +122,14 @@ public class TestDiagnosticDataGenerator {
 		TestDiagnosticData data = generateBasicData();
 		
 		data.getSignature().get(0).getBasicSignature().setReferenceDataFound(false);
+		return new DiagnosticData(data);
+	}
+	
+	public static DiagnosticData generateDiagnosticDataCertificateSignatureNonValid() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getUsedCertificates().getCertificate().get(0).getBasicSignature().setSignatureValid(false);
+		
 		return new DiagnosticData(data);
 	}
 	

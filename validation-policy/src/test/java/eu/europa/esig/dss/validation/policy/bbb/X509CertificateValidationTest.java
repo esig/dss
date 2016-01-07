@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.validation.policy.bbb;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -58,6 +59,86 @@ public class X509CertificateValidationTest {
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, xcv.getConclusion().getSubIndication());
 		Assert.assertEquals(1, xcv.getConstraints().size());
+	}
+	
+	@Test
+	public void CertificateValidationCurrentTimeNotInValidityRangeOfTheSignerCertificate() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithRevokedSigningCertificate();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 740);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), cal.getTime(), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(1, xcv.getConstraints().size());
+	}
+	
+	@Test
+	public void CertificateValidationWithSignatureCertificateNotValid() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataCertificateSignatureNonValid();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), new Date(), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(4, xcv.getConstraints().size());
+	}
+	
+	@Test
+	public void CertificateValidationWithNoRevocationData() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithNoRevocationData();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), new Date(), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.TRY_LATER, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(5, xcv.getConstraints().size());
+	}
+	
+	@Test
+	public void CertificateValidationWithRevocationDataNotTrusted() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithRevocationDataNotTrusted();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), new Date(), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.TRY_LATER, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(6, xcv.getConstraints().size());
 	}
 	
 	@Test
