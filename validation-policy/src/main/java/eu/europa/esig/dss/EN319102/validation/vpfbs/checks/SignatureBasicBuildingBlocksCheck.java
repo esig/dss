@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.EN319102.validation.bs.checks;
+package eu.europa.esig.dss.EN319102.validation.vpfbs.checks;
 
 import java.util.Date;
 import java.util.List;

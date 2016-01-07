@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.EN319102.validation.tsp.checks;
+package eu.europa.esig.dss.EN319102.validation.vpftsp.checks;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
@@ -17,6 +17,9 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 	private final XmlBasicBuildingBlocks timestampBBB;
 
+	private Indication indication;
+	private SubIndication subIndication;
+
 	public TimestampBasicBuildingBlocksCheck(XmlValidationProcessTimestamps result, XmlBasicBuildingBlocks timestampBBB, LevelConstraint constraint) {
 		super(result, constraint);
 
@@ -31,6 +34,8 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		XmlISC isc = timestampBBB.getISC();
 		XmlConclusion iscConclusion = isc.getConclusion();
 		if (!Indication.VALID.equals(iscConclusion.getIndication())) {
+			indication = iscConclusion.getIndication();
+			subIndication = iscConclusion.getSubIndication();
 			return false;
 		}
 
@@ -39,18 +44,24 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		XmlCV cv = timestampBBB.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
 		if (!Indication.VALID.equals(cvConclusion.getIndication())) {
+			indication = cvConclusion.getIndication();
+			subIndication = cvConclusion.getSubIndication();
 			return false;
 		}
 
 		XmlXCV xcv = timestampBBB.getXCV();
 		XmlConclusion xcvConclusion = xcv.getConclusion();
 		if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
+			indication = xcvConclusion.getIndication();
+			subIndication = xcvConclusion.getSubIndication();
 			return false;
 		}
 
 		XmlSAV sav = timestampBBB.getSAV();
 		XmlConclusion savConclusion = sav.getConclusion();
 		if (!Indication.VALID.equals(savConclusion.getIndication())) {
+			indication = savConclusion.getIndication();
+			subIndication = savConclusion.getSubIndication();
 			return false;
 		}
 
@@ -69,11 +80,12 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return null;
+		return indication;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return null;
+		return subIndication;
 	}
+
 }

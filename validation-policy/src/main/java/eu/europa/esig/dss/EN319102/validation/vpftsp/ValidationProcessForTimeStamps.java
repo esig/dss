@@ -1,8 +1,8 @@
-package eu.europa.esig.dss.EN319102.validation.tsp;
+package eu.europa.esig.dss.EN319102.validation.vpftsp;
 
 import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.EN319102.validation.tsp.checks.TimestampBasicBuildingBlocksCheck;
+import eu.europa.esig.dss.EN319102.validation.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.jaxb.policy.Level;

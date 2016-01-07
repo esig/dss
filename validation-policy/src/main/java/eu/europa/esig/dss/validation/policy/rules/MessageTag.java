@@ -37,6 +37,8 @@ public enum MessageTag {
 	ADEST_ROBVPIIC_ANS("The result of the Basic validation process is not conclusive!"),
 	ADEST_ROTVPIIC("Is the result of the timestamps validation process conclusive?"),
 	ADEST_ROTVPIIC_ANS("The result of the timestamps validation process is not conclusive!"),
+	ADEST_RORPIIC("Is the result of the revocation data validation process conclusive?"),
+	ADEST_RORPIIC_ANS("The result of the revocation data validation process is not conclusive!"),
 
 	BBB_CV_IRDOF("Is the reference data object(s) found?"),
 	BBB_CV_IRDOF_ANS("The reference data object(s) not found!"),

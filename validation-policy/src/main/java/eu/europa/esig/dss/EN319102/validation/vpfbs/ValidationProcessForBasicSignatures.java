@@ -1,10 +1,10 @@
-package eu.europa.esig.dss.EN319102.validation.bs;
+package eu.europa.esig.dss.EN319102.validation.vpfbs;
 
 import java.util.Map;
 
 import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.EN319102.validation.bs.checks.SignatureBasicBuildingBlocksCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfbs.checks.SignatureBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
