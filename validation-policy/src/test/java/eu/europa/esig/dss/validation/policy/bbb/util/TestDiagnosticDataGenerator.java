@@ -133,6 +133,20 @@ public class TestDiagnosticDataGenerator {
 		return new DiagnosticData(data);
 	}
 	
+	public static DiagnosticData generateDiagnosticDataWithNoSigningDate() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getSignature().get(0).setDateTime(null);
+		return new DiagnosticData(data);
+	}
+	
+	public static DiagnosticData generateDiagnosticDataWithWrongEncriptionAlgo() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getSignature().get(0).getBasicSignature().setDigestAlgoUsedToSignThisToken("TEST");
+		return new DiagnosticData(data);
+	}
+	
 	private static TestDiagnosticData generateBasicData() throws Exception {
 		TestDiagnosticData data = new TestDiagnosticData();
 		data.setDocumentName(DOCUMENT_NAME);

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.EN319102.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
@@ -20,6 +21,7 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.ListAlgo;
 
 public class SignatureAcceptanceValidationTest {
 	
@@ -247,4 +249,51 @@ public class SignatureAcceptanceValidationTest {
 		Assert.assertEquals(MessageTag.BBB_SAV_IUQPCSP_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(9, sav.getConstraints().size());
 	}
+	
+	@Test
+	public void testWithBasicDataWithNoSigningTimeAndLevelFail() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateDiagnosticDataWithNoSigningDate();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getSigningTimeConstraint().setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPSTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(2, sav.getConstraints().size());
+	}
+	
+	@Test
+	public void testWithCryptographicError() throws Exception {
+		DiagnosticData data = TestDiagnosticDataGenerator.generateDiagnosticDataWithWrongEncriptionAlgo();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
+		XmlSAV sav = validation.execute();
+		
+		for(XmlConstraint constraint : sav.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, sav.getConclusion().getSubIndication());
+		Assert.assertEquals(12, sav.getConstraints().size());
+	}
+	
+	
+	
 }
