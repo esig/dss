@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.EN319102.bbb.isc;
 
-import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
+import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.isc.checks.DigestValueMatchCheck;
 import eu.europa.esig.dss.EN319102.bbb.isc.checks.DigestValuePresentCheck;
@@ -54,7 +54,7 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  * warning shall be returned with the output. 4) The building block shall return
  * the signing certificate
  */
-public class IdentificationOfTheSigningCertificate extends AbstractBasicBuildingBlock<XmlISC> {
+public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;

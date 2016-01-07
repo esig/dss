@@ -14,6 +14,7 @@ import eu.europa.esig.dss.EN319102.validation.vpftsp.ValidationProcessForTimeSta
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.validation.AbstractTokenProxy;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
@@ -66,21 +67,14 @@ public class CustomProcessExecutor implements ProcessExecutor {
 
 			XmlSignature signatureAnalysis = new XmlSignature();
 
-			if (ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
+			signatureAnalysis.setId(signature.getId());
+			signatureAnalysis.setType(signature.getType());
 
-				signatureAnalysis.setId(signature.getId());
-				signatureAnalysis.setType(signature.getType());
+			ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, bbbs.get(signature.getId()), bbbs);
+			XmlValidationProcessBasicSignatures vpfbsResult = vpfbs.execute();
+			signatureAnalysis.setValidationProcessBasicSignatures(vpfbsResult);
 
-				ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, bbbs.get(signature.getId()), bbbs);
-				signatureAnalysis.setValidationProcessBasicSignatures(vpfbs.execute());
-
-			} else if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
-
-				signatureAnalysis.setId(signature.getId());
-				signatureAnalysis.setType(signature.getType());
-
-				ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, bbbs.get(signature.getId()), bbbs);
-				signatureAnalysis.setValidationProcessBasicSignatures(vpfbs.execute());
+			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
 
 				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(diagnosticData.getAllTimestampsNotArchival(signature.getId()), bbbs);
 				signatureAnalysis.setValidationProcessTimestamps(vpftsp.execute());

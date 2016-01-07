@@ -2,7 +2,7 @@ package eu.europa.esig.dss.EN319102.bbb.sav;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
+import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.AbstractTokenProxy;
@@ -13,7 +13,7 @@ import eu.europa.esig.dss.validation.report.DiagnosticData;
  * additional verification to be performed on the signature itself or on the
  * attributes of the signature ETSI EN 319 132-1
  */
-public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy> extends AbstractBasicBuildingBlock<XmlSAV> {
+public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy> extends Chain<XmlSAV> {
 
 	protected final DiagnosticData diagnosticData;
 	protected final T token;

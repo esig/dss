@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
+import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
@@ -17,7 +17,7 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 /**
  * 5.4 Validation process for time-stamps
  */
-public class ValidationProcessForTimeStamps extends AbstractBasicBuildingBlock<XmlValidationProcessTimestamps> {
+public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTimestamps> {
 
 	private final Set<TimestampWrapper> timestamps;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;

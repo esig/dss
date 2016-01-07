@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
+import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateExpirationCheck;
@@ -42,7 +42,7 @@ import eu.europa.esig.jaxb.policy.RevocationConstraints;
  * 5.2.6 X.509 certificate validation This building block validates the signing
  * certificate at current time.
  */
-public class X509CertificateValidation extends AbstractBasicBuildingBlock<XmlXCV> {
+public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private final DiagnosticData diagnosticData;
 	private final CertificateWrapper currentCertificate;

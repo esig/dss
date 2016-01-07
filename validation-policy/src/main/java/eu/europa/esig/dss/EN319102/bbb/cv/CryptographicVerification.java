@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.EN319102.bbb.cv;
 
-import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
+import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.EN319102.bbb.cv.checks.ReferenceDataIntactCheck;
@@ -33,7 +33,7 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  * Otherwise, the building block shall return the indication FAILED and the
  * sub-indication SIG_CRYPTO_FAILURE.
  */
-public class CryptographicVerification extends AbstractBasicBuildingBlock<XmlCV> {
+public class CryptographicVerification extends Chain<XmlCV> {
 
 	private final TokenProxy token;
 

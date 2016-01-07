@@ -2,7 +2,7 @@ package eu.europa.esig.dss.EN319102.validation.vpfbs;
 
 import java.util.Map;
 
-import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
+import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpfbs.checks.SignatureBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
@@ -14,7 +14,7 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 /**
  * 5.3 Validation process for Basic Signatures
  */
-public class ValidationProcessForBasicSignatures extends AbstractBasicBuildingBlock<XmlValidationProcessBasicSignatures> {
+public class ValidationProcessForBasicSignatures extends Chain<XmlValidationProcessBasicSignatures> {
 
 	private final DiagnosticData diagnosticData;
 

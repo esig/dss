@@ -1,123 +1,52 @@
 package eu.europa.esig.dss.EN319102.validation.vpfltvd;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
-import eu.europa.esig.dss.EN319102.validation.vpfbs.ValidationProcessForBasicSignatures;
-import eu.europa.esig.dss.EN319102.validation.vpftsp.ValidationProcessForTimeStamps;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicSignaturesValidation;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlLongTermData;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlLongTermDataValidation;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTimestampsValidation;
-import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.MessageTag;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.EN319102.bbb.Chain;
+import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
+import eu.europa.esig.jaxb.policy.Level;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data
  */
-public class ValidationProcessForSignaturesWithLongTermValidationData {
+public class ValidationProcessForSignaturesWithLongTermValidationData extends Chain<XmlValidationProcessLongTermData> {
 
-	private final DiagnosticData diagnosticData;
+	private final XmlConstraintsConclusion basicSignatureValidation;
+	private final XmlConstraintsConclusion timestampValidation;
 
-	private final ValidationPolicy policy;
+	public ValidationProcessForSignaturesWithLongTermValidationData(XmlConstraintsConclusion basicSignatureValidation,
+			XmlConstraintsConclusion timestampValidation) {
+		super(new XmlValidationProcessLongTermData());
 
-	private final Date currentTime;
-
-	public ValidationProcessForSignaturesWithLongTermValidationData(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
-		this.diagnosticData = diagnosticData;
-		this.policy = policy;
-		this.currentTime = currentTime;
+		this.basicSignatureValidation = basicSignatureValidation;
+		this.timestampValidation = timestampValidation;
 	}
 
-	public XmlLongTermDataValidation execute() {
-		XmlLongTermDataValidation result = new XmlLongTermDataValidation();
+	@Override
+	protected void initChain() {
 
-		XmlBasicSignaturesValidation basicSignaturesValidation = runValidationProcessForBasicSignatures();
+		/*
+		 * 5.5.4 2) Signature validation: the process shall perform the validation process for Basic Signatures as per
+		 * clause 5.3 with all the inputs, including the processing of any signed attributes as specified. If the
+		 * Signature contains long-term validation data, this data shall be passed to the validation process for Basic
+		 * Signatures.
+		 * 
+		 * If this validation returns PASSED, INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE,
+		 * INDETERMINATE/REVOKED_NO_POE or INDETERMINATE/OUT_OF_BOUNDS_NO_POE, the SVA
+		 * shall go to the next step. Otherwise, the process shall return the status and information returned by the
+		 * validation process for Basic Signatures.
+		 */
+		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
 
-		boolean acceptableBasicSignature = validateBasicSignaturesValidation(result, basicSignaturesValidation);
-
-		if (!acceptableBasicSignature) {
-			return result;
-		}
-
-		XmlTimestampsValidation timestampsValidation = runValidationProcessForTimeStamps();
-
-		return result;
 	}
 
-	private XmlBasicSignaturesValidation runValidationProcessForBasicSignatures() {
-		ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, policy, currentTime);
-		return vpfbs.execute();
-	}
+	private ChainItem<XmlValidationProcessLongTermData> isAcceptableBasicSignatureValidation() {
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
 
-	private XmlConclusion getBasicBuildingBlocksConclusionBySignatureId(XmlBasicSignaturesValidation basicSignaturesValidation, String id) {
-		List<XmlSignature> basicSignatures = basicSignaturesValidation.getSignatures();
-		for (XmlSignature xmlSignature : basicSignatures) {
-			if (StringUtils.equals(id, xmlSignature.getId()) && xmlSignature.getBasicBuildingBlocks() != null) {
-				return xmlSignature.getBasicBuildingBlocks().getConclusion();
-			}
-		}
-		return null;
-	}
-
-	private boolean validateBasicSignaturesValidation(XmlLongTermDataValidation result, XmlBasicSignaturesValidation basicSignaturesValidation) {
-		boolean acceptableBasicSignature = false;
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-		if (CollectionUtils.isNotEmpty(signatures)) {
-			for (SignatureWrapper signature : signatures) {
-				XmlLongTermData ltd = new XmlLongTermData();
-				ltd.setSignatureId(signature.getId());
-
-				XmlConclusion bbbConclusion = getBasicBuildingBlocksConclusionBySignatureId(basicSignaturesValidation, signature.getId());
-
-				XmlConstraint constraint = new XmlConstraint();
-				XmlName name = new XmlName();
-				name.setNameId(MessageTag.ADEST_ROBVPIIC.name());
-				name.setValue(MessageTag.ADEST_ROBVPIIC.getMessage());
-				constraint.setName(name);
-
-				if (isAcceptableBasicBuildingBlocksConclusion(bbbConclusion)) {
-					acceptableBasicSignature = true;
-					constraint.setStatus(XmlStatus.OK);
-				} else {
-					constraint.setStatus(XmlStatus.NOT_OK);
-					ltd.setConclusion(bbbConclusion);
-				}
-
-				ltd.getConstraints().add(constraint);
-				result.getLongTermData().add(ltd);
-			}
-		}
-		return acceptableBasicSignature;
-	}
-
-	private boolean isAcceptableBasicBuildingBlocksConclusion(XmlConclusion bbbConclusion) {
-		if (bbbConclusion != null) {
-			Indication bbbIndication = bbbConclusion.getIndication();
-			SubIndication bbbSubIndication = bbbConclusion.getSubIndication();
-
-			return Indication.VALID.equals(bbbIndication)
-					|| (Indication.INDETERMINATE.equals(bbbIndication) && (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bbbSubIndication)
-							|| SubIndication.REVOKED_NO_POE.equals(bbbSubIndication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bbbSubIndication)));
-		}
-		return false;
-	}
-
-	private XmlTimestampsValidation runValidationProcessForTimeStamps() {
-		ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(diagnosticData, policy, currentTime);
-		return vpftsp.execute();
+		return new AcceptableBasicSignatureValidationCheck(result, basicSignatureValidation, constraint);
 	}
 
 }
