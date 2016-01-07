@@ -37,7 +37,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 	public SignatureBasicBuildingBlocksCheck(XmlValidationProcessBasicSignatures result, DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB,
 			Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
-		super(result, constraint);
+		super(result, constraint, signatureBBB.getId());
 
 		this.diagnosticData = diagnosticData;
 		this.signatureBBB = signatureBBB;

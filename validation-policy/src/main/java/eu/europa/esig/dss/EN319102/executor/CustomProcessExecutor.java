@@ -16,7 +16,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.validation.AbstractTokenProxy;
 import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.validation.report.Reports;
 
@@ -65,22 +64,28 @@ public class CustomProcessExecutor implements ProcessExecutor {
 
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 
-			ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, bbbs.get(signature.getId()), bbbs);
-
 			XmlSignature signatureAnalysis = new XmlSignature();
-			signatureAnalysis.setId(signature.getId());
-			signatureAnalysis.setType(signature.getType());
-			signatureAnalysis.setValidationProcessBasicSignatures(vpfbs.execute());
 
-			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
-				Set<TimestampWrapper> allTimestampsNotArchival = diagnosticData.getAllTimestampsNotArchival(signature.getId());
-				for (TimestampWrapper tsp : allTimestampsNotArchival) {
-					ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(bbbs.get(tsp.getId()));
-					signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
-				}
-			}
+			if (ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
 
-			if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
+				signatureAnalysis.setId(signature.getId());
+				signatureAnalysis.setType(signature.getType());
+
+				ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, bbbs.get(signature.getId()), bbbs);
+				signatureAnalysis.setValidationProcessBasicSignatures(vpfbs.execute());
+
+			} else if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
+
+				signatureAnalysis.setId(signature.getId());
+				signatureAnalysis.setType(signature.getType());
+
+				ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, bbbs.get(signature.getId()), bbbs);
+				signatureAnalysis.setValidationProcessBasicSignatures(vpfbs.execute());
+
+				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(diagnosticData.getAllTimestampsNotArchival(signature.getId()), bbbs);
+				signatureAnalysis.setValidationProcessTimestamps(vpftsp.execute());
+
+			} else if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
 
 			}
 

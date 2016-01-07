@@ -21,7 +21,7 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	private SubIndication subIndication;
 
 	public TimestampBasicBuildingBlocksCheck(XmlValidationProcessTimestamps result, XmlBasicBuildingBlocks timestampBBB, LevelConstraint constraint) {
-		super(result, constraint);
+		super(result, constraint, timestampBBB.getId());
 
 		this.timestampBBB = timestampBBB;
 	}

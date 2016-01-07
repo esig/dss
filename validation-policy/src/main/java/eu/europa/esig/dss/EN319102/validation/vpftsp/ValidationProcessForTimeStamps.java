@@ -1,10 +1,16 @@
 package eu.europa.esig.dss.EN319102.validation.vpftsp;
 
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import eu.europa.esig.dss.EN319102.bbb.AbstractBasicBuildingBlock;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
@@ -13,20 +19,34 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  */
 public class ValidationProcessForTimeStamps extends AbstractBasicBuildingBlock<XmlValidationProcessTimestamps> {
 
-	private final XmlBasicBuildingBlocks timestampBBB;
+	private final Set<TimestampWrapper> timestamps;
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-	public ValidationProcessForTimeStamps(XmlBasicBuildingBlocks timestampBBB) {
+	public ValidationProcessForTimeStamps(Set<TimestampWrapper> timestamps, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		super(new XmlValidationProcessTimestamps());
 
-		this.timestampBBB = timestampBBB;
+		this.timestamps = timestamps;
+		this.bbbs = bbbs;
 	}
 
 	@Override
 	protected void initChain() {
-		firstItem = basicBuildingBlocks();
+		if (CollectionUtils.isNotEmpty(timestamps)) {
+			ChainItem<XmlValidationProcessTimestamps> item = null;
+			for (TimestampWrapper tsp : timestamps) {
+				XmlBasicBuildingBlocks tspBasicBuldingBlocks = bbbs.get(tsp.getId());
+				if (tspBasicBuldingBlocks != null) {
+					if (firstItem == null) {
+						item = firstItem = basicBuildingBlocks(tspBasicBuldingBlocks);
+					} else {
+						item = item.setNextItem(basicBuildingBlocks(tspBasicBuldingBlocks));
+					}
+				}
+			}
+		}
 	}
 
-	private ChainItem<XmlValidationProcessTimestamps> basicBuildingBlocks() {
+	private ChainItem<XmlValidationProcessTimestamps> basicBuildingBlocks(XmlBasicBuildingBlocks timestampBBB) {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

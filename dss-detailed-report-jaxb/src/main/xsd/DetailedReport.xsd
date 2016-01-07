@@ -13,10 +13,10 @@
 
 	<xs:complexType name="Signature">
 		<xs:sequence>
-			<xs:element type="ValidationProcessBasicSignatures" name="ValidationProcessBasicSignatures"  minOccurs="0" />
-			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="ValidationProcessBasicSignatures" name="ValidationProcessBasicSignatures" minOccurs="0" />
+			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" />
+			<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" />
+			<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="Type" type="xs:string" use="required" />
@@ -38,7 +38,7 @@
 	<xs:complexType name="ConstraintsConclusion">
 		<xs:sequence>
 			<xs:element type="Constraint" name="Constraints" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="Conclusion" name="Conclusion" minOccurs="1" maxOccurs="1" />
+			<xs:element type="Conclusion" name="Conclusion" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -97,6 +97,7 @@
 			<xs:element type="Name" name="Name" />
 			<xs:element type="Status" name="Status" />
 		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- In case of constraint with a BBB -->
 	</xs:complexType>
 
 	<xs:complexType name="Conclusion">

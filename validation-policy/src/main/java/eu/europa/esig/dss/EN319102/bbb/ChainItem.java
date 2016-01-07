@@ -25,9 +25,17 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private final LevelConstraint constraint;
 
+	private String bbbId;
+
 	protected ChainItem(T result, LevelConstraint constraint) {
 		this.result = result;
 		this.constraint = constraint;
+	}
+
+	protected ChainItem(T result, LevelConstraint constraint, String bbbId) {
+		this.result = result;
+		this.constraint = constraint;
+		this.bbbId = bbbId;
 	}
 
 	public ChainItem<T> setNextItem(ChainItem<T> nextItem) {
@@ -40,7 +48,6 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 			logger.info("Check skipped : constraint not defined");
 			callNext();
 		} else {
-
 			switch (constraint.getLevel()) {
 			case IGNORE:
 				ignore();
@@ -105,6 +112,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		XmlConstraint constraint = new XmlConstraint();
 		constraint.setName(buildConstraintName());
 		constraint.setStatus(status);
+		constraint.setId(bbbId);
 		addConstraint(constraint);
 	}
 

@@ -21,7 +21,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 	private SubIndication subIndication;
 
 	public RevocationBasicBuildingBlocksCheck(XmlValidationProcessLongTermData result, XmlBasicBuildingBlocks revocationBBB, LevelConstraint constraint) {
-		super(result, constraint);
+		super(result, constraint, revocationBBB.getId());
 
 		this.revocationBBB = revocationBBB;
 	}
