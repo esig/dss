@@ -54,6 +54,7 @@ public class ValidationContextInitializationTest {
 		
 		Assert.assertEquals(Indication.INDETERMINATE, vci.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.NO_POLICY, vci.getConclusion().getSubIndication());
+		Assert.assertEquals(1, vci.getConstraints().size());
 	}
 	
 	@Test
