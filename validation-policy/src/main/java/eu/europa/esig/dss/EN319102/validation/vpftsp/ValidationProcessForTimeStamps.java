@@ -34,19 +34,19 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 		if (CollectionUtils.isNotEmpty(timestamps)) {
 			ChainItem<XmlValidationProcessTimestamps> item = null;
 			for (TimestampWrapper tsp : timestamps) {
-				XmlBasicBuildingBlocks tspBasicBuldingBlocks = bbbs.get(tsp.getId());
-				if (tspBasicBuldingBlocks != null) {
+				XmlBasicBuildingBlocks tspBBB = bbbs.get(tsp.getId());
+				if (tspBBB != null) {
 					if (firstItem == null) {
-						item = firstItem = basicBuildingBlocks(tspBasicBuldingBlocks);
+						item = firstItem = timestampBasicBuildingBlocksValid(tspBBB);
 					} else {
-						item = item.setNextItem(basicBuildingBlocks(tspBasicBuldingBlocks));
+						item = item.setNextItem(timestampBasicBuildingBlocksValid(tspBBB));
 					}
 				}
 			}
 		}
 	}
 
-	private ChainItem<XmlValidationProcessTimestamps> basicBuildingBlocks(XmlBasicBuildingBlocks timestampBBB) {
+	private ChainItem<XmlValidationProcessTimestamps> timestampBasicBuildingBlocksValid(XmlBasicBuildingBlocks timestampBBB) {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
