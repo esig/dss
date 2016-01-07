@@ -17,6 +17,24 @@ public class TestDiagnosticDataGenerator {
 		return new DiagnosticData(generateBasicData());
 	}
 	
+	public static DiagnosticData generateDiagnosticDataWithExpiredSigningCertificate() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		Date date = data.getUsedCertificates().getCertificate().get(0).getNotBefore();
+		
+		data.getUsedCertificates().getCertificate().get(0).setNotAfter(date);
+		
+		return new DiagnosticData(data);
+	}
+	
+	public static DiagnosticData generateDiagnosticDataWithRevokedSigningCertificate() throws Exception {
+		TestDiagnosticData data = generateBasicData();
+		
+		data.getUsedCertificates().getCertificate().get(0).getRevocation().setStatus(false);
+		data.getUsedCertificates().getCertificate().get(0).getRevocation().setReason("Test reason");
+		
+		return new DiagnosticData(data);
+	}
+	
 	public static DiagnosticData generateDiagnosticDataWithPolicy() throws Exception {
 		TestDiagnosticData data = generateBasicData();
 		

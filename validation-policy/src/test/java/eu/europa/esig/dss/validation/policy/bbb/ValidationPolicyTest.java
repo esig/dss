@@ -11,7 +11,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestPolicyGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 public class ValidationPolicyTest {
@@ -25,8 +24,7 @@ public class ValidationPolicyTest {
 		
 		XmlBasicBuildingBlocks result = bbb.execute();
 		
-		Assert.assertEquals(Indication.INDETERMINATE, result.getConclusion().getIndication());
-		Assert.assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, result.getConclusion().getSubIndication());
+		Assert.assertEquals(Indication.VALID, result.getConclusion().getIndication());
 	}
 	
 	

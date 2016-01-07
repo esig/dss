@@ -14,6 +14,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestPolicyGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -23,7 +24,7 @@ public class X509CertificateValidationTest {
 	private static final Logger logger = LoggerFactory.getLogger(X509CertificateValidationTest.class);
 
 	@Test
-	public void test() throws Exception {
+	public void CertificateValidationWithBasicData() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 		
 		LevelConstraint failLevel = new LevelConstraint();
@@ -37,5 +38,41 @@ public class X509CertificateValidationTest {
 		}
 		
 		Assert.assertEquals(Indication.VALID, xcv.getConclusion().getIndication());
+	}
+	
+	@Test
+	public void CertificateValidationWithExpiredCertificate() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithExpiredSigningCertificate();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), new Date(), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, xcv.getConclusion().getSubIndication());
+	}
+	
+	@Test
+	public void CertificateValidationWithRevokedCertificate() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithRevokedSigningCertificate();
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), new Date(), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.REVOKED_NO_POE, xcv.getConclusion().getSubIndication());
 	}
 }
