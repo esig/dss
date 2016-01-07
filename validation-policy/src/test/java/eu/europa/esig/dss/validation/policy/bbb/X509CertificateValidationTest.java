@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.EN319102.bbb.xcv.X509CertificateValidation;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
@@ -158,5 +159,71 @@ public class X509CertificateValidationTest {
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.REVOKED_NO_POE, xcv.getConclusion().getSubIndication());
 		Assert.assertEquals(7, xcv.getConstraints().size());
+	}
+	
+	@Test
+	public void PolicyWithSSCDAsFailLevel() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithWrongEncriptionAlgo();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getSigningCertificateSupportedBySSCDConstraint(Context.SIGNATURE).setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), new Date(), Context.SIGNATURE, policy);
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(13, xcv.getConstraints().size());
+	}
+	
+	@Test
+	public void PolicyWithIssuerAsFailLevel() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithWrongEncriptionAlgo();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getSigningCertificateIssuedToLegalPersonConstraint(Context.SIGNATURE).setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), new Date(), Context.SIGNATURE, policy);
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(14, xcv.getConstraints().size());
+	}
+	
+	@Test
+	public void PolicyWithQualifiedSignerCertificateAsFailLevel() throws Exception {
+		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithWrongEncriptionAlgo();
+		
+		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		policy.getSigningCertificateQualificationConstraint(Context.SIGNATURE).setLevel(Level.FAIL);
+		
+		LevelConstraint failLevel = new LevelConstraint();
+		failLevel.setLevel(Level.FAIL);
+		
+		X509CertificateValidation verification = new X509CertificateValidation(diagnosticData, diagnosticData.getUsedCertificates().get(0), new Date(), Context.SIGNATURE, policy);
+		XmlXCV xcv = verification.execute();
+		
+		for(XmlConstraint constraint : xcv.getConstraints()) {
+			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
+		}
+		
+		Assert.assertEquals(Indication.INVALID, xcv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(12, xcv.getConstraints().size());
 	}
 }
