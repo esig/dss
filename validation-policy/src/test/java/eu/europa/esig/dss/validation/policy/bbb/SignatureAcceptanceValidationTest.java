@@ -26,7 +26,7 @@ public class SignatureAcceptanceValidationTest {
 	private static final Logger logger = LoggerFactory.getLogger(SignatureAcceptanceValidationTest.class);
 
 	@Test
-	public void testWithBasicDataButCertifiedRolesAsInformLevel() throws Exception {
+	public void testWithBasicDataAndCertifiedRolesAsInformLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 		
 		LevelConstraint failLevel = new LevelConstraint();
@@ -40,6 +40,7 @@ public class SignatureAcceptanceValidationTest {
 		}
 		
 		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(12, sav.getConstraints().size());
 	}
 	
 	@Test
@@ -62,6 +63,7 @@ public class SignatureAcceptanceValidationTest {
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ICERRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(11, sav.getConstraints().size());
 	}
 	
 	@Test
@@ -82,5 +84,6 @@ public class SignatureAcceptanceValidationTest {
 		}
 		
 		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(12, sav.getConstraints().size());
 	}
 }

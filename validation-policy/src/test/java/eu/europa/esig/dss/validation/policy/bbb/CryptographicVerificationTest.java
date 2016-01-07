@@ -29,13 +29,14 @@ public class CryptographicVerificationTest {
 		failLevel.setLevel(Level.FAIL);
 		
 		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
-		XmlCV xcv = verification.execute();
+		XmlCV cv = verification.execute();
 		
-		for(XmlConstraint constraint : xcv.getConstraints()) {
+		for(XmlConstraint constraint : cv.getConstraints()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 		
-		Assert.assertEquals(Indication.VALID, xcv.getConclusion().getIndication());
+		Assert.assertEquals(Indication.VALID, cv.getConclusion().getIndication());
+		Assert.assertEquals(3, cv.getConstraints().size());
 	}
 	
 	@Test
@@ -46,14 +47,15 @@ public class CryptographicVerificationTest {
 		failLevel.setLevel(Level.FAIL);
 		
 		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
-		XmlCV xcv = verification.execute();
+		XmlCV cv = verification.execute();
 		
-		for(XmlConstraint constraint : xcv.getConstraints()) {
+		for(XmlConstraint constraint : cv.getConstraints()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 		
-		Assert.assertEquals(Indication.INVALID, xcv.getConclusion().getIndication());
-		Assert.assertEquals(SubIndication.SIG_CRYPTO_FAILURE, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(Indication.INVALID, cv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIG_CRYPTO_FAILURE, cv.getConclusion().getSubIndication());
+		Assert.assertEquals(3, cv.getConstraints().size());
 	}
 	
 	@Test
@@ -64,14 +66,15 @@ public class CryptographicVerificationTest {
 		failLevel.setLevel(Level.FAIL);
 		
 		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
-		XmlCV xcv = verification.execute();
+		XmlCV cv = verification.execute();
 		
-		for(XmlConstraint constraint : xcv.getConstraints()) {
+		for(XmlConstraint constraint : cv.getConstraints()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 		
-		Assert.assertEquals(Indication.INVALID, xcv.getConclusion().getIndication());
-		Assert.assertEquals(SubIndication.HASH_FAILURE, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(Indication.INVALID, cv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.HASH_FAILURE, cv.getConclusion().getSubIndication());
+		Assert.assertEquals(2, cv.getConstraints().size());
 	}
 	
 	@Test
@@ -82,13 +85,14 @@ public class CryptographicVerificationTest {
 		failLevel.setLevel(Level.FAIL);
 		
 		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
-		XmlCV xcv = verification.execute();
+		XmlCV cv = verification.execute();
 		
-		for(XmlConstraint constraint : xcv.getConstraints()) {
+		for(XmlConstraint constraint : cv.getConstraints()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 		
-		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
-		Assert.assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(Indication.INDETERMINATE, cv.getConclusion().getIndication());
+		Assert.assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, cv.getConclusion().getSubIndication());
+		Assert.assertEquals(1, cv.getConstraints().size());
 	}
 }

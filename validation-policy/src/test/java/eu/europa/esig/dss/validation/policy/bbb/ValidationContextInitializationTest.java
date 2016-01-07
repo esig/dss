@@ -36,6 +36,7 @@ public class ValidationContextInitializationTest {
 		}
 		
 		Assert.assertEquals(Indication.VALID, vci.getConclusion().getIndication());
+		Assert.assertEquals(1, vci.getConstraints().size());
 	}
 	
 	@Test
@@ -72,5 +73,6 @@ public class ValidationContextInitializationTest {
 		}
 		
 		Assert.assertEquals(Indication.VALID, vci.getConclusion().getIndication());
+		Assert.assertEquals(1, vci.getConstraints().size());
 	}
 }

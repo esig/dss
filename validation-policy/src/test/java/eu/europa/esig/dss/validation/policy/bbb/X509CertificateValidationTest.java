@@ -38,6 +38,7 @@ public class X509CertificateValidationTest {
 		}
 		
 		Assert.assertEquals(Indication.VALID, xcv.getConclusion().getIndication());
+		Assert.assertEquals(14, xcv.getConstraints().size());
 	}
 	
 	@Test
@@ -56,6 +57,7 @@ public class X509CertificateValidationTest {
 		
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(1, xcv.getConstraints().size());
 	}
 	
 	@Test
@@ -74,5 +76,6 @@ public class X509CertificateValidationTest {
 		
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.REVOKED_NO_POE, xcv.getConclusion().getSubIndication());
+		Assert.assertEquals(7, xcv.getConstraints().size());
 	}
 }
