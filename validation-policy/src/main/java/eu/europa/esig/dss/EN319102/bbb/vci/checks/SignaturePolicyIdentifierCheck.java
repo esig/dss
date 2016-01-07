@@ -7,8 +7,6 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.x509.SignaturePolicy;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 public class SignaturePolicyIdentifierCheck extends ChainItem<XmlVCI> {
@@ -29,7 +27,7 @@ public class SignaturePolicyIdentifierCheck extends ChainItem<XmlVCI> {
 		} else if (signature.isPolicyPresent()) {
 			return signature.getPolicyStatus();
 		} else {
-			if(level.getId().contains("NO_POLICY")) {
+			if (level.getId().contains(SignaturePolicy.NO_POLICY)) {
 				return true;
 			}
 			return false;

@@ -17,6 +17,7 @@ import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.AcceptableBasicSign
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeBeforeIssuanceDateOfSigningCertificateCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.SigningCertificateValidityAtBestSignatureTimeCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
@@ -153,7 +154,21 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
 			item = item.setNextItem(bestSignatureTimeBeforeIssuanceDateOfSigningCertificate(bestSignatureTime));
+			item = item.setNextItem(signingCertificateValidityAtBestSignatureTime(bestSignatureTime)); // otherwise
 		}
+
+		/*
+		 * c) If step 2 returned INDETERMINATE with the sub-indication CRYPTO_CONSTRAINTS_FAILURE_NO_POE and the
+		 * material concerned by this failure is the signature value or a signed attribute: If the algorithm(s)
+		 * concerned were still considered reliable at bestsignature-time, the process shall continue with step d.
+		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
+		 * CRYPTO_CONSTRAINTS_FAILURE_NO_POE.
+		 */
+		// TODO expired algorithm to be tested against bestSignatureTime
+		// if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
+		// && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
+		// item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
+		// }
 
 	}
 
@@ -185,6 +200,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeBeforeIssuanceDateOfSigningCertificate(Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
 		return new BestSignatureTimeBeforeIssuanceDateOfSigningCertificateCheck(result, signingCertificate, bestSignatureTime, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> signingCertificateValidityAtBestSignatureTime(Date bestSignatureTime) {
+		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		return new SigningCertificateValidityAtBestSignatureTimeCheck(result, signingCertificate, bestSignatureTime, getFailLevelConstraint());
 	}
 
 	// TODO uses validation policy
