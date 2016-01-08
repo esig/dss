@@ -45,8 +45,8 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 		if ((latestContent == null) && (earliestSignature == null) && (earliestValidationData == null) && (earliestArchive == null)) {
 			return true;
 		}
-		boolean ok = true;
 
+		boolean ok = true;
 		if ((earliestSignature == null) && ((earliestValidationData != null) || (earliestArchive != null))) {
 			ok = false;
 		}

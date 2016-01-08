@@ -18,6 +18,7 @@ import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeBe
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.SigningCertificateValidityAtBestSignatureTimeCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
@@ -182,6 +183,22 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * sub-indication TIMESTAMP_ORDER_FAILURE.
 		 */
 		item = item.setNextItem(timestampCoherenceOrder(allowedTimestamps));
+
+		/*
+		 * 5) Handling Time-stamp delay: If the validation constraints specify a time-stamp delay:
+		 * a) If no signing-time property/attribute is present, the process shall return the indication INDETERMINATE
+		 * with the sub-indication SIG_CONSTRAINTS_FAILURE.
+		 */
+		item = item.setNextItem(signingTimeAttributePresent());
+
+		/*
+		 * b) If a signing-time property/attribute is present, the process shall check that the claimed time in the
+		 * attribute plus the time-stamp delay is after the best-signature-time. If the check is successful, the process
+		 * shall go to the next step. Otherwise, the process shall return the indication FAILED with the sub-indication
+		 * SIG_CONSTRAINTS_FAILURE.
+		 */
+		item = item.setNextItem(timestampDelay(bestSignatureTime));
+
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> isAcceptableBasicSignatureValidation() {
@@ -221,6 +238,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampCoherenceOrder(Set<TimestampWrapper> allowedTimestamps) {
 		return new TimestampCoherenceOrderCheck(result, allowedTimestamps, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> signingTimeAttributePresent() {
+		return new SigningTimeAttributePresentCheck(result, currentSignature, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> timestampDelay(Date bestSignatureTime) {
+		// TODO return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, );
+		return null;
 	}
 
 	// TODO uses validation policy
