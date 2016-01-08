@@ -225,12 +225,24 @@ public class SimpleReportBuilder {
 	}
 
 	private void addSignedBy(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
-		String signedBy = "?";
+		String unknown = "?";
+		String signedBy = unknown;
 		String certificateId = diagnosticSignature.getSigningCertificateId();
 		if (StringUtils.isNotEmpty(certificateId)) {
-			signedBy = diagnosticData.getCertificateDN(certificateId);
+			signedBy = diagnosticData.getUsedCertificateById(certificateId).getCommonName();
+			if(signedBy.equals(StringUtils.EMPTY)) {
+				signedBy = diagnosticData.getUsedCertificateById(certificateId).getGivenName();
+				if(signedBy.equals(StringUtils.EMPTY)) {
+					signedBy = diagnosticData.getUsedCertificateById(certificateId).getSurname();
+					if(signedBy.equals(StringUtils.EMPTY)) {
+						signedBy = diagnosticData.getUsedCertificateById(certificateId).getPseudo();
+						if(signedBy.equals(StringUtils.EMPTY)) {
+							signedBy = unknown;
+						}
+					}
+				}
+			} 
 		}
-		// TODO extract "2.5.4.3"
 		xmlSignature.setSignedBy(signedBy);
 	}
 
