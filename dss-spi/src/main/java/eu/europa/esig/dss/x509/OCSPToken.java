@@ -22,6 +22,8 @@ package eu.europa.esig.dss.x509;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.PublicKey;
 import java.util.List;
 
@@ -219,6 +221,19 @@ public class OCSPToken extends RevocationToken {
 			return bytes;
 		} catch (IOException e) {
 			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
+		}
+	}
+	
+	@Override
+	public boolean isAvailable() {
+		try {
+			HttpURLConnection connection = (HttpURLConnection) new URL(sourceURI).openConnection();
+			connection.setRequestMethod("GET");
+			int responseCode = connection.getResponseCode();
+			return responseCode == 200;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

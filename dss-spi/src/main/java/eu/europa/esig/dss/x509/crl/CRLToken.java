@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.x509.crl;
 
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
@@ -232,6 +234,19 @@ public class CRLToken extends RevocationToken {
 		} catch (Exception e) {
 
 			return ((Object) this).toString();
+		}
+	}
+	
+	@Override
+	public boolean isAvailable() {
+		try {
+			HttpURLConnection connection = (HttpURLConnection) new URL(sourceURL).openConnection();
+			connection.setRequestMethod("GET");
+			int responseCode = connection.getResponseCode();
+			return responseCode == 200;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

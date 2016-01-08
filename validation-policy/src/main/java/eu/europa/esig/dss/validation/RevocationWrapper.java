@@ -44,6 +44,10 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	public boolean isStatus() {
 		return revocation.isStatus();
 	}
+	
+	public boolean isAvailable() {
+		return revocation.isAvailable();
+	}
 
 	public Date getNextUpdate() {
 		return revocation.getNextUpdate();

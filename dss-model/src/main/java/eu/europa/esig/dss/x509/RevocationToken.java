@@ -92,6 +92,8 @@ public abstract class RevocationToken extends Token {
 	 * @return {@code true} if the conditions are meet
 	 */
 	public abstract boolean isValid();
+	
+	public abstract boolean isAvailable();
 
 	public abstract String getSourceURL();
 
