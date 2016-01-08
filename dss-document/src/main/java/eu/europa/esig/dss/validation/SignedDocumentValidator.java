@@ -43,6 +43,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.slf4j.Logger;
@@ -962,6 +965,28 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlDistinguishedName.setFormat(x500PrincipalFormat);
 		final String x500PrincipalName = X500PrincipalName.getName(x500PrincipalFormat);
 		xmlDistinguishedName.setValue(x500PrincipalName);
+		
+		final X500Name x500Name = X500Name.getInstance(X500PrincipalName.getEncoded());
+		RDN[] rdns = x500Name.getRDNs(BCStyle.CN);
+		if(rdns.length > 0) {
+			xmlDistinguishedName.setCommonName(rdns[0].getFirst().getValue().toString());
+		}
+		
+		rdns = x500Name.getRDNs(BCStyle.C);
+		if(rdns.length > 0) {
+			xmlDistinguishedName.setCountryName(rdns[0].getFirst().getValue().toString());
+		}
+		
+		rdns = x500Name.getRDNs(BCStyle.O);
+		if(rdns.length > 0) {
+			xmlDistinguishedName.setOrganizationName(rdns[0].getFirst().getValue().toString());
+		}
+		
+		rdns = x500Name.getRDNs(BCStyle.SERIALNUMBER);
+		if(rdns.length > 0) {
+			xmlDistinguishedName.setSerialNumber(rdns[0].getFirst().getValue().toString());
+		}
+		
 		return xmlDistinguishedName;
 	}
 
