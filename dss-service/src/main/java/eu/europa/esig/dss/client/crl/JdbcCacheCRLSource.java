@@ -140,7 +140,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 
 					LOG.debug("CRL in cache");
 					final CRLValidity crlValidity = CRLUtils.isValidCRL(x509Crl, issuerToken);
-					final CRLToken crlToken = new CRLToken(certificateToken, crlValidity, true);
+					final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 					crlToken.setSourceURL(crlUrl);
 					if (crlToken.isValid()) {
 

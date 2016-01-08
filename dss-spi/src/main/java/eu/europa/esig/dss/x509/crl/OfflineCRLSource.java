@@ -76,7 +76,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		if (bestCRLValidity == null) {
 			return null;
 		}
-		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity, true);
+		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity);
 		validCRLTokenList.put(certificateToken, crlToken);
 		return crlToken;
 	}

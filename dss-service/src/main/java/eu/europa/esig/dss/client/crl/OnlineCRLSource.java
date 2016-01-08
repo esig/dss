@@ -140,7 +140,7 @@ public class OnlineCRLSource implements CRLSource {
 			return null;
 		}
 		final CRLValidity crlValidity = CRLUtils.isValidCRL(crl, issuerToken);
-		final CRLToken crlToken = new CRLToken(certificateToken, crlValidity, true);
+		final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 		crlToken.setSourceURL(dataAndUrl.urlString);
 		return crlToken;
 	}
