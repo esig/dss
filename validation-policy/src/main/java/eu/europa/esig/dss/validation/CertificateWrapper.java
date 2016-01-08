@@ -198,6 +198,41 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		BigInteger serialNumber = certificate.getSerialNumber();
 		return serialNumber == null ? StringUtils.EMPTY : serialNumber.toString();
 	}
+	
+	public String getCommonName() {
+		String cn = certificate.getCommonName();
+		return cn == null ? StringUtils.EMPTY : cn;
+	}
+	
+	public String getCountryName() {
+		String c = certificate.getCountryName();
+		return c == null ? StringUtils.EMPTY : c;
+	}
+	
+	public String getGivenName() {
+		String givenName = certificate.getGivenName();
+		return givenName == null ? StringUtils.EMPTY : givenName;
+	}
+	
+	public String getOrganizationName() {
+		String o = certificate.getOrganizationName();
+		return o == null ? StringUtils.EMPTY : o;
+	}
+	
+	public String getOrganizationalUnit() {
+		String ou = certificate.getOrganizationalUnit();
+		return ou == null ? StringUtils.EMPTY : ou;
+	}
+	
+	public String getSurname() {
+		String surname = certificate.getSurname();
+		return surname == null ? StringUtils.EMPTY : surname;
+	}
+	
+	public String getPseudo() {
+		String pseudo = certificate.getPseudonym();
+		return pseudo == null ? StringUtils.EMPTY : pseudo;
+	}
 
 	/**
 	 * This method indicates if the certificate has QCWithSSCD qualification.
