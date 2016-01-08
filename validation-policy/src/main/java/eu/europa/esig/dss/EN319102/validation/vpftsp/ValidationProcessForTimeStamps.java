@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.EN319102.validation.vpftsp;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -10,6 +10,7 @@ import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -19,13 +20,13 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  */
 public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTimestamps> {
 
-	private final Set<TimestampWrapper> timestamps;
+	private final List<TimestampWrapper> timestamps;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-	public ValidationProcessForTimeStamps(Set<TimestampWrapper> timestamps, Map<String, XmlBasicBuildingBlocks> bbbs) {
+	public ValidationProcessForTimeStamps(SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		super(new XmlValidationProcessTimestamps());
 
-		this.timestamps = timestamps;
+		this.timestamps = signature.getTimestampList();
 		this.bbbs = bbbs;
 	}
 

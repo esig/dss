@@ -716,15 +716,15 @@ public class DiagnosticData {
 		return notArchivalTimestamps;
 	}
 
-	public Set<TimestampWrapper> getAllArchiveTimestamps() {
-		Set<TimestampWrapper> archiveTimestamps = new HashSet<TimestampWrapper>();
+	public Set<TimestampWrapper> getAllTimestamps() {
+		Set<TimestampWrapper> allTimestamps = new HashSet<TimestampWrapper>();
 		List<SignatureWrapper> signatures = getSignatures();
 		if (CollectionUtils.isNotEmpty(signatures)) {
 			for (SignatureWrapper signatureWrapper : signatures) {
-				archiveTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP));
+				allTimestamps.addAll(signatureWrapper.getTimestampList());
 			}
 		}
-		return archiveTimestamps;
+		return allTimestamps;
 	}
 
 	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getJaxbModel() {

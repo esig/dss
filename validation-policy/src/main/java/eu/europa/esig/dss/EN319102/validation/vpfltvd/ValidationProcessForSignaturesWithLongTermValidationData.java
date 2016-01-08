@@ -51,15 +51,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper currentSignature;
-	private final Set<TimestampWrapper> timestamps;
+	private final List<TimestampWrapper> timestamps;
 	private final Set<RevocationWrapper> revocationData;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
 	private final Date currentDate;
 
 	public ValidationProcessForSignaturesWithLongTermValidationData(XmlConstraintsConclusion basicSignatureValidation,
-			XmlConstraintsConclusion timestampValidation, DiagnosticData diagnosticData, SignatureWrapper currentSignature, Set<TimestampWrapper> timestamps,
-			Set<RevocationWrapper> revocationData, Map<String, XmlBasicBuildingBlocks> bbbs, Date currentDate) {
+			XmlConstraintsConclusion timestampValidation, DiagnosticData diagnosticData, SignatureWrapper currentSignature,
+			Map<String, XmlBasicBuildingBlocks> bbbs, Date currentDate) {
 		super(new XmlValidationProcessLongTermData());
 
 		this.basicSignatureValidation = basicSignatureValidation;
@@ -67,8 +67,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 		this.diagnosticData = diagnosticData;
 		this.currentSignature = currentSignature;
-		this.timestamps = timestamps;
-		this.revocationData = revocationData;
+		this.timestamps = diagnosticData.getTimestampList(currentSignature.getId());
+		this.revocationData = diagnosticData.getAllRevocationData();
 		this.bbbs = bbbs;
 		this.currentDate = currentDate;
 	}
@@ -212,7 +212,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new RevocationBasicBuildingBlocksCheck(result, revocationBBB, getFailLevelConstraint());
 	}
 
-	private Set<TimestampWrapper> filterInvalidMessageImprint(Set<TimestampWrapper> allTimestamps) {
+	private Set<TimestampWrapper> filterInvalidMessageImprint(List<TimestampWrapper> allTimestamps) {
 		Set<TimestampWrapper> result = new HashSet<TimestampWrapper>();
 		for (TimestampWrapper tsp : allTimestamps) {
 			if (tsp.isMessageImprintDataFound() && tsp.isMessageImprintDataIntact()) {
