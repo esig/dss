@@ -110,13 +110,13 @@
 											maxOccurs="unbounded" />
 										<xs:element type="xs:string" name="IssuerCertificate" />
 										<xs:element type="xs:integer" name="SerialNumber" />
-										<xs:element type="xs:string" name="CommonName"></xs:element>
-										<xs:element type="xs:string" name="CountryName"></xs:element>
-										<xs:element type="xs:string" name="OrganizationName"></xs:element>
-										<xs:element type="xs:string" name="GivenName"></xs:element>
-										<xs:element type="xs:string" name="OrganizationalUnit"></xs:element>
-										<xs:element type="xs:string" name="Surname"></xs:element>
-										<xs:element type="xs:string" name="Pseudonym"></xs:element>
+										<xs:element type="xs:string" name="CommonName" minOccurs="0"/>
+										<xs:element type="xs:string" name="CountryName" minOccurs="0"/>
+										<xs:element type="xs:string" name="OrganizationName" minOccurs="0"/>
+										<xs:element type="xs:string" name="GivenName" minOccurs="0"/>
+										<xs:element type="xs:string" name="OrganizationalUnit" minOccurs="0"/>
+										<xs:element type="xs:string" name="Surname" minOccurs="0"/>
+										<xs:element type="xs:string" name="Pseudonym" minOccurs="0"/>
 										<xs:element type="DigestAlgAndValueType" name="DigestAlgAndValue"
 											minOccurs="0" maxOccurs="unbounded" />
 										<xs:element type="xs:dateTime" name="NotAfter" />
