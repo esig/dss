@@ -168,12 +168,13 @@
   		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="TimeConstraint">
-		<xs:simpleContent>
-			<xs:extension base="xs:string">
+	<xs:complexType name="TimeConstraint" mixed="true">
+  		<xs:complexContent>
+			<xs:extension base="tns:LevelConstraint">
 				<xs:attribute type="tns:TimeUnit" name="Unit"/>
+				<xs:attribute type="xs:int" name="value" />
 			</xs:extension>
-		</xs:simpleContent>
+  		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:simpleType name="level">

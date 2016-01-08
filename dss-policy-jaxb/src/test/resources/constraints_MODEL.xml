@@ -130,7 +130,7 @@
 		</OnRoles>
 	</SignatureConstraints>
 	<Timestamp>
-		<TimestampDelay Unit="DAYS">0</TimestampDelay>
+		<TimestampDelay Level="FAIL" Unit="DAYS">0</TimestampDelay>
 		<MessageImprintDataFound Level="FAIL"/>
 		<MessageImprintDataIntact Level="FAIL"/>
 		<Coherence Level="FAIL"/>
@@ -189,7 +189,7 @@
 		</CACertificate>
 	</Timestamp>
 	<Revocation>
-		<RevocationFreshness Unit="DAYS">9700</RevocationFreshness>
+		<RevocationFreshness Level="FAIL" Unit="DAYS">0</RevocationFreshness>
 		<SigningCertificate>
 			<Signature Level="FAIL"/>
 			<Expiration Level="FAIL"/>
