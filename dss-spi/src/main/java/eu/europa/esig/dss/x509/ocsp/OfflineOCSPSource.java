@@ -91,7 +91,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		}
 		if (bestSingleResp != null) {
 
-			final OCSPToken ocspToken = new OCSPToken(bestBasicOCSPResp, bestSingleResp);
+			final OCSPToken ocspToken = new OCSPToken(bestBasicOCSPResp, bestSingleResp, true);
 			certificateToken.setRevocationToken(ocspToken);
 			return ocspToken;
 		}

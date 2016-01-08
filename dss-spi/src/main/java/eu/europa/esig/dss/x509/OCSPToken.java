@@ -71,7 +71,7 @@ public class OCSPToken extends RevocationToken {
 	 * @param basicOCSPResp   The basic OCSP response.
 	 * @param singleResp
 	 */
-	public OCSPToken(final BasicOCSPResp basicOCSPResp, final SingleResp singleResp) {
+	public OCSPToken(final BasicOCSPResp basicOCSPResp, final SingleResp singleResp, final boolean available) {
 
 		if (basicOCSPResp == null) {
 			throw new NullPointerException();
@@ -82,6 +82,7 @@ public class OCSPToken extends RevocationToken {
 		this.basicOCSPResp = basicOCSPResp;
 		this.singleResp = singleResp;
 		this.issuingTime = basicOCSPResp.getProducedAt();
+		this.available = available;
 		setStatus(singleResp.getCertStatus());
 		final ASN1ObjectIdentifier signatureAlgOID = basicOCSPResp.getSignatureAlgOID();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(signatureAlgOID.getId());
@@ -221,19 +222,6 @@ public class OCSPToken extends RevocationToken {
 			return bytes;
 		} catch (IOException e) {
 			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
-		}
-	}
-	
-	@Override
-	public boolean isAvailable() {
-		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(sourceURI).openConnection();
-			connection.setRequestMethod("GET");
-			int responseCode = connection.getResponseCode();
-			return responseCode == 200;
-		} catch(Exception e) {
-			e.printStackTrace();
-			return false;
 		}
 	}
 }

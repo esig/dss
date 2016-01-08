@@ -161,7 +161,7 @@ public class OnlineOCSPSource implements OCSPSource {
 			}
 
 			if (bestSingleResp != null) {
-				final OCSPToken ocspToken = new OCSPToken(basicOCSPResp, bestSingleResp);
+				final OCSPToken ocspToken = new OCSPToken(basicOCSPResp, bestSingleResp, true);
 				ocspToken.setSourceURI(ocspAccessLocation);
 				certificateToken.setRevocationToken(ocspToken);
 				return ocspToken;

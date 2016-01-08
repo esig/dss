@@ -24,6 +24,8 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
+	
+	protected boolean available;
 
 	/**
 	 * Contains the revocation status of the token. True if is not revoked, false if is revoked or null if unknown.
@@ -50,6 +52,10 @@ public abstract class RevocationToken extends Token {
 	 * The reason of the revocation.
 	 */
 	protected String reason;
+	
+	public boolean isAvailable() {
+		return available;
+	}
 
 	/**
 	 * @return
@@ -92,8 +98,6 @@ public abstract class RevocationToken extends Token {
 	 * @return {@code true} if the conditions are meet
 	 */
 	public abstract boolean isValid();
-	
-	public abstract boolean isAvailable();
 
 	public abstract String getSourceURL();
 

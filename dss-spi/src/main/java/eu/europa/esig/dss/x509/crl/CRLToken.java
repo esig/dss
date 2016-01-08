@@ -68,10 +68,11 @@ public class CRLToken extends RevocationToken {
 	 *            {@code CRLValidity} containing the information about the
 	 *            validity of the CRL
 	 */
-	public CRLToken(final CertificateToken certificateToken, final CRLValidity crlValidity) {
+	public CRLToken(final CertificateToken certificateToken, final CRLValidity crlValidity, final boolean available) {
 
 		ensureNotNull(crlValidity);
 		this.crlValidity = crlValidity;
+		this.available = available;
 		setDefaultValues();
 		setRevocationStatus(certificateToken);
 		LOG.debug("+CRLToken");
@@ -234,19 +235,6 @@ public class CRLToken extends RevocationToken {
 		} catch (Exception e) {
 
 			return ((Object) this).toString();
-		}
-	}
-	
-	@Override
-	public boolean isAvailable() {
-		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(sourceURL).openConnection();
-			connection.setRequestMethod("GET");
-			int responseCode = connection.getResponseCode();
-			return responseCode == 200;
-		} catch(Exception e) {
-			e.printStackTrace();
-			return false;
 		}
 	}
 }
