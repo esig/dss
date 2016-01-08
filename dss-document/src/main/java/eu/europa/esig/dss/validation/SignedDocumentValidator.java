@@ -27,6 +27,7 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,10 +42,12 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.X500NameStyle;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
@@ -889,6 +892,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlCert.getIssuerDistinguishedName().add(xmlDistinguishedName);
 
 		xmlCert.setSerialNumber(certToken.getSerialNumber());
+		X500Principal x500Principal = certToken.getSubjectX500Principal();
+		xmlCert.setCommonName(extractAttributeFromX500Principal(BCStyle.CN, x500Principal));
+		xmlCert.setCountryName(extractAttributeFromX500Principal(BCStyle.C, x500Principal));
+		xmlCert.setOrganizationName(extractAttributeFromX500Principal(BCStyle.O, x500Principal));
+		xmlCert.setGivenName(extractAttributeFromX500Principal(BCStyle.GIVENNAME, x500Principal));
+		xmlCert.setOrganizationalUnit(extractAttributeFromX500Principal(BCStyle.OU, x500Principal));
+		xmlCert.setSurname(extractAttributeFromX500Principal(BCStyle.SURNAME, x500Principal));
+		xmlCert.setPseudonym(extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
 
 		for (final DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
 
@@ -965,29 +976,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlDistinguishedName.setFormat(x500PrincipalFormat);
 		final String x500PrincipalName = X500PrincipalName.getName(x500PrincipalFormat);
 		xmlDistinguishedName.setValue(x500PrincipalName);
-		
-		final X500Name x500Name = X500Name.getInstance(X500PrincipalName.getEncoded());
-		RDN[] rdns = x500Name.getRDNs(BCStyle.CN);
-		if(rdns.length > 0) {
-			xmlDistinguishedName.setCommonName(rdns[0].getFirst().getValue().toString());
-		}
-		
-		rdns = x500Name.getRDNs(BCStyle.C);
-		if(rdns.length > 0) {
-			xmlDistinguishedName.setCountryName(rdns[0].getFirst().getValue().toString());
-		}
-		
-		rdns = x500Name.getRDNs(BCStyle.O);
-		if(rdns.length > 0) {
-			xmlDistinguishedName.setOrganizationName(rdns[0].getFirst().getValue().toString());
-		}
-		
-		rdns = x500Name.getRDNs(BCStyle.SERIALNUMBER);
-		if(rdns.length > 0) {
-			xmlDistinguishedName.setSerialNumber(rdns[0].getFirst().getValue().toString());
-		}
-		
 		return xmlDistinguishedName;
+	}
+	
+	private String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500Principal X500PrincipalName) {
+		final X500Name x500Name = X500Name.getInstance(X500PrincipalName.getEncoded());
+		RDN[] rdns = x500Name.getRDNs(identifier);
+		if(rdns.length > 0) {
+			return rdns[0].getFirst().getValue().toString();
+		}
+		return null;
 	}
 
 	/**
