@@ -87,8 +87,10 @@ public final class RuleUtils {
 	/**
 	 * This method checks if the given string is present in the list of {@code String}(s).
 	 *
-	 * @param id     {@code String} to check
-	 * @param idList the list of {@code String}(s)
+	 * @param id
+	 *            {@code String} to check
+	 * @param idList
+	 *            the list of {@code String}(s)
 	 * @return tru if the {@code id} is present in the {@code idList}, false otherwise
 	 */
 	public static boolean contains1(final String id, final List<String> idList) {
@@ -101,14 +103,6 @@ public final class RuleUtils {
 			}
 		}
 		return false;
-	}
-
-	public static long convertToLong(final String value) {
-		try {
-			return Long.parseLong(value);
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	public static String canonicalizeDigestAlgo(final String algo) {
@@ -163,14 +157,14 @@ public final class RuleUtils {
 		return found;
 	}
 
-	public static Long convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, String value) {
+	public static Long convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, int value) {
 		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
 		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
-		return to.convert(convertToLong(value), from);
+		return to.convert(value, from);
 	}
 
-	public static long convertDuration(TimeConstraint revocationFreshness) {
-		return convertDuration(revocationFreshness.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, revocationFreshness.getValue());
+	public static long convertDuration(TimeConstraint timeConstraint) {
+		return convertDuration(timeConstraint.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, timeConstraint.getValue());
 	}
 
 }

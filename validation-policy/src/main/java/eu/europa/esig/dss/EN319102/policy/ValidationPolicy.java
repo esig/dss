@@ -26,6 +26,7 @@ import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
@@ -187,13 +188,6 @@ public interface ValidationPolicy {
 	 * @return
 	 */
 	String getPolicyDescription();
-
-	/**
-	 * Returns the timestamp delay in milliseconds.
-	 *
-	 * @return
-	 */
-	Long getTimestampDelayTime();
 
 	String getCertifiedRolesAttendance();
 
@@ -411,20 +405,9 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getSignatureIntactConstraint(Context context);
 
-	// BasicValidationProcessValidConstraint
-	// getBasicValidationProcessConclusionConstraint();
-
 	LevelConstraint getMessageImprintDataFoundConstraint();
 
 	LevelConstraint getMessageImprintDataIntactConstraint();
-
-	/**
-	 * This constraint is always executed!
-	 *
-	 * @return
-	 */
-	// TimestampValidationProcessValidConstraint
-	// getTimestampValidationProcessConstraint();
 
 	LevelConstraint getRevocationTimeConstraint();
 
@@ -436,12 +419,7 @@ public interface ValidationPolicy {
 
 	LevelConstraint getTimestampCoherenceConstraint();
 
-	/**
-	 * This constraint has only two levels: FAIL, or NOTHING
-	 *
-	 * @return
-	 */
-	LevelConstraint getTimestampDelaySigningTimePropertyConstraint();
+	TimeConstraint getTimestampDelaySigningTimePropertyConstraint();
 
 	RevocationConstraints getRevocationConstraint();
 

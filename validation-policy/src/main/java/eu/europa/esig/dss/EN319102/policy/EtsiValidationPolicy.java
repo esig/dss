@@ -34,7 +34,6 @@ import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
@@ -264,16 +263,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	@Override
 	public String getPolicyDescription() {
 		return policy.getDescription();
-	}
-
-	@Override
-	public Long getTimestampDelayTime() {
-		TimestampConstraints timestamp = policy.getTimestamp();
-		if (timestamp != null) {
-			TimeConstraint timestampDelay = timestamp.getTimestampDelay();
-			return RuleUtils.convertDuration(timestampDelay.getUnit(), TimeUnit.MILLISECONDS, timestampDelay.getValue());
-		}
-		return null;
 	}
 
 	@Override
@@ -605,12 +594,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getTimestampDelaySigningTimePropertyConstraint() {
-		final Long timestampDelay = getTimestampDelayTime();
-		if ((timestampDelay != null) && (timestampDelay > 0)) {
-			LevelConstraint constraint = new LevelConstraint();
-			constraint.setLevel(Level.FAIL);
-			return constraint;
+	public TimeConstraint getTimestampDelaySigningTimePropertyConstraint() {
+		TimestampConstraints timestampConstraints = policy.getTimestamp();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTimestampDelay();
 		}
 		return null;
 	}

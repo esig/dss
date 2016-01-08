@@ -20,6 +20,7 @@ import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.RevocationDateAfter
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.SigningCertificateValidityAtBestSignatureTimeCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.TimestampCoherenceOrderCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.TimestampDelayCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
@@ -35,6 +36,8 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
+import eu.europa.esig.jaxb.policy.TimeUnit;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data
@@ -245,14 +248,22 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampDelay(Date bestSignatureTime) {
-		// TODO return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, );
-		return null;
+		return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, getFailTimeConstraint());
 	}
 
 	// TODO uses validation policy
 	private LevelConstraint getFailLevelConstraint() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
+		return constraint;
+	}
+
+	// TODO uses validation policy
+	private TimeConstraint getFailTimeConstraint() {
+		TimeConstraint constraint = new TimeConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.setUnit(TimeUnit.DAYS);
+		constraint.setValue(1);
 		return constraint;
 	}
 
