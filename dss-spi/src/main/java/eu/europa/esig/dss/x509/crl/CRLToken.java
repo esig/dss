@@ -236,17 +236,4 @@ public class CRLToken extends RevocationToken {
 			return ((Object) this).toString();
 		}
 	}
-	
-	@Override
-	public boolean isAvailable() {
-		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(sourceURL).openConnection();
-			connection.setRequestMethod("GET");
-			int responseCode = connection.getResponseCode();
-			return responseCode == 200;
-		} catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
 }

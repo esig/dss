@@ -223,17 +223,4 @@ public class OCSPToken extends RevocationToken {
 			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
 		}
 	}
-	
-	@Override
-	public boolean isAvailable() {
-		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(sourceURI).openConnection();
-			connection.setRequestMethod("GET");
-			int responseCode = connection.getResponseCode();
-			return responseCode == 200;
-		} catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
 }
