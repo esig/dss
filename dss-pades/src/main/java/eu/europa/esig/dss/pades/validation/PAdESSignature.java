@@ -276,7 +276,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 					timestampToken.setTimestampedReferences(references);
 					archiveTimestampTokenList.add(timestampToken);
 				}
-				timestampedTimestamps.add(String.valueOf(timestampToken.getDSSId()));
+				timestampedTimestamps.add(timestampToken.getDSSId().asXmlId());
 			}
 
 		}

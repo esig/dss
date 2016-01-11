@@ -968,7 +968,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				default:
 					throw new DSSException("TimeStampType not supported : " + timestampType);
 			}
-			timestampedTimestamps.add(String.valueOf(timestampToken.getDSSId()));
+			timestampedTimestamps.add(timestampToken.getDSSId().asXmlId());
 		}
 	}
 
