@@ -213,7 +213,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 		final RequestConfig.Builder custom = RequestConfig.custom();
 		custom.setSocketTimeout(timeoutSocket);
-		custom.setConnectionRequestTimeout(timeoutConnection);
+		custom.setConnectTimeout(timeoutConnection);
 		final RequestConfig requestConfig = custom.build();
 		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
 		httpClientBuilder.setConnectionManager(getConnectionManager());
