@@ -21,9 +21,12 @@
 package eu.europa.esig.dss.ws;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
+
+import org.apache.commons.io.IOUtils;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -67,7 +70,12 @@ public class WSDocument {
 	 */
 	public WSDocument(final DSSDocument dssDocument) throws DSSException {
 
-		final byte[] bytes = dssDocument.getBytes();
+		byte[] bytes;
+		try {
+			bytes = IOUtils.toByteArray(dssDocument.openStream());
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
 		this.bytes = Arrays.copyOf(bytes, bytes.length);
 		mimeType = dssDocument.getMimeType();
 		name = dssDocument.getName();

@@ -23,9 +23,11 @@ package eu.europa.esig.dss.cades.validation;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Test;
@@ -79,10 +81,10 @@ public class CAdESWithDEREncodedTimestampTest {
 
 
 	@Test
-	public void testFile3() throws DSSException, CMSException  {
+	public void testFile3() throws DSSException, CMSException, IOException  {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-CAdES/DE_CRY/Signature-C-DE_CRY-4.p7m");
 
-		CAdESSignature signature = new CAdESSignature(dssDocument.getBytes());
+		CAdESSignature signature = new CAdESSignature(IOUtils.toByteArray(dssDocument.openStream()));
 		CMSSignedData cmsSignedData = signature.getCmsSignedData();
 		assertNotNull(cmsSignedData);
 	}

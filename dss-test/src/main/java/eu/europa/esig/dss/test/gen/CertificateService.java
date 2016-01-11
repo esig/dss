@@ -101,7 +101,7 @@ public class CertificateService {
 		MockPrivateKeyEntry rootEntry =  generateSelfSignedCertificate(algorithm, rootCrl);
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
+		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 100000)); // 1000d
 
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
@@ -112,7 +112,7 @@ public class CertificateService {
 
 	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, MockPrivateKeyEntry rootEntry) throws Exception {
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
+		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 100000)); // 1000d
 
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
@@ -131,7 +131,7 @@ public class CertificateService {
 		X500Name issuer = new X500Name("CN=RootSelfSignedFake,O=DSS-test");
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
+		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 100000)); // 1000d
 
 		CertificateToken certificate = null;
 		if (rootCrl) {
@@ -149,7 +149,7 @@ public class CertificateService {
 		X500Name subject = new X500Name("CN=RootSubjectTSP,O=DSS-test");
 
 		final Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		final Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)); // 10d
+		final Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 100000)); // 1000d
 
 		// generate certificate
 		CertificateToken cert = generateTspCertificate(algorithm, keyPair, issuer, subject, notBefore, notAfter);

@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -59,8 +60,8 @@ public class GetOriginalDocumentTest {
 		
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-		String firstDocument = new String(canon.canonicalize(document.getBytes()));
-		String secondDocument = new String(canon.canonicalize(removeResult.getBytes()));
+		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
+		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(removeResult)));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 	
@@ -91,8 +92,8 @@ public class GetOriginalDocumentTest {
 		
 		DSSDocument result = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-		String firstDocument = new String(canon.canonicalize(document.getBytes()));
-		String secondDocument = new String(canon.canonicalize(result.getBytes()));
+		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
+		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(result)));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 	
@@ -180,11 +181,11 @@ public class GetOriginalDocumentTest {
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(result.getNextDocument());
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-		String firstDocument = new String(canon.canonicalize(doc1.getBytes()));
-		String secondDocument = new String(canon.canonicalize(result.getBytes()));
+		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc1)));
+		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(result)));
 		Assert.assertEquals(firstDocument, secondDocument);
-		firstDocument = new String(canon.canonicalize(doc2.getBytes()));
-		secondDocument = new String(canon.canonicalize(result.getNextDocument().getBytes()));
+		firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc2)));
+		secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(result.getNextDocument())));
 		Assert.assertEquals(firstDocument, secondDocument);
 		Assert.assertNull(result.getNextDocument().getNextDocument());
 	}

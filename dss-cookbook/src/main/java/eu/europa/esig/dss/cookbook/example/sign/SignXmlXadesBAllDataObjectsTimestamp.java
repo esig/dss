@@ -108,7 +108,7 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
 		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-		InputStream is = new ByteArrayInputStream(signedDocument.getBytes());
+		InputStream is = signedDocument.openStream();
 
 		DSSUtils.saveToFile(is, "target/signedXmlXadesBAllDataObjectsTimestamp.xml");
 	}

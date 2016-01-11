@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.pdfbox.io.IOUtils;
 import org.bouncycastle.util.encoders.Base64;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -119,7 +120,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 				DSSDocument inMemoryDocument = null;
 				DSSDocument firstDocument = null;
 				for(DSSDocument document : cadesSignature.getDetachedContents()) {
-					byte[] content = document.getBytes();
+					byte[] content;
+					try {
+						content = IOUtils.toByteArray(document.openStream());
+					} catch (IOException e) {
+						throw new DSSException(e);
+					}
 					content = isBase64Encoded(content) ? Base64.decode(content) : content;
 					if(firstDocument == null) {
 						firstDocument = new InMemoryDocument(content);

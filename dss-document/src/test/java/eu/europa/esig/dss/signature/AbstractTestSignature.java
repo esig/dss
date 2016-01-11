@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -77,7 +78,7 @@ public abstract class AbstractTestSignature {
 		final DSSDocument signedDocument = sign();
 
 		assertNotNull(signedDocument.getName());
-		assertNotNull(signedDocument.getBytes());
+		assertNotNull(DSSUtils.toByteArray(signedDocument));
 		assertNotNull(signedDocument.getMimeType());
 
 		logger.info("=================== VALIDATION =================");

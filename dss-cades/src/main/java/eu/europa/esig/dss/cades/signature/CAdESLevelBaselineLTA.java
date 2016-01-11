@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -111,7 +114,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		final Attribute atsHashIndexAttribute = timestampExtractor.getAtsHashIndex(signerInformation, timestampDigestAlgorithm);
 
-		final byte[] originalDocumentBytes = getOriginalDocumentBytes(cmsSignedData, parameters);
+		final InputStream originalDocumentBytes = getOriginalDocumentBytes(cmsSignedData, parameters);
 
 		final byte[] encodedToTimestamp = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentBytes, timestampDigestAlgorithm);
 
@@ -129,16 +132,16 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	 * @return
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	private byte[] getOriginalDocumentBytes(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) throws DSSException {
+	private InputStream getOriginalDocumentBytes(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) throws DSSException {
 
 		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		if (signedContent != null) {
-			return CMSUtils.getSignedContent(signedContent);
+			return new ByteArrayInputStream(CMSUtils.getSignedContent(signedContent));
 		}
 		final DSSDocument detachedContent = parameters.getDetachedContent();
 		if (detachedContent == null) {
 			throw new DSSException("In the case of detached signature the detached content must be set!");
 		}
-		return detachedContent.getBytes();
+		return detachedContent.openStream();
 	}
 }

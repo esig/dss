@@ -169,7 +169,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 			return asicEntryMimetype;
 		}
-		final MimeType asicCommentString = getZipComment(asicContainer.getBytes());
+		final MimeType asicCommentString = getZipComment(asicContainer);
 		if (isASiCMimeType(asicCommentString)) {
 
 			return asicCommentString;
@@ -426,44 +426,51 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return signature;
 	}
 
-	private static MimeType getZipComment(final byte[] buffer) {
+	private static MimeType getZipComment(final DSSDocument document) {
 
-		final int len = buffer.length;
-		final byte[] magicDirEnd = {0x50, 0x4b, 0x05, 0x06};
-		final int buffLen = Math.min(buffer.length, len);
-		// Check the buffer from the end
-		for (int ii = buffLen - magicDirEnd.length - 22; ii >= 0; ii--) {
-
-			boolean isMagicStart = true;
-			for (int jj = 0; jj < magicDirEnd.length; jj++) {
-
-				if (buffer[ii + jj] != magicDirEnd[jj]) {
-
-					isMagicStart = false;
-					break;
+		try {
+			byte[] buffer = IOUtils.toByteArray(document.openStream());
+		
+			final int len = buffer.length;
+			final byte[] magicDirEnd = {0x50, 0x4b, 0x05, 0x06};
+			final int buffLen = Math.min(buffer.length, len);
+			// Check the buffer from the end
+			for (int ii = buffLen - magicDirEnd.length - 22; ii >= 0; ii--) {
+	
+				boolean isMagicStart = true;
+				for (int jj = 0; jj < magicDirEnd.length; jj++) {
+	
+					if (buffer[ii + jj] != magicDirEnd[jj]) {
+	
+						isMagicStart = false;
+						break;
+					}
+				}
+				if (isMagicStart) {
+	
+					// Magic Start found!
+					int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
+					int realLen = buffLen - ii - 22;
+					if (commentLen != realLen) {
+						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is " + commentLen + ", but file ends after " + realLen + " bytes!");
+					}
+					final String comment = new String(buffer, ii + 22, Math.min(commentLen, realLen));
+	
+					final int indexOf = comment.indexOf(MIME_TYPE_COMMENT);
+					if (indexOf > -1) {
+	
+						final String asicCommentMimeTypeString = comment.substring(MIME_TYPE_COMMENT.length() + indexOf);
+						final MimeType mimeType = MimeType.fromMimeTypeString(asicCommentMimeTypeString);
+						return mimeType;
+					}
 				}
 			}
-			if (isMagicStart) {
-
-				// Magic Start found!
-				int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
-				int realLen = buffLen - ii - 22;
-				if (commentLen != realLen) {
-					LOG.warn("WARNING! ZIP comment size mismatch: directory says len is " + commentLen + ", but file ends after " + realLen + " bytes!");
-				}
-				final String comment = new String(buffer, ii + 22, Math.min(commentLen, realLen));
-
-				final int indexOf = comment.indexOf(MIME_TYPE_COMMENT);
-				if (indexOf > -1) {
-
-					final String asicCommentMimeTypeString = comment.substring(MIME_TYPE_COMMENT.length() + indexOf);
-					final MimeType mimeType = MimeType.fromMimeTypeString(asicCommentMimeTypeString);
-					return mimeType;
-				}
-			}
+			LOG.warn("ZIP comment NOT found!");
+			return null;
+	
+		} catch(IOException e) {
+			throw new DSSException(e);
 		}
-		LOG.warn("ZIP comment NOT found!");
-		return null;
 	}
 
 	/**

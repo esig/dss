@@ -50,7 +50,7 @@ public abstract class AbstractRequirementChecks {
 		signedDocument.save("target/requirement-check.xml");
 
 		DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-		document = documentBuilder.parse(new ByteArrayInputStream(signedDocument.getBytes()));
+		document = documentBuilder.parse(signedDocument.openStream());
 	}
 
 	protected abstract DSSDocument getSignedDocument() throws Exception;

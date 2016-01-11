@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -113,7 +114,7 @@ public class NexuController {
 		signatureDocumentForm.setBase64SignatureValue(signatureValue.getSignatureValue());
 
 		DSSDocument document = signingService.signDocument(signatureDocumentForm);
-		InMemoryDocument signedDocument = new InMemoryDocument(document.getBytes(), document.getName(), document.getMimeType());
+		InMemoryDocument signedDocument = new InMemoryDocument(DSSUtils.toByteArray(document), document.getName(), document.getMimeType());
 		model.addAttribute("signedDocument", signedDocument);
 
 		SignDocumentResponse signedDocumentResponse = new SignDocumentResponse();

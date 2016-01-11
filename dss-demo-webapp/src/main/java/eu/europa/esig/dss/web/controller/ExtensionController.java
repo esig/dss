@@ -62,7 +62,7 @@ public class ExtensionController {
 		response.setContentType(extendedDocument.getMimeType().getMimeTypeString());
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + extendedDocument.getName() + "\"");
 		try {
-			IOUtils.copy(new ByteArrayInputStream(extendedDocument.getBytes()), response.getOutputStream());
+			IOUtils.copy(extendedDocument.openStream(), response.getOutputStream());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

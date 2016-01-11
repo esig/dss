@@ -384,7 +384,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getXmlId());
 
 			final Element digestValueDom = DSSXMLUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
-			final byte[] digest = DSSUtils.digest(digestAlgorithm, currentDetachedDocument.getBytes());
+			final byte[] digest = DSSUtils.digest(digestAlgorithm, currentDetachedDocument);
 			final String base64Encoded = Base64.encodeBase64String(digest);
 			final Text textNode = documentDom.createTextNode(base64Encoded);
 			digestValueDom.appendChild(textNode);
@@ -631,7 +631,15 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		final String signatureZipEntryName = getSignatureFileName(asicParameters);
 		final ZipEntry entrySignature = new ZipEntry(signatureZipEntryName);
 		createZipEntry(outZip, entrySignature);
-		zipWriteBytes(outZip, signature.getBytes());
+		zipWriteBytes(outZip, signature);
+	}
+
+	private void zipWriteBytes(final ZipOutputStream outZip, final DSSDocument document) throws DSSException {
+		try {
+			document.writeTo(outZip);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	private void zipWriteBytes(final ZipOutputStream outZip, final byte[] bytes) throws DSSException {
@@ -789,7 +797,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		boolean isSignatureTypeCorrect = true;
 		if(isArchive(toSignDocument)) {
 			isMimetypeCorrect = toSignDocument.getMimeType().getMimeTypeString().equals(getMimeTypeBytes(parameters.aSiC()));
-			ByteArrayInputStream stream = new ByteArrayInputStream(toSignDocument.getBytes());
+			InputStream stream = toSignDocument.openStream();
 			ZipInputStream zip = new ZipInputStream(stream);
 			ZipEntry entry = zip.getNextEntry();
 			while(entry != null) {

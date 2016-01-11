@@ -24,6 +24,7 @@ import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -496,7 +497,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, byte[] originalDocument,
+	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, InputStream originalDocument,
 			DigestAlgorithm digestAlgorithm) throws DSSException {
 
 		final CMSSignedData cmsSignedData = cadesSignature.getCmsSignedData();
