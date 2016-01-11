@@ -171,6 +171,14 @@ public enum MessageTag {
 	LABEL_TINTWS("Additional assurance on the signing time may be needed to prove the validity of the signature."),
 	LABEL_TINVTWS("There is no valid timestamp within the signature."),
 
+	ERV_FATSPCS("Is the first archive timestamp covers the signature ?"),
+	ERV_FATSPCS_ANS("The first archive timestamp don't cover the signature !"),
+	
+	ERV_IERVC("Is the result of the Evidence record validation conclusive?"),
+	ERV_IERVC_ANS("Evidence record validation is not conclusive!"),
+	ERV_ATSCEO("Is all archive timestamps cover each other ?"),
+	ERV_ATSCEO_ANS("All archive timestamps don't cover each other!"),
+	
 	EMPTY("");
 
 
