@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks;
+package eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import org.apache.commons.collections.CollectionUtils;
 
 import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv.ArchiveTimestampsCoverEachOtherCheck;
-import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv.FirstArchiveTimestampHashValueCorrectCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv.checks.ArchiveTimestampsCoverEachOtherCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv.checks.FirstArchiveTimestampHashValueCorrectCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlERV;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;

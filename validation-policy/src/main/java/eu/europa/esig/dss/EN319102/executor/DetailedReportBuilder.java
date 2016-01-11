@@ -82,14 +82,19 @@ public class DetailedReportBuilder {
 		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
 		switch (validationLevel) {
 		case ARCHIVAL_DATA:
+			process(diagnosticData.getAllArchiveTimestamps(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
+			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 		case LONG_TERM_DATA:
 			process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
-			process(diagnosticData.getAllTimestamps(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
 			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
 			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		case TIMESTAMPS:
-			process(diagnosticData.getAllTimestamps(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
 			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
 			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;

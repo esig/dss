@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv;
+package eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv.checks;
 
 import java.util.List;
 
