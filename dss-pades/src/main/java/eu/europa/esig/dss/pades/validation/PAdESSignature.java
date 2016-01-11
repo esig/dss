@@ -226,7 +226,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 				final TimestampToken timestampToken = pdfBoxTimestampInfo.getTimestampToken();
 				if (timestampToken.getTimeStampType() == TimestampType.SIGNATURE_TIMESTAMP) {
 
-					timestampToken.setTimestampedReferences(cadesSignature.getSignatureTimestampedReferences());
+					timestampToken.setTimestampedReferences(getSignatureTimestampedReferences());
 					result.add(timestampToken);
 				}
 			}
@@ -263,7 +263,7 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 				final TimestampToken timestampToken = pdfBoxTimestampInfo.getTimestampToken();
 				if (timestampToken.getTimeStampType() == TimestampType.ARCHIVE_TIMESTAMP) {
 
-					final List<TimestampReference> references = cadesSignature.getSignatureTimestampedReferences();
+					final List<TimestampReference> references = getSignatureTimestampedReferences();
 					for (final String timestampId : timestampedTimestamps) {
 
 						final TimestampReference signatureReference_ = new TimestampReference(timestampId);
@@ -282,6 +282,17 @@ public class PAdESSignature extends DefaultAdvancedSignature {
 		}
 		return Collections.unmodifiableList(archiveTimestampTokenList);
 	}
+	
+	private List<TimestampReference> getSignatureTimestampedReferences() {
+		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+		final TimestampReference signatureReference = new TimestampReference(getId());
+		references.add(signatureReference);
+		final List<TimestampReference> signingCertificateTimestampReferences = cadesSignature.getSigningCertificateTimestampReferences();
+		references.addAll(signingCertificateTimestampReferences);
+		return references;
+	}
+	
+	
 
 	private TimestampReference createCertificateTimestampReference(CertificateToken certificate) {
 		final byte[] certificateDigest = DSSUtils.digest(DigestAlgorithm.SHA1, certificate.getEncoded());

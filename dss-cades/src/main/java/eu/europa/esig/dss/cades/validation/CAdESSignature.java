@@ -1031,7 +1031,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return signatureReference;
 	}
 
-	private List<TimestampReference> getSigningCertificateTimestampReferences() {
+	public List<TimestampReference> getSigningCertificateTimestampReferences() {
 
 		if (signingCertificateTimestampReferences == null) {
 
