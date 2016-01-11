@@ -43,7 +43,6 @@
 
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
-
 		<log4j.version>1.2.17</log4j.version>
 		<spring.version>3.2.14.RELEASE</spring.version>
 		<tiles.version>2.2.2</tiles.version>

@@ -645,6 +645,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element policyDigestValue = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_VALUE);
 				final String digestValue = policyDigestValue.getTextContent().trim();
 				signaturePolicy.setDigestValue(digestValue);
+				final Element policyUrl = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
+				if (policyUrl != null) {
+					signaturePolicy.setUrl(policyUrl.getTextContent().trim());
+				}
 				return signaturePolicy;
 			} else {
 				// Implicit policy
