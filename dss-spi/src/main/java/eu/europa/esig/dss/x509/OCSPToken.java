@@ -108,15 +108,28 @@ public class OCSPToken extends RevocationToken {
 			final RevokedStatus revokedStatus = (RevokedStatus) certStatus;
 			status = false;
 			revocationDate = revokedStatus.getRevocationTime();
-			final int reasonId = revokedStatus.getRevocationReason();
-			final CRLReason crlReason = CRLReason.lookup(reasonId);
-			reason = crlReason.toString();
+            reason = getRevocationReason(revokedStatus);
 		} else if (certStatus instanceof UnknownStatus) {
 
 			if (logger.isInfoEnabled()) {
 				logger.info("OCSP status unknown");
 			}
 			reason = "OCSP status: unknown";
+		}
+	}
+
+	private String getRevocationReason(RevokedStatus revokedStatus) {
+		int reasonId = getRevocationReasonId(revokedStatus);
+		CRLReason crlReason = CRLReason.lookup(reasonId);
+		return crlReason.toString();
+	}
+
+    private int getRevocationReasonId(RevokedStatus revokedStatus) {
+		try {
+			return revokedStatus.getRevocationReason();
+		} catch (IllegalStateException e) {
+		logger.warn("OCSP Revocation reason is not available: " + e.getMessage());
+			return 0; //Zero means 'unspecified'
 		}
 	}
 
