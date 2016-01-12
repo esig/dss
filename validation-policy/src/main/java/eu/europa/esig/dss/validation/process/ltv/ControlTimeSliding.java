@@ -203,7 +203,7 @@ public class ControlTimeSliding {
 
 			RevocationWrapper revocationData = certificate.getRevocationData();
 
-			final Date revocationIssuingTime = revocationData.getIssuingTime();
+			final Date revocationIssuingTime = revocationData.getProductionDate();
 			final String formatedRevocationIssuingTime = DateUtils.formatDate(revocationIssuingTime);
 
 			constraintNode.addChild(NodeName.STATUS, NodeValue.OK);
@@ -279,7 +279,7 @@ public class ControlTimeSliding {
 			 */
 			if (revoked) {
 
-				final Date revocationDate = revocationData.getDateTime();
+				final Date revocationDate = revocationData.getRevocationDate();
 				controlTime = revocationDate;
 
 				final String formatedRevocationDate = DateUtils.formatDate(revocationDate);

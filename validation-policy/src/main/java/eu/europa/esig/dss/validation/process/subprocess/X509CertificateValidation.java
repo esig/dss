@@ -397,7 +397,7 @@ public class X509CertificateValidation {
 		boolean revocationFreshnessToBeChecked = constraintData.isRevocationFreshnessToBeChecked();
 		boolean revocationFresh = !revocationFreshnessToBeChecked;
 
-		Date issuingTime = revocation.getIssuingTime();
+		Date issuingTime = revocation.getProductionDate();
 		if (revocationFreshnessToBeChecked && (issuingTime != null)) {
 			final long revocationDeltaTime = currentTime.getTime() - issuingTime.getTime();
 			if (revocationDeltaTime <= constraintData.getMaxRevocationFreshness()) {
@@ -561,7 +561,7 @@ public class X509CertificateValidation {
 	private boolean checkRevocationFreshnessConstraint(final Conclusion conclusion, final String certificateId, final boolean revocationFresh, final RevocationWrapper revocation, String subContext) {
 
 		// If the revocation data does not exist then this check is ignored.
-		if (revocation.getIssuingTime() == null) {
+		if (revocation.getProductionDate() == null) {
 			return true;
 		}
 
@@ -574,7 +574,7 @@ public class X509CertificateValidation {
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.TRY_LATER, MessageTag.BBB_XCV_IRIF_ANS);
 		constraint.setAttribute(AttributeValue.CERTIFICATE_ID, certificateId);
 		constraint.setAttribute(AttributeName.REVOCATION_NEXT_UPDATE, revocation.getNextUpdate());
-		constraint.setAttribute(AttributeName.REVOCATION_ISSUING_TIME, revocation.getIssuingTime());
+		constraint.setAttribute(AttributeName.REVOCATION_ISSUING_TIME, revocation.getProductionDate());
 		constraint.setAttribute(AttributeName.MAXIMUM_REVOCATION_FRESHNESS, constraintData.getFormatedMaxRevocationFreshness());
 		constraint.setConclusionReceiver(conclusion);
 
@@ -627,8 +627,8 @@ public class X509CertificateValidation {
 		constraint.setValue(String.valueOf(revoked));
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.REVOKED_NO_POE, MessageTag.BBB_XCV_ISCR_ANS);
 		constraint.setAttribute(AttributeValue.CERTIFICATE_ID, certificateId);
-		if (revocation.getDateTime() != null) {
-			constraint.setAttribute(AttributeName.REVOCATION_TIME, revocation.getDateTime());
+		if (revocation.getRevocationDate() != null) {
+			constraint.setAttribute(AttributeName.REVOCATION_TIME, revocation.getRevocationDate());
 		}
 		if (StringUtils.isNotBlank(revocation.getReason())) {
 			constraint.setAttribute(AttributeName.REVOCATION_REASON, revocation.getReason());
@@ -666,8 +666,8 @@ public class X509CertificateValidation {
 		constraint.setValue(String.valueOf(onHold));
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.TRY_LATER, MessageTag.BBB_XCV_ISCOH_ANS);
 		constraint.setAttribute(AttributeValue.CERTIFICATE_ID, certificateId);
-		if (revocation.getDateTime() != null) {
-			constraint.setAttribute(AttributeName.REVOCATION_TIME, revocation.getDateTime());
+		if (revocation.getRevocationDate() != null) {
+			constraint.setAttribute(AttributeName.REVOCATION_TIME, revocation.getRevocationDate());
 		}
 		if (revocation.getNextUpdate() != null) {
 			constraint.setAttribute(AttributeName.REVOCATION_NEXT_UPDATE, revocation.getNextUpdate());
@@ -848,8 +848,8 @@ public class X509CertificateValidation {
 		constraint.setValue(String.valueOf(revoked));
 		constraint.setIndications(Indication.INDETERMINATE, SubIndication.REVOKED_CA_NO_POE, MessageTag.BBB_XCV_IICR_ANS);
 		constraint.setAttribute(AttributeValue.CERTIFICATE_ID, certificateId);
-		if (revocation.getDateTime() != null) {
-			constraint.setAttribute(AttributeName.REVOCATION_TIME, revocation.getDateTime());
+		if (revocation.getRevocationDate() != null) {
+			constraint.setAttribute(AttributeName.REVOCATION_TIME, revocation.getRevocationDate());
 		}
 		if (StringUtils.isNotBlank(revocation.getReason())) {
 			constraint.setAttribute(AttributeName.REVOCATION_REASON, revocation.getReason());

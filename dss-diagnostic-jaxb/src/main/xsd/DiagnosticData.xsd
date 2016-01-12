@@ -322,11 +322,12 @@
 			<xs:element type="xs:string" name="SourceAddress" />
 			<xs:element type="xs:boolean" name="Available" />
 			<xs:element type="xs:boolean" name="Status" />
-			<xs:element type="xs:dateTime" name="DateTime" />
 			<xs:element type="xs:string" name="Reason" />
-			<xs:element type="xs:dateTime" name="IssuingTime" />
+			<xs:element type="xs:dateTime" name="ProductionDate" />
+			<xs:element type="xs:dateTime" name="ThisUpdate" />
 			<xs:element type="xs:dateTime" name="NextUpdate" />
-
+			<xs:element type="xs:dateTime" name="RevocationDate" />
+			
 			<xs:element type="BasicSignatureType" name="BasicSignature" />
 			<xs:element type="SigningCertificateType" name="SigningCertificate" />
 			<xs:element type="CertificateChainType" name="CertificateChain" />

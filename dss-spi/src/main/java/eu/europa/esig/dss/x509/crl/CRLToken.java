@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.x509.crl;
 
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
@@ -93,7 +91,8 @@ public class CRLToken extends RevocationToken {
 		final String sigAlgOID = x509crl.getSigAlgOID();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(sigAlgOID);
 		this.signatureAlgorithm = signatureAlgorithm;
-		this.issuingTime = x509crl.getThisUpdate();
+		this.thisUpdate = x509crl.getThisUpdate();
+		this.productionDate = x509crl.getThisUpdate(); // dates are equals in case of CRL
 		this.nextUpdate = x509crl.getNextUpdate();
 		issuerX500Principal = x509crl.getIssuerX500Principal();
 		this.extraInfo = new TokenValidationExtraInfo();
@@ -170,7 +169,7 @@ public class CRLToken extends RevocationToken {
 	@Override
 	public String getAbbreviation() {
 
-		return "CRLToken[" + (issuingTime == null ? "?" : DSSUtils.formatInternal(issuingTime)) + ", signedBy="
+		return "CRLToken[" + (productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)) + ", signedBy="
 				+ (issuerToken == null ? "?" : issuerToken.getDSSIdAsString()) + "]";
 	}
 
@@ -199,6 +198,7 @@ public class CRLToken extends RevocationToken {
 	 *
 	 * @return the thisUpdate date from the CRL.
 	 */
+	@Override
 	public Date getThisUpdate() {
 		return crlValidity.getX509CRL().getThisUpdate();
 	}
@@ -212,9 +212,8 @@ public class CRLToken extends RevocationToken {
 			out.append(indentStr).append("CRLToken[\n");
 			indentStr += "\t";
 			out.append(indentStr).append("Version: ").append(crlValidity.getX509CRL().getVersion()).append('\n');
-			out.append(indentStr).append("Issuing time: ").append(issuingTime == null ? "?" : DSSUtils.formatInternal(issuingTime)).append('\n');
-			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm)
-			.append('\n');
+			out.append(indentStr).append("Production time: ").append(productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)).append('\n');
+			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 			out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
 			if (issuerToken != null) {
 				out.append(indentStr).append("Issuer's certificate: ").append(issuerToken.getDSSIdAsString()).append('\n');
