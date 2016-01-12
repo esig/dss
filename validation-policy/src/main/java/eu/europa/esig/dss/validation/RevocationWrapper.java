@@ -2,8 +2,6 @@ package eu.europa.esig.dss.validation;
 
 import java.util.Date;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
@@ -37,16 +35,20 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getSigningCertificate();
 	}
 
-	public Date getIssuingTime() {
-		return revocation.getIssuingTime();
+	public Date getProductionDate() {
+		return revocation.getProductionDate();
 	}
 
 	public boolean isStatus() {
 		return revocation.isStatus();
 	}
-	
+
 	public boolean isAvailable() {
 		return revocation.isAvailable();
+	}
+
+	public Date getThisUpdate() {
+		return revocation.getThisUpdate();
 	}
 
 	public Date getNextUpdate() {
@@ -57,8 +59,8 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getReason();
 	}
 
-	public Date getDateTime() {
-		return revocation.getDateTime();
+	public Date getRevocationDate() {
+		return revocation.getRevocationDate();
 	}
 
 	public String getSource() {

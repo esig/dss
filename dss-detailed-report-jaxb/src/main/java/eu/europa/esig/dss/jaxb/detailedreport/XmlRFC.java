@@ -14,12 +14,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for XCV complex type.
+ * <p>Java class for RFC complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="XCV">
+ * &lt;complexType name="RFC">
  *   &lt;complexContent>
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/diagnostic}ConstraintsConclusion">
  *     &lt;/extension>
@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "XCV")
-public class XmlXCV
+@XmlType(name = "RFC")
+public class XmlRFC
     extends XmlConstraintsConclusion
 {
 

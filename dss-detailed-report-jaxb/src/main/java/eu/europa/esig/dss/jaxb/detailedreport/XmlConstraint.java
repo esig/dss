@@ -3,7 +3,6 @@
 // See <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2016.01.12 at 09:49:56 AM CET 
-//
 
 
 package eu.europa.esig.dss.jaxb.detailedreport;

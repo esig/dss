@@ -30,7 +30,7 @@ public class RevocationFreshnessCheck extends ChainItem<XmlXCV> {
 		RevocationWrapper revocationData = certificate.getRevocationData();
 		if (revocationData != null) {
 			// If the issuing time of revocation data does not exist then this check is ignored.
-			Date issuingTime = revocationData.getIssuingTime();
+			Date issuingTime = revocationData.getProductionDate();
 			if (issuingTime == null) {
 				return true;
 			} else {

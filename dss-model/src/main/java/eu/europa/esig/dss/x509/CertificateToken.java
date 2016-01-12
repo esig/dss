@@ -504,7 +504,7 @@ public class CertificateToken extends Token {
 				out.append(indentStr).append("Revocation data[\n");
 				indentStr += "\t";
 				final CertificateToken revocationTokenIssuerToken = revocationToken.getIssuerToken();
-				out.append(indentStr).append("Status: ").append(revocationToken.getStatus()).append(" / ").append(revocationToken.getIssuingTime())
+				out.append(indentStr).append("Status: ").append(revocationToken.getStatus()).append(" / ").append(revocationToken.getProductionDate())
 						.append(" / issuer's certificate ").append(revocationTokenIssuerToken != null ? revocationTokenIssuerToken.getDSSIdAsString() : "null")
 						.append('\n');
 				indentStr = indentStr.substring(1);

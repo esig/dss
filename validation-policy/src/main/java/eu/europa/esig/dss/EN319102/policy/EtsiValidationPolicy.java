@@ -40,7 +40,6 @@ import eu.europa.esig.jaxb.policy.RevocationConstraints;
 import eu.europa.esig.jaxb.policy.SignatureConstraints;
 import eu.europa.esig.jaxb.policy.SignedAttributesConstraints;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
-import eu.europa.esig.jaxb.policy.TimeUnit;
 import eu.europa.esig.jaxb.policy.TimestampConstraints;
 import eu.europa.esig.jaxb.policy.UnsignedAttributesConstraints;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
@@ -58,36 +57,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	public EtsiValidationPolicy(ConstraintsParameters policy) {
 		this.policy = policy;
-	}
-
-	@Override
-	public boolean isRevocationFreshnessToBeChecked() {
-		RevocationConstraints revocation = policy.getRevocation();
-		if (revocation != null) {
-			return revocation.getRevocationFreshness() != null;
-		}
-		return false;
-	}
-
-	@Override
-	public String getFormatedMaxRevocationFreshness() {
-		return getMaxRevocationFreshness() + " " + TimeUnit.MILLISECONDS;
-	}
-
-	@Override
-	public Long getMaxRevocationFreshness() {
-		RevocationConstraints revocation = policy.getRevocation();
-		if (revocation != null) {
-			TimeConstraint revocationFreshness = revocation.getRevocationFreshness();
-			if (revocationFreshness != null) {
-				Long maxRevocationFreshness = RuleUtils.convertDuration(revocationFreshness.getUnit(), TimeUnit.MILLISECONDS, revocationFreshness.getValue());
-				if (maxRevocationFreshness == 0) {
-					maxRevocationFreshness = Long.MAX_VALUE;
-				}
-				return maxRevocationFreshness;
-			}
-		}
-		return Long.MAX_VALUE;
 	}
 
 	@Override
@@ -549,15 +518,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getRevocationTimeConstraint() {
-		TimestampConstraints timestamp = policy.getTimestamp();
-		if (timestamp != null) {
-			return timestamp.getRevocationTimeAgainstBestSignatureTime();
-		}
-		return null;
-	}
-
-	@Override
 	public LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint() {
 		TimestampConstraints timestamp = policy.getTimestamp();
 		if (timestamp != null) {
@@ -598,6 +558,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		TimestampConstraints timestampConstraints = policy.getTimestamp();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getTimestampDelay();
+		}
+		return null;
+	}
+
+	@Override
+	public TimeConstraint getRevocationFreshnessConstraint() {
+		RevocationConstraints revocationConstraints = policy.getRevocation();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getRevocationFreshness();
 		}
 		return null;
 	}

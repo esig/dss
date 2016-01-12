@@ -24,7 +24,7 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
-	
+
 	protected boolean available;
 
 	/**
@@ -33,9 +33,14 @@ public abstract class RevocationToken extends Token {
 	protected Boolean status;
 
 	/**
-	 * Represents the this update date of the CRL or the production date of the OCSP response.
+	 * Represents the production date of the OCSP response or the thisUpdate in case of CRL.
 	 */
-	protected Date issuingTime;
+	protected Date productionDate;
+
+	/**
+	 * Represents the this update date of the CRL.
+	 */
+	protected Date thisUpdate;
 
 	/**
 	 * Represents the next update date of the CRL or null for OCSP response.
@@ -60,11 +65,12 @@ public abstract class RevocationToken extends Token {
 		return status;
 	}
 
-	/**
-	 * @return
-	 */
-	public Date getIssuingTime() {
-		return issuingTime;
+	public Date getProductionDate() {
+		return productionDate;
+	}
+
+	public Date getThisUpdate() {
+		return thisUpdate;
 	}
 
 	/**
@@ -87,13 +93,14 @@ public abstract class RevocationToken extends Token {
 	public String getReason() {
 		return reason;
 	}
-	
+
 	public boolean isAvailable() {
 		return available;
 	}
 
 	/**
-	 * Indicates if the token signature is intact and the signing certificate matches with the signature and if the extended key usage is present.
+	 * Indicates if the token signature is intact and the signing certificate matches with the signature and if the
+	 * extended key usage is present.
 	 *
 	 * @return {@code true} if the conditions are meet
 	 */
