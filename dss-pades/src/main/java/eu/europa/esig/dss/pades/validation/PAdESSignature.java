@@ -93,8 +93,7 @@ public class PAdESSignature extends CAdESSignature {
 	 * @throws DSSException
 	 */
 	protected PAdESSignature(final DSSDocument document, final PdfSignatureInfo pdfSignatureInfo, final CertificatePool certPool) throws DSSException {
-		super(pdfSignatureInfo.getCades().getCmsSignedData(), certPool);
-		super.setDetachedContents(pdfSignatureInfo.getCades().getDetachedContents());
+		super(pdfSignatureInfo.getCades().getCmsSignedData(), certPool, pdfSignatureInfo.getCades().getDetachedContents());
 		this.document = document;
 		this.dssDictionary = pdfSignatureInfo.getDssDictionary();
 		this.pdfSignatureInfo = pdfSignatureInfo;

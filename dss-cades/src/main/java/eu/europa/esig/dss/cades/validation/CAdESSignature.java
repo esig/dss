@@ -231,6 +231,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool) {
 		this(cms, getFirstSignerInformation(cms), certPool);
 	}
+	
+	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool, List<DSSDocument> detachedContents) {
+		this(cms, certPool);
+		setDetachedContents(detachedContents);
+	}
 
 	/**
 	 * @param cmsSignedData
