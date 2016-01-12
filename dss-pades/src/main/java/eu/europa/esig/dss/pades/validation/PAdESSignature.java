@@ -244,6 +244,11 @@ public class PAdESSignature extends CAdESSignature {
 		final List<String> timestampedTimestamps = new ArrayList<String>();
 		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
+		
+		for(TimestampToken token : super.getSignatureTimestamps()) {
+			timestampedTimestamps.add(token.getDSSId().asXmlId());
+		}
+		
 		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
 
 			if (outerSignature.isTimestamp()) {
