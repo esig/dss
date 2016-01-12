@@ -35,6 +35,8 @@ import eu.europa.esig.dss.TokenIdentifier;
 @SuppressWarnings("serial")
 public abstract class Token implements Serializable {
 
+	private String dssId;
+
 	/**
 	 * This attribute represents the {@link CertificateToken} which is the issuer of the encapsulated Token. In other
 	 * words this is the CertificateToken used to sign the enclosed Token.
@@ -121,6 +123,16 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
+	 * Returns a string representation of the unique DSS token identifier.
+	 */
+	public String getDSSIdAsString() {
+		if (dssId == null) {
+			dssId = getDSSId().asXmlId();
+		}
+		return dssId;
+	}
+
+	/**
 	 * Returns the {@code X500Principal} of the certificate which was used to sign this token.
 	 *
 	 * @return
@@ -146,7 +158,7 @@ public abstract class Token implements Serializable {
 	 * @return
 	 */
 	public TokenIdentifier getIssuerTokenDSSId() {
-		if(issuerToken == null) {
+		if (issuerToken == null) {
 			return null;
 		} else {
 			return issuerToken.getDSSId();
@@ -154,8 +166,10 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Checks if the token is signed by the token given in the parameter. Each check changes the associated with the token signer's certificate. If
-	 * the issuerToken is already known, and the current check fail the issuerToken stays unchanged. It is up to the calling function to make sure
+	 * Checks if the token is signed by the token given in the parameter. Each check changes the associated with the
+	 * token signer's certificate. If
+	 * the issuerToken is already known, and the current check fail the issuerToken stays unchanged. It is up to the
+	 * calling function to make sure
 	 * that the signer's certificate was found.
 	 *
 	 * @param issuerToken
