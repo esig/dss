@@ -44,18 +44,6 @@ public interface ValidationPolicy {
 		SIGNING_CERT, CA_CERTIFICATE
 	};
 
-	boolean isRevocationFreshnessToBeChecked();
-
-	String getFormatedMaxRevocationFreshness();
-
-	/**
-	 * This function returns the maximum duration in milliseconds for which the
-	 * revocation data are considered fresh.
-	 *
-	 * @return
-	 */
-	Long getMaxRevocationFreshness();
-
 	/**
 	 * This function returns the algorithm expiration date extracted from the
 	 * 'constraint.xml' file. If the TAG AlgoExpirationDate is not present
@@ -409,8 +397,6 @@ public interface ValidationPolicy {
 
 	LevelConstraint getMessageImprintDataIntactConstraint();
 
-	LevelConstraint getRevocationTimeConstraint();
-
 	LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint();
 
 	LevelConstraint getSigningCertificateValidityAtBestSignatureTimeConstraint();
@@ -420,6 +406,8 @@ public interface ValidationPolicy {
 	LevelConstraint getTimestampCoherenceConstraint();
 
 	TimeConstraint getTimestampDelaySigningTimePropertyConstraint();
+
+	TimeConstraint getRevocationFreshnessConstraint();
 
 	RevocationConstraints getRevocationConstraint();
 
