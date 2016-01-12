@@ -1,4 +1,4 @@
-package known.issues;
+package eu.europa.esig.dss.pades;
 
 import java.io.File;
 import java.util.Date;
