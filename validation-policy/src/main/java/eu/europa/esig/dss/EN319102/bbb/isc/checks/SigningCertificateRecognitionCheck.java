@@ -3,6 +3,7 @@ package eu.europa.esig.dss.EN319102.bbb.isc.checks;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
@@ -27,7 +28,12 @@ public class SigningCertificateRecognitionCheck extends ChainItem<XmlISC> {
 	protected boolean process() {
 		String signingCertificateId = token.getSigningCertificateId();
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
-		return StringUtils.equals(signingCertificateId, certificate.getId());
+		if(StringUtils.equals(signingCertificateId, certificate.getId())) {
+			addInfo(XmlInfoBuilder.createCertificateIdInfo(token.getSigningCertificateId()));
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

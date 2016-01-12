@@ -101,6 +101,7 @@
 		<xs:sequence>
 			<xs:element type="Name" name="Name" />
 			<xs:element type="Status" name="Status" />
+			<xs:element type="Info" name="Info" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- In case of constraint with a BBB -->
 	</xs:complexType>
@@ -110,6 +111,7 @@
 			<xs:element type="Indication" name="Indication" />
 			<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
 			<xs:element type="Error" name="Error" minOccurs="0" />
+			<xs:element type="Info" name="Info" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -132,8 +134,12 @@
 	<xs:complexType name="Info">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
-				<xs:attribute name="Identifier" type="xs:string" use="optional" />
-				<xs:attribute name="CertificateId" type="xs:string" use="optional" />
+				<xs:attribute name="Identifier" type="xs:string"  use="optional"/>
+				<xs:attribute name="CertificateId" type="xs:string" use="optional"/>
+				<xs:attribute name="Field" type="xs:string" use="optional"/>
+				<xs:attribute name="RevokedDate" type="xs:date" use="optional"/>
+				<xs:attribute name="NextUpdateDate" type="xs:date" use="optional"/>
+				<xs:attribute name="AlgoExpirationDate" type="xs:date" use="optional"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>

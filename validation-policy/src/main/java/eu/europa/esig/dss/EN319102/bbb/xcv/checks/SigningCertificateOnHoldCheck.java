@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.EN319102.bbb.xcv.checks;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.RevocationWrapper;
@@ -23,7 +24,14 @@ public class SigningCertificateOnHoldCheck extends ChainItem<XmlXCV> {
 	protected boolean process() {
 		RevocationWrapper revocationData = certificate.getRevocationData();
 		boolean isOnHold = (revocationData != null) && !revocationData.isStatus() && CRLReasonEnum.certificateHold.name().equals(revocationData.getReason());
-		return !isOnHold;
+		if(!isOnHold) {
+			return true;
+		} else {
+			if(revocationData.getNextUpdate() != null) {
+				addInfo(XmlInfoBuilder.createNextUpadteInfo(revocationData.getNextUpdate()));
+			}
+			return false;
+		}
 	}
 
 	@Override

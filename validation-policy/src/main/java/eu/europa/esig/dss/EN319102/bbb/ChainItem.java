@@ -1,5 +1,12 @@
 package eu.europa.esig.dss.EN319102.bbb;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.xml.datatype.DatatypeFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +14,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlError;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlInfo;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -26,6 +34,8 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	private final LevelConstraint constraint;
 
 	private String bbbId;
+	
+	private List<XmlInfo> infos = new ArrayList<XmlInfo>();
 
 	protected ChainItem(T result, LevelConstraint constraint) {
 		this.result = result;
@@ -64,6 +74,10 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 				break;
 			}
 		}
+	}
+	
+	public void addInfo(XmlInfo info) {
+		infos.add(info);
 	}
 
 	protected abstract boolean process();
@@ -113,6 +127,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		constraint.setName(buildConstraintName());
 		constraint.setStatus(status);
 		constraint.setId(bbbId);
+		constraint.getInfo().addAll(infos);
 		addConstraint(constraint);
 	}
 

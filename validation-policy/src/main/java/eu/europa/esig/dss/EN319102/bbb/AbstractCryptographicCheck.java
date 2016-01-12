@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlInfo;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
@@ -46,6 +47,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		if ((acceptableEncryptionAlgo != null) && CollectionUtils.isNotEmpty(acceptableEncryptionAlgo.getAlgo())) {
 			if (!isIn(token.getEncryptionAlgoUsedToSignThisToken(), acceptableEncryptionAlgo.getAlgo())) {
 				errorMessage = MessageTag.ASCCM_ANS_1;
+				addListOfAlgoInfo(acceptableEncryptionAlgo);
 				return false;
 			}
 		}
@@ -55,6 +57,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		if ((acceptableDigestAlgo != null) && CollectionUtils.isNotEmpty(acceptableDigestAlgo.getAlgo())) {
 			if (!isIn(token.getDigestAlgoUsedToSignThisToken(), acceptableDigestAlgo.getAlgo())) {
 				errorMessage = MessageTag.ASCCM_ANS_2;
+				addListOfAlgoInfo(acceptableDigestAlgo);
 				return false;
 			}
 		}
@@ -70,6 +73,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 			int expectedMinimumKeySize = getExpectedKeySize(token.getEncryptionAlgoUsedToSignThisToken(), miniPublicKeySize.getAlgo());
 			if (tokenKeySize < expectedMinimumKeySize) {
 				errorMessage = MessageTag.ASCCM_ANS_3;
+				addListOfAlgoInfo(miniPublicKeySize);
 				return false;
 			}
 		}
@@ -82,10 +86,12 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 			Date expirationDate = getExpirationDate(token.getDigestAlgoUsedToSignThisToken(), algoExpirationDate.getAlgo());
 			if (expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
+				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getDigestAlgoUsedToSignThisToken(), expirationDate));
 				return false;
 			}
 			if (expirationDate.before(currentTime)) {
 				errorMessage = MessageTag.ASCCM_ANS_5;
+				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getDigestAlgoUsedToSignThisToken(), expirationDate));
 				return false;
 			}
 
@@ -94,15 +100,23 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 			expirationDate = getExpirationDate(algoToFind, algoExpirationDate.getAlgo());
 			if (expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
+				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getEncryptionAlgoUsedToSignThisToken(), expirationDate));
 				return false;
 			}
 			if (expirationDate.before(currentTime)) {
 				errorMessage = MessageTag.ASCCM_ANS_5;
+				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getEncryptionAlgoUsedToSignThisToken(), expirationDate));
 				return false;
 			}
 		}
 
 		return true;
+	}
+	
+	private void addListOfAlgoInfo(ListAlgo list) {
+		for(Algo algo : list.getAlgo()) {
+			addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(algo.getValue(), getExpirationDate(algo.getValue(), list.getAlgo())));
+		}
 	}
 
 	private Date getExpirationDate(String algoToFind, List<Algo> algos) {
