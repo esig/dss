@@ -76,6 +76,11 @@
 			<xs:extension base="ConstraintsConclusion" />
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="RFC">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="CV">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion" />
