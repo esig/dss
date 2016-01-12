@@ -27,7 +27,7 @@ public class SigningCertificateRevokedCheck extends ChainItem<XmlXCV> {
 		if(!isRevoked) {
 			return true;
 		} else {
-			addInfo(XmlInfoBuilder.createRevocationInfo(revocationData.getDateTime(), revocationData.getReason()));
+			addInfo(XmlInfoBuilder.createRevocationInfo(revocationData.getRevocationDate(), revocationData.getReason()));
 			return false;
 		}
 	}
