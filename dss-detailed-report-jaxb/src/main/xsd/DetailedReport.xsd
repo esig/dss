@@ -142,9 +142,9 @@
 				<xs:attribute name="Identifier" type="xs:string"  use="optional"/>
 				<xs:attribute name="CertificateId" type="xs:string" use="optional"/>
 				<xs:attribute name="Field" type="xs:string" use="optional"/>
-				<xs:attribute name="RevokedDate" type="xs:date" use="optional"/>
-				<xs:attribute name="NextUpdateDate" type="xs:date" use="optional"/>
-				<xs:attribute name="AlgoExpirationDate" type="xs:date" use="optional"/>
+				<xs:attribute name="RevokedDate" type="xs:dateTime" use="optional"/>
+				<xs:attribute name="NextUpdateDate" type="xs:dateTime" use="optional"/>
+				<xs:attribute name="AlgoExpirationDate" type="xs:dateTime" use="optional"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>

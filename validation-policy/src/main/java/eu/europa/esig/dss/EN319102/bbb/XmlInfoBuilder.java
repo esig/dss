@@ -39,32 +39,21 @@ public class XmlInfoBuilder {
 	
 	public static XmlInfo createRevocationInfo(Date revocationDate, String reason) {
 		XmlInfo info = new XmlInfo();
-		info.setRevokedDate(dateToXmlGregorianCalendare(revocationDate));
+		info.setRevokedDate(revocationDate);
 		info.setValue(reason);
 		return info;
 	}
 	
 	public static XmlInfo createNextUpadteInfo(Date nextUpdateDate) {
 		XmlInfo info = new XmlInfo();
-		info.setNextUpdateDate(dateToXmlGregorianCalendare(nextUpdateDate));
+		info.setNextUpdateDate(nextUpdateDate);
 		return info;
 	}
 	
 	public static XmlInfo createAlgoExpirationDateInfo(String algo, Date expirationDate) {
 		XmlInfo info = new XmlInfo();
-		info.setAlgoExpirationDate(dateToXmlGregorianCalendare(expirationDate));
+		info.setAlgoExpirationDate(expirationDate);
 		info.setValue(algo);
 		return info;
-	}
-	
-	private static XMLGregorianCalendar dateToXmlGregorianCalendare(Date date) {
-		try {
-			GregorianCalendar calendar = new GregorianCalendar();
-			calendar.setTime(date);
-			return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
-		} catch(Exception e) {
-			logger.info("The date to convert for the XmlInfo is null");
-			return null;
-		}
 	}
 }
