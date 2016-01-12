@@ -32,6 +32,7 @@ public class BasicBuildingBlocksValidationTest {
 		Assert.assertNotNull(result.getSAV());
 		Assert.assertNotNull(result.getVCI());
 		Assert.assertNotNull(result.getXCV());
+		Assert.assertEquals(1, result.getISC().getConclusion().getInfo().size());
 	}
 	
 	@Test

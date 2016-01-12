@@ -159,6 +159,7 @@ public class X509CertificateValidationTest {
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.REVOKED_NO_POE, xcv.getConclusion().getSubIndication());
 		Assert.assertEquals(7, xcv.getConstraints().size());
+		Assert.assertEquals(1, xcv.getConstraints().get(xcv.getConstraints().size()-1).getInfo().size());
 	}
 	
 	@Test

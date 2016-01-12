@@ -292,6 +292,7 @@ public class SignatureAcceptanceValidationTest {
 		Assert.assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(12, sav.getConstraints().size());
+		Assert.assertEquals(4, sav.getConstraints().get(sav.getConstraints().size()-1).getInfo().size());
 	}
 	
 	
