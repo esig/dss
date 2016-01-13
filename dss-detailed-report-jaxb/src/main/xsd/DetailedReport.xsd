@@ -103,7 +103,11 @@
 	</xs:complexType>
 	<xs:complexType name="VTS">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+        			<xs:element name="ControlTime" type="xs:dateTime"/>
+				</xs:sequence>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	
