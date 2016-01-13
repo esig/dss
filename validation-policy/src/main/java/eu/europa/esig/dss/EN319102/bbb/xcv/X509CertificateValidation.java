@@ -151,7 +151,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, constraint);
+		return new ProspectiveCertificateChainCheck<XmlXCV>(result, currentCertificate, diagnosticData, constraint);
 	}
 
 	private ChainItem<XmlXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {
@@ -167,7 +167,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSignatureConstraint(context, subContext);
-		return new CertificateSignatureValidCheck(result, certificate, constraint);
+		return new CertificateSignatureValidCheck<XmlXCV>(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> revocationDataAvailable(CertificateWrapper certificate, SubContext subContext) {

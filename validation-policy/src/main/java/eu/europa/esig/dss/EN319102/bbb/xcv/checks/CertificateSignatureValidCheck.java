@@ -1,18 +1,18 @@
 package eu.europa.esig.dss.EN319102.bbb.xcv.checks;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class CertificateSignatureValidCheck extends ChainItem<XmlXCV> {
+public class CertificateSignatureValidCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final CertificateWrapper certificate;
 
-	public CertificateSignatureValidCheck(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public CertificateSignatureValidCheck(T result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
 	}
