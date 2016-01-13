@@ -101,6 +101,11 @@
 			<xs:extension base="ConstraintsConclusion" />
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="VTS">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
 	
 	<xs:complexType name="Constraint">
 		<xs:sequence>

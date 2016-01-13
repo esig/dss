@@ -14,12 +14,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for CV complex type.
+ * <p>Java class for VTS complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CV">
+ * &lt;complexType name="VTS">
  *   &lt;complexContent>
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/diagnostic}ConstraintsConclusion">
  *     &lt;/extension>
@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CV")
-public class XmlCV
+@XmlType(name = "VTS")
+public class XmlVTS
     extends XmlConstraintsConclusion
 {
 
