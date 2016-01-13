@@ -387,17 +387,19 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	public void addDssDictionary(InputStream inputStream, OutputStream outpuStream, ModelPdfDict dssDictionary) {
 		FileInputStream fis = null;
 		PDDocument pdDocument = null;
+		File toSignFile = null;
+		File signedFile = null;
 		try {
 
-			File toSignFile = DSSPDFUtils.getFileFromPdfData(inputStream);
+			toSignFile = DSSPDFUtils.getFileFromPdfData(inputStream);
 
 			pdDocument = PDDocument.load(toSignFile);
 
-			File signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
+			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
 
 			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
 
-			if (dssDictionary !=null){
+			if (dssDictionary != null) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSDictionary();
 				PdfBoxDict value = new PdfBoxDict(dssDictionary);
 				cosDictionary.setItem("DSS", value.getWrapped());
@@ -416,6 +418,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} finally {
 			IOUtils.closeQuietly(pdDocument);
 			IOUtils.closeQuietly(fis);
+			DSSUtils.delete(toSignFile);
+			DSSUtils.delete(signedFile);
 		}
 	}
 
