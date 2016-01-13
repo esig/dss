@@ -27,7 +27,13 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 			result.setConclusion(conclusion);
 		}
 
+		addAdditionalInfo();
+
 		return result;
+	}
+
+	protected void addAdditionalInfo() {
+		// default is empty
 	}
 
 	protected abstract void initChain();
