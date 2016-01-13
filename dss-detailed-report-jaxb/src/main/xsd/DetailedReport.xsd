@@ -105,7 +105,16 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
-        			<xs:element name="ControlTime" type="xs:dateTime"/>
+        			<xs:element name="ControlTime" type="xs:dateTime" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PCV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+        			<xs:element name="ControlTime" type="xs:dateTime" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

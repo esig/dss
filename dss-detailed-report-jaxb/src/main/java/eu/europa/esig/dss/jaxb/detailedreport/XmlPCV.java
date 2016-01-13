@@ -18,16 +18,16 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
- * <p>Java class for VTS complex type.
+ * <p>Java class for PCV complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="VTS">
+ * &lt;complexType name="PCV">
  *   &lt;complexContent>
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/diagnostic}ConstraintsConclusion">
  *       &lt;sequence>
- *         &lt;element name="ControlTime" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *         &lt;element name="ControlTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -37,14 +37,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VTS", propOrder = {
+@XmlType(name = "PCV", propOrder = {
     "controlTime"
 })
-public class XmlVTS
+public class XmlPCV
     extends XmlConstraintsConclusion
 {
 
-    @XmlElement(name = "ControlTime", required = true, type = String.class)
+    @XmlElement(name = "ControlTime", type = String.class)
     @XmlJavaTypeAdapter(Adapter1 .class)
     @XmlSchemaType(name = "dateTime")
     protected Date controlTime;
