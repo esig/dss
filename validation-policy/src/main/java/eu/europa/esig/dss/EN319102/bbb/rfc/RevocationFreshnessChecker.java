@@ -8,7 +8,7 @@ import eu.europa.esig.dss.EN319102.bbb.rfc.checks.NextUpdateCheck;
 import eu.europa.esig.dss.EN319102.bbb.rfc.checks.RevocationDataFreshCheck;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.RevocationWrapper;
 
 /**
  * 5.2.5 Revocation freshness checker
@@ -20,14 +20,14 @@ import eu.europa.esig.dss.validation.CertificateWrapper;
  */
 public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
-	private final CertificateWrapper certificate;
+	private final RevocationWrapper revocationData;
 	private final Date validationDate;
 	private final ValidationPolicy policy;
 
-	public RevocationFreshnessChecker(CertificateWrapper certificate, Date validationDate, ValidationPolicy policy) {
+	public RevocationFreshnessChecker(RevocationWrapper revocationData, Date validationDate, ValidationPolicy policy) {
 		super(new XmlRFC());
 
-		this.certificate = certificate;
+		this.revocationData = revocationData;
 		this.validationDate = validationDate;
 		this.policy = policy;
 	}
@@ -57,11 +57,11 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	}
 
 	private ChainItem<XmlRFC> nextUpdateCheck() {
-		return new NextUpdateCheck(result, certificate, validationDate, policy.getRevocationFreshnessConstraint());
+		return new NextUpdateCheck(result, revocationData, validationDate, policy.getRevocationFreshnessConstraint());
 	}
 
 	private ChainItem<XmlRFC> revocationDataFreshCheck() {
-		return new RevocationDataFreshCheck(result, certificate, validationDate, policy.getRevocationFreshnessConstraint());
+		return new RevocationDataFreshCheck(result, revocationData, validationDate, policy.getRevocationFreshnessConstraint());
 	}
 
 }

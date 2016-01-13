@@ -4,7 +4,6 @@ import java.util.Date;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.RevocationWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
@@ -13,19 +12,18 @@ import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 public class NextUpdateCheck extends ChainItem<XmlRFC> {
 
-	private final CertificateWrapper certificate;
+	private final RevocationWrapper revocationData;
 	private final Date validationDate;
 
-	public NextUpdateCheck(XmlRFC result, CertificateWrapper certificate, Date validationDate, TimeConstraint constraint) {
+	public NextUpdateCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate, TimeConstraint constraint) {
 		super(result, constraint);
 
-		this.certificate = certificate;
+		this.revocationData = revocationData;
 		this.validationDate = validationDate;
 	}
 
 	@Override
 	protected boolean process() {
-		RevocationWrapper revocationData = certificate.getRevocationData();
 		if (revocationData != null) {
 			Date nextUpdate = revocationData.getNextUpdate();
 
