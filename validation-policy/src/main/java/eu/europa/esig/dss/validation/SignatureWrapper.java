@@ -3,7 +3,9 @@ package eu.europa.esig.dss.validation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -102,6 +104,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			}
 		}
 		return result;
+	}
+
+	public Set<TimestampWrapper> getAllTimestampsNotArchival() {
+		Set<TimestampWrapper> notArchivalTimestamps = new HashSet<TimestampWrapper>();
+		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP));
+		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.CONTENT_TIMESTAMP));
+		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+		return notArchivalTimestamps;
 	}
 
 	public boolean isSignatureProductionPlacePresent() {
@@ -204,7 +215,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		for (final TimestampWrapper timestamp : timestampList) {
 			final boolean signatureValid = timestamp.isSignatureValid();
 			final boolean messageImprintIntact = timestamp.isMessageImprintDataIntact();
-			if (signatureValid && messageImprintIntact) { // TODO correct ?  return true if at least 1 TSP OK
+			if (signatureValid && messageImprintIntact) { // TODO correct ? return true if at least 1 TSP OK
 				return true;
 			}
 		}

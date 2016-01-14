@@ -695,25 +695,18 @@ public class DiagnosticData {
 		List<SignatureWrapper> signatures = getSignatures();
 		if (CollectionUtils.isNotEmpty(signatures)) {
 			for (SignatureWrapper signatureWrapper : signatures) {
-				notArchivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP));
-				notArchivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP));
-				notArchivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
-				notArchivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+				notArchivalTimestamps.addAll(signatureWrapper.getAllTimestampsNotArchival());
 			}
 		}
 		return notArchivalTimestamps;
 	}
 
 	public Set<TimestampWrapper> getAllTimestampsNotArchival(String signatureId) {
-		Set<TimestampWrapper> notArchivalTimestamps = new HashSet<TimestampWrapper>();
 		SignatureWrapper signature = getSignatureById(signatureId);
 		if (signature != null) {
-			notArchivalTimestamps.addAll(signature.getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP));
-			notArchivalTimestamps.addAll(signature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP));
-			notArchivalTimestamps.addAll(signature.getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
-			notArchivalTimestamps.addAll(signature.getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+			return signature.getAllTimestampsNotArchival();
 		}
-		return notArchivalTimestamps;
+		return new HashSet<TimestampWrapper>();
 	}
 
 	public Set<TimestampWrapper> getAllArchiveTimestamps() {

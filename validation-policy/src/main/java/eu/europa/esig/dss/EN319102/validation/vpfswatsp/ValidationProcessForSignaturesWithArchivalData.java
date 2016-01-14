@@ -12,8 +12,6 @@ import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
  * 5.6 Validation process for Signatures with Archival Data
@@ -70,13 +68,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private ChainItem<XmlValidationProcessArchivalData> evidenceRecordValidationProcess(List<TimestampWrapper> archiveTsps) {
 		return new EvidenceRecordValidationCheck(result, signature, archiveTsps, getFailLevelConstraint());
-	}
-
-	// TODO uses validation policy
-	private LevelConstraint getFailLevelConstraint() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-		return constraint;
 	}
 
 }

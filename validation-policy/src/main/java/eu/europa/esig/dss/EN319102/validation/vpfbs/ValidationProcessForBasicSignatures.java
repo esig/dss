@@ -9,8 +9,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
  * 5.3 Validation process for Basic Signatures
@@ -36,10 +34,7 @@ public class ValidationProcessForBasicSignatures extends Chain<XmlValidationProc
 	}
 
 	private ChainItem<XmlValidationProcessBasicSignatures> basicBuildingBlocks() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-
-		return new SignatureBasicBuildingBlocksCheck(result, diagnosticData, bbbs.get(signature.getId()), bbbs, constraint);
+		return new SignatureBasicBuildingBlocksCheck(result, diagnosticData, bbbs.get(signature.getId()), bbbs, getFailLevelConstraint());
 	}
 
 }

@@ -15,11 +15,10 @@ import eu.europa.esig.dss.EN319102.validation.vpftsp.ValidationProcessForTimeSta
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.validation.AbstractTokenProxy;
 import eu.europa.esig.dss.validation.SignatureWrapper;
+import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 public class DetailedReportBuilder {
@@ -50,32 +49,41 @@ public class DetailedReportBuilder {
 			signatureAnalysis.setId(signature.getId());
 			signatureAnalysis.setType(signature.getType());
 
-			ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, signature, bbbs);
-			XmlValidationProcessBasicSignatures vpfbsResult = vpfbs.execute();
-			signatureAnalysis.setValidationProcessBasicSignatures(vpfbsResult);
+			executeBasicValidation(signatureAnalysis, signature, diagnosticData, bbbs);
 
 			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
-
-				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(signature, bbbs);
-				signatureAnalysis.setValidationProcessTimestamps(vpftsp.execute());
-
+				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
-
-				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(signature, bbbs);
-				XmlValidationProcessTimestamps vpftspResult = vpftsp.execute();
-				signatureAnalysis.setValidationProcessTimestamps(vpftspResult);
-
-				ValidationProcessForSignaturesWithLongTermValidationData vpfltvd = new ValidationProcessForSignaturesWithLongTermValidationData(vpfbsResult,
-						vpftspResult, diagnosticData, signature, bbbs, currentTime);
-				XmlValidationProcessLongTermData vpfltvdResult = vpfltvd.execute();
-				signatureAnalysis.setValidationProcessLongTermData(vpfltvdResult);
-
+				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
+				executeLongTermValidation(signatureAnalysis, signature, currentTime, bbbs);
 			}
 
 			detailedReport.getSignatures().add(signatureAnalysis);
 		}
 
 		return detailedReport;
+	}
+
+	private void executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, DiagnosticData diagnosticData2,
+			Map<String, XmlBasicBuildingBlocks> bbbs) {
+		ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, signature, bbbs);
+		signatureAnalysis.setValidationProcessBasicSignatures(vpfbs.execute());
+	}
+
+	private void executeTimestampsValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
+		Set<TimestampWrapper> timestampsNotArchival = signature.getAllTimestampsNotArchival();
+		for (TimestampWrapper timestamp : timestampsNotArchival) {
+			ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(timestamp, bbbs);
+			signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
+		}
+	}
+
+	private void executeLongTermValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Date currentTime,
+			Map<String, XmlBasicBuildingBlocks> bbbs) {
+		ValidationProcessForSignaturesWithLongTermValidationData vpfltvd = new ValidationProcessForSignaturesWithLongTermValidationData(signatureAnalysis,
+				diagnosticData, signature, bbbs, currentTime);
+		XmlValidationProcessLongTermData vpfltvdResult = vpfltvd.execute();
+		signatureAnalysis.setValidationProcessLongTermData(vpfltvdResult);
 	}
 
 	private Map<String, XmlBasicBuildingBlocks> executeAllBasicBuildingBlocks() {

@@ -3,6 +3,8 @@ package eu.europa.esig.dss.EN319102.bbb;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.jaxb.policy.Level;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public abstract class Chain<T extends XmlConstraintsConclusion> {
 
@@ -37,5 +39,12 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	}
 
 	protected abstract void initChain();
+
+	// TODO uses validation policy
+	protected LevelConstraint getFailLevelConstraint() {
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+		return constraint;
+	}
 
 }

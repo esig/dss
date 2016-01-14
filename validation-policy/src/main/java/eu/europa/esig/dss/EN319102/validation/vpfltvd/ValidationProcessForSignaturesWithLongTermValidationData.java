@@ -25,8 +25,10 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.RevocationWrapper;
 import eu.europa.esig.dss.validation.SignatureWrapper;
@@ -35,7 +37,6 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 import eu.europa.esig.jaxb.policy.TimeUnit;
 
@@ -47,7 +48,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private static final Logger logger = LoggerFactory.getLogger(ValidationProcessForSignaturesWithLongTermValidationData.class);
 
 	private final XmlConstraintsConclusion basicSignatureValidation;
-	private final XmlConstraintsConclusion timestampValidation;
+	private final List<XmlValidationProcessTimestamps> timestampValidations;
 
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper currentSignature;
@@ -57,13 +58,12 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private final Date currentDate;
 
-	public ValidationProcessForSignaturesWithLongTermValidationData(XmlConstraintsConclusion basicSignatureValidation,
-			XmlConstraintsConclusion timestampValidation, DiagnosticData diagnosticData, SignatureWrapper currentSignature,
-			Map<String, XmlBasicBuildingBlocks> bbbs, Date currentDate) {
+	public ValidationProcessForSignaturesWithLongTermValidationData(XmlSignature signatureAnalysis, DiagnosticData diagnosticData,
+			SignatureWrapper currentSignature, Map<String, XmlBasicBuildingBlocks> bbbs, Date currentDate) {
 		super(new XmlValidationProcessLongTermData());
 
-		this.basicSignatureValidation = basicSignatureValidation;
-		this.timestampValidation = timestampValidation;
+		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignatures();
+		this.timestampValidations = signatureAnalysis.getValidationProcessTimestamps();
 
 		this.diagnosticData = diagnosticData;
 		this.currentSignature = currentSignature;
@@ -122,15 +122,17 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * shall set best-signature-time to this date and shall try the next token.
 		 */
 		for (TimestampWrapper timestampWrapper : allowedTimestamps) {
-			List<XmlConstraint> constraints = timestampValidation.getConstraints();
 			boolean foundValidationTSP = false;
-			for (XmlConstraint tspValidation : constraints) {
-				if (StringUtils.equals(timestampWrapper.getId(), tspValidation.getId())) {
-					foundValidationTSP = true;
-					Date productionTime = timestampWrapper.getProductionTime();
-					if (XmlStatus.OK.equals(tspValidation.getStatus()) && productionTime.before(bestSignatureTime)) {
-						bestSignatureTime = productionTime;
-						break;
+			for (XmlValidationProcessTimestamps timestampValidation : timestampValidations) {
+				List<XmlConstraint> constraints = timestampValidation.getConstraints();
+				for (XmlConstraint tspValidation : constraints) {
+					if (StringUtils.equals(timestampWrapper.getId(), tspValidation.getId())) {
+						foundValidationTSP = true;
+						Date productionTime = timestampWrapper.getProductionTime();
+						if (XmlStatus.OK.equals(tspValidation.getStatus()) && productionTime.before(bestSignatureTime)) {
+							bestSignatureTime = productionTime;
+							break;
+						}
 					}
 				}
 			}
@@ -251,13 +253,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampDelay(Date bestSignatureTime) {
 		return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, getFailTimeConstraint());
-	}
-
-	// TODO uses validation policy
-	private LevelConstraint getFailLevelConstraint() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-		return constraint;
 	}
 
 	// TODO uses validation policy

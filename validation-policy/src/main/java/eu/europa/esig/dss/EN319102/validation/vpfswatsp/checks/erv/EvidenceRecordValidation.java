@@ -11,8 +11,6 @@ import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv.checks.FirstA
 import eu.europa.esig.dss.jaxb.detailedreport.XmlERV;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
  * 5.6.2.5 Evidence record validation building block
@@ -51,6 +49,18 @@ public class EvidenceRecordValidation extends Chain<XmlERV> {
 			item.setNextItem(archiveTimestampsCoverEachOther());
 		}
 
+		/*
+		 * b) Performing the time stamp validation process (see clause 5.4) and if necessary, the past signature
+		 * validation process (see clause 5.6.2.4):
+		 * b1) The building block shall check that each Archive Time-stamp is valid relative to the time of the
+		 * following Archive Time-stamp. If this is the case, the building block shall go to the next step.
+		 * Otherwise, the building block shall return the indication FAILED.
+		 * b2) The building block shall check that all Archive Time-stamps within a chain use the same hash
+		 * algorithm and this algorithm is considered secure at the time of the first Archive Time-stamp of the
+		 * following Archive Time-stamp Chain. If this is the case, the building block shall go to the next
+		 * step. Otherwise, the building block shall return the indication FAILED.
+		 */
+
 	}
 
 	private ChainItem<XmlERV> firstArchiveTimestampHashValueCorrect(TimestampWrapper firstTimestamp) {
@@ -59,13 +69,6 @@ public class EvidenceRecordValidation extends Chain<XmlERV> {
 
 	private ChainItem<XmlERV> archiveTimestampsCoverEachOther() {
 		return new ArchiveTimestampsCoverEachOtherCheck(result, archiveTimestamps, getFailLevelConstraint());
-	}
-
-	// TODO uses validation policy
-	private LevelConstraint getFailLevelConstraint() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-		return constraint;
 	}
 
 }

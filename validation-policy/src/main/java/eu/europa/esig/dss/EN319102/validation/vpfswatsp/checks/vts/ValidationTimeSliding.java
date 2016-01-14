@@ -20,8 +20,6 @@ import eu.europa.esig.dss.validation.RevocationWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ValidationTimeSliding extends Chain<XmlVTS> {
 
@@ -115,13 +113,6 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(String id, Date controlTime) {
 		return new POEExistsAtOrBeforeControlTimeCheck(result, id, controlTime, poe, getFailLevelConstraint());
-	}
-
-	// TODO uses validation policy
-	private LevelConstraint getFailLevelConstraint() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-		return constraint;
 	}
 
 }

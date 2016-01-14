@@ -21,7 +21,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class PastCertificateValidation extends Chain<XmlPCV> {
@@ -160,13 +159,6 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	@Override
 	protected void addAdditionalInfo() {
 		result.setControlTime(controlTime); // can be null
-	}
-
-	// TODO uses validation policy
-	private LevelConstraint getFailLevelConstraint() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-		return constraint;
 	}
 
 }
