@@ -113,4 +113,20 @@ public class POEExtraction {
 		return false;
 	}
 
+	public Date getLowestPOE(final String id, final Date controlTime) {
+		Date lowestDate = null;
+		List<Date> dates = poe.get(id);
+		if (dates != null) {
+			for (Date date : dates) {
+				if (date.compareTo(controlTime) <= 0) {
+					if (lowestDate == null) {
+						lowestDate = date;
+					} else if (lowestDate.after(date)) {
+						lowestDate = date;
+					}
+				}
+			}
+		}
+		return lowestDate;
+	}
 }
