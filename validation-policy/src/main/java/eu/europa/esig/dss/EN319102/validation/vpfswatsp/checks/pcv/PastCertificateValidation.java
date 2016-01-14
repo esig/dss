@@ -82,6 +82,10 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * 
 		 * ==> Simplified because DSS only uses one certificate chain
 		 */
+
+		Date intervalNotBefore = null;
+		Date intervalNotAfter = null;
+
 		List<XmlChainCertificate> certificateChain = token.getCertificateChain();
 		for (XmlChainCertificate certChainItem : certificateChain) {
 			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certChainItem.getId());
@@ -93,6 +97,22 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 			SubContext subContext = SubContext.CA_CERTIFICATE;
 			if (StringUtils.equals(signingCertificateId, certChainItem.getId())) {
 				subContext = SubContext.SIGNING_CERT;
+			}
+
+			if (intervalNotBefore == null || intervalNotBefore.before(certificate.getNotBefore())) {
+				intervalNotBefore = certificate.getNotBefore();
+			}
+			if (intervalNotAfter == null || intervalNotAfter.after(certificate.getNotAfter())) {
+				intervalNotAfter = certificate.getNotAfter();
+			}
+
+			if (SubContext.CA_CERTIFICATE.equals(subContext) && certificate.isRevoked()) {
+				Date caRevocationDate = certificate.getRevocationData().getRevocationDate();
+				if (intervalNotAfter.after(caRevocationDate)) {
+					intervalNotAfter = caRevocationDate;
+				}
+
+				// TODO REVOKED_CA_NO_POE
 			}
 
 			item.setNextItem(certificateSignatureValid(certificate, subContext));
