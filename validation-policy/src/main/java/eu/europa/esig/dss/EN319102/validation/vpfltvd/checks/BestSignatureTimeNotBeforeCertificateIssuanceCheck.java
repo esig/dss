@@ -1,44 +1,41 @@
-package eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv.checks;
+package eu.europa.esig.dss.EN319102.validation.vpfltvd.checks;
 
 import java.util.Date;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck extends ChainItem<XmlPSV> {
+public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final Date bestSignatureTime;
-	private final Date notBefore;
-	private final Date notAfter;
+	private final CertificateWrapper signingCertificate;
 
-	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(XmlPSV result, Date bestSignatureTime, Date notBefore, Date notAfter,
+	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(T result, Date bestSignatureTime, CertificateWrapper signingCertificate,
 			LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.bestSignatureTime = bestSignatureTime;
-		this.notBefore = notBefore;
-		this.notAfter = notAfter;
+		this.signingCertificate = signingCertificate;
 	}
 
 	@Override
 	protected boolean process() {
-		return bestSignatureTime.after(notBefore) && bestSignatureTime.before(notAfter);
+		return !bestSignatureTime.before(signingCertificate.getNotBefore());
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.TSV_IBSTAIDOSC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.TSV_IBSTAIDOSC_ANS;
 	}
 
 	@Override
@@ -48,7 +45,7 @@ public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpira
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.OUT_OF_BOUNDS_NO_POE;
+		return SubIndication.NOT_YET_VALID;
 	}
 
 }

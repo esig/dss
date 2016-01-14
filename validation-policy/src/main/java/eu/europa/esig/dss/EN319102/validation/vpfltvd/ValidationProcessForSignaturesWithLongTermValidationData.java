@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
-import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeBeforeIssuanceDateOfSigningCertificateCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
-import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.SigningCertificateValidityAtBestSignatureTimeCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.TimestampDelayCheck;
@@ -158,8 +158,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * OUT_OF_BOUNDS_NO_POE.
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(bestSignatureTimeBeforeIssuanceDateOfSigningCertificate(bestSignatureTime));
-			item = item.setNextItem(signingCertificateValidityAtBestSignatureTime(bestSignatureTime)); // otherwise
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime));
+			item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime)); // otherwise
 		}
 
 		/*
@@ -229,14 +229,16 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new RevocationDateAfterBestSignatureTimeCheck(result, signingCertificate, bestSignatureTime, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeBeforeIssuanceDateOfSigningCertificate(Date bestSignatureTime) {
+	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
-		return new BestSignatureTimeBeforeIssuanceDateOfSigningCertificateCheck(result, signingCertificate, bestSignatureTime, getFailLevelConstraint());
+		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlValidationProcessLongTermData>(result, bestSignatureTime, signingCertificate,
+				getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> signingCertificateValidityAtBestSignatureTime(Date bestSignatureTime) {
+	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
-		return new SigningCertificateValidityAtBestSignatureTimeCheck(result, signingCertificate, bestSignatureTime, getFailLevelConstraint());
+		return new BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck<XmlValidationProcessLongTermData>(result, bestSignatureTime,
+				signingCertificate, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampCoherenceOrder(Set<TimestampWrapper> allowedTimestamps) {

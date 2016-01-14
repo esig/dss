@@ -6,10 +6,10 @@ import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck;
+import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.pcv.PastCertificateValidation;
-import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv.checks.BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck;
-import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv.checks.POEExistsCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv.checks.PastCertificateValidationCheck;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
@@ -94,11 +94,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 				Date bestSignatureTime = poe.getLowestPOE(token.getId(), controlTime);
 				CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
-				Date notBefore = signingCertificate.getNotBefore();
-				Date notAfter = signingCertificate.getNotAfter();
 
-				item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, notBefore));
-				item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime, notBefore, notAfter));
+				item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
+				item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime, signingCertificate));
 				return;
 			}
 
@@ -129,12 +127,13 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		return new POEExistsCheck(result, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlPSV> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime, Date notBefore) {
-		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck(result, bestSignatureTime, notBefore, getFailLevelConstraint());
+	private ChainItem<XmlPSV> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime, CertificateWrapper signingCertificate) {
+		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlPSV>(result, bestSignatureTime, signingCertificate, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlPSV> bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(Date bestSignatureTime, Date notBefore, Date notAfter) {
-		return new BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(result, bestSignatureTime, notBefore, notAfter,
+	private ChainItem<XmlPSV> bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(Date bestSignatureTime,
+			CertificateWrapper signingCertificate) {
+		return new BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck<XmlPSV>(result, bestSignatureTime, signingCertificate,
 				getFailLevelConstraint());
 	}
 
