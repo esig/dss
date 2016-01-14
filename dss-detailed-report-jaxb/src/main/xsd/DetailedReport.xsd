@@ -14,7 +14,7 @@
 	<xs:complexType name="Signature">
 		<xs:sequence>
 			<xs:element type="ValidationProcessBasicSignatures" name="ValidationProcessBasicSignatures" minOccurs="0" />
-			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" />
+			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" />
 			<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" />
 		</xs:sequence>
