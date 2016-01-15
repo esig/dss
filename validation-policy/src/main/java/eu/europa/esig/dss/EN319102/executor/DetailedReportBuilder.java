@@ -84,7 +84,7 @@ public class DetailedReportBuilder {
 	private void executeLongTermValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Date currentTime,
 			Map<String, XmlBasicBuildingBlocks> bbbs) {
 		ValidationProcessForSignaturesWithLongTermValidationData vpfltvd = new ValidationProcessForSignaturesWithLongTermValidationData(signatureAnalysis,
-				diagnosticData, signature, bbbs, currentTime);
+				diagnosticData, signature, bbbs, policy, currentTime);
 		XmlValidationProcessLongTermData vpfltvdResult = vpfltvd.execute();
 		signatureAnalysis.setValidationProcessLongTermData(vpfltvdResult);
 	}

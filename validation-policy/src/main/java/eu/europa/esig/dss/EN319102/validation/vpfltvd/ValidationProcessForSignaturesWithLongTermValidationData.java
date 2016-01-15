@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.bbb.CryptographicCheck;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
@@ -36,9 +39,6 @@ import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
-import eu.europa.esig.jaxb.policy.TimeUnit;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data
@@ -56,10 +56,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private final Set<RevocationWrapper> revocationData;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
+	private final ValidationPolicy policy;
 	private final Date currentDate;
 
 	public ValidationProcessForSignaturesWithLongTermValidationData(XmlSignature signatureAnalysis, DiagnosticData diagnosticData,
-			SignatureWrapper currentSignature, Map<String, XmlBasicBuildingBlocks> bbbs, Date currentDate) {
+			SignatureWrapper currentSignature, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentDate) {
 		super(new XmlValidationProcessLongTermData());
 
 		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignatures();
@@ -70,6 +71,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		this.timestamps = diagnosticData.getTimestampList(currentSignature.getId());
 		this.revocationData = diagnosticData.getAllRevocationData();
 		this.bbbs = bbbs;
+
+		this.policy = policy;
 		this.currentDate = currentDate;
 	}
 
@@ -171,11 +174,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
 		 * CRYPTO_CONSTRAINTS_FAILURE_NO_POE.
 		 */
-		// TODO expired algorithm to be tested against bestSignatureTime
-		// if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
-		// && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
-		// item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
-		// }
+		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
+				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
+			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
+		}
 
 		/*
 		 * d) For each time-stamp token remaining in the set of signature time-stamp tokens, the process shall check
@@ -252,16 +254,12 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampDelay(Date bestSignatureTime) {
-		return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, getFailTimeConstraint());
+		return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, policy.getTimestampDelaySigningTimePropertyConstraint());
 	}
 
-	// TODO uses validation policy
-	private TimeConstraint getFailTimeConstraint() {
-		TimeConstraint constraint = new TimeConstraint();
-		constraint.setLevel(Level.FAIL);
-		constraint.setUnit(TimeUnit.DAYS);
-		constraint.setValue(1);
-		return constraint;
+	private ChainItem<XmlValidationProcessLongTermData> algorithmReliableAtBestSignatureTime(Date bestSignatureTime) {
+		return new CryptographicCheck<XmlValidationProcessLongTermData>(result, currentSignature, bestSignatureTime,
+				policy.getSignatureCryptographicConstraint(Context.SIGNATURE));
 	}
 
 }
