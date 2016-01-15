@@ -160,7 +160,12 @@ public final class RuleUtils {
 	public static Long convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, int value) {
 		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
 		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
-		return to.convert(value, from);
+		long convert = to.convert(value, from);
+		if (convert == 0) {
+			return Long.MAX_VALUE;
+		} else {
+			return convert;
+		}
 	}
 
 	public static long convertDuration(TimeConstraint timeConstraint) {

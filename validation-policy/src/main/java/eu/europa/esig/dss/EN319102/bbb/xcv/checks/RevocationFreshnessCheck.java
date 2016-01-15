@@ -3,10 +3,10 @@ package eu.europa.esig.dss.EN319102.bbb.xcv.checks;
 import java.util.Date;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.policy.RuleUtils;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.CertificateWrapper;
 import eu.europa.esig.dss.validation.RevocationWrapper;
-import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -28,20 +28,16 @@ public class RevocationFreshnessCheck extends ChainItem<XmlXCV> {
 	@Override
 	protected boolean process() {
 		RevocationWrapper revocationData = certificate.getRevocationData();
-		if (revocationData != null) {
-			// If the issuing time of revocation data does not exist then this check is ignored.
+		if (revocationData != null && revocationData.getProductionDate() != null) {
 			Date issuingTime = revocationData.getProductionDate();
-			if (issuingTime == null) {
-				return true;
-			} else {
-				final long revocationDeltaTime = currentTime.getTime() - issuingTime.getTime();
-				// TODO check 0day should not work
-				if (revocationDeltaTime <= RuleUtils.convertDuration(revocationConstraints.getRevocationFreshness())) {
-					return true;
-				}
+			final long revocationDeltaTime = currentTime.getTime() - issuingTime.getTime();
+			// TODO check 0day should not work
+			if (revocationDeltaTime > RuleUtils.convertDuration(revocationConstraints.getRevocationFreshness())) {
+				return false;
 			}
 		}
-		return false;
+		return true;
+
 	}
 
 	@Override
