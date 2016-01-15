@@ -1,12 +1,16 @@
 package eu.europa.esig.dss.EN319102.validation.vpfswatsp;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
 import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.erv.EvidenceRecordValidationCheck;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
@@ -18,14 +22,21 @@ import eu.europa.esig.dss.x509.TimestampType;
  */
 public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlValidationProcessArchivalData> {
 
-	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper signature;
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+	private final DiagnosticData diagnosticData;
+	private final ValidationPolicy policy;
+	private final Date currentTime;
 
-	public ValidationProcessForSignaturesWithArchivalData(DiagnosticData diagnosticData, SignatureWrapper signature) {
+	public ValidationProcessForSignaturesWithArchivalData(SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs, DiagnosticData diagnosticData,
+			ValidationPolicy policy, Date currentTime) {
 		super(new XmlValidationProcessArchivalData());
 
-		this.diagnosticData = diagnosticData;
 		this.signature = signature;
+		this.bbbs = bbbs;
+		this.diagnosticData = diagnosticData;
+		this.policy = policy;
+		this.currentTime = currentTime;
 	}
 
 	@Override
