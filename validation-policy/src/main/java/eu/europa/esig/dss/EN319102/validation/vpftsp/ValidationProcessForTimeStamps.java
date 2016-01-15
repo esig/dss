@@ -32,6 +32,12 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 		}
 	}
 
+	@Override
+	protected void addAdditionalInfo() {
+		result.setId(timestamp.getId());
+		result.setType(timestamp.getType());
+	}
+
 	private ChainItem<XmlValidationProcessTimestamps> timestampBasicBuildingBlocksValid(XmlBasicBuildingBlocks timestampBBB) {
 		return new TimestampBasicBuildingBlocksCheck(result, timestampBBB, getFailLevelConstraint());
 	}
