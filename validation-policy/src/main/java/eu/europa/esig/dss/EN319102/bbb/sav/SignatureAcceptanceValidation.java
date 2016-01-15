@@ -3,6 +3,7 @@ package eu.europa.esig.dss.EN319102.bbb.sav;
 import java.util.Date;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.bbb.CryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.ClaimedRolesCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.CommitmentTypeIndicationsCheck;
@@ -14,7 +15,6 @@ import eu.europa.esig.dss.EN319102.bbb.sav.checks.CounterSignatureCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.EN319102.bbb.sav.checks.StructuralValidationCheck;
-import eu.europa.esig.dss.EN319102.bbb.sav.checks.TokenCryptographicCheck;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
@@ -139,7 +139,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	private ChainItem<XmlSAV> signatureCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new TokenCryptographicCheck(result, token, currentTime, constraint);
+		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
 	}
 
 }

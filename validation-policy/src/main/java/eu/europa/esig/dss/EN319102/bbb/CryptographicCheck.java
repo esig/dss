@@ -20,9 +20,9 @@ import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.ListAlgo;
 
-public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+public class CryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractCryptographicCheck.class);
+	private static final Logger logger = LoggerFactory.getLogger(CryptographicCheck.class);
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -31,7 +31,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	private final CryptographicConstraint constraint;
 	private MessageTag errorMessage = MessageTag.EMPTY;
 
-	public AbstractCryptographicCheck(T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
+	public CryptographicCheck(T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
 		super(result, constraint);
 		this.currentTime = currentTime;
 		this.token = token;

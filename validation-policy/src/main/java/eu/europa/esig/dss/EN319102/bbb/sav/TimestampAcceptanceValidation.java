@@ -3,7 +3,7 @@ package eu.europa.esig.dss.EN319102.bbb.sav;
 import java.util.Date;
 
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.EN319102.bbb.sav.checks.TokenCryptographicCheck;
+import eu.europa.esig.dss.EN319102.bbb.CryptographicCheck;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
@@ -29,7 +29,7 @@ public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	private ChainItem<XmlSAV> timestampCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(Context.TIMESTAMP);
-		return new TokenCryptographicCheck(result, token, currentTime, constraint);
+		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
 	}
 
 }

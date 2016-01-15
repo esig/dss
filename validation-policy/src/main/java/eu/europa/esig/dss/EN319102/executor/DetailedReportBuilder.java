@@ -56,6 +56,9 @@ public class DetailedReportBuilder {
 			} else if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 				executeLongTermValidation(signatureAnalysis, signature, currentTime, bbbs);
+			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
+				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
+				executeLongTermValidation(signatureAnalysis, signature, currentTime, bbbs);
 			}
 
 			detailedReport.getSignatures().add(signatureAnalysis);

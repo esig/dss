@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,8 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
 import eu.europa.esig.dss.validation.CertificateWrapper;
+import eu.europa.esig.dss.validation.RevocationWrapper;
+import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.report.DiagnosticData;
@@ -39,6 +42,25 @@ import eu.europa.esig.dss.validation.report.DiagnosticData;
 public class POEExtraction {
 
 	private Map<String, List<Date>> poe = new HashMap<String, List<Date>>();
+
+	public void init(DiagnosticData diagnosticData, Date currentTime) {
+		Set<SignatureWrapper> signatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper signature : signatures) {
+			addPOE(signature.getId(), currentTime);
+		}
+		Set<TimestampWrapper> timestamps = diagnosticData.getAllTimestamps();
+		for (TimestampWrapper timestamp : timestamps) {
+			addPOE(timestamp.getId(), currentTime);
+		}
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		for (CertificateWrapper certificate : usedCertificates) {
+			addPOE(certificate.getId(), currentTime);
+			RevocationWrapper revocationData = certificate.getRevocationData();
+			if (revocationData != null) {
+				addPOE(revocationData.getId(), currentTime);
+			}
+		}
+	}
 
 	public void extractPOE(TimestampWrapper timestamp, DiagnosticData diagnosticData) {
 
@@ -129,4 +151,5 @@ public class POEExtraction {
 		}
 		return lowestDate;
 	}
+
 }

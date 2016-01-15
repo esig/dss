@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.EN319102.bbb.Chain;
 import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateCryptographicCheck;
+import eu.europa.esig.dss.EN319102.bbb.CryptographicCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.EN319102.bbb.xcv.checks.IntermediateCertificateRevokedCheck;
@@ -217,7 +217,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> certificateCryptographic(TokenProxy token, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
-		return new CertificateCryptographicCheck(result, token, currentTime, cryptographicConstraint);
+		return new CryptographicCheck<XmlXCV>(result, token, currentTime, cryptographicConstraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateQualified(CertificateWrapper certificate) {

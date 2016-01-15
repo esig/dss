@@ -52,6 +52,9 @@ public class EvidenceRecordValidation extends Chain<XmlERV> {
 
 	@Override
 	protected void initChain() {
+		if (CollectionUtils.isEmpty(archiveTimestamps)) {
+			return;
+		}
 
 		Collections.sort(archiveTimestamps, new TimestampComparator());
 
