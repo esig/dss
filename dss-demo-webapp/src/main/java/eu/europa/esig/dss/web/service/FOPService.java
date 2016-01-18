@@ -24,8 +24,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 
 @Component
 public class FOPService {
@@ -38,7 +36,7 @@ public class FOPService {
 	@PostConstruct
 	public void init() throws Exception {
 
-		FopFactoryBuilder builder= new FopFactoryBuilder(new File(".").toURI());
+		FopFactoryBuilder builder = new FopFactoryBuilder(new File(".").toURI());
 		builder.setAccessibility(true);
 
 		fopFactory = builder.build();
@@ -58,12 +56,11 @@ public class FOPService {
 		IOUtils.closeQuietly(detailedIS);
 	}
 
-	@Deprecated
-	public void generateSimpleReport(SimpleReport report, OutputStream os) throws Exception {
+	public void generateSimpleReport(String simpleReport, OutputStream os) throws Exception {
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, os);
 		Result res = new SAXResult(fop.getDefaultHandler());
 		Transformer transformer = templateSimpleReport.newTransformer();
-		transformer.transform(new StreamSource(new StringReader(report.toString())), res);
+		transformer.transform(new StreamSource(new StringReader(simpleReport)), res);
 	}
 
 	public void generateSimpleReport(Document dom, OutputStream os) throws Exception {
@@ -73,11 +70,11 @@ public class FOPService {
 		transformer.transform(new DOMSource(dom), res);
 	}
 
-	public void generateDetailedReport(DetailedReport report, OutputStream os) throws Exception {
+	public void generateDetailedReport(String detailedReport, OutputStream os) throws Exception {
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, os);
 		Result res = new SAXResult(fop.getDefaultHandler());
 		Transformer transformer = templateDetailedReport.newTransformer();
-		transformer.transform(new StreamSource(new StringReader(report.toString())), res);
+		transformer.transform(new StreamSource(new StringReader(detailedReport)), res);
 	}
 
 }
