@@ -71,7 +71,6 @@ public class BasicBuildingBlocks {
 		XmlConclusion iscConclusion = isc.getConclusion();
 		if (!Indication.VALID.equals(iscConclusion.getIndication())) {
 			result.setConclusion(iscConclusion);
-			return result;
 		}
 		XmlInfo conclusionInfo = new XmlInfo();
 		conclusionInfo.setCertificateId(token.getSigningCertificateId());
@@ -86,7 +85,6 @@ public class BasicBuildingBlocks {
 			XmlConclusion vciConclusion = vci.getConclusion();
 			if (!Indication.VALID.equals(vciConclusion.getIndication())) {
 				result.setConclusion(vciConclusion);
-				return result;
 			}
 		}
 
@@ -103,7 +101,6 @@ public class BasicBuildingBlocks {
 		XmlConclusion xcvConclusion = xcv.getConclusion();
 		if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
 			result.setConclusion(xcvConclusion);
-			return result;
 		}
 
 		/**
@@ -115,7 +112,6 @@ public class BasicBuildingBlocks {
 		XmlConclusion cvConclusion = cv.getConclusion();
 		if (!Indication.VALID.equals(cvConclusion.getIndication())) {
 			result.setConclusion(cvConclusion);
-			return result;
 		}
 
 		/**
@@ -126,12 +122,13 @@ public class BasicBuildingBlocks {
 		XmlConclusion savConclusion = sav.getConclusion();
 		if (!Indication.VALID.equals(savConclusion.getIndication())) {
 			result.setConclusion(cvConclusion);
-			return result;
 		}
 
-		XmlConclusion conclusion = new XmlConclusion();
-		conclusion.setIndication(Indication.VALID);
-		result.setConclusion(conclusion);
+		if (result.getConclusion() == null) {
+			XmlConclusion conclusion = new XmlConclusion();
+			conclusion.setIndication(Indication.VALID);
+			result.setConclusion(conclusion);
+		}
 
 		return result;
 	}
