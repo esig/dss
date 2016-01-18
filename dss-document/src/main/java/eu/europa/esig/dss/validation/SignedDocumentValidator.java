@@ -51,8 +51,8 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 
+import eu.europa.esig.dss.AttributeValue;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -65,6 +65,12 @@ import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
+import eu.europa.esig.dss.EN319102.executor.CustomProcessExecutor;
+import eu.europa.esig.dss.EN319102.executor.ProcessExecutor;
+import eu.europa.esig.dss.EN319102.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.report.Reports;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
@@ -101,12 +107,6 @@ import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.QcStatementCondition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
-import eu.europa.esig.dss.validation.policy.CustomProcessExecutor;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.ProcessExecutor;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
-import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -115,6 +115,7 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.ocsp.ListOCSPSource;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 /**
  * Validate the signed document. The content of the document is determined automatically. It can be: XML, CAdES(p7m),
@@ -154,8 +155,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 
 	protected CertificateToken providedSigningCertificateToken = null;
-
-	private ValidationPolicy countersignatureValidationPolicy;
 
 	/**
 	 * The reference to the certificate verifier. The current DSS implementation proposes
@@ -327,16 +326,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		policyDocuments.put(signatureId, policyDocument);
 	}
 
-	/**
-	 * This setter allows to indicate the countersignature {@code ValidationPolicy} to be used.
-	 *
-	 * @param countersignatureValidationPolicy
-	 *            {@code ValidationPolicy} to be used
-	 */
-	public void setCountersignatureValidationPolicy(final ValidationPolicy countersignatureValidationPolicy) {
-		this.countersignatureValidationPolicy = countersignatureValidationPolicy;
-	}
-
 	@Override
 	public Reports validateDocument() {
 
@@ -385,8 +374,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
 
-		final Document validationPolicyDom = ValidationResourceManager.loadPolicyData(policyDataStream);
-		return validateDocument(validationPolicyDom);
+		final ConstraintsParameters validationPolicyJaxb = ValidationResourceManager.loadPolicyData(policyDataStream);
+		return validateDocument(validationPolicyJaxb);
 	}
 
 	/**
@@ -398,9 +387,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return
 	 */
 	@Override
-	public Reports validateDocument(final Document validationPolicyDom) {
+	public Reports validateDocument(final ConstraintsParameters validationPolicyJaxb) {
 
-		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyDom);
+		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyJaxb);
 		return validateDocument(validationPolicy);
 	}
 
@@ -426,16 +415,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 		final ProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
-		if (countersignatureValidationPolicy == null) {
-
-			final Document countersignaturePolicyData = ValidationResourceManager.loadCountersignaturePolicyData(null);
-			countersignatureValidationPolicy = new EtsiValidationPolicy(countersignaturePolicyData);
-		}
-		executor.setCountersignatureValidationPolicy(countersignatureValidationPolicy);
 
 		final DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
-
-		final Document diagnosticDataDom = ValidationResourceManager.convert(jaxbDiagnosticData);
 		executor.setDiagnosticData(jaxbDiagnosticData);
 		Date date2 = null;
 		if (LOG.isTraceEnabled()) {
@@ -1409,7 +1390,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private void performStructuralValidation(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
 		final ValidationPolicy validationPolicy = processExecutor.getValidationPolicy();
-		if ((validationPolicy == null) || (validationPolicy.getStructuralValidationConstraint() == null)) {
+		if ((validationPolicy == null) || (validationPolicy.getStructuralValidationConstraint(Context.SIGNATURE) == null)) {
 			return;
 		}
 		final String structureValid = signature.validateStructure();

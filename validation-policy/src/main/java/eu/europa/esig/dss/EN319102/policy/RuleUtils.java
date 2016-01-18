@@ -169,7 +169,10 @@ public final class RuleUtils {
 	}
 
 	public static long convertDuration(TimeConstraint timeConstraint) {
-		return convertDuration(timeConstraint.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, timeConstraint.getValue());
+		if (timeConstraint != null) {
+			return convertDuration(timeConstraint.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, timeConstraint.getValue());
+		}
+		return Long.MAX_VALUE;
 	}
 
 }

@@ -35,12 +35,12 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
 
 public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> {
 
@@ -85,7 +85,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		//		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
@@ -94,7 +94,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 		DSSDocument extendedDocument = extendSignature(signedDocument);
 
-		//		extendedDocument.save("target/xades.xml");
+		// extendedDocument.save("target/xades.xml");
 
 		assertNotNull(extendedDocument);
 		assertNotNull(extendedDocument.getMimeType());
@@ -105,7 +105,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		reports = validator.validateDocument();
 
-		//		reports.print();
+		// reports.print();
 
 		diagnosticData = reports.getDiagnosticData();
 
@@ -121,7 +121,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extensionParameters);
 		assertNotNull(extendedDocument);
 
-		//		extendedDocument.save("target/pdf.pdf");
+		// extendedDocument.save("target/pdf.pdf");
 
 		return extendedDocument;
 	}

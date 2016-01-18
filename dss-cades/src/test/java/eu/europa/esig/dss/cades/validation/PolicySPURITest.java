@@ -12,11 +12,11 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
 
 public class PolicySPURITest {
 

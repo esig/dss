@@ -28,16 +28,17 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureWrapper;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
 
 /**
  * Unit test added to fix : https://joinup.ec.europa.eu/asset/sd-dss/issue/xades-signedproperties-reference
  *
- * XAdES standard : The generator shall create as many <code>ds:Reference</code> element as signed data objects (each one referencing one of them)
+ * XAdES standard : The generator shall create as many <code>ds:Reference</code> element as signed data objects (each
+ * one referencing one of them)
  * plus one ds:Reference element referencing xades:SignedProperties element.
  */
 public class SignedPropertiesNotCheckedTest {

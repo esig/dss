@@ -28,6 +28,9 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.EN319102.report.DetailedReport;
+import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.EN319102.report.SimpleReport;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
@@ -39,9 +42,6 @@ import eu.europa.esig.dss.tsl.service.TSLRepository;
 import eu.europa.esig.dss.tsl.service.TSLValidationJob;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
@@ -55,8 +55,10 @@ public class ValidateXmlXadesLTWithOnlineSourcesTest extends CookbookTools {
 
 		// tag::demo[]
 
-		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted anchor.
-		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this point.
+		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted
+		// anchor.
+		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this
+		// point.
 		preparePKCS12TokenAndKey();
 		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
 		final CertificateToken trustedCertificate = certificateChain[0];
@@ -82,7 +84,8 @@ public class ValidateXmlXadesLTWithOnlineSourcesTest extends CookbookTools {
 		File cacheFolder = new File("/temp");
 		fileCacheDataLoader.setFileCacheDirectory(cacheFolder);
 
-		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12", "dss-password");
+		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
+				"dss-password");
 
 		TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
 		certificateSource.setDssKeyStore(keyStoreCertificateSource);

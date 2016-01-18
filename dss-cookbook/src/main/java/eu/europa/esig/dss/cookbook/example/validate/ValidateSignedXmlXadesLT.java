@@ -27,6 +27,7 @@ import java.io.InputStream;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.EN319102.report.Reports;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.esig.dss.cookbook.sources.AlwaysValidOCSPSource;
@@ -34,9 +35,6 @@ import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -69,13 +67,11 @@ public class ValidateSignedXmlXadesLT extends Cookbook {
 		validator.setCertificateVerifier(verifier);
 
 		Reports reports = validator.validateDocument();
-		SimpleReport simpleReport = reports.getSimpleReport();
-		DetailedReport detailReport = reports.getDetailedReport();
 
-		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
+		InputStream is = new ByteArrayInputStream(reports.getXmlSimpleReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationXmlXadesLT_simpleReport.xml");
 
-		is = new ByteArrayInputStream(detailReport.toByteArray());
+		is = new ByteArrayInputStream(reports.getXmlDetailedReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationXmlXadesLT_detailReport.xml");
 	}
 }

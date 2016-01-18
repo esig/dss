@@ -40,14 +40,14 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.EN319102.report.SimpleReport;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -79,7 +79,7 @@ public abstract class AbstractTestSignature {
 
 		logger.info("=================== VALIDATION =================");
 
-		//		signedDocument.save("target/xades.xml");
+		// signedDocument.save("target/xades.xml");
 
 		if (logger.isDebugEnabled()) {
 			try {
@@ -161,7 +161,8 @@ public abstract class AbstractTestSignature {
 	}
 
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
-		assertEquals(getPrivateKeyEntry().getCertificate().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
+		assertEquals(getPrivateKeyEntry().getCertificate().getDigestAlgorithm(),
+				diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
 	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
@@ -224,14 +225,14 @@ public abstract class AbstractTestSignature {
 				String timestampType = diagnosticData.getTimestampType(timestampId);
 				TimestampType type = TimestampType.valueOf(timestampType);
 				switch (type) {
-					case SIGNATURE_TIMESTAMP:
-						foundSignatureTimeStamp = true;
-						break;
-					case ARCHIVE_TIMESTAMP:
-						foundArchiveTimeStamp = true;
-						break;
-					default:
-						break;
+				case SIGNATURE_TIMESTAMP:
+					foundSignatureTimeStamp = true;
+					break;
+				case ARCHIVE_TIMESTAMP:
+					foundArchiveTimeStamp = true;
+					break;
+				default:
+					break;
 				}
 
 			}

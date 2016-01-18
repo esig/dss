@@ -13,7 +13,9 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -22,9 +24,6 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TimestampWrapper;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
 
 public class PAdESLTACheckTimeStampIDTest {
 
@@ -41,23 +40,23 @@ public class PAdESLTACheckTimeStampIDTest {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
-		
+
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
-		
+
 		ToBeSigned toBeSigned = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, toBeSigned);
 		final DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		
+
 		Reports report = validator.validateDocument();
 		report.print();
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String signatureId = diagnostic.getFirstSignatureId();
-		for(TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
+		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
 			Assert.assertEquals(signatureId, wrapper.getSignedObjects().getSignedSignature().get(0).getId());
 		}
 	}

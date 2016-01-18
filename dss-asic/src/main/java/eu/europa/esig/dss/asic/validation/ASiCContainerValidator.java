@@ -30,45 +30,43 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import eu.europa.esig.dss.ASiCNamespaces;
 import eu.europa.esig.dss.AsicManifestDocument;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.asic.signature.ASiCService;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.report.Reports;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.report.Reports;
 
 /**
  * This class is the base class for ASiC containers.
  *
  * Mime-type handling: FROM: ETSI TS 102 918 V1.2.1
  * A.1 Mimetype
- * The "mimetype" object, when stored in a ZIP, file can be used to support operating systems that rely on some content in
- * specific positions in a file (the so called "magic number" as described in RFC 4288 [11] in order to select the specific
- * application that can load and elaborate the file content. The following restrictions apply to the mimetype to support this
+ * The "mimetype" object, when stored in a ZIP, file can be used to support operating systems that rely on some content
+ * in
+ * specific positions in a file (the so called "magic number" as described in RFC 4288 [11] in order to select the
+ * specific
+ * application that can load and elaborate the file content. The following restrictions apply to the mimetype to support
+ * this
  * feature:
  * • it has to be the first in the archive;
  * • it cannot contain "Extra fields" (i.e. extra field length at offset 28 shall be zero);
  * • it cannot be compressed (i.e. compression method at offset 8 shall be zero);
  * • the first 4 octets shall have the hex values: "50 4B 03 04".
- * An application can ascertain if this feature is used by checking if the string "mimetype" is found starting at offset 30. In
- * this case it can be assumed that a string representing the container mime type is present starting at offset 38; the length
+ * An application can ascertain if this feature is used by checking if the string "mimetype" is found starting at offset
+ * 30. In
+ * this case it can be assumed that a string representing the container mime type is present starting at offset 38; the
+ * length
  * of this string is contained in the 4 octets starting at offset 18.
  * All multi-octets values are little-endian.
  * The "mimetype" shall NOT be compressed or encrypted inside the ZIP file.
@@ -76,7 +74,8 @@ import eu.europa.esig.dss.validation.report.Reports;
  * --> The use of two first bytes is not standard conforming.
  *
  * 5.2.1 Media type identification
- * 1) File extension: ".asics"|".asice" should be used (".scs"|".sce" is allowed for operating systems and/or file systems not
+ * 1) File extension: ".asics"|".asice" should be used (".scs"|".sce" is allowed for operating systems and/or file
+ * systems not
  * allowing more than 3 characters file extensions). In the case where the container content is to be handled
  * manually, the ".zip" extension may be used.
  *
@@ -109,7 +108,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	/**
 	 * This mime-type comes from the container file name: (zip, asic...).
 	 */
-	//	private MimeType asicContainerMimeType;
+	// private MimeType asicContainerMimeType;
 
 	/**
 	 * This mime-type comes from the 'mimetype' file included within the container.
@@ -122,7 +121,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	 * If this field is present, it should be set with "mimetype=" followed by the mime type of the data object held in
 	 * the signed data object.
 	 */
-	//	protected MimeType asicCommentMimeType;
+	// protected MimeType asicCommentMimeType;
 
 	private boolean cadesSigned = false;
 	private boolean xadesSigned = false;
@@ -135,7 +134,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		super(null);
 		this.asicContainer = null;
 	}
-	
+
 	public ASiCContainerValidator(final DSSDocument asicContainer) {
 		super(null);
 		this.asicContainer = asicContainer;
@@ -147,7 +146,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 		createSubordinatedContainerValidators();
 	}
-	
+
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
 		int headerLength = 500;
@@ -240,7 +239,8 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		try {
 
 			MimeType asicEntryMimeType = null;
-			asicsInputStream = new ZipInputStream(asicContainer.openStream()); // The underlying stream is closed by the parent (asicsInputStream).
+			asicsInputStream = new ZipInputStream(asicContainer.openStream()); // The underlying stream is closed by the
+																				// parent (asicsInputStream).
 
 			for (ZipEntry entry = asicsInputStream.getNextEntry(); entry != null; entry = asicsInputStream.getNextEntry()) {
 
@@ -331,7 +331,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			final String mimeTypeString = byteArrayOutputStream.toString("UTF-8");
 			final MimeType asicMimeType = MimeType.fromMimeTypeString(mimeTypeString);
 			return asicMimeType;
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -345,7 +345,8 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return inMemoryDocument;
 	}
 
-	private static void addAsicManifestEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) throws IOException {
+	private static void addAsicManifestEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream)
+			throws IOException {
 
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		IOUtils.copy(asicsInputStream, byteArrayOutputStream);
@@ -355,8 +356,10 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	/**
 	 * 6.2.2 Contents of Container
-	 * 4) Other application specific information may be added in further files contained within the META-INF directory, such as:
-	 * c) "META-INF/metadata.xml" has a user defined content. If present, its content shall be well formed XML conformant to OEBPS Container Format (OCF) [4] specifications.
+	 * 4) Other application specific information may be added in further files contained within the META-INF directory,
+	 * such as:
+	 * c) "META-INF/metadata.xml" has a user defined content. If present, its content shall be well formed XML
+	 * conformant to OEBPS Container Format (OCF) [4] specifications.
 	 *
 	 * @param entryName
 	 * @return
@@ -369,8 +372,10 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	/**
 	 * 6.2.2 Contents of Container
-	 * 4) Other application specific information may be added in further files contained within the META-INF directory, such as:
-	 * a) "META-INF/container.xml" if present shall be well formed XML conformant to OEBPS Container Format (OCF) [4] specifications. It shall identify the MIME type and full path
+	 * 4) Other application specific information may be added in further files contained within the META-INF directory,
+	 * such as:
+	 * a) "META-INF/container.xml" if present shall be well formed XML conformant to OEBPS Container Format (OCF) [4]
+	 * specifications. It shall identify the MIME type and full path
 	 * of all the root data objects in the container, as specified in OCF.
 	 *
 	 * @param entryName
@@ -384,9 +389,12 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	/**
 	 * 6.2.2 Contents of Container
-	 * 4) Other application specific information may be added in further files contained within the META-INF directory, such as:
-	 * b) "META-INF/manifest.xml" if present shall be well formed XML conformant to OASIS Open Document Format [6] specifications.
-	 * NOTE 4: according to ODF [6] specifications, inclusion of reference to other META-INF information, such as *signatures*.xml, in manifest.xml is optional. In this way it is
+	 * 4) Other application specific information may be added in further files contained within the META-INF directory,
+	 * such as:
+	 * b) "META-INF/manifest.xml" if present shall be well formed XML conformant to OASIS Open Document Format [6]
+	 * specifications.
+	 * NOTE 4: according to ODF [6] specifications, inclusion of reference to other META-INF information, such as
+	 * *signatures*.xml, in manifest.xml is optional. In this way it is
 	 * possible to protect the container's content signing manifest.xml while allowing to add later signatures.
 	 *
 	 * @param entryName
@@ -416,7 +424,8 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	public static boolean isXAdES(final String entryName) {
 
-		final boolean signature = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature") && !entryName.contains("Manifest");
+		final boolean signature = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature")
+				&& !entryName.contains("Manifest");
 		return signature;
 	}
 
@@ -429,7 +438,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	private static MimeType getZipComment(final byte[] buffer) {
 
 		final int len = buffer.length;
-		final byte[] magicDirEnd = {0x50, 0x4b, 0x05, 0x06};
+		final byte[] magicDirEnd = { 0x50, 0x4b, 0x05, 0x06 };
 		final int buffLen = Math.min(buffer.length, len);
 		// Check the buffer from the end
 		for (int ii = buffLen - magicDirEnd.length - 22; ii >= 0; ii--) {
@@ -467,9 +476,11 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If null or empty the default file is used.
+	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If
+	 * null or empty the default file is used.
 	 *
-	 * @param validationPolicy {@code ValidationPolicy}
+	 * @param validationPolicy
+	 *            {@code ValidationPolicy}
 	 * @return
 	 */
 	@Override

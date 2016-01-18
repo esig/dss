@@ -83,6 +83,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 						// TODO item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData.getId(), controlTime));
 
+						// TODO correct ??
 						if (certificate.isRevoked()) {
 							controlTime = revocationData.getRevocationDate();
 						} else if (!isFresh(revocationData, controlTime)) {

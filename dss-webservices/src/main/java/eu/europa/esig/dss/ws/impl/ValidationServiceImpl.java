@@ -31,12 +31,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.ws.DSSWSUtils;
 import eu.europa.esig.dss.ws.ValidationService;
 import eu.europa.esig.dss.ws.WSDocument;
@@ -53,14 +51,16 @@ public class ValidationServiceImpl implements ValidationService {
 	private CertificateVerifier certificateVerifier;
 
 	/**
-	 * @param certificateVerifier the certificateVerifier to set
+	 * @param certificateVerifier
+	 *            the certificateVerifier to set
 	 */
 	public void setCertificateVerifier(CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
 
 	@Override
-	public WSValidationReport validateDocument(WSDocument wsDocument, WSDocument wsDetachedContents, WSDocument policy, boolean diagnosticDataToBeReturned) throws DSSException {
+	public WSValidationReport validateDocument(WSDocument wsDocument, WSDocument wsDetachedContents, WSDocument policy, boolean diagnosticDataToBeReturned)
+			throws DSSException {
 
 		String exceptionMessage;
 		try {
@@ -85,12 +85,8 @@ public class ValidationServiceImpl implements ValidationService {
 
 			final InputStream inputStream = policy == null ? null : policy.openStream();
 			final Reports reports = validator.validateDocument(inputStream);
-
-			final SimpleReport simpleReport = reports.getSimpleReport();
-			final String simpleReportXml = simpleReport.toString();
-
-			final DetailedReport detailedReport = reports.getDetailedReport();
-			final String detailedReportXml = detailedReport.toString();
+			final String simpleReportXml = reports.getXmlSimpleReport();
+			final String detailedReportXml = reports.getXmlDetailedReport();
 
 			final WSValidationReport wsValidationReport = new WSValidationReport();
 			wsValidationReport.setXmlSimpleReport(simpleReportXml);

@@ -24,8 +24,11 @@ public class DateParser {
 	}
 
 	public static String print(Date v) {
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		return sdf.format(v);
+		if (v != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+			return sdf.format(v);
+		}
+		return null;
 	}
 
 }

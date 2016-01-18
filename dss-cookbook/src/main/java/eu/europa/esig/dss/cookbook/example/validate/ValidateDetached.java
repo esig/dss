@@ -29,14 +29,12 @@ import java.util.List;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.EN319102.report.Reports;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 
@@ -66,7 +64,7 @@ public class ValidateDetached extends Cookbook {
 
 		validator.setCertificateVerifier(verifier);
 
-		//DOCUMENT TO SIGN
+		// DOCUMENT TO SIGN
 		List<DSSDocument> detachedContentsList = new ArrayList<DSSDocument>();
 		String detachedFilePath = getPathFromResource("/hello-world.pdf");
 		DSSDocument detachedContents = new FileDocument(detachedFilePath);
@@ -74,14 +72,11 @@ public class ValidateDetached extends Cookbook {
 		validator.setDetachedContents(detachedContentsList);
 
 		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		SimpleReport simpleReport = reports.getSimpleReport();
-
-		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
+		InputStream is = new ByteArrayInputStream(reports.getXmlSimpleReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationDetached_simpleReport.xml");
-		//		TODO is = new ByteArrayInputStream(diagnosticData.toByteArray());
-		//		DSSUtils.saveToFile(is, "target/validationDetached_diagnosticReport.xml");
+		// TODO is = new ByteArrayInputStream(diagnosticData.toByteArray());
+		// DSSUtils.saveToFile(is, "target/validationDetached_diagnosticReport.xml");
 
-		//System.out.println(diagnosticData);
+		// System.out.println(diagnosticData);
 	}
 }

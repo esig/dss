@@ -28,6 +28,8 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.EN319102.report.SimpleReport;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.esig.dss.cookbook.sources.AlwaysValidOCSPSource;
@@ -35,8 +37,6 @@ import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -49,8 +49,10 @@ public class ValidateSignedXmlXadesBTest extends CookbookTools {
 
 		// tag::demo[]
 
-		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted anchor.
-		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this point.
+		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted
+		// anchor.
+		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this
+		// point.
 		preparePKCS12TokenAndKey();
 		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
 		final CertificateToken trustedCertificate = certificateChain[0];
