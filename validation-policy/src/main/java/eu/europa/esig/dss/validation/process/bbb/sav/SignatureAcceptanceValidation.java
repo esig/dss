@@ -6,7 +6,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
@@ -15,6 +14,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierChe
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;

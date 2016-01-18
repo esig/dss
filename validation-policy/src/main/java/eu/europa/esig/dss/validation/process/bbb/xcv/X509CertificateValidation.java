@@ -13,7 +13,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.CryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.IntermediateCertificateRevokedCheck;

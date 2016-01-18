@@ -6,7 +6,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.CryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;

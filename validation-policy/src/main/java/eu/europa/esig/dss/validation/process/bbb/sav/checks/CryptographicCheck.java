@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process;
+package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,6 +14,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.validation.wrappers.TokenProxy;
 import eu.europa.esig.jaxb.policy.Algo;
