@@ -2,17 +2,22 @@ package eu.europa.esig.dss.EN319102.validation.vpftsp;
 
 import java.util.Map;
 
-import eu.europa.esig.dss.EN319102.bbb.Chain;
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.EN319102.validation.Chain;
+import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
+import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
-import eu.europa.esig.dss.validation.TimestampWrapper;
 
 /**
  * 5.4 Validation process for time-stamps
  */
 public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTimestamps> {
+
+	private static final Logger logger = LoggerFactory.getLogger(ValidationProcessForTimeStamps.class);
 
 	private final TimestampWrapper timestamp;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
@@ -29,6 +34,8 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 		XmlBasicBuildingBlocks tspBBB = bbbs.get(timestamp.getId());
 		if (tspBBB != null) {
 			firstItem = timestampBasicBuildingBlocksValid(tspBBB);
+		} else {
+			logger.error("Basic Building Blocks for timestamp " + timestamp.getId() + " not found!");
 		}
 	}
 

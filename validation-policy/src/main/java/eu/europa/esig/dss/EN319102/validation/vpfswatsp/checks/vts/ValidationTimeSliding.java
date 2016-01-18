@@ -6,20 +6,20 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import eu.europa.esig.dss.EN319102.bbb.Chain;
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.EN319102.bbb.rfc.RevocationFreshnessChecker;
+import eu.europa.esig.dss.EN319102.validation.Chain;
+import eu.europa.esig.dss.EN319102.validation.ChainItem;
+import eu.europa.esig.dss.EN319102.validation.bbb.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.vts.checks.RevocationDataExistsCheck;
+import eu.europa.esig.dss.EN319102.wrappers.CertificateWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.RevocationWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.TokenProxy;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
-import eu.europa.esig.dss.validation.CertificateWrapper;
-import eu.europa.esig.dss.validation.RevocationWrapper;
-import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 public class ValidationTimeSliding extends Chain<XmlVTS> {
 

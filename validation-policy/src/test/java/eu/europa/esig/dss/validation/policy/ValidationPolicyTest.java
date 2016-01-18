@@ -9,6 +9,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import eu.europa.esig.dss.EN319102.policy.EtsiValidationPolicy;
+
 public class ValidationPolicyTest {
 
 	@Test

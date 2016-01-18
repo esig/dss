@@ -2,13 +2,13 @@ package eu.europa.esig.dss.EN319102.validation.vpfbs;
 
 import java.util.Map;
 
-import eu.europa.esig.dss.EN319102.bbb.Chain;
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.EN319102.validation.Chain;
+import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpfbs.checks.SignatureBasicBuildingBlocksCheck;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
-import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * 5.3 Validation process for Basic Signatures

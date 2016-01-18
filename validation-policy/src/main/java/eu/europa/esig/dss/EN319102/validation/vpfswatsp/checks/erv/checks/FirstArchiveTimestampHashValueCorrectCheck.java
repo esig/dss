@@ -5,14 +5,14 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.MessageTag;
+import eu.europa.esig.dss.EN319102.validation.ChainItem;
+import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlERV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
-import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 

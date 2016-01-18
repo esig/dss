@@ -23,8 +23,8 @@ package eu.europa.esig.dss.EN319102.executor;
 import java.util.Date;
 
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.report.Reports;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
 
 /**
  * This interface allows to define how the validation process should be carried out.

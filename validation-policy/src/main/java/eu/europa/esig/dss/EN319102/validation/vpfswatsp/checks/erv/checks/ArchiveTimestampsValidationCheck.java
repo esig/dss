@@ -5,23 +5,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.MessageTag;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.TimestampComparator;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv.PastSignatureValidation;
 import eu.europa.esig.dss.EN319102.validation.vpftsp.ValidationProcessForTimeStamps;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlERV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
-import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ArchiveTimestampsValidationCheck extends ChainItem<XmlERV> {

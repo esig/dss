@@ -2,11 +2,11 @@ package eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.vts.checks;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
+import eu.europa.esig.dss.MessageTag;
+import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 

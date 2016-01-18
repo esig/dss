@@ -10,15 +10,15 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.AttributeValue;
+import eu.europa.esig.dss.EN319102.wrappers.CertificateWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.RevocationWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
-import eu.europa.esig.dss.validation.CertificateWrapper;
-import eu.europa.esig.dss.validation.RevocationWrapper;
-import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.TimestampWrapper;
-import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * 5.6.2.3 POE extraction

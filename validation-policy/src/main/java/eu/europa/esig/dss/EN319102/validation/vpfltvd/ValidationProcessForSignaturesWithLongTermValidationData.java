@@ -11,9 +11,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.EN319102.bbb.Chain;
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
-import eu.europa.esig.dss.EN319102.bbb.CryptographicCheck;
+import eu.europa.esig.dss.EN319102.validation.Chain;
+import eu.europa.esig.dss.EN319102.validation.ChainItem;
+import eu.europa.esig.dss.EN319102.validation.CryptographicCheck;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
@@ -24,6 +24,11 @@ import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.RevocationDateAfter
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.TimestampDelayCheck;
+import eu.europa.esig.dss.EN319102.wrappers.CertificateWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.RevocationWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
@@ -32,13 +37,8 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
-import eu.europa.esig.dss.validation.CertificateWrapper;
-import eu.europa.esig.dss.validation.RevocationWrapper;
-import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.TimestampWrapper;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data

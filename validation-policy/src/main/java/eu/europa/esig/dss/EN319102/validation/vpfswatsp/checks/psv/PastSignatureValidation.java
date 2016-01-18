@@ -2,23 +2,23 @@ package eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.EN319102.bbb.Chain;
-import eu.europa.esig.dss.EN319102.bbb.ChainItem;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.validation.Chain;
+import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.pcv.PastCertificateValidation;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv.checks.POEExistsCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.psv.checks.PastCertificateValidationCheck;
+import eu.europa.esig.dss.EN319102.wrappers.CertificateWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.TokenProxy;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
-import eu.europa.esig.dss.validation.CertificateWrapper;
-import eu.europa.esig.dss.validation.TokenProxy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 public class PastSignatureValidation extends Chain<XmlPSV> {
 

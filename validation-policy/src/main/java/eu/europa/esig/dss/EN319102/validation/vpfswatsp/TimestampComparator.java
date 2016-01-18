@@ -3,7 +3,7 @@ package eu.europa.esig.dss.EN319102.validation.vpfswatsp;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import eu.europa.esig.dss.validation.TimestampWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 
 public class TimestampComparator implements Comparator<TimestampWrapper>, Serializable {
 

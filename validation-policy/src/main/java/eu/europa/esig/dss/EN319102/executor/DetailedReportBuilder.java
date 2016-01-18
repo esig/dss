@@ -6,20 +6,22 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.EN319102.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.validation.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.EN319102.validation.vpfbs.ValidationProcessForBasicSignatures;
 import eu.europa.esig.dss.EN319102.validation.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
+import eu.europa.esig.dss.EN319102.validation.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
 import eu.europa.esig.dss.EN319102.validation.vpftsp.ValidationProcessForTimeStamps;
+import eu.europa.esig.dss.EN319102.wrappers.AbstractTokenProxy;
+import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
+import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.validation.AbstractTokenProxy;
-import eu.europa.esig.dss.validation.SignatureWrapper;
-import eu.europa.esig.dss.validation.TimestampWrapper;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
 
 public class DetailedReportBuilder {
 
@@ -55,10 +57,11 @@ public class DetailedReportBuilder {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
-				executeLongTermValidation(signatureAnalysis, signature, currentTime, bbbs);
+				executeLongTermValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
-				executeLongTermValidation(signatureAnalysis, signature, currentTime, bbbs);
+				executeLongTermValidation(signatureAnalysis, signature, bbbs);
+				executeArchiveValidation(signatureAnalysis, signature);
 			}
 
 			detailedReport.getSignatures().add(signatureAnalysis);
@@ -81,12 +84,18 @@ public class DetailedReportBuilder {
 		}
 	}
 
-	private void executeLongTermValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Date currentTime,
-			Map<String, XmlBasicBuildingBlocks> bbbs) {
+	private void executeLongTermValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		ValidationProcessForSignaturesWithLongTermValidationData vpfltvd = new ValidationProcessForSignaturesWithLongTermValidationData(signatureAnalysis,
 				diagnosticData, signature, bbbs, policy, currentTime);
 		XmlValidationProcessLongTermData vpfltvdResult = vpfltvd.execute();
 		signatureAnalysis.setValidationProcessLongTermData(vpfltvdResult);
+	}
+
+	private void executeArchiveValidation(XmlSignature signatureAnalysis, SignatureWrapper signature) {
+		ValidationProcessForSignaturesWithArchivalData vpfswad = new ValidationProcessForSignaturesWithArchivalData(signatureAnalysis, signature,
+				diagnosticData, policy, currentTime);
+		XmlValidationProcessArchivalData vpfswadResult = vpfswad.execute();
+		signatureAnalysis.setValidationProcessArchivalData(vpfswadResult);
 	}
 
 	private Map<String, XmlBasicBuildingBlocks> executeAllBasicBuildingBlocks() {
