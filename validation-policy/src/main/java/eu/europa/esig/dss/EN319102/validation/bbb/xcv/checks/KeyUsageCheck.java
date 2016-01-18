@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.EN319102.validation.bbb.xcv.checks;
 
-import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 
 import eu.europa.esig.dss.MessageTag;
@@ -15,18 +13,18 @@ import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 public class KeyUsageCheck extends ChainItem<XmlXCV> {
 
 	private final CertificateWrapper certificate;
-	private final List<String> expectedKeyUsages;
+	private final MultiValuesConstraint constraint;
 
 	public KeyUsageCheck(XmlXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
-		this.expectedKeyUsages = constraint.getId();
+		this.constraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
-		if (CollectionUtils.isNotEmpty(expectedKeyUsages)) {
-			return expectedKeyUsages.containsAll(certificate.getKeyUsages());
+		if (CollectionUtils.isNotEmpty(constraint.getId())) {
+			return constraint.getId().containsAll(certificate.getKeyUsages());
 		}
 		return true;
 	}
