@@ -51,9 +51,9 @@ public class BasicBuildingBlocksValidationTest {
 		Assert.assertEquals(Indication.INVALID, result.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.FORMAT_FAILURE, result.getConclusion().getSubIndication());
 
-		Assert.assertNull(result.getCV());
-		Assert.assertNull(result.getSAV());
-		Assert.assertNull(result.getVCI());
-		Assert.assertNull(result.getXCV());
+		Assert.assertNotNull(result.getCV());
+		Assert.assertNotNull(result.getSAV());
+		Assert.assertNotNull(result.getVCI());
+		Assert.assertNotNull(result.getXCV());
 	}
 }

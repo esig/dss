@@ -171,6 +171,11 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 					return false;
 				}
 			}
+
+			indication = Indication.INDETERMINATE;
+			subIndication = SubIndication.REVOKED_NO_POE;
+			return false;
+
 		} else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
 				&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
@@ -194,6 +199,11 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 					return false;
 				}
 			}
+
+			indication = Indication.INDETERMINATE;
+			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
+			return false;
+
 		} else if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
 			indication = xcvConclusion.getIndication();
 			subIndication = xcvConclusion.getSubIndication();

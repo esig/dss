@@ -104,8 +104,12 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		conclusion.setSubIndication(getFailedSubIndicationForConclusion());
 		XmlError errorMessage = new XmlError();
 		MessageTag errorMessageTag = getErrorMessageTag();
-		errorMessage.setNameId(errorMessageTag.name());
-		errorMessage.setValue(errorMessageTag.getMessage());
+		if (errorMessageTag != null) {
+			errorMessage.setNameId(errorMessageTag.name());
+			errorMessage.setValue(errorMessageTag.getMessage());
+		} else {
+			logger.error("MessageTag is not defined !");
+		}
 		conclusion.setError(errorMessage);
 		result.setConclusion(conclusion);
 	}
@@ -134,8 +138,12 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	private XmlName buildConstraintName() {
 		MessageTag tag = getMessageTag();
 		XmlName name = new XmlName();
-		name.setNameId(tag.name());
-		name.setValue(tag.getMessage());
+		if (tag != null) {
+			name.setNameId(tag.name());
+			name.setValue(tag.getMessage());
+		} else {
+			logger.error("MessageTag is not defined!");
+		}
 		return name;
 	}
 
