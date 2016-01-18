@@ -93,6 +93,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamps;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
@@ -748,7 +749,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 					final XmlSignedSignature xmlSignedSignature = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSignedSignature();
 					xmlSignedSignature.setId(timestampReference.getSignatureId());
 					xmlSignedObjectsType.getSignedSignature().add(xmlSignedSignature);
-				} else {
+				} else if(TimestampReferenceCategory.TIMESTAMP.equals(timestampedCategory)) {
+					final XmlTimestampedTimestamp xmlTimestampedTimestamp = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlTimestampedTimestamp();
+					xmlTimestampedTimestamp.setId(timestampReference.getSignatureId());
+					xmlSignedObjectsType.getTimestampedTimestamp().add(xmlTimestampedTimestamp);
+				}else {
 
 					final XmlDigestAlgAndValueType xmlDigestAlgAndValue = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlDigestAlgAndValueType();
 					xmlDigestAlgAndValue.setDigestMethod(timestampReference.getDigestAlgorithm());

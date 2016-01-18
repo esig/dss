@@ -948,7 +948,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
 					for (final String timestampId : timestampedTimestamps) {
 
-						final TimestampReference timestampReference = new TimestampReference(timestampId);
+						final TimestampReference timestampReference = new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP);
 						archiveReferences.add(timestampReference);
 					}
 					archiveReferences.addAll(getTimestampedReferences());
