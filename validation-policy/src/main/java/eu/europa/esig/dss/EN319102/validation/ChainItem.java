@@ -50,7 +50,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	}
 
 	public void execute() {
-		if (constraint == null) {
+		if (constraint == null || constraint.getLevel() == null) {
 			logger.info("Check skipped : constraint not defined");
 			callNext();
 		} else {

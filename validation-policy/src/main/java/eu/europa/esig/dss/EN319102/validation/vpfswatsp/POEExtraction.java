@@ -111,12 +111,14 @@ public class POEExtraction {
 	}
 
 	private void addPOE(String poeId, Date productionTime) {
-		List<Date> datesById = poe.get(poeId);
-		if (datesById == null) {
-			datesById = new ArrayList<Date>();
-			poe.put(poeId, datesById);
+		if (productionTime != null) {
+			List<Date> datesById = poe.get(poeId);
+			if (datesById == null) {
+				datesById = new ArrayList<Date>();
+				poe.put(poeId, datesById);
+			}
+			datesById.add(productionTime);
 		}
-		datesById.add(productionTime);
 	}
 
 	/**

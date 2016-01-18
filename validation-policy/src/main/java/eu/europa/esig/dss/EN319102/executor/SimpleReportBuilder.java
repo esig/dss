@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.AttributeValue;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.MessageTag;
 import eu.europa.esig.dss.TSLConstant;
@@ -42,7 +43,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
-import eu.europa.esig.dss.validation.policy.rules.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 

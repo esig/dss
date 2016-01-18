@@ -57,6 +57,8 @@ public interface ProcessExecutor {
 	 */
 	void setValidationPolicy(ValidationPolicy validationPolicy);
 
+	ValidationPolicy getValidationPolicy();
+
 	/**
 	 * This method allows to set the validation level that is used during the
 	 * validation process execution.
@@ -72,5 +74,7 @@ public interface ProcessExecutor {
 	 * @return {@code Reports}
 	 */
 	Reports execute();
+
+	Date getCurrentTime();
 
 }

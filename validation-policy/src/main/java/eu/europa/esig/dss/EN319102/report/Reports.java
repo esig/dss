@@ -160,7 +160,7 @@ public class Reports {
 
 	public String getXmlDetailedReport() {
 		if (xmlDetailedReport == null) {
-			xmlDetailedReport = getJAXBObjectAsString(xmlDetailedReport, eu.europa.esig.dss.jaxb.detailedreport.DetailedReport.class.getPackage().getName());
+			xmlDetailedReport = getJAXBObjectAsString(detailedReport, eu.europa.esig.dss.jaxb.detailedreport.DetailedReport.class.getPackage().getName());
 		}
 		return xmlDetailedReport;
 	}
@@ -181,7 +181,7 @@ public class Reports {
 			marshaller.marshal(obj, writer);
 			return writer.toString();
 		} catch (JAXBException e) {
-			logger.error("Unable to generate string value for context " + contextPath + " : " + e.getMessage(), e);
+			logger.error("Unable to generate string value for context " + contextPath + " (code:" + e.getErrorCode() + ") : " + e.getMessage(), e);
 			return null;
 		}
 	}

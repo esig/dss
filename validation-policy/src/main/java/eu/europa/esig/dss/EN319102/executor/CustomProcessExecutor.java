@@ -54,4 +54,14 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		return new Reports(jaxbDiagnosticData, detailedReport, simpleReport);
 	}
 
+	@Override
+	public Date getCurrentTime() {
+		return currentTime;
+	}
+
+	@Override
+	public ValidationPolicy getValidationPolicy() {
+		return policy;
+	}
+
 }

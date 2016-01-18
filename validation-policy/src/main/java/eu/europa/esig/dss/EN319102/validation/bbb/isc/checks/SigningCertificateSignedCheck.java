@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.EN319102.validation.bbb.isc.checks;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.esig.dss.MessageTag;
 import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.wrappers.TokenProxy;
@@ -24,7 +26,9 @@ public class SigningCertificateSignedCheck extends ChainItem<XmlISC> {
 	@Override
 	protected boolean process() {
 		String signedElement = token.getSigningCertificateSigned();
-		return XMLE_X509CERTIFICATE.equals(signedElement) || XMLE_X509DATA.equals(signedElement) || XMLE_KEYINFO.equals(signedElement);
+		// TODO
+		return StringUtils.isEmpty(signedElement)
+				|| (XMLE_X509CERTIFICATE.equals(signedElement) || XMLE_X509DATA.equals(signedElement) || XMLE_KEYINFO.equals(signedElement));
 	}
 
 	@Override

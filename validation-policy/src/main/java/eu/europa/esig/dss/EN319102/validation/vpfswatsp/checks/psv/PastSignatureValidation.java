@@ -64,7 +64,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		/*
 		 * 2) If there is a POE of the signature value at (or before) the validation time returned in the previous step:
 		 */
-		if (poe.isPOEExists(token.getId(), controlTime)) {
+		if (controlTime != null && poe.isPOEExists(token.getId(), controlTime)) {
 
 			/*
 			 * If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE or INDETERMINATE/

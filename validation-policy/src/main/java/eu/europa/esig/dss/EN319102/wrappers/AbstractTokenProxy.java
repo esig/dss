@@ -23,7 +23,10 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public List<XmlChainCertificate> getCertificateChain() {
-		return getCurrentCertificateChain().getChainCertificate();
+		if (getCurrentCertificateChain() != null) {
+			return getCurrentCertificateChain().getChainCertificate();
+		}
+		return new ArrayList<XmlChainCertificate>();
 	}
 
 	@Override

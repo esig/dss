@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.EN319102.validation.Chain;
 import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.bbb.xcv.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.EN319102.validation.bbb.xcv.checks.ProspectiveCertificateChainCheck;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.pcv.checks.ValidationTimeSlidingCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.vts.ValidationTimeSliding;
@@ -107,7 +107,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 			if (SubContext.CA_CERTIFICATE.equals(subContext) && certificate.isRevoked()) {
 				Date caRevocationDate = certificate.getRevocationData().getRevocationDate();
-				if (intervalNotAfter.after(caRevocationDate)) {
+				if (caRevocationDate != null && intervalNotAfter.after(caRevocationDate)) {
 					intervalNotAfter = caRevocationDate;
 				}
 

@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.validation.Chain;
 import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.bbb.rfc.RevocationFreshnessChecker;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
 import eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.vts.checks.RevocationDataExistsCheck;
@@ -75,21 +75,23 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				}
 
 				RevocationWrapper revocationData = certificate.getRevocationData();
-				Date revocationProductionDate = revocationData.getProductionDate();
-				if (revocationProductionDate.before(controlTime)) {
+				if (revocationData != null) {
+					Date revocationProductionDate = revocationData.getProductionDate();
+					if (revocationProductionDate != null && revocationProductionDate.before(controlTime)) {
 
-					item.setNextItem(poeExistsAtOrBeforeControlTime(certificate.getId(), controlTime));
+						item.setNextItem(poeExistsAtOrBeforeControlTime(certificate.getId(), controlTime));
 
-					// TODO item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData.getId(), controlTime));
+						// TODO item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData.getId(), controlTime));
 
-					if (certificate.isRevoked()) {
-						controlTime = revocationData.getRevocationDate();
-					} else if (!isFresh(revocationData, controlTime)) {
-						controlTime = revocationData.getProductionDate();
+						if (certificate.isRevoked()) {
+							controlTime = revocationData.getRevocationDate();
+						} else if (!isFresh(revocationData, controlTime)) {
+							controlTime = revocationData.getProductionDate();
+						}
+
+						// TODO crypto check
+
 					}
-
-					// TODO crypto check
-
 				}
 			}
 

@@ -86,11 +86,13 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		 * otherwise go to the next step.
 		 */
 		XmlVCI vci = signatureBBB.getVCI();
-		XmlConclusion vciConclusion = vci.getConclusion();
-		if (Indication.INDETERMINATE.equals(vciConclusion.getIndication())) {
-			indication = vciConclusion.getIndication();
-			subIndication = vciConclusion.getSubIndication();
-			return false;
+		if (vci != null) {
+			XmlConclusion vciConclusion = vci.getConclusion();
+			if (Indication.INDETERMINATE.equals(vciConclusion.getIndication())) {
+				indication = vciConclusion.getIndication();
+				subIndication = vciConclusion.getSubIndication();
+				return false;
+			}
 		}
 
 		/*

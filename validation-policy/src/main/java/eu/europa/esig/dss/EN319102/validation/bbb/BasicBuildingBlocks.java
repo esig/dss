@@ -2,17 +2,22 @@ package eu.europa.esig.dss.EN319102.validation.bbb;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.EN319102.validation.bbb.cv.CryptographicVerification;
 import eu.europa.esig.dss.EN319102.validation.bbb.isc.IdentificationOfTheSigningCertificate;
 import eu.europa.esig.dss.EN319102.validation.bbb.sav.AbstractAcceptanceValidation;
+import eu.europa.esig.dss.EN319102.validation.bbb.sav.RevocationAcceptanceValidation;
 import eu.europa.esig.dss.EN319102.validation.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.EN319102.validation.bbb.sav.TimestampAcceptanceValidation;
 import eu.europa.esig.dss.EN319102.validation.bbb.vci.ValidationContextInitialization;
 import eu.europa.esig.dss.EN319102.validation.bbb.xcv.X509CertificateValidation;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.EN319102.wrappers.CertificateWrapper;
 import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.EN319102.wrappers.RevocationWrapper;
 import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
 import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.EN319102.wrappers.TokenProxy;
@@ -30,6 +35,8 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
  * 5.2 Basic building blocks
  */
 public class BasicBuildingBlocks {
+
+	private static final Logger logger = LoggerFactory.getLogger(BasicBuildingBlocks.class);
 
 	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
@@ -160,6 +167,10 @@ public class BasicBuildingBlocks {
 			aav = new SignatureAcceptanceValidation(diagnosticData, currentTime, (SignatureWrapper) token, context, policy);
 		} else if (Context.TIMESTAMP.equals(context)) {
 			aav = new TimestampAcceptanceValidation(diagnosticData, currentTime, (TimestampWrapper) token, policy);
+		} else if (Context.REVOCATION.equals(context)) {
+			aav = new RevocationAcceptanceValidation(diagnosticData, currentTime, (RevocationWrapper) token, policy);
+		} else {
+			logger.info("Unsupported context " + context);
 		}
 		return aav.execute();
 	}
