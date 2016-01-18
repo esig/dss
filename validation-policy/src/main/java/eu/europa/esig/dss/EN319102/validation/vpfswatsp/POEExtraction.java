@@ -19,6 +19,7 @@ import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 
 /**
  * 5.6.2.3 POE extraction
@@ -72,6 +73,9 @@ public class POEExtraction {
 				// SIGNATURES and TIMESTAMPS
 				for (XmlSignedSignature signedSignature : signedObjects.getSignedSignature()) {
 					addPOE(signedSignature.getId(), productionTime);
+				}
+				for(XmlTimestampedTimestamp timstampedTimastamp : signedObjects.getTimestampedTimestamp()) {
+					addPOE(timstampedTimastamp.getId(), productionTime);
 				}
 			}
 
