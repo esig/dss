@@ -222,7 +222,7 @@
 		</Cryptographic>
 	</CounterSignatureConstraints>
 	<Timestamp>
-		<TimestampDelay Level="FAIL" Unit="DAYS">0</TimestampDelay>
+		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
 		<MessageImprintDataFound Level="FAIL" />
 		<MessageImprintDataIntact Level="FAIL" />
 		<RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
@@ -294,7 +294,7 @@
 		</BasicSignatureConstraints>
 	</Timestamp>
 	<Revocation>
-		<RevocationFreshness Level="FAIL" Unit="DAYS">0</RevocationFreshness>
+		<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
 		<BasicSignatureConstraints>
 			<SigningCertificate>
 				<Signature Level="FAIL" />
