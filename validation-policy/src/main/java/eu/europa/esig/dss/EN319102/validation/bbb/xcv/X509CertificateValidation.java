@@ -6,6 +6,9 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.EN319102.validation.Chain;
 import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.validation.CryptographicCheck;
@@ -25,9 +28,6 @@ import eu.europa.esig.dss.EN319102.validation.bbb.xcv.checks.SigningCertificateS
 import eu.europa.esig.dss.EN319102.validation.bbb.xcv.checks.SigningCertificateTSLStatusAndValidityCheck;
 import eu.europa.esig.dss.EN319102.validation.bbb.xcv.checks.SigningCertificateTSLStatusCheck;
 import eu.europa.esig.dss.EN319102.validation.bbb.xcv.checks.SigningCertificateTSLValidityCheck;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.EN319102.wrappers.CertificateWrapper;
 import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.EN319102.wrappers.TokenProxy;
@@ -151,7 +151,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck<XmlXCV>(result, currentCertificate, diagnosticData, constraint);
+		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, constraint);
 	}
 
 	private ChainItem<XmlXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {

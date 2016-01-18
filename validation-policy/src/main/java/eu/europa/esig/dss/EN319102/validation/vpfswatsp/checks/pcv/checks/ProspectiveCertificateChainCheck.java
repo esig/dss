@@ -1,31 +1,29 @@
-package eu.europa.esig.dss.EN319102.validation.bbb.xcv.checks;
+package eu.europa.esig.dss.EN319102.validation.vpfswatsp.checks.pcv.checks;
 
 import eu.europa.esig.dss.MessageTag;
 import eu.europa.esig.dss.EN319102.validation.ChainItem;
 import eu.europa.esig.dss.EN319102.wrappers.CertificateWrapper;
 import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.EN319102.wrappers.TokenProxy;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class ProspectiveCertificateChainCheck extends ChainItem<XmlXCV> {
+public class ProspectiveCertificateChainCheck extends ChainItem<XmlPCV> {
 
-	private final CertificateWrapper certificate;
+	private final TokenProxy token;
 	private final DiagnosticData diagnosticData;
 
-	public ProspectiveCertificateChainCheck(XmlXCV result, CertificateWrapper certificate, DiagnosticData diagnosticData, LevelConstraint constraint) {
+	public ProspectiveCertificateChainCheck(XmlPCV result, TokenProxy token, DiagnosticData diagnosticData, LevelConstraint constraint) {
 		super(result, constraint);
-		this.certificate = certificate;
+		this.token = token;
 		this.diagnosticData = diagnosticData;
 	}
 
 	@Override
 	protected boolean process() {
-		if (certificate.isTrusted()) {
-			return true;
-		}
-		String lastChainCertId = certificate.getLastChainCertificateId();
+		String lastChainCertId = token.getLastChainCertificateId();
 		final CertificateWrapper lastChainCertificate = diagnosticData.getUsedCertificateByIdNullSafe(lastChainCertId);
 		return lastChainCertificate.isTrusted();
 	}
