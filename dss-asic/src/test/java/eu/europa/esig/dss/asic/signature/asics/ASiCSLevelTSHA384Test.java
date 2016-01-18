@@ -42,7 +42,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
+import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 
 public class ASiCSLevelTSHA384Test extends AbstractTestSignature {
 

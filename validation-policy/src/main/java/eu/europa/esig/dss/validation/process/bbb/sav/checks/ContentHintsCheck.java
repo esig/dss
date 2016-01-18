@@ -1,0 +1,49 @@
+package eu.europa.esig.dss.validation.process.bbb.sav.checks;
+
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
+import eu.europa.esig.dss.validation.MessageTag;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.bbb.AbstractValueCheckItem;
+import eu.europa.esig.dss.validation.wrappers.SignatureWrapper;
+import eu.europa.esig.jaxb.policy.ValueConstraint;
+
+public class ContentHintsCheck extends AbstractValueCheckItem<XmlSAV> {
+
+	private final SignatureWrapper signature;
+	private final ValueConstraint constraint;
+
+	public ContentHintsCheck(XmlSAV result, SignatureWrapper signature, ValueConstraint constraint) {
+		super(result, constraint);
+		this.signature = signature;
+		this.constraint = constraint;
+	}
+
+	@Override
+	protected boolean process() {
+		String contentType = signature.getContentHints();
+		String expectedValue = constraint.getValue();
+		return processValueCheck(contentType, expectedValue);
+	}
+
+	@Override
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_SAV_ISQPCHP;
+	}
+
+	@Override
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_SAV_ISQPCHP_ANS;
+	}
+
+	@Override
+	protected Indication getFailedIndicationForConclusion() {
+		return Indication.INVALID;
+	}
+
+	@Override
+	protected SubIndication getFailedSubIndicationForConclusion() {
+		return SubIndication.SIG_CONSTRAINTS_FAILURE;
+	}
+
+}

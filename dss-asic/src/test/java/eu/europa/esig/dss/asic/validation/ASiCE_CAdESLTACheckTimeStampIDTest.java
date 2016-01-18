@@ -13,9 +13,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.EN319102.report.Reports;
-import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
-import eu.europa.esig.dss.EN319102.wrappers.TimestampWrapper;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.test.TestUtils;
@@ -25,6 +22,9 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
+import eu.europa.esig.dss.validation.wrappers.TimestampWrapper;
 
 public class ASiCE_CAdESLTACheckTimeStampIDTest {
 

@@ -27,7 +27,6 @@ import java.io.InputStream;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.EN319102.report.Reports;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.esig.dss.cookbook.sources.AlwaysValidOCSPSource;
@@ -35,6 +34,7 @@ import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**

@@ -77,7 +77,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.validation.report.Reports;
 
 public class InfiniteLoopDSS621Test {
 

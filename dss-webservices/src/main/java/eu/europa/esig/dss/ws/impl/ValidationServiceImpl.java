@@ -31,10 +31,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.EN319102.report.Reports;
-import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.dss.ws.DSSWSUtils;
 import eu.europa.esig.dss.ws.ValidationService;
 import eu.europa.esig.dss.ws.WSDocument;

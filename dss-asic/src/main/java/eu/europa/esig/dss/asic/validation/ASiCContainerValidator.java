@@ -41,11 +41,11 @@ import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
-import eu.europa.esig.dss.EN319102.report.Reports;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.report.Reports;
 
 /**
  * This class is the base class for ASiC containers.

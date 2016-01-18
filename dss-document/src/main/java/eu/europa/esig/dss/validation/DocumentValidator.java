@@ -27,9 +27,9 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.EN319102.executor.ProcessExecutor;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
-import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.validation.executor.ProcessExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 

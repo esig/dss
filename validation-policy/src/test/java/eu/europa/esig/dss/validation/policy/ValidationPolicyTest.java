@@ -12,7 +12,6 @@ import javax.xml.validation.SchemaFactory;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.EN319102.policy.EtsiValidationPolicy;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class ValidationPolicyTest {

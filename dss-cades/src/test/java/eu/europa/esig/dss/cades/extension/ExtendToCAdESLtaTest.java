@@ -13,14 +13,14 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.EN319102.report.Reports;
-import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 
 /**
  * Unit test to fix issue https://esig-dss.atlassian.net/browse/DSS-646

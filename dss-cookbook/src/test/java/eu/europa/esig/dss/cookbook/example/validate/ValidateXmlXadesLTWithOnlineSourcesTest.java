@@ -28,9 +28,6 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.EN319102.report.DetailedReport;
-import eu.europa.esig.dss.EN319102.report.Reports;
-import eu.europa.esig.dss.EN319102.report.SimpleReport;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
@@ -42,6 +39,9 @@ import eu.europa.esig.dss.tsl.service.TSLRepository;
 import eu.europa.esig.dss.tsl.service.TSLValidationJob;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.DetailedReport;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 

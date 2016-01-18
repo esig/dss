@@ -23,10 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.EN319102.report.Reports;
-import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.model.ValidationForm;
 import eu.europa.esig.dss.web.service.FOPService;

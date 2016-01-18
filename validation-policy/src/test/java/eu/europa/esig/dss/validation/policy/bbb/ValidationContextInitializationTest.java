@@ -5,15 +5,15 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
-import eu.europa.esig.dss.EN319102.validation.bbb.vci.ValidationContextInitialization;
-import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestPolicyGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.bbb.vci.ValidationContextInitialization;
+import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 

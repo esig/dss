@@ -26,7 +26,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.validation.report.Reports;
 
 /**
  * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-768

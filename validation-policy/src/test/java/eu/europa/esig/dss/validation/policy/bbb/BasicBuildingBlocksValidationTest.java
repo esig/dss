@@ -5,14 +5,14 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy.Context;
-import eu.europa.esig.dss.EN319102.validation.bbb.BasicBuildingBlocks;
-import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestPolicyGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
+import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 
 public class BasicBuildingBlocksValidationTest {
 

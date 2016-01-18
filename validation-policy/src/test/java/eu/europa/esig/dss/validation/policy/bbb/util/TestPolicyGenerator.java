@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.validation.policy.bbb.util;
 
-import eu.europa.esig.dss.EN319102.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.EN319102.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;

@@ -9,11 +9,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.EN319102.report.Reports;
-import eu.europa.esig.dss.EN319102.wrappers.DiagnosticData;
-import eu.europa.esig.dss.EN319102.wrappers.SignatureWrapper;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
+import eu.europa.esig.dss.validation.wrappers.SignatureWrapper;
 
 /**
  * Unit test added to fix issue : https://esig-dss.atlassian.net/browse/DSS-678

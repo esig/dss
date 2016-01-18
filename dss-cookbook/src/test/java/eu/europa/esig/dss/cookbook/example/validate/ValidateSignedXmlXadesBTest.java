@@ -28,8 +28,6 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.EN319102.report.Reports;
-import eu.europa.esig.dss.EN319102.report.SimpleReport;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.esig.dss.cookbook.sources.AlwaysValidOCSPSource;
@@ -37,6 +35,8 @@ import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**

@@ -28,7 +28,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.EN319102.report.Reports;
+import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSReference;
