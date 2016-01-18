@@ -32,6 +32,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateTS
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateTSLValidityCheck;
 import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
 import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
+import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
 import eu.europa.esig.dss.validation.wrappers.TokenProxy;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -114,7 +115,10 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 				}
 
 				// check cryptographic constraints for the revocation token
-				item = item.setNextItem(certificateCryptographic(certificate.getRevocationData(), Context.REVOCATION, currentSubContext));
+				RevocationWrapper revocationData = certificate.getRevocationData();
+				if (revocationData != null) {
+					item = item.setNextItem(certificateCryptographic(revocationData, Context.REVOCATION, currentSubContext));
+				}
 
 			}
 		}
