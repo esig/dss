@@ -111,7 +111,10 @@ public class OCSPToken extends RevocationToken {
 			final RevokedStatus revokedStatus = (RevokedStatus) certStatus;
 			status = false;
 			revocationDate = revokedStatus.getRevocationTime();
-			final int reasonId = revokedStatus.getRevocationReason();
+			int reasonId = 0; // unspecified
+			if (revokedStatus.hasRevocationReason()) {
+				reasonId = revokedStatus.getRevocationReason();
+			}
 			final CRLReason crlReason = CRLReason.lookup(reasonId);
 			reason = crlReason.toString();
 		} else if (certStatus instanceof UnknownStatus) {
@@ -177,7 +180,8 @@ public class OCSPToken extends RevocationToken {
 	}
 
 	/**
-	 * This method returns the DSS abbreviation of the certificate. It is used for debugging purpose.
+	 * This method returns the DSS abbreviation of the certificate. It is used
+	 * for debugging purpose.
 	 *
 	 * @return
 	 */
