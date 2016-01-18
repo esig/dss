@@ -59,7 +59,7 @@ public class PAdESLTACheckTimeStampedTimestampIDTest {
 		String timestampId = diagnostic.getSignatures().get(0).getTimestampList().get(0).getId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(diagnostic.getFirstSignatureId())) {
 			if (wrapper.getType().equals(TimestampType.ARCHIVE_TIMESTAMP.toString())) {
-				Assert.assertEquals(timestampId, wrapper.getSignedObjects().getSignedSignature().get(1).getId());
+				Assert.assertEquals(timestampId, wrapper.getSignedObjects().getTimestampedTimestamp().get(0).getId());
 			}
 		}
 	}

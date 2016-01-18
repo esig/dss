@@ -404,35 +404,34 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public Reports validateDocument(final ValidationPolicy validationPolicy) {
-
 		LOG.info("Document validation...");
 		if (certificateVerifier == null) {
-
 			throw new NullPointerException();
 		}
-		Date date1 = null;
-		if (LOG.isInfoEnabled()) {
-			date1 = new Date();
-		}
+
+		Date date1 = new Date();
+
 		final ProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
-
 		final DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
 		executor.setDiagnosticData(jaxbDiagnosticData);
-		Date date2 = null;
-		if (LOG.isTraceEnabled()) {
 
-			date2 = new Date();
+		Date date2 = new Date();
+
+		if (LOG.isTraceEnabled()) {
 			final long dateDiff = DSSUtils.getDateDiff(date1, date2, TimeUnit.MILLISECONDS);
-			LOG.trace("diff 1: " + dateDiff + " ms.");
+			LOG.trace("DiagnosticData building : " + dateDiff + " ms.");
 		}
-		final Reports reports = executor.execute();
-		if (LOG.isTraceEnabled()) {
 
-			Date date3 = new Date();
+		final Reports reports = executor.execute();
+
+		Date date3 = new Date();
+
+		if (LOG.isTraceEnabled()) {
 			final long dateDiff = DSSUtils.getDateDiff(date2, date3, TimeUnit.MILLISECONDS);
-			LOG.trace("diff 2: " + dateDiff + " ms.");
+			LOG.trace("Reports building: " + dateDiff + " ms.");
 		}
+
 		return reports;
 	}
 
@@ -730,11 +729,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 					final XmlSignedSignature xmlSignedSignature = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSignedSignature();
 					xmlSignedSignature.setId(timestampReference.getSignatureId());
 					xmlSignedObjectsType.getSignedSignature().add(xmlSignedSignature);
-				} else if(TimestampReferenceCategory.TIMESTAMP.equals(timestampedCategory)) {
+				} else if (TimestampReferenceCategory.TIMESTAMP.equals(timestampedCategory)) {
 					final XmlTimestampedTimestamp xmlTimestampedTimestamp = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlTimestampedTimestamp();
 					xmlTimestampedTimestamp.setId(timestampReference.getSignatureId());
 					xmlSignedObjectsType.getTimestampedTimestamp().add(xmlTimestampedTimestamp);
-				}else {
+				} else {
 
 					final XmlDigestAlgAndValueType xmlDigestAlgAndValue = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlDigestAlgAndValueType();
 					xmlDigestAlgAndValue.setDigestMethod(timestampReference.getDigestAlgorithm());
