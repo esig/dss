@@ -62,7 +62,8 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 	 * @param countryCode
 	 *            the country code
 	 * @param dssKeyStore
-	 *            the key store which contains trusted certificates (allowed to sign the LOTL)
+	 *            the key store which contains trusted certificates (allowed to
+	 *            sign the LOTL)
 	 */
 	public TSLValidator(File file, String countryCode, KeyStoreCertificateSource dssKeyStore) {
 		this.file = file;
@@ -78,7 +79,8 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 	 * @param countryCode
 	 *            the country code
 	 * @param dssKeyStore
-	 *            the key store which contains trusted certificates (allowed to sign the LOTL)
+	 *            the key store which contains trusted certificates (allowed to
+	 *            sign the LOTL)
 	 * @param potentialSigners
 	 *            the list of certificates allowed to sign this TSL
 	 */
@@ -97,7 +99,8 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		DSSDocument dssDocument = new FileDocument(file);
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(dssDocument);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
-		// To increase the security: the default {@code XPathQueryHolder} is used.
+		// To increase the security: the default {@code XPathQueryHolder} is
+		// used.
 		List<XPathQueryHolder> xPathQueryHolders = xmlDocumentValidator.getXPathQueryHolder();
 		xPathQueryHolders.clear();
 		xPathQueryHolders.add(new XPathQueryHolder());
@@ -113,7 +116,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		result.setSubIndication(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		if (!isValid) {
-			logger.info("The TSL signature is not valid : \n" + simpleReport.toString());
+			logger.info("The TSL signature is not valid : \n" + reports.getXmlSimpleReport());
 		}
 
 		return result;
