@@ -39,7 +39,7 @@ public class XAdESBWithoutSignedDataObjectPropertiesToLTATest {
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		DSSDocument extendDocument = service.extendDocument(toSignDocument, parameters);
-		extendDocument.save("src/test/resources/result.xml");
+		// extendDocument.save("target/result.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
