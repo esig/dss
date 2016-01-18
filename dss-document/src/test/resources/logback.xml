@@ -9,6 +9,7 @@
 	
 	<logger name="eu.europa.esig.dss" level="TRACE"/>
 	<logger name="org.apache.pdfbox" level="ERROR"/>
+	<logger name="org.apache.xml.security" level="INFO"/>
 
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
