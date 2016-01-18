@@ -96,6 +96,7 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampReference;
+import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -1247,7 +1248,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final List<TimestampReference> references = getSignatureTimestampedReferences();
 				for (final String timestampId : timestampedTimestamps) {
 
-					final TimestampReference signatureReference_ = new TimestampReference(timestampId);
+					final TimestampReference signatureReference_ = new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP);
 					references.add(signatureReference_);
 				}
 				references.addAll(getTimestampedReferences());

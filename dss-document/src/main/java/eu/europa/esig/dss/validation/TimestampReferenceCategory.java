@@ -29,6 +29,8 @@ public enum TimestampReferenceCategory {
    CERTIFICATE,
 
    // Constant to indicate that the reference is for a revocation data.
-   REVOCATION;
+   REVOCATION,
+   
+   TIMESTAMP;
 
 }

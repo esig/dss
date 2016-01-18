@@ -50,6 +50,11 @@ public class TimestampReference {
 		this.digestValue = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
 		this.category = TimestampReferenceCategory.SIGNATURE;
 	}
+	
+	public TimestampReference(final String signatureId, final TimestampReferenceCategory category) {
+		this(signatureId);
+		this.category = category;
+	}
 
 	public TimestampReference(final String digestAlgorithm, final String digestValue) {
 
