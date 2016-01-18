@@ -148,6 +148,7 @@ public enum MessageTag {
 	PSV_IPCVC("Is past certificate validation conclusive?"),
 	PSV_IPCVC_ANS("The past certificate validation is not conclusive!"),
 	PSV_IPSVC("Is past signature validation conclusive?"),
+	PSV_IPSVC_ANS("The past signature validation is not conclusive!"),
 	PSV_ITPOSVAOBCT("Is there a POE of the signature value at (or before) control-time?"),
 
 	TSV_ASTPTCT("Is the order of the timestamps correct?"),
