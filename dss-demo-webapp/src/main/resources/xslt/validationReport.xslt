@@ -90,7 +90,7 @@
 	    					<xsl:attribute name="class">row</xsl:attribute>
 		    				<div>
 					    		<xsl:attribute name="class">col-md-6</xsl:attribute>
-								Basic Building Blocks validation
+								<i>Basic Building Blocks validation</i>
 					    	</div>
 					    	<div>
 					    		<xsl:attribute name="class">col-md-6</xsl:attribute>
@@ -149,7 +149,7 @@
 	    					<xsl:attribute name="class">row</xsl:attribute>
 		    				<div>
 					    		<xsl:attribute name="class">col-md-6</xsl:attribute>
-								Basic Building Blocks validation
+								<i>Basic Building Blocks validation</i>
 					    	</div>
 					    	<div>
 					    		<xsl:attribute name="class">col-md-6</xsl:attribute>
