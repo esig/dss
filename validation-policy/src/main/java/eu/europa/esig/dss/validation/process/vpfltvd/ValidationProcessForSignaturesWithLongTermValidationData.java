@@ -52,7 +52,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper currentSignature;
-	private final List<TimestampWrapper> timestamps;
 	private final Set<RevocationWrapper> revocationData;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
@@ -68,7 +67,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 		this.diagnosticData = diagnosticData;
 		this.currentSignature = currentSignature;
-		this.timestamps = diagnosticData.getTimestampList(currentSignature.getId());
 		this.revocationData = diagnosticData.getAllRevocationData();
 		this.bbbs = bbbs;
 
@@ -115,7 +113,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * message imprint has been generated according to the corresponding signature format specification
 		 * verification. If the verification fails, the process shall remove the token from the set.
 		 */
-		Set<TimestampWrapper> allowedTimestamps = filterInvalidMessageImprint(timestamps);
+		Set<TimestampWrapper> allowedTimestamps = filterInvalidTimestamps(currentSignature.getTimestampList());
 
 		/*
 		 * b) Time-stamp token validation: For each time-stamp token remaining in the set of signature time-stamp
@@ -125,22 +123,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * shall set best-signature-time to this date and shall try the next token.
 		 */
 		for (TimestampWrapper timestampWrapper : allowedTimestamps) {
-			boolean foundValidationTSP = false;
-			for (XmlValidationProcessTimestamps timestampValidation : timestampValidations) {
-				List<XmlConstraint> constraints = timestampValidation.getConstraint();
-				for (XmlConstraint tspValidation : constraints) {
-					if (StringUtils.equals(timestampWrapper.getId(), tspValidation.getId())) {
-						foundValidationTSP = true;
-						Date productionTime = timestampWrapper.getProductionTime();
-						if (XmlStatus.OK.equals(tspValidation.getStatus()) && productionTime.before(bestSignatureTime)) {
-							bestSignatureTime = productionTime;
-							break;
-						}
-					}
-				}
-			}
-			if (!foundValidationTSP) {
-				logger.warn("Cannot find tsp validation info for tsp " + timestampWrapper.getId());
+			Date productionTime = timestampWrapper.getProductionTime();
+			if (productionTime.before(bestSignatureTime)) {
+				bestSignatureTime = productionTime;
 			}
 		}
 
@@ -208,24 +193,36 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	}
 
+	private Set<TimestampWrapper> filterInvalidTimestamps(List<TimestampWrapper> allTimestamps) {
+		Set<TimestampWrapper> result = new HashSet<TimestampWrapper>();
+		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			boolean foundValidationTSP = false;
+			for (XmlValidationProcessTimestamps timestampValidation : timestampValidations) {
+				List<XmlConstraint> constraints = timestampValidation.getConstraint();
+				for (XmlConstraint tspValidation : constraints) {
+					if (StringUtils.equals(timestampWrapper.getId(), tspValidation.getId())) {
+						foundValidationTSP = true;
+						// PVA : if OK message imprint is validated in SVA of timestamp (depending of constraint.xml)
+						if (XmlStatus.OK.equals(tspValidation.getStatus())) {
+							result.add(timestampWrapper);
+							break;
+						}
+					}
+				}
+			}
+			if (!foundValidationTSP) {
+				logger.warn("Cannot find tsp validation info for tsp " + timestampWrapper.getId());
+			}
+		}
+		return result;
+	}
+
 	private ChainItem<XmlValidationProcessLongTermData> isAcceptableBasicSignatureValidation() {
 		return new AcceptableBasicSignatureValidationCheck(result, basicSignatureValidation, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationBasicBuildingBlocksValid(XmlBasicBuildingBlocks revocationBBB) {
 		return new RevocationBasicBuildingBlocksCheck(result, revocationBBB, getFailLevelConstraint());
-	}
-
-	private Set<TimestampWrapper> filterInvalidMessageImprint(List<TimestampWrapper> allTimestamps) {
-		Set<TimestampWrapper> result = new HashSet<TimestampWrapper>();
-		for (TimestampWrapper tsp : allTimestamps) {
-			if (tsp.isMessageImprintDataFound() && tsp.isMessageImprintDataIntact()) {
-				result.add(tsp);
-			} else {
-				logger.info("Timestamp " + tsp.getId() + " is skipped");
-			}
-		}
-		return result;
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDateAfterBestSignatureDate(Date bestSignatureTime) {

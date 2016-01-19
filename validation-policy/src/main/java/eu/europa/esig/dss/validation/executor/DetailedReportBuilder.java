@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -77,8 +78,8 @@ public class DetailedReportBuilder {
 	}
 
 	private void executeTimestampsValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
-		Set<TimestampWrapper> timestampsNotArchival = signature.getAllTimestampsNotArchival();
-		for (TimestampWrapper timestamp : timestampsNotArchival) {
+		List<TimestampWrapper> allTimestamps = signature.getTimestampList(); // PVA : all timestamps here ? Used in LTV
+		for (TimestampWrapper timestamp : allTimestamps) {
 			ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(timestamp, bbbs);
 			signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
 		}
@@ -102,19 +103,14 @@ public class DetailedReportBuilder {
 		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
 		switch (validationLevel) {
 		case ARCHIVAL_DATA:
-			process(diagnosticData.getAllArchiveTimestamps(), Context.TIMESTAMP, bbbs);
-			process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
-			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
-			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
-			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 		case LONG_TERM_DATA:
 			process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
-			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllTimestamps(), Context.TIMESTAMP, bbbs);
 			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
 			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		case TIMESTAMPS:
-			process(diagnosticData.getAllTimestampsNotArchival(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getAllTimestamps(), Context.TIMESTAMP, bbbs);
 			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
 			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
