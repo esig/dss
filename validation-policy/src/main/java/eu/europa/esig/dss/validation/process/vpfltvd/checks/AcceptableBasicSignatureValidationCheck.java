@@ -38,6 +38,7 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 				indication = bbbIndication;
 				subIndication = bbbSubIndication;
 			}
+			return allowed;
 		}
 		return false;
 	}
