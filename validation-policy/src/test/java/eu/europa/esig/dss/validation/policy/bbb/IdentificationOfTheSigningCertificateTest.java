@@ -32,12 +32,12 @@ public class IdentificationOfTheSigningCertificateTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlISC isc = verification.execute();
 
-		for (XmlConstraint constraint : isc.getConstraints()) {
+		for (XmlConstraint constraint : isc.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.VALID, isc.getConclusion().getIndication());
-		Assert.assertEquals(6, isc.getConstraints().size());
+		Assert.assertEquals(6, isc.getConstraint().size());
 	}
 
 	@Test
@@ -51,13 +51,13 @@ public class IdentificationOfTheSigningCertificateTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlISC isc = verification.execute();
 
-		for (XmlConstraint constraint : isc.getConstraints()) {
+		for (XmlConstraint constraint : isc.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, isc.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.FORMAT_FAILURE, isc.getConclusion().getSubIndication());
-		Assert.assertEquals(4, isc.getConstraints().size());
+		Assert.assertEquals(4, isc.getConstraint().size());
 	}
 
 	@Test
@@ -71,13 +71,13 @@ public class IdentificationOfTheSigningCertificateTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlISC isc = verification.execute();
 
-		for (XmlConstraint constraint : isc.getConstraints()) {
+		for (XmlConstraint constraint : isc.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, isc.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.FORMAT_FAILURE, isc.getConclusion().getSubIndication());
-		Assert.assertEquals(5, isc.getConstraints().size());
+		Assert.assertEquals(5, isc.getConstraint().size());
 	}
 
 	@Test
@@ -91,13 +91,13 @@ public class IdentificationOfTheSigningCertificateTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlISC isc = verification.execute();
 
-		for (XmlConstraint constraint : isc.getConstraints()) {
+		for (XmlConstraint constraint : isc.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, isc.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, isc.getConclusion().getSubIndication());
-		Assert.assertEquals(6, isc.getConstraints().size());
+		Assert.assertEquals(6, isc.getConstraint().size());
 	}
 
 	@Test
@@ -111,13 +111,13 @@ public class IdentificationOfTheSigningCertificateTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlISC isc = verification.execute();
 
-		for (XmlConstraint constraint : isc.getConstraints()) {
+		for (XmlConstraint constraint : isc.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, isc.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.FORMAT_FAILURE, isc.getConclusion().getSubIndication());
-		Assert.assertEquals(3, isc.getConstraints().size());
+		Assert.assertEquals(3, isc.getConstraint().size());
 	}
 
 	@Test
@@ -131,12 +131,12 @@ public class IdentificationOfTheSigningCertificateTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlISC isc = verification.execute();
 
-		for (XmlConstraint constraint : isc.getConstraints()) {
+		for (XmlConstraint constraint : isc.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, isc.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, isc.getConclusion().getSubIndication());
-		Assert.assertEquals(1, isc.getConstraints().size());
+		Assert.assertEquals(1, isc.getConstraint().size());
 	}
 }

@@ -32,12 +32,12 @@ public class ValidationContextInitializationTest {
 				TestPolicyGenerator.generatePolicy());
 		XmlVCI vci = verification.execute();
 
-		for (XmlConstraint constraint : vci.getConstraints()) {
+		for (XmlConstraint constraint : vci.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.VALID, vci.getConclusion().getIndication());
-		Assert.assertEquals(1, vci.getConstraints().size());
+		Assert.assertEquals(1, vci.getConstraint().size());
 	}
 
 	@Test
@@ -51,13 +51,13 @@ public class ValidationContextInitializationTest {
 				TestPolicyGenerator.generatePolicy(false));
 		XmlVCI vci = verification.execute();
 
-		for (XmlConstraint constraint : vci.getConstraints()) {
+		for (XmlConstraint constraint : vci.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, vci.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.NO_POLICY, vci.getConclusion().getSubIndication());
-		Assert.assertEquals(1, vci.getConstraints().size());
+		Assert.assertEquals(1, vci.getConstraint().size());
 	}
 
 	@Test
@@ -71,11 +71,11 @@ public class ValidationContextInitializationTest {
 				TestPolicyGenerator.generatePolicy(false));
 		XmlVCI vci = verification.execute();
 
-		for (XmlConstraint constraint : vci.getConstraints()) {
+		for (XmlConstraint constraint : vci.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.VALID, vci.getConclusion().getIndication());
-		Assert.assertEquals(1, vci.getConstraints().size());
+		Assert.assertEquals(1, vci.getConstraint().size());
 	}
 }

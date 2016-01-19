@@ -36,12 +36,12 @@ public class SignatureAcceptanceValidationTest {
 				TestPolicyGenerator.generatePolicy());
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
-		Assert.assertEquals(12, sav.getConstraints().size());
+		Assert.assertEquals(12, sav.getConstraint().size());
 	}
 
 	@Test
@@ -57,14 +57,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ICERRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(11, sav.getConstraints().size());
+		Assert.assertEquals(11, sav.getConstraint().size());
 	}
 
 	@Test
@@ -80,12 +80,12 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
-		Assert.assertEquals(12, sav.getConstraints().size());
+		Assert.assertEquals(12, sav.getConstraint().size());
 	}
 
 	@Test
@@ -101,14 +101,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ICRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(10, sav.getConstraints().size());
+		Assert.assertEquals(10, sav.getConstraint().size());
 	}
 
 	@Test
@@ -124,14 +124,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(3, sav.getConstraints().size());
+		Assert.assertEquals(3, sav.getConstraint().size());
 	}
 
 	@Test
@@ -147,14 +147,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCHP_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(4, sav.getConstraints().size());
+		Assert.assertEquals(4, sav.getConstraint().size());
 	}
 
 	@Test
@@ -170,14 +170,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(5, sav.getConstraints().size());
+		Assert.assertEquals(5, sav.getConstraint().size());
 	}
 
 	@Test
@@ -193,14 +193,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPXTIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(6, sav.getConstraints().size());
+		Assert.assertEquals(6, sav.getConstraint().size());
 	}
 
 	@Test
@@ -216,14 +216,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTSIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(8, sav.getConstraints().size());
+		Assert.assertEquals(8, sav.getConstraint().size());
 	}
 
 	@Test
@@ -239,14 +239,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_IUQPCSP_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(9, sav.getConstraints().size());
+		Assert.assertEquals(9, sav.getConstraint().size());
 	}
 
 	@Test
@@ -262,14 +262,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPSTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(2, sav.getConstraints().size());
+		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
 	@Test
@@ -284,14 +284,14 @@ public class SignatureAcceptanceValidationTest {
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
-		for (XmlConstraint constraint : sav.getConstraints()) {
+		for (XmlConstraint constraint : sav.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(12, sav.getConstraints().size());
-		Assert.assertEquals(4, sav.getConstraints().get(sav.getConstraints().size() - 1).getInfo().size());
+		Assert.assertEquals(12, sav.getConstraint().size());
+		Assert.assertEquals(4, sav.getConstraint().get(sav.getConstraint().size() - 1).getInfo().size());
 	}
 
 }

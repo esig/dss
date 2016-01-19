@@ -36,12 +36,12 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.VALID, xcv.getConclusion().getIndication());
-		Assert.assertEquals(14, xcv.getConstraints().size());
+		Assert.assertEquals(14, xcv.getConstraint().size());
 	}
 
 	@Test
@@ -55,13 +55,13 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(1, xcv.getConstraints().size());
+		Assert.assertEquals(1, xcv.getConstraint().size());
 	}
 
 	@Test
@@ -79,13 +79,13 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(1, xcv.getConstraints().size());
+		Assert.assertEquals(1, xcv.getConstraint().size());
 	}
 
 	@Test
@@ -99,13 +99,13 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(4, xcv.getConstraints().size());
+		Assert.assertEquals(4, xcv.getConstraint().size());
 	}
 
 	@Test
@@ -119,13 +119,13 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.TRY_LATER, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(5, xcv.getConstraints().size());
+		Assert.assertEquals(5, xcv.getConstraint().size());
 	}
 
 	@Test
@@ -139,13 +139,13 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.TRY_LATER, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(6, xcv.getConstraints().size());
+		Assert.assertEquals(6, xcv.getConstraint().size());
 	}
 
 	@Test
@@ -159,14 +159,14 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, TestPolicyGenerator.generatePolicy());
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.REVOKED_NO_POE, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(7, xcv.getConstraints().size());
-		Assert.assertEquals(1, xcv.getConstraints().get(xcv.getConstraints().size() - 1).getInfo().size());
+		Assert.assertEquals(7, xcv.getConstraint().size());
+		Assert.assertEquals(1, xcv.getConstraint().get(xcv.getConstraint().size() - 1).getInfo().size());
 	}
 
 	@Test
@@ -183,13 +183,13 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, policy);
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(13, xcv.getConstraints().size());
+		Assert.assertEquals(13, xcv.getConstraint().size());
 	}
 
 	@Test
@@ -206,13 +206,13 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, policy);
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(14, xcv.getConstraints().size());
+		Assert.assertEquals(14, xcv.getConstraint().size());
 	}
 
 	@Test
@@ -229,12 +229,12 @@ public class X509CertificateValidationTest {
 				Context.SIGNATURE, policy);
 		XmlXCV xcv = verification.execute();
 
-		for (XmlConstraint constraint : xcv.getConstraints()) {
+		for (XmlConstraint constraint : xcv.getConstraint()) {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
 		Assert.assertEquals(Indication.INVALID, xcv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, xcv.getConclusion().getSubIndication());
-		Assert.assertEquals(12, xcv.getConstraints().size());
+		Assert.assertEquals(12, xcv.getConstraint().size());
 	}
 }
