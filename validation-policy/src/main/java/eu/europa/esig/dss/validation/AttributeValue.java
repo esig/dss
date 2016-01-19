@@ -22,30 +22,6 @@ package eu.europa.esig.dss.validation;
 
 public interface AttributeValue {
 
-	String EXPIRED_CERTS_REVOCATION_INFO = "ExpiredCertsRevocationInfo";
-	String REVOCATION = "Revocation";
-
-	String CERTIFICATE = "Certificate";
-	String CERTIFICATE_ID = "CertificateId";
-	String CERTIFICATE_SOURCE = "CertificateSource";
-	String NOT_BEFORE = "NotBefore";
-	String NOT_AFTER = "NotAfter";
-
-	String BEST_SIGNATURE_TIME = "BestSignatureTime";
-	String CONTROL_TIME = "ControlTime";
-	String ALGORITHM_NOT_FOUND = "Algorithm not found";
-	String TRUSTED_SERVICE_STATUS = "TrustedServiceStatus";
-	String LATEST_CONTENT_TIMESTAMP_PRODUCTION_TIME = "LatestContentTimestampProductionDate";
-	String EARLIEST_SIGNATURE_TIMESTAMP_PRODUCTION_TIME = "EarliestSignatureTimestampProductionDate";
-
-	String ALGORITHM_EXPIRATION_DATE = "AlgorithmExpirationDate";
-
-	String ALGORITHM = "Algorithm";
-	String ENCRYPTION_ALGORITHM = "EncryptionAlgorithm";
-	String DIGEST_ALGORITHM = "DigestAlgorithm";
-	String PUBLIC_KEY_SIZE = "PublicKeySize";
-	String MINIMUM_PUBLIC_KEY_SIZE = "MinimumPublicKeySize";
-
 	String COUNTERSIGNATURE = "COUNTERSIGNATURE";
 
 }

@@ -14,7 +14,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
-import eu.europa.esig.dss.validation.AttributeValue;
+import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
 import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
@@ -74,14 +74,14 @@ public class POEExtraction {
 				for (XmlSignedSignature signedSignature : signedObjects.getSignedSignature()) {
 					addPOE(signedSignature.getId(), productionTime);
 				}
-				for(XmlTimestampedTimestamp timstampedTimastamp : signedObjects.getTimestampedTimestamp()) {
+				for (XmlTimestampedTimestamp timstampedTimastamp : signedObjects.getTimestampedTimestamp()) {
 					addPOE(timstampedTimastamp.getId(), productionTime);
 				}
 			}
 
 			if (CollectionUtils.isNotEmpty(signedObjects.getDigestAlgAndValue())) {
 				for (XmlDigestAlgAndValueType digestAlgoAndValue : signedObjects.getDigestAlgAndValue()) {
-					if (AttributeValue.CERTIFICATE.equals(digestAlgoAndValue.getCategory())) {
+					if (StringUtils.equals(TimestampReferenceCategory.CERTIFICATE.name(), digestAlgoAndValue.getCategory())) {
 						String certificateId = getCertificateIdByDigest(digestAlgoAndValue, diagnosticData);
 						if (certificateId != null) {
 							addPOE(certificateId, productionTime);

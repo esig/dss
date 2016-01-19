@@ -79,7 +79,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	private Date extractExpirationDate(final String algorithm, CryptographicConstraint signatureCryptographicConstraint) {
 		AlgoExpirationDate algoExpirationDate = signatureCryptographicConstraint.getAlgoExpirationDate();
-		String dateFormat = "yyyy-MM-dd";
+		String dateFormat = DateUtils.DEFAULT_DATE_FORMAT;
 		if (algoExpirationDate != null) {
 			if (StringUtils.isNotEmpty(algoExpirationDate.getFormat())) {
 				dateFormat = algoExpirationDate.getFormat();
