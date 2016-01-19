@@ -91,7 +91,7 @@ public class BasicBuildingBlocks {
 		/**
 		 * 5.2.5 Revocation freshness checker
 		 */
-		// TODO ?
+		// Not invoked here
 
 		/**
 		 * 5.2.6 X.509 certificate validation

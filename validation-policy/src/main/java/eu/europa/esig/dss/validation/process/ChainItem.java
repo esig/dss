@@ -182,4 +182,9 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		}
 	}
 
+	protected boolean isValid(XmlConstraintsConclusion constraintConclusion) {
+		return constraintConclusion != null && constraintConclusion.getConclusion() != null
+				&& Indication.VALID.equals(constraintConclusion.getConclusion().getIndication());
+	}
+
 }

@@ -164,8 +164,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	}
 
 	private ChainItem<XmlXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
-		// TODO multi context
-		MultiValuesConstraint constraint = validationPolicy.getSigningCertificateKeyUsageConstraint(context);
+		MultiValuesConstraint constraint = validationPolicy.getSigningCertificateKeyUsageConstraint(context, subContext);
 		return new KeyUsageCheck(result, certificate, constraint);
 	}
 

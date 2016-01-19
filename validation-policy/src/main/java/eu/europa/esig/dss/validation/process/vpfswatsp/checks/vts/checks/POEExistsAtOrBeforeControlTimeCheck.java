@@ -31,14 +31,12 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.PSV_ITPOSVAOBCT;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.PSV_ITPOSVAOBCT_ANS;
 	}
 
 	@Override

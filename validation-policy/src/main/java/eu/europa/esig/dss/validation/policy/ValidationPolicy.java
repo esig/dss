@@ -209,10 +209,11 @@ public interface ValidationPolicy {
 
 	/**
 	 * @param context
+	 * @param subContext
 	 * @return {@code LevelConstraint} if key-usage for a given context element
 	 *         is present in the constraint file, null otherwise.
 	 */
-	MultiValuesConstraint getSigningCertificateKeyUsageConstraint(Context context);
+	MultiValuesConstraint getSigningCertificateKeyUsageConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @param context

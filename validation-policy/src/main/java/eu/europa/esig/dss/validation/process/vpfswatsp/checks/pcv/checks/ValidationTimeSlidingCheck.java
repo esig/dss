@@ -20,19 +20,17 @@ public class ValidationTimeSlidingCheck extends ChainItem<XmlPCV> {
 
 	@Override
 	protected boolean process() {
-		return vts != null && vts.getConclusion() != null && Indication.VALID.equals(vts.getConclusion().getIndication());
+		return isValid(vts);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.PCV_IVTSC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.PCV_IVTSC_ANS;
 	}
 
 	@Override

@@ -139,8 +139,8 @@ public enum MessageTag {
 	CTS_ITACBT("Is there a concordance between the trusted service and the certificate?"),
 	CTS_ITACBT_ANS("There is no concordance between the trusted service and the certificate!"),
 
-	PCV_ICTSC("Is control time sliding conclusive?"),
-	PCV_ICTSC_ANS("The indications returned by control time sliding sub-process."),
+	PCV_IVTSC("Is validation time sliding conclusive?"),
+	PCV_IVTSC_ANS("The indications returned by validation time sliding sub-process."),
 	PCV_TINTA_ANS("There is no trusted anchor."),
 	PCV_TIOOCIC_ANS("There is only one certificate in the chain."),
 
@@ -150,6 +150,7 @@ public enum MessageTag {
 	PSV_IPSVC("Is past signature validation conclusive?"),
 	PSV_IPSVC_ANS("The past signature validation is not conclusive!"),
 	PSV_ITPOSVAOBCT("Is there a POE of the signature value at (or before) control-time?"),
+	PSV_ITPOSVAOBCT_ANS("No POE found at (or before) control-time!"),
 
 	TSV_ASTPTCT("Is the order of the timestamps correct?"),
 	TSV_ASTPTCT_ANS("The order of the timestamps is not correct!"),

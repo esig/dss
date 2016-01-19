@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlERV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
@@ -72,21 +71,14 @@ public class ArchiveTimestampsValidationCheck extends ChainItem<XmlERV> {
 		return true;
 	}
 
-	private boolean isValid(XmlConstraintsConclusion constraintConclusion) {
-		return constraintConclusion != null && constraintConclusion.getConclusion() != null
-				&& Indication.VALID.equals(constraintConclusion.getConclusion().getIndication());
-	}
-
 	@Override
 	protected MessageTag getMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.ADEST_ROTVPIIC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.ADEST_ROTVPIIC_ANS;
 	}
 
 	@Override

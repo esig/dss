@@ -54,14 +54,12 @@ public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.BBB_XCV_IRIF;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.BBB_XCV_IRIF_ANS;
 	}
 
 	@Override

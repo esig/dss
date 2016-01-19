@@ -248,8 +248,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public MultiValuesConstraint getSigningCertificateKeyUsageConstraint(final Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
+	public MultiValuesConstraint getSigningCertificateKeyUsageConstraint(final Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getKeyUsage();
 		}

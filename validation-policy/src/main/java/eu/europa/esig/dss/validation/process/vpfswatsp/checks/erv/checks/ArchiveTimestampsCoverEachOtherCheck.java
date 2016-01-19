@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlERV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjectsType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -33,11 +33,9 @@ public class ArchiveTimestampsCoverEachOtherCheck extends ChainItem<XmlERV> {
 				XmlSignedObjectsType signedObjects = timestampWrapper.getSignedObjects();
 				boolean found = false;
 				if (signedObjects != null && CollectionUtils.isNotEmpty(signedObjects.getSignedSignature())) {
-					// TODO change with timestamped tsps
-					List<XmlSignedSignature> signedSignatures = signedObjects.getSignedSignature();
-					// TODO should not loop
-					for (XmlSignedSignature xmlSignedSignature : signedSignatures) {
-						if (StringUtils.equals(xmlSignedSignature.getId(), previous.getId())) {
+					List<XmlTimestampedTimestamp> signedTimestamps = signedObjects.getTimestampedTimestamp();
+					for (XmlTimestampedTimestamp xmlTsp : signedTimestamps) {
+						if (StringUtils.equals(xmlTsp.getId(), previous.getId())) {
 							found = true;
 							break;
 						}
