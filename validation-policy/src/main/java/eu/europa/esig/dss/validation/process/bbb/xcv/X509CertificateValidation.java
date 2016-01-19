@@ -76,6 +76,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			for (XmlChainCertificate chainCertificate : certificateChainList) {
 				CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
 
+				// Trusted certificated doesn't need validation
+				if (certificate.isTrusted()) {
+					continue;
+				}
+
 				SubContext currentSubContext = SubContext.SIGNING_CERT;
 
 				if (!StringUtils.equals(currentCertificate.getId(), certificate.getId())) { // CA
