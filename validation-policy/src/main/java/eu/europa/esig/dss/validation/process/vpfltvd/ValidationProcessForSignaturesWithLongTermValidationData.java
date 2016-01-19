@@ -127,7 +127,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		for (TimestampWrapper timestampWrapper : allowedTimestamps) {
 			boolean foundValidationTSP = false;
 			for (XmlValidationProcessTimestamps timestampValidation : timestampValidations) {
-				List<XmlConstraint> constraints = timestampValidation.getConstraints();
+				List<XmlConstraint> constraints = timestampValidation.getConstraint();
 				for (XmlConstraint tspValidation : constraints) {
 					if (StringUtils.equals(timestampWrapper.getId(), tspValidation.getId())) {
 						foundValidationTSP = true;

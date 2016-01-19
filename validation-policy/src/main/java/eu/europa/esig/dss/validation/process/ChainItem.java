@@ -132,7 +132,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	}
 
 	private void addConstraint(XmlConstraint constraint) {
-		result.getConstraints().add(constraint);
+		result.getConstraint().add(constraint);
 	}
 
 	private XmlName buildConstraintName() {

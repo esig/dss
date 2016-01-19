@@ -37,7 +37,7 @@
 
 	<xs:complexType name="ConstraintsConclusion">
 		<xs:sequence>
-			<xs:element type="Constraint" name="Constraints" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Constraint" name="Constraint" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="Conclusion" name="Conclusion" />
 		</xs:sequence>
 	</xs:complexType>
