@@ -45,6 +45,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.report.DetailedReport;
 import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.validation.report.SimpleReport;
@@ -146,16 +147,39 @@ public abstract class AbstractTestSignature {
 		List<String> signatureIds = detailedReport.getSignatureIds();
 		assertTrue(CollectionUtils.isNotEmpty(signatureIds));
 		for (String sigId : signatureIds) {
-			assertNotNull(detailedReport.getBasicValidationIndication(sigId));
+			Indication basicIndication = detailedReport.getBasicValidationIndication(sigId);
+			assertNotNull(basicIndication);
+			if (!Indication.VALID.equals(basicIndication)) {
+				assertNotNull(detailedReport.getBasicValidationSubIndication(sigId));
+			}
 		}
 
 		if (isBaselineT()) {
 			List<String> timestampIds = detailedReport.getTimestampIds();
 			assertTrue(CollectionUtils.isNotEmpty(timestampIds));
-			// for (String tspId : timestampIds) {
-			// assertNotNull(detailedReport.getBasicValidationIndication(tspId));
-			// assertNotNull(detailedReport.getTimestampValidationIndication(tspId));
-			// }
+			for (String tspId : timestampIds) {
+				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
+				assertNotNull(timestampIndication);
+				if (!Indication.VALID.equals(timestampIndication)) {
+					assertNotNull(detailedReport.getTimestampValidationSubIndication(tspId));
+				}
+			}
+		}
+
+		for (String sigId : signatureIds) {
+			Indication ltvIndication = detailedReport.getLongTermValidationIndication(sigId);
+			assertNotNull(ltvIndication);
+			if (!Indication.VALID.equals(ltvIndication)) {
+				assertNotNull(detailedReport.getLongTermValidationSubIndication(sigId));
+			}
+		}
+
+		for (String sigId : signatureIds) {
+			Indication archiveDataIndication = detailedReport.getArchiveDataValidationIndication(sigId);
+			assertNotNull(archiveDataIndication);
+			if (!Indication.VALID.equals(archiveDataIndication)) {
+				assertNotNull(detailedReport.getArchiveDataValidationSubIndication(sigId));
+			}
 		}
 	}
 

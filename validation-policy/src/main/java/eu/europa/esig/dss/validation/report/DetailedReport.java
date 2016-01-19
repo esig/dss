@@ -156,6 +156,15 @@ public class DetailedReport {
 		return null;
 	}
 
+	public SubIndication getBasicValidationSubIndication(String signatureId) {
+		XmlSignature signature = getXmlSignatureById(signatureId);
+		if (signature != null && signature.getValidationProcessBasicSignatures() != null
+				&& signature.getValidationProcessBasicSignatures().getConclusion() != null) {
+			return signature.getValidationProcessBasicSignatures().getConclusion().getSubIndication();
+		}
+		return null;
+	}
+
 	public Indication getTimestampValidationIndication(String timestampId) {
 		List<XmlSignature> signatures = jaxbDetailedReport.getSignature();
 		if (CollectionUtils.isNotEmpty(signatures)) {
@@ -169,6 +178,55 @@ public class DetailedReport {
 					}
 				}
 			}
+		}
+		return null;
+	}
+
+	public SubIndication getTimestampValidationSubIndication(String timestampId) {
+		List<XmlSignature> signatures = jaxbDetailedReport.getSignature();
+		if (CollectionUtils.isNotEmpty(signatures)) {
+			for (XmlSignature xmlSignature : signatures) {
+				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
+				if (CollectionUtils.isNotEmpty(validationTimestamps)) {
+					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
+						if (StringUtils.equals(tspValidation.getId(), timestampId) && tspValidation.getConclusion() != null) {
+							return tspValidation.getConclusion().getSubIndication();
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public Indication getLongTermValidationIndication(String signatureId) {
+		XmlSignature signature = getXmlSignatureById(signatureId);
+		if (signature != null && signature.getValidationProcessLongTermData() != null && signature.getValidationProcessLongTermData().getConclusion() != null) {
+			return signature.getValidationProcessLongTermData().getConclusion().getIndication();
+		}
+		return null;
+	}
+
+	public SubIndication getLongTermValidationSubIndication(String signatureId) {
+		XmlSignature signature = getXmlSignatureById(signatureId);
+		if (signature != null && signature.getValidationProcessLongTermData() != null && signature.getValidationProcessLongTermData().getConclusion() != null) {
+			return signature.getValidationProcessLongTermData().getConclusion().getSubIndication();
+		}
+		return null;
+	}
+
+	public Indication getArchiveDataValidationIndication(String signatureId) {
+		XmlSignature signature = getXmlSignatureById(signatureId);
+		if (signature != null && signature.getValidationProcessArchivalData() != null && signature.getValidationProcessArchivalData().getConclusion() != null) {
+			return signature.getValidationProcessArchivalData().getConclusion().getIndication();
+		}
+		return null;
+	}
+
+	public SubIndication getArchiveDataValidationSubIndication(String signatureId) {
+		XmlSignature signature = getXmlSignatureById(signatureId);
+		if (signature != null && signature.getValidationProcessArchivalData() != null && signature.getValidationProcessArchivalData().getConclusion() != null) {
+			return signature.getValidationProcessArchivalData().getConclusion().getSubIndication();
 		}
 		return null;
 	}
@@ -187,108 +245,6 @@ public class DetailedReport {
 
 	//
 	// /**
-	// * This method returns the {@code List} of the signature id based on the XML element:
-	// * '/ValidationData/BasicBuildingBlocks/Signature' within the report.
-	// *
-	// * @return {@code List} of the signature id
-	// */
-	// public List<String> getBasicBuildingBlocksSignatureId() {
-	//
-	//// return getIdList("/ValidationData/BasicBuildingBlocks/Signature");
-	// }
-	//
-	// /**
-	// * This method returns the {@code List} of the signature id based on the XML element:
-	// * '/ValidationData/TimestampValidationData/Signature' within the report.
-	// *
-	// * @return {@code List} of the signature id
-	// */
-	// public List<String> getTimestampValidationSignatureId() {
-	//
-	// return getIdList("/ValidationData/TimestampValidationData/Signature");
-	// }
-	//
-	// /**
-	// * This method returns the {@code List} of the timestamp id for the given {@code TimestampType} based on
-	// * TimestampValidationData.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @param timestampType
-	// * {@code TimestampType}
-	// * @return {@code List} of timestamp id
-	// */
-	// public List<String> getTimestampValidationTimestampId(final String signatureId, final TimestampType
-	// timestampType) {
-	//
-	// return getIdList("/ValidationData/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Type='%s']",
-	// signatureId, timestampType.name());
-	// }
-	//
-	// /**
-	// * Returns the validation INDICATION of the timestamp validation for the given signature id.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @return related {@code Indication} indication
-	// */
-	// public Indication getTimestampValidationIndication(final String signatureId, final String timestampId) {
-	// return Indication.valueOf(
-	// getValue("/ValidationData/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']/BasicBuildingBlocks/Conclusion/Indication/text()",
-	// signatureId, timestampId));
-	// }
-	//
-	// /**
-	// * Returns the validation SUB_INDICATION of the timestamp validation for the given signature id.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @return related {@code SubIndication} sub-indication
-	// */
-	// public SubIndication getTimestampValidationSubIndication(final String signatureId, final String timestampId) {
-	// return SubIndication.forName(
-	// getValue("/ValidationData/TimestampValidationData/Signature[@Id='%s']/Timestamp[@Id='%s']/BasicBuildingBlocks/Conclusion/SubIndication/text()",
-	// signatureId, timestampId));
-	// }
-	//
-	// /**
-	// * This method returns the {@code List} of the signature id based on the XML element:
-	// * '/ValidationData/LongTermValidationData/Signature' within the report.
-	// *
-	// * @return {@code List} of the signature id
-	// */
-	// public List<String> getLongTermValidationSignatureId() {
-	//
-	// return getIdList("/ValidationData/LongTermValidationData/Signature");
-	// }
-	//
-	// /**
-	// * Returns the validation INDICATION of the long term validation for the given signature id.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @return related {@code Indication} indication
-	// */
-	// public Indication getLongTermValidationIndication(final String signatureId) {
-	// return
-	// Indication.valueOf(getValue("/ValidationData/LongTermValidationData/Signature[@Id='%s']/Conclusion/Indication/text()",
-	// signatureId));
-	// }
-	//
-	// /**
-	// * Returns the validation SUB_INDICATION of the long term validation for the given signature id.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @return related {@code SubIndication} sub-indication
-	// */
-	// public SubIndication getLongTermValidationSubIndication(final String signatureId) {
-	// return
-	// SubIndication.forName(getValue("/ValidationData/LongTermValidationData/Signature[@Id='%s']/Conclusion/SubIndication/text()",
-	// signatureId));
-	// }
-	//
-	// /**
 	// * This method checks if the basic building blocks have VALID indication. The check is performed for all
 	// signatures.
 	// *
@@ -300,32 +256,6 @@ public class DetailedReport {
 	// final List<XmlDom> indications =
 	// getElements("/ValidationData/BasicBuildingBlocks/Signature/Conclusion/Indication");
 	// return areAllIndicationsValid(indications);
-	// }
-	//
-	// /**
-	// * This method returns the indication related to the AdESTValidation of a given signature.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @return found {@code Indication} indication
-	// */
-	// public Indication getAdESTValidationIndication(final String signatureId) {
-	// return
-	// Indication.valueOf(getValue("/ValidationData/AdESTValidationData/Signature[@Id='%s']/Conclusion/Indication/text()",
-	// signatureId));
-	// }
-	//
-	// /**
-	// * This method returns the subIndication related to the AdESTValidation of a given signature.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @return found {@code String} sub-indication
-	// */
-	// public SubIndication getAdESTValidationSubIndication(final String signatureId) {
-	// return
-	// SubIndication.forName(getValue("/ValidationData/AdESTValidationData/Signature[@Id='%s']/Conclusion/SubIndication/text()",
-	// signatureId));
 	// }
 	//
 	// /**
@@ -394,48 +324,6 @@ public class DetailedReport {
 	//
 	// final String status = getValue("//Name[@NameId='%s']/../Status/text()", tag.name());
 	// return status;
-	// }
-	//
-	// /**
-	// * This method returns the {@code List} of {@code String} id based on the given XPath query and set of optional
-	// * parameters.
-	// *
-	// * @param xPath
-	// * XPath query
-	// * @param parameters
-	// * array of {@code String }parameters
-	// * @return {@code List} of id
-	// */
-	// private List<String> getIdList(final String xPath, final String... parameters) {
-	//
-	// final List<String> idList = new ArrayList<String>();
-	//
-	// final List<XmlDom> elements = getElements(xPath, parameters);
-	// for (final XmlDom element : elements) {
-	//
-	// final String id = element.getAttribute("Id");
-	// idList.add(id);
-	// }
-	//
-	// return idList;
-	// }
-	//
-	// /**
-	// * This method checks if all indications contained within the {@code indications} are VALID.
-	// *
-	// * @param indications
-	// * {@code List} of {@code XmlDom} containing the INDICATION
-	// * @return {@code true} if all contained indications are equal to VALID, otherwise {@code false}
-	// */
-	// private boolean areAllIndicationsValid(final List<XmlDom> indications) {
-	//
-	// boolean valid = indications.size() > 0;
-	// for (final XmlDom indicationDom : indications) {
-	//
-	// final String indication = indicationDom.getText();
-	// valid = valid && Indication.VALID.name().equals(indication);
-	// }
-	// return valid;
 	// }
 
 }
