@@ -199,7 +199,7 @@ public class SimpleReportBuilder {
 	}
 
 	private XmlConstraintsConclusion getBasicSignatureValidationConclusion(String signatureId) {
-		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
+		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignature();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
 			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessBasicSignatures();
@@ -209,7 +209,7 @@ public class SimpleReportBuilder {
 	}
 
 	private XmlConstraintsConclusion getArchivalValidationConclusion(String signatureId) {
-		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
+		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignature();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
 			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessArchivalData();

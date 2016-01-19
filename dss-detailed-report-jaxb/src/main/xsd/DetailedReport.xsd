@@ -5,22 +5,22 @@
 	<xs:element name="DetailedReport">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="Signature" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element type="ValidationProcessBasicSignatures" name="ValidationProcessBasicSignatures" minOccurs="0" />
+							<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
+							<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" />
+							<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" />
+						</xs:sequence>
+						<xs:attribute name="Id" type="xs:string" use="required" />
+						<xs:attribute name="Type" type="xs:string" use="required" />
+					</xs:complexType>
+				</xs:element>
 				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-
-	<xs:complexType name="Signature">
-		<xs:sequence>
-			<xs:element type="ValidationProcessBasicSignatures" name="ValidationProcessBasicSignatures" minOccurs="0" />
-			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" />
-			<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" />
-		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
-		<xs:attribute name="Type" type="xs:string" use="required" />
-	</xs:complexType>
 
 	<xs:complexType name="BasicBuildingBlocks">
 		<xs:sequence>
