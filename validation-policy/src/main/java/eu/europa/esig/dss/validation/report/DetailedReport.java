@@ -20,6 +20,19 @@
  */
 package eu.europa.esig.dss.validation.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+
 /**
  * This class represents the detailed report built during the validation process. It contains information on each
  * executed constraint. It is composed among other of the
@@ -42,28 +55,136 @@ public class DetailedReport {
 		this.jaxbDetailedReport = jaxbDetailedReport;
 	}
 
-	// /**
-	// * Returns the number of the signatures into the signed document. The XML element:
-	// * '/ValidationData/BasicBuildingBlocks/Signature' is used to obtain this information.
-	// *
-	// * @return {@code int} number of the retrieved signatures
-	// */
-	// public int getBasicBuildingBlocksNumber() {
-	// return jaxbDetailedReport.getBasicBuildingBlocks().size();
-	// }
-	//
-	// /**
-	// * Returns the id of the signature. The signature is identified by its index: 1 for the first one.
-	// *
-	// * @param index
-	// * (position/order) of the signature within the report
-	// * @return {@code String} identifying the signature
-	// */
-	// public String getBasicBuildingBlocksSignatureId(final int index) {
-	//
-	//// final String signatureId = getValue("/ValidationData/BasicBuildingBlocks/Signature[%s]/@Id", index);
-	//// return signatureId;
-	// }
+	/**
+	 * This method returns the result of the Basic Building Block for a token (signature, timestamp, revocation)
+	 * 
+	 * @param tokenId
+	 * @return the Indication
+	 */
+	public Indication getBasicBuildingBlocksIndication(String tokenId) {
+		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
+		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
+			if (StringUtils.equals(xmlBasicBuildingBlocks.getId(), tokenId)) {
+				return xmlBasicBuildingBlocks.getConclusion().getIndication();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns the result of the Basic Building Block for a token (signature, timestamp, revocation)
+	 * 
+	 * @param tokenId
+	 * @return the SubIndication
+	 */
+	public SubIndication getBasicBuildingBlocksSubIndication(String tokenId) {
+		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
+		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
+			if (StringUtils.equals(xmlBasicBuildingBlocks.getId(), tokenId)) {
+				return xmlBasicBuildingBlocks.getConclusion().getSubIndication();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the number of Basic Building Blocks.
+	 *
+	 * @return {@code int} number of Basic Building Blocks
+	 */
+	public int getBasicBuildingBlocksNumber() {
+		return jaxbDetailedReport.getBasicBuildingBlocks().size();
+	}
+
+	/**
+	 * Returns the id of the token. The signature is identified by its index: 0 for the first one.
+	 *
+	 * @param index
+	 *            (position/order) of the signature within the report
+	 * @return {@code String} identifying the token
+	 */
+	public String getBasicBuildingBlocksSignatureId(final int index) {
+		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
+		if (CollectionUtils.size(bbbs) >= index) {
+			XmlBasicBuildingBlocks bbb = jaxbDetailedReport.getBasicBuildingBlocks().get(index);
+			if (bbb != null) {
+				return bbb.getId();
+			}
+		}
+		return null;
+	}
+
+	public List<String> getSignatureIds() {
+		List<String> result = new ArrayList<String>();
+		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
+		for (XmlBasicBuildingBlocks bbb : bbbs) {
+			if (StringUtils.equals(Context.SIGNATURE.name(), bbb.getType()) || StringUtils.equals(Context.COUNTER_SIGNATURE.name(), bbb.getType())) {
+				result.add(bbb.getId());
+			}
+		}
+		return result;
+	}
+
+	public List<String> getTimestampIds() {
+		List<String> result = new ArrayList<String>();
+		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
+		for (XmlBasicBuildingBlocks bbb : bbbs) {
+			if (StringUtils.equals(Context.TIMESTAMP.name(), bbb.getType())) {
+				result.add(bbb.getId());
+			}
+		}
+		return result;
+	}
+
+	public List<String> getRevocationIds() {
+		List<String> result = new ArrayList<String>();
+		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
+		for (XmlBasicBuildingBlocks bbb : bbbs) {
+			if (StringUtils.equals(Context.REVOCATION.name(), bbb.getType())) {
+				result.add(bbb.getId());
+			}
+		}
+		return result;
+	}
+
+	public Indication getBasicValidationIndication(String signatureId) {
+		XmlSignature signature = getXmlSignatureById(signatureId);
+		if (signature != null && signature.getValidationProcessBasicSignatures() != null
+				&& signature.getValidationProcessBasicSignatures().getConclusion() != null) {
+			return signature.getValidationProcessBasicSignatures().getConclusion().getIndication();
+		}
+		return null;
+	}
+
+	public Indication getTimestampValidationIndication(String timestampId) {
+		List<XmlSignature> signatures = jaxbDetailedReport.getSignature();
+		if (CollectionUtils.isNotEmpty(signatures)) {
+			for (XmlSignature xmlSignature : signatures) {
+				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
+				if (CollectionUtils.isNotEmpty(validationTimestamps)) {
+					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
+						if (StringUtils.equals(tspValidation.getId(), timestampId) && tspValidation.getConclusion() != null) {
+							return tspValidation.getConclusion().getIndication();
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private XmlSignature getXmlSignatureById(String signatureId) {
+		List<XmlSignature> signatures = jaxbDetailedReport.getSignature();
+		if (CollectionUtils.isNotEmpty(signatures)) {
+			for (XmlSignature xmlSignature : signatures) {
+				if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+					return xmlSignature;
+				}
+			}
+		}
+		return null;
+	}
+
 	//
 	// /**
 	// * This method returns the {@code List} of the signature id based on the XML element:
@@ -74,32 +195,6 @@ public class DetailedReport {
 	// public List<String> getBasicBuildingBlocksSignatureId() {
 	//
 	//// return getIdList("/ValidationData/BasicBuildingBlocks/Signature");
-	// }
-	//
-	// /**
-	// * Returns the validation INDICATION of the basic building blocks for the given signature id.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @return related {@code Indication} indication
-	// */
-	// public Indication getBasicBuildingBlocksIndication(final String signatureId) {
-	//// return
-	// Indication.valueOf(getValue("/ValidationData/BasicBuildingBlocks/Signature[@Id='%s']/Conclusion/Indication/text()",
-	// signatureId));
-	// }
-	//
-	// /**
-	// * Returns the validation SUB_INDICATION of the basic building blocks for the given signature id.
-	// *
-	// * @param signatureId
-	// * {@code String} id of the signature
-	// * @return related {@code Indication} sub-indication
-	// */
-	// public SubIndication getBasicBuildingBlocksSubIndication(final String signatureId) {
-	// return
-	// SubIndication.forName(getValue("/ValidationData/BasicBuildingBlocks/Signature[@Id='%s']/Conclusion/SubIndication/text()",
-	// signatureId));
 	// }
 	//
 	// /**

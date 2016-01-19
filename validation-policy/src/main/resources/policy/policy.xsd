@@ -22,7 +22,6 @@
 			<xs:element name="StructuralValidation" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="AcceptablePolicies" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0" />
-			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
 			<xs:element name="SignedAttributes" type="tns:SignedAttributesConstraints" minOccurs="0" />
 			<xs:element name="UnsignedAttributes" type="tns:UnsignedAttributesConstraints" minOccurs="0" />
 		</xs:sequence>
@@ -81,6 +80,7 @@
 			<xs:element name="SignatureValid" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
 			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
+			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 

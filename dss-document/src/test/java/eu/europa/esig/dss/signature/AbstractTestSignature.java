@@ -45,6 +45,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.report.DetailedReport;
 import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
@@ -104,6 +105,9 @@ public abstract class AbstractTestSignature {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		verifySimpleReport(simpleReport);
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		verifyDetailedReport(detailedReport);
 	}
 
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -126,6 +130,33 @@ public abstract class AbstractTestSignature {
 
 	protected void verifySimpleReport(SimpleReport simpleReport) {
 		assertNotNull(simpleReport);
+	}
+
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		assertNotNull(detailedReport);
+
+		int nbBBBs = detailedReport.getBasicBuildingBlocksNumber();
+		assertTrue(nbBBBs > 0);
+		for (int i = 0; i < nbBBBs; i++) {
+			String id = detailedReport.getBasicBuildingBlocksSignatureId(i);
+			assertNotNull(id);
+			assertNotNull(detailedReport.getBasicBuildingBlocksIndication(id));
+		}
+
+		List<String> signatureIds = detailedReport.getSignatureIds();
+		assertTrue(CollectionUtils.isNotEmpty(signatureIds));
+		for (String sigId : signatureIds) {
+			assertNotNull(detailedReport.getBasicValidationIndication(sigId));
+		}
+
+		if (isBaselineT()) {
+			List<String> timestampIds = detailedReport.getTimestampIds();
+			assertTrue(CollectionUtils.isNotEmpty(timestampIds));
+			// for (String tspId : timestampIds) {
+			// assertNotNull(detailedReport.getBasicValidationIndication(tspId));
+			// assertNotNull(detailedReport.getTimestampValidationIndication(tspId));
+			// }
+		}
 	}
 
 	protected DSSDocument sign() {

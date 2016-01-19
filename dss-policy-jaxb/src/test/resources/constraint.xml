@@ -83,27 +83,27 @@
 					</AcceptableDigestAlgo>
 				</Cryptographic>
 			</CACertificate>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
 		</BasicSignatureConstraints>
-		<Cryptographic Level="FAIL">
-			<AcceptableEncryptionAlgo>
-				<Algo>RSA</Algo>
-				<Algo>DSA</Algo>
-				<Algo>ECDSA</Algo>
-			</AcceptableEncryptionAlgo>
-			<MiniPublicKeySize>
-				<Algo Size="128">DSA</Algo>
-				<Algo Size="1024">RSA</Algo>
-				<Algo Size="192">ECDSA</Algo>
-			</MiniPublicKeySize>
-			<AcceptableDigestAlgo>
-				<Algo>SHA1</Algo>
-				<Algo>SHA224</Algo>
-				<Algo>SHA256</Algo>
-				<Algo>SHA384</Algo>
-				<Algo>SHA512</Algo>
-				<Algo>RIPEMD160</Algo>
-			</AcceptableDigestAlgo>
-		</Cryptographic>
 		<SignedAttributes>
 			<SigningTime Level="FAIL" />
 			<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
@@ -199,27 +199,27 @@
 					</AcceptableDigestAlgo>
 				</Cryptographic>
 			</CACertificate>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
 		</BasicSignatureConstraints>
-		<Cryptographic Level="FAIL">
-			<AcceptableEncryptionAlgo>
-				<Algo>RSA</Algo>
-				<Algo>DSA</Algo>
-				<Algo>ECDSA</Algo>
-			</AcceptableEncryptionAlgo>
-			<MiniPublicKeySize>
-				<Algo Size="128">DSA</Algo>
-				<Algo Size="1024">RSA</Algo>
-				<Algo Size="192">ECDSA</Algo>
-			</MiniPublicKeySize>
-			<AcceptableDigestAlgo>
-				<Algo>SHA1</Algo>
-				<Algo>SHA224</Algo>
-				<Algo>SHA256</Algo>
-				<Algo>SHA384</Algo>
-				<Algo>SHA512</Algo>
-				<Algo>RIPEMD160</Algo>
-			</AcceptableDigestAlgo>
-		</Cryptographic>
 	</CounterSignatureConstraints>
 	<Timestamp>
 		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />

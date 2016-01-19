@@ -24,10 +24,10 @@ public class RevocationAcceptanceValidation extends AbstractAcceptanceValidation
 
 	@Override
 	protected void initChain() {
-		firstItem = timestampCryptographic();
+		firstItem = revocationCryptographic();
 	}
 
-	private ChainItem<XmlSAV> timestampCryptographic() {
+	private ChainItem<XmlSAV> revocationCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(Context.REVOCATION);
 		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
 	}

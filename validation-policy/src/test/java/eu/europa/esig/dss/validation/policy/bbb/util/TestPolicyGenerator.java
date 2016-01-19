@@ -16,29 +16,26 @@ import eu.europa.esig.jaxb.policy.UnsignedAttributesConstraints;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 public class TestPolicyGenerator {
-	
+
 	public static ValidationPolicy generatePolicy() {
 		return generatePolicy(true);
 	}
 
 	public static ValidationPolicy generatePolicy(boolean policyMandatory) {
-		
+
 		ConstraintsParameters policy = new ConstraintsParameters();
 		policy.setName("Test policy");
 
 		SignatureConstraints constraints = new SignatureConstraints();
-		constraints.setCryptographic(generateCryptographicConstrains());
-		
+
 		TestMultiValueConstraint multi = new TestMultiValueConstraint();
 		multi.setLevel(Level.FAIL);
 		multi.addConstraint("ANY_POLICY");
-		if(policyMandatory) {
+		if (policyMandatory) {
 			multi.addConstraint("NO_POLICY");
 		}
 		constraints.setAcceptablePolicies(multi);
-		
-		
-		
+
 		BasicSignatureConstraints basic = new BasicSignatureConstraints();
 		basic.setCACertificate(generateCertConstraint());
 		basic.setReferenceDataExistence(failLeveLConstraint());
@@ -46,19 +43,21 @@ public class TestPolicyGenerator {
 		basic.setSignatureIntact(failLeveLConstraint());
 		basic.setSignatureValid(failLeveLConstraint());
 		basic.setSigningCertificate(generateCertConstraint());
-		
+		basic.setCryptographic(generateCryptographicConstrains());
+
 		constraints.setBasicSignatureConstraints(basic);
-		
+
 		constraints.setStructuralValidation(failLeveLConstraint());
-		
+
 		SignedAttributesConstraints signedConstraints = new SignedAttributesConstraints();
 		signedConstraints.setSignerLocation(infoLeveLConstraint());
 		multi = new TestMultiValueConstraint();
 		multi.setLevel(Level.INFORM);
 		ValueConstraint vConstraint = new ValueConstraint();
-		vConstraint.setValue("*");;
+		vConstraint.setValue("*");
+		;
 		vConstraint.setLevel(Level.INFORM);
-		
+
 		signedConstraints.setCertifiedRoles(multi);
 		multi = new TestMultiValueConstraint();
 		multi.setLevel(Level.INFORM);
@@ -70,32 +69,34 @@ public class TestPolicyGenerator {
 		signedConstraints.setSigningTime(warnLeveLConstraint());
 		signedConstraints.setContentHints(vConstraint);
 		vConstraint = new ValueConstraint();
-		vConstraint.setValue("*");;
+		vConstraint.setValue("*");
+		;
 		vConstraint.setLevel(Level.INFORM);
 		signedConstraints.setContentIdentifier(vConstraint);
 		vConstraint = new ValueConstraint();
-		vConstraint.setValue("*");;
+		vConstraint.setValue("*");
+		;
 		vConstraint.setLevel(Level.INFORM);
 		signedConstraints.setContentType(vConstraint);
 		signedConstraints.setSignerLocation(infoLeveLConstraint());
-		
+
 		constraints.setSignedAttributes(signedConstraints);
-		
+
 		UnsignedAttributesConstraints unsignedConstraints = new UnsignedAttributesConstraints();
 		unsignedConstraints.setCounterSignature(infoLeveLConstraint());
-		
+
 		constraints.setUnsignedAttributes(unsignedConstraints);
-		
+
 		policy.setSignatureConstraints(constraints);
-		
+
 		return new EtsiValidationPolicy(policy);
 	}
-	
+
 	private static CertificateConstraints generateCertConstraint() {
 		TestMultiValueConstraint keyUsage = new TestMultiValueConstraint();
 		keyUsage.setLevel(Level.WARN);
 		keyUsage.addConstraint("nonRepudiation");
-		
+
 		CertificateConstraints certConstraint = new CertificateConstraints();
 		certConstraint.setKeyUsage(keyUsage);
 		certConstraint.setAttributePresent(failLeveLConstraint());
@@ -119,7 +120,7 @@ public class TestPolicyGenerator {
 		certConstraint.setTSLStatus(warnLeveLConstraint());
 		certConstraint.setTSLValidity(warnLeveLConstraint());
 		certConstraint.setSupportedBySSCD(warnLeveLConstraint());
-		
+
 		return certConstraint;
 	}
 
@@ -152,22 +153,22 @@ public class TestPolicyGenerator {
 		result.setAcceptableDigestAlgo(list);
 
 		result.setLevel(Level.FAIL);
-		
+
 		return result;
 	}
-	
+
 	private static LevelConstraint failLeveLConstraint() {
 		LevelConstraint failLevel = new LevelConstraint();
 		failLevel.setLevel(Level.FAIL);
 		return failLevel;
 	}
-	
+
 	private static LevelConstraint warnLeveLConstraint() {
 		LevelConstraint failLevel = new LevelConstraint();
 		failLevel.setLevel(Level.WARN);
 		return failLevel;
 	}
-	
+
 	private static LevelConstraint infoLeveLConstraint() {
 		LevelConstraint failLevel = new LevelConstraint();
 		failLevel.setLevel(Level.INFORM);

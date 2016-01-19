@@ -231,9 +231,9 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public CryptographicConstraint getSignatureCryptographicConstraint(Context context) {
-		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
-		if (signatureConstraints != null) {
-			return signatureConstraints.getCryptographic();
+		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
+		if (basicSignature != null) {
+			return basicSignature.getCryptographic();
 		}
 		return null;
 	}

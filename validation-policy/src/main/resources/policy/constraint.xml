@@ -85,8 +85,7 @@
 					</AcceptableDigestAlgo>
 				</Cryptographic>
 			</CACertificate>
-		</BasicSignatureConstraints>
-		<Cryptographic Level="FAIL">
+			<Cryptographic Level="FAIL">
 			<AcceptableEncryptionAlgo>
 				<Algo>RSA</Algo>
 				<Algo>DSA</Algo>
@@ -106,6 +105,7 @@
 				<Algo>RIPEMD160</Algo>
 			</AcceptableDigestAlgo>
 		</Cryptographic>
+		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningTime Level="FAIL" />
 <!--		<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
@@ -123,7 +123,7 @@
 <!--		<CounterSignature Level="IGNORE" /> check presence -->
 		</UnsignedAttributes>
 	</SignatureConstraints>
-<Timestamp>
+	<Timestamp>
 		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
 		<MessageImprintDataFound Level="FAIL" />
 		<MessageImprintDataIntact Level="FAIL" />
