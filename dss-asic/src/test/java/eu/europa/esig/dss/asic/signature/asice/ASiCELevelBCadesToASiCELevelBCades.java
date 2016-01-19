@@ -24,6 +24,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.report.Reports;
 import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 
@@ -78,7 +79,7 @@ public class ASiCELevelBCadesToASiCELevelBCades {
 		while (reports != null) {
 			DiagnosticData diagnosticData = reports.getDiagnosticData();
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-			Assert.assertNotEquals("INVALID", reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
+			Assert.assertNotEquals(Indication.INVALID, reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
 			reports = reports.getNextReports();
 		}
 	}
