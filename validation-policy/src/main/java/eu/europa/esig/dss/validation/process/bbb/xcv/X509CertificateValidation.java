@@ -37,7 +37,7 @@ import eu.europa.esig.dss.validation.wrappers.TokenProxy;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
-import eu.europa.esig.jaxb.policy.RevocationConstraints;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 /**
  * 5.2.6 X.509 certificate validation This building block validates the signing
@@ -185,17 +185,17 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	}
 
 	private ChainItem<XmlXCV> revocationFreshness(CertificateWrapper certificate) {
-		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraint();
-		return new RevocationFreshnessCheck(result, certificate, currentTime, revocationConstraints);
+		TimeConstraint revocationFreshnessConstraints = validationPolicy.getRevocationFreshnessConstraint();
+		return new RevocationFreshnessCheck(result, certificate, currentTime, revocationFreshnessConstraints);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(context, subContext);
+		LevelConstraint constraint = validationPolicy.getCertificateRevokedConstraint(context, subContext);
 		return new SigningCertificateRevokedCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> intermediateCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRevokedConstraint(context, subContext);
+		LevelConstraint constraint = validationPolicy.getCertificateRevokedConstraint(context, subContext);
 		return new IntermediateCertificateRevokedCheck(result, certificate, constraint);
 	}
 

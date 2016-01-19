@@ -25,7 +25,6 @@ import java.util.Date;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
-import eu.europa.esig.jaxb.policy.RevocationConstraints;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
 
@@ -177,8 +176,6 @@ public interface ValidationPolicy {
 	 */
 	String getPolicyDescription();
 
-	String getCertifiedRolesAttendance();
-
 	/**
 	 * This method creates the {@code SignatureCryptographicConstraint}
 	 * corresponding to the context parameter. If AcceptableEncryptionAlgo is
@@ -261,18 +258,10 @@ public interface ValidationPolicy {
 	LevelConstraint getRevocationDataIsTrustedConstraint(Context context, SubContext subContext);
 
 	/**
-	 * @param context
-	 * @return {@code LevelConstraint} if RevocationDataFreshness for a given
-	 *         context element is present in the constraint file, null
-	 *         otherwise.
-	 */
-	LevelConstraint getRevocationDataFreshnessConstraint(Context context, SubContext subContext);
-
-	/**
 	 * @return {@code LevelConstraint} if Revoked for a given context element is
 	 *         present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateRevokedConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificateRevokedConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if OnHold for a given context element is
@@ -297,20 +286,6 @@ public interface ValidationPolicy {
 	 *         element is present in the constraint file, null otherwise.
 	 */
 	LevelConstraint getSigningCertificateTSLStatusAndValidityConstraint(Context context);
-
-	/**
-	 * @param context
-	 *            of the certificate: main signature, timestamp, revocation data
-	 * @return {@code LevelConstraint} if Revoked for a given context element is
-	 *         present in the constraint file, null otherwise.
-	 */
-	LevelConstraint getIntermediateCertificateRevokedConstraint(Context context);
-
-	/**
-	 * @return {@code LevelConstraint} if CertificateChain for a given context
-	 *         element is present in the constraint file, null otherwise.
-	 */
-	LevelConstraint getChainConstraint(Context context);
 
 	/**
 	 * @return {@code LevelConstraint} if Qualification for a given context
@@ -408,8 +383,6 @@ public interface ValidationPolicy {
 	TimeConstraint getTimestampDelaySigningTimePropertyConstraint();
 
 	TimeConstraint getRevocationFreshnessConstraint();
-
-	RevocationConstraints getRevocationConstraint();
 
 	LevelConstraint getCounterSignatureConstraint();
 

@@ -60,11 +60,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public RevocationConstraints getRevocationConstraint() {
-		return policy.getRevocation();
-	}
-
-	@Override
 	public Date getAlgorithmExpirationDate(final String algorithm, Context context, SubContext subContext) {
 		CryptographicConstraint signatureCryptographicConstraint = getCertificateCryptographicConstraint(context, subContext);
 		if (signatureCryptographicConstraint != null) {
@@ -235,15 +230,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public String getCertifiedRolesAttendance() {
-		// TODO
-		// String attendance =
-		// getValue("ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/@Attendance");
-		// return attendance;
-		return null;
-	}
-
-	@Override
 	public CryptographicConstraint getSignatureCryptographicConstraint(Context context) {
 		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
 		if (signatureConstraints != null) {
@@ -316,17 +302,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getRevocationDataFreshnessConstraint(final Context context, final SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getRevocationDataFreshness();
-		}
-		return null;
-	}
-
-	// TODO rename
-	@Override
-	public LevelConstraint getSigningCertificateRevokedConstraint(final Context context, final SubContext subContext) {
+	public LevelConstraint getCertificateRevokedConstraint(final Context context, final SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getRevoked();
@@ -367,27 +343,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		if (certificateConstraints != null) {
 			return certificateConstraints.getTSLStatusAndValidity();
 		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getIntermediateCertificateRevokedConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getCACertificateByContext(context);
-		if (certificateConstraints != null) {
-			certificateConstraints.getRevoked();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getChainConstraint(Context context) {
-		// TODO not implemented
-		// final String level =
-		// getValue("/ConstraintsParameters/MainSignature/CertificateChain/@Level");
-		// if (StringUtils.isNotBlank(level)) {
-		// final Constraint constraint = new Constraint(level);
-		// return constraint;
-		// }
 		return null;
 	}
 
@@ -587,10 +542,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return getCertificateConstraints(context, SubContext.SIGNING_CERT);
 	}
 
-	private CertificateConstraints getCACertificateByContext(Context context) {
-		return getCertificateConstraints(context, SubContext.CA_CERTIFICATE);
-	}
-
 	private CertificateConstraints getCertificateConstraints(Context context, SubContext subContext) {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
@@ -599,7 +550,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 			} else if (SubContext.CA_CERTIFICATE.equals(subContext)) {
 				return basicSignatureConstraints.getCACertificate();
 			}
-
 		}
 		return null;
 	}

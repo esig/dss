@@ -236,17 +236,17 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
 		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlValidationProcessLongTermData>(result, bestSignatureTime, signingCertificate,
-				getFailLevelConstraint());
+				policy.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
 		return new BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck<XmlValidationProcessLongTermData>(result, bestSignatureTime,
-				signingCertificate, getFailLevelConstraint());
+				signingCertificate, policy.getSigningCertificateValidityAtBestSignatureTimeConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampCoherenceOrder(Set<TimestampWrapper> allowedTimestamps) {
-		return new TimestampCoherenceOrderCheck(result, allowedTimestamps, getFailLevelConstraint());
+		return new TimestampCoherenceOrderCheck(result, allowedTimestamps, policy.getTimestampCoherenceConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> signingTimeAttributePresent() {

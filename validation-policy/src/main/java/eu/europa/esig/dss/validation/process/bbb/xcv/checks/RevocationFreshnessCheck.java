@@ -10,18 +10,18 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
 import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
-import eu.europa.esig.jaxb.policy.RevocationConstraints;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 public class RevocationFreshnessCheck extends ChainItem<XmlXCV> {
 
 	private final CertificateWrapper certificate;
-	private final RevocationConstraints revocationConstraints;
+	private final TimeConstraint revocationFreshnessConstraints;
 	private final Date currentTime;
 
-	public RevocationFreshnessCheck(XmlXCV result, CertificateWrapper certificate, Date currentTime, RevocationConstraints revocationConstraints) {
-		super(result, revocationConstraints);
+	public RevocationFreshnessCheck(XmlXCV result, CertificateWrapper certificate, Date currentTime, TimeConstraint revocationFreshnessConstraints) {
+		super(result, revocationFreshnessConstraints);
 		this.certificate = certificate;
-		this.revocationConstraints = revocationConstraints;
+		this.revocationFreshnessConstraints = revocationFreshnessConstraints;
 		this.currentTime = currentTime;
 	}
 
@@ -32,7 +32,7 @@ public class RevocationFreshnessCheck extends ChainItem<XmlXCV> {
 			Date issuingTime = revocationData.getProductionDate();
 			final long revocationDeltaTime = currentTime.getTime() - issuingTime.getTime();
 			// TODO check 0day should not work
-			if (revocationDeltaTime > RuleUtils.convertDuration(revocationConstraints.getRevocationFreshness())) {
+			if (revocationDeltaTime > RuleUtils.convertDuration(revocationFreshnessConstraints)) {
 				return false;
 			}
 		}
