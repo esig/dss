@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/diagnostic" xmlns="http://dss.esig.europa.eu/validation/diagnostic"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/diagnostic"
+	xmlns="http://dss.esig.europa.eu/validation/diagnostic" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
 	<xs:element name="SimpleReport">
 		<xs:complexType>
@@ -15,30 +16,37 @@
 				</xs:element>
 				<xs:element type="xs:dateTime" name="ValidationTime" />
 				<xs:element type="xs:string" name="DocumentName" />
-				<xs:element type="Signature" name="Signatures" maxOccurs="unbounded" minOccurs="0" />
 				<xs:element type="xs:int" name="ValidSignaturesCount" />
 				<xs:element type="xs:int" name="SignaturesCount" />
+				<xs:element name="Signature" maxOccurs="unbounded"
+					minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element type="xs:dateTime" name="SigningTime" />
+							<xs:element type="xs:string" name="SignedBy" />
+							<xs:element type="Indication" name="Indication" />
+							<xs:element type="xs:string" name="SignatureLevel" />
+							<xs:element type="SubIndication" name="SubIndication" />
+							<xs:element type="xs:string" name="Errors" minOccurs="0"
+								maxOccurs="unbounded" />
+							<xs:element type="xs:string" name="Warnings"
+								minOccurs="0" maxOccurs="unbounded" />
+							<xs:element type="xs:string" name="Infos" minOccurs="0"
+								maxOccurs="unbounded" />
+						</xs:sequence>
+						<xs:attribute type="xs:string" name="Id" use="required" />
+						<xs:attribute type="xs:string" name="Type" use="optional" />
+						<xs:attribute type="xs:string" name="ParentId" use="optional" />
+						<xs:attribute type="xs:string" name="SignatureFormat"
+							use="required" />
+					</xs:complexType>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:complexType name="Signature">
-		<xs:sequence>
-			<xs:element type="xs:dateTime" name="SigningTime" />
-			<xs:element type="xs:string" name="SignedBy" />
-			<xs:element type="Indication" name="Indication" />
-			<xs:element type="xs:string" name="SignatureLevel" />
-			<xs:element type="SubIndication" name="SubIndication" />
-			<xs:element type="xs:string" name="Errors" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="xs:string" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="xs:string" name="Infos" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute type="xs:string" name="Id" use="required" />
-		<xs:attribute type="xs:string" name="Type" use="optional" />
-		<xs:attribute type="xs:string" name="ParentId" use="optional" />
-		<xs:attribute type="xs:string" name="SignatureFormat" use="required" />
-	</xs:complexType>
-		
+
+
 	<xs:simpleType name="Indication" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="VALID" />
@@ -46,7 +54,7 @@
 			<xs:enumeration value="INVALID" />
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="SubIndication" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NO_SIGNER_CERTIFICATE_FOUND" />

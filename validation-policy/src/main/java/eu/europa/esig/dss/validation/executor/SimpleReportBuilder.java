@@ -195,7 +195,7 @@ public class SimpleReportBuilder {
 		final XmlSignatureScopes signatureScopes = signature.getSignatureScopes();
 		addSignatureScope(xmlSignature, signatureScopes);
 
-		simpleReport.getSignatures().add(xmlSignature);
+		simpleReport.getSignature().add(xmlSignature);
 	}
 
 	private XmlConstraintsConclusion getBasicSignatureValidationConclusion(String signatureId) {

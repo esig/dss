@@ -117,7 +117,7 @@ public class SimpleReport {
 	 */
 	public List<String> getSignatureIdList() {
 		final List<String> signatureIdList = new ArrayList<String>();
-		List<XmlSignature> signatures = simpleReport.getSignatures();
+		List<XmlSignature> signatures = simpleReport.getSignature();
 		if (CollectionUtils.isNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				signatureIdList.add(xmlSignature.getId());
@@ -178,7 +178,7 @@ public class SimpleReport {
 	}
 
 	private XmlSignature getSignatureById(String signatureId) {
-		List<XmlSignature> signatures = simpleReport.getSignatures();
+		List<XmlSignature> signatures = simpleReport.getSignature();
 		if (CollectionUtils.isNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				if (StringUtils.equals(signatureId, xmlSignature.getId())) {
