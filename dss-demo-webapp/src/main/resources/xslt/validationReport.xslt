@@ -113,76 +113,79 @@
 	</xsl:template>
 
     <xsl:template name="TimestampValidation">
-    	<div>
-    		<xsl:attribute name="class">panel panel-default</xsl:attribute>
-    		<div>
-    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-	    		<xsl:attribute name="data-target">#collapseTimestampValidation</xsl:attribute>
-				<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-				Validation Process for Timestamps
-			</div>
-			<div>
-				<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-				<xsl:attribute name="id">collapseTimestampValidation</xsl:attribute>
-		    	<xsl:for-each select="dss:ValidationProcessTimestamps">
-			    	<div>
-			    		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-				        <xsl:variable name="indicationCssClass">
-				        	<xsl:choose>
-								<xsl:when test="$indicationText='VALID'">success</xsl:when>
-								<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-								<xsl:when test="$indicationText='INVALID'">danger</xsl:when>
-								<xsl:otherwise>default</xsl:otherwise>
-							</xsl:choose>
-				        </xsl:variable>
-			    		<div>
-			    			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+    	<xsl:variable name="TimestampValidationData" select="dss:ValidationProcessTimestamps" />
+    	<xsl:if test="$TimestampValidationData != ''">
+	    	<div>
+	    		<xsl:attribute name="class">panel panel-default</xsl:attribute>
+	    		<div>
+	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
+		    		<xsl:attribute name="data-target">#collapseTimestampValidation</xsl:attribute>
+					<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+					Validation Process for Timestamps
+				</div>
+				<div>
+					<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+					<xsl:attribute name="id">collapseTimestampValidation</xsl:attribute>
+			    	<xsl:for-each select="dss:ValidationProcessTimestamps">
+				    	<div>
+				    		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
+					        <xsl:variable name="indicationCssClass">
+					        	<xsl:choose>
+									<xsl:when test="$indicationText='VALID'">success</xsl:when>
+									<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
+									<xsl:when test="$indicationText='INVALID'">danger</xsl:when>
+									<xsl:otherwise>default</xsl:otherwise>
+								</xsl:choose>
+					        </xsl:variable>
 				    		<div>
-				    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-					    		<xsl:attribute name="data-target">#collapseTimestampValidationData<xsl:value-of select="@Id"/></xsl:attribute>
-						       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-						       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
-							        <span>
-							        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
-							        	<xsl:if test="string-length(dss:Conclusion/dss:Error) &gt; 0">
-							        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Error"/></xsl:attribute>
-							        	</xsl:if>
-							        	<xsl:if test="string-length(dss:Conclusion/dss:Warning) &gt; 0">
-							        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Warning"/></xsl:attribute>
-							        	</xsl:if>
-							        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
-						        	</span>
-						        </xsl:if>
-				    			<xsl:value-of select="@Type"/> Id = <xsl:value-of select="@Id"/>
-					        </div>
-							<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
+				    			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
 					    		<div>
-					    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-						        	<xsl:attribute name="id">collapseTimestampValidationData<xsl:value-of select="@Id"/></xsl:attribute>
-						        	<div>
-				    					<xsl:attribute name="class">row</xsl:attribute>
-					    				<div>
-								    		<xsl:attribute name="class">col-md-6</xsl:attribute>
-											<i>Basic Building Blocks validation</i>
+					    			<xsl:attribute name="class">panel-heading</xsl:attribute>
+						    		<xsl:attribute name="data-target">#collapseTimestampValidationData<xsl:value-of select="@Id"/></xsl:attribute>
+							       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+							       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
+								        <span>
+								        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
+								        	<xsl:if test="string-length(dss:Conclusion/dss:Error) &gt; 0">
+								        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Error"/></xsl:attribute>
+								        	</xsl:if>
+								        	<xsl:if test="string-length(dss:Conclusion/dss:Warning) &gt; 0">
+								        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Warning"/></xsl:attribute>
+								        	</xsl:if>
+								        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
+							        	</span>
+							        </xsl:if>
+					    			<xsl:value-of select="@Type"/> Id = <xsl:value-of select="@Id"/>
+						        </div>
+								<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
+						    		<div>
+						    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+							        	<xsl:attribute name="id">collapseTimestampValidationData<xsl:value-of select="@Id"/></xsl:attribute>
+							        	<div>
+					    					<xsl:attribute name="class">row</xsl:attribute>
+						    				<div>
+									    		<xsl:attribute name="class">col-md-6</xsl:attribute>
+												<i>Basic Building Blocks validation</i>
+									    	</div>
+									    	<div>
+									    		<xsl:attribute name="class">col-md-6</xsl:attribute>
+										    	<a> 
+													<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>
+													<span>
+														<xsl:attribute name="class">glyphicon glyphicon-circle-arrow-right</xsl:attribute>
+													</span>
+												</a>
+									    	</div>
 								    	</div>
-								    	<div>
-								    		<xsl:attribute name="class">col-md-6</xsl:attribute>
-									    	<a> 
-												<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>
-												<span>
-													<xsl:attribute name="class">glyphicon glyphicon-circle-arrow-right</xsl:attribute>
-												</span>
-											</a>
-								    	</div>
-							    	</div>
-						        	<xsl:apply-templates/>
-					    		</div>
-					    	</xsl:if>
+							        	<xsl:apply-templates/>
+						    		</div>
+						    	</xsl:if>
+					    	</div>
 				    	</div>
-			    	</div>
-		    	</xsl:for-each>
+			    	</xsl:for-each>
+		    	</div>
 	    	</div>
-    	</div>
+    	</xsl:if>
     </xsl:template>
     
     <xsl:template match="dss:ValidationProcessArchivalData">
