@@ -86,25 +86,25 @@
 				</Cryptographic>
 			</CACertificate>
 			<Cryptographic Level="FAIL">
-			<AcceptableEncryptionAlgo>
-				<Algo>RSA</Algo>
-				<Algo>DSA</Algo>
-				<Algo>ECDSA</Algo>
-			</AcceptableEncryptionAlgo>
-			<MiniPublicKeySize>
-				<Algo Size="128">DSA</Algo>
-				<Algo Size="1024">RSA</Algo>
-				<Algo Size="192">ECDSA</Algo>
-			</MiniPublicKeySize>
-			<AcceptableDigestAlgo>
-				<Algo>SHA1</Algo>
-				<Algo>SHA224</Algo>
-				<Algo>SHA256</Algo>
-				<Algo>SHA384</Algo>
-				<Algo>SHA512</Algo>
-				<Algo>RIPEMD160</Algo>
-			</AcceptableDigestAlgo>
-		</Cryptographic>
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningTime Level="FAIL" />
@@ -231,6 +231,7 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataIsTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
+				<ProspectiveCertificateChain Level="FAIL" />
 				<Revoked Level="FAIL" />
 				<Cryptographic Level="WARN">
 					<AcceptableEncryptionAlgo>

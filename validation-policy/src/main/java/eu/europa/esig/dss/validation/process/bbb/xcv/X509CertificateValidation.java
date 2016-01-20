@@ -67,8 +67,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	@Override
 	protected void initChain() {
-		ChainItem<XmlXCV> item = firstItem = certificateExpiration(currentCertificate, SubContext.SIGNING_CERT);
-		item = item.setNextItem(prospectiveCertificateChain());
+		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
 		List<XmlChainCertificate> certificateChainList = currentCertificate.getCertificateChain();
 
@@ -77,31 +76,28 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 				CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
 
 				// Trusted certificated doesn't need validation
-				if (certificate.isTrusted()) {
-					continue;
-				}
+				// if (certificate.isTrusted()) {
+				// continue;
+				// }
 
 				SubContext currentSubContext = SubContext.SIGNING_CERT;
-
 				if (!StringUtils.equals(currentCertificate.getId(), certificate.getId())) { // CA
-																							// Certificate
 					currentSubContext = SubContext.CA_CERTIFICATE;
-					item = item.setNextItem(certificateExpiration(certificate, currentSubContext));
 				}
+
+				item = item.setNextItem(certificateExpiration(certificate, currentSubContext));
 
 				item = item.setNextItem(keyUsage(certificate, currentSubContext));
 
 				item = item.setNextItem(certificateSignatureValid(certificate, currentSubContext));
 
-				item = item.setNextItem(revocationDataAvailable(certificate, currentSubContext));
+				if (SubContext.SIGNING_CERT.equals(currentSubContext)) {
 
-				item = item.setNextItem(revocationDataTrusted(certificate, currentSubContext));
+					item = item.setNextItem(revocationDataAvailable(certificate, currentSubContext));
 
-				item = item.setNextItem(revocationFreshness(certificate));
+					item = item.setNextItem(revocationDataTrusted(certificate, currentSubContext));
 
-				if (SubContext.SIGNING_CERT.equals(currentSubContext)) { // TODO
-																			// Why
-																			// ??
+					item = item.setNextItem(revocationFreshness(certificate));
 
 					item = item.setNextItem(signingCertificateRevoked(certificate, currentSubContext));
 
