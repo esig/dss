@@ -45,8 +45,10 @@
 				<div>
 					<xsl:attribute name="class">panel-body collapse</xsl:attribute>
 					<xsl:attribute name="id">collapseSignatureValidationData</xsl:attribute>
-					<xsl:apply-templates/>
+					<xsl:apply-templates select="dss:ValidationProcessBasicSignatures" />
 					<xsl:call-template name="TimestampValidation" />
+					<xsl:apply-templates select="dss:ValidationProcessLongTermData" />
+					<xsl:apply-templates select="dss:ValidationProcessArchivalData" />
 				</div>
 			</xsl:if>
 		</div>
@@ -117,7 +119,7 @@
     			<xsl:attribute name="class">panel-heading</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseTimestampValidation</xsl:attribute>
 				<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-				Timestamps validation
+				Validation Process for Timestamps
 			</div>
 			<div>
 				<xsl:attribute name="class">panel-body collapse</xsl:attribute>
@@ -151,8 +153,7 @@
 							        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
 						        	</span>
 						        </xsl:if>
-				    			Validation Process for Timestamps <br/>
-				    			(<xsl:value-of select="@Type"/> Id = <xsl:value-of select="@Id"/>)
+				    			<xsl:value-of select="@Type"/> Id = <xsl:value-of select="@Id"/>
 					        </div>
 							<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 					    		<div>
