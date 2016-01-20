@@ -98,13 +98,13 @@
 		        <xsl:apply-templates select="dss:SubIndication">
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
-			    <xsl:apply-templates select="dss:Error">
+			    <xsl:apply-templates select="dss:Errors">
 				    <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 			    </xsl:apply-templates>
-			    <xsl:apply-templates select="dss:Warning">
+			    <xsl:apply-templates select="dss:Warnings">
 				    <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 			    </xsl:apply-templates>
-		        <xsl:apply-templates select="dss:Info">
+		        <xsl:apply-templates select="dss:Infos">
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
 		        
@@ -146,7 +146,7 @@
     	</div>
     </xsl:template>
 
-	<xsl:template match="dss:SubIndication|dss:Error|dss:Warning|dss:Info">
+	<xsl:template match="dss:SubIndication|dss:Errors|dss:Warnings|dss:Infos">
 		<xsl:param name="indicationClass" />
 		<dl>
     		<xsl:attribute name="class">dl-horizontal</xsl:attribute>

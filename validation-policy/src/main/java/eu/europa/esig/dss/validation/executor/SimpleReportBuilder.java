@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +29,10 @@ import org.apache.commons.lang.StringUtils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
@@ -139,12 +143,20 @@ public class SimpleReportBuilder {
 
 		final Indication archivalIndication = archivalValidation.getConclusion().getIndication();
 		final SubIndication archivalSubIndication = archivalValidation.getConclusion().getSubIndication();
+		
+		List<String> infoList = xmlSignature.getInfos();
 		// final List<XmlDom> ltvInfoList = ltvConclusion.getElements("./Info");
 
 		Indication indication = archivalIndication;
 		SubIndication subIndication = archivalSubIndication;
 		// List<XmlDom> infoList = new ArrayList<XmlDom>();
 		// infoList.addAll(ltvInfoList);
+		
+		for(XmlConstraint constraint : getAllBBBConstraintsForASignature(xmlSignature)) {
+			if(constraint.getStatus().equals(XmlStatus.WARNING)) {
+				infoList.add(MessageTag.valueOf(constraint.getName().getNameId()+"_ANS").getMessage());
+			}
+		}
 
 		// final List<XmlDom> basicValidationInfoList = basicValidationConclusion.getElements("./Info");
 		// final List<XmlDom> basicValidationWarningList = basicValidationConclusion.getElements("./Warning");
@@ -198,6 +210,30 @@ public class SimpleReportBuilder {
 		simpleReport.getSignature().add(xmlSignature);
 	}
 
+	private List<XmlConstraint> getAllBBBConstraintsForASignature(XmlSignature signature) {
+		List<XmlConstraint> result = new ArrayList<XmlConstraint>();
+		for(XmlBasicBuildingBlocks bbb : detailedReport.getBasicBuildingBlocks()) {
+			if(bbb.getId().equals(signature.getId())) { // Check if it's the BBB for the signature
+				if(bbb.getCV() != null) {
+					result.addAll(bbb.getCV().getConstraint());
+				} 
+				if(bbb.getISC() != null) {
+					result.addAll(bbb.getISC().getConstraint());
+				}
+				if(bbb.getSAV() != null) {
+					result.addAll(bbb.getSAV().getConstraint());
+				} 
+				if(bbb.getVCI() != null) {
+					result.addAll(bbb.getVCI().getConstraint());
+				} 
+				if(bbb.getXCV() != null) {
+					result.addAll(bbb.getXCV().getConstraint());
+				}
+			}
+		}
+		return result;
+	}
+	
 	private XmlConstraintsConclusion getBasicSignatureValidationConclusion(String signatureId) {
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignature();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
