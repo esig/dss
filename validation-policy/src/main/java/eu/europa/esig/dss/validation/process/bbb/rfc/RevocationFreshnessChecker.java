@@ -57,7 +57,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	}
 
 	private ChainItem<XmlRFC> nextUpdateCheck() {
-		return new NextUpdateCheck(result, revocationData, validationDate, policy.getRevocationFreshnessConstraint());
+		return new NextUpdateCheck(result, revocationData, policy.getRevocationFreshnessConstraint());
 	}
 
 	private ChainItem<XmlRFC> revocationDataFreshCheck() {

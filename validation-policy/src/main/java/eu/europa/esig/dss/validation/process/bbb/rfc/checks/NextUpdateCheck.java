@@ -14,13 +14,11 @@ import eu.europa.esig.jaxb.policy.TimeConstraint;
 public class NextUpdateCheck extends ChainItem<XmlRFC> {
 
 	private final RevocationWrapper revocationData;
-	private final Date validationDate;
 
-	public NextUpdateCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate, TimeConstraint constraint) {
+	public NextUpdateCheck(XmlRFC result, RevocationWrapper revocationData, TimeConstraint constraint) {
 		super(result, constraint);
 
 		this.revocationData = revocationData;
-		this.validationDate = validationDate;
 	}
 
 	@Override
@@ -30,12 +28,7 @@ public class NextUpdateCheck extends ChainItem<XmlRFC> {
 			if (nextUpdate == null) {
 				return false;
 			}
-
 			addInfo(XmlInfoBuilder.createNextUpadteInfo(nextUpdate));
-			if (validationDate.after(nextUpdate)) {
-				return false;
-			}
-
 			return true;
 		}
 		return false;

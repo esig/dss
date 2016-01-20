@@ -45,8 +45,8 @@ public enum MessageTag {
 	BBB_ICS_AIDNASNE_ANS("The 'issuer-serial' attribute is absent or does not match!"),
 
 	/* BBB -> RFC */
-	BBB_RFC_NUP("Is there a valid Next Update defined for the revocation data?"),
-	BBB_RFC_NUP_ANS("There is no valid Next Update defined for the revocation data!"),
+	BBB_RFC_NUP("Is there a Next Update defined for the revocation data?"),
+	BBB_RFC_NUP_ANS("There is no Next Update defined for the revocation data!"),
 	BBB_RFC_IRIF("Is the revocation information fresh for the certificate?"),
 	BBB_RFC_IRIF_ANS("The revocation status information is not considered as 'fresh'."),
 	

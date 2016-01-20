@@ -43,6 +43,7 @@
 									</bindingIncludes>
 									<specVersion>2.1</specVersion>
 									<encoding>UTF-8</encoding>
+									<locale>en</locale>
 								</configuration>
 							</execution>
 						</executions>

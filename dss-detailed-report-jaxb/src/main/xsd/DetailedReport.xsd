@@ -26,6 +26,7 @@
 		<xs:sequence>
 			<xs:element type="ISC" name="ISC" minOccurs="0" />
 			<xs:element type="VCI" name="VCI" minOccurs="0" />
+			<xs:element type="RFC" name="RFC" minOccurs="0" />
 			<xs:element type="CV"  name="CV"  minOccurs="0" />
 			<xs:element type="SAV" name="SAV" minOccurs="0" />
 			<xs:element type="XCV" name="XCV" minOccurs="0" />
