@@ -59,6 +59,7 @@ import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
+import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -95,14 +96,17 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method returns {@code T extends ASN1Primitive} created from array of bytes. The {@code IOException} is transformed in {@code DSSException}.
+	 * This method returns {@code T extends ASN1Primitive} created from array of bytes. The {@code IOException} is
+	 * transformed in {@code DSSException}.
 	 *
-	 * @param bytes array of bytes to be transformed to {@code ASN1Primitive}
+	 * @param bytes
+	 *            array of bytes to be transformed to {@code ASN1Primitive}
 	 * @return new {@code T extends ASN1Primitive}
 	 */
 	public static <T extends ASN1Primitive> T toASN1Primitive(final byte[] bytes) throws DSSException {
 		try {
-			@SuppressWarnings("unchecked") final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
+			@SuppressWarnings("unchecked")
+			final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
 			return asn1Primitive;
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -124,7 +128,8 @@ public final class DSSASN1Utils {
 	/**
 	 * This method return DER encoded ASN1 attribute. The {@code IOException} is transformed in {@code DSSException}.
 	 *
-	 * @param asn1Encodable asn1Encodable to be DER encoded
+	 * @param asn1Encodable
+	 *            asn1Encodable to be DER encoded
 	 * @return array of bytes representing the DER encoded asn1Encodable
 	 */
 	public static byte[] getDEREncoded(ASN1Encodable asn1Encodable) {
@@ -167,7 +172,8 @@ public final class DSSASN1Utils {
 	/**
 	 * Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
 	 *
-	 * @param timeStampToken {@code TimeStampToken}
+	 * @param timeStampToken
+	 *            {@code TimeStampToken}
 	 * @return Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
 	 */
 	public static byte[] getEncoded(final TimeStampToken timeStampToken) throws DSSException {
@@ -180,11 +186,14 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method returns the {@code ASN1Sequence} encapsulated in {@code DEROctetString}. The {@code DEROctetString} is represented as {@code byte} array.
+	 * This method returns the {@code ASN1Sequence} encapsulated in {@code DEROctetString}. The {@code DEROctetString}
+	 * is represented as {@code byte} array.
 	 *
-	 * @param bytes {@code byte} representation of {@code DEROctetString}
+	 * @param bytes
+	 *            {@code byte} representation of {@code DEROctetString}
 	 * @return encapsulated {@code ASN1Sequence}
-	 * @throws DSSException in case of a decoding problem
+	 * @throws DSSException
+	 *             in case of a decoding problem
 	 */
 	public static ASN1Sequence getAsn1SequenceFromDerOctetString(byte[] bytes) throws DSSException {
 		ASN1InputStream input = null;
@@ -207,7 +216,8 @@ public final class DSSASN1Utils {
 	/**
 	 * This method computes the digest of an ANS1 signature policy (used in CAdES)
 	 *
-	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value without the outer type and length
+	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value
+	 * without the outer type and length
 	 * fields, and the hashing algorithm shall be as specified in the field sigPolicyHash.
 	 */
 	public static byte[] getAsn1SignaturePolicyDigest(DigestAlgorithm digestAlgorithm, byte[] policyBytes) {
@@ -274,8 +284,10 @@ public final class DSSASN1Utils {
 	public static AlgorithmIdentifier getAlgorithmIdentifier(DigestAlgorithm digestAlgorithm) {
 
 		/*
-		 * The recommendation (cf. RFC 3380 section 2.1) is to omit the parameter for SHA-1, but some implementations still expect a
-		 * NULL there. Therefore we always include a NULL parameter even with SHA-1, despite the recommendation, because the RFC
+		 * The recommendation (cf. RFC 3380 section 2.1) is to omit the parameter for SHA-1, but some implementations
+		 * still expect a
+		 * NULL there. Therefore we always include a NULL parameter even with SHA-1, despite the recommendation, because
+		 * the RFC
 		 * states that implementations SHOULD support it as well anyway
 		 */
 		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
@@ -286,8 +298,10 @@ public final class DSSASN1Utils {
 	/**
 	 * Indicates if the revocation data should be checked for an OCSP signing certificate.<br>
 	 * http://www.ietf.org/rfc/rfc2560.txt?number=2560<br>
-	 * A CA may specify that an OCSP client can trust a responder for the lifetime of the responder's certificate. The CA
-	 * does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of the
+	 * A CA may specify that an OCSP client can trust a responder for the lifetime of the responder's certificate. The
+	 * CA
+	 * does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of
+	 * the
 	 * extension should be NULL.
 	 *
 	 * @return
@@ -377,7 +391,7 @@ public final class DSSASN1Utils {
 
 		List<String> locationsUrls = new ArrayList<String>();
 		for (AccessDescription accessDescription : accessDescriptions) {
-			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())){
+			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())) {
 				GeneralName gn = accessDescription.getAccessLocation();
 				if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
 					DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
@@ -483,7 +497,7 @@ public final class DSSASN1Utils {
 		final StringBuilder stringBuilder = new StringBuilder();
 		/**
 		 * RFC 4514 LDAP: Distinguished Names
-		 * 2.1.  Converting the RDNSequence
+		 * 2.1. Converting the RDNSequence
 		 *
 		 * If the RDNSequence is an empty sequence, the result is the empty or
 		 * zero-length string.
@@ -511,13 +525,13 @@ public final class DSSASN1Utils {
 				String string = getString(attributeValue);
 
 				/**
-				 * RFC 4514               LDAP: Distinguished Names
+				 * RFC 4514 LDAP: Distinguished Names
 				 * ...
 				 * Other characters may be escaped.
 				 *
 				 * Each octet of the character to be escaped is replaced by a backslash
 				 * and two hex digits, which form a single octet in the code of the
-				 * character.  Alternatively, if and only if the character to be escaped
+				 * character. Alternatively, if and only if the character to be escaped
 				 * is one of
 				 *
 				 * ' ', '"', '#', '+', ',', ';', '<', '=', '>', or '\'
@@ -535,14 +549,15 @@ public final class DSSASN1Utils {
 				string = string.replace("<", "\\<");
 				string = string.replace("=", "\\=");
 				string = string.replace(">", "\\>");
-				// System.out.println(">>> " + attributeType.toString() + "=" + attributeValue.getClass().getSimpleName() + "[" + string + "]");
+				// System.out.println(">>> " + attributeType.toString() + "=" +
+				// attributeValue.getClass().getSimpleName() + "[" + string + "]");
 				if (stringBuilder.length() != 0) {
 					stringBuilder.append(',');
 				}
 				stringBuilder.append(attributeType).append('=').append(string);
 			}
 		}
-		//final X500Name x500Name = X500Name.getInstance(encoded);
+		// final X500Name x500Name = X500Name.getInstance(encoded);
 		return stringBuilder.toString();
 	}
 
@@ -568,6 +583,15 @@ public final class DSSASN1Utils {
 			LOG.error("!!!*******!!! value: " + string);
 		}
 		return string;
+	}
+
+	public static String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500Principal X500PrincipalName) {
+		final X500Name x500Name = X500Name.getInstance(X500PrincipalName.getEncoded());
+		RDN[] rdns = x500Name.getRDNs(identifier);
+		if (rdns.length > 0) {
+			return rdns[0].getFirst().getValue().toString();
+		}
+		return null;
 	}
 
 }

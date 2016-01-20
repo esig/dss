@@ -41,11 +41,8 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.x500.RDN;
-import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
@@ -66,7 +63,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
@@ -132,11 +128,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This variable can hold a specific {@code ProcessExecutor}
 	 */
 	protected ProcessExecutor processExecutor = null;
-
-	/*
-	 * The factory used to create DiagnosticData
-	 */
-	protected static final ObjectFactory DIAGNOSTIC_DATA_OBJECT_FACTORY = new ObjectFactory();
 
 	/**
 	 * This is the pool of certificates used in the validation process. The pools present in the certificate verifier
@@ -279,7 +270,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
-
 		this.certificateVerifier = certificateVerifier;
 		validationCertPool = certificateVerifier.createValidationPool();
 
@@ -502,7 +492,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private void prepareDiagnosticData() {
 
-		jaxbDiagnosticData = DIAGNOSTIC_DATA_OBJECT_FACTORY.createDiagnosticData();
+		jaxbDiagnosticData = new DiagnosticData();
 
 		String absolutePath = document.getAbsolutePath();
 		String documentName = document.getName();
@@ -601,7 +591,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private XmlSignature validateSignature(final AdvancedSignature signature) throws DSSException {
 
-		final XmlSignature xmlSignature = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSignature();
+		final XmlSignature xmlSignature = new XmlSignature();
 		try {
 
 			final CertificateToken signingToken = dealSignature(signature, xmlSignature);
@@ -663,7 +653,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				final XmlTimestampType xmlTimestampToken = xmlForTimestamp(timestampToken);
 				if (xmlTimestamps == null) {
 
-					xmlTimestamps = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlTimestamps();
+					xmlTimestamps = new XmlTimestamps();
 				}
 				xmlTimestamps.getTimestamp().add(xmlTimestampToken);
 			}
@@ -677,7 +667,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private XmlTimestampType xmlForTimestamp(final TimestampToken timestampToken) {
 
-		final XmlTimestampType xmlTimestampToken = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlTimestampType();
+		final XmlTimestampType xmlTimestampToken = new XmlTimestampType();
 		xmlTimestampToken.setId(timestampToken.getDSSId().asXmlId());
 		final TimestampType timestampType = timestampToken.getTimeStampType();
 		xmlTimestampToken.setType(timestampType.name());
@@ -690,7 +680,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlTimestampToken.setCanonicalizationMethod(timestampToken.getCanonicalizationMethod());
 
 		final SignatureAlgorithm signatureAlgorithm = timestampToken.getSignatureAlgorithm();
-		final XmlBasicSignatureType xmlBasicSignatureType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
+		final XmlBasicSignatureType xmlBasicSignatureType = new XmlBasicSignatureType();
 		if (signatureAlgorithm != null) {
 
 			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm().getName());
@@ -717,7 +707,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final List<TimestampReference> timestampReferences = timestampToken.getTimestampedReferences();
 		if ((timestampReferences != null) && !timestampReferences.isEmpty()) {
 
-			final XmlSignedObjectsType xmlSignedObjectsType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSignedObjectsType();
+			final XmlSignedObjectsType xmlSignedObjectsType = new XmlSignedObjectsType();
 			final List<XmlDigestAlgAndValueType> xmlDigestAlgAndValueList = xmlSignedObjectsType.getDigestAlgAndValue();
 
 			for (final TimestampReference timestampReference : timestampReferences) {
@@ -725,16 +715,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				final TimestampReferenceCategory timestampedCategory = timestampReference.getCategory();
 				if (TimestampReferenceCategory.SIGNATURE.equals(timestampedCategory)) {
 
-					final XmlSignedSignature xmlSignedSignature = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSignedSignature();
+					final XmlSignedSignature xmlSignedSignature = new XmlSignedSignature();
 					xmlSignedSignature.setId(timestampReference.getSignatureId());
 					xmlSignedObjectsType.getSignedSignature().add(xmlSignedSignature);
 				} else if (TimestampReferenceCategory.TIMESTAMP.equals(timestampedCategory)) {
-					final XmlTimestampedTimestamp xmlTimestampedTimestamp = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlTimestampedTimestamp();
+					final XmlTimestampedTimestamp xmlTimestampedTimestamp = new XmlTimestampedTimestamp();
 					xmlTimestampedTimestamp.setId(timestampReference.getSignatureId());
 					xmlSignedObjectsType.getTimestampedTimestamp().add(xmlTimestampedTimestamp);
 				} else {
 
-					final XmlDigestAlgAndValueType xmlDigestAlgAndValue = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlDigestAlgAndValueType();
+					final XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
 					xmlDigestAlgAndValue.setDigestMethod(timestampReference.getDigestAlgorithm());
 					xmlDigestAlgAndValue.setDigestValue(timestampReference.getDigestValue());
 					xmlDigestAlgAndValue.setCategory(timestampedCategory.name());
@@ -755,11 +745,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (issuerToken != null) {
 
 			CertificateToken issuerToken_ = issuerToken;
-			final XmlCertificateChainType xmlCertChainType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlCertificateChainType();
+			final XmlCertificateChainType xmlCertChainType = new XmlCertificateChainType();
 			final List<XmlChainCertificate> certChainTokens = xmlCertChainType.getChainCertificate();
 			do {
 
-				final XmlChainCertificate xmlCertToken = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlChainCertificate();
+				final XmlChainCertificate xmlCertToken = new XmlChainCertificate();
 				xmlCertToken.setId(issuerToken_.getDSSId().asXmlId());
 				final CertificateSourceType mainSource = getCertificateMainSourceType(issuerToken_);
 				xmlCertToken.setSource(mainSource.name());
@@ -796,7 +786,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private void dealUsedCertificates(final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms, final Set<CertificateToken> usedCertTokens) {
 
-		final XmlUsedCertificates xmlUsedCerts = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlUsedCertificates();
+		final XmlUsedCertificates xmlUsedCerts = new XmlUsedCertificates();
 		jaxbDiagnosticData.setUsedCertificates(xmlUsedCerts);
 		for (final CertificateToken certToken : usedCertTokens) {
 
@@ -832,7 +822,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (!certToken.isTrusted()) {
 
 			/// System.out.println("--> QCStatement for: " + certToken.getAbbreviation());
-			final XmlQCStatement xmlQCS = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlQCStatement();
+			final XmlQCStatement xmlQCS = new XmlQCStatement();
 			xmlQCS.setQCP(qcp.check(certToken));
 			xmlQCS.setQCPPlus(qcpPlus.check(certToken));
 			xmlQCS.setQCC(qcCompliance.check(certToken));
@@ -853,10 +843,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final List<String> list = certToken.getValidationInfo();
 		if (list.size() > 0) {
 
-			final XmlInfoType xmlInfo = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlInfoType();
+			final XmlInfoType xmlInfo = new XmlInfoType();
 			for (String message : list) {
 
-				final XmlMessage xmlMessage = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlMessage();
+				final XmlMessage xmlMessage = new XmlMessage();
 				xmlMessage.setId(0);
 				xmlMessage.setValue(message);
 				xmlInfo.getMessage().add(xmlMessage);
@@ -876,7 +866,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private XmlCertificate dealCertificateDetails(final Set<DigestAlgorithm> usedDigestAlgorithms, final CertificateToken certToken) {
 
-		final XmlCertificate xmlCert = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlCertificate();
+		final XmlCertificate xmlCert = new XmlCertificate();
 
 		xmlCert.setId(certToken.getDSSId().asXmlId());
 
@@ -892,13 +882,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		xmlCert.setSerialNumber(certToken.getSerialNumber());
 		X500Principal x500Principal = certToken.getSubjectX500Principal();
-		xmlCert.setCommonName(extractAttributeFromX500Principal(BCStyle.CN, x500Principal));
-		xmlCert.setCountryName(extractAttributeFromX500Principal(BCStyle.C, x500Principal));
-		xmlCert.setOrganizationName(extractAttributeFromX500Principal(BCStyle.O, x500Principal));
-		xmlCert.setGivenName(extractAttributeFromX500Principal(BCStyle.GIVENNAME, x500Principal));
-		xmlCert.setOrganizationalUnit(extractAttributeFromX500Principal(BCStyle.OU, x500Principal));
-		xmlCert.setSurname(extractAttributeFromX500Principal(BCStyle.SURNAME, x500Principal));
-		xmlCert.setPseudonym(extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
+		xmlCert.setCommonName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, x500Principal));
+		xmlCert.setCountryName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, x500Principal));
+		xmlCert.setOrganizationName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, x500Principal));
+		xmlCert.setGivenName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.GIVENNAME, x500Principal));
+		xmlCert.setOrganizationalUnit(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.OU, x500Principal));
+		xmlCert.setSurname(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SURNAME, x500Principal));
+		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
 
 		for (final DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
 
@@ -929,7 +919,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlCert.setExpiredCertOnCRL(true);
 		}
 
-		final XmlBasicSignatureType xmlBasicSignatureType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
+		final XmlBasicSignatureType xmlBasicSignatureType = new XmlBasicSignatureType();
 
 		final SignatureAlgorithm signatureAlgorithm = certToken.getSignatureAlgorithm();
 		xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm().getName());
@@ -961,7 +951,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (CollectionUtils.isEmpty(keyUsageBits)) {
 			return;
 		}
-		final XmlKeyUsageBits xmlKeyUsageBits = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlKeyUsageBits();
+		final XmlKeyUsageBits xmlKeyUsageBits = new XmlKeyUsageBits();
 		final List<String> xmlKeyUsageBitItems = xmlKeyUsageBits.getKeyUsage();
 		for (final KeyUsageBit keyUsageBit : keyUsageBits) {
 			xmlKeyUsageBitItems.add(keyUsageBit.name());
@@ -971,20 +961,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private XmlDistinguishedName xmlForDistinguishedName(final String x500PrincipalFormat, final X500Principal X500PrincipalName) {
 
-		final XmlDistinguishedName xmlDistinguishedName = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlDistinguishedName();
+		final XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
 		xmlDistinguishedName.setFormat(x500PrincipalFormat);
 		final String x500PrincipalName = X500PrincipalName.getName(x500PrincipalFormat);
 		xmlDistinguishedName.setValue(x500PrincipalName);
 		return xmlDistinguishedName;
-	}
-
-	private String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500Principal X500PrincipalName) {
-		final X500Name x500Name = X500Name.getInstance(X500PrincipalName.getEncoded());
-		RDN[] rdns = x500Name.getRDNs(identifier);
-		if (rdns.length > 0) {
-			return rdns[0].getFirst().getValue().toString();
-		}
-		return null;
 	}
 
 	/**
@@ -1032,7 +1013,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			// System.out.println("---------------------------------------------");
 			// System.out.println(serviceInfo);
 
-			final XmlTrustedServiceProviderType xmlTSP = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlTrustedServiceProviderType();
+			final XmlTrustedServiceProviderType xmlTSP = new XmlTrustedServiceProviderType();
 			xmlTSP.setTSPName(serviceInfo.getTspName());
 			xmlTSP.setTSPServiceName(serviceInfo.getServiceName());
 			xmlTSP.setTSPServiceType(serviceInfo.getType());
@@ -1048,7 +1029,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final List<String> qualifiers = getQualifiers(serviceInfo, certToken);
 			if (!qualifiers.isEmpty()) {
 
-				final XmlQualifiers xmlQualifiers = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlQualifiers();
+				final XmlQualifiers xmlQualifiers = new XmlQualifiers();
 				for (String qualifier : qualifiers) {
 
 					xmlQualifiers.getQualifier().add(qualifier);
@@ -1093,7 +1074,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private void dealRevocationData(final CertificateToken certToken, final XmlCertificate xmlCert) {
 
-		final XmlRevocationType xmlRevocation = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlRevocationType();
+		final XmlRevocationType xmlRevocation = new XmlRevocationType();
 		final RevocationToken revocationToken = certToken.getRevocationToken();
 		if (revocationToken != null) {
 
@@ -1110,7 +1091,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlRevocation.setSourceAddress(revocationToken.getSourceURL());
 			xmlRevocation.setId(revocationToken.getDSSId().asXmlId());
 
-			final XmlBasicSignatureType xmlBasicSignatureType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
+			final XmlBasicSignatureType xmlBasicSignatureType = new XmlBasicSignatureType();
 			final SignatureAlgorithm revocationSignatureAlgo = revocationToken.getSignatureAlgorithm();
 			final boolean unknownAlgorithm = revocationSignatureAlgo == null;
 			final String encryptionAlgorithmName = unknownAlgorithm ? "?" : revocationSignatureAlgo.getEncryptionAlgorithm().getName();
@@ -1137,10 +1118,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final List<String> list = revocationToken.getValidationInfo();
 			if (list.size() > 0) {
 
-				final XmlInfoType xmlInfo = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlInfoType();
+				final XmlInfoType xmlInfo = new XmlInfoType();
 				for (String message : list) {
 
-					final XmlMessage xmlMessage = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlMessage();
+					final XmlMessage xmlMessage = new XmlMessage();
 					xmlMessage.setId(0);
 					xmlMessage.setValue(message);
 					xmlInfo.getMessage().add(xmlMessage);
@@ -1173,7 +1154,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			return;
 		}
 
-		final XmlPolicy xmlPolicy = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlPolicy();
+		final XmlPolicy xmlPolicy = new XmlPolicy();
 		xmlSignature.setPolicy(xmlPolicy);
 
 		final String policyId = signaturePolicy.getIdentifier();
@@ -1189,7 +1170,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
 
-		XmlDigestAlgAndValueType xmlDigestAlgAndValue = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlDigestAlgAndValueType();
+		XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
 		xmlDigestAlgAndValue.setDigestMethod(signPolicyHashAlgFromSignature == null ? "" : signPolicyHashAlgFromSignature.getName());
 		xmlDigestAlgAndValue.setDigestValue(policyDigestValueFromSignature);
 		xmlPolicy.setDigestAlgAndValue(xmlDigestAlgAndValue);
@@ -1399,7 +1380,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final String structureValid = signature.validateStructure();
 		if (structureValid != null) {
 
-			final XmlStructuralValidationType xmlStructuralValidationType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlStructuralValidationType();
+			final XmlStructuralValidationType xmlStructuralValidationType = new XmlStructuralValidationType();
 			xmlStructuralValidationType.setValid(StringUtils.EMPTY.equals(structureValid));
 			if (!StringUtils.EMPTY.equals(structureValid)) {
 				xmlStructuralValidationType.setMessage(structureValid);
@@ -1412,7 +1393,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final SignatureProductionPlace signatureProductionPlace = signature.getSignatureProductionPlace();
 		if (signatureProductionPlace != null) {
 
-			final XmlSignatureProductionPlace xmlSignatureProductionPlace = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSignatureProductionPlace();
+			final XmlSignatureProductionPlace xmlSignatureProductionPlace = new XmlSignatureProductionPlace();
 			xmlSignatureProductionPlace.setCountryName(signatureProductionPlace.getCountryName());
 			xmlSignatureProductionPlace.setStateOrProvince(signatureProductionPlace.getStateOrProvince());
 			xmlSignatureProductionPlace.setPostalCode(signatureProductionPlace.getPostalCode());
@@ -1435,7 +1416,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			for (final CertifiedRole certifiedRole : certifiedRoles) {
 
-				final XmlCertifiedRolesType xmlCertifiedRolesType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlCertifiedRolesType();
+				final XmlCertifiedRolesType xmlCertifiedRolesType = new XmlCertifiedRolesType();
 
 				xmlCertifiedRolesType.setCertifiedRole(certifiedRole.getRole());
 				xmlCertifiedRolesType.setNotBefore(certifiedRole.getNotBefore());
@@ -1456,7 +1437,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 		if ((claimedRoles != null) && (claimedRoles.length > 0)) {
 
-			final XmlClaimedRoles xmlClaimedRoles = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlClaimedRoles();
+			final XmlClaimedRoles xmlClaimedRoles = new XmlClaimedRoles();
 			for (final String claimedRole : claimedRoles) {
 
 				xmlClaimedRoles.getClaimedRole().add(claimedRole);
@@ -1476,7 +1457,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 		if (commitmentTypeIndication != null) {
 
-			final XmlCommitmentTypeIndication xmlCommitmentTypeIndication = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlCommitmentTypeIndication();
+			final XmlCommitmentTypeIndication xmlCommitmentTypeIndication = new XmlCommitmentTypeIndication();
 			final List<String> xmlIdentifiers = xmlCommitmentTypeIndication.getIdentifier();
 
 			final List<String> identifiers = commitmentTypeIndication.getIdentifiers();
@@ -1506,7 +1487,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		XmlBasicSignatureType xmlBasicSignature = xmlSignature.getBasicSignature();
 		if (xmlBasicSignature == null) {
 
-			xmlBasicSignature = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlBasicSignatureType();
+			xmlBasicSignature = new XmlBasicSignatureType();
 		}
 		return xmlBasicSignature;
 	}
@@ -1549,7 +1530,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private CertificateValidity dealSigningCertificate(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
-		final XmlSigningCertificateType xmlSignCertType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSigningCertificateType();
+		final XmlSigningCertificateType xmlSignCertType = new XmlSigningCertificateType();
 		signature.checkSigningCertificate();
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
@@ -1582,7 +1563,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		if (issuerCertificateToken != null) {
 
-			final XmlSigningCertificateType xmlSignCertType = DIAGNOSTIC_DATA_OBJECT_FACTORY.createXmlSigningCertificateType();
+			final XmlSigningCertificateType xmlSignCertType = new XmlSigningCertificateType();
 
 			xmlSignCertType.setId(issuerCertificateToken.getDSSId().asXmlId());
 			return xmlSignCertType;

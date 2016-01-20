@@ -131,6 +131,19 @@ public abstract class AbstractTestSignature {
 
 	protected void verifySimpleReport(SimpleReport simpleReport) {
 		assertNotNull(simpleReport);
+
+		List<String> signatureIdList = simpleReport.getSignatureIdList();
+		assertTrue(CollectionUtils.isNotEmpty(signatureIdList));
+
+		for (String sigId : signatureIdList) {
+			Indication indication = simpleReport.getIndication(sigId);
+			assertNotNull(indication);
+			if (indication != Indication.VALID) {
+				assertNotNull(simpleReport.getSubIndication(sigId));
+			}
+			assertNotNull(simpleReport.getSignatureLevel(sigId));
+		}
+		assertNotNull(simpleReport.getValidationTime());
 	}
 
 	protected void verifyDetailedReport(DetailedReport detailedReport) {
