@@ -20,11 +20,36 @@
  */
 package eu.europa.esig.dss.validation;
 
-/**
- *
- */
 public enum MessageTag {
+	
+	/* BBB -> CV */
+	BBB_CV_IRDOF("Is the reference data object(s) found?"),
+	BBB_CV_IRDOF_ANS("The reference data object(s) is not found!"),
+	BBB_CV_IRDOI("Is the reference data object(s) intact?"),
+	BBB_CV_IRDOI_ANS("The reference data object(s) is not intact!"),
+	BBB_CV_ISI("Is the signature intact?"),
+	BBB_CV_ISI_ANS("The signature is not intact!"),
+	
+	/* BBB -> ICS */
+	BBB_ICS_ISCI("Is there an identified candidate for the signing certificate?"),
+	BBB_ICS_ISCI_ANS("There is no candidate for the signing certificate!"),
+	BBB_ICS_ISCS("Is the signing certificate signed?"),
+	BBB_ICS_ISCS_ANS("The signing certificate is not signed!"),
+	BBB_ICS_ISASCP("Is the signed attribute: 'signing-certificate' present?"),
+	BBB_ICS_ISASCP_ANS("The signed attribute: 'signing-certificate' is absent!"),
+	BBB_ICS_ISACDP("Is the signed attribute: 'cert-digest' of the certificate present?"),
+	BBB_ICS_ISACDP_ANS("The signed attribute: 'cert-digest' is absent!"),
+	BBB_ICS_ICDVV("Is the certificate's digest value valid?"),
+	BBB_ICS_ICDVV_ANS("The signing certificate digest value does not match!"),
+	BBB_ICS_AIDNASNE("Are the issuer distinguished name and the serial number equal?"),
+	BBB_ICS_AIDNASNE_ANS("The 'issuer-serial' attribute is absent or does not match!"),
 
+	/* BBB -> RFC */
+	BBB_RFC_NUP("Is there a valid Next Update defined for the revocation data?"),
+	BBB_RFC_NUP_ANS("There is no valid Next Update defined for the revocation data!"),
+	BBB_RFC_IRIF("Is the revocation information fresh for the certificate?"),
+	BBB_RFC_IRIF_ANS("The revocation status information is not considered as 'fresh'."),
+	
 	ADEST_IMIDF("Is message imprint data found?"),
 	ADEST_IMIDF_ANS("The timestamp message imprint data is not found!"),
 	ADEST_IMIVC("Is message imprint verification conclusive?"),
@@ -40,25 +65,8 @@ public enum MessageTag {
 	ADEST_RORPIIC("Is the result of the revocation data validation process conclusive?"),
 	ADEST_RORPIIC_ANS("The result of the revocation data validation process is not conclusive!"),
 
-	BBB_CV_IRDOF("Is the reference data object(s) found?"),
-	BBB_CV_IRDOF_ANS("The reference data object(s) not found!"),
-	BBB_CV_IRDOI("Is the reference data object(s) intact?"),
-	BBB_CV_IRDOI_ANS("The reference data object(s) is not intact!"),
-	BBB_CV_ISI("Is the signature intact?"),
-	BBB_CV_ISI_ANS("The signature is not intact!"),
-
-	BBB_ICS_ISCI("Is there an identified candidate for the signing certificate?"),
-	BBB_ICS_ISCI_ANS("There is no candidate for the signing certificate!"),
-	BBB_ICS_ISCS("Is the signing certificate signed?"),
-	BBB_ICS_ISCS_ANS("The signing certificate is not signed!"),
-	BBB_ICS_ISASCP("Is the signed attribute: 'signing-certificate' present?"),
-	BBB_ICS_ISASCP_ANS("The signed attribute: 'signing-certificate' is absent!"),
-	BBB_ICS_ISACDP("Is the signed attribute: 'cert-digest' of the certificate present?"),
-	BBB_ICS_ISACDP_ANS("The signed attribute: 'cert-digest' is absent!"),
-	BBB_ICS_ICDVV("Is the certificate's digest value valid?"),
-	BBB_ICS_ICDVV_ANS("The signing certificate digest value does not match!"),
-	BBB_ICS_AIDNASNE("Are the issuer distinguished name and the serial number equal?"),
-	BBB_ICS_AIDNASNE_ANS("The 'issuer-serial' attribute is absent or does not match!"),
+	
+	
 
 	ASCCM("Are signature cryptographic constraints met?"),
 	ASCCM_ANS_1("The encryption algorithm not authorised!"),

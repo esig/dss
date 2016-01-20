@@ -251,7 +251,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> signingTimeAttributePresent() {
-		return new SigningTimeAttributePresentCheck(result, currentSignature, getFailLevelConstraint());
+		return new SigningTimeAttributePresentCheck(result, currentSignature, policy.getSigningTimeConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampDelay(Date bestSignatureTime) {

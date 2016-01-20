@@ -19,6 +19,16 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
+/**
+ * This class is an item of the {@code Chain} class.
+ *
+ * That follows the design pattern "chain of responsibility".
+ * 
+ * Depending of the {@code Level} in {@code LevelConstraint} the Chain will continue/stop the current treatment. The
+ * {@code ChainItem} is a validation constraint which allows to collect information, warnings, errors,...
+ * 
+ * @see Chain
+ */
 public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ChainItem.class);
@@ -33,25 +43,56 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private List<XmlInfo> infos = new ArrayList<XmlInfo>();
 
+	/**
+	 * Common constructor
+	 * 
+	 * @param result
+	 *            the {@code Chain} object parent of this object
+	 * @param constraint
+	 *            the {@code LevelConstraint} to follow to execute this ChainItem
+	 * 
+	 */
 	protected ChainItem(T result, LevelConstraint constraint) {
 		this.result = result;
 		this.constraint = constraint;
 	}
 
+	/**
+	 * Specific constructor for Basic Building Blocks validation
+	 * 
+	 * @param result
+	 *            the {@code Chain} object parent of this object
+	 * @param constraint
+	 *            the {@code LevelConstraint} to follow to execute this ChainItem
+	 * @param bbbId
+	 *            the {@code XmlBasicBuildingBlocks}'s id
+	 * 
+	 */
 	protected ChainItem(T result, LevelConstraint constraint, String bbbId) {
 		this.result = result;
 		this.constraint = constraint;
 		this.bbbId = bbbId;
 	}
 
+	/**
+	 * This method allows to build the chain of responsibility
+	 * 
+	 * @param nextItem
+	 *            the next {@code ChainItem} to call if this one succeed
+	 * @return the current item
+	 */
 	public ChainItem<T> setNextItem(ChainItem<T> nextItem) {
 		this.nextItem = nextItem;
 		return nextItem;
 	}
 
+	/**
+	 * This method allows to execute the chain of responsibility. It will run all the chain until the first
+	 * {@code Level.FAIL} and not valid process.
+	 */
 	public void execute() {
-		if (constraint == null || constraint.getLevel() == null) {
-			logger.info("Check skipped : constraint not defined");
+		if ((constraint == null) || (constraint.getLevel() != null)) {
+			logger.trace("Check skipped : constraint not defined");
 			callNext();
 		} else {
 			switch (constraint.getLevel()) {
@@ -72,7 +113,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		}
 	}
 
-	public void addInfo(XmlInfo info) {
+	protected void addInfo(XmlInfo info) {
 		infos.add(info);
 	}
 
@@ -108,7 +149,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 			errorMessage.setNameId(errorMessageTag.name());
 			errorMessage.setValue(errorMessageTag.getMessage());
 		} else {
-			logger.error("MessageTag is not defined !");
+			logger.error("MessageTag is not defined!");
 		}
 		conclusion.setError(errorMessage);
 		result.setConclusion(conclusion);

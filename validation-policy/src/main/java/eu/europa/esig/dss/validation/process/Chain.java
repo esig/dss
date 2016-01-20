@@ -6,16 +6,47 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
+/**
+ * This class is part of the design pattern "Chain of responsibility".
+ * 
+ * All sub-classes need to implement the method initChain() which will define the {@code ChainItem} (constraints) to
+ * execute.
+ * 
+ * The chain is builded as follow with the method {@link eu.europa.esig.dss.validation.process.ChainItem#setNextItem}.
+ * 
+ * @param <T>
+ *            the class used as result. The selected class must extend {@code XmlConstraintsConclusion} which contains
+ *            some constraints and a conclusion.
+ * 
+ * @see ChainItem
+ */
 public abstract class Chain<T extends XmlConstraintsConclusion> {
 
+	/**
+	 * The result object : a sub-class of {@code XmlConstraintsConclusion}
+	 */
 	protected final T result;
 
+	/**
+	 * The first item to execute the chain
+	 */
 	protected ChainItem<T> firstItem;
 
+	/**
+	 * Common constructor
+	 * 
+	 * @param newInstance
+	 *            a new instance of the result object
+	 */
 	protected Chain(T newInstance) {
 		this.result = newInstance;
 	}
 
+	/**
+	 * This method allows to initialize and execute the complete chain until the first failure.
+	 * 
+	 * @return the complete result with constraints and final conclusion for the chain
+	 */
 	public T execute() {
 		initChain();
 

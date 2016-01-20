@@ -7,6 +7,7 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 
@@ -26,11 +27,11 @@ public class NextUpdateCheck extends ChainItem<XmlRFC> {
 	protected boolean process() {
 		if (revocationData != null) {
 			Date nextUpdate = revocationData.getNextUpdate();
-
 			if (nextUpdate == null) {
 				return false;
 			}
 
+			addInfo(XmlInfoBuilder.createNextUpadteInfo(nextUpdate));
 			if (validationDate.after(nextUpdate)) {
 				return false;
 			}
@@ -42,14 +43,12 @@ public class NextUpdateCheck extends ChainItem<XmlRFC> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.BBB_RFC_NUP;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.BBB_RFC_NUP_ANS;
 	}
 
 	@Override
