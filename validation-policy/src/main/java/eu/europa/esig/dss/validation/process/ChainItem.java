@@ -91,7 +91,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * {@code Level.FAIL} and not valid process.
 	 */
 	public void execute() {
-		if ((constraint == null) || (constraint.getLevel() != null)) {
+		if ((constraint == null) || (constraint.getLevel() == null)) {
 			logger.trace("Check skipped : constraint not defined");
 			callNext();
 		} else {
