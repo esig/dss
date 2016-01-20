@@ -20,6 +20,7 @@ import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
+import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.report.Reports;
 
 @ContextConfiguration("/spring/applicationContext.xml")
@@ -30,17 +31,20 @@ public class FOPServiceTest {
 	private FOPService service;
 
 	@Test
-	public void generateSimpleReportFiveSignatures() throws Exception {
-		// TODO
-		// InputStream is =
-		// FOPServiceTest.class.getResourceAsStream("/simple-report-5-signatures.xml");
-		//
-		// Document document = DSSXMLUtils.buildDOM(is);
-		// assertNotNull(document);
-		//
-		// FileOutputStream fos = new
-		// FileOutputStream("target/simpleReportFiveSignature.pdf");
-		// service.generateSimpleReport(document, fos);
+	public void generateSimpleReport() throws Exception {
+		JAXBContext context = JAXBContext
+				.newInstance(SimpleReport.class.getPackage().getName());
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		Marshaller marshaller = context.createMarshaller();
+
+		SimpleReport simpleReport = (SimpleReport) unmarshaller.unmarshal(new File("src/test/resources/simpleReport.xml"));
+		assertNotNull(simpleReport);
+		
+		StringWriter writer = new StringWriter();
+		marshaller.marshal(simpleReport, writer);
+
+		FileOutputStream fos = new FileOutputStream("target/simpleReport.pdf");
+		service.generateSimpleReport(writer.toString(), fos);
 	}
 
 	@Test
