@@ -6,7 +6,10 @@
 	<xsl:output method="html" encoding="utf-8" indent="yes" omit-xml-declaration="yes" />
 
     <xsl:template match="/dss:DetailedReport">
-	    <xsl:apply-templates/>
+	    <xsl:apply-templates select="dss:Signature"/>
+	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
+	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
+	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
     </xsl:template>
 
     <xsl:template match="dss:BasicBuildingBlocks">    
@@ -37,14 +40,14 @@
 			<xsl:attribute name="class">panel panel-primary</xsl:attribute>
 			<div>
 				<xsl:attribute name="class">panel-heading</xsl:attribute>
-				<xsl:attribute name="data-target">#collapseSignatureValidationData</xsl:attribute>
+				<xsl:attribute name="data-target">#collapseSignatureValidationData<xsl:value-of select="@Id"/></xsl:attribute>
 				<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 				Signature <xsl:value-of select="@Id"/>
 			</div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 				<div>
 					<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-					<xsl:attribute name="id">collapseSignatureValidationData</xsl:attribute>
+					<xsl:attribute name="id">collapseSignatureValidationData<xsl:value-of select="@Id"/></xsl:attribute>
 					<xsl:apply-templates select="dss:ValidationProcessBasicSignatures" />
 					<xsl:call-template name="TimestampValidation" />
 					<xsl:apply-templates select="dss:ValidationProcessLongTermData" />
