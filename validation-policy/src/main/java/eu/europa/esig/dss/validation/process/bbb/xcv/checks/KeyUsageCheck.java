@@ -1,16 +1,16 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
-import org.apache.commons.collections.CollectionUtils;
+import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
-public class KeyUsageCheck extends ChainItem<XmlXCV> {
+public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
 
 	private final CertificateWrapper certificate;
 	private final MultiValuesConstraint constraint;
@@ -23,10 +23,9 @@ public class KeyUsageCheck extends ChainItem<XmlXCV> {
 
 	@Override
 	protected boolean process() {
-		if (CollectionUtils.isNotEmpty(constraint.getId())) {
-			return constraint.getId().containsAll(certificate.getKeyUsages());
-		}
-		return true;
+		List<String> expectedKeyUsages = constraint.getId();
+		List<String> keyUsages = certificate.getKeyUsages();
+		return processValuesCheck(keyUsages, expectedKeyUsages);
 	}
 
 	@Override
