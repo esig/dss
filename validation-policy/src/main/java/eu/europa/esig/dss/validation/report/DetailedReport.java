@@ -242,6 +242,10 @@ public class DetailedReport {
 		}
 		return null;
 	}
+	
+	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getJAXBModel() {
+		return jaxbDetailedReport;
+	}
 
 	//
 	// /**
