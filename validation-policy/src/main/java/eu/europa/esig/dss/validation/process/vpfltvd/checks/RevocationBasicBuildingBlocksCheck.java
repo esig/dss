@@ -4,6 +4,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
@@ -40,6 +41,14 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 		}
 
 		// VCI is skipped
+
+		XmlRFC rfc = revocationBBB.getRFC();
+		XmlConclusion rfcConclusion = rfc.getConclusion();
+		if (!Indication.VALID.equals(rfcConclusion.getIndication())) {
+			indication = rfcConclusion.getIndication();
+			subIndication = rfcConclusion.getSubIndication();
+			return false;
+		}
 
 		XmlCV cv = revocationBBB.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
