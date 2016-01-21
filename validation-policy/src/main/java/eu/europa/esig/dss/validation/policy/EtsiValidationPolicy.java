@@ -257,19 +257,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateExpirationConstraint(final Context context, final SubContext subContext) {
+	public LevelConstraint getCertificateNotExpiredConstraint(final Context context, final SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getExpiration();
+			return certificateConstraints.getNotExpired();
 		}
 		return null;
 	}
 
 	@Override
 	public LevelConstraint getProspectiveCertificateChainConstraint(final Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getProspectiveCertificateChain();
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getProspectiveCertificateChain();
 		}
 		return null;
 	}
@@ -293,28 +293,28 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getRevocationDataIsTrustedConstraint(final Context context, final SubContext subContext) {
+	public LevelConstraint getRevocationDataTrustedConstraint(final Context context, final SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getRevocationDataIsTrusted();
+			return certificateConstraints.getRevocationDataTrusted();
 		}
 		return null;
 	}
 
 	@Override
-	public LevelConstraint getCertificateRevokedConstraint(final Context context, final SubContext subContext) {
+	public LevelConstraint getCertificateNotRevokedConstraint(final Context context, final SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getRevoked();
+			return certificateConstraints.getNotRevoked();
 		}
 		return null;
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateOnHoldConstraint(final Context context, final SubContext subContext) {
+	public LevelConstraint getCertificateNotOnHoldConstraint(final Context context, final SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getOnHold();
+			return certificateConstraints.getNotOnHold();
 		}
 		return null;
 	}
@@ -384,45 +384,60 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getSigningCertificateSignedConstraint(final Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getSigned();
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSigningCertificateSigned();
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public LevelConstraint getSigningCertificateAttributePresentConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getAttributePresent();
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSigningCertificatePresent();
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public LevelConstraint getSigningCertificateDigestValuePresentConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getDigestValuePresent();
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getCertDigestPresent();
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public LevelConstraint getSigningCertificateDigestValueMatchConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getDigestValueMatch();
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getCertDigestMatch();
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public LevelConstraint getSigningCertificateIssuerSerialMatchConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getIssuerSerialMatch();
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getIssuerSerialMatch();
+			}
 		}
 		return null;
 	}

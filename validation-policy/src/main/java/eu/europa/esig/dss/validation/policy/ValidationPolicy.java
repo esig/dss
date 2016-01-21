@@ -221,7 +221,7 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if Expiration for a given context element
 	 *         is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateExpirationConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext);
 
 	/**
 	 * This constraint requests the presence of the trust anchor in the
@@ -256,19 +256,19 @@ public interface ValidationPolicy {
 	 *         context element is present in the constraint file, null
 	 *         otherwise.
 	 */
-	LevelConstraint getRevocationDataIsTrustedConstraint(Context context, SubContext subContext);
+	LevelConstraint getRevocationDataTrustedConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if Revoked for a given context element is
 	 *         present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getCertificateRevokedConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificateNotRevokedConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if OnHold for a given context element is
 	 *         present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateOnHoldConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificateNotOnHoldConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if the TSLValidity for a given context

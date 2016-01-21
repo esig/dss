@@ -53,6 +53,8 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		 * shall return the signing certificate. Otherwise, the building block shall go to step 2.
 		 */
 		ChainItem<XmlISC> item = firstItem = signingCertificateRecognition();
+		
+		if (Context.SIGNATURE.equals(context) ||Context.COUNTER_SIGNATURE.equals(context) ){
 		item = item.setNextItem(signingCertificateSigned());
 		item = item.setNextItem(signingCertificateAttributePresent());
 
@@ -74,16 +76,17 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		 * signing certificate: if they do not match, an additional warning shall be returned with the output.
 		 */
 		item = item.setNextItem(issuerSerialMatch());
+		}
+	}
+	
+	private ChainItem<XmlISC> signingCertificateRecognition() {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRecognitionConstraint(context);
+		return new SigningCertificateRecognitionCheck(result, token, diagnosticData, constraint);
 	}
 
 	private ChainItem<XmlISC> signingCertificateSigned() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateSignedConstraint(context);
 		return new SigningCertificateSignedCheck(result, token, constraint);
-	}
-
-	private ChainItem<XmlISC> signingCertificateRecognition() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRecognitionConstraint(context);
-		return new SigningCertificateRecognitionCheck(result, token, diagnosticData, constraint);
 	}
 
 	private ChainItem<XmlISC> signingCertificateAttributePresent() {

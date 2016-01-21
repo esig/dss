@@ -86,9 +86,9 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			item = item.setNextItem(revocationFreshness(currentCertificate));
 
-			item = item.setNextItem(signingCertificateRevoked(currentCertificate, SubContext.SIGNING_CERT));
+			item = item.setNextItem(certificateRevoked(currentCertificate, SubContext.SIGNING_CERT));
 
-			item = item.setNextItem(signingCertificateOnHold(currentCertificate, SubContext.SIGNING_CERT));
+			item = item.setNextItem(certificateOnHold(currentCertificate, SubContext.SIGNING_CERT));
 
 			item = item.setNextItem(signingCertificateInTSLValidity(currentCertificate));
 
@@ -144,7 +144,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	}
 
 	private ChainItem<XmlXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateExpirationConstraint(context, subContext);
+		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
 		return new CertificateExpirationCheck(result, certificate, currentTime, constraint);
 	}
 
@@ -164,7 +164,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	}
 
 	private ChainItem<XmlXCV> revocationDataTrusted(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getRevocationDataIsTrustedConstraint(context, subContext);
+		LevelConstraint constraint = validationPolicy.getRevocationDataTrustedConstraint(context, subContext);
 		return new RevocationDataTrustedCheck(result, certificate, constraint);
 	}
 
@@ -173,18 +173,18 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		return new RevocationFreshnessCheck(result, certificate, currentTime, revocationFreshnessConstraints);
 	}
 
-	private ChainItem<XmlXCV> signingCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateRevokedConstraint(context, subContext);
+	private ChainItem<XmlXCV> certificateRevoked(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateNotRevokedConstraint(context, subContext);
 		return new SigningCertificateRevokedCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> intermediateCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateRevokedConstraint(context, subContext);
+		LevelConstraint constraint = validationPolicy.getCertificateNotRevokedConstraint(context, subContext);
 		return new IntermediateCertificateRevokedCheck(result, certificate, constraint);
 	}
 
-	private ChainItem<XmlXCV> signingCertificateOnHold(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateOnHoldConstraint(context, subContext);
+	private ChainItem<XmlXCV> certificateOnHold(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateNotOnHoldConstraint(context, subContext);
 		return new SigningCertificateOnHoldCheck(result, certificate, constraint);
 	}
 

@@ -12,24 +12,19 @@
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
+			<ProspectiveCertificateChain Level="FAIL" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
-				<AttributePresent Level="FAIL" />
-				<DigestValuePresent Level="FAIL" />
-				<DigestValueMatch Level="FAIL" />
-				<IssuerSerialMatch Level="WARN" />
-				<Signed Level="FAIL" />
 				<Signature Level="FAIL" />
-				<Expiration Level="FAIL" />
+				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataIsTrusted Level="FAIL" />
+				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
-				<ProspectiveCertificateChain Level="FAIL" />
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
-				<Revoked Level="FAIL" />
-				<OnHold Level="FAIL" />
+				<NotRevoked  Level="FAIL" />
+				<NotOnHold Level="FAIL" />
 				<TSLValidity Level="WARN" />
 				<TSLStatus Level="WARN" />
 				<TSLStatusAndValidity Level="FAIL" />
@@ -59,11 +54,11 @@
 			</SigningCertificate>
 			<CACertificate>
 				<Signature Level="FAIL" />
-				<Expiration Level="FAIL" />
+				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataIsTrusted Level="FAIL" />
+				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
-				<Revoked Level="FAIL" />
+				<NotRevoked  Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
@@ -107,6 +102,11 @@
 			</Cryptographic>
 		</BasicSignatureConstraints>
 		<SignedAttributes>
+			<SigningCertificatePresent Level="FAIL" />
+			<SigningCertificateSigned Level="FAIL" />
+			<CertDigestPresent Level="FAIL" />
+			<CertDigestMatch Level="FAIL" />
+			<IssuerSerialMatch Level="WARN" />
 			<SigningTime Level="FAIL" />
 <!--		<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
 			<ContentHints Level="FAIL" value="*" />
@@ -136,16 +136,16 @@
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
+			<ProspectiveCertificateChain Level="FAIL" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
-				<Expiration Level="FAIL" />
+				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataIsTrusted Level="FAIL" />
+				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
-				<ProspectiveCertificateChain Level="FAIL" />
-				<Revoked Level="FAIL" />
-				<OnHold Level="FAIL" />
+				<NotRevoked  Level="FAIL" />
+				<NotOnHold Level="FAIL" />
 				<TSLStatus Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
@@ -170,11 +170,11 @@
 			</SigningCertificate>
 			<CACertificate>
 				<Signature Level="FAIL" />
-				<Expiration Level="FAIL" />
+				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataIsTrusted Level="FAIL" />
+				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
-				<Revoked Level="FAIL" />
+				<NotRevoked  Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
@@ -224,11 +224,11 @@
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
+			<ProspectiveCertificateChain Level="FAIL" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
-				<Expiration Level="FAIL" />
-				<ProspectiveCertificateChain Level="FAIL" />
+				<NotExpired Level="FAIL" />
 				<Cryptographic Level="WARN">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
@@ -252,7 +252,7 @@
 			</SigningCertificate>
 			<CACertificate>
 				<Signature Level="FAIL" />
-				<Expiration Level="FAIL" />
+				<NotExpired Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
