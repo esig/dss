@@ -273,7 +273,7 @@
     
     <xsl:template match="dss:Conclusion" />
 	
-    <xsl:template match="dss:ISC|dss:VCI|dss:CV|dss:SAV|dss:XCV">
+    <xsl:template match="dss:ISC|dss:VCI|dss:RFC|dss:CV|dss:SAV|dss:XCV">
     	<fo:table>
 			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
 			
@@ -297,6 +297,9 @@
 								</xsl:when>
 								<xsl:when test="name(.) = 'VCI'">
 									Validation Context Initialization : 
+								</xsl:when>
+								<xsl:when test="name(.) = 'RFC'">
+									Revocation Freshness Checker
 								</xsl:when>
 								<xsl:when test="name(.) = 'CV'">
 									Cryptographic Verification : 
