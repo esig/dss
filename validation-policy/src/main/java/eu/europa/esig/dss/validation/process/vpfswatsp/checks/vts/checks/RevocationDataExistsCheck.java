@@ -25,14 +25,12 @@ public class RevocationDataExistsCheck extends ChainItem<XmlVTS> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.BBB_XCV_IRDPFC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageTag.BBB_XCV_IRDPFC_ANS;
 	}
 
 	@Override

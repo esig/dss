@@ -129,43 +129,45 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 					bestSignatureTime = productionTime;
 				}
 			}
+		}
 
-			/*
-			 * 4) Comparing times:
-			 * a) If step 2 returned the indication INDETERMINATE with the sub-indication REVOKED_NO_POE: If the
-			 * returned revocation time is posterior to best-signature-time, the process shall perform step 4d.
-			 * Otherwise,
-			 * the process shall return the indication INDETERMINATE with the sub-indication REVOKED_NO_POE.
-			 */
-			XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
-			if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(bsConclusion.getSubIndication())) {
-				item = item.setNextItem(revocationDateAfterBestSignatureDate(bestSignatureTime));
-			}
+		/*
+		 * 4) Comparing times:
+		 * a) If step 2 returned the indication INDETERMINATE with the sub-indication REVOKED_NO_POE: If the
+		 * returned revocation time is posterior to best-signature-time, the process shall perform step 4d.
+		 * Otherwise,
+		 * the process shall return the indication INDETERMINATE with the sub-indication REVOKED_NO_POE.
+		 */
+		XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
+		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(bsConclusion.getSubIndication())) {
+			item = item.setNextItem(revocationDateAfterBestSignatureDate(bestSignatureTime));
+		}
 
-			/*
-			 * b) If step 2 returned the indication INDETERMINATE with the sub-indication
-			 * OUT_OF_BOUNDS_NO_POE: If best-signature-time is before the issuance date of the signing
-			 * certificate, the process shall return the indication FAILED with the sub-indication NOT_YET_VALID.
-			 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
-			 * OUT_OF_BOUNDS_NO_POE.
-			 */
-			if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
-				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime));
-				item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime)); // otherwise
-			}
+		/*
+		 * b) If step 2 returned the indication INDETERMINATE with the sub-indication
+		 * OUT_OF_BOUNDS_NO_POE: If best-signature-time is before the issuance date of the signing
+		 * certificate, the process shall return the indication FAILED with the sub-indication NOT_YET_VALID.
+		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
+		 * OUT_OF_BOUNDS_NO_POE.
+		 */
+		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime));
+			item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime)); // otherwise
+		}
 
-			/*
-			 * c) If step 2 returned INDETERMINATE with the sub-indication CRYPTO_CONSTRAINTS_FAILURE_NO_POE and the
-			 * material concerned by this failure is the signature value or a signed attribute: If the algorithm(s)
-			 * concerned were still considered reliable at best-signature-time, the process shall continue with step d.
-			 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
-			 * CRYPTO_CONSTRAINTS_FAILURE_NO_POE.
-			 */
-			if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
-					&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
-				item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
-			}
+		/*
+		 * c) If step 2 returned INDETERMINATE with the sub-indication CRYPTO_CONSTRAINTS_FAILURE_NO_POE and the
+		 * material concerned by this failure is the signature value or a signed attribute: If the algorithm(s)
+		 * concerned were still considered reliable at best-signature-time, the process shall continue with step d.
+		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
+		 * CRYPTO_CONSTRAINTS_FAILURE_NO_POE.
+		 */
+		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
+				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
+			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
+		}
 
+		if (CollectionUtils.isNotEmpty(allowedTimestamps)) {
 			/*
 			 * d) For each time-stamp token remaining in the set of signature time-stamp tokens, the process shall check
 			 * the coherence in the values of the times indicated in the time-stamp tokens. They shall be posterior to
