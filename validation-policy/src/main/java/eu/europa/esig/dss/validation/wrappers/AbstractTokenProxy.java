@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -91,25 +92,25 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	@Override
 	public boolean isIssuerSerialMatch() {
 		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null) && currentSigningCertificate.isIssuerSerialMatch();
+		return (currentSigningCertificate != null) && BooleanUtils.isTrue(currentSigningCertificate.isIssuerSerialMatch());
 	}
 
 	@Override
 	public boolean isAttributePresent() {
 		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null) && currentSigningCertificate.isAttributePresent();
+		return (currentSigningCertificate != null) && BooleanUtils.isTrue(currentSigningCertificate.isAttributePresent());
 	}
 
 	@Override
 	public boolean isDigestValueMatch() {
 		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null) && currentSigningCertificate.isDigestValueMatch();
+		return (currentSigningCertificate != null) && BooleanUtils.isTrue(currentSigningCertificate.isDigestValueMatch());
 	}
 
 	@Override
 	public boolean isDigestValuePresent() {
 		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null) && currentSigningCertificate.isDigestValuePresent();
+		return (currentSigningCertificate != null) && BooleanUtils.isTrue(currentSigningCertificate.isDigestValuePresent());
 	}
 
 	@Override
