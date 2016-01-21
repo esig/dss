@@ -424,6 +424,16 @@
 	        </dependency>
 	        <dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-soap</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-soap-client</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-token</artifactId>
 				<version>${project.version}</version>
 	        </dependency>
@@ -784,6 +794,8 @@
 				<module>dss-soap</module>
 				<module>dss-validation-rest-client</module>
 				<module>dss-validation-rest</module>
+				<module>dss-validation-soap</module>
+				<module>dss-validation-soap-client</module>
 				<module>dss-tsl-validation</module>
 			</modules>
 		</profile>
@@ -832,6 +844,8 @@
 				<module>dss-soap</module>
 				<module>dss-validation-rest-client</module>
 				<module>dss-validation-rest</module>
+				<module>dss-validation-soap</module>
+				<module>dss-validation-soap-client</module>
 				<module>dss-tsl-validation</module>
 			</modules>
 		</profile>
