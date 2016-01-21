@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -1089,7 +1090,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlRevocation.setReason(revocationToken.getReason());
 			xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
 			xmlRevocation.setSourceAddress(revocationToken.getSourceURL());
-			xmlRevocation.setId(revocationToken.getDSSId().asXmlId());
+
+			// In case of CRL, the X509CRL can be the same for different certificates
+			byte[] digestForId = DSSUtils.digest(DigestAlgorithm.SHA256, certToken.getEncoded(), revocationToken.getEncoded());
+			xmlRevocation.setId(DatatypeConverter.printHexBinary(digestForId));
 
 			final XmlBasicSignatureType xmlBasicSignatureType = new XmlBasicSignatureType();
 			final SignatureAlgorithm revocationSignatureAlgo = revocationToken.getSignatureAlgorithm();
