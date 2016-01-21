@@ -8,6 +8,7 @@
     <xsl:template match="/dss:DetailedReport">
 	    <xsl:apply-templates select="dss:Signature"/>
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
+	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
     </xsl:template>
