@@ -52,7 +52,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper currentSignature;
-	private final Set<RevocationWrapper> revocationData;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
 	private final ValidationPolicy policy;
@@ -67,7 +66,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 		this.diagnosticData = diagnosticData;
 		this.currentSignature = currentSignature;
-		this.revocationData = diagnosticData.getAllRevocationData();
 		this.bbbs = bbbs;
 
 		this.policy = policy;
@@ -98,6 +96,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
 
+		Set<RevocationWrapper> revocationData = getLinkedRevocationData();
 		if (CollectionUtils.isNotEmpty(revocationData)) {
 			for (RevocationWrapper revocation : revocationData) {
 				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocation.getId());
@@ -194,6 +193,25 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			 * sub-indication SIG_CONSTRAINTS_FAILURE.
 			 */
 			item = item.setNextItem(timestampDelay(bestSignatureTime));
+		}
+	}
+
+	private Set<RevocationWrapper> getLinkedRevocationData() {
+		Set<RevocationWrapper> result = new HashSet<RevocationWrapper>();
+		extractRevocationDataFromCertificateChain(result, currentSignature.getCertificateChainIds());
+		List<TimestampWrapper> timestampList = currentSignature.getTimestampList();
+		for (TimestampWrapper timestamp : timestampList) {
+			extractRevocationDataFromCertificateChain(result, timestamp.getCertificateChainIds());
+		}
+		return result;
+	}
+
+	private void extractRevocationDataFromCertificateChain(Set<RevocationWrapper> result, List<String> certificateChainIds) {
+		for (String certificateId : certificateChainIds) {
+			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
+			if (certificate != null && certificate.getRevocationData() != null) {
+				result.add(certificate.getRevocationData());
+			}
 		}
 	}
 
