@@ -22,8 +22,15 @@
 	   			<xsl:attribute name="class">panel-heading</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseBasicBuildingBlocks<xsl:value-of select="@Id"/></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+		       	<xsl:variable name="bbbId" select="@Id" />
+		       	<xsl:variable name="bbbType">
+		       		<xsl:choose>
+		       			<xsl:when test="@Type = 'TIMESTAMP'"><xsl:value-of select="../dss:Signature/dss:ValidationProcessTimestamps[@Id = $bbbId]/@Type"/></xsl:when>
+		       			<xsl:otherwise><xsl:value-of select="@Type"/></xsl:otherwise>
+		       		</xsl:choose>
+		       	</xsl:variable>
 	   			Basic Building Blocks <br/>
-	   			(<xsl:value-of select="@Type"/> Id = <xsl:value-of select="@Id"/>)
+	   			(<xsl:value-of select="$bbbType"/> Id = <xsl:value-of select="@Id"/>)
 	        </div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 	    		<div>
