@@ -54,13 +54,15 @@ public class ArchiveTimestampsValidationCheck extends ChainItem<XmlERV> {
 
 		TimestampWrapper yougestTSP = null;
 		for (TimestampWrapper timestamp : archiveTimestamps) {
+			XmlBasicBuildingBlocks bbbTsp = bbbs.get(timestamp.getId());
 			ValidationProcessForTimeStamps tspValidation = new ValidationProcessForTimeStamps(timestamp, bbbs);
 			XmlValidationProcessTimestamps tspValidationResult = tspValidation.execute();
 
 			if (!isValid(tspValidationResult)) {
 				Date validationDate = yougestTSP == null ? currentTime : yougestTSP.getProductionTime();
-				PastSignatureValidation psv = new PastSignatureValidation(timestamp, diagnosticData, poe, validationDate, policy, Context.TIMESTAMP);
+				PastSignatureValidation psv = new PastSignatureValidation(timestamp, diagnosticData, bbbTsp, poe, validationDate, policy, Context.TIMESTAMP);
 				XmlPSV psvResult = psv.execute();
+				bbbTsp.setPSV(psvResult);
 				if (!isValid(psvResult)) {
 					return false;
 				}

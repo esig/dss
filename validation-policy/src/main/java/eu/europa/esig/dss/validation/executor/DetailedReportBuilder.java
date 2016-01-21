@@ -62,7 +62,7 @@ public class DetailedReportBuilder {
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 				executeLongTermValidation(signatureAnalysis, signature, bbbs);
-				executeArchiveValidation(signatureAnalysis, signature);
+				executeArchiveValidation(signatureAnalysis, signature, bbbs);
 			}
 
 			detailedReport.getSignature().add(signatureAnalysis);
@@ -92,9 +92,9 @@ public class DetailedReportBuilder {
 		signatureAnalysis.setValidationProcessLongTermData(vpfltvdResult);
 	}
 
-	private void executeArchiveValidation(XmlSignature signatureAnalysis, SignatureWrapper signature) {
+	private void executeArchiveValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		ValidationProcessForSignaturesWithArchivalData vpfswad = new ValidationProcessForSignaturesWithArchivalData(signatureAnalysis, signature,
-				diagnosticData, policy, currentTime);
+				diagnosticData, bbbs, policy, currentTime);
 		XmlValidationProcessArchivalData vpfswadResult = vpfswad.execute();
 		signatureAnalysis.setValidationProcessArchivalData(vpfswadResult);
 	}

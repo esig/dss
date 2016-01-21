@@ -3,12 +3,14 @@ package eu.europa.esig.dss.validation.process.vpfswatsp;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
@@ -38,19 +40,21 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	private final List<XmlValidationProcessTimestamps> validationProcessTimestamps;
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 	private final ValidationPolicy policy;
 	private final Date currentTime;
 
 	private final POEExtraction poe = new POEExtraction();
 
 	public ValidationProcessForSignaturesWithArchivalData(XmlSignature signatureAnalysis, SignatureWrapper signature, DiagnosticData diagnosticData,
-			ValidationPolicy policy, Date currentTime) {
+			Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentTime) {
 		super(new XmlValidationProcessArchivalData());
 
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
 		this.validationProcessTimestamps = signatureAnalysis.getValidationProcessTimestamps();
 		this.signature = signature;
 		this.diagnosticData = diagnosticData;
+		this.bbbs = bbbs;
 		this.policy = policy;
 		this.currentTime = currentTime;
 	}
@@ -108,8 +112,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		if (CollectionUtils.isNotEmpty(timestampsList)) {
 			Collections.sort(timestampsList, new TimestampComparator());
 			for (TimestampWrapper newestTimestamp : timestampsList) {
+				XmlBasicBuildingBlocks bbbTsp = bbbs.get(newestTimestamp.getId());
 				XmlConstraintsConclusion timestampValidation = getTimestampValidation(newestTimestamp);
-				if (timestampValidation != null) {
+				if ((timestampValidation != null) && (bbbTsp != null)) {
 
 					/*
 					 * b) If PASSED is returned and the cryptographic hash function used in the time-stamp
@@ -129,8 +134,10 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 * constraints, cryptographic constraints and the set of POEs.
 					 */
 					else {
-						PastSignatureValidation psv = new PastSignatureValidation(newestTimestamp, diagnosticData, poe, currentTime, policy, Context.TIMESTAMP);
+						PastSignatureValidation psv = new PastSignatureValidation(newestTimestamp, diagnosticData, bbbTsp, poe, currentTime, policy,
+								Context.TIMESTAMP);
 						XmlPSV psvResult = psv.execute();
+						bbbTsp.setPSV(psvResult);
 
 						/*
 						 * If it returns PASSED and the cryptographic hash function used in the time-stamp is considered
@@ -182,7 +189,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(Context currentContext) {
-		return new PastSignatureValidationCheck(result, signature, diagnosticData, poe, currentTime, policy, currentContext, getFailLevelConstraint());
+		XmlBasicBuildingBlocks bbbSig = bbbs.get(signature.getId());
+		return new PastSignatureValidationCheck(result, signature, diagnosticData, bbbSig, poe, currentTime, policy, currentContext, getFailLevelConstraint());
 	}
 
 	private XmlConstraintsConclusion getTimestampValidation(TimestampWrapper newestTimestamp) {

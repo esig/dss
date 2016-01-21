@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -24,18 +25,20 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 	private final TokenProxy token;
 	private final DiagnosticData diagnosticData;
+	private final XmlBasicBuildingBlocks bbb;
 	private final POEExtraction poe;
 	private final Date currentTime;
 
 	private final ValidationPolicy policy;
 	private final Context context;
 
-	public PastSignatureValidation(TokenProxy token, DiagnosticData diagnosticData, POEExtraction poe, Date currentTime, ValidationPolicy policy,
-			Context context) {
+	public PastSignatureValidation(TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime,
+			ValidationPolicy policy, Context context) {
 		super(new XmlPSV());
 
 		this.token = token;
 		this.diagnosticData = diagnosticData;
+		this.bbb = bbb;
 		this.poe = poe;
 		this.currentTime = currentTime;
 		this.policy = policy;
@@ -45,8 +48,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	@Override
 	protected void initChain() {
 
-		PastCertificateValidation pcv = new PastCertificateValidation(token, diagnosticData, poe, currentTime, policy, context);
+		PastCertificateValidation pcv = new PastCertificateValidation(token, diagnosticData, bbb, poe, currentTime, policy, context);
 		XmlPCV pcvResult = pcv.execute();
+		bbb.setPCV(pcvResult);
 
 		/*
 		 * 1) The building block shall perform the past certificate validation process with the following inputs: the

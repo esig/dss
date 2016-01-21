@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
@@ -27,6 +28,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private final TokenProxy token;
 	private final DiagnosticData diagnosticData;
+	private final XmlBasicBuildingBlocks bbb;
 	private final POEExtraction poe;
 
 	private final Date currentTime;
@@ -34,12 +36,13 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	private final Context context;
 	private Date controlTime;
 
-	public PastCertificateValidation(TokenProxy token, DiagnosticData diagnosticData, POEExtraction poe, Date currentTime, ValidationPolicy policy,
-			Context context) {
+	public PastCertificateValidation(TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime,
+			ValidationPolicy policy, Context context) {
 		super(new XmlPCV());
 
 		this.token = token;
 		this.diagnosticData = diagnosticData;
+		this.bbb = bbb;
 		this.poe = poe;
 		this.currentTime = currentTime;
 
@@ -161,6 +164,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	private ChainItem<XmlPCV> validationTimeSliding() {
 		ValidationTimeSliding validationTimeSliding = new ValidationTimeSliding(diagnosticData, token, currentTime, poe, policy);
 		XmlVTS vts = validationTimeSliding.execute();
+		bbb.setVTS(vts);
 		controlTime = vts.getControlTime();
 
 		return new ValidationTimeSlidingCheck(result, vts, getFailLevelConstraint());

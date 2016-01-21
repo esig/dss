@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.validation.MessageTag;
@@ -20,6 +21,7 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
+	private final XmlBasicBuildingBlocks bbb;
 	private final POEExtraction poe;
 	private final Date currentTime;
 	private final ValidationPolicy policy;
@@ -28,12 +30,13 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 	private Indication indication;
 	private SubIndication subIndication;
 
-	public PastSignatureValidationCheck(XmlValidationProcessArchivalData result, SignatureWrapper signature, DiagnosticData diagnosticData, POEExtraction poe,
-			Date currentTime, ValidationPolicy policy, Context context, LevelConstraint constraint) {
+	public PastSignatureValidationCheck(XmlValidationProcessArchivalData result, SignatureWrapper signature, DiagnosticData diagnosticData,
+			XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.signature = signature;
 		this.diagnosticData = diagnosticData;
+		this.bbb = bbb;
 		this.poe = poe;
 		this.currentTime = currentTime;
 		this.policy = policy;
@@ -42,7 +45,7 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 
 	@Override
 	protected boolean process() {
-		PastSignatureValidation psv = new PastSignatureValidation(signature, diagnosticData, poe, currentTime, policy, context);
+		PastSignatureValidation psv = new PastSignatureValidation(signature, diagnosticData, bbb, poe, currentTime, policy, context);
 		XmlPSV psvResult = psv.execute();
 
 		if (psvResult != null && psvResult.getConclusion() != null && Indication.VALID.equals(psvResult.getConclusion().getIndication())) {
