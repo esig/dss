@@ -13,19 +13,16 @@ import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 public class CertifiedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
 	private final SignatureWrapper signature;
-	private final MultiValuesConstraint constraint;
 
 	public CertifiedRolesCheck(XmlSAV result, SignatureWrapper signature, MultiValuesConstraint constraint) {
 		super(result, constraint);
 		this.signature = signature;
-		this.constraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
 		List<String> certifiedRoles = signature.getCertifiedRoles();
-		List<String> expectedValues = constraint.getId();
-		return processValuesCheck(certifiedRoles, expectedValues);
+		return processValuesCheck(certifiedRoles);
 	}
 
 	@Override

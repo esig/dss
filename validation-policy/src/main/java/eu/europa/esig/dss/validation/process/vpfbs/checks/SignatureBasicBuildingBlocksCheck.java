@@ -9,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
@@ -55,8 +56,16 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		 * returns PASSED, the building block shall go to the next step. Otherwise, the building block shall return the
 		 * indication and information returned by the validation process.
 		 */
-		// TODO
-
+		XmlFC fc = signatureBBB.getFC();
+		if (fc != null) {
+			XmlConclusion fcConclusion = fc.getConclusion();
+			if (!Indication.VALID.equals(fcConclusion.getIndication())) {
+				indication = fcConclusion.getIndication();
+				subIndication = fcConclusion.getSubIndication();
+				return false;
+			}
+		}
+		
 		/*
 		 * 5.3.4 2) The Basic Signature validation process shall perform the identification of the signing certificate
 		 * (as per clause 5.2.3) with the signature and the signing certificate, if provided as a parameter.

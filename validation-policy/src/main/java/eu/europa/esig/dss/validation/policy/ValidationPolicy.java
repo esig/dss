@@ -387,4 +387,6 @@ public interface ValidationPolicy {
 
 	LevelConstraint getCounterSignatureConstraint();
 
+	MultiValuesConstraint getSignatureFormatConstraint(Context context);
+
 }

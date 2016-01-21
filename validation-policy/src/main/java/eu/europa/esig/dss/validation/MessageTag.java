@@ -21,6 +21,10 @@
 package eu.europa.esig.dss.validation;
 
 public enum MessageTag {
+
+	/* BBB -> FC */
+	BBB_FC_IEFF("Is the expected format found?"),
+	BBB_FC_IEFF_ANS("The expected format is not found!"),
 	
 	/* BBB -> CV */
 	BBB_CV_IRDOF("Is the reference data object(s) found?"),

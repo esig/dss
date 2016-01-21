@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlInfo;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
@@ -18,6 +19,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
+import eu.europa.esig.dss.validation.process.bbb.fc.FormatChecking;
 import eu.europa.esig.dss.validation.process.bbb.isc.IdentificationOfTheSigningCertificate;
 import eu.europa.esig.dss.validation.process.bbb.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.AbstractAcceptanceValidation;
@@ -62,7 +64,14 @@ public class BasicBuildingBlocks {
 		/**
 		 * 5.2.2 Format Checking
 		 */
-		// TODO
+		XmlFC fc = executeFormatChecking();
+		if (fc != null) {
+			result.setFC(fc);
+			XmlConclusion fcConclusion = fc.getConclusion();
+			if (!Indication.VALID.equals(fcConclusion.getIndication())) {
+				result.setConclusion(fcConclusion);
+			}
+		}
 
 		/**
 		 * 5.2.3 Identification of the signing certificate
@@ -140,6 +149,15 @@ public class BasicBuildingBlocks {
 		}
 
 		return result;
+	}
+
+	private XmlFC executeFormatChecking() {
+		if (Context.SIGNATURE.equals(context)) {
+			FormatChecking fc = new FormatChecking((SignatureWrapper) token, context, policy);
+			return fc.execute();
+		} else {
+			return null;
+		}
 	}
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {

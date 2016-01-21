@@ -215,7 +215,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		for (final TimestampWrapper timestamp : timestampList) {
 			final boolean signatureValid = timestamp.isSignatureValid();
 			final boolean messageImprintIntact = timestamp.isMessageImprintDataIntact();
-			if (signatureValid && messageImprintIntact) { // TODO correct ? return true if at least 1 TSP OK
+			if (signatureValid && messageImprintIntact) { // TODO correct ?
+															// return true if at
+															// least 1 TSP OK
 				return true;
 			}
 		}
@@ -326,6 +328,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			return policy.isStatus();
 		}
 		return false;
+	}
+
+	public String getFormat() {
+		return signature.getSignatureFormat();
 	}
 
 }
