@@ -14,12 +14,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ValidationProcessArchivalData complex type.
+ * <p>Java class for RF complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ValidationProcessArchivalData">
+ * &lt;complexType name="RF">
  *   &lt;complexContent>
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/diagnostic}ConstraintsConclusion">
  *     &lt;/extension>
@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ValidationProcessArchivalData")
-public class XmlValidationProcessArchivalData
+@XmlType(name = "RF")
+public class XmlRF
     extends XmlConstraintsConclusion
 {
 
