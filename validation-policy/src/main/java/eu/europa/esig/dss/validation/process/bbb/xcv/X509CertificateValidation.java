@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
@@ -67,58 +66,63 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	@Override
 	protected void initChain() {
+
 		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
-		List<XmlChainCertificate> certificateChainList = currentCertificate.getCertificateChain();
+		// Checks SIGNING_CERT
 
+		item = item.setNextItem(certificateExpiration(currentCertificate, SubContext.SIGNING_CERT));
+
+		item = item.setNextItem(keyUsage(currentCertificate, SubContext.SIGNING_CERT));
+
+		item = item.setNextItem(certificateSignatureValid(currentCertificate, SubContext.SIGNING_CERT));
+
+		item = item.setNextItem(certificateCryptographic(currentCertificate, context, SubContext.SIGNING_CERT));
+
+		if (!currentCertificate.isTrusted()) {
+			item = item.setNextItem(revocationDataAvailable(currentCertificate, SubContext.SIGNING_CERT));
+
+			item = item.setNextItem(revocationDataTrusted(currentCertificate, SubContext.SIGNING_CERT));
+
+			item = item.setNextItem(revocationFreshness(currentCertificate));
+
+			item = item.setNextItem(signingCertificateRevoked(currentCertificate, SubContext.SIGNING_CERT));
+
+			item = item.setNextItem(signingCertificateOnHold(currentCertificate, SubContext.SIGNING_CERT));
+
+			item = item.setNextItem(signingCertificateInTSLValidity(currentCertificate));
+
+			item = item.setNextItem(signingCertificateTSLStatus(currentCertificate));
+
+			item = item.setNextItem(signingCertificateTSLStatusAndValidity(currentCertificate));
+
+			// check cryptographic constraints for the revocation token
+			RevocationWrapper revocationData = currentCertificate.getRevocationData();
+			if (revocationData != null) {
+				item = item.setNextItem(certificateCryptographic(revocationData, Context.REVOCATION, SubContext.SIGNING_CERT));
+			}
+		}
+
+		// Check CA_CERTIFICATEs
+		List<XmlChainCertificate> certificateChainList = currentCertificate.getCertificateChain();
 		if (CollectionUtils.isNotEmpty(certificateChainList)) {
 			for (XmlChainCertificate chainCertificate : certificateChainList) {
 				CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
 
-				// Trusted certificated doesn't need validation
-				// if (certificate.isTrusted()) {
-				// continue;
-				// }
+				item = item.setNextItem(certificateExpiration(certificate, SubContext.CA_CERTIFICATE));
 
-				SubContext currentSubContext = SubContext.SIGNING_CERT;
-				if (!StringUtils.equals(currentCertificate.getId(), certificate.getId())) { // CA
-					currentSubContext = SubContext.CA_CERTIFICATE;
-				}
+				item = item.setNextItem(keyUsage(certificate, SubContext.CA_CERTIFICATE));
 
-				item = item.setNextItem(certificateExpiration(certificate, currentSubContext));
+				item = item.setNextItem(certificateSignatureValid(certificate, SubContext.CA_CERTIFICATE));
 
-				item = item.setNextItem(keyUsage(certificate, currentSubContext));
+				item = item.setNextItem(intermediateCertificateRevoked(certificate, SubContext.CA_CERTIFICATE));
 
-				item = item.setNextItem(certificateSignatureValid(certificate, currentSubContext));
-
-				if (SubContext.SIGNING_CERT.equals(currentSubContext)) {
-
-					item = item.setNextItem(revocationDataAvailable(certificate, currentSubContext));
-
-					item = item.setNextItem(revocationDataTrusted(certificate, currentSubContext));
-
-					item = item.setNextItem(revocationFreshness(certificate));
-
-					item = item.setNextItem(signingCertificateRevoked(certificate, currentSubContext));
-
-					item = item.setNextItem(signingCertificateOnHold(certificate, currentSubContext));
-
-					item = item.setNextItem(signingCertificateInTSLValidity(certificate));
-
-					item = item.setNextItem(signingCertificateTSLStatus(certificate));
-
-					item = item.setNextItem(signingCertificateTSLStatusAndValidity(certificate));
-
-				} else {
-
-					item = item.setNextItem(intermediateCertificateRevoked(certificate, currentSubContext));
-
-				}
+				item = item.setNextItem(certificateCryptographic(certificate, context, SubContext.CA_CERTIFICATE));
 
 				// check cryptographic constraints for the revocation token
 				RevocationWrapper revocationData = certificate.getRevocationData();
 				if (revocationData != null) {
-					item = item.setNextItem(certificateCryptographic(revocationData, Context.REVOCATION, currentSubContext));
+					item = item.setNextItem(certificateCryptographic(revocationData, Context.REVOCATION, SubContext.CA_CERTIFICATE));
 				}
 
 			}
@@ -133,25 +137,6 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			item = item.setNextItem(signingCertificateIssuedToLegalPerson(currentCertificate));
 		}
 
-		if (CollectionUtils.isNotEmpty(certificateChainList)) {
-			String lastChainCertId = currentCertificate.getLastChainCertificateId();
-			for (XmlChainCertificate chainCertificate : certificateChainList) {
-				CertificateWrapper chainItem = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
-
-				/**
-				 * The trusted anchor is not checked. In the case of a
-				 * certificate chain consisting of a single certificate which is
-				 * trusted we need to set this variable to true.
-				 */
-				if (StringUtils.equals(lastChainCertId, chainCertificate.getId()) && chainItem.isTrusted()) {
-					continue;
-				}
-
-				SubContext currentSubContext = StringUtils.equals(chainItem.getId(), currentCertificate.getId()) ? SubContext.SIGNING_CERT
-						: SubContext.CA_CERTIFICATE;
-				item = item.setNextItem(certificateCryptographic(chainItem, context, currentSubContext));
-			}
-		}
 	}
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {

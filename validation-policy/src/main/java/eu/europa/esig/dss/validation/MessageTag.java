@@ -65,8 +65,8 @@ public enum MessageTag {
 	ADEST_RORPIIC("Is the result of the revocation data validation process conclusive?"),
 	ADEST_RORPIIC_ANS("The result of the revocation data validation process is not conclusive!"),
 
-	
-	
+	LTV_ABSV("Is the result of the Basic Validation Process acceptable?"),
+	LTV_ABSV_ANS("The result of the Basic validation process is not acceptable to continue the process!"),
 
 	ASCCM("Are signature cryptographic constraints met?"),
 	ASCCM_ANS_1("The encryption algorithm not authorised!"),

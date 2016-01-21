@@ -45,12 +45,12 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ADEST_ROBVPIIC;
+		return MessageTag.LTV_ABSV;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ADEST_ROBVPIIC_ANS;
+		return MessageTag.LTV_ABSV_ANS;
 	}
 
 	@Override

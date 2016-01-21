@@ -228,11 +228,7 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<Expiration Level="FAIL" />
-				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataIsTrusted Level="FAIL" />
-				<RevocationDataFreshness Level="WARN" />
 				<ProspectiveCertificateChain Level="FAIL" />
-				<Revoked Level="FAIL" />
 				<Cryptographic Level="WARN">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
@@ -257,10 +253,6 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<Expiration Level="FAIL" />
-				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataIsTrusted Level="FAIL" />
-				<RevocationDataFreshness Level="WARN" />
-				<Revoked Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
