@@ -33,10 +33,12 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
 import eu.europa.esig.dss.validation.AttributeValue;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.CertificateQualification;
@@ -134,6 +136,7 @@ public class SimpleReportBuilder {
 		xmlSignature.setId(signatureId);
 
 		addCounterSignature(signature, xmlSignature);
+		addSignatureScope(signature, xmlSignature);
 		addSigningTime(signature, xmlSignature);
 		addSignatureFormat(signature, xmlSignature);
 		addSignedBy(signature, xmlSignature);
@@ -204,9 +207,6 @@ public class SimpleReportBuilder {
 
 		addSignatureProfile(signature, xmlSignature);
 
-		final XmlSignatureScopes signatureScopes = signature.getSignatureScopes();
-		addSignatureScope(xmlSignature, signatureScopes);
-
 		simpleReport.getSignature().add(xmlSignature);
 	}
 
@@ -261,9 +261,13 @@ public class SimpleReportBuilder {
 		}
 	}
 
-	private void addSignatureScope(final XmlSignature signatureNode, final XmlSignatureScopes signatureScopes) {
-		if (signatureScopes != null) {
-			// TODO signatureNode.addChild(signatureScopes);
+	private void addSignatureScope(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
+		for(XmlSignatureScopeType scopeType : diagnosticSignature.getSignatureScopes().getSignatureScope()) {
+			XmlSignatureScope scope = new XmlSignatureScope();
+			scope.setName(scopeType.getName());
+			scope.setScope(scopeType.getScope());
+			scope.setValue(scopeType.getValue());
+			xmlSignature.getSignatureScope().add(scope);
 		}
 	}
 
@@ -272,7 +276,7 @@ public class SimpleReportBuilder {
 	// xmlSignature.getErrors().add(error.getText());
 	// }
 	// }
-
+	
 	private void addSigningTime(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
 		xmlSignature.setSigningTime(diagnosticSignature.getDateTime());
 	}

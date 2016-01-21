@@ -273,7 +273,7 @@
 					</fo:table-cell>
 				</fo:table-row>
 			
-				<xsl:for-each select="./dss:SignatureScopes/dss:SignatureScope">
+				<xsl:for-each select="dss:SignatureScope">
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block>

@@ -133,7 +133,7 @@
 		            <dd><xsl:value-of select="count(preceding-sibling::dss:Signature) + 1"/> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/></dd>
 		        </dl>
 		        
-		        <xsl:for-each select="./dss:SignatureScopes/dss:SignatureScope">
+		        <xsl:for-each select="dss:SignatureScope">
 			        <dl>
 			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
 			            <dt>Signature scope:</dt>
