@@ -309,7 +309,7 @@
         </xsl:if>
     </xsl:template>
     
-    <xsl:template match="dss:ISC|dss:VCI|dss:RFC|dss:CV|dss:SAV|dss:XCV">
+    <xsl:template match="dss:ISC|dss:VCI|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PCV|dss:VTS">
 		<div>
 			<xsl:attribute name="class">row</xsl:attribute>
 			<div>
@@ -317,22 +317,31 @@
 				<strong>
 					<xsl:choose>
 						<xsl:when test="name(.) = 'ISC'">
-							Identification of the signing certificate
+							Identification of the Signing Certificate (ISC)
 						</xsl:when>
 						<xsl:when test="name(.) = 'VCI'">
-							Validation Context Initialization
+							Validation Context Initialization (VCI)
 						</xsl:when>
 						<xsl:when test="name(.) = 'RFC'">
-							Revocation Freshness Checker
+							Revocation Freshness Checker (RFC)
 						</xsl:when>
 						<xsl:when test="name(.) = 'CV'">
-							Cryptographic Verification
+							Cryptographic Verification (CV)
 						</xsl:when>
 						<xsl:when test="name(.) = 'SAV'">
-							Signature Acceptance Validation
+							Signature Acceptance Validation (SAV)
 						</xsl:when>
 						<xsl:when test="name(.) = 'XCV'">
-							X509 Certificate Validation
+							X509 Certificate Validation (XCV)
+						</xsl:when>
+						<xsl:when test="name(.) = 'PSV'">
+							Past Signature Validation (PSV)
+						</xsl:when>
+						<xsl:when test="name(.) = 'PCV'">
+							Past Certificate Validation (PCV)
+						</xsl:when>
+						<xsl:when test="name(.) = 'VTS'">
+							Validation Time Sliding (VTS)
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:value-of select="name(.)" />
