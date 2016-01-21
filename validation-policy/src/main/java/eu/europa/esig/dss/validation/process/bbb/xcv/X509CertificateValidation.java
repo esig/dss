@@ -13,6 +13,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.IntermediateCertificateRevokedCheck;
@@ -32,7 +33,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateTS
 import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
 import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
-import eu.europa.esig.dss.validation.wrappers.TokenProxy;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
@@ -99,7 +99,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			// check cryptographic constraints for the revocation token
 			RevocationWrapper revocationData = currentCertificate.getRevocationData();
 			if (revocationData != null) {
-				item = item.setNextItem(certificateCryptographic(revocationData, Context.REVOCATION, SubContext.SIGNING_CERT));
+				item = item.setNextItem(revocationCryptographic(revocationData, Context.REVOCATION, SubContext.SIGNING_CERT));
 			}
 		}
 
@@ -122,7 +122,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 				// check cryptographic constraints for the revocation token
 				RevocationWrapper revocationData = certificate.getRevocationData();
 				if (revocationData != null) {
-					item = item.setNextItem(certificateCryptographic(revocationData, Context.REVOCATION, SubContext.CA_CERTIFICATE));
+					item = item.setNextItem(revocationCryptographic(revocationData, Context.REVOCATION, SubContext.CA_CERTIFICATE));
 				}
 
 			}
@@ -136,7 +136,6 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			item = item.setNextItem(signingCertificateIssuedToLegalPerson(currentCertificate));
 		}
-
 	}
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
@@ -204,9 +203,14 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		return new SigningCertificateTSLStatusAndValidityCheck(result, certificate, constraint);
 	}
 
-	private ChainItem<XmlXCV> certificateCryptographic(TokenProxy token, Context context, SubContext subcontext) {
+	private ChainItem<XmlXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
-		return new CryptographicCheck<XmlXCV>(result, token, currentTime, cryptographicConstraint);
+		return new CertificateCryptographicCheck(result, certificate, currentTime, cryptographicConstraint);
+	}
+
+	private ChainItem<XmlXCV> revocationCryptographic(RevocationWrapper revocationData, Context revocation, SubContext subcontext) {
+		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
+		return new CryptographicCheck<XmlXCV>(result, revocationData, currentTime, cryptographicConstraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateQualified(CertificateWrapper certificate) {
