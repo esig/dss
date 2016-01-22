@@ -69,6 +69,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
+		// Skip for Trusted Certificate
+		if (currentCertificate.isTrusted()) {
+			return;
+		}
+
 		// Checks SIGNING_CERT
 
 		item = item.setNextItem(certificateExpiration(currentCertificate, SubContext.SIGNING_CERT));
@@ -79,28 +84,35 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		item = item.setNextItem(certificateCryptographic(currentCertificate, context, SubContext.SIGNING_CERT));
 
-		if (!currentCertificate.isTrusted()) {
-			item = item.setNextItem(revocationDataAvailable(currentCertificate, SubContext.SIGNING_CERT));
+		item = item.setNextItem(revocationDataAvailable(currentCertificate, SubContext.SIGNING_CERT));
 
-			item = item.setNextItem(revocationDataTrusted(currentCertificate, SubContext.SIGNING_CERT));
+		item = item.setNextItem(revocationDataTrusted(currentCertificate, SubContext.SIGNING_CERT));
 
-			item = item.setNextItem(revocationFreshness(currentCertificate));
+		item = item.setNextItem(revocationFreshness(currentCertificate));
 
-			item = item.setNextItem(certificateRevoked(currentCertificate, SubContext.SIGNING_CERT));
+		item = item.setNextItem(certificateRevoked(currentCertificate, SubContext.SIGNING_CERT));
 
-			item = item.setNextItem(certificateOnHold(currentCertificate, SubContext.SIGNING_CERT));
+		item = item.setNextItem(certificateOnHold(currentCertificate, SubContext.SIGNING_CERT));
 
-			item = item.setNextItem(signingCertificateInTSLValidity(currentCertificate));
+		item = item.setNextItem(signingCertificateInTSLValidity(currentCertificate));
 
-			item = item.setNextItem(signingCertificateTSLStatus(currentCertificate));
+		item = item.setNextItem(signingCertificateTSLStatus(currentCertificate));
 
-			item = item.setNextItem(signingCertificateTSLStatusAndValidity(currentCertificate));
+		item = item.setNextItem(signingCertificateTSLStatusAndValidity(currentCertificate));
 
-			// check cryptographic constraints for the revocation token
-			RevocationWrapper revocationData = currentCertificate.getRevocationData();
-			if (revocationData != null) {
-				item = item.setNextItem(revocationCryptographic(revocationData, Context.REVOCATION, SubContext.SIGNING_CERT));
-			}
+		// These constraints apply only to the main signature
+		if (Context.SIGNATURE.equals(context)) {
+			item = item.setNextItem(signingCertificateQualified(currentCertificate));
+
+			item = item.setNextItem(signingCertificateSupportedBySSCD(currentCertificate));
+
+			item = item.setNextItem(signingCertificateIssuedToLegalPerson(currentCertificate));
+		}
+
+		// check cryptographic constraints for the revocation token
+		RevocationWrapper revocationData = currentCertificate.getRevocationData();
+		if (revocationData != null) {
+			item = item.setNextItem(revocationCryptographic(revocationData, Context.REVOCATION, SubContext.SIGNING_CERT));
 		}
 
 		// Check CA_CERTIFICATEs
@@ -120,21 +132,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 				item = item.setNextItem(certificateCryptographic(certificate, context, SubContext.CA_CERTIFICATE));
 
 				// check cryptographic constraints for the revocation token
-				RevocationWrapper revocationData = certificate.getRevocationData();
-				if (revocationData != null) {
-					item = item.setNextItem(revocationCryptographic(revocationData, Context.REVOCATION, SubContext.CA_CERTIFICATE));
+				RevocationWrapper caRevocationData = certificate.getRevocationData();
+				if (caRevocationData != null) {
+					item = item.setNextItem(revocationCryptographic(caRevocationData, Context.REVOCATION, SubContext.CA_CERTIFICATE));
 				}
-
 			}
-		}
-
-		// These constraints apply only to the main signature
-		if (Context.SIGNATURE.equals(context)) {
-			item = item.setNextItem(signingCertificateQualified(currentCertificate));
-
-			item = item.setNextItem(signingCertificateSupportedBySSCD(currentCertificate));
-
-			item = item.setNextItem(signingCertificateIssuedToLegalPerson(currentCertificate));
 		}
 	}
 

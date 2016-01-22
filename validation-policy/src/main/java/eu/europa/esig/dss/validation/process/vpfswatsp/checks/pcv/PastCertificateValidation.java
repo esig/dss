@@ -14,6 +14,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ProspectiveCertificateChainCheck;
@@ -22,6 +23,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTime
 import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
 import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.dss.validation.wrappers.TokenProxy;
+import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class PastCertificateValidation extends Chain<XmlPCV> {
@@ -141,7 +143,24 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * shall set the current status to FAILED/CHAIN_CONSTRAINTS_FAILURE and
 		 * shall go to step 1.
 		 */
-		// TODO
+		if (controlTime != null) {
+			certificateChain = token.getCertificateChain();
+			for (XmlChainCertificate certChainItem : certificateChain) {
+				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certChainItem.getId());
+				if (certificate.isTrusted()) {
+					// There is not need to check for the trusted certificate
+					continue;
+				}
+
+				SubContext subContext = SubContext.CA_CERTIFICATE;
+				if (StringUtils.equals(signingCertificateId, certChainItem.getId())) {
+					subContext = SubContext.SIGNING_CERT;
+				}
+
+				item = item.setNextItem(cryptographicCheck(result, certificate, controlTime, subContext));
+			}
+
+		}
 
 		/*
 		 * 5) The building block shall return the current status . If the
@@ -168,6 +187,11 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		controlTime = vts.getControlTime();
 
 		return new ValidationTimeSlidingCheck(result, vts, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
+		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, subContext);
+		return new CryptographicCheck<XmlPCV>(result, certificate, validationTime, constraint);
 	}
 
 	@Override
