@@ -9,7 +9,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
-import eu.europa.esig.dss.validation.policy.bbb.util.TestPolicyGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
@@ -17,7 +16,7 @@ import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class CryptographicVerificationTest {
+public class CryptographicVerificationTest extends AbstractValidationPolicy {
 
 	private static final Logger logger = LoggerFactory.getLogger(CryptographicVerificationTest.class);
 
@@ -28,8 +27,7 @@ public class CryptographicVerificationTest {
 		LevelConstraint failLevel = new LevelConstraint();
 		failLevel.setLevel(Level.FAIL);
 
-		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				TestPolicyGenerator.generatePolicy());
+		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, getPolicy());
 		XmlCV cv = verification.execute();
 
 		for (XmlConstraint constraint : cv.getConstraint()) {
@@ -47,8 +45,7 @@ public class CryptographicVerificationTest {
 		LevelConstraint failLevel = new LevelConstraint();
 		failLevel.setLevel(Level.FAIL);
 
-		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				TestPolicyGenerator.generatePolicy());
+		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, getPolicy());
 		XmlCV cv = verification.execute();
 
 		for (XmlConstraint constraint : cv.getConstraint()) {
@@ -67,8 +64,7 @@ public class CryptographicVerificationTest {
 		LevelConstraint failLevel = new LevelConstraint();
 		failLevel.setLevel(Level.FAIL);
 
-		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				TestPolicyGenerator.generatePolicy());
+		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, getPolicy());
 		XmlCV cv = verification.execute();
 
 		for (XmlConstraint constraint : cv.getConstraint()) {
@@ -87,8 +83,7 @@ public class CryptographicVerificationTest {
 		LevelConstraint failLevel = new LevelConstraint();
 		failLevel.setLevel(Level.FAIL);
 
-		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				TestPolicyGenerator.generatePolicy());
+		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, getPolicy());
 		XmlCV cv = verification.execute();
 
 		for (XmlConstraint constraint : cv.getConstraint()) {

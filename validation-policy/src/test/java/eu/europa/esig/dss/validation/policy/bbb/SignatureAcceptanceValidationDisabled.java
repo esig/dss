@@ -13,27 +13,22 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
-import eu.europa.esig.dss.validation.policy.bbb.util.TestPolicyGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
 import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class SignatureAcceptanceValidationTest {
+public class SignatureAcceptanceValidationDisabled extends AbstractValidationPolicy {
 
-	private static final Logger logger = LoggerFactory.getLogger(SignatureAcceptanceValidationTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(SignatureAcceptanceValidationDisabled.class);
 
 	@Test
 	public void testWithBasicDataAndCertifiedRolesAsInformLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
-
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE,
-				TestPolicyGenerator.generatePolicy());
+				getPolicy());
 		XmlSAV sav = validation.execute();
 
 		for (XmlConstraint constraint : sav.getConstraint()) {
@@ -41,18 +36,13 @@ public class SignatureAcceptanceValidationTest {
 		}
 
 		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
-		Assert.assertEquals(12, sav.getConstraint().size());
 	}
 
 	@Test
 	public void testWithBasicDataButCertifiedRolesAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getCertifiedRolesConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -71,11 +61,7 @@ public class SignatureAcceptanceValidationTest {
 	public void testWithBasicDataButCertifiedRolesAsWarn() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getCertifiedRolesConstraint().setLevel(Level.WARN);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -85,18 +71,13 @@ public class SignatureAcceptanceValidationTest {
 		}
 
 		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
-		Assert.assertEquals(12, sav.getConstraint().size());
 	}
 
 	@Test
 	public void testWithBasicDataButClaimedRolesAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getClaimedRoleConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -115,11 +96,7 @@ public class SignatureAcceptanceValidationTest {
 	public void testWithBasicDataButContentTypeAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getContentTypeConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -138,11 +115,7 @@ public class SignatureAcceptanceValidationTest {
 	public void testWithBasicDataButContentHintsAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getContentHintsConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -161,11 +134,7 @@ public class SignatureAcceptanceValidationTest {
 	public void testWithBasicDataButContentIdentifierAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getContentIdentifierConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -184,11 +153,7 @@ public class SignatureAcceptanceValidationTest {
 	public void testWithBasicDataButCommitmentTypeIndicationAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getCommitmentTypeIndicationConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -207,11 +172,7 @@ public class SignatureAcceptanceValidationTest {
 	public void testWithBasicDataButContentTimestampAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getContentTimestampConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -230,11 +191,7 @@ public class SignatureAcceptanceValidationTest {
 	public void testWithBasicDataButCounterSignatureAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-		policy.getCounterSignatureConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -253,11 +210,8 @@ public class SignatureAcceptanceValidationTest {
 	public void testWithBasicDataWithNoSigningTimeAndLevelFail() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateDiagnosticDataWithNoSigningDate();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
+		ValidationPolicy policy = getPolicy();
 		policy.getSigningTimeConstraint().setLevel(Level.FAIL);
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
@@ -269,17 +223,13 @@ public class SignatureAcceptanceValidationTest {
 		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPSTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
-		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
 	@Test
 	public void testWithCryptographicError() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateDiagnosticDataWithWrongEncriptionAlgo();
 
-		ValidationPolicy policy = TestPolicyGenerator.generatePolicy();
-
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ValidationPolicy policy = getPolicy();
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
