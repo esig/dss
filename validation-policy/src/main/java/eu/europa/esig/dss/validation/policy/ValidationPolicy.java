@@ -22,6 +22,8 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
@@ -34,14 +36,6 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
  * a specific validation policy
  */
 public interface ValidationPolicy {
-
-	public enum Context {
-		SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, REVOCATION
-	};
-
-	public enum SubContext {
-		SIGNING_CERT, CA_CERTIFICATE
-	};
 
 	/**
 	 * This function returns the algorithm expiration date extracted from the

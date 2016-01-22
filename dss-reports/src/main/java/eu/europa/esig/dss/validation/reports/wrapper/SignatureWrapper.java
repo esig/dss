@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.wrappers;
+package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.ArrayList;
 import java.util.Collections;

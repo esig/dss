@@ -14,7 +14,7 @@ import org.apache.cxf.jaxrs.model.wadl.Description;
 import com.sun.istack.Nullable;
 
 import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.validation.report.dto.ValidationResultDTO;
+import eu.europa.esig.dss.validation.reports.dto.ValidationResultDTO;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 @Path("ValidationService")

@@ -10,7 +10,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
-import eu.europa.esig.dss.validation.wrappers.TimestampWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 /**
  * 5.4 Validation process for time-stamps

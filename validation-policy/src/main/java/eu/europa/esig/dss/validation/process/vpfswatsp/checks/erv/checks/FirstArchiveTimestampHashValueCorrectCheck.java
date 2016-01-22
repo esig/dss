@@ -12,8 +12,8 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.wrappers.SignatureWrapper;
-import eu.europa.esig.dss.validation.wrappers.TimestampWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class FirstArchiveTimestampHashValueCorrectCheck extends ChainItem<XmlERV> {

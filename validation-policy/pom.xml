@@ -14,6 +14,10 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-reports</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
   			<artifactId>dss-policy-jaxb</artifactId>
 		</dependency>
 		<dependency>

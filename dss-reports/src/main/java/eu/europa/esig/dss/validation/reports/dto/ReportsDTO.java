@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.report.dto;
+package eu.europa.esig.dss.validation.reports.dto;
 
 import java.io.Serializable;
 

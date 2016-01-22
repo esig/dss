@@ -7,9 +7,9 @@ import org.apache.commons.collections.CollectionUtils;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
+import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy.SubContext;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -29,10 +29,10 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateSu
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateTSLStatusAndValidityCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateTSLStatusCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateTSLValidityCheck;
-import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
-import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
-import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
-import eu.europa.esig.dss.validation.wrappers.TokenProxy;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;

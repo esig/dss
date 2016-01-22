@@ -389,6 +389,11 @@
 	        </dependency>
 	        <dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-reports</artifactId>
+				<version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-remote-services</artifactId>
 				<version>${project.version}</version>
 	        </dependency>
@@ -782,6 +787,7 @@
 				<module>dss-diagnostic-jaxb</module>
 				<module>dss-simple-report-jaxb</module>
 				<module>dss-detailed-report-jaxb</module>
+				<module>dss-reports</module>
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-cades</module>
@@ -832,6 +838,7 @@
 				<module>dss-diagnostic-jaxb</module>
 				<module>dss-simple-report-jaxb</module>
 				<module>dss-detailed-report-jaxb</module>
+				<module>dss-reports</module>
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-cades</module>

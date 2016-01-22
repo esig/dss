@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.wrappers;
+package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,7 +36,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
-import eu.europa.esig.dss.validation.AttributeValue;
+import eu.europa.esig.dss.validation.reports.AttributeValue;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**

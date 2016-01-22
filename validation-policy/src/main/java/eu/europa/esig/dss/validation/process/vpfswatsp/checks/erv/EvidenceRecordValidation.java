@@ -17,9 +17,9 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.TimestampComparator;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.erv.checks.ArchiveTimestampsCoverEachOtherCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.erv.checks.ArchiveTimestampsValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.erv.checks.FirstArchiveTimestampHashValueCorrectCheck;
-import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
-import eu.europa.esig.dss.validation.wrappers.SignatureWrapper;
-import eu.europa.esig.dss.validation.wrappers.TimestampWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**

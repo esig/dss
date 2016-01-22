@@ -16,10 +16,10 @@ import eu.europa.esig.dss.validation.process.bbb.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.RevocationDataExistsCheck;
-import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
-import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
-import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
-import eu.europa.esig.dss.validation.wrappers.TokenProxy;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 
 public class ValidationTimeSliding extends Chain<XmlVTS> {
 

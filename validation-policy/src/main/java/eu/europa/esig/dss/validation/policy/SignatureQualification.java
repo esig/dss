@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
+import eu.europa.esig.dss.validation.reports.SignatureType;
+
 public class SignatureQualification {
 
 	private static final int QCP = 1;

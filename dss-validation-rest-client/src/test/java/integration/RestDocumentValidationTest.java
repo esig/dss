@@ -11,7 +11,7 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.validation.RestDocumentValidationService;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.report.dto.ValidationResultDTO;
+import eu.europa.esig.dss.validation.reports.dto.ValidationResultDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/test-context.xml")
