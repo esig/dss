@@ -5,10 +5,13 @@ import java.io.Serializable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.model.wadl.Description;
+
+import com.sun.istack.Nullable;
 
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.validation.report.dto.ValidationResultDTO;
@@ -22,5 +25,6 @@ public interface RestDocumentValidationService extends Serializable {
 
 	@POST
 	@Path("validateSignature")
-	ValidationResultDTO validateSignature(RemoteDocument signedFile, RemoteDocument originalFile, ConstraintsParameters policy);
+	ValidationResultDTO validateSignature(@PathParam("signedFile") RemoteDocument signedFile, 
+			@PathParam("originalFile") @Nullable RemoteDocument originalFile, @PathParam("policy") @Nullable ConstraintsParameters policy);
 }
