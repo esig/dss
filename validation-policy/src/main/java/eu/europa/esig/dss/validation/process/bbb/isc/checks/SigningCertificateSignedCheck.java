@@ -43,12 +43,12 @@ public class SigningCertificateSignedCheck extends ChainItem<XmlISC> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.FORMAT_FAILURE;
+		return SubIndication.NO_SIGNING_CERTIFICATE_FOUND;
 	}
 
 }
