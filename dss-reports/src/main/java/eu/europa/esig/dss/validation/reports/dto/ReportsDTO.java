@@ -6,16 +6,16 @@ import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 
-public class ValidationResultDTO implements Serializable {
+public class ReportsDTO implements Serializable {
 	
 	private DiagnosticData diagnosticData;
 	private SimpleReport simpleReport;
-	private eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport;
+	private DetailedReport detailedReport;
 	
-	public ValidationResultDTO() {
+	public ReportsDTO() {
 	}
 	
-	public ValidationResultDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport) {
+	public ReportsDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 		this.simpleReport = simpleReport;

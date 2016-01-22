@@ -22,17 +22,19 @@ package eu.europa.esig.dss.test.mock;
 
 import java.util.Calendar;
 
-import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 
 public class MockServiceInfo extends ServiceInfo {
+	
+	public static final String CA_QC = "http://uri.etsi.org/TrstSvc/Svctype/CA/QC";
+	public static final String SERVICE_STATUS_UNDERSUPERVISION_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision"; 
 
 	public MockServiceInfo() {
 
 		setTspName("DSS, Mock Office DSS-CA");
-		setType(TSLConstant.CA_QC);
+		setType(CA_QC);
 		setServiceName("DSS, Mock Service Name");
-		setStatus(TSLConstant.SERVICE_STATUS_UNDERSUPERVISION_119612);
+		setStatus(SERVICE_STATUS_UNDERSUPERVISION_119612);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.YEAR, -15);
 		setStatusStartDate(calendar.getTime());

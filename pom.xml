@@ -57,6 +57,7 @@
 		<cxf.version>2.7.16</cxf.version>
 		<junit.version>4.11</junit.version>
 		<commons-collecions.version>3.2.2</commons-collecions.version>
+		<jackson-jaxrs-json-provider.version>2.5.4</jackson-jaxrs-json-provider.version>
 	</properties>
 	
 	<build>
@@ -504,6 +505,16 @@
 				<scope>test</scope>
 			</dependency>
 			<!-- Public Dependencies -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-json-provider</artifactId>
+				<version>${jackson-jaxrs-json-provider.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>

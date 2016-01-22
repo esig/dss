@@ -102,7 +102,6 @@ import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.reports.AttributeValue;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;

@@ -7,7 +7,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.dto.ValidationResultDTO;
+import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class RemoteDocumentValidationService {
@@ -18,7 +18,7 @@ public class RemoteDocumentValidationService {
 		this.verifier = verifier;
 	}
 	
-	public ValidationResultDTO validateDocument(RemoteDocument signedFile, RemoteDocument originalFile, ConstraintsParameters policy) {
+	public ReportsDTO validateDocument(RemoteDocument signedFile, RemoteDocument originalFile, ConstraintsParameters policy) {
 		
 		DSSDocument signedDocument = new InMemoryDocument(signedFile.getBytes()); 
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
@@ -33,7 +33,7 @@ public class RemoteDocumentValidationService {
 		
 		Reports reports = policy != null ? signedDocValidator.validateDocument(policy) : signedDocValidator.validateDocument();
 		
-		ValidationResultDTO result = new ValidationResultDTO(reports.getDiagnosticData().getJaxbModel(), reports.getSimpleReport().getJaxbModel()
+		ReportsDTO result = new ReportsDTO(reports.getDiagnosticData().getJaxbModel(), reports.getSimpleReport().getJaxbModel()
 				, reports.getDetailedReport().getJAXBModel());
 		
 		return result;

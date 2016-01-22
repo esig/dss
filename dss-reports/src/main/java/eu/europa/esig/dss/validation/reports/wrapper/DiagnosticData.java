@@ -36,7 +36,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
-import eu.europa.esig.dss.validation.reports.AttributeValue;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -649,7 +648,7 @@ public class DiagnosticData {
 		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
 		List<SignatureWrapper> mixedSignatures = getSignatures();
 		for (SignatureWrapper signatureWrapper : mixedSignatures) {
-			if (!AttributeValue.COUNTERSIGNATURE.equals(signatureWrapper.getType())) {
+			if (StringUtils.isEmpty(signatureWrapper.getParentId())) {
 				signatures.add(signatureWrapper);
 			}
 		}
@@ -665,7 +664,7 @@ public class DiagnosticData {
 		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
 		List<SignatureWrapper> mixedSignatures = getSignatures();
 		for (SignatureWrapper signatureWrapper : mixedSignatures) {
-			if (AttributeValue.COUNTERSIGNATURE.equals(signatureWrapper.getType())) {
+			if (StringUtils.isNotEmpty(signatureWrapper.getParentId())) {
 				signatures.add(signatureWrapper);
 			}
 		}

@@ -10,7 +10,6 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
@@ -21,6 +20,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
+import eu.europa.esig.dss.validation.policy.TSLConstant;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 

@@ -10,6 +10,7 @@
 	<name>DSS Reports</name>
 
 	<dependencies>
+<!-- 		find a way to remove it -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-model</artifactId>
@@ -33,10 +34,6 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
 

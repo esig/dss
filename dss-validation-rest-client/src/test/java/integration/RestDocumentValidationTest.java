@@ -11,7 +11,7 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.validation.RestDocumentValidationService;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.reports.dto.ValidationResultDTO;
+import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/test-context.xml")
@@ -24,7 +24,7 @@ public class RestDocumentValidationTest {
 	public void testWithNoPolicyAndNoOriginalFile() {
 		RemoteDocument signedFile = new RemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
 		
-		ValidationResultDTO result = validationService.validateSignature(signedFile, null, null);
+		ReportsDTO result = validationService.validateSignature(signedFile, null, null);
 		
 		Assert.assertNotNull(result.getDiagnosticData());
 		Assert.assertNotNull(result.getDetailedReport());
