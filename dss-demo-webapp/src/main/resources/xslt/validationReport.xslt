@@ -31,7 +31,7 @@
 		       		</xsl:choose>
 		       	</xsl:variable>
 	   			Basic Building Blocks <br/>
-	   			(<xsl:value-of select="$bbbType"/> Id = <xsl:value-of select="@Id"/>)
+	   			<xsl:value-of select="$bbbType"/> (Id = <xsl:value-of select="@Id"/>)
 	        </div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 	    		<div>
@@ -97,28 +97,12 @@
 					Validation Process for Basic Signatures
 				</div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
-					<div>
-						<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-						<xsl:attribute name="id">collapseBasicValidationData</xsl:attribute>
-						<div>
-	    					<xsl:attribute name="class">row</xsl:attribute>
-		    				<div>
-					    		<xsl:attribute name="class">col-md-6</xsl:attribute>
-								<i>Basic Building Blocks validation</i>
-					    	</div>
-					    	<div>
-					    		<xsl:attribute name="class">col-md-6</xsl:attribute>
-						    	<a> 
-									<xsl:attribute name="href">#<xsl:value-of select="../@Id"/></xsl:attribute>
-									<span>
-										<xsl:attribute name="class">glyphicon glyphicon-circle-arrow-right</xsl:attribute>
-									</span>
-								</a>
-					    	</div>
-				    	</div>
-						<xsl:apply-templates/>
-					</div>
-				</xsl:if>
+		    		<div>
+		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+			        	<xsl:attribute name="id">collapseBasicValidationData</xsl:attribute>
+			        	<xsl:apply-templates/>
+		    		</div>
+		    	</xsl:if>
 			</div>
 		</div>
 	</xsl:template>
@@ -172,22 +156,6 @@
 						    		<div>
 						    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
 							        	<xsl:attribute name="id">collapseTimestampValidationData<xsl:value-of select="@Id"/></xsl:attribute>
-							        	<div>
-					    					<xsl:attribute name="class">row</xsl:attribute>
-						    				<div>
-									    		<xsl:attribute name="class">col-md-6</xsl:attribute>
-												<i>Basic Building Blocks validation</i>
-									    	</div>
-									    	<div>
-									    		<xsl:attribute name="class">col-md-6</xsl:attribute>
-										    	<a> 
-													<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>
-													<span>
-														<xsl:attribute name="class">glyphicon glyphicon-circle-arrow-right</xsl:attribute>
-													</span>
-												</a>
-									    	</div>
-								    	</div>
 							        	<xsl:apply-templates/>
 						    		</div>
 						    	</xsl:if>
@@ -314,7 +282,7 @@
 		<div>
 			<xsl:attribute name="class">row</xsl:attribute>
 			<div>
-				<xsl:attribute name="class">col-md-6</xsl:attribute>
+				<xsl:attribute name="class">col-md-8</xsl:attribute>
 				<strong>
 					<xsl:choose>
 						<xsl:when test="name(.) = 'FC'">
@@ -355,7 +323,7 @@
 				</strong>
 			</div>
 			<div>
-				<xsl:attribute name="class">col-md-6</xsl:attribute>
+				<xsl:attribute name="class">col-md-4</xsl:attribute>
 				<xsl:call-template name="signature-conclusion">
 					<xsl:with-param name="Conclusion" select="dss:Conclusion" />
 				</xsl:call-template>
@@ -369,11 +337,21 @@
 	    <div>
 	    	<xsl:attribute name="class">row</xsl:attribute>
 	    	<div>
-	    		<xsl:attribute name="class">col-md-6</xsl:attribute>
+	    		<xsl:attribute name="class">col-md-8</xsl:attribute>
 				<xsl:value-of select="dss:Name"/>
+	    		<xsl:if test="@Id">
+	    			<a> 
+						<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>
+						<xsl:attribute name="title">Basic Building Blocks validation</xsl:attribute>
+						<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
+						<span>
+							<xsl:attribute name="class">glyphicon glyphicon-circle-arrow-right</xsl:attribute>
+						</span>
+					</a>
+	    		</xsl:if>
 	    	</div>
 	    	<div>
-	    		<xsl:attribute name="class">col-md-6</xsl:attribute>
+	    		<xsl:attribute name="class">col-md-4</xsl:attribute>
 	        	<xsl:variable name="statusText" select="dss:Status"/>
 	        	<xsl:choose>
 					<xsl:when test="$statusText='OK'">
