@@ -16,7 +16,7 @@
     	<property name="service" ref="remoteSignatureService" />
     </bean>
 
-	<jaxrs:server id="jaxrsSignatureService" address="/rest">
+	<jaxrs:server id="jaxrsSignatureService" address="/rest/signature">
 		<jaxrs:serviceBeans>
 			<ref bean="restSignatureService" />
 		</jaxrs:serviceBeans>

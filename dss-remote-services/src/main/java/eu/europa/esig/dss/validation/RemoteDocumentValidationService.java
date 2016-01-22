@@ -14,10 +14,6 @@ public class RemoteDocumentValidationService {
 
 	private CertificateVerifier verifier;
 	
-	public RemoteDocumentValidationService(CertificateVerifier verifier) {
-		this.verifier = verifier;
-	}
-	
 	public ReportsDTO validateDocument(RemoteDocument signedFile, RemoteDocument originalFile, ConstraintsParameters policy) {
 		
 		DSSDocument signedDocument = new InMemoryDocument(signedFile.getBytes()); 
@@ -37,5 +33,9 @@ public class RemoteDocumentValidationService {
 				, reports.getDetailedReport().getJAXBModel());
 		
 		return result;
+	}
+	
+	public void setVerifier(CertificateVerifier verifier) {
+		this.verifier = verifier;
 	}
 }

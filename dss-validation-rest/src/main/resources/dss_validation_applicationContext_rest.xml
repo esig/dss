@@ -12,8 +12,8 @@
 	<import resource="classpath:/service-definitions.xml" />
 	
     <!-- REST VALIDATION SERVICE -->
-    <bean id="restValidationService" class="eu.europa.esig.dss.signature.RestDocumentValidationServiceImpl">
-    	<property name="service" ref="remoteValidationService" />
+    <bean id="restValidationService" class="eu.europa.esig.dss.validation.RestDocumentValidationServiceImpl">
+    	<property name="validationService" ref="remoteValidationService" />
     </bean>
 
 	<jaxrs:server id="jaxrsValidationService" address="/rest/validation">
