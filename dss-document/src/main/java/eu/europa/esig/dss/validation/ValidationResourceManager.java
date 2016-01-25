@@ -22,9 +22,13 @@ package eu.europa.esig.dss.validation;
 
 import java.io.InputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +125,12 @@ public class ValidationResourceManager {
 	 */
 	public static ConstraintsParameters load(final InputStream inputStream) throws DSSException {
 		try {
+			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = sf.newSchema(new StreamSource(ValidationResourceManager.class.getResourceAsStream(defaultPolicyXsdLocation)));
+			
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			unmarshaller.setSchema(schema);
+			
 			return (ConstraintsParameters) unmarshaller.unmarshal(inputStream);
 		} catch (Exception e) {
 			throw new DSSException("Unable to load policy : " + e.getMessage(), e);
