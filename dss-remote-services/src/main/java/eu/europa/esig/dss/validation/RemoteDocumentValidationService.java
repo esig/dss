@@ -22,7 +22,7 @@ public class RemoteDocumentValidationService {
 		
 		if(originalFile != null && originalFile.getBytes().length > 0) {
 			List<DSSDocument> list = new ArrayList<DSSDocument>();
-			DSSDocument orignalDocument = new InMemoryDocument(originalFile.getBytes());
+			DSSDocument orignalDocument = new InMemoryDocument(originalFile.getBytes(), originalFile.getName(), originalFile.getMimeType());
 			list.add(orignalDocument);
 			signedDocValidator.setDetachedContents(list);
 		}

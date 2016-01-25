@@ -39,12 +39,12 @@
 				<role>developer</role>
 			</roles>
 		</developer>
-		
+
 	</developers>
-	
+
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
-	
+
 		<log4j.version>1.2.17</log4j.version>
 		<spring.version>3.2.14.RELEASE</spring.version>
 		<tiles.version>2.2.2</tiles.version>
@@ -58,8 +58,9 @@
 		<junit.version>4.11</junit.version>
 		<commons-collecions.version>3.2.2</commons-collecions.version>
 		<jackson-jaxrs-json-provider.version>2.5.4</jackson-jaxrs-json-provider.version>
+		<javax.mail.version>1.4.5</javax.mail.version>
 	</properties>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -114,9 +115,9 @@
 						</goals>
 						<configuration>
 							<skipTests>false</skipTests>
-							<testFailureIgnore>false</testFailureIgnore>		
+							<testFailureIgnore>false</testFailureIgnore>
 							<includes>
-								<include>eu/**/*Test.java</include>	
+								<include>eu/**/*Test.java</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -128,9 +129,9 @@
 						</goals>
 						<configuration>
 							<skipTests>true</skipTests>
-							<testFailureIgnore>false</testFailureIgnore>		
+							<testFailureIgnore>false</testFailureIgnore>
 							<includes>
-								<include>integration/**/*Test.java</include>	
+								<include>integration/**/*Test.java</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -142,9 +143,9 @@
 						</goals>
 						<configuration>
 							<skipTests>false</skipTests>
-							<testFailureIgnore>true</testFailureIgnore>		
+							<testFailureIgnore>true</testFailureIgnore>
 							<includes>
-								<include>plugtests/**/*Test.java</include>	
+								<include>plugtests/**/*Test.java</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -156,9 +157,9 @@
 						</goals>
 						<configuration>
 							<skipTests>false</skipTests>
-							<testFailureIgnore>true</testFailureIgnore>						
+							<testFailureIgnore>true</testFailureIgnore>
 							<includes>
-								<include>known/issues/**/*Test.java</include>	
+								<include>known/issues/**/*Test.java</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -179,17 +180,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>attach-javadocs</id> -->
-<!-- 						<goals> -->
-<!-- 							<goal>jar</goal> -->
-<!-- 						</goals>	 -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
+				<!-- <executions> -->
+				<!-- <execution> -->
+				<!-- <id>attach-javadocs</id> -->
+				<!-- <goals> -->
+				<!-- <goal>jar</goal> -->
+				<!-- </goals> -->
+				<!-- </execution> -->
+				<!-- </executions> -->
 			</plugin>
 			<plugin>
-				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
+				<!-- explicitly define maven-deploy-plugin after other to force exec 
+					order -->
 				<artifactId>maven-deploy-plugin</artifactId>
 				<executions>
 					<execution>
@@ -222,9 +224,9 @@
 					<configuration>
 						<encoding>${project.encoding}</encoding>
 						<nonFilteredFileExtensions><!-- Avoid to modify keystore -->
-				          <nonFilteredFileExtension>jks</nonFilteredFileExtension> 
-				          <nonFilteredFileExtension>p12</nonFilteredFileExtension>
-				        </nonFilteredFileExtensions>
+							<nonFilteredFileExtension>jks</nonFilteredFileExtension>
+							<nonFilteredFileExtension>p12</nonFilteredFileExtension>
+						</nonFilteredFileExtensions>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -244,11 +246,11 @@
 					<artifactId>maven-shade-plugin</artifactId>
 					<version>2.4.1</version>
 				</plugin>
-                <plugin>
-                    <groupId>com.github.wvengen</groupId>
-                    <artifactId>proguard-maven-plugin</artifactId>
-                    <version>2.0.8</version>
-                </plugin>
+				<plugin>
+					<groupId>com.github.wvengen</groupId>
+					<artifactId>proguard-maven-plugin</artifactId>
+					<version>2.0.8</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jarsigner-plugin</artifactId>
@@ -383,66 +385,66 @@
 				<artifactId>dss-xades</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-	        <dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-model</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-reports</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-remote-services</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-rest</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-rest-client</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-soap</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-soap-client</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-rest</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-rest-client</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-soap</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-soap-client</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-token</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-jaxb</artifactId>
@@ -453,16 +455,16 @@
 				<artifactId>dss-tsl-validation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-	        <dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-common-validation-jaxb</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-diagnostic-jaxb</artifactId>
 				<version>${project.version}</version>
-	        </dependency>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-policy-jaxb</artifactId>
@@ -470,8 +472,8 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-	  			<artifactId>dss-detailed-report-jaxb</artifactId>
-	  			<version>${project.version}</version>
+				<artifactId>dss-detailed-report-jaxb</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -506,6 +508,11 @@
 			</dependency>
 			<!-- Public Dependencies -->
 			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>${javax.mail.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.fasterxml.jackson.jaxrs</groupId>
 				<artifactId>jackson-jaxrs-json-provider</artifactId>
 				<version>${jackson-jaxrs-json-provider.version}</version>
@@ -520,7 +527,7 @@
 				<artifactId>httpclient</artifactId>
 				<version>4.3.6</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
@@ -546,7 +553,7 @@
 				<artifactId>commons-fileupload</artifactId>
 				<version>1.3.1</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
@@ -623,7 +630,7 @@
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
@@ -769,13 +776,13 @@
 	<profiles>
 		<profile>
 			<id>notJava8</id>
-			
+
 			<activation>
 				<jdk>[1.6,1.8)</jdk>
 			</activation>
-			
+
 			<properties>
-			<project.source.version>1.6</project.source.version>
+				<project.source.version>1.6</project.source.version>
 			</properties>
 
 			<!-- Skip dss-standalone-app (JavaFX) -->
@@ -816,16 +823,16 @@
 				<module>dss-tsl-validation</module>
 			</modules>
 		</profile>
-		
+
 		<profile>
 			<id>java8</id>
-			
+
 			<activation>
 				<jdk>[1.8,</jdk>
 			</activation>
-			
+
 			<properties>
-			<project.source.version>1.8</project.source.version>
+				<project.source.version>1.8</project.source.version>
 			</properties>
 
 			<modules>
@@ -867,7 +874,7 @@
 				<module>dss-tsl-validation</module>
 			</modules>
 		</profile>
-	
+
 		<profile>
 			<id>delivery</id>
 			<build>

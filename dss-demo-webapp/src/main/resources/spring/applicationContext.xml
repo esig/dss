@@ -13,6 +13,7 @@
     <import resource="classpath:/dss_applicationContext_soap.xml"/>
 	<import resource="classpath:/dss_applicationContext_rest.xml"/>
 	<import resource="classpath:/dss_validation_applicationContext_rest.xml"/>
+	<import resource="classpath:/dss_validation_applicationContext_soap.xml"/>
     
     <context:annotation-config />
 	<context:component-scan base-package="eu.europa.esig.dss" />
