@@ -20,9 +20,9 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class X509CertificateValidationTest extends AbstractValidationPolicy {
+public class X509CertificateValidationDisabled extends AbstractValidationPolicy {
 
-	private static final Logger logger = LoggerFactory.getLogger(X509CertificateValidationTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(X509CertificateValidationDisabled.class);
 
 	@Test
 	public void CertificateValidationWithBasicData() throws Exception {
