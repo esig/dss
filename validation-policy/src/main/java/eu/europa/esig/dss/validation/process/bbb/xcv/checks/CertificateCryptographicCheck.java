@@ -4,7 +4,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
 public class CertificateCryptographicCheck extends CryptographicCheck<XmlXCV> {

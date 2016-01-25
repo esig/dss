@@ -2,13 +2,13 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
 import java.util.List;
 
-import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.MessageTag;
+import eu.europa.esig.dss.validation.policy.TSLConstant;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class SigningCertificateSupportedBySSCDCheck extends ChainItem<XmlXCV> {
