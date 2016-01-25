@@ -16,7 +16,7 @@ public class RemoteDocumentValidationService {
 	
 	public ReportsDTO validateDocument(RemoteDocument signedFile, RemoteDocument originalFile, ConstraintsParameters policy) {
 		
-		DSSDocument signedDocument = new InMemoryDocument(signedFile.getBytes()); 
+		DSSDocument signedDocument = new InMemoryDocument(signedFile.getBytes(), signedFile.getName(), signedFile.getMimeType()); 
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		signedDocValidator.setCertificateVerifier(verifier);
 		

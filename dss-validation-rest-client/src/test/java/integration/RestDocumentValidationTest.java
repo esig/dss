@@ -1,5 +1,7 @@
 package integration;
 
+import java.io.File;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +13,8 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.validation.RestDocumentValidationService;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.dto.DataToValidateDTO;
 import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -24,7 +28,9 @@ public class RestDocumentValidationTest {
 	public void testWithNoPolicyAndNoOriginalFile() {
 		RemoteDocument signedFile = new RemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
 		
-		ReportsDTO result = validationService.validateSignature(signedFile, null, null);
+		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, null, null);
+		
+		ReportsDTO result = validationService.validateSignature(toValidate);
 		
 		Assert.assertNotNull(result.getDiagnosticData());
 		Assert.assertNotNull(result.getDetailedReport());
@@ -33,5 +39,8 @@ public class RestDocumentValidationTest {
 		Assert.assertEquals(1, result.getSimpleReport().getSignature().size());
 		Assert.assertEquals(2, result.getDiagnosticData().getSignature().get(0).getTimestamps().getTimestamp().size());
 		Assert.assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.VALID));
+		
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
+		reports.print();
 	}
 }
