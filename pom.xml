@@ -357,16 +357,6 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-webservices</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-webservices-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-asic</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -794,8 +784,6 @@
 				<module>dss-spi</module>
 				<module>dss-test</module>
 				<module>sscd-mocca-adapter</module>
-				<module>dss-webservices</module>
-				<module>dss-webservices-client</module>
 				<module>dss-cookbook</module>
 				<module>dss-demo-webapp</module>
 				<module>dss-demo-bundle</module>
@@ -843,8 +831,6 @@
 				<module>dss-spi</module>
 				<module>dss-test</module>
 				<module>sscd-mocca-adapter</module>
-				<module>dss-webservices</module>
-				<module>dss-webservices-client</module>
 				<module>dss-standalone-app</module>
 				<module>dss-standalone-app-package</module>
 				<module>dss-cookbook</module>
