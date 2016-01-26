@@ -62,6 +62,14 @@
 				</div>
 			</div>
 		</c:if>
+		
+		<spring:message code="label.policy.acceptableFormats" var="translation" />
+        <jsp:include page="multi-value-constraints.jsp">
+            <jsp:param name="label" value="${translation}" />
+            <jsp:param name="levelValue" value="${signature.acceptableFormats.level}" />
+            <jsp:param name="list" value="${signature.acceptableFormats.id}" />
+            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.AcceptableFormats" />
+        </jsp:include>
 
 		<div >
 			<c:set var="basicSignatureConstraints" value="${signature.basicSignatureConstraints}" scope="request" />

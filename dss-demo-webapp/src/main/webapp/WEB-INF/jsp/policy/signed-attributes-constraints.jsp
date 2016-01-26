@@ -76,6 +76,14 @@
             <jsp:param name="pathToBind" value="${param.pathToBind}.ContentIdentifier" />
         </jsp:include>
         
+        <spring:message code="label.policy.commitmentTypeIndication" var="translation" />
+        <jsp:include page="multi-value-constraints.jsp">
+            <jsp:param name="label" value="${translation}" />
+            <jsp:param name="levelValue" value="${signedAttributes.commitmentTypeIndication.level}" />
+            <jsp:param name="list" value="${signedAttributes.commitmentTypeIndication.id}" />
+            <jsp:param name="pathToBind" value="${param.pathToBind}.CommitmentTypeIndication" />
+        </jsp:include>
+        
         <spring:message code="label.policy.signerLocation" var="translation" />
         <jsp:include page="level-constraint.jsp">
             <jsp:param name="label" value="${translation}" />
@@ -91,12 +99,13 @@
             <jsp:param name="pathToBind" value="${param.pathToBind}.ClaimedRoles" />
         </jsp:include>
         
-<%--         <spring:message code="label.policy.certifiedRoles" var="translation" /> --%>
-<%--         <jsp:include page="level-constraint.jsp"> --%>
-<%--             <jsp:param name="label" value="${translation}" /> --%>
-<%--             <jsp:param name="levelValue" value="${signedAttributes.certifiedRoles.level}" /> --%>
-<%--             <jsp:param name="pathToBind" value="MainSignature.MandatedSignedQProperties.CertifiedRoles.Level" /> --%>
-<%--         </jsp:include> --%>
+        <spring:message code="label.policy.certifiedRoles" var="translation" />
+        <jsp:include page="multi-value-constraints.jsp">
+            <jsp:param name="label" value="${translation}" />
+            <jsp:param name="levelValue" value="${signedAttributes.certifiedRoles.level}" />
+            <jsp:param name="list" value="${signedAttributes.certifiedRoles.id}" />
+            <jsp:param name="pathToBind" value="${param.pathToBind}.CertifiedRoles" />
+        </jsp:include>
 
 		<spring:message code="label.policy.content.timestamp" var="translation" />
         <jsp:include page="level-constraint.jsp">

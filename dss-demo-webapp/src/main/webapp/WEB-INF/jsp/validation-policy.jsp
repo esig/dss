@@ -77,6 +77,24 @@
     function escapeString(string) {
        return string.replace( /(:|\.|\[|\]|,)/g, "\\$1" );
     }
+	
+	// This function is used to add a value in a multi-value-constraint
+    function addValue(path) {
+		var id = "multi-value-"+path;
+		var block = document.getElementById(id);
+		var number = block.getElementsByTagName("input").length;
+		
+		var divNode = document.createElement("div");
+		divNode.setAttribute("class", "col-sm-7 col-sm-offset-5");
+		divNode.setAttribute("style", "margin-bottom: 15px;");
+		
+		var inputNode = document.createElement("input");
+		inputNode.setAttribute("class", "form-control");
+		inputNode.setAttribute("name", path+".Id["+number+"]");
+		
+		divNode.appendChild(inputNode);
+		block.appendChild(divNode);
+	}
 
     $('.encryptionAlgo:checkbox').change(function() {
 

@@ -136,27 +136,6 @@
             <jsp:param name="id" value="crypto-${param.id}" />
             <jsp:param name="prefixPath" value="${param.pathToBindPrefix}.Cryptographic" />
         </jsp:include>
-        
-<!--         END -->
-
-
-<%--         <spring:message code="label.policy.attributePresent" var="translation" /> --%>
-<%--         <jsp:include page="level-constraint.jsp"> --%>
-<%--             <jsp:param name="label" value="${translation}" /> --%>
-<%--             <jsp:param name="levelValue" value="${currentCertificate.attributePresent.level}" /> --%>
-<%--             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.AttributePresent.Level" /> --%>
-<%--         </jsp:include> --%>
-
-
-
-<%--         <spring:message code="label.policy.signed" var="translation" /> --%>
-<%--         <jsp:include page="level-constraint.jsp"> --%>
-<%--             <jsp:param name="label" value="${translation}" /> --%>
-<%--             <jsp:param name="levelValue" value="${currentCertificate.signed.level}" /> --%>
-<%--             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.Signed.Level" /> --%>
-<%--         </jsp:include>  --%>
-    
-        
     </div>
 </div>
 
