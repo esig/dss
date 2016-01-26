@@ -22,8 +22,6 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
@@ -207,7 +205,7 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if key-usage for a given context element
 	 *         is present in the constraint file, null otherwise.
 	 */
-	MultiValuesConstraint getSigningCertificateKeyUsageConstraint(Context context, SubContext subContext);
+	MultiValuesConstraint getCertificateKeyUsageConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @param context
@@ -382,5 +380,19 @@ public interface ValidationPolicy {
 	LevelConstraint getCounterSignatureConstraint();
 
 	MultiValuesConstraint getSignatureFormatConstraint(Context context);
+
+	MultiValuesConstraint getCertificateCountryConstraint(Context context, SubContext subContext);
+
+	MultiValuesConstraint getCertificateOrganizationNameConstraint(Context context, SubContext subContext);
+
+	MultiValuesConstraint getCertificateOrganizationUnitConstraint(Context context, SubContext subContext);
+
+	MultiValuesConstraint getCertificateSurnameConstraint(Context context, SubContext subContext);
+
+	MultiValuesConstraint getCertificateGivenNameConstraint(Context context, SubContext subContext);
+
+	MultiValuesConstraint getCertificateCommonNameConstraint(Context context, SubContext subContext);
+
+	MultiValuesConstraint getCertificatePseudonymConstraint(Context context, SubContext subContext);
 
 }

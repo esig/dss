@@ -137,6 +137,21 @@ public enum MessageTag {
 	BBB_XCV_ICSI("Is the certificate's signature intact?"),
 	BBB_XCV_ICSI_ANS("The signature of the certificate is spoiled or it is not possible to validate it!"),
 
+	BBB_XCV_ISCGCOUN("Has the certificate given country-name?"),
+	BBB_XCV_ISCGCOUN_ANS("The certificate has not expected country-name!"),
+	BBB_XCV_ISCGORGAN("Has the certificate given organization name?"),
+	BBB_XCV_ISCGORGAN_ANS("The certificate has not expected organization name!"),
+	BBB_XCV_ISCGORGAU("Has the certificate given organization unit?"),
+	BBB_XCV_ISCGORGAU_ANS("The certificate has not expected organization unit!"),
+	BBB_XCV_ISCGSURN("Has the certificate given surname?"),
+	BBB_XCV_ISCGSURN_ANS("The certificate has not expected surname!"),
+	BBB_XCV_ISCGGIVEN("Has the certificate given given name?"),
+	BBB_XCV_ISCGGIVEN_ANS("The certificate has not expected given name!"),
+	BBB_XCV_ISCGPSEUDO("Has the certificate given pseudonym?"),
+	BBB_XCV_ISCGPSEUDO_ANS("The certificate has not expected pseudonym!"),
+	BBB_XCV_ISCGCOMMONN("Has the certificate given common name?"),
+	BBB_XCV_ISCGCOMMONN_ANS("The certificate has not expected common name!"),
+
 	XCV_IFCCIIPC_ANS("The interval ['%s', '%s'] for the certificate ['%s'] is inconsistent in the prospective chain."),
 
 	CTS_DRIE("Does the revocation information exist?"),

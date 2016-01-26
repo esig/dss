@@ -28,8 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.validation.DateUtils;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
@@ -250,7 +248,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public CryptographicConstraint getCertificateCryptographicConstraint(final Context context, final SubContext subContext) {
+	public CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getCryptographic();
@@ -259,7 +257,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public MultiValuesConstraint getSigningCertificateKeyUsageConstraint(final Context context, SubContext subContext) {
+	public MultiValuesConstraint getCertificateKeyUsageConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getKeyUsage();
@@ -268,7 +266,70 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateNotExpiredConstraint(final Context context, final SubContext subContext) {
+	public MultiValuesConstraint getCertificateSurnameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSurname();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateGivenNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getGivenName();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateCommonNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getCommonName();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePseudonymConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPseudonym();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateCountryConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getCountry();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateOrganizationNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getOrganizationName();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateOrganizationUnitConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getOrganizationUnit();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getNotExpired();
@@ -277,7 +338,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getProspectiveCertificateChainConstraint(final Context context) {
+	public LevelConstraint getProspectiveCertificateChainConstraint(Context context) {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
 			return basicSignatureConstraints.getProspectiveCertificateChain();
@@ -286,7 +347,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateSignatureConstraint(final Context context, final SubContext subContext) {
+	public LevelConstraint getCertificateSignatureConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getSignature();
