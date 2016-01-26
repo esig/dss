@@ -23,10 +23,10 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.reports.Reports;
 
 public class TwoPAdESSigniatureMustHaveDifferentIdTest {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(TwoPAdESSigniatureMustHaveDifferentIdTest.class);
 
 	@Test
@@ -35,7 +35,7 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest {
 
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-		
+
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
@@ -45,32 +45,32 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest {
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
-		
+
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		DocumentSignatureService<PAdESSignatureParameters> service = new PAdESService(certificateVerifier);
-		
+
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		DSSDocument firstSignedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(firstSignedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		String firstId = reports.getSimpleReport().getFirstSignatureId();
-		
+
 		signatureParameters.bLevel().setSigningDate(new Date());
 		dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		DSSDocument secondSignedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		
+
 		validator = SignedDocumentValidator.fromDocument(secondSignedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		reports = validator.validateDocument();
 		String secondId = reports.getSimpleReport().getFirstSignatureId();
-		
+
 		logger.info("First signature id  : " + firstId);
 		logger.info("Second signature id  : " + secondId);
-		
+
 		Assert.assertNotEquals(firstId, secondId);
 	}
 }
