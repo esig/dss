@@ -8,7 +8,7 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.rfc.checks.NextUpdateCheck;
 import eu.europa.esig.dss.validation.process.bbb.rfc.checks.RevocationDataFreshCheck;
-import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 
 /**
  * 5.2.5 Revocation freshness checker

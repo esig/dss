@@ -90,7 +90,11 @@
 					<xsl:attribute name="flow-name">xsl-region-body</xsl:attribute>
 					<xsl:attribute name="font-size">9pt</xsl:attribute>
 					
-					<xsl:apply-templates />
+					<xsl:apply-templates select="dss:Signature"/>
+				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
+				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
+				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
+				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
 					
 					<fo:block>
 						<xsl:attribute name="id">theEnd</xsl:attribute>
@@ -109,10 +113,17 @@
        		<xsl:attribute name="color">white</xsl:attribute>
        		<xsl:attribute name="padding">5px</xsl:attribute>
        		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+       		<xsl:variable name="bbbId" select="@Id" />
+	       	<xsl:variable name="bbbType">
+	       		<xsl:choose>
+	       			<xsl:when test="@Type = 'TIMESTAMP'"><xsl:value-of select="../dss:Signature/dss:ValidationProcessTimestamps[@Id = $bbbId]/@Type"/></xsl:when>
+	       			<xsl:otherwise><xsl:value-of select="@Type"/></xsl:otherwise>
+	       		</xsl:choose>
+	       	</xsl:variable>
     		Basic Building Blocks
     		<fo:block>
     			<xsl:attribute name="font-size">7pt</xsl:attribute>
-    			<xsl:value-of select="@Type"/> - <xsl:value-of select="@Id"/>
+    			<xsl:value-of select="$bbbType"/> - <xsl:value-of select="$bbbId"/>
     		</fo:block>
     	</fo:block>
     	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">

@@ -8,7 +8,7 @@ import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.wrappers.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {

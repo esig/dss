@@ -66,7 +66,7 @@ public class ValidateSignedXmlCadesB extends Cookbook {
 
 		validator.setCertificateVerifier(verifier);
 
-		eu.europa.esig.dss.validation.report.Reports reports = validator.validateDocument();
+		eu.europa.esig.dss.validation.reports.Reports reports = validator.validateDocument();
 
 		InputStream is = new ByteArrayInputStream(reports.getXmlSimpleReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationXmlCadesB_simpleReport.xml");

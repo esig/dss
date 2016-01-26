@@ -5,8 +5,8 @@ import java.util.Date;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
-import eu.europa.esig.dss.validation.wrappers.AbstractTokenProxy;
-import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.AbstractTokenProxy;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any

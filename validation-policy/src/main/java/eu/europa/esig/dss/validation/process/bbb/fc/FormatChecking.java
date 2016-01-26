@@ -1,12 +1,12 @@
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
+import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy.Context;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
-import eu.europa.esig.dss.validation.wrappers.SignatureWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 /**

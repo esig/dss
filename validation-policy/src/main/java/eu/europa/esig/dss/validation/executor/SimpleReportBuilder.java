@@ -27,7 +27,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
@@ -43,14 +42,15 @@ import eu.europa.esig.dss.validation.AttributeValue;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.SignatureQualification;
-import eu.europa.esig.dss.validation.policy.SignatureType;
 import eu.europa.esig.dss.validation.policy.TLQualification;
+import eu.europa.esig.dss.validation.policy.TSLConstant;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.wrappers.CertificateWrapper;
-import eu.europa.esig.dss.validation.wrappers.DiagnosticData;
-import eu.europa.esig.dss.validation.wrappers.SignatureWrapper;
+import eu.europa.esig.dss.validation.reports.SignatureType;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.

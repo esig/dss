@@ -16,7 +16,7 @@
     	<property name="service" ref="remoteSignatureService" />
     </bean>
 
-	<jaxrs:server id="jaxrsSignatureService" address="/rest">
+	<jaxrs:server id="jaxrsSignatureService" address="/rest/signature">
 		<jaxrs:serviceBeans>
 			<ref bean="restSignatureService" />
 		</jaxrs:serviceBeans>
@@ -27,19 +27,4 @@
 			<cxf:logging />
 		</jaxrs:features>
 	</jaxrs:server>
-
-    <!-- VALIDATION SERVICE 
-    <bean id="dss.validation.validationService" class="eu.europa.esig.dss.ws.impl.ValidationServiceImpl">
-        <property name="certificateVerifier" ref="certificateVerifier"/>
-    </bean>
-
-    <jaxws:endpoint id="validationService" implementor="#dss.validation.validationService" address="/validationService" />
-
-    <bean id="certificateVerifier" class="eu.europa.esig.dss.validation.CommonCertificateVerifier">
-        <property name="trustedCertSource" ref="trustedListSource"/>
-        <property name="ocspSource" ref="ocspSource"/>
-        <property name="crlSource" ref="crlSource"/>
-        <property name="dataLoader" ref="dataLoader"/>
-    </bean>-->
-
 </beans>

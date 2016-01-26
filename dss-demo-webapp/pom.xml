@@ -187,11 +187,21 @@
 			<artifactId>dss-soap</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation-soap</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		
 		<!-- REST -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-rest</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation-rest</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		

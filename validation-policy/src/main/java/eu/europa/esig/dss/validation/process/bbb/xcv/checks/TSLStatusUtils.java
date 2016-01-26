@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
-import eu.europa.esig.dss.TSLConstant;
+import eu.europa.esig.dss.validation.policy.TSLConstant;
 
 public final class TSLStatusUtils {
 
