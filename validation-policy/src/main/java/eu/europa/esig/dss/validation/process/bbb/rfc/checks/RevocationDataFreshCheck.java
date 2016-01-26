@@ -40,7 +40,7 @@ public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 
 	private long getMaxFreshness() {
 		long maxFreshness = RuleUtils.convertDuration(timeConstraint);
-		if (maxFreshness == 0) {
+		if (maxFreshness == Integer.MAX_VALUE) {
 			maxFreshness = diff(revocationData.getNextUpdate(), revocationData.getThisUpdate());
 		}
 		return maxFreshness;
