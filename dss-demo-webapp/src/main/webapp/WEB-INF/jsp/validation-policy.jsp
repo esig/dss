@@ -25,13 +25,23 @@
         </div>
     </div>
 
-    <c:set var="signature" value="${policy.mainSignature}" scope="request" />
+    <c:set var="signature" value="${policy.signatureConstraints}" scope="request" />
     <spring:message code="label.policy.title.signature" var="title" />
     <jsp:include page="policy/signature-constraints.jsp">
         <jsp:param name="id" value="signature" />
         <jsp:param name="title" value="${title}" />
-        <jsp:param name="pathToBindPrefix" value="MainSignature" />
+        <jsp:param name="pathToBindPrefix" value="SignatureConstraints" />
     </jsp:include>
+    
+    
+    <c:set var="counterSignature" value="${policy.counterSignatureConstraints}" scope="request" />
+    <spring:message code="label.policy.countersignature" var="title" />
+    <jsp:include page="policy/signature-constraints.jsp">
+        <jsp:param name="id" value="counterSignature" />
+        <jsp:param name="title" value="${title}" />
+        <jsp:param name="pathToBindPrefix" value="CounterSignatureConstraints" />
+    </jsp:include>
+    
 
     <c:set var="timestamp" value="${policy.timestamp}" scope="request" />
     <spring:message code="label.policy.timestamp" var="title" />
@@ -40,9 +50,20 @@
         <jsp:param name="title" value="${title}" />
         <jsp:param name="pathToBindPrefix" value="Timestamp" />
     </jsp:include>
-
+    
     <c:set var="revocation" value="${policy.revocation}" scope="request" />
-    <jsp:include page="policy/revocation-constraints.jsp" />
+    <spring:message code="label.policy.revocation" var="title" />
+    <jsp:include page="policy/revocation-constraints.jsp">
+        <jsp:param name="id" value="revocation" />
+        <jsp:param name="title" value="${title}" />
+        <jsp:param name="pathToBindPrefix" value="Revocation" />
+    </jsp:include>
+    
+    <c:set var="cryptographic" value="${policy.cryptographic}" scope="request" />
+    <jsp:include page="policy/cryptographic-constraints.jsp">
+        <jsp:param name="id" value="crypto" />
+        <jsp:param name="pathToBind" value="Cryptographic" />
+    </jsp:include>
     
     <div id="binding" class="hidden"></div>
 
