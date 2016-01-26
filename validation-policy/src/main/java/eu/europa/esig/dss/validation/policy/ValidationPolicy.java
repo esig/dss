@@ -21,383 +21,378 @@
 package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
-import java.util.List;
 
-import org.w3c.dom.Document;
-
-import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
+import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
- * This class encapsulates the constraint file that controls the policy to be used during the validation process. This is the base class used to implement a specific validation
- * policy
+ * This class encapsulates the constraint file that controls the policy to be
+ * used during the validation process. This is the base class used to implement
+ * a specific validation policy
  */
-public abstract class ValidationPolicy extends XmlDom {
-
-	public ValidationPolicy(final Document document) {
-
-		super(document);
-	}
-	/**
-	 * @return
-	 */
-	public abstract boolean isRevocationFreshnessToBeChecked();
-
-	public abstract String getFormatedMaxRevocationFreshness();
+public interface ValidationPolicy {
 
 	/**
-	 * This function returns the maximum duration in milliseconds for which the revocation data are considered fresh.
+	 * This function returns the algorithm expiration date extracted from the
+	 * 'constraint.xml' file. If the TAG AlgoExpirationDate is not present
+	 * within the constraints {@code null} is returned.
 	 *
-	 * @return
-	 */
-	public abstract Long getMaxRevocationFreshness();
-
-	/**
-	 * This function returns the algorithm expiration date extracted from the 'constraint.xml' file. If the TAG AlgoExpirationDate is not present within the
-	 * constraints {@code null} is returned.
-	 *
-	 * @param algorithm algorithm (SHA1, SHA256, RSA2048...) to be checked
+	 * @param algorithm
+	 *            algorithm (SHA1, SHA256, RSA2048...) to be checked
 	 * @return expiration date or null
 	 */
-	public abstract Date getAlgorithmExpirationDate(String algorithm);
+	Date getAlgorithmExpirationDate(String algorithm, Context context, SubContext subContext);
 
 	/**
-	 * Indicates if the signature policy should be checked. If AcceptablePolicies element is absent within the constraint file then null is returned,
-	 * otherwise the list of identifiers is initialised.
+	 * Indicates if the signature policy should be checked. If
+	 * AcceptablePolicies element is absent within the constraint file then null
+	 * is returned, otherwise the list of identifiers is initialised.
 	 *
-	 * @return {@code Constraint} if SigningTime element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if SigningTime element is present in the
+	 *         constraint file, null otherwise.
 	 */
-	public abstract SignaturePolicyConstraint getSignaturePolicyConstraint();
+	MultiValuesConstraint getSignaturePolicyConstraint(Context context);
 
 	/**
-	 * Indicates if the structural validation should be checked. If StructuralValidation element is absent within the constraint file then null is returned.
+	 * Indicates if the structural validation should be checked. If
+	 * StructuralValidation element is absent within the constraint file then
+	 * null is returned.
 	 *
-	 * @return {@code Constraint} if StructuralValidation element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if StructuralValidation element is
+	 *         present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getStructuralValidationConstraint();
+	LevelConstraint getStructuralValidationConstraint(Context context);
 
 	/**
-	 * Indicates if the signed property: signing-time should be checked. If SigningTime element is absent within the constraint file then null is returned.
+	 * Indicates if the signed property: signing-time should be checked. If
+	 * SigningTime element is absent within the constraint file then null is
+	 * returned.
 	 *
-	 * @return {@code Constraint} if SigningTime element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if SigningTime element is present in the
+	 *         constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningTimeConstraint();
+	LevelConstraint getSigningTimeConstraint();
 
 	/**
-	 * Indicates if the signed property: content-type should be checked. If ContentType element is absent within the constraint file then null is returned.
+	 * Indicates if the signed property: content-type should be checked. If
+	 * ContentType element is absent within the constraint file then null is
+	 * returned.
 	 *
-	 * @return {@code Constraint} if ContentType element is present in the constraint file, null otherwise.
+	 * @return {@code ValueConstraint} if ContentType element is present in the
+	 *         constraint file, null otherwise.
 	 */
-	public abstract Constraint getContentTypeConstraint();
+	ValueConstraint getContentTypeConstraint();
 
 	/**
-	 * Indicates if the signed property: content-hints should be checked. If ContentHints element is absent within the constraint file then null is returned.
+	 * Indicates if the signed property: content-hints should be checked. If
+	 * ContentHints element is absent within the constraint file then null is
+	 * returned.
 	 *
-	 * @return {@code Constraint} if ContentHints element is present in the constraint file, null otherwise.
+	 * @return {@code ValueConstraint} if ContentHints element is present in the
+	 *         constraint file, null otherwise.
 	 */
-	public abstract Constraint getContentHintsConstraint();
+	ValueConstraint getContentHintsConstraint();
 
 	/**
-	 * Indicates if the signed property: content-identifier should be checked. If ContentIdentifier element is absent within the constraint file then null is returned.
+	 * Indicates if the signed property: content-identifier should be checked.
+	 * If ContentIdentifier element is absent within the constraint file then
+	 * null is returned.
 	 *
-	 * @return {@code Constraint} if ContentIdentifier element is present in the constraint file, null otherwise.
+	 * @return {@code ValueConstraint} if ContentIdentifier element is present
+	 *         in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getContentIdentifierConstraint();
+	ValueConstraint getContentIdentifierConstraint();
 
 	/**
-	 * Indicates if the signed property: commitment-type-indication should be checked. If CommitmentTypeIndication element is absent within the constraint file then null is
-	 * returned, otherwise the list of identifiers is initialised.
+	 * Indicates if the signed property: commitment-type-indication should be
+	 * checked. If CommitmentTypeIndication element is absent within the
+	 * constraint file then null is returned, otherwise the list of identifiers
+	 * is initialised.
 	 *
-	 * @return {@code Constraint} if CommitmentTypeIndication element is present in the constraint file, null otherwise.
+	 * @return {@code MultiValuesConstraint} if CommitmentTypeIndication element
+	 *         is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getCommitmentTypeIndicationConstraint();
+	MultiValuesConstraint getCommitmentTypeIndicationConstraint();
 
 	/**
-	 * Indicates if the signed property: signer-location should be checked. If SignerLocation element is absent within the constraint file then null is returned.
+	 * Indicates if the signed property: signer-location should be checked. If
+	 * SignerLocation element is absent within the constraint file then null is
+	 * returned.
 	 *
-	 * @return {@code Constraint} if SignerLocation element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if SignerLocation element is present in
+	 *         the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSignerLocationConstraint();
+	LevelConstraint getSignerLocationConstraint();
 
 	/**
-	 * Indicates if the signed property: content-time-stamp should be checked. If ContentTimeStamp element is absent within the constraint file then null is returned.
+	 * Indicates if the signed property: content-time-stamp should be checked.
+	 * If ContentTimeStamp element is absent within the constraint file then
+	 * null is returned.
 	 *
-	 * @return {@code Constraint} if ContentTimeStamp element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if ContentTimeStamp element is present in
+	 *         the constraint file, null otherwise.
 	 */
-	public abstract Constraint getContentTimestampPresenceConstraint();
+	LevelConstraint getContentTimestampConstraint();
 
 	/**
-	 * Indicates if the signed property: content-time-stamp should be checked. If ClaimedRoles element is absent within the constraint file then null is returned.
+	 * Indicates if the unsigned property: claimed-role should be checked. If
+	 * ClaimedRoles element is absent within the constraint file then null is
+	 * returned.
 	 *
-	 * @return {@code Constraint} if ClaimedRoles element is present in the constraint file, null otherwise.
+	 * @return {@code MultiValuesConstraint} if ClaimedRoles element is present
+	 *         in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getClaimedRoleConstraint();
+	MultiValuesConstraint getClaimedRoleConstraint();
 
 	/**
 	 * Return the mandated signer role.
 	 *
 	 * @return
 	 */
-	public abstract List<String> getClaimedRoles();
-
-	/**
-	 * Indicates if the presence of the Signer Role is mandatory.
-	 *
-	 * @return
-	 */
-	public abstract boolean shouldCheckIfCertifiedRoleIsPresent();
-
-	/**
-	 * Return the mandated signer role.
-	 *
-	 * @return
-	 */
-	public abstract List<String> getCertifiedRoles();
+	MultiValuesConstraint getCertifiedRolesConstraint();
 
 	/**
 	 * Returns the name of the policy.
 	 *
 	 * @return
 	 */
-	public abstract String getPolicyName();
+	String getPolicyName();
 
 	/**
 	 * Returns the policy description.
 	 *
 	 * @return
 	 */
-	public abstract String getPolicyDescription();
+	String getPolicyDescription();
 
 	/**
-	 * Returns the timestamp delay in milliseconds.
+	 * This method creates the {@code SignatureCryptographicConstraint}
+	 * corresponding to the context parameter. If AcceptableEncryptionAlgo is
+	 * not present in the constraint file the null is returned.
 	 *
-	 * @return
-	 */
-	public abstract Long getTimestampDelayTime();
-
-	public abstract String getCertifiedRolesAttendance();
-
-	/**
-	 * This method creates the {@code SignatureCryptographicConstraint} corresponding to the context parameter. If AcceptableEncryptionAlgo is not present in the constraint file
-	 * the null is returned.
-	 *
-	 * @param context The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
-	 * @return {@code SignatureCryptographicConstraint} if AcceptableEncryptionAlgo for a given context element is present in the constraint file, null otherwise.
-	 */
-	public abstract SignatureCryptographicConstraint getSignatureCryptographicConstraint(String context);
-
-	/**
-	 * This method creates the {@code SignatureCryptographicConstraint} corresponding to the context parameter. If AcceptableEncryptionAlgo is not present in the constraint file
-	 * the null is returned.
-	 *
-	 * @param context    The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
-	 * @param subContext the sub context of the signature cryptographic constraints: EMPTY (signature itself), SigningCertificate, CACertificate
-	 * @return {@code SignatureCryptographicConstraint} if AcceptableEncryptionAlgo for a given context element is present in the constraint file, null otherwise.
-	 */
-	public abstract SignatureCryptographicConstraint getSignatureCryptographicConstraint(String context, String subContext);
-
-	/**
-	 * This method creates the {@code SignatureCryptographicConstraint} corresponding to the context parameter. If AcceptableEncryptionAlgo is not present in the constraint file
-	 * the null is returned.
-	 *
-	 * @param rootXPathQuery The context of the signature cryptographic constraints is included within the XPath query.
-	 * @param context        The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
-	 * @param subContext     the sub context of the signature cryptographic constraints: EMPTY (signature itself), SigningCertificate, CACertificate
-	 * @return {@code SignatureCryptographicConstraint} if AcceptableEncryptionAlgo for a given context element is present in the constraint file, null otherwise.
-	 */
-	protected abstract SignatureCryptographicConstraint getSignatureCryptographicConstraint_(String rootXPathQuery, String context, String subContext);
-
-	/**
 	 * @param context
-	 * @return {@code Constraint} if key-usage for a given context element is present in the constraint file, null otherwise.
+	 *            The context of the signature cryptographic constraints:
+	 *            MainSignature, Timestamp, Revocation
+	 * @return {@code SignatureCryptographicConstraint} if
+	 *         AcceptableEncryptionAlgo for a given context element is present
+	 *         in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateKeyUsageConstraint(String context);
+	CryptographicConstraint getSignatureCryptographicConstraint(Context context);
+
+	/**
+	 * This method creates the {@code SignatureCryptographicConstraint}
+	 * corresponding to the context parameter. If AcceptableEncryptionAlgo is
+	 * not present in the constraint file the null is returned.
+	 *
+	 * @param context
+	 *            The context of the signature cryptographic constraints:
+	 *            MainSignature, Timestamp, Revocation
+	 * @param subContext
+	 *            the sub context of the signature cryptographic constraints:
+	 *            EMPTY (signature itself), SigningCertificate, CACertificate
+	 * @return {@code SignatureCryptographicConstraint} if
+	 *         AcceptableEncryptionAlgo for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @param context
 	 * @param subContext
-	 * @return {@code Constraint} if Expiration for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if key-usage for a given context element
+	 *         is present in the constraint file, null otherwise.
 	 */
-	public abstract CertificateExpirationConstraint getSigningCertificateExpirationConstraint(String context, String subContext);
-
-	/**
-	 * This constraint requests the presence of the trust anchor in the certificate chain.
-	 *
-	 * @param context
-	 * @return {@code Constraint} if ProspectiveCertificateChain element for a given context element is present in the constraint file, null otherwise.
-	 */
-	public abstract Constraint getProspectiveCertificateChainConstraint(String context);
+	MultiValuesConstraint getCertificateKeyUsageConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @param context
 	 * @param subContext
-	 * @return {@code Constraint} if Signature for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if Expiration for a given context element
+	 *         is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getCertificateSignatureConstraint(String context, String subContext);
+	LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext);
+
+	/**
+	 * This constraint requests the presence of the trust anchor in the
+	 * certificate chain.
+	 *
+	 * @param context
+	 * @return {@code LevelConstraint} if ProspectiveCertificateChain element
+	 *         for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getProspectiveCertificateChainConstraint(Context context);
 
 	/**
 	 * @param context
-	 * @return {@code Constraint} if RevocationDataAvailable for a given context element is present in the constraint file, null otherwise.
+	 * @param subContext
+	 * @return {@code LevelConstraint} if Signature for a given context element
+	 *         is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getRevocationDataAvailableConstraint(String context, String subContext);
+	LevelConstraint getCertificateSignatureConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @param context
-	 * @return {@code Constraint} if RevocationDataIsTrusted for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if RevocationDataAvailable for a given
+	 *         context element is present in the constraint file, null
+	 *         otherwise.
 	 */
-	public abstract Constraint getRevocationDataIsTrustedConstraint(String context, String subContext);
+	LevelConstraint getRevocationDataAvailableConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @param context
-	 * @return {@code Constraint} if RevocationDataFreshness for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if RevocationDataIsTrusted for a given
+	 *         context element is present in the constraint file, null
+	 *         otherwise.
 	 */
-	public abstract Constraint getRevocationDataFreshnessConstraint(String context, String subContext);
+	LevelConstraint getRevocationDataTrustedConstraint(Context context, SubContext subContext);
 
 	/**
-	 * @return {@code Constraint} if Revoked for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if Revoked for a given context element is
+	 *         present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateRevokedConstraint(String context, String subContext);
+	LevelConstraint getCertificateNotRevokedConstraint(Context context, SubContext subContext);
 
 	/**
-	 * @return {@code Constraint} if OnHold for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if OnHold for a given context element is
+	 *         present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateOnHoldConstraint(String context, String subContext);
+	LevelConstraint getCertificateNotOnHoldConstraint(Context context, SubContext subContext);
 
 	/**
-	 * @return {@code Constraint} if the TSLValidity for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if the TSLValidity for a given context
+	 *         element is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateTSLValidityConstraint(String context);
+	LevelConstraint getSigningCertificateTSLValidityConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if TSLStatus for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if TSLStatus for a given context element
+	 *         is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateTSLStatusConstraint(String context);
+	LevelConstraint getSigningCertificateTSLStatusConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if the TSLValidity for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if the TSLValidity for a given context
+	 *         element is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateTSLStatusAndValidityConstraint(String context);
+	LevelConstraint getSigningCertificateTSLStatusAndValidityConstraint(Context context);
 
 	/**
-	 * @param context of the certificate: main signature, timestamp, revocation data
-	 * @return {@code Constraint} if Revoked for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if Qualification for a given context
+	 *         element is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getIntermediateCertificateRevokedConstraint(String context);
+	LevelConstraint getSigningCertificateQualificationConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if CertificateChain for a given context element is present in the constraint file, null otherwise.
-	 */
-	public abstract Constraint getChainConstraint();
-
-	/**
-	 * @return {@code Constraint} if Qualification for a given context element is present in the constraint file, null otherwise.
-	 */
-	public abstract Constraint getSigningCertificateQualificationConstraint();
-
-	/**
-	 * Indicates if the end user certificate used in validating the signature is mandated to be supported by a secure
-	 * signature creation device (SSCD) as defined in Directive 1999/93/EC [9].
+	 * Indicates if the end user certificate used in validating the signature is
+	 * mandated to be supported by a secure signature creation device (SSCD) as
+	 * defined in Directive 1999/93/EC [9].
 	 *
-	 * @return {@code Constraint} if SupportedBySSCD for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if SupportedBySSCD for a given context
+	 *         element is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateSupportedBySSCDConstraint();
+	LevelConstraint getSigningCertificateSupportedBySSCDConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if IssuedToLegalPerson for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if IssuedToLegalPerson for a given
+	 *         context element is present in the constraint file, null
+	 *         otherwise.
 	 */
-	public abstract Constraint getSigningCertificateIssuedToLegalPersonConstraint();
+	LevelConstraint getSigningCertificateIssuedToLegalPersonConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if Recognition for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if Recognition for a given context
+	 *         element is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateRecognitionConstraint(String context);
+	LevelConstraint getSigningCertificateRecognitionConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if Signed for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if Signed for a given context element is
+	 *         present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateSignedConstraint(String context);
+	LevelConstraint getSigningCertificateSignedConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if SigningCertificateAttribute for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if SigningCertificateAttribute for a
+	 *         given context element is present in the constraint file, null
+	 *         otherwise.
 	 */
-	public abstract Constraint getSigningCertificateAttributePresentConstraint(String context);
+	LevelConstraint getSigningCertificateAttributePresentConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if DigestValuePresent for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if DigestValuePresent for a given context
+	 *         element is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateDigestValuePresentConstraint(String context);
+	LevelConstraint getSigningCertificateDigestValuePresentConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if DigestValueMatch for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if DigestValueMatch for a given context
+	 *         element is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateDigestValueMatchConstraint(String context);
+	LevelConstraint getSigningCertificateDigestValueMatchConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if IssuerSerialMatch for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if IssuerSerialMatch for a given context
+	 *         element is present in the constraint file, null otherwise.
 	 */
-	public abstract Constraint getSigningCertificateIssuerSerialMatchConstraint(String context);
+	LevelConstraint getSigningCertificateIssuerSerialMatchConstraint(Context context);
 
 	/**
-	 * @return {@code Constraint} if ReferenceDataExistence for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if ReferenceDataExistence for a given
+	 *         context element is present in the constraint file, null
+	 *         otherwise.
 	 */
-	public abstract Constraint getReferenceDataExistenceConstraint();
+	LevelConstraint getReferenceDataExistenceConstraint(Context context);
 
 	/**
-	 * @return {@code ReferenceDataIntact} if ReferenceDataIntact for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code ReferenceDataIntact} if ReferenceDataIntact for a given
+	 *         context element is present in the constraint file, null
+	 *         otherwise.
 	 */
-	public abstract Constraint getReferenceDataIntactConstraint();
+	LevelConstraint getReferenceDataIntactConstraint(Context context);
 
 	/**
-	 * @return {@code ReferenceDataIntact} if SignatureIntact for a given context element is present in the constraint file, null otherwise.
+	 * @return {@code ReferenceDataIntact} if SignatureIntact for a given
+	 *         context element is present in the constraint file, null
+	 *         otherwise.
 	 */
-	public abstract Constraint getSignatureIntactConstraint();
+	LevelConstraint getSignatureIntactConstraint(Context context);
 
-	/**
-	 * This method returns the "basic" constraint able to handle simple (empty/not empty), boolean value and identifiers list.
-	 *
-	 * @param XP_ROOT              is the root part of the XPath query use to retrieve the constraint description.
-	 * @param defaultExpectedValue true or false
-	 * @return
-	 */
-	protected abstract Constraint getBasicConstraint(String XP_ROOT, boolean defaultExpectedValue);
+	LevelConstraint getMessageImprintDataFoundConstraint();
 
-	public abstract BasicValidationProcessValidConstraint getBasicValidationProcessConclusionConstraint();
+	LevelConstraint getMessageImprintDataIntactConstraint();
 
-	public abstract Constraint getMessageImprintDataFoundConstraint();
+	LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint();
 
-	public abstract Constraint getMessageImprintDataIntactConstraint();
+	LevelConstraint getSigningCertificateValidityAtBestSignatureTimeConstraint();
 
-	/**
-	 * This constraint is always executed!
-	 *
-	 * @return
-	 */
-	public abstract TimestampValidationProcessValidConstraint getTimestampValidationProcessConstraint();
+	LevelConstraint getAlgorithmReliableAtBestSignatureTimeConstraint();
 
-	public abstract Constraint getRevocationTimeConstraint();
+	LevelConstraint getTimestampCoherenceConstraint();
 
-	public abstract Constraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint();
+	TimeConstraint getTimestampDelaySigningTimePropertyConstraint();
 
-	public abstract Constraint getSigningCertificateValidityAtBestSignatureTimeConstraint();
+	TimeConstraint getRevocationFreshnessConstraint();
 
-	public abstract Constraint getAlgorithmReliableAtBestSignatureTimeConstraint();
+	LevelConstraint getCounterSignatureConstraint();
 
-	public abstract Constraint getTimestampCoherenceConstraint();
+	MultiValuesConstraint getSignatureFormatConstraint(Context context);
 
-	/**
-	 * This constraint has only two levels: FAIL, or NOTHING
-	 *
-	 * @return
-	 */
-	public abstract Constraint getTimestampDelaySigningTimePropertyConstraint();
+	MultiValuesConstraint getCertificateCountryConstraint(Context context, SubContext subContext);
 
-	public abstract Constraint getContentTimestampImprintIntactConstraint();
+	MultiValuesConstraint getCertificateOrganizationNameConstraint(Context context, SubContext subContext);
 
-	public abstract Constraint getContentTimestampImprintFoundConstraint();
+	MultiValuesConstraint getCertificateOrganizationUnitConstraint(Context context, SubContext subContext);
 
-	public abstract Constraint getCounterSignatureReferenceDataExistenceConstraint();
+	MultiValuesConstraint getCertificateSurnameConstraint(Context context, SubContext subContext);
 
-	public abstract Constraint getCounterSignatureReferenceDataIntactConstraint();
+	MultiValuesConstraint getCertificateGivenNameConstraint(Context context, SubContext subContext);
 
-	public abstract Constraint getCounterSignatureIntactConstraint();
+	MultiValuesConstraint getCertificateCommonNameConstraint(Context context, SubContext subContext);
+
+	MultiValuesConstraint getCertificatePseudonymConstraint(Context context, SubContext subContext);
+
 }
-

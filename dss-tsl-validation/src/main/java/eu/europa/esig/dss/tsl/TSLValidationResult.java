@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.tsl;
 
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
  * This class is a DTO result for TSLValidator Callable.
@@ -28,8 +29,8 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 public class TSLValidationResult {
 
 	private String countryCode;
-	private String indication;
-	private String subIndication;
+	private Indication indication;
+	private SubIndication subIndication;
 
 	public String getCountryCode() {
 		return countryCode;
@@ -39,19 +40,19 @@ public class TSLValidationResult {
 		this.countryCode = countryCode;
 	}
 
-	public String getIndication() {
+	public Indication getIndication() {
 		return indication;
 	}
 
-	public void setIndication(String indication) {
+	public void setIndication(Indication indication) {
 		this.indication = indication;
 	}
 
-	public String getSubIndication() {
+	public SubIndication getSubIndication() {
 		return subIndication;
 	}
 
-	public void setSubIndication(String subIndication) {
+	public void setSubIndication(SubIndication subIndication) {
 		this.subIndication = subIndication;
 	}
 

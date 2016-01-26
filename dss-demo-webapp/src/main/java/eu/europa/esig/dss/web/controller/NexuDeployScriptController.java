@@ -12,14 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 @Controller
 public class NexuDeployScriptController {
-	
 
 	@Value("${baseUrl}")
 	private String baseUrl;
@@ -50,10 +48,10 @@ public class NexuDeployScriptController {
 		model.put("nexuUrl", nexuUrl);
 
 		template.process(model, outWriter);
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.parseMediaType("text/javascript"));
-		
+
 		return new ResponseEntity<String>(outWriter.toString(), headers, HttpStatus.ACCEPTED);
 	}
 }

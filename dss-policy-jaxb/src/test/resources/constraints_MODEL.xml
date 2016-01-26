@@ -1,6 +1,6 @@
 ﻿<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/diagnostic">
 	<Description>Our validation process follows ETSI TS 102 853 V1.1.2 (2012-10) standard.</Description>
-	<MainSignature>
+	<SignatureConstraints>
 		<StructuralValidation Level="WARN"/>
 		<AcceptablePolicies Level="FAIL">
 			<Id>ANY_POLICY</Id>
@@ -94,7 +94,7 @@
 				</Certificate>
 			</AcceptableChain>
 		</CertificateChain>
-		<MandatedSignedQProperties>
+		<SignedAttributes>
 			<SigningTime Level="FAIL"/>
 			<ContentType Level="FAIL">1.2.840.113549.1.7.1</ContentType>
 			<ContentIdentifier Level="FAIL">*</ContentIdentifier>
@@ -102,22 +102,22 @@
 			<!-- Not yet implemented -->
 			<ContentReference Level="FAIL"/>
 			<CommitmentTypeIndication Level="FAIL">
-				<Identifier>1.2.840.113549.1.9.16.6.1</Identifier>
-				<Identifier>1.2.840.113549.1.9.16.6.4</Identifier>
-				<Identifier>1.2.840.113549.1.9.16.6.5</Identifier>
-				<Identifier>1.2.840.113549.1.9.16.6.6</Identifier>
+				<Id>1.2.840.113549.1.9.16.6.1</Id>
+				<Id>1.2.840.113549.1.9.16.6.4</Id>
+				<Id>1.2.840.113549.1.9.16.6.5</Id>
+				<Id>1.2.840.113549.1.9.16.6.6</Id>
 			</CommitmentTypeIndication>
 			<SignerLocation>true</SignerLocation>
 			<SignerAttributes>false</SignerAttributes>
 			<ContentTimeStamp>true</ContentTimeStamp>
-		</MandatedSignedQProperties>
-		<MandatedUnsignedQProperties>
-			<CounterSignature>false</CounterSignature>
+		</SignedAttributes>
+		<UnsignedAttributes>
+			<CounterSignature Level="FAIL" />
 			<MandatedSignatureTimeStamp>false</MandatedSignatureTimeStamp>
 			<MandatedLtForm>false</MandatedLtForm>
 			<MandatedArchivalForm>false</MandatedArchivalForm>
 			<SignaturePolicyExtensions>false</SignaturePolicyExtensions>
-		</MandatedUnsignedQProperties>
+		</UnsignedAttributes>
 		<OnRoles>
 			<ClaimedRoles Attendance="ALL">
 				<Role>supervisor</Role>
@@ -128,9 +128,9 @@
 					</CertifiedRoles>
 			-->
 		</OnRoles>
-	</MainSignature>
+	</SignatureConstraints>
 	<Timestamp>
-		<TimestampDelay Unit="DAYS">0</TimestampDelay>
+		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
 		<MessageImprintDataFound Level="FAIL"/>
 		<MessageImprintDataIntact Level="FAIL"/>
 		<Coherence Level="FAIL"/>
@@ -189,7 +189,7 @@
 		</CACertificate>
 	</Timestamp>
 	<Revocation>
-		<RevocationFreshness Unit="DAYS">9700</RevocationFreshness>
+		<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
 		<SigningCertificate>
 			<Signature Level="FAIL"/>
 			<Expiration Level="FAIL"/>

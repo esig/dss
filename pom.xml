@@ -55,6 +55,8 @@
 		<cxf.version>2.7.16</cxf.version>
 		<junit.version>4.11</junit.version>
 		<commons-collecions.version>3.2.2</commons-collecions.version>
+		<jackson-jaxrs-json-provider.version>2.5.4</jackson-jaxrs-json-provider.version>
+		<javax.mail.version>1.4.5</javax.mail.version>
 	</properties>
 
 	<build>
@@ -186,7 +188,8 @@
 				<!-- </executions> -->
 			</plugin>
 			<plugin>
-				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
+				<!-- explicitly define maven-deploy-plugin after other to force exec 
+					order -->
 				<artifactId>maven-deploy-plugin</artifactId>
 				<executions>
 					<execution>
@@ -352,16 +355,6 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-webservices</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-webservices-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-asic</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -383,6 +376,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-reports</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -412,6 +410,26 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-token</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -427,12 +445,27 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-common-validation-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-diagnostic-jaxb</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-policy-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-detailed-report-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-simple-report-jaxb</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -462,6 +495,21 @@
 				<scope>test</scope>
 			</dependency>
 			<!-- Public Dependencies -->
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>${javax.mail.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-json-provider</artifactId>
+				<version>${jackson-jaxrs-json-provider.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
@@ -737,14 +785,16 @@
 				<module>dss-spi</module>
 				<module>dss-test</module>
 				<module>sscd-mocca-adapter</module>
-				<module>dss-webservices</module>
-				<module>dss-webservices-client</module>
 				<module>dss-cookbook</module>
 				<module>dss-demo-webapp</module>
 				<module>dss-demo-bundle</module>
 				<module>dss-policy-jaxb</module>
+				<module>dss-common-validation-jaxb</module>
 				<module>dss-tsl-jaxb</module>
 				<module>dss-diagnostic-jaxb</module>
+				<module>dss-simple-report-jaxb</module>
+				<module>dss-detailed-report-jaxb</module>
+				<module>dss-reports</module>
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-cades</module>
@@ -755,6 +805,10 @@
 				<module>dss-rest</module>
 				<module>dss-soap-client</module>
 				<module>dss-soap</module>
+				<module>dss-validation-rest-client</module>
+				<module>dss-validation-rest</module>
+				<module>dss-validation-soap</module>
+				<module>dss-validation-soap-client</module>
 				<module>dss-tsl-validation</module>
 			</modules>
 		</profile>
@@ -780,16 +834,18 @@
 				<module>dss-spi</module>
 				<module>dss-test</module>
 				<module>sscd-mocca-adapter</module>
-				<module>dss-webservices</module>
-				<module>dss-webservices-client</module>
 				<module>dss-standalone-app</module>
 				<module>dss-standalone-app-package</module>
 				<module>dss-cookbook</module>
 				<module>dss-demo-webapp</module>
 				<module>dss-demo-bundle</module>
 				<module>dss-policy-jaxb</module>
+				<module>dss-common-validation-jaxb</module>
 				<module>dss-tsl-jaxb</module>
 				<module>dss-diagnostic-jaxb</module>
+				<module>dss-simple-report-jaxb</module>
+				<module>dss-detailed-report-jaxb</module>
+				<module>dss-reports</module>
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-cades</module>
@@ -800,6 +856,10 @@
 				<module>dss-rest</module>
 				<module>dss-soap-client</module>
 				<module>dss-soap</module>
+				<module>dss-validation-rest-client</module>
+				<module>dss-validation-rest</module>
+				<module>dss-validation-soap</module>
+				<module>dss-validation-soap-client</module>
 				<module>dss-tsl-validation</module>
 			</modules>
 		</profile>

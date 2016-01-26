@@ -9,6 +9,13 @@
         </h3>
     </div>
     <div class="panel-body collapse in cryptographic-block" id="block-<c:out value="${param.id}" />">
+    
+    	<spring:message code="label.level" var="translation" />
+        <jsp:include page="level-constraint.jsp">
+            <jsp:param name="label" value="${translation}" />
+            <jsp:param name="levelValue" value="${cryptographic.level}" />
+            <jsp:param name="pathToBind" value="${param.prefixPath}.Level" />
+        </jsp:include>
 
         <div class="form-group encryptionAlgos" >
             <label class="col-sm-5 control-label"><spring:message code="label.policy.acceptableEncryptionAlgo" /></label>
@@ -20,7 +27,7 @@
                             <c:set var="checked" value="checked" />
                         </c:if>
                     </c:forEach>
-                    <input name="encryptionAlgo" type="checkbox" id="encryptionAlgo-<c:out value="${param.pathToBind}"/>-<c:out value="${supportedAlgo}"/>" class="encryptionAlgo" value="<c:out value="${supportedAlgo}"/>" <c:if test="${not empty checked}"> checked="checked"</c:if> /> <c:out value="${supportedAlgo}"/> <br />
+                    <input name="encryptionAlgo" type="checkbox" id="encryptionAlgo-<c:out value="${param.prefixPath}"/>-<c:out value="${supportedAlgo}"/>" class="encryptionAlgo" value="<c:out value="${supportedAlgo}"/>" <c:if test="${not empty checked}"> checked="checked"</c:if> /> <c:out value="${supportedAlgo}"/> <br />
                 </c:forEach>
             </div>
         </div>
@@ -29,10 +36,10 @@
             <label class="col-sm-5 control-label"><spring:message code="label.policy.miniPublicKeySize" /></label>
             <div class="col-sm-7" id="encryptionAlgoSizes-<c:out value="${param.pathToBind}" />">
                 <c:forEach var="algo" items="${cryptographic.miniPublicKeySize.algo}">
-                    <div class="form-group" id="encryptionAlgoSize-<c:out value="${param.pathToBind}"/>-<c:out value="${algo.value}"/>">
+                    <div class="form-group" id="encryptionAlgoSize-<c:out value="${param.prefixPath}"/>-<c:out value="${algo.value}"/>">
                         <label class="col-sm-2 control-label"><c:out value="${algo.value}" /></label>
                         <div class="col-sm-4">
-                            <input type="text" id="encryptionAlgoSize-<c:out value="${param.pathToBind}"/>-<c:out value="${algo.value}"/>" name="<c:out value="${algo.value}"/>" value="<c:out value="${algo.size}"/>" class="form-control" />
+                            <input type="text" id="encryptionAlgoSize-<c:out value="${param.prefixPath}"/>-<c:out value="${algo.value}"/>" name="<c:out value="${algo.value}"/>" value="<c:out value="${algo.size}"/>" class="form-control" />
                         </div>
                     </div>
                 </c:forEach>
@@ -49,7 +56,7 @@
                             <c:set var="checked" value="checked" />
                         </c:if>
                     </c:forEach>
-                    <input name="digestAlgo" type="checkbox" id="digestAlgo-<c:out value="${param.pathToBind}"/>-<c:out value="${supportedAlgo}"/>"  value="<c:out value="${supportedAlgo}"/>" <c:if test="${not empty checked}"> checked="checked"</c:if> /> <c:out value="${supportedAlgo}"/> <br />
+                    <input name="digestAlgo" type="checkbox" id="digestAlgo-<c:out value="${param.prefixPath}"/>-<c:out value="${supportedAlgo}"/>"  value="<c:out value="${supportedAlgo}"/>" <c:if test="${not empty checked}"> checked="checked"</c:if> /> <c:out value="${supportedAlgo}"/> <br />
                 </c:forEach>
             </div>
         </div>

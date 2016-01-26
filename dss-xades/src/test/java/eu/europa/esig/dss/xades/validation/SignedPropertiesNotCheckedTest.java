@@ -22,24 +22,26 @@ package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 /**
  * Unit test added to fix : https://joinup.ec.europa.eu/asset/sd-dss/issue/xades-signedproperties-reference
  *
- * XAdES standard : The generator shall create as many <code>ds:Reference</code> element as signed data objects (each one referencing one of them)
+ * XAdES standard : The generator shall create as many <code>ds:Reference</code> element as signed data objects (each
+ * one referencing one of them)
  * plus one ds:Reference element referencing xades:SignedProperties element.
  */
 public class SignedPropertiesNotCheckedTest {
-
-	private static final String REFERENCE_DATA_FOUND_PATH = "/DiagnosticData/Signature[@Id='%s']/BasicSignature/ReferenceDataFound/text()";
 
 	@Test
 	public void testWithSignedProperties() {
@@ -51,7 +53,8 @@ public class SignedPropertiesNotCheckedTest {
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.getBoolValue(REFERENCE_DATA_FOUND_PATH, diagnosticData.getFirstSignatureId()));
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertTrue(signatures.get(0).isReferenceDataFound());
 	}
 
 }

@@ -23,21 +23,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.XmlDom;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.model.ValidationForm;
 import eu.europa.esig.dss.web.service.FOPService;
 import eu.europa.esig.dss.web.service.XSLTService;
 
 @Controller
-@SessionAttributes({
-	"simpleReportXml", "detailedReportXml", "reportsList"
-})
+@SessionAttributes({ "simpleReportXml", "detailedReportXml", "reportsList" })
 @RequestMapping(value = "/validation")
 public class ValidationController {
 
@@ -96,20 +92,21 @@ public class ValidationController {
 			reports = documentValidator.validateDocument();
 		}
 
-		SimpleReport simpleReport = reports.getSimpleReport();
-		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, simpleReport);
-		model.addAttribute("simpleReport", xsltService.generateSimpleReport(simpleReport));
+		String xmlSimpleReport = reports.getXmlSimpleReport();
+		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, xmlSimpleReport);
+		model.addAttribute("simpleReport", xsltService.generateSimpleReport(xmlSimpleReport));
 
-		DetailedReport detailedReport = reports.getDetailedReport();
-		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, detailedReport);
-		model.addAttribute("detailedReport", xsltService.generateDetailedReport(detailedReport));
-		model.addAttribute("diagnosticTree", reports.getDiagnosticData().toString());
-		
+		String xmlDetailedReport = reports.getXmlDetailedReport();
+		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, xmlDetailedReport);
+		model.addAttribute("detailedReport", xsltService.generateDetailedReport(xmlDetailedReport));
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		model.addAttribute("diagnosticTree", reports.getXmlDiagnosticData());
+
 		List<String> reportsNameList = new ArrayList<String>();
 		List<Reports> reportsList = new ArrayList<Reports>();
-		while(reports != null) {
-			XmlDom dom = reports.getDiagnosticData().getElement("//DocumentName");
-			reportsNameList.add(dom.getText());
+		while (reports != null) {
+			reportsNameList.add(diagnosticData.getDocumentName());
 			reportsList.add(reports);
 			reports = reports.getNextReports();
 		}
@@ -118,45 +115,48 @@ public class ValidationController {
 
 		return VALIDATION_RESULT_TILE;
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/report", method = RequestMethod.GET)
 	public String getReports(@RequestParam("name") String reportFileName, HttpSession session, Model model) {
 		Reports reports = null;
 		List<Reports> reportsList = (List<Reports>) session.getAttribute(REPORTS_LIST);
 		List<String> reportsNameList = new ArrayList<String>();
-		for(Reports report : reportsList) {
-			XmlDom dom = report.getDiagnosticData().getElement("//DocumentName");
-			String name = dom.getText().substring(dom.getText().lastIndexOf("/")+1);
-			if(name.equals(reportFileName)) {
-				reportsNameList.add(dom.getText());
+		for (Reports report : reportsList) {
+			DiagnosticData diagnosticData = report.getDiagnosticData();
+			String documentName = diagnosticData.getDocumentName();
+			String name = documentName.substring(documentName.lastIndexOf("/") + 1);
+			if (name.equals(reportFileName)) {
+				reportsNameList.add(documentName);
 				reports = report;
 			}
 		}
-		
-		SimpleReport simpleReport = reports.getSimpleReport();
-		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, simpleReport);
-		model.addAttribute("simpleReport", xsltService.generateSimpleReport(simpleReport));
 
-		DetailedReport detailedReport = reports.getDetailedReport();
-		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, detailedReport);
-		model.addAttribute("detailedReport", xsltService.generateDetailedReport(detailedReport));
-		model.addAttribute("diagnosticTree", reports.getDiagnosticData().toString());
-		
-		for(Reports report : reportsList) {
-			if(report != reports) {
-				XmlDom dom = report.getDiagnosticData().getElement("//DocumentName");
-				reportsNameList.add(dom.getText());
+		String xmlSimpleReport = reports.getXmlSimpleReport();
+		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, xmlSimpleReport);
+		model.addAttribute("simpleReport", xsltService.generateSimpleReport(xmlSimpleReport));
+
+		String xmlDetailedReport = reports.getXmlDetailedReport();
+		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, xmlDetailedReport);
+		model.addAttribute("detailedReport", xsltService.generateDetailedReport(xmlDetailedReport));
+
+		model.addAttribute("diagnosticTree", reports.getXmlDiagnosticData());
+
+		for (Reports report : reportsList) {
+			if (report != reports) {
+				DiagnosticData diagnosticData = report.getDiagnosticData();
+				reportsNameList.add(diagnosticData.getDocumentName());
 			}
 		}
 		model.addAttribute("reports", reportsNameList);
-		
+
 		return VALIDATION_RESULT_TILE;
 	}
 
 	@RequestMapping(value = "/download-simple-report")
 	public void downloadSimpleReport(HttpSession session, HttpServletResponse response) {
 		try {
-			SimpleReport simpleReport = (SimpleReport) session.getAttribute(SIMPLE_REPORT_ATTRIBUTE);
+			String simpleReport = (String) session.getAttribute(SIMPLE_REPORT_ATTRIBUTE);
 
 			response.setContentType(MimeType.PDF.getMimeTypeString());
 			response.setHeader("Content-Disposition", "attachment; filename=DSS-Simple-report.pdf");
@@ -170,7 +170,7 @@ public class ValidationController {
 	@RequestMapping(value = "/download-detailed-report")
 	public void downloadDetailedReport(HttpSession session, HttpServletResponse response) {
 		try {
-			DetailedReport detailedReport = (DetailedReport) session.getAttribute(DETAILED_REPORT_ATTRIBUTE);
+			String detailedReport = (String) session.getAttribute(DETAILED_REPORT_ATTRIBUTE);
 
 			response.setContentType(MimeType.PDF.getMimeTypeString());
 			response.setHeader("Content-Disposition", "attachment; filename=DSS-Detailed-report.pdf");

@@ -20,15 +20,16 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.SignatureCertificateSource;
 
 /**
  * CertificateSource that will retrieve the certificate from a PAdES Signature
@@ -36,7 +37,7 @@ import eu.europa.esig.dss.x509.SignatureCertificateSource;
  *
  */
 
-public class PAdESCertificateSource extends SignatureCertificateSource {
+public class PAdESCertificateSource extends CAdESCertificateSource {
 
 	/**
 	 * The default constructor for PAdESCertificateSource.
@@ -45,22 +46,13 @@ public class PAdESCertificateSource extends SignatureCertificateSource {
 	 * @param cadesCertSource
 	 * @param certPool        The pool of certificates to be used. Can be null.
 	 */
-	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CAdESCertificateSource cadesCertSource, final CertificatePool certPool) {
+	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CMSSignedData cmsSignedData, final SignerInformation signerInfo, final CertificatePool certPool) {
 
-		super(certPool);
+		super(cmsSignedData, signerInfo, certPool);
 
-		// TODO certificateTokens -> private
-		certificateTokens = new ArrayList<CertificateToken>();
 		if (dssCatalog != null) {
 			final Set<CertificateToken> certList = dssCatalog.getCertList();
 			for (final CertificateToken certToken : certList) {
-				addCertificate(certToken);
-			}
-		}
-
-		if (cadesCertSource != null) {
-			// We add the CAdES specific certificates to this source.
-			for (final CertificateToken certToken : cadesCertSource.getCertificates()) {
 				addCertificate(certToken);
 			}
 		}
@@ -68,13 +60,11 @@ public class PAdESCertificateSource extends SignatureCertificateSource {
 
 	@Override
 	public List<CertificateToken> getEncapsulatedCertificates() {
-		// TODO Auto-generated method stub
-		return null;
+		return super.getEncapsulatedCertificates();
 	}
 
 	@Override
 	public List<CertificateToken> getKeyInfoCertificates() {
-		// TODO Auto-generated method stub
-		return null;
+		return super.getKeyInfoCertificates();
 	}
 }

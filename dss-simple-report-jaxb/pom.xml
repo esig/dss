@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>4.7-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>dss-simple-report-jaxb</artifactId>
+	<name>JAXB Simple Report Model</name>
+	<description>Generated source from XSD for Simple Report.</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-common-validation-jaxb</artifactId>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>jaxb</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jvnet.jaxb2.maven2</groupId>
+						<artifactId>maven-jaxb2-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<schemaDirectory>src/main/xsd</schemaDirectory>
+									<generatePackage>eu.europa.esig.dss.jaxb.simplereport</generatePackage>
+									<schemaIncludes>
+										<schemaInclude>SimpleReport.xsd</schemaInclude>
+									</schemaIncludes>
+									<bindingIncludes>
+										<include>binding.xml</include>
+									</bindingIncludes>
+									<specVersion>2.1</specVersion>
+									<encoding>UTF-8</encoding>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

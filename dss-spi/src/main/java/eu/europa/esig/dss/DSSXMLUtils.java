@@ -171,8 +171,10 @@ public final class DSSXMLUtils {
 	/**
 	 * This method allows to register a namespace and associated prefix. If the prefix exists already it is replaced.
 	 *
-	 * @param prefix    namespace prefix
-	 * @param namespace namespace
+	 * @param prefix
+	 *            namespace prefix
+	 * @param namespace
+	 *            namespace
 	 * @return true if this map did not already contain the specified element
 	 */
 	public static boolean registerNamespace(final String prefix, final String namespace) {
@@ -185,7 +187,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method allows to register a transformation.
 	 *
-	 * @param transformURI the URI of transform
+	 * @param transformURI
+	 *            the URI of transform
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerTransform(final String transformURI) {
@@ -197,7 +200,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method allows to register a canonicalizer.
 	 *
-	 * @param c14nAlgorithmURI the URI of canonicalization algorithm
+	 * @param c14nAlgorithmURI
+	 *            the URI of canonicalization algorithm
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
@@ -207,7 +211,8 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * @param xpathString XPath query string
+	 * @param xpathString
+	 *            XPath query string
 	 * @return
 	 */
 	private static XPathExpression createXPathExpression(final String xpathString) {
@@ -226,8 +231,10 @@ public final class DSSXMLUtils {
 	/**
 	 * Return the Element corresponding to the XPath query.
 	 *
-	 * @param xmlNode     The node where the search should be performed.
-	 * @param xPathString XPath query string
+	 * @param xmlNode
+	 *            The node where the search should be performed.
+	 * @param xPathString
+	 *            XPath query string
 	 * @return
 	 */
 	public static Element getElement(final Node xmlNode, final String xPathString) {
@@ -238,8 +245,10 @@ public final class DSSXMLUtils {
 	/**
 	 * Return the Node corresponding to the XPath query.
 	 *
-	 * @param xmlNode     The node where the search should be performed.
-	 * @param xPathString XPath query string
+	 * @param xmlNode
+	 *            The node where the search should be performed.
+	 * @param xPathString
+	 *            XPath query string
 	 * @return
 	 */
 	public static Node getNode(final Node xmlNode, final String xPathString) {
@@ -254,8 +263,10 @@ public final class DSSXMLUtils {
 	/**
 	 * This method returns the list of children's names for a given {@code Node}.
 	 *
-	 * @param xmlNode     The node where the search should be performed.
-	 * @param xPathString XPath query string
+	 * @param xmlNode
+	 *            The node where the search should be performed.
+	 * @param xPathString
+	 *            XPath query string
 	 * @return {@code List} of children's names
 	 */
 	public static List<String> getChildrenNames(final Node xmlNode, final String xPathString) {
@@ -278,8 +289,10 @@ public final class DSSXMLUtils {
 	/**
 	 * Returns the NodeList corresponding to the XPath query.
 	 *
-	 * @param xmlNode     The node where the search should be performed.
-	 * @param xPathString XPath query string
+	 * @param xmlNode
+	 *            The node where the search should be performed.
+	 * @param xPathString
+	 *            XPath query string
 	 * @return
 	 * @throws XPathExpressionException
 	 */
@@ -298,8 +311,10 @@ public final class DSSXMLUtils {
 	/**
 	 * Returns the String value of the corresponding to the XPath query.
 	 *
-	 * @param xmlNode     The node where the search should be performed.
-	 * @param xPathString XPath query string
+	 * @param xmlNode
+	 *            The node where the search should be performed.
+	 * @param xPathString
+	 *            XPath query string
 	 * @return string value of the XPath query
 	 * @throws XPathExpressionException
 	 */
@@ -310,23 +325,6 @@ public final class DSSXMLUtils {
 			final XPathExpression xPathExpression = createXPathExpression(xPathString);
 			final String string = (String) xPathExpression.evaluate(xmlNode, XPathConstants.STRING);
 			return string.trim();
-		} catch (XPathExpressionException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * Returns the number of found elements based on the XPath query.
-	 *
-	 * @param xmlNode
-	 * @param xPathString
-	 * @return
-	 */
-	public static int count(final Node xmlNode, final String xPathString) {
-		try {
-			final XPathExpression xPathExpression = createXPathExpression(xPathString);
-			final Double number = (Double) xPathExpression.evaluate(xmlNode, XPathConstants.NUMBER);
-			return number.intValue();
 		} catch (XPathExpressionException e) {
 			throw new DSSException(e);
 		}
@@ -349,9 +347,11 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Document Object Model (DOM) Level 3 Load and Save Specification See: http://www.w3.org/TR/2004/REC-DOM-Level-3-LS-20040407/
+	 * Document Object Model (DOM) Level 3 Load and Save Specification See:
+	 * http://www.w3.org/TR/2004/REC-DOM-Level-3-LS-20040407/
 	 *
-	 * @param xmlNode The node to be serialized.
+	 * @param xmlNode
+	 *            The node to be serialized.
 	 * @return
 	 */
 	public static byte[] serializeNode(final Node xmlNode) {
@@ -375,30 +375,10 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by the fact that the attribute does not have attached type of
-	 * information. Another solution is to parse the XML against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
-	 * This method is useful to carry out tests with different signature provider.
-	 *
-	 * @param context
-	 * @param element
-	 */
-	public static void recursiveIdBrowse(final DOMValidateContext context, final Element element) {
-
-		for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
-
-			final Node node = element.getChildNodes().item(ii);
-			if (node.getNodeType() == Node.ELEMENT_NODE) {
-
-				final Element childElement = (Element) node;
-				setIDIdentifier(context, childElement);
-				recursiveIdBrowse(context, childElement);
-			}
-		}
-	}
-
-	/**
-	 * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by the fact that the attribute does not have attached type of
-	 * information. Another solution is to parse the XML against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
+	 * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by
+	 * the fact that the attribute does not have attached type of
+	 * information. Another solution is to parse the XML against some DTD or XML schema. This process adds the necessary
+	 * type of information to each ID attribute.
 	 *
 	 * @param element
 	 */
@@ -417,9 +397,11 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * If this method finds an attribute with names ID (case-insensitive) then it is returned. If there is more than one ID attributes then the first one is returned.
+	 * If this method finds an attribute with names ID (case-insensitive) then it is returned. If there is more than one
+	 * ID attributes then the first one is returned.
 	 *
-	 * @param element to be checked
+	 * @param element
+	 *            to be checked
 	 * @return the ID attribute value or null
 	 */
 	public static String getIDIdentifier(final Element element) {
@@ -441,7 +423,8 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * If this method finds an attribute with names ID (case-insensitive) then declares it to be a user-determined ID attribute.
+	 * If this method finds an attribute with names ID (case-insensitive) then declares it to be a user-determined ID
+	 * attribute.
 	 *
 	 * @param childElement
 	 */
@@ -464,7 +447,8 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * If this method finds an attribute with names ID (case-insensitive) then declares it to be a user-determined ID attribute.
+	 * If this method finds an attribute with names ID (case-insensitive) then declares it to be a user-determined ID
+	 * attribute.
 	 *
 	 * @param childElement
 	 */
@@ -541,7 +525,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method returns the {@link org.w3c.dom.Document} created based on the XML string.
 	 *
-	 * @param xmlString The string representing the dssDocument to be created.
+	 * @param xmlString
+	 *            The string representing the dssDocument to be created.
 	 * @return
 	 * @throws ParserConfigurationException
 	 * @throws IOException
@@ -556,7 +541,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method returns the {@link org.w3c.dom.Document} created based on byte array.
 	 *
-	 * @param bytes The bytes array representing the dssDocument to be created.
+	 * @param bytes
+	 *            The bytes array representing the dssDocument to be created.
 	 * @return
 	 * @throws ParserConfigurationException
 	 * @throws IOException
@@ -571,7 +557,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method returns the {@link org.w3c.dom.Document} created based on the XML inputStream.
 	 *
-	 * @param inputStream The inputStream stream representing the dssDocument to be created.
+	 * @param inputStream
+	 *            The inputStream stream representing the dssDocument to be created.
 	 * @return
 	 * @throws DSSException
 	 */
@@ -590,7 +577,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method returns the {@link org.w3c.dom.Document} created based on the {@link eu.europa.esig.dss.DSSDocument}.
 	 *
-	 * @param dssDocument The DSS representation of the document from which the dssDocument is created.
+	 * @param dssDocument
+	 *            The DSS representation of the document from which the dssDocument is created.
 	 * @return
 	 * @throws DSSException
 	 */
@@ -607,7 +595,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method says if the framework can canonicalize an XML data with the provided method.
 	 *
-	 * @param canonicalizationMethod the canonicalization method to be checked
+	 * @param canonicalizationMethod
+	 *            the canonicalization method to be checked
 	 * @return true if it is possible to canonicalize false otherwise
 	 */
 	public static boolean canCanonicalize(final String canonicalizationMethod) {
@@ -622,10 +611,13 @@ public final class DSSXMLUtils {
 	/**
 	 * This method canonicalizes the given array of bytes using the {@code canonicalizationMethod} parameter.
 	 *
-	 * @param canonicalizationMethod canonicalization method
-	 * @param toCanonicalizeBytes    array of bytes to canonicalize
+	 * @param canonicalizationMethod
+	 *            canonicalization method
+	 * @param toCanonicalizeBytes
+	 *            array of bytes to canonicalize
 	 * @return array of canonicalized bytes
-	 * @throws DSSException if any error is encountered
+	 * @throws DSSException
+	 *             if any error is encountered
 	 */
 	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
 		try {
@@ -639,8 +631,10 @@ public final class DSSXMLUtils {
 	/**
 	 * This method canonicalizes the given {@code Node}.
 	 *
-	 * @param canonicalizationMethod canonicalization method
-	 * @param node                   {@code Node} to canonicalize
+	 * @param canonicalizationMethod
+	 *            canonicalization method
+	 * @param node
+	 *            {@code Node} to canonicalize
 	 * @return array of canonicalized bytes
 	 */
 	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
@@ -656,8 +650,10 @@ public final class DSSXMLUtils {
 	/**
 	 * This method canonicalizes the given {@code NodeList}.
 	 *
-	 * @param canonicalizationMethod canonicalization method
-	 * @param nodeList               {@code NodeList} to canonicalize
+	 * @param canonicalizationMethod
+	 *            canonicalization method
+	 * @param nodeList
+	 *            {@code NodeList} to canonicalize
 	 * @return array of canonicalized bytes
 	 */
 	public static byte[] canonicalizeXPathNodeSet(final String canonicalizationMethod, final Set<Node> nodeList) {
@@ -673,11 +669,16 @@ public final class DSSXMLUtils {
 	/**
 	 * This method creates and adds a new XML {@code Element} with text value
 	 *
-	 * @param document  root document
-	 * @param parentDom parent node
-	 * @param namespace namespace
-	 * @param name      element name
-	 * @param value     element text node value
+	 * @param document
+	 *            root document
+	 * @param parentDom
+	 *            parent node
+	 * @param namespace
+	 *            namespace
+	 * @param name
+	 *            element name
+	 * @param value
+	 *            element text node value
 	 * @return added element
 	 */
 	public static Element addTextElement(final Document document, final Element parentDom, final String namespace, final String name, final String value) {
@@ -692,10 +693,14 @@ public final class DSSXMLUtils {
 	/**
 	 * This method creates and adds a new XML {@code Element}
 	 *
-	 * @param document  root document
-	 * @param parentDom parent node
-	 * @param namespace namespace
-	 * @param name      element name
+	 * @param document
+	 *            root document
+	 * @param parentDom
+	 *            parent node
+	 * @param namespace
+	 *            namespace
+	 * @param name
+	 *            element name
 	 * @return added element
 	 */
 	public static Element addElement(final Document document, final Element parentDom, final String namespace, final String name) {
@@ -730,9 +735,12 @@ public final class DSSXMLUtils {
 	/**
 	 * This method sets a text node to the given DOM element.
 	 *
-	 * @param document  root document
-	 * @param parentDom parent node
-	 * @param text      text to be added
+	 * @param document
+	 *            root document
+	 * @param parentDom
+	 *            parent node
+	 * @param text
+	 *            text to be added
 	 */
 	public static void setTextNode(final Document document, final Element parentDom, final String text) {
 
@@ -741,35 +749,12 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Creates a DOM Document object of the specified type with its document element.
-	 *
-	 * @param namespaceURI  the namespace URI of the document element to create or null
-	 * @param qualifiedName the qualified name of the document element to be created or null
-	 * @param element       document {@code Element}
-	 * @return {@code Document}
-	 */
-	public static Document createDocument(final String namespaceURI, final String qualifiedName, final Element element) {
-		ensureDocumentBuilder();
-
-		DOMImplementation domImpl;
-		try {
-			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-		final Document newDocument = domImpl.createDocument(namespaceURI, qualifiedName, null);
-		final Element newElement = newDocument.getDocumentElement();
-		newDocument.adoptNode(element);
-		newElement.appendChild(element);
-
-		return newDocument;
-	}
-
-	/**
 	 * Creates a DOM document without document element.
 	 *
-	 * @param namespaceURI  the namespace URI of the document element to create or null
-	 * @param qualifiedName the qualified name of the document element to be created or null
+	 * @param namespaceURI
+	 *            the namespace URI of the document element to create or null
+	 * @param qualifiedName
+	 *            the qualified name of the document element to be created or null
 	 * @return {@code Document}
 	 */
 	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
@@ -785,40 +770,11 @@ public final class DSSXMLUtils {
 		return domImpl.createDocument(namespaceURI, qualifiedName, null);
 	}
 
-
-	/**
-	 * Creates a DOM Document object of the specified type with its document elements.
-	 *
-	 * @param namespaceURI
-	 * @param qualifiedName
-	 * @param element1
-	 * @param element2
-	 * @return {@code Document}
-	 */
-	public static Document createDocument(final String namespaceURI, final String qualifiedName, final Element element1, final Element element2) {
-		ensureDocumentBuilder();
-
-		DOMImplementation domImpl;
-		try {
-			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-		final Document newDocument = domImpl.createDocument(namespaceURI, qualifiedName, null);
-		final Element newElement = newDocument.getDocumentElement();
-		newDocument.adoptNode(element1);
-		newElement.appendChild(element1);
-
-		newDocument.adoptNode(element2);
-		newElement.appendChild(element2);
-
-		return newDocument;
-	}
-
 	/**
 	 * Converts a given {@code Date} to a new {@code XMLGregorianCalendar}.
 	 *
-	 * @param date the date to be converted
+	 * @param date
+	 *            the date to be converted
 	 * @return the new {@code XMLGregorianCalendar} or null
 	 */
 	public static XMLGregorianCalendar createXMLGregorianCalendar(final Date date) {
@@ -843,7 +799,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method allows to convert the given text (XML representation of a date) to the {@code Date}.
 	 *
-	 * @param text the text representing the XML date
+	 * @param text
+	 *            the text representing the XML date
 	 * @return {@code Date} converted or null
 	 */
 	public static Date getDate(final String text) {
@@ -860,36 +817,10 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method retrieves an element based on its ID
-	 *
-	 * @param currentDom the DOM in which the element has to be retrieved
-	 * @param elementId  the specified ID
-	 * @param namespace  the namespace to take into account
-	 * @param tagName    the tagName of the element to find
-	 * @return the
-	 * @throws NullPointerException
-	 */
-	public static Element getElementById(Document currentDom, String elementId, String namespace, String tagName) throws NullPointerException {
-
-		Element element = null;
-		NodeList nodes = currentDom.getElementsByTagNameNS(namespace, tagName);
-
-		for (int i = 0; i < nodes.getLength(); i++) {
-			element = (Element) nodes.item(i);
-			if (elementId.equals(DSSXMLUtils.getIDIdentifier(element))) {
-				return element;
-			}
-		}
-		if (element == null) {
-			throw new NullPointerException();
-		}
-		return null;
-	}
-
-	/**
 	 * This method allows to validate an XML against the XAdES XSD schema.
 	 *
-	 * @param streamSource {@code InputStream} XML to validate
+	 * @param streamSource
+	 *            {@code InputStream} XML to validate
 	 * @return null if the XSD validates the XML, error message otherwise
 	 */
 	public static String validateAgainstXSD(final StreamSource streamSource) {
@@ -919,7 +850,8 @@ public final class DSSXMLUtils {
 	/**
 	 * This method allows to convert an XML {@code Node} to a {@code String}.
 	 *
-	 * @param node {@code Node} to be converted
+	 * @param node
+	 *            {@code Node} to be converted
 	 * @return {@code String} representation of the node
 	 */
 	public static String xmlToString(final Node node) {

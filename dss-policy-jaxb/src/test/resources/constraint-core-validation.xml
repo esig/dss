@@ -1,8 +1,10 @@
 <ConstraintsParameters Name="Core-Validation" xmlns="http://dss.esig.europa.eu/validation/diagnostic">
 	<Description>This policy allows to check the core validity of the signature.</Description>
-	<MainSignature>
-		<ReferenceDataExistence Level="FAIL" />
-		<ReferenceDataIntact Level="FAIL" />
-		<SignatureIntact Level="FAIL" />
-	</MainSignature>
+	<SignatureConstraints>
+		<BasicSignatureConstraints>
+			<ReferenceDataExistence Level="FAIL" />
+			<ReferenceDataIntact Level="FAIL" />
+			<SignatureIntact Level="FAIL" />
+		</BasicSignatureConstraints>
+	</SignatureConstraints>
 </ConstraintsParameters>

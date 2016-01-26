@@ -1,0 +1,14 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="
+       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<jaxrs:client id="restClient" address="http://localhost:8080/dss-demo-webapp/services/rest/validation" serviceClass="eu.europa.esig.dss.validation.RestDocumentValidationService">
+		<jaxrs:providers>
+			<bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+</beans>

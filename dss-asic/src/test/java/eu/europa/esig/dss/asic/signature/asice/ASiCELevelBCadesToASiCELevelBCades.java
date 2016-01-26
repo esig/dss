@@ -1,17 +1,13 @@
 package eu.europa.esig.dss.asic.signature.asice;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.bouncycastle.util.encoders.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUnsupportedOperationException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -25,12 +21,12 @@ import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class ASiCELevelBCadesToASiCELevelBCades {
 
@@ -68,7 +64,7 @@ public class ASiCELevelBCadesToASiCELevelBCades {
 
 		certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
-		
+
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
 		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
@@ -79,11 +75,11 @@ public class ASiCELevelBCadesToASiCELevelBCades {
 		Reports reports = validator.validateDocument();
 
 		reports.print();
-		
-		while(reports != null) {
+
+		while (reports != null) {
 			DiagnosticData diagnosticData = reports.getDiagnosticData();
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-			Assert.assertNotEquals("INVALID", reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
+			Assert.assertNotEquals(Indication.INVALID, reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
 			reports = reports.getNextReports();
 		}
 	}

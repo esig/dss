@@ -22,25 +22,26 @@ package eu.europa.esig.dss.validation;
 
 import java.io.InputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.ObjectFactory;
 
 public class ValidationResourceManager {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationResourceManager.class);
 
 	public static String defaultPolicyConstraintsLocation = "/policy/constraint.xml";
-	public static String defaultCountersignaturePolicyConstraintsLocation = "/policy/countersignature-constraint.xml";
 	public static String defaultPolicyXsdLocation = "/policy/policy.xsd";
 
 	private static JAXBContext jaxbContext;
@@ -55,13 +56,14 @@ public class ValidationResourceManager {
 	}
 
 	/**
-	 * This method loads the policy constraint file. If the validationPolicy is not specified then the default policy file is
+	 * This method loads the policy constraint file. If the validationPolicy is not specified then the default policy
+	 * file is
 	 * loaded.
 	 *
 	 * @param policyDataStream
 	 * @return
 	 */
-	public static Document loadPolicyData(InputStream policyDataStream) {
+	public static ConstraintsParameters loadPolicyData(InputStream policyDataStream) {
 
 		if (policyDataStream != null) {
 
@@ -70,26 +72,6 @@ public class ValidationResourceManager {
 		if ((defaultPolicyConstraintsLocation != null) && !defaultPolicyConstraintsLocation.isEmpty()) {
 
 			return load(defaultPolicyConstraintsLocation);
-		}
-		return null;
-	}
-
-	/**
-	 * This method loads the policy constraint file. If the validationPolicy is not specified then the default policy file is
-	 * loaded.
-	 *
-	 * @param policyDataStream
-	 * @return
-	 */
-	public static Document loadCountersignaturePolicyData(InputStream policyDataStream) {
-
-		if (policyDataStream != null) {
-
-			return load(policyDataStream);
-		}
-		if ((defaultCountersignaturePolicyConstraintsLocation != null) && !defaultCountersignaturePolicyConstraintsLocation.isEmpty()) {
-
-			return load(defaultCountersignaturePolicyConstraintsLocation);
 		}
 		return null;
 	}
@@ -120,7 +102,7 @@ public class ValidationResourceManager {
 	 * @param path
 	 * @return
 	 */
-	public static Document load(final String path) {
+	public static ConstraintsParameters load(final String path) {
 
 		if ((path == null) || path.isEmpty()) {
 
@@ -130,41 +112,29 @@ public class ValidationResourceManager {
 		if (fileInputStream == null) {
 			LOG.warn("path: '{}'", path);
 		}
-		final Document document = load(fileInputStream);
-		// DSSXMLUtils.printDocument(document, System.out);
-		return document;
+		return load(fileInputStream);
 	}
 
 	/**
-	 * This is the utility method that loads the data from the inputstream determined by the inputstream parameter into a
-	 * {@link org.w3c.dom.Document}.
+	 * This is the utility method that loads the data from the inputstream determined by the inputstream parameter into
+	 * a
+	 * {@link ConstraintsParameters}.
 	 *
 	 * @param inputStream
 	 * @return
 	 */
-	public static Document load(final InputStream inputStream) throws DSSException {
-
-		final Document document = DSSXMLUtils.buildDOM(inputStream);
-		return document;
-	}
-
-	/**
-	 * This is the utility method that marshals the JAXB object into a {@link org.w3c.dom.Document}.
-	 *
-	 * @param diagnosticDataJB The JAXB object representing the diagnostic data.
-	 * @return
-	 */
-	public static Document convert(final DiagnosticData diagnosticDataJB) {
-
+	public static ConstraintsParameters load(final InputStream inputStream) throws DSSException {
 		try {
-
-			final Document diagnosticData = DSSXMLUtils.buildDOM();
-			Marshaller marshaller = jaxbContext.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.marshal(diagnosticDataJB, diagnosticData);
-			return diagnosticData;
-		} catch (JAXBException e) {
-			throw new DSSException(e);
+			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = sf.newSchema(new StreamSource(ValidationResourceManager.class.getResourceAsStream(defaultPolicyXsdLocation)));
+			
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			unmarshaller.setSchema(schema);
+			
+			return (ConstraintsParameters) unmarshaller.unmarshal(inputStream);
+		} catch (Exception e) {
+			throw new DSSException("Unable to load policy : " + e.getMessage(), e);
 		}
 	}
+
 }

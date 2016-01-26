@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 public final class RuleUtils {
 
@@ -79,41 +80,22 @@ public final class RuleUtils {
 			}
 			throw new DSSException("Unknown time unit: " + toUnit + ".");
 		} catch (Exception e) {
-
 			throw new DSSException("Error during the duration conversion: " + e.getMessage(), e);
 		}
 	}
 
 	/**
-	 * @param id
-	 * @param idList
-	 * @return
-	 */
-	public static boolean contains(final String id, final List<XmlDom> idList) {
-
-		boolean found = false;
-		for (XmlDom xmlDom : idList) {
-
-			String value = xmlDom.getValue("./text()");
-			if (value.equals(id)) {
-
-				found = true;
-				break;
-			}
-		}
-		return found;
-	}
-
-	/**
 	 * This method checks if the given string is present in the list of {@code String}(s).
 	 *
-	 * @param id     {@code String} to check
-	 * @param idList the list of {@code String}(s)
+	 * @param id
+	 *            {@code String} to check
+	 * @param idList
+	 *            the list of {@code String}(s)
 	 * @return tru if the {@code id} is present in the {@code idList}, false otherwise
 	 */
 	public static boolean contains1(final String id, final List<String> idList) {
 
-		if (id != null && idList != null) {
+		if ((id != null) && (idList != null)) {
 			for (final String idFromList : idList) {
 				if (idFromList.equals(id)) {
 					return true;
@@ -121,16 +103,6 @@ public final class RuleUtils {
 			}
 		}
 		return false;
-	}
-
-	public static long convertToLong(final String value) {
-
-		try {
-
-			return Long.parseLong(value);
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	public static String canonicalizeDigestAlgo(final String algo) {
@@ -151,11 +123,9 @@ public final class RuleUtils {
 		return signatureAlgo;
 	}
 
-	public static boolean in(final String value, final String... values) {
-
+	public static boolean in(final SubIndication value, final SubIndication... values) {
 		final boolean contains = Arrays.asList(values).contains(value);
 		return contains;
-
 	}
 
 	public static String toString(List<String> strings) {
@@ -186,4 +156,23 @@ public final class RuleUtils {
 		}
 		return found;
 	}
+
+	public static int convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, int value) {
+		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
+		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
+		Long convert = to.convert(value, from);
+		if (convert == 0) {
+			return Integer.MAX_VALUE;
+		} else {
+			return convert.intValue();
+		}
+	}
+
+	public static int convertDuration(TimeConstraint timeConstraint) {
+		if (timeConstraint != null) {
+			return convertDuration(timeConstraint.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, timeConstraint.getValue());
+		}
+		return Integer.MAX_VALUE;
+	}
+
 }

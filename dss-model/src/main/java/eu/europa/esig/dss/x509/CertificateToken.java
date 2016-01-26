@@ -48,14 +48,13 @@ import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 
 /**
- * Whenever the signature validation process encounters an {@link java.security.cert.X509Certificate} a certificateToken is created.<br>
+ * Whenever the signature validation process encounters an {@link java.security.cert.X509Certificate} a certificateToken
+ * is created.<br>
  * This class encapsulates some frequently used information: a certificate comes from a certain context (Trusted List,
  * CertStore, Signature), has revocation data... To expedite the processing of such information, they are kept in cache.
  */
 @SuppressWarnings("serial")
 public class CertificateToken extends Token {
-
-	private String dssId;
 
 	/**
 	 * Encapsulated X509 certificate.
@@ -86,7 +85,8 @@ public class CertificateToken extends Token {
 	private RevocationToken revocationToken;
 
 	/**
-	 * Indicates if the certificate is self-signed. This attribute stays null till the first call to {@link #isSelfSigned()} function.
+	 * Indicates if the certificate is self-signed. This attribute stays null till the first call to
+	 * {@link #isSelfSigned()} function.
 	 */
 	private Boolean selfSigned;
 
@@ -164,16 +164,6 @@ public class CertificateToken extends Token {
 		}
 	}
 
-	/**
-	 * Returns a string representation of the unique DSS certificate token identifier.
-	 */
-	public String getDSSIdAsString() {
-		if (dssId == null) {
-			dssId = getDSSId().asXmlId();
-		}
-		return dssId;
-	}
-
 	@Override
 	public String getAbbreviation() {
 		return getDSSIdAsString();
@@ -200,7 +190,8 @@ public class CertificateToken extends Token {
 	 * To get the encryption algorithm used with this public key call getAlgorithm() method.<br>
 	 * RFC 2459:<br>
 	 * 4.1.2.7 Subject Public Key Info
-	 * This field is used to carry the public key and identify the algorithm with which the key is used. The algorithm is
+	 * This field is used to carry the public key and identify the algorithm with which the key is used. The algorithm
+	 * is
 	 * identified using the AlgorithmIdentifier structure specified in section 4.1.1.2. The object identifiers for the
 	 * supported algorithms and the methods for encoding the public key materials (public key and parameters) are
 	 * specified in section 7.3.
@@ -331,7 +322,8 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Gets information about the context in which this certificate token was created (TRUSTED_LIST, TRUSTED_STORE, ...).
+	 * Gets information about the context in which this certificate token was created (TRUSTED_LIST, TRUSTED_STORE,
+	 * ...).
 	 * This method does not guarantee that the token is trusted or not.
 	 *
 	 * @return
@@ -341,7 +333,8 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Gets information about the trusted context of the certificate. See {@link eu.europa.esig.dss.tsl.ServiceInfo} for more information.
+	 * Gets information about the trusted context of the certificate. See {@link eu.europa.esig.dss.tsl.ServiceInfo} for
+	 * more information.
 	 *
 	 * @return
 	 */
@@ -421,7 +414,8 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Returns the trust anchor associated with the certificate. If it is the self-signed certificate then {@code this} is returned.
+	 * Returns the trust anchor associated with the certificate. If it is the self-signed certificate then {@code this}
+	 * is returned.
 	 *
 	 * @return
 	 */
@@ -482,7 +476,8 @@ public class CertificateToken extends Token {
 			out.append(indentStr).append(getDSSIdAsString()).append("<--").append(issuerAsString).append(", source=").append(certSource);
 			out.append(", serial=" + x509Certificate.getSerialNumber()).append('\n');
 			// Validity period
-			out.append(indentStr).append("Validity period    : ").append(x509Certificate.getNotBefore()).append(" - ").append(x509Certificate.getNotAfter()).append('\n');
+			out.append(indentStr).append("Validity period    : ").append(x509Certificate.getNotBefore()).append(" - ").append(x509Certificate.getNotAfter())
+					.append('\n');
 			out.append(indentStr).append("Subject name       : ").append(getSubjectX500Principal()).append('\n');
 			out.append(indentStr).append("Issuer subject name: ").append(getIssuerX500Principal()).append('\n');
 			if (sources.contains(CertificateSourceType.TRUSTED_LIST)) {
@@ -509,8 +504,9 @@ public class CertificateToken extends Token {
 				out.append(indentStr).append("Revocation data[\n");
 				indentStr += "\t";
 				final CertificateToken revocationTokenIssuerToken = revocationToken.getIssuerToken();
-				out.append(indentStr).append("Status: ").append(revocationToken.getStatus()).append(" / ").append(revocationToken.getIssuingTime())
-				.append(" / issuer's certificate ").append(revocationTokenIssuerToken != null ? revocationTokenIssuerToken.getDSSIdAsString() : "null").append('\n');
+				out.append(indentStr).append("Status: ").append(revocationToken.getStatus()).append(" / ").append(revocationToken.getProductionDate())
+						.append(" / issuer's certificate ").append(revocationTokenIssuerToken != null ? revocationTokenIssuerToken.getDSSIdAsString() : "null")
+						.append('\n');
 				indentStr = indentStr.substring(1);
 				out.append(indentStr).append("]\n");
 			} else {
@@ -620,7 +616,8 @@ public class CertificateToken extends Token {
 		String readableCertificate = x509Certificate.getSubjectDN().getName();
 		final int dnStartIndex = readableCertificate.indexOf("CN=") + 3;
 		if ((dnStartIndex > 0) && (readableCertificate.indexOf(",", dnStartIndex) > 0)) {
-			readableCertificate = readableCertificate.substring(dnStartIndex, readableCertificate.indexOf(",", dnStartIndex)) + " (SN:" + getSerialNumber() + ")";
+			readableCertificate = readableCertificate.substring(dnStartIndex, readableCertificate.indexOf(",", dnStartIndex)) + " (SN:" + getSerialNumber()
+					+ ")";
 		}
 		return readableCertificate;
 	}

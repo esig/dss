@@ -52,8 +52,10 @@ import eu.europa.esig.dss.x509.crl.CRLValidity;
 
 /**
  * Online CRL repository. This CRL repository implementation will download the CRLs from the given CRL URIs.
- * Note that for the HTTP kind of URLs you can provide dedicated data loader. If the data loader is not provided the standard load from URI is
- * provided. For FTP the standard load from URI is provided. For LDAP kind of URLs an internal implementation using apache-ldap-api is provided.
+ * Note that for the HTTP kind of URLs you can provide dedicated data loader. If the data loader is not provided the
+ * standard load from URI is
+ * provided. For FTP the standard load from URI is provided. For LDAP kind of URLs an internal implementation using
+ * apache-ldap-api is provided.
  *
  *
  */
@@ -63,7 +65,8 @@ public class OnlineCRLSource implements CRLSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineCRLSource.class);
 
 	/**
-	 * If the multiple protocols are available to retrieve the revocation data, then that indicated by this variable is used first.
+	 * If the multiple protocols are available to retrieve the revocation data, then that indicated by this variable is
+	 * used first.
 	 */
 	private Protocol preferredProtocol;
 
@@ -84,7 +87,8 @@ public class OnlineCRLSource implements CRLSource {
 	/**
 	 * This constructor allows to set a specific {@code DataLoader}.
 	 *
-	 * @param dataLoader the component that allows to retrieve the data using any protocol: HTTP, HTTPS, FTP, LDAP.
+	 * @param dataLoader
+	 *            the component that allows to retrieve the data using any protocol: HTTP, HTTPS, FTP, LDAP.
 	 */
 	public OnlineCRLSource(final DataLoader dataLoader) {
 
@@ -93,10 +97,12 @@ public class OnlineCRLSource implements CRLSource {
 	}
 
 	/**
-	 * This method allows to set the preferred protocol. This parameter is used used when retrieving the CRL to choose the canal.<br/>
+	 * This method allows to set the preferred protocol. This parameter is used used when retrieving the CRL to choose
+	 * the canal.<br/>
 	 * Possible values are: http, ldap, ftp
 	 *
-	 * @param preferredProtocol {@code Protocol} that is used first to retrieve the revocation data
+	 * @param preferredProtocol
+	 *            {@code Protocol} that is used first to retrieve the revocation data
 	 */
 	public void setPreferredProtocol(final Protocol preferredProtocol) {
 
@@ -106,7 +112,8 @@ public class OnlineCRLSource implements CRLSource {
 	/**
 	 * Set the DataLoader to use for querying the CRL server
 	 *
-	 * @param dataLoader the component that allows to retrieve the data using any protocol: HTTP, HTTPS, FTP, LDAP.
+	 * @param dataLoader
+	 *            the component that allows to retrieve the data using any protocol: HTTP, HTTPS, FTP, LDAP.
 	 */
 	public void setDataLoader(final DataLoader dataLoader) {
 
@@ -136,7 +143,7 @@ public class OnlineCRLSource implements CRLSource {
 		try {
 			crl = DSSUtils.loadCRL(dataAndUrl.data);
 		} catch (Exception e) {
-			LOG.warn("", e);
+			LOG.warn("Unable to load the CRL (url:" + dataAndUrl.urlString + ") : " + e.getMessage(), e);
 			return null;
 		}
 		final CRLValidity crlValidity = CRLUtils.isValidCRL(crl, issuerToken);
@@ -148,7 +155,8 @@ public class OnlineCRLSource implements CRLSource {
 	/**
 	 * Download a CRL from any location with any protocol.
 	 *
-	 * @param downloadUrls the {@code List} of urls to be used to obtain the revocation data through the CRL canal.
+	 * @param downloadUrls
+	 *            the {@code List} of urls to be used to obtain the revocation data through the CRL canal.
 	 * @return {@code X509CRL} or null if it was not possible to download the CRL
 	 */
 	private DataLoader.DataAndUrl downloadCrl(final List<String> downloadUrls) {
@@ -169,7 +177,8 @@ public class OnlineCRLSource implements CRLSource {
 	/**
 	 * Gives back the {@code List} of CRL URI meta-data found within the given X509 certificate.
 	 *
-	 * @param certificateToken the X509 certificate
+	 * @param certificateToken
+	 *            the X509 certificate
 	 * @return the {@code List} of CRL URI, or {@code null} if the extension is not present
 	 * @throws DSSException
 	 */
@@ -228,7 +237,8 @@ public class OnlineCRLSource implements CRLSource {
 	 * if {@code preferredProtocol} is set then the list of urls is prioritize.
 	 * NOTE: This is not standard conformant! However in the major number of cases LDAP is much slower then HTTP!
 	 *
-	 * @param urls {@code List} of urls to prioritize
+	 * @param urls
+	 *            {@code List} of urls to prioritize
 	 */
 	private void prioritize(final List<String> urls) {
 

@@ -47,6 +47,7 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
  */
+@SuppressWarnings("serial")
 public class OCSPToken extends RevocationToken {
 
 	private static final Logger logger = LoggerFactory.getLogger(OCSPToken.class);
@@ -56,8 +57,6 @@ public class OCSPToken extends RevocationToken {
 	 */
 	private transient final BasicOCSPResp basicOCSPResp;
 
-	private transient final SingleResp singleResp;
-
 	/**
 	 * In case of online source this is the source URI.
 	 */
@@ -66,7 +65,8 @@ public class OCSPToken extends RevocationToken {
 	/**
 	 * The default constructor for OCSPToken.
 	 *
-	 * @param basicOCSPResp   The basic OCSP response.
+	 * @param basicOCSPResp
+	 *            The basic OCSP response.
 	 * @param singleResp
 	 */
 	public OCSPToken(final BasicOCSPResp basicOCSPResp, final SingleResp singleResp) {
@@ -78,8 +78,11 @@ public class OCSPToken extends RevocationToken {
 			throw new NullPointerException();
 		}
 		this.basicOCSPResp = basicOCSPResp;
-		this.singleResp = singleResp;
-		this.issuingTime = basicOCSPResp.getProducedAt();
+
+		this.productionDate = basicOCSPResp.getProducedAt();
+		this.thisUpdate = singleResp.getThisUpdate();
+		this.nextUpdate = singleResp.getNextUpdate();
+
 		setStatus(singleResp.getCertStatus());
 		final ASN1ObjectIdentifier signatureAlgOID = basicOCSPResp.getSignatureAlgOID();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(signatureAlgOID.getId());
@@ -87,7 +90,7 @@ public class OCSPToken extends RevocationToken {
 		this.extraInfo = new TokenValidationExtraInfo();
 
 		if (logger.isTraceEnabled()) {
-			logger.trace("OCSP token, produced at '" + DSSUtils.formatInternal(issuingTime) + "' created.");
+			logger.trace("OCSP token, produced at '" + DSSUtils.formatInternal(productionDate) + "' created.");
 		}
 	}
 
@@ -108,7 +111,12 @@ public class OCSPToken extends RevocationToken {
 			final RevokedStatus revokedStatus = (RevokedStatus) certStatus;
 			status = false;
 			revocationDate = revokedStatus.getRevocationTime();
-            reason = getRevocationReason(revokedStatus);
+			int reasonId = 0; // unspecified
+			if (revokedStatus.hasRevocationReason()) {
+				reasonId = revokedStatus.getRevocationReason();
+			}
+			final CRLReason crlReason = CRLReason.lookup(reasonId);
+			reason = crlReason.toString();
 		} else if (certStatus instanceof UnknownStatus) {
 
 			if (logger.isInfoEnabled()) {
@@ -124,12 +132,12 @@ public class OCSPToken extends RevocationToken {
 		return crlReason.toString();
 	}
 
-    private int getRevocationReasonId(RevokedStatus revokedStatus) {
+	private int getRevocationReasonId(RevokedStatus revokedStatus) {
 		try {
 			return revokedStatus.getRevocationReason();
 		} catch (IllegalStateException e) {
-		logger.warn("OCSP Revocation reason is not available: " + e.getMessage());
-			return 0; //Zero means 'unspecified'
+			logger.warn("OCSP Revocation reason is not available: " + e.getMessage());
+			return 0; // Zero means 'unspecified'
 		}
 	}
 
@@ -187,23 +195,24 @@ public class OCSPToken extends RevocationToken {
 	}
 
 	/**
-	 * This method returns the DSS abbreviation of the certificate. It is used for debugging purpose.
+	 * This method returns the DSS abbreviation of the certificate. It is used
+	 * for debugging purpose.
 	 *
 	 * @return
 	 */
 	@Override
 	public String getAbbreviation() {
-		return "OCSPToken[" + DSSUtils.formatInternal(basicOCSPResp.getProducedAt()) + ", signedBy=" + (issuerToken == null ? "?" : issuerToken.getDSSIdAsString()) +
-				"]";
+		return "OCSPToken[" + DSSUtils.formatInternal(basicOCSPResp.getProducedAt()) + ", signedBy="
+				+ (issuerToken == null ? "?" : issuerToken.getDSSIdAsString()) + "]";
 	}
 
 	@Override
 	public String toString(String indentStr) {
 		final StringWriter out = new StringWriter();
 		out.append(indentStr).append("OCSPToken[");
-		out.append("ProductionTime: ").append(DSSUtils.formatInternal(issuingTime)).append("; ");
-		out.append("ThisUpdate: ").append(DSSUtils.formatInternal(singleResp.getThisUpdate())).append("; ");
-		out.append("NextUpdate: ").append(DSSUtils.formatInternal(singleResp.getNextUpdate())).append('\n');
+		out.append("ProductionTime: ").append(DSSUtils.formatInternal(productionDate)).append("; ");
+		out.append("ThisUpdate: ").append(DSSUtils.formatInternal(thisUpdate)).append("; ");
+		out.append("NextUpdate: ").append(DSSUtils.formatInternal(nextUpdate)).append('\n');
 		out.append("SignedBy: ").append(issuerToken != null ? issuerToken.getDSSIdAsString() : null).append('\n');
 		indentStr += "\t";
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm.getJCEId()).append('\n');

@@ -1,12 +1,10 @@
 package eu.europa.esig.dss.asic.extension.asice;
 
-import java.io.File;
 import java.util.Date;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -21,7 +19,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCeSignAndExtendTest {
 
@@ -53,7 +51,7 @@ public class ASiCeSignAndExtendTest {
 	}
 
 	public void extend(DSSDocument docToExtend) throws Exception {
-		//DSSDocument docToExtend = new FileDocument(new File("target/asic-e-cades-b.asice"));
+		// DSSDocument docToExtend = new FileDocument(new File("target/asic-e-cades-b.asice"));
 
 		ASiCService service = new ASiCService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();

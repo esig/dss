@@ -41,7 +41,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class ASiCSLevelLTATest extends AbstractTestSignature {
 

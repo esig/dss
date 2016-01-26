@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import eu.europa.esig.dss.EncryptionAlgorithm;
 
+@SuppressWarnings("serial")
 public class DataToSignParams implements Serializable {
 
 	@NotNull
@@ -15,7 +16,7 @@ public class DataToSignParams implements Serializable {
 	private List<String> certificateChain;
 	@NotNull
 	private EncryptionAlgorithm encryptionAlgorithm;
-	
+
 	public DataToSignParams() {
 	}
 
@@ -42,6 +43,5 @@ public class DataToSignParams implements Serializable {
 	public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
 		this.encryptionAlgorithm = encryptionAlgorithm;
 	}
-	
-	
+
 }

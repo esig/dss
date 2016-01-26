@@ -17,6 +17,10 @@ import org.junit.Test;
 
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.Level;
+import eu.europa.esig.jaxb.policy.RevocationConstraints;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
+import eu.europa.esig.jaxb.policy.TimeUnit;
 
 public class JaxbPolicyTest {
 
@@ -24,7 +28,7 @@ public class JaxbPolicyTest {
 	public void testUnmarshalling() throws Exception {
 		ConstraintsParameters constraintsParameters = unmarshal(new File("src/test/resources/constraint.xml"));
 
-		Algo algo = constraintsParameters.getMainSignature().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
+		Algo algo = constraintsParameters.getSignatureConstraints().getBasicSignatureConstraints().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
 		assertNotNull(algo);
 		String algoName = algo.getValue();
 		assertEquals("DSA", algoName);
@@ -40,14 +44,22 @@ public class JaxbPolicyTest {
 		unmarshal(new File("src/test/resources/constraint-core-validation.xml"));
 	}
 
-	// TODO	@Test
-	public void testUnmarshalModel() throws Exception {
-		unmarshal(new File("src/test/resources/constraints_MODEL.xml"));
+	@Test
+	public void testUnmarshalConstraint() throws Exception {
+		ConstraintsParameters constraintsParameters = unmarshal(new File("src/test/resources/constraint.xml"));
+		RevocationConstraints revocation = constraintsParameters.getRevocation();
+		assertNotNull(revocation);
+		TimeConstraint revocationFreshness = revocation.getRevocationFreshness();
+		assertNotNull(revocationFreshness);
+		assertEquals(Level.FAIL, revocationFreshness.getLevel());
+		assertEquals(TimeUnit.DAYS, revocationFreshness.getUnit());
+		assertNotNull(revocationFreshness.getValue());
+		assertEquals(0, revocationFreshness.getValue().intValue());
 	}
 
-	@Test
-	public void testUnmarshalCountersignature() throws Exception {
-		unmarshal(new File("src/test/resources/countersignature-constraint.xml"));
+	// TODO @Test
+	public void testUnmarshalModel() throws Exception {
+		unmarshal(new File("src/test/resources/constraints_MODEL.xml"));
 	}
 
 	public ConstraintsParameters unmarshal(File file) throws Exception {

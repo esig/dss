@@ -14,14 +14,14 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class XAdESBWithoutSignedDataObjectPropertiesToLTATest {
-	
+
 	@Test
 	public void test() throws Exception {
 		DSSDocument toSignDocument = new FileDocument("src/test/resources/XAdESBWithoutSignedDataObjectProperties.xml");
@@ -37,9 +37,10 @@ public class XAdESBWithoutSignedDataObjectPropertiesToLTATest {
 		parameters.setSigningCertificate(signerEntry.getCertificate());
 		parameters.setCertificateChain(signerEntry.getCertificateChain());
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		
+
 		DSSDocument extendDocument = service.extendDocument(toSignDocument, parameters);
-		
+		// extendDocument.save("target/result.xml");
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();

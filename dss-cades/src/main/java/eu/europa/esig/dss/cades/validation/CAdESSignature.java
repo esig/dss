@@ -197,12 +197,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private String signatureId;
 
 	/**
-	 * It's only used to keep the same signature id between cades and pades
-	 * signature. (PAdESSignature should extend XAdESSignature!)
-	 */
-	private Date padesSigningTime = null;
-
-	/**
 	 * Cached list of the Signing Certificate Timestamp References.
 	 */
 	private List<TimestampReference> signingCertificateTimestampReferences;
@@ -239,6 +233,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool) {
 		this(cms, getFirstSignerInformation(cms), certPool);
 	}
+	
+	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool, List<DSSDocument> detachedContents) {
+		this(cms, certPool);
+		setDetachedContents(detachedContents);
+	}
 
 	/**
 	 * @param cmsSignedData
@@ -264,16 +263,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		super(certPool);
 		this.cmsSignedData = cmsSignedData;
 		this.signerInformation = signerInformation;
-	}
-
-	/**
-	 * This is convenience method. To be used only internally!
-	 *
-	 * @param padesSigningTime
-	 *            PAdES signing time
-	 */
-	public void setPadesSigningTime(final Date padesSigningTime) {
-		this.padesSigningTime = padesSigningTime;
 	}
 
 	/**
@@ -966,7 +955,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
 					for (final String timestampId : timestampedTimestamps) {
 
-						final TimestampReference timestampReference = new TimestampReference(timestampId);
+						final TimestampReference timestampReference = new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP);
 						archiveReferences.add(timestampReference);
 					}
 					archiveReferences.addAll(getTimestampedReferences());
@@ -975,7 +964,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				default:
 					throw new DSSException("TimeStampType not supported : " + timestampType);
 			}
-			timestampedTimestamps.add(String.valueOf(timestampToken.getDSSId()));
+			timestampedTimestamps.add(timestampToken.getDSSId().asXmlId());
 		}
 	}
 
@@ -1038,7 +1027,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return signatureReference;
 	}
 
-	private List<TimestampReference> getSigningCertificateTimestampReferences() {
+	public List<TimestampReference> getSigningCertificateTimestampReferences() {
 
 		if (signingCertificateTimestampReferences == null) {
 
@@ -1745,7 +1734,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
 			// Only used to keep the same signature id between CAdES and PAdES
 			// signature!
-			final Date signingTime = padesSigningTime != null ? padesSigningTime : getSigningTime();
+			final Date signingTime = getSigningTime();
 			signatureId = DSSUtils.getDeterministicId(signingTime, identifier);
 		}
 		return signatureId;

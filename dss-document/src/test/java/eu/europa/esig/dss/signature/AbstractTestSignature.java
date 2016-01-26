@@ -23,14 +23,11 @@ package eu.europa.esig.dss.signature;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -49,9 +46,11 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -83,7 +82,7 @@ public abstract class AbstractTestSignature {
 
 		logger.info("=================== VALIDATION =================");
 
-		//		signedDocument.save("target/xades.xml");
+		// signedDocument.save("target/xades.xml");
 
 		if (logger.isDebugEnabled()) {
 			try {
@@ -108,6 +107,9 @@ public abstract class AbstractTestSignature {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		verifySimpleReport(simpleReport);
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		verifyDetailedReport(detailedReport);
 	}
 
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -130,6 +132,69 @@ public abstract class AbstractTestSignature {
 
 	protected void verifySimpleReport(SimpleReport simpleReport) {
 		assertNotNull(simpleReport);
+
+		List<String> signatureIdList = simpleReport.getSignatureIdList();
+		assertTrue(CollectionUtils.isNotEmpty(signatureIdList));
+
+		for (String sigId : signatureIdList) {
+			Indication indication = simpleReport.getIndication(sigId);
+			assertNotNull(indication);
+			if (indication != Indication.VALID) {
+				assertNotNull(simpleReport.getSubIndication(sigId));
+			}
+			assertNotNull(simpleReport.getSignatureLevel(sigId));
+		}
+		assertNotNull(simpleReport.getValidationTime());
+	}
+
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		assertNotNull(detailedReport);
+
+		int nbBBBs = detailedReport.getBasicBuildingBlocksNumber();
+		assertTrue(nbBBBs > 0);
+		for (int i = 0; i < nbBBBs; i++) {
+			String id = detailedReport.getBasicBuildingBlocksSignatureId(i);
+			assertNotNull(id);
+			assertNotNull(detailedReport.getBasicBuildingBlocksIndication(id));
+		}
+
+		List<String> signatureIds = detailedReport.getSignatureIds();
+		assertTrue(CollectionUtils.isNotEmpty(signatureIds));
+		for (String sigId : signatureIds) {
+			Indication basicIndication = detailedReport.getBasicValidationIndication(sigId);
+			assertNotNull(basicIndication);
+			if (!Indication.VALID.equals(basicIndication)) {
+				assertNotNull(detailedReport.getBasicValidationSubIndication(sigId));
+			}
+		}
+
+		if (isBaselineT()) {
+			List<String> timestampIds = detailedReport.getTimestampIds();
+			assertTrue(CollectionUtils.isNotEmpty(timestampIds));
+			for (String tspId : timestampIds) {
+				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
+				assertNotNull(timestampIndication);
+				if (!Indication.VALID.equals(timestampIndication)) {
+					assertNotNull(detailedReport.getTimestampValidationSubIndication(tspId));
+				}
+			}
+		}
+
+		for (String sigId : signatureIds) {
+			Indication ltvIndication = detailedReport.getLongTermValidationIndication(sigId);
+			assertNotNull(ltvIndication);
+			if (!Indication.VALID.equals(ltvIndication)) {
+				assertNotNull(detailedReport.getLongTermValidationSubIndication(sigId));
+			}
+		}
+
+		for (String sigId : signatureIds) {
+			Indication archiveDataIndication = detailedReport.getArchiveDataValidationIndication(sigId);
+			assertNotNull(archiveDataIndication);
+			if (!Indication.VALID.equals(archiveDataIndication)) {
+				assertNotNull(detailedReport.getArchiveDataValidationSubIndication(sigId));
+			}
+		}
 	}
 
 	protected DSSDocument sign() {
@@ -229,14 +294,14 @@ public abstract class AbstractTestSignature {
 				String timestampType = diagnosticData.getTimestampType(timestampId);
 				TimestampType type = TimestampType.valueOf(timestampType);
 				switch (type) {
-					case SIGNATURE_TIMESTAMP:
-						foundSignatureTimeStamp = true;
-						break;
-					case ARCHIVE_TIMESTAMP:
-						foundArchiveTimeStamp = true;
-						break;
-					default:
-						break;
+				case SIGNATURE_TIMESTAMP:
+					foundSignatureTimeStamp = true;
+					break;
+				case ARCHIVE_TIMESTAMP:
+					foundArchiveTimeStamp = true;
+					break;
+				default:
+					break;
 				}
 
 			}
@@ -256,16 +321,9 @@ public abstract class AbstractTestSignature {
 		Date signatureDate = diagnosticData.getSignatureDate();
 		Date originalSigningDate = getSignatureParameters().bLevel().getSigningDate();
 
-		try {
-			// Time in GMT
-			SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-			dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-			SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-			Date originalGMTDate = dateFormatLocal.parse(dateFormatGmt.format(originalSigningDate));
+		// Date in signed documents is truncated
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
 
-			assertEquals(originalGMTDate, signatureDate);
-		} catch (ParseException e) {
-			fail("Cannot check the signing date");
-		}
+		assertEquals(dateFormat.format(originalSigningDate), dateFormat.format(signatureDate));
 	}
 }

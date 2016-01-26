@@ -1,15 +1,12 @@
 package eu.europa.esig.dss.asic.signature.asics;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -22,12 +19,11 @@ import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class ASiCSLevelBCadesToASiCSLevelBCades {
 
@@ -63,7 +59,7 @@ public class ASiCSLevelBCadesToASiCSLevelBCades {
 
 		certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
-		
+
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
 		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
@@ -75,8 +71,8 @@ public class ASiCSLevelBCadesToASiCSLevelBCades {
 
 		reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		
-		for(String id : diagnosticData.getSignatureIdList()) {
+
+		for (String id : diagnosticData.getSignatureIdList()) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(id));
 		}
 	}

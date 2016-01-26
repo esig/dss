@@ -171,7 +171,8 @@
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 	       					<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-							<xsl:value-of select="dss:Indication" /> - <xsl:value-of select="dss:SubIndication" />
+	       					<xsl:variable name="subIndication"><xsl:value-of select="dss:SubIndication" /></xsl:variable>
+							<xsl:value-of select="dss:Indication" /> <xsl:if test="$subIndication != ''">- <xsl:value-of select="dss:SubIndication" /></xsl:if>
 						</fo:block>
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
@@ -272,7 +273,7 @@
 					</fo:table-cell>
 				</fo:table-row>
 			
-				<xsl:for-each select="./dss:SignatureScopes/dss:SignatureScope">
+				<xsl:for-each select="dss:SignatureScope">
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block>

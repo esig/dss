@@ -5,7 +5,11 @@
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
 	version="2.1" jaxb:extensionBindingPrefixes="xjc">
 	
-  <jaxb:globalBindings localScoping="toplevel"/>
+  <jaxb:globalBindings localScoping="toplevel">
+  	<jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"
+          parseMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.parse"
+          printMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.print" />
+  </jaxb:globalBindings>
   
   <jaxb:bindings schemaLocation="DiagnosticData.xsd" node="/xs:schema">
     <jaxb:schemaBindings>
