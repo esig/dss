@@ -108,6 +108,18 @@ public class Reports {
 		return simpleReportWrapper;
 	}
 
+	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getDiagnosticDataJaxb() {
+		return diagnosticData;
+	}
+
+	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getDetailedReportJaxb() {
+		return detailedReport;
+	}
+
+	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport getSimpleReportJaxb() {
+		return simpleReport;
+	}
+
 	/**
 	 * This method allows to set the sequence of the reports related to a
 	 * document to validate. It's only used with ASiC-E container.
