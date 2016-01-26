@@ -25,12 +25,9 @@ public class CertificateExpirationCheck extends ChainItem<XmlXCV> {
 	protected boolean process() {
 		Date notBefore = certificate.getNotBefore();
 		Date notAfter = certificate.getNotAfter();
-		Date expiredCertsRevocationInfo = certificate.getCertificateTSPServiceExpiredCertsRevocationInfo();
 		boolean certificateValidity = (notBefore != null && (currentTime.compareTo(notBefore) >= 0))
 				&& (notAfter != null && (currentTime.compareTo(notAfter) <= 0));
-		return ((expiredCertsRevocationInfo != null) || certificateValidity); // TODO Check the value of
-																				// expiredCertsRevocationInfo -> it may
-																				// be always null
+		return certificateValidity;
 	}
 
 	@Override
