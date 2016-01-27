@@ -95,6 +95,16 @@
 		divNode.appendChild(inputNode);
 		block.appendChild(divNode);
 	}
+	
+	function removeLastValue(path) {
+		var id = "multi-value-" + path;
+		var block = document.getElementById(id);
+		var number = block.getElementsByTagName("input").length;
+		if(number > 0) {
+			var item = block.getElementsByTagName("input")[number-1];
+			item.parentNode.removeChild(item);
+		}
+	}
 
     $('.encryptionAlgo:checkbox').change(function() {
 

@@ -24,8 +24,10 @@
 	    </c:forEach>
     </div>
     <div class="col-sm-7 col-sm-offset-5" style="margin-bottom: 15px;">
-    	<spring:message code="label.policy.addValue" var="buttonText" />
-    	<input id="addButton" value="<c:out value="${buttonText}"/>" type="button" onclick="addValue('<c:out value="${param.pathToBind}"/>')"/>
+    	<spring:message code="label.policy.addValue" var="addButtonText" />
+    	<spring:message code="label.policy.removeValue" var="removeButtonText" />
+    	<input id="addButton" value="<c:out value="${addButtonText}"/>" type="button" onclick="addValue('<c:out value="${param.pathToBind}"/>')"/>
+    	<input id="removeButton" value="<c:out value="${removeButtonText}"/>" type="button" onclick="removeLastValue('<c:out value="${param.pathToBind}"/>')"/>
     </div>
 	
 </div>
