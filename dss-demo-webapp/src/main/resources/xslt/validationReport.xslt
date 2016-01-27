@@ -283,6 +283,7 @@
 			<xsl:attribute name="class">row</xsl:attribute>
 			<div>
 				<xsl:attribute name="class">col-md-8</xsl:attribute>
+				<xsl:attribute name="style">margin-bottom:5px;margin-top:5px;</xsl:attribute>
 				<strong>
 					<xsl:choose>
 						<xsl:when test="name(.) = 'FC'">
