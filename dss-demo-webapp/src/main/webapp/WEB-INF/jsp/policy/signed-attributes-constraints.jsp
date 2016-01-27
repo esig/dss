@@ -76,11 +76,11 @@
             <jsp:param name="pathToBind" value="${param.pathToBind}.ContentIdentifier" />
         </jsp:include>
         
+        <c:set var="multi" value="${signedAttributes.commitmentTypeIndication}" scope="request" />
         <spring:message code="label.policy.commitmentTypeIndication" var="translation" />
         <jsp:include page="multi-value-constraints.jsp">
             <jsp:param name="label" value="${translation}" />
             <jsp:param name="levelValue" value="${signedAttributes.commitmentTypeIndication.level}" />
-            <jsp:param name="list" value="${signedAttributes.commitmentTypeIndication.id}" />
             <jsp:param name="pathToBind" value="${param.pathToBind}.CommitmentTypeIndication" />
         </jsp:include>
         
@@ -91,19 +91,19 @@
             <jsp:param name="pathToBind" value="${param.pathToBind}.SignerLocation.Level" />
         </jsp:include>
         
+        <c:set var="multi" value="${signedAttributes.claimedRoles}" scope="request" />
         <spring:message code="label.policy.claimedRoles" var="translation" />
         <jsp:include page="multi-value-constraints.jsp">
             <jsp:param name="label" value="${translation}" />
             <jsp:param name="levelValue" value="${signedAttributes.claimedRoles.level}" />
-            <jsp:param name="list" value="${signedAttributes.claimedRoles.id}" />
             <jsp:param name="pathToBind" value="${param.pathToBind}.ClaimedRoles" />
         </jsp:include>
         
+        <c:set var="multi" value="${signedAttributes.certifiedRoles}" scope="request" />
         <spring:message code="label.policy.certifiedRoles" var="translation" />
         <jsp:include page="multi-value-constraints.jsp">
             <jsp:param name="label" value="${translation}" />
             <jsp:param name="levelValue" value="${signedAttributes.certifiedRoles.level}" />
-            <jsp:param name="list" value="${signedAttributes.certifiedRoles.id}" />
             <jsp:param name="pathToBind" value="${param.pathToBind}.CertifiedRoles" />
         </jsp:include>
 

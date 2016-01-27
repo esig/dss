@@ -17,9 +17,9 @@
 	</div>
 	
 	<div id="multi-value-<c:out value="${param.pathToBind}"/>">
-		<c:forEach var="item" items="${param.list}" varStatus="loop">
+		<c:forEach var="item" items="${multi.id}" varStatus="loop">
 			<div class="col-sm-7 col-sm-offset-5" style="margin-bottom: 15px;">
-		      <input class="form-control" name="<c:out value="${param.pathToBind}"/>.Id[${loop.index}]" value="<c:out value="${item}" />" />
+		      <input class="form-control" name="<c:out value="${param.pathToBind}"/>.Id[${loop.index}]" value="<c:out value="${item}"/>" />
 		    </div>
 	    </c:forEach>
     </div>
@@ -29,3 +29,4 @@
     </div>
 	
 </div>
+<c:remove var="multi" />
