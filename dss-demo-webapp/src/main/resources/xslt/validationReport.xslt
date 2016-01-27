@@ -281,9 +281,9 @@
     <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PCV|dss:VTS">
 		<div>
 			<xsl:attribute name="class">row</xsl:attribute>
+			<xsl:attribute name="style">margin-bottom:5px;margin-top:5px;</xsl:attribute>
 			<div>
 				<xsl:attribute name="class">col-md-8</xsl:attribute>
-				<xsl:attribute name="style">margin-bottom:5px;margin-top:5px;</xsl:attribute>
 				<strong>
 					<xsl:choose>
 						<xsl:when test="name(.) = 'FC'">
