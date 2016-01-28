@@ -79,6 +79,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * This variable contains the {@code ListOCSPSource} extracted from the signatures to validate.
 	 */
 	private ListOCSPSource signatureOCSPSource;
+	
+	private CertificatePool certificatePool;
 
 	/**
 	 * The default constructor. The {@code DataLoader} is created to allow the retrieval of certificates through AIA.
@@ -232,15 +234,18 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public CertificatePool createValidationPool() {
 
-		final CertificatePool validationPool = new CertificatePool();
-		if (trustedCertSource != null) {
-
-			validationPool.merge(trustedCertSource.getCertificatePool());
+		if(certificatePool == null) {
+			final CertificatePool validationPool = new CertificatePool();
+			if (trustedCertSource != null) {
+	
+				validationPool.merge(trustedCertSource.getCertificatePool());
+			}
+			if (adjunctCertSource != null) {
+	
+				validationPool.merge(adjunctCertSource.getCertificatePool());
+			}
+			certificatePool = validationPool;
 		}
-		if (adjunctCertSource != null) {
-
-			validationPool.merge(adjunctCertSource.getCertificatePool());
-		}
-		return validationPool;
+		return certificatePool;
 	}
 }

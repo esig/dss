@@ -44,6 +44,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -212,10 +213,9 @@ public abstract class AbstractTestSignature {
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-
-		// TODO uncomment when DSS-666 is done
-		// List<AdvancedSignature> signatures = validator.getSignatures();
-		// assertTrue(CollectionUtils.isNotEmpty(signatures));
+		
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertTrue(CollectionUtils.isNotEmpty(signatures));
 
 		Reports reports = validator.validateDocument();
 		return reports;

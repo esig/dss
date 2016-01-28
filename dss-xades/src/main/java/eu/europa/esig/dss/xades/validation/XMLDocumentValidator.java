@@ -63,6 +63,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	protected Document rootElement;
 	
+	private List<AdvancedSignature> signatures;
+	
 	/**
 	 * Default constructor used with reflexion (see SignedDocumentValidator)
 	 */
@@ -116,8 +118,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-
-		if (signatures != null) {
+		if(signatures != null) {
 			return signatures;
 		}
 		signatures = new ArrayList<AdvancedSignature>();
@@ -164,6 +165,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			throw new NullPointerException("signatureId");
 		}
 		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		List<AdvancedSignature> signatureList = getSignatures();
 		
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 			
@@ -171,7 +173,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
 			
 			if (signatureId.equals(idIdentifier)) {
-				XAdESSignature signature = (XAdESSignature) signatures.get(ii);
+				XAdESSignature signature = (XAdESSignature) signatureList.get(ii);
+				signature.checkSignatureIntegrity();
 				if(getSignatureObjects(signatureEl).isEmpty() && signature.getReferences().isEmpty()) {
 					throw new DSSException("The signature must be enveloped or enveloping!");
 				} else if(isEnveloping(signatureEl)) {
@@ -233,6 +236,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		for (int ii = 0; ii < list.getLength(); ii++) {
 
 			final Node node = list.item(ii);
+			System.out.println(node.getTextContent());
 			final Element element = (Element) node;
 			XPathQueryHolder queryHolder = new XPathQueryHolder();
 			if (DSSXMLUtils.getElement(element, queryHolder.XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES) != null) {

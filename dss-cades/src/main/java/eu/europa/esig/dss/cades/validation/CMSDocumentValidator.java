@@ -108,11 +108,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-
-		if (signatures != null) {
-			return signatures;
-		}
-		signatures = new ArrayList<AdvancedSignature>();
+		List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 		if (cmsSignedData != null) {
 
 			for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {

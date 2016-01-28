@@ -85,10 +85,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 
-		if (signatures != null) {
-			return signatures;
-		}
-		signatures = new ArrayList<AdvancedSignature>();
+		List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override
@@ -113,6 +110,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		if (StringUtils.isBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
+		List<AdvancedSignature> signatures = getSignatures();
 		for(AdvancedSignature signature : signatures) {
 			PAdESSignature padesSignature = (PAdESSignature) signature;
 			if(padesSignature.getId().equals(signatureId)) {

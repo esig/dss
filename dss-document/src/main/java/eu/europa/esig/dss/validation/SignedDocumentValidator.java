@@ -158,14 +158,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private final SignatureScopeFinder signatureScopeFinder;
 
 	/**
-	 * This list contains the list of signatures
-	 */
-	protected List<AdvancedSignature> signatures = null;
-
-	/**
 	 * This variable contains the reference to the diagnostic data.
 	 */
-	protected DiagnosticData jaxbDiagnosticData; // JAXB object
+	private DiagnosticData jaxbDiagnosticData; // JAXB object
 
 	private final Condition qcp = new PolicyIdCondition(OID.id_etsi_qcp_public.getId());
 
@@ -521,7 +516,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private List<AdvancedSignature> getAllSignatures() {
 
 		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
-		for (final AdvancedSignature signature : getSignatures()) {
+		List<AdvancedSignature> signatureList = getSignatures();
+		for (final AdvancedSignature signature : signatureList) {
 
 			allSignatureList.add(signature);
 			final List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
