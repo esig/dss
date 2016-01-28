@@ -102,7 +102,8 @@
 		var number = block.getElementsByTagName("input").length;
 		if(number > 0) {
 			var item = block.getElementsByTagName("input")[number-1];
-			item.parentNode.removeChild(item);
+			var divBlock = item.parentNode;
+			divBlock.parentNode.removeChild(divBlock);
 		}
 	}
 
