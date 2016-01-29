@@ -135,7 +135,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * status to the returned indication and sub-indication and shall go
 		 * back to step 1.
 		 */
-		item.setNextItem(validationTimeSliding());
+		item = item.setNextItem(validationTimeSliding());
 
 		/*
 		 * 4) The building block shall apply the chain constraints to the chain.
