@@ -126,8 +126,8 @@ public class POEExtraction {
 	}
 
 	/**
-	 * Returns true if there is a POE exists for a given id at or before the control time.
-	 *
+	 * Returns true if there is a POE exists for a given id at (or before) the control time.
+	 * 
 	 */
 	public boolean isPOEExists(final String id, final Date controlTime) {
 		List<Date> dates = poe.get(id);

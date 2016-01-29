@@ -27,8 +27,7 @@ public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlVali
 	@Override
 	protected boolean process() {
 		RevocationWrapper revocationData = certificate.getRevocationData();
-		boolean isRevocationDateAfterBestSignatureDate = revocationData != null && revocationData.getRevocationDate().after(bestSignatureTime);
-		return !isRevocationDateAfterBestSignatureDate;
+		return revocationData.getRevocationDate().after(bestSignatureTime);
 	}
 
 	@Override
