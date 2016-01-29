@@ -43,6 +43,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
@@ -115,10 +116,8 @@ public class OCSPToken extends RevocationToken {
 			if (revokedStatus.hasRevocationReason()) {
 				reasonId = revokedStatus.getRevocationReason();
 			}
-			final CRLReason crlReason = CRLReason.lookup(reasonId);
-			reason = crlReason.toString();
+			reason = CRLReasonEnum.fromInt(reasonId).name();
 		} else if (certStatus instanceof UnknownStatus) {
-
 			if (logger.isInfoEnabled()) {
 				logger.info("OCSP status unknown");
 			}
