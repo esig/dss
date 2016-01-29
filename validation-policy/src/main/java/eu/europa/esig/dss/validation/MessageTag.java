@@ -172,6 +172,8 @@ public enum MessageTag {
 	PCV_TIOOCIC_ANS("There is only one certificate in the chain."),
 
 	PSV_IATVC("Is AdES-T validation conclusive?"),
+	PSV_IPCVA("Is past certificate validation acceptable?"),
+	PSV_IPCVA_ANS("The past certificate validation is not acceptable!"),
 	PSV_IPCVC("Is past certificate validation conclusive?"),
 	PSV_IPCVC_ANS("The past certificate validation is not conclusive!"),
 	PSV_IPSVC("Is past signature validation conclusive?"),

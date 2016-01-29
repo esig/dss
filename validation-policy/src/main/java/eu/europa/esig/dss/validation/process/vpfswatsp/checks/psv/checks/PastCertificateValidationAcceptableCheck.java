@@ -8,11 +8,11 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class PastCertificateValidationCheck extends ChainItem<XmlPSV> {
+public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> {
 
 	private final XmlPCV pcv;
 
-	public PastCertificateValidationCheck(XmlPSV result, XmlPCV pcv, LevelConstraint constraint) {
+	public PastCertificateValidationAcceptableCheck(XmlPSV result, XmlPCV pcv, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.pcv = pcv;
@@ -20,17 +20,29 @@ public class PastCertificateValidationCheck extends ChainItem<XmlPSV> {
 
 	@Override
 	protected boolean process() {
-		return isValid(pcv);
+		if ((pcv != null) && (pcv.getConclusion() != null)) {
+			Indication pcvIndication = pcv.getConclusion().getIndication();
+			SubIndication pcvSubindication = pcv.getConclusion().getSubIndication();
+
+			// INDETERMINATE cases are treated in following steps depending of POE
+			return Indication.VALID.equals(pcvIndication)
+					|| (Indication.INDETERMINATE.equals(pcvSubindication) && (SubIndication.REVOKED_NO_POE.equals(pcvSubindication)
+							|| SubIndication.REVOKED_CA_NO_POE.equals(pcvSubindication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(pcvSubindication)
+							|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(pcvSubindication)));
+
+		}
+		return false;
+
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.PSV_IPCVC;
+		return MessageTag.PSV_IPCVA;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.PSV_IPCVC_ANS;
+		return MessageTag.PSV_IPCVA_ANS;
 	}
 
 	@Override

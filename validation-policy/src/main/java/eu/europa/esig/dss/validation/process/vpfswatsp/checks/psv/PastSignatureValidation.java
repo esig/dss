@@ -16,6 +16,7 @@ import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNot
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.PastCertificateValidation;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.POEExistsCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastCertificateValidationAcceptableCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastCertificateValidationCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -59,7 +60,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * building block shall go to the next step. Otherwise, the building block shall return the current time status
 		 * and sub-indication with an explanation of the failure.
 		 */
-		ChainItem<XmlPSV> item = firstItem = pastCertificateValidationCheck(pcvResult);
+		ChainItem<XmlPSV> item = firstItem = pastCertificateValidationAcceptableCheck(pcvResult);
 
 		Date controlTime = pcvResult.getControlTime();
 		Indication pcvIndication = pcvResult.getConclusion().getIndication();
@@ -119,6 +120,14 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * 4) In all other cases, the building block shall return the current time indication/ sub-indication together
 		 * with an explanation of the failure.
 		 */
+		else {
+			item.setNextItem(pastCertificateValidationCheck(pcvResult));
+		}
+
+	}
+
+	private ChainItem<XmlPSV> pastCertificateValidationAcceptableCheck(XmlPCV pcvResult) {
+		return new PastCertificateValidationAcceptableCheck(result, pcvResult, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> pastCertificateValidationCheck(XmlPCV pcvResult) {
