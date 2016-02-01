@@ -7,11 +7,14 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class BasicBuildingBlocksValidationTest extends AbstractValidationPolicy {
 
@@ -20,7 +23,10 @@ public class BasicBuildingBlocksValidationTest extends AbstractValidationPolicy 
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 		Assert.assertNotNull(diagnosticData);
 
-		BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, diagnosticData.getSignatures().get(0), new Date(), getPolicy(), Context.SIGNATURE);
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
+		
+		BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, diagnosticData.getSignatures().get(0), new Date(), policy, Context.SIGNATURE);
 
 		XmlBasicBuildingBlocks result = bbb.execute();
 
@@ -38,8 +44,11 @@ public class BasicBuildingBlocksValidationTest extends AbstractValidationPolicy 
 	public void testBBBWithDigestValueOfTheCertificateNotPresent() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithDigestValueOfTheCertificateNotPresent();
 		Assert.assertNotNull(diagnosticData);
+		
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
-		BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, diagnosticData.getSignatures().get(0), new Date(), getPolicy(), Context.SIGNATURE);
+		BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, diagnosticData.getSignatures().get(0), new Date(), policy, Context.SIGNATURE);
 
 		XmlBasicBuildingBlocks result = bbb.execute();
 

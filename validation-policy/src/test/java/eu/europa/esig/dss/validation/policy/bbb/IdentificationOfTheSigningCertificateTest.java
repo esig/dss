@@ -8,11 +8,15 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.bbb.isc.IdentificationOfTheSigningCertificate;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.Level;
 
 public class IdentificationOfTheSigningCertificateTest extends AbstractValidationPolicy {
 
@@ -22,8 +26,11 @@ public class IdentificationOfTheSigningCertificateTest extends AbstractValidatio
 	public void testWithBasicData() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
+		
 		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0),
-				Context.SIGNATURE, getPolicy());
+				Context.SIGNATURE, policy);
 		XmlISC isc = verification.execute();
 
 		for (XmlConstraint constraint : isc.getConstraint()) {
@@ -38,8 +45,11 @@ public class IdentificationOfTheSigningCertificateTest extends AbstractValidatio
 	public void testWithDigestNotPresent() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithDigestValueOfTheCertificateNotPresent();
 
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
+		
 		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0),
-				Context.SIGNATURE, getPolicy());
+				Context.SIGNATURE, policy);
 		XmlISC isc = verification.execute();
 
 		for (XmlConstraint constraint : isc.getConstraint()) {
@@ -55,8 +65,11 @@ public class IdentificationOfTheSigningCertificateTest extends AbstractValidatio
 	public void testWithDigestNotMatch() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithDigestValueOfTheCertificateNotMatch();
 
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
+		
 		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0),
-				Context.SIGNATURE, getPolicy());
+				Context.SIGNATURE, policy);
 		XmlISC isc = verification.execute();
 
 		for (XmlConstraint constraint : isc.getConstraint()) {
@@ -68,12 +81,16 @@ public class IdentificationOfTheSigningCertificateTest extends AbstractValidatio
 		Assert.assertEquals(5, isc.getConstraint().size());
 	}
 
-	// @Test
+	@Test
 	public void testWithIssuerSerialNotMatch() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithIssuerSerialOfTheCertificateNotMatch();
-
+		
+		ConstraintsParameters parameters = getConstraintsParameters();
+		parameters.getSignatureConstraints().getSignedAttributes().setIssuerSerialMatch(createLevelConstraint(Level.FAIL));
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
+		
 		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0),
-				Context.SIGNATURE, getPolicy());
+				Context.SIGNATURE, policy);
 		XmlISC isc = verification.execute();
 
 		for (XmlConstraint constraint : isc.getConstraint()) {
@@ -89,8 +106,11 @@ public class IdentificationOfTheSigningCertificateTest extends AbstractValidatio
 	public void testWithNullSigningCertificate() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataSigningCertificateNotFound();
 
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
+		
 		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0),
-				Context.SIGNATURE, getPolicy());
+				Context.SIGNATURE, policy);
 		XmlISC isc = verification.execute();
 
 		for (XmlConstraint constraint : isc.getConstraint()) {
@@ -106,8 +126,11 @@ public class IdentificationOfTheSigningCertificateTest extends AbstractValidatio
 	public void testWithNoSigningCertificateFound() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataSigningCertificateNotPresent();
 
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
+		
 		IdentificationOfTheSigningCertificate verification = new IdentificationOfTheSigningCertificate(diagnosticData, diagnosticData.getSignatures().get(0),
-				Context.SIGNATURE, getPolicy());
+				Context.SIGNATURE, policy);
 		XmlISC isc = verification.execute();
 
 		for (XmlConstraint constraint : isc.getConstraint()) {

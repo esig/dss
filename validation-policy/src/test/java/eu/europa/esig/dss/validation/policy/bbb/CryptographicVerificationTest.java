@@ -8,13 +8,14 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class CryptographicVerificationTest extends AbstractValidationPolicy {
 
@@ -24,10 +25,10 @@ public class CryptographicVerificationTest extends AbstractValidationPolicy {
 	public void CryptographicVerificationWithBasicDataTest() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
-		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, getPolicy());
+		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlCV cv = verification.execute();
 
 		for (XmlConstraint constraint : cv.getConstraint()) {
@@ -42,10 +43,10 @@ public class CryptographicVerificationTest extends AbstractValidationPolicy {
 	public void CryptographicVerificationWithSignatureNonIntactTest() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithNonIntactSignature();
 
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
-		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, getPolicy());
+		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlCV cv = verification.execute();
 
 		for (XmlConstraint constraint : cv.getConstraint()) {
@@ -61,10 +62,10 @@ public class CryptographicVerificationTest extends AbstractValidationPolicy {
 	public void CryptographicVerificationWithDataReferenceNonIntactTest() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticReferenceDataWithNonIntactSignature();
 
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
-		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, getPolicy());
+		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlCV cv = verification.execute();
 
 		for (XmlConstraint constraint : cv.getConstraint()) {
@@ -80,10 +81,10 @@ public class CryptographicVerificationTest extends AbstractValidationPolicy {
 	public void CryptographicVerificationWithDataReferenceNotFoundTest() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticReferenceDataWithNotFound();
 
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
-		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, getPolicy());
+		CryptographicVerification verification = new CryptographicVerification(diagnosticData.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlCV cv = verification.execute();
 
 		for (XmlConstraint constraint : cv.getConstraint()) {

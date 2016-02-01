@@ -8,27 +8,29 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.bbb.vci.ValidationContextInitialization;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class ValidationContextInitializationDisabled extends AbstractValidationPolicy {
+public class ValidationContextInitializationTest extends AbstractValidationPolicy {
 
-	private static final Logger logger = LoggerFactory.getLogger(ValidationContextInitializationDisabled.class);
+	private static final Logger logger = LoggerFactory.getLogger(ValidationContextInitializationTest.class);
 
 	@Test
 	public void testWithBasicData() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
 		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				getPolicy());
+				policy);
 		XmlVCI vci = verification.execute();
 
 		for (XmlConstraint constraint : vci.getConstraint()) {
@@ -43,8 +45,13 @@ public class ValidationContextInitializationDisabled extends AbstractValidationP
 	public void testWithMandatoryPolicyAndNoPolicyInTheData() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
 
+		ConstraintsParameters parameters = getConstraintsParameters();
+		parameters.getSignatureConstraints().setAcceptablePolicies(createMultiValueConstraint(Level.FAIL));
+		parameters.getSignatureConstraints().getAcceptablePolicies().getId().add("ANY_POLICY");
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
+		
 		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				getPolicy());
+				policy);
 		XmlVCI vci = verification.execute();
 
 		for (XmlConstraint constraint : vci.getConstraint()) {
@@ -60,11 +67,11 @@ public class ValidationContextInitializationDisabled extends AbstractValidationP
 	public void testWithMandatoryPolicyAndPolicyInTheData() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithPolicy();
 
-		LevelConstraint failLevel = new LevelConstraint();
-		failLevel.setLevel(Level.FAIL);
+		ConstraintsParameters parameters = getConstraintsParameters();
+		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
 		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				getPolicy());
+				policy);
 		XmlVCI vci = verification.execute();
 
 		for (XmlConstraint constraint : vci.getConstraint()) {
