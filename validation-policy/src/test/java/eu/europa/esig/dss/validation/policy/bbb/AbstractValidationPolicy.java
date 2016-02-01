@@ -10,6 +10,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -31,20 +33,23 @@ public class AbstractValidationPolicy {
 
 		return constraints;
 	}
-	
-	
+
+	public ValidationPolicy getPolicy() throws Exception {
+		return new EtsiValidationPolicy(getConstraintsParameters());
+	}
+
 	public MultiValuesConstraint createMultiValueConstraint(Level level) {
 		MultiValuesConstraint result = new MultiValuesConstraint();
 		result.setLevel(level);
 		return result;
 	}
-	
+
 	public ValueConstraint createValueConstraint(Level level) {
 		ValueConstraint result = new ValueConstraint();
 		result.setLevel(level);
 		return result;
 	}
-	
+
 	public LevelConstraint createLevelConstraint(Level level) {
 		LevelConstraint result = new LevelConstraint();
 		result.setLevel(level);
