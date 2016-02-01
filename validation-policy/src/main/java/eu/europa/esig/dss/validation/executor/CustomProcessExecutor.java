@@ -19,7 +19,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	private ValidationPolicy policy;
 
 	@Override
-	public void getCurrentTime(Date currentTime) {
+	public void setCurrentTime(Date currentTime) {
 		this.currentTime = currentTime;
 	}
 

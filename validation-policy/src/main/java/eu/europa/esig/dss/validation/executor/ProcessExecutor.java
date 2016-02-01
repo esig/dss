@@ -37,7 +37,7 @@ public interface ProcessExecutor {
 	 *
 	 * @param diagnosticData
 	 */
-	void getCurrentTime(Date currentDate);
+	void setCurrentTime(Date currentDate);
 
 	/**
 	 * This method allows to set the
