@@ -94,6 +94,11 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 					break;
 				}
 			}
+			
+			pdfDocumentValidator = new PDFDocumentValidator(document);
+			pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+
+			signatures = pdfDocumentValidator.getSignatures();
 
 			// create DSS dictionary
 			ModelPdfDict dssDictionary = new ModelPdfDict("DSS");
@@ -188,15 +193,14 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 	private void validate(PAdESSignature signature, SignatureValidationCallBack validationCallback) {
 
-		CAdESSignature cadesSignature = signature.getCAdESSignature();
-		ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
-		DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusionInProfileLT = cadesSignature.getRevocationDataForInclusion(validationContext);
+		ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
+		DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusionInProfileLT = signature.getRevocationDataForInclusion(validationContext);
 
 		validationCallback.setSignature(signature);
 		validationCallback.setCrls(revocationsForInclusionInProfileLT.crlTokens);
 		validationCallback.setOcsps(revocationsForInclusionInProfileLT.ocspTokens);
 
-		Set<CertificateToken> certs = new HashSet<CertificateToken>(cadesSignature.getCertificates());
+		Set<CertificateToken> certs = new HashSet<CertificateToken>(signature.getCertificates());
 		validationCallback.setCertificates(certs);
 	}
 
