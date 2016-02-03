@@ -6,7 +6,9 @@ import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureValue;
@@ -118,19 +121,16 @@ public class SigningService {
 		// parameters.setEncryptionAlgorithm(form.getEncryptionAlgorithm()); retrieved from certificate
 		parameters.bLevel().setSigningDate(form.getSigningDate());
 
-		/*
-		 * TODO
-		 * if (StringUtils.isNotEmpty(form.getPolicyOid()) && StringUtils.isNotEmpty(form.getPolicyBase64HashValue()) &&
-		 * (form.getPolicyDigestAlgorithm() !=null)) {
-		 * Policy signaturePolicy = new Policy();
-		 * signaturePolicy.setId(form.getPolicyOid());
-		 * signaturePolicy.setDigestAlgorithm(form.getPolicyDigestAlgorithm());
-		 * signaturePolicy.setDigestValue(Base64.decodeBase64(form.getPolicyBase64HashValue()));
-		 * parameters.bLevel().setSignaturePolicy(signaturePolicy );
-		 * }
-		 * 
-		 * parameters.setSignWithExpiredCertificate(form.isSignWithExpiredCertificate());
-		 */
+		if (StringUtils.isNotEmpty(form.getPolicyOid()) && StringUtils.isNotEmpty(form.getPolicyBase64HashValue())
+				&& (form.getPolicyDigestAlgorithm() != null)) {
+			Policy signaturePolicy = new Policy();
+			signaturePolicy.setId(form.getPolicyOid());
+			signaturePolicy.setDigestAlgorithm(form.getPolicyDigestAlgorithm());
+			signaturePolicy.setDigestValue(Base64.decodeBase64(form.getPolicyBase64HashValue()));
+			parameters.bLevel().setSignaturePolicy(signaturePolicy);
+		}
+
+		parameters.setSignWithExpiredCertificate(form.isSignWithExpiredCertificate());
 
 		CertificateToken signingCertificate = DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate());
 		parameters.setSigningCertificate(signingCertificate);

@@ -15,10 +15,13 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 
 public class NexuSignatureDocumentForm {
-	//@AssertTrue(message = "{error.nexu.not.found}")
+
+	// @AssertTrue(message = "{error.nexu.not.found}")
 	private boolean nexuDetected;
 
 	private Date signingDate;
+
+	private boolean signWithExpiredCertificate;
 
 	private MultipartFile documentToSign;
 
@@ -35,6 +38,12 @@ public class NexuSignatureDocumentForm {
 
 	@NotNull(message = "{error.digest.algo.mandatory}")
 	private DigestAlgorithm digestAlgorithm;
+
+	private String policyOid;
+
+	private DigestAlgorithm policyDigestAlgorithm;
+
+	private String policyBase64HashValue;
 
 	private String base64Certificate;
 
@@ -58,6 +67,14 @@ public class NexuSignatureDocumentForm {
 
 	public void setSigningDate(Date signingDate) {
 		this.signingDate = signingDate;
+	}
+
+	public boolean isSignWithExpiredCertificate() {
+		return signWithExpiredCertificate;
+	}
+
+	public void setSignWithExpiredCertificate(boolean signWithExpiredCertificate) {
+		this.signWithExpiredCertificate = signWithExpiredCertificate;
 	}
 
 	public MultipartFile getDocumentToSign() {
@@ -140,16 +157,40 @@ public class NexuSignatureDocumentForm {
 		this.base64SignatureValue = base64SignatureValue;
 	}
 
+	public String getPolicyOid() {
+		return policyOid;
+	}
+
+	public void setPolicyOid(String policyOid) {
+		this.policyOid = policyOid;
+	}
+
+	public DigestAlgorithm getPolicyDigestAlgorithm() {
+		return policyDigestAlgorithm;
+	}
+
+	public void setPolicyDigestAlgorithm(DigestAlgorithm policyDigestAlgorithm) {
+		this.policyDigestAlgorithm = policyDigestAlgorithm;
+	}
+
+	public String getPolicyBase64HashValue() {
+		return policyBase64HashValue;
+	}
+
+	public void setPolicyBase64HashValue(String policyBase64HashValue) {
+		this.policyBase64HashValue = policyBase64HashValue;
+	}
+
 	@AssertTrue(message = "{error.to.sign.file.mandatory}")
 	public boolean isDocumentToSign() {
 		return (documentToSign != null) && (!documentToSign.isEmpty());
 	}
 
 	@AssertTrue(message = "{error.signature.underlying.form.mandatory}")
-	public boolean isAsicUnderlyingFormValid(){
-		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)){
+	public boolean isAsicUnderlyingFormValid() {
+		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)) {
 			return SignatureForm.CAdES.equals(asicUnderlyingForm) || SignatureForm.XAdES.equals(asicUnderlyingForm);
-		} else{
+		} else {
 			return true;
 		}
 	}

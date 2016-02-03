@@ -40,13 +40,57 @@
         </div>
     </div>
     
-<!--     <div class="form-group"> -->
-<%--     	<c:if test="${#fields.hasErrors('nexuDetected')}"> --%>
+    <div class="form-group">
+        <form:label path="documentToSign" cssClass="col-sm-2 control-label">
+            <spring:message code="label.allow.expired.certificate" />
+        </form:label>
+        <div class="col-sm-4">
+            <form:checkbox path="signWithExpiredCertificate" />
+        </div>
+    </div>
+
+<!-- 	<div id="nexu"></div> -->
+<%--    	<c:if test="${fields.hasErrors('nexuDetected')}"> --%>
+<!--     	<div class="form-group"> -->
 <!--     		<div class="col-sm-offset-2 col-sm-10 text-danger"> -->
 <%--     			<form:errors path="*{nexuDetected}" cssClass="error"/> --%>
 <!--     		</div> -->
-<%--     	</c:if> --%>
-<!--     </div> -->
+<!-- 	    </div> -->
+<%--    	</c:if> --%>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" data-toggle="collapse" data-target="#block-policy">
+            <spring:message code="label.policy" />
+        </div>
+        <div class="panel-body collapse in" id="block-policy">
+            <div class="form-group">
+                <form:label path="policyOid" cssClass="col-sm-3 control-label">
+                    <spring:message code="label.policy.oid" />
+                </form:label>
+                <div class="col-sm-4">
+                    <form:input path="policyOid" size="50" />
+                </div>
+            </div>
+            <div class="form-group">
+                <form:label path="policyDigestAlgorithm" cssClass="col-sm-3 control-label">
+                    <spring:message code="label.digest.algorithm" />
+                </form:label>
+                <div class="col-sm-8">
+                    <c:forEach var="algo" items="${digestAlgos}">
+                        <label class="radio-inline"> <form:radiobutton path="policyDigestAlgorithm" value="${algo}" /> ${algo}</label>
+                    </c:forEach>
+                </div>
+            </div>
+            <div class="form-group">
+                <form:label path="policyBase64HashValue" cssClass="col-sm-3 control-label">
+                    <spring:message code="label.policy.hash.value" />
+                </form:label>
+                <div class="col-sm-4">
+                    <form:input path="policyBase64HashValue" size="50" />
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
@@ -58,6 +102,4 @@
 
 <script type="text/javascript" src="<c:url value="/scripts/jsSignatureLevel.js" />"></script>
 
-<script type="text/javascript" src="<c:url value="/scripts/jsSignatureLevel.js" />"></script>
-
-<script src="${pageContext.request.contextPath}/js/nexu-deploy.js" type="text/javascript"></script>
+<script type="text/javascript" src="<c:url value="/js/nexu-deploy.js" />"></script>
