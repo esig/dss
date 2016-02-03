@@ -80,7 +80,7 @@
 				<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
 	    		<div>
 					<xsl:attribute name="class">panel-heading</xsl:attribute>
-					<xsl:attribute name="data-target">#collapseBasicValidationData</xsl:attribute>
+					<xsl:attribute name="data-target">#collapseBasicValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 					<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 					<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 				        <span>
@@ -99,7 +99,7 @@
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 		    		<div>
 		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-			        	<xsl:attribute name="id">collapseBasicValidationData</xsl:attribute>
+			        	<xsl:attribute name="id">collapseBasicValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
 		    	</xsl:if>
@@ -114,13 +114,13 @@
 	    		<xsl:attribute name="class">panel panel-default</xsl:attribute>
 	    		<div>
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseTimestampValidation</xsl:attribute>
+		    		<xsl:attribute name="data-target">#collapseTimestampValidation<xsl:value-of select="@Id"/></xsl:attribute>
 					<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 					Validation Process for Timestamps
 				</div>
 				<div>
 					<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-					<xsl:attribute name="id">collapseTimestampValidation</xsl:attribute>
+					<xsl:attribute name="id">collapseTimestampValidation<xsl:value-of select="@Id"/></xsl:attribute>
 			    	<xsl:for-each select="dss:ValidationProcessTimestamps">
 				    	<div>
 				    		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
@@ -182,7 +182,7 @@
     			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
 	    		<div>
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseArchivalValidationData</xsl:attribute>
+		    		<xsl:attribute name="data-target">#collapseArchivalValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 				        <span>
@@ -201,7 +201,7 @@
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 		    		<div>
 		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-			        	<xsl:attribute name="id">collapseArchivalValidationData</xsl:attribute>
+			        	<xsl:attribute name="id">collapseArchivalValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
 		    	</xsl:if>
@@ -224,7 +224,7 @@
     			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
 	    		<div>
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseLongTermValidationData</xsl:attribute>
+		    		<xsl:attribute name="data-target">#collapseLongTermValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 				        <span>
@@ -242,7 +242,7 @@
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-		        	<xsl:attribute name="id">collapseLongTermValidationData</xsl:attribute>
+		        	<xsl:attribute name="id">collapseLongTermValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 		        	<xsl:apply-templates/>
 	    		</div>
     		</div>
