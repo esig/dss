@@ -242,16 +242,7 @@ public abstract class XAdESBuilder {
 			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, inMemoryCertificate);
 			
 			if(params.isEn319132()) {
-				try {
-					final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL_V2);
-					
-					String name = certificate.getCertificate().getIssuerX500Principal().getName();
-					IssuerAndSerialNumber issuerAndSerial = new IssuerAndSerialNumber(new X500Name(name), certificate.getCertificate().getSerialNumber());
-					byte[] issuer = Base64.encodeBase64(issuerAndSerial.getEncoded());
-					DSSXMLUtils.setTextNode(documentDom, issuerSerialDom, new String(issuer));
-				}catch(IOException e) {
-					throw new RuntimeException(e);
-				}
+				// "The references to certificates shall not include the IssuerSerialV2 element" page 53 of EN 319 132-1 requirement j
 				
 			} else {
 				final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
