@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.6.RC2</version>
+		<version>4.6.RC3</version>
 	</parent>
 	<artifactId>dss-tsl-jaxb</artifactId>
 	<name>JAXB TSL Model</name>
