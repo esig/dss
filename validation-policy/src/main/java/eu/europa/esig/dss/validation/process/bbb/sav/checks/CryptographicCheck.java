@@ -84,7 +84,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 		if ((algoExpirationDate != null) && CollectionUtils.isNotEmpty(algoExpirationDate.getAlgo())) {
 
 			// Digest algorithm
-			Date expirationDate = getExpirationDate(token.getDigestAlgoUsedToSignThisToken(), algoExpirationDate.getAlgo());
+			Date expirationDate = getExpirationDate(token.getDigestAlgoUsedToSignThisToken(), algoExpirationDate.getAlgo(), algoExpirationDate.getFormat());
 			if (expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
 				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getDigestAlgoUsedToSignThisToken(), expirationDate));
@@ -98,7 +98,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 
 			// Encryption algorithm
 			String algoToFind = token.getEncryptionAlgoUsedToSignThisToken() + token.getKeyLengthUsedToSignThisToken();
-			expirationDate = getExpirationDate(algoToFind, algoExpirationDate.getAlgo());
+			expirationDate = getExpirationDate(algoToFind, algoExpirationDate.getAlgo(), algoExpirationDate.getFormat());
 			if (expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
 				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getEncryptionAlgoUsedToSignThisToken(), expirationDate));
@@ -116,19 +116,19 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 
 	private void addListOfAlgoInfo(ListAlgo list) {
 		for (Algo algo : list.getAlgo()) {
-			addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(algo.getValue(), getExpirationDate(algo.getValue(), list.getAlgo())));
+			addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(algo.getValue(), getExpirationDate(algo.getValue(), list.getAlgo(), DATE_FORMAT)));
 		}
 	}
 
-	private Date getExpirationDate(String algoToFind, List<Algo> algos) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+	private Date getExpirationDate(String algoToFind, List<Algo> algos, String format) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(StringUtils.isEmpty(format) ? DATE_FORMAT : format);
 		Date result = null;
 		for (Algo algo : algos) {
-			if (StringUtils.equals(algoToFind, algo.getValue())) {
+			if (StringUtils.equals(algoToFind, algo.getValue()) && StringUtils.isNotEmpty(algo.getDate())) {
 				try {
 					result = dateFormat.parse(algo.getDate());
 				} catch (Exception e) {
-					logger.warn("Unable to parse date with pattern '" + DATE_FORMAT + "' :" + e.getMessage());
+					logger.warn("Unable to parse date with pattern '" + dateFormat.toPattern() + "' : " + e.getMessage());
 				}
 			}
 		}
