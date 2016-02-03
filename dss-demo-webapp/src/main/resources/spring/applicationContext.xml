@@ -85,10 +85,6 @@
     
     <!-- /TSL Loader -->
 
-	<bean id="freeMarkerConfigurationFactory" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
-	    <property name="templateLoaderPath" value="classpath:/templates"/>
-	</bean>
-
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
             <list merge="true">

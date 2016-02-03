@@ -46,9 +46,7 @@ import eu.europa.esig.dss.web.model.SignatureValueAsString;
 import eu.europa.esig.dss.web.service.SigningService;
 
 @Controller
-@SessionAttributes(value = {
-		"signatureDocumentForm", "signedDocument"
-})
+@SessionAttributes(value = { "signatureDocumentForm", "signedDocument" })
 @RequestMapping(value = "/nexu")
 public class NexuController {
 
@@ -80,8 +78,8 @@ public class NexuController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String sendSignatureParameters(Model model, HttpServletRequest response,
 			@ModelAttribute("signatureDocumentForm") @Valid NexuSignatureDocumentForm signatureDocumentForm, BindingResult result) {
-		if(result.hasErrors()) {
-			for(ObjectError error : result.getAllErrors()) {
+		if (result.hasErrors()) {
+			for (ObjectError error : result.getAllErrors()) {
 				logger.error(error.getDefaultMessage());
 			}
 			return SIGNATURE_PARAMETERS;
@@ -92,7 +90,8 @@ public class NexuController {
 
 	@RequestMapping(value = "/get-data-to-sign", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public GetDataToSignResponse getDataToSign(Model model, @RequestBody @Valid DataToSignParams params, @ModelAttribute("signatureDocumentForm") @Valid NexuSignatureDocumentForm signatureDocumentForm, BindingResult result) {
+	public GetDataToSignResponse getDataToSign(Model model, @RequestBody @Valid DataToSignParams params,
+			@ModelAttribute("signatureDocumentForm") @Valid NexuSignatureDocumentForm signatureDocumentForm, BindingResult result) {
 		signatureDocumentForm.setBase64Certificate(params.getSigningCertificate());
 		signatureDocumentForm.setBase64CertificateChain(params.getCertificateChain());
 		signatureDocumentForm.setEncryptionAlgorithm(params.getEncryptionAlgorithm());
@@ -154,9 +153,8 @@ public class NexuController {
 
 	@ModelAttribute("digestAlgos")
 	public DigestAlgorithm[] getDigestAlgorithms() {
-		DigestAlgorithm[] algos = new DigestAlgorithm[] {
-				DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512
-		};
+		DigestAlgorithm[] algos = new DigestAlgorithm[] { DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384,
+				DigestAlgorithm.SHA512 };
 		return algos;
 	}
 }
