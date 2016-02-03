@@ -13,7 +13,14 @@
 				   		<td style="padding:0 15px 0 10px;">
 						<select class="form-control" id="reportSelector" onchange="signatureFileNameChange()">
 							<c:forEach var="report" items="${reports}">
-								<option value="${fn:substringAfter(report, '/')}">${fn:substringAfter(report, '/')}</option>
+								<c:choose>
+									<c:when test="${report == selected }">
+										<option value="${report}" selected="selected">${report}</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${report}">${report}</option>
+									</c:otherwise>
+								</c:choose>
 							</c:forEach>
 						</select>
 						</td>

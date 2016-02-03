@@ -100,13 +100,12 @@ public class ValidationController {
 		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, xmlDetailedReport);
 		model.addAttribute("detailedReport", xsltService.generateDetailedReport(xmlDetailedReport));
 
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		model.addAttribute("diagnosticTree", reports.getXmlDiagnosticData());
 
 		List<String> reportsNameList = new ArrayList<String>();
 		List<Reports> reportsList = new ArrayList<Reports>();
 		while (reports != null) {
-			reportsNameList.add(diagnosticData.getDocumentName());
+			reportsNameList.add(reports.getDiagnosticData().getDocumentName());
 			reportsList.add(reports);
 			reports = reports.getNextReports();
 		}
@@ -124,10 +123,9 @@ public class ValidationController {
 		List<String> reportsNameList = new ArrayList<String>();
 		for (Reports report : reportsList) {
 			DiagnosticData diagnosticData = report.getDiagnosticData();
-			String documentName = diagnosticData.getDocumentName();
-			String name = documentName.substring(documentName.lastIndexOf("/") + 1);
+			String name = diagnosticData.getDocumentName();
 			if (name.equals(reportFileName)) {
-				reportsNameList.add(documentName);
+				model.addAttribute("selected", name);
 				reports = report;
 			}
 		}
@@ -143,10 +141,8 @@ public class ValidationController {
 		model.addAttribute("diagnosticTree", reports.getXmlDiagnosticData());
 
 		for (Reports report : reportsList) {
-			if (report != reports) {
-				DiagnosticData diagnosticData = report.getDiagnosticData();
-				reportsNameList.add(diagnosticData.getDocumentName());
-			}
+			DiagnosticData diagnosticData = report.getDiagnosticData();
+			reportsNameList.add(diagnosticData.getDocumentName());
 		}
 		model.addAttribute("reports", reportsNameList);
 
