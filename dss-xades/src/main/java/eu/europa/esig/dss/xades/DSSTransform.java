@@ -23,25 +23,11 @@ package eu.europa.esig.dss.xades;
 public class DSSTransform {
 
 	private String algorithm;
-
 	private String elementName;
 	private String namespace;
 	private String textContent;
 
 	public DSSTransform() {
-	}
-
-	/**
-	 * This is a copy constructor.
-	 *
-	 * @param transform
-	 */
-	public DSSTransform(final DSSTransform transform) {
-
-		algorithm = transform.algorithm;
-		elementName = transform.elementName;
-		namespace = transform.namespace;
-		textContent = transform.textContent;
 	}
 
 	public String getAlgorithm() {
