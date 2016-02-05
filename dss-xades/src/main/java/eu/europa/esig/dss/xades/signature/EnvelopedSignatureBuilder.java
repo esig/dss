@@ -38,7 +38,6 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
@@ -115,11 +114,6 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		dssReferences.add(dssReference);
 
 		return dssReferences;
-	}
-
-	@Override
-	protected MimeType getReferenceMimeType(final DSSReference reference) {
-		return MimeType.XML;
 	}
 
 	/**

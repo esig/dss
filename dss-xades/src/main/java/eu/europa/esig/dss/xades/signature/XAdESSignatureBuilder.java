@@ -580,7 +580,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *            the reference to compute
 	 * @return the {@code MimeType} of the reference or the default value {@code MimeType.BINARY}
 	 */
-	protected MimeType getReferenceMimeType(final DSSReference reference) {
+	private MimeType getReferenceMimeType(final DSSReference reference) {
 
 		MimeType dataObjectFormatMimeType = reference.getContents().getMimeType();
 		if (dataObjectFormatMimeType == null) {
