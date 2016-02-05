@@ -75,7 +75,7 @@ public class XAdESDoubleSignatureTest {
 	}
 
 	@Test
-	public void testDoubleSignature() throws InterruptedException {
+	public void testDoubleSignature() {
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(verifier);
@@ -102,9 +102,6 @@ public class XAdESDoubleSignatureTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
-
-		reports.print();
-
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();

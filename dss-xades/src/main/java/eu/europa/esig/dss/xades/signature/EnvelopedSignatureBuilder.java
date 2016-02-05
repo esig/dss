@@ -147,17 +147,12 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 			final String uri_id = uri.substring(1);
 			nodeToTransform = document.getElementById(uri_id);
 		}
-		byte[] transformedReferenceBytes = null;
-		if (CollectionUtils.isEmpty(transforms)) {
-			transformedReferenceBytes = DSSXMLUtils.serializeNode(nodeToTransform);
-		} else {
-			transformedReferenceBytes = applyTransformations(dssDocument, transforms, nodeToTransform, transformedReferenceBytes);
-		}
+		byte[] transformedReferenceBytes = applyTransformations(dssDocument, transforms, nodeToTransform);
 		return new InMemoryDocument(transformedReferenceBytes);
 	}
 
-	private byte[] applyTransformations(DSSDocument dssDocument, final List<DSSTransform> transforms, Node nodeToTransform, byte[] transformedReferenceBytes) {
-
+	private byte[] applyTransformations(DSSDocument dssDocument, final List<DSSTransform> transforms, Node nodeToTransform) {
+		byte[] transformedReferenceBytes = null;
 		for (final DSSTransform transform : transforms) {
 
 			final String transformAlgorithm = transform.getAlgorithm();
