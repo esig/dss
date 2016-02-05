@@ -45,7 +45,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public abstract class XAdESBuilder {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(XAdESBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESBuilder.class);
 
 	public static final String DS_CANONICALIZATION_METHOD = "ds:CanonicalizationMethod";
 	public static final String DS_DIGEST_METHOD = "ds:DigestMethod";

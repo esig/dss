@@ -44,12 +44,12 @@ import org.w3c.dom.NodeList;
  * An implementation of a resource resolver, which evaluates xpointer expressions.
  *
  *
- *         Adapted by
+ * Adapted by
  *
  */
 public class XPointerResourceResolver extends ResourceResolverSpi {
 
-	private static Logger LOG = LoggerFactory.getLogger(XPointerResourceResolver.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XPointerResourceResolver.class);
 
 	private static final String XP_OPEN = "xpointer(";
 
@@ -81,7 +81,8 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 	/**
 	 * Indicates if the given URI is an XPointer query.
 	 *
-	 * @param uriValue URI to be analysed
+	 * @param uriValue
+	 *            URI to be analysed
 	 * @return true if it is an XPointer query
 	 */
 	public static boolean isXPointerQuery(String uriValue, final boolean strict) {

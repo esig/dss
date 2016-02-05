@@ -37,12 +37,10 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 /**
  * Retrieves OCSP values from an XAdES (>XL) signature.
  *
- *
  */
-
 public class XAdESOCSPSource extends OfflineOCSPSource {
 
-	private static Logger logger = LoggerFactory.getLogger(XAdESOCSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESOCSPSource.class);
 
 	private final Element signatureElement;
 
@@ -51,18 +49,18 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	/**
 	 * The default constructor for XAdESOCSPSource.
 	 *
-	 * @param signatureElement {@code Element} that contains an XML signature
-	 * @param xPathQueryHolder adapted {@code XPathQueryHolder}
+	 * @param signatureElement
+	 *            {@code Element} that contains an XML signature
+	 * @param xPathQueryHolder
+	 *            adapted {@code XPathQueryHolder}
 	 */
 	public XAdESOCSPSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
-
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
 	}
 
 	@Override
 	public List<BasicOCSPResp> getContainedOCSPResponses() {
-
 		final List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
 		addOCSP(list, xPathQueryHolder.XPATH_ENCAPSULATED_OCSP_VALUE);
 		addOCSP(list, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
@@ -75,11 +73,11 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 
 			final Element certEl = (Element) nodeList.item(ii);
-			try{
+			try {
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPBase64Encoded(certEl.getTextContent());
 				list.add(basicOCSPResp);
-			} catch (Exception e){
-				logger.warn("Cannot retrieve OCSP response from '" + certEl.getTextContent() + "' : " + e.getMessage(), e);
+			} catch (Exception e) {
+				LOG.warn("Cannot retrieve OCSP response from '" + certEl.getTextContent() + "' : " + e.getMessage(), e);
 			}
 		}
 	}

@@ -198,12 +198,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *            can be null
 	 */
 	public XAdESSignature(final Element signatureElement, final CertificatePool certPool) {
-
-		this(signatureElement, (new ArrayList<XPathQueryHolder>() {
+		this(signatureElement, new ArrayList<XPathQueryHolder>() {
 			{
 				add(new XPathQueryHolder());
 			}
-		}), certPool);
+		}, certPool);
 	}
 
 	/**
@@ -1970,7 +1969,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			} else {
 
 				final CertificateToken certificateToken = getSigningCertificateToken();
-				TokenIdentifier identifier = (certificateToken == null ? null : certificateToken.getDSSId());
+				TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
 				signatureId = DSSUtils.getDeterministicId(getSigningTime(), identifier);
 			}
 		}

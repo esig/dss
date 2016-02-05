@@ -33,6 +33,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -66,6 +68,8 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
  *
  */
 public abstract class XAdESSignatureBuilder extends XAdESBuilder implements SignatureBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignatureBuilder.class);
 
 	/**
 	 * Indicates if the signature was already built. (Two steps building)

@@ -41,11 +41,10 @@ import eu.europa.esig.dss.MimeType;
 /**
  * This class helps us home users to resolve http URIs without a network connection
  *
- *
  */
 public class OfflineResolver extends ResourceResolverSpi {
 
-	private static final Logger logger = LoggerFactory.getLogger(OfflineResolver.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OfflineResolver.class);
 
 	private final List<DSSDocument> documents;
 
@@ -67,27 +66,27 @@ public class OfflineResolver extends ResourceResolverSpi {
 
 		String documentUri = uriAttr.getNodeValue();
 		documentUri = decodeUrl(documentUri);
-		if (documentUri.equals("") || documentUri.startsWith("#")) {
+		if ("".equals(documentUri) || documentUri.startsWith("#")) {
 			return false;
 		}
 		try {
 
 			if (isKnown(documentUri) != null) {
 
-				logger.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
+				LOG.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
 				return true;
 			}
 			final URI baseUri = new URI(baseUriString);
 			URI uriNew = new URI(baseUri, documentUri);
 			if (uriNew.getScheme().equals("http")) {
 
-				logger.debug("I state that I can resolve '" + uriNew.toString() + "'");
+				LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
 				return true;
 			}
-			logger.debug("I state that I can't resolve '" + uriNew.toString() + "'");
+			LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
 		} catch (URI.MalformedURIException ex) {
 			if (documents == null || documents.size() == 0) {
-				logger.warn("OfflineResolver: WARNING: ", ex);
+				LOG.warn("OfflineResolver: WARNING: ", ex);
 			}
 		}
 		if (doesContainOnlyOneDocument()) {
@@ -101,7 +100,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 		try {
 			return URLDecoder.decode(documentUri, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			logger.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 		return documentUri;
 	}
@@ -118,12 +117,13 @@ public class OfflineResolver extends ResourceResolverSpi {
 
 			// The input stream is closed automatically by XMLSignatureInput class
 
-			// TODO-Bob (05/09/2014):  There is an error concerning the input streams base64 encoded. Some extra bytes are added within the santuario which breaks the HASH.
+			// TODO-Bob (05/09/2014): There is an error concerning the input streams base64 encoded. Some extra bytes
+			// are added within the santuario which breaks the HASH.
 			// TODO-Vin (05/09/2014): Can you create an isolated test-case JIRA DSS-?
 			InputStream inputStream = document.openStream();
-			//			final byte[] bytes = DSSUtils.toByteArray(inputStream);
-			//			final String string = new String(bytes);
-			//			inputStream = DSSUtils.toInputStream(bytes);
+			// final byte[] bytes = DSSUtils.toByteArray(inputStream);
+			// final String string = new String(bytes);
+			// inputStream = DSSUtils.toInputStream(bytes);
 			final XMLSignatureInput result = new XMLSignatureInput(inputStream);
 			result.setSourceURI(documentUri);
 			final MimeType mimeType = document.getMimeType();
@@ -133,7 +133,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 			return result;
 		} else {
 
-			Object exArgs[] = {"The uriNodeValue " + documentUri + " is not configured for offline work"};
+			Object exArgs[] = { "The uriNodeValue " + documentUri + " is not configured for offline work" };
 			throw new ResourceResolverException("generic.EmptyMessage", exArgs, documentUri, baseUriString);
 		}
 	}
