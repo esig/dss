@@ -215,12 +215,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @param certPool
 	 *            can be null
 	 */
-	public XAdESSignature(final Element signatureElement, final List<XPathQueryHolder> xPathQueryHolders, final CertificatePool certPool)
-			throws NullPointerException {
-
+	public XAdESSignature(final Element signatureElement, final List<XPathQueryHolder> xPathQueryHolders, final CertificatePool certPool) {
 		super(certPool);
 		if (signatureElement == null) {
-
 			throw new NullPointerException("signatureElement");
 		}
 		this.signatureElement = signatureElement;
