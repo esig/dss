@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- */
 public class DSSTransform {
 
 	private String algorithm;
@@ -35,7 +27,6 @@ public class DSSTransform {
 	private String elementName;
 	private String namespace;
 	private String textContent;
-	private boolean perform = false;
 
 	public DSSTransform() {
 	}
@@ -48,7 +39,6 @@ public class DSSTransform {
 	public DSSTransform(final DSSTransform transform) {
 
 		algorithm = transform.algorithm;
-		perform = transform.perform;
 		elementName = transform.elementName;
 		namespace = transform.namespace;
 		textContent = transform.textContent;
@@ -60,21 +50,6 @@ public class DSSTransform {
 
 	public void setAlgorithm(String algorithm) {
 		this.algorithm = algorithm;
-	}
-
-	/**
-	 * The framework (4.3.0-RC) is able to cope in automated manner only with some transformations: canonicalization & {@code Transforms.TRANSFORM_XPATH}. You need to set this
-	 * property to tell to the framework to perform the transformation. It applies only for {@code SignaturePackaging.ENVELOPED}.
-	 * The default value is {@code false}.
-	 *
-	 * @param perform indicates if the transformation should be performed
-	 */
-	public void setPerform(boolean perform) {
-		this.perform = perform;
-	}
-
-	public boolean isPerform() {
-		return perform;
 	}
 
 	public String getElementName() {
@@ -103,12 +78,7 @@ public class DSSTransform {
 
 	@Override
 	public String toString() {
-		return "DSSTransform{" +
-				"algorithm='" + algorithm + '\'' +
-				", elementName='" + elementName + '\'' +
-				", namespace='" + namespace + '\'' +
-				", textContent='" + textContent + '\'' +
-				", perform=" + perform +
-				'}';
+		return "DSSTransform{" + "algorithm='" + algorithm + '\'' + ", elementName='" + elementName + '\'' + ", namespace='" + namespace + '\''
+				+ ", textContent='" + textContent + "\'}";
 	}
 }

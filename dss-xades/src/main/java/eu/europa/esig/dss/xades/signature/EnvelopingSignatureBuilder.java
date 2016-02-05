@@ -51,32 +51,18 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 	/**
 	 * The default constructor for EnvelopingSignatureBuilder. The enveloped signature uses by default the inclusive
 	 * method of canonicalization.
-	 *  @param params  The set of parameters relating to the structure and process of the creation or extension of the
-	 *                electronic signature.
-	 * @param origDoc The original document to sign.
+	 * 
+	 * @param params
+	 *            The set of parameters relating to the structure and process of the creation or extension of the
+	 *            electronic signature.
+	 * @param origDoc
+	 *            The original document to sign.
 	 * @param certificateVerifier
 	 */
 	public EnvelopingSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 
 		super(params, origDoc, certificateVerifier);
 		setCanonicalizationMethods(params, CanonicalizationMethod.INCLUSIVE);
-	}
-
-	/**
-	 * This method creates the first reference (this is a reference to the file to sign) witch is specific for each form
-	 * of signature. Here, the value of the URI is an unique identifier to the base64 encoded data (file). The data are
-	 * included in the signature XML.
-	 *
-	 * @throws DSSException
-	 */
-	@Override
-	protected void incorporateReferences() throws DSSException {
-
-		final List<DSSReference> references = params.getReferences();
-		for (final DSSReference reference : references) {
-
-			incorporateReference(reference);
-		}
 	}
 
 	@Override
@@ -89,23 +75,24 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		transform.setAlgorithm(CanonicalizationMethod.BASE64);
 
 		transforms.add(transform);
-		
+
 		DSSDocument document = detachedDocument;
 		int referenceId = 1;
 		do {
-			//<ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object" URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
+			// <ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object"
+			// URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
 			final DSSReference reference = new DSSReference();
-			reference.setId("r-id-"+referenceId);
+			reference.setId("r-id-" + referenceId);
 			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
-			reference.setUri("#o-id-"+referenceId);
+			reference.setUri("#o-id-" + referenceId);
 			reference.setContents(document);
 			reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
 			reference.setTransforms(transforms);
 			references.add(reference);
-			
+
 			referenceId++;
 			document = document.getNextDocument();
-		} while(document != null);
+		} while (document != null);
 
 		return references;
 	}
