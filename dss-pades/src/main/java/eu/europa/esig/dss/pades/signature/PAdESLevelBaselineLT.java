@@ -36,7 +36,6 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
@@ -91,12 +90,12 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 				if (!signature.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T)) {
 					final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
 					document = padesLevelBaselineT.extendSignatures(document, parameters);
+
+					pdfDocumentValidator = new PDFDocumentValidator(document);
+					pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
 					break;
 				}
 			}
-			
-			pdfDocumentValidator = new PDFDocumentValidator(document);
-			pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
 
 			signatures = pdfDocumentValidator.getSignatures();
 

@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.pades;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 
@@ -26,11 +25,11 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class GetOriginalDocumentTest {
-	
+
 	@Test
 	public final void getOriginalDocumentFromEnvelopedSignature() throws Exception {
 		DSSDocument document = new FileDocument("src/test/resources/sample.pdf");
-		
+
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
@@ -38,41 +37,38 @@ public class GetOriginalDocumentTest {
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(certificateVerifier);
-		
+
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		
+
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
-		
+
 		InputStream is = document.openStream();
-		PDDocument pdf = new PDDocument();
+		PDDocument pdf = PDDocument.load(is, true);
 		PDFTextStripper stripper = new PDFTextStripper();
-		pdf.load(is, true);
 		String firstDocument = stripper.getText(pdf);
-		
+
 		is = removeResult.openStream();
-		pdf.load(is, true);
+		pdf = PDDocument.load(is, true);
 		String secondDocument = stripper.getText(pdf);
-		
-		
-		//removeResult.save("C:\\Users\\axel.abinet\\Desktop\\test.pdf");
+
+		// removeResult.save("C:\\Users\\axel.abinet\\Desktop\\test.pdf");
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
-	
+
 	@Test
 	public final void getOriginalDocumentFromEnvelopingSignature() throws Exception {
 		DSSDocument document = new FileDocument("src/test/resources/sample.pdf");
-		
+
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
@@ -85,26 +81,25 @@ public class GetOriginalDocumentTest {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(certificateVerifier);
-		
+
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		
+
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
 		InputStream is = document.openStream();
-		PDDocument pdf = new PDDocument();
+		PDDocument pdf = PDDocument.load(is, true);
 		PDFTextStripper stripper = new PDFTextStripper();
-		pdf.load(is, true);
 		String firstDocument = stripper.getText(pdf);
-		
+
 		is = removeResult.openStream();
-		pdf.load(is, true);
+		pdf = PDDocument.load(is, true);
 		String secondDocument = stripper.getText(pdf);
-		
+
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 }
