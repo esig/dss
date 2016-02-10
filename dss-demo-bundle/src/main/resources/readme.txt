@@ -7,6 +7,9 @@ To start any application go to the folder:
 - Webapp-Startup.bat starts the Tomcat server
 - Webapp-Shutdown.bat stops the Tomcat server
 
+# For NexU:
+- Nexu-Startup.bat starts NexU
+
 The HTML page is available via
   http://localhost:8080/
 Please make sure that your browser has the corresponding Java-plugin installed and activated.
