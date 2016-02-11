@@ -48,6 +48,12 @@
 			<!-- Works only if there is one include -->
 			<outputFileNameMapping>ROOT.war</outputFileNameMapping>
 		</dependencySet>
+		<dependencySet>
+			<includes>
+				<include>lu.nowina.apps:nexu-app:jar</include>
+			</includes>
+			<outputDirectory></outputDirectory>
+			<outputFileNameMapping>nexu.jar</outputFileNameMapping>
+		</dependencySet>
 	</dependencySets>
-
 </assembly>
