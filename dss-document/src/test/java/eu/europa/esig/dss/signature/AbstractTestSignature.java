@@ -213,7 +213,7 @@ public abstract class AbstractTestSignature {
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		
+
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertTrue(CollectionUtils.isNotEmpty(signatures));
 
@@ -230,8 +230,7 @@ public abstract class AbstractTestSignature {
 	}
 
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
-		assertEquals(getPrivateKeyEntry().getCertificate().getDigestAlgorithm(),
-				diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
+		assertEquals(getSignatureParameters().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
 	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
