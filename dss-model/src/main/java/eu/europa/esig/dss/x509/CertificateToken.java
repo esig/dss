@@ -42,7 +42,6 @@ import javax.xml.bind.DatatypeConverter;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.Normalizer;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.ServiceInfo;
@@ -96,11 +95,6 @@ public class CertificateToken extends Token {
 	protected CertificateTokenValidationExtraInfo extraInfo;
 
 	/**
-	 * Normalized X500Principal (BMPString, TeletextString...)
-	 */
-	private X500Principal subjectX500PrincipalNormalized = null;
-
-	/**
 	 * In the case of the XML signature this is the Id associated with the certificate if any.
 	 */
 	private String xmlId;
@@ -133,7 +127,7 @@ public class CertificateToken extends Token {
 		}
 
 		this.x509Certificate = x509Certificate;
-		this.issuerX500Principal = Normalizer.getNormalizedX500Principal(x509Certificate.getIssuerX500Principal());
+		this.issuerX500Principal = x509Certificate.getIssuerX500Principal();
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
 		this.digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
@@ -362,11 +356,7 @@ public class CertificateToken extends Token {
 	 * @return
 	 */
 	public X500Principal getSubjectX500Principal() {
-		if (subjectX500PrincipalNormalized == null) {
-			subjectX500PrincipalNormalized = Normalizer.getNormalizedX500Principal(x509Certificate.getSubjectX500Principal());
-			;
-		}
-		return subjectX500PrincipalNormalized;
+		return x509Certificate.getSubjectX500Principal();
 	}
 
 	@Override
