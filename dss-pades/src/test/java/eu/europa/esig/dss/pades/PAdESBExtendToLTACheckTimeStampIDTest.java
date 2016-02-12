@@ -43,7 +43,7 @@ public class PAdESBExtendToLTACheckTimeStampIDTest {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		ToBeSigned toBeSigned = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, toBeSigned);
@@ -57,7 +57,7 @@ public class PAdESBExtendToLTACheckTimeStampIDTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports report = validator.validateDocument();
-		report.print();
+		// report.print();
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String signatureId = diagnostic.getFirstSignatureId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {

@@ -42,7 +42,7 @@ public class CAdESWithSpecialCharInFilenameTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 	}
 

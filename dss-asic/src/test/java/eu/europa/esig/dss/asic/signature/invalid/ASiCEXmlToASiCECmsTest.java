@@ -26,7 +26,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCECmsToASiCEXml {
+public class ASiCEXmlToASiCECmsTest {
 
 	@Test(expected = DSSUnsupportedOperationException.class)
 	public void test() throws Exception {
@@ -41,7 +41,7 @@ public class ASiCECmsToASiCEXml {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
-		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
+		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		ASiCService service = new ASiCService(certificateVerifier);
@@ -56,7 +56,7 @@ public class ASiCECmsToASiCEXml {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
-		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
+		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 
 		certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
@@ -70,7 +70,7 @@ public class ASiCECmsToASiCEXml {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.extension;
 
 import java.io.File;
-import java.util.Date;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
@@ -57,9 +56,10 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
+		;
 		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 		return signedDocument;
@@ -69,7 +69,7 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 	protected DocumentSignatureService<PAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		PAdESService service = new PAdESService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 		return service;
 	}
 

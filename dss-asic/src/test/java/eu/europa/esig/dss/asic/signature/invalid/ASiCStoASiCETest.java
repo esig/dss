@@ -67,7 +67,7 @@ public class ASiCStoASiCETest {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));

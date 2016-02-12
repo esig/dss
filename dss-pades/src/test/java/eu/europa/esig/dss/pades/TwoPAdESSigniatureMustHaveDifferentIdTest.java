@@ -58,6 +58,9 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest {
 		Reports reports = validator.validateDocument();
 		String firstId = reports.getSimpleReport().getFirstSignatureId();
 
+		// milli seconds are splitted
+		Thread.sleep(500);
+
 		signatureParameters.bLevel().setSigningDate(new Date());
 		dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);

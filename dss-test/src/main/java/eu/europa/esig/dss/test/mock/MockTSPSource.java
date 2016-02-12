@@ -89,23 +89,14 @@ public class MockTSPSource implements TSPSource {
 		this.key = tsaKey;
 		this.cert = tsaCert;
 		this.useNonce = useNonce;
-		if(useNonce) {
-			if(nonceSeed != null) {
+		if (useNonce) {
+			if (nonceSeed != null) {
 				random = new SecureRandom(nonceSeed);
 			} else {
 				random = new SecureRandom();
 			}
 		}
 		this.policyOid = new ASN1ObjectIdentifier(policyOid);
-	}
-
-	/**
-	 * The default constructor for MockTSPSource.
-	 */
-	@Deprecated
-	public MockTSPSource(final MockPrivateKeyEntry entry, final Date timestampDate) throws DSSException {
-		this(entry.getPrivateKey(), entry.getCertificate(), true, null, "1.234.567.890");
-		LOG.debug("TSP mockup with certificate {}", cert.getDSSId());
 	}
 
 	/**
@@ -136,7 +127,7 @@ public class MockTSPSource implements TSPSource {
 		}
 
 		TimeStampRequest tsRequest = null;
-		if(useNonce) {
+		if (useNonce) {
 			final BigInteger nonce = BigInteger.valueOf(random.nextLong());
 			tsRequest = tsqGenerator.generate(digestAlgorithm.getOid(), digest, nonce);
 		} else {

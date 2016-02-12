@@ -1,10 +1,9 @@
-package eu.europa.esig.dss.asic.signature.asics;
+package eu.europa.esig.dss.asic.signature.invalid;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -21,16 +20,15 @@ import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCSLevelBXadesToASiCSLevelBXades {
+public class ASiCSXmlToASiCSCmsTest {
 
-	@Test
+	@Test(expected = DSSUnsupportedOperationException.class)
 	public void test() throws Exception {
 		DSSDocument documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
 
@@ -58,11 +56,11 @@ public class ASiCSLevelBXadesToASiCSLevelBXades {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
-		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
+		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 
 		certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
-		
+
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
 		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
@@ -72,11 +70,10 @@ public class ASiCSLevelBXadesToASiCSLevelBXades {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
+
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		
-		for(String id : diagnosticData.getSignatureIdList()) {
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(id));
-		}
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+
 	}
 }

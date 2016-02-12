@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.signature.asics;
+package eu.europa.esig.dss.asic.signature.invalid;
 
 import static org.junit.Assert.assertTrue;
 
@@ -7,6 +7,7 @@ import java.util.Date;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -25,9 +26,9 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCSLevelBCadesToASiCSLevelBCades {
+public class ASiCECmsToASiCEXmlTest {
 
-	@Test
+	@Test(expected = DSSUnsupportedOperationException.class)
 	public void test() throws Exception {
 		DSSDocument documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
 
@@ -39,7 +40,7 @@ public class ASiCSLevelBCadesToASiCSLevelBCades {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
 		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -54,8 +55,8 @@ public class ASiCSLevelBCadesToASiCSLevelBCades {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
-		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
+		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
 
 		certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
@@ -69,11 +70,10 @@ public class ASiCSLevelBCadesToASiCSLevelBCades {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		// reports.print();
 
-		for (String id : diagnosticData.getSignatureIdList()) {
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(id));
-		}
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+
 	}
 }

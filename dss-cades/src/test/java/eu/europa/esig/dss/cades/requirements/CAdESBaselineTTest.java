@@ -2,8 +2,6 @@ package eu.europa.esig.dss.cades.requirements;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
-
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -39,7 +37,7 @@ public class CAdESBaselineTTest extends AbstractRequirementChecks {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CAdESService service = new CAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);

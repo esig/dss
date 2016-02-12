@@ -1,14 +1,13 @@
-package eu.europa.esig.dss.asic.signature.asice;
+package eu.europa.esig.dss.asic.signature.invalid;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -24,13 +23,12 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCELevelBCadesToASiCELevelBCades {
+public class ASiCSCmsToASiCSXmlTest {
 
-	@Test
+	@Test(expected = DSSUnsupportedOperationException.class)
 	public void test() throws Exception {
 		DSSDocument documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
 
@@ -42,7 +40,7 @@ public class ASiCELevelBCadesToASiCELevelBCades {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
 		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -57,10 +55,8 @@ public class ASiCELevelBCadesToASiCELevelBCades {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
-		signatureParameters.setDetachedContent(documentToSign);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
+		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
 
 		certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
@@ -74,13 +70,10 @@ public class ASiCELevelBCadesToASiCELevelBCades {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
-		while (reports != null) {
-			DiagnosticData diagnosticData = reports.getDiagnosticData();
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-			Assert.assertNotEquals(Indication.INVALID, reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
-			reports = reports.getNextReports();
-		}
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+
 	}
 }

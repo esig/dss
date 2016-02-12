@@ -31,7 +31,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 public class CAdESWithContentTimestampTest {
 
 	@Test
-	public void testContentTimeStamp() throws IOException{
+	public void testContentTimeStamp() throws IOException {
 		File file = new File("src/test/resources/plugtest/cades/CAdES-BES/Sample_Set_11/Signature-C-BES-4.p7m");
 
 		FileInputStream fis = new FileInputStream(file);
@@ -40,7 +40,7 @@ public class CAdESWithContentTimestampTest {
 
 		ASN1TaggedObject taggedObj = DERTaggedObject.getInstance(asn1Seq.getObjectAt(1));
 		ASN1Primitive object = taggedObj.getObject();
-		SignedData signedData  = SignedData.getInstance(object);
+		SignedData signedData = SignedData.getInstance(object);
 
 		ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 		ASN1Sequence seqSignedInfo = ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0));
@@ -48,7 +48,7 @@ public class CAdESWithContentTimestampTest {
 		SignerInfo signedInfo = SignerInfo.getInstance(seqSignedInfo);
 		ASN1Set authenticatedAttributes = signedInfo.getAuthenticatedAttributes();
 
-		boolean found= false;
+		boolean found = false;
 		for (int i = 0; i < authenticatedAttributes.size(); i++) {
 			ASN1Sequence authAttrSeq = ASN1Sequence.getInstance(authenticatedAttributes.getObjectAt(i));
 			ASN1ObjectIdentifier attrOid = ASN1ObjectIdentifier.getInstance(authAttrSeq.getObjectAt(0));
@@ -58,12 +58,11 @@ public class CAdESWithContentTimestampTest {
 		}
 		assertTrue(found);
 
-
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(file));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
@@ -72,12 +71,11 @@ public class CAdESWithContentTimestampTest {
 		boolean foundContentTimestamp = false;
 		for (String timestampId : timestampIdList) {
 			String timestampType = diagnosticData.getTimestampType(timestampId);
-			if (TimestampType.CONTENT_TIMESTAMP.name().equals(timestampType)){
+			if (TimestampType.CONTENT_TIMESTAMP.name().equals(timestampType)) {
 				foundContentTimestamp = true;
 			}
 		}
 		assertTrue(foundContentTimestamp);
-
 
 		IOUtils.closeQuietly(asn1sInput);
 		IOUtils.closeQuietly(fis);

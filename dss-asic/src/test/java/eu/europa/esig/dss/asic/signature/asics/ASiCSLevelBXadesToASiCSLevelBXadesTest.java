@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.signature.asice;
+package eu.europa.esig.dss.asic.signature.asics;
 
 import static org.junit.Assert.assertTrue;
 
@@ -25,7 +25,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCELevelBXadesToASiCELevelBXades {
+public class ASiCSLevelBXadesToASiCSLevelBXadesTest {
 
 	@Test
 	public void test() throws Exception {
@@ -39,7 +39,7 @@ public class ASiCELevelBXadesToASiCELevelBXades {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
 		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -54,7 +54,7 @@ public class ASiCELevelBXadesToASiCELevelBXades {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
 		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
 
 		certificateVerifier = new CommonCertificateVerifier();
@@ -69,7 +69,7 @@ public class ASiCELevelBXadesToASiCELevelBXades {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		for (String id : diagnosticData.getSignatureIdList()) {

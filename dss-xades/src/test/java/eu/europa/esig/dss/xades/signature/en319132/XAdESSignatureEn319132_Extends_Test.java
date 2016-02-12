@@ -27,7 +27,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESSignatureEn319132_Extends {
+public class XAdESSignatureEn319132_Extends_Test {
 
 	@Test
 	public void extendsBToT() throws Exception {
@@ -38,7 +38,7 @@ public class XAdESSignatureEn319132_Extends {
 
 		XAdESService secondService = new XAdESService(new CommonCertificateVerifier());
 		CertificateService secondCertificateService = new CertificateService();
-		secondService.setTspSource(new MockTSPSource(secondCertificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
+		secondService.setTspSource(new MockTSPSource(secondCertificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 
 		DSSDocument extendedDocument = secondService.extendDocument(signedDocument, extensionParameters);
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendedDocument);
@@ -59,7 +59,7 @@ public class XAdESSignatureEn319132_Extends {
 
 		XAdESService secondService = new XAdESService(new CommonCertificateVerifier());
 		CertificateService secondCertificateService = new CertificateService();
-		secondService.setTspSource(new MockTSPSource(secondCertificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
+		secondService.setTspSource(new MockTSPSource(secondCertificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 
 		DSSDocument extendedDocument = secondService.extendDocument(signedDocument, extensionParameters);
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendedDocument);
@@ -80,7 +80,7 @@ public class XAdESSignatureEn319132_Extends {
 
 		XAdESService secondService = new XAdESService(new CommonCertificateVerifier());
 		CertificateService secondCertificateService = new CertificateService();
-		secondService.setTspSource(new MockTSPSource(secondCertificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
+		secondService.setTspSource(new MockTSPSource(secondCertificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 
 		DSSDocument extendedDocument = secondService.extendDocument(signedDocument, extensionParameters);
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendedDocument);
@@ -116,7 +116,7 @@ public class XAdESSignatureEn319132_Extends {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		DocumentSignatureService<XAdESSignatureParameters> service = new XAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);

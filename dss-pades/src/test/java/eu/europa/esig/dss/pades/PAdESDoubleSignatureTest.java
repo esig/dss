@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -80,7 +79,7 @@ public class PAdESDoubleSignatureTest {
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		PAdESService service = new PAdESService(verifier);
 		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		PAdESSignatureParameters params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
@@ -93,7 +92,7 @@ public class PAdESDoubleSignatureTest {
 		params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		params.setSigningCertificate(privateKeyEntry.getCertificate());
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
@@ -104,7 +103,7 @@ public class PAdESDoubleSignatureTest {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 

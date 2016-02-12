@@ -98,7 +98,7 @@ public class InfiniteLoopDSS621Test {
 		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
 		Reports reports = signedDocumentValidator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 		final List<AdvancedSignature> signatures = signedDocumentValidator.getSignatures();
 
@@ -114,9 +114,8 @@ public class InfiniteLoopDSS621Test {
 		}
 	}
 
-
 	/**
-	 * These signatures are invalid because of non ordered  signed attributes
+	 * These signatures are invalid because of non ordered signed attributes
 	 */
 	@Test
 	public void manualTest() throws Exception {
@@ -130,7 +129,7 @@ public class InfiniteLoopDSS621Test {
 		List<PDSignature> signatures = document.getSignatureDictionaries();
 		assertEquals(6, signatures.size());
 
-		int idx= 0;
+		int idx = 0;
 		for (PDSignature pdSignature : signatures) {
 			byte[] contents = pdSignature.getContents(pdfBytes);
 			byte[] signedContent = pdSignature.getSignedContent(pdfBytes);
@@ -251,7 +250,7 @@ public class InfiniteLoopDSS621Test {
 		document.close();
 	}
 
-	private List<X509Certificate>  extractCertificates(SignedData signedData) throws Exception {
+	private List<X509Certificate> extractCertificates(SignedData signedData) throws Exception {
 		ASN1Set certificates = signedData.getCertificates();
 		logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
 
@@ -260,8 +259,7 @@ public class InfiniteLoopDSS621Test {
 			ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
 
 			X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
-			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(
-					certificateHolder);
+			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(certificateHolder);
 
 			foundCertificates.add(certificate);
 		}

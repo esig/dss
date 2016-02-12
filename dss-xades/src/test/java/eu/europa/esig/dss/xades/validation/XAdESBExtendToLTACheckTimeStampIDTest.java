@@ -44,7 +44,7 @@ public class XAdESBExtendToLTACheckTimeStampIDTest {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		ToBeSigned toBeSigned = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, toBeSigned);
@@ -58,7 +58,7 @@ public class XAdESBExtendToLTACheckTimeStampIDTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports report = validator.validateDocument();
-		report.print();
+		// report.print();
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String signatureId = diagnostic.getFirstSignatureId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {

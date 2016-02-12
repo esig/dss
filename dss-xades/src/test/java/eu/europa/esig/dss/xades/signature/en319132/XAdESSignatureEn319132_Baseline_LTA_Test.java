@@ -23,7 +23,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESSignatureEn319132_Baseline_LTA extends AbstractTestSignature {
+public class XAdESSignatureEn319132_Baseline_LTA_Test extends AbstractTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;

@@ -10,18 +10,18 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCEWith2SignaturesTest {
-	
+
 	@Test
 	public void test() {
 		DSSDocument asicContainer = new FileDocument("src/test/resources/ASiCEWith2Signatures.bdoc");
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(asicContainer);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		Assert.assertNotNull(reports);
-		reports.print();
+		// reports.print();
 		reports = reports.getNextReports();
 		Assert.assertNotNull(reports);
-		reports.print();
+		// reports.print();
 	}
 }

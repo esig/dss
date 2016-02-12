@@ -3,7 +3,6 @@ package eu.europa.esig.dss.cades.extension;
 import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -39,7 +38,7 @@ public class ExtendToCAdESLtaTest {
 		validator.setDetachedContents(detachedContents);
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		// The ordering of attributes inside the SET is wrong. The attributes must be ordering by their tags and length
@@ -53,7 +52,7 @@ public class ExtendToCAdESLtaTest {
 		CertificateService certificateService = new CertificateService();
 
 		CAdESService service = new CAdESService(new CommonCertificateVerifier());
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 
 		CAdESSignatureParameters parameters = new CAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);

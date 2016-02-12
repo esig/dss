@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.validation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.util.List;
@@ -30,6 +31,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -55,8 +57,7 @@ public class SignedPropertiesNotCheckedTest {
 		assertFalse(signatures.get(0).isReferenceDataFound());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		// assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND,
-		// detailedReport.getBasicBuildingBlocksSubIndication(diagnosticData.getFirstSignatureId()));
+		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getBasicBuildingBlocksSubIndication(diagnosticData.getFirstSignatureId()));
 	}
 
 }

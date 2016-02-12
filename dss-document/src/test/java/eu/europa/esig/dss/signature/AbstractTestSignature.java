@@ -99,9 +99,7 @@ public abstract class AbstractTestSignature {
 
 		Reports reports = getValidationReport(signedDocument);
 
-		if (logger.isDebugEnabled()) {
-			reports.print();
-		}
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		verifyDiagnosticData(diagnosticData);

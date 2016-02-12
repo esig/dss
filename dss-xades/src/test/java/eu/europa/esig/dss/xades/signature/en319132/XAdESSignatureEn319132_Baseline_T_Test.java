@@ -1,29 +1,38 @@
 package eu.europa.esig.dss.xades.signature.en319132;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.JKSSignatureToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESSignatureEn319132_Baseline_LT extends AbstractTestSignature {
+public class XAdESSignatureEn319132_Baseline_T_Test extends AbstractTestSignature {
 	
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -48,7 +57,7 @@ public class XAdESSignatureEn319132_Baseline_LT extends AbstractTestSignature {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 		signatureParameters.setEn319132(true);
 		signatureParameters.bLevel().addClaimedSignerRole("Test role");
 		signatureParameters.bLevel().setSignerLocation(location);

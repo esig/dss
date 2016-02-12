@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.asic.extension.asice;
 
-import java.util.Date;
-
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -46,7 +44,7 @@ public class ASiCeSignAndExtendTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 		extend(signDocument);
 	}
 
@@ -55,7 +53,7 @@ public class ASiCeSignAndExtendTest {
 
 		ASiCService service = new ASiCService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		ASiCSignatureParameters parameters = new ASiCSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_LT);

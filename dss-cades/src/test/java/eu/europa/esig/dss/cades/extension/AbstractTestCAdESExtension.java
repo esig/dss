@@ -70,7 +70,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 
 		CAdESService service = new CAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 
@@ -85,7 +85,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 		certificateVerifier.setCrlSource(new MockCRLSource(generatedCRL));
 		CAdESService service = new CAdESService(certificateVerifier);
 		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 		return service;
 	}
 
