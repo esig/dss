@@ -24,8 +24,6 @@ import java.io.File;
 import java.util.Date;
 
 import org.junit.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -43,8 +41,6 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBRIPEMD160Test extends AbstractTestSignature {
-
-	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBRIPEMD160Test.class);
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -69,12 +65,6 @@ public class XAdESLevelBRIPEMD160Test extends AbstractTestSignature {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
 
-	}
-
-	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		String xmlContent = new String(byteArray);
-		logger.info(xmlContent);
 	}
 
 	@Override
