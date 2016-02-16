@@ -725,18 +725,18 @@
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
-		<repository>
-			<id>jboss-public</id>
-			<url>https://repository.jboss.org/nexus/</url>
-		</repository>
-		<repository>
-			<id>netbeans</id>
-			<url>http://bits.netbeans.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>java.net</id>
-			<url>http://download.java.net/maven/2/</url>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>jboss-public</id> -->
+<!-- 			<url>https://repository.jboss.org/nexus/</url> -->
+<!-- 		</repository> -->
+<!-- 		<repository> -->
+<!-- 			<id>netbeans</id> -->
+<!-- 			<url>http://bits.netbeans.org/maven2/</url> -->
+<!-- 		</repository> -->
+<!-- 		<repository> -->
+<!-- 			<id>java.net</id> -->
+<!-- 			<url>http://download.java.net/maven/2/</url> -->
+<!-- 		</repository> -->
 		<repository>
 			<id>joinup-mocca-thirparty</id>
 			<url>http://joinup.ec.europa.eu/site/mocca/m2/repository/</url>
