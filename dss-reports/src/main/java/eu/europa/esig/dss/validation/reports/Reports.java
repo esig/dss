@@ -149,13 +149,13 @@ public class Reports {
 		do {
 
 			System.out.println("[" + reportDeep + "] ----------------Diagnostic data-----------------");
-			System.out.println(getXmlDiagnosticData());
+			System.out.println(currentReports.getXmlDiagnosticData());
 
 			System.out.println("[" + reportDeep + "] ----------------Validation report---------------");
-			System.out.println(getXmlDetailedReport());
+			System.out.println(currentReports.getXmlDetailedReport());
 
 			System.out.println("[" + reportDeep + "] ----------------Simple report-------------------");
-			System.out.println(getXmlSimpleReport());
+			System.out.println(currentReports.getXmlSimpleReport());
 
 			System.out.println("[" + reportDeep + "] END ------------------------------------------------");
 			reportDeep += "#";
