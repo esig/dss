@@ -452,6 +452,14 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			// This is already an existing ASiC container; a new signature should be added.
 			final DocumentValidator subordinatedValidator = validator.getSubordinatedValidator();
 			final DSSDocument contextSignature = subordinatedValidator.getDocument();
+			DSSDocument signature = contextSignature;
+			DocumentValidator documentValidator = subordinatedValidator;
+			while(documentValidator.getNextValidator() != null) {
+				documentValidator = documentValidator.getNextValidator();
+				signature.setNextDocument(documentValidator.getDocument());
+				signature = signature.getNextDocument();
+			}
+			
 			asicParameters.setEnclosedSignature(contextSignature);
 			if (asice) {
 				if (cadesForm) {
@@ -656,12 +664,37 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		}
 		final boolean asice = isAsice(asicParameters);
 		if (isXAdESForm(asicParameters)) {
-			return asice ? ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE : ZIP_ENTRY_ASICS_METAINF_XADES_SIGNATURE;
+			if(asice) {
+				if(asicParameters.getEnclosedSignature() != null) {
+					return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE.replace('1', getSignatureNumber(asicParameters.getEnclosedSignature()));
+				} else {
+					return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE;
+				} 
+			} else {
+				return ZIP_ENTRY_ASICS_METAINF_XADES_SIGNATURE;
+			}
 		} else if (isCAdESForm(asicParameters)) {
-			return asice ? ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE : ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE;
+			if (asice || asicParameters.getEnclosedSignature() != null) {
+				if(asicParameters.getEnclosedSignature() != null) {
+					return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.replace('1', getSignatureNumber(asicParameters.getEnclosedSignature()));
+				} else {
+					return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE;
+				} 
+			} else {
+				return ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE;
+			}
 		} else {
 			throw new DSSException("ASiC signature form must be XAdES or CAdES!");
 		}
+	}
+	
+	private char getSignatureNumber(DSSDocument enclosedSignature) {
+		int signatureNumbre = '1';
+		while(enclosedSignature != null) {
+			signatureNumbre++;
+			enclosedSignature = enclosedSignature.getNextDocument();
+		}
+		return (char) signatureNumbre;
 	}
 
 	private void storeMimetype(final ASiCParameters asicParameters, final ZipOutputStream outZip) throws DSSException {
