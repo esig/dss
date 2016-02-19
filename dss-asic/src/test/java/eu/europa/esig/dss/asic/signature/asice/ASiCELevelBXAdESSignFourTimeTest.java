@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -106,7 +105,6 @@ public class ASiCELevelBXAdESSignFourTimeTest {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		resignedDocument.save("C://Users/axel.abinet/Desktop/test.zip");
 
 		Reports reports = validator.validateDocument();
 
