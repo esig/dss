@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -36,7 +35,7 @@ public class ASiCELevelBXAdESSignFourTimeTest {
 
 	@Test
 	public void test() throws Exception {
-		DSSDocument documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
@@ -71,7 +70,7 @@ public class ASiCELevelBXAdESSignFourTimeTest {
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
 		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
-		
+
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
@@ -87,7 +86,7 @@ public class ASiCELevelBXAdESSignFourTimeTest {
 		dataToSign = service.getDataToSign(resignedDocument, signatureParameters);
 		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		resignedDocument = service.signDocument(resignedDocument, signatureParameters, signatureValue);
-		
+
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
@@ -106,11 +105,8 @@ public class ASiCELevelBXAdESSignFourTimeTest {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		resignedDocument.save("C://Users/axel.abinet/Desktop/test.zip");
 
 		Reports reports = validator.validateDocument();
-
-		// reports.print();
 
 		while (reports != null) {
 			DiagnosticData diagnosticData = reports.getDiagnosticData();
