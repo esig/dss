@@ -1,2 +1,2 @@
-%JAVA_HOME%/bin/java -jar dss-app.jar
+"%JAVA_HOME%\bin\java.exe" -jar dss-app.jar
 pause
