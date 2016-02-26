@@ -33,6 +33,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 
+import eu.europa.esig.dss.DSSException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -170,7 +171,11 @@ public class TSLValidationJob {
 			resultLoaderLOTL = result.get();
 		} catch (Exception e) {
 			logger.error("Unable to load the LOTL : " + e.getMessage(), e);
-			return;
+			throw new DSSException("Unable to load the LOTL : " + e.getMessage());
+		}
+		if(resultLoaderLOTL.getContent() == null) {
+			logger.error("Unable to load the LOTL: content is empty");
+			throw new DSSException("Unable to load the LOTL: content is empty");
 		}
 
 		TSLValidationModel europeanModel = null;
