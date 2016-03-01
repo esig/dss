@@ -1,10 +1,12 @@
 package eu.europa.esig.dss;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509CRL;
@@ -85,14 +87,43 @@ public class DSSUtilsTest {
 	@Test
 	public void convertToPEM() {
 		String convertToPEM = DSSUtils.convertToPEM(certificateWithAIA);
+		assertTrue(convertToPEM.contains(DSSUtils.CERT_BEGIN));
+		assertTrue(convertToPEM.contains(DSSUtils.CERT_END));
+
+		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertToPEM.getBytes())));
+
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
 		assertTrue(certificate.equals(certificateWithAIA));
+
+		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
+		assertFalse(DSSUtils.isPEM(new ByteArrayInputStream(certDER)));
+
+		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
+		assertTrue(certificate2.equals(certificateWithAIA));
 	}
 
 	@Test
 	public void loadCrl() throws Exception {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/belgium2.crl"));
 		assertNotNull(crl);
+		assertFalse(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/belgium2.crl")));
+
+		String convertCRLToPEM = DSSUtils.convertCrlToPEM(crl);
+		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
+
+		X509CRL crl2 = DSSUtils.loadCRL(convertCRLToPEM.getBytes());
+		assertEquals(crl, crl2);
+
+		byte[] convertCRLToDER = DSSUtils.convertCRLToDER(convertCRLToPEM);
+		X509CRL crl3 = DSSUtils.loadCRL(convertCRLToDER);
+		assertEquals(crl, crl3);
+	}
+
+	@Test
+	public void loadPEMCrl() throws Exception {
+		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
+		assertNotNull(crl);
+		assertTrue(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/LTRCA.crl")));
 	}
 
 	@Test
@@ -121,7 +152,7 @@ public class DSSUtilsTest {
 		CertificateToken rootCA2 = DSSUtils.loadCertificateFromBase64EncodedString(certBase64);
 		logger.info(rootCA2.toString());
 		logger.info(rootCA2.getCertificate().toString());
-		//		assertFalse(rootCA2.isSelfSigned());
+		// assertFalse(rootCA2.isSelfSigned());
 
 		X509Certificate certificate = rootCA2.getCertificate();
 		certificate.verify(certificate.getPublicKey());
