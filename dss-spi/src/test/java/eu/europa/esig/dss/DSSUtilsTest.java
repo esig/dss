@@ -110,6 +110,7 @@ public class DSSUtilsTest {
 
 		String convertCRLToPEM = DSSUtils.convertCrlToPEM(crl);
 		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
+		assertTrue(DSSUtils.isPEM(convertCRLToPEM.getBytes()));
 
 		X509CRL crl2 = DSSUtils.loadCRL(convertCRLToPEM.getBytes());
 		assertEquals(crl, crl2);

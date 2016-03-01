@@ -346,7 +346,7 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns true if the byteArray contains a PEM encoded item
+	 * This method returns true if the inputStream contains a PEM encoded item
 	 * 
 	 * @return true if PEM encoded
 	 */
@@ -355,7 +355,27 @@ public final class DSSUtils {
 			String startPEM = "-----BEGIN";
 			int headerLength = 100;
 			byte[] preamble = new byte[headerLength];
-			int read = is.read(preamble, 0, headerLength);
+			if (is.read(preamble, 0, headerLength) > 0) {
+				String startArray = new String(preamble);
+				return startArray.startsWith(startPEM);
+			}
+			return false;
+		} catch (Exception e) {
+			throw new DSSException("Unable to read InputStream");
+		}
+	}
+
+	/**
+	 * This method returns true if the byteArray contains a PEM encoded item
+	 * 
+	 * @return true if PEM encoded
+	 */
+	public static boolean isPEM(byte[] byteArray) {
+		try {
+			String startPEM = "-----BEGIN";
+			int headerLength = 100;
+			byte[] preamble = new byte[headerLength];
+			System.arraycopy(byteArray, 0, preamble, 0, headerLength);
 			String startArray = new String(preamble);
 			return startArray.startsWith(startPEM);
 		} catch (Exception e) {
