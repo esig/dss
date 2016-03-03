@@ -57,7 +57,7 @@
 		<commons-collecions.version>3.2.2</commons-collecions.version>
 		<jackson-jaxrs-json-provider.version>2.5.4</jackson-jaxrs-json-provider.version>
 		<javax.mail.version>1.4.5</javax.mail.version>
-		<nexu.version>1.3-SNAPSHOT</nexu.version>
+		<nexu.version>1.3</nexu.version>
 	</properties>
 
 	<build>

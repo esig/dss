@@ -1,5 +1,5 @@
 /*
- * © Nowina Solutions, 2015-2015
+ * © Nowina Solutions, 2015-2016
  *
  * Concédée sous licence EUPL, version 1.1 ou – dès leur approbation par la Commission européenne - versions ultérieures de l’EUPL (la «Licence»).
  * Vous ne pouvez utiliser la présente œuvre que conformément à la Licence.
@@ -12,7 +12,7 @@
  * Consultez la Licence pour les autorisations et les restrictions linguistiques spécifiques relevant de la Licence.
  */
 
-var nexuVersion = "1.0";
+var nexuVersion = "1.3";
 
 $.get("${nexuUrl}/nexu-info", function(data) {
 	// something responded
