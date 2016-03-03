@@ -11,6 +11,7 @@ import java.util.Date;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
@@ -30,13 +31,9 @@ public class CustomProcessExecutorTest {
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
 		assertNotNull(diagnosticData);
 
-		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
-		assertNotNull(policyJaxB);
-
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(new EtsiValidationPolicy(policyJaxB));
+		executor.setValidationPolicy(loadPolicy());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date currentTime = sdf.parse("03/03/2016 09:25:00");
 		executor.setCurrentTime(currentTime);
@@ -44,25 +41,20 @@ public class CustomProcessExecutorTest {
 		Reports reports = executor.execute();
 		assertNotNull(reports);
 
-		// reports.print();
-
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.VALID, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test
 	public void testPSV() throws Exception {
+		/* Certificate not revoked -> no need timestamp to be valid */
 		FileInputStream fis = new FileInputStream("src/test/resources/diagnosticDataPSV.xml");
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
 		assertNotNull(diagnosticData);
 
-		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
-		assertNotNull(policyJaxB);
-
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(new EtsiValidationPolicy(policyJaxB));
+		executor.setValidationPolicy(loadPolicy());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date currentTime = sdf.parse("03/03/2016 09:25:00");
 		executor.setCurrentTime(currentTime);
@@ -78,7 +70,40 @@ public class CustomProcessExecutorTest {
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getBasicValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		assertEquals(Indication.VALID, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+	}
 
+	@Test
+	public void testLTA() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/diagnosticDataLTA.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date currentTime = sdf.parse("03/03/2016 11:21:00");
+		executor.setCurrentTime(currentTime);
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		reports.print();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.VALID, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.VALID, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+
+		assertEquals(2, CollectionUtils.size(detailedReport.getTimestampIds()));
+	}
+
+	private EtsiValidationPolicy loadPolicy() throws Exception {
+		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
+		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
+		assertNotNull(policyJaxB);
+		return new EtsiValidationPolicy(policyJaxB);
 	}
 
 	@SuppressWarnings("unchecked")
