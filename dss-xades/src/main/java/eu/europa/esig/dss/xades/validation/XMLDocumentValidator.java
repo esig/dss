@@ -239,9 +239,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		final NodeList list = DSSXMLUtils.getNodeList(signatureEl, XPathQueryHolder.XPATH_OBJECT);
 		final List<Element> references = new ArrayList<Element>(list.getLength());
 		for (int ii = 0; ii < list.getLength(); ii++) {
-
 			final Node node = list.item(ii);
-			System.out.println(node.getTextContent());
 			final Element element = (Element) node;
 			XPathQueryHolder queryHolder = new XPathQueryHolder();
 			if (DSSXMLUtils.getElement(element, queryHolder.XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES) != null) {

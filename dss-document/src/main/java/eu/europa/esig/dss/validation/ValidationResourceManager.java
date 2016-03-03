@@ -30,6 +30,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,6 @@ public class ValidationResourceManager {
 	private static JAXBContext jaxbContext;
 
 	static {
-
 		try {
 			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 		} catch (JAXBException e) {
@@ -83,12 +83,8 @@ public class ValidationResourceManager {
 	 * @return
 	 */
 	public static InputStream getResourceInputStream(final String dataFileName) {
-
 		try {
-			// final URL resource = ValidationResourceManager.class.getResource("/");
-			// System.out.println(resource.getPath());
 			InputStream inputStream = ValidationResourceManager.class.getResourceAsStream(dataFileName);
-			// DSSUtils.copy(inputStream, System.out);
 			return inputStream;
 		} catch (Exception e) {
 			throw new DSSException(e);
@@ -103,14 +99,12 @@ public class ValidationResourceManager {
 	 * @return
 	 */
 	public static ConstraintsParameters load(final String path) {
-
-		if ((path == null) || path.isEmpty()) {
-
+		if (StringUtils.isEmpty(path)) {
 			return null;
 		}
 		final InputStream fileInputStream = getResourceInputStream(path);
 		if (fileInputStream == null) {
-			LOG.warn("path: '{}'", path);
+			LOG.warn("Unknown resource (path: '{}')", path);
 		}
 		return load(fileInputStream);
 	}
@@ -127,10 +121,10 @@ public class ValidationResourceManager {
 		try {
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = sf.newSchema(new StreamSource(ValidationResourceManager.class.getResourceAsStream(defaultPolicyXsdLocation)));
-			
+
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			unmarshaller.setSchema(schema);
-			
+
 			return (ConstraintsParameters) unmarshaller.unmarshal(inputStream);
 		} catch (Exception e) {
 			throw new DSSException("Unable to load policy : " + e.getMessage(), e);

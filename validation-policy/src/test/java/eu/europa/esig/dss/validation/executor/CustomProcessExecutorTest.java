@@ -88,8 +88,6 @@ public class CustomProcessExecutorTest {
 		Reports reports = executor.execute();
 		assertNotNull(reports);
 
-		reports.print();
-
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.VALID, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
