@@ -18,9 +18,22 @@ public class DSSPKUtilsTest {
 	}
 
 	@Test
+	public void getPublicKeyEncryptionAlgoECDSA() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ecdsa.cer"));
+		String publicKeyEncryptionAlgo = DSSPKUtils.getPublicKeyEncryptionAlgo(certificate.getPublicKey());
+		assertEquals("ECDSA", publicKeyEncryptionAlgo);
+	}
+
+	@Test
 	public void getPublicKeySize() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/BA-QC-Wurzel-CA-2_PN.txt"));
 		assertEquals(2048, DSSPKUtils.getPublicKeySize(certificate.getPublicKey()));
+	}
+
+	@Test
+	public void getPublicKeySizeECDSA() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ecdsa.cer"));
+		assertEquals(256, DSSPKUtils.getPublicKeySize(certificate.getPublicKey()));
 	}
 
 }

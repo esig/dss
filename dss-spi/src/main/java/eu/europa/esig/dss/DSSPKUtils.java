@@ -117,11 +117,8 @@ public final class DSSPKUtils {
 			ECPublicKey ecPublicKey = (ECPublicKey) publicKey;
 			java.security.spec.ECParameterSpec spec = ecPublicKey.getParams();
 			if (spec != null) {
-
-				// TODO: (Bob: 20130528) To be checked (need an example)
 				publicKeySize = spec.getCurve().getField().getFieldSize();
 			} else {
-
 				publicKeySize = 0;
 			}
 		} else if (publicKey instanceof DSAPublicKey) {
