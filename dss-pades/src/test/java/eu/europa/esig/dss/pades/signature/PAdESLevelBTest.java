@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.signature;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -49,12 +50,12 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerIdentifier;
 import org.bouncycastle.asn1.cms.SignerInfo;
-import org.bouncycastle.asn1.pkcs.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -75,14 +76,13 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class PAdESLevelBTest extends AbstractTestSignature {
+public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 
 	private static final Logger logger = LoggerFactory.getLogger(PAdESLevelBTest.class);
 
@@ -114,6 +114,7 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
+
 		try {
 			InputStream inputStream = new ByteArrayInputStream(byteArray);
 
@@ -127,7 +128,7 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 
 				logger.info("Byte range : " + Arrays.toString(pdSignature.getByteRange()));
 
-				//IOUtils.write(contents, new FileOutputStream("sig.p7s"));
+				// IOUtils.write(contents, new FileOutputStream("sig.p7s"));
 
 				ASN1InputStream asn1sInput = new ASN1InputStream(contents);
 				ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
@@ -140,7 +141,8 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 				SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
 
 				ASN1Set digestAlgorithmSet = signedData.getDigestAlgorithms();
-				ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier.getInstance(ASN1Sequence.getInstance(digestAlgorithmSet.getObjectAt(0)).getObjectAt(0));
+				ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier
+						.getInstance(ASN1Sequence.getInstance(digestAlgorithmSet.getObjectAt(0)).getObjectAt(0));
 				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(oidDigestAlgo.getId());
 				logger.info("DIGEST ALGO : " + digestAlgorithm);
 
@@ -163,9 +165,15 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 				logger.info("AUTHENTICATED ATTR : " + authenticatedAttributeSet);
 
 				List<ASN1ObjectIdentifier> attributeOids = new ArrayList<ASN1ObjectIdentifier>();
+				int previousSize = 0;
 				for (int i = 0; i < authenticatedAttributeSet.size(); i++) {
 					Attribute attribute = Attribute.getInstance(authenticatedAttributeSet.getObjectAt(i));
-					attributeOids.add(attribute.getAttrType());
+					ASN1ObjectIdentifier attrTypeOid = attribute.getAttrType();
+					attributeOids.add(attrTypeOid);
+					int size = attrTypeOid.getEncoded().length + attribute.getEncoded().length;
+					assertTrue(size >= previousSize);
+
+					previousSize = size;
 				}
 				logger.info("List of OID for Auth Attrb : " + attributeOids);
 
@@ -239,7 +247,27 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 		}
 	}
 
-	private List<X509Certificate>  extractCertificates(SignedData signedData) throws Exception {
+	private boolean isSubset(byte[] encoded, byte[] arrayToFind) {
+
+		for (int i = 0; i < encoded.length; i++) {
+			boolean found = false;
+			int j;
+			for (j = 0; j < arrayToFind.length; j++) {
+				if (encoded[i] == arrayToFind[j]) {
+					found = true;
+				} else {
+					break;
+				}
+			}
+			if (found && j == arrayToFind.length - 1) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private List<X509Certificate> extractCertificates(SignedData signedData) throws Exception {
 		ASN1Set certificates = signedData.getCertificates();
 		logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
 
@@ -248,14 +276,12 @@ public class PAdESLevelBTest extends AbstractTestSignature {
 			ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
 
 			X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
-			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(
-					certificateHolder);
+			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(certificateHolder);
 
 			foundCertificates.add(certificate);
 		}
 		return foundCertificates;
 	}
-
 
 	@Override
 	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
