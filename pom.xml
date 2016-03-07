@@ -49,12 +49,9 @@
 		<slf4j.version>1.6.6</slf4j.version>
 		<logback-classic.version>1.0.13</logback-classic.version>
 		<bouncycastle.version>1.52</bouncycastle.version>
-		<jgoodies-forms.version>1.6.0</jgoodies-forms.version>
-		<jgoodies-bindings.version>2.7.0</jgoodies-bindings.version>
 		<xmlsec.version>2.0.5</xmlsec.version>
 		<cxf.version>2.7.16</cxf.version>
 		<junit.version>4.11</junit.version>
-		<commons-collecions.version>3.2.2</commons-collecions.version>
 		<jackson-jaxrs-json-provider.version>2.5.4</jackson-jaxrs-json-provider.version>
 		<nexu.version>1.3</nexu.version>
 	</properties>
@@ -535,7 +532,7 @@
 			<dependency>
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
-				<version>${commons-collecions.version}</version>
+				<version>3.2.2</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
@@ -623,6 +620,7 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
+				<scope>test</scope>
 			</dependency>
 
 			<dependency>
@@ -662,11 +660,6 @@
 			</dependency>
 			<!-- Logger -->
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-jdk14</artifactId>
 				<version>${slf4j.version}</version>
@@ -681,11 +674,6 @@
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>${slf4j.version}</version>
 				<scope>runtime</scope>
-			</dependency>
-			<dependency>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-				<version>1.1.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -712,36 +700,14 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.jgoodies</groupId>
-				<artifactId>jgoodies-binding</artifactId>
-				<version>${jgoodies-bindings.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.jgoodies</groupId>
-				<artifactId>jgoodies-forms</artifactId>
-				<version>${jgoodies-forms.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
-<!-- 		<repository> -->
-<!-- 			<id>jboss-public</id> -->
-<!-- 			<url>https://repository.jboss.org/nexus/</url> -->
-<!-- 		</repository> -->
-<!-- 		<repository> -->
-<!-- 			<id>netbeans</id> -->
-<!-- 			<url>http://bits.netbeans.org/maven2/</url> -->
-<!-- 		</repository> -->
-<!-- 		<repository> -->
-<!-- 			<id>java.net</id> -->
-<!-- 			<url>http://download.java.net/maven/2/</url> -->
-<!-- 		</repository> -->
 		<repository>
 			<id>joinup-mocca-thirparty</id>
 			<url>http://joinup.ec.europa.eu/site/mocca/m2/repository/</url>
