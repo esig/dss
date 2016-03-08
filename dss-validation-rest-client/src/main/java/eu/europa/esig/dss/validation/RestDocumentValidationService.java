@@ -5,18 +5,13 @@ import java.io.Serializable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.model.wadl.Description;
 
-import com.sun.istack.Nullable;
-
-import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.validation.reports.dto.DataToValidateDTO;
 import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 @Path("ValidationService")
 @Produces(MediaType.APPLICATION_JSON)
