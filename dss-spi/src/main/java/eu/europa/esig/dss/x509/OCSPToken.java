@@ -26,7 +26,6 @@ import java.security.PublicKey;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateStatus;
 import org.bouncycastle.cert.ocsp.OCSPResp;
@@ -96,13 +95,12 @@ public class OCSPToken extends RevocationToken {
 	}
 
 	private void setStatus(final CertificateStatus certStatus) {
-
 		if (certStatus == null) {
 			status = true;
 			return;
 		}
 		if (logger.isInfoEnabled()) {
-			logger.info("OCSP certificate status: " + certStatus.getClass().getName());
+			logger.info("OCSP certificate status: " + certStatus.getClass().getSimpleName());
 		}
 		if (certStatus instanceof RevokedStatus) {
 
@@ -125,27 +123,10 @@ public class OCSPToken extends RevocationToken {
 		}
 	}
 
-	private String getRevocationReason(RevokedStatus revokedStatus) {
-		int reasonId = getRevocationReasonId(revokedStatus);
-		CRLReason crlReason = CRLReason.lookup(reasonId);
-		return crlReason.toString();
-	}
-
-	private int getRevocationReasonId(RevokedStatus revokedStatus) {
-		try {
-			return revokedStatus.getRevocationReason();
-		} catch (IllegalStateException e) {
-			logger.warn("OCSP Revocation reason is not available: " + e.getMessage());
-			return 0; // Zero means 'unspecified'
-		}
-	}
-
 	/**
 	 * @return the ocspResp
 	 */
-
 	public BasicOCSPResp getBasicOCSPResp() {
-
 		return basicOCSPResp;
 	}
 
