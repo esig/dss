@@ -80,11 +80,11 @@ public final class DSSUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(DSSUtils.class);
 
-	public static final String CERT_BEGIN = "-----BEGIN CERTIFICATE-----\n";
-	public static final String CERT_END = "\n-----END CERTIFICATE-----";
+	public static final String CERT_BEGIN = "-----BEGIN CERTIFICATE-----";
+	public static final String CERT_END = "-----END CERTIFICATE-----";
 
-	public static final String CRL_BEGIN = "-----BEGIN X509 CRL-----\n";
-	public static final String CRL_END = "\n-----END X509 CRL-----";
+	public static final String CRL_BEGIN = "-----BEGIN X509 CRL-----";
+	public static final String CRL_END = "-----END X509 CRL-----";
 
 	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
 
@@ -98,6 +98,8 @@ public final class DSSUtils {
 	 * The default date pattern: "yyyy-MM-dd"
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
+	private static final String NEW_LINE = "\n";
 
 	static {
 		try {
@@ -324,7 +326,7 @@ public final class DSSUtils {
 	public static String convertToPEM(final CertificateToken cert) throws DSSException {
 		final byte[] derCert = cert.getEncoded();
 		String pemCertPre = Base64.encodeBase64String(derCert);
-		final String pemCert = CERT_BEGIN + pemCertPre + CERT_END;
+		final String pemCert = CERT_BEGIN + NEW_LINE + pemCertPre + NEW_LINE + CERT_END;
 		return pemCert;
 	}
 
@@ -338,7 +340,7 @@ public final class DSSUtils {
 		try {
 			final byte[] derCrl = crl.getEncoded();
 			String pemCrlPre = Base64.encodeBase64String(derCrl);
-			final String pemCrl = CRL_BEGIN + pemCrlPre + CRL_END;
+			final String pemCrl = CRL_BEGIN + NEW_LINE + pemCrlPre + NEW_LINE + CRL_END;
 			return pemCrl;
 		} catch (CRLException e) {
 			throw new DSSException("Unable to convert CRL to PEM encoding : " + e.getMessage());
@@ -393,6 +395,7 @@ public final class DSSUtils {
 	public static byte[] convertToDER(String pemCert) {
 		String base64 = pemCert.replace(CERT_BEGIN, "");
 		base64 = base64.replace(CERT_END, "");
+		base64 = base64.replaceAll("\\s", "");
 		return Base64.decodeBase64(base64);
 	}
 
@@ -406,6 +409,7 @@ public final class DSSUtils {
 	public static byte[] convertCRLToDER(String pemCRL) {
 		String base64 = pemCRL.replace(CRL_BEGIN, "");
 		base64 = base64.replace(CRL_END, "");
+		base64 = base64.replaceAll("\\s", "");
 		return Base64.decodeBase64(base64);
 	}
 
