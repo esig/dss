@@ -32,7 +32,7 @@ import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
- * The usage of this interface permits the user to choose the underlying PDF library use to created PDF signatures.
+ * The usage of this interface permits the user to choose the underlying PDF library used to create PDF signatures.
  *
  *
  */
