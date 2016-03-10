@@ -166,7 +166,6 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * This methods reinits the deterministicId to force to recompute it
 	 */
-	@Override
 	public void reinitDeterministicId() {
 		deterministicId = null;
 	}
