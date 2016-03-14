@@ -96,9 +96,6 @@
 				<configuration>
 					<!-- Default test configuration -->
 					<skipTests>true</skipTests>
-					<systemProperties>
-						<java.util.logging.config.file>../logging.properties</java.util.logging.config.file>
-					</systemProperties>
 				</configuration>
 				<executions>
 					<execution>

@@ -35,31 +35,72 @@ public class WebappIT {
 
 	@Test
 	public void signature() {
-		driver.get(BASE_URL + "signature");
+		driver.get(BASE_URL + "nexu");
+		assertFindTitleSpan();
+	}
+
+	@Test
+	public void signatureStandalone() {
+		driver.get(BASE_URL + "signature-standalone");
+		assertFindTitleSpan();
+	}
+
+	@Test
+	public void extension() {
+		driver.get(BASE_URL + "extension");
+		assertFindTitleSpan();
+	}
+
+	@Test
+	public void validation() {
+		driver.get(BASE_URL + "validation");
+		assertFindTitleSpan();
+	}
+
+	@Test
+	public void validationPolicy() {
+		driver.get(BASE_URL + "validation-policy");
+		assertFindTitleSpan();
+	}
+
+	@Test
+	public void tslInfo() {
+		driver.get(BASE_URL + "tsl-info");
+		assertFindTitleSpan();
+	}
+
+	@Test
+	public void tslInfoBE() {
+		driver.get(BASE_URL + "tsl-info/be");
 		assertFindTitleSpan();
 	}
 
 	@Test
 	public void webservicesAvailable() {
-		driver.get(BASE_URL + "wservice");
-		List<WebElement> linksWSDL = driver.findElements(By.tagName("a"));
-		assertEquals(2, CollectionUtils.size(linksWSDL));
+		driver.get(BASE_URL + "services");
+		List<WebElement> linksService = driver.findElements(By.tagName("a"));
+		assertEquals(4, CollectionUtils.size(linksService));
 	}
 
 	@Test
 	public void wsdlSignature() {
-		driver.get(BASE_URL + "wservice/signatureService?wsdl");
+		driver.get(BASE_URL + "services/SignatureService?wsdl");
 	}
 
 	@Test
 	public void wsdlValidate() {
-		driver.get(BASE_URL + "wservice/validationService?wsdl");
+		driver.get(BASE_URL + "services/soap/ValidationService?wsdl");
+	}
+
+	@Test
+	public void restValidation() {
+		driver.get(BASE_URL + "services/rest/validation?_wadl");
 	}
 
 	private void assertFindTitleSpan() {
-		WebElement siteTitleElement = driver.findElement(By.xpath("//span[contains(@class, 'site-title')]"));
+		WebElement siteTitleElement = driver.findElement(By.xpath("//title"));
 		assertNotNull(siteTitleElement);
-		assertEquals("DSS WebApp",siteTitleElement.getText());
+		assertEquals("DSS WebApp", siteTitleElement.getText());
 	}
 
 	@After

@@ -368,6 +368,9 @@
 								<goals>
 									<goal>shutdown</goal>
 								</goals>
+								<configuration>
+									<skipErrorOnShutdown>true</skipErrorOnShutdown>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
