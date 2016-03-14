@@ -24,25 +24,25 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class XAdESSignatureEn319132_Baseline_LT_Test extends AbstractTestSignature {
-	
+
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private MockPrivateKeyEntry privateKeyEntry;
-	
+
 	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-		
+
 		SignerLocation location = new SignerLocation();
 		location.setCountry("Luxembourg");
 		location.setLocality("Kehlen");
 		location.setStreet("Zone industrielle, 15");
 		location.setPostalCode("L-8287");
-		
+
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
@@ -52,7 +52,6 @@ public class XAdESSignatureEn319132_Baseline_LT_Test extends AbstractTestSignatu
 		signatureParameters.setEn319132(true);
 		signatureParameters.bLevel().addClaimedSignerRole("Test role");
 		signatureParameters.bLevel().setSignerLocation(location);
-		
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
@@ -66,7 +65,7 @@ public class XAdESSignatureEn319132_Baseline_LT_Test extends AbstractTestSignatu
 	}
 
 	@Override
-	protected DocumentSignatureService getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
 
