@@ -1,55 +1,25 @@
 <configuration>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!-- encoders are assigned the type
-			 ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>DEBUG</level>
+			<level>INFO</level>
 		</filter>
 		<encoder>
-			<pattern>%-5level %F:%L [%thread] - %msg %n</pattern>
-			<!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %F:%L - %msg%n</pattern>-->
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
 
-	<appender name="debug" class="ch.qos.logback.core.FileAppender">
-		<file>dss-debug.log</file>
-		<!-- rewrite file each time -->
-		<append>false</append>
-		<!-- encoders are assigned the type
-			 ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
-		<encoder>
-			<pattern>%-5level %logger{35}:%L - %msg%n</pattern>
-			<!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %F:%L - %msg%n</pattern>-->
-		</encoder>
-	</appender>
-
-	<!--<logger name="eu.europa" level="DEBUG">-->
-	<!--<appender-ref ref="STDOUT"/>-->
-	<!--</logger>-->
 	<logger name="org.apache.http" level="WARN"/>
-	<logger name="org.apache.xml.security.utils.DigesterOutputStream" level="INFO"/>
-	<logger name="org.apache.pdfbox.pdfparser.PDFObjectStreamParser" level="INFO"/>
-	<logger name="org.springframework.core" level="INFO"/>
-	<logger name="org.springframework.beans" level="INFO"/>
-	<logger name="org.springframework.context" level="INFO"/>
-	<logger name="org.springframework.context.support" level="INFO"/>
-	<logger name="org.apache.commons.digester" level="INFO"/>
+	<logger name="org.apache.xml" level="INFO"/>
+	<logger name="org.apache.pdfbox." level="INFO"/>
+	<logger name="org.apache.commons" level="INFO"/>
 	<logger name="org.apache.tiles" level="INFO"/>
 	<logger name="org.apache.cxf" level="INFO"/>
-	<logger name="org.springframework.web.servlet.resource" level="INFO"/>
-	<logger name="org.springframework.web.servlet" level="INFO"/>
-	<logger name="org.springframework.web.servlet.handler" level="INFO"/>
-	<logger name="org.apache.commons.beanutils.converters" level="INFO"/>
-	<logger name="org.apache.commons.beanutils" level="INFO"/>
-	<!--<logger name="" level="INFO"/>-->
-	<!--<logger name="" level="INFO"/>-->
-	<!--<logger name="" level="INFO"/>-->
-	<!--<logger name="" level="INFO"/>-->
+	<logger name="org.springframework" level="INFO"/>
 
-	<root level="DEBUG">
+	<root level="INFO">
 		<appender-ref ref="STDOUT"/>
-		<!--<appender-ref ref="debug"/>-->
 	</root>
 
 </configuration>
