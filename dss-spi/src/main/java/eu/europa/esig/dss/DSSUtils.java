@@ -1299,20 +1299,23 @@ public final class DSSUtils {
 			destinationFile.createNewFile();
 		}
 
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
 		FileChannel source = null;
 		FileChannel destination = null;
 
 		try {
-			source = new FileInputStream(sourceFile).getChannel();
-			destination = new FileOutputStream(destinationFile).getChannel();
+			fis = new FileInputStream(sourceFile);
+			fos = new FileOutputStream(destinationFile);
+			source = fis.getChannel();
+			destination = fos.getChannel();
 			destination.transferFrom(source, 0, source.size());
 		} finally {
-			if (source != null) {
-				source.close();
-			}
-			if (destination != null) {
-				destination.close();
-			}
+			IOUtils.closeQuietly(source);
+			IOUtils.closeQuietly(fis);
+
+			IOUtils.closeQuietly(destination);
+			IOUtils.closeQuietly(fos);
 		}
 	}
 
