@@ -815,10 +815,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param xmlCert
 	 */
 	private void dealQCStatement(final CertificateToken certToken, final XmlCertificate xmlCert) {
-
 		if (!certToken.isTrusted()) {
-
-			/// System.out.println("--> QCStatement for: " + certToken.getAbbreviation());
 			final XmlQCStatement xmlQCS = new XmlQCStatement();
 			xmlQCS.setQCP(qcp.check(certToken));
 			xmlQCS.setQCPPlus(qcpPlus.check(certToken));
@@ -990,26 +987,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param xmlCert
 	 */
 	private void dealTrustedService(final CertificateToken certToken, final XmlCertificate xmlCert) {
-
 		if (certToken.isTrusted()) {
-
 			return;
 		}
 		final CertificateToken trustAnchor = certToken.getTrustAnchor();
 		if (trustAnchor == null) {
-
 			return;
 		}
 		final Set<ServiceInfo> services = trustAnchor.getAssociatedTSPS();
 		if (services == null) {
-
 			return;
 		}
 		for (final ServiceInfo serviceInfo : services) {
-
-			// System.out.println("---------------------------------------------");
-			// System.out.println(serviceInfo);
-
 			final XmlTrustedServiceProviderType xmlTSP = new XmlTrustedServiceProviderType();
 			xmlTSP.setTSPName(serviceInfo.getTspName());
 			xmlTSP.setTSPServiceName(serviceInfo.getServiceName());
@@ -1024,11 +1013,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			// Check of the associated conditions to identify the qualifiers
 			final List<String> qualifiers = getQualifiers(serviceInfo, certToken);
-			if (!qualifiers.isEmpty()) {
-
+			if (CollectionUtils.isNotEmpty(qualifiers)) {
 				final XmlQualifiers xmlQualifiers = new XmlQualifiers();
 				for (String qualifier : qualifiers) {
-
 					xmlQualifiers.getQualifier().add(qualifier);
 				}
 				xmlTSP.setQualifiers(xmlQualifiers);
