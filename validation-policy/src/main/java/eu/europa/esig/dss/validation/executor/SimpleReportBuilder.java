@@ -33,7 +33,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
@@ -146,7 +145,7 @@ public class SimpleReportBuilder {
 
 		final Indication archivalIndication = archivalValidation.getConclusion().getIndication();
 		final SubIndication archivalSubIndication = archivalValidation.getConclusion().getSubIndication();
-		
+
 		List<String> infoList = xmlSignature.getInfos();
 		// final List<XmlDom> ltvInfoList = ltvConclusion.getElements("./Info");
 
@@ -154,10 +153,10 @@ public class SimpleReportBuilder {
 		SubIndication subIndication = archivalSubIndication;
 		// List<XmlDom> infoList = new ArrayList<XmlDom>();
 		// infoList.addAll(ltvInfoList);
-		
-		for(XmlConstraint constraint : getAllBBBConstraintsForASignature(xmlSignature)) {
-			if(constraint.getStatus().equals(XmlStatus.WARNING)) {
-				infoList.add(MessageTag.valueOf(constraint.getName().getNameId()+"_ANS").getMessage());
+
+		for (XmlConstraint constraint : getAllBBBConstraintsForASignature(xmlSignature)) {
+			if (constraint.getStatus().equals(XmlStatus.WARNING)) {
+				infoList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
 			}
 		}
 
@@ -212,28 +211,28 @@ public class SimpleReportBuilder {
 
 	private List<XmlConstraint> getAllBBBConstraintsForASignature(XmlSignature signature) {
 		List<XmlConstraint> result = new ArrayList<XmlConstraint>();
-		for(XmlBasicBuildingBlocks bbb : detailedReport.getBasicBuildingBlocks()) {
-			if(bbb.getId().equals(signature.getId())) { // Check if it's the BBB for the signature
-				if(bbb.getCV() != null) {
+		for (XmlBasicBuildingBlocks bbb : detailedReport.getBasicBuildingBlocks()) {
+			if (bbb.getId().equals(signature.getId())) { // Check if it's the BBB for the signature
+				if (bbb.getCV() != null) {
 					result.addAll(bbb.getCV().getConstraint());
-				} 
-				if(bbb.getISC() != null) {
+				}
+				if (bbb.getISC() != null) {
 					result.addAll(bbb.getISC().getConstraint());
 				}
-				if(bbb.getSAV() != null) {
+				if (bbb.getSAV() != null) {
 					result.addAll(bbb.getSAV().getConstraint());
-				} 
-				if(bbb.getVCI() != null) {
+				}
+				if (bbb.getVCI() != null) {
 					result.addAll(bbb.getVCI().getConstraint());
-				} 
-				if(bbb.getXCV() != null) {
+				}
+				if (bbb.getXCV() != null) {
 					result.addAll(bbb.getXCV().getConstraint());
 				}
 			}
 		}
 		return result;
 	}
-	
+
 	private XmlConstraintsConclusion getBasicSignatureValidationConclusion(String signatureId) {
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignature();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
@@ -262,7 +261,7 @@ public class SimpleReportBuilder {
 	}
 
 	private void addSignatureScope(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
-		for(XmlSignatureScopeType scopeType : diagnosticSignature.getSignatureScopes().getSignatureScope()) {
+		for (XmlSignatureScopeType scopeType : diagnosticSignature.getSignatureScopes().getSignatureScope()) {
 			XmlSignatureScope scope = new XmlSignatureScope();
 			scope.setName(scopeType.getName());
 			scope.setScope(scopeType.getScope());
@@ -276,7 +275,7 @@ public class SimpleReportBuilder {
 	// xmlSignature.getErrors().add(error.getText());
 	// }
 	// }
-	
+
 	private void addSigningTime(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
 		xmlSignature.setSigningTime(diagnosticSignature.getDateTime());
 	}
@@ -345,9 +344,14 @@ public class SimpleReportBuilder {
 		trustedListQualification.setQcForLegalPerson(isQcForLegalPerson(qualifiers));
 		trustedListQualification.setQcSSCDAsInCert(isQcSscdStatusAsInCert(qualifiers));
 		trustedListQualification.setQcWithSSCD(isQcWithSSCD(qualifiers));
+		trustedListQualification.setQcStatement(isQcStatement(qualifiers));
 
 		final SignatureType signatureType = SignatureQualification.getSignatureType(certQualification, trustedListQualification);
 		return signatureType;
+	}
+
+	private boolean isQcStatement(List<String> qualifiers) {
+		return qualifiers.contains(TSLConstant.QC_STATEMENT) || qualifiers.contains(TSLConstant.QC_STATEMENT_119612);
 	}
 
 	private boolean isQcNoSSCD(final List<String> qualifiers) {
