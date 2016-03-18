@@ -6,12 +6,6 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<import resource="classpath:spring/applicationContext-dao.xml"/>
-	
-    <bean id="dssKeyStore" class="eu.europa.esig.dss.web.DSSKeyStoreFactoryBean">
-	    <property name="keyStoreType" value="${dss.keystore.type}" />
-	    <property name="keyStoreFilename" value="${dss.keystore.filename}" />
-	    <property name="keyStorePassword" value="${dss.keystore.password}" />
-	</bean>
 
 	<bean id="proxyPreferenceManager" class="eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager">
 		<property name="proxyDao" ref="proxyDao"/>
