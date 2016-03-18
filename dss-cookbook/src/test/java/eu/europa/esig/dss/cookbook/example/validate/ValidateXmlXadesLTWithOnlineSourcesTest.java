@@ -88,7 +88,6 @@ public class ValidateXmlXadesLTWithOnlineSourcesTest extends CookbookTools {
 				"dss-password");
 
 		TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
-		certificateSource.setDssKeyStore(keyStoreCertificateSource);
 
 		TSLRepository tslRepository = new TSLRepository();
 		tslRepository.setTrustedListsCertificateSource(certificateSource);
