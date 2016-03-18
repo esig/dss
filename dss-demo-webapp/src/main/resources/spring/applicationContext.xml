@@ -53,6 +53,12 @@
 		<property name="allowIndeterminateSignatures" value="false" />
 		<property name="trustedListsCertificateSource" ref="trustedListSource" />
 	</bean>
+	
+    <bean id="dssKeyStore" class="eu.europa.esig.dss.web.DSSKeyStoreFactoryBean">
+	    <property name="keyStoreType" value="${dss.keystore.type}" />
+	    <property name="keyStoreFilename" value="${dss.keystore.filename}" />
+	    <property name="keyStorePassword" value="${dss.keystore.password}" />
+	</bean>
 
 	<bean id="tslValidationJob" class="eu.europa.esig.dss.tsl.service.TSLValidationJob">
 		<property name="dataLoader" ref="dataLoader" />

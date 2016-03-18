@@ -45,9 +45,7 @@
 		<property name="dataLoader" ref="ocspDataLoader"/>
 	</bean>
 
-	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.TrustedListsCertificateSource">
-		<property name="dssKeyStore" ref="dssKeyStore" />
-	</bean>
+	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.TrustedListsCertificateSource" />
 
 	<bean id="tspSource" class="eu.europa.esig.dss.client.tsp.OnlineTSPSource">
 		<property name="tspServer" value="http://tsa.belgium.be/connect"/>
