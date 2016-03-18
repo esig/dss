@@ -76,8 +76,8 @@ public class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
 
-		//Set the Timestamp source
-		String tspServer = "http://services.globaltrustfinder.com/adss/tsa";
+		// Set the Timestamp source
+		String tspServer = "http://tsa.belgium.be/connect";
 		OnlineTSPSource onlineTSPSource = new OnlineTSPSource(tspServer);
 		service.setTspSource(onlineTSPSource);
 
