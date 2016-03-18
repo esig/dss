@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,7 +59,8 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.signature.visible.ImageFactory;
+import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
+import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.DSSPDFUtils;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -77,7 +77,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	private static final Logger logger = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
 	@Override
-	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException {
+	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
+			throws DSSException {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 		File toSignFile = null;
@@ -93,14 +94,15 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
 			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
 
-			final byte[] digestValue = signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature, digestAlgorithm);
+			final byte[] digestValue = signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature,
+					digestAlgorithm);
 			return digestValue;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
+			IOUtils.closeQuietly(pdDocument);
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
-			IOUtils.closeQuietly(pdDocument);
 		}
 	}
 
@@ -132,14 +134,15 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} finally {
 			IOUtils.closeQuietly(fileInputStream);
 			IOUtils.closeQuietly(finalFileInputStream);
+			IOUtils.closeQuietly(pdDocument);
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
-			IOUtils.closeQuietly(pdDocument);
 		}
 	}
 
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final File signedFile,
-			final FileOutputStream fileOutputStream, final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm) throws DSSException {
+			final FileOutputStream fileOutputStream, final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm)
+			throws DSSException {
 
 		try {
 
@@ -182,9 +185,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	private void fillImageParameters(final PDDocument doc, final SignatureImageParameters imgParams, SignatureOptions options) throws IOException {
-		Dimension optimalSize = ImageFactory.getOptimalSize(imgParams);
-		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, ImageFactory.create(imgParams), imgParams.getPage());
-		visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis()).width((float) optimalSize.getWidth()).height((float) optimalSize.getHeight());
+
+		// DSS-747. Using the DPI resolution to convert java size to dot
+		ImageAndResolution ires = ImageUtils.create(imgParams);
+
+		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, ires.getInputStream(), imgParams.getPage());
+		visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis());
+
+		visibleSig.width(ires.toXPoint(visibleSig.getWidth())).height(ires.toYPoint(visibleSig.getHeight()));
 
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 		signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
@@ -197,21 +205,21 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 		final PDSignature signature = new PDSignature();
 		signature.setType(getType());
-//		signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
+		// signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
 		Date date = parameters.bLevel().getSigningDate();
 		String encodedDate = " " + Hex.encodeHexString(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
 		CertificateToken token = parameters.getSigningCertificate();
-		if(token == null) {
+		if (token == null) {
 			signature.setName("Unknown signer" + encodedDate);
 		} else {
-			if(parameters.getSigningCertificate().getSubjectShortName() != null) {
+			if (parameters.getSigningCertificate().getSubjectShortName() != null) {
 				String shortName = parameters.getSigningCertificate().getSubjectShortName() + encodedDate;
 				signature.setName(shortName);
 			} else {
 				signature.setName("Unknown signer" + encodedDate);
 			}
 		}
-		
+
 		signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE); // default filter
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(getSubFilter());
@@ -242,13 +250,15 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		return COSName.SIG;
 	}
 
-	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream, PDDocument pdDocument) throws DSSException {
+	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream, PDDocument pdDocument)
+			throws DSSException {
 
 		FileInputStream signedFileInputStream = null;
 		try {
 
 			signedFileInputStream = new FileInputStream(signedFile);
-			// the document needs to have an ID, if not a ID based on the current system time is used, and then the digest of the signed data is
+			// the document needs to have an ID, if not a ID based on the current system time is used, and then the
+			// digest of the signed data is
 			// different
 			if (pdDocument.getDocumentId() == null) {
 
@@ -339,7 +349,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				linkSignatures(signatures);
 
 				for (PdfSignatureOrDocTimestampInfo sig : signatures) {
-					logger.debug("Signature " + sig.uniqueId() + " found with byteRange " + Arrays.toString(sig.getSignatureByteRange()) + " ("	+ sig.getSubFilter() + ")");
+					logger.debug("Signature " + sig.uniqueId() + " found with byteRange " + Arrays.toString(sig.getSignatureByteRange()) + " ("
+							+ sig.getSubFilter() + ")");
 				}
 			}
 
@@ -354,7 +365,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	/**
-	 * This method links previous signatures to the new one. This is useful to get revision number and to know if a TSP is over the DSS dictionary
+	 * This method links previous signatures to the new one. This is useful to get revision number and to know if a TSP
+	 * is over the DSS dictionary
 	 */
 	private void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
 		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
@@ -367,7 +379,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			previousList.add(sig);
 		}
 	}
-
 
 	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
 		ByteArrayInputStream bais = null;
@@ -400,19 +411,19 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	@Override
 	public void addDssDictionary(InputStream inputStream, OutputStream outpuStream, ModelPdfDict dssDictionary) {
+		File toSignFile = null;
+		File signedFile = null;
 		FileInputStream fis = null;
 		PDDocument pdDocument = null;
 		try {
-
-			File toSignFile = DSSPDFUtils.getFileFromPdfData(inputStream);
-
+			toSignFile = DSSPDFUtils.getFileFromPdfData(inputStream);
 			pdDocument = PDDocument.load(toSignFile);
 
-			File signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
+			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
 
 			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
 
-			if (dssDictionary !=null){
+			if (dssDictionary != null) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSDictionary();
 				PdfBoxDict value = new PdfBoxDict(dssDictionary);
 				cosDictionary.setItem("DSS", value.getWrapped());
@@ -431,6 +442,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} finally {
 			IOUtils.closeQuietly(pdDocument);
 			IOUtils.closeQuietly(fis);
+			DSSUtils.delete(toSignFile);
+			DSSUtils.delete(signedFile);
 		}
 	}
 

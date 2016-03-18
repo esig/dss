@@ -83,7 +83,7 @@ public class PAdESVisibleSignatureTest {
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
-		imageParameters.setTextParameters(textParameters );
+		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
@@ -111,7 +111,7 @@ public class PAdESVisibleSignatureTest {
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setFont(new Font("Arial", Font.BOLD, 15));
 		textParameters.setSignerNamePosition(SignerPosition.TOP);
-		imageParameters.setTextParameters(textParameters );
+		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
@@ -127,7 +127,7 @@ public class PAdESVisibleSignatureTest {
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setSignerNamePosition(SignerPosition.LEFT);
-		imageParameters.setTextParameters(textParameters );
+		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
@@ -138,7 +138,7 @@ public class PAdESVisibleSignatureTest {
 		SignatureValue signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		// signedDocument.save("test.pdf");
+		// signedDocument.save("target/test.pdf");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
