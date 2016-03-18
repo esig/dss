@@ -83,7 +83,8 @@ public class OnlineOCSPSource implements OCSPSource {
 	private DataLoader dataLoader;
 
 	/**
-	 * Create an OCSP source The default constructor for OnlineOCSPSource. The default {@code OCSPDataLoader} is set. It is possible to change it with {@code
+	 * Create an OCSP source The default constructor for OnlineOCSPSource. The default {@code OCSPDataLoader} is set. It
+	 * is possible to change it with {@code
 	 * #setDataLoader}.
 	 */
 	public OnlineOCSPSource() {
@@ -93,7 +94,8 @@ public class OnlineOCSPSource implements OCSPSource {
 	/**
 	 * Set the DataLoader to use for querying the OCSP server.
 	 *
-	 * @param dataLoader the component that allows to retrieve the OCSP response using HTTP.
+	 * @param dataLoader
+	 *            the component that allows to retrieve the OCSP response using HTTP.
 	 */
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
@@ -102,7 +104,8 @@ public class OnlineOCSPSource implements OCSPSource {
 	/**
 	 * Set the NonceSource to use for querying the OCSP server.
 	 *
-	 * @param nonceSource the component that prevents the replay attack.
+	 * @param nonceSource
+	 *            the component that prevents the replay attack.
 	 */
 	public void setNonceSource(NonceSource nonceSource) {
 		this.nonceSource = nonceSource;
@@ -138,12 +141,13 @@ public class OnlineOCSPSource implements OCSPSource {
 
 			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 
-			if (nonceSource !=null) {
+			if (nonceSource != null) {
 				Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
 				DEROctetString derReceivedNonce = (DEROctetString) extension.getExtnValue();
 				BigInteger receivedNonce = new BigInteger(derReceivedNonce.getOctets());
 				if (!receivedNonce.equals(nonceSource.getNonce())) {
-					throw new DSSException("The OCSP request for " + dssIdAsString + " was the victim of replay attack: nonce [sent:" + nonceSource.getNonce() + ", received:" + receivedNonce + "]");
+					throw new DSSException("The OCSP request for " + dssIdAsString + " was the victim of replay attack: nonce [sent:" + nonceSource.getNonce()
+							+ ", received:" + receivedNonce + "]");
 				}
 			}
 
@@ -186,9 +190,10 @@ public class OnlineOCSPSource implements OCSPSource {
 
 			/*
 			 * The nonce extension is used to bind a request to a response to prevent replay attacks.
+			 * RFC 6960 (OCSP) section 4.1.2 such extensions SHOULD NOT be flagged as critical
 			 */
-			if (nonceSource !=null) {
-				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, true, new DEROctetString(nonceSource.getNonce().toByteArray()));
+			if (nonceSource != null) {
+				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false, new DEROctetString(nonceSource.getNonce().toByteArray()));
 				Extensions extensions = new Extensions(extension);
 				ocspReqBuilder.setRequestExtensions(extensions);
 			}
@@ -206,7 +211,8 @@ public class OnlineOCSPSource implements OCSPSource {
 	/**
 	 * Gives back the OCSP URI meta-data found within the given X509 cert.
 	 *
-	 * @param certificate the X509 cert.
+	 * @param certificate
+	 *            the X509 cert.
 	 * @return the OCSP URI, or <code>null</code> if the extension is not present.
 	 * @throws DSSException
 	 */
