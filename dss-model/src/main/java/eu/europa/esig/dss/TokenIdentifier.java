@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 
 import javax.xml.bind.DatatypeConverter;
@@ -29,7 +30,7 @@ import eu.europa.esig.dss.x509.Token;
 /**
  * This class is used to obtain a unique id for Token
  */
-public final class TokenIdentifier {
+public final class TokenIdentifier implements Serializable {
 
 	private Digest tokenDigest;
 
