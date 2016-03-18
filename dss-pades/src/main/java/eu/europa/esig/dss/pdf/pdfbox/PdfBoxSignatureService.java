@@ -189,16 +189,20 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		// DSS-747. Using the DPI resolution to convert java size to dot
 		ImageAndResolution ires = ImageUtils.create(imgParams);
 
-		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, ires.getInputStream(), imgParams.getPage());
-		visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis());
+		InputStream is = ires.getInputStream();
+		try {
+			PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, is, imgParams.getPage());
+			visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis());
+			visibleSig.width(ires.toXPoint(visibleSig.getWidth())).height(ires.toYPoint(visibleSig.getHeight()));
 
-		visibleSig.width(ires.toXPoint(visibleSig.getWidth())).height(ires.toYPoint(visibleSig.getHeight()));
+			PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
+			signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
 
-		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
-		signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
-
-		options.setVisualSignature(signatureProperties);
-		options.setPage(imgParams.getPage());
+			options.setVisualSignature(signatureProperties);
+			options.setPage(imgParams.getPage());
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
 	}
 
 	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters) {
