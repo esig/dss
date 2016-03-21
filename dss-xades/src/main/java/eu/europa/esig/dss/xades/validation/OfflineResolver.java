@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
@@ -70,20 +71,19 @@ public class OfflineResolver extends ResourceResolverSpi {
 			return false;
 		}
 		try {
-
 			if (isKnown(documentUri) != null) {
-
 				LOG.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
 				return true;
 			}
-			final URI baseUri = new URI(baseUriString);
-			URI uriNew = new URI(baseUri, documentUri);
-			if (uriNew.getScheme().equals("http")) {
-
-				LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
-				return true;
+			if (StringUtils.isNotEmpty(baseUriString)) {
+				final URI baseUri = new URI(baseUriString);
+				URI uriNew = new URI(baseUri, documentUri);
+				if (uriNew.getScheme().equals("http")) {
+					LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
+					return true;
+				}
+				LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
 			}
-			LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
 		} catch (URI.MalformedURIException ex) {
 			if (documents == null || documents.size() == 0) {
 				LOG.warn("OfflineResolver: WARNING: ", ex);
