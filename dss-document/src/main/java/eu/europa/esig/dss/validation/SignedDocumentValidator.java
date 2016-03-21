@@ -1065,7 +1065,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final Boolean revocationTokenStatus = revocationToken.getStatus();
 			// revocationTokenStatus can be null when OCSP return Unknown. In this case we set status to false.
 			xmlRevocation.setStatus(revocationTokenStatus == null ? false : revocationTokenStatus);
-			xmlRevocation.setAvailable(revocationToken.isAvailable());
 			xmlRevocation.setProductionDate(revocationToken.getProductionDate());
 			xmlRevocation.setThisUpdate(revocationToken.getThisUpdate());
 			xmlRevocation.setNextUpdate(revocationToken.getNextUpdate());

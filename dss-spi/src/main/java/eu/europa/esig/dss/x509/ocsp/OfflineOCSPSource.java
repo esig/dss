@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.x509.ocsp;
 
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 
@@ -37,9 +36,7 @@ import eu.europa.esig.dss.x509.OCSPToken;
 /**
  * Abstract class that helps to implement an OCSPSource with an already loaded list of BasicOCSPResp
  *
- *
  */
-
 public abstract class OfflineOCSPSource implements OCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
@@ -52,8 +49,6 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
 			LOG.trace("--> OfflineOCSPSource queried for " + dssIdAsString + " contains: " + containedOCSPResponses.size() + " element(s).");
 		}
-		final X509Certificate x509Certificate = certificateToken.getCertificate();
-		final X509Certificate issuerX509Certificate = issuerCertificateToken.getCertificate();
 		/**
 		 * TODO: (Bob 2013.05.08) Does the OCSP responses always use SHA1?<br>
 		 * RFC 2560:<br>
@@ -69,7 +64,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		Date bestUpdate = null;
 		BasicOCSPResp bestBasicOCSPResp = null;
 		SingleResp bestSingleResp = null;
-		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(x509Certificate, issuerX509Certificate);
+		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
 		for (final BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
 
 			for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
