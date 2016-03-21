@@ -61,37 +61,36 @@ public class OfflineResolver extends ResourceResolverSpi {
 
 	@Override
 	public boolean engineCanResolveURI(final ResourceResolverContext context) {
-
 		final Attr uriAttr = context.attr;
-		final String baseUriString = context.baseUri;
-
-		String documentUri = uriAttr.getNodeValue();
-		documentUri = decodeUrl(documentUri);
-		if ("".equals(documentUri) || documentUri.startsWith("#")) {
-			return false;
-		}
-		try {
-			if (isKnown(documentUri) != null) {
-				LOG.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
-				return true;
+		if (uriAttr != null) {
+			String documentUri = uriAttr.getNodeValue();
+			documentUri = decodeUrl(documentUri);
+			if ("".equals(documentUri) || documentUri.startsWith("#")) {
+				return false;
 			}
-			if (StringUtils.isNotEmpty(baseUriString)) {
-				final URI baseUri = new URI(baseUriString);
-				URI uriNew = new URI(baseUri, documentUri);
-				if (uriNew.getScheme().equals("http")) {
-					LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
+			try {
+				if (isKnown(documentUri) != null) {
+					LOG.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
 					return true;
 				}
-				LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
+				final String baseUriString = context.baseUri;
+				if (StringUtils.isNotEmpty(baseUriString)) {
+					final URI baseUri = new URI(baseUriString);
+					URI uriNew = new URI(baseUri, documentUri);
+					if (uriNew.getScheme().equals("http")) {
+						LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
+						return true;
+					}
+					LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
+				}
+			} catch (URI.MalformedURIException ex) {
+				if (documents == null || documents.size() == 0) {
+					LOG.warn("OfflineResolver: WARNING: ", ex);
+				}
 			}
-		} catch (URI.MalformedURIException ex) {
-			if (documents == null || documents.size() == 0) {
-				LOG.warn("OfflineResolver: WARNING: ", ex);
+			if (doesContainOnlyOneDocument()) {
+				return true;
 			}
-		}
-		if (doesContainOnlyOneDocument()) {
-
-			return true;
 		}
 		return false;
 	}
