@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.client.ocsp;
+package eu.europa.esig.dss.x509.ocsp;
 
 import org.bouncycastle.cert.ocsp.OCSPResp;
 

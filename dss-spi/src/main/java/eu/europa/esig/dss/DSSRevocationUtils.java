@@ -50,9 +50,9 @@ import org.bouncycastle.util.Arrays;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Utility class used to convert OCSPResp to BasicOCSPResp

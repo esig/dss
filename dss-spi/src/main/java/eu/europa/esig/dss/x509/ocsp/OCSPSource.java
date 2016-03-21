@@ -23,7 +23,6 @@ package eu.europa.esig.dss.x509.ocsp;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 
 /**
  * The validation of a certificate may require the use of OCSP information. Theses information can be provided by multiple sources

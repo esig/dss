@@ -48,9 +48,9 @@ import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Contains XAdES-C profile aspects

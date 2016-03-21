@@ -13,7 +13,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 public class OnlineOCSPSourceTest {
 

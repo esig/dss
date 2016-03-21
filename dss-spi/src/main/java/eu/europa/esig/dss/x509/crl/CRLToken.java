@@ -52,11 +52,6 @@ public class CRLToken extends RevocationToken {
 	private final CRLValidity crlValidity;
 
 	/**
-	 * The Url which was used to obtain the CRL.
-	 */
-	private String sourceURL;
-
-	/**
 	 * The constructor to be used with the certificate which is managed by the
 	 * CRL and the {@code CRLValidity}.
 	 *
@@ -136,23 +131,6 @@ public class CRLToken extends RevocationToken {
 	 */
 	public X509CRL getX509crl() {
 		return crlValidity.getX509CRL();
-	}
-
-	@Override
-	public String getSourceURL() {
-		return sourceURL;
-	}
-
-	/**
-	 * This sets the revocation data source URL. It is only used in case of
-	 * {@code OnlineCRLSource}.
-	 *
-	 * @param sourceURL
-	 *            the URL which was used to retrieve this CRL
-	 */
-	public void setSourceURL(final String sourceURL) {
-
-		this.sourceURL = sourceURL;
 	}
 
 	@Override

@@ -26,6 +26,16 @@ import java.util.Date;
 public abstract class RevocationToken extends Token {
 
 	/**
+	 * The URL which was used to obtain the revocation data (online).
+	 */
+	protected String sourceURL;
+
+	/**
+	 * This boolean shows if the online resource is available
+	 */
+	protected boolean available;
+
+	/**
 	 * Contains the revocation status of the token. True if is not revoked, false if is revoked or null if unknown.
 	 */
 	protected Boolean status;
@@ -55,6 +65,29 @@ public abstract class RevocationToken extends Token {
 	 * The reason of the revocation.
 	 */
 	protected String reason;
+
+	public String getSourceURL() {
+		return sourceURL;
+	}
+
+	/**
+	 * This sets the revocation data source URL. It is only used in case of
+	 * {@code OnlineSource}.
+	 *
+	 * @param sourceURL
+	 *            the URL which was used to retrieve this CRL
+	 */
+	public void setSourceURL(final String sourceURL) {
+		this.sourceURL = sourceURL;
+	}
+
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
 
 	/**
 	 * @return
@@ -99,7 +132,5 @@ public abstract class RevocationToken extends Token {
 	 * @return {@code true} if the conditions are meet
 	 */
 	public abstract boolean isValid();
-
-	public abstract String getSourceURL();
 
 }

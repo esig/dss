@@ -34,12 +34,12 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.ocsp.ListOCSPSource;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {

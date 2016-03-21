@@ -56,8 +56,9 @@ import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Online OCSP repository. This implementation will contact the OCSP Responder to retrieve the OCSP response.
@@ -126,55 +127,41 @@ public class OnlineOCSPSource implements OCSPSource {
 				return null;
 			}
 
+			OCSPToken ocspToken = new OCSPToken();
+			ocspToken.setSourceURL(ocspAccessLocation);
+
 			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
 			final byte[] content = buildOCSPRequest(certId);
 
 			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
 			if (ArrayUtils.isEmpty(ocspRespBytes)) {
-				return null;
+				return ocspToken;
 			}
+			ocspToken.setAvailable(true);
 
 			final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
 
 			OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
+			ocspToken.setResponseStatus(status);
 			if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
 				final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
+				ocspToken.setBasicOCSPResp(basicOCSPResp);
 
 				if (nonceSource != null) {
-					Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
-					DEROctetString derReceivedNonce = (DEROctetString) extension.getExtnValue();
-					BigInteger receivedNonce = new BigInteger(derReceivedNonce.getOctets());
-					if (!receivedNonce.equals(nonceSource.getNonce())) {
-						throw new DSSException("The OCSP request for " + dssIdAsString + " was the victim of replay attack: nonce [sent:"
-								+ nonceSource.getNonce() + ", received:" + receivedNonce + "]");
-					}
+					ocspToken.setUseNonce(true);
+					ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp));
 				}
 
-				Date bestUpdate = null;
-				SingleResp bestSingleResp = null;
-				for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
-					if (DSSRevocationUtils.matches(certId, singleResp)) {
-						final Date thisUpdate = singleResp.getThisUpdate();
-						if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
-							bestSingleResp = singleResp;
-							bestUpdate = thisUpdate;
-						}
-					}
-				}
-
-				if (bestSingleResp != null) {
-					final OCSPToken ocspToken = new OCSPToken(basicOCSPResp, bestSingleResp);
-					ocspToken.setSourceURI(ocspAccessLocation);
-					certificateToken.setRevocationToken(ocspToken);
-					return ocspToken;
-				}
+				ocspToken.setBestSingleResp(getBestSingleResp(basicOCSPResp, certId));
 			}
+
+			certificateToken.setRevocationToken(ocspToken);
+			return ocspToken;
 		} catch (OCSPException e) {
 			throw new DSSException(e);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-		return null;
 	}
 
 	private byte[] buildOCSPRequest(final CertificateID certId) throws DSSException {
@@ -198,6 +185,28 @@ public class OnlineOCSPSource implements OCSPSource {
 		} catch (IOException e) {
 			throw new DSSException("Cannot build OCSP Request", e);
 		}
+	}
+
+	private boolean isNonceMatch(final BasicOCSPResp basicOCSPResp) {
+		Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+		DEROctetString derReceivedNonce = (DEROctetString) extension.getExtnValue();
+		BigInteger receivedNonce = new BigInteger(derReceivedNonce.getOctets());
+		return receivedNonce.equals(nonceSource.getNonce());
+	}
+
+	private SingleResp getBestSingleResp(final BasicOCSPResp basicOCSPResp, final CertificateID certId) {
+		Date bestUpdate = null;
+		SingleResp bestSingleResp = null;
+		for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
+			if (DSSRevocationUtils.matches(certId, singleResp)) {
+				final Date thisUpdate = singleResp.getThisUpdate();
+				if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
+					bestSingleResp = singleResp;
+					bestUpdate = thisUpdate;
+				}
+			}
+		}
+		return bestSingleResp;
 	}
 
 	/**

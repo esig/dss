@@ -1071,7 +1071,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlRevocation.setRevocationDate(revocationToken.getRevocationDate());
 			xmlRevocation.setReason(revocationToken.getReason());
 			xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
-			xmlRevocation.setSourceAddress(revocationToken.getSourceURL());
+
+			String sourceURL = revocationToken.getSourceURL();
+			if (StringUtils.isNotEmpty(sourceURL)) { // not empty = online
+				xmlRevocation.setSourceAddress(sourceURL);
+				xmlRevocation.setAvailable(revocationToken.isAvailable());
+			}
 
 			// In case of CRL, the X509CRL can be the same for different certificates
 			byte[] digestForId = DSSUtils.digest(DigestAlgorithm.SHA256, certToken.getEncoded(), revocationToken.getEncoded());
