@@ -67,12 +67,14 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 
 	@Override
 	public boolean engineCanResolveURI(final ResourceResolverContext context) {
-
+		boolean xPointerQuery = false;
+		String uri = "?";
 		final Attr uriAttr = context.attr;
-		final String uri = uriAttr.getNodeValue();
-		final boolean xPointerQuery = isXPointerQuery(uri, false);
+		if (uriAttr != null) {
+			uri = uriAttr.getNodeValue();
+			xPointerQuery = isXPointerQuery(uri, false);
+		}
 		if (LOG.isDebugEnabled()) {
-
 			LOG.debug("I state that I " + (xPointerQuery ? "can" : "cannot") + " resolve Uri/Base Uri:'" + uri + "/" + context.baseUri + "'");
 		}
 		return xPointerQuery;
