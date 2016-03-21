@@ -1,18 +1,18 @@
-<configuration debug="true">
+<configuration>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-			</pattern>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
 	
-	<logger name="eu.europa.esig.dss" level="TRACE" />
+	<logger name="eu.europa.esig.dss" level="DEBUG" />
 	<logger name="org.apache.pdfbox" level="ERROR" />
 	<logger name="org.apache.xmlgraphics" level="INFO" />
 	<logger name="org.apache.xml.security" level="INFO" />
+	<logger name="org.apache.http" level="INFO" />
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>

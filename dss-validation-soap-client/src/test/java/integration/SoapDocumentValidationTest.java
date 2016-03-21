@@ -1,12 +1,15 @@
 package integration;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +40,16 @@ public class SoapDocumentValidationTest {
 
 		ReportsDTO result = validationService.validateSignature(toValidate);
 
-		Assert.assertNotNull(result.getDiagnosticData());
-		Assert.assertNotNull(result.getDetailedReport());
-		Assert.assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getDiagnosticData());
+		assertNotNull(result.getDetailedReport());
+		assertNotNull(result.getSimpleReport());
 
-		Assert.assertEquals(1, result.getSimpleReport().getSignature().size());
-		Assert.assertEquals(2, result.getDiagnosticData().getSignature().get(0).getTimestamps().getTimestamp().size());
-		Assert.assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.VALID));
+		assertEquals(1, result.getSimpleReport().getSignature().size());
+		assertEquals(2, result.getDiagnosticData().getSignature().get(0).getTimestamps().getTimestamp().size());
+		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.VALID));
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
-		reports.print();
+		assertNotNull(reports);
 	}
 
 	@Test
@@ -58,15 +61,15 @@ public class SoapDocumentValidationTest {
 
 		ReportsDTO result = validationService.validateSignature(toValidate);
 
-		Assert.assertNotNull(result.getDiagnosticData());
-		Assert.assertNotNull(result.getDetailedReport());
-		Assert.assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getDiagnosticData());
+		assertNotNull(result.getDetailedReport());
+		assertNotNull(result.getSimpleReport());
 
-		Assert.assertEquals(1, result.getSimpleReport().getSignature().size());
-		Assert.assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INDETERMINATE));
+		assertEquals(1, result.getSimpleReport().getSignature().size());
+		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INDETERMINATE));
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
-		reports.print();
+		assertNotNull(reports);
 	}
 
 	@Test
@@ -83,15 +86,15 @@ public class SoapDocumentValidationTest {
 
 		ReportsDTO result = validationService.validateSignature(toValidate);
 
-		Assert.assertNotNull(result.getDiagnosticData());
-		Assert.assertNotNull(result.getDetailedReport());
-		Assert.assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getDiagnosticData());
+		assertNotNull(result.getDetailedReport());
+		assertNotNull(result.getSimpleReport());
 
-		Assert.assertEquals(1, result.getSimpleReport().getSignature().size());
-		Assert.assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INVALID));
+		assertEquals(1, result.getSimpleReport().getSignature().size());
+		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INVALID));
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
-		reports.print();
+		assertNotNull(reports);
 	}
 
 	@Test
@@ -107,15 +110,15 @@ public class SoapDocumentValidationTest {
 
 		ReportsDTO result = validationService.validateSignature(toValidate);
 
-		Assert.assertNotNull(result.getDiagnosticData());
-		Assert.assertNotNull(result.getDetailedReport());
-		Assert.assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getDiagnosticData());
+		assertNotNull(result.getDetailedReport());
+		assertNotNull(result.getSimpleReport());
 
-		Assert.assertEquals(1, result.getSimpleReport().getSignature().size());
-		Assert.assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INDETERMINATE));
+		assertEquals(1, result.getSimpleReport().getSignature().size());
+		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INDETERMINATE));
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
-		reports.print();
+		assertNotNull(reports);
 	}
 
 }

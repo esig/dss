@@ -60,7 +60,7 @@ public class ETSISamplesValidationTest {
 		DetailedReport detailedReport = validateDocument.getDetailedReport();
 		assertNotNull(detailedReport);
 
-		validateDocument.print();
+		// validateDocument.print();
 	}
 
 }

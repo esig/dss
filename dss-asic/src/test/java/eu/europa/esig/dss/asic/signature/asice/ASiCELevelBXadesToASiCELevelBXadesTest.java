@@ -69,7 +69,7 @@ public class ASiCELevelBXadesToASiCELevelBXadesTest {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		for (String id : diagnosticData.getSignatureIdList()) {
