@@ -144,6 +144,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			final FileOutputStream fileOutputStream, final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm)
 			throws DSSException {
 
+		SignatureOptions options = new SignatureOptions();
 		try {
 
 			final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
@@ -162,9 +163,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				}
 			};
 
-			SignatureOptions options = new SignatureOptions();
 			options.setPreferedSignatureSize(parameters.getSignatureSize());
-
 			if (parameters.getImageParameters() != null) {
 				fillImageParameters(pdDocument, parameters.getImageParameters(), options);
 			}
@@ -181,6 +180,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			throw new DSSException(e);
 		} catch (SignatureException e) {
 			throw new DSSException(e);
+		} finally {
+			IOUtils.closeQuietly(options.getVisualSignature());
 		}
 	}
 
