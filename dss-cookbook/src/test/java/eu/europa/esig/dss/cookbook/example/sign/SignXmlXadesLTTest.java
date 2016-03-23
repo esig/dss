@@ -108,7 +108,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 		commonCertificateVerifier.setCrlSource(onlineCRLSource);
 
 		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
-		onlineCRLSource.setDataLoader(commonsHttpDataLoader);
+		onlineOCSPSource.setDataLoader(commonsHttpDataLoader);
 		commonCertificateVerifier.setOcspSource(onlineOCSPSource);
 
 		// Create XAdES service for signature
