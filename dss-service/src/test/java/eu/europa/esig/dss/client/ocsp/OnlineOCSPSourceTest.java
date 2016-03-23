@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.client.ocsp;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 
@@ -10,9 +12,8 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
-import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 public class OnlineOCSPSourceTest {
 
@@ -23,6 +24,13 @@ public class OnlineOCSPSourceTest {
 	public void init() {
 		certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		rootToken = DSSUtils.loadCertificate(new File("src/test/resources/LTQCACA.crt"));
+	}
+
+	@Test
+	public void getAccessLocation() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		assertNull(ocspSource.getAccessLocation(rootToken));
+		assertEquals("http://ocsp.luxtrust.lu", ocspSource.getAccessLocation(certificateToken));
 	}
 
 	@Test
@@ -41,4 +49,5 @@ public class OnlineOCSPSourceTest {
 		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 	}
+
 }

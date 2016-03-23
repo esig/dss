@@ -1065,14 +1065,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final Boolean revocationTokenStatus = revocationToken.getStatus();
 			// revocationTokenStatus can be null when OCSP return Unknown. In this case we set status to false.
 			xmlRevocation.setStatus(revocationTokenStatus == null ? false : revocationTokenStatus);
-			xmlRevocation.setAvailable(revocationToken.isAvailable());
 			xmlRevocation.setProductionDate(revocationToken.getProductionDate());
 			xmlRevocation.setThisUpdate(revocationToken.getThisUpdate());
 			xmlRevocation.setNextUpdate(revocationToken.getNextUpdate());
 			xmlRevocation.setRevocationDate(revocationToken.getRevocationDate());
 			xmlRevocation.setReason(revocationToken.getReason());
 			xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
-			xmlRevocation.setSourceAddress(revocationToken.getSourceURL());
+
+			String sourceURL = revocationToken.getSourceURL();
+			if (StringUtils.isNotEmpty(sourceURL)) { // not empty = online
+				xmlRevocation.setSourceAddress(sourceURL);
+				xmlRevocation.setAvailable(revocationToken.isAvailable());
+			}
 
 			// In case of CRL, the X509CRL can be the same for different certificates
 			byte[] digestForId = DSSUtils.digest(DigestAlgorithm.SHA256, certToken.getEncoded(), revocationToken.getEncoded());

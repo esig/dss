@@ -23,7 +23,6 @@ package eu.europa.esig.dss;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
@@ -51,9 +50,9 @@ import org.bouncycastle.util.Arrays;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Utility class used to convert OCSPResp to BasicOCSPResp
@@ -199,17 +198,17 @@ public final class DSSRevocationUtils {
 	 * issuer's certificate.
 	 *
 	 * @param cert
-	 *            {@code X509Certificate} for which the id is created
+	 *            {@code CertificateToken} for which the id is created
 	 * @param issuerCert
-	 *            {@code X509Certificate} issuer certificate of the {@code cert}
+	 *            {@code CertificateToken} issuer certificate of the {@code cert}
 	 * @return {@code CertificateID}
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	public static CertificateID getOCSPCertificateID(final X509Certificate cert, final X509Certificate issuerCert) throws DSSException {
+	public static CertificateID getOCSPCertificateID(final CertificateToken cert, final CertificateToken issuerCert) throws DSSException {
 		try {
 			final BigInteger serialNumber = cert.getSerialNumber();
 			final DigestCalculator digestCalculator = getSHA1DigestCalculator();
-			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(new CertificateToken(issuerCert));
+			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(issuerCert);
 			final CertificateID certificateID = new CertificateID(digestCalculator, x509CertificateHolder, serialNumber);
 			return certificateID;
 		} catch (OCSPException e) {
@@ -230,7 +229,8 @@ public final class DSSRevocationUtils {
 	/**
 	 * This method loads an OCSP response from the given base 64 encoded string.
 	 *
-	 * @param base64Encoded base 64 encoded OCSP response
+	 * @param base64Encoded
+	 *            base 64 encoded OCSP response
 	 * @return {@code BasicOCSPResp}
 	 * @throws IOException
 	 * @throws OCSPException
