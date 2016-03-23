@@ -1452,9 +1452,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final List<String> xmlIdentifiers = xmlCommitmentTypeIndication.getIdentifier();
 
 			final List<String> identifiers = commitmentTypeIndication.getIdentifiers();
-			for (final String identifier : identifiers) {
-
-				xmlIdentifiers.add(identifier);
+			if (CollectionUtils.isNotEmpty(identifiers)) {
+				for (final String identifier : identifiers) {
+					xmlIdentifiers.add(identifier);
+				}
 			}
 			xmlSignature.setCommitmentTypeIndication(xmlCommitmentTypeIndication);
 		}

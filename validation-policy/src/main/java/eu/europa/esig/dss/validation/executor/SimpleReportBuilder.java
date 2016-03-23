@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.DSSException;
@@ -33,6 +34,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
@@ -261,12 +263,15 @@ public class SimpleReportBuilder {
 	}
 
 	private void addSignatureScope(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
-		for (XmlSignatureScopeType scopeType : diagnosticSignature.getSignatureScopes().getSignatureScope()) {
-			XmlSignatureScope scope = new XmlSignatureScope();
-			scope.setName(scopeType.getName());
-			scope.setScope(scopeType.getScope());
-			scope.setValue(scopeType.getValue());
-			xmlSignature.getSignatureScope().add(scope);
+		XmlSignatureScopes signatureScopes = diagnosticSignature.getSignatureScopes();
+		if (signatureScopes != null && CollectionUtils.isNotEmpty(signatureScopes.getSignatureScope())) {
+			for (XmlSignatureScopeType scopeType : signatureScopes.getSignatureScope()) {
+				XmlSignatureScope scope = new XmlSignatureScope();
+				scope.setName(scopeType.getName());
+				scope.setScope(scopeType.getScope());
+				scope.setValue(scopeType.getValue());
+				xmlSignature.getSignatureScope().add(scope);
+			}
 		}
 	}
 
