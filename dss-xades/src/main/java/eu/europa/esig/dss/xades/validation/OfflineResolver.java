@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.xades.validation;
 
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -64,7 +62,6 @@ public class OfflineResolver extends ResourceResolverSpi {
 		final Attr uriAttr = context.attr;
 		if (uriAttr != null) {
 			String documentUri = uriAttr.getNodeValue();
-			documentUri = decodeUrl(documentUri);
 			if ("".equals(documentUri) || documentUri.startsWith("#")) {
 				return false;
 			}
@@ -95,22 +92,12 @@ public class OfflineResolver extends ResourceResolverSpi {
 		return false;
 	}
 
-	private String decodeUrl(String documentUri) {
-		try {
-			return URLDecoder.decode(documentUri, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			LOG.error(e.getMessage(), e);
-		}
-		return documentUri;
-	}
-
 	@Override
 	public XMLSignatureInput engineResolveURI(ResourceResolverContext context) throws ResourceResolverException {
 
 		final Attr uriAttr = context.attr;
 		final String baseUriString = context.baseUri;
 		String documentUri = uriAttr.getNodeValue();
-		documentUri = decodeUrl(documentUri);
 		final DSSDocument document = getDocument(documentUri);
 		if (document != null) {
 

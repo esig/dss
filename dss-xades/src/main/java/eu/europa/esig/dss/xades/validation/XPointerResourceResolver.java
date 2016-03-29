@@ -75,7 +75,7 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 			xPointerQuery = isXPointerQuery(uri, false);
 		}
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("I state that I " + (xPointerQuery ? "can" : "cannot") + " resolve Uri/Base Uri:'" + uri + "/" + context.baseUri + "'");
+			LOG.debug("I state that I " + (xPointerQuery ? "can" : "cannot") + " resolve Uri/Base Uri:'" + uri + "'/'" + context.baseUri + "'");
 		}
 		return xPointerQuery;
 	}
