@@ -157,22 +157,22 @@ public final class RuleUtils {
 		return found;
 	}
 
-	public static int convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, int value) {
+	public static long convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, int value) {
 		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
 		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
 		Long convert = to.convert(value, from);
 		if (convert == 0) {
-			return Integer.MAX_VALUE;
+			return Long.MAX_VALUE;
 		} else {
-			return convert.intValue();
+			return convert.longValue();
 		}
 	}
 
-	public static int convertDuration(TimeConstraint timeConstraint) {
+	public static long convertDuration(TimeConstraint timeConstraint) {
 		if (timeConstraint != null) {
 			return convertDuration(timeConstraint.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, timeConstraint.getValue());
 		}
-		return Integer.MAX_VALUE;
+		return Long.MAX_VALUE;
 	}
 
 }

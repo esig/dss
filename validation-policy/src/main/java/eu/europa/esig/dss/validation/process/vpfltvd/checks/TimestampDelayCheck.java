@@ -2,8 +2,6 @@ package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import java.util.Date;
 
-import org.apache.commons.lang.time.DateUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
@@ -34,8 +32,13 @@ public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermD
 		if (signingTime == null) {
 			return false;
 		}
-		int timestampDelay = RuleUtils.convertDuration(timeConstraint);
-		Date limit = DateUtils.addMilliseconds(signingTime, timestampDelay);
+		long delayMilliseconds = RuleUtils.convertDuration(timeConstraint);
+		Date limit;
+		if (delayMilliseconds == Long.MAX_VALUE) {
+			limit = new Date(Long.MAX_VALUE);
+		} else {
+			limit = new Date((signingTime.getTime() + delayMilliseconds));
+		}
 		return limit.after(bestSignatureTime);
 	}
 
