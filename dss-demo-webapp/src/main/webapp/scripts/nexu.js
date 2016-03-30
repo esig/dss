@@ -32,8 +32,8 @@ function callUrl(url, type, data, success_callback, error_callback) {
 			  console.log(url + " : OK");
 			  success_callback.call(this, result);
 		  }
-		}).fail(function (error) {
-			console.log(url + " : KO");
+		}).fail(function (error, textStatus ) {
+			console.log(url + " : KO " + textStatus);
 			eval(error);
 			error_callback.call(this, error);
 		});

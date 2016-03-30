@@ -99,6 +99,9 @@ public class NexuController {
 		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
 
 		ToBeSigned dataToSign = signingService.getDataToSign(signatureDocumentForm);
+		if (dataToSign == null) {
+			return null;
+		}
 
 		GetDataToSignResponse responseJson = new GetDataToSignResponse();
 		responseJson.setDataToSign(DatatypeConverter.printBase64Binary(dataToSign.getBytes()));
@@ -125,19 +128,16 @@ public class NexuController {
 	public String downloadSignedFile(@ModelAttribute("signedDocument") InMemoryDocument signedDocument, HttpServletResponse response) {
 		try {
 			MimeType mimeType = signedDocument.getMimeType();
-			String extension = null;
 			if (mimeType != null) {
 				response.setContentType(mimeType.getMimeTypeString());
-				extension = MimeType.getExtension(mimeType);
 			}
 			response.setHeader("Content-Transfer-Encoding", "binary");
-			response.setHeader("Content-Disposition", "attachment; filename=" + signedDocument.getName() + (extension != null ? "." + extension : ""));
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + signedDocument.getName() + "\"");
 			IOUtils.copy(new ByteArrayInputStream(signedDocument.getBytes()), response.getOutputStream());
 
 		} catch (Exception e) {
 			logger.error("An error occured while pushing file in response : " + e.getMessage(), e);
 		}
-
 		return null;
 	}
 

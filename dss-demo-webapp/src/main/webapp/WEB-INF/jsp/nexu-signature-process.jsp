@@ -10,7 +10,9 @@
 		<span id="bar-text"></span>
 		</div>
 </div>
-<div id="error" style="display:none" class="alert alert-danger" role="danger"><strong id="errorText">Oops... an error occurred </strong><span id="errorcontent"></span></div>
+<div id="error" style="display:none" class="alert alert-danger" role="danger">
+	<strong id="errorText">Oops... an error occurred </strong><span id="errorcontent"></span>
+</div>
 
 <%-- <script src="${pageContext.request.contextPath}/js/nexu-deploy.js" type="text/javascript"></script> --%>
 
@@ -49,9 +51,16 @@
 	}
 	
 	function sign(dataToSignResponse) {
-		updateProgressBar("Signing the digest...", "50%");
-		var digestAlgo = "${signatureDocumentForm.digestAlgorithm.name}";
-		nexu_sign_with_token_infos(tokenId, keyId, dataToSignResponse.dataToSign, digestAlgo, signDocument, error);
+		if (dataToSignResponse == null) {
+			$('#bar').removeClass('progress-bar-success active').addClass('progress-bar-danger');
+			$('#bar-text').html("Error");
+			$("#errorcontent").text("unable to compute the data to sign (see server logs)");
+			$("#error").show();
+		} else {
+			updateProgressBar("Signing the digest...", "50%");
+			var digestAlgo = "${signatureDocumentForm.digestAlgorithm.name}";
+			nexu_sign_with_token_infos(tokenId, keyId, dataToSignResponse.dataToSign, digestAlgo, signDocument, error);
+		}
 	}
 	
 	function signDocument(signatureData) {
