@@ -32,10 +32,8 @@ import org.bouncycastle.util.encoders.Base64;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
@@ -85,7 +83,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 
-		List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override
@@ -111,13 +109,13 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			throw new NullPointerException("signatureId");
 		}
 		List<AdvancedSignature> signatures = getSignatures();
-		for(AdvancedSignature signature : signatures) {
+		for (AdvancedSignature signature : signatures) {
 			PAdESSignature padesSignature = (PAdESSignature) signature;
-			if(padesSignature.getId().equals(signatureId)) {
+			if (padesSignature.getId().equals(signatureId)) {
 				CAdESSignature cadesSignature = padesSignature.getCAdESSignature();
 				DSSDocument inMemoryDocument = null;
 				DSSDocument firstDocument = null;
-				for(DSSDocument document : cadesSignature.getDetachedContents()) {
+				for (DSSDocument document : cadesSignature.getDetachedContents()) {
 					byte[] content;
 					try {
 						content = IOUtils.toByteArray(document.openStream());
@@ -125,25 +123,25 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 						throw new DSSException(e);
 					}
 					content = isBase64Encoded(content) ? Base64.decode(content) : content;
-					if(firstDocument == null) {
+					if (firstDocument == null) {
 						firstDocument = new InMemoryDocument(content);
 						inMemoryDocument = firstDocument;
 					} else {
 						DSSDocument doc = new InMemoryDocument(content);
 						inMemoryDocument.setNextDocument(document);
 						inMemoryDocument = document;
-					}					
+					}
 				}
 				return firstDocument;
 			}
 		}
 		throw new DSSException("The signature with the given id was not found!");
 	}
-	
+
 	private boolean isBase64Encoded(byte[] array) {
 		return isBase64Encoded(new String(array));
 	}
-	
+
 	private boolean isBase64Encoded(String text) {
 		Pattern pattern = Pattern.compile(BASE64_REGEX);
 		Matcher matcher = pattern.matcher(text);
