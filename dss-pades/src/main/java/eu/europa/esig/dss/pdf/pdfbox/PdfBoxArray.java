@@ -33,7 +33,7 @@ import eu.europa.esig.dss.pdf.PdfArray;
 
 class PdfBoxArray implements PdfArray {
 
-	COSArray wrapped;
+	private COSArray wrapped;
 
 	// Retain this reference ! PDDocument must not be garbage collected
 	@SuppressWarnings("unused")

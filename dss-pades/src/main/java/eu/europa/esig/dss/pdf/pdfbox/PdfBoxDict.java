@@ -38,9 +38,6 @@ import eu.europa.esig.dss.pdf.PdfDict;
 class PdfBoxDict implements PdfDict {
 
 	private COSDictionary wrapped;
-
-	// Retain this reference ! PDDocument must not be garbage collected
-	@SuppressWarnings("unused")
 	private PDDocument document;
 
 	public PdfBoxDict(COSDictionary wrapped, PDDocument document) {
@@ -113,10 +110,6 @@ class PdfBoxDict implements PdfDict {
 	@Override
 	public String toString() {
 		return wrapped.toString();
-	}
-
-	COSDictionary getWrapped() {
-		return wrapped;
 	}
 
 }
