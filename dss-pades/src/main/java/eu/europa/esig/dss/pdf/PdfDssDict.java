@@ -36,7 +36,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * This class is a representation of a DSS (Document Security Store) Dictionary embedded in a PDF file.
- * The dictionary is unique in a PDF file and can contain : VRI dictionary, certificates (Certs), OCSP responses (OCSPs) and CRLs.
+ * The dictionary is unique in a PDF file and can contain : VRI dictionary, certificates (Certs), OCSP responses (OCSPs)
+ * and CRLs.
  * This dictionary is filled in PAdES-BASELINE-LT extension process.
  */
 public class PdfDssDict {
@@ -59,7 +60,7 @@ public class PdfDssDict {
 
 	private Set<CertificateToken> certList = new HashSet<CertificateToken>();
 
-	public static PdfDssDict build(PdfDict documentDict) {
+	public static PdfDssDict extract(PdfDict documentDict) {
 		if (documentDict != null) {
 			final PdfDict dssCatalog = documentDict.getAsDict(DSS_DICTIONARY_NAME);
 			if (dssCatalog != null) {

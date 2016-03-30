@@ -33,17 +33,24 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.exceptions.SignatureException;
+import org.apache.pdfbox.io.RandomAccessBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
@@ -61,6 +68,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
 import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.DSSPDFUtils;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -68,9 +77,11 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;
-import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.Token;
+import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 class PdfBoxSignatureService implements PDFSignatureService {
 
@@ -315,7 +326,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				logger.debug("{} signature(s) found", pdSignatures.size());
 
 				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
-				PdfDssDict dssDictionary = PdfDssDict.build(catalog);
+				PdfDssDict dssDictionary = PdfDssDict.extract(catalog);
 
 				for (PDSignature signature : pdSignatures) {
 					String subFilter = signature.getSubFilter();
@@ -395,7 +406,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
 			if (CollectionUtils.isNotEmpty(pdSignatures)) {
 				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
-				dssDictionary = PdfDssDict.build(catalog);
+				dssDictionary = PdfDssDict.extract(catalog);
 			}
 		} catch (Exception e) {
 			logger.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
@@ -415,7 +426,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	@Override
-	public void addDssDictionary(InputStream inputStream, OutputStream outpuStream, ModelPdfDict dssDictionary) {
+	public void addDssDictionary(InputStream inputStream, OutputStream outpuStream, List<DSSDictionaryCallback> callbacks) {
 		File toSignFile = null;
 		File signedFile = null;
 		FileInputStream fis = null;
@@ -428,10 +439,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
 
-			if (dssDictionary != null) {
+			if (CollectionUtils.isNotEmpty(callbacks)) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSDictionary();
-				PdfBoxDict value = new PdfBoxDict(dssDictionary);
-				cosDictionary.setItem("DSS", value.getWrapped());
+				cosDictionary.setItem("DSS", buildDSSDictionary(callbacks));
 				cosDictionary.setNeedToBeUpdate(true);
 			}
 
@@ -450,6 +460,95 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
 		}
+	}
+
+	private COSDictionary buildDSSDictionary(List<DSSDictionaryCallback> callbacks) throws Exception {
+		COSDictionary dss = new COSDictionary();
+
+		Map<String, COSStream> streams = new HashMap<String, COSStream>();
+
+		Set<CRLToken> allCrls = new HashSet<CRLToken>();
+		Set<OCSPToken> allOcsps = new HashSet<OCSPToken>();
+		Set<CertificateToken> allCertificates = new HashSet<CertificateToken>();
+
+		COSDictionary vriDictionary = new COSDictionary();
+		for (DSSDictionaryCallback callback : callbacks) {
+			COSDictionary sigVriDictionary = new COSDictionary();
+			sigVriDictionary.setDirect(true);
+
+			if (CollectionUtils.isNotEmpty(callback.getCertificates())) {
+				COSArray vriCertArray = new COSArray();
+				for (CertificateToken token : callback.getCertificates()) {
+					vriCertArray.add(getStream(streams, token));
+					allCertificates.add(token);
+				}
+				sigVriDictionary.setItem("Cert", vriCertArray);
+			}
+
+			if (CollectionUtils.isNotEmpty(callback.getOcsps())) {
+				COSArray vriOcspArray = new COSArray();
+				for (OCSPToken token : callback.getOcsps()) {
+					vriOcspArray.add(getStream(streams, token));
+					allOcsps.add(token);
+				}
+				sigVriDictionary.setItem("OCSP", vriOcspArray);
+			}
+
+			if (CollectionUtils.isNotEmpty(callback.getCrls())) {
+				COSArray vriCrlArray = new COSArray();
+				for (CRLToken token : callback.getCrls()) {
+					vriCrlArray.add(getStream(streams, token));
+					allCrls.add(token);
+				}
+				sigVriDictionary.setItem("CRL", vriCrlArray);
+			}
+
+			PAdESSignature signature = callback.getSignature();
+			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, signature.getCAdESSignature().getCmsSignedData().getEncoded());
+			String hexHash = Hex.encodeHexString(digest).toUpperCase();
+
+			vriDictionary.setItem(hexHash, sigVriDictionary);
+		}
+		dss.setItem("VRI", vriDictionary);
+
+		if (CollectionUtils.isNotEmpty(allCertificates)) {
+			COSArray arrayAllCerts = new COSArray();
+			for (CertificateToken token : allCertificates) {
+				arrayAllCerts.add(getStream(streams, token));
+			}
+			dss.setItem("Certs", arrayAllCerts);
+		}
+
+		if (CollectionUtils.isNotEmpty(allOcsps)) {
+			COSArray arrayAllOcsps = new COSArray();
+			for (OCSPToken token : allOcsps) {
+				arrayAllOcsps.add(getStream(streams, token));
+			}
+			dss.setItem("OCSPs", arrayAllOcsps);
+		}
+
+		if (CollectionUtils.isNotEmpty(allCrls)) {
+			COSArray arrayAllCrls = new COSArray();
+			for (CRLToken token : allCrls) {
+				arrayAllCrls.add(getStream(streams, token));
+			}
+			dss.setItem("CRLs", arrayAllCrls);
+		}
+
+		return dss;
+	}
+
+	private COSStream getStream(Map<String, COSStream> streams, Token token) throws IOException {
+		COSStream stream = streams.get(token.getDSSIdAsString());
+		if (stream == null) {
+			RandomAccessBuffer storage = new RandomAccessBuffer();
+			stream = new COSStream(storage);
+			OutputStream unfilteredStream = stream.createUnfilteredStream();
+			unfilteredStream.write(token.getEncoded());
+			unfilteredStream.flush();
+			streams.put(token.getDSSIdAsString(), stream);
+		}
+		return stream;
 	}
 
 }
