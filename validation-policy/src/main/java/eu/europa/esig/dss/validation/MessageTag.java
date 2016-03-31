@@ -71,6 +71,9 @@ public enum MessageTag {
 
 	LTV_ABSV("Is the result of the Basic Validation Process acceptable?"),
 	LTV_ABSV_ANS("The result of the Basic validation process is not acceptable to continue the process!"),
+	
+	ARCH_LTVV("Is the result of the LTV validation process acceptable?"),
+	ARCH_LTVV_ANS("The result of the LTV validation process is not acceptable to continue the process!"),
 
 	ASCCM("Are signature cryptographic constraints met?"),
 	ASCCM_ANS_1("The encryption algorithm not authorised!"),

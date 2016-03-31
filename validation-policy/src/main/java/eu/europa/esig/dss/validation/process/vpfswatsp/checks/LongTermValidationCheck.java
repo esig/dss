@@ -36,12 +36,12 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ADEST_RORPIIC;
+		return MessageTag.ARCH_LTVV;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ADEST_RORPIIC_ANS;
+		return MessageTag.ARCH_LTVV_ANS;
 	}
 
 	@Override
