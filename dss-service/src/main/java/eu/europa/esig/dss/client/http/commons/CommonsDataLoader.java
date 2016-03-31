@@ -95,7 +95,9 @@ import eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager;
 /**
  * Implementation of DataLoader for any protocol.
  * <p/>
- * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without having to add the certificate to the JVM TrustStore. It takes into account a proxy management through {@code ProxyPreferenceManager}. The authentication is also supported.
+ * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without having to add the certificate to the JVM
+ * TrustStore. It takes into account a proxy management through {@code ProxyPreferenceManager}. The authentication is
+ * also supported.
  */
 public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
@@ -113,8 +115,10 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	protected String contentType;
 
-	// TODO: (Bob: 2014 Jan 28) It should be taken into account: Content-Transfer-Encoding if it is not the default value.
-	// TODO: (Bob: 2014 Jan 28) It is extracted from: https://joinup.ec.europa.eu/software/sd-dss/issue/dss-41-tsa-service-basic-auth
+	// TODO: (Bob: 2014 Jan 28) It should be taken into account: Content-Transfer-Encoding if it is not the default
+	// value.
+	// TODO: (Bob: 2014 Jan 28) It is extracted from:
+	// https://joinup.ec.europa.eu/software/sd-dss/issue/dss-41-tsa-service-basic-auth
 	// tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
 
 	private ProxyPreferenceManager proxyPreferenceManager;
@@ -123,6 +127,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	private int timeoutSocket = TIMEOUT_SOCKET;
 	private int connectionsMaxTotal = CONNECTIONS_MAX_TOTAL;
 	private int connectionsMaxPerRoute = CONNECTIONS_MAX_PER_ROUTE;
+	private boolean redirectsEnabled = true;
 
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
 
@@ -172,21 +177,20 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		return socketFactoryRegistryBuilder.register("http", PlainConnectionSocketFactory.getSocketFactory());
 	}
 
-	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) throws DSSException {
+	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder)
+			throws DSSException {
 		try {
 
 			SSLContext sslContext = null;
-			if (StringUtils.isEmpty(sslKeystorePath)){
+			if (StringUtils.isEmpty(sslKeystorePath)) {
 				LOG.debug("Use default SSL configuration");
 				sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(new KeyManager[0], new TrustManager[] {
-						new DefaultTrustManager()
-				}, new SecureRandom());
+				sslContext.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
 				SSLContext.setDefault(sslContext);
-			} else{
+			} else {
 				LOG.debug("Use specific SSL configuration with keystore");
 				FileInputStream fis = new FileInputStream(new File(sslKeystorePath));
-				KeyStore keystore  = KeyStore.getInstance(sslKeystoreType);
+				KeyStore keystore = KeyStore.getInstance(sslKeystoreType);
 				keystore.load(fis, sslKeystorePassword.toCharArray());
 				IOUtils.closeQuietly(fis);
 				sslContext = SSLContexts.custom().loadTrustMaterial(keystore).useTLS().build();
@@ -214,6 +218,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		final RequestConfig.Builder custom = RequestConfig.custom();
 		custom.setSocketTimeout(timeoutSocket);
 		custom.setConnectTimeout(timeoutConnection);
+		custom.setRedirectsEnabled(redirectsEnabled);
+
 		final RequestConfig requestConfig = custom.build();
 		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
 		httpClientBuilder.setConnectionManager(getConnectionManager());
@@ -405,7 +411,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * This method retrieves data using LDAP protocol.
 	 * - CRL from given LDAP url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
-	 * - ex URL from AIA ldap://xadessrv.plugtests.net/CN=LevelBCAOK,OU=Plugtests_2015-2016,O=ETSI,C=FR?cACertificate;binary
+	 * - ex URL from AIA
+	 * ldap://xadessrv.plugtests.net/CN=LevelBCAOK,OU=Plugtests_2015-2016,O=ETSI,C=FR?cACertificate;binary
 	 *
 	 * @param urlString
 	 * @return
@@ -512,10 +519,12 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			final URI uri = URI.create(url.trim());
 			httpRequest = new HttpPost(uri);
 
-			// The length for the InputStreamEntity is needed, because some receivers (on the other side) need this information.
+			// The length for the InputStreamEntity is needed, because some receivers (on the other side) need this
+			// information.
 			// To determine the length, we cannot read the content-stream up to the end and re-use it afterwards.
 			// This is because, it may not be possible to reset the stream (= go to position 0).
-			// So, the solution is to cache temporarily the complete content data (as we do not expect much here) in a byte-array.
+			// So, the solution is to cache temporarily the complete content data (as we do not expect much here) in a
+			// byte-array.
 			final ByteArrayInputStream bis = new ByteArrayInputStream(content);
 
 			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length);
@@ -573,7 +582,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 		final int statusCode = httpResponse.getStatusLine().getStatusCode();
 		if (LOG.isDebugEnabled()) {
-			LOG.debug(url +" status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
+			LOG.debug(url + " status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
 		}
 
 		if (statusCode != HttpStatus.SC_OK) {
@@ -683,6 +692,25 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @return true if http redirects are allowed
+	 */
+	public boolean isRedirectsEnabled() {
+		return redirectsEnabled;
+	}
+
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @param redirectsEnabled
+	 *            true if http redirects are allowed
+	 */
+	public void setRedirectsEnabled(boolean redirectsEnabled) {
+		this.redirectsEnabled = redirectsEnabled;
+	}
+
+	/**
 	 * @return the contentType
 	 */
 	public String getContentType() {
@@ -769,7 +797,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 			final HttpHost httpHost = credentialsEntry.getKey();
 			final UsernamePasswordCredentials credentials = credentialsEntry.getValue();
-			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(), credentials.getPassword());
+			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
+					credentials.getPassword());
 		}
 	}
 
