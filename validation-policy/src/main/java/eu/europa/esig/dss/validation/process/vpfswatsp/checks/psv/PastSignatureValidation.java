@@ -63,8 +63,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		ChainItem<XmlPSV> item = firstItem = pastCertificateValidationAcceptableCheck(pcvResult);
 
 		Date controlTime = pcvResult.getControlTime();
-		Indication pcvIndication = pcvResult.getConclusion().getIndication();
-		SubIndication pcvSubIndication = pcvResult.getConclusion().getSubIndication();
+		Indication currentTimeIndication = bbb.getConclusion().getIndication();
+		SubIndication currentTimeSubIndication = bbb.getConclusion().getSubIndication();
 
 		/*
 		 * 2) If there is a POE of the signature value at (or before) the validation time returned in the previous step:
@@ -75,9 +75,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			 * If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE or INDETERMINATE/
 			 * REVOKED_CA_NO_POE, the building block shall return PASSED.
 			 */
-			if (Indication.INDETERMINATE.equals(pcvIndication)
-					&& (SubIndication.REVOKED_NO_POE.equals(pcvSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(pcvSubIndication))) {
-				item.setNextItem(poeExist());
+			if (Indication.INDETERMINATE.equals(currentTimeIndication)
+					&& (SubIndication.REVOKED_NO_POE.equals(currentTimeSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(currentTimeSubIndication))) {
+				item = item.setNextItem(poeExist());
 				return;
 			}
 
@@ -93,13 +93,13 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			 * building block shall return the status indication PASSED.
 			 */
 
-			else if (Indication.INDETERMINATE.equals(pcvIndication) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(pcvSubIndication)) {
+			else if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)) {
 
 				Date bestSignatureTime = poe.getLowestPOE(token.getId(), controlTime);
 				CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
 
-				item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
-				item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime, signingCertificate));
+				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
+				item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime, signingCertificate));
 				return;
 			}
 
@@ -110,7 +110,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			 * considered secure, the building block shall return the status indication PASSED.
 			 */
 
-			else if (Indication.INDETERMINATE.equals(pcvIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(pcvSubIndication)) {
+			else if (Indication.INDETERMINATE.equals(currentTimeIndication)
+					&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
 				// TODO
 			}
 
@@ -121,7 +122,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * with an explanation of the failure.
 		 */
 		else {
-			item.setNextItem(pastCertificateValidationCheck(pcvResult));
+			item = item.setNextItem(pastCertificateValidationCheck(pcvResult));
 		}
 
 	}

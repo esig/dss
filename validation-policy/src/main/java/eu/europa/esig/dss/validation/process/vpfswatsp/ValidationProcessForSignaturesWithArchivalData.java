@@ -176,7 +176,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * to the next step. Otherwise, the long term validation process shall return the indication/sub-indication and
 		 * associated explanations returned from the past signature validation process.
 		 */
-		item.setNextItem(pastSignatureValidation(currentContext));
+		item = item.setNextItem(pastSignatureValidation(currentContext));
 
 		/*
 		 * 6) Data extraction: the SVA shall return the success indication PASSED. In addition, the long term validation

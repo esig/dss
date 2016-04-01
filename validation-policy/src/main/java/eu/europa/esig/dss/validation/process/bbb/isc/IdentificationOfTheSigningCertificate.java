@@ -53,32 +53,33 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		 * shall return the signing certificate. Otherwise, the building block shall go to step 2.
 		 */
 		ChainItem<XmlISC> item = firstItem = signingCertificateRecognition();
-		
-		if (Context.SIGNATURE.equals(context) ||Context.COUNTER_SIGNATURE.equals(context) ){
-		item = item.setNextItem(signingCertificateSigned());
-		item = item.setNextItem(signingCertificateAttributePresent());
 
-		/*
-		 * 2) The building block shall take the first reference and shall check that the digest of the certificate
-		 * referenced matches the result of digesting the signing certificate with the algorithm indicated. If they do
-		 * not match, the building block shall take the next element and shall repeat this step until a matching element
-		 * has been found or all elements have been checked. If they do match, the building block shall continue with
-		 * step 3. If the last element is reached without finding any match, the validation of this property shall be
-		 * taken as failed and the building block shall return the indication INDETERMINATE with the sub-indication
-		 * NO_SIGNING_CERTIFICATE_FOUND.
-		 */
-		item = item.setNextItem(digestValuePresent());
-		item = item.setNextItem(digestValueMatch());
+		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
+			item = item.setNextItem(signingCertificateSigned());
+			item = item.setNextItem(signingCertificateAttributePresent());
 
-		/*
-		 * 3) If the issuer and the serial number are additionally present in that reference, the details of the
-		 * issuer's name and the serial number of the IssuerSerial element may be compared with those indicated in the
-		 * signing certificate: if they do not match, an additional warning shall be returned with the output.
-		 */
-		item = item.setNextItem(issuerSerialMatch());
+			/*
+			 * 2) The building block shall take the first reference and shall check that the digest of the certificate
+			 * referenced matches the result of digesting the signing certificate with the algorithm indicated. If they
+			 * do not match, the building block shall take the next element and shall repeat this step until a matching
+			 * element has been found or all elements have been checked. If they do match, the building block shall
+			 * continue with step 3. If the last element is reached without finding any match, the validation of this
+			 * property shall be taken as failed and the building block shall return the indication INDETERMINATE with
+			 * the sub-indication NO_SIGNING_CERTIFICATE_FOUND.
+			 */
+			item = item.setNextItem(digestValuePresent());
+			item = item.setNextItem(digestValueMatch());
+
+			/*
+			 * 3) If the issuer and the serial number are additionally present in that reference, the details of the
+			 * issuer's name and the serial number of the IssuerSerial element may be compared with those indicated in
+			 * the
+			 * signing certificate: if they do not match, an additional warning shall be returned with the output.
+			 */
+			item = item.setNextItem(issuerSerialMatch());
 		}
 	}
-	
+
 	private ChainItem<XmlISC> signingCertificateRecognition() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateRecognitionConstraint(context);
 		return new SigningCertificateRecognitionCheck(result, token, diagnosticData, constraint);

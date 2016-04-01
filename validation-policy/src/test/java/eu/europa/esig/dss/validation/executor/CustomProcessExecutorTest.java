@@ -46,8 +46,7 @@ public class CustomProcessExecutorTest {
 	}
 
 	@Test
-	public void testPSV() throws Exception {
-		/* Certificate not revoked -> no need timestamp to be valid */
+	public void testPsvOutOfBoundsNoPoe() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/diagnosticDataPSV.xml");
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
 		assertNotNull(diagnosticData);
@@ -57,6 +56,34 @@ public class CustomProcessExecutorTest {
 		executor.setValidationPolicy(loadPolicy());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date currentTime = sdf.parse("03/03/2016 09:25:00");
+		executor.setCurrentTime(currentTime);
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getBasicValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testPsv() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/DSS-841-diagnosticdata.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date currentTime = sdf.parse("01/04/2016 12:00:00");
 		executor.setCurrentTime(currentTime);
 
 		Reports reports = executor.execute();

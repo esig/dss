@@ -102,7 +102,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 						 * Otherwise, the building block shall return the indication INDETERMINATE with the
 						 * sub-indication NO_POE.
 						 */
-						item.setNextItem(poeExistsAtOrBeforeControlTime(certificate.getId(), controlTime));
+						item = item.setNextItem(poeExistsAtOrBeforeControlTime(certificate.getId(), controlTime));
 
 						// TODO missing info in DiagnosticData
 						// item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData.getId(), controlTime));

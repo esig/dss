@@ -53,7 +53,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		 * considered maximum freshness, the building block shall return the indication PASSED. Otherwise the building
 		 * block shall return the indication FAILED.
 		 */
-		item.setNextItem(revocationDataFreshCheck());
+		item = item.setNextItem(revocationDataFreshCheck());
 	}
 
 	private ChainItem<XmlRFC> nextUpdateCheck() {

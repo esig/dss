@@ -74,7 +74,7 @@ public class EvidenceRecordValidation extends Chain<XmlERV> {
 		 * return the indication FAILED.
 		 */
 		if (CollectionUtils.size(item) > 1) {
-			item.setNextItem(archiveTimestampsCoverEachOther());
+			item = item.setNextItem(archiveTimestampsCoverEachOther());
 		}
 
 		/*
@@ -84,7 +84,7 @@ public class EvidenceRecordValidation extends Chain<XmlERV> {
 		 * following Archive Time-stamp. If this is the case, the building block shall go to the next step.
 		 * Otherwise, the building block shall return the indication FAILED.
 		 */
-		item.setNextItem(archiveTimestampsValidation());
+		item = item.setNextItem(archiveTimestampsValidation());
 
 		/*
 		 * b2) The building block shall check that all Archive Time-stamps within a chain use the same hash

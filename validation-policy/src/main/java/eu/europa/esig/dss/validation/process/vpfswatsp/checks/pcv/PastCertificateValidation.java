@@ -123,7 +123,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 				// TODO REVOKED_CA_NO_POE
 			}
 
-			item.setNextItem(certificateSignatureValid(certificate, subContext));
+			item = item.setNextItem(certificateSignatureValid(certificate, subContext));
 		}
 
 		/*
