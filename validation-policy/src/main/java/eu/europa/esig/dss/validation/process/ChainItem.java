@@ -139,6 +139,13 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		recordConstraint(XmlStatus.NOT_OK);
 	}
 
+	private void recordCustomSuccessConclusion() {
+		XmlConclusion conclusion = new XmlConclusion();
+		conclusion.setIndication(getSuccessIndication());
+		conclusion.setSubIndication(getSuccessSubIndication());
+		result.setConclusion(conclusion);
+	}
+
 	private void recordConclusion() {
 		XmlConclusion conclusion = new XmlConclusion();
 		conclusion.setIndication(getFailedIndicationForConclusion());
@@ -195,11 +202,27 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		boolean valid = process();
 		if (valid) {
 			recordValid();
-			callNext();
+			if (!isCustomSuccessConclusion()) {
+				callNext();
+			} else {
+				recordCustomSuccessConclusion();
+			}
 		} else {
 			recordInvalid();
 			recordConclusion();
 		}
+	}
+
+	private boolean isCustomSuccessConclusion() {
+		return getSuccessIndication() != null;
+	}
+
+	protected Indication getSuccessIndication() {
+		return null;
+	}
+
+	protected SubIndication getSuccessSubIndication() {
+		return null;
 	}
 
 	private void informOrWarn(Level level) {
