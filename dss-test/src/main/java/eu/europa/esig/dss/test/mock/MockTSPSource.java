@@ -129,9 +129,9 @@ public class MockTSPSource implements TSPSource {
 		TimeStampRequest tsRequest = null;
 		if (useNonce) {
 			final BigInteger nonce = BigInteger.valueOf(random.nextLong());
-			tsRequest = tsqGenerator.generate(digestAlgorithm.getOid(), digest, nonce);
+			tsRequest = tsqGenerator.generate(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), digest, nonce);
 		} else {
-			tsRequest = tsqGenerator.generate(digestAlgorithm.getOid(), digest);
+			tsRequest = tsqGenerator.generate(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), digest);
 		}
 
 		try {
@@ -140,10 +140,10 @@ public class MockTSPSource implements TSPSource {
 
 			// that to make sure we generate the same timestamp data for the
 			// same timestamp date
-			AttributeTable signedAttributes = new AttributeTable(new Hashtable());
+			AttributeTable signedAttributes = new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Object>());
 			signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.pkcs_9_at_signingTime, new Time(timestampDate_));
 			final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
-			AttributeTable unsignedAttributes = new AttributeTable(new Hashtable());
+			AttributeTable unsignedAttributes = new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Object>());
 			final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);
 
 			final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
