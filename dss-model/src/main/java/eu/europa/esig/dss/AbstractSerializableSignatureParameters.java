@@ -57,8 +57,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 */
 	private BLevelParameters bLevelParams = new BLevelParameters();
 
-	private String deterministicId;
-
 	private TimestampParameters signatureTimestampParameters;
 	private TimestampParameters archiveTimestampParameters;
 	private TimestampParameters contentTimestampParameters;
@@ -218,18 +216,11 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		this.contentTimestampParameters = contentTimestampParameters;
 	}
 
-	/**
-	 * This methods reinits the deterministicId to force to recompute it
-	 */
-	public void reinitDeterministicId() {
-		deterministicId = null;
-	}
-
 	@Override
 	public String toString() {
 		return "SignatureParameters{" + "signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel
 				+ ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" + encryptionAlgorithm
-				+ ", digestAlgorithm=" + digestAlgorithm + ", bLevelParams=" + bLevelParams + ", deterministicId='" + deterministicId + '\''
+				+ ", digestAlgorithm=" + digestAlgorithm + ", bLevelParams=" + bLevelParams
 				+ ", signatureTimestampParameters=" + ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString())
 				+ ", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) + '}';
 	}
@@ -241,7 +232,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		result = (prime * result) + ((archiveTimestampParameters == null) ? 0 : archiveTimestampParameters.hashCode());
 		result = (prime * result) + ((bLevelParams == null) ? 0 : bLevelParams.hashCode());
 		result = (prime * result) + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
-		result = (prime * result) + ((deterministicId == null) ? 0 : deterministicId.hashCode());
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = (prime * result) + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
 		result = (prime * result) + (signWithExpiredCertificate ? 1231 : 1237);
@@ -283,13 +273,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 				return false;
 			}
 		} else if (!contentTimestampParameters.equals(other.contentTimestampParameters)) {
-			return false;
-		}
-		if (deterministicId == null) {
-			if (other.deterministicId != null) {
-				return false;
-			}
-		} else if (!deterministicId.equals(other.deterministicId)) {
 			return false;
 		}
 		if (digestAlgorithm != other.digestAlgorithm) {
