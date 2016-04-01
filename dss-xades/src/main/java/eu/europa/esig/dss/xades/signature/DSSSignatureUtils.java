@@ -56,7 +56,7 @@ public final class DSSSignatureUtils {
 			return signatureValue;
 		} catch (IOException e) {
 
-			throw new DSSException(e);
+			return signatureValue;
 		}
 	}
 
