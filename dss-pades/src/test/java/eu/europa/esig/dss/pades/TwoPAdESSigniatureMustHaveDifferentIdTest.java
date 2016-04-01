@@ -2,6 +2,8 @@ package eu.europa.esig.dss.pades;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,22 +60,19 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest {
 		Reports reports = validator.validateDocument();
 		String firstId = reports.getSimpleReport().getFirstSignatureId();
 
-		// milli seconds are splitted
-		Thread.sleep(500);
-
 		signatureParameters.bLevel().setSigningDate(new Date());
-		dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		dataToSign = service.getDataToSign(firstSignedDocument, signatureParameters);
 		signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
-		DSSDocument secondSignedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+		DSSDocument secondSignedDocument = service.signDocument(firstSignedDocument, signatureParameters, signatureValue);
 
 		validator = SignedDocumentValidator.fromDocument(secondSignedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		reports = validator.validateDocument();
-		String secondId = reports.getSimpleReport().getFirstSignatureId();
 
-		logger.info("First signature id  : " + firstId);
-		logger.info("Second signature id  : " + secondId);
+		List<String> signatureIdList = reports.getSimpleReport().getSignatureIdList();
 
-		Assert.assertNotEquals(firstId, secondId);
+		Assert.assertEquals(2, new HashSet<>(reports.getSimpleReport().getSignatureIdList()).size());
+		Assert.assertNotEquals(signatureIdList.get(0), signatureIdList.get(1));
+
 	}
 }
