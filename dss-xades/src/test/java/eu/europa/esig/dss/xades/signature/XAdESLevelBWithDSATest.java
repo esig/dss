@@ -26,7 +26,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @RunWith(Parameterized.class)
-public class XAdESLevelBWithECDSATest extends AbstractTestSignature {
+public class XAdESLevelBWithDSATest extends AbstractTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -44,7 +44,7 @@ public class XAdESLevelBWithECDSATest extends AbstractTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.ECDSA_SHA256);
+		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.DSA_SHA256);
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -52,7 +52,7 @@ public class XAdESLevelBWithECDSATest extends AbstractTestSignature {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.ECDSA);
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.DSA);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();

@@ -20,14 +20,20 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import org.apache.commons.io.IOUtils;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.util.BigIntegers;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 
 /**
  * This is the utility class to manipulate different signature types.
- *
  *
  */
 public final class DSSSignatureUtils {
@@ -38,133 +44,53 @@ public final class DSSSignatureUtils {
 	/**
 	 * Converts the binary signature value to the Xml DSig format in function of used algorithm
 	 *
-	 * @param algorithm      Signature algorithm used to create the signatureValue
+	 * @param algorithm
+	 *            Signature algorithm used to create the signatureValue
 	 * @param signatureValue
 	 * @return
 	 */
 	public static byte[] convertToXmlDSig(final EncryptionAlgorithm algorithm, byte[] signatureValue) {
-
-		try {
-
-			if (algorithm == EncryptionAlgorithm.ECDSA) {
-
-				return convertECDSAASN1toXMLDSIG(signatureValue);
-			} else if (algorithm == EncryptionAlgorithm.DSA) {
-
-				return convertDSAASN1toXMLDSIG(signatureValue);
-			}
+		if (EncryptionAlgorithm.ECDSA == algorithm || EncryptionAlgorithm.DSA == algorithm) {
+			return convertDSAandECDSAASN1toXMLDSIG(signatureValue);
+		} else {
 			return signatureValue;
-		} catch (IOException e) {
-
-			throw new DSSException(e);
 		}
 	}
 
 	/**
-	 * Converts an ASN.1 DSA value to a XML Signature DSA Value.
-	 *
-	 * The JAVA JCE DSA Signature algorithm creates ASN.1 encoded (r,s) value pairs; the XML Signature requires the core
-	 * BigInteger values.
-	 *
-	 * @param asn1Bytes
-	 * @return the decode bytes
-	 * @throws IOException
-	 * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-	 */
-	public static byte[] convertDSAASN1toXMLDSIG(final byte asn1Bytes[]) throws IOException {
-
-		// Using BC to deal with BigInt DSA signature value
-		//		ByteArrayInputStream bIn = new ByteArrayInputStream(asn1Bytes);
-		//		ASN1InputStream aIn = new ASN1InputStream(bIn);
-		//		ASN1Sequence asn1Sequence = (ASN1Sequence) aIn.readObject();
-		//
-		//
-		//		final DERInteger rDERInteger = (DERInteger) asn1Sequence.getObjectAt(0);
-		//		final BigInteger r = rDERInteger.getValue();
-		//		final byte[] rBytes = r.toByteArray();
-		//
-		//		final DERInteger sDERInteger = (DERInteger) asn1Sequence.getObjectAt(1);
-		//		final BigInteger s = sDERInteger.getValue();
-		//		final byte[] sBytes = s.toByteArray();
-
-
-		final byte rLength = asn1Bytes[3];
-
-		int ii = rLength;
-		for (; (ii > 0) && (asn1Bytes[(4 + rLength) - ii] == 0); ii--) {
-
-//			System.out.println((4 + rLength) - ii + ": " + asn1Bytes[(4 + rLength) - ii]);
-		}
-
-		final byte sLength = asn1Bytes[5 + rLength];
-		int jj;
-		for (jj = sLength; (jj > 0) && (asn1Bytes[(6 + rLength + sLength) - jj] == 0); jj--) {
-		}
-
-		if ((asn1Bytes[0] != 48) || (asn1Bytes[1] != asn1Bytes.length - 2) || (asn1Bytes[2] != 2) || (ii > 20) || (asn1Bytes[4 + rLength] != 2) || (jj > 20)) {
-
-			throw new IOException("Invalid ASN.1 format of DSA signature");
-		}
-
-		byte xmlDsigBytes[] = new byte[40];
-		System.arraycopy(asn1Bytes, (4 + rLength) - ii, xmlDsigBytes, 20 - ii, ii);
-		System.arraycopy(asn1Bytes, (6 + rLength + sLength) - jj, xmlDsigBytes, 40 - jj, jj);
-
-		//		byte xmlDsigBytes[] = new byte[rBytes.length + sBytes.length];
-		//		System.arraycopy(rBytes, 0, xmlDsigBytes, 0, rBytes.length);
-		//		System.arraycopy(sBytes, 0, xmlDsigBytes, rBytes.length, sBytes.length);
-
-		return xmlDsigBytes;
-	}
-
-	/**
-	 * Converts an ASN.1 ECDSA value to a XML Signature ECDSA Value.
+	 * Converts an ASN.1 DSA / ECDSA value to a XML Signature DSA / ECDSA Value.
 	 *
 	 * The JAVA JCE ECDSA Signature algorithm creates ASN.1 encoded (r,s) value pairs; the XML Signature requires the
 	 * core BigInteger values.
 	 *
-	 * @param asn1Bytes
+	 * @param binaries
+	 *            the ASN1 signature value
 	 * @return the decode bytes
 	 * @throws IOException
 	 * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
 	 * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
 	 */
-	public static byte[] convertECDSAASN1toXMLDSIG(byte asn1Bytes[]) throws IOException {
+	private static byte[] convertDSAandECDSAASN1toXMLDSIG(byte[] binaries) {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		ASN1InputStream is = null;
+		try {
+			is = new ASN1InputStream(binaries);
 
-		if (asn1Bytes.length < 8 || asn1Bytes[0] != 48) {
-			throw new IOException("Invalid ASN.1 format of ECDSA signature");
+			ASN1Sequence seq = (ASN1Sequence) is.readObject();
+			if (seq.size() != 2) {
+				throw new IllegalArgumentException("ASN1 Sequence size should be 2 !");
+			}
+			ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
+			ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
+
+			buffer.write(BigIntegers.asUnsignedByteArray(r.getValue()));
+			buffer.write(BigIntegers.asUnsignedByteArray(s.getValue()));
+		} catch (Exception e) {
+			throw new DSSException("Unable to convert to xmlDsig : " + e.getMessage(), e);
+		} finally {
+			IOUtils.closeQuietly(is);
 		}
-		int offset;
-		if (asn1Bytes[1] > 0) {
-			offset = 2;
-		} else if (asn1Bytes[1] == (byte) 0x81) {
-			offset = 3;
-		} else {
-			throw new IOException("Invalid ASN.1 format of ECDSA signature");
-		}
-
-		byte rLength = asn1Bytes[offset + 1];
-		int i;
-
-		for (i = rLength; (i > 0) && (asn1Bytes[(offset + 2 + rLength) - i] == 0); i--) {
-		}
-
-		byte sLength = asn1Bytes[offset + 2 + rLength + 1];
-		int j;
-
-		for (j = sLength; (j > 0) && (asn1Bytes[(offset + 2 + rLength + 2 + sLength) - j] == 0); j--) {
-		}
-
-		int rawLen = Math.max(i, j);
-
-		if ((asn1Bytes[offset - 1] & 0xff) != asn1Bytes.length - offset || (asn1Bytes[offset - 1] & 0xff) != 2 + rLength + 2 + sLength || asn1Bytes[offset] != 2 || asn1Bytes[offset + 2 + rLength] != 2) {
-			throw new IOException("Invalid ASN.1 format of ECDSA signature");
-		}
-		byte xmldsigBytes[] = new byte[2 * rawLen];
-
-		System.arraycopy(asn1Bytes, (offset + 2 + rLength) - i, xmldsigBytes, rawLen - i, i);
-		System.arraycopy(asn1Bytes, (offset + 2 + rLength + 2 + sLength) - j, xmldsigBytes, 2 * rawLen - j, j);
-
-		return xmldsigBytes;
+		return buffer.toByteArray();
 	}
+
 }
