@@ -100,6 +100,7 @@ import eu.europa.esig.dss.tsl.QcStatementCondition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -172,6 +173,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	// Single policy document to use with all signatures.
 	private File policyDocument;
+
+	// Default configuration with the highest level
+	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
 
 	private HashMap<String, File> policyDocuments;
 
@@ -312,9 +316,17 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		policyDocuments.put(signatureId, policyDocument);
 	}
 
+	/**
+	 * This method allows to specify the validation level (Basic / Timestamp / Long Term / Archival).
+	 * By default, the selected validation is ARCHIVAL
+	 */
+	@Override
+	public void setValidationLevel(ValidationLevel validationLevel) {
+		this.validationLevel = validationLevel;
+	}
+
 	@Override
 	public Reports validateDocument() {
-
 		return validateDocument((InputStream) null);
 	}
 
@@ -398,6 +410,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final ProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
+		executor.setValidationLevel(validationLevel);
 		final DiagnosticData jaxbDiagnosticData = generateDiagnosticData();
 		executor.setDiagnosticData(jaxbDiagnosticData);
 

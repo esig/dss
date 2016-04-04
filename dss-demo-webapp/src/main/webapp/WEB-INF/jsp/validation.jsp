@@ -10,6 +10,20 @@
     
     <jsp:include page="fields/originalFileField.jsp" />
 
+	<div class="form-group">
+	    <form:label path="validationLevel" cssClass="col-sm-2 control-label">
+	        <spring:message code="label.validation.level" />
+	    </form:label>
+	    <div class="col-sm-4">
+	        <form:select path="validationLevel">
+	        
+                <c:forEach var="level" items="${validationLevels}">
+	        		<form:option value="${level}"><spring:message code="label.validation.level.${level}" /></form:option>
+	        	</c:forEach>
+	        </form:select>
+	    </div>
+	</div>
+	
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <form:radiobutton path="defaultPolicy" value="true" /> <spring:message code="label.validation.default.policy.file" />

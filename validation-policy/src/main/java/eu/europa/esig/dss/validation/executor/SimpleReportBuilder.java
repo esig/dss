@@ -61,15 +61,18 @@ public class SimpleReportBuilder {
 	private final Date currentTime;
 	private final ValidationPolicy policy;
 	private final DiagnosticData diagnosticData;
+	private final ValidationLevel validationLevel;
 	private final DetailedReport detailedReport;
 
 	private int totalSignatureCount = 0;
 	private int validSignatureCount = 0;
 
-	public SimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
+	public SimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, ValidationLevel validationLevel,
+			DetailedReport detailedReport) {
 		this.currentTime = currentTime;
 		this.policy = policy;
 		this.diagnosticData = diagnosticData;
+		this.validationLevel = validationLevel;
 		this.detailedReport = detailedReport;
 	}
 
@@ -149,62 +152,21 @@ public class SimpleReportBuilder {
 		final SubIndication archivalSubIndication = archivalValidation.getConclusion().getSubIndication();
 
 		List<String> infoList = xmlSignature.getInfos();
-		// final List<XmlDom> ltvInfoList = ltvConclusion.getElements("./Info");
 
 		Indication indication = archivalIndication;
 		SubIndication subIndication = archivalSubIndication;
-		// List<XmlDom> infoList = new ArrayList<XmlDom>();
-		// infoList.addAll(ltvInfoList);
 
 		for (XmlConstraint constraint : getAllBBBConstraintsForASignature(xmlSignature)) {
-			if (constraint.getStatus().equals(XmlStatus.WARNING)) {
+			if (XmlStatus.WARNING.equals(constraint.getStatus())) {
 				infoList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
 			}
 		}
 
-		// final List<XmlDom> basicValidationInfoList = basicValidationConclusion.getElements("./Info");
-		// final List<XmlDom> basicValidationWarningList = basicValidationConclusion.getElements("./Warning");
-		// final List<XmlDom> basicValidationErrorList = basicValidationConclusion.getElements("./Error");
-
-		final boolean noTimestamp = Indication.INDETERMINATE.equals(archivalIndication) && SubIndication.NO_TIMESTAMP.equals(archivalSubIndication);
-		if (noTimestamp) {
-
-			final Indication basicValidationConclusionIndication = basicValidation.getConclusion().getIndication();
-			final SubIndication basicValidationConclusionSubIndication = basicValidation.getConclusion().getSubIndication();
-			indication = basicValidationConclusionIndication;
-			subIndication = basicValidationConclusionSubIndication;
-			// infoList = basicValidationInfoList;
-			if (!Indication.VALID.equals(basicValidationConclusionIndication)) {
-
-				if (noTimestamp) {
-					xmlSignature.getWarnings().add(MessageTag.LABEL_TINTWS.getMessage());
-				} else {
-					xmlSignature.getWarnings().add(MessageTag.LABEL_TINVTWS.getMessage());
-					// for (XmlDom xmlDom : ltvInfoList) {
-					// xmlSignature.getInfos().add(xmlDom.getText());
-					// }
-				}
-			}
-		}
 		xmlSignature.setIndication(indication);
+		xmlSignature.setSubIndication(subIndication);
 		if (Indication.VALID.equals(indication)) {
 			validSignatureCount++;
 		}
-		if (subIndication != null) {
-			xmlSignature.setSubIndication(subIndication);
-		}
-		// if (basicValidationConclusion != null) {
-		// String errorMessage = signature.getErrorMessage();
-		// if (StringUtils.isNotEmpty(errorMessage)) {
-		// xmlSignature.getInfos().add(StringEscapeUtils.escapeXml(errorMessage));
-		// }
-		// }
-		// if (!Indication.VALID.equals(archivalIndication)) {
-		//
-		// addBasicInfo(xmlSignature, basicValidationErrorList);
-		// }
-		// addBasicInfo(xmlSignature, basicValidationWarningList);
-		// addBasicInfo(xmlSignature, infoList);
 
 		addSignatureProfile(signature, xmlSignature);
 
@@ -274,12 +236,6 @@ public class SimpleReportBuilder {
 			}
 		}
 	}
-
-	// private void addBasicInfo(final XmlSignature xmlSignature, final List<XmlDom> basicValidationErrorList) {
-	// for (final XmlDom error : basicValidationErrorList) {
-	// xmlSignature.getErrors().add(error.getText());
-	// }
-	// }
 
 	private void addSigningTime(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
 		xmlSignature.setSigningTime(diagnosticSignature.getDateTime());

@@ -52,7 +52,7 @@ public class DetailedReportBuilder {
 			signatureAnalysis.setId(signature.getId());
 			signatureAnalysis.setType(signature.getType());
 
-			executeBasicValidation(signatureAnalysis, signature, diagnosticData, bbbs);
+			executeBasicValidation(signatureAnalysis, signature, bbbs);
 
 			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
@@ -71,8 +71,7 @@ public class DetailedReportBuilder {
 		return detailedReport;
 	}
 
-	private void executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, DiagnosticData diagnosticData2,
-			Map<String, XmlBasicBuildingBlocks> bbbs) {
+	private void executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, signature, bbbs);
 		signatureAnalysis.setValidationProcessBasicSignatures(vpfbs.execute());
 	}

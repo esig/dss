@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,9 +28,11 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.web.WebAppUtils;
+import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.ValidationForm;
 import eu.europa.esig.dss.web.service.FOPService;
 import eu.europa.esig.dss.web.service.XSLTService;
@@ -55,9 +60,15 @@ public class ValidationController {
 	@Autowired
 	private FOPService fopService;
 
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(ValidationLevel.class, new EnumPropertyEditor(ValidationLevel.class));
+	}
+
 	@RequestMapping(method = RequestMethod.GET)
-	public String showValidationForm(Model model) {
+	public String showValidationForm(Model model, HttpServletRequest request) {
 		ValidationForm validationForm = new ValidationForm();
+		validationForm.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
 		validationForm.setDefaultPolicy(true);
 		model.addAttribute("validationForm", validationForm);
 		return VALIDATION_TILE;
@@ -78,6 +89,7 @@ public class ValidationController {
 			detachedContents.add(WebAppUtils.toDSSDocument(originalFile));
 			documentValidator.setDetachedContents(detachedContents);
 		}
+		documentValidator.setValidationLevel(validationForm.getValidationLevel());
 
 		Reports reports = null;
 
@@ -91,6 +103,8 @@ public class ValidationController {
 		} else {
 			reports = documentValidator.validateDocument();
 		}
+
+		// reports.print();
 
 		String xmlSimpleReport = reports.getXmlSimpleReport();
 		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, xmlSimpleReport);
@@ -175,6 +189,11 @@ public class ValidationController {
 		} catch (Exception e) {
 			logger.error("An error occured while generating pdf for detailed report : " + e.getMessage(), e);
 		}
+	}
+
+	@ModelAttribute("validationLevels")
+	public ValidationLevel[] getValidationLevels() {
+		return ValidationLevel.values();
 	}
 
 }

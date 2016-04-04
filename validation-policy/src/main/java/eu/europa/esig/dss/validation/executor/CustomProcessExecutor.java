@@ -48,7 +48,7 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(currentTime, policy, validationLevel, diagnosticData);
 		DetailedReport detailedReport = detailedReportBuilder.build();
 
-		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, detailedReport);
+		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, validationLevel, detailedReport);
 		SimpleReport simpleReport = simpleReportBuilder.build();
 
 		return new Reports(jaxbDiagnosticData, detailedReport, simpleReport);

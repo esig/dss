@@ -28,6 +28,7 @@ import java.util.List;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -85,6 +86,8 @@ public interface DocumentValidator {
 	void defineSigningCertificate(final CertificateToken x509Certificate);
 
 	void setPolicyFile(final File policyDocument);
+
+	void setValidationLevel(ValidationLevel validationLevel);
 
 	void setPolicyFile(final String signatureId, final File policyDocument);
 
