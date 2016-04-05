@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
@@ -57,6 +59,8 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
  */
 public class SimpleReportBuilder {
+
+	private static final Logger logger = LoggerFactory.getLogger(SimpleReportBuilder.class);
 
 	private final Date currentTime;
 	private final ValidationPolicy policy;
@@ -145,16 +149,27 @@ public class SimpleReportBuilder {
 		addSignatureFormat(signature, xmlSignature);
 		addSignedBy(signature, xmlSignature);
 
-		XmlConstraintsConclusion basicValidation = getBasicSignatureValidationConclusion(signatureId);
-		XmlConstraintsConclusion archivalValidation = getArchivalValidationConclusion(signatureId);
+		XmlConstraintsConclusion conclusion = null;
+		switch (validationLevel) {
+		case BASIC_SIGNATURES:
+			conclusion = getBasicSignatureValidationConclusion(signatureId);
+			break;
+		case TIMESTAMPS:
+		case LONG_TERM_DATA:
+			conclusion = getLongTermDataValidationConclusion(signatureId);
+			break;
+		case ARCHIVAL_DATA:
+			conclusion = getArchivalValidationConclusion(signatureId);
+			break;
+		default:
+			logger.error("Unsupported validation level : " + validationLevel);
+			break;
+		}
 
-		final Indication archivalIndication = archivalValidation.getConclusion().getIndication();
-		final SubIndication archivalSubIndication = archivalValidation.getConclusion().getSubIndication();
+		Indication indication = conclusion.getConclusion().getIndication();
+		SubIndication subIndication = conclusion.getConclusion().getSubIndication();
 
 		List<String> infoList = xmlSignature.getInfos();
-
-		Indication indication = archivalIndication;
-		SubIndication subIndication = archivalSubIndication;
 
 		for (XmlConstraint constraint : getAllBBBConstraintsForASignature(xmlSignature)) {
 			if (XmlStatus.WARNING.equals(constraint.getStatus())) {
@@ -202,6 +217,16 @@ public class SimpleReportBuilder {
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
 			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessBasicSignatures();
+			}
+		}
+		return null;
+	}
+
+	private XmlConstraintsConclusion getLongTermDataValidationConclusion(String signatureId) {
+		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignature();
+		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
+			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+				return xmlSignature.getValidationProcessLongTermData();
 			}
 		}
 		return null;

@@ -38,7 +38,7 @@ import eu.europa.esig.dss.web.service.FOPService;
 import eu.europa.esig.dss.web.service.XSLTService;
 
 @Controller
-@SessionAttributes({ "simpleReportXml", "detailedReportXml", "reportsList" })
+@SessionAttributes({ "validationForm", "simpleReportXml", "detailedReportXml", "reportsList" })
 @RequestMapping(value = "/validation")
 public class ValidationController {
 
@@ -193,7 +193,7 @@ public class ValidationController {
 
 	@ModelAttribute("validationLevels")
 	public ValidationLevel[] getValidationLevels() {
-		return ValidationLevel.values();
+		return new ValidationLevel[] { ValidationLevel.BASIC_SIGNATURES, ValidationLevel.LONG_TERM_DATA, ValidationLevel.ARCHIVAL_DATA };
 	}
 
 }

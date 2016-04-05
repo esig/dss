@@ -35,7 +35,6 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureTokenType;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.DataToSignParams;
@@ -65,7 +64,6 @@ public class NexuController {
 		binder.registerCustomEditor(SignatureLevel.class, new EnumPropertyEditor(SignatureLevel.class));
 		binder.registerCustomEditor(DigestAlgorithm.class, new EnumPropertyEditor(DigestAlgorithm.class));
 		binder.registerCustomEditor(EncryptionAlgorithm.class, new EnumPropertyEditor(EncryptionAlgorithm.class));
-		binder.registerCustomEditor(SignatureTokenType.class, new EnumPropertyEditor(SignatureTokenType.class));
 	}
 
 	@RequestMapping(method = RequestMethod.GET)

@@ -14,9 +14,8 @@
 	    <form:label path="validationLevel" cssClass="col-sm-2 control-label">
 	        <spring:message code="label.validation.level" />
 	    </form:label>
-	    <div class="col-sm-4">
-	        <form:select path="validationLevel">
-	        
+	    <div class="col-sm-7">
+	        <form:select path="validationLevel" cssClass="form-control input-sm">
                 <c:forEach var="level" items="${validationLevels}">
 	        		<form:option value="${level}"><spring:message code="label.validation.level.${level}" /></form:option>
 	        	</c:forEach>
