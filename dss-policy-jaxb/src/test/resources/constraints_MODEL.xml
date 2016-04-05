@@ -1,4 +1,4 @@
-﻿<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+﻿<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/policy">
 	<Description>Our validation process follows ETSI TS 102 853 V1.1.2 (2012-10) standard.</Description>
 	<SignatureConstraints>
 		<StructuralValidation Level="WARN"/>

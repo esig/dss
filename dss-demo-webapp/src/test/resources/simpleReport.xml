@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<SimpleReport xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+<SimpleReport xmlns="http://dss.esig.europa.eu/validation/simple-report">
     <Policy>
         <PolicyName>QES AdESQC TL based</PolicyName>
         <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a

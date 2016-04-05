@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><ValidationData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+<?xml version="1.0" encoding="UTF-8"?><ValidationData xmlns="http://dss.esig.europa.eu/validation/detailed-report">
 	<BasicBuildingBlocks>
 		<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
 			<ISC>
