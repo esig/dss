@@ -170,9 +170,15 @@ public class SimpleReportBuilder {
 		SubIndication subIndication = constraintsConclusion.getConclusion().getSubIndication();
 
 		List<String> infoList = xmlSignature.getInfos();
-
+		List<String> warnList = xmlSignature.getWarnings();
+		List<String> errorList = xmlSignature.getErrors();
+		// TODO improve
 		for (XmlConstraint constraint : getAllBBBConstraintsForASignature(xmlSignature)) {
 			if (XmlStatus.WARNING.equals(constraint.getStatus())) {
+				warnList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
+			} else if (XmlStatus.NOT_OK.equals(constraint.getStatus())) {
+				errorList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
+			} else if (XmlStatus.INFORMATION.equals(constraint.getStatus())) {
 				infoList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
 			}
 		}
