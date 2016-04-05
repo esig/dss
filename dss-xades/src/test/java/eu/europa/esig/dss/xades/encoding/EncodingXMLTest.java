@@ -19,6 +19,8 @@ import eu.europa.esig.dss.xades.signature.DSSSignatureUtils;
 
 public class EncodingXMLTest {
 
+	private static final String HELLO_WORLD = "Hello World";
+
 	static {
 		Security.addProvider(new BouncyCastleProvider());
 	}
@@ -42,7 +44,7 @@ public class EncodingXMLTest {
 
 		Signature s = Signature.getInstance("SHA256withDSA", BouncyCastleProvider.PROVIDER_NAME);
 		s.initSign(pair.getPrivate());
-		s.update("Hello World".getBytes());
+		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
 
 		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.DSA, signatureValue);
@@ -56,7 +58,7 @@ public class EncodingXMLTest {
 
 		Signature s = Signature.getInstance("SHA256withRSA", BouncyCastleProvider.PROVIDER_NAME);
 		s.initSign(pair.getPrivate());
-		s.update("Hello World".getBytes());
+		s.update(HELLO_WORLD.getBytes());
 		byte[] binary = s.sign();
 		assertTrue(ArrayUtils.isEquals(binary, DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.RSA, binary)));
 	}
@@ -69,7 +71,7 @@ public class EncodingXMLTest {
 
 		Signature s = Signature.getInstance("SHA256withDSA", BouncyCastleProvider.PROVIDER_NAME);
 		s.initSign(pair.getPrivate());
-		s.update("Hello World".getBytes());
+		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
 		assertTrue(ArrayUtils.isNotEmpty(DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.DSA, signatureValue)));
 	}
@@ -81,14 +83,18 @@ public class EncodingXMLTest {
 
 		Signature s = Signature.getInstance("SHA256withECDSA", BouncyCastleProvider.PROVIDER_NAME);
 		s.initSign(pair.getPrivate());
-		s.update("Hello World".getBytes());
+		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
 
 		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
 		assertTrue(ArrayUtils.isNotEmpty(convertToXmlDSig));
 
-		byte[] xmlsec = SignatureECDSA.convertASN1toXMLDSIG(signatureValue);
-		assertTrue(ArrayUtils.isEquals(convertToXmlDSig, xmlsec));
+		byte[] asn1xmlsec = SignatureECDSA.convertXMLDSIGtoASN1(convertToXmlDSig);
+
+		Signature s2 = Signature.getInstance("SHA256withECDSA", BouncyCastleProvider.PROVIDER_NAME);
+		s2.initVerify(pair.getPublic());
+		s2.update(HELLO_WORLD.getBytes());
+		assertTrue(s2.verify(asn1xmlsec));
 	}
 
 	@Test
@@ -100,17 +106,18 @@ public class EncodingXMLTest {
 
 		Signature s = Signature.getInstance("SHA256withECDSA", BouncyCastleProvider.PROVIDER_NAME);
 		s.initSign(pair.getPrivate());
-		s.update("Hello World".getBytes());
+		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
 
 		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
 		assertTrue(ArrayUtils.isNotEmpty(convertToXmlDSig));
 
-		byte[] xmlsec = SignatureECDSA.convertASN1toXMLDSIG(signatureValue);
+		byte[] asn1xmlsec = SignatureECDSA.convertXMLDSIGtoASN1(convertToXmlDSig);
 
-		System.out.println(DatatypeConverter.printHexBinary(convertToXmlDSig));
-		System.out.println(DatatypeConverter.printHexBinary(xmlsec));
-		assertTrue(ArrayUtils.isEquals(convertToXmlDSig, xmlsec));
+		Signature s2 = Signature.getInstance("SHA256withECDSA", BouncyCastleProvider.PROVIDER_NAME);
+		s2.initVerify(pair.getPublic());
+		s2.update(HELLO_WORLD.getBytes());
+		assertTrue(s2.verify(asn1xmlsec));
 	}
 
 }
