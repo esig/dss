@@ -14,7 +14,7 @@
     <Signature Id="id-30b3acd8c4fe0ced13b26ed2e6574d91e2e77b19e06a42b6c513a0b046b4561b" SignatureFormat="PAdES_BASELINE_LTA">
         <SigningTime>30/07/2015 13:49:14.000</SigningTime>
         <SignedBy>Pierrick Vandenbroucke (Signature)</SignedBy>
-        <Indication>VALID</Indication>
+        <Indication>TOTAL_PASSED</Indication>
         <SignatureLevel>AdESqc</SignatureLevel>
     </Signature>
 </SimpleReport>

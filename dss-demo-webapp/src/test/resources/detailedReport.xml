@@ -7,7 +7,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </ValidationProcessBasicSignatures>
         <ValidationProcessTimestamps Id="548237B903ACD373E5DB3440E7B165F65A36C5EE762F28E4751872DF0F51BC7C" Type="SIGNATURE_TIMESTAMP">
@@ -16,7 +16,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </ValidationProcessTimestamps>
         <ValidationProcessTimestamps Id="5D28376DD8EF2CDFFC6BA2E97CD16F11BE9FFE00C5EE86BD7C259B63907E399F" Type="ARCHIVE_TIMESTAMP">
@@ -25,7 +25,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </ValidationProcessTimestamps>
         <ValidationProcessLongTermData>
@@ -54,7 +54,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </ValidationProcessLongTermData>
         <ValidationProcessArchivalData>
@@ -63,7 +63,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </ValidationProcessArchivalData>
     </Signature>
@@ -95,7 +95,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
                 <Info CertificateId="4199E98D0E5B02935EB72DC8B7F9188E27DDF8A1DCB7BC8C3C3F3C7C1C099D5B"/>
             </Conclusion>
         </ISC>
@@ -105,7 +105,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </VCI>
         <CV>
@@ -122,7 +122,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
         <SAV>
@@ -135,7 +135,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </SAV>
         <XCV>
@@ -192,28 +192,28 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </XCV>
         <Conclusion>
-            <Indication>VALID</Indication>
+            <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
     <BasicBuildingBlocks Id="786326B530E9CFE305E2F13D4BEC56F83EC135ED21FFD6D116B8BED90A814017" Type="REVOCATION">
         <ISC>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
                 <Info CertificateId="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             </Conclusion>
         </ISC>
         <CV>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
         <SAV>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </SAV>
         <XCV>
@@ -222,11 +222,11 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </XCV>
         <Conclusion>
-            <Indication>VALID</Indication>
+            <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
     <BasicBuildingBlocks Id="5D28376DD8EF2CDFFC6BA2E97CD16F11BE9FFE00C5EE86BD7C259B63907E399F" Type="TIMESTAMP">
@@ -237,13 +237,13 @@
                 <Info CertificateId="D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
                 <Info CertificateId="D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
             </Conclusion>
         </ISC>
         <CV>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
         <SAV>
@@ -256,7 +256,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </SAV>
         <XCV>
@@ -269,28 +269,28 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </XCV>
         <Conclusion>
-            <Indication>VALID</Indication>
+            <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
     <BasicBuildingBlocks Id="AB59767C958DFBC85FB93268FAC9F226CC9BEF549C8F43D65C634FFDB5C849AA" Type="REVOCATION">
         <ISC>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
                 <Info CertificateId="7C37121A7E63DCE1F808523CC3A70AF9428A5C973FFAF773E615A526C9E363A7"/>
             </Conclusion>
         </ISC>
         <CV>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
         <SAV>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </SAV>
         <XCV>
@@ -331,11 +331,11 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </XCV>
         <Conclusion>
-            <Indication>VALID</Indication>
+            <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
     <BasicBuildingBlocks Id="548237B903ACD373E5DB3440E7B165F65A36C5EE762F28E4751872DF0F51BC7C" Type="TIMESTAMP">
@@ -346,13 +346,13 @@
                 <Info CertificateId="D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
                 <Info CertificateId="D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
             </Conclusion>
         </ISC>
         <CV>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
         <SAV>
@@ -365,7 +365,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </SAV>
         <XCV>
@@ -378,11 +378,11 @@
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
-                <Indication>VALID</Indication>
+                <Indication>PASSED</Indication>
             </Conclusion>
         </XCV>
         <Conclusion>
-            <Indication>VALID</Indication>
+            <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
 </DetailedReport>
