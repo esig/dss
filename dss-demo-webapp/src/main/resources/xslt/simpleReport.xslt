@@ -41,9 +41,9 @@
         <xsl:variable name="idSig" select="@Id" />
         <xsl:variable name="indicationCssClass">
         	<xsl:choose>
-				<xsl:when test="$indicationText='VALID'">success</xsl:when>
+				<xsl:when test="$indicationText='TOTAL_PASSED'">success</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-				<xsl:when test="$indicationText='INVALID'">danger</xsl:when>
+				<xsl:when test="$indicationText='TOTAL_FAILED'">danger</xsl:when>
 			</xsl:choose>
         </xsl:variable>
         
@@ -65,7 +65,7 @@
 					<dd>
 						<xsl:attribute name="class">text-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
 						<xsl:choose>
-							<xsl:when test="$indicationText='VALID'">
+							<xsl:when test="$indicationText='TOTAL_PASSED'">
 								<span>
 									<xsl:attribute name="class">glyphicon glyphicon-ok-sign</xsl:attribute>
 								</span>
@@ -75,7 +75,7 @@
 									<xsl:attribute name="class">glyphicon glyphicon-question-sign</xsl:attribute>
 								</span>
 							</xsl:when>
-							<xsl:when test="$indicationText='INVALID'">
+							<xsl:when test="$indicationText='TOTAL_FAILED'">
 								<span>
 									<xsl:attribute name="class">glyphicon glyphicon-remove-sign</xsl:attribute>
 								</span>

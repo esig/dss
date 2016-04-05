@@ -34,7 +34,7 @@ public class SignatureIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

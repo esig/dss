@@ -120,7 +120,7 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

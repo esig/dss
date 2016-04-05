@@ -151,9 +151,9 @@
 			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationColor">
 	        	<xsl:choose>
-					<xsl:when test="$indicationText='VALID'">green</xsl:when>
+					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
 					<xsl:otherwise>grey</xsl:otherwise>
 				</xsl:choose>
 	        </xsl:variable>
@@ -183,9 +183,9 @@
 			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationColor">
 	        	<xsl:choose>
-					<xsl:when test="$indicationText='VALID'">green</xsl:when>
+					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
 					<xsl:otherwise>grey</xsl:otherwise>
 				</xsl:choose>
 	        </xsl:variable>
@@ -220,9 +220,9 @@
 			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationColor">
 	        	<xsl:choose>
-					<xsl:when test="$indicationText='VALID'">green</xsl:when>
+					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
 					<xsl:otherwise>grey</xsl:otherwise>
 				</xsl:choose>
 	        </xsl:variable>
@@ -254,9 +254,9 @@
 	        <xsl:variable name="idSig" select="@Id" />
 	        <xsl:variable name="indicationColor">
 	        	<xsl:choose>
-					<xsl:when test="$indicationText='VALID'">green</xsl:when>
+					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
 					<xsl:otherwise>grey</xsl:otherwise>
 				</xsl:choose>
 	        </xsl:variable>
@@ -340,9 +340,9 @@
 						<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication"/>
 				        <xsl:variable name="indicationColor">
 				        	<xsl:choose>
-								<xsl:when test="$indicationText='VALID'">green</xsl:when>
+								<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 								<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-								<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+								<xsl:when test="$indicationText='FAILED'">red</xsl:when>
 								<xsl:otherwise>grey</xsl:otherwise>
 							</xsl:choose>
 				        </xsl:variable>
@@ -448,9 +448,9 @@
 							<xsl:variable name="indicationText" select="$Conclusion/dss:Indication"/>
 					        <xsl:variable name="indicationColor">
 					        	<xsl:choose>
-									<xsl:when test="$indicationText='VALID'">green</xsl:when>
+									<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 									<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-									<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+									<xsl:when test="$indicationText='FAILED'">red</xsl:when>
 									<xsl:otherwise>grey</xsl:otherwise>
 								</xsl:choose>
 					        </xsl:variable>

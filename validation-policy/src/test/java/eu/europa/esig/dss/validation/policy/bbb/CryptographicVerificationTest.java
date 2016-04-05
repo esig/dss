@@ -35,7 +35,7 @@ public class CryptographicVerificationTest extends AbstractValidationPolicy {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.VALID, cv.getConclusion().getIndication());
+		Assert.assertEquals(Indication.PASSED, cv.getConclusion().getIndication());
 		Assert.assertEquals(3, cv.getConstraint().size());
 	}
 
@@ -53,7 +53,7 @@ public class CryptographicVerificationTest extends AbstractValidationPolicy {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, cv.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, cv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CRYPTO_FAILURE, cv.getConclusion().getSubIndication());
 		Assert.assertEquals(3, cv.getConstraint().size());
 	}
@@ -72,7 +72,7 @@ public class CryptographicVerificationTest extends AbstractValidationPolicy {
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, cv.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, cv.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.HASH_FAILURE, cv.getConclusion().getSubIndication());
 		Assert.assertEquals(2, cv.getConstraint().size());
 	}

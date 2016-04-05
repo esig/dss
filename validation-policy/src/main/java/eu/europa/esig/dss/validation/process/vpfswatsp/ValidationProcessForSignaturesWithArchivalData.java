@@ -213,7 +213,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private boolean isValid(XmlConstraintsConclusion xmlConstraintConclusion) {
 		return xmlConstraintConclusion != null && xmlConstraintConclusion.getConclusion() != null
-				&& Indication.VALID.equals(xmlConstraintConclusion.getConclusion().getIndication());
+				&& Indication.PASSED.equals(xmlConstraintConclusion.getConclusion().getIndication());
 	}
 
 }

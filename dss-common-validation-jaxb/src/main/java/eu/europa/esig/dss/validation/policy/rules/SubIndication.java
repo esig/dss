@@ -38,18 +38,12 @@ public enum SubIndication {
 	HASH_FAILURE,
 	SIG_CRYPTO_FAILURE,
 	SIG_CONSTRAINTS_FAILURE,
-	NO_VALID_TIMESTAMP,
-	NO_TIMESTAMP,
 	NOT_YET_VALID,
 	TIMESTAMP_ORDER_FAILURE,
 	REVOKED,
 	EXPIRED,
 	NO_POE,
 
-	/**
-	 * Added to handle the constraint on the timestamp delay in case where no signing-time property/attribute is present.
-	 */
-	CLAIMED_SIGNING_TIME_ABSENT,
 	/**
 	 * Added to handle any unexpected error encountered during the validation process.
 	 */

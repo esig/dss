@@ -35,7 +35,7 @@ public class FormatCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

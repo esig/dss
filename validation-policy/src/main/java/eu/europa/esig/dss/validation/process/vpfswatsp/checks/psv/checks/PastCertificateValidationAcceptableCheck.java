@@ -25,7 +25,7 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 			SubIndication pcvSubindication = pcv.getConclusion().getSubIndication();
 
 			// INDETERMINATE cases are treated in following steps depending of POE
-			return Indication.VALID.equals(pcvIndication)
+			return Indication.PASSED.equals(pcvIndication)
 					|| (Indication.INDETERMINATE.equals(pcvSubindication) && (SubIndication.REVOKED_NO_POE.equals(pcvSubindication)
 							|| SubIndication.REVOKED_CA_NO_POE.equals(pcvSubindication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(pcvSubindication)
 							|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(pcvSubindication)));

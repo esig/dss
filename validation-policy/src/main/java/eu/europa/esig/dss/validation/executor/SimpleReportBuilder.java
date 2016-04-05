@@ -149,25 +149,25 @@ public class SimpleReportBuilder {
 		addSignatureFormat(signature, xmlSignature);
 		addSignedBy(signature, xmlSignature);
 
-		XmlConstraintsConclusion conclusion = null;
+		XmlConstraintsConclusion constraintsConclusion = null;
 		switch (validationLevel) {
 		case BASIC_SIGNATURES:
-			conclusion = getBasicSignatureValidationConclusion(signatureId);
+			constraintsConclusion = getBasicSignatureValidationConclusion(signatureId);
 			break;
 		case TIMESTAMPS:
 		case LONG_TERM_DATA:
-			conclusion = getLongTermDataValidationConclusion(signatureId);
+			constraintsConclusion = getLongTermDataValidationConclusion(signatureId);
 			break;
 		case ARCHIVAL_DATA:
-			conclusion = getArchivalValidationConclusion(signatureId);
+			constraintsConclusion = getArchivalValidationConclusion(signatureId);
 			break;
 		default:
 			logger.error("Unsupported validation level : " + validationLevel);
 			break;
 		}
 
-		Indication indication = conclusion.getConclusion().getIndication();
-		SubIndication subIndication = conclusion.getConclusion().getSubIndication();
+		Indication indication = constraintsConclusion.getConclusion().getIndication();
+		SubIndication subIndication = constraintsConclusion.getConclusion().getSubIndication();
 
 		List<String> infoList = xmlSignature.getInfos();
 
@@ -177,11 +177,15 @@ public class SimpleReportBuilder {
 			}
 		}
 
-		xmlSignature.setIndication(indication);
-		xmlSignature.setSubIndication(subIndication);
-		if (Indication.VALID.equals(indication)) {
+		if (Indication.PASSED.equals(indication)) {
 			validSignatureCount++;
+			xmlSignature.setIndication(Indication.TOTAL_PASSED);
+		} else if (Indication.FAILED.equals(indication)) {
+			xmlSignature.setIndication(Indication.TOTAL_FAILED);
+		} else {
+			xmlSignature.setIndication(indication); // INDERTERMINATE
 		}
+		xmlSignature.setSubIndication(subIndication);
 
 		addSignatureProfile(signature, xmlSignature);
 

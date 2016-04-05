@@ -197,9 +197,9 @@
 
 	<xs:simpleType name="Indication" final="restriction">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="VALID" />
+			<xs:enumeration value="PASSED" />
 			<xs:enumeration value="INDETERMINATE" />
-			<xs:enumeration value="INVALID" />
+			<xs:enumeration value="FAILED" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -221,17 +221,12 @@
 			<xs:enumeration value="HASH_FAILURE" />
 			<xs:enumeration value="SIG_CRYPTO_FAILURE" />
 			<xs:enumeration value="SIG_CONSTRAINTS_FAILURE" />
-			<xs:enumeration value="NO_VALID_TIMESTAMP" />
-			<xs:enumeration value="NO_TIMESTAMP" />
 			<xs:enumeration value="NOT_YET_VALID" />
 			<xs:enumeration value="TIMESTAMP_ORDER_FAILURE" />
 			<xs:enumeration value="REVOKED" />
 			<xs:enumeration value="EXPIRED" />
 			<xs:enumeration value="NO_POE" />
-			<xs:enumeration value="CLAIMED_SIGNING_TIME_ABSENT" />
 			<xs:enumeration value="UNEXPECTED_ERROR" />
-			<xs:enumeration value="INDETERMINATE" />
-			<xs:enumeration value="INVALID" />
 		</xs:restriction>
 	</xs:simpleType>
 

@@ -51,7 +51,7 @@ public class CounterSignatureCheck extends ChainItem<XmlSAV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

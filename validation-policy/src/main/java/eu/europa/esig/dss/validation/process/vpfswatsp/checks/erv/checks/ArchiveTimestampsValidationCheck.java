@@ -85,7 +85,7 @@ public class ArchiveTimestampsValidationCheck extends ChainItem<XmlERV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

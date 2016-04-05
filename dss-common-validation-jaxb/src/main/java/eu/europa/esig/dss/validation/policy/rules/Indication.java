@@ -25,8 +25,6 @@ package eu.europa.esig.dss.validation.policy.rules;
  */
 public enum Indication {
 
-	VALID,
-	INDETERMINATE,
-	INVALID
+	TOTAL_PASSED, PASSED, INDETERMINATE, FAILED, TOTAL_FAILED
 
 }

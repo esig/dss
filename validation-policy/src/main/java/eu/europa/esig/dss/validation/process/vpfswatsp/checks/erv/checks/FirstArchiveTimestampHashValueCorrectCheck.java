@@ -55,7 +55,7 @@ public class FirstArchiveTimestampHashValueCorrectCheck extends ChainItem<XmlERV
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

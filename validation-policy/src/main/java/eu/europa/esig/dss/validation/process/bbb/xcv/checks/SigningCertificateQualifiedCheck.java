@@ -64,7 +64,7 @@ public class SigningCertificateQualifiedCheck extends ChainItem<XmlXCV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

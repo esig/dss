@@ -26,7 +26,7 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 			ltvIndication = longTermValidationResult.getConclusion().getIndication();
 			ltvSubIndication = longTermValidationResult.getConclusion().getSubIndication();
 
-			return Indication.VALID.equals(ltvIndication)
+			return Indication.PASSED.equals(ltvIndication)
 					|| (Indication.INDETERMINATE.equals(ltvIndication) && (SubIndication.REVOKED_NO_POE.equals(ltvSubIndication)
 							|| SubIndication.REVOKED_CA_NO_POE.equals(ltvSubIndication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(ltvSubIndication)
 							|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(ltvSubIndication)));

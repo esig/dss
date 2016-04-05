@@ -79,7 +79,7 @@ public class ASiCELevelBCadesToASiCELevelBCadesTest {
 		while (reports != null) {
 			DiagnosticData diagnosticData = reports.getDiagnosticData();
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-			Assert.assertNotEquals(Indication.INVALID, reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
+			Assert.assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
 			reports = reports.getNextReports();
 		}
 	}

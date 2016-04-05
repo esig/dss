@@ -68,7 +68,7 @@ public class BasicBuildingBlocks {
 		if (fc != null) {
 			result.setFC(fc);
 			XmlConclusion fcConclusion = fc.getConclusion();
-			if (!Indication.VALID.equals(fcConclusion.getIndication())) {
+			if (!Indication.PASSED.equals(fcConclusion.getIndication())) {
 				result.setConclusion(fcConclusion);
 			}
 		}
@@ -80,7 +80,7 @@ public class BasicBuildingBlocks {
 		result.setISC(isc);
 
 		XmlConclusion iscConclusion = isc.getConclusion();
-		if (!Indication.VALID.equals(iscConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
 			result.setConclusion(iscConclusion);
 		}
 		XmlInfo conclusionInfo = new XmlInfo();
@@ -94,7 +94,7 @@ public class BasicBuildingBlocks {
 		if (vci != null) {
 			result.setVCI(vci);
 			XmlConclusion vciConclusion = vci.getConclusion();
-			if (!Indication.VALID.equals(vciConclusion.getIndication())) {
+			if (!Indication.PASSED.equals(vciConclusion.getIndication())) {
 				result.setConclusion(vciConclusion);
 			}
 		}
@@ -106,7 +106,7 @@ public class BasicBuildingBlocks {
 		if (rfc != null) {
 			result.setRFC(rfc);
 			XmlConclusion rfcConclusion = rfc.getConclusion();
-			if (!Indication.VALID.equals(rfcConclusion.getIndication())) {
+			if (!Indication.PASSED.equals(rfcConclusion.getIndication())) {
 				result.setConclusion(rfcConclusion);
 			}
 		}
@@ -117,7 +117,7 @@ public class BasicBuildingBlocks {
 		XmlXCV xcv = executeX509CertificateValidation();
 		result.setXCV(xcv);
 		XmlConclusion xcvConclusion = xcv.getConclusion();
-		if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
 			result.setConclusion(xcvConclusion);
 		}
 
@@ -128,7 +128,7 @@ public class BasicBuildingBlocks {
 		result.setCV(cv);
 
 		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!Indication.VALID.equals(cvConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
 			result.setConclusion(cvConclusion);
 		}
 
@@ -138,13 +138,13 @@ public class BasicBuildingBlocks {
 		XmlSAV sav = executeSignatureAcceptanceValidation();
 		result.setSAV(sav);
 		XmlConclusion savConclusion = sav.getConclusion();
-		if (!Indication.VALID.equals(savConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(savConclusion.getIndication())) {
 			result.setConclusion(cvConclusion);
 		}
 
 		if (result.getConclusion() == null) {
 			XmlConclusion conclusion = new XmlConclusion();
-			conclusion.setIndication(Indication.VALID);
+			conclusion.setIndication(Indication.PASSED);
 			result.setConclusion(conclusion);
 		}
 

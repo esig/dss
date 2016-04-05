@@ -56,7 +56,7 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 
 		if (result.getConclusion() == null) {
 			XmlConclusion conclusion = new XmlConclusion();
-			conclusion.setIndication(Indication.VALID);
+			conclusion.setIndication(Indication.PASSED);
 			result.setConclusion(conclusion);
 		}
 

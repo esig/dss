@@ -45,7 +45,7 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

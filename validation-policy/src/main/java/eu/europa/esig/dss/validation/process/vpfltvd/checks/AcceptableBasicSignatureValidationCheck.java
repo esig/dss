@@ -30,7 +30,7 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 			Indication bbbIndication = basicSignatureValidationConclusion.getIndication();
 			SubIndication bbbSubIndication = basicSignatureValidationConclusion.getSubIndication();
 
-			boolean allowed = Indication.VALID.equals(bbbIndication)
+			boolean allowed = Indication.PASSED.equals(bbbIndication)
 					|| (Indication.INDETERMINATE.equals(bbbIndication) && (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bbbSubIndication)
 							|| SubIndication.REVOKED_NO_POE.equals(bbbSubIndication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bbbSubIndication)));
 

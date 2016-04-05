@@ -38,7 +38,7 @@ import eu.europa.esig.dss.web.service.FOPService;
 import eu.europa.esig.dss.web.service.XSLTService;
 
 @Controller
-@SessionAttributes({ "validationForm", "simpleReportXml", "detailedReportXml", "reportsList" })
+@SessionAttributes({ "simpleReportXml", "detailedReportXml", "reportsList" })
 @RequestMapping(value = "/validation")
 public class ValidationController {
 

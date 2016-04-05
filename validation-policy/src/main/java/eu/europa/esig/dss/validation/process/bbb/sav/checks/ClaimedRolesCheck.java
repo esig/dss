@@ -37,7 +37,7 @@ public class ClaimedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

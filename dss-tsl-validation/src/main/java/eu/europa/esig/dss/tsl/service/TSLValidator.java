@@ -34,6 +34,7 @@ import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
@@ -99,6 +100,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		DSSDocument dssDocument = new FileDocument(file);
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(dssDocument);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
+		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
 		// To increase the security: the default {@code XPathQueryHolder} is
 		// used.
 		List<XPathQueryHolder> xPathQueryHolders = xmlDocumentValidator.getXPathQueryHolder();
@@ -108,7 +110,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		Reports reports = xmlDocumentValidator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
-		boolean isValid = Indication.VALID.equals(indication);
+		boolean isValid = Indication.TOTAL_PASSED.equals(indication);
 
 		TSLValidationResult result = new TSLValidationResult();
 		result.setCountryCode(countryCode);

@@ -57,7 +57,7 @@ public class TSLValidationResult {
 	}
 
 	public boolean isValid() {
-		return Indication.VALID.equals(indication);
+		return Indication.TOTAL_PASSED.equals(indication);
 	}
 
 	public boolean isIndeterminate() {
@@ -65,7 +65,7 @@ public class TSLValidationResult {
 	}
 
 	public boolean isInvalid() {
-		return Indication.INVALID.equals(indication);
+		return Indication.TOTAL_FAILED.equals(indication);
 	}
 
 }

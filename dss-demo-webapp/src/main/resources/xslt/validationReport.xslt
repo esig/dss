@@ -70,9 +70,9 @@
 			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationCssClass">
 	        	<xsl:choose>
-					<xsl:when test="$indicationText='VALID'">success</xsl:when>
+					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
 					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-					<xsl:when test="$indicationText='INVALID'">danger</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
 					<xsl:otherwise>default</xsl:otherwise>
 				</xsl:choose>
 	        </xsl:variable>
@@ -126,9 +126,9 @@
 				    		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 					        <xsl:variable name="indicationCssClass">
 					        	<xsl:choose>
-									<xsl:when test="$indicationText='VALID'">success</xsl:when>
+									<xsl:when test="$indicationText='PASSED'">success</xsl:when>
 									<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-									<xsl:when test="$indicationText='INVALID'">danger</xsl:when>
+									<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
 									<xsl:otherwise>default</xsl:otherwise>
 								</xsl:choose>
 					        </xsl:variable>
@@ -172,9 +172,9 @@
     		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationCssClass">
 	        	<xsl:choose>
-					<xsl:when test="$indicationText='VALID'">success</xsl:when>
+					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
 					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-					<xsl:when test="$indicationText='INVALID'">danger</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
 					<xsl:otherwise>default</xsl:otherwise>
 				</xsl:choose>
 	        </xsl:variable>
@@ -214,9 +214,9 @@
 	    	<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationCssClass">
 	        	<xsl:choose>
-					<xsl:when test="$indicationText='VALID'">success</xsl:when>
+					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
 					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-					<xsl:when test="$indicationText='INVALID'">danger</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
 					<xsl:otherwise>default</xsl:otherwise>
 				</xsl:choose>
 	        </xsl:variable>
@@ -255,9 +255,9 @@
         <xsl:variable name="indicationText" select="$Conclusion/dss:Indication"/>
         <xsl:variable name="indicationCssClass">
         	<xsl:choose>
-				<xsl:when test="$indicationText='VALID'">label-success</xsl:when>
+				<xsl:when test="$indicationText='PASSED'">label-success</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">label-warning</xsl:when>
-				<xsl:when test="$indicationText='INVALID'">label-danger</xsl:when>
+				<xsl:when test="$indicationText='FAILED'">label-danger</xsl:when>
 			</xsl:choose>
         </xsl:variable>
         

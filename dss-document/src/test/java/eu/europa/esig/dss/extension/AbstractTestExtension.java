@@ -145,7 +145,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (String sigId : signatureIdList) {
 			Indication indication = simpleReport.getIndication(sigId);
 			assertNotNull(indication);
-			if (indication != Indication.VALID) {
+			if (indication != Indication.PASSED) {
 				assertNotNull(simpleReport.getSubIndication(sigId));
 			}
 			assertNotNull(simpleReport.getSignatureLevel(sigId));
@@ -169,7 +169,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (String sigId : signatureIds) {
 			Indication basicIndication = detailedReport.getBasicValidationIndication(sigId);
 			assertNotNull(basicIndication);
-			if (!Indication.VALID.equals(basicIndication)) {
+			if (!Indication.PASSED.equals(basicIndication)) {
 				assertNotNull(detailedReport.getBasicValidationSubIndication(sigId));
 			}
 		}
@@ -179,7 +179,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 			for (String tspId : timestampIds) {
 				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
 				assertNotNull(timestampIndication);
-				if (!Indication.VALID.equals(timestampIndication)) {
+				if (!Indication.PASSED.equals(timestampIndication)) {
 					assertNotNull(detailedReport.getTimestampValidationSubIndication(tspId));
 				}
 			}
@@ -188,7 +188,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (String sigId : signatureIds) {
 			Indication ltvIndication = detailedReport.getLongTermValidationIndication(sigId);
 			assertNotNull(ltvIndication);
-			if (!Indication.VALID.equals(ltvIndication)) {
+			if (!Indication.PASSED.equals(ltvIndication)) {
 				assertNotNull(detailedReport.getLongTermValidationSubIndication(sigId));
 			}
 		}
@@ -196,7 +196,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (String sigId : signatureIds) {
 			Indication archiveDataIndication = detailedReport.getArchiveDataValidationIndication(sigId);
 			assertNotNull(archiveDataIndication);
-			if (!Indication.VALID.equals(archiveDataIndication)) {
+			if (!Indication.PASSED.equals(archiveDataIndication)) {
 				assertNotNull(detailedReport.getArchiveDataValidationSubIndication(sigId));
 			}
 		}

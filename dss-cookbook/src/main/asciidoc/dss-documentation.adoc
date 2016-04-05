@@ -564,7 +564,7 @@ In case there is a need to use only a specific query holder the following steps 
 
 == The signature validation
 
-Generally and following ETSI standard, the validation process of an electronic signature must provide one of the three following status: INVALID, VALID or INDETERMINATE. A VALID response indicates that the signature has passed verification and it complies with the signature validation policy. An INVALID response indicates that either the signature format is incorrect or that the digital signature value fails verification. An INDETERMINATE validation response indicates that the format and digital signature verifications have not failed but there is insufficient information to determine if the electronic signature is valid. For each of the validation checks, the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications.
+Generally and following ETSI standard, the validation process of an electronic signature must provide one of the three following status: TOTAL-FAILED, TOTAL-PASSED or INDETERMINATE. A TOTAL-PASSED response indicates that the signature has passed verification and it complies with the signature validation policy. An TOTAL_FAILED response indicates that either the signature format is incorrect or that the digital signature value fails verification. An INDETERMINATE validation response indicates that the format and digital signature verifications have not failed but there is insufficient information to determine if the electronic signature is valid. For each of the validation checks, the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications.
 
 ===	Validation Process
 
@@ -655,7 +655,7 @@ For example the Basic Building Blocks are divided into five elements:
  * CV - Cryptographic Verification
  * SAV - Signature Acceptance Validation
  
-Each block contains a number of rules that are executed sequentially. The rules are driven by the constraints defined in the validation policy. The result of each rule is OK or NOT OK. The process is stopped when the first rule fails. Each block also contains a conclusion. If all rules are met then the conclusion node indicates VALID. Otherwise INVALID or INDETERMINATE indication is returned depending on the ETSI standard definition. 
+Each block contains a number of rules that are executed sequentially. The rules are driven by the constraints defined in the validation policy. The result of each rule is OK or NOT OK. The process is stopped when the first rule fails. Each block also contains a conclusion. If all rules are met then the conclusion node indicates PASSED. Otherwise FAILED or INDETERMINATE indication is returned depending on the ETSI standard definition. 
 
 ==== Diagnostic Data
 

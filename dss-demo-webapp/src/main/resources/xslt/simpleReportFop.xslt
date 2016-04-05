@@ -130,9 +130,9 @@
         <xsl:variable name="idSig" select="@Id" />
         <xsl:variable name="indicationColor">
         	<xsl:choose>
-				<xsl:when test="$indicationText='VALID'">green</xsl:when>
+				<xsl:when test="$indicationText='TOTAL_PASSED'">green</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-				<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+				<xsl:when test="$indicationText='TOTAL_FAILED'">red</xsl:when>
 			</xsl:choose>
         </xsl:variable>
         

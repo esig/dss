@@ -37,7 +37,7 @@ public class IdentificationOfTheSigningCertificateTest extends AbstractValidatio
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.VALID, isc.getConclusion().getIndication());
+		Assert.assertEquals(Indication.PASSED, isc.getConclusion().getIndication());
 		Assert.assertEquals(6, isc.getConstraint().size());
 	}
 

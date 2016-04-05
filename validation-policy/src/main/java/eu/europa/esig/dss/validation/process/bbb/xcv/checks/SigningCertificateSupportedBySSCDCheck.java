@@ -68,7 +68,7 @@ public class SigningCertificateSupportedBySSCDCheck extends ChainItem<XmlXCV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

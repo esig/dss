@@ -35,7 +35,7 @@ public class CountryCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

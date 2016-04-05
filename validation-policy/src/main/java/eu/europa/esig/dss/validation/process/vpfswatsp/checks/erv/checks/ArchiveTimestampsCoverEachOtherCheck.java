@@ -63,7 +63,7 @@ public class ArchiveTimestampsCoverEachOtherCheck extends ChainItem<XmlERV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

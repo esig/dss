@@ -46,7 +46,7 @@ public class RestDocumentValidationTest {
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
 		assertEquals(2, result.getDiagnosticData().getSignature().get(0).getTimestamps().getTimestamp().size());
-		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.VALID));
+		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.PASSED));
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
 		assertNotNull(reports);
@@ -91,7 +91,7 @@ public class RestDocumentValidationTest {
 		assertNotNull(result.getSimpleReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INVALID));
+		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.FAILED));
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
 		assertNotNull(reports);

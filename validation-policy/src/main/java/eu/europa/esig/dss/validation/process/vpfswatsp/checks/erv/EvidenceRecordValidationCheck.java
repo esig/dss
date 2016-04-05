@@ -43,7 +43,7 @@ public class EvidenceRecordValidationCheck extends ChainItem<XmlValidationProces
 		EvidenceRecordValidation erv = new EvidenceRecordValidation(signature, bbbs, diagnosticData, poe, policy, currentTime);
 		XmlERV xmlERV = erv.execute();
 		XmlConclusion ervConclusion = xmlERV.getConclusion();
-		if (Indication.VALID.equals(ervConclusion.getIndication())) {
+		if (Indication.PASSED.equals(ervConclusion.getIndication())) {
 			return true;
 		}
 		return false;
@@ -61,7 +61,7 @@ public class EvidenceRecordValidationCheck extends ChainItem<XmlValidationProces
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

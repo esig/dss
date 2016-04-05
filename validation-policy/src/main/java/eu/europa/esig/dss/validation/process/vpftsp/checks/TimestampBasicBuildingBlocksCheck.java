@@ -33,7 +33,7 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 		XmlISC isc = timestampBBB.getISC();
 		XmlConclusion iscConclusion = isc.getConclusion();
-		if (!Indication.VALID.equals(iscConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
 			indication = iscConclusion.getIndication();
 			subIndication = iscConclusion.getSubIndication();
 			return false;
@@ -43,7 +43,7 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 		XmlCV cv = timestampBBB.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!Indication.VALID.equals(cvConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
 			indication = cvConclusion.getIndication();
 			subIndication = cvConclusion.getSubIndication();
 			return false;
@@ -51,7 +51,7 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 		XmlXCV xcv = timestampBBB.getXCV();
 		XmlConclusion xcvConclusion = xcv.getConclusion();
-		if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
 			indication = xcvConclusion.getIndication();
 			subIndication = xcvConclusion.getSubIndication();
 			return false;
@@ -59,7 +59,7 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 		XmlSAV sav = timestampBBB.getSAV();
 		XmlConclusion savConclusion = sav.getConclusion();
-		if (!Indication.VALID.equals(savConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(savConclusion.getIndication())) {
 			indication = savConclusion.getIndication();
 			subIndication = savConclusion.getSubIndication();
 			return false;

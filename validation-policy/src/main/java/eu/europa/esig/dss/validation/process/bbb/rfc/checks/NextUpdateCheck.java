@@ -46,7 +46,7 @@ public class NextUpdateCheck extends ChainItem<XmlRFC> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INVALID;
+		return Indication.FAILED;
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class ValidationContextInitializationTest extends AbstractValidationPolic
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.VALID, vci.getConclusion().getIndication());
+		Assert.assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
 		Assert.assertEquals(1, vci.getConstraint().size());
 	}
 
@@ -78,7 +78,7 @@ public class ValidationContextInitializationTest extends AbstractValidationPolic
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.VALID, vci.getConclusion().getIndication());
+		Assert.assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
 		Assert.assertEquals(1, vci.getConstraint().size());
 	}
 }

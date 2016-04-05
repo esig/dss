@@ -41,7 +41,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.PASSED, sav.getConclusion().getIndication());
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ICERRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
@@ -82,7 +82,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.VALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.PASSED, sav.getConclusion().getIndication());
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ICRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
@@ -123,7 +123,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
@@ -145,7 +145,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCHP_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
@@ -167,7 +167,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
@@ -189,7 +189,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPXTIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
@@ -213,7 +213,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTSIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
@@ -238,7 +238,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_IUQPCSP_ANS.getMessage(), sav.getConclusion().getError().getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
@@ -263,7 +263,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 			logger.info(constraint.getName().getValue() + " : " + constraint.getStatus());
 		}
 
-		Assert.assertEquals(Indication.INVALID, sav.getConclusion().getIndication());
+		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 		Assert.assertEquals(MessageTag.BBB_SAV_ISQPSTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
 	}

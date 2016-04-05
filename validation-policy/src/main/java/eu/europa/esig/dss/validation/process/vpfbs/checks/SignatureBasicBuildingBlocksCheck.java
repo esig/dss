@@ -59,7 +59,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		XmlFC fc = signatureBBB.getFC();
 		if (fc != null) {
 			XmlConclusion fcConclusion = fc.getConclusion();
-			if (!Indication.VALID.equals(fcConclusion.getIndication())) {
+			if (!Indication.PASSED.equals(fcConclusion.getIndication())) {
 				indication = fcConclusion.getIndication();
 				subIndication = fcConclusion.getSubIndication();
 				return false;
@@ -120,7 +120,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		 */
 		XmlCV cv = signatureBBB.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!Indication.VALID.equals(cvConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
 			indication = cvConclusion.getIndication();
 			subIndication = cvConclusion.getSubIndication();
 			return false;
@@ -175,7 +175,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 				}
 
 				if (failed) {
-					indication = Indication.INVALID;
+					indication = Indication.FAILED;
 					subIndication = SubIndication.REVOKED;
 					return false;
 				}
@@ -213,7 +213,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
 			return false;
 
-		} else if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
+		} else if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
 			indication = xcvConclusion.getIndication();
 			subIndication = xcvConclusion.getSubIndication();
 			return false;
@@ -264,13 +264,13 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 				}
 
 				if (failed) {
-					indication = Indication.INVALID;
+					indication = Indication.FAILED;
 					subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
 					return false;
 				}
 			}
 
-		} else if (!Indication.VALID.equals(savConclusion.getIndication())) {
+		} else if (!Indication.PASSED.equals(savConclusion.getIndication())) {
 			indication = savConclusion.getIndication();
 			subIndication = savConclusion.getSubIndication();
 			return false;
@@ -282,7 +282,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	private boolean isValidTimestamp(TimestampWrapper timestamp) {
 		XmlBasicBuildingBlocks timestampBasicBuildingBlocks = bbbs.get(timestamp.getId());
 		return (timestampBasicBuildingBlocks != null && timestampBasicBuildingBlocks.getConclusion() != null)
-				&& Indication.VALID.equals(timestampBasicBuildingBlocks.getConclusion().getIndication());
+				&& Indication.PASSED.equals(timestampBasicBuildingBlocks.getConclusion().getIndication());
 	}
 
 	private Date getRevocationDateForSigningCertificate(SignatureWrapper currentSignature) {

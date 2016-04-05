@@ -34,7 +34,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlISC isc = revocationBBB.getISC();
 		XmlConclusion iscConclusion = isc.getConclusion();
-		if (!Indication.VALID.equals(iscConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
 			indication = iscConclusion.getIndication();
 			subIndication = iscConclusion.getSubIndication();
 			return false;
@@ -44,7 +44,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlRFC rfc = revocationBBB.getRFC();
 		XmlConclusion rfcConclusion = rfc.getConclusion();
-		if (!Indication.VALID.equals(rfcConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(rfcConclusion.getIndication())) {
 			indication = rfcConclusion.getIndication();
 			subIndication = rfcConclusion.getSubIndication();
 			return false;
@@ -52,7 +52,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlCV cv = revocationBBB.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!Indication.VALID.equals(cvConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
 			indication = cvConclusion.getIndication();
 			subIndication = cvConclusion.getSubIndication();
 			return false;
@@ -60,7 +60,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlXCV xcv = revocationBBB.getXCV();
 		XmlConclusion xcvConclusion = xcv.getConclusion();
-		if (!Indication.VALID.equals(xcvConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
 			indication = xcvConclusion.getIndication();
 			subIndication = xcvConclusion.getSubIndication();
 			return false;
@@ -68,7 +68,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlSAV sav = revocationBBB.getSAV();
 		XmlConclusion savConclusion = sav.getConclusion();
-		if (!Indication.VALID.equals(savConclusion.getIndication())) {
+		if (!Indication.PASSED.equals(savConclusion.getIndication())) {
 			indication = savConclusion.getIndication();
 			subIndication = savConclusion.getSubIndication();
 			return false;
