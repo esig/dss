@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
@@ -23,6 +24,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 
+@Ignore("Only performance/support check. No need to be executed all the time")
 public class SignatureTest {
 
 	private CertificateService service = new CertificateService();

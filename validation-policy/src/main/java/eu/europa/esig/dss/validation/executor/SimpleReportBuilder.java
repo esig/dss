@@ -32,8 +32,11 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlError;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlInfo;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
@@ -169,17 +172,27 @@ public class SimpleReportBuilder {
 		Indication indication = constraintsConclusion.getConclusion().getIndication();
 		SubIndication subIndication = constraintsConclusion.getConclusion().getSubIndication();
 
-		List<String> infoList = xmlSignature.getInfos();
-		List<String> warnList = xmlSignature.getWarnings();
 		List<String> errorList = xmlSignature.getErrors();
+
+		XmlConclusion conclusion = constraintsConclusion.getConclusion();
+		XmlError error = conclusion.getError();
+		if (error != null) {
+			errorList.add(error.getValue());
+		}
+
+		List<String> infoList = xmlSignature.getInfos();
+		List<XmlInfo> infos = conclusion.getInfo();
+		if (CollectionUtils.isNotEmpty(infos)) {
+			for (XmlInfo xmlInfo : infos) {
+				infoList.add(xmlInfo.getValue());
+			}
+		}
+
 		// TODO improve
+		List<String> warnList = xmlSignature.getWarnings();
 		for (XmlConstraint constraint : getAllBBBConstraintsForASignature(xmlSignature)) {
 			if (XmlStatus.WARNING.equals(constraint.getStatus())) {
 				warnList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
-			} else if (XmlStatus.NOT_OK.equals(constraint.getStatus())) {
-				errorList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
-			} else if (XmlStatus.INFORMATION.equals(constraint.getStatus())) {
-				infoList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
 			}
 		}
 

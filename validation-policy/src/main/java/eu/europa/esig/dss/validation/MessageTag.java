@@ -54,10 +54,13 @@ public enum MessageTag {
 	BBB_RFC_IRIF("Is the revocation information fresh for the certificate?"),
 	BBB_RFC_IRIF_ANS("The revocation status information is not considered as 'fresh'."),
 	
-	ADEST_IMIDF("Is message imprint data found?"),
-	ADEST_IMIDF_ANS("The timestamp message imprint data is not found!"),
-	ADEST_IMIVC("Is message imprint verification conclusive?"),
-	ADEST_IMIVC_ANS("The timestamp message imprint verification has failed!"),
+	/* BBB -> SAV -> TSP*/
+	BBB_SAV_TSP_IMIDF("Is message imprint data found?"),
+	BBB_SAV_TSP_IMIDF_ANS("The timestamp message imprint data is not found!"),
+	BBB_SAV_TSP_IMIVC("Is message imprint verification conclusive?"),
+	BBB_SAV_TSP_IMIVC_ANS("The timestamp message imprint verification has failed!"),
+	
+	
 	ADEST_ITVPC("Is timestamp validation process conclusive?"),
 	ADEST_ITVPC_ANS_1("The timestamp is rejected, its generation time is before the best-signature-time!"),
 	ADEST_ITVPC_INFO_1("The best-signature-time was set to the generation time of the timestamp."),
@@ -157,11 +160,6 @@ public enum MessageTag {
 
 	XCV_IFCCIIPC_ANS("The interval ['%s', '%s'] for the certificate ['%s'] is inconsistent in the prospective chain."),
 
-	CTS_DRIE("Does the revocation information exist?"),
-	CTS_DSOPCPOEOC("Does the set of POEs contains a proof of existence of the certificate?"),
-	CTS_ICNEAIDORSI("Is the certificate not expired at the issuance date of the revocation status information?"),
-	CTS_IIDORSIBCT("Is the issuance date of the revocation status information before control-time?"),
-	CTS_SCT("Sliding the control-time."),
 	CTS_IIDOCWVPOTS("Is the issuance date of the certificate within the validity period of trusted service?"),
 	CTS_IIDOCWVPOTS_ANS("There is no concordance between the validity dates of trusted services and the certificate!"),
 	CTS_WITSS("What is the trusted service status?"),
@@ -171,10 +169,7 @@ public enum MessageTag {
 
 	PCV_IVTSC("Is validation time sliding conclusive?"),
 	PCV_IVTSC_ANS("The indications returned by validation time sliding sub-process."),
-	PCV_TINTA_ANS("There is no trusted anchor."),
-	PCV_TIOOCIC_ANS("There is only one certificate in the chain."),
 
-	PSV_IATVC("Is AdES-T validation conclusive?"),
 	PSV_IPCVA("Is past certificate validation acceptable?"),
 	PSV_IPCVA_ANS("The past certificate validation is not acceptable!"),
 	PSV_IPCVC("Is past certificate validation conclusive?"),
@@ -184,16 +179,13 @@ public enum MessageTag {
 	PSV_ITPOSVAOBCT("Is there a POE of the signature value at (or before) control-time?"),
 	PSV_ITPOSVAOBCT_ANS("No POE found at (or before) control-time!"),
 
-	TSV_ASTPTCT("Is the order of the timestamps correct?"),
-	TSV_ASTPTCT_ANS("The order of the timestamps is not correct!"),
+	TSV_ASTPTCT("Are timestamps in the right order?"),
+	TSV_ASTPTCT_ANS("The timestamps were not generated in the right order!"),
 	TSV_IBSTAIDOSC("Is the best-signature-time after the issuance date of the signing certificate?"),
 	TSV_IBSTAIDOSC_ANS("The best-signature-time is before the issuance date of the signing certificate!"),
 	TSV_ISCNVABST("Is the signing certificate not valid at the best-signature-time?"),
 	TSV_ISCNVABST_ANS("The past signing certificate validation must be performed!"),
-	TSV_ATITRO("Are timestamps in the right order?"),
-	TSV_ATITRO_ANS("The timestamps were not generated in the right order!"),
 
-	// TSV___("The signature-time-stamp protects the signature against the revocation of the signer's certificate but not against its expiration!"),
 	ADEST_IRTPTBST("Is revocation time posterior to best-signature-time?"),
 	ADEST_IRTPTBST_ANS("The revocation time is not posterior to best-signature-time!"),
 	ADEST_VFDTAOCST_ANS("The validation failed due to the absence of claimed signing time!"),

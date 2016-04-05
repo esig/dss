@@ -29,7 +29,7 @@ public class SignatureIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_CV_ISI;
+		return MessageTag.BBB_CV_ISI_ANS;
 	}
 
 	@Override

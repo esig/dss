@@ -24,12 +24,12 @@ public class TimestampMessageImprintDataIntactCheck extends ChainItem<XmlSAV> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ADEST_IMIVC;
+		return MessageTag.BBB_SAV_TSP_IMIVC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ADEST_IMIVC_ANS;
+		return MessageTag.BBB_SAV_TSP_IMIVC_ANS;
 	}
 
 	@Override
