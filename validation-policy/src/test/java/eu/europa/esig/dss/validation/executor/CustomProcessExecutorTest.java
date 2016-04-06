@@ -124,6 +124,72 @@ public class CustomProcessExecutorTest {
 		assertEquals(2, CollectionUtils.size(detailedReport.getTimestampIds()));
 	}
 
+	@Test
+	public void testNO_POE() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/diagnosticNO_POE.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date currentTime = sdf.parse("06/04/2016 17:10:00");
+		executor.setCurrentTime(currentTime);
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getBasicValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getLongTermValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_POE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+	}
+
+	@Test
+	public void testTRY_LATER() throws Exception {
+		/* TSPServiceType = http://uri.etsi.org/TrstSvc/Svctype/CA/PKC */
+
+		FileInputStream fis = new FileInputStream("src/test/resources/diagnosticTRY_LATER.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date currentTime = sdf.parse("06/04/2016 17:55:00");
+		executor.setCurrentTime(currentTime);
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, detailedReport.getBasicValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, detailedReport.getLongTermValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+	}
+
 	private EtsiValidationPolicy loadPolicy() throws Exception {
 		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
 		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);

@@ -26,7 +26,7 @@ public class SigningCertificateTSLStatusAndValidityCheck extends ChainItem<XmlXC
 	@Override
 	protected boolean process() {
 		String trustedSource = certificate.getLastChainCertificateSource();
-		if (CertificateSourceType.TRUSTED_STORE.name().equals(trustedSource)) {
+		if (CertificateSourceType.TRUSTED_STORE.name().equals(trustedSource)) { // do not include Trusted list
 			return true;
 		}
 

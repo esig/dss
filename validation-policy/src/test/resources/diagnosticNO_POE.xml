@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Signature-P-CZ-4.pdf</DocumentName>
+    <Signature Id="id-b0e3f11cc97f8f166e32b24131c221a85f0581092bfdc147259a171f7afbc8dc">
+        <DateTime>13/12/2013 10:47:03</DateTime>
+        <SignatureFormat>PAdES_BASELINE_T</SignatureFormat>
+        <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+        </BasicSignature>
+        <SigningCertificate Id="5AA887CC7082CE5107FD737A00D1D3E0D99A30A3F9CF4F2AF22BB1A1D1DDBECC">
+            <AttributePresent>true</AttributePresent>
+            <DigestValuePresent>true</DigestValuePresent>
+            <DigestValueMatch>true</DigestValueMatch>
+            <IssuerSerialMatch>true</IssuerSerialMatch>
+        </SigningCertificate>
+        <CertificateChain>
+            <ChainCertificate Id="5AA887CC7082CE5107FD737A00D1D3E0D99A30A3F9CF4F2AF22BB1A1D1DDBECC">
+                <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                <Source>TRUSTED_LIST</Source>
+            </ChainCertificate>
+        </CertificateChain>
+        <ContentType>application/pdf</ContentType>
+        <Timestamps>
+            <Timestamp Id="C4D485352DA7D0292AA540B833FFEF27D62668B282E2FBAA19E172F7E49AF27A" Type="SIGNATURE_TIMESTAMP">
+                <ProductionTime>13/12/2013 10:47:04</ProductionTime>
+                <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
+                <EncodedSignedDataDigestValue>KIRJq7PHA8gB0fc0T8T/zXC5CNbXb9X0y4oINS5ApNs=</EncodedSignedDataDigestValue>
+                <MessageImprintDataFound>true</MessageImprintDataFound>
+                <MessageImprintDataIntact>true</MessageImprintDataIntact>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="9FB5F319FE4B7DCDBA5183F79E2B125A2651033D9A090684828B4F4FF5F83F20"/>
+                <CertificateChain>
+                    <ChainCertificate Id="9FB5F319FE4B7DCDBA5183F79E2B125A2651033D9A090684828B4F4FF5F83F20">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+                <SignedObjects>
+                    <SignedSignature Id="id-b0e3f11cc97f8f166e32b24131c221a85f0581092bfdc147259a171f7afbc8dc"/>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>http://www.w3.org/2001/04/xmlenc#sha256</DigestMethod>
+                        <DigestValue>WqiHzHCCzlEH/XN6ANHT4NmaMKP5z08q8iuxodHdvsw=</DigestValue>
+                    </DigestAlgAndValue>
+                </SignedObjects>
+            </Timestamp>
+        </Timestamps>
+        <SignatureScopes>
+            <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+        </SignatureScopes>
+    </Signature>
+    <UsedCertificates>
+        <Certificate Id="C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+            <SubjectDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=P autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o= autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</IssuerDistinguishedName>
+            <SerialNumber>10500000</SerialNumber>
+            <CommonName>I.CA - Qualified Certification Authority, 09/2009</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationName>autorita, a.s.</OrganizationName>
+            <OrganizationalUnit>I.CA - Accredited Provider of Certification Services</OrganizationalUnit>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>0kQaqMIDrsqpblAfEk1Sto/kw3U=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>01/09/2019 02:00:00</NotAfter>
+            <NotBefore>01/09/2009 02:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+        </Certificate>
+        <Certificate Id="9FB5F319FE4B7DCDBA5183F79E2B125A2651033D9A090684828B4F4FF5F83F20">
+            <SubjectDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=autorita\, a.s.,cn=i.ca - time stamping authority\, tss/tsu 2\, 12/2011,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=autorita\, a.s.,CN=I.CA - Time Stamping Authority\, TSS/TSU 2\, 12/2011,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</IssuerDistinguishedName>
+            <SerialNumber>10685328</SerialNumber>
+            <CommonName>I.CA - Time Stamping Authority, TSS/TSU 2, 12/2011</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationName>autorita, a.s.</OrganizationName>
+            <OrganizationalUnit>I.CA - Accredited Provider of Certification Services</OrganizationalUnit>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>6iMCmrLS3MXMy0OkfQZEAAadvxM=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>21/12/2016 01:00:00</NotAfter>
+            <NotBefore>21/12/2011 01:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+        </Certificate>
+        <Certificate Id="5AA887CC7082CE5107FD737A00D1D3E0D99A30A3F9CF4F2AF22BB1A1D1DDBECC">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130f494443435a20313134303837333130,2.5.4.5=#130e494341202d203130313837333636,1.2.840.113549.1.9.1=#160e746f6d616e656b406963612e637a,o=autorita\, a.s.,cn=jaroslav,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130f494443435a20313134303837333130,2.5.4.5=#130e494341202d203130313837333636,1.2.840.113549.1.9.1=#160e746f6d616e656b406963612e637a,O=autorita\, a.s.,CN=Jaroslav,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</IssuerDistinguishedName>
+            <IssuerCertificate>C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802</IssuerCertificate>
+            <SerialNumber>10865783</SerialNumber>
+            <CommonName>Jaroslav</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationName>autorita, a.s.</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>POjFWr33wzVLhibbcrlxfiSIO/w=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>21/10/2014 08:23:17</NotAfter>
+            <NotBefore>21/10/2013 08:23:17</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802"/>
+            <CertificateChain>
+                <ChainCertificate Id="C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <QCStatement>
+                <QCP>false</QCP>
+                <QCPPlus>false</QCPPlus>
+                <QCC>true</QCC>
+                <QCSSCD>true</QCSSCD>
+            </QCStatement>
+            <TrustedServiceProvider>
+                <TSPName>First certification authority, a.s.</TSPName>
+                <TSPServiceName>(16) I.CA - issuing qualified certificates</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>01/09/2009 02:00:00</StartDate>
+                <Qualifiers>
+                    <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert</Qualifier>
+                </Qualifiers>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Info>
+                <Message Id="0">No CRL info found !</Message>
+            </Info>
+        </Certificate>
+    </UsedCertificates>
+</DiagnosticData>

@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Signature-P-DK-1.pdf</DocumentName>
+    <Signature Id="id-d69362d9616e2a79f91f7c7765c8b4b8d1d9ebc1bda05c098cc475252a79644e">
+        <DateTime>22/11/2013 14:15:29</DateTime>
+        <SignatureFormat>PAdES_BASELINE_LTA</SignatureFormat>
+        <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+        </BasicSignature>
+        <SigningCertificate Id="3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D">
+            <AttributePresent>true</AttributePresent>
+            <DigestValuePresent>true</DigestValuePresent>
+            <DigestValueMatch>true</DigestValueMatch>
+            <IssuerSerialMatch>false</IssuerSerialMatch>
+        </SigningCertificate>
+        <CertificateChain>
+            <ChainCertificate Id="3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D">
+                <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35">
+                <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8">
+                <Source>TRUSTED_LIST</Source>
+            </ChainCertificate>
+        </CertificateChain>
+        <ContentType>application/pdf</ContentType>
+        <Timestamps>
+            <Timestamp Id="C46C0F819FECFC7337F4292D3CC48771D350C10A4857D0E6475F6957ECFFAC68" Type="SIGNATURE_TIMESTAMP">
+                <ProductionTime>22/11/2013 14:15:56</ProductionTime>
+                <SignedDataDigestAlgo>SHA1</SignedDataDigestAlgo>
+                <EncodedSignedDataDigestValue>0+YrQ9eo+uszlIoFBdoeojZydEE=</EncodedSignedDataDigestValue>
+                <MessageImprintDataFound>true</MessageImprintDataFound>
+                <MessageImprintDataIntact>true</MessageImprintDataIntact>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="A00E8CD6182C4648CBAB4D10C418B5B47E2F116821A9790ACC241B5210895739"/>
+                <CertificateChain>
+                    <ChainCertificate Id="A00E8CD6182C4648CBAB4D10C418B5B47E2F116821A9790ACC241B5210895739">
+                        <Source>SIGNATURE</Source>
+                    </ChainCertificate>
+                    <ChainCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+                <SignedObjects>
+                    <SignedSignature Id="id-d69362d9616e2a79f91f7c7765c8b4b8d1d9ebc1bda05c098cc475252a79644e"/>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>http://www.w3.org/2000/09/xmldsig#sha1</DigestMethod>
+                        <DigestValue>NG4bcyLOWLrnxRX6u3glR/HXhJ0=</DigestValue>
+                    </DigestAlgAndValue>
+                </SignedObjects>
+            </Timestamp>
+            <Timestamp Id="1377350BF5745A2964E5B10F8CFE4AD45309B88D29386E00FFEC851FCBF4D077" Type="ARCHIVE_TIMESTAMP">
+                <ProductionTime>22/11/2013 14:16:01</ProductionTime>
+                <SignedDataDigestAlgo>SHA1</SignedDataDigestAlgo>
+                <EncodedSignedDataDigestValue>cEHq7tQ8vHSKvq+Dwmg1+RMl7Ug=</EncodedSignedDataDigestValue>
+                <MessageImprintDataFound>true</MessageImprintDataFound>
+                <MessageImprintDataIntact>true</MessageImprintDataIntact>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="A00E8CD6182C4648CBAB4D10C418B5B47E2F116821A9790ACC241B5210895739"/>
+                <CertificateChain>
+                    <ChainCertificate Id="A00E8CD6182C4648CBAB4D10C418B5B47E2F116821A9790ACC241B5210895739">
+                        <Source>SIGNATURE</Source>
+                    </ChainCertificate>
+                    <ChainCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+                <SignedObjects>
+                    <SignedSignature Id="id-d69362d9616e2a79f91f7c7765c8b4b8d1d9ebc1bda05c098cc475252a79644e"/>
+                    <TimestampedTimestamp Id="C46C0F819FECFC7337F4292D3CC48771D350C10A4857D0E6475F6957ECFFAC68"/>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>http://www.w3.org/2000/09/xmldsig#sha1</DigestMethod>
+                        <DigestValue>NG4bcyLOWLrnxRX6u3glR/HXhJ0=</DigestValue>
+                    </DigestAlgAndValue>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>SHA1</DigestMethod>
+                        <DigestValue>NG4bcyLOWLrnxRX6u3glR/HXhJ0=</DigestValue>
+                    </DigestAlgAndValue>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>SHA1</DigestMethod>
+                        <DigestValue>6p3jPxGFTAHr2wyn3awFwyCiPP0=</DigestValue>
+                    </DigestAlgAndValue>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>SHA1</DigestMethod>
+                        <DigestValue>XPsfXbcy5AhMDdSXhXTgy8CTvrM=</DigestValue>
+                    </DigestAlgAndValue>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>SHA1</DigestMethod>
+                        <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
+                    </DigestAlgAndValue>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>SHA1</DigestMethod>
+                        <DigestValue>eauSjwQ3UvXDprMDPcWdONuUsDc=</DigestValue>
+                    </DigestAlgAndValue>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>SHA1</DigestMethod>
+                        <DigestValue>wzjnDAMuMgzjyAZ/JjuEV7KhN+8=</DigestValue>
+                    </DigestAlgAndValue>
+                </SignedObjects>
+            </Timestamp>
+        </Timestamps>
+        <SignatureScopes>
+            <SignatureScope name="PDF previous version #1" scope="PdfByteRangeSignatureScope">The document byte range: [0, 83011, 107013, 1730]</SignatureScope>
+        </SignatureScopes>
+    </Signature>
+    <UsedCertificates>
+        <Certificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+            <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Belgium Root CA2,C=BE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Belgium Root CA2,C=BE</IssuerDistinguishedName>
+            <SerialNumber>3098404661496965511</SerialNumber>
+            <CommonName>Belgium Root CA2</CommonName>
+            <CountryName>BE</CountryName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>15/12/2021 09:00:00</NotAfter>
+            <NotBefore>04/10/2007 12:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>crlSign</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+        </Certificate>
+        <Certificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8">
+            <SubjectDistinguishedName Format="CANONICAL">cn=trust2408 oces primary ca,o=trust2408,c=dk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=TRUST2408 OCES Primary CA,O=TRUST2408,C=DK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=trust2408 oces primary ca,o=trust2408,c=dk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=TRUST2408 OCES Primary CA,O=TRUST2408,C=DK</IssuerDistinguishedName>
+            <SerialNumber>1267621891</SerialNumber>
+            <CommonName>TRUST2408 OCES Primary CA</CommonName>
+            <CountryName>DK</CountryName>
+            <OrganizationName>TRUST2408</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>XPsfXbcy5AhMDdSXhXTgy8CTvrM=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>03/12/2037 14:11:34</NotAfter>
+            <NotBefore>03/03/2010 13:41:34</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>crlSign</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+        </Certificate>
+        <Certificate Id="3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D">
+            <SubjectDistinguishedName Format="CANONICAL">cn=rune +2.5.4.5=#131c5049443a393230382d323030322d322d383434373439313736313538,o=ingen organisatorisk tilknytning,c=dk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Rune +2.5.4.5=#131c5049443a393230382d323030322d322d383434373439313736313538,O=Ingen organisatorisk tilknytning,C=DK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=trust2408 oces ca i,o=trust2408,c=dk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=TRUST2408 OCES CA I,O=TRUST2408,C=DK</IssuerDistinguishedName>
+            <IssuerCertificate>45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35</IssuerCertificate>
+            <SerialNumber>1284421801</SerialNumber>
+            <CommonName>Rune </CommonName>
+            <CountryName>DK</CountryName>
+            <OrganizationName>Ingen organisatorisk tilknytning</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>NG4bcyLOWLrnxRX6u3glR/HXhJ0=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>11/06/2016 22:58:25</NotAfter>
+            <NotBefore>11/06/2013 22:58:59</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyEncipherment</KeyUsage>
+                <KeyUsage>keyAgreement</KeyUsage>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>dataEncipherment</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35"/>
+            <CertificateChain>
+                <ChainCertificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35">
+                    <Source>SIGNATURE</Source>
+                </ChainCertificate>
+                <ChainCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <QCStatement>
+                <QCP>false</QCP>
+                <QCPPlus>false</QCPPlus>
+                <QCC>false</QCC>
+                <QCSSCD>false</QCSSCD>
+            </QCStatement>
+            <TrustedServiceProvider>
+                <TSPName>Nets DanID A/S</TSPName>
+                <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>03/03/2010 00:00:00</StartDate>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Revocation Id="602462989DB941BEE07CF5CBF79F6D840CE3AD70A89084891E6837F16B568F3C">
+                <Source>OCSPToken</Source>
+                <SourceAddress>http://ocsp.oces-issuing01.trust2408.com/responder</SourceAddress>
+                <Available>true</Available>
+                <Status>true</Status>
+                <ProductionDate>06/04/2016 17:38:05</ProductionDate>
+                <ThisUpdate>06/04/2016 08:32:51</ThisUpdate>
+                <NextUpdate>07/04/2016 05:38:05</NextUpdate>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="27F9223082663AEF7B36C9189B8AC0D5602690E5EE94779E910A09F6599C737D"/>
+                <CertificateChain>
+                    <ChainCertificate Id="27F9223082663AEF7B36C9189B8AC0D5602690E5EE94779E910A09F6599C737D">
+                        <Source>OCSP_RESPONSE</Source>
+                    </ChainCertificate>
+                    <ChainCertificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35">
+                        <Source>SIGNATURE</Source>
+                    </ChainCertificate>
+                    <ChainCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+            </Revocation>
+        </Certificate>
+        <Certificate Id="A00E8CD6182C4648CBAB4D10C418B5B47E2F116821A9790ACC241B5210895739">
+            <SubjectDistinguishedName Format="CANONICAL">cn=time stamping authority,c=be,2.5.4.5=#130432303133,o=belgium federal government</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Time Stamping Authority,C=BE,2.5.4.5=#130432303133,O=Belgium Federal Government</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Belgium Root CA2,C=BE</IssuerDistinguishedName>
+            <IssuerCertificate>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</IssuerCertificate>
+            <SerialNumber>4835703278459866660762907</SerialNumber>
+            <CommonName>Time Stamping Authority</CommonName>
+            <CountryName>BE</CountryName>
+            <OrganizationName>Belgium Federal Government</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>eauSjwQ3UvXDprMDPcWdONuUsDc=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>11/01/2018 12:00:00</NotAfter>
+            <NotBefore>11/10/2012 13:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
+            <CertificateChain>
+                <ChainCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <QCStatement>
+                <QCP>false</QCP>
+                <QCPPlus>false</QCPPlus>
+                <QCC>false</QCC>
+                <QCSSCD>false</QCSSCD>
+            </QCStatement>
+            <TrustedServiceProvider>
+                <TSPName>Certipost n.v./s.a.</TSPName>
+                <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                <StartDate>04/10/2007 12:00:00</StartDate>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Revocation Id="7BC842E59852823B9A0C561BF87FB2B3FD264044F6DFE29E4955D1DEEAFB364E">
+                <Source>CRLToken</Source>
+                <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
+                <Available>true</Available>
+                <Status>true</Status>
+                <ProductionDate>15/02/2016 12:00:00</ProductionDate>
+                <ThisUpdate>15/02/2016 12:00:00</ThisUpdate>
+                <NextUpdate>31/07/2016 13:00:00</NextUpdate>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
+                <CertificateChain>
+                    <ChainCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+            </Revocation>
+            <Info>
+                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35">
+            <SubjectDistinguishedName Format="CANONICAL">cn=trust2408 oces ca i,o=trust2408,c=dk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=TRUST2408 OCES CA I,O=TRUST2408,C=DK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=trust2408 oces primary ca,o=trust2408,c=dk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=TRUST2408 OCES Primary CA,O=TRUST2408,C=DK</IssuerDistinguishedName>
+            <IssuerCertificate>92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8</IssuerCertificate>
+            <SerialNumber>1267622008</SerialNumber>
+            <CommonName>TRUST2408 OCES CA I</CommonName>
+            <CountryName>DK</CountryName>
+            <OrganizationName>TRUST2408</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>6p3jPxGFTAHr2wyn3awFwyCiPP0=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>28/05/2025 13:45:00</NotAfter>
+            <NotBefore>28/05/2010 13:15:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>crlSign</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8"/>
+            <CertificateChain>
+                <ChainCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <QCStatement>
+                <QCP>false</QCP>
+                <QCPPlus>false</QCPPlus>
+                <QCC>false</QCC>
+                <QCSSCD>false</QCSSCD>
+            </QCStatement>
+            <TrustedServiceProvider>
+                <TSPName>Nets DanID A/S</TSPName>
+                <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>03/03/2010 00:00:00</StartDate>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Revocation Id="B48A3077D805F3A1EA910B6FA83D56ED5A787A63D615C85A5AF0F34F6D741CA5">
+                <Source>CRLToken</Source>
+                <SourceAddress>http://crl.oces.trust2408.com/oces.crl</SourceAddress>
+                <Available>true</Available>
+                <Status>true</Status>
+                <ProductionDate>06/04/2016 16:01:02</ProductionDate>
+                <ThisUpdate>06/04/2016 16:01:02</ThisUpdate>
+                <NextUpdate>07/04/2016 04:01:02</NextUpdate>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8"/>
+                <CertificateChain>
+                    <ChainCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+            </Revocation>
+            <Info>
+                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="27F9223082663AEF7B36C9189B8AC0D5602690E5EE94779E910A09F6599C737D">
+            <SubjectDistinguishedName Format="CANONICAL">cn=danid a/s - ocsp responder 01+2.5.4.5=#13174356523a33303830383436302d5549443a4f4353503031,o=danid a/s // cvr:30808460,c=dk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#13174356523a33303830383436302d5549443a4f4353503031+CN=DANID A/S - OCSP Responder 01,O=DANID A/S // CVR:30808460,C=DK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=trust2408 oces ca i,o=trust2408,c=dk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=TRUST2408 OCES CA I,O=TRUST2408,C=DK</IssuerDistinguishedName>
+            <IssuerCertificate>45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35</IssuerCertificate>
+            <SerialNumber>1456617131</SerialNumber>
+            <CommonName>CVR:30808460-UID:OCSP01</CommonName>
+            <CountryName>DK</CountryName>
+            <OrganizationName>DANID A/S // CVR:30808460</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>9Aj3+yfI2yAXHVwufrjV/rsf31k=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>09/04/2016 05:02:38</NotAfter>
+            <NotBefore>06/04/2016 05:02:52</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35"/>
+            <CertificateChain>
+                <ChainCertificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35">
+                    <Source>SIGNATURE</Source>
+                </ChainCertificate>
+                <ChainCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <QCStatement>
+                <QCP>false</QCP>
+                <QCPPlus>false</QCPPlus>
+                <QCC>false</QCC>
+                <QCSSCD>false</QCSSCD>
+            </QCStatement>
+            <TrustedServiceProvider>
+                <TSPName>Nets DanID A/S</TSPName>
+                <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>03/03/2010 00:00:00</StartDate>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Info>
+                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="8EC26EAB661E36E1DB7BFCEE4CE89F72D8D0324FC04E359814D7E94EA279BD8F">
+            <SubjectDistinguishedName Format="CANONICAL">cn=danid a/s - ocsp responder 02+2.5.4.5=#13174356523a33303830383436302d5549443a4f4353503032,o=danid a/s // cvr:30808460,c=dk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#13174356523a33303830383436302d5549443a4f4353503032+CN=DANID A/S - OCSP Responder 02,O=DANID A/S // CVR:30808460,C=DK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=trust2408 oces ca i,o=trust2408,c=dk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=TRUST2408 OCES CA I,O=TRUST2408,C=DK</IssuerDistinguishedName>
+            <IssuerCertificate>45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35</IssuerCertificate>
+            <SerialNumber>1287883194</SerialNumber>
+            <CommonName>CVR:30808460-UID:OCSP02</CommonName>
+            <CountryName>DK</CountryName>
+            <OrganizationName>DANID A/S // CVR:30808460</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>wzjnDAMuMgzjyAZ/JjuEV7KhN+8=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>25/11/2013 12:22:20</NotAfter>
+            <NotBefore>22/11/2013 12:22:24</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35"/>
+            <CertificateChain>
+                <ChainCertificate Id="45F626A804C20761AE633F0BF928CFAB6692F207F5A57F8028312A481AE29F35">
+                    <Source>SIGNATURE</Source>
+                </ChainCertificate>
+                <ChainCertificate Id="92D8092EE77BC9208F0897DC05271894E63EF27933AE537FB983EEF0EAE3EEC8">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <QCStatement>
+                <QCP>false</QCP>
+                <QCPPlus>false</QCPPlus>
+                <QCC>false</QCC>
+                <QCSSCD>false</QCSSCD>
+            </QCStatement>
+            <TrustedServiceProvider>
+                <TSPName>Nets DanID A/S</TSPName>
+                <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>03/03/2010 00:00:00</StartDate>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Info>
+                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
+            </Info>
+        </Certificate>
+    </UsedCertificates>
+</DiagnosticData>
