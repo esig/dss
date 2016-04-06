@@ -90,7 +90,7 @@
 					<xsl:attribute name="flow-name">xsl-region-body</xsl:attribute>
 					<xsl:attribute name="font-size">9pt</xsl:attribute>
 					
-					<xsl:apply-templates select="dss:Signature"/>
+					<xsl:apply-templates select="dss:Signatures"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
@@ -116,7 +116,7 @@
        		<xsl:variable name="bbbId" select="@Id" />
 	       	<xsl:variable name="bbbType">
 	       		<xsl:choose>
-	       			<xsl:when test="@Type = 'TIMESTAMP'"><xsl:value-of select="../dss:Signature/dss:ValidationProcessTimestamps[@Id = $bbbId]/@Type"/></xsl:when>
+	       			<xsl:when test="@Type = 'TIMESTAMP'"><xsl:value-of select="../dss:Signatures/dss:ValidationProcessTimestamps[@Id = $bbbId]/@Type"/></xsl:when>
 	       			<xsl:otherwise><xsl:value-of select="@Type"/></xsl:otherwise>
 	       		</xsl:choose>
 	       	</xsl:variable>
@@ -131,7 +131,7 @@
    		</xsl:if>
     </xsl:template>
     
-    <xsl:template match="dss:Signature">
+    <xsl:template match="dss:Signatures">
 		<fo:block>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>

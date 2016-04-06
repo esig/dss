@@ -6,7 +6,7 @@
 	<xsl:output method="html" encoding="utf-8" indent="yes" omit-xml-declaration="yes" />
 
     <xsl:template match="/dss:DetailedReport">
-	    <xsl:apply-templates select="dss:Signature"/>
+	    <xsl:apply-templates select="dss:Signatures"/>
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
@@ -26,7 +26,7 @@
 		       	<xsl:variable name="bbbId" select="@Id" />
 		       	<xsl:variable name="bbbType">
 		       		<xsl:choose>
-		       			<xsl:when test="@Type = 'TIMESTAMP'"><xsl:value-of select="../dss:Signature/dss:ValidationProcessTimestamps[@Id = $bbbId]/@Type"/></xsl:when>
+		       			<xsl:when test="@Type = 'TIMESTAMP'"><xsl:value-of select="../dss:Signatures/dss:ValidationProcessTimestamps[@Id = $bbbId]/@Type"/></xsl:when>
 		       			<xsl:otherwise><xsl:value-of select="@Type"/></xsl:otherwise>
 		       		</xsl:choose>
 		       	</xsl:variable>
@@ -43,7 +43,7 @@
 	   	</div>
     </xsl:template>
     
-    <xsl:template match="dss:Signature">
+    <xsl:template match="dss:Signatures">
 		<div>
 			<xsl:attribute name="class">panel panel-primary</xsl:attribute>
 			<div>
