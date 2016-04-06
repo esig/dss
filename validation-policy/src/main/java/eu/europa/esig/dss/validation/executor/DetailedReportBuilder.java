@@ -65,7 +65,7 @@ public class DetailedReportBuilder {
 				executeArchiveValidation(signatureAnalysis, signature, bbbs);
 			}
 
-			detailedReport.getSignature().add(signatureAnalysis);
+			detailedReport.getSignatures().add(signatureAnalysis);
 		}
 
 		return detailedReport;

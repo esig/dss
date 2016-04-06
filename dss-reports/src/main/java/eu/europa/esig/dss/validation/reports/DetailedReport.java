@@ -166,7 +166,7 @@ public class DetailedReport {
 	}
 
 	public Indication getTimestampValidationIndication(String timestampId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignature();
+		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
 		if (CollectionUtils.isNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
@@ -183,7 +183,7 @@ public class DetailedReport {
 	}
 
 	public SubIndication getTimestampValidationSubIndication(String timestampId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignature();
+		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
 		if (CollectionUtils.isNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
@@ -232,7 +232,7 @@ public class DetailedReport {
 	}
 
 	private XmlSignature getXmlSignatureById(String signatureId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignature();
+		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
 		if (CollectionUtils.isNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				if (StringUtils.equals(signatureId, xmlSignature.getId())) {
@@ -242,7 +242,7 @@ public class DetailedReport {
 		}
 		return null;
 	}
-	
+
 	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getJAXBModel() {
 		return jaxbDetailedReport;
 	}

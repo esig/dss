@@ -236,7 +236,7 @@ public class SimpleReportBuilder {
 	}
 
 	private XmlConstraintsConclusion getBasicSignatureValidationConclusion(String signatureId) {
-		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignature();
+		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
 			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessBasicSignatures();
@@ -246,7 +246,7 @@ public class SimpleReportBuilder {
 	}
 
 	private XmlConstraintsConclusion getLongTermDataValidationConclusion(String signatureId) {
-		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignature();
+		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
 			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessLongTermData();
@@ -256,7 +256,7 @@ public class SimpleReportBuilder {
 	}
 
 	private XmlConstraintsConclusion getArchivalValidationConclusion(String signatureId) {
-		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignature();
+		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
 			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessArchivalData();
