@@ -61,7 +61,6 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
@@ -116,11 +115,12 @@ import eu.europa.esig.dss.x509.ocsp.ListOCSPSource;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 /**
- * Validate the signed document. The content of the document is determined automatically. It can be: XML, CAdES(p7m),
- * PDF or ASiC(zip).
- * SignatureScopeFinder can be set using the appropriate setter (ex. setCadesSignatureScopeFinder). By default, this
- * class will use the
- * default SignatureScopeFinder as defined by eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
+ * Validate the signed document. The content of the document is determined
+ * automatically. It can be: XML, CAdES(p7m), PDF or ASiC(zip).
+ * SignatureScopeFinder can be set using the appropriate setter (ex.
+ * setCadesSignatureScopeFinder). By default, this class will use the default
+ * SignatureScopeFinder as defined by
+ * eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
 public abstract class SignedDocumentValidator implements DocumentValidator {
 
@@ -132,8 +132,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected ProcessExecutor processExecutor = null;
 
 	/**
-	 * This is the pool of certificates used in the validation process. The pools present in the certificate verifier
-	 * are merged and added to this pool.
+	 * This is the pool of certificates used in the validation process. The
+	 * pools present in the certificate verifier are merged and added to this
+	 * pool.
 	 */
 	protected CertificatePool validationCertPool;
 
@@ -143,16 +144,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected DSSDocument document;
 
 	/**
-	 * In case of a detached signature this {@code List} contains the signed documents.
+	 * In case of a detached signature this {@code List} contains the signed
+	 * documents.
 	 */
 	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 
 	protected CertificateToken providedSigningCertificateToken = null;
 
 	/**
-	 * The reference to the certificate verifier. The current DSS implementation proposes
-	 * {@link eu.europa.esig.dss.validation.CommonCertificateVerifier}. This verifier
-	 * encapsulates the references to different sources used in the signature validation process.
+	 * The reference to the certificate verifier. The current DSS implementation
+	 * proposes {@link eu.europa.esig.dss.validation.CommonCertificateVerifier}.
+	 * This verifier encapsulates the references to different sources used in
+	 * the signature validation process.
 	 */
 	protected CertificateVerifier certificateVerifier;
 
@@ -209,11 +212,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method guesses the document format and returns an appropriate document validator.
+	 * This method guesses the document format and returns an appropriate
+	 * document validator.
 	 *
 	 * @param dssDocument
 	 *            The instance of {@code DSSDocument} to validate
-	 * @return returns the specific instance of SignedDocumentValidator in terms of the document type
+	 * @return returns the specific instance of SignedDocumentValidator in terms
+	 *         of the document type
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
 		if (CollectionUtils.isEmpty(registredDocumentValidators)) {
@@ -260,11 +265,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * To carry out the validation process of the signature(s) some external sources of certificates and of revocation
-	 * data can be needed. The certificate verifier is used to pass
-	 * these values. Note that once this setter is called any change in the content of the
-	 * <code>CommonTrustedCertificateSource</code> or in adjunct certificate source is not
-	 * taken into account.
+	 * To carry out the validation process of the signature(s) some external
+	 * sources of certificates and of revocation data can be needed. The
+	 * certificate verifier is used to pass these values. Note that once this
+	 * setter is called any change in the content of the
+	 * <code>CommonTrustedCertificateSource</code> or in adjunct certificate
+	 * source is not taken into account.
 	 *
 	 * @param certificateVerifier
 	 */
@@ -273,7 +279,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		this.certificateVerifier = certificateVerifier;
 		validationCertPool = certificateVerifier.createValidationPool();
 
-		// If ASiC, the certificateVerifier must be given to the subordinate validator
+		// If ASiC, the certificateVerifier must be given to the subordinate
+		// validator
 		DocumentValidator subordinateValidator = getSubordinatedValidator();
 		while (subordinateValidator != null) {
 			subordinateValidator.setCertificateVerifier(certificateVerifier);
@@ -288,8 +295,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method allows to provide an external policy document to be used with all signatures within the document to
-	 * validate.
+	 * This method allows to provide an external policy document to be used with
+	 * all signatures within the document to validate.
 	 *
 	 * @param policyDocument
 	 */
@@ -300,7 +307,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method allows to provide an external policy document to be used with a given signature id.
+	 * This method allows to provide an external policy document to be used with
+	 * a given signature id.
 	 *
 	 * @param signatureId
 	 *            signature id
@@ -317,8 +325,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method allows to specify the validation level (Basic / Timestamp / Long Term / Archival).
-	 * By default, the selected validation is ARCHIVAL
+	 * This method allows to specify the validation level (Basic / Timestamp /
+	 * Long Term / Archival). By default, the selected validation is ARCHIVAL
 	 */
 	@Override
 	public void setValidationLevel(ValidationLevel validationLevel) {
@@ -363,8 +371,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Validates the document and all its signatures. The policyDataStream contains the constraint file. If null or
-	 * empty the default file is used.
+	 * Validates the document and all its signatures. The policyDataStream
+	 * contains the constraint file. If null or empty the default file is used.
 	 *
 	 * @param policyDataStream
 	 *            {@code InputStream}
@@ -377,8 +385,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If
-	 * null or empty the default file is used.
+	 * Validates the document and all its signatures. The
+	 * {@code validationPolicyDom} contains the constraint file. If null or
+	 * empty the default file is used.
 	 *
 	 * @param validationPolicyDom
 	 *            {@code Document}
@@ -392,8 +401,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Validates the document and all its signatures. The {@code validationPolicyDom} contains the constraint file. If
-	 * null or empty the default file is used.
+	 * Validates the document and all its signatures. The
+	 * {@code validationPolicyDom} contains the constraint file. If null or
+	 * empty the default file is used.
 	 *
 	 * @param validationPolicy
 	 *            {@code ValidationPolicy}
@@ -440,8 +450,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method returns the process executor. If the instance of this class is not yet instantiated then the new
-	 * instance is created.
+	 * This method returns the process executor. If the instance of this class
+	 * is not yet instantiated then the new instance is created.
 	 *
 	 * @return {@code ProcessExecutor}
 	 */
@@ -454,9 +464,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method generates the diagnostic data. This is the set of all data extracted from the signature, associated
-	 * certificates and trusted lists. The diagnostic data contains
-	 * also the results of basic computations (hash check, signature integrity, certificates chain...
+	 * This method generates the diagnostic data. This is the set of all data
+	 * extracted from the signature, associated certificates and trusted lists.
+	 * The diagnostic data contains also the results of basic computations (hash
+	 * check, signature integrity, certificates chain...
 	 */
 	private DiagnosticData generateDiagnosticData() {
 
@@ -466,7 +477,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final List<AdvancedSignature> allSignatureList = getAllSignatures();
 
-		// The list of all signing certificates is created to allow a parallel validation.
+		// The list of all signing certificates is created to allow a parallel
+		// validation.
 		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
 
 		final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
@@ -480,7 +492,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		validationContext.setCurrentTime(provideProcessExecutorInstance().getCurrentTime());
 		validationContext.validate();
 
-		// For each validated signature present in the document to be validated the extraction of diagnostic data is
+		// For each validated signature present in the document to be validated
+		// the extraction of diagnostic data is
 		// launched.
 		final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
 		for (final AdvancedSignature signature : allSignatureList) {
@@ -496,8 +509,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method prepares the {@code DiagnosticData} object to store all static information about the signatures being
-	 * validated.
+	 * This method prepares the {@code DiagnosticData} object to store all
+	 * static information about the signatures being validated.
 	 */
 	private void prepareDiagnosticData() {
 
@@ -515,14 +528,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Escape special characters which cause problems with jaxb or documentbuilderfactory and namespace aware mode
+	 * Escape special characters which cause problems with jaxb or
+	 * documentbuilderfactory and namespace aware mode
 	 */
 	private String removeSpecialCharsForXml(String text) {
 		return text.replaceAll("&", "");
 	}
 
 	/**
-	 * This method returns the list of all signatures including the countersignatures.
+	 * This method returns the list of all signatures including the
+	 * countersignatures.
 	 *
 	 * @return {@code List} of {@code AdvancedSignature} to validate
 	 */
@@ -543,7 +558,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * For all signatures to be validated this method merges the OCSP sources.
 	 *
 	 * @param allSignatureList
-	 *            {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 *            {@code List} of {@code AdvancedSignature}s to validate
+	 *            including the countersignatures
 	 * @return {@code ListCRLSource}
 	 */
 	private ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
@@ -560,7 +576,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * For all signatures to be validated this method merges the OCSP sources.
 	 *
 	 * @param allSignatureList
-	 *            {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 *            {@code List} of {@code AdvancedSignature}s to validate
+	 *            including the countersignatures
 	 * @return {@code ListOCSPSource}
 	 */
 	private ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
@@ -575,10 +592,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * @param allSignatureList
-	 *            {@code List} of {@code AdvancedSignature}s to validate including the countersignatures
+	 *            {@code List} of {@code AdvancedSignature}s to validate
+	 *            including the countersignatures
 	 * @param validationContext
-	 *            {@code ValidationContext} is the implementation of the validators for: certificates, timestamps and
-	 *            revocation data.
+	 *            {@code ValidationContext} is the implementation of the
+	 *            validators for: certificates, timestamps and revocation data.
 	 */
 	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
 
@@ -597,7 +615,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @param signature
 	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
-	 * @return The JAXB object containing all diagnostic data pertaining to the signature
+	 * @return The JAXB object containing all diagnostic data pertaining to the
+	 *         signature
 	 */
 	private XmlSignature validateSignature(final AdvancedSignature signature) throws DSSException {
 
@@ -626,7 +645,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlSignature.setTimestamps(xmlTimestamps);
 		} catch (Exception e) {
 
-			// Any raised error is just logged and the process continues with the next signature.
+			// Any raised error is just logged and the process continues with
+			// the next signature.
 			LOG.warn(e.getMessage(), e);
 			addErrorMessage(xmlSignature, e);
 		}
@@ -700,9 +720,23 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(keyLength);
 
 		final boolean signatureValid = timestampToken.isSignatureValid();
-		xmlBasicSignatureType.setReferenceDataFound(signatureValid /* timestampToken.isReferenceDataFound() */);
-		xmlBasicSignatureType.setReferenceDataIntact(signatureValid /* timestampToken.isReferenceDataIntact() */);
-		xmlBasicSignatureType.setSignatureIntact(signatureValid /* timestampToken.isSignatureIntact() */);
+		xmlBasicSignatureType.setReferenceDataFound(signatureValid /*
+																	 * timestampToken
+																	 * .
+																	 * isReferenceDataFound
+																	 * ()
+																	 */);
+		xmlBasicSignatureType.setReferenceDataIntact(signatureValid /*
+																	 * timestampToken
+																	 * .
+																	 * isReferenceDataIntact
+																	 * ()
+																	 */);
+		xmlBasicSignatureType.setSignatureIntact(signatureValid /*
+																 * timestampToken.
+																 * isSignatureIntact
+																 * ()
+																 */);
 		xmlBasicSignatureType.setSignatureValid(signatureValid);
 		xmlTimestampToken.setBasicSignature(xmlBasicSignatureType);
 
@@ -816,8 +850,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method deals with the Qualified Certificate Statements. The retrieved information is transformed to the JAXB
-	 * object.<br>
+	 * This method deals with the Qualified Certificate Statements. The
+	 * retrieved information is transformed to the JAXB object.<br>
 	 * Qualified Certificate Statements, the following Policies are checked:<br>
 	 * - Qualified Certificates Policy "0.4.0.1456.1.1” (QCP);<br>
 	 * - Qualified Certificates Policy "0.4.0.1456.1.2" (QCP+);<br>
@@ -839,8 +873,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method deals with the certificate validation extra information. The retrieved information is transformed to
-	 * the JAXB object.
+	 * This method deals with the certificate validation extra information. The
+	 * retrieved information is transformed to the JAXB object.
 	 *
 	 * @param certToken
 	 * @param xmlCert
@@ -863,10 +897,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method deals with the certificate's details. The retrieved information is transformed to the JAXB object.
+	 * This method deals with the certificate's details. The retrieved
+	 * information is transformed to the JAXB object.
 	 *
 	 * @param usedDigestAlgorithms
-	 *            set of different digest algorithms used to compute certificate digest
+	 *            set of different digest algorithms used to compute certificate
+	 *            digest
 	 * @param certToken
 	 *            current certificate token
 	 * @return
@@ -903,10 +939,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlDigestAlgAndValue.setDigestMethod(digestAlgorithm.getName());
 			xmlDigestAlgAndValue.setDigestValue(DSSUtils.digest(digestAlgorithm, certToken));
 			xmlCert.getDigestAlgAndValue().add(xmlDigestAlgAndValue);
-		}
-		TokenIdentifier issuerTokenDSSId = certToken.getIssuerTokenDSSId();
-		if (issuerTokenDSSId != null) {
-			xmlCert.setIssuerCertificate(issuerTokenDSSId.asXmlId());
 		}
 		xmlCert.setNotAfter(certToken.getNotAfter());
 		xmlCert.setNotBefore(certToken.getNotBefore());
@@ -976,10 +1008,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method deals with the certificate chain. The retrieved information is transformed to the JAXB object.
+	 * This method deals with the certificate chain. The retrieved information
+	 * is transformed to the JAXB object.
 	 *
 	 * @param xmlSignature
-	 *            The JAXB object containing all diagnostic data pertaining to the signature
+	 *            The JAXB object containing all diagnostic data pertaining to
+	 *            the signature
 	 * @param signingToken
 	 *            {@code CertificateToken} relative to the current signature
 	 */
@@ -993,8 +1027,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method deals with the trusted service information in case of trusted certificate. The retrieved information
-	 * is transformed to the JAXB object.
+	 * This method deals with the trusted service information in case of trusted
+	 * certificate. The retrieved information is transformed to the JAXB object.
 	 *
 	 * @param certToken
 	 * @param xmlCert
@@ -1038,7 +1072,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Retrieves all the qualifiers for which the corresponding conditionEntry is true.
+	 * Retrieves all the qualifiers for which the corresponding conditionEntry
+	 * is true.
 	 *
 	 * @param certificateToken
 	 * @return
@@ -1063,8 +1098,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method deals with the revocation data of a certificate. The retrieved information is transformed to the JAXB
-	 * object.
+	 * This method deals with the revocation data of a certificate. The
+	 * retrieved information is transformed to the JAXB object.
 	 *
 	 * @param certToken
 	 * @param xmlCert
@@ -1076,7 +1111,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (revocationToken != null) {
 
 			final Boolean revocationTokenStatus = revocationToken.getStatus();
-			// revocationTokenStatus can be null when OCSP return Unknown. In this case we set status to false.
+			// revocationTokenStatus can be null when OCSP return Unknown. In
+			// this case we set status to false.
 			xmlRevocation.setStatus(revocationTokenStatus == null ? false : revocationTokenStatus);
 			xmlRevocation.setProductionDate(revocationToken.getProductionDate());
 			xmlRevocation.setThisUpdate(revocationToken.getThisUpdate());
@@ -1091,7 +1127,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlRevocation.setAvailable(revocationToken.isAvailable());
 			}
 
-			// In case of CRL, the X509CRL can be the same for different certificates
+			// In case of CRL, the X509CRL can be the same for different
+			// certificates
 			byte[] digestForId = DSSUtils.digest(DigestAlgorithm.SHA256, certToken.getEncoded(), revocationToken.getEncoded());
 			xmlRevocation.setId(DatatypeConverter.printHexBinary(digestForId));
 
@@ -1137,12 +1174,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method deals with the signature policy. The retrieved information is transformed to the JAXB object.
+	 * This method deals with the signature policy. The retrieved information is
+	 * transformed to the JAXB object.
 	 *
 	 * @param signature
 	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
 	 * @param xmlSignature
-	 *            The JAXB object containing all diagnostic data pertaining to the signature
+	 *            The JAXB object containing all diagnostic data pertaining to
+	 *            the signature
 	 */
 	private void dealPolicy(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
@@ -1180,9 +1219,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlPolicy.setDigestAlgAndValue(xmlDigestAlgAndValue);
 
 		/**
-		 * ETSI 102 853:
-		 * 3) Obtain the digest of the resulting document against which the digest value present in the
-		 * property/attribute will be checked:
+		 * ETSI 102 853: 3) Obtain the digest of the resulting document against
+		 * which the digest value present in the property/attribute will be
+		 * checked:
 		 */
 		if ((policyDocument == null) && StringUtils.isEmpty(policyUrl)) {
 			xmlPolicy.setIdentified(false);
@@ -1227,12 +1266,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			if (isAsn1Processable) {
 				/**
-				 * a)
-				 * If the resulting document is based on TR 102 272 [i.2] (ESI: ASN.1 format for signature policies),
-				 * use the digest value present in the
-				 * SignPolicyDigest element from the resulting document. Check that the digest algorithm indicated
-				 * in the SignPolicyDigestAlg from the resulting document is equal to the digest algorithm indicated in
-				 * the property.
+				 * a) If the resulting document is based on TR 102 272 [i.2]
+				 * (ESI: ASN.1 format for signature policies), use the digest
+				 * value present in the SignPolicyDigest element from the
+				 * resulting document. Check that the digest algorithm indicated
+				 * in the SignPolicyDigestAlg from the resulting document is
+				 * equal to the digest algorithm indicated in the property.
 				 */
 
 				final ASN1Sequence signPolicyHashAlgObject = (ASN1Sequence) asn1Sequence.getObjectAt(0);
@@ -1240,19 +1279,20 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				DigestAlgorithm signPolicyHashAlgFromPolicy = DigestAlgorithm.forOID(signPolicyHashAlgIdentifier.getAlgorithm().getId());
 
 				/**
-				 * b)
-				 * If the resulting document is based on TR 102 038 [i.3] ((ESI) XML format for signature policies), use
-				 * the digest value present in
-				 * signPolicyHash element from the resulting document. Check that the digest
-				 * algorithm indicated in the signPolicyHashAlg from the resulting document is equal to the digest
-				 * algorithm indicated in the attribute.
+				 * b) If the resulting document is based on TR 102 038 [i.3]
+				 * ((ESI) XML format for signature policies), use the digest
+				 * value present in signPolicyHash element from the resulting
+				 * document. Check that the digest algorithm indicated in the
+				 * signPolicyHashAlg from the resulting document is equal to the
+				 * digest algorithm indicated in the attribute.
 				 */
 
 				/**
-				 * The use of a zero-sigPolicyHash value is to ensure backwards compatibility with earlier versions of
-				 * the
-				 * current document. If sigPolicyHash is zero, then the hash value should not be checked against the
-				 * calculated hash value of the signature policy.
+				 * The use of a zero-sigPolicyHash value is to ensure backwards
+				 * compatibility with earlier versions of the current document.
+				 * If sigPolicyHash is zero, then the hash value should not be
+				 * checked against the calculated hash value of the signature
+				 * policy.
 				 */
 				if (!signPolicyHashAlgFromPolicy.equals(signPolicyHashAlgFromSignature)) {
 					xmlPolicy.setProcessingError("The digest algorithm indicated in the SignPolicyHashAlg from the resulting document ("
@@ -1287,8 +1327,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			} else {
 
 				/**
-				 * c)
-				 * In all other cases, compute the digest using the digesting algorithm indicated in the children of the
+				 * c) In all other cases, compute the digest using the digesting
+				 * algorithm indicated in the children of the
 				 * property/attribute.
 				 */
 
@@ -1314,13 +1354,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method deals with the basic signature data. The retrieved information is transformed to the JAXB object. The
-	 * signing certificate token is returned if found.
+	 * This method deals with the basic signature data. The retrieved
+	 * information is transformed to the JAXB object. The signing certificate
+	 * token is returned if found.
 	 *
 	 * @param signature
 	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
 	 * @param xmlSignature
-	 *            The JAXB object containing all diagnostic data pertaining to the signature
+	 *            The JAXB object containing all diagnostic data pertaining to
+	 *            the signature
 	 * @return
 	 */
 	private CertificateToken dealSignature(final AdvancedSignature signature, final XmlSignature xmlSignature) {
@@ -1362,7 +1404,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final EncryptionAlgorithm encryptionAlgorithm = signature.getEncryptionAlgorithm();
 		final String encryptionAlgorithmString = encryptionAlgorithm == null ? "?" : encryptionAlgorithm.getName();
 		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmString);
-		// signingCertificateValidity can be null in case of a non AdES signature.
+		// signingCertificateValidity can be null in case of a non AdES
+		// signature.
 		final CertificateToken signingCertificateToken = certificateValidity == null ? null : certificateValidity.getCertificateToken();
 		final int keyLength = signingCertificateToken == null ? 0 : DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
 		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
@@ -1498,14 +1541,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method verifies the cryptographic integrity of the signature: the references are identified, their digest is
-	 * checked and then the signature itself. The result of these
-	 * verifications is transformed to the JAXB representation.
+	 * This method verifies the cryptographic integrity of the signature: the
+	 * references are identified, their digest is checked and then the signature
+	 * itself. The result of these verifications is transformed to the JAXB
+	 * representation.
 	 *
 	 * @param signature
 	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
 	 * @param xmlSignature
-	 *            The JAXB object containing all diagnostic data pertaining to the signature
+	 *            The JAXB object containing all diagnostic data pertaining to
+	 *            the signature
 	 */
 	private void performSignatureCryptographicValidation(final AdvancedSignature signature, final XmlSignature xmlSignature) {
 
@@ -1523,14 +1568,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method finds the signing certificate and creates its JAXB object representation. This is the signing
-	 * certificate used to produce the main signature (signature being
-	 * analysed). If the signingToken is null (the signing certificate was not found) then Id is set to 0.
+	 * This method finds the signing certificate and creates its JAXB object
+	 * representation. This is the signing certificate used to produce the main
+	 * signature (signature being analysed). If the signingToken is null (the
+	 * signing certificate was not found) then Id is set to 0.
 	 *
 	 * @param signature
 	 *            Signature to be validated (can be XAdES, CAdES, PAdES).
 	 * @param xmlSignature
-	 *            The JAXB object containing all diagnostic data pertaining to the signature
+	 *            The JAXB object containing all diagnostic data pertaining to
+	 *            the signature
 	 * @return
 	 */
 	private CertificateValidity dealSigningCertificate(final AdvancedSignature signature, final XmlSignature xmlSignature) {
@@ -1577,11 +1624,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This method allows to define the sequence of the validator related to a document to validate. It's only used with
-	 * ASiC-E container.
+	 * This method allows to define the sequence of the validator related to a
+	 * document to validate. It's only used with ASiC-E container.
 	 *
 	 * @param validator
-	 *            {@code SignedDocumentValidator} corresponding to the next signature with in the contained.
+	 *            {@code SignedDocumentValidator} corresponding to the next
+	 *            signature with in the contained.
 	 */
 	public void setNextValidator(final DocumentValidator validator) {
 		throw new DSSUnsupportedOperationException("This method is not applicable in this context!");

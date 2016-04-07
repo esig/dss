@@ -13,7 +13,9 @@ public class SoapDocumentValidationServiceImpl implements SoapDocumentValidation
 	}
 
 	@Override
-	public ReportsDTO validateSignature(DataToValidateDTO dataToValidate) {
-		return validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocument(), dataToValidate.getPolicy());
+	public WSReportsDTO validateSignature(DataToValidateDTO dataToValidate) {
+		ReportsDTO reportsDTO = validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocument(),
+				dataToValidate.getPolicy());
+		return new WSReportsDTO(reportsDTO.getDiagnosticData(), reportsDTO.getSimpleReport(), reportsDTO.getDetailedReport());
 	}
 }
