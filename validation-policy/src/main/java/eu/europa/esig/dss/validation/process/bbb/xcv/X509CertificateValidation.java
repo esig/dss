@@ -166,10 +166,23 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 				item = item.setNextItem(certificateCryptographic(certificate, context, SubContext.CA_CERTIFICATE));
 
-				// check cryptographic constraints for the revocation token
-				RevocationWrapper caRevocationData = certificate.getRevocationData();
-				if (caRevocationData != null) {
-					item = item.setNextItem(revocationCryptographic(caRevocationData, Context.REVOCATION, SubContext.CA_CERTIFICATE));
+				if (!certificate.isTrusted()) {
+
+					item = item.setNextItem(revocationDataAvailable(certificate, SubContext.CA_CERTIFICATE));
+
+					item = item.setNextItem(revocationDataTrusted(certificate, SubContext.CA_CERTIFICATE));
+
+					item = item.setNextItem(revocationFreshness(certificate));
+
+					item = item.setNextItem(certificateRevoked(certificate, SubContext.CA_CERTIFICATE));
+
+					item = item.setNextItem(certificateOnHold(certificate, SubContext.CA_CERTIFICATE));
+
+					// check cryptographic constraints for the revocation token
+					RevocationWrapper caRevocationData = certificate.getRevocationData();
+					if (caRevocationData != null) {
+						item = item.setNextItem(revocationCryptographic(caRevocationData, Context.REVOCATION, SubContext.CA_CERTIFICATE));
+					}
 				}
 			}
 		}
