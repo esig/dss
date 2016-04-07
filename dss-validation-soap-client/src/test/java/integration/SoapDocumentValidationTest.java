@@ -19,10 +19,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.validation.SoapDocumentValidationService;
+import eu.europa.esig.dss.validation.WSReportsDTO;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.dto.DataToValidateDTO;
-import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,7 +38,7 @@ public class SoapDocumentValidationTest {
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, null, null);
 
-		ReportsDTO result = validationService.validateSignature(toValidate);
+		WSReportsDTO result = validationService.validateSignature(toValidate);
 
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
@@ -59,7 +59,7 @@ public class SoapDocumentValidationTest {
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, originalFile, null);
 
-		ReportsDTO result = validationService.validateSignature(toValidate);
+		WSReportsDTO result = validationService.validateSignature(toValidate);
 
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
@@ -84,7 +84,7 @@ public class SoapDocumentValidationTest {
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, originalFile, policy);
 
-		ReportsDTO result = validationService.validateSignature(toValidate);
+		WSReportsDTO result = validationService.validateSignature(toValidate);
 
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
@@ -108,7 +108,7 @@ public class SoapDocumentValidationTest {
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, null, policy);
 
-		ReportsDTO result = validationService.validateSignature(toValidate);
+		WSReportsDTO result = validationService.validateSignature(toValidate);
 
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
