@@ -26,6 +26,7 @@ import java.security.cert.X509CRLEntry;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.ArrayUtils;
 import org.bouncycastle.asn1.ASN1Enumerated;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
@@ -48,6 +49,8 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.util.Arrays;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
@@ -61,6 +64,8 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
  */
 
 public final class DSSRevocationUtils {
+
+	private static final Logger logger = LoggerFactory.getLogger(DSSRevocationUtils.class);
 
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
 
@@ -147,21 +152,27 @@ public final class DSSRevocationUtils {
 	 * @param crlEntry
 	 *            An object for a revoked certificate in a CRL (Certificate
 	 *            Revocation List).
-	 * @return
-	 * @throws DSSException
+	 * @return reason or null
 	 */
-	public static String getRevocationReason(final X509CRLEntry crlEntry) throws DSSException {
+	public static String getRevocationReason(final X509CRLEntry crlEntry) {
 		final String reasonId = Extension.reasonCode.getId();
 		final byte[] extensionBytes = crlEntry.getExtensionValue(reasonId);
 
+		if (ArrayUtils.isEmpty(extensionBytes)) {
+			logger.warn("Empty reasonCode extension for crl entry");
+			return null;
+		}
+
+		String reason = null;
 		try {
 			final ASN1Enumerated reasonCodeExtension = ASN1Enumerated.getInstance(X509ExtensionUtil.fromExtensionValue(extensionBytes));
-			final CRLReason reason = CRLReason.getInstance(reasonCodeExtension);
-			int intValue = reason.getValue().intValue();
-			return CRLReasonEnum.fromInt(intValue).name();
+			final CRLReason crlReason = CRLReason.getInstance(reasonCodeExtension);
+			int intValue = crlReason.getValue().intValue();
+			reason = CRLReasonEnum.fromInt(intValue).name();
 		} catch (IOException e) {
-			throw new DSSException(e);
+			logger.error("Unable to retrieve the crl reason : " + e.getMessage(), e);
 		}
+		return reason;
 	}
 
 	/**

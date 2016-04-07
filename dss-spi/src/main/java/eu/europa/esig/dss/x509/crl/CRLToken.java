@@ -118,11 +118,8 @@ public class CRLToken extends RevocationToken {
 		final X509CRLEntry crlEntry = x509crl.getRevokedCertificate(serialNumber);
 		status = null == crlEntry;
 		if (!status) {
-
 			revocationDate = crlEntry.getRevocationDate();
-
-			final String revocationReason = DSSRevocationUtils.getRevocationReason(crlEntry);
-			reason = revocationReason;
+			reason = DSSRevocationUtils.getRevocationReason(crlEntry);
 		}
 	}
 
