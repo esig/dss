@@ -433,11 +433,14 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			final DirContext ctx = new InitialDirContext(env);
 			final Attributes attributes = ctx.getAttributes(StringUtils.EMPTY);
 			final Attribute attribute = attributes.get(attributeName);
-			final byte[] ldapBytes = (byte[]) attribute.get();
-			if (ArrayUtils.isEmpty(ldapBytes)) {
-				throw new DSSException("Cannot download CRL from: " + urlString);
+			if (attribute != null) {
+				final byte[] ldapBytes = (byte[]) attribute.get();
+				if (ArrayUtils.isNotEmpty(ldapBytes)) {
+					return ldapBytes;
+				}
+			} else {
+				LOG.warn("No attribute '" + attributeName + "' for url " + urlString);
 			}
-			return ldapBytes;
 		} catch (Exception e) {
 			LOG.warn(e.getMessage(), e);
 		}
