@@ -15,11 +15,12 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateExpirationCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateOnHoldCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CountryCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.GivenNameCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.checks.IntermediateCertificateRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.KeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.OrganizationNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.OrganizationUnitCheck;
@@ -29,9 +30,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.checks.RevocationDataAvaila
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.RevocationDataTrustedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.RevocationFreshnessCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateIssuedToLegalPersonCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateOnHoldCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateQualifiedCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateSupportedBySSCDCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateTSLStatusAndValidityCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.SigningCertificateTSLStatusCheck;
@@ -162,8 +161,6 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 				item = item.setNextItem(certificateSignatureValid(certificate, SubContext.CA_CERTIFICATE));
 
-				item = item.setNextItem(intermediateCertificateRevoked(certificate, SubContext.CA_CERTIFICATE));
-
 				item = item.setNextItem(certificateCryptographic(certificate, context, SubContext.CA_CERTIFICATE));
 
 				if (!certificate.isTrusted()) {
@@ -260,17 +257,12 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> certificateRevoked(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotRevokedConstraint(context, subContext);
-		return new SigningCertificateRevokedCheck(result, certificate, constraint);
-	}
-
-	private ChainItem<XmlXCV> intermediateCertificateRevoked(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateNotRevokedConstraint(context, subContext);
-		return new IntermediateCertificateRevokedCheck(result, certificate, constraint);
+		return new CertificateRevokedCheck(result, certificate, constraint, subContext);
 	}
 
 	private ChainItem<XmlXCV> certificateOnHold(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotOnHoldConstraint(context, subContext);
-		return new SigningCertificateOnHoldCheck(result, certificate, constraint);
+		return new CertificateOnHoldCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlXCV> signingCertificateInTSLValidity(CertificateWrapper certificate) {

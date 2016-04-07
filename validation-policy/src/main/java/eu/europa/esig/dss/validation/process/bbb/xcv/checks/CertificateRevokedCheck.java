@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.MessageTag;
+import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -11,13 +12,15 @@ import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class SigningCertificateRevokedCheck extends ChainItem<XmlXCV> {
+public class CertificateRevokedCheck extends ChainItem<XmlXCV> {
 
 	private final CertificateWrapper certificate;
+	private final SubContext subContext;
 
-	public SigningCertificateRevokedCheck(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public CertificateRevokedCheck(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint, SubContext subContext) {
 		super(result, constraint);
 		this.certificate = certificate;
+		this.subContext = subContext;
 	}
 
 	@Override
@@ -49,7 +52,11 @@ public class SigningCertificateRevokedCheck extends ChainItem<XmlXCV> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.REVOKED_NO_POE;
+		if (SubContext.SIGNING_CERT.equals(subContext)) {
+			return SubIndication.REVOKED_NO_POE;
+		} else {
+			return SubIndication.REVOKED_CA_NO_POE;
+		}
 	}
 
 }
