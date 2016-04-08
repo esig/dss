@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-CZ-4.pdf</DocumentName>
     <Signature Id="id-b0e3f11cc97f8f166e32b24131c221a85f0581092bfdc147259a171f7afbc8dc">
-        <DateTime>13/12/2013 10:47:03</DateTime>
+        <DateTime>2013-12-13T10:47:03</DateTime>
         <SignatureFormat>PAdES_BASELINE_T</SignatureFormat>
         <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -30,7 +30,7 @@
         <ContentType>application/pdf</ContentType>
         <Timestamps>
             <Timestamp Id="C4D485352DA7D0292AA540B833FFEF27D62668B282E2FBAA19E172F7E49AF27A" Type="SIGNATURE_TIMESTAMP">
-                <ProductionTime>13/12/2013 10:47:04</ProductionTime>
+                <ProductionTime>2013-12-13T10:47:04</ProductionTime>
                 <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>KIRJq7PHA8gB0fc0T8T/zXC5CNbXb9X0y4oINS5ApNs=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -78,8 +78,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>0kQaqMIDrsqpblAfEk1Sto/kw3U=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>01/09/2019 02:00:00</NotAfter>
-            <NotBefore>01/09/2009 02:00:00</NotBefore>
+            <NotAfter>2019-09-01T02:00:00</NotAfter>
+            <NotBefore>2009-09-01T02:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -112,8 +112,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>6iMCmrLS3MXMy0OkfQZEAAadvxM=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>21/12/2016 01:00:00</NotAfter>
-            <NotBefore>21/12/2011 01:00:00</NotBefore>
+            <NotAfter>2016-12-21T01:00:00</NotAfter>
+            <NotBefore>2011-12-21T01:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -146,8 +146,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>POjFWr33wzVLhibbcrlxfiSIO/w=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>21/10/2014 08:23:17</NotAfter>
-            <NotBefore>21/10/2013 08:23:17</NotBefore>
+            <NotAfter>2014-10-21T08:23:17</NotAfter>
+            <NotBefore>2013-10-21T08:23:17</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -182,7 +182,7 @@
                 <TSPServiceName>(16) I.CA - issuing qualified certificates</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>01/09/2009 02:00:00</StartDate>
+                <StartDate>2009-09-01T02:00:00</StartDate>
                 <Qualifiers>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert</Qualifier>
                 </Qualifiers>

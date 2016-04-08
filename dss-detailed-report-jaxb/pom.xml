@@ -33,7 +33,7 @@
 									<goal>generate</goal>
 								</goals>
 								<configuration>
-									<schemaDirectory>src/main/xsd</schemaDirectory>
+									<schemaDirectory>src/main/resources/xsd</schemaDirectory>
 									<generatePackage>eu.europa.esig.dss.jaxb.detailedreport</generatePackage>
 									<schemaIncludes>
 										<schemaInclude>DetailedReport.xsd</schemaInclude>

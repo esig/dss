@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>signedLTV.pdf</DocumentName>
     <Signature Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93">
-        <DateTime>29/04/2014 07:32:50</DateTime>
+        <DateTime>2014-04-29T07:32:50</DateTime>
         <SignatureFormat>PAdES_BASELINE_LTA</SignatureFormat>
         <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -30,7 +30,7 @@
         <ContentType>application/pdf</ContentType>
         <Timestamps>
             <Timestamp Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" Type="SIGNATURE_TIMESTAMP">
-                <ProductionTime>29/04/2014 07:32:54</ProductionTime>
+                <ProductionTime>2014-04-29T07:32:54</ProductionTime>
                 <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>il0Pi//B+xBP1O3cbka4xtLtSZw6X96ci4RA2zSziw4=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -62,7 +62,7 @@
                 </SignedObjects>
             </Timestamp>
             <Timestamp Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" Type="SIGNATURE_TIMESTAMP">
-                <ProductionTime>29/04/2014 07:33:19</ProductionTime>
+                <ProductionTime>2014-04-29T07:33:19</ProductionTime>
                 <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>lqYYTS4wIpYd86rxMvnU3k4OWRL1tzSknKrwbHTZ/Y8=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -94,7 +94,7 @@
                 </SignedObjects>
             </Timestamp>
             <Timestamp Id="7453A148A73E91DDCD689D466D32A6C652D397853E52C1EC2EAC5F0CF4881168" Type="ARCHIVE_TIMESTAMP">
-                <ProductionTime>29/04/2014 07:36:30</ProductionTime>
+                <ProductionTime>2014-04-29T07:36:30</ProductionTime>
                 <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>xUNGJfAdRgtCCUF7MS9pAIRECenbxln32Us9U3r9Io8=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -139,7 +139,7 @@
                 </SignedObjects>
             </Timestamp>
             <Timestamp Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" Type="ARCHIVE_TIMESTAMP">
-                <ProductionTime>29/04/2014 07:37:12</ProductionTime>
+                <ProductionTime>2014-04-29T07:37:12</ProductionTime>
                 <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>bHPXVM/CvO3D4WJ0zA1xDAZfL+PsWFUqWK5hcQJ5OHM=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -185,7 +185,7 @@
                 </SignedObjects>
             </Timestamp>
             <Timestamp Id="A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF" Type="ARCHIVE_TIMESTAMP">
-                <ProductionTime>29/04/2014 07:35:49</ProductionTime>
+                <ProductionTime>2014-04-29T07:35:49</ProductionTime>
                 <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>hyJI8p6uy4vVdLQUyyIIdi/wmjN4mtpwRaqg3cWH8lE=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -252,8 +252,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>FcPZ/ByKno7Us/dn83JGxZKfmCk=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>22/02/2016 18:29:38</NotAfter>
-            <NotBefore>22/02/2010 18:29:38</NotBefore>
+            <NotAfter>2016-02-22T18:29:38</NotAfter>
+            <NotBefore>2010-02-22T18:29:38</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -287,8 +287,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>GJZGTRInvkrNd4wl/cpZ3HCCKEs=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>21/10/2014 14:45:54</NotAfter>
-            <NotBefore>21/10/2013 14:45:54</NotBefore>
+            <NotAfter>2014-10-21T14:45:54</NotAfter>
+            <NotBefore>2013-10-21T14:45:54</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -325,7 +325,7 @@
                 <TSPServiceName>(23) ACAeID2 - issuing qualified certificates</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>22/02/2010 18:29:38</StartDate>
+                <StartDate>2010-02-22T18:29:38</StartDate>
                 <Qualifiers>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD</Qualifier>
                 </Qualifiers>
@@ -335,9 +335,9 @@
                 <Source>CRLToken</Source>
                 <Available>false</Available>
                 <Status>true</Status>
-                <ProductionDate>29/04/2014 06:50:05</ProductionDate>
-                <ThisUpdate>29/04/2014 06:50:05</ThisUpdate>
-                <NextUpdate>29/04/2014 18:50:05</NextUpdate>
+                <ProductionDate>2014-04-29T06:50:05</ProductionDate>
+                <ThisUpdate>2014-04-29T06:50:05</ThisUpdate>
+                <NextUpdate>2014-04-29T18:50:05</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -367,8 +367,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>15/12/2021 09:00:00</NotAfter>
-            <NotBefore>04/10/2007 12:00:00</NotBefore>
+            <NotAfter>2021-12-15T09:00:00</NotAfter>
+            <NotBefore>2007-10-04T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -401,8 +401,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>nijlspVz2D09CpwjskczOLI2F0Y=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>23/01/2019 12:00:00</NotAfter>
-            <NotBefore>23/10/2013 13:00:00</NotBefore>
+            <NotAfter>2019-01-23T12:00:00</NotAfter>
+            <NotBefore>2013-10-23T13:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -437,7 +437,7 @@
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>04/10/2007 12:00:00</StartDate>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
@@ -445,9 +445,9 @@
                 <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
                 <Available>true</Available>
                 <Status>true</Status>
-                <ProductionDate>15/02/2016 12:00:00</ProductionDate>
-                <ThisUpdate>15/02/2016 12:00:00</ThisUpdate>
-                <NextUpdate>31/07/2016 13:00:00</NextUpdate>
+                <ProductionDate>2016-02-15T12:00:00</ProductionDate>
+                <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>
+                <NextUpdate>2016-07-31T13:00:00</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

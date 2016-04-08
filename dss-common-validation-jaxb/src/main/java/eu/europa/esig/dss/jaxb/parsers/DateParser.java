@@ -10,7 +10,7 @@ public class DateParser {
 
 	private static final Logger logger = LoggerFactory.getLogger(DateParser.class);
 
-	private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";// "dd/MM/yyyy HH:mm:ss";
 
 	public static Date parse(String v) {
 		try {

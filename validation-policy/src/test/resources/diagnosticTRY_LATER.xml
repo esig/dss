@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-DK-1.pdf</DocumentName>
     <Signature Id="id-d69362d9616e2a79f91f7c7765c8b4b8d1d9ebc1bda05c098cc475252a79644e">
-        <DateTime>22/11/2013 14:15:29</DateTime>
+        <DateTime>2013-11-22T14:15:29</DateTime>
         <SignatureFormat>PAdES_BASELINE_LTA</SignatureFormat>
         <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -33,7 +33,7 @@
         <ContentType>application/pdf</ContentType>
         <Timestamps>
             <Timestamp Id="C46C0F819FECFC7337F4292D3CC48771D350C10A4857D0E6475F6957ECFFAC68" Type="SIGNATURE_TIMESTAMP">
-                <ProductionTime>22/11/2013 14:15:56</ProductionTime>
+                <ProductionTime>2013-11-22T14:15:56</ProductionTime>
                 <SignedDataDigestAlgo>SHA1</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>0+YrQ9eo+uszlIoFBdoeojZydEE=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -65,7 +65,7 @@
                 </SignedObjects>
             </Timestamp>
             <Timestamp Id="1377350BF5745A2964E5B10F8CFE4AD45309B88D29386E00FFEC851FCBF4D077" Type="ARCHIVE_TIMESTAMP">
-                <ProductionTime>22/11/2013 14:16:01</ProductionTime>
+                <ProductionTime>2013-11-22T14:16:01</ProductionTime>
                 <SignedDataDigestAlgo>SHA1</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>cEHq7tQ8vHSKvq+Dwmg1+RMl7Ug=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -139,8 +139,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>15/12/2021 09:00:00</NotAfter>
-            <NotBefore>04/10/2007 12:00:00</NotBefore>
+            <NotAfter>2021-12-15T09:00:00</NotAfter>
+            <NotBefore>2007-10-04T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -172,8 +172,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>XPsfXbcy5AhMDdSXhXTgy8CTvrM=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>03/12/2037 14:11:34</NotAfter>
-            <NotBefore>03/03/2010 13:41:34</NotBefore>
+            <NotAfter>2037-12-03T14:11:34</NotAfter>
+            <NotBefore>2010-03-03T13:41:34</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -206,8 +206,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>NG4bcyLOWLrnxRX6u3glR/HXhJ0=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>11/06/2016 22:58:25</NotAfter>
-            <NotBefore>11/06/2013 22:58:59</NotBefore>
+            <NotAfter>2016-06-11T22:58:25</NotAfter>
+            <NotBefore>2013-06-11T22:58:59</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -248,7 +248,7 @@
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>03/03/2010 00:00:00</StartDate>
+                <StartDate>2010-03-03T00:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="602462989DB941BEE07CF5CBF79F6D840CE3AD70A89084891E6837F16B568F3C">
@@ -256,9 +256,9 @@
                 <SourceAddress>http://ocsp.oces-issuing01.trust2408.com/responder</SourceAddress>
                 <Available>true</Available>
                 <Status>true</Status>
-                <ProductionDate>06/04/2016 17:38:05</ProductionDate>
-                <ThisUpdate>06/04/2016 08:32:51</ThisUpdate>
-                <NextUpdate>07/04/2016 05:38:05</NextUpdate>
+                <ProductionDate>2016-04-06T17:38:05</ProductionDate>
+                <ThisUpdate>2016-04-06T08:32:51</ThisUpdate>
+                <NextUpdate>2016-04-07T05:38:05</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -296,8 +296,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>eauSjwQ3UvXDprMDPcWdONuUsDc=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>11/01/2018 12:00:00</NotAfter>
-            <NotBefore>11/10/2012 13:00:00</NotBefore>
+            <NotAfter>2018-01-11T12:00:00</NotAfter>
+            <NotBefore>2012-10-11T13:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -332,7 +332,7 @@
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>04/10/2007 12:00:00</StartDate>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="7BC842E59852823B9A0C561BF87FB2B3FD264044F6DFE29E4955D1DEEAFB364E">
@@ -340,9 +340,9 @@
                 <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
                 <Available>true</Available>
                 <Status>true</Status>
-                <ProductionDate>15/02/2016 12:00:00</ProductionDate>
-                <ThisUpdate>15/02/2016 12:00:00</ThisUpdate>
-                <NextUpdate>31/07/2016 13:00:00</NextUpdate>
+                <ProductionDate>2016-02-15T12:00:00</ProductionDate>
+                <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>
+                <NextUpdate>2016-07-31T13:00:00</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -377,8 +377,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>6p3jPxGFTAHr2wyn3awFwyCiPP0=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>28/05/2025 13:45:00</NotAfter>
-            <NotBefore>28/05/2010 13:15:00</NotBefore>
+            <NotAfter>2025-05-28T13:45:00</NotAfter>
+            <NotBefore>2010-05-28T13:15:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -413,7 +413,7 @@
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>03/03/2010 00:00:00</StartDate>
+                <StartDate>2010-03-03T00:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="B48A3077D805F3A1EA910B6FA83D56ED5A787A63D615C85A5AF0F34F6D741CA5">
@@ -421,9 +421,9 @@
                 <SourceAddress>http://crl.oces.trust2408.com/oces.crl</SourceAddress>
                 <Available>true</Available>
                 <Status>true</Status>
-                <ProductionDate>06/04/2016 16:01:02</ProductionDate>
-                <ThisUpdate>06/04/2016 16:01:02</ThisUpdate>
-                <NextUpdate>07/04/2016 04:01:02</NextUpdate>
+                <ProductionDate>2016-04-06T16:01:02</ProductionDate>
+                <ThisUpdate>2016-04-06T16:01:02</ThisUpdate>
+                <NextUpdate>2016-04-07T04:01:02</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -458,8 +458,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>9Aj3+yfI2yAXHVwufrjV/rsf31k=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>09/04/2016 05:02:38</NotAfter>
-            <NotBefore>06/04/2016 05:02:52</NotBefore>
+            <NotAfter>2016-04-09T05:02:38</NotAfter>
+            <NotBefore>2016-04-06T05:02:52</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -498,7 +498,7 @@
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>03/03/2010 00:00:00</StartDate>
+                <StartDate>2010-03-03T00:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>
@@ -519,8 +519,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>wzjnDAMuMgzjyAZ/JjuEV7KhN+8=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>25/11/2013 12:22:20</NotAfter>
-            <NotBefore>22/11/2013 12:22:24</NotBefore>
+            <NotAfter>2013-11-25T12:22:20</NotAfter>
+            <NotBefore>2013-11-22T12:22:24</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -559,7 +559,7 @@
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>03/03/2010 00:00:00</StartDate>
+                <StartDate>2010-03-03T00:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>

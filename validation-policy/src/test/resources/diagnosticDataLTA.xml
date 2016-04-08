@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>old-simple-report-signed-pades-baseline-lta.pdf.pdf</DocumentName>
     <Signature Id="id-d5367b92bd4e826d8d7eec080c8353f9fd28d05069cf576662cc824ee3923200">
-        <DateTime>03/03/2016 11:19:25</DateTime>
+        <DateTime>2016-03-03T11:19:25</DateTime>
         <SignatureFormat>PAdES_BASELINE_LTA</SignatureFormat>
         <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -33,7 +33,7 @@
         <ContentType>application/pdf</ContentType>
         <Timestamps>
             <Timestamp Id="2C135D779B7B64766F3BDF0B013EBC3C146AA6B660A25B0246367C635D5C2F8A" Type="SIGNATURE_TIMESTAMP">
-                <ProductionTime>03/03/2016 11:19:33</ProductionTime>
+                <ProductionTime>2016-03-03T11:19:33</ProductionTime>
                 <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>qQWN1idyA5cOUOK3SwPxdCYhyGtILePmUqmpdlYDLhQ=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -65,7 +65,7 @@
                 </SignedObjects>
             </Timestamp>
             <Timestamp Id="244C5E50CB1CC54BE7F3BB1F44573A4E362F0DE5AC2CCDB438FFA117B7E82A6C" Type="ARCHIVE_TIMESTAMP">
-                <ProductionTime>03/03/2016 11:19:35</ProductionTime>
+                <ProductionTime>2016-03-03T11:19:35</ProductionTime>
                 <SignedDataDigestAlgo>SHA256</SignedDataDigestAlgo>
                 <EncodedSignedDataDigestValue>NyCtAOMyP4iHaG/mHndPiWU5pCP8slcON2bhxWjHMMw=</EncodedSignedDataDigestValue>
                 <MessageImprintDataFound>true</MessageImprintDataFound>
@@ -124,8 +124,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>ywdlEr+sSR+BKDStlAOj2bdcwcE=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>29/01/2017 12:00:00</NotAfter>
-            <NotBefore>08/12/2015 12:00:00</NotBefore>
+            <NotAfter>2017-01-29T12:00:00</NotAfter>
+            <NotBefore>2015-12-08T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -164,7 +164,7 @@
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>04/10/2007 12:00:00</StartDate>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>
@@ -185,8 +185,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>dMxuVVn/18LdBSbAwhWTxWyThPM=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>16/07/2017 13:00:00</NotAfter>
-            <NotBefore>16/11/2010 12:00:00</NotBefore>
+            <NotAfter>2017-07-16T13:00:00</NotAfter>
+            <NotBefore>2010-11-16T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -221,7 +221,7 @@
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>04/10/2007 12:00:00</StartDate>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="B033DE5A4F6980014D4A51D7C4248C410AAEA11A95B2E731FD277DBC69516D62">
@@ -229,9 +229,9 @@
                 <SourceAddress>http://crl.eid.belgium.be/belgium2.crl</SourceAddress>
                 <Available>false</Available>
                 <Status>true</Status>
-                <ProductionDate>15/02/2016 12:00:00</ProductionDate>
-                <ThisUpdate>15/02/2016 12:00:00</ThisUpdate>
-                <NextUpdate>31/07/2016 13:00:00</NextUpdate>
+                <ProductionDate>2016-02-15T12:00:00</ProductionDate>
+                <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>
+                <NextUpdate>2016-07-31T13:00:00</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -267,8 +267,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>nijlspVz2D09CpwjskczOLI2F0Y=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>23/01/2019 12:00:00</NotAfter>
-            <NotBefore>23/10/2013 13:00:00</NotBefore>
+            <NotAfter>2019-01-23T12:00:00</NotAfter>
+            <NotBefore>2013-10-23T13:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -303,7 +303,7 @@
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>04/10/2007 12:00:00</StartDate>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
@@ -311,9 +311,9 @@
                 <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
                 <Available>false</Available>
                 <Status>true</Status>
-                <ProductionDate>15/02/2016 12:00:00</ProductionDate>
-                <ThisUpdate>15/02/2016 12:00:00</ThisUpdate>
-                <NextUpdate>31/07/2016 13:00:00</NextUpdate>
+                <ProductionDate>2016-02-15T12:00:00</ProductionDate>
+                <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>
+                <NextUpdate>2016-07-31T13:00:00</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -350,8 +350,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>42by2G4VKm3tcQ6c6F5XvOMsSLk=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>18/02/2017 00:59:59</NotAfter>
-            <NotBefore>23/02/2012 09:24:09</NotBefore>
+            <NotAfter>2017-02-18T00:59:59</NotAfter>
+            <NotBefore>2012-02-23T09:24:09</NotBefore>
             <PublicKeySize>1024</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -388,7 +388,7 @@
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>04/10/2007 12:00:00</StartDate>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <Qualifiers>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert</Qualifier>
                 </Qualifiers>
@@ -399,9 +399,9 @@
                 <SourceAddress>http://ocsp.eid.belgium.be</SourceAddress>
                 <Available>false</Available>
                 <Status>true</Status>
-                <ProductionDate>03/03/2016 11:20:03</ProductionDate>
-                <ThisUpdate>03/03/2016 11:20:03</ThisUpdate>
-                <NextUpdate>03/03/2016 11:21:03</NextUpdate>
+                <ProductionDate>2016-03-03T11:20:03</ProductionDate>
+                <ThisUpdate>2016-03-03T11:20:03</ThisUpdate>
+                <NextUpdate>2016-03-03T11:21:03</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -437,8 +437,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>15/12/2021 09:00:00</NotAfter>
-            <NotBefore>04/10/2007 12:00:00</NotBefore>
+            <NotAfter>2021-12-15T09:00:00</NotAfter>
+            <NotBefore>2007-10-04T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>

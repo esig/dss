@@ -1210,13 +1210,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlPolicy.setNotice(notice);
 
 		final String policyDigestValueFromSignature = StringUtils.upperCase(signaturePolicy.getDigestValue());
-
 		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
 
-		XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
-		xmlDigestAlgAndValue.setDigestMethod(signPolicyHashAlgFromSignature == null ? "" : signPolicyHashAlgFromSignature.getName());
-		xmlDigestAlgAndValue.setDigestValue(policyDigestValueFromSignature);
-		xmlPolicy.setDigestAlgAndValue(xmlDigestAlgAndValue);
+		if (StringUtils.isNotEmpty(policyDigestValueFromSignature)) {
+			XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
+			xmlDigestAlgAndValue.setDigestMethod(signPolicyHashAlgFromSignature == null ? "" : signPolicyHashAlgFromSignature.getName());
+			xmlDigestAlgAndValue.setDigestValue(policyDigestValueFromSignature);
+			xmlPolicy.setDigestAlgAndValue(xmlDigestAlgAndValue);
+		}
 
 		/**
 		 * ETSI 102 853: 3) Obtain the digest of the resulting document against

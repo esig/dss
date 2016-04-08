@@ -98,7 +98,7 @@ public abstract class AbstractTestSignature {
 		checkMimeType(signedDocument);
 
 		Reports reports = getValidationReport(signedDocument);
-
+		// reports.setValidateXml(true);
 		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

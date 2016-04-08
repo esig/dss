@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>test-pdf.pdf</DocumentName>
     <Signature Id="id-1e8a1b7021938d5955b677daf479883c9caaac54978ed25ba52f4b1eee9aa9fe">
-        <DateTime>01/02/2015 00:00:00</DateTime>
+        <DateTime>2015-02-01T00:00:00</DateTime>
         <SignatureFormat>PAdES_BASELINE_B</SignatureFormat>
         <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -52,8 +52,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>M9w9puz4nfDzvgRnF6G6Iq076cs=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>28/06/2016 13:00:00</NotAfter>
-            <NotBefore>28/10/2009 12:00:00</NotBefore>
+            <NotAfter>2016-06-28T13:00:00</NotAfter>
+            <NotBefore>2009-10-28T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -88,7 +88,7 @@
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>04/10/2007 12:00:00</StartDate>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="E00A900E6D12C95A27D05C830AF672E957084E92B5DA2945562A82E1E6B6309C">
@@ -96,9 +96,9 @@
                 <SourceAddress>http://crl.eid.belgium.be/belgium2.crl</SourceAddress>
                 <Available>false</Available>
                 <Status>true</Status>
-                <ProductionDate>15/02/2016 12:00:00</ProductionDate>
-                <ThisUpdate>15/02/2016 12:00:00</ThisUpdate>
-                <NextUpdate>31/07/2016 13:00:00</NextUpdate>
+                <ProductionDate>2016-02-15T12:00:00</ProductionDate>
+                <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>
+                <NextUpdate>2016-07-31T13:00:00</NextUpdate>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -131,8 +131,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>15/12/2021 09:00:00</NotAfter>
-            <NotBefore>04/10/2007 12:00:00</NotBefore>
+            <NotAfter>2021-12-15T09:00:00</NotAfter>
+            <NotBefore>2007-10-04T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -166,8 +166,8 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>pZ2MoZbrZLCyT1C2TD8DJ67WYOQ=</DigestValue>
             </DigestAlgAndValue>
-            <NotAfter>07/12/2015 00:59:59</NotAfter>
-            <NotBefore>13/12/2010 23:50:44</NotBefore>
+            <NotAfter>2015-12-07T00:59:59</NotAfter>
+            <NotBefore>2010-12-13T23:50:44</NotBefore>
             <PublicKeySize>1024</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -204,7 +204,7 @@
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
                 <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>04/10/2007 12:00:00</StartDate>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <Qualifiers>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert</Qualifier>
                 </Qualifiers>
