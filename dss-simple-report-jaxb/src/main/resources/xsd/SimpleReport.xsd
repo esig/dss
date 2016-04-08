@@ -23,7 +23,7 @@
 				<xs:element name="Signature" maxOccurs="unbounded" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element type="xs:dateTime" name="SigningTime" />
+							<xs:element type="xs:dateTime" name="SigningTime" minOccurs="0" />
 							<xs:element type="xs:string" name="SignedBy" />
 							<xs:element type="Indication" name="Indication" />
 							<xs:element type="xs:string" name="SignatureLevel" />
