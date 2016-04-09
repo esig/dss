@@ -13,7 +13,7 @@ public class CheckSubXCVResult extends ChainItem<XmlXCV> {
 	private final XmlSubXCV subResult;
 
 	public CheckSubXCVResult(XmlXCV result, XmlSubXCV subResult, LevelConstraint constraint) {
-		super(result, constraint);
+		super(result, constraint, subResult.getId());
 
 		this.subResult = subResult;
 	}

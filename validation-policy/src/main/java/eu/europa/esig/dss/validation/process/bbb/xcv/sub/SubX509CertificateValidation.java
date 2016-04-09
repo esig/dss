@@ -104,12 +104,14 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
 
-		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(currentCertificate.getRevocationData(), currentTime, context, subContext,
-				validationPolicy);
-		XmlRFC rfcResult = rfc.execute();
-		result.setRFC(rfcResult);
+		if (!currentCertificate.isIdPkixOcspNoCheck()) {
+			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(currentCertificate.getRevocationData(), currentTime, context, subContext,
+					validationPolicy);
+			XmlRFC rfcResult = rfc.execute();
+			result.setRFC(rfcResult);
 
-		item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfcResult));
+			item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfcResult));
+		}
 	}
 
 	private ChainItem<XmlSubXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {

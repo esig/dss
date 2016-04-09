@@ -19,6 +19,7 @@
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
@@ -57,6 +58,8 @@
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked  Level="FAIL" />
 				<Cryptographic Level="FAIL">
@@ -143,6 +146,7 @@
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked  Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -173,6 +177,7 @@
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked  Level="FAIL" />
 				<Cryptographic Level="FAIL">

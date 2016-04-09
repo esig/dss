@@ -98,6 +98,7 @@
 			<xs:element name="NotExpired" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationDataAvailable" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationDataTrusted" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="RevocationDataNextUpdatePresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationDataFreshness" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="KeyUsage" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="Surname" type="tns:MultiValuesConstraint" minOccurs="0" />

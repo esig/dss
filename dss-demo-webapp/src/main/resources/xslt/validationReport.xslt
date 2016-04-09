@@ -278,7 +278,7 @@
         </xsl:if>
     </xsl:template>
     
-    <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PCV|dss:VTS">
+    <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PCV|dss:VTS">
 		<div>
 			<xsl:attribute name="class">row</xsl:attribute>
 			<xsl:attribute name="style">margin-bottom:5px;margin-top:5px;</xsl:attribute>
@@ -294,9 +294,6 @@
 						</xsl:when>
 						<xsl:when test="name(.) = 'VCI'">
 							Validation Context Initialization (VCI)
-						</xsl:when>
-						<xsl:when test="name(.) = 'RFC'">
-							Revocation Freshness Checker (RFC)
 						</xsl:when>
 						<xsl:when test="name(.) = 'CV'">
 							Cryptographic Verification (CV)
@@ -333,6 +330,77 @@
 		<xsl:apply-templates />
     </xsl:template>
 
+	<xsl:template match="dss:SubXCV">
+    	<div>
+    		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
+	        <xsl:variable name="indicationCssClass">
+	        	<xsl:choose>
+					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
+					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
+					<xsl:otherwise>default</xsl:otherwise>
+				</xsl:choose>
+	        </xsl:variable>
+       		<xsl:attribute name="id"><xsl:value-of select="@Id"/></xsl:attribute>
+    		<div>
+    			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+    			<xsl:attribute name="style">margin-top : 10px</xsl:attribute>
+	    		<div>
+	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
+		    		<xsl:attribute name="data-target">#collapseSubXCV<xsl:value-of select="@Id"/></xsl:attribute>
+			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+			       	
+		       		<xsl:if test="@TrustAnchor = 'true'">
+		       			<span>
+							<xsl:attribute name="class">glyphicon glyphicon-thumbs-up pull-right</xsl:attribute>
+							<xsl:attribute name="style">font-size : 20px;</xsl:attribute>
+							<xsl:attribute name="title">Trust Anchor</xsl:attribute>		       			
+		       			</span>
+		       		</xsl:if>
+			       	
+	    			Certificate Id=<xsl:value-of select="@Id"/>
+		        </div>
+		        
+		       	<xsl:if test="@TrustAnchor != 'true'">
+		    		<div>
+		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+			        	<xsl:attribute name="id">collapseSubXCV<xsl:value-of select="@Id"/></xsl:attribute>
+			        	<xsl:apply-templates/>
+		    		</div>
+	    		</xsl:if>
+    		</div>
+    	</div>
+    </xsl:template>
+    
+	<xsl:template match="dss:RFC">
+    	<div>
+    		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
+	        <xsl:variable name="indicationCssClass">
+	        	<xsl:choose>
+					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
+					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
+					<xsl:otherwise>default</xsl:otherwise>
+				</xsl:choose>
+	        </xsl:variable>
+       		<xsl:attribute name="id"><xsl:value-of select="@Id"/></xsl:attribute>
+    		<div>
+    			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+    			<xsl:attribute name="style">margin-top : 10px</xsl:attribute>
+	    		<div>
+	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
+		    		<xsl:attribute name="data-target">#collapseRFC<xsl:value-of select="@Id"/></xsl:attribute>
+			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+	    			Revocation Freshness Checker (RFC)
+		        </div>
+	    		<div>
+	    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+		        	<xsl:attribute name="id">collapseRFC<xsl:value-of select="@Id"/></xsl:attribute>
+		        	<xsl:apply-templates/>
+	    		</div>
+    		</div>
+    	</div>
+    </xsl:template>
 
     <xsl:template match="dss:Constraint">
 	    <div>
@@ -343,7 +411,7 @@
 	    		<xsl:if test="@Id">
 	    			<a> 
 						<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>
-						<xsl:attribute name="title">Basic Building Blocks validation</xsl:attribute>
+						<xsl:attribute name="title">Details</xsl:attribute>
 						<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 						<span>
 							<xsl:attribute name="class">glyphicon glyphicon-circle-arrow-right</xsl:attribute>

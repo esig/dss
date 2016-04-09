@@ -45,9 +45,8 @@ import eu.europa.esig.jaxb.policy.UnsignedAttributesConstraints;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
- * This class encapsulates the constraint file that controls the policy to be
- * used during the validation process. It adds the functions to direct access to
- * the file data. It is the implementation of the ETSI 102853 standard.
+ * This class encapsulates the constraint file that controls the policy to be used during the validation process. It adds the functions to direct access to the
+ * file data. It is the implementation of the ETSI 102853 standard.
  */
 public class EtsiValidationPolicy implements ValidationPolicy {
 
@@ -371,6 +370,16 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 			return certificateConstraints.getRevocationDataTrusted();
 		}
 		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationDataNextUpdatePresentConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationDataNextUpdatePresent();
+		}
+		return null;
+
 	}
 
 	@Override

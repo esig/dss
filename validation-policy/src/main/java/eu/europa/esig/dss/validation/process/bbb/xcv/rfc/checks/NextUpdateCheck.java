@@ -9,13 +9,13 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class NextUpdateCheck extends ChainItem<XmlRFC> {
 
 	private final RevocationWrapper revocationData;
 
-	public NextUpdateCheck(XmlRFC result, RevocationWrapper revocationData, TimeConstraint constraint) {
+	public NextUpdateCheck(XmlRFC result, RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.revocationData = revocationData;
@@ -46,12 +46,12 @@ public class NextUpdateCheck extends ChainItem<XmlRFC> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.FAILED;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return null;
+		return SubIndication.TRY_LATER;
 	}
 
 }
