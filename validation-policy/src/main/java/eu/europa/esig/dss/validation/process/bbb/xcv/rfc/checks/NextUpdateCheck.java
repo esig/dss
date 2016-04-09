@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.bbb.rfc.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
 import java.util.Date;
 

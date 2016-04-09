@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.bbb.rfc.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
 import java.util.Date;
 
@@ -64,12 +64,12 @@ public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.FAILED;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return null;
+		return SubIndication.TRY_LATER;
 	}
 
 }

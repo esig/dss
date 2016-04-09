@@ -11,20 +11,24 @@ package eu.europa.esig.dss.jaxb.detailedreport;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ValidationProcessTimestamps complex type.
+ * <p>Java class for SubXCV complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ValidationProcessTimestamps">
+ * &lt;complexType name="SubXCV">
  *   &lt;complexContent>
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/detailed-report}ConstraintsConclusion">
+ *       &lt;sequence>
+ *         &lt;element name="RFC" type="{http://dss.esig.europa.eu/validation/detailed-report}RFC"/>
+ *       &lt;/sequence>
  *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="Type" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="TrustAnchor" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -33,15 +37,43 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ValidationProcessTimestamps")
-public class XmlValidationProcessTimestamps
+@XmlType(name = "SubXCV", propOrder = {
+    "rfc"
+})
+public class XmlSubXCV
     extends XmlConstraintsConclusion
 {
 
+    @XmlElement(name = "RFC", required = true)
+    protected XmlRFC rfc;
     @XmlAttribute(name = "Id", required = true)
     protected String id;
-    @XmlAttribute(name = "Type", required = true)
-    protected String type;
+    @XmlAttribute(name = "TrustAnchor")
+    protected Boolean trustAnchor;
+
+    /**
+     * Gets the value of the rfc property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XmlRFC }
+     *     
+     */
+    public XmlRFC getRFC() {
+        return rfc;
+    }
+
+    /**
+     * Sets the value of the rfc property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XmlRFC }
+     *     
+     */
+    public void setRFC(XmlRFC value) {
+        this.rfc = value;
+    }
 
     /**
      * Gets the value of the id property.
@@ -68,27 +100,27 @@ public class XmlValidationProcessTimestamps
     }
 
     /**
-     * Gets the value of the type property.
+     * Gets the value of the trustAnchor property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Boolean }
      *     
      */
-    public String getType() {
-        return type;
+    public Boolean isTrustAnchor() {
+        return trustAnchor;
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the trustAnchor property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Boolean }
      *     
      */
-    public void setType(String value) {
-        this.type = value;
+    public void setTrustAnchor(Boolean value) {
+        this.trustAnchor = value;
     }
 
 }

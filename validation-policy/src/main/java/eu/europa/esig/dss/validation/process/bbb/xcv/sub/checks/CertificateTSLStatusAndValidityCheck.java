@@ -1,9 +1,9 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.TSLConstant;
@@ -14,11 +14,11 @@ import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class SigningCertificateTSLValidityCheck extends ChainItem<XmlXCV> {
+public class CertificateTSLStatusAndValidityCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public SigningCertificateTSLValidityCheck(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public CertificateTSLStatusAndValidityCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
 	}
@@ -26,6 +26,7 @@ public class SigningCertificateTSLValidityCheck extends ChainItem<XmlXCV> {
 	@Override
 	protected boolean process() {
 		String trustedSource = certificate.getLastChainCertificateSource();
+		// do not include Trusted list
 		if (CertificateSourceType.TRUSTED_STORE.name().equals(trustedSource)) {
 			return true;
 		}
@@ -40,13 +41,10 @@ public class SigningCertificateTSLValidityCheck extends ChainItem<XmlXCV> {
 			}
 			Date statusStartDate = trustedServiceProvider.getStartDate();
 			Date statusEndDate = trustedServiceProvider.getEndDate();
-			// The issuing time of the certificate should be into the validity period of the associated service
+			// The issuing time of the certificate should be into the validity
+			// period of the associated service
 			if (certificateValidFrom.after(statusStartDate) && ((statusEndDate == null) || certificateValidFrom.before(statusEndDate))) {
-				String status = trustedServiceProvider.getStatus();
-				found = TSLStatusUtils.isUndersupervision(status) || TSLStatusUtils.isAccredited(status) || TSLStatusUtils.isSupervisionInCessation(status);
-				if (found) {
-					break;
-				}
+				found = true;
 			}
 		}
 		return found;
@@ -54,12 +52,12 @@ public class SigningCertificateTSLValidityCheck extends ChainItem<XmlXCV> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.CTS_IIDOCWVPOTS;
+		return MessageTag.CTS_ITACBT;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.CTS_IIDOCWVPOTS_ANS;
+		return MessageTag.CTS_ITACBT_ANS;
 	}
 
 	@Override

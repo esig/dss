@@ -1,25 +1,25 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class RevocationDataAvailableCheck extends ChainItem<XmlXCV> {
+public class RevocationDataAvailableCheck extends ChainItem<XmlRFC> {
 
-	private final CertificateWrapper certificate;
+	private final RevocationWrapper revocationData;
 
-	public RevocationDataAvailableCheck(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public RevocationDataAvailableCheck(XmlRFC result, RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(result, constraint);
-		this.certificate = certificate;
+		this.revocationData = revocationData;
 	}
 
 	@Override
 	protected boolean process() {
-		return certificate.isRevocationDataAvailable();
+		return revocationData != null;
 	}
 
 	@Override

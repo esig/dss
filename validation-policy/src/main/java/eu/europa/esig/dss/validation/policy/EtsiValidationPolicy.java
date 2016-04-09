@@ -392,8 +392,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateTSLValidityConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
+	public LevelConstraint getCertificateTSLValidityConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getTSLValidity();
 		}
@@ -401,8 +401,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateTSLStatusConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
+	public LevelConstraint getCertificateTSLStatusConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getTSLStatus();
 		}
@@ -410,8 +410,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateTSLStatusAndValidityConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
+	public LevelConstraint getCertificateTSLStatusAndValidityConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getTSLStatusAndValidity();
 		}
@@ -419,8 +419,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateQualificationConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
+	public LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getQualification();
 		}
@@ -428,8 +428,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateSupportedBySSCDConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
+	public LevelConstraint getCertificateSupportedBySSCDConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getSupportedBySSCD();
 		}
@@ -437,8 +437,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateIssuedToLegalPersonConstraint(Context context) {
-		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
+	public LevelConstraint getCertificateIssuedToLegalPersonConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getIssuedToLegalPerson();
 		}

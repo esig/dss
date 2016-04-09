@@ -11,7 +11,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlInfo;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
@@ -21,7 +20,6 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
 import eu.europa.esig.dss.validation.process.bbb.fc.FormatChecking;
 import eu.europa.esig.dss.validation.process.bbb.isc.IdentificationOfTheSigningCertificate;
-import eu.europa.esig.dss.validation.process.bbb.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.AbstractAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.RevocationAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
@@ -100,18 +98,6 @@ public class BasicBuildingBlocks {
 		}
 
 		/**
-		 * 5.2.5 Revocation freshness checker (only for revocation data)
-		 */
-		XmlRFC rfc = executeRevocationFreshnessChecker();
-		if (rfc != null) {
-			result.setRFC(rfc);
-			XmlConclusion rfcConclusion = rfc.getConclusion();
-			if (!Indication.PASSED.equals(rfcConclusion.getIndication())) {
-				result.setConclusion(rfcConclusion);
-			}
-		}
-
-		/**
 		 * 5.2.6 X.509 certificate validation
 		 */
 		XmlXCV xcv = executeX509CertificateValidation();
@@ -169,14 +155,6 @@ public class BasicBuildingBlocks {
 		if (Context.SIGNATURE.equals(context)) {
 			ValidationContextInitialization vci = new ValidationContextInitialization((SignatureWrapper) token, context, policy);
 			return vci.execute();
-		}
-		return null;
-	}
-
-	private XmlRFC executeRevocationFreshnessChecker() {
-		if (Context.REVOCATION.equals(context)) {
-			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker((RevocationWrapper) token, currentTime, policy);
-			return rfc.execute();
 		}
 		return null;
 	}

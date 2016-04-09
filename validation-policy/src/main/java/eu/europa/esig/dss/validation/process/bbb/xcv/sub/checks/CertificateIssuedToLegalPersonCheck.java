@@ -1,8 +1,8 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.TSLConstant;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -11,11 +11,11 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class SigningCertificateIssuedToLegalPersonCheck extends ChainItem<XmlXCV> {
+public class CertificateIssuedToLegalPersonCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public SigningCertificateIssuedToLegalPersonCheck(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public CertificateIssuedToLegalPersonCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
 	}
@@ -25,8 +25,9 @@ public class SigningCertificateIssuedToLegalPersonCheck extends ChainItem<XmlXCV
 		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 
 		/**
-		 * Mandates the signer's certificate used in validating the signature to be issued by a certificate authority
-		 * issuing certificate as having been issued to a legal person.
+		 * Mandates the signer's certificate used in validating the signature to
+		 * be issued by a certificate authority issuing certificate as having
+		 * been issued to a legal person.
 		 */
 		return qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON) || qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON_119612);
 	}

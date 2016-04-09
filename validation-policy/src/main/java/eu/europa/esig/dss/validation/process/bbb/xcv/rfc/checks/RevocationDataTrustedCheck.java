@@ -1,35 +1,33 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class RevocationDataTrustedCheck extends ChainItem<XmlXCV> {
+public class RevocationDataTrustedCheck extends ChainItem<XmlRFC> {
 
-	private final CertificateWrapper certificate;
+	private final RevocationWrapper revocationData;
 
-	public RevocationDataTrustedCheck(XmlXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public RevocationDataTrustedCheck(XmlRFC result, RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(result, constraint);
-		this.certificate = certificate;
+		this.revocationData = revocationData;
 	}
 
 	@Override
 	protected boolean process() {
 		String anchorSource = null;
-		RevocationWrapper revocationData = certificate.getRevocationData();
 		if (revocationData != null) {
 			anchorSource = revocationData.getLastChainCertificateSource();
 		}
-		CertificateSourceType anchorSourceType = StringUtils.isBlank(anchorSource) ? CertificateSourceType.UNKNOWN
-				: CertificateSourceType.valueOf(anchorSource);
+		CertificateSourceType anchorSourceType = StringUtils.isBlank(anchorSource) ? CertificateSourceType.UNKNOWN : CertificateSourceType
+				.valueOf(anchorSource);
 		return CertificateSourceType.TRUSTED_LIST.equals(anchorSourceType) || CertificateSourceType.TRUSTED_STORE.equals(anchorSourceType);
 	}
 

@@ -1,45 +1,46 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
-public class CertificateSignatureValidCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+public class CountryCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public CertificateSignatureValidCheck(T result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public CountryCheck(XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
 		super(result, constraint);
+
 		this.certificate = certificate;
 	}
 
 	@Override
 	protected boolean process() {
-		return certificate.isSignatureValid();
+		return processValueCheck(certificate.getCountryName());
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_ICSI;
+		return MessageTag.BBB_XCV_ISCGCOUN;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_ICSI_ANS;
+		return MessageTag.BBB_XCV_ISCGCOUN_ANS;
 	}
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INDETERMINATE;
+		return Indication.FAILED;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.NO_CERTIFICATE_CHAIN_FOUND;
+		return SubIndication.SIG_CONSTRAINTS_FAILURE;
 	}
 
 }

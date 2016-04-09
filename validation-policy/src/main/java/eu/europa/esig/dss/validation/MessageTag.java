@@ -113,6 +113,10 @@ public enum MessageTag {
 	BBB_VCI_ISPK_ANS_2("An error encountered when processing the signature policy identifier!"),
 	BBB_VCI_ISPK_ANS_3("The signature policy identifier is not allowed by the validation policy constraint!"),
 
+	BBB_XCV_SUB("Is the certificate validation concluant ?"),
+	BBB_XCV_SUB_ANS("The certificate validation is not concluant!"),
+	BBB_XCV_RFC("Is the revocation freshness check concluant ?"),
+	BBB_XCV_RFC_ANS("The revocation freshness check is not concluant!"),
 	BBB_XCV_ACCCM("Are chain cryptographic constraints met?"),
 	BBB_XCV_ACCM("Are chain constraints met?"),
 	BBB_XCV_ARDCCM("Are revocation data cryptographic constraints met?"),

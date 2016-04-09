@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import eu.europa.esig.dss.validation.policy.TSLConstant;
 

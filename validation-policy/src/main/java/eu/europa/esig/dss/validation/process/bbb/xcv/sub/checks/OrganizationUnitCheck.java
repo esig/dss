@@ -1,6 +1,6 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -8,11 +8,11 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
-public class OrganizationUnitCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
+public class OrganizationUnitCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public OrganizationUnitCheck(XmlXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
+	public OrganizationUnitCheck(XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
 		super(result, constraint);
 
 		this.certificate = certificate;

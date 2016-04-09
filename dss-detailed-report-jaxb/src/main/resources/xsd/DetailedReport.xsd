@@ -29,7 +29,6 @@
 			<xs:element type="FC" name="FC" minOccurs="0" />
 			<xs:element type="ISC" name="ISC" minOccurs="0" />
 			<xs:element type="VCI" name="VCI" minOccurs="0" />
-			<xs:element type="RFC" name="RFC" minOccurs="0" />
 			<xs:element type="CV"  name="CV"  minOccurs="0" />
 			<xs:element type="SAV" name="SAV" minOccurs="0" />
 			<xs:element type="XCV" name="XCV" minOccurs="0" />
@@ -108,7 +107,22 @@
 	</xs:complexType>
 	<xs:complexType name="XCV">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="SubXCV" type="SubXCV" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubXCV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="RFC" type="RFC" />
+				</xs:sequence>
+				<xs:attribute name="Id" type="xs:string" use="required" />
+				<xs:attribute name="TrustAnchor" type="xs:boolean" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="VTS">

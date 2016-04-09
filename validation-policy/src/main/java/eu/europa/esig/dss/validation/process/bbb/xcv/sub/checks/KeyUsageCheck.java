@@ -1,6 +1,8 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import java.util.List;
+
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -8,29 +10,29 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
-public class SurnameCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
+public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public SurnameCheck(XmlXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
+	public KeyUsageCheck(XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
 		super(result, constraint);
-
 		this.certificate = certificate;
 	}
 
 	@Override
 	protected boolean process() {
-		return processValueCheck(certificate.getSurname());
+		List<String> keyUsages = certificate.getKeyUsages();
+		return processValuesCheck(keyUsages);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_ISCGSURN;
+		return MessageTag.BBB_XCV_ISCGKU;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_ISCGSURN_ANS;
+		return MessageTag.BBB_XCV_ISCGKU_ANS;
 	}
 
 	@Override

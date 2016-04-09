@@ -266,25 +266,25 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if the TSLValidity for a given context
 	 *         element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateTSLValidityConstraint(Context context);
+	LevelConstraint getCertificateTSLValidityConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if TSLStatus for a given context element
 	 *         is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateTSLStatusConstraint(Context context);
+	LevelConstraint getCertificateTSLStatusConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if the TSLValidity for a given context
 	 *         element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateTSLStatusAndValidityConstraint(Context context);
+	LevelConstraint getCertificateTSLStatusAndValidityConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if Qualification for a given context
 	 *         element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateQualificationConstraint(Context context);
+	LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Indicates if the end user certificate used in validating the signature is
@@ -294,14 +294,14 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if SupportedBySSCD for a given context
 	 *         element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateSupportedBySSCDConstraint(Context context);
+	LevelConstraint getCertificateSupportedBySSCDConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if IssuedToLegalPerson for a given
 	 *         context element is present in the constraint file, null
 	 *         otherwise.
 	 */
-	LevelConstraint getSigningCertificateIssuedToLegalPersonConstraint(Context context);
+	LevelConstraint getCertificateIssuedToLegalPersonConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if Recognition for a given context
