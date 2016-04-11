@@ -79,6 +79,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return BooleanUtils.isTrue(certificate.isIdPkixOcspNoCheck());
 	}
 
+	public boolean isIdKpOCSPSigning() {
+		return BooleanUtils.isTrue(certificate.isIdKpOCSPSigning());
+	}
+
 	public Date getNotBefore() {
 		return certificate.getNotBefore();
 	}

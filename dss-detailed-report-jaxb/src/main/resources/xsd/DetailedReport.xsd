@@ -118,7 +118,7 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
-					<xs:element name="RFC" type="RFC" />
+					<xs:element name="RFC" type="RFC" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="TrustAnchor" type="xs:boolean" />

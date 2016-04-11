@@ -24,6 +24,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateTSLVa
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
@@ -104,14 +105,28 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
 
-		if (!currentCertificate.isIdPkixOcspNoCheck()) {
+		if (!isRevocationNoNeedCheck(currentCertificate)) {
 			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(currentCertificate.getRevocationData(), currentTime, context, subContext,
 					validationPolicy);
 			XmlRFC rfcResult = rfc.execute();
 			result.setRFC(rfcResult);
 
 			item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfcResult));
+		} else {
+			item = item.setNextItem(idPkixOcspNoCheck());
 		}
+	}
+
+	/*
+	 * A signing certificate includes the id-pkix-ocsp-nocheck extension. This extension informs the OCSP client that
+	 * the OCSP signing certificate should not be checked for revocation during the lifetime of the certificate. The
+	 * OCSP Signing certificate should therefore have a short lifetime.
+	 */
+	private boolean isRevocationNoNeedCheck(CertificateWrapper certificate) {
+		if (certificate.isIdPkixOcspNoCheck() && certificate.isIdKpOCSPSigning()) {
+			return currentTime.compareTo(certificate.getNotBefore()) >= 0 && currentTime.compareTo(certificate.getNotAfter()) <= 0;
+		}
+		return false;
 	}
 
 	private ChainItem<XmlSubXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {
@@ -211,6 +226,10 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
 		return new RevocationFreshnessCheckerResult(result, rfcResult, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlSubXCV> idPkixOcspNoCheck() {
+		return new IdPkixOcspNoCheck(result, getFailLevelConstraint());
 	}
 
 }

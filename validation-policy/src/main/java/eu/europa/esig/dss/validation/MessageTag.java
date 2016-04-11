@@ -144,6 +144,7 @@ public enum MessageTag {
 	BBB_XCV_ISCGKU_ANS("The signer's certificate has not expected key-usage!"),
 	BBB_XCV_ICSI("Is the certificate's signature intact?"),
 	BBB_XCV_ICSI_ANS("The signature of the certificate is spoiled or it is not possible to validate it!"),
+	BBB_XCV_OCSP_NO_CHECK("The certificate has the id-pkix-ocsp-nocheck extension (RFC is skipped)"),
 
 	BBB_XCV_ISCGCOUN("Has the certificate given country-name?"),
 	BBB_XCV_ISCGCOUN_ANS("The certificate has not expected country-name!"),
