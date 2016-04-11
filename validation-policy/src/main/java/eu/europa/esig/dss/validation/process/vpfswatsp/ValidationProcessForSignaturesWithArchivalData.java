@@ -74,7 +74,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * validation process returns PASSED, the SVA shall go to step 6.
 		 */
 		// not supported
-		// ChainItem<XmlValidationProcessArchivalData> item = firstItem = evidenceRecordValidationProcess();
 
 		/*
 		 * 2) POE initialization: the long term validation process shall add a POE for each object in the signature
@@ -201,11 +200,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		}
 		return null;
 	}
-
-	// private ChainItem<XmlValidationProcessArchivalData> evidenceRecordValidationProcess() {
-	// return new EvidenceRecordValidationCheck(result, signature, bbbs, diagnosticData, poe, policy, currentTime,
-	// getFailLevelConstraint());
-	// }
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {
 		return new LongTermValidationCheck(result, validationProcessLongTermData, getFailLevelConstraint());
