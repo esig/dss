@@ -158,7 +158,9 @@
 		<xs:sequence>
 			<xs:element type="Name" name="Name" />
 			<xs:element type="Status" name="Status" />
-			<xs:element type="Info" name="Info" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Name" name="Error" minOccurs="0" />
+			<xs:element type="Name" name="Warning" minOccurs="0" />
+			<xs:element type="Name" name="Info" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- In case of constraint with a BBB -->
 	</xs:complexType>
@@ -167,8 +169,10 @@
 		<xs:sequence>
 			<xs:element type="Indication" name="Indication" />
 			<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
-			<xs:element type="Error" name="Error" minOccurs="0" />
-			<xs:element type="Info" name="Info" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Name" name="Errors" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Name" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Name" name="Infos" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="xs:string" name="AdditionalInfos" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -176,27 +180,6 @@
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
 				<xs:attribute name="NameId" type="xs:string" />
-			</xs:extension>
-		</xs:simpleContent>
-	</xs:complexType>
-
-	<xs:complexType name="Error">
-		<xs:simpleContent>
-			<xs:extension base="xs:string">
-				<xs:attribute name="NameId" type="xs:string" />
-			</xs:extension>
-		</xs:simpleContent>
-	</xs:complexType>
-
-	<xs:complexType name="Info">
-		<xs:simpleContent>
-			<xs:extension base="xs:string">
-				<xs:attribute name="Identifier" type="xs:string"  use="optional"/>
-				<xs:attribute name="CertificateId" type="xs:string" use="optional"/>
-				<xs:attribute name="Field" type="xs:string" use="optional"/>
-				<xs:attribute name="RevokedDate" type="xs:dateTime" use="optional"/>
-				<xs:attribute name="NextUpdateDate" type="xs:dateTime" use="optional"/>
-				<xs:attribute name="AlgoExpirationDate" type="xs:dateTime" use="optional"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>

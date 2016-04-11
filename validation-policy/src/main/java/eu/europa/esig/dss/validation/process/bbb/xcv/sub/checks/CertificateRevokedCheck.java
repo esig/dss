@@ -6,7 +6,6 @@ import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
@@ -30,7 +29,6 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 		if (!isRevoked) {
 			return true;
 		} else {
-			addInfo(XmlInfoBuilder.createRevocationInfo(revocationData.getRevocationDate(), revocationData.getReason()));
 			return false;
 		}
 	}

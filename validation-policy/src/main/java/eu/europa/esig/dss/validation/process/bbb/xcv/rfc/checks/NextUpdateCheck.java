@@ -7,7 +7,6 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
@@ -28,7 +27,6 @@ public class NextUpdateCheck extends ChainItem<XmlRFC> {
 			if (nextUpdate == null) {
 				return false;
 			}
-			addInfo(XmlInfoBuilder.createNextUpadteInfo(nextUpdate));
 			return true;
 		}
 		return false;

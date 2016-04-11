@@ -35,9 +35,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlError;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlInfo;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
@@ -45,7 +43,6 @@ import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
 import eu.europa.esig.dss.validation.AttributeValue;
-import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.TLQualification;
@@ -175,24 +172,26 @@ public class SimpleReportBuilder {
 		List<String> errorList = xmlSignature.getErrors();
 
 		XmlConclusion conclusion = constraintsConclusion.getConclusion();
-		XmlError error = conclusion.getError();
-		if (error != null) {
-			errorList.add(error.getValue());
-		}
-
-		List<String> infoList = xmlSignature.getInfos();
-		List<XmlInfo> infos = conclusion.getInfo();
-		if (CollectionUtils.isNotEmpty(infos)) {
-			for (XmlInfo xmlInfo : infos) {
-				infoList.add(xmlInfo.getValue());
+		List<XmlName> errors = conclusion.getErrors();
+		if (CollectionUtils.isNotEmpty(errors)) {
+			for (XmlName error : errors) {
+				errorList.add(error.getValue());
 			}
 		}
 
-		// TODO improve
-		List<String> warnList = xmlSignature.getWarnings();
-		for (XmlConstraint constraint : getAllBBBConstraintsForASignature(xmlSignature)) {
-			if (XmlStatus.WARNING.equals(constraint.getStatus())) {
-				warnList.add(MessageTag.valueOf(constraint.getName().getNameId() + "_ANS").getMessage());
+		List<String> infoList = xmlSignature.getInfos();
+		List<XmlName> infos = conclusion.getInfos();
+		if (CollectionUtils.isNotEmpty(infos)) {
+			for (XmlName info : infos) {
+				infoList.add(info.getValue());
+			}
+		}
+
+		List<String> warnsList = xmlSignature.getWarnings();
+		List<XmlName> warnings = conclusion.getWarnings();
+		if (CollectionUtils.isNotEmpty(warnings)) {
+			for (XmlName warning : warnings) {
+				warnsList.add(warning.getValue());
 			}
 		}
 

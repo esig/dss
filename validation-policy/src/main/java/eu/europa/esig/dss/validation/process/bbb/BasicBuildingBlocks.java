@@ -10,7 +10,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlInfo;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
@@ -81,9 +80,6 @@ public class BasicBuildingBlocks {
 		if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
 			result.setConclusion(iscConclusion);
 		}
-		XmlInfo conclusionInfo = new XmlInfo();
-		conclusionInfo.setCertificateId(token.getSigningCertificateId());
-		isc.getConclusion().getInfo().add(conclusionInfo);
 
 		/**
 		 * 5.2.4 Validation context initialization (only for signature)

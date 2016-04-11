@@ -441,6 +441,12 @@
 							<xsl:attribute name="title"><xsl:value-of select="dss:Warning" /></xsl:attribute>
 						</span>
 					</xsl:when>
+					<xsl:when test="$statusText='INFORMATION'">
+						<span>
+							<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="dss:Info" /></xsl:attribute>
+						</span>
+					</xsl:when>
 					<xsl:otherwise>
 						<span>
 							<xsl:value-of select="dss:Status" />

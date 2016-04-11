@@ -7,7 +7,6 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
@@ -29,7 +28,6 @@ public class SigningCertificateRecognitionCheck extends ChainItem<XmlISC> {
 		String signingCertificateId = token.getSigningCertificateId();
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
 		if (StringUtils.equals(signingCertificateId, certificate.getId())) {
-			addInfo(XmlInfoBuilder.createCertificateIdInfo(token.getSigningCertificateId()));
 			return true;
 		} else {
 			return false;

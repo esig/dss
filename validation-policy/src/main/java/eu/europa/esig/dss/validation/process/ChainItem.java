@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlError;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlInfo;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.validation.MessageTag;
@@ -24,8 +22,8 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  *
  * That follows the design pattern "chain of responsibility".
  * 
- * Depending of the {@code Level} in {@code LevelConstraint} the Chain will continue/stop the current treatment. The
- * {@code ChainItem} is a validation constraint which allows to collect information, warnings, errors,...
+ * Depending of the {@code Level} in {@code LevelConstraint} the Chain will continue/stop the current treatment. The {@code ChainItem} is a validation
+ * constraint which allows to collect information, warnings, errors,...
  * 
  * @see Chain
  */
@@ -41,7 +39,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private String bbbId;
 
-	private List<XmlInfo> infos = new ArrayList<XmlInfo>();
+	private List<String> infos = new ArrayList<String>();
 
 	/**
 	 * Common constructor
@@ -87,8 +85,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	}
 
 	/**
-	 * This method allows to execute the chain of responsibility. It will run all the chain until the first
-	 * {@code Level.FAIL} and not valid process.
+	 * This method allows to execute the chain of responsibility. It will run all the chain until the first {@code Level.FAIL} and not valid process.
 	 */
 	public void execute() {
 		if ((constraint == null) || (constraint.getLevel() == null)) {
@@ -113,7 +110,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		}
 	}
 
-	protected void addInfo(XmlInfo info) {
+	protected void addInfo(String info) {
 		infos.add(info);
 	}
 
@@ -150,7 +147,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		XmlConclusion conclusion = new XmlConclusion();
 		conclusion.setIndication(getFailedIndicationForConclusion());
 		conclusion.setSubIndication(getFailedSubIndicationForConclusion());
-		XmlError errorMessage = new XmlError();
+		XmlName errorMessage = new XmlName();
 		MessageTag errorMessageTag = getErrorMessageTag();
 		if (errorMessageTag != null) {
 			errorMessage.setNameId(errorMessageTag.name());
@@ -158,7 +155,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		} else {
 			logger.error("MessageTag is not defined!");
 		}
-		conclusion.setError(errorMessage);
+		conclusion.getErrors().add(errorMessage);
 		result.setConclusion(conclusion);
 	}
 
@@ -175,7 +172,23 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		constraint.setName(buildConstraintName());
 		constraint.setStatus(status);
 		constraint.setId(bbbId);
-		constraint.getInfo().addAll(infos);
+		if (XmlStatus.NOT_OK.equals(status) || XmlStatus.WARNING.equals(status) || XmlStatus.INFORMATION.equals(status)) {
+			XmlName message = new XmlName();
+			MessageTag errorMessageTag = getErrorMessageTag();
+			if (errorMessageTag != null) {
+				message.setNameId(errorMessageTag.name());
+				message.setValue(errorMessageTag.getMessage());
+			} else {
+				logger.error("MessageTag is not defined!");
+			}
+			if (XmlStatus.NOT_OK.equals(status)) {
+				constraint.setError(message);
+			} else if (XmlStatus.WARNING.equals(status)) {
+				constraint.setWarning(message);
+			} else if (XmlStatus.INFORMATION.equals(status)) {
+				constraint.setInfo(message);
+			}
+		}
 		addConstraint(constraint);
 	}
 

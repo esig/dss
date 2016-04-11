@@ -15,7 +15,6 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
@@ -48,7 +47,6 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 		if ((acceptableEncryptionAlgo != null) && CollectionUtils.isNotEmpty(acceptableEncryptionAlgo.getAlgo())) {
 			if (!isIn(token.getEncryptionAlgoUsedToSignThisToken(), acceptableEncryptionAlgo.getAlgo())) {
 				errorMessage = MessageTag.ASCCM_ANS_1;
-				addListOfAlgoInfo(acceptableEncryptionAlgo);
 				return false;
 			}
 		}
@@ -58,7 +56,6 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 		if ((acceptableDigestAlgo != null) && CollectionUtils.isNotEmpty(acceptableDigestAlgo.getAlgo())) {
 			if (!isIn(token.getDigestAlgoUsedToSignThisToken(), acceptableDigestAlgo.getAlgo())) {
 				errorMessage = MessageTag.ASCCM_ANS_2;
-				addListOfAlgoInfo(acceptableDigestAlgo);
 				return false;
 			}
 		}
@@ -74,7 +71,6 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 			int expectedMinimumKeySize = getExpectedKeySize(token.getEncryptionAlgoUsedToSignThisToken(), miniPublicKeySize.getAlgo());
 			if (tokenKeySize < expectedMinimumKeySize) {
 				errorMessage = MessageTag.ASCCM_ANS_3;
-				addListOfAlgoInfo(miniPublicKeySize);
 				return false;
 			}
 		}
@@ -87,12 +83,10 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 			Date expirationDate = getExpirationDate(token.getDigestAlgoUsedToSignThisToken(), algoExpirationDate.getAlgo(), algoExpirationDate.getFormat());
 			if (expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
-				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getDigestAlgoUsedToSignThisToken(), expirationDate));
 				return false;
 			}
 			if (expirationDate.before(currentTime)) {
 				errorMessage = MessageTag.ASCCM_ANS_5;
-				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getDigestAlgoUsedToSignThisToken(), expirationDate));
 				return false;
 			}
 
@@ -101,23 +95,15 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 			expirationDate = getExpirationDate(algoToFind, algoExpirationDate.getAlgo(), algoExpirationDate.getFormat());
 			if (expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
-				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getEncryptionAlgoUsedToSignThisToken(), expirationDate));
 				return false;
 			}
 			if (expirationDate.before(currentTime)) {
 				errorMessage = MessageTag.ASCCM_ANS_5;
-				addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(token.getEncryptionAlgoUsedToSignThisToken(), expirationDate));
 				return false;
 			}
 		}
 
 		return true;
-	}
-
-	private void addListOfAlgoInfo(ListAlgo list) {
-		for (Algo algo : list.getAlgo()) {
-			addInfo(XmlInfoBuilder.createAlgoExpirationDateInfo(algo.getValue(), getExpirationDate(algo.getValue(), list.getAlgo(), DATE_FORMAT)));
-		}
 	}
 
 	private Date getExpirationDate(String algoToFind, List<Algo> algos, String format) {

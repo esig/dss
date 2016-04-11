@@ -5,7 +5,6 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.XmlInfoBuilder;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
@@ -27,9 +26,6 @@ public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 		if (!isOnHold) {
 			return true;
 		} else {
-			if (revocationData.getNextUpdate() != null) {
-				addInfo(XmlInfoBuilder.createNextUpadteInfo(revocationData.getNextUpdate()));
-			}
 			return false;
 		}
 	}
