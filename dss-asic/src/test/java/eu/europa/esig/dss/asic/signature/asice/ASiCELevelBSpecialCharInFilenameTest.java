@@ -50,7 +50,7 @@ public class ASiCELevelBSpecialCharInFilenameTest extends AbstractTestSignature 
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test+file.txt");
+		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "012éù*34ä5µ£6789~#%&()+=`@{[]}'.txt");
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
