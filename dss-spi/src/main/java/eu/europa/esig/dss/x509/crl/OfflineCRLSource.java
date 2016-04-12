@@ -107,11 +107,14 @@ public abstract class OfflineCRLSource implements CRLSource {
 
 				final Date thisUpdate = x509CRL.getThisUpdate();
 				if (!DSSASN1Utils.hasExpiredCertOnCRLExtension(certificateToken)) {
-
-					if (thisUpdate.before(certificateToken.getNotBefore()) || thisUpdate.after(certificateToken.getNotAfter())) {
-
-						LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: "
-								+ certificateToken.getDSSIdAsString());
+					// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and [notBefore, notAfter] from
+					// the X509Certificate
+					final Date nextUpdate = x509CRL.getNextUpdate();
+					final Date notAfter = certificateToken.getNotAfter();
+					final Date notBefore = certificateToken.getNotBefore();
+					boolean periodAreIntersecting = thisUpdate.before(notAfter) && nextUpdate.after(notBefore);
+					if (!periodAreIntersecting) {
+						LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: " + certificateToken.getDSSIdAsString());
 						continue;
 					}
 				}
