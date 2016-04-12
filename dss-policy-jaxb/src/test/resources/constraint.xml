@@ -59,7 +59,6 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataNextUpdatePresent Level="WARN" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked  Level="FAIL" />
 				<Cryptographic Level="FAIL">

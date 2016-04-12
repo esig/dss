@@ -43,7 +43,7 @@ public class ValidationResourceManager {
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationResourceManager.class);
 
 	public static String defaultPolicyConstraintsLocation = "/policy/constraint.xml";
-	public static String defaultPolicyXsdLocation = "/policy/policy.xsd";
+	public static String defaultPolicyXsdLocation = "/xsd/policy.xsd";
 
 	private static JAXBContext jaxbContext;
 

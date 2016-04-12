@@ -67,7 +67,7 @@ public class JaxbPolicyTest {
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = sf.newSchema(new File("src/main/xsd/policy.xsd"));
+		Schema schema = sf.newSchema(new File("src/main/resources/xsd/policy.xsd"));
 		unmarshaller.setSchema(schema);
 
 		ConstraintsParameters constraintsParamaters = (ConstraintsParameters) unmarshaller.unmarshal(file);

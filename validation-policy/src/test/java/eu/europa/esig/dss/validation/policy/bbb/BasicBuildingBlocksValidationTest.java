@@ -25,7 +25,7 @@ public class BasicBuildingBlocksValidationTest extends AbstractValidationPolicy 
 
 		ConstraintsParameters parameters = getConstraintsParameters();
 		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
-		
+
 		BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, diagnosticData.getSignatures().get(0), new Date(), policy, Context.SIGNATURE);
 
 		XmlBasicBuildingBlocks result = bbb.execute();
@@ -37,14 +37,13 @@ public class BasicBuildingBlocksValidationTest extends AbstractValidationPolicy 
 		Assert.assertNotNull(result.getSAV());
 		Assert.assertNotNull(result.getVCI());
 		Assert.assertNotNull(result.getXCV());
-		Assert.assertEquals(1, result.getISC().getConclusion().getInfo().size());
 	}
 
 	@Test
 	public void testBBBWithDigestValueOfTheCertificateNotPresent() throws Exception {
 		DiagnosticData diagnosticData = TestDiagnosticDataGenerator.generateDiagnosticDataWithDigestValueOfTheCertificateNotPresent();
 		Assert.assertNotNull(diagnosticData);
-		
+
 		ConstraintsParameters parameters = getConstraintsParameters();
 		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 

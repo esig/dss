@@ -101,6 +101,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocation.getId());
 				if (revocationBBB != null) {
 					item = item.setNextItem(revocationBasicBuildingBlocksValid(revocationBBB));
+				} else {
+					logger.warn("No BBB found for revocation " + revocation.getId());
 				}
 			}
 		}

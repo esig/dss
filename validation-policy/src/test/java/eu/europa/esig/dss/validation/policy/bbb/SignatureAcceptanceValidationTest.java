@@ -29,12 +29,11 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 	@Test
 	public void testWithBasicDataAndCertifiedRolesAsInformLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
-		
+
 		ConstraintsParameters parameters = getConstraintsParameters();
 		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
-		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE,
-				policy);
+		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlSAV sav = validation.execute();
 
 		for (XmlConstraint constraint : sav.getConstraint()) {
@@ -50,7 +49,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getSignedAttributes().setCertifiedRoles(createMultiValueConstraint(Level.FAIL));
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -62,7 +61,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_ICERRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_ICERRM_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
@@ -72,7 +71,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getSignedAttributes().setCertifiedRoles(createMultiValueConstraint(Level.WARN));
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -91,7 +90,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getSignedAttributes().setClaimedRoles(createMultiValueConstraint(Level.FAIL));
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -103,7 +102,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_ICRM_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_ICRM_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
@@ -113,7 +112,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getSignedAttributes().setContentType(createValueConstraint(Level.FAIL));
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -125,7 +124,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTP_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
@@ -135,7 +134,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getSignedAttributes().setContentHints(createValueConstraint(Level.FAIL));
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -147,7 +146,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCHP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCHP_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
@@ -157,7 +156,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getSignedAttributes().setContentIdentifier(createValueConstraint(Level.FAIL));
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -169,7 +168,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCIP_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
@@ -179,7 +178,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getSignedAttributes().setCommitmentTypeIndication(createMultiValueConstraint(Level.FAIL));
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -191,7 +190,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_ISQPXTIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPXTIP_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
@@ -203,7 +202,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(Level.FAIL);
 		constraints.getSignatureConstraints().getSignedAttributes().setContentTimeStamp(levelConstraint);
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -215,20 +214,20 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTSIP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPCTSIP_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
 	@Test
 	public void testWithBasicDataButCounterSignatureAsFailLevel() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateSimpleDiagnosticData();
-		
+
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(Level.FAIL);
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getUnsignedAttributes().setCounterSignature(levelConstraint);
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -240,20 +239,20 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_IUQPCSP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_IUQPCSP_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 		Assert.assertEquals(2, sav.getConstraint().size());
 	}
 
 	@Test
 	public void testWithBasicDataWithNoSigningTimeAndLevelFail() throws Exception {
 		DiagnosticData data = TestDiagnosticDataGenerator.generateDiagnosticDataWithNoSigningDate();
-		
+
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(Level.FAIL);
 
 		ConstraintsParameters constraints = getConstraintsParameters();
 		constraints.getSignatureConstraints().getSignedAttributes().setSigningTime(levelConstraint);
-		
+
 		ValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		SignatureAcceptanceValidation validation = new SignatureAcceptanceValidation(data, new Date(), data.getSignatures().get(0), Context.SIGNATURE, policy);
@@ -265,7 +264,7 @@ public class SignatureAcceptanceValidationTest extends AbstractValidationPolicy 
 
 		Assert.assertEquals(Indication.FAILED, sav.getConclusion().getIndication());
 		Assert.assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
-		Assert.assertEquals(MessageTag.BBB_SAV_ISQPSTP_ANS.getMessage(), sav.getConclusion().getError().getValue());
+		Assert.assertEquals(MessageTag.BBB_SAV_ISQPSTP_ANS.getMessage(), sav.getConclusion().getErrors().get(0).getValue());
 	}
 
 	@Test

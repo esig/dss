@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,9 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
@@ -208,30 +205,6 @@ public class SimpleReportBuilder {
 		addSignatureProfile(signature, xmlSignature);
 
 		simpleReport.getSignature().add(xmlSignature);
-	}
-
-	private List<XmlConstraint> getAllBBBConstraintsForASignature(XmlSignature signature) {
-		List<XmlConstraint> result = new ArrayList<XmlConstraint>();
-		for (XmlBasicBuildingBlocks bbb : detailedReport.getBasicBuildingBlocks()) {
-			if (bbb.getId().equals(signature.getId())) { // Check if it's the BBB for the signature
-				if (bbb.getCV() != null) {
-					result.addAll(bbb.getCV().getConstraint());
-				}
-				if (bbb.getISC() != null) {
-					result.addAll(bbb.getISC().getConstraint());
-				}
-				if (bbb.getSAV() != null) {
-					result.addAll(bbb.getSAV().getConstraint());
-				}
-				if (bbb.getVCI() != null) {
-					result.addAll(bbb.getVCI().getConstraint());
-				}
-				if (bbb.getXCV() != null) {
-					result.addAll(bbb.getXCV().getConstraint());
-				}
-			}
-		}
-		return result;
 	}
 
 	private XmlConstraintsConclusion getBasicSignatureValidationConclusion(String signatureId) {

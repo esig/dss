@@ -39,7 +39,7 @@
 									<goal>generate</goal>
 								</goals>
 								<configuration>
-									<schemaDirectory>src/main/xsd</schemaDirectory>
+									<schemaDirectory>src/main/resources/xsd</schemaDirectory>
 									<generatePackage>eu.europa.esig.jaxb.policy</generatePackage>
 									<schemaIncludes>
 										<schemaInclude>policy.xsd</schemaInclude>

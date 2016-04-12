@@ -64,6 +64,7 @@
 				<RevocationDataNextUpdatePresent Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
+				<NotOnHold Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
@@ -152,7 +153,6 @@
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-				<TSLStatus Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
@@ -182,6 +182,7 @@
 				<RevocationDataNextUpdatePresent Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
+				<NotOnHold Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>

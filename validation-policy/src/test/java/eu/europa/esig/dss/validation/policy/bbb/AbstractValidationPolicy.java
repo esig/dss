@@ -3,10 +3,12 @@ package eu.europa.esig.dss.validation.policy.bbb;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.InputStream;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -22,7 +24,8 @@ public class AbstractValidationPolicy {
 
 	public ConstraintsParameters getConstraintsParameters() throws Exception {
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = sf.newSchema(new File("src/main/resources/policy/policy.xsd"));
+		InputStream schemaStream = AbstractValidationPolicy.class.getResourceAsStream("/xsd/policy.xsd");
+		Schema schema = sf.newSchema(new StreamSource(schemaStream));
 
 		JAXBContext jaxbContext = JAXBContext.newInstance(eu.europa.esig.jaxb.policy.ObjectFactory.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
