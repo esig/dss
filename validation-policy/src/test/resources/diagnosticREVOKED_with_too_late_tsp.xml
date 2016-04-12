@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Signature-P-PL_ADS-8.pdf</DocumentName>
+    <Signature Id="id-96275cb5c67aec709670e9f1d56cd7419bd57b5829e922a4e19c10dd383e1857">
+        <DateTime>2016-04-08T10:47:28</DateTime>
+        <SignatureFormat>PAdES_BASELINE_LT</SignatureFormat>
+        <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+        </BasicSignature>
+        <SigningCertificate Id="B3E1E3E45223FC8C8A735874E4DCC25E0CAC482191383EA995165EA75E59FD13">
+            <AttributePresent>true</AttributePresent>
+            <DigestValuePresent>true</DigestValuePresent>
+            <DigestValueMatch>true</DigestValueMatch>
+            <IssuerSerialMatch>false</IssuerSerialMatch>
+        </SigningCertificate>
+        <CertificateChain>
+            <ChainCertificate Id="B3E1E3E45223FC8C8A735874E4DCC25E0CAC482191383EA995165EA75E59FD13">
+                <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="357579BDF5F9474F22E655A9E418D17EFF0B3C11FCF40AD091773BE22329C562">
+                <Source>TRUSTED_LIST</Source>
+            </ChainCertificate>
+        </CertificateChain>
+        <ContentType>application/pdf</ContentType>
+        <Timestamps>
+            <Timestamp Id="E153F9E95DDD2D4E6E92CF17DDA4C9037CE6712EE0202C9B0BB8785CB66311FC" Type="SIGNATURE_TIMESTAMP">
+                <ProductionTime>2016-04-08T14:47:38</ProductionTime>
+                <SignedDataDigestAlgo>SHA1</SignedDataDigestAlgo>
+                <EncodedSignedDataDigestValue>ch74pi51I0Hq1C0f6lt3gTt+3IQ=</EncodedSignedDataDigestValue>
+                <MessageImprintDataFound>true</MessageImprintDataFound>
+                <MessageImprintDataIntact>true</MessageImprintDataIntact>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="AC3593840F21F63E9280D28F9AFECAE733D52C9C531B2CA9A009A9446C669209"/>
+                <CertificateChain>
+                    <ChainCertificate Id="AC3593840F21F63E9280D28F9AFECAE733D52C9C531B2CA9A009A9446C669209">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+                <SignedObjects>
+                    <SignedSignature Id="id-96275cb5c67aec709670e9f1d56cd7419bd57b5829e922a4e19c10dd383e1857"/>
+                    <DigestAlgAndValue Category="CERTIFICATE">
+                        <DigestMethod>http://www.w3.org/2000/09/xmldsig#sha1</DigestMethod>
+                        <DigestValue>wt0FkwclsmsOhjmZsiNhF/bXLfA=</DigestValue>
+                    </DigestAlgAndValue>
+                </SignedObjects>
+            </Timestamp>
+        </Timestamps>
+        <SignatureScopes>
+            <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+        </SignatureScopes>
+    </Signature>
+    <UsedCertificates>
+        <Certificate Id="357579BDF5F9474F22E655A9E418D17EFF0B3C11FCF40AD091773BE22329C562">
+            <SubjectDistinguishedName Format="CANONICAL">cn=certum qca,o=unizeto technologies s.a.,c=pl,2.5.4.5=#130b4e722077706973753a2031</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=CERTUM QCA,O=Unizeto Technologies S.A.,C=PL,2.5.4.5=#130b4e722077706973753a2031</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=narodowe centrum certyfikacji (nccert),o=minister wlasciwy do spraw gospodarki,c=pl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Narodowe Centrum Certyfikacji (NCCert),O=Minister wlasciwy do spraw gospodarki,C=PL</IssuerDistinguishedName>
+            <SerialNumber>240593320095729088310555193235895822405302832950</SerialNumber>
+            <CommonName>CERTUM QCA</CommonName>
+            <CountryName>PL</CountryName>
+            <OrganizationName>Unizeto Technologies S.A.</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>UDcfs0kfxWFiO+5mV67/qwAHkas=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2019-04-08T01:59:59</NotAfter>
+            <NotBefore>2014-04-07T09:29:43</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+        </Certificate>
+        <Certificate Id="B3E1E3E45223FC8C8A735874E4DCC25E0CAC482191383EA995165EA75E59FD13">
+            <SubjectDistinguishedName Format="CANONICAL">c=pl,2.5.4.5=#1311504553454c3a3739303632353136343030,2.5.4.4=#0c0f42617274c5826f6d69656a637a796b,2.5.4.42=#0c0b4d61c582676f727a617461,cn=m b</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=PL,2.5.4.5=#1311504553454c3a3739303632353136343030,2.5.4.4=#0c0f42617274c5826f6d69656a637a796b,2.5.4.42=#0c0b4d61c582676f727a617461,CN=m b</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=certum qca,o=unizeto technologies s.a.,c=pl,2.5.4.5=#130b4e722077706973753a2031</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CERTUM QCA,O=Unizeto Technologies S.A.,C=PL,2.5.4.5=#130b4e722077706973753a2031</IssuerDistinguishedName>
+            <SerialNumber>135011590978461381735987585772810701754</SerialNumber>
+            <CommonName>m b</CommonName>
+            <CountryName>PL</CountryName>
+            <GivenName>m</GivenName>
+            <Surname>b</Surname>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>wt0FkwclsmsOhjmZsiNhF/bXLfA=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2018-01-06T06:12:38</NotAfter>
+            <NotBefore>2016-01-07T06:12:38</NotBefore>
+            <PublicKeySize>1024</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="357579BDF5F9474F22E655A9E418D17EFF0B3C11FCF40AD091773BE22329C562"/>
+            <CertificateChain>
+                <ChainCertificate Id="357579BDF5F9474F22E655A9E418D17EFF0B3C11FCF40AD091773BE22329C562">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <QCStatement>
+                <QCP>false</QCP>
+                <QCPPlus>false</QCPPlus>
+                <QCC>true</QCC>
+                <QCSSCD>false</QCSSCD>
+            </QCStatement>
+            <TrustedServiceProvider>
+                <TSPName>Unizeto Technologies S.A.</TSPName>
+                <TSPServiceName>Certification authority issuing qualified certificates</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                <StartDate>2014-04-07T09:29:00</StartDate>
+                <EndDate>2016-04-01T18:00:00</EndDate>
+                <Qualifiers>
+                    <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                    <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                </Qualifiers>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <TrustedServiceProvider>
+                <TSPName>Unizeto Technologies S.A.</TSPName>
+                <TSPServiceName>Certification authority issuing qualified certificates</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Status>
+                <StartDate>2016-04-01T18:00:00</StartDate>
+                <Qualifiers>
+                    <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                    <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                </Qualifiers>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Revocation Id="86230EF04A700F00882C827D5B1B8BACECD8568FCB039F04611B869D02B59D8C">
+                <Source>CRLToken</Source>
+                <SourceAddress>http://crl.certum.pl/qca14.crl</SourceAddress>
+                <Available>false</Available>
+                <Status>false</Status>
+                <Reason>affiliationChanged</Reason>
+                <ProductionDate>2016-04-12T00:02:07</ProductionDate>
+                <ThisUpdate>2016-04-12T00:02:07</ThisUpdate>
+                <NextUpdate>2016-04-13T00:02:07</NextUpdate>
+                <RevocationDate>2016-04-08T13:32:49</RevocationDate>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="357579BDF5F9474F22E655A9E418D17EFF0B3C11FCF40AD091773BE22329C562"/>
+                <CertificateChain>
+                    <ChainCertificate Id="357579BDF5F9474F22E655A9E418D17EFF0B3C11FCF40AD091773BE22329C562">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+            </Revocation>
+            <Info>
+                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
+                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="AC3593840F21F63E9280D28F9AFECAE733D52C9C531B2CA9A009A9446C669209">
+            <SubjectDistinguishedName Format="CANONICAL">cn=certum qtsa,o=asseco data systems s.a.,c=pl,2.5.4.5=#130c4e722077706973753a203135</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=CERTUM QTSA,O=Asseco Data Systems S.A.,C=PL,2.5.4.5=#130c4e722077706973753a203135</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=narodowe centrum certyfikacji (nccert),o=minister wlasciwy do spraw gospodarki,c=pl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Narodowe Centrum Certyfikacji (NCCert),O=Minister wlasciwy do spraw gospodarki,C=PL</IssuerDistinguishedName>
+            <SerialNumber>227792606299944004592002222445418427029064848827</SerialNumber>
+            <CommonName>CERTUM QTSA</CommonName>
+            <CountryName>PL</CountryName>
+            <OrganizationName>Asseco Data Systems S.A.</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>3t3xXUbAqc86ngZuBzG77ough04=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2020-10-27T00:59:59</NotAfter>
+            <NotBefore>2016-04-01T16:39:37</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+        </Certificate>
+        <Certificate Id="1B82910EF7607FE4AAAE5105E2B9EC711D218732D261DD0B94EE4CD7ABC07690">
+            <SubjectDistinguishedName Format="CANONICAL">cn=narodowe centrum certyfikacji (nccert),o=minister wlasciwy do spraw gospodarki,c=pl</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Narodowe Centrum Certyfikacji (NCCert),O=Minister wlasciwy do spraw gospodarki,C=PL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=narodowe centrum certyfikacji (nccert),o=minister wlasciwy do spraw gospodarki,c=pl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Narodowe Centrum Certyfikacji (NCCert),O=Minister wlasciwy do spraw gospodarki,C=PL</IssuerDistinguishedName>
+            <SerialNumber>563206454069127598643323046419945895619292235545</SerialNumber>
+            <CommonName>Narodowe Centrum Certyfikacji (NCCert)</CommonName>
+            <CountryName>PL</CountryName>
+            <OrganizationName>Minister wlasciwy do spraw gospodarki</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>qVFvqBFTXnNFiBVxBmx3DPl/ZpU=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2020-10-27T00:59:59</NotAfter>
+            <NotBefore>2009-10-26T07:57:01</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+        </Certificate>
+    </UsedCertificates>
+</DiagnosticData>
