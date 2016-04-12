@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.asic.extension.asice;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -43,6 +45,7 @@ public class ASiCeSignAndExtendTest {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
 
 		// reports.print();
 		extend(signDocument);

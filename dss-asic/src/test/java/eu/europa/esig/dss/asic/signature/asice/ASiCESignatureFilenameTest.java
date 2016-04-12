@@ -20,43 +20,45 @@
  */
 package eu.europa.esig.dss.asic.signature.asice;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.zip.ZipFile;
 
-import static org.junit.Assert.assertNotNull;
+import org.apache.commons.io.IOUtils;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 
 public class ASiCESignatureFilenameTest extends ASiCELevelBTest {
 
-    private DSSDocument documentToSign;
+	private DSSDocument documentToSign;
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@Rule
+	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    @Before
-    public void setUp() throws Exception {
-        documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
-    }
+	@Before
+	public void setUp() throws Exception {
+		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+	}
 
-    @Override
-    public void signAndVerify() throws IOException {
-        String containerTemporaryPath = temporaryFolder.newFile().getPath();
-        getSignatureParameters().aSiC().setSignatureFileName("signatures2047.xml");
-        documentToSign = sign();
-        documentToSign.save(containerTemporaryPath);
-        ZipFile zip = new ZipFile(containerTemporaryPath);
-        assertNotNull("Signature file name is not correct", zip.getEntry("META-INF/signatures2047.xml"));
-    }
+	@Override
+	public void signAndVerify() throws IOException {
+		String containerTemporaryPath = temporaryFolder.newFile().getPath();
+		getSignatureParameters().aSiC().setSignatureFileName("signatures2047.xml");
+		documentToSign = sign();
+		documentToSign.save(containerTemporaryPath);
+		ZipFile zip = new ZipFile(containerTemporaryPath);
+		assertNotNull("Signature file name is not correct", zip.getEntry("META-INF/signatures2047.xml"));
+		IOUtils.closeQuietly(zip);
+	}
 
-    @Override
-    protected DSSDocument getDocumentToSign() {
-        return documentToSign;
-    }
-
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
 
 }
