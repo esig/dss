@@ -20,11 +20,14 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -38,6 +41,8 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
  * This class handles the specifics of the detached XML signature.
  */
 class DetachedSignatureBuilder extends XAdESSignatureBuilder {
+
+	private static final Logger logger = LoggerFactory.getLogger(DetachedSignatureBuilder.class);
 
 	/**
 	 * The default constructor for DetachedSignatureBuilder.<br>
@@ -83,7 +88,12 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 			final DSSReference reference = new DSSReference();
 			reference.setId("r-id-" + referenceIndex++);
 			final String fileURI = currentDetachedDocument.getName() != null ? currentDetachedDocument.getName() : "";
-			reference.setUri(fileURI);
+			try {
+				reference.setUri(URLEncoder.encode(fileURI, "UTF-8"));
+			} catch (Exception e) {
+				logger.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
+				reference.setUri(fileURI);
+			}
 			reference.setContents(currentDetachedDocument);
 			reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
 
