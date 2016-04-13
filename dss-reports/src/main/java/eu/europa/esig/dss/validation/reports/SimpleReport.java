@@ -176,6 +176,52 @@ public class SimpleReport {
 		return StringUtils.EMPTY;
 	}
 
+	/**
+	 * This method returns the signature time
+	 *
+	 * @param signatureId
+	 * @return
+	 */
+	public Date getSigningTime(final String signatureId) {
+		XmlSignature xmlSignature = getSignatureById(signatureId);
+		if (xmlSignature != null) {
+			return xmlSignature.getSigningTime();
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns the signedBy
+	 *
+	 * @param signatureId
+	 * @return
+	 */
+	public String getSignedBy(final String signatureId) {
+		XmlSignature xmlSignature = getSignatureById(signatureId);
+		if (xmlSignature != null) {
+			return xmlSignature.getSignedBy();
+		}
+		return StringUtils.EMPTY;
+	}
+
+	/**
+	 * This method returns the number of signatures
+	 * 
+	 * @return
+	 */
+	public int getSignaturesCount() {
+		return simpleReport.getSignaturesCount();
+	}
+
+	/**
+	 * This method returns the number of valid signatures
+	 * 
+	 * @return
+	 */
+	public int getValidSignaturesCount() {
+		return simpleReport.getValidSignaturesCount();
+	}
+
 	private XmlSignature getSignatureById(String signatureId) {
 		List<XmlSignature> signatures = simpleReport.getSignature();
 		if (CollectionUtils.isNotEmpty(signatures)) {

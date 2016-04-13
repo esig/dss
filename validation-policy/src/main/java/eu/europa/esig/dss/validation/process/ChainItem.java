@@ -168,10 +168,10 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	}
 
 	private void recordConstraint(XmlStatus status) {
-		XmlConstraint constraint = new XmlConstraint();
-		constraint.setName(buildConstraintName());
-		constraint.setStatus(status);
-		constraint.setId(bbbId);
+		XmlConstraint xmlConstraint = new XmlConstraint();
+		xmlConstraint.setName(buildConstraintName());
+		xmlConstraint.setStatus(status);
+		xmlConstraint.setId(bbbId);
 		if (XmlStatus.NOT_OK.equals(status) || XmlStatus.WARNING.equals(status) || XmlStatus.INFORMATION.equals(status)) {
 			XmlName message = new XmlName();
 			MessageTag errorMessageTag = getErrorMessageTag();
@@ -182,14 +182,14 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 				logger.error("MessageTag is not defined!");
 			}
 			if (XmlStatus.NOT_OK.equals(status)) {
-				constraint.setError(message);
+				xmlConstraint.setError(message);
 			} else if (XmlStatus.WARNING.equals(status)) {
-				constraint.setWarning(message);
+				xmlConstraint.setWarning(message);
 			} else if (XmlStatus.INFORMATION.equals(status)) {
-				constraint.setInfo(message);
+				xmlConstraint.setInfo(message);
 			}
 		}
-		addConstraint(constraint);
+		addConstraint(xmlConstraint);
 	}
 
 	private void addConstraint(XmlConstraint constraint) {

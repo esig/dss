@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,13 +54,13 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 
 	public static void main(String[] args) throws IOException {
-		//Select document that will eventually be signed
+		// Select document that will eventually be signed
 		prepareXmlDoc();
 
-		//Set signature token
+		// Set signature token
 		preparePKCS12TokenAndKey();
 
-		//Define the references that have to be considered for the AllDataObjectsTimestamp
+		// Define the references that have to be considered for the AllDataObjectsTimestamp
 		List<DSSReference> references = new ArrayList<DSSReference>();
 		DSSReference dssReference = new DSSReference();
 		dssReference.setContents(toSignDocument);
@@ -69,7 +68,7 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 		references.add(dssReference);
 
-		//Define the signature parameters
+		// Define the signature parameters
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
@@ -85,22 +84,22 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		// We set the certificate chain
 		signatureParameters.setCertificateChain(privateKey.getCertificateChain());
 
-		//Define the contentTimestamp specific parameters
+		// Define the contentTimestamp specific parameters
 
-		try{
-			MockTSPSource mockTsp= getMockTSPSource();
+		try {
+			MockTSPSource mockTsp = getMockTSPSource();
 			TimestampService timestampService = new TimestampService(mockTsp, new CertificatePool());
 			TimestampToken timestampToken = timestampService.generateXAdESContentTimestampAsTimestampToken(toSignDocument, signatureParameters,
 					TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 
-			//The AllDataObjectsTimestamp has been generated, now we have to include it in the signature parameters
+			// The AllDataObjectsTimestamp has been generated, now we have to include it in the signature parameters
 			List<TimestampToken> contentTimestamps = new ArrayList<TimestampToken>();
 			contentTimestamps.add(timestampToken);
 			signatureParameters.setContentTimestamps(contentTimestamps);
-		}catch (Exception e) {
-			new DSSException("Error during MockTspSource",e);
+		} catch (Exception e) {
+			new DSSException("Error during MockTspSource", e);
 		}
-		//Create the signature, including the AllDataObjectsTimestamp
+		// Create the signature, including the AllDataObjectsTimestamp
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(verifier);
 
