@@ -45,7 +45,8 @@ import eu.europa.esig.jaxb.policy.UnsignedAttributesConstraints;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
- * This class encapsulates the constraint file that controls the policy to be used during the validation process. It adds the functions to direct access to the
+ * This class encapsulates the constraint file that controls the policy to be used during the validation process. It
+ * adds the functions to direct access to the
  * file data. It is the implementation of the ETSI 102853 standard.
  */
 public class EtsiValidationPolicy implements ValidationPolicy {
@@ -97,6 +98,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
 		if (signatureConstraints != null) {
 			return signatureConstraints.getAcceptablePolicies();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSignaturePolicyIdentifiedConstraint(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getPolicyAvailable();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSignaturePolicyPolicyHashValid(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getPolicyHashMatch();
 		}
 		return null;
 	}

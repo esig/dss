@@ -65,7 +65,7 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NO_SIGNING_CERTIFICATE_FOUND" />
 			<xs:enumeration value="FORMAT_FAILURE" />
-			<xs:enumeration value="NO_POLICY" />
+			<xs:enumeration value="SIGNATURE_POLICY_NOT_AVAILABLE" />
 			<xs:enumeration value="POLICY_PROCESSING_ERROR" />
 			<xs:enumeration value="OUT_OF_BOUNDS_NO_POE" />
 			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND" />

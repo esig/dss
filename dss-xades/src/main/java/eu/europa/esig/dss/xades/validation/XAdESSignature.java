@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.stream.StreamSource;
 
@@ -644,7 +645,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Element policyId = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_ID);
 			if (policyId != null) {
 				// Explicit policy
-				final String policyIdString = policyId.getTextContent();
+				String policyIdString = policyId.getTextContent();
+				// urn:oid:1.2.3 --> 1.2.3
+				if (policyIdString.indexOf(':') >= 0) {
+					policyIdString = policyIdString.substring(policyIdString.lastIndexOf(':') + 1);
+				}
 				final SignaturePolicy signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DSSXMLUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
 				final String policyDigestMethodString = policyDigestMethod.getTextContent();
@@ -652,7 +657,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				signaturePolicy.setDigestAlgorithm(digestAlgorithm);
 				final Element policyDigestValue = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_VALUE);
 				final String digestValue = policyDigestValue.getTextContent().trim();
-				signaturePolicy.setDigestValue(digestValue);
+				signaturePolicy.setDigestValue(DatatypeConverter.parseBase64Binary(digestValue));
 				final Element policyUrl = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
 				if (policyUrl != null) {
 					signaturePolicy.setUrl(policyUrl.getTextContent().trim());

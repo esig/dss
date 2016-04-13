@@ -25,97 +25,86 @@ import eu.europa.esig.dss.DigestAlgorithm;
 /**
  * Represents the value of a SignaturePolicy
  *
- *
  */
 public class SignaturePolicy {
 
-    /**
-     * The validation process accepts no policy. No particular treatment is done.
-     */
-    public static final String NO_POLICY = "NO_POLICY";
+	/**
+	 * The validation process accepts no policy. No particular treatment is done.
+	 */
+	public static final String NO_POLICY = "NO_POLICY";
 
-    /**
-     * The validation process accepts any policy. The used policy is only showed, no particular treatment is done.
-     */
+	/**
+	 * The validation process accepts any policy. The used policy is only showed, no particular treatment is done.
+	 */
+	public static final String ANY_POLICY = "ANY_POLICY";
 
-    public static final String IMPLICIT_POLICY = "IMPLICIT_POLICY";
+	public static final String IMPLICIT_POLICY = "IMPLICIT_POLICY";
 
-    private String identifier;
-    private DigestAlgorithm digestAlgorithm;
-    private String digestValue;
+	private String identifier;
+	private DigestAlgorithm digestAlgorithm;
+	private byte[] digestValue;
 
-    /**
-     * Two qualifiers for the signature policy have been identified so far:
-     * • a URL where a copy of the signature policy MAY be obtained;
-     * • a user notice that should be displayed when the signature is verified.
-     */
-    private String url;
-    private String notice;
+	/**
+	 * Two qualifiers for the signature policy have been identified so far:
+	 * • a URL where a copy of the signature policy MAY be obtained;
+	 * • a user notice that should be displayed when the signature is verified.
+	 */
+	private String url;
+	private String notice;
 
-    /**
-     * The default constructor for SignaturePolicy. It represents the implied policy.
-     */
-    public SignaturePolicy() {
-        this.identifier = IMPLICIT_POLICY;
-    }
+	/**
+	 * The default constructor for SignaturePolicy. It represents the implied policy.
+	 */
+	public SignaturePolicy() {
+		this.identifier = IMPLICIT_POLICY;
+	}
 
-    /**
-     * The default constructor for SignaturePolicy.
-     *
-     * @param identifier
-     */
-    public SignaturePolicy(final String identifier) {
-        this.identifier = identifier;
-    }
+	/**
+	 * The default constructor for SignaturePolicy.
+	 *
+	 * @param identifier
+	 */
+	public SignaturePolicy(final String identifier) {
+		this.identifier = identifier;
+	}
 
-    /**
-     * @return the identifier
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
+	/**
+	 * @return the identifier
+	 */
+	public String getIdentifier() {
+		return identifier;
+	}
 
-    public DigestAlgorithm getDigestAlgorithm() {
-        return digestAlgorithm;
-    }
+	public DigestAlgorithm getDigestAlgorithm() {
+		return digestAlgorithm;
+	}
 
-    public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-        this.digestAlgorithm = digestAlgorithm;
-    }
+	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
+		this.digestAlgorithm = digestAlgorithm;
+	}
 
-    public String getDigestValue() {
-        return digestValue;
-    }
+	public byte[] getDigestValue() {
+		return digestValue;
+	}
 
-    public void setDigestValue(final String digestValue) {
-        this.digestValue = digestValue;
-    }
+	public void setDigestValue(final byte[] digestValue) {
+		this.digestValue = digestValue;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public void setUrl(final String url) {
-        this.url = url;
-    }
+	public void setUrl(final String url) {
+		this.url = url;
+	}
 
-    public String getNotice() {
-        return notice;
-    }
+	public String getNotice() {
+		return notice;
+	}
 
-    public void setNotice(final String notice) {
-        this.notice = notice;
-    }
+	public void setNotice(final String notice) {
+		this.notice = notice;
+	}
 
-    @Override
-    public String toString() {
-
-        return "SignaturePolicy{" +
-              "identifier='" + identifier + '\'' +
-              ", digestAlgorithm=" + digestAlgorithm +
-              ", digestValue='" + digestValue + '\'' +
-              ", url='" + url + '\'' +
-              ", notice='" + notice + '\'' +
-              '}';
-    }
 }

@@ -27,6 +27,7 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +42,7 @@ import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -1206,13 +1208,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final String notice = signaturePolicy.getNotice();
 		xmlPolicy.setNotice(notice);
 
-		final String policyDigestValueFromSignature = StringUtils.upperCase(signaturePolicy.getDigestValue());
+		final byte[] digestValue = signaturePolicy.getDigestValue();
 		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
 
-		if (StringUtils.isNotEmpty(policyDigestValueFromSignature)) {
+		if (ArrayUtils.isNotEmpty(digestValue)) {
 			XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
 			xmlDigestAlgAndValue.setDigestMethod(signPolicyHashAlgFromSignature == null ? "" : signPolicyHashAlgFromSignature.getName());
-			xmlDigestAlgAndValue.setDigestValue(policyDigestValueFromSignature);
+			xmlDigestAlgAndValue.setDigestValue(DatatypeConverter.printBase64Binary(digestValue));
 			xmlPolicy.setDigestAlgAndValue(xmlDigestAlgAndValue);
 		}
 
@@ -1303,46 +1305,40 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				}
 
 				byte[] recalculatedDigestValue = DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes);
-				String recalculatedDigestHexValue = DSSUtils.toHex(recalculatedDigestValue);
 
-				boolean equal = policyDigestValueFromSignature.equals(recalculatedDigestHexValue);
+				boolean equal = Arrays.equals(digestValue, recalculatedDigestValue);
 				xmlPolicy.setStatus(equal);
 				if (!equal) {
-					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature
-							+ ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
+					xmlPolicy.setProcessingError("The policy digest value (" + DatatypeConverter.printBase64Binary(digestValue)
+							+ ") does not match the re-calculated digest value (" + DatatypeConverter.printBase64Binary(recalculatedDigestValue) + ").");
 					return;
 				}
 
 				final ASN1OctetString signPolicyHash = (ASN1OctetString) asn1Sequence.getObjectAt(2);
 				final byte[] policyDigestValueFromPolicy = signPolicyHash.getOctets();
-				String policyDigestHexValueFromPolicy = DSSUtils.toHex(policyDigestValueFromPolicy);
-				equal = policyDigestValueFromSignature.equals(policyDigestHexValueFromPolicy);
+				equal = Arrays.equals(digestValue, policyDigestValueFromPolicy);
 				xmlPolicy.setStatus(equal);
 				if (!equal) {
-					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature
-							+ ") does not match the digest value from the policy file (" + policyDigestHexValueFromPolicy + ").");
+					xmlPolicy.setProcessingError("The policy digest value (" + DatatypeConverter.printBase64Binary(digestValue)
+							+ ") does not match the digest value from the policy file (" + DatatypeConverter.printBase64Binary(policyDigestValueFromPolicy)
+							+ ").");
 				}
 			} else {
-
 				/**
 				 * c) In all other cases, compute the digest using the digesting
 				 * algorithm indicated in the children of the
 				 * property/attribute.
 				 */
-
 				byte[] recalculatedDigestValue = DSSUtils.digest(signPolicyHashAlgFromSignature, policyBytes);
-				String recalculatedDigestHexValue = DSSUtils.toHex(recalculatedDigestValue);
-
-				boolean equal = policyDigestValueFromSignature.equals(recalculatedDigestHexValue);
+				boolean equal = Arrays.equals(digestValue, recalculatedDigestValue);
 				xmlPolicy.setStatus(equal);
 				if (!equal) {
-					xmlPolicy.setProcessingError("The policy digest value (" + policyDigestValueFromSignature
-							+ ") does not match the re-calculated digest value (" + recalculatedDigestHexValue + ").");
-					return;
+					xmlPolicy.setProcessingError("The policy digest value (" + DatatypeConverter.printBase64Binary(digestValue)
+							+ ") does not match the re-calculated digest value (" + DatatypeConverter.printBase64Binary(recalculatedDigestValue) + ").");
 				}
 			}
 
-		} catch (RuntimeException e) {
+		} catch (Exception e) {
 			// When any error (communication) we just set the status to false
 			xmlPolicy.setStatus(false);
 			xmlPolicy.setProcessingError(e.getMessage());

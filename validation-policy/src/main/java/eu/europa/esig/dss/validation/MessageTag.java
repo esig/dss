@@ -110,8 +110,12 @@ public enum MessageTag {
 
 	BBB_VCI_ISPK("Is the signature policy known?"),
 	BBB_VCI_ISPK_ANS_1("The signature policy is mandatory!"),
-	BBB_VCI_ISPK_ANS_2("An error encountered when processing the signature policy identifier!"),
-	BBB_VCI_ISPK_ANS_3("The signature policy identifier is not allowed by the validation policy constraint!"),
+
+	BBB_VCI_ISPA("Is the signature policy available?"),
+	BBB_VCI_ISPA_ANS("The signature policy is not available!"),
+	
+	BBB_VCI_ISPM("Is the signature policy's hash match?"),
+	BBB_VCI_ISPM_ANS("The signature policy's hash doesn't match the computed one!"),
 
 	BBB_XCV_SUB("Is the certificate validation concluant ?"),
 	BBB_XCV_SUB_ANS("The certificate validation is not concluant!"),

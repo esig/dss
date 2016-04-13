@@ -567,12 +567,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		final ASN1OctetString digestValue = hashAlgAndValue.getHashValue();
 		final byte[] digestValueBytes = digestValue.getOctets();
-		final String policyDigestHexValue = DSSUtils.toHex(digestValueBytes);
-		signaturePolicy.setDigestValue(policyDigestHexValue);
+		signaturePolicy.setDigestValue(digestValueBytes);
 
 		final SigPolicyQualifiers sigPolicyQualifiers = sigPolicy.getSigPolicyQualifiers();
 		if (sigPolicyQualifiers == null) {
-
 			return signaturePolicy;
 		}
 		for (int ii = 0; ii < sigPolicyQualifiers.size(); ii++) {

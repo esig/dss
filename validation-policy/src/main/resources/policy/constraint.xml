@@ -8,6 +8,8 @@
 			<Id>ANY_POLICY</Id>
 			<Id>NO_POLICY</Id>
 		</AcceptablePolicies>
+		<PolicyAvailable Level="WARN" />
+		<PolicyHashMatch Level="WARN" />
 		<AcceptableFormats Level="FAIL">
 			<Id>*</Id> <!-- ALL -->
 		</AcceptableFormats>

@@ -5,8 +5,11 @@ import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashValidCheck;
+import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifierCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 /**
@@ -33,12 +36,28 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 
 	@Override
 	protected void initChain() {
-		firstItem = signaturePolicyIdentifier();
+		MultiValuesConstraint signaturePolicyConstraint = validationPolicy.getSignaturePolicyConstraint(context);
+
+		ChainItem<XmlVCI> item = firstItem = signaturePolicyIdentifier(signaturePolicyConstraint);
+
+		item = item.setNextItem(signaturePolicyIdentified());
+
+		item = item.setNextItem(signaturePolicyHashValid());
+
 	}
 
-	private ChainItem<XmlVCI> signaturePolicyIdentifier() {
-		MultiValuesConstraint constraint = validationPolicy.getSignaturePolicyConstraint(context);
-		return new SignaturePolicyIdentifierCheck(result, constraint, signature);
+	private ChainItem<XmlVCI> signaturePolicyIdentifier(MultiValuesConstraint signaturePolicyConstraint) {
+		return new SignaturePolicyIdentifierCheck(result, signature, signaturePolicyConstraint);
+	}
+
+	private ChainItem<XmlVCI> signaturePolicyIdentified() {
+		LevelConstraint constraint = validationPolicy.getSignaturePolicyIdentifiedConstraint(context);
+		return new SignaturePolicyIdentifiedCheck(result, signature, constraint);
+	}
+
+	private ChainItem<XmlVCI> signaturePolicyHashValid() {
+		LevelConstraint constraint = validationPolicy.getSignaturePolicyPolicyHashValid(context);
+		return new SignaturePolicyHashValidCheck(result, signature, constraint);
 	}
 
 }

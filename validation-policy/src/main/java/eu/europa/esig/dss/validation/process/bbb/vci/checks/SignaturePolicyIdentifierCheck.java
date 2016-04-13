@@ -1,37 +1,39 @@
 package eu.europa.esig.dss.validation.process.bbb.vci.checks;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
-public class SignaturePolicyIdentifierCheck extends ChainItem<XmlVCI> {
+public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem<XmlVCI> {
 
 	private final SignatureWrapper signature;
-	private final MultiValuesConstraint level;
+	private final MultiValuesConstraint multiValues;
 
-	public SignaturePolicyIdentifierCheck(XmlVCI result, MultiValuesConstraint constraint, SignatureWrapper signature) {
-		super(result, constraint);
+	public SignaturePolicyIdentifierCheck(XmlVCI result, SignatureWrapper signature, MultiValuesConstraint multiValues) {
+		super(result, multiValues);
 		this.signature = signature;
-		this.level = constraint;
+		this.multiValues = multiValues;
 	}
 
 	@Override
 	protected boolean process() {
-		if (SignaturePolicy.IMPLICIT_POLICY.equals(signature.getPolicyId())) {
+		String policyId = signature.getPolicyId();
+		if (multiValues.getId().contains(SignaturePolicy.NO_POLICY) && StringUtils.isEmpty(policyId)) {
 			return true;
-		} else if (signature.isPolicyPresent()) {
-			return signature.getPolicyStatus();
-		} else {
-			if (level.getId().contains(SignaturePolicy.NO_POLICY)) {
-				return true;
-			}
-			return false;
+		} else if (multiValues.getId().contains(SignaturePolicy.ANY_POLICY) && StringUtils.isNotEmpty(policyId)) {
+			return true;
+		} else if (multiValues.getId().contains(SignaturePolicy.IMPLICIT_POLICY) && StringUtils.equals(SignaturePolicy.IMPLICIT_POLICY, policyId)) {
+			return true;
 		}
+		// oids
+		return processValueCheck(policyId);
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class SignaturePolicyIdentifierCheck extends ChainItem<XmlVCI> {
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return signature.isPolicyPresent() ? MessageTag.BBB_VCI_ISPK_ANS_2 : MessageTag.BBB_VCI_ISPK_ANS_1;
+		return MessageTag.BBB_VCI_ISPK_ANS_1;
 	}
 
 	@Override
@@ -51,7 +53,7 @@ public class SignaturePolicyIdentifierCheck extends ChainItem<XmlVCI> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return signature.isPolicyPresent() ? SubIndication.POLICY_PROCESSING_ERROR : SubIndication.NO_POLICY;
+		return SubIndication.POLICY_PROCESSING_ERROR;
 	}
 
 }
