@@ -115,7 +115,6 @@
 										</xs:element>
 										<xs:element type="xs:boolean" name="IdKpOCSPSigning" minOccurs="0" />
 										<xs:element type="xs:boolean" name="IdPkixOcspNoCheck" minOccurs="0" />
-										<xs:element type="xs:boolean" name="ExpiredCertOnCRL" minOccurs="0" />
 
 										<xs:element type="BasicSignatureType" name="BasicSignature" />
 										<xs:element type="SigningCertificateType" name="SigningCertificate" minOccurs="0" />

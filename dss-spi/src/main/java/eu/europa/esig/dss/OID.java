@@ -48,11 +48,6 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_ce_extKeyUsage = new ASN1ObjectIdentifier("2.5.29.37");
 
 	/**
-	 * The CRL extension expiredCertOnCRL.
-	 */
-	public static final ASN1ObjectIdentifier id_ce_expiredCertsOnCRL = new ASN1ObjectIdentifier("2.5.29.60");
-
-	/**
 	 * Not defined in: ETSIQCObjectIdentifiers
 	 * A certificate policy for qualified certificates issued to the public.<br />
 	 * {itu-t(0) identified-organization(4) etsi(0) qualified-certificate-policies(1456) policy-identifiers(1) qcp-public(2)}

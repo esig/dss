@@ -321,26 +321,6 @@ public final class DSSASN1Utils {
 		return false;
 	}
 
-	/**
-	 * Indicates if this certificate has an CRL extension expiredCertOnCRL.
-	 *
-	 * @return
-	 */
-	public static boolean hasExpiredCertOnCRLExtension(CertificateToken token) {
-		final byte[] extensionValue = token.getCertificate().getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
-		if (extensionValue != null) {
-			try {
-				final ASN1Primitive derObject = toASN1Primitive(extensionValue);
-				if (derObject instanceof DEROctetString) {
-					return isDEROctetStringNull((DEROctetString) derObject);
-				}
-			} catch (Exception e) {
-				LOG.debug("Exception when processing 'id_ce_expiredCertsOnCRL'", e);
-			}
-		}
-		return false;
-	}
-
 	public static List<String> getPolicyIdentifiers(final CertificateToken certToken) {
 		List<String> policyIdentifiers = new ArrayList<String>();
 		final byte[] certificatePolicies = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());

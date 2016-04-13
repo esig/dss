@@ -30,7 +30,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -98,28 +97,24 @@ public abstract class OfflineCRLSource implements CRLSource {
 		Date bestX509UpdateDate = null;
 
 		for (final X509CRL x509CRL : x509CRLList) {
-
 			final CRLValidity crlValidity = getCrlValidity(issuerToken, x509CRL);
 			if (crlValidity == null) {
 				continue;
 			}
 			if (issuerToken.equals(crlValidity.getIssuerToken()) && crlValidity.isValid()) {
-
+				// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and [notBefore, notAfter] from
+				// the X509Certificate
 				final Date thisUpdate = x509CRL.getThisUpdate();
-				if (!DSSASN1Utils.hasExpiredCertOnCRLExtension(certificateToken)) {
-					// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and [notBefore, notAfter] from
-					// the X509Certificate
-					final Date nextUpdate = x509CRL.getNextUpdate();
-					final Date notAfter = certificateToken.getNotAfter();
-					final Date notBefore = certificateToken.getNotBefore();
-					boolean periodAreIntersecting = thisUpdate.before(notAfter) && nextUpdate.after(notBefore);
-					if (!periodAreIntersecting) {
-						LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: " + certificateToken.getDSSIdAsString());
-						continue;
-					}
+				final Date nextUpdate = x509CRL.getNextUpdate();
+				final Date notAfter = certificateToken.getNotAfter();
+				final Date notBefore = certificateToken.getNotBefore();
+				boolean periodAreIntersecting = thisUpdate.before(notAfter) && (nextUpdate != null && nextUpdate.after(notBefore));
+				if (!periodAreIntersecting) {
+					LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: " + certificateToken.getDSSIdAsString());
+					continue;
 				}
-				if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
 
+				if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
 					bestCRLValidity = crlValidity;
 					bestX509UpdateDate = thisUpdate;
 				}

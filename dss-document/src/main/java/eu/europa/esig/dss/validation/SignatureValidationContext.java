@@ -48,7 +48,8 @@ import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 
 /**
- * During the validation of a signature, the software retrieves different X509 artifacts like Certificate, CRL and OCSP Response. The SignatureValidationContext is a "cache" for
+ * During the validation of a signature, the software retrieves different X509 artifacts like Certificate, CRL and OCSP
+ * Response. The SignatureValidationContext is a "cache" for
  * one validation request that contains every object retrieved so far.
  *
  */
@@ -66,7 +67,8 @@ public class SignatureValidationContext implements ValidationContext {
 	private DataLoader dataLoader;
 
 	/**
-	 * The certificate pool which encapsulates all certificates used during the validation process and extracted from all used sources
+	 * The certificate pool which encapsulates all certificates used during the validation process and extracted from
+	 * all used sources
 	 */
 	protected CertificatePool validationCertificatePool;
 
@@ -93,7 +95,8 @@ public class SignatureValidationContext implements ValidationContext {
 	protected Date currentTime = new Date();
 
 	/**
-	 * This constructor is used during the signature creation process. The certificate pool is created within initialize method.
+	 * This constructor is used during the signature creation process. The certificate pool is created within initialize
+	 * method.
 	 */
 	public SignatureValidationContext() {
 	}
@@ -101,7 +104,8 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * This constructor is used when a signature need to be validated.
 	 *
-	 * @param validationCertificatePool The pool of certificates used during the validation process
+	 * @param validationCertificatePool
+	 *            The pool of certificates used during the validation process
 	 */
 	public SignatureValidationContext(final CertificatePool validationCertificatePool) {
 		if (validationCertificatePool == null) {
@@ -111,7 +115,8 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * @param certificateVerifier The certificates verifier (eg: using the TSL as list of trusted certificates).
+	 * @param certificateVerifier
+	 *            The certificates verifier (eg: using the TSL as list of trusted certificates).
 	 */
 	@Override
 	public void initialize(final CertificateVerifier certificateVerifier) {
@@ -164,7 +169,8 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * This method returns the issuer certificate (the certificate which was used to sign the token) of the given token.
 	 *
-	 * @param token the token for which the issuer must be obtained.
+	 * @param token
+	 *            the token for which the issuer must be obtained.
 	 * @return the issuer certificate token of the given token or null if not found.
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
@@ -172,7 +178,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 		if (token.isTrusted()) {
 
-			// When the token is trusted the check of the issuer token is not needed so null is returned. Only a certificate token can be trusted.
+			// When the token is trusted the check of the issuer token is not needed so null is returned. Only a
+			// certificate token can be trusted.
 			return null;
 		}
 		if (token.getIssuerToken() != null) {
@@ -206,7 +213,8 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * Get the issuer's certificate from Authority Information Access through id-ad-caIssuers extension.
 	 *
-	 * @param token {@code CertificateToken} for which the issuer is sought.
+	 * @param token
+	 *            {@code CertificateToken} for which the issuer is sought.
 	 * @return {@code CertificateToken} representing the issuer certificate or null.
 	 */
 	private CertificateToken getIssuerFromAIA(final CertificateToken token) {
@@ -236,11 +244,14 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * This function retrieves the issuer certificate from the validation pool (this pool should contain trusted certificates). The check is made if the token is well signed by
+	 * This function retrieves the issuer certificate from the validation pool (this pool should contain trusted
+	 * certificates). The check is made if the token is well signed by
 	 * the retrieved certificate.
 	 *
-	 * @param token               token for which the issuer have to be found
-	 * @param issuerX500Principal issuer's subject distinguished name
+	 * @param token
+	 *            token for which the issuer have to be found
+	 * @param issuerX500Principal
+	 *            issuer's subject distinguished name
 	 * @return the corresponding {@code CertificateToken} or null if not found
 	 */
 	private CertificateToken getIssuerFromPool(final Token token, final X500Principal issuerX500Principal) {
@@ -260,7 +271,8 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * Adds a new token to the list of tokes to verify only if it was not already verified.
 	 *
-	 * @param token token to verify
+	 * @param token
+	 *            token to verify
 	 * @return true if the token was not yet verified, false otherwise.
 	 */
 	private boolean addTokenForVerification(final Token token) {
@@ -279,13 +291,13 @@ public class SignatureValidationContext implements ValidationContext {
 				if (tokensToProcess.containsKey(token)) {
 
 					if (traceEnabled) {
-						logger.trace("Token was already in the list {}:{}", new Object[]{token.getClass().getSimpleName(), token.getAbbreviation()});
+						logger.trace("Token was already in the list {}:{}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
 					}
 					return false;
 				}
 				tokensToProcess.put(token, null);
 				if (traceEnabled) {
-					logger.trace("+ New {} to check: {}", new Object[]{token.getClass().getSimpleName(), token.getAbbreviation()});
+					logger.trace("+ New {} to check: {}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
 				}
 				return true;
 			} finally {
@@ -369,7 +381,8 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Retrieves the revocation data from signature (if exists) or from the online sources. The issuer certificate must be provided, the underlining library (bouncy castle) needs
+	 * Retrieves the revocation data from signature (if exists) or from the online sources. The issuer certificate must
+	 * be provided, the underlining library (bouncy castle) needs
 	 * it to build the request.
 	 *
 	 * @param certToken
@@ -402,7 +415,8 @@ public class SignatureValidationContext implements ValidationContext {
 				return revocationToken;
 			}
 		}
-		final OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource, validationCertificatePool);
+		final OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource,
+				validationCertificatePool);
 		final RevocationToken revocationToken = offlineVerifier.check(certToken);
 		return revocationToken;
 	}
@@ -414,18 +428,12 @@ public class SignatureValidationContext implements ValidationContext {
 
 			return true;
 		}
-		final CertificateToken issuerCertToken = certificateToken.getIssuerToken();
-		// issuerCertToken cannot be null
-		final boolean expiredCertOnCRLExtension = DSSASN1Utils.hasExpiredCertOnCRLExtension(issuerCertToken);
-		if (expiredCertOnCRLExtension) {
 
-			certificateToken.extraInfo().addInfo("Certificate is expired but the issuer certificate has ExpiredCertOnCRL extension.");
-			return true;
-		}
 		final Date expiredCertsRevocationFromDate = getExpiredCertsRevocationFromDate(certificateToken);
 		if (expiredCertsRevocationFromDate != null) {
 
-			certificateToken.extraInfo().addInfo("Certificate is expired but the TSL extension 'expiredCertsRevocationInfo' is present: " + expiredCertsRevocationFromDate);
+			certificateToken.extraInfo()
+					.addInfo("Certificate is expired but the TSL extension 'expiredCertsRevocationInfo' is present: " + expiredCertsRevocationFromDate);
 			return true;
 		}
 		return false;

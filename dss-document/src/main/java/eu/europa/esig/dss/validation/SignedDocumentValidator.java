@@ -954,9 +954,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
 			xmlCert.setIdPkixOcspNoCheck(true);
 		}
-		if (DSSASN1Utils.hasExpiredCertOnCRLExtension(certToken)) {
-			xmlCert.setExpiredCertOnCRL(true);
-		}
 
 		final XmlBasicSignatureType xmlBasicSignatureType = new XmlBasicSignatureType();
 
