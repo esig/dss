@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.MessageTag;
+import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -14,10 +15,14 @@ public class ProspectiveCertificateChainCheck extends ChainItem<XmlXCV> {
 	private final CertificateWrapper certificate;
 	private final DiagnosticData diagnosticData;
 
-	public ProspectiveCertificateChainCheck(XmlXCV result, CertificateWrapper certificate, DiagnosticData diagnosticData, LevelConstraint constraint) {
+	private final Context context;
+
+	public ProspectiveCertificateChainCheck(XmlXCV result, CertificateWrapper certificate, DiagnosticData diagnosticData, Context context,
+			LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
 		this.diagnosticData = diagnosticData;
+		this.context = context;
 	}
 
 	@Override
@@ -37,7 +42,18 @@ public class ProspectiveCertificateChainCheck extends ChainItem<XmlXCV> {
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_CCCBB_ANS;
+		switch (context) {
+		case SIGNATURE:
+			return MessageTag.BBB_XCV_CCCBB_SIG_ANS;
+		case COUNTER_SIGNATURE:
+			return MessageTag.BBB_XCV_CCCBB_SIG_ANS;
+		case TIMESTAMP:
+			return MessageTag.BBB_XCV_CCCBB_TSP_ANS;
+		case REVOCATION:
+			return MessageTag.BBB_XCV_CCCBB_REV_ANS;
+		default:
+			return MessageTag.BBB_XCV_CCCBB_ANS;
+		}
 	}
 
 	@Override

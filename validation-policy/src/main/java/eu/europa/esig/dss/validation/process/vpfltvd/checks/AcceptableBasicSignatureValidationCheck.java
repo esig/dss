@@ -1,7 +1,10 @@
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
+import java.util.List;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -15,6 +18,7 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 
 	private Indication indication;
 	private SubIndication subIndication;
+	private List<XmlName> bsErrors;
 
 	public AcceptableBasicSignatureValidationCheck(XmlValidationProcessLongTermData result, XmlConstraintsConclusion basicSignatureValidation,
 			LevelConstraint constraint) {
@@ -37,6 +41,7 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 			if (!allowed) {
 				indication = bbbIndication;
 				subIndication = bbbSubIndication;
+				bsErrors = basicSignatureValidationConclusion.getErrors();
 			}
 			return allowed;
 		}
@@ -61,6 +66,11 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return subIndication;
+	}
+
+	@Override
+	protected List<XmlName> getPreviousErrors() {
+		return bsErrors;
 	}
 
 }

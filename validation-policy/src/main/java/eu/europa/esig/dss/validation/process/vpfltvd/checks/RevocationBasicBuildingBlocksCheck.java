@@ -1,9 +1,12 @@
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
+import java.util.List;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
@@ -19,6 +22,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 	private Indication indication;
 	private SubIndication subIndication;
+	private List<XmlName> errors;
 
 	public RevocationBasicBuildingBlocksCheck(XmlValidationProcessLongTermData result, XmlBasicBuildingBlocks revocationBBB, LevelConstraint constraint) {
 		super(result, constraint, revocationBBB.getId());
@@ -36,6 +40,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 		if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
 			indication = iscConclusion.getIndication();
 			subIndication = iscConclusion.getSubIndication();
+			errors = iscConclusion.getErrors();
 			return false;
 		}
 
@@ -46,6 +51,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
 			indication = cvConclusion.getIndication();
 			subIndication = cvConclusion.getSubIndication();
+			errors = cvConclusion.getErrors();
 			return false;
 		}
 
@@ -54,6 +60,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 		if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
 			indication = xcvConclusion.getIndication();
 			subIndication = xcvConclusion.getSubIndication();
+			errors = xcvConclusion.getErrors();
 			return false;
 		}
 
@@ -62,6 +69,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 		if (!Indication.PASSED.equals(savConclusion.getIndication())) {
 			indication = savConclusion.getIndication();
 			subIndication = savConclusion.getSubIndication();
+			errors = savConclusion.getErrors();
 			return false;
 		}
 
@@ -86,6 +94,11 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return subIndication;
+	}
+
+	@Override
+	protected List<XmlName> getPreviousErrors() {
+		return errors;
 	}
 
 }

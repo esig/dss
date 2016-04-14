@@ -50,8 +50,8 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
-		SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(currentCertificate, currentTime, context,
-				SubContext.SIGNING_CERT, validationPolicy);
+		SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(currentCertificate, currentTime, context, SubContext.SIGNING_CERT,
+				validationPolicy);
 		XmlSubXCV subXCV = certificateValidation.execute();
 		result.getSubXCV().add(subXCV);
 
@@ -75,7 +75,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, constraint);
+		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVresult) {

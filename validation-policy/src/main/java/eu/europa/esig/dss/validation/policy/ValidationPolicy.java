@@ -227,13 +227,6 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getRevocationDataAvailableConstraint(Context context, SubContext subContext);
 
-	/**
-	 * @param context
-	 * @return {@code LevelConstraint} if RevocationDataIsTrusted for a given context element is present in the
-	 *         constraint file, null otherwise.
-	 */
-	LevelConstraint getRevocationDataTrustedConstraint(Context context, SubContext subContext);
-
 	LevelConstraint getRevocationDataNextUpdatePresentConstraint(Context context, SubContext subContext);
 
 	/**

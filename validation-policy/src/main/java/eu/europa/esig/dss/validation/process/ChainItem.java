@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.validation.process;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +24,8 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  *
  * That follows the design pattern "chain of responsibility".
  * 
- * Depending of the {@code Level} in {@code LevelConstraint} the Chain will continue/stop the current treatment. The {@code ChainItem} is a validation
+ * Depending of the {@code Level} in {@code LevelConstraint} the Chain will continue/stop the current treatment. The
+ * {@code ChainItem} is a validation
  * constraint which allows to collect information, warnings, errors,...
  * 
  * @see Chain
@@ -85,7 +88,8 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	}
 
 	/**
-	 * This method allows to execute the chain of responsibility. It will run all the chain until the first {@code Level.FAIL} and not valid process.
+	 * This method allows to execute the chain of responsibility. It will run all the chain until the first
+	 * {@code Level.FAIL} and not valid process.
 	 */
 	public void execute() {
 		if ((constraint == null) || (constraint.getLevel() == null)) {
@@ -120,6 +124,10 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	protected abstract MessageTag getErrorMessageTag();
 
+	protected List<XmlName> getPreviousErrors() {
+		return Collections.emptyList();
+	}
+
 	protected abstract Indication getFailedIndicationForConclusion();
 
 	protected abstract SubIndication getFailedSubIndicationForConclusion();
@@ -147,15 +155,22 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		XmlConclusion conclusion = new XmlConclusion();
 		conclusion.setIndication(getFailedIndicationForConclusion());
 		conclusion.setSubIndication(getFailedSubIndicationForConclusion());
-		XmlName errorMessage = new XmlName();
+
+		List<XmlName> previousErrors = getPreviousErrors();
+		if (CollectionUtils.isNotEmpty(previousErrors)) {
+			conclusion.getErrors().addAll(previousErrors);
+		}
+
 		MessageTag errorMessageTag = getErrorMessageTag();
 		if (errorMessageTag != null) {
+			XmlName errorMessage = new XmlName();
 			errorMessage.setNameId(errorMessageTag.name());
 			errorMessage.setValue(errorMessageTag.getMessage());
+			conclusion.getErrors().add(errorMessage);
 		} else {
 			logger.error("MessageTag is not defined!");
 		}
-		conclusion.getErrors().add(errorMessage);
+
 		result.setConclusion(conclusion);
 	}
 

@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
+import java.util.List;
+
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.MessageTag;
@@ -41,6 +44,11 @@ public class CheckSubXCVResult extends ChainItem<XmlXCV> {
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return subResult.getConclusion().getSubIndication();
+	}
+
+	@Override
+	protected List<XmlName> getPreviousErrors() {
+		return subResult.getConclusion().getErrors();
 	}
 
 }

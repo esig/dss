@@ -1,6 +1,9 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
+import java.util.List;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -13,6 +16,7 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 	private final XmlConstraintsConclusion longTermValidationResult;
 	private Indication ltvIndication;
 	private SubIndication ltvSubIndication;
+	private List<XmlName> ltvErrors;
 
 	public LongTermValidationCheck(XmlValidationProcessArchivalData result, XmlConstraintsConclusion longTermValidationResult, LevelConstraint constraint) {
 		super(result, constraint);
@@ -25,6 +29,7 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 		if (longTermValidationResult != null && longTermValidationResult.getConclusion() != null) {
 			ltvIndication = longTermValidationResult.getConclusion().getIndication();
 			ltvSubIndication = longTermValidationResult.getConclusion().getSubIndication();
+			ltvErrors = longTermValidationResult.getConclusion().getErrors();
 
 			return Indication.PASSED.equals(ltvIndication)
 					|| (Indication.INDETERMINATE.equals(ltvIndication) && (SubIndication.REVOKED_NO_POE.equals(ltvSubIndication)
@@ -42,6 +47,11 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		return MessageTag.ARCH_LTVV_ANS;
+	}
+
+	@Override
+	protected List<XmlName> getPreviousErrors() {
+		return ltvErrors;
 	}
 
 	@Override

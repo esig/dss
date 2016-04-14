@@ -8,8 +8,8 @@
 			<Id>ANY_POLICY</Id>
 			<Id>NO_POLICY</Id>
 		</AcceptablePolicies>
-		<PolicyAvailable Level="WARN" />
-		<PolicyHashMatch Level="WARN" />
+		<PolicyAvailable Level="FAIL" />
+		<PolicyHashMatch Level="FAIL" />
 		<AcceptableFormats Level="FAIL">
 			<Id>*</Id> <!-- ALL -->
 		</AcceptableFormats>
@@ -23,7 +23,6 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataNextUpdatePresent Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
 				<KeyUsage Level="WARN">
@@ -62,7 +61,6 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataNextUpdatePresent Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
@@ -150,7 +148,6 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataNextUpdatePresent Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
@@ -180,7 +177,6 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataNextUpdatePresent Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
@@ -240,7 +236,6 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataNextUpdatePresent Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
@@ -270,7 +265,6 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataNextUpdatePresent Level="FAIL" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />

@@ -12,14 +12,15 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.NextUpdateCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataTrustedCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
- * 5.2.5 Revocation freshness checker This building block checks that a given revocation status information is "fresh" at a given validation time. The freshness
- * of the revocation status information is the maximum accepted difference between the issuance time of the revocation status information and the current time.
+ * 5.2.5 Revocation freshness checker This building block checks that a given revocation status information is "fresh"
+ * at a given validation time. The freshness
+ * of the revocation status information is the maximum accepted difference between the issuance time of the revocation
+ * status information and the current time.
  * This process is used by other validation blocks when checking the revocation status of a certificate.
  */
 public class RevocationFreshnessChecker extends Chain<XmlRFC> {
@@ -47,20 +48,24 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 		ChainItem<XmlRFC> item = firstItem = revocationDataAvailable(revocationData);
 
-		item = item.setNextItem(revocationDataTrusted(revocationData));
-
 		/*
-		 * 1) The building block shall get the maximum accepted revocation freshness from the X.509 validation constraints for the given certificate. If the
-		 * constraints do not contain a value for the maximum accepted revocation freshness and the revocation information status is a CRL or an OCSP response
-		 * IETF RFC 5280 [1], IETF RFC 6960 [i.12] with a value in the nextUpdate field the time interval between the fields thisUpdate and nextUpdate shall be
-		 * used as the value of maximum freshness. If nextUpdate is not set, the building block shall return with the indication FAILED.
+		 * 1) The building block shall get the maximum accepted revocation freshness from the X.509 validation
+		 * constraints for the given certificate. If the
+		 * constraints do not contain a value for the maximum accepted revocation freshness and the revocation
+		 * information status is a CRL or an OCSP response
+		 * IETF RFC 5280 [1], IETF RFC 6960 [i.12] with a value in the nextUpdate field the time interval between the
+		 * fields thisUpdate and nextUpdate shall be
+		 * used as the value of maximum freshness. If nextUpdate is not set, the building block shall return with the
+		 * indication FAILED.
 		 * 
-		 * NOTE: This means that if the given validation time is after the nextUpdate time, the revocation status information will not be considered fresh.
+		 * NOTE: This means that if the given validation time is after the nextUpdate time, the revocation status
+		 * information will not be considered fresh.
 		 */
 		item = item.setNextItem(nextUpdateCheck(revocationData));
 
 		/*
-		 * 2) If the issuance time of the revocation information status is after the validation time minus the considered maximum freshness, the building block
+		 * 2) If the issuance time of the revocation information status is after the validation time minus the
+		 * considered maximum freshness, the building block
 		 * shall return the indication PASSED. Otherwise the building block shall return the indication FAILED.
 		 */
 		item = item.setNextItem(revocationDataFreshCheck(revocationData));
@@ -72,11 +77,6 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	private ChainItem<XmlRFC> revocationDataAvailable(RevocationWrapper revocationData) {
 		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(context, subContext);
 		return new RevocationDataAvailableCheck(result, revocationData, constraint);
-	}
-
-	private ChainItem<XmlRFC> revocationDataTrusted(RevocationWrapper revocationData) {
-		LevelConstraint constraint = policy.getRevocationDataTrustedConstraint(context, subContext);
-		return new RevocationDataTrustedCheck(result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRFC> nextUpdateCheck(RevocationWrapper revocationData) {

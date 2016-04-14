@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.validation.process.vpfbs.checks;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
@@ -35,6 +37,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 	private Indication indication;
 	private SubIndication subIndication;
+	private List<XmlName> errors = new ArrayList<XmlName>();
 
 	public SignatureBasicBuildingBlocksCheck(XmlValidationProcessBasicSignatures result, DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB,
 			Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
@@ -62,10 +65,11 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 			if (!Indication.PASSED.equals(fcConclusion.getIndication())) {
 				indication = fcConclusion.getIndication();
 				subIndication = fcConclusion.getSubIndication();
+				errors.addAll(fcConclusion.getErrors());
 				return false;
 			}
 		}
-		
+
 		/*
 		 * 5.3.4 2) The Basic Signature validation process shall perform the identification of the signing certificate
 		 * (as per clause 5.2.3) with the signature and the signing certificate, if provided as a parameter.
@@ -82,6 +86,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 				&& SubIndication.NO_SIGNING_CERTIFICATE_FOUND.equals(iscConclusion.getSubIndication())) {
 			indication = iscConclusion.getIndication();
 			subIndication = iscConclusion.getSubIndication();
+			errors.addAll(iscConclusion.getErrors());
 			return false;
 		}
 
@@ -100,6 +105,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 			if (Indication.INDETERMINATE.equals(vciConclusion.getIndication())) {
 				indication = vciConclusion.getIndication();
 				subIndication = vciConclusion.getSubIndication();
+				errors.addAll(vciConclusion.getErrors());
 				return false;
 			}
 		}
@@ -123,6 +129,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
 			indication = cvConclusion.getIndication();
 			subIndication = cvConclusion.getSubIndication();
+			errors.addAll(cvConclusion.getErrors());
 			return false;
 		}
 
@@ -177,12 +184,14 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 				if (failed) {
 					indication = Indication.FAILED;
 					subIndication = SubIndication.REVOKED;
+					errors.addAll(xcvConclusion.getErrors());
 					return false;
 				}
 			}
 
 			indication = Indication.INDETERMINATE;
 			subIndication = SubIndication.REVOKED_NO_POE;
+			errors.addAll(xcvConclusion.getErrors());
 			return false;
 
 		} else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
@@ -205,17 +214,20 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 				if (failed) {
 					indication = Indication.INDETERMINATE;
 					subIndication = SubIndication.EXPIRED;
+					errors.addAll(xcvConclusion.getErrors());
 					return false;
 				}
 			}
 
 			indication = Indication.INDETERMINATE;
 			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
+			errors.addAll(xcvConclusion.getErrors());
 			return false;
 
 		} else if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
 			indication = xcvConclusion.getIndication();
 			subIndication = xcvConclusion.getSubIndication();
+			errors.addAll(xcvConclusion.getErrors());
 			return false;
 		}
 
@@ -273,6 +285,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		} else if (!Indication.PASSED.equals(savConclusion.getIndication())) {
 			indication = savConclusion.getIndication();
 			subIndication = savConclusion.getSubIndication();
+			errors.addAll(savConclusion.getErrors());
 			return false;
 		}
 
@@ -319,6 +332,11 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return subIndication;
+	}
+
+	@Override
+	protected List<XmlName> getPreviousErrors() {
+		return errors;
 	}
 
 }

@@ -12,7 +12,6 @@ import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.bbb.util.TestDiagnosticDataGenerator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.bbb.vci.ValidationContextInitialization;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
@@ -29,8 +28,7 @@ public class ValidationContextInitializationTest extends AbstractValidationPolic
 		ConstraintsParameters parameters = getConstraintsParameters();
 		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
-		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				policy);
+		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlVCI vci = verification.execute();
 
 		for (XmlConstraint constraint : vci.getConstraint()) {
@@ -49,9 +47,8 @@ public class ValidationContextInitializationTest extends AbstractValidationPolic
 		parameters.getSignatureConstraints().setAcceptablePolicies(createMultiValueConstraint(Level.FAIL));
 		parameters.getSignatureConstraints().getAcceptablePolicies().getId().add("ANY_POLICY");
 		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
-		
-		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				policy);
+
+		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlVCI vci = verification.execute();
 
 		for (XmlConstraint constraint : vci.getConstraint()) {
@@ -59,7 +56,6 @@ public class ValidationContextInitializationTest extends AbstractValidationPolic
 		}
 
 		Assert.assertEquals(Indication.INDETERMINATE, vci.getConclusion().getIndication());
-		Assert.assertEquals(SubIndication.NO_POLICY, vci.getConclusion().getSubIndication());
 		Assert.assertEquals(1, vci.getConstraint().size());
 	}
 
@@ -70,8 +66,7 @@ public class ValidationContextInitializationTest extends AbstractValidationPolic
 		ConstraintsParameters parameters = getConstraintsParameters();
 		ValidationPolicy policy = new EtsiValidationPolicy(parameters);
 
-		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE,
-				policy);
+		ValidationContextInitialization verification = new ValidationContextInitialization(diagnosticData.getSignatures().get(0), Context.SIGNATURE, policy);
 		XmlVCI vci = verification.execute();
 
 		for (XmlConstraint constraint : vci.getConstraint()) {
@@ -79,6 +74,6 @@ public class ValidationContextInitializationTest extends AbstractValidationPolic
 		}
 
 		Assert.assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
-		Assert.assertEquals(1, vci.getConstraint().size());
+		Assert.assertEquals(3, vci.getConstraint().size());
 	}
 }

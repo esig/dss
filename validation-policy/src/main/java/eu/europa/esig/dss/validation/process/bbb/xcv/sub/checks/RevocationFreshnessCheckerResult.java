@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
+import java.util.List;
+
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
@@ -40,6 +43,11 @@ public class RevocationFreshnessCheckerResult extends ChainItem<XmlSubXCV> {
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return rfcResult.getConclusion().getSubIndication();
+	}
+
+	@Override
+	protected List<XmlName> getPreviousErrors() {
+		return rfcResult.getConclusion().getErrors();
 	}
 
 }
