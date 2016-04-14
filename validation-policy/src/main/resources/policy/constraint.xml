@@ -23,7 +23,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
@@ -61,7 +61,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -148,7 +148,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -177,7 +177,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -236,7 +236,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -265,7 +265,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
