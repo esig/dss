@@ -241,23 +241,9 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getCertificateNotOnHoldConstraint(Context context, SubContext subContext);
 
-	/**
-	 * @return {@code LevelConstraint} if the TSLValidity for a given context element is present in the constraint file,
-	 *         null otherwise.
-	 */
-	LevelConstraint getCertificateTSLValidityConstraint(Context context, SubContext subContext);
+	MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context, SubContext subContext);
 
-	/**
-	 * @return {@code LevelConstraint} if TSLStatus for a given context element is present in the constraint file, null
-	 *         otherwise.
-	 */
-	LevelConstraint getCertificateTSLStatusConstraint(Context context, SubContext subContext);
-
-	/**
-	 * @return {@code LevelConstraint} if the TSLValidity for a given context element is present in the constraint file,
-	 *         null otherwise.
-	 */
-	LevelConstraint getCertificateTSLStatusAndValidityConstraint(Context context, SubContext subContext);
+	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if Qualification for a given context element is present in the constraint file,

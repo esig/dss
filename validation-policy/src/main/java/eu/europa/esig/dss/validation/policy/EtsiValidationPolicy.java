@@ -411,28 +411,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateTSLValidityConstraint(Context context, SubContext subContext) {
+	public MultiValuesConstraint getTrustedServiceStatusConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getTSLValidity();
+			return certificateConstraints.getTrustedServiceStatus();
 		}
 		return null;
 	}
 
 	@Override
-	public LevelConstraint getCertificateTSLStatusConstraint(Context context, SubContext subContext) {
+	public MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getTSLStatus();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getCertificateTSLStatusAndValidityConstraint(Context context, SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getTSLStatusAndValidity();
+			return certificateConstraints.getTrustedServiceTypeIdentifier();
 		}
 		return null;
 	}

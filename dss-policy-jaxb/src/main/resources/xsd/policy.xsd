@@ -111,9 +111,8 @@
 			<xs:element name="Country" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="NotRevoked" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotOnHold" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="TSLValidity" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="TSLStatus" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="TSLStatusAndValidity" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TrustedServiceTypeIdentifier" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="TrustedServiceStatus" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="Qualification" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="SupportedBySSCD" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="IssuedToLegalPerson" type="tns:LevelConstraint" minOccurs="0" />

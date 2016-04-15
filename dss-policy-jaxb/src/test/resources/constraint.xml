@@ -25,9 +25,14 @@
 				</KeyUsage>
 				<NotRevoked  Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-				<TSLValidity Level="WARN" />
-				<TSLStatus Level="WARN" />
-				<TSLStatusAndValidity Level="FAIL" />
+				<TrustedServiceTypeIdentifier Level="WARN">
+					<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
+				</TrustedServiceTypeIdentifier>
+				<TrustedServiceStatus Level="WARN">
+					<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
+					<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
+					<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
+				</TrustedServiceStatus>
 				<Qualification Level="WARN" />
 				<SupportedBySSCD Level="WARN" />
 				<IssuedToLegalPerson Level="INFORM" />
@@ -146,7 +151,6 @@
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked  Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-				<TSLStatus Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>

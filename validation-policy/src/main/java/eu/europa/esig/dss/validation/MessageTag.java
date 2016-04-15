@@ -170,12 +170,10 @@ public enum MessageTag {
 
 	XCV_IFCCIIPC_ANS("The interval ['%s', '%s'] for the certificate ['%s'] is inconsistent in the prospective chain."),
 
-	CTS_IIDOCWVPOTS("Is the issuance date of the certificate within the validity period of trusted service?"),
-	CTS_IIDOCWVPOTS_ANS("There is no concordance between the validity dates of trusted services and the certificate!"),
-	CTS_WITSS("What is the trusted service status?"),
-	CTS_WITSS_ANS("The status of the trusted service should be: UNDERSUPERVISION, SUPERVISIONINCESSATION or ACCREDITED!"),
-	CTS_ITACBT("Is there a concordance between the trusted service and the certificate?"),
-	CTS_ITACBT_ANS("There is no concordance between the trusted service and the certificate!"),
+	XCV_TSL_ESP("Is the expected trusted service status present ?"),
+	XCV_TSL_ESP_ANS("The trusted service has not expected status!"),
+	XCV_TSL_ETIP("Is the expected trusted service type identifier present ?"),
+	XCV_TSL_ETIP_ANS("The trusted service has not expected type identifier!"),
 
 	PCV_IVTSC("Is validation time sliding conclusive?"),
 	PCV_IVTSC_ANS("The indications returned by validation time sliding sub-process."),
