@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
@@ -309,7 +310,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public boolean isPolicyAsn1Processable() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
-			return policy.isAsn1Processable();
+			return BooleanUtils.isTrue(policy.isAsn1Processable());
 		}
 		return false;
 	}
@@ -317,7 +318,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public boolean isPolicyIdentified() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
-			return policy.isIdentified();
+			return BooleanUtils.isTrue(policy.isIdentified());
 		}
 		return false;
 	}
@@ -325,7 +326,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public boolean isPolicyStatus() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
-			return policy.isStatus();
+			return BooleanUtils.isTrue(policy.isStatus());
 		}
 		return false;
 	}
