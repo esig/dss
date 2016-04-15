@@ -3,7 +3,11 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatus;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatusType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -33,11 +37,16 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlS
 		Date certificateValidFrom = certificate.getNotBefore();
 		List<XmlTrustedServiceProviderType> tspList = certificate.getCertificateTSPService();
 		for (XmlTrustedServiceProviderType trustedServiceProvider : tspList) {
-			Date statusStartDate = trustedServiceProvider.getStartDate();
-			Date statusEndDate = trustedServiceProvider.getEndDate();
-			// The issuing time of the certificate should be into the validity period of the associated service
-			if (certificateValidFrom.after(statusStartDate) && ((statusEndDate == null) || certificateValidFrom.before(statusEndDate))) {
-				return processValueCheck(trustedServiceProvider.getStatus());
+			XmlServiceStatus serviceStatus = trustedServiceProvider.getServiceStatus();
+			if (serviceStatus != null && CollectionUtils.isNotEmpty(serviceStatus.getStatusService())) {
+				for (XmlServiceStatusType status : serviceStatus.getStatusService()) {
+					Date statusStartDate = status.getStartDate();
+					Date statusEndDate = status.getEndDate();
+					// The issuing time of the certificate should be into the validity period of the associated service
+					if (certificateValidFrom.after(statusStartDate) && ((statusEndDate == null) || certificateValidFrom.before(statusEndDate))) {
+						return processValueCheck(status.getStatus());
+					}
+				}
 			}
 		}
 		return false;

@@ -17,27 +17,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for CertificateChainType complex type.
+ * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CertificateChainType">
+ * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="ChainCertificate" maxOccurs="unbounded" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;element name="Source" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *                 &lt;/sequence>
- *                 &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
+ *         &lt;element name="StatusService" type="{http://dss.esig.europa.eu/validation/diagnostic}ServiceStatusType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -47,41 +36,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CertificateChainType", propOrder = {
-    "chainCertificate"
+@XmlType(name = "", propOrder = {
+    "statusService"
 })
-public class XmlCertificateChainType {
+public class XmlServiceStatus {
 
-    @XmlElement(name = "ChainCertificate")
-    protected List<XmlChainCertificate> chainCertificate;
+    @XmlElement(name = "StatusService", required = true)
+    protected List<XmlServiceStatusType> statusService;
 
     /**
-     * Gets the value of the chainCertificate property.
+     * Gets the value of the statusService property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the chainCertificate property.
+     * This is why there is not a <CODE>set</CODE> method for the statusService property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getChainCertificate().add(newItem);
+     *    getStatusService().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link XmlChainCertificate }
+     * {@link XmlServiceStatusType }
      * 
      * 
      */
-    public List<XmlChainCertificate> getChainCertificate() {
-        if (chainCertificate == null) {
-            chainCertificate = new ArrayList<XmlChainCertificate>();
+    public List<XmlServiceStatusType> getStatusService() {
+        if (statusService == null) {
+            statusService = new ArrayList<XmlServiceStatusType>();
         }
-        return this.chainCertificate;
+        return this.statusService;
     }
 
 }

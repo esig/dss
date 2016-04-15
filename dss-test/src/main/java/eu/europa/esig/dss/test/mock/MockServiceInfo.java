@@ -20,25 +20,29 @@
  */
 package eu.europa.esig.dss.test.mock;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 
 public class MockServiceInfo extends ServiceInfo {
-	
+
 	public static final String CA_QC = "http://uri.etsi.org/TrstSvc/Svctype/CA/QC";
-	public static final String SERVICE_STATUS_UNDERSUPERVISION_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision"; 
+	public static final String SERVICE_STATUS_UNDERSUPERVISION_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision";
 
 	public MockServiceInfo() {
 
 		setTspName("DSS, Mock Office DSS-CA");
 		setType(CA_QC);
 		setServiceName("DSS, Mock Service Name");
-		setStatus(SERVICE_STATUS_UNDERSUPERVISION_119612);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.YEAR, -15);
-		setStatusStartDate(calendar.getTime());
-		setStatusEndDate(null);
+
+		List<ServiceInfoStatus> statusList = new ArrayList<ServiceInfoStatus>();
+		statusList.add(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION_119612, calendar.getTime(), null));
+		setStatus(statusList);
 		setTlWellSigned(true);
 	}
 }

@@ -178,8 +178,12 @@
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2007-10-04T12:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+		                <StartDate>2007-10-04T12:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="B033DE5A4F6980014D4A51D7C4248C410AAEA11A95B2E731FD277DBC69516D62">
@@ -261,8 +265,12 @@
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2007-10-04T12:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+		                <StartDate>2007-10-04T12:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <Qualifiers>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert</Qualifier>
                 </Qualifiers>
@@ -379,8 +387,12 @@
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2007-10-04T12:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+		                <StartDate>2007-10-04T12:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
@@ -464,8 +476,12 @@
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2007-10-04T12:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+		                <StartDate>2007-10-04T12:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>

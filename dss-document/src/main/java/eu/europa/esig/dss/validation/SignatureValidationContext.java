@@ -38,7 +38,6 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -422,67 +421,25 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private boolean shouldCheckOnLine(final CertificateToken certificateToken) {
-
 		final boolean expired = certificateToken.isExpiredOn(currentTime);
 		if (!expired) {
-
-			return true;
-		}
-
-		final Date expiredCertsRevocationFromDate = getExpiredCertsRevocationFromDate(certificateToken);
-		if (expiredCertsRevocationFromDate != null) {
-
-			certificateToken.extraInfo()
-					.addInfo("Certificate is expired but the TSL extension 'expiredCertsRevocationInfo' is present: " + expiredCertsRevocationFromDate);
 			return true;
 		}
 		return false;
 	}
 
-	private Date getExpiredCertsRevocationFromDate(final CertificateToken certificateToken) {
-
-		final CertificateToken trustAnchor = certificateToken.getTrustAnchor();
-		if (trustAnchor != null) {
-
-			final Set<ServiceInfo> serviceInfoList = trustAnchor.getAssociatedTSPS();
-			if (serviceInfoList != null) {
-
-				final Date notAfter = certificateToken.getNotAfter();
-				for (final ServiceInfo serviceInfo : serviceInfoList) {
-
-					final Date date = serviceInfo.getExpiredCertsRevocationInfo();
-					if ((date != null) && date.before(notAfter)) {
-
-						if (serviceInfo.getStatusEndDate() == null) {
-
-							/**
-							 * Service is still active (operational)
-							 */
-							// if(serviceInfo.getStatus().equals())
-							return date;
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	@Override
 	public Set<CertificateToken> getProcessedCertificates() {
-
 		return Collections.unmodifiableSet(processedCertificates);
 	}
 
 	@Override
 	public Set<RevocationToken> getProcessedRevocations() {
-
 		return Collections.unmodifiableSet(processedRevocations);
 	}
 
 	@Override
 	public Set<TimestampToken> getProcessedTimestamps() {
-
 		return Collections.unmodifiableSet(processedTimestamps);
 	}
 

@@ -466,21 +466,6 @@ public class DiagnosticData {
 		return StringUtils.EMPTY;
 	}
 
-	public String getCertificateTSPServiceStatus(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.getCertificateTSPServiceStatus();
-	}
-
-	public Date getCertificateTSPServiceStartDate(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.getCertificateTSPServiceStartDate();
-	}
-
-	public Date getCertificateTSPServiceEndDate(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.getCertificateTSPServiceEndDate();
-	}
-
 	/**
 	 * This method indicates if the associated trusted list is well signed.
 	 *
@@ -491,7 +476,6 @@ public class DiagnosticData {
 	public boolean isCertificateRelatedTSLWellSigned(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		return certificate.isCertificateRelatedTSLWellSigned();
-
 	}
 
 	/**

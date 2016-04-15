@@ -247,8 +247,12 @@
                 <TSPName>Nets DanID A/S</TSPName>
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>2010-03-03T00:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+		                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+		                <StartDate>2010-03-03T00:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="602462989DB941BEE07CF5CBF79F6D840CE3AD70A89084891E6837F16B568F3C">
@@ -331,8 +335,12 @@
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2007-10-04T12:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+		                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+		                <StartDate>2007-10-04T12:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="7BC842E59852823B9A0C561BF87FB2B3FD264044F6DFE29E4955D1DEEAFB364E">
@@ -412,8 +420,12 @@
                 <TSPName>Nets DanID A/S</TSPName>
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>2010-03-03T00:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+		                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+		                <StartDate>2010-03-03T00:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="B48A3077D805F3A1EA910B6FA83D56ED5A787A63D615C85A5AF0F34F6D741CA5">
@@ -497,8 +509,12 @@
                 <TSPName>Nets DanID A/S</TSPName>
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>2010-03-03T00:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+		                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+		                <StartDate>2010-03-03T00:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>
@@ -558,8 +574,12 @@
                 <TSPName>Nets DanID A/S</TSPName>
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>2010-03-03T00:00:00</StartDate>
+                <ServiceStatus>
+                    <StatusService>
+		                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+		                <StartDate>2010-03-03T00:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>

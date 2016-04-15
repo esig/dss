@@ -81,6 +81,8 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatus;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatusType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
@@ -99,6 +101,7 @@ import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.QcStatementCondition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -1051,11 +1054,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlTSP.setTSPServiceType(serviceInfo.getType());
 			xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
 
-			final Date statusStartDate = serviceInfo.getStatusStartDate();
-			xmlTSP.setStatus(serviceInfo.getStatus());
-			xmlTSP.setStartDate(statusStartDate);
-			xmlTSP.setEndDate(serviceInfo.getStatusEndDate());
-			xmlTSP.setExpiredCertsRevocationInfo(serviceInfo.getExpiredCertsRevocationInfo());
+			XmlServiceStatus xmlServiceStatus = new XmlServiceStatus();
+			List<ServiceInfoStatus> statusList = serviceInfo.getStatus();
+			for (ServiceInfoStatus serviceInfoStatus : statusList) {
+				XmlServiceStatusType xmlStatus = new XmlServiceStatusType();
+				xmlStatus.setStatus(serviceInfoStatus.getStatus());
+				xmlStatus.setStartDate(serviceInfoStatus.getStartDate());
+				xmlStatus.setEndDate(serviceInfoStatus.getEndDate());
+				xmlServiceStatus.getStatusService().add(xmlStatus);
+			}
+			xmlTSP.setServiceStatus(xmlServiceStatus);
 
 			// Check of the associated conditions to identify the qualifiers
 			final List<String> qualifiers = getQualifiers(serviceInfo, certToken);
@@ -1251,20 +1259,17 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			return;
 		}
 
-		boolean isAsn1Processable;
 		ASN1Sequence asn1Sequence = null;
 		try {
 			asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
-			isAsn1Processable = true;
 		} catch (Exception e) {
 			LOG.info("Policy bytes are not asn1 processable : " + e.getMessage());
-			isAsn1Processable = false;
 		}
-		xmlPolicy.setAsn1Processable(isAsn1Processable);
 
 		try {
+			if (asn1Sequence != null) {
+				xmlPolicy.setAsn1Processable(true);
 
-			if (isAsn1Processable) {
 				/**
 				 * a) If the resulting document is based on TR 102 272 [i.2]
 				 * (ESI: ASN.1 format for signature policies), use the digest

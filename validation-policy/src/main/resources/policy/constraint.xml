@@ -30,7 +30,7 @@
 				</KeyUsage>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-				<TrustedServiceTypeIdentifier Level="WARN">
+				<TrustedServiceTypeIdentifier Level="FAIL">
 					<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
 				</TrustedServiceTypeIdentifier>
 				<TrustedServiceStatus Level="FAIL">

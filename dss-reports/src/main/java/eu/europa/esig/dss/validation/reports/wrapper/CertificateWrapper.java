@@ -127,46 +127,6 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return new ArrayList<String>(result);
 	}
 
-	public String getCertificateTSPServiceStatus() {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getStatus(); // TODO correct ?? return first one
-			}
-		}
-		return StringUtils.EMPTY;
-	}
-
-	public Date getCertificateTSPServiceStartDate() {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getStartDate(); // TODO correct ?? return first one
-			}
-		}
-		return null;
-	}
-
-	public Date getCertificateTSPServiceEndDate() {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getEndDate(); // TODO correct ?? return first one
-			}
-		}
-		return null;
-	}
-
-	public Date getCertificateTSPServiceExpiredCertsRevocationInfo() {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getExpiredCertsRevocationInfo(); // TODO correct ?? return first one
-			}
-		}
-		return null;
-	}
-
 	public String getCertificateTSPServiceName() {
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
 		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {

@@ -145,9 +145,13 @@
                 <TSPName>Unizeto Technologies S.A.</TSPName>
                 <TSPServiceName>Certification authority issuing qualified certificates</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2014-04-07T09:29:00</StartDate>
-                <EndDate>2016-04-01T18:00:00</EndDate>
+                <ServiceStatus>
+                    <StatusService>
+		                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+		                <StartDate>2014-04-07T09:29:00</StartDate>
+		                <EndDate>2016-04-01T18:00:00</EndDate>
+                    </StatusService>
+                </ServiceStatus>
                 <Qualifiers>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
