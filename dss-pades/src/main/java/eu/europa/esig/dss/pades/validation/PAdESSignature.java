@@ -298,9 +298,13 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public List<TimestampReference> getSignatureTimestampedReferences() {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		final TimestampReference signatureReference = new TimestampReference(getId());
-		references.add(signatureReference);
+		// timestamp of the current signature
+		references.add(new TimestampReference(getId()));
+		// retrieve references from CMS Object
 		final List<TimestampReference> signingCertificateTimestampReferences = super.getSigningCertificateTimestampReferences();
+		for (TimestampReference timestampReference : signingCertificateTimestampReferences) {
+			usedCertificatesDigestAlgorithms.add(timestampReference.getDigestAlgorithm());
+		}
 		references.addAll(signingCertificateTimestampReferences);
 		return references;
 	}

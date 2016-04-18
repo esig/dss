@@ -960,9 +960,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			case ARCHIVE_TIMESTAMP:
 				final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
 				for (final String timestampId : timestampedTimestamps) {
-
-					final TimestampReference timestampReference = new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP);
-					archiveReferences.add(timestampReference);
+					archiveReferences.add(new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP));
 				}
 				archiveReferences.addAll(getTimestampedReferences());
 				timestampToken.setTimestampedReferences(archiveReferences);

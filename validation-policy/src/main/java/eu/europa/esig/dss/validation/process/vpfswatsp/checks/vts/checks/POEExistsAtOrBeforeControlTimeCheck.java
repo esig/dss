@@ -2,9 +2,10 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
 import eu.europa.esig.dss.validation.MessageTag;
-import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -15,16 +16,16 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 
 	private final TokenProxy token;
-	private final Context context;
+	private final TimestampReferenceCategory referenceCategory;
 	private final Date controlTime;
 	private final POEExtraction poe;
 
-	public POEExistsAtOrBeforeControlTimeCheck(XmlVTS result, TokenProxy token, Context context, Date controlTime, POEExtraction poe,
-			LevelConstraint constraint) {
+	public POEExistsAtOrBeforeControlTimeCheck(XmlVTS result, TokenProxy token, TimestampReferenceCategory referenceCategory, Date controlTime,
+			POEExtraction poe, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.token = token;
-		this.context = context;
+		this.referenceCategory = referenceCategory;
 		this.controlTime = controlTime;
 		this.poe = poe;
 	}
@@ -36,16 +37,17 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		if (Context.SIGNATURE.equals(context)) {
-			return MessageTag.PSV_ITPOSVAOBCT;
-		} else {
+		if (TimestampReferenceCategory.CERTIFICATE.equals(referenceCategory)) {
+			return MessageTag.PSV_ITPOCOBCT;
+		} else if (TimestampReferenceCategory.REVOCATION.equals(referenceCategory)) {
 			return MessageTag.PSV_ITPORDAOBCT;
 		}
+		throw new DSSException("Probleme VTS");
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.PSV_ITPOSVAOBCT_ANS;
+		return MessageTag.PSV_ITPOOBCT_ANS;
 	}
 
 	@Override

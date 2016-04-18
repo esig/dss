@@ -8,6 +8,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
+import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -122,9 +123,9 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * indication INDETERMINATE with the sub-indication
 				 * NO_POE.
 				 */
-				item = item.setNextItem(poeExistsAtOrBeforeControlTime(certificate, Context.SIGNATURE, controlTime));
+				item = item.setNextItem(poeExistsAtOrBeforeControlTime(certificate, TimestampReferenceCategory.CERTIFICATE, controlTime));
 
-				item = item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData, Context.REVOCATION, controlTime));
+				item = item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData, TimestampReferenceCategory.REVOCATION, controlTime));
 
 				/*
 				 * c) The update of the value of control-time is as
@@ -193,8 +194,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		return new IssuanceDateBeforeControlTime(result, revocationData, controlTime, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, Context context, Date controlTime) {
-		return new POEExistsAtOrBeforeControlTimeCheck(result, token, context, controlTime, poe, getFailLevelConstraint());
+	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampReferenceCategory referenceCategory, Date controlTime) {
+		return new POEExistsAtOrBeforeControlTimeCheck(result, token, referenceCategory, controlTime, poe, getFailLevelConstraint());
 	}
 
 }

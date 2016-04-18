@@ -184,9 +184,10 @@ public enum MessageTag {
 	PSV_IPCVC_ANS("The past certificate validation is not conclusive!"),
 	PSV_IPSVC("Is past signature validation conclusive?"),
 	PSV_IPSVC_ANS("The past signature validation is not conclusive!"),
+	PSV_ITPOCOBCT("Is there a POE of the certificate at (or before) control-time?"),
 	PSV_ITPOSVAOBCT("Is there a POE of the signature value at (or before) control-time?"),
 	PSV_ITPORDAOBCT("Is there a POE of the revocation data at (or before) control-time?"),
-	PSV_ITPOSVAOBCT_ANS("No POE found at (or before) control-time!"),
+	PSV_ITPOOBCT_ANS("No Proof Of Existance found at (or before) control-time!"),
 
 	TSV_ASTPTCT("Are timestamps in the right order?"),
 	TSV_ASTPTCT_ANS("The timestamps were not generated in the right order!"),
