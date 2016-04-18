@@ -120,7 +120,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	 * OCSP Signing certificate should therefore have a short lifetime.
 	 */
 	private boolean isRevocationNoNeedCheck(CertificateWrapper certificate) {
-		if (certificate.isIdPkixOcspNoCheck() && certificate.isIdKpOCSPSigning()) {
+		if (certificate.isIdPkixOcspNoCheck() || certificate.isIdKpOCSPSigning()) { // TODO correct ??
 			return currentTime.compareTo(certificate.getNotBefore()) >= 0 && currentTime.compareTo(certificate.getNotAfter()) <= 0;
 		}
 		return false;

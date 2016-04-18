@@ -1595,7 +1595,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 
 			String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
-			genericCertId.setDigestAlgorithm(DigestAlgorithm.forXML(xmlName).getName());
+			genericCertId.setDigestAlgorithm(DigestAlgorithm.forXML(xmlName));
 
 			genericCertId.setDigestValue(Base64.decodeBase64(digestValueEl.getTextContent()));
 			certIds.add(genericCertId);
@@ -1608,7 +1608,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<CRLRef> getCRLRefs() {
 
-		final List<CRLRef> certIds = new ArrayList<CRLRef>();
+		final List<CRLRef> crlRefs = new ArrayList<CRLRef>();
 		final Element signingCertEl = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_REVOCATION_CRL_REFS);
 		if (signingCertEl != null) {
 
@@ -1623,16 +1623,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 
 				final CRLRef ref = new CRLRef(digestAlgo, Base64.decodeBase64(digestValueEl.getTextContent()));
-				certIds.add(ref);
+				crlRefs.add(ref);
 			}
 		}
-		return certIds;
+		return crlRefs;
 	}
 
 	@Override
 	public List<OCSPRef> getOCSPRefs() {
 
-		final List<OCSPRef> certIds = new ArrayList<OCSPRef>();
+		final List<OCSPRef> ocspRefs = new ArrayList<OCSPRef>();
 		final Element signingCertEl = DSSXMLUtils.getElement(signatureElement, xPathQueryHolder.XPATH_OCSP_REFS);
 		if (signingCertEl != null) {
 
@@ -1653,10 +1653,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final String digestValue = digestValueEl.getTextContent();
 				final byte[] base64EncodedDigestValue = Base64.decodeBase64(digestValue);
 				final OCSPRef ocspRef = new OCSPRef(digestAlgo, base64EncodedDigestValue, false);
-				certIds.add(ocspRef);
+				ocspRefs.add(ocspRef);
 			}
 		}
-		return certIds;
+		return ocspRefs;
 	}
 
 	@Override
@@ -2009,9 +2009,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private TimestampReference createRevocationTimestampReference(Element element) {
-
-		String digestAlgorithm = DSSXMLUtils.getNode(element, xPathQueryHolder.XPATH__DIGEST_METHOD_ALGORITHM).getTextContent();
-		digestAlgorithm = DigestAlgorithm.forXML(digestAlgorithm).getName();
+		String digestAlgorithmStr = DSSXMLUtils.getNode(element, xPathQueryHolder.XPATH__DIGEST_METHOD_ALGORITHM).getTextContent();
+		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digestAlgorithmStr);
 		final String digestValue = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__DIGEST_VALUE).getTextContent();
 		final TimestampReference revocationReference = new TimestampReference(digestAlgorithm, digestValue);
 		return revocationReference;
@@ -2066,7 +2065,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		usedCertificatesDigestAlgorithms.add(digestAlgorithm);
 		final Element digestValueElement = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__DIGEST_VALUE);
 		final String digestValue = (digestValueElement == null) ? "" : digestValueElement.getTextContent();
-		final TimestampReference reference = new TimestampReference(digestAlgorithm.name(), digestValue);
+		final TimestampReference reference = new TimestampReference(digestAlgorithm, digestValue);
 		return reference;
 	}
 
@@ -2074,7 +2073,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
-		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1.name(), DSSUtils.digest(DigestAlgorithm.SHA1, certificateToken));
+		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1, DSSUtils.digest(DigestAlgorithm.SHA1, certificateToken));
 		return reference;
 	}
 

@@ -4,34 +4,43 @@ import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
 import eu.europa.esig.dss.validation.MessageTag;
+import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
+import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 
-	private final String poeId;
+	private final TokenProxy token;
+	private final Context context;
 	private final Date controlTime;
 	private final POEExtraction poe;
 
-	public POEExistsAtOrBeforeControlTimeCheck(XmlVTS result, String poeId, Date controlTime, POEExtraction poe, LevelConstraint constraint) {
+	public POEExistsAtOrBeforeControlTimeCheck(XmlVTS result, TokenProxy token, Context context, Date controlTime, POEExtraction poe,
+			LevelConstraint constraint) {
 		super(result, constraint);
 
-		this.poeId = poeId;
+		this.token = token;
+		this.context = context;
 		this.controlTime = controlTime;
 		this.poe = poe;
 	}
 
 	@Override
 	protected boolean process() {
-		return poe.isPOEExists(poeId, controlTime);
+		return poe.isPOEExists(token.getId(), controlTime);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.PSV_ITPOSVAOBCT;
+		if (Context.SIGNATURE.equals(context)) {
+			return MessageTag.PSV_ITPOSVAOBCT;
+		} else {
+			return MessageTag.PSV_ITPORDAOBCT;
+		}
 	}
 
 	@Override

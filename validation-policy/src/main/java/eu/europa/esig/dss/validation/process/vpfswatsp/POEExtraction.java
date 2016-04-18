@@ -86,11 +86,12 @@ public class POEExtraction {
 						if (certificateId != null) {
 							addPOE(certificateId, productionTime);
 						}
+					} else if (StringUtils.equals(TimestampReferenceCategory.REVOCATION.name(), digestAlgoAndValue.getCategory())) {
+						String revocationId = getRevocationIdByDigest(digestAlgoAndValue, diagnosticData);
+						if (revocationId != null) {
+							addPOE(revocationId, productionTime);
+						}
 					}
-					// TODO REVOCATION
-					// else if (AttributeValue.REVOCATION.equals(digestAlgoAndValue.getCategory())) {
-					//
-					// }
 				}
 			}
 		}
@@ -106,6 +107,25 @@ public class POEExtraction {
 						if (StringUtils.equals(certificateDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
 								&& StringUtils.equals(certificateDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
 							return certificate.getId();
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private String getRevocationIdByDigest(XmlDigestAlgAndValueType digestAlgoValue, DiagnosticData diagnosticData) {
+		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
+		if (CollectionUtils.isNotEmpty(certificates)) {
+			for (CertificateWrapper certificate : certificates) {
+				RevocationWrapper revocationData = certificate.getRevocationData();
+				if (revocationData != null) {
+					List<XmlDigestAlgAndValueType> digestAlgAndValues = revocationData.getDigestAlgAndValue();
+					for (XmlDigestAlgAndValueType revocDigestAndValue : digestAlgAndValues) {
+						if (StringUtils.equals(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
+								&& StringUtils.equals(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
+							return revocationData.getId();
 						}
 					}
 				}

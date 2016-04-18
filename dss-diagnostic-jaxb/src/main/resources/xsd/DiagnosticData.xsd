@@ -309,6 +309,7 @@
 			<xs:element type="xs:dateTime" name="ThisUpdate" />
 			<xs:element type="xs:dateTime" name="NextUpdate" minOccurs="0" />
 			<xs:element type="xs:dateTime" name="RevocationDate" minOccurs="0" />
+			<xs:element type="DigestAlgAndValueType" name="DigestAlgAndValue" minOccurs="0" maxOccurs="unbounded" />
 			
 			<xs:element type="BasicSignatureType" name="BasicSignature" />
 			<xs:element type="SigningCertificateType" name="SigningCertificate" />

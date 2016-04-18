@@ -185,6 +185,7 @@ public enum MessageTag {
 	PSV_IPSVC("Is past signature validation conclusive?"),
 	PSV_IPSVC_ANS("The past signature validation is not conclusive!"),
 	PSV_ITPOSVAOBCT("Is there a POE of the signature value at (or before) control-time?"),
+	PSV_ITPORDAOBCT("Is there a POE of the revocation data at (or before) control-time?"),
 	PSV_ITPOSVAOBCT_ANS("No POE found at (or before) control-time!"),
 
 	TSV_ASTPTCT("Are timestamps in the right order?"),
@@ -205,13 +206,10 @@ public enum MessageTag {
 	LABEL_TINTWS("Additional assurance on the signing time may be needed to prove the validity of the signature."),
 	LABEL_TINVTWS("There is no valid timestamp within the signature."),
 
-	ERV_FATSPCS("Is the first archive timestamp covers the signature ?"),
-	ERV_FATSPCS_ANS("The first archive timestamp don't cover the signature !"),
-	
-	ERV_IERVC("Is the result of the Evidence record validation conclusive?"),
-	ERV_IERVC_ANS("Evidence record validation is not conclusive!"),
-	ERV_ATSCEO("Is all archive timestamps cover each other ?"),
-	ERV_ATSCEO_ANS("All archive timestamps don't cover each other!"),
+	VTS_IRC("Is the revocation data consistant ?"),
+	VTS_IRC_ANS("The revocation data is not consistant!"),
+	VTS_ICTBRD("Is the issuance date before control-time ?"),
+	VTS_ICTBRD_ANS("The issuance date of revocation data is not before control-time!"),
 	
 	EMPTY("");
 

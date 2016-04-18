@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatus;
@@ -44,7 +45,7 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 					Date statusEndDate = status.getEndDate();
 					// The issuing time of the certificate should be into the validity period of the associated service
 					if (certificateValidFrom.after(statusStartDate) && ((statusEndDate == null) || certificateValidFrom.before(statusEndDate))) {
-						return processValueCheck(trustedServiceProvider.getTSPServiceType());
+						return processValueCheck(StringUtils.trim(trustedServiceProvider.getTSPServiceType()));
 					}
 				}
 			}

@@ -893,7 +893,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<TimestampToken> getSignatureTimestamps() throws RuntimeException {
+	public List<TimestampToken> getSignatureTimestamps() {
 
 		if (signatureTimestamps == null) {
 			makeTimestampTokens();
@@ -1087,7 +1087,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private TimestampReference createCertificateTimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] certHash) {
-		final TimestampReference reference = new TimestampReference(digestAlgorithm.getXmlId(), Base64.encodeBase64String(certHash));
+		final TimestampReference reference = new TimestampReference(digestAlgorithm, Base64.encodeBase64String(certHash));
 		return reference;
 	}
 
@@ -1358,7 +1358,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			final OtherCertID otherCertId = OtherCertID.getInstance(completeCertificateRefs.getObjectAt(i));
 			final CertificateRef certId = new CertificateRef();
-			certId.setDigestAlgorithm(otherCertId.getAlgorithmHash().getAlgorithm().getId());
+			certId.setDigestAlgorithm(DigestAlgorithm.forOID(otherCertId.getAlgorithmHash().getAlgorithm().getId()));
 			certId.setDigestValue(otherCertId.getCertHash());
 
 			final IssuerSerial issuer = otherCertId.getIssuerSerial();
@@ -1758,9 +1758,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		for (final CertificateRef certificateRef : certRefs) {
 
 			final String digestValue = Base64.encodeBase64String(certificateRef.getDigestValue());
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(certificateRef.getDigestAlgorithm());
+			final DigestAlgorithm digestAlgorithm = certificateRef.getDigestAlgorithm();
 			usedCertificatesDigestAlgorithms.add(digestAlgorithm);
-			final TimestampReference reference = new TimestampReference(digestAlgorithm.name(), digestValue);
+			final TimestampReference reference = new TimestampReference(digestAlgorithm, digestValue);
 			references.add(reference);
 		}
 
@@ -1771,16 +1771,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			if (digestAlgorithm == null) { // -444
 				continue;
 			}
+			usedCertificatesDigestAlgorithms.add(digestAlgorithm);
 			final String digestValue = Base64.encodeBase64String(ocspRef.getDigestValue());
-			TimestampReference reference = new TimestampReference(digestAlgorithm.getName(), digestValue, TimestampReferenceCategory.REVOCATION);
+			TimestampReference reference = new TimestampReference(digestAlgorithm, digestValue, TimestampReferenceCategory.REVOCATION);
 			references.add(reference);
 		}
 
 		final List<CRLRef> crlRefs = getCRLRefs();
 		for (final CRLRef crlRef : crlRefs) {
-
 			final String digestValue = Base64.encodeBase64String(crlRef.getDigestValue());
-			TimestampReference reference = new TimestampReference(crlRef.getDigestAlgorithm().getName(), digestValue, TimestampReferenceCategory.REVOCATION);
+			usedCertificatesDigestAlgorithms.add(crlRef.getDigestAlgorithm());
+			TimestampReference reference = new TimestampReference(crlRef.getDigestAlgorithm(), digestValue, TimestampReferenceCategory.REVOCATION);
 			references.add(reference);
 		}
 		return references;

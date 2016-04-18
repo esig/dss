@@ -725,23 +725,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(keyLength);
 
 		final boolean signatureValid = timestampToken.isSignatureValid();
-		xmlBasicSignatureType.setReferenceDataFound(signatureValid /*
-																	 * timestampToken
-																	 * .
-																	 * isReferenceDataFound
-																	 * ()
-																	 */);
-		xmlBasicSignatureType.setReferenceDataIntact(signatureValid /*
-																	 * timestampToken
-																	 * .
-																	 * isReferenceDataIntact
-																	 * ()
-																	 */);
-		xmlBasicSignatureType.setSignatureIntact(signatureValid /*
-																 * timestampToken.
-																 * isSignatureIntact
-																 * ()
-																 */);
+		xmlBasicSignatureType.setReferenceDataFound(signatureValid /* timestampToken.isReferenceDataFound() */);
+		xmlBasicSignatureType.setReferenceDataIntact(signatureValid /* timestampToken.isReferenceDataIntact() */);
+		xmlBasicSignatureType.setSignatureIntact(signatureValid /* timestampToken.isSignatureIntact() */);
 		xmlBasicSignatureType.setSignatureValid(signatureValid);
 		xmlTimestampToken.setBasicSignature(xmlBasicSignatureType);
 
@@ -754,8 +740,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlTimestampToken.setCertificateChain(xmlCertChainType);
 
 		final List<TimestampReference> timestampReferences = timestampToken.getTimestampedReferences();
-		if ((timestampReferences != null) && !timestampReferences.isEmpty()) {
-
+		if (CollectionUtils.isNotEmpty(timestampReferences)) {
 			final XmlSignedObjectsType xmlSignedObjectsType = new XmlSignedObjectsType();
 			final List<XmlDigestAlgAndValueType> xmlDigestAlgAndValueList = xmlSignedObjectsType.getDigestAlgAndValue();
 
@@ -774,7 +759,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				} else {
 
 					final XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
-					xmlDigestAlgAndValue.setDigestMethod(timestampReference.getDigestAlgorithm());
+					xmlDigestAlgAndValue.setDigestMethod(timestampReference.getDigestAlgorithm().getName());
 					xmlDigestAlgAndValue.setDigestValue(timestampReference.getDigestValue());
 					xmlDigestAlgAndValue.setCategory(timestampedCategory.name());
 					xmlDigestAlgAndValueList.add(xmlDigestAlgAndValue);
@@ -848,7 +833,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			}
 			dealQCStatement(certToken, xmlCert);
 			dealTrustedService(certToken, xmlCert);
-			dealRevocationData(certToken, xmlCert);
+			dealRevocationData(usedCertificatesDigestAlgorithms, certToken, xmlCert);
 			dealCertificateValidationInfo(certToken, xmlCert);
 			xmlUsedCerts.getCertificate().add(xmlCert);
 		}
@@ -1107,11 +1092,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method deals with the revocation data of a certificate. The
 	 * retrieved information is transformed to the JAXB object.
+	 * 
+	 * @param usedCertificatesDigestAlgorithms
 	 *
 	 * @param certToken
 	 * @param xmlCert
 	 */
-	private void dealRevocationData(final CertificateToken certToken, final XmlCertificate xmlCert) {
+	private void dealRevocationData(Set<DigestAlgorithm> usedDigestAlgorithms, final CertificateToken certToken, final XmlCertificate xmlCert) {
 
 		final XmlRevocationType xmlRevocation = new XmlRevocationType();
 		final RevocationToken revocationToken = certToken.getRevocationToken();
@@ -1155,6 +1142,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlBasicSignatureType.setSignatureIntact(signatureValid);
 			xmlBasicSignatureType.setSignatureValid(signatureValid);
 			xmlRevocation.setBasicSignature(xmlBasicSignatureType);
+
+			for (final DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
+				final XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
+				xmlDigestAlgAndValue.setDigestMethod(digestAlgorithm.getName());
+				xmlDigestAlgAndValue.setDigestValue(DSSUtils.digest(digestAlgorithm, revocationToken));
+				xmlRevocation.getDigestAlgAndValue().add(xmlDigestAlgAndValue);
+			}
 
 			final CertificateToken issuerToken = revocationToken.getIssuerToken();
 			final XmlSigningCertificateType xmlRevocationSignCert = xmlForSigningCertificate(issuerToken);
