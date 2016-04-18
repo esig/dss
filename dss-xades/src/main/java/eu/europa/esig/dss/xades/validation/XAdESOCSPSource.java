@@ -62,7 +62,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	@Override
 	public List<BasicOCSPResp> getContainedOCSPResponses() {
 		final List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
-		addOCSP(list, xPathQueryHolder.XPATH_ENCAPSULATED_OCSP_VALUE);
+		addOCSP(list, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
 		addOCSP(list, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
 		return list;
 	}

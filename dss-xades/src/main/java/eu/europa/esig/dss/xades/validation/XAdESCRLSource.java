@@ -36,39 +36,41 @@ import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
  */
 public class XAdESCRLSource extends OfflineCRLSource {
 
-    /**
-     * The default constructor for XAdESCRLSource.
-     *
-     * @param signatureElement {@code Element} that contains an XML signature
-     * @param xPathQueryHolder adapted {@code XPathQueryHolder}
-     */
-    public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
+	/**
+	 * The default constructor for XAdESCRLSource.
+	 *
+	 * @param signatureElement
+	 *            {@code Element} that contains an XML signature
+	 * @param xPathQueryHolder
+	 *            adapted {@code XPathQueryHolder}
+	 */
+	public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
 
-        if (signatureElement == null) {
+		if (signatureElement == null) {
 
-            throw new NullPointerException("signatureElement");
-        }
-        if (xPathQueryHolder == null) {
+			throw new NullPointerException("signatureElement");
+		}
+		if (xPathQueryHolder == null) {
 
-            throw new NullPointerException("xPathQueryHolder");
-        }
-	    x509CRLList = new ArrayList<X509CRL>();
-        addCRLs(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUE);
-        addCRLs(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUE);
-    }
+			throw new NullPointerException("xPathQueryHolder");
+		}
+		x509CRLList = new ArrayList<X509CRL>();
+		addCRLs(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL);
+		addCRLs(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES + xPathQueryHolder.XPATH_ECRLV);
+	}
 
-    private void addCRLs(Element signatureElement, final String xPathQuery) {
+	private void addCRLs(Element signatureElement, final String xPathQuery) {
 
-        final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQuery);
-        for (int ii = 0; ii < nodeList.getLength(); ii++) {
+		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQuery);
+		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 
-            final Element certEl = (Element) nodeList.item(ii);
-            final String textContent = certEl.getTextContent();
-            final X509CRL x509CRL = DSSUtils.loadCRLBase64Encoded(textContent);
-            if (!x509CRLList.contains(x509CRL)) {
+			final Element certEl = (Element) nodeList.item(ii);
+			final String textContent = certEl.getTextContent();
+			final X509CRL x509CRL = DSSUtils.loadCRLBase64Encoded(textContent);
+			if (!x509CRLList.contains(x509CRL)) {
 
-                x509CRLList.add(x509CRL);
-            }
-        }
-    }
+				x509CRLList.add(x509CRL);
+			}
+		}
+	}
 }
