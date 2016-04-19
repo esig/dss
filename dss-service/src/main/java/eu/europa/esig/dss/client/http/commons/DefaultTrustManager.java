@@ -25,7 +25,7 @@ public final class DefaultTrustManager implements X509TrustManager {
     private static final Logger LOGGER = Logger.getLogger(DefaultTrustManager.class);
 
     /** TrustStore. */
-    private X509TrustManager trustManager;  - not transient
+    private X509TrustManager trustManager;
 
     public DefaultTrustManager(final KeyStore keystore) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         super();
@@ -74,3 +74,4 @@ public final class DefaultTrustManager implements X509TrustManager {
     }
 
 }
+
