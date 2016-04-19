@@ -180,8 +180,8 @@ public enum MessageTag {
 
 	PSV_IPCVA("Is past certificate validation acceptable?"),
 	PSV_IPCVA_ANS("The past certificate validation is not acceptable!"),
-	PSV_IPCVC("Is past certificate validation conclusive?"),
-	PSV_IPCVC_ANS("The past certificate validation is not conclusive!"),
+	PSV_IPCVC("No POE, what is the current time validation?"),
+	PSV_IPCVC_ANS("The current time validation is not conclusive!"),
 	PSV_IPSVC("Is past signature validation conclusive?"),
 	PSV_IPSVC_ANS("The past signature validation is not conclusive!"),
 	PSV_ITPOCOBCT("Is there a POE of the certificate at (or before) control-time?"),

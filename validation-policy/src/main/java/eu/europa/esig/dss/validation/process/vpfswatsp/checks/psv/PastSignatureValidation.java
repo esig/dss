@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 
 import java.util.Date;
+import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.validation.policy.Context;
@@ -15,9 +17,9 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.PastCertificateValidation;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.CurrentTimeIndicationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.POEExistsCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastCertificateValidationAcceptableCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastCertificateValidationCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
@@ -49,6 +51,10 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	@Override
 	protected void initChain() {
 
+		final Indication currentTimeIndication = bbb.getConclusion().getIndication();
+		final SubIndication currentTimeSubIndication = bbb.getConclusion().getSubIndication();
+		final List<XmlName> currentTimeErrors = bbb.getConclusion().getErrors();
+
 		PastCertificateValidation pcv = new PastCertificateValidation(token, diagnosticData, bbb, poe, currentTime, policy, context);
 		XmlPCV pcvResult = pcv.execute();
 		bbb.setPCV(pcvResult);
@@ -63,8 +69,6 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		ChainItem<XmlPSV> item = firstItem = pastCertificateValidationAcceptableCheck(pcvResult);
 
 		Date controlTime = pcvResult.getControlTime();
-		Indication currentTimeIndication = bbb.getConclusion().getIndication();
-		SubIndication currentTimeSubIndication = bbb.getConclusion().getSubIndication();
 
 		/*
 		 * 2) If there is a POE of the signature value at (or before) the validation time returned in the previous step:
@@ -122,17 +126,18 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * with an explanation of the failure.
 		 */
 		else {
-			item = item.setNextItem(pastCertificateValidationCheck(pcvResult));
+			item = item.setNextItem(currentTimeIndicationCheck(currentTimeIndication, currentTimeSubIndication, currentTimeErrors));
 		}
 
 	}
 
-	private ChainItem<XmlPSV> pastCertificateValidationAcceptableCheck(XmlPCV pcvResult) {
-		return new PastCertificateValidationAcceptableCheck(result, pcvResult, getFailLevelConstraint());
+	private ChainItem<XmlPSV> currentTimeIndicationCheck(Indication currentTimeIndication, SubIndication currentTimeSubIndication,
+			List<XmlName> currentTimeErrors) {
+		return new CurrentTimeIndicationCheck(result, currentTimeIndication, currentTimeSubIndication, currentTimeErrors, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlPSV> pastCertificateValidationCheck(XmlPCV pcvResult) {
-		return new PastCertificateValidationCheck(result, pcvResult, getFailLevelConstraint());
+	private ChainItem<XmlPSV> pastCertificateValidationAcceptableCheck(XmlPCV pcvResult) {
+		return new PastCertificateValidationAcceptableCheck(result, pcvResult, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> poeExist() {
