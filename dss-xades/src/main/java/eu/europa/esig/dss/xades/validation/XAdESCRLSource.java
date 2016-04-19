@@ -56,7 +56,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 		}
 		x509CRLList = new ArrayList<X509CRL>();
 		addCRLs(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL);
-		addCRLs(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES + xPathQueryHolder.XPATH_ECRLV);
+		addCRLs(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES);
 	}
 
 	private void addCRLs(Element signatureElement, final String xPathQuery) {

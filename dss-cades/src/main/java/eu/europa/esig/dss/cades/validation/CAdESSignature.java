@@ -49,9 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -183,12 +181,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * an input provided by the DA then getSigningCer MUST be called.
 	 */
 	private CertificateValidity signingCertificateValidity;
-
-	/**
-	 * This list represents all digest algorithms used to calculate the digest
-	 * values of certificates.
-	 */
-	private Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
 
 	/**
 	 * This id identifies the signature, it is calculated on the signing time if
@@ -1762,33 +1754,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			references.add(reference);
 		}
 
-		final List<OCSPRef> ocspRefs = getOCSPRefs();
-		for (final OCSPRef ocspRef : ocspRefs) {
+		addReferencesFromOfflineCRLSource(references);
+		addReferencesFromOfflineOCSPSource(references);
 
-			final DigestAlgorithm digestAlgorithm = ocspRef.getDigestAlgorithm();
-			if (digestAlgorithm == null) { // -444
-				continue;
-			}
-			usedCertificatesDigestAlgorithms.add(digestAlgorithm);
-			final String digestValue = Base64.encodeBase64String(ocspRef.getDigestValue());
-			TimestampReference reference = new TimestampReference(digestAlgorithm, digestValue, TimestampReferenceCategory.REVOCATION);
-			references.add(reference);
-		}
-
-		final List<CRLRef> crlRefs = getCRLRefs();
-		for (final CRLRef crlRef : crlRefs) {
-			final String digestValue = Base64.encodeBase64String(crlRef.getDigestValue());
-			usedCertificatesDigestAlgorithms.add(crlRef.getDigestAlgorithm());
-			TimestampReference reference = new TimestampReference(crlRef.getDigestAlgorithm(), digestValue, TimestampReferenceCategory.REVOCATION);
-			references.add(reference);
-		}
 		return references;
-	}
-
-	@Override
-	public Set<DigestAlgorithm> getUsedCertificatesDigestAlgorithms() {
-
-		return usedCertificatesDigestAlgorithms;
 	}
 
 	@Override

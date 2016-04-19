@@ -26,11 +26,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections.CollectionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -45,13 +49,15 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	/**
-	 * This is the reference to the global (external) pool of certificates. All encapsulated certificates in the signature are added to this pool. See {@link
+	 * This is the reference to the global (external) pool of certificates. All encapsulated certificates in the
+	 * signature are added to this pool. See {@link
 	 * eu.europa.esig.dss.x509.CertificatePool}
 	 */
 	protected final CertificatePool certPool;
 
 	/**
-	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be provided by the driving application.
+	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be
+	 * provided by the driving application.
 	 */
 	protected CertificateToken providedSigningCertificateToken;
 
@@ -61,7 +67,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected List<DSSDocument> detachedContents;
 
 	/**
-	 * This variable contains the result of the signature mathematical validation. It is initialised when the method {@code checkSignatureIntegrity} is called.
+	 * This variable contains the result of the signature mathematical validation. It is initialised when the method
+	 * {@code checkSignatureIntegrity} is called.
 	 */
 	protected SignatureCryptographicVerification signatureCryptographicVerification;
 
@@ -90,10 +97,17 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	// Cached {@code OfflineOCSPSource}
 	protected OfflineOCSPSource offlineOCSPSource;
+
 	private AdvancedSignature masterSignature;
 
 	/**
-	 * @param certPool can be null
+	 * This list represents all digest algorithms used to calculate the digest values of certificates.
+	 */
+	protected Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
+
+	/**
+	 * @param certPool
+	 *            can be null
 	 */
 	protected DefaultAdvancedSignature(final CertificatePool certPool) {
 		this.certPool = certPool;
@@ -126,7 +140,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
-	 * @return the upper level for which data have been found. Doesn't mean any validity of the data found. Null if unknown.
+	 * @return the upper level for which data have been found. Doesn't mean any validity of the data found. Null if
+	 *         unknown.
 	 */
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
@@ -139,7 +154,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * This method returns the {@code SignatureLevel} which was reached.
 	 *
-	 * @param signatureLevels the array of the all levels associated with the given signature type
+	 * @param signatureLevels
+	 *            the array of the all levels associated with the given signature type
 	 * @return {@code SignatureLevel}
 	 */
 	private SignatureLevel getDataFoundUpToProfile(final SignatureLevel... signatureLevels) {
@@ -157,7 +173,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * This method validates the signing certificate and all timestamps.
 	 *
-	 * @return signature validation context containing all certificates and revocation data used during the validation process.
+	 * @return signature validation context containing all certificates and revocation data used during the validation
+	 *         process.
 	 */
 	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
 
@@ -177,9 +194,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
-	 * This method returns all certificates used during the validation process. If a certificate is already present within the signature then it is ignored.
+	 * This method returns all certificates used during the validation process. If a certificate is already present
+	 * within the signature then it is ignored.
 	 *
-	 * @param validationContext validation context containing all information about the validation process of the signing certificate and time-stamps
+	 * @param validationContext
+	 *            validation context containing all information about the validation process of the signing certificate
+	 *            and time-stamps
 	 * @return set of certificates not yet present within the signature
 	 */
 	public Set<CertificateToken> getCertificatesForInclusion(final ValidationContext validationContext) {
@@ -220,12 +240,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * This method returns revocation values (ocsp and crl) that will be included in the LT profile.
 	 *
-	 * @param validationContext {@code ValidationContext} contains all the revocation data retrieved during the validation process.
+	 * @param validationContext
+	 *            {@code ValidationContext} contains all the revocation data retrieved during the validation process.
 	 * @return {@code RevocationDataForInclusion}
 	 */
 	public RevocationDataForInclusion getRevocationDataForInclusion(final ValidationContext validationContext) {
 
-		//TODO: to be checked: there can be also CRL and OCSP in TimestampToken CMS data
+		// TODO: to be checked: there can be also CRL and OCSP in TimestampToken CMS data
 		final Set<RevocationToken> revocationTokens = validationContext.getProcessedRevocations();
 		final OfflineCRLSource crlSource = getCRLSource();
 		final List<X509CRL> containedX509CRLs = crlSource.getContainedX509CRLs();
@@ -319,7 +340,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
 	 *
-	 * @param validationContext {@code ValidationContext} to which the timestamps must be added
+	 * @param validationContext
+	 *            {@code ValidationContext} to which the timestamps must be added
 	 */
 	@Override
 	public void prepareTimestamps(final ValidationContext validationContext) {
@@ -416,5 +438,50 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public String validateStructure() {
 		return null;
 	}
-}
 
+	/**
+	 * This method adds references to retrieved OCSP responses from LT level. With LTA level, we have a proof of
+	 * existence
+	 * 
+	 * @param references
+	 */
+	protected void addReferencesFromOfflineOCSPSource(List<TimestampReference> references) {
+		OfflineOCSPSource ocspSource = getOCSPSource();
+		if (ocspSource != null) {
+			List<BasicOCSPResp> containedOCSPResponses = ocspSource.getContainedOCSPResponses();
+			if (CollectionUtils.isNotEmpty(containedOCSPResponses)) {
+				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
+				for (BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
+					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(basicOCSPResp));
+					references.add(new TimestampReference(DigestAlgorithm.SHA1, Base64.encodeBase64String(digest), TimestampReferenceCategory.REVOCATION));
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method adds references to retrieved CRL responses from LT level. With LTA level, we have a proof of
+	 * existence
+	 * 
+	 * @param references
+	 */
+	protected void addReferencesFromOfflineCRLSource(List<TimestampReference> references) {
+		OfflineCRLSource crlSource = getCRLSource();
+		if (crlSource != null) {
+			List<X509CRL> containedX509CRLs = crlSource.getContainedX509CRLs();
+			if (CollectionUtils.isNotEmpty(containedX509CRLs)) {
+				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
+				for (X509CRL x509crl : containedX509CRLs) {
+					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(x509crl));
+					references.add(new TimestampReference(DigestAlgorithm.SHA1, Base64.encodeBase64String(digest), TimestampReferenceCategory.REVOCATION));
+				}
+			}
+		}
+	}
+
+	@Override
+	public Set<DigestAlgorithm> getUsedCertificatesDigestAlgorithms() {
+		return usedCertificatesDigestAlgorithms;
+	}
+
+}

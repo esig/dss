@@ -21,18 +21,15 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.io.ByteArrayOutputStream;
-import java.security.cert.X509CRL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,11 +78,6 @@ public class PAdESSignature extends CAdESSignature {
 	private final PdfSignatureInfo pdfSignatureInfo;
 
 	private PAdESCertificateSource padesCertSources;
-
-	/**
-	 * This list represents all digest algorithms used to calculate the digest values of certificates.
-	 */
-	private Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
 
 	/**
 	 * The default constructor for PAdESSignature.
@@ -267,14 +259,10 @@ public class PAdESSignature extends CAdESSignature {
 					for (final CertificateRef certRef : certRefs) {
 						references.add(createCertificateTimestampReference(certRef));
 					}
-					List<CRLRef> crlRefs = getCRLRefs();
-					for (CRLRef crlRef : crlRefs) {
-						references.add(createRevocationTimestampReference(crlRef));
-					}
-					List<OCSPRef> ocspRefs = getOCSPRefs();
-					for (OCSPRef ocspRef : ocspRefs) {
-						references.add(createRevocationTimestampReference(ocspRef));
-					}
+
+					addReferencesFromOfflineCRLSource(references);
+					addReferencesFromOfflineOCSPSource(references);
+
 					timestampToken.setTimestampedReferences(references);
 					archiveTimestampTokenList.add(timestampToken);
 				}
@@ -283,16 +271,6 @@ public class PAdESSignature extends CAdESSignature {
 
 		}
 		return Collections.unmodifiableList(archiveTimestampTokenList);
-	}
-
-	private TimestampReference createRevocationTimestampReference(OCSPRef ocspRef) {
-		usedCertificatesDigestAlgorithms.add(ocspRef.getDigestAlgorithm());
-		return new TimestampReference(ocspRef.getDigestAlgorithm(), Base64.encodeBase64String(ocspRef.getDigestValue()), TimestampReferenceCategory.REVOCATION);
-	}
-
-	private TimestampReference createRevocationTimestampReference(CRLRef crlRef) {
-		usedCertificatesDigestAlgorithms.add(crlRef.getDigestAlgorithm());
-		return new TimestampReference(crlRef.getDigestAlgorithm(), Base64.encodeBase64String(crlRef.getDigestValue()), TimestampReferenceCategory.REVOCATION);
 	}
 
 	@Override
@@ -359,26 +337,12 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public List<CRLRef> getCRLRefs() {
-		List<CRLRef> refs = new ArrayList<CRLRef>();
-		if (dssDictionary != null) {
-			Set<X509CRL> crlList = dssDictionary.getCrlList();
-			for (X509CRL x509crl : crlList) {
-				refs.add(new CRLRef(DigestAlgorithm.SHA1, DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(x509crl))));
-			}
-		}
-		return refs;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<OCSPRef> getOCSPRefs() {
-		List<OCSPRef> refs = new ArrayList<OCSPRef>();
-		if (dssDictionary != null) {
-			Set<BasicOCSPResp> ocspList = dssDictionary.getOcspList();
-			for (BasicOCSPResp basicOCSPResp : ocspList) {
-				refs.add(new OCSPRef(DigestAlgorithm.SHA1, DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(basicOCSPResp)), false));
-			}
-		}
-		return refs;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -457,12 +421,6 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public Set<DigestAlgorithm> getUsedCertificatesDigestAlgorithms() {
-
-		return usedCertificatesDigestAlgorithms;
-	}
-
-	@Override
 	public boolean isDataForSignatureLevelPresent(SignatureLevel signatureLevel) {
 		boolean dataForLevelPresent = true;
 		switch (signatureLevel) {
@@ -482,8 +440,8 @@ public class PAdESSignature extends CAdESSignature {
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_B);
 			break;
 		case PAdES_BASELINE_B:
-			dataForLevelPresent = (pdfSignatureInfo != null); // &&
-																// "ETSI.CAdES.detached".equals(pdfSignatureInfo.getSubFilter());
+			dataForLevelPresent = (pdfSignatureInfo != null);
+			// && "ETSI.CAdES.detached".equals(pdfSignatureInfo.getSubFilter());
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
@@ -514,4 +472,5 @@ public class PAdESSignature extends CAdESSignature {
 	public PdfSignatureInfo getPdfSignatureInfo() {
 		return pdfSignatureInfo;
 	}
+
 }
