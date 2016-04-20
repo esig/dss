@@ -129,7 +129,7 @@ public class CertificatePool implements Serializable {
 			CertificateToken certToken = certById.get(id);
 			if (certToken == null) {
 
-				LOG.debug("Certificate " + id + " is not in the pool");
+				LOG.trace("Certificate " + id + " is not in the pool");
 				certToken = certificateToAdd;
 				certById.put(id, certToken);
 				final String subjectName = certificateToAdd.getSubjectX500Principal().getName(X500Principal.CANONICAL);
@@ -142,7 +142,7 @@ public class CertificatePool implements Serializable {
 				list.add(certToken);
 			} else {
 
-				LOG.debug("Certificate " + id + " is already in the pool");
+				LOG.trace("Certificate " + id + " is already in the pool");
 				final X509Certificate foundCertificate = certToken.getCertificate();
 				final byte[] foundCertificateSignature = foundCertificate.getSignature();
 				final byte[] certificateToAddSignature = certificateToAdd.getSignature();

@@ -1,9 +1,11 @@
 package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.Date;
+import java.util.List;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 
@@ -65,6 +67,10 @@ public class RevocationWrapper extends AbstractTokenProxy {
 
 	public String getSource() {
 		return revocation.getSource();
+	}
+
+	public List<XmlDigestAlgAndValueType> getDigestAlgAndValue() {
+		return revocation.getDigestAlgAndValue();
 	}
 
 }

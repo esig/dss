@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
+import java.util.List;
+
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -8,19 +10,23 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class PastCertificateValidationCheck extends ChainItem<XmlPSV> {
+public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
 
-	private final XmlPCV pcv;
+	private final Indication indication;
+	private final SubIndication subIndication;
+	private final List<XmlName> errors;
 
-	public PastCertificateValidationCheck(XmlPSV result, XmlPCV pcv, LevelConstraint constraint) {
+	public CurrentTimeIndicationCheck(XmlPSV result, Indication indication, SubIndication subIndication, List<XmlName> errors, LevelConstraint constraint) {
 		super(result, constraint);
 
-		this.pcv = pcv;
+		this.indication = indication;
+		this.subIndication = subIndication;
+		this.errors = errors;
 	}
 
 	@Override
 	protected boolean process() {
-		return isValid(pcv);
+		return Indication.PASSED.equals(indication);
 	}
 
 	@Override
@@ -35,12 +41,17 @@ public class PastCertificateValidationCheck extends ChainItem<XmlPSV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return pcv.getConclusion().getIndication();
+		return indication;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return pcv.getConclusion().getSubIndication();
+		return subIndication;
+	}
+
+	@Override
+	protected List<XmlName> getPreviousErrors() {
+		return errors;
 	}
 
 }

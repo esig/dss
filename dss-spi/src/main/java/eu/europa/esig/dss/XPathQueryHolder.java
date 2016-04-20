@@ -25,10 +25,6 @@ import java.io.Serializable;
 /**
  * This class hold all XPath queries schema-dependent. It was created to cope with old signatures bases on http://uri.etsi.org/01903/v1.1.1.
  *
- *
- *
- *
- *
  */
 public class XPathQueryHolder implements Serializable {
 
@@ -64,8 +60,11 @@ public class XPathQueryHolder implements Serializable {
 
 	public String XPATH_CV = "/xades:CertificateValues";
 	public String XPATH_EX509C = "/xades:EncapsulatedX509Certificate";
-	public String XPATH_ECRLV = "/xades:CRLValues/xades:EncapsulatedCRLValue";
-	public String XPATH_EOCSPV = "/xades:OCSPValues/xades:EncapsulatedOCSPValue";
+	public String XPATH_CRLV = "/xades:CRLValues";
+	public String XPATH_OCSPV = "/xades:OCSPValues";
+	public String XPATH_ECRLV = "/xades:EncapsulatedCRLValue";
+	public String XPATH_EOCSPV = "/xades:EncapsulatedOCSPValue";
+	public String XPATH__ECRLV = "." + XPATH_ECRLV;
 	public String XPATH_OCSPREF = "/xades:OCSPRef";
 	public String XPATH__OCSPREF = "." + XPATH_OCSPREF;
 
@@ -85,9 +84,8 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_QUALIFYING_PROPERTIES = XPATH_OBJECT + "/xades:QualifyingProperties";
 	public String XPATH__QUALIFYING_PROPERTIES = "./xades:QualifyingProperties";
 	/**
-	 * This query is used to determinate {@code XPathQueryHolder} tu use if function of the namespace of QualifyingProperties.
-	 * public final String XPATH_QUALIFYING_PROPERTIES_NAMESPACE = "namespace-uri(./ds:Signature/ds:Object/*[local-name()='QualifyingProperties'])";
-	 * This is not used anymore. See
+	 * This query is used to determinate {@code XPathQueryHolder} tu use if function of the namespace of QualifyingProperties. public final String
+	 * XPATH_QUALIFYING_PROPERTIES_NAMESPACE = "namespace-uri(./ds:Signature/ds:Object/*[local-name()='QualifyingProperties'])"; This is not used anymore. See
 	 */
 
 	public String XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES = XPATH__QUALIFYING_PROPERTIES + "/xades:SignedProperties";
@@ -105,8 +103,10 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_SIGNATURE_POLICY_IDENTIFIER = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignaturePolicyIdentifier";
 	public String XPATH_CLAIMED_ROLE = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignerRole/xades:ClaimedRoles/xades:ClaimedRole";
 	public String XPATH_CLAIMED_ROLE_V2 = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignerRoleV2/xades:ClaimedRoles/xades:ClaimedRole";
-	public String XPATH_CERTIFIED_ROLE = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignerRole/xades:CertifiedRoles/xades:CertifiedRole/EncapsulatedX509Certificate";
-	public String XPATH_CERTIFIED_ROLE_V2 = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignerRoleV2/xades:CertifiedRolesV2/xades:CertifiedRole/EncapsulatedX509Certificate";
+	public String XPATH_CERTIFIED_ROLE = XPATH_SIGNED_SIGNATURE_PROPERTIES
+			+ "/xades:SignerRole/xades:CertifiedRoles/xades:CertifiedRole/EncapsulatedX509Certificate";
+	public String XPATH_CERTIFIED_ROLE_V2 = XPATH_SIGNED_SIGNATURE_PROPERTIES
+			+ "/xades:SignerRoleV2/xades:CertifiedRolesV2/xades:CertifiedRole/EncapsulatedX509Certificate";
 	public String XPATH_PRODUCTION_PLACE = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignatureProductionPlace";
 	public String XPATH_PRODUCTION_PLACE_V2 = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignatureProductionPlaceV2";
 	public String XPATH__SIGNATURE_POLICY_IMPLIED = "./xades:SignaturePolicyImplied";
@@ -154,13 +154,16 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_ENCAPSULATED_X509_CERTIFICATE = XPATH_CERTIFICATE_VALUES + XPATH_EX509C;
 	public String XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_CV + XPATH_EX509C;
 
-	public String XPATH_TSVD_ENCAPSULATED_CRL_VALUE = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_ECRLV;
+	public String XPATH_TSVD_ENCAPSULATED_CRL_VALUES = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_CRLV + XPATH_ECRLV;
 	public String XPATH_TSVD_ENCAPSULATED_OCSP_VALUE = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_EOCSPV;
 
 	public String XPATH_CERT_REFS = XPATH_COMPLETE_CERTIFICATE_REFS + "/xades:CertRefs";
 
-	public String XPATH_ENCAPSULATED_CRL_VALUE = XPATH_REVOCATION_VALUES + XPATH_ECRLV;
-	public String XPATH_ENCAPSULATED_OCSP_VALUE = XPATH_REVOCATION_VALUES + XPATH_EOCSPV;
+	public String XPATH_ENCAPSULATED_CRL_VALUES = XPATH_REVOCATION_VALUES + XPATH_CRLV;
+	public String XPATH_ENCAPSULATED_OCSP_VALUES = XPATH_REVOCATION_VALUES + XPATH_OCSPV;
+
+	public String XPATH_CRL_VALUES_ENCAPSULATED_CRL = XPATH_ENCAPSULATED_CRL_VALUES + XPATH_ECRLV;
+	public String XPATH_OCSP_VALUES_ENCAPSULATED_OCSP = XPATH_ENCAPSULATED_OCSP_VALUES + XPATH_EOCSPV;
 
 	// Level -B
 	public String XPATH_COUNT_SIGNED_SIGNATURE_PROPERTIES = "count(" + XPATH_SIGNED_SIGNATURE_PROPERTIES + ")";

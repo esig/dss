@@ -121,7 +121,7 @@ public class BasicBuildingBlocks {
 		result.setSAV(sav);
 		XmlConclusion savConclusion = sav.getConclusion();
 		if (!Indication.PASSED.equals(savConclusion.getIndication())) {
-			result.setConclusion(cvConclusion);
+			result.setConclusion(savConclusion);
 		}
 
 		if (result.getConclusion() == null) {

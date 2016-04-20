@@ -1,36 +1,46 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
+import java.util.Date;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class RevocationDataExistsCheck extends ChainItem<XmlVTS> {
+public class RevocationDataConsistant extends ChainItem<XmlVTS> {
 
-	private final RevocationWrapper revocationData;
+	private final CertificateWrapper certificate;
 
-	public RevocationDataExistsCheck(XmlVTS result, RevocationWrapper revocationData, LevelConstraint constraint) {
+	public RevocationDataConsistant(XmlVTS result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
-
-		this.revocationData = revocationData;
+		this.certificate = certificate;
 	}
 
 	@Override
 	protected boolean process() {
-		return revocationData != null;
+		RevocationWrapper revocationData = certificate.getRevocationData();
+
+		Date certNotBefore = certificate.getNotBefore();
+		Date certNotAfter = certificate.getNotAfter();
+		Date thisUpdate = revocationData.getThisUpdate();
+
+		// TODO specific data from CRL / OCSP
+
+		return certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(thisUpdate) >= 0);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_IRDPFC;
+		return MessageTag.VTS_IRC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_IRDPFC_ANS;
+		return MessageTag.VTS_IRC_ANS;
 	}
 
 	@Override
@@ -40,7 +50,7 @@ public class RevocationDataExistsCheck extends ChainItem<XmlVTS> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.NO_POE;
+		return SubIndication.UNEXPECTED_ERROR;
 	}
 
 }

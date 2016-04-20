@@ -8,6 +8,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
+import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -16,7 +17,9 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.IssuanceDateBeforeControlTime;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.RevocationDataConsistant;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.RevocationDataExistsCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -36,7 +39,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private Date controlTime;
 
-	public ValidationTimeSliding(DiagnosticData diagnosticData, TokenProxy token, Date currentTime, Context context, POEExtraction poe, ValidationPolicy policy) {
+	public ValidationTimeSliding(DiagnosticData diagnosticData, TokenProxy token, Date currentTime, Context context, POEExtraction poe,
+			ValidationPolicy policy) {
 		super(new XmlVTS());
 
 		this.diagnosticData = diagnosticData;
@@ -99,72 +103,69 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * return the indication INDETERMINATE with the sub-indication
 				 * NO_POE.
 				 */
-				ChainItem<XmlVTS> item = revocationDataExists(certificate);
+				RevocationWrapper revocationData = certificate.getRevocationData();
+				ChainItem<XmlVTS> item = revocationDataExists(revocationData);
 				if (firstItem == null) {
 					firstItem = item;
 				}
 
-				RevocationWrapper revocationData = certificate.getRevocationData();
+				item = item.setNextItem(revocationDataConsistant(certificate));
+
+				item = item.setNextItem(issuanceDateBeforeControlTime(revocationData));
+
+				/*
+				 * b) If the set of POEs contains a proof of existence
+				 * of the certificate and the revocation status
+				 * information at (or before) control-time, the building
+				 * block shall go to step c).
+				 * 
+				 * Otherwise, the building block shall return the
+				 * indication INDETERMINATE with the sub-indication
+				 * NO_POE.
+				 */
+				item = item.setNextItem(poeExistsAtOrBeforeControlTime(certificate, TimestampReferenceCategory.CERTIFICATE, controlTime));
+
+				item = item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData, TimestampReferenceCategory.REVOCATION, controlTime));
+
+				/*
+				 * c) The update of the value of control-time is as
+				 * follows:
+				 * 
+				 * - If the certificate is marked as revoked in the
+				 * revocation status information, the building block
+				 * shall set control-time to the revocation time.
+				 * 
+				 * - If the certificate is not marked as revoked, the
+				 * building block shall run the Revocation Freshness
+				 * Checker with the used revocation information status,
+				 * the certificate for which the revocation status is
+				 * being checked and the control-time. If it returns
+				 * FAILED, the building block shall set control-time to
+				 * the issuance time of the revocation status
+				 * information.
+				 * 
+				 * Otherwise, the building block shall not change the
+				 * value of control-time.
+				 */
 				if (revocationData != null) {
-					Date revocationProductionDate = revocationData.getProductionDate();
-					if (revocationProductionDate != null && revocationProductionDate.before(controlTime)) {
-
-						/*
-						 * b) If the set of POEs contains a proof of existence
-						 * of the certificate and the revocation status
-						 * information at (or before) control-time, the building
-						 * block shall go to step c).
-						 * 
-						 * Otherwise, the building block shall return the
-						 * indication INDETERMINATE with the sub-indication
-						 * NO_POE.
-						 */
-						item = item.setNextItem(poeExistsAtOrBeforeControlTime(certificate.getId(), controlTime));
-
-						// TODO missing info in DiagnosticData
-						// item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData.getId(),
-						// controlTime));
-
-						/*
-						 * c) The update of the value of control-time is as
-						 * follows:
-						 * 
-						 * - If the certificate is marked as revoked in the
-						 * revocation status information, the building block
-						 * shall set control-time to the revocation time.
-						 * 
-						 * - If the certificate is not marked as revoked, the
-						 * building block shall run the Revocation Freshness
-						 * Checker with the used revocation information status,
-						 * the certificate for which the revocation status is
-						 * being checked and the control-time. If it returns
-						 * FAILED, the building block shall set control-time to
-						 * the issuance time of the revocation status
-						 * information.
-						 * 
-						 * Otherwise, the building block shall not change the
-						 * value of control-time.
-						 */
-						// TODO correct ??
-						if (certificate.isRevoked()) {
-							controlTime = revocationData.getRevocationDate();
-						} else if (!isFresh(revocationData, controlTime)) {
-							controlTime = revocationData.getProductionDate();
-						}
-
-						/*
-						 * d) The building block shall apply the cryptographic
-						 * constraints to the certificate and the revocation
-						 * status information against the control-time. If the
-						 * certificate (or the revocation status information)
-						 * does not match these constraints, the building block
-						 * shall set control-time to the lowest time up to which
-						 * the listed algorithms were considered reliable.
-						 */
-						// TODO crypto check
-
+					if (certificate.isRevoked()) {
+						controlTime = revocationData.getRevocationDate();
+					} else if (!isFresh(revocationData, controlTime)) {
+						controlTime = revocationData.getProductionDate();
 					}
 				}
+
+				/*
+				 * d) The building block shall apply the cryptographic
+				 * constraints to the certificate and the revocation
+				 * status information against the control-time. If the
+				 * certificate (or the revocation status information)
+				 * does not match these constraints, the building block
+				 * shall set control-time to the lowest time up to which
+				 * the listed algorithms were considered reliable.
+				 */
+				// TODO crypto check
+
 			}
 		}
 	}
@@ -181,12 +182,20 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		return execute != null && execute.getConclusion() != null && Indication.PASSED.equals(execute.getConclusion().getIndication());
 	}
 
-	private ChainItem<XmlVTS> revocationDataExists(CertificateWrapper certificate) {
-		return new RevocationDataExistsCheck(result, certificate, getFailLevelConstraint());
+	private ChainItem<XmlVTS> revocationDataExists(RevocationWrapper revocationData) {
+		return new RevocationDataExistsCheck(result, revocationData, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(String id, Date controlTime) {
-		return new POEExistsAtOrBeforeControlTimeCheck(result, id, controlTime, poe, getFailLevelConstraint());
+	private ChainItem<XmlVTS> revocationDataConsistant(CertificateWrapper certificate) {
+		return new RevocationDataConsistant(result, certificate, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlVTS> issuanceDateBeforeControlTime(RevocationWrapper revocationData) {
+		return new IssuanceDateBeforeControlTime(result, revocationData, controlTime, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampReferenceCategory referenceCategory, Date controlTime) {
+		return new POEExistsAtOrBeforeControlTimeCheck(result, token, referenceCategory, controlTime, poe, getFailLevelConstraint());
 	}
 
 }

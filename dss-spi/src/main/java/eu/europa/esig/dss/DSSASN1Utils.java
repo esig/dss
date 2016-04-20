@@ -436,7 +436,7 @@ public final class DSSASN1Utils {
 	 * @return a IssuerSerial
 	 */
 	public static IssuerSerial getIssuerSerial(final CertificateToken certToken) {
-		final X500Name issuerX500Name = DSSUtils.getX509CertificateHolder(certToken).getIssuer();
+		final X500Name issuerX500Name = getX509CertificateHolder(certToken).getIssuer();
 		final GeneralName generalName = new GeneralName(issuerX500Name);
 		final GeneralNames generalNames = new GeneralNames(generalName);
 		final BigInteger serialNumber = certToken.getCertificate().getSerialNumber();

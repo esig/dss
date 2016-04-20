@@ -49,9 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -183,12 +181,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * an input provided by the DA then getSigningCer MUST be called.
 	 */
 	private CertificateValidity signingCertificateValidity;
-
-	/**
-	 * This list represents all digest algorithms used to calculate the digest
-	 * values of certificates.
-	 */
-	private Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
 
 	/**
 	 * This id identifies the signature, it is calculated on the signing time if
@@ -893,7 +885,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<TimestampToken> getSignatureTimestamps() throws RuntimeException {
+	public List<TimestampToken> getSignatureTimestamps() {
 
 		if (signatureTimestamps == null) {
 			makeTimestampTokens();
@@ -960,9 +952,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			case ARCHIVE_TIMESTAMP:
 				final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
 				for (final String timestampId : timestampedTimestamps) {
-
-					final TimestampReference timestampReference = new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP);
-					archiveReferences.add(timestampReference);
+					archiveReferences.add(new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP));
 				}
 				archiveReferences.addAll(getTimestampedReferences());
 				timestampToken.setTimestampedReferences(archiveReferences);
@@ -1087,7 +1077,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private TimestampReference createCertificateTimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] certHash) {
-		final TimestampReference reference = new TimestampReference(digestAlgorithm.getXmlId(), Base64.encodeBase64String(certHash));
+		final TimestampReference reference = new TimestampReference(digestAlgorithm, Base64.encodeBase64String(certHash));
 		return reference;
 	}
 
@@ -1358,7 +1348,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			final OtherCertID otherCertId = OtherCertID.getInstance(completeCertificateRefs.getObjectAt(i));
 			final CertificateRef certId = new CertificateRef();
-			certId.setDigestAlgorithm(otherCertId.getAlgorithmHash().getAlgorithm().getId());
+			certId.setDigestAlgorithm(DigestAlgorithm.forOID(otherCertId.getAlgorithmHash().getAlgorithm().getId()));
 			certId.setDigestValue(otherCertId.getCertHash());
 
 			final IssuerSerial issuer = otherCertId.getIssuerSerial();
@@ -1758,38 +1748,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		for (final CertificateRef certificateRef : certRefs) {
 
 			final String digestValue = Base64.encodeBase64String(certificateRef.getDigestValue());
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(certificateRef.getDigestAlgorithm());
+			final DigestAlgorithm digestAlgorithm = certificateRef.getDigestAlgorithm();
 			usedCertificatesDigestAlgorithms.add(digestAlgorithm);
-			final TimestampReference reference = new TimestampReference(digestAlgorithm.name(), digestValue);
+			final TimestampReference reference = new TimestampReference(digestAlgorithm, digestValue);
 			references.add(reference);
 		}
 
-		final List<OCSPRef> ocspRefs = getOCSPRefs();
-		for (final OCSPRef ocspRef : ocspRefs) {
+		addReferencesFromOfflineCRLSource(references);
+		addReferencesFromOfflineOCSPSource(references);
 
-			final DigestAlgorithm digestAlgorithm = ocspRef.getDigestAlgorithm();
-			if (digestAlgorithm == null) { // -444
-				continue;
-			}
-			final String digestValue = Base64.encodeBase64String(ocspRef.getDigestValue());
-			TimestampReference reference = new TimestampReference(digestAlgorithm.getName(), digestValue, TimestampReferenceCategory.REVOCATION);
-			references.add(reference);
-		}
-
-		final List<CRLRef> crlRefs = getCRLRefs();
-		for (final CRLRef crlRef : crlRefs) {
-
-			final String digestValue = Base64.encodeBase64String(crlRef.getDigestValue());
-			TimestampReference reference = new TimestampReference(crlRef.getDigestAlgorithm().getName(), digestValue, TimestampReferenceCategory.REVOCATION);
-			references.add(reference);
-		}
 		return references;
-	}
-
-	@Override
-	public Set<DigestAlgorithm> getUsedCertificatesDigestAlgorithms() {
-
-		return usedCertificatesDigestAlgorithms;
 	}
 
 	@Override

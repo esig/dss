@@ -219,7 +219,7 @@ public final class DSSRevocationUtils {
 		try {
 			final BigInteger serialNumber = cert.getSerialNumber();
 			final DigestCalculator digestCalculator = getSHA1DigestCalculator();
-			final X509CertificateHolder x509CertificateHolder = DSSUtils.getX509CertificateHolder(issuerCert);
+			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(issuerCert);
 			final CertificateID certificateID = new CertificateID(digestCalculator, x509CertificateHolder, serialNumber);
 			return certificateID;
 		} catch (OCSPException e) {

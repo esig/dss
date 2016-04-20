@@ -121,16 +121,20 @@
 		                                        <dl class="dl-horizontal">
 		                                            <dt>Name :</dt>
 		                                            <dd><c:out value="${service.name}"/></dd>
-		                                            <dt>Status :</dt>
-		                                            <dd><a href="<c:out value="${service.status}" />"><c:out value="${service.status}"/></a></dd>
 		                                            <dt>Type :</dt>
 		                                            <dd><a href="<c:out value="${service.type}" />"><c:out value="${service.type}" /></a></dd>
-		                                            <dt>Start date :</dt>
-		                                            <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${service.startDate}" /></dd>
-		                                            <c:if test="${service.endDate !=null}">
-		                                                <dt>End date :</dt>
-		                                                <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${service.endDate}" /></dd>
-		                                            </c:if>
+		                                            
+		                                   			<c:forEach var="serviceStatus" items="${service.status}">
+		                                   				<br />
+			                                            <dt>Status :</dt>
+			                                            <dd><a href="<c:out value="${serviceStatus.status}" />"><c:out value="${serviceStatus.status}"/></a></dd>
+			                                            <dt>Start date :</dt>
+			                                            <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${serviceStatus.startDate}" /></dd>
+			                                            <c:if test="${serviceStatus.endDate !=null}">
+			                                                <dt>End date :</dt>
+			                                                <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${serviceStatus.endDate}" /></dd>
+			                                            </c:if>
+													</c:forEach>
 		                                        </dl>
 		                                        
 		                                        <c:if test="${not empty service.certificates}">
@@ -152,23 +156,6 @@
 		                                                            <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${token.certificate.notBefore}" /></dd>
 		                                                            <dt><spring:message code="label.validity_end" /></dt>
 		                                                            <dd><fmt:formatDate pattern="dd/MM/yyyy HH:mm:ss" value="${token.certificate.notAfter}" /></dd>
-		                                                        </dl>
-		                                                    </c:forEach>
-		                                                </div>
-		                                            </div>
-		                                        </c:if>
-		                                        
-		                                        <c:if test="${not empty service.x500Principals}">
-		                                            <div class="panel panel-default">
-		                                                <div class="panel-heading" data-toggle="collapse" data-target="#countryx500Principals${countryCode}${sp.index}-${ser.index}">
-		                                                    <span class="badge pull-right">${fn:length(service.x500Principals)}</span>
-		                                                    <h3 class="panel-title">X509 Subject Names</h3>
-		                                                </div>
-		                                                <div class="panel-body collapse in" id="countryx500Principals${countryCode}${sp.index}-${ser.index}">
-		                                                    <c:forEach var="x500" items="${service.x500Principals}">
-		                                                        <dl class="dl-horizontal">
-		                                                            <dt><spring:message code="label.service" /> :</dt>
-		                                                            <dd><c:out value="${x500.name}" /></dd>
 		                                                        </dl>
 		                                                    </c:forEach>
 		                                                </div>
