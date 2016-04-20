@@ -83,15 +83,15 @@ public final class DefaultTrustManager implements X509TrustManager {
 	private void initTrustManager(final KeyStore keystore) throws GeneralSecurityException, IOException {
 
 		// initialize a new TMF with the ts we just loaded
-		final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 		tmf.init(keystore);
 
 		// acquire X509 trust manager from factory
-		final TrustManager[] tms = tmf.getTrustManagers();
+		TrustManager[] tms = tmf.getTrustManagers();
 
 		for (final TrustManager tm : tms) {
 			if (tm instanceof X509TrustManager) {
-				this.trustManager = (X509TrustManager) tm;
+				trustManager = (X509TrustManager) tm;
 				return;
 			}
 		}
@@ -106,7 +106,7 @@ public final class DefaultTrustManager implements X509TrustManager {
 	 */
 	@Override
 	public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
-		this.trustManager.checkClientTrusted(chain, authType);
+		trustManager.checkClientTrusted(chain, authType);
 	}
 
 	/*
@@ -116,7 +116,7 @@ public final class DefaultTrustManager implements X509TrustManager {
 	 */
 	@Override
 	public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
-		this.trustManager.checkServerTrusted(chain, authType);
+		trustManager.checkServerTrusted(chain, authType);
 	}
 
 	/*
@@ -126,7 +126,7 @@ public final class DefaultTrustManager implements X509TrustManager {
 	 */
 	@Override
 	public X509Certificate[] getAcceptedIssuers() {
-		return this.trustManager.getAcceptedIssuers();
+		return trustManager.getAcceptedIssuers();
 	}
 
 }

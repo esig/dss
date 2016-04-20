@@ -69,7 +69,7 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 */
 	@Override
 	public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
-		return this.keyManager.chooseClientAlias(keyType, issuers, socket);
+		return keyManager.chooseClientAlias(keyType, issuers, socket);
 	}
 
 	/*
@@ -79,7 +79,7 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 */
 	@Override
 	public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
-		return this.keyManager.chooseServerAlias(keyType, issuers, socket);
+		return keyManager.chooseServerAlias(keyType, issuers, socket);
 
 	}
 
@@ -90,7 +90,7 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 */
 	@Override
 	public X509Certificate[] getCertificateChain(final String alias) {
-		return this.keyManager.getCertificateChain(alias);
+		return keyManager.getCertificateChain(alias);
 
 	}
 
@@ -101,7 +101,7 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 */
 	@Override
 	public String[] getClientAliases(final String keyType, final Principal[] issuers) {
-		return this.keyManager.getClientAliases(keyType, issuers);
+		return keyManager.getClientAliases(keyType, issuers);
 
 	}
 
@@ -112,7 +112,7 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 */
 	@Override
 	public PrivateKey getPrivateKey(final String alias) {
-		return this.keyManager.getPrivateKey(alias);
+		return keyManager.getPrivateKey(alias);
 	}
 
 	/*
@@ -122,7 +122,7 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 */
 	@Override
 	public String[] getServerAliases(final String keyType, final Principal[] issuers) {
-		return this.keyManager.getServerAliases(keyType, issuers);
+		return keyManager.getServerAliases(keyType, issuers);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public final class DefaultKeyManager implements X509KeyManager {
 
 		for (final KeyManager km : kms) {
 			if (km instanceof X509KeyManager) {
-				this.keyManager = (X509KeyManager) km;
+				keyManager = (X509KeyManager) km;
 				return;
 			}
 		}
