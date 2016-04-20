@@ -16,6 +16,8 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509KeyManager;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Default Keys Manager.
  * 
@@ -24,8 +26,7 @@ import javax.net.ssl.X509KeyManager;
 public final class DefaultKeyManager implements X509KeyManager {
 
     /** KeyManager. */
-    private X509KeyManager keyManager; 
-   
+    private X509KeyManager keyManager;
 
     /**
      * Constructor.
@@ -40,6 +41,25 @@ public final class DefaultKeyManager implements X509KeyManager {
      */
     public DefaultKeyManager(final KeyStore keystore, final String ksPasswd) throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         super();
+        this.initKeyManager(keystore, ksPasswd);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param keystore The keystore
+     * @param ksPasswd Keystore's password
+     * @throws UnrecoverableKeyException Not recoverable key
+     * @throws KeyStoreException Keystore error
+     * @throws NoSuchAlgorithmException Algorithm not found
+     * @throws CertificateException Certificate error
+     * @throws IOException I/O Error
+     */
+    public DefaultKeyManager(final InputStream ksInputStream, final String ksPasswd) throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+        super();
+        // load keystore from specified cert store (or default)
+        final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keystore.load(ksInputStream, StringUtils.trimToEmpty(ksPasswd).toCharArray());
         this.initKeyManager(keystore, ksPasswd);
     }
 
@@ -125,6 +145,6 @@ public final class DefaultKeyManager implements X509KeyManager {
                 return;
             }
         }
-        throw new NoSuchAlgorithmException("No X509KeyManager in KeyManagerFactory"); 
+        throw new NoSuchAlgorithmException("No X509KeyManager in KeyManagerFactory");
     }
 }

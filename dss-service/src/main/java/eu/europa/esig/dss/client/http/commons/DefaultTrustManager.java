@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.client.http.commons;
 
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -12,7 +12,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Default trust manager.
@@ -21,12 +21,16 @@ import org.apache.log4j.Logger;
  */
 public final class DefaultTrustManager implements X509TrustManager {
 
-    /** Logger. */
-    private static final Logger LOGGER = Logger.getLogger(DefaultTrustManager.class);
-
     /** TrustStore. */
     private X509TrustManager trustManager;
 
+    /**
+     * @param keystore
+     * @throws KeyStoreException
+     * @throws IOException
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     */
     public DefaultTrustManager(final KeyStore keystore) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         super();
         // initialize a new TMF with the ts we just loaded
@@ -39,11 +43,57 @@ public final class DefaultTrustManager implements X509TrustManager {
         for (final TrustManager tm : tms) {
             if (tm instanceof X509TrustManager) {
                 this.trustManager = (X509TrustManager) tm;
-                DefaultTrustManager.LOGGER.debug(this.trustManager.toString());
                 return;
             }
         }
-        throw new NoSuchAlgorithmException("No X509TrustManager in TrustManagerFactory"); 
+        throw new NoSuchAlgorithmException("No X509TrustManager in TrustManagerFactory");
+    }
+
+    /**
+     * Constructeur.
+     * 
+     * @param tsInputStream stream vers le trustore
+     * @param tsPasswd Mot de passe du trustStore
+     * @throws KeyStoreException erreur de keystore
+     * @throws NoSuchAlgorithmException erreur d'algorithme non trouvé
+     * @throws CertificateException erreur de certificat
+     * @throws IOException erreur d'E/S
+     */
+    public DefaultTrustManager(final InputStream tsInputStream, final String tsPasswd) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+        super();
+
+        // load keystore from specified cert store (or default)
+        final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keystore.load(tsInputStream, StringUtils.trimToEmpty(tsPasswd).toCharArray());
+        this.initTrustManager(keystore);
+    }
+
+    /**
+     * Méthode de chargement du trustStore.
+     * 
+     * @param keystore truststore
+     * @throws KeyStoreException erreur de keystore
+     * @throws NoSuchAlgorithmException erreur d'algorithme non trouvé
+     * @throws CertificateException erreur de certificat
+     * @throws IOException erreur d'E/S
+     */
+    private void initTrustManager(final KeyStore keystore) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException { // NOPMD
+
+        // initialize a new TMF with the ts we just loaded
+        final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(keystore);
+
+        // acquire X509 trust manager from factory
+        final TrustManager[] tms = tmf.getTrustManagers();
+
+        for (final TrustManager tm : tms) {
+            if (tm instanceof X509TrustManager) {
+                this.trustManager = (X509TrustManager) tm;
+                return;
+            }
+        }
+
+        throw new NoSuchAlgorithmException("No X509TrustManager in TrustManagerFactory"); //$NON-NLS-1$
     }
 
     /*
@@ -51,7 +101,7 @@ public final class DefaultTrustManager implements X509TrustManager {
      * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String)
      */
     @Override
-    public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException { 
+    public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
         this.trustManager.checkClientTrusted(chain, authType);
     }
 
@@ -60,7 +110,7 @@ public final class DefaultTrustManager implements X509TrustManager {
      * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String)
      */
     @Override
-    public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException { 
+    public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
         this.trustManager.checkServerTrusted(chain, authType);
     }
 
@@ -69,9 +119,8 @@ public final class DefaultTrustManager implements X509TrustManager {
      * @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
      */
     @Override
-    public X509Certificate[] getAcceptedIssuers() { 
+    public X509Certificate[] getAcceptedIssuers() {
         return this.trustManager.getAcceptedIssuers();
     }
 
 }
-
