@@ -66,7 +66,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.cert.X509CRLHolder;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -765,20 +764,6 @@ public final class DSSUtils {
 		}
 		final byte[] digestValue = messageDigest.digest();
 		return digestValue;
-	}
-
-	/**
-	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code X509Certificate}.
-	 *
-	 * @param x509Certificate
-	 * @return a X509CertificateHolder holding this certificate
-	 */
-	public static X509CertificateHolder getX509CertificateHolder(final CertificateToken certToken) {
-		try {
-			return new X509CertificateHolder(certToken.getEncoded());
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**
