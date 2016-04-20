@@ -47,7 +47,7 @@ public final class DefaultKeyManager implements X509KeyManager {
     /**
      * Constructor.
      * 
-     * @param keystore The keystore
+     * @param ksInputStream The keystore
      * @param ksPasswd Keystore's password
      * @throws UnrecoverableKeyException Not recoverable key
      * @throws KeyStoreException Keystore error

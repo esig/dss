@@ -50,14 +50,14 @@ public final class DefaultTrustManager implements X509TrustManager {
     }
 
     /**
-     * Constructeur.
+     * Constructor.
      * 
-     * @param tsInputStream stream vers le trustore
-     * @param tsPasswd Mot de passe du trustStore
-     * @throws KeyStoreException erreur de keystore
-     * @throws NoSuchAlgorithmException erreur d'algorithme non trouvé
-     * @throws CertificateException erreur de certificat
-     * @throws IOException erreur d'E/S
+     * @param tsInputStream The truststore
+     * @param tsPasswd truststore password
+     * @throws KeyStoreException Keystore error
+     * @throws NoSuchAlgorithmException Algorithm not found
+     * @throws CertificateException Certificate error
+     * @throws IOException I/O Error
      */
     public DefaultTrustManager(final InputStream tsInputStream, final String tsPasswd) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         super();
@@ -69,13 +69,14 @@ public final class DefaultTrustManager implements X509TrustManager {
     }
 
     /**
-     * Méthode de chargement du trustStore.
+     * Loading the truststore.
      * 
      * @param keystore truststore
-     * @throws KeyStoreException erreur de keystore
-     * @throws NoSuchAlgorithmException erreur d'algorithme non trouvé
-     * @throws CertificateException erreur de certificat
-     * @throws IOException erreur d'E/S
+     * @throws KeyStoreException error
+     * @throws KeyStoreException Keystore error
+     * @throws NoSuchAlgorithmException Algorithm not found
+     * @throws CertificateException Certificate error
+     * @throws IOException I/O Error
      */
     private void initTrustManager(final KeyStore keystore) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException { // NOPMD
 
