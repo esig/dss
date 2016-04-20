@@ -143,6 +143,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	/** Path to the truststore. */
 	private String sslTruststorePath;
+	/** Trust store's type */
+	private String sslTruststoreType = KeyStore.getDefaultType();
 	/** Truststore's password. */
 	private String sslTruststorePassword = StringUtils.EMPTY;
 
@@ -184,33 +186,30 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		return socketFactoryRegistryBuilder.register("http", PlainConnectionSocketFactory.getSocketFactory());
 	}
 
-	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder)
-			throws DSSException {
+	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(
+			final RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) throws DSSException {
 		FileInputStream fis = null;
 		FileInputStream trustStoreIs = null;
 		try {
 
 			SSLContext sslContext = null;
-			if (StringUtils.isEmpty(this.sslKeystorePath)) {
-				CommonsDataLoader.LOG.debug("Use default SSL configuration");
+			if (StringUtils.isEmpty(sslKeystorePath)) {
+				LOG.debug("Use default SSL configuration");
 				sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
+				sslContext.init(new KeyManager[0], new TrustManager[] { new AcceptAllTrustManager() }, new SecureRandom());
 				SSLContext.setDefault(sslContext);
 			} else {
-
-				CommonsDataLoader.LOG.debug("Utilisation des infos keystore / truststore fournies");
-				fis = new FileInputStream(new File(this.sslKeystorePath));
-
-				trustStoreIs = new FileInputStream(new File(this.sslTruststorePath));
+				LOG.debug("Use provided info for SSL");
+				fis = new FileInputStream(new File(sslKeystorePath));
+				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
 
 				sslContext = SSLContext.getInstance("TLS");
-				final DefaultKeyManager dkm = new DefaultKeyManager(fis, this.sslKeystorePassword);
-
-				sslContext.init(new KeyManager[] { dkm }, new TrustManager[] { new DefaultTrustManager(trustStoreIs, this.sslTruststorePassword) }, null);
-
+				DefaultKeyManager dkm = new DefaultKeyManager(fis, sslKeystoreType, sslKeystorePassword);
+				sslContext.init(new KeyManager[] { dkm },
+						new TrustManager[] { new DefaultTrustManager(trustStoreIs, sslTruststoreType, sslTruststorePassword) }, null);
 			}
 
-			final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
+			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
 		} catch (final Exception e) {
 			throw new DSSException(e);
@@ -783,28 +782,16 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		this.sslKeystorePassword = sslKeystorePassword;
 	}
 
-	public String getSslTruststorePath() {
-		return this.sslTruststorePath;
-	}
-
 	public void setSslTruststorePath(final String sslTruststorePath) {
 		this.sslTruststorePath = sslTruststorePath;
 	}
 
-	public String getSslKeystorePath() {
-		return this.sslKeystorePath;
-	}
-
-	public String getSslKeystoreType() {
-		return this.sslKeystoreType;
-	}
-
-	public String getSslTruststorePassword() {
-		return this.sslTruststorePassword;
-	}
-
 	public void setSslTruststorePassword(final String sslTruststorePassword) {
 		this.sslTruststorePassword = sslTruststorePassword;
+	}
+
+	public void setSslTruststoreType(String sslTruststoreType) {
+		this.sslTruststoreType = sslTruststoreType;
 	}
 
 	/**

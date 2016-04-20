@@ -1,14 +1,13 @@
 package eu.europa.esig.dss.client.http.commons;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.KeyManager;
@@ -32,20 +31,33 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 *            The keystore
 	 * @param ksPasswd
 	 *            Keystore's password
-	 * @throws UnrecoverableKeyException
-	 *             Not recoverable key
-	 * @throws KeyStoreException
-	 *             Keystore error
-	 * @throws NoSuchAlgorithmException
-	 *             Algorithm not found
-	 * @throws CertificateException
-	 *             Certificate error
+	 * @throws GeneralSecurityException
+	 *             Certificate/Keystore/Algorithm/... exception
 	 * @throws IOException
 	 *             I/O Error
 	 */
-	public DefaultKeyManager(final KeyStore keystore, final String ksPasswd)
-			throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
-		super();
+	public DefaultKeyManager(KeyStore keystore, String ksPasswd) throws GeneralSecurityException, IOException {
+		this.initKeyManager(keystore, ksPasswd);
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param ksInputStream
+	 *            The keystore
+	 * @param keyStoreType
+	 *            The keystore type
+	 * @param ksPasswd
+	 *            Keystore's password
+	 * @throws GeneralSecurityException
+	 *             Certificate/Keystore/Algorithm/... exception
+	 * @throws IOException
+	 *             I/O Error
+	 */
+	public DefaultKeyManager(InputStream ksInputStream, String keyStoreType, String ksPasswd) throws GeneralSecurityException, IOException {
+		// load keystore from specified cert store (or default)
+		final KeyStore keystore = KeyStore.getInstance(keyStoreType);
+		keystore.load(ksInputStream, ksPasswd.toCharArray());
 		this.initKeyManager(keystore, ksPasswd);
 	}
 
@@ -120,25 +132,18 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 *            the keystore to load
 	 * @param ksPasswd
 	 *            keystore's password
-	 * @throws UnrecoverableKeyException
-	 *             Not recoverable key
-	 * @throws KeyStoreException
-	 *             Keystore error
-	 * @throws NoSuchAlgorithmException
-	 *             Algorithm not found
-	 * @throws CertificateException
-	 *             Certificate error
+	 * @throws GeneralSecurityException
+	 *             Certificate/Keystore/Algorithm/... exception
 	 * @throws IOException
 	 *             I/O Error
 	 */
-	private void initKeyManager(final KeyStore keystore, final String ksPasswd)
-			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException { // NOPMD
+	private void initKeyManager(KeyStore keystore, String ksPasswd) throws GeneralSecurityException, IOException {
 		// initialize a new KMF with the ts we just loaded
-		final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 		kmf.init(keystore, ksPasswd.toCharArray());
 
 		// acquire X509 key manager from factory
-		final KeyManager[] kms = kmf.getKeyManagers();
+		KeyManager[] kms = kmf.getKeyManagers();
 
 		for (final KeyManager km : kms) {
 			if (km instanceof X509KeyManager) {
@@ -148,4 +153,5 @@ public final class DefaultKeyManager implements X509KeyManager {
 		}
 		throw new NoSuchAlgorithmException("No X509KeyManager in KeyManagerFactory");
 	}
+
 }
