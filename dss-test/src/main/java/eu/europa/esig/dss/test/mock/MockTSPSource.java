@@ -104,7 +104,7 @@ public class MockTSPSource implements TSPSource {
 	 */
 	public MockTSPSource(final MockPrivateKeyEntry entry) throws DSSException {
 		this(entry.getPrivateKey(), entry.getCertificate(), true, null, "1.234.567.890");
-		LOG.debug("TSP mockup with certificate {}", cert.getDSSId());
+		LOG.debug("TSP mockup with certificate {}", cert.getDSSIdAsString());
 	}
 
 	@Override
