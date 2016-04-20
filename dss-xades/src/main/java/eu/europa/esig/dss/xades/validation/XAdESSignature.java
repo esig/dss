@@ -493,29 +493,33 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
 						if (issuerNameEl != null) {
 							final String textContent = issuerNameEl.getTextContent();
+
 							ASN1InputStream is = null;
-							ASN1Sequence seq = null;
+							GeneralName name = null;
+							ASN1Integer serial = null;
 							try {
 								is = new ASN1InputStream(Base64.decodeBase64(textContent));
-								seq = (ASN1Sequence) is.readObject();
+								ASN1Sequence seq = (ASN1Sequence) is.readObject();
+								ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
+								name = GeneralName.getInstance(obj.getObjectAt(0));
+								serial = (ASN1Integer) seq.getObjectAt(1);
 							} catch (IOException e) {
 								LOG.error("Unable to decode textContent " + textContent + " : " + e.getMessage(), e);
 							} finally {
 								IOUtils.closeQuietly(is);
 							}
 
-							ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
-							GeneralName name = GeneralName.getInstance(obj.getObjectAt(0));
-							ASN1Integer serial = (ASN1Integer) seq.getObjectAt(1);
-							issuerName = new X500Principal(name.getName().toString());
-							serialNumber = serial.getValue();
+							try {
+								issuerName = new X500Principal(name.getName().toASN1Primitive().getEncoded());
+							} catch (Exception e) {
+								LOG.error("Unable to decode X500Principal : " + e.getMessage(), e);
+							}
 
-							/*
-							 * IssuerAndSerialNumber issuerAndSerial = IssuerAndSerialNumber.getInstance(seq);
-							 * issuerName = new
-							 * X500Principal(issuerAndSerial.getName().toString()); serialNumber =
-							 * issuerAndSerial.getSerialNumber().getValue();
-							 */
+							try {
+								serialNumber = serial.getValue();
+							} catch (Exception e) {
+								LOG.error("Unable to decode serialNumber : " + e.getMessage(), e);
+							}
 
 						}
 					} else {
@@ -527,26 +531,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						final String textContent = issuerNameEl.getTextContent();
 
 						issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
+
+						final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
+						final String serialNumberText = serialNumberEl.getTextContent();
+						// serial number can contain leading and trailing whitespace.
+						serialNumber = new BigInteger(serialNumberText.trim());
 					}
 					final X500Principal candidateIssuerName = certificateToken.getIssuerX500Principal();
 
-					// final boolean issuerNameMatches =
-					// candidateIssuerName.equals(issuerName);
 					final boolean issuerNameMatches = DSSUtils.x500PrincipalAreEquals(candidateIssuerName, issuerName);
 					if (!issuerNameMatches) {
-
 						final String c14nCandidateIssuerName = candidateIssuerName.getName(X500Principal.CANONICAL);
 						LOG.info("candidateIssuerName: " + c14nCandidateIssuerName);
 						final String c14nIssuerName = issuerName == null ? "" : issuerName.getName(X500Principal.CANONICAL);
 						LOG.info("issuerName         : " + c14nIssuerName);
 					}
 
-					if (!isEn319132) {
-						final Element serialNumberEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
-						final String serialNumberText = serialNumberEl.getTextContent();
-						// serial number can contain leading and trailing whitespace.
-						serialNumber = new BigInteger(serialNumberText.trim());
-					}
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
 					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
 
@@ -560,7 +560,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					// method checkSignatureIntegrity cannot set the signing
 					// certificate.
 					if (candidates.getTheCertificateValidity() == null) {
-
 						candidates.setTheCertificateValidity(certificateValidity);
 					}
 					break;
