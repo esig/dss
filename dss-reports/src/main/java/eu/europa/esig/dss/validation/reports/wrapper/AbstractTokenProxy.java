@@ -75,7 +75,11 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public String getEncryptionAlgoUsedToSignThisToken() {
-		return getCurrentBasicSignature().getEncryptionAlgoUsedToSignThisToken();
+		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		if (basicSignature != null) {
+			return basicSignature.getEncryptionAlgoUsedToSignThisToken();
+		}
+		return StringUtils.EMPTY;
 	}
 
 	@Override
