@@ -294,6 +294,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 		final boolean asice = isAsice(asicParameters);
 		final boolean cadesForm = isCAdESForm(asicParameters);
+		final boolean xadesForm = isXAdESForm(asicParameters);
 
 		final String toSignDocumentName = toSignDocument.getName();
 
@@ -314,8 +315,12 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 		storesSignature(asicParameters, signature, zipOutputStream);
 
-		if (asice && cadesForm) {
-			storeAsicManifest(parameters, toSignDocument, zipOutputStream);
+		if (asice) {
+			if (cadesForm) {
+				storeAsicManifestCAdES(parameters, toSignDocument, zipOutputStream);
+			} else if (xadesForm) {
+				storeManifestXAdES(parameters, toSignDocument, zipOutputStream);
+			}
 		}
 		DSSUtils.close(zipOutputStream);
 
@@ -347,7 +352,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		IOUtils.closeQuietly(zipInputStream);
 	}
 
-	private void storeAsicManifest(ASiCSignatureParameters parameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
+	private void storeAsicManifestCAdES(ASiCSignatureParameters parameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
 
 		ASiCParameters asicParameters = parameters.aSiC();
 
@@ -360,10 +365,11 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		final ZipEntry entrySignature = new ZipEntry(asicManifestZipEntryName);
 		createZipEntry(outZip, entrySignature);
 
-		buildAsicManifest(parameters, detachedDocument, outZip);
+		buildAsicManifestCAdES(parameters, detachedDocument, outZip);
 	}
 
-	private void buildAsicManifest(final ASiCSignatureParameters underlyingParameters, final DSSDocument detachedDocument, final OutputStream outputStream) {
+	private void buildAsicManifestCAdES(final ASiCSignatureParameters underlyingParameters, final DSSDocument detachedDocument,
+			final OutputStream outputStream) {
 
 		ASiCParameters asicParameters = underlyingParameters.aSiC();
 
@@ -392,6 +398,41 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			final String base64Encoded = Base64.encodeBase64String(digest);
 			final Text textNode = documentDom.createTextNode(base64Encoded);
 			digestValueDom.appendChild(textNode);
+
+			currentDetachedDocument = currentDetachedDocument.getNextDocument();
+		} while (currentDetachedDocument != null);
+
+		storeXmlDom(outputStream, documentDom);
+	}
+
+	private void storeManifestXAdES(ASiCSignatureParameters parameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
+		final String asicManifestZipEntryName = META_INF + "manifest.xml";
+		final ZipEntry entrySignature = new ZipEntry(asicManifestZipEntryName);
+		createZipEntry(outZip, entrySignature);
+
+		buildAsicManifestXAdES(parameters, detachedDocument, outZip);
+	}
+
+	// <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+	// <manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0">>
+	// <manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.etsi.asic-e+zip"/>
+	// <manifest:file-entry manifest:full-path="test.txt" manifest:media-type="text/plain"/>
+	// <manifest:file-entry manifest:full-path="test-data-file.bin" manifest:media-type="application/octet-stream"/>
+	// </manifest:manifest>
+	private void buildAsicManifestXAdES(ASiCSignatureParameters parameters, DSSDocument detachedDocument, OutputStream outputStream) {
+		final Document documentDom = DSSXMLUtils.buildDOM();
+		final Element manifestDom = documentDom.createElementNS(ASiCNamespaces.MANIFEST_NS, "manifest:manifest");
+		documentDom.appendChild(manifestDom);
+
+		final Element rootDom = DSSXMLUtils.addElement(documentDom, manifestDom, ASiCNamespaces.MANIFEST_NS, "manifest:file-entry");
+		rootDom.setAttribute("manifest:full-path", "/");
+		rootDom.setAttribute("manifest:media-type", MimeType.ASICE.getMimeTypeString());
+
+		DSSDocument currentDetachedDocument = detachedDocument;
+		do {
+			Element fileDom = DSSXMLUtils.addElement(documentDom, manifestDom, ASiCNamespaces.MANIFEST_NS, "manifest:file-entry");
+			fileDom.setAttribute("manifest:full-path", currentDetachedDocument.getName());
+			fileDom.setAttribute("manifest:media-type", currentDetachedDocument.getMimeType().getMimeTypeString());
 
 			currentDetachedDocument = currentDetachedDocument.getNextDocument();
 		} while (currentDetachedDocument != null);
@@ -468,7 +509,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			if (asice) {
 				if (cadesForm) {
 					final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-					buildAsicManifest(underlyingParameter, underlyingParameter.getDetachedContent(), outputStream);
+					buildAsicManifestCAdES(underlyingParameter, underlyingParameter.getDetachedContent(), outputStream);
 					contextToSignDocument = new InMemoryDocument(outputStream.toByteArray(), "AsicManifestXXX.xml", MimeType.XML);
 					// underlyingParameter.setDetachedContent(null);
 				} else {
@@ -485,7 +526,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		} else {
 			if (asice && cadesForm) {
 				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				buildAsicManifest(underlyingParameter, detachedDocument, outputStream);
+				buildAsicManifestCAdES(underlyingParameter, detachedDocument, outputStream);
 				contextToSignDocument = new InMemoryDocument(outputStream.toByteArray(), "AsicManifestXXX.xml", MimeType.XML);
 			} else {
 				underlyingParameter.setDetachedContent(contextToSignDocument);
