@@ -65,6 +65,10 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getRevocationDate();
 	}
 
+	public Date getExpiredCertsOnCRL() {
+		return revocation.getExpiredCertsOnCRL();
+	}
+
 	public String getSource() {
 		return revocation.getSource();
 	}

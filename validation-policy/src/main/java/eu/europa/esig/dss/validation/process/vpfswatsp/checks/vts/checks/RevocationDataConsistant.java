@@ -28,9 +28,15 @@ public class RevocationDataConsistant extends ChainItem<XmlVTS> {
 		Date certNotAfter = certificate.getNotAfter();
 		Date thisUpdate = revocationData.getThisUpdate();
 
-		// TODO specific data from CRL / OCSP
+		Date expiredCertsOnCRL = revocationData.getExpiredCertsOnCRL();
+		Date notAfterRevoc = thisUpdate;
+		if (expiredCertsOnCRL != null) {
+			notAfterRevoc = expiredCertsOnCRL;
+		}
 
-		return certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(thisUpdate) >= 0);
+		// TODO specific data from OCSP
+
+		return certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(notAfterRevoc) >= 0);
 	}
 
 	@Override

@@ -96,7 +96,7 @@ public final class DefaultTrustManager implements X509TrustManager {
 			}
 		}
 
-		throw new NoSuchAlgorithmException("No X509TrustManager in TrustManagerFactory"); //$NON-NLS-1$
+		throw new NoSuchAlgorithmException("No X509TrustManager in TrustManagerFactory");
 	}
 
 	/*

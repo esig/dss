@@ -30,6 +30,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotApplicableMethodException;
 import eu.europa.esig.dss.DSSRevocationUtils;
@@ -89,6 +90,8 @@ public class CRLToken extends RevocationToken {
 		this.thisUpdate = x509crl.getThisUpdate();
 		this.productionDate = x509crl.getThisUpdate(); // dates are equals in case of CRL
 		this.nextUpdate = x509crl.getNextUpdate();
+		this.expiredCertsOnCRL = DSSASN1Utils.getExpiredCertsOnCRL(x509crl);
+
 		issuerX500Principal = x509crl.getIssuerX500Principal();
 		this.extraInfo = new TokenValidationExtraInfo();
 

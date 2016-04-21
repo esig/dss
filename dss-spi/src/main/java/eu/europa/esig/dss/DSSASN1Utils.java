@@ -23,6 +23,7 @@ package eu.europa.esig.dss;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.CertificateParsingException;
+import java.security.cert.X509CRL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
@@ -38,6 +40,7 @@ import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -570,6 +573,23 @@ public final class DSSASN1Utils {
 		RDN[] rdns = x500Name.getRDNs(identifier);
 		if (rdns.length > 0) {
 			return rdns[0].getFirst().getValue().toString();
+		}
+		return null;
+	}
+
+	public static Date getExpiredCertsOnCRL(X509CRL x509crl) {
+		Set<String> nonCriticalExtensionOIDs = x509crl.getNonCriticalExtensionOIDs();
+		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(OID.id_ce_expiredCertsOnCRL.getId())) {
+			byte[] extensionValue = x509crl.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
+			if (ArrayUtils.isNotEmpty(extensionValue)) {
+				try {
+					ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(extensionValue);
+					ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
+					return generalTime.getDate();
+				} catch (Exception e) {
+					LOG.error("Unable to retrieve id_ce_expiredCertsOnCRL on CRL : " + e.getMessage(), e);
+				}
+			}
 		}
 		return null;
 	}
