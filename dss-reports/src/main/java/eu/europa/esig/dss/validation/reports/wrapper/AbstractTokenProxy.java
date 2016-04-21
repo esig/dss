@@ -44,27 +44,35 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public boolean isReferenceDataFound() {
-		return getCurrentBasicSignature().isReferenceDataFound();
+		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		return (basicSignature != null) && BooleanUtils.isTrue(basicSignature.isReferenceDataFound());
 	}
 
 	@Override
 	public boolean isReferenceDataIntact() {
-		return getCurrentBasicSignature().isReferenceDataIntact();
+		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		return (basicSignature != null) && BooleanUtils.isTrue(basicSignature.isReferenceDataIntact());
 	}
 
 	@Override
 	public boolean isSignatureIntact() {
-		return getCurrentBasicSignature().isSignatureIntact();
+		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		return (basicSignature != null) && BooleanUtils.isTrue(basicSignature.isSignatureIntact());
 	}
 
 	@Override
 	public boolean isSignatureValid() {
-		return getCurrentBasicSignature().isSignatureValid();
+		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		return (basicSignature != null) && BooleanUtils.isTrue(basicSignature.isSignatureValid());
 	}
 
 	@Override
 	public String getDigestAlgoUsedToSignThisToken() {
-		return getCurrentBasicSignature().getDigestAlgoUsedToSignThisToken();
+		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		if (basicSignature != null) {
+			return basicSignature.getDigestAlgoUsedToSignThisToken();
+		}
+		return StringUtils.EMPTY;
 	}
 
 	@Override
@@ -90,7 +98,11 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public String getKeyLengthUsedToSignThisToken() {
-		return getCurrentBasicSignature().getKeyLengthUsedToSignThisToken();
+		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		if (basicSignature != null) {
+			return basicSignature.getKeyLengthUsedToSignThisToken();
+		}
+		return StringUtils.EMPTY;
 	}
 
 	@Override
