@@ -199,7 +199,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private ASN1Sequence getVerifiedCertificatesHashIndex(TimestampToken timestampToken) throws DSSException {
 
 		final ASN1Sequence certHashes = getCertificatesHashIndex(timestampToken);
-		final ArrayList<DEROctetString> certHashesList = Collections.list(certHashes.getObjects());
+		final List<DEROctetString> certHashesList = new ArrayList<DEROctetString>();
+		if (certHashes != null) {
+			certHashesList.addAll(Collections.list(certHashes.getObjects()));
+		}
 
 		final List<CertificateToken> certificates = cadesSignature.getCertificatesWithinSignatureAndTimestamps();
 		for (final CertificateToken certificateToken : certificates) {
@@ -273,7 +276,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private ASN1Sequence getVerifiedCRLsHashIndex(TimestampToken timestampToken) throws DSSException {
 
 		final ASN1Sequence crlHashes = getCRLHashIndex(timestampToken);
-		final ArrayList<DEROctetString> crlHashesList = Collections.list(crlHashes.getObjects());
+		final List<DEROctetString> crlHashesList = new ArrayList<DEROctetString>();
+		if (crlHashes != null) {
+			crlHashesList.addAll(Collections.list(crlHashes.getObjects()));
+		}
 
 		final SignedData signedData = SignedData.getInstance(cadesSignature.getCmsSignedData().toASN1Structure().getContent());
 		final ASN1Set signedDataCRLs = signedData.getCRLs();
@@ -296,7 +302,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		return crlHashes;
 	}
 
-	private void handleRevocationEncoded(ArrayList<DEROctetString> crlHashesList, byte[] ocspHolderEncoded) {
+	private void handleRevocationEncoded(List<DEROctetString> crlHashesList, byte[] ocspHolderEncoded) {
 
 		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, ocspHolderEncoded);
 		final DEROctetString derOctetStringDigest = new DEROctetString(digest);
@@ -367,9 +373,11 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	@SuppressWarnings("unchecked")
 	private ASN1Sequence getVerifiedUnsignedAttributesHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) throws DSSException {
-
 		final ASN1Sequence unsignedAttributesHashes = getUnsignedAttributesHashIndex(timestampToken);
-		final ArrayList<DEROctetString> timestampUnsignedAttributesHashesList = Collections.list(unsignedAttributesHashes.getObjects());
+		final List<DEROctetString> timestampUnsignedAttributesHashesList = new ArrayList<DEROctetString>();
+		if (unsignedAttributesHashes != null) {
+			timestampUnsignedAttributesHashesList.addAll(Collections.list(unsignedAttributesHashes.getObjects()));
+		}
 
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
@@ -409,11 +417,14 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	private ASN1Sequence getUnsignedAttributesHashIndex(TimestampToken timestampToken) {
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
-		int unsignedAttributesIndex = 2;
-		if (timestampAttributeAtsHashIndexValue.size() > 3) {
-			unsignedAttributesIndex++;
+		if (timestampAttributeAtsHashIndexValue != null) {
+			int unsignedAttributesIndex = 2;
+			if (timestampAttributeAtsHashIndexValue.size() > 3) {
+				unsignedAttributesIndex++;
+			}
+			return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(unsignedAttributesIndex).toASN1Primitive();
 		}
-		return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(unsignedAttributesIndex).toASN1Primitive();
+		return null;
 	}
 
 	/**
@@ -424,11 +435,14 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	private ASN1Sequence getCRLHashIndex(TimestampToken timestampToken) {
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
-		int crlIndex = 1;
-		if (timestampAttributeAtsHashIndexValue.size() > 3) {
-			crlIndex++;
+		if (timestampAttributeAtsHashIndexValue != null) {
+			int crlIndex = 1;
+			if (timestampAttributeAtsHashIndexValue.size() > 3) {
+				crlIndex++;
+			}
+			return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(crlIndex).toASN1Primitive();
 		}
-		return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(crlIndex).toASN1Primitive();
+		return null;
 	}
 
 	/**
@@ -438,13 +452,15 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return
 	 */
 	private ASN1Sequence getCertificatesHashIndex(TimestampToken timestampToken) {
-
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
-		int certificateIndex = 0;
-		if (timestampAttributeAtsHashIndexValue.size() > 3) {
-			certificateIndex++;
+		if (timestampAttributeAtsHashIndexValue != null) {
+			int certificateIndex = 0;
+			if (timestampAttributeAtsHashIndexValue.size() > 3) {
+				certificateIndex++;
+			}
+			return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(certificateIndex).toASN1Primitive();
 		}
-		return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(certificateIndex).toASN1Primitive();
+		return null;
 	}
 
 	/**
@@ -456,7 +472,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private AlgorithmIdentifier getAlgorithmIdentifier(final TimestampToken timestampToken) {
 
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
-		if (timestampAttributeAtsHashIndexValue.size() > 3) {
+		if (timestampAttributeAtsHashIndexValue != null && timestampAttributeAtsHashIndexValue.size() > 3) {
 
 			final int algorithmIndex = 0;
 			final ASN1Encodable asn1Encodable = timestampAttributeAtsHashIndexValue.getObjectAt(algorithmIndex);
@@ -487,8 +503,13 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private ASN1Sequence getAtsHashIndex(TimestampToken timestampToken) {
 		final AttributeTable timestampTokenUnsignedAttributes = timestampToken.getUnsignedAttributes();
 		final Attribute atsHashIndexAttribute = timestampTokenUnsignedAttributes.get(id_aa_ATSHashIndex);
-		final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
-		return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
+		if (atsHashIndexAttribute != null) {
+			final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
+			if (attrValues != null && attrValues.size() > 0) {
+				return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
+			}
+		}
+		return null;
 	}
 
 	private AlgorithmIdentifier getHashIndexDigestAlgorithmIdentifier() {

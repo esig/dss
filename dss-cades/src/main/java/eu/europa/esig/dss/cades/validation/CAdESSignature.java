@@ -1285,7 +1285,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentHints() {
-
 		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
 		if (signedAttributes == null) {
 			return null;
@@ -1296,9 +1295,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		final ASN1Encodable asn1Encodable = contentHintAttribute.getAttrValues().getObjectAt(0);
 		final ContentHints contentHints = ContentHints.getInstance(asn1Encodable);
-		final String contentHintsContentType = contentHints.getContentType().toString();
-		final String contentHintsContentDescription = contentHints.getContentDescription().getString();
-		final String contentHint = contentHintsContentType + " [" + contentHintsContentDescription + "]";
+		String contentHint = null;
+		if (contentHints != null) {
+			// content-type is mandatory
+			contentHint = contentHints.getContentType().toString();
+			// content-description is optional
+			if (contentHints.getContentDescription() != null) {
+				contentHint += " [" + contentHints.getContentDescription().toString() + "]";
+			}
+		}
 		return contentHint;
 	}
 
