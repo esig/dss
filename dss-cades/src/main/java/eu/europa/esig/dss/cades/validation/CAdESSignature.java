@@ -108,15 +108,12 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataParser;
-import org.bouncycastle.cms.CMSSignerDigestMismatchException;
 import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.CMSTypedStream;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.RuntimeOperatorException;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
@@ -1158,37 +1155,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					signatureCryptographicVerification.setReferenceDataIntact(signatureIntact);
 					signatureCryptographicVerification.setSignatureIntact(signatureIntact);
 
-				} catch (RuntimeOperatorException e) {
-
-					// Bob: This is a compatibility issue with Java 7. The
-					// implementation of the sun.security.rsa.RSASignature class
-					// has changed
-					// between version 6 and 7. Bouncy castle does not properly
-					// take into account the change. Indeed, an exception is
-					// thrown by
-					// version 7 that BC does not properly catch resulting by
-					// raising an exception
-					// org.bouncycastle.operator.RuntimeOperatorException.
-					LOG.warn(e.getMessage(), e);
-				} catch (CMSSignerDigestMismatchException e) {
-					LOG.error(e.getMessage(), e);
+				} catch (Exception e) {
+					LOG.error("Unable to validate CMS Signature : " + e.getMessage(), e);
 					signatureCryptographicVerification.setErrorMessage(e.getMessage());
-				} catch (OperatorCreationException e) {
-					LOG.error(e.getMessage(), e);
-					signatureCryptographicVerification.setErrorMessage(e.getMessage());
-				} catch (CMSException e) {
-					LOG.error(e.getMessage(), e);
-					signatureCryptographicVerification.setErrorMessage(e.getMessage());
-				} catch (IllegalArgumentException e) {
-					// Bob: Can arrive when for example:
-					// java.lang.IllegalArgumentException: Unknown signature
-					// type requested: RIPEMD160WITH0.4.0.127.0.7.1.1.4.1.6
-					// at
-					// org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder.generate(Unknown
-					// Source)
-					// ~[bcpkix-jdk15on-1.49.jar:1.49.0]
-					LOG.error(e.getMessage(), e);
-					signatureCryptographicVerification.setErrorMessage(e.getMessage());
+					signatureCryptographicVerification.setReferenceDataIntact(false);
+					signatureCryptographicVerification.setSignatureIntact(false);
 				}
 			}
 		} catch (CMSException e) {
@@ -1285,7 +1256,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentHints() {
-
 		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
 		if (signedAttributes == null) {
 			return null;
@@ -1296,9 +1266,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		final ASN1Encodable asn1Encodable = contentHintAttribute.getAttrValues().getObjectAt(0);
 		final ContentHints contentHints = ContentHints.getInstance(asn1Encodable);
-		final String contentHintsContentType = contentHints.getContentType().toString();
-		final String contentHintsContentDescription = contentHints.getContentDescription().getString();
-		final String contentHint = contentHintsContentType + " [" + contentHintsContentDescription + "]";
+		String contentHint = null;
+		if (contentHints != null) {
+			// content-type is mandatory
+			contentHint = contentHints.getContentType().toString();
+			// content-description is optional
+			if (contentHints.getContentDescription() != null) {
+				contentHint += " [" + contentHints.getContentDescription().toString() + "]";
+			}
+		}
 		return contentHint;
 	}
 

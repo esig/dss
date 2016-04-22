@@ -71,7 +71,6 @@ import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.auth.BasicScheme;
@@ -135,9 +134,19 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	private boolean updated;
 
+	/** Path to the keystore. */
 	private String sslKeystorePath;
+	/** Keystore's type. */
 	private String sslKeystoreType = KeyStore.getDefaultType();
+	/** Keystore's password. */
 	private String sslKeystorePassword = StringUtils.EMPTY;
+
+	/** Path to the truststore. */
+	private String sslTruststorePath;
+	/** Trust store's type */
+	private String sslTruststoreType = KeyStore.getDefaultType();
+	/** Truststore's password. */
+	private String sslTruststorePassword = StringUtils.EMPTY;
 
 	/**
 	 * The default constructor for CommonsDataLoader.
@@ -177,29 +186,36 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		return socketFactoryRegistryBuilder.register("http", PlainConnectionSocketFactory.getSocketFactory());
 	}
 
-	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder)
-			throws DSSException {
+	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(
+			final RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) throws DSSException {
+		FileInputStream fis = null;
+		FileInputStream trustStoreIs = null;
 		try {
 
 			SSLContext sslContext = null;
 			if (StringUtils.isEmpty(sslKeystorePath)) {
 				LOG.debug("Use default SSL configuration");
 				sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
+				sslContext.init(new KeyManager[0], new TrustManager[] { new AcceptAllTrustManager() }, new SecureRandom());
 				SSLContext.setDefault(sslContext);
 			} else {
-				LOG.debug("Use specific SSL configuration with keystore");
-				FileInputStream fis = new FileInputStream(new File(sslKeystorePath));
-				KeyStore keystore = KeyStore.getInstance(sslKeystoreType);
-				keystore.load(fis, sslKeystorePassword.toCharArray());
-				IOUtils.closeQuietly(fis);
-				sslContext = SSLContexts.custom().loadTrustMaterial(keystore).useTLS().build();
+				LOG.debug("Use provided info for SSL");
+				fis = new FileInputStream(new File(sslKeystorePath));
+				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
+
+				sslContext = SSLContext.getInstance("TLS");
+				DefaultKeyManager dkm = new DefaultKeyManager(fis, sslKeystoreType, sslKeystorePassword);
+				sslContext.init(new KeyManager[] { dkm },
+						new TrustManager[] { new DefaultTrustManager(trustStoreIs, sslTruststoreType, sslTruststorePassword) }, null);
 			}
 
-			final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
+			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new DSSException(e);
+		} finally {
+			IOUtils.closeQuietly(fis);
+			IOUtils.closeQuietly(trustStoreIs);
 		}
 	}
 
@@ -764,6 +780,18 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	public void setSslKeystorePassword(String sslKeystorePassword) {
 		this.sslKeystorePassword = sslKeystorePassword;
+	}
+
+	public void setSslTruststorePath(final String sslTruststorePath) {
+		this.sslTruststorePath = sslTruststorePath;
+	}
+
+	public void setSslTruststorePassword(final String sslTruststorePassword) {
+		this.sslTruststorePassword = sslTruststorePassword;
+	}
+
+	public void setSslTruststoreType(String sslTruststoreType) {
+		this.sslTruststoreType = sslTruststoreType;
 	}
 
 	/**

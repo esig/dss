@@ -61,6 +61,8 @@ public abstract class RevocationToken extends Token {
 	 */
 	protected Date revocationDate;
 
+	protected Date expiredCertsOnCRL;
+
 	/**
 	 * The reason of the revocation.
 	 */
@@ -116,6 +118,10 @@ public abstract class RevocationToken extends Token {
 	 */
 	public Date getRevocationDate() {
 		return revocationDate;
+	}
+
+	public Date getExpiredCertsOnCRL() {
+		return expiredCertsOnCRL;
 	}
 
 	/**
