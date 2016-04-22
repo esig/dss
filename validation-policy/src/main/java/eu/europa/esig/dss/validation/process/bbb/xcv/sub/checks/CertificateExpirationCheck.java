@@ -1,8 +1,11 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -28,6 +31,13 @@ public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 		boolean certificateValidity = (notBefore != null && (currentTime.compareTo(notBefore) >= 0))
 				&& (notAfter != null && (currentTime.compareTo(notAfter) <= 0));
 		return certificateValidity;
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		Object[] params = new Object[] { sdf.format(certificate.getNotBefore()), sdf.format(certificate.getNotAfter()) };
+		return MessageFormat.format(AdditionalInfo.CERTIFICATE_VALIDITY, params);
 	}
 
 	@Override

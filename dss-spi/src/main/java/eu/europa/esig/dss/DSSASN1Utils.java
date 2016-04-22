@@ -345,7 +345,7 @@ public final class DSSASN1Utils {
 		final List<String> extensionIdList = new ArrayList<String>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
 		if (qcStatement != null) {
-			final ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatement);
+			final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
 			// Sequence of QCStatement
 			for (int ii = 0; ii < seq.size(); ii++) {
 				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));

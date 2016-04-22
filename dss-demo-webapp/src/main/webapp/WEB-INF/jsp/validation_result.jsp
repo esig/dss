@@ -77,6 +77,8 @@
     
     $('.collapse').collapse();
     
+    $('[data-toggle="tooltip"]').tooltip();
+    
     function signatureFileNameChange() {
     	var select = document.getElementById("reportSelector");
     	var value = select.options[select.selectedIndex].value;

@@ -1,9 +1,12 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
+import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -33,6 +36,13 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 	@Override
 	protected boolean process() {
 		return poe.isPOEExists(token.getId(), controlTime);
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		Object[] params = new Object[] { sdf.format(controlTime) };
+		return MessageFormat.format(AdditionalInfo.CONTROL_TIME, params);
 	}
 
 	@Override
