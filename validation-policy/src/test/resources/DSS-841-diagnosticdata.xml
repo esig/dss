@@ -314,12 +314,9 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>true</QCC>
-                <QCSSCD>false</QCSSCD>
-            </QCStatement>
+            <QCStatementIds>
+                <oid>0.4.0.1862.1.1</oid>
+            </QCStatementIds>
             <TrustedServiceProvider>
                 <TSPName>eIdentity a.s.</TSPName>
                 <TSPServiceName>(23) ACAeID2 - issuing qualified certificates</TSPServiceName>
@@ -430,12 +427,6 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>false</QCC>
-                <QCSSCD>false</QCSSCD>
-            </QCStatement>
             <TrustedServiceProvider>
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>

@@ -96,12 +96,9 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>true</QCPPlus>
-            <QCC>true</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
+         <QCStatementIds>
+             <oid>0.4.0.1862.1.1</oid>
+         </QCStatementIds>
          <TrustedServiceProvider>
             <TSPName>A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</TSPName>
             <TSPServiceName>a-sign-Premium-Sig-02 (key no. 1)</TSPServiceName>

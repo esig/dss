@@ -40,10 +40,12 @@ import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
 import eu.europa.esig.dss.validation.AttributeValue;
+import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.policy.CertificateQualification;
+import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
+import eu.europa.esig.dss.validation.policy.ServiceQualification;
 import eu.europa.esig.dss.validation.policy.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.TLQualification;
-import eu.europa.esig.dss.validation.policy.TSLConstant;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -309,10 +311,10 @@ public class SimpleReportBuilder {
 
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
 		final CertificateQualification certQualification = new CertificateQualification();
-		certQualification.setQcp(certificate.isCertificateQCP());
-		certQualification.setQcpp(certificate.isCertificateQCPPlus());
-		certQualification.setQcc(certificate.isCertificateQCC());
-		certQualification.setQcsscd(certificate.isCertificateQCSSCD());
+		certQualification.setQcp(CertificatePolicyIdentifiers.isQCP(certificate));
+		certQualification.setQcpp(CertificatePolicyIdentifiers.isQCPPlus(certificate));
+		certQualification.setQcc(QCStatementPolicyIdentifiers.isQCCompliant(certificate));
+		certQualification.setQcsscd(QCStatementPolicyIdentifiers.isSupportedByQSCD(certificate));
 
 		final TLQualification trustedListQualification = new TLQualification();
 
@@ -320,35 +322,15 @@ public class SimpleReportBuilder {
 
 		final List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 
-		trustedListQualification.setCaqc(TSLConstant.CA_QC.equals(caqc));
-		trustedListQualification.setQcCNoSSCD(isQcNoSSCD(qualifiers));
-		trustedListQualification.setQcForLegalPerson(isQcForLegalPerson(qualifiers));
-		trustedListQualification.setQcSSCDAsInCert(isQcSscdStatusAsInCert(qualifiers));
-		trustedListQualification.setQcWithSSCD(isQcWithSSCD(qualifiers));
-		trustedListQualification.setQcStatement(isQcStatement(qualifiers));
+		trustedListQualification.setCaqc(ServiceQualification.CA_QC.equals(caqc));
+		trustedListQualification.setQcCNoSSCD(ServiceQualification.isQcNoSSCD(qualifiers));
+		trustedListQualification.setQcForLegalPerson(ServiceQualification.isQcForLegalPerson(qualifiers));
+		trustedListQualification.setQcSSCDAsInCert(ServiceQualification.isQcSscdStatusAsInCert(qualifiers));
+		trustedListQualification.setQcWithSSCD(ServiceQualification.isQcWithSSCD(qualifiers));
+		trustedListQualification.setQcStatement(ServiceQualification.isQcStatement(qualifiers));
 
 		final SignatureType signatureType = SignatureQualification.getSignatureType(certQualification, trustedListQualification);
 		return signatureType;
-	}
-
-	private boolean isQcStatement(List<String> qualifiers) {
-		return qualifiers.contains(TSLConstant.QC_STATEMENT) || qualifiers.contains(TSLConstant.QC_STATEMENT_119612);
-	}
-
-	private boolean isQcNoSSCD(final List<String> qualifiers) {
-		return qualifiers.contains(TSLConstant.QC_NO_SSCD) || qualifiers.contains(TSLConstant.QC_NO_SSCD_119612);
-	}
-
-	private boolean isQcForLegalPerson(final List<String> qualifiers) {
-		return qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON) || qualifiers.contains(TSLConstant.QC_FOR_LEGAL_PERSON_119612);
-	}
-
-	private boolean isQcSscdStatusAsInCert(final List<String> qualifiers) {
-		return qualifiers.contains(TSLConstant.QCSSCD_STATUS_AS_IN_CERT) || qualifiers.contains(TSLConstant.QCSSCD_STATUS_AS_IN_CERT_119612);
-	}
-
-	private boolean isQcWithSSCD(final List<String> qualifiers) {
-		return qualifiers.contains(TSLConstant.QC_WITH_SSCD) || qualifiers.contains(TSLConstant.QC_WITH_SSCD_119612);
 	}
 
 }

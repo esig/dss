@@ -13,7 +13,10 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChec
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToNaturalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateOnHoldCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQCStatementIdsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
@@ -96,11 +99,17 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(trustedServiceWithExpectedStatus(currentCertificate, subContext));
 
+		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQCStatementIds(currentCertificate, subContext));
+
 		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateSupportedBySSCD(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateIssuedToNaturalPerson(currentCertificate, subContext));
 
 		if (!isRevocationNoNeedCheck(currentCertificate)) {
 			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(currentCertificate.getRevocationData(), currentTime, context, subContext,
@@ -196,6 +205,16 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new TrustedServiceStatusCheck(result, certificate, constraint);
 	}
 
+	private ChainItem<XmlSubXCV> certificatePolicyIds(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificatePolicyIdsConstraint(context, subContext);
+		return new CertificatePolicyIdsCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateQCStatementIds(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateQCStatementIdsConstraint(context, subContext);
+		return new CertificateQCStatementIdsCheck(result, certificate, constraint);
+	}
+
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
 		return new CertificateCryptographicCheck(result, certificate, currentTime, cryptographicConstraint);
@@ -214,6 +233,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificateIssuedToLegalPerson(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateIssuedToLegalPersonConstraint(context, subContext);
 		return new CertificateIssuedToLegalPersonCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateIssuedToNaturalPerson(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateIssuedToNaturalPersonConstraint(context, subContext);
+		return new CertificateIssuedToNaturalPersonCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {

@@ -11,11 +11,11 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class CertificateIssuedToLegalPersonCheck extends ChainItem<XmlSubXCV> {
+public class CertificateIssuedToNaturalPersonCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public CertificateIssuedToLegalPersonCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public CertificateIssuedToNaturalPersonCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
 	}
@@ -24,22 +24,18 @@ public class CertificateIssuedToLegalPersonCheck extends ChainItem<XmlSubXCV> {
 	protected boolean process() {
 		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 
-		/**
-		 * Mandates the signer's certificate used in validating the signature to
-		 * be issued by a certificate authority issuing certificate as having
-		 * been issued to a legal person.
-		 */
-		return ServiceQualification.isQcForLegalPerson(qualifiers);
+		// TODO improve
+		return !ServiceQualification.isQcForLegalPerson(qualifiers);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_CMDCIITLP;
+		return MessageTag.BBB_XCV_CMDCIITNP;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_CMDCIITLP_ANS;
+		return MessageTag.BBB_XCV_CMDCIITNP_ANS;
 	}
 
 	@Override

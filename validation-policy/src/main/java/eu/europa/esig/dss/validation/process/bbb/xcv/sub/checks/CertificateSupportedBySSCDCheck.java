@@ -4,7 +4,9 @@ import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
-import eu.europa.esig.dss.validation.policy.TSLConstant;
+import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
+import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
+import eu.europa.esig.dss.validation.policy.ServiceQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -22,20 +24,12 @@ public class CertificateSupportedBySSCDCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected boolean process() {
-		/**
-		 * Mandates the end user certificate used in validating the signature to
-		 * be supported by a secure signature creation device (SSCD) as defined
-		 * in Directive 1999/93/EC [9]. This status is derived from: • QcSSCD
-		 * extension being set in the signer's certificate in accordance with
-		 * ETSI TS 101 862 [5];
-		 */
-		boolean qcSSCD = certificate.isCertificateQCSSCD();
 
-		/**
-		 * • QCP+ certificate policy OID being indicated in the signer's
-		 * certificate policies extension (i.e. 0.4.0.1456.1.1);
-		 */
-		boolean qcpPlus = certificate.isCertificateQCPPlus();
+		// checks in policy id extension
+		boolean policyIdSupportedByQSCD = CertificatePolicyIdentifiers.isSupportedByQSCD(certificate);
+
+		// checks in QC statement extension
+		boolean qcStatementSupportedByQSCD = QCStatementPolicyIdentifiers.isSupportedByQSCD(certificate);
 
 		/**
 		 * • The content of a Trusted service Status List;<br>
@@ -45,12 +39,9 @@ public class CertificateSupportedBySSCDCheck extends ChainItem<XmlSubXCV> {
 
 		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 
-		boolean sie = qualifiers.contains(TSLConstant.QC_WITH_SSCD) || qualifiers.contains(TSLConstant.QC_WITH_SSCD_119612);
-		// TODO To be clarified with Olivier D.
-		// || qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT) || qualifiers
-		// .contains(QCSSCD_STATUS_AS_IN_CERT_119612);
+		boolean sie = qualifiers.contains(ServiceQualification.QC_WITH_SSCD) || qualifiers.contains(ServiceQualification.QC_WITH_SSCD_119612);
 
-		if (!(qcSSCD || qcpPlus || sie)) {
+		if (!(policyIdSupportedByQSCD || qcStatementSupportedByQSCD || sie)) {
 			return false;
 		}
 		return true;

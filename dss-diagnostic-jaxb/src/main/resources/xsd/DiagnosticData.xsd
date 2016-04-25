@@ -138,16 +138,6 @@
 											</xs:complexType>
 										</xs:element>
 										
-										<xs:element name="QCStatement" minOccurs="0">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element type="xs:boolean" name="QCP" />
-													<xs:element type="xs:boolean" name="QCPPlus" />
-													<xs:element type="xs:boolean" name="QCC" />
-													<xs:element type="xs:boolean" name="QCSSCD" />
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
 										<xs:element type="TrustedServiceProviderType" name="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
 										<xs:element type="RevocationType" name="Revocation" minOccurs="0" />
 										<xs:element type="InfoType" name="Info" minOccurs="0" />

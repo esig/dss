@@ -113,8 +113,11 @@
 			<xs:element name="NotOnHold" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="TrustedServiceTypeIdentifier" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="TrustedServiceStatus" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="PolicyIds" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="QCStatementIds" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="Qualification" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="SupportedBySSCD" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="IssuedToNaturalPerson" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="IssuedToLegalPerson" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
 		</xs:sequence>

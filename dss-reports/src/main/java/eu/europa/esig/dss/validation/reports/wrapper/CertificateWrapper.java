@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -14,14 +15,14 @@ import org.apache.commons.lang.StringUtils;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicyIds;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlKeyUsageBits;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatementIds;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
-import eu.europa.esig.dss.validation.policy.TSLConstant;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 
@@ -89,26 +90,6 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public Date getNotAfter() {
 		return certificate.getNotAfter();
-	}
-
-	public boolean isCertificateQCP() {
-		XmlQCStatement qcStatement = certificate.getQCStatement();
-		return (qcStatement != null) && qcStatement.isQCP();
-	}
-
-	public boolean isCertificateQCPPlus() {
-		XmlQCStatement qcStatement = certificate.getQCStatement();
-		return (qcStatement != null) && qcStatement.isQCPPlus();
-	}
-
-	public boolean isCertificateQCC() {
-		XmlQCStatement qcStatement = certificate.getQCStatement();
-		return (qcStatement != null) && qcStatement.isQCC();
-	}
-
-	public boolean isCertificateQCSSCD() {
-		XmlQCStatement qcStatement = certificate.getQCStatement();
-		return (qcStatement != null) && qcStatement.isQCSSCD();
 	}
 
 	public List<String> getCertificateTSPServiceQualifiers() {
@@ -203,71 +184,6 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return pseudo == null ? StringUtils.EMPTY : pseudo;
 	}
 
-	/**
-	 * This method indicates if the certificate has QCWithSSCD qualification.
-	 *
-	 * @return true if QCWithSSCD qualification is present
-	 */
-	public boolean hasCertificateQCWithSSCDQualification() {
-		List<String> expectedQualifications = new ArrayList<String>();
-		expectedQualifications.add(TSLConstant.QC_WITH_SSCD);
-		expectedQualifications.add(TSLConstant.QC_WITH_SSCD_119612);
-		return hasQualification(expectedQualifications);
-	}
-
-	/**
-	 * This method indicates if the certificate has QCNoSSCD qualification.
-	 *
-	 * @return true if QCNoSSCD qualification is present
-	 */
-	public boolean hasCertificateQCNoSSCDQualification() {
-		List<String> expectedQualifications = new ArrayList<String>();
-		expectedQualifications.add(TSLConstant.QC_NO_SSCD);
-		expectedQualifications.add(TSLConstant.QC_NO_SSCD_119612);
-		return hasQualification(expectedQualifications);
-	}
-
-	/**
-	 * This method indicates if the certificate has QCSSCDStatusAsInCert qualification.
-	 *
-	 * @return true if QCSSCDStatusAsInCert qualification is present
-	 */
-	public boolean hasCertificateQCSSCDStatusAsInCertQualification() {
-		List<String> expectedQualifications = new ArrayList<String>();
-		expectedQualifications.add(TSLConstant.QCSSCD_STATUS_AS_IN_CERT);
-		expectedQualifications.add(TSLConstant.QCSSCD_STATUS_AS_IN_CERT_119612);
-		return hasQualification(expectedQualifications);
-	}
-
-	/**
-	 * This method indicates if the certificate has QCForLegalPerson qualification.
-	 *
-	 * @return true if QCForLegalPerson qualification is present
-	 */
-	public boolean hasCertificateQCForLegalPersonQualification() {
-		List<String> expectedQualifications = new ArrayList<String>();
-		expectedQualifications.add(TSLConstant.QC_FOR_LEGAL_PERSON);
-		expectedQualifications.add(TSLConstant.QC_FOR_LEGAL_PERSON_119612);
-		return hasQualification(expectedQualifications);
-	}
-
-	private boolean hasQualification(List<String> expectedQualifications) {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType xmlTrustedServiceProvider : trustedServiceProviders) {
-				XmlQualifiers qualifiers = xmlTrustedServiceProvider.getQualifiers();
-				if ((qualifiers != null) && CollectionUtils.isNotEmpty(qualifiers.getQualifier())) {
-					for (String qualifier : qualifiers.getQualifier()) {
-						if (expectedQualifications.contains(qualifier)) {
-							return true;
-						}
-					}
-				}
-			}
-		}
-		return false;
-	}
-
 	public boolean isCertificateRelatedTSLWellSigned() {
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
 		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
@@ -310,6 +226,24 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			}
 		}
 		return StringUtils.EMPTY;
+	}
+
+	public List<String> getPolicyIds() {
+		XmlCertificatePolicyIds certificatePolicyIds = certificate.getCertificatePolicyIds();
+		if (certificatePolicyIds != null) {
+			return certificatePolicyIds.getOid();
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
+	public List<String> getQCStatementIds() {
+		XmlQCStatementIds certificateQCStatementIds = certificate.getQCStatementIds();
+		if (certificateQCStatementIds != null) {
+			return certificateQCStatementIds.getOid();
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 }

@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
@@ -66,17 +65,6 @@ public class SignedDocumentValidatorTest {
 		method.setAccessible(true);
 		XmlCertificate cert = (XmlCertificate) method.invoke(sdv, new HashSet<Object>(), certificate);
 		assertNotNull(cert);
-
-		Method methodDealQCStatement = SignedDocumentValidator.class.getDeclaredMethod("dealQCStatement", CertificateToken.class, XmlCertificate.class);
-		methodDealQCStatement.setAccessible(true);
-		methodDealQCStatement.invoke(sdv, certificate, cert);
-
-		XmlQCStatement qcStatement = cert.getQCStatement();
-		assertNotNull(qcStatement);
-		assertFalse(qcStatement.isQCC());
-		assertFalse(qcStatement.isQCP());
-		assertFalse(qcStatement.isQCPPlus());
-		assertFalse(qcStatement.isQCSSCD());
 
 		Method methodDealTrustedService = SignedDocumentValidator.class.getDeclaredMethod("dealTrustedService", CertificateToken.class, XmlCertificate.class);
 		methodDealTrustedService.setAccessible(true);

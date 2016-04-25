@@ -67,43 +67,6 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_etsi_qcp_public_with_sscd = new ASN1ObjectIdentifier("0.4.0.1456.1.1");
 
 	/**
-	 * QCP-n: certificate policy for EU qualified certificates issued to natural persons;
-	 * Itu-t(0) identified-organization(4) etsi(0) qualified-certificate-policies(194112)
-	 * policy-identifiers(1) qcp-natural (0)
-	 */
-	public static final ASN1ObjectIdentifier id_etsi_qcp_natural = new ASN1ObjectIdentifier("0.4.0.194112.1.0");
-
-	/**
-	 * QCP-l: certificate policy for EU qualified certificates issued to legal persons;
-	 * itu-t(0) identified-organization(4) etsi(0) qualified-certificate-policies(194112)
-	 * policy-identifiers(1) qcp-legal (1)
-	 */
-	public static final ASN1ObjectIdentifier id_etsi_qcp_legal = new ASN1ObjectIdentifier("0.4.0.194112.1.1");
-
-	/**
-	 * QCP-n-qscd: certificate policy for EU qualified certificates issued to natural persons with private key related
-	 * to the certified public key in a QSCD;
-	 * Itu-t(0) identified-organization(4) etsi(0) qualified-certificate-policies(194112)
-	 * policy-identifiers(1) qcp-natural-qscd (2)
-	 */
-	public static final ASN1ObjectIdentifier id_etsi_qcp_natural_qscd = new ASN1ObjectIdentifier("0.4.0.194112.1.2");
-
-	/**
-	 * QCP-l-qscd: certificate policy for EU qualified certificates issued to legal persons with private key related to
-	 * the certified public key in a QSCD;
-	 * itu-t(0) identified-organization(4) etsi(0) qualified-certificate-policies(194112)
-	 * policy-identifiers(1) qcp-legal-qscd (3)
-	 */
-	public static final ASN1ObjectIdentifier id_etsi_qcp_legal_qscd = new ASN1ObjectIdentifier("0.4.0.194112.1.3");
-
-	/**
-	 * QCP-w: certificate policy for EU qualified website authentication certificates;
-	 * itu-t(0) identified-organization(4) etsi(0) qualified-certificate-policies(194112)
-	 * policy-identifiers(1) qcp-web (4)
-	 */
-	public static final ASN1ObjectIdentifier id_etsi_qcp_web = new ASN1ObjectIdentifier("0.4.0.194112.1.4");
-
-	/**
 	 * Not defined in: PKCSObjectIdentifiers
 	 * mime-type attribute
 	 * See ETSI TS 101 733, clause 5.11.5

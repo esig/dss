@@ -355,4 +355,10 @@ public interface ValidationPolicy {
 
 	MultiValuesConstraint getCertificatePseudonymConstraint(Context context, SubContext subContext);
 
+	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
+
+	MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext);
+
+	LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext);
+
 }

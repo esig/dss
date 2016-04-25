@@ -237,12 +237,6 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>false</QCC>
-                <QCSSCD>false</QCSSCD>
-            </QCStatement>
             <TrustedServiceProvider>
                 <TSPName>Nets DanID A/S</TSPName>
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
@@ -325,12 +319,6 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>false</QCC>
-                <QCSSCD>false</QCSSCD>
-            </QCStatement>
             <TrustedServiceProvider>
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
@@ -410,12 +398,6 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>false</QCC>
-                <QCSSCD>false</QCSSCD>
-            </QCStatement>
             <TrustedServiceProvider>
                 <TSPName>Nets DanID A/S</TSPName>
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
@@ -499,12 +481,6 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>false</QCC>
-                <QCSSCD>false</QCSSCD>
-            </QCStatement>
             <TrustedServiceProvider>
                 <TSPName>Nets DanID A/S</TSPName>
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>
@@ -564,12 +540,6 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>false</QCC>
-                <QCSSCD>false</QCSSCD>
-            </QCStatement>
             <TrustedServiceProvider>
                 <TSPName>Nets DanID A/S</TSPName>
                 <TSPServiceName>Root Certification Authority of TRUST2408 OCES Primary CA</TSPServiceName>

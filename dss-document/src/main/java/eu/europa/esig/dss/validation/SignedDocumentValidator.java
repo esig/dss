@@ -48,7 +48,6 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +59,6 @@ import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.client.http.DataLoader;
@@ -79,7 +77,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlInfoType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlKeyUsageBits;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlMessage;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatementIds;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
@@ -100,8 +97,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
-import eu.europa.esig.dss.tsl.PolicyIdCondition;
-import eu.europa.esig.dss.tsl.QcStatementCondition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
@@ -172,14 +167,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This variable contains the reference to the diagnostic data.
 	 */
 	private DiagnosticData jaxbDiagnosticData; // JAXB object
-
-	private final Condition qcp = new PolicyIdCondition(OID.id_etsi_qcp_public.getId());
-
-	private final Condition qcpPlus = new PolicyIdCondition(OID.id_etsi_qcp_public_with_sscd.getId());
-
-	private final Condition qcCompliance = new QcStatementCondition(ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId());
-
-	private final Condition qcsscd = new QcStatementCondition(ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId());
 
 	// Single policy document to use with all signatures.
 	private File policyDocument;
@@ -833,34 +820,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				final String pem = DSSUtils.convertToPEM(certToken);
 				LOG.trace("\n" + pem);
 			}
-			dealQCStatement(certToken, xmlCert);
 			dealTrustedService(certToken, xmlCert);
 			dealRevocationData(usedCertificatesDigestAlgorithms, certToken, xmlCert);
 			dealCertificateValidationInfo(certToken, xmlCert);
 			xmlUsedCerts.getCertificate().add(xmlCert);
-		}
-	}
-
-	/**
-	 * This method deals with the Qualified Certificate Statements. The
-	 * retrieved information is transformed to the JAXB object.<br>
-	 * Qualified Certificate Statements, the following Policies are checked:<br>
-	 * - Qualified Certificates Policy "0.4.0.1456.1.1” (QCP);<br>
-	 * - Qualified Certificates Policy "0.4.0.1456.1.2" (QCP+);<br>
-	 * - Qualified Certificates Compliance "0.4.0.1862.1.1";<br>
-	 * - Qualified Certificates SCCD "0.4.0.1862.1.4";<br>
-	 *
-	 * @param certToken
-	 * @param xmlCert
-	 */
-	private void dealQCStatement(final CertificateToken certToken, final XmlCertificate xmlCert) {
-		if (!certToken.isTrusted()) {
-			final XmlQCStatement xmlQCS = new XmlQCStatement();
-			xmlQCS.setQCP(qcp.check(certToken));
-			xmlQCS.setQCPPlus(qcpPlus.check(certToken));
-			xmlQCS.setQCC(qcCompliance.check(certToken));
-			xmlQCS.setQCSSCD(qcsscd.check(certToken));
-			xmlCert.setQCStatement(xmlQCS);
 		}
 	}
 

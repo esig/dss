@@ -397,54 +397,6 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method indicates if the certificate has QCWithSSCD qualification.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return true if QCWithSSCD qualification is present
-	 */
-	public boolean hasCertificateQCWithSSCDQualification(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.hasCertificateQCWithSSCDQualification();
-	}
-
-	/**
-	 * This method indicates if the certificate has QCNoSSCD qualification.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return true if QCNoSSCD qualification is present
-	 */
-	public boolean hasCertificateQCNoSSCDQualification(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.hasCertificateQCNoSSCDQualification();
-	}
-
-	/**
-	 * This method indicates if the certificate has QCSSCDStatusAsInCert qualification.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return true if QCSSCDStatusAsInCert qualification is present
-	 */
-	public boolean hasCertificateQCSSCDStatusAsInCertQualification(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.hasCertificateQCSSCDStatusAsInCertQualification();
-	}
-
-	/**
-	 * This method indicates if the certificate has QCForLegalPerson qualification.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return true if QCForLegalPerson qualification is present
-	 */
-	public boolean hasCertificateQCForLegalPersonQualification(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.hasCertificateQCForLegalPersonQualification();
-	}
-
-	/**
 	 * This method returns the associated TSPServiceName.
 	 *
 	 * @param dssCertificateId

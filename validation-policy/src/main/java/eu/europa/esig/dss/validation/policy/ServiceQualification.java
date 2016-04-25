@@ -20,7 +20,12 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-public interface TSLConstant {
+import java.util.List;
+
+public final class ServiceQualification {
+
+	private ServiceQualification() {
+	}
 
 	public static final String CA_QC = "http://uri.etsi.org/TrstSvc/Svctype/CA/QC";
 
@@ -42,7 +47,8 @@ public interface TSLConstant {
 
 	/**
 	 * It is ensured by the certification service provider and controlled (supervision model) or audited (accreditation
-	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any Qualified
+	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any
+	 * Qualified
 	 * Certificate issued under the service (RootCA/QC or CA/QC) identified in "Service digital identity" and further
 	 * identified by the filters information used to further identify under the "Sdi" identified certification service
 	 * that precise set of Qualified Certificates for which this additional information is required with regards to the
@@ -56,7 +62,8 @@ public interface TSLConstant {
 
 	/**
 	 * It is ensured by the certification service provider and controlled (supervision model) or audited (accreditation
-	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any Qualified
+	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any
+	 * Qualified
 	 * Certificate issued under the service (RootCA/QC or CA/QC) identified in "Service digital identity" and further
 	 * identified by the filters information used to further identify under the "Sdi" identified certification service
 	 * that precise set of Qualified Certificates for which this additional information is required with regards to the
@@ -70,7 +77,8 @@ public interface TSLConstant {
 
 	/**
 	 * It is ensured by the certification service provider and controlled (supervision model) or audited (accreditation
-	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any Qualified
+	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any
+	 * Qualified
 	 * Certificate issued under the service (RootCA/QC or CA/QC) identified in "Service digital identity" and further
 	 * identified by the filters information used to further identify under the "Sdi" identified certification service
 	 * that precise set of Qualified Certificates for which this additional information is required with regards to the
@@ -83,7 +91,8 @@ public interface TSLConstant {
 
 	/**
 	 * It is ensured by the certification service provider and controlled (supervision model) or audited (accreditation
-	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any Qualified
+	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any
+	 * Qualified
 	 * Certificate issued under the service (RootCA/QC or CA/QC) identified in "Service digital identity" and further
 	 * identified by the filters information used to further identify under the "Sdi" identified certification service
 	 * that precise set of Qualified Certificates for which this additional information is required with regards to the
@@ -110,7 +119,8 @@ public interface TSLConstant {
 	/**
 	 * Under Supervision<b><br>
 	 * The service identified in "Service digital identity" (see clause 5.5.3) provided by the Certification Service
-	 * Provider (CSP) identified in "TSP name" (see clause 5.4.1) is currently under supervision, for compliance with the
+	 * Provider (CSP) identified in "TSP name" (see clause 5.4.1) is currently under supervision, for compliance with
+	 * the
 	 * provisions laid down in Directive 1999/93/EC [1], by the Member State identified in the "Scheme territory" (see
 	 * clause 5.3.10) in which the CSP is established.
 	 */
@@ -120,18 +130,36 @@ public interface TSLConstant {
 	/**
 	 * Accredited<br>
 	 * An accreditation assessment has been performed by the Accreditation Body on behalf of the Member State identified
-	 * in the "Scheme territory" (see clause 5.3.10) and the service identified in "Service digital identity" (see clause
+	 * in the "Scheme territory" (see clause 5.3.10) and the service identified in "Service digital identity" (see
+	 * clause
 	 * 5.5.3) provided by the trust service provider identified in "TSP name" (see clause 5.4.1) is found to be in
 	 * compliance with the provisions laid down in Directive 1999/93/EC [i.3].<br>
 	 * This accredited trust service provider may be established in another Member State than the one identified in the
-	 * "Scheme territory" (see clause 5.3.10) of the trusted list or in a non-EU country (see article 7.1(a) of Directive
+	 * "Scheme territory" (see clause 5.3.10) of the trusted list or in a non-EU country (see article 7.1(a) of
+	 * Directive
 	 * 1999/93/EC [i.3]).
 	 */
 	public static final String SERVICE_STATUS_ACCREDITED = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/Svcstatus/accredited";
 	public static final String SERVICE_STATUS_ACCREDITED_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited";
 
+	public static boolean isQcStatement(List<String> qualifiers) {
+		return qualifiers.contains(QC_STATEMENT) || qualifiers.contains(QC_STATEMENT_119612);
+	}
 
-	public static final String TSL = "http://uri.etsi.org/02231/v2#";
+	public static boolean isQcNoSSCD(List<String> qualifiers) {
+		return qualifiers.contains(QC_NO_SSCD) || qualifiers.contains(QC_NO_SSCD_119612);
+	}
 
-	public static final String TSLX = "http://uri.etsi.org/02231/v2/additionaltypes#";
+	public static boolean isQcForLegalPerson(List<String> qualifiers) {
+		return qualifiers.contains(QC_FOR_LEGAL_PERSON) || qualifiers.contains(QC_FOR_LEGAL_PERSON_119612);
+	}
+
+	public static boolean isQcSscdStatusAsInCert(List<String> qualifiers) {
+		return qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT) || qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT_119612);
+	}
+
+	public static boolean isQcWithSSCD(List<String> qualifiers) {
+		return qualifiers.contains(QC_WITH_SSCD) || qualifiers.contains(QC_WITH_SSCD_119612);
+	}
+
 }

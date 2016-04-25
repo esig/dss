@@ -135,12 +135,9 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>true</QCC>
-                <QCSSCD>false</QCSSCD>
-            </QCStatement>
+            <QCStatementIds>
+                <oid>0.4.0.1862.1.1</oid>
+            </QCStatementIds>
             <TrustedServiceProvider>
                 <TSPName>Unizeto Technologies S.A.</TSPName>
                 <TSPServiceName>Certification authority issuing qualified certificates</TSPServiceName>

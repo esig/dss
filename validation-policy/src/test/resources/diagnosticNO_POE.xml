@@ -171,12 +171,10 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <QCStatement>
-                <QCP>false</QCP>
-                <QCPPlus>false</QCPPlus>
-                <QCC>true</QCC>
-                <QCSSCD>true</QCSSCD>
-            </QCStatement>
+            <QCStatementIds>
+                <oid>0.4.0.1862.1.1</oid>
+                <oid>0.4.0.1862.1.4</oid>
+            </QCStatementIds>
             <TrustedServiceProvider>
                 <TSPName>First certification authority, a.s.</TSPName>
                 <TSPServiceName>(16) I.CA - issuing qualified certificates</TSPServiceName>
