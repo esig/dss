@@ -122,6 +122,22 @@
 
 										<xs:element type="xs:boolean" name="Trusted" />
 										<xs:element type="xs:boolean" name="SelfSigned" />
+										
+										<xs:element name="CertificatePolicyIds" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element type="xs:string" name="oid" minOccurs="0" maxOccurs="unbounded" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="QCStatementIds" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element type="xs:string" name="oid" minOccurs="0" maxOccurs="unbounded" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										
 										<xs:element name="QCStatement" minOccurs="0">
 											<xs:complexType>
 												<xs:sequence>

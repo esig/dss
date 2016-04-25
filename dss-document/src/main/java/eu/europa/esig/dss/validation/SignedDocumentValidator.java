@@ -68,6 +68,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicyIds;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRolesType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlClaimedRoles;
@@ -79,6 +80,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlKeyUsageBits;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlMessage;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatement;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatementIds;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatus;
@@ -960,11 +962,22 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		xmlCert.setBasicSignature(xmlBasicSignatureType);
 
 		final CertificateToken issuerToken = certToken.getIssuerToken();
-		final XmlSigningCertificateType xmlSigningCertificate = xmlForSigningCertificate(issuerToken);
-		xmlCert.setSigningCertificate(xmlSigningCertificate);
+		xmlCert.setSigningCertificate(xmlForSigningCertificate(issuerToken));
+		xmlCert.setCertificateChain(xmlForCertificateChain(issuerToken));
 
-		final XmlCertificateChainType xmlCertChainType = xmlForCertificateChain(issuerToken);
-		xmlCert.setCertificateChain(xmlCertChainType);
+		List<String> qcStatementsIdList = DSSASN1Utils.getQCStatementsIdList(certToken);
+		if (CollectionUtils.isNotEmpty(qcStatementsIdList)) {
+			XmlQCStatementIds qcStatementIds = new XmlQCStatementIds();
+			qcStatementIds.getOid().addAll(qcStatementsIdList);
+			xmlCert.setQCStatementIds(qcStatementIds);
+		}
+
+		List<String> policyIdentifiersList = DSSASN1Utils.getPolicyIdentifiers(certToken);
+		if (CollectionUtils.isNotEmpty(policyIdentifiersList)) {
+			XmlCertificatePolicyIds certPolicyIds = new XmlCertificatePolicyIds();
+			certPolicyIds.getOid().addAll(policyIdentifiersList);
+			xmlCert.setCertificatePolicyIds(certPolicyIds);
+		}
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(certToken.isTrusted());
