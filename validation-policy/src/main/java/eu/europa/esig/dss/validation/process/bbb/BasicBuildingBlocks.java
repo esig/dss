@@ -97,10 +97,12 @@ public class BasicBuildingBlocks {
 		 * 5.2.6 X.509 certificate validation
 		 */
 		XmlXCV xcv = executeX509CertificateValidation();
-		result.setXCV(xcv);
-		XmlConclusion xcvConclusion = xcv.getConclusion();
-		if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-			result.setConclusion(xcvConclusion);
+		if (xcv != null) {
+			result.setXCV(xcv);
+			XmlConclusion xcvConclusion = xcv.getConclusion();
+			if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
+				result.setConclusion(xcvConclusion);
+			}
 		}
 
 		/**
@@ -161,10 +163,12 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlXCV executeX509CertificateValidation() {
-		// Not null because of ISC
-		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(token.getSigningCertificateId());
-		X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, context, policy);
-		return xcv.execute();
+		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
+		if (certificate != null) {
+			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, context, policy);
+			return xcv.execute();
+		}
+		return null;
 	}
 
 	private XmlSAV executeSignatureAcceptanceValidation() {

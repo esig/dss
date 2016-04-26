@@ -36,7 +36,9 @@ public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected String getAdditionalInfo() {
 		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-		Object[] params = new Object[] { sdf.format(certificate.getNotBefore()), sdf.format(certificate.getNotAfter()) };
+		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : sdf.format(certificate.getNotBefore());
+		String notAfterStr = certificate.getNotAfter() == null ? " ? " : sdf.format(certificate.getNotAfter());
+		Object[] params = new Object[] { notBeforeStr, notAfterStr };
 		return MessageFormat.format(AdditionalInfo.CERTIFICATE_VALIDITY, params);
 	}
 
