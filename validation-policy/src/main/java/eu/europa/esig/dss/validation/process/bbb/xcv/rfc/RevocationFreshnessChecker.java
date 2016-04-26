@@ -48,30 +48,33 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 		ChainItem<XmlRFC> item = firstItem = revocationDataAvailable(revocationData);
 
-		/*
-		 * 1) The building block shall get the maximum accepted revocation freshness from the X.509 validation
-		 * constraints for the given certificate. If the
-		 * constraints do not contain a value for the maximum accepted revocation freshness and the revocation
-		 * information status is a CRL or an OCSP response
-		 * IETF RFC 5280 [1], IETF RFC 6960 [i.12] with a value in the nextUpdate field the time interval between the
-		 * fields thisUpdate and nextUpdate shall be
-		 * used as the value of maximum freshness. If nextUpdate is not set, the building block shall return with the
-		 * indication FAILED.
-		 * 
-		 * NOTE: This means that if the given validation time is after the nextUpdate time, the revocation status
-		 * information will not be considered fresh.
-		 */
-		item = item.setNextItem(nextUpdateCheck(revocationData));
+		if (revocationData != null) {
+			/*
+			 * 1) The building block shall get the maximum accepted revocation freshness from the X.509 validation
+			 * constraints for the given certificate. If the
+			 * constraints do not contain a value for the maximum accepted revocation freshness and the revocation
+			 * information status is a CRL or an OCSP response
+			 * IETF RFC 5280 [1], IETF RFC 6960 [i.12] with a value in the nextUpdate field the time interval between
+			 * the
+			 * fields thisUpdate and nextUpdate shall be
+			 * used as the value of maximum freshness. If nextUpdate is not set, the building block shall return with
+			 * the
+			 * indication FAILED.
+			 * 
+			 * NOTE: This means that if the given validation time is after the nextUpdate time, the revocation status
+			 * information will not be considered fresh.
+			 */
+			item = item.setNextItem(nextUpdateCheck(revocationData));
 
-		/*
-		 * 2) If the issuance time of the revocation information status is after the validation time minus the
-		 * considered maximum freshness, the building block
-		 * shall return the indication PASSED. Otherwise the building block shall return the indication FAILED.
-		 */
-		item = item.setNextItem(revocationDataFreshCheck(revocationData));
+			/*
+			 * 2) If the issuance time of the revocation information status is after the validation time minus the
+			 * considered maximum freshness, the building block
+			 * shall return the indication PASSED. Otherwise the building block shall return the indication FAILED.
+			 */
+			item = item.setNextItem(revocationDataFreshCheck(revocationData));
 
-		item = item.setNextItem(revocationCryptographic(revocationData));
-
+			item = item.setNextItem(revocationCryptographic(revocationData));
+		}
 	}
 
 	private ChainItem<XmlRFC> revocationDataAvailable(RevocationWrapper revocationData) {
