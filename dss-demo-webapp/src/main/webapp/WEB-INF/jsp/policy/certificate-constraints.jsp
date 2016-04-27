@@ -37,11 +37,11 @@
             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.RevocationDataAvailable.Level" />
         </jsp:include>
 
-        <spring:message code="label.policy.revocationDataIsTrusted" var="translation" />
+        <spring:message code="label.policy.revocationNextUpdatePresent" var="translation" />
         <jsp:include page="level-constraint.jsp">
             <jsp:param name="label" value="${translation}" />
-            <jsp:param name="levelValue" value="${currentCertificate.revocationDataTrusted.level}" />
-            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.RevocationDataTrusted.Level" />
+            <jsp:param name="levelValue" value="${currentCertificate.revocationDataNextUpdatePresent.level}" />
+            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.RevocationDataNextUpdatePresent.Level" />
         </jsp:include>
 
         <spring:message code="label.policy.revocationDataFreshness" var="translation" />
@@ -89,27 +89,6 @@
             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.NotOnHold.Level" />
         </jsp:include>
 
-        <spring:message code="label.policy.tslValidity" var="translation" />
-        <jsp:include page="level-constraint.jsp">
-            <jsp:param name="label" value="${translation}" />
-            <jsp:param name="levelValue" value="${currentCertificate.TSLValidity.level}" />
-            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.TSLValidity.Level" />
-        </jsp:include>
-
-        <spring:message code="label.policy.tslStatus" var="translation" />
-        <jsp:include page="level-constraint.jsp">
-            <jsp:param name="label" value="${translation}" />
-            <jsp:param name="levelValue" value="${currentCertificate.TSLStatus.level}" />
-            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.TSLStatus.Level" />
-        </jsp:include>
-        
-        <spring:message code="label.policy.tslStatusAndValidity" var="translation" />
-        <jsp:include page="level-constraint.jsp">
-            <jsp:param name="label" value="${translation}" />
-            <jsp:param name="levelValue" value="${currentCertificate.TSLStatusAndValidity.level}" />
-            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.TSLStatusAndValidity.Level" />
-        </jsp:include>
-        
         <spring:message code="label.policy.qualification" var="translation" />
         <jsp:include page="level-constraint.jsp">
             <jsp:param name="label" value="${translation}" />
