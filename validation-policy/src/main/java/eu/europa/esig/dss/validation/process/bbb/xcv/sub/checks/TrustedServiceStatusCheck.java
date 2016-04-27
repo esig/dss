@@ -60,8 +60,11 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlS
 
 	@Override
 	protected String getAdditionalInfo() {
-		Object[] params = new Object[] { serviceStatusStr };
-		return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_STATUS, params);
+		if (StringUtils.isNotEmpty(serviceStatusStr)) {
+			Object[] params = new Object[] { serviceStatusStr };
+			return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_STATUS, params);
+		}
+		return null;
 	}
 
 	@Override

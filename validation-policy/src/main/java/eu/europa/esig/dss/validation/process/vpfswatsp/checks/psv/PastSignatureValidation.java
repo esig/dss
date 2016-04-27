@@ -107,28 +107,23 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 				return;
 			}
 
-			/*
-			 * 3) If current time indication/ sub-indication is INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE and for
-			 * each algorithm (or key size) in the list concerned by the failure, there is a POE for the material that
-			 * uses this algorithm (or key size) at a time before the time up to which the algorithm in question was
-			 * considered secure, the building block shall return the status indication PASSED.
-			 */
+		}
 
-			else if (Indication.INDETERMINATE.equals(currentTimeIndication)
-					&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
-				// TODO
-			}
-
+		/*
+		 * 3) If current time indication/ sub-indication is INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE and for
+		 * each algorithm (or key size) in the list concerned by the failure, there is a POE for the material that
+		 * uses this algorithm (or key size) at a time before the time up to which the algorithm in question was
+		 * considered secure, the building block shall return the status indication PASSED.
+		 */
+		if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
+			// TODO
 		}
 
 		/*
 		 * 4) In all other cases, the building block shall return the current time indication/ sub-indication together
 		 * with an explanation of the failure.
 		 */
-		else {
-			item = item.setNextItem(currentTimeIndicationCheck(currentTimeIndication, currentTimeSubIndication, currentTimeErrors));
-		}
-
+		item = item.setNextItem(currentTimeIndicationCheck(currentTimeIndication, currentTimeSubIndication, currentTimeErrors));
 	}
 
 	private ChainItem<XmlPSV> currentTimeIndicationCheck(Indication currentTimeIndication, SubIndication currentTimeSubIndication,

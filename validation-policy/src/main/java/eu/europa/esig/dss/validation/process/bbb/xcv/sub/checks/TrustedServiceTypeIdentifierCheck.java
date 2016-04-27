@@ -60,8 +60,11 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 
 	@Override
 	protected String getAdditionalInfo() {
-		Object[] params = new Object[] { serviceTypeStr };
-		return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_TYPE, params);
+		if (StringUtils.isNotEmpty(serviceTypeStr)) {
+			Object[] params = new Object[] { serviceTypeStr };
+			return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_TYPE, params);
+		}
+		return null;
 	}
 
 	@Override
