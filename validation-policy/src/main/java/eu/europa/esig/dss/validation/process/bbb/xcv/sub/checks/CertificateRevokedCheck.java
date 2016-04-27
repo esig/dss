@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.AdditionalInfo;
@@ -39,8 +40,10 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected String getAdditionalInfo() {
 		RevocationWrapper revocationData = certificate.getRevocationData();
-		Object[] params = new Object[] { revocationData.getReason() };
-		return MessageFormat.format(AdditionalInfo.REVOCATION_REASON, params);
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		String revocationDateStr = revocationData.getRevocationDate() == null ? " ? " : sdf.format(revocationData.getRevocationDate());
+		Object[] params = new Object[] { revocationData.getReason(), revocationDateStr };
+		return MessageFormat.format(AdditionalInfo.REVOCATION, params);
 	}
 
 	@Override

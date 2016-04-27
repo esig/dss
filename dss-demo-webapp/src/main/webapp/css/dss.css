@@ -14,3 +14,8 @@
 	margin-left: 0px;
 	padding-left: 0px;
 }
+
+.tooltip-inner {
+    max-width: none;
+    white-space: nowrap;
+}
