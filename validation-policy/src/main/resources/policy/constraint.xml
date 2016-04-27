@@ -147,7 +147,7 @@
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
-			<ProspectiveCertificateChain Level="FAIL" />
+			<ProspectiveCertificateChain Level="WARN" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -189,7 +189,7 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
-				<RevocationDataAvailable Level="FAIL" />
+				<RevocationDataAvailable Level="WARN" />
 				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
@@ -243,7 +243,7 @@
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
-			<ProspectiveCertificateChain Level="FAIL" />
+			<ProspectiveCertificateChain Level="WARN" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -285,7 +285,7 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
-				<RevocationDataAvailable Level="FAIL" />
+				<RevocationDataAvailable Level="WARN" />
 				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="WARN" />
 				<NotRevoked Level="FAIL" />
