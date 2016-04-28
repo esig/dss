@@ -43,23 +43,6 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_ce_extKeyUsage = new ASN1ObjectIdentifier("2.5.29.37");
 
 	/**
-	 * Not defined in: ETSIQCObjectIdentifiers
-	 * A certificate policy for qualified certificates issued to the public.<br />
-	 * {itu-t(0) identified-organization(4) etsi(0) qualified-certificate-policies(1456) policy-identifiers(1)
-	 * qcp-public(2)}
-	 */
-	public static final ASN1ObjectIdentifier id_etsi_qcp_public = new ASN1ObjectIdentifier("0.4.0.1456.1.2");
-
-	/**
-	 * Not defined in: ETSIQCObjectIdentifiers
-	 * A certificate policy for qualified certificates issued to the public, requiring use of secure signature-creation
-	 * devices.<br />
-	 * {itu-t(0) identified-organization(4) etsi(0) qualified-certificate-policies(1456) policy-identifiers(1)
-	 * qcp-public-with-sscd(1)}
-	 */
-	public static final ASN1ObjectIdentifier id_etsi_qcp_public_with_sscd = new ASN1ObjectIdentifier("0.4.0.1456.1.1");
-
-	/**
 	 * Not defined in: PKCSObjectIdentifiers
 	 * mime-type attribute
 	 * See ETSI TS 101 733, clause 5.11.5

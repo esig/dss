@@ -23,8 +23,12 @@ package eu.europa.esig.dss.x509.ocsp;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.PublicKey;
+import java.text.ParseException;
 import java.util.List;
 
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateStatus;
 import org.bouncycastle.cert.ocsp.OCSPResp;
@@ -77,7 +81,7 @@ public class OCSPToken extends RevocationToken {
 	private SingleResp bestSingleResp;
 
 	public OCSPToken() {
-		this.extraInfo = new TokenValidationExtraInfo(); // TODO usefull ?
+		this.extraInfo = new TokenValidationExtraInfo();
 	}
 
 	public boolean extractInfo() {
@@ -92,6 +96,7 @@ public class OCSPToken extends RevocationToken {
 		this.nextUpdate = bestSingleResp.getNextUpdate();
 
 		extractStatusInfo(bestSingleResp.getCertStatus());
+		extractArchiveCutOff();
 		return true;
 	}
 
@@ -120,6 +125,18 @@ public class OCSPToken extends RevocationToken {
 				logger.info("OCSP status unknown");
 			}
 			reason = "OCSP status: unknown";
+		}
+	}
+
+	private void extractArchiveCutOff() {
+		Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_archive_cutoff);
+		if (extension != null) {
+			ASN1GeneralizedTime archiveCutOffAsn1 = (ASN1GeneralizedTime) extension.getParsedValue();
+			try {
+				archiveCutOff = archiveCutOffAsn1.getDate();
+			} catch (ParseException e) {
+				logger.warn("Unable to extract id_pkix_ocsp_archive_cutoff : " + e.getMessage());
+			}
 		}
 	}
 

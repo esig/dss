@@ -1089,6 +1089,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlRevocation.setNextUpdate(revocationToken.getNextUpdate());
 			xmlRevocation.setRevocationDate(revocationToken.getRevocationDate());
 			xmlRevocation.setExpiredCertsOnCRL(revocationToken.getExpiredCertsOnCRL());
+			xmlRevocation.setArchiveCutOff(revocationToken.getArchiveCutOff());
 			xmlRevocation.setReason(revocationToken.getReason());
 			xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
 
