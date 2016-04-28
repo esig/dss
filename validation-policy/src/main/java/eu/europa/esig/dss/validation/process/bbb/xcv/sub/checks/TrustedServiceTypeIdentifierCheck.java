@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatusType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
+import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -21,6 +23,8 @@ import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
+
+	private String serviceTypeStr;
 
 	public TrustedServiceTypeIdentifierCheck(XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
 		super(result, constraint);
@@ -45,12 +49,22 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 					Date statusEndDate = status.getEndDate();
 					// The issuing time of the certificate should be into the validity period of the associated service
 					if (certificateValidFrom.after(statusStartDate) && ((statusEndDate == null) || certificateValidFrom.before(statusEndDate))) {
-						return processValueCheck(StringUtils.trim(trustedServiceProvider.getTSPServiceType()));
+						serviceTypeStr = StringUtils.trim(trustedServiceProvider.getTSPServiceType());
+						return processValueCheck(serviceTypeStr);
 					}
 				}
 			}
 		}
 		return false;
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		if (StringUtils.isNotEmpty(serviceTypeStr)) {
+			Object[] params = new Object[] { serviceTypeStr };
+			return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_TYPE, params);
+		}
+		return null;
 	}
 
 	@Override

@@ -1,8 +1,11 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
+import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -50,6 +53,17 @@ public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 		long nextUpdateTime = nextUpdate == null ? 0 : nextUpdate.getTime();
 		long thisUpdateTime = thisUpdate == null ? 0 : thisUpdate.getTime();
 		return nextUpdateTime - thisUpdateTime;
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		String nextUpdateString = "not defined";
+		if (revocationData != null && revocationData.getNextUpdate() != null) {
+			nextUpdateString = sdf.format(revocationData.getNextUpdate());
+		}
+		Object[] params = new Object[] { nextUpdateString };
+		return MessageFormat.format(AdditionalInfo.NEXT_UPDATE, params);
 	}
 
 	@Override

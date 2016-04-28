@@ -161,6 +161,7 @@
 			<xs:element type="Name" name="Error" minOccurs="0" />
 			<xs:element type="Name" name="Warning" minOccurs="0" />
 			<xs:element type="Name" name="Info" minOccurs="0" />
+			<xs:element type="xs:string" name="AdditionalInfo" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- In case of constraint with a BBB -->
 	</xs:complexType>
@@ -172,7 +173,6 @@
 			<xs:element type="Name" name="Errors" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="Name" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="Name" name="Infos" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="xs:string" name="AdditionalInfos" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 

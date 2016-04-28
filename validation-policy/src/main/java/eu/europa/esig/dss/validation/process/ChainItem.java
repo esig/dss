@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.validation.process;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,8 +40,6 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	private final LevelConstraint constraint;
 
 	private String bbbId;
-
-	private List<String> infos = new ArrayList<String>();
 
 	/**
 	 * Common constructor
@@ -112,10 +109,6 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 				break;
 			}
 		}
-	}
-
-	protected void addInfo(String info) {
-		infos.add(info);
 	}
 
 	protected abstract boolean process();
@@ -188,6 +181,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		xmlConstraint.setStatus(status);
 		xmlConstraint.setId(bbbId);
 		if (XmlStatus.NOT_OK.equals(status) || XmlStatus.WARNING.equals(status) || XmlStatus.INFORMATION.equals(status)) {
+			xmlConstraint.setAdditionalInfo(getAdditionalInfo());
 			XmlName message = new XmlName();
 			MessageTag errorMessageTag = getErrorMessageTag();
 			if (errorMessageTag != null) {
@@ -205,6 +199,10 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 			}
 		}
 		addConstraint(xmlConstraint);
+	}
+
+	protected String getAdditionalInfo() {
+		return null;
 	}
 
 	private void addConstraint(XmlConstraint constraint) {

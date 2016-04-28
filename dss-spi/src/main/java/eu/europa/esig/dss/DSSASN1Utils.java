@@ -62,6 +62,7 @@ import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
@@ -310,7 +311,7 @@ public final class DSSASN1Utils {
 	 * @return
 	 */
 	public static boolean hasIdPkixOcspNoCheckExtension(CertificateToken token) {
-		final byte[] extensionValue = token.getCertificate().getExtensionValue(OID.id_pkix_ocsp_no_check.getId());
+		final byte[] extensionValue = token.getCertificate().getExtensionValue(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId());
 		if (extensionValue != null) {
 			try {
 				final ASN1Primitive derObject = toASN1Primitive(extensionValue);
@@ -345,7 +346,7 @@ public final class DSSASN1Utils {
 		final List<String> extensionIdList = new ArrayList<String>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
 		if (qcStatement != null) {
-			final ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatement);
+			final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
 			// Sequence of QCStatement
 			for (int ii = 0; ii < seq.size(); ii++) {
 				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));

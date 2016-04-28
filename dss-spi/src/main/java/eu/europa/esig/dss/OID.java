@@ -32,13 +32,6 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_kp_OCSPSigning = new ASN1ObjectIdentifier("1.3.6.1.5.5.7.3.9");
 
 	/**
-	 * id-pkix-ocsp-nocheck<br>
-	 * Revocation Checking of an Authorised Responder.<br>
-	 * An OCSP client can trust a responder for the lifetime of the responder's certificate.
-	 */
-	public static final ASN1ObjectIdentifier id_pkix_ocsp_no_check = new ASN1ObjectIdentifier("1.3.6.1.5.5.7.48.1.5");
-
-	/**
 	 * Certificate extension: "id_ce_extKeyUsage" (Extended key usage)
 	 * This field indicates one or more purposes for which the certified public key may be used, in addition to or in
 	 * place of the basic purposes indicated in the key usage

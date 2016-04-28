@@ -1,6 +1,10 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -28,6 +32,15 @@ public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		RevocationWrapper revocationData = certificate.getRevocationData();
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		String revocationDateStr = revocationData.getRevocationDate() == null ? " ? " : sdf.format(revocationData.getRevocationDate());
+		Object[] params = new Object[] { revocationData.getReason(), revocationDateStr };
+		return MessageFormat.format(AdditionalInfo.REVOCATION, params);
 	}
 
 	@Override
