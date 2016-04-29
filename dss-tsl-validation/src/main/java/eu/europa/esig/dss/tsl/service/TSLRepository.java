@@ -334,6 +334,12 @@ public class TSLRepository {
 			logger.info("Nb of loaded trusted lists : " + tslValidationModels.size());
 			logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 			logger.info("Nb of skipped trusted lists : " + skippedTSLValidationModels.size());
+
+			if (CollectionUtils.isNotEmpty(skippedTSLValidationModels)) {
+				for (TSLValidationModel tslValidationModel : skippedTSLValidationModels) {
+					logger.info(tslValidationModel.getUrl() + " is skipped");
+				}
+			}
 		}
 	}
 

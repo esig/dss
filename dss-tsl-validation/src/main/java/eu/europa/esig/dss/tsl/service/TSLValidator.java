@@ -107,7 +107,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		xPathQueryHolders.clear();
 		xPathQueryHolders.add(new XPathQueryHolder());
 
-		Reports reports = xmlDocumentValidator.validateDocument();
+		Reports reports = xmlDocumentValidator.validateDocument(new File("src/main/resources/tsl-constraint.xml"));
 		SimpleReport simpleReport = reports.getSimpleReport();
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		boolean isValid = Indication.TOTAL_PASSED.equals(indication);
