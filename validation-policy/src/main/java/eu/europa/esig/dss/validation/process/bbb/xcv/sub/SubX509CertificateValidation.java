@@ -31,8 +31,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnit
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResult;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SurnameCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.TrustedServiceStatusCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.TrustedServiceTypeIdentifierCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -94,10 +92,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(certificateRevoked(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateOnHold(currentCertificate, subContext));
-
-		item = item.setNextItem(trustedServiceWithExpectedTypeIdentifier(currentCertificate, subContext));
-
-		item = item.setNextItem(trustedServiceWithExpectedStatus(currentCertificate, subContext));
 
 		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
 
@@ -193,16 +187,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificateOnHold(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotOnHoldConstraint(context, subContext);
 		return new CertificateOnHoldCheck(result, certificate, constraint);
-	}
-
-	private ChainItem<XmlSubXCV> trustedServiceWithExpectedTypeIdentifier(CertificateWrapper certificate, SubContext subContext) {
-		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceTypeIdentifierConstraint(context, subContext);
-		return new TrustedServiceTypeIdentifierCheck(result, certificate, constraint);
-	}
-
-	private ChainItem<XmlSubXCV> trustedServiceWithExpectedStatus(CertificateWrapper certificate, SubContext subContext) {
-		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceStatusConstraint(context, subContext);
-		return new TrustedServiceStatusCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificatePolicyIds(CertificateWrapper certificate, SubContext subContext) {

@@ -15,10 +15,13 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CheckSubXCVResult;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustedServiceStatusCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustedServiceTypeIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.SubX509CertificateValidation;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 /**
  * 5.2.6 X.509 certificate validation This building block validates the signing
@@ -50,6 +53,10 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
+		item = item.setNextItem(trustedServiceWithExpectedTypeIdentifier(currentCertificate));
+
+		item = item.setNextItem(trustedServiceWithExpectedStatus(currentCertificate));
+
 		SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(currentCertificate, currentTime, context, SubContext.SIGNING_CERT,
 				validationPolicy);
 		XmlSubXCV subXCV = certificateValidation.execute();
@@ -76,6 +83,16 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
 		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, context, constraint);
+	}
+
+	private ChainItem<XmlXCV> trustedServiceWithExpectedTypeIdentifier(CertificateWrapper certificate) {
+		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceTypeIdentifierConstraint(context);
+		return new TrustedServiceTypeIdentifierCheck(result, certificate, context, constraint);
+	}
+
+	private ChainItem<XmlXCV> trustedServiceWithExpectedStatus(CertificateWrapper certificate) {
+		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceStatusConstraint(context);
+		return new TrustedServiceStatusCheck(result, certificate, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVresult) {

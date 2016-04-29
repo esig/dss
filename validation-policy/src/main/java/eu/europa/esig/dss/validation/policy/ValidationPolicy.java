@@ -241,9 +241,9 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getCertificateNotOnHoldConstraint(Context context, SubContext subContext);
 
-	MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context, SubContext subContext);
+	MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context);
 
-	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context, SubContext subContext);
+	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
 
 	/**
 	 * @return {@code LevelConstraint} if Qualification for a given context element is present in the constraint file,

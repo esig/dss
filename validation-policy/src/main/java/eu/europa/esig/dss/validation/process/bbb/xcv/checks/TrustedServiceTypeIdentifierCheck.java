@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -7,12 +7,13 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatusType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
+import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
@@ -20,15 +21,17 @@ import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
-public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
+public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
 
 	private final CertificateWrapper certificate;
+	private final Context context;
 
 	private String serviceTypeStr;
 
-	public TrustedServiceTypeIdentifierCheck(XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
+	public TrustedServiceTypeIdentifierCheck(XmlXCV result, CertificateWrapper certificate, Context context, MultiValuesConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
+		this.context = context;
 	}
 
 	@Override
@@ -74,7 +77,18 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.XCV_TSL_ETIP_ANS;
+		switch (context) {
+		case SIGNATURE:
+			return MessageTag.XCV_TSL_ETIP_SIG_ANS;
+		case COUNTER_SIGNATURE:
+			return MessageTag.XCV_TSL_ETIP_SIG_ANS;
+		case TIMESTAMP:
+			return MessageTag.XCV_TSL_ETIP_TSP_ANS;
+		case REVOCATION:
+			return MessageTag.XCV_TSL_ETIP_REV_ANS;
+		default:
+			return MessageTag.XCV_TSL_ETIP_ANS;
+		}
 	}
 
 	@Override
@@ -84,7 +98,7 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.TRY_LATER;
+		return SubIndication.NO_CERTIFICATE_CHAIN_FOUND;
 	}
 
 }

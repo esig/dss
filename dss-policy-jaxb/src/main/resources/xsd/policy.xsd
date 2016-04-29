@@ -87,6 +87,8 @@
 			<xs:element name="SignatureIntact" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="SignatureValid" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="ProspectiveCertificateChain" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TrustedServiceTypeIdentifier" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="TrustedServiceStatus" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
 			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
 			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
@@ -111,8 +113,6 @@
 			<xs:element name="Country" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="NotRevoked" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotOnHold" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="TrustedServiceTypeIdentifier" type="tns:MultiValuesConstraint" minOccurs="0" />
-			<xs:element name="TrustedServiceStatus" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="PolicyIds" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="QCStatementIds" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="Qualification" type="tns:LevelConstraint" minOccurs="0" />

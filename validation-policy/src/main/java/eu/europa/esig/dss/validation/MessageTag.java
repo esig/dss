@@ -178,8 +178,14 @@ public enum MessageTag {
 
 	XCV_TSL_ESP("Is the expected trusted service status present ?"),
 	XCV_TSL_ESP_ANS("The trusted service has not expected status!"),
+	XCV_TSL_ESP_SIG_ANS("The trusted service of the signing certificate has not expected status!"),
+	XCV_TSL_ESP_TSP_ANS("The trusted service of the timestamp has not expected status!"),
+	XCV_TSL_ESP_REV_ANS("The trusted service of the revocation has not expected status!"),
 	XCV_TSL_ETIP("Is the expected trusted service type identifier present ?"),
 	XCV_TSL_ETIP_ANS("The trusted service has not expected type identifier!"),
+	XCV_TSL_ETIP_SIG_ANS("The trusted service of the signing certificate has not expected type identifier!"),
+	XCV_TSL_ETIP_TSP_ANS("The trusted service of the timestamp has not expected type identifier!"),
+	XCV_TSL_ETIP_REV_ANS("The trusted service of the revocation has not expected type identifier!"),
 
 	PCV_IVTSC("Is validation time sliding conclusive?"),
 	PCV_IVTSC_ANS("The indications returned by validation time sliding sub-process."),
