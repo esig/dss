@@ -8,6 +8,8 @@ public class AdditionalInfo {
 
 	public static final String REVOCATION = "Revocation reason : {0} (date : {1})";
 
+	public static final String KEY_USAGE = "Key usage : {0}";
+
 	public static final String NEXT_UPDATE = "Next update : {0}";
 
 	public static final String CONTROL_TIME = "Control time : {0}";

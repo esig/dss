@@ -249,6 +249,10 @@
 			<ProspectiveCertificateChain Level="WARN" />
 			<TrustedServiceTypeIdentifier Level="WARN">
 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
+				<Id>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/CRL</Id>
+				<Id>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/CRL/QC</Id>
+				<Id>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP</Id>
+				<Id>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</Id>
 			</TrustedServiceTypeIdentifier>
 			<TrustedServiceStatus Level="WARN">
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>

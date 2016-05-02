@@ -165,8 +165,21 @@ public class BasicBuildingBlocks {
 	private XmlXCV executeX509CertificateValidation() {
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
 		if (certificate != null) {
-			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, context, policy);
-			return xcv.execute();
+			if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
+				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
+						policy);
+				return xcv.execute();
+			} else if (Context.TIMESTAMP.equals(context)) {
+				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+						((TimestampWrapper) token).getProductionTime(), context, policy);
+				return xcv.execute();
+			} else if (Context.REVOCATION.equals(context)) {
+				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+						((RevocationWrapper) token).getProductionDate(), context, policy);
+				return xcv.execute();
+			} else {
+				logger.info("Unsupported context " + context);
+			}
 		}
 		return null;
 	}

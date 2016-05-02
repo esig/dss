@@ -997,45 +997,46 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param xmlCert
 	 */
 	private void dealTrustedService(final CertificateToken certToken, final XmlCertificate xmlCert) {
+		Set<ServiceInfo> services = null;
 		if (certToken.isTrusted()) {
-			return;
-		}
-		final CertificateToken trustAnchor = certToken.getTrustAnchor();
-		if (trustAnchor == null) {
-			return;
-		}
-		final Set<ServiceInfo> services = trustAnchor.getAssociatedTSPS();
-		if (services == null) {
-			return;
-		}
-		for (final ServiceInfo serviceInfo : services) {
-			final XmlTrustedServiceProviderType xmlTSP = new XmlTrustedServiceProviderType();
-			xmlTSP.setTSPName(serviceInfo.getTspName());
-			xmlTSP.setTSPServiceName(serviceInfo.getServiceName());
-			xmlTSP.setTSPServiceType(serviceInfo.getType());
-			xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
-
-			XmlServiceStatus xmlServiceStatus = new XmlServiceStatus();
-			List<ServiceInfoStatus> statusList = serviceInfo.getStatus();
-			for (ServiceInfoStatus serviceInfoStatus : statusList) {
-				XmlServiceStatusType xmlStatus = new XmlServiceStatusType();
-				xmlStatus.setStatus(serviceInfoStatus.getStatus());
-				xmlStatus.setStartDate(serviceInfoStatus.getStartDate());
-				xmlStatus.setEndDate(serviceInfoStatus.getEndDate());
-				xmlServiceStatus.getStatusService().add(xmlStatus);
+			services = certToken.getAssociatedTSPS();
+		} else {
+			final CertificateToken trustAnchor = certToken.getTrustAnchor();
+			if (trustAnchor == null) {
+				return;
 			}
-			xmlTSP.setServiceStatus(xmlServiceStatus);
+			services = trustAnchor.getAssociatedTSPS();
+		}
+		if (CollectionUtils.isNotEmpty(services)) {
+			for (final ServiceInfo serviceInfo : services) {
+				final XmlTrustedServiceProviderType xmlTSP = new XmlTrustedServiceProviderType();
+				xmlTSP.setTSPName(serviceInfo.getTspName());
+				xmlTSP.setTSPServiceName(serviceInfo.getServiceName());
+				xmlTSP.setTSPServiceType(serviceInfo.getType());
+				xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
 
-			// Check of the associated conditions to identify the qualifiers
-			final List<String> qualifiers = getQualifiers(serviceInfo, certToken);
-			if (CollectionUtils.isNotEmpty(qualifiers)) {
-				final XmlQualifiers xmlQualifiers = new XmlQualifiers();
-				for (String qualifier : qualifiers) {
-					xmlQualifiers.getQualifier().add(qualifier);
+				XmlServiceStatus xmlServiceStatus = new XmlServiceStatus();
+				List<ServiceInfoStatus> statusList = serviceInfo.getStatus();
+				for (ServiceInfoStatus serviceInfoStatus : statusList) {
+					XmlServiceStatusType xmlStatus = new XmlServiceStatusType();
+					xmlStatus.setStatus(serviceInfoStatus.getStatus());
+					xmlStatus.setStartDate(serviceInfoStatus.getStartDate());
+					xmlStatus.setEndDate(serviceInfoStatus.getEndDate());
+					xmlServiceStatus.getStatusService().add(xmlStatus);
 				}
-				xmlTSP.setQualifiers(xmlQualifiers);
+				xmlTSP.setServiceStatus(xmlServiceStatus);
+
+				// Check of the associated conditions to identify the qualifiers
+				final List<String> qualifiers = getQualifiers(serviceInfo, certToken);
+				if (CollectionUtils.isNotEmpty(qualifiers)) {
+					final XmlQualifiers xmlQualifiers = new XmlQualifiers();
+					for (String qualifier : qualifiers) {
+						xmlQualifiers.getQualifier().add(qualifier);
+					}
+					xmlTSP.setQualifiers(xmlQualifiers);
+				}
+				xmlCert.getTrustedServiceProvider().add(xmlTSP);
 			}
-			xmlCert.getTrustedServiceProvider().add(xmlTSP);
 		}
 	}
 

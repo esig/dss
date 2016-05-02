@@ -32,17 +32,19 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	private final DiagnosticData diagnosticData;
 	private final CertificateWrapper currentCertificate;
 	private final Date currentTime;
+	private final Date usageTime;
 
 	private final Context context;
 	private final ValidationPolicy validationPolicy;
 
-	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, Context context,
+	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, Date usageTime, Context context,
 			ValidationPolicy validationPolicy) {
 		super(new XmlXCV());
 
 		this.diagnosticData = diagnosticData;
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
+		this.usageTime = usageTime;
 
 		this.context = context;
 		this.validationPolicy = validationPolicy;
@@ -53,9 +55,9 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
-		item = item.setNextItem(trustedServiceWithExpectedTypeIdentifier(currentCertificate));
+		item = item.setNextItem(trustedServiceWithExpectedTypeIdentifier());
 
-		item = item.setNextItem(trustedServiceWithExpectedStatus(currentCertificate));
+		item = item.setNextItem(trustedServiceWithExpectedStatus());
 
 		SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(currentCertificate, currentTime, context, SubContext.SIGNING_CERT,
 				validationPolicy);
@@ -85,14 +87,14 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, context, constraint);
 	}
 
-	private ChainItem<XmlXCV> trustedServiceWithExpectedTypeIdentifier(CertificateWrapper certificate) {
+	private ChainItem<XmlXCV> trustedServiceWithExpectedTypeIdentifier() {
 		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceTypeIdentifierConstraint(context);
-		return new TrustedServiceTypeIdentifierCheck(result, certificate, context, constraint);
+		return new TrustedServiceTypeIdentifierCheck(result, currentCertificate, usageTime, context, constraint);
 	}
 
-	private ChainItem<XmlXCV> trustedServiceWithExpectedStatus(CertificateWrapper certificate) {
+	private ChainItem<XmlXCV> trustedServiceWithExpectedStatus() {
 		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceStatusConstraint(context);
-		return new TrustedServiceStatusCheck(result, certificate, context, constraint);
+		return new TrustedServiceStatusCheck(result, currentCertificate, usageTime, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVresult) {

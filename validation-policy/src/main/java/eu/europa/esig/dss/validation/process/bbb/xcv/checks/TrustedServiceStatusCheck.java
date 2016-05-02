@@ -24,13 +24,15 @@ import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
 
 	private final CertificateWrapper certificate;
+	private final Date usageTime; // timestamp / revocation production
 	private final Context context;
 
 	private String serviceStatusStr;
 
-	public TrustedServiceStatusCheck(XmlXCV result, CertificateWrapper certificate, Context context, MultiValuesConstraint constraint) {
+	public TrustedServiceStatusCheck(XmlXCV result, CertificateWrapper certificate, Date usageTime, Context context, MultiValuesConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
+		this.usageTime = usageTime;
 		this.context = context;
 	}
 
@@ -42,18 +44,20 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 			return true;
 		}
 
-		Date certificateValidFrom = certificate.getNotBefore();
 		List<XmlTrustedServiceProviderType> tspList = certificate.getCertificateTSPService();
 		for (XmlTrustedServiceProviderType trustedServiceProvider : tspList) {
 			XmlServiceStatus serviceStatus = trustedServiceProvider.getServiceStatus();
 			if (serviceStatus != null && CollectionUtils.isNotEmpty(serviceStatus.getStatusService())) {
 				for (XmlServiceStatusType status : serviceStatus.getStatusService()) {
-					Date statusStartDate = status.getStartDate();
-					Date statusEndDate = status.getEndDate();
-					// The issuing time of the certificate should be into the validity period of the associated service
-					if (certificateValidFrom.after(statusStartDate) && ((statusEndDate == null) || certificateValidFrom.before(statusEndDate))) {
-						serviceStatusStr = StringUtils.trim(status.getStatus());
-						return processValueCheck(serviceStatusStr);
+					serviceStatusStr = StringUtils.trim(status.getStatus());
+					if (processValueCheck(serviceStatusStr)) {
+						Date statusStartDate = status.getStartDate();
+						Date statusEndDate = status.getEndDate();
+						// The issuing time of the certificate should be into the validity period of the associated
+						// service
+						if ((usageTime.compareTo(statusStartDate) >= 0) && ((statusEndDate == null) || usageTime.before(statusEndDate))) {
+							return true;
+						}
 					}
 				}
 			}

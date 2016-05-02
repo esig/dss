@@ -1,8 +1,12 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
+import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -23,6 +27,12 @@ public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 	protected boolean process() {
 		List<String> keyUsages = certificate.getKeyUsages();
 		return processValuesCheck(keyUsages);
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		Object[] params = new Object[] { StringUtils.join(certificate.getKeyUsages(), ", ") };
+		return MessageFormat.format(AdditionalInfo.KEY_USAGE, params);
 	}
 
 	@Override
