@@ -284,7 +284,7 @@
     
     <xsl:template match="dss:Conclusion" />
 	
-    <xsl:template match="dss:ISC|dss:VCI|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PCV|dss:VTS">
+    <xsl:template match="dss:ISC|dss:VCI|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:SubXCV|dss:PSV|dss:PCV|dss:VTS">
     	<fo:table>
 			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
 			
@@ -320,6 +320,12 @@
 								</xsl:when>
 								<xsl:when test="name(.) = 'XCV'">
 									X509 Certificate Validation (XCV) : 
+								</xsl:when>
+								<xsl:when test="name(.) = 'SubXCV'">
+									<xsl:choose>
+										<xsl:when test="@TrustAnchor ='true'">Trust Anchor</xsl:when>
+										<xsl:otherwise>Certificate : </xsl:otherwise>
+									</xsl:choose>
 								</xsl:when>
 								<xsl:when test="name(.) = 'PSV'">
 									Past Signature Validation (PSV) : 
