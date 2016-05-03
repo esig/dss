@@ -67,11 +67,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			return;
 		}
 
-		ChainItem<XmlSubXCV> item = firstItem = certificateExpiration(currentCertificate, subContext);
-
-		item = item.setNextItem(keyUsage(currentCertificate, subContext));
-
-		item = item.setNextItem(surname(currentCertificate, subContext));
+		ChainItem<XmlSubXCV> item = firstItem = surname(currentCertificate, subContext);
 
 		item = item.setNextItem(givenName(currentCertificate, subContext));
 
@@ -89,9 +85,13 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
 
+		item = item.setNextItem(keyUsage(currentCertificate, subContext));
+
 		item = item.setNextItem(certificateRevoked(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateOnHold(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
 
 		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
 

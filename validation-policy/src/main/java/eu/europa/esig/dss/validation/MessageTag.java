@@ -199,7 +199,7 @@ public enum MessageTag {
 	PSV_ITPOCOBCT("Is there a POE of the certificate at (or before) control-time?"),
 	PSV_ITPOSVAOBCT("Is there a POE of the signature value at (or before) control-time?"),
 	PSV_ITPORDAOBCT("Is there a POE of the revocation data at (or before) control-time?"),
-	PSV_ITPOOBCT_ANS("No Proof Of Existance found at (or before) control-time!"),
+	PSV_ITPOOBCT_ANS("No Proof Of Existence found at (or before) control-time!"),
 
 	TSV_ASTPTCT("Are timestamps in the right order?"),
 	TSV_ASTPTCT_ANS("The timestamps were not generated in the right order!"),

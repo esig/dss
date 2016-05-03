@@ -35,12 +35,11 @@ public class RevocationDataConsistant extends ChainItem<XmlVTS> {
 		}
 
 		Date archiveCutOff = revocationData.getArchiveCutOff();
-		Date notBeforeRevoc = thisUpdate;
 		if (archiveCutOff != null) {
-			notBeforeRevoc = archiveCutOff;
+			notAfterRevoc = archiveCutOff;
 		}
 
-		return certNotBefore.before(notBeforeRevoc) && (certNotAfter.compareTo(notAfterRevoc) >= 0);
+		return certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(notAfterRevoc) >= 0);
 	}
 
 	@Override

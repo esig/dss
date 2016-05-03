@@ -1232,6 +1232,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			return;
 		}
 
+		if (ArrayUtils.isEmpty(policyBytes)) {
+			xmlPolicy.setIdentified(false);
+			xmlPolicy.setProcessingError("Empty content for policy");
+			return;
+		}
+
 		ASN1Sequence asn1Sequence = null;
 		try {
 			asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
