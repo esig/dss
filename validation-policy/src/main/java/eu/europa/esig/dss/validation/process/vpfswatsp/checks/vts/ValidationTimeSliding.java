@@ -3,6 +3,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -17,10 +18,8 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.IssuanceDateBeforeControlTime;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.RevocationDataConsistant;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.RevocationDataExistsCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
@@ -99,19 +98,26 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * found, the building block shall consider the most recent one
 				 * and shall go to the next step.
 				 * 
+				 * If more than one revocation status is found, the building block shall consider the most recent one
+				 * and shall go to the next step.
+				 * 
 				 * If there is no such information, The building block shall
 				 * return the indication INDETERMINATE with the sub-indication
 				 * NO_POE.
 				 */
-				RevocationWrapper revocationData = certificate.getRevocationData();
-				ChainItem<XmlVTS> item = revocationDataExists(revocationData);
+				RevocationWrapper latestCompliant = null;
+				Set<RevocationWrapper> revocations = certificate.getRevocationData();
+				for (RevocationWrapper revocation : revocations) {
+					if ((latestCompliant == null || revocation.getProductionDate().after(latestCompliant.getProductionDate()))
+							&& isConsistant(certificate, revocation) && isIssuanceBeforeControlTime(revocation)) {
+						latestCompliant = revocation;
+					}
+				}
+
+				ChainItem<XmlVTS> item = satisfyingRevocationDataExists(latestCompliant);
 				if (firstItem == null) {
 					firstItem = item;
 				}
-
-				item = item.setNextItem(revocationDataConsistant(certificate));
-
-				item = item.setNextItem(issuanceDateBeforeControlTime(revocationData));
 
 				/*
 				 * b) If the set of POEs contains a proof of existence
@@ -125,7 +131,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 */
 				item = item.setNextItem(poeExistsAtOrBeforeControlTime(certificate, TimestampReferenceCategory.CERTIFICATE, controlTime));
 
-				item = item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData, TimestampReferenceCategory.REVOCATION, controlTime));
+				item = item.setNextItem(poeExistsAtOrBeforeControlTime(latestCompliant, TimestampReferenceCategory.REVOCATION, controlTime));
 
 				/*
 				 * c) The update of the value of control-time is as
@@ -147,11 +153,11 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * Otherwise, the building block shall not change the
 				 * value of control-time.
 				 */
-				if (revocationData != null) {
+				if (latestCompliant != null) {
 					if (certificate.isRevoked()) {
-						controlTime = revocationData.getRevocationDate();
-					} else if (!isFresh(revocationData, controlTime)) {
-						controlTime = revocationData.getProductionDate();
+						controlTime = latestCompliant.getRevocationDate();
+					} else if (!isFresh(latestCompliant, controlTime)) {
+						controlTime = latestCompliant.getProductionDate();
 					}
 				}
 
@@ -182,20 +188,36 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		return execute != null && execute.getConclusion() != null && Indication.PASSED.equals(execute.getConclusion().getIndication());
 	}
 
-	private ChainItem<XmlVTS> revocationDataExists(RevocationWrapper revocationData) {
-		return new RevocationDataExistsCheck(result, revocationData, getFailLevelConstraint());
-	}
-
-	private ChainItem<XmlVTS> revocationDataConsistant(CertificateWrapper certificate) {
-		return new RevocationDataConsistant(result, certificate, getFailLevelConstraint());
-	}
-
-	private ChainItem<XmlVTS> issuanceDateBeforeControlTime(RevocationWrapper revocationData) {
-		return new IssuanceDateBeforeControlTime(result, revocationData, controlTime, getFailLevelConstraint());
+	private ChainItem<XmlVTS> satisfyingRevocationDataExists(RevocationWrapper revocationData) {
+		return new SatisfyingRevocationDataExistsCheck(result, revocationData, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampReferenceCategory referenceCategory, Date controlTime) {
 		return new POEExistsAtOrBeforeControlTimeCheck(result, token, referenceCategory, controlTime, poe, getFailLevelConstraint());
+	}
+
+	private boolean isConsistant(CertificateWrapper certificate, RevocationWrapper revocationData) {
+		Date certNotBefore = certificate.getNotBefore();
+		Date certNotAfter = certificate.getNotAfter();
+		Date thisUpdate = revocationData.getThisUpdate();
+
+		Date expiredCertsOnCRL = revocationData.getExpiredCertsOnCRL();
+		Date notAfterRevoc = thisUpdate;
+		if (expiredCertsOnCRL != null) {
+			notAfterRevoc = expiredCertsOnCRL;
+		}
+
+		Date archiveCutOff = revocationData.getArchiveCutOff();
+		if (archiveCutOff != null) {
+			notAfterRevoc = archiveCutOff;
+		}
+
+		return certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(notAfterRevoc) >= 0);
+	}
+
+	private boolean isIssuanceBeforeControlTime(RevocationWrapper revocationData) {
+		Date issuanceDate = revocationData.getProductionDate();
+		return issuanceDate.before(controlTime);
 	}
 
 }

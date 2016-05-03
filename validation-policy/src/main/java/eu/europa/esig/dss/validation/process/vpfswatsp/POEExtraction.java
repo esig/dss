@@ -20,6 +20,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * 5.6.2.3 POE extraction
@@ -56,9 +57,13 @@ public class POEExtraction {
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for (CertificateWrapper certificate : usedCertificates) {
 			addPOE(certificate.getId(), currentTime);
-			RevocationWrapper revocationData = certificate.getRevocationData();
-			if (revocationData != null) {
-				addPOE(revocationData.getId(), currentTime);
+			Set<RevocationWrapper> revocations = certificate.getRevocationData();
+			if (CollectionUtils.isNotEmpty(revocations)) {
+				for (RevocationWrapper revocation : revocations) {
+					if (RevocationOrigin.SIGNATURE.name().equals(revocation.getOrigin())) {
+						addPOE(revocation.getId(), currentTime);
+					}
+				}
 			}
 		}
 	}
@@ -119,13 +124,15 @@ public class POEExtraction {
 		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
 		if (CollectionUtils.isNotEmpty(certificates)) {
 			for (CertificateWrapper certificate : certificates) {
-				RevocationWrapper revocationData = certificate.getRevocationData();
-				if (revocationData != null) {
-					List<XmlDigestAlgAndValueType> digestAlgAndValues = revocationData.getDigestAlgAndValue();
-					for (XmlDigestAlgAndValueType revocDigestAndValue : digestAlgAndValues) {
-						if (StringUtils.equals(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-								&& StringUtils.equals(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
-							return revocationData.getId();
+				Set<RevocationWrapper> revocations = certificate.getRevocationData();
+				if (CollectionUtils.isNotEmpty(revocations)) {
+					for (RevocationWrapper revocationData : revocations) {
+						List<XmlDigestAlgAndValueType> digestAlgAndValues = revocationData.getDigestAlgAndValue();
+						for (XmlDigestAlgAndValueType revocDigestAndValue : digestAlgAndValues) {
+							if (StringUtils.equals(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
+									&& StringUtils.equals(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
+								return revocationData.getId();
+							}
 						}
 					}
 				}
@@ -153,7 +160,7 @@ public class POEExtraction {
 		List<Date> dates = poe.get(id);
 		if (dates != null) {
 			for (Date date : dates) {
-				if (date.compareTo(controlTime) < 0) {
+				if (date.compareTo(controlTime) <= 0) {
 					return true;
 				}
 			}

@@ -440,7 +440,7 @@ public class DiagnosticData {
 	public String getCertificateRevocationSource(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
-			return certificate.getRevocationData().getSource();
+			return certificate.getLatestRevocationData().getSource();
 		}
 		return StringUtils.EMPTY;
 	}
@@ -455,7 +455,7 @@ public class DiagnosticData {
 	public boolean getCertificateRevocationStatus(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
-			return certificate.getRevocationData().isStatus();
+			return certificate.getLatestRevocationData().isStatus();
 		}
 		return false;
 	}
@@ -470,7 +470,7 @@ public class DiagnosticData {
 	public String getCertificateRevocationReason(String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
-			return certificate.getRevocationData().getReason();
+			return certificate.getLatestRevocationData().getReason();
 		}
 		return StringUtils.EMPTY;
 	}
@@ -612,9 +612,9 @@ public class DiagnosticData {
 		List<CertificateWrapper> certificates = getUsedCertificates();
 		if (CollectionUtils.isNotEmpty(certificates)) {
 			for (CertificateWrapper certificate : certificates) {
-				RevocationWrapper data = certificate.getRevocationData();
-				if (data != null) {
-					revocationData.add(data);
+				Set<RevocationWrapper> revocations = certificate.getRevocationData();
+				if (revocations != null) {
+					revocationData.addAll(revocations);
 				}
 			}
 		}

@@ -25,7 +25,7 @@ public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected boolean process() {
-		RevocationWrapper revocationData = certificate.getRevocationData();
+		RevocationWrapper revocationData = certificate.getLatestRevocationData();
 		boolean isOnHold = (revocationData != null) && !revocationData.isStatus() && CRLReasonEnum.certificateHold.name().equals(revocationData.getReason());
 		if (!isOnHold) {
 			return true;
@@ -36,7 +36,7 @@ public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected String getAdditionalInfo() {
-		RevocationWrapper revocationData = certificate.getRevocationData();
+		RevocationWrapper revocationData = certificate.getLatestRevocationData();
 		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
 		String revocationDateStr = revocationData.getRevocationDate() == null ? " ? " : sdf.format(revocationData.getRevocationDate());
 		Object[] params = new Object[] { revocationData.getReason(), revocationDateStr };

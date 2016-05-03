@@ -1076,80 +1076,81 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param xmlCert
 	 */
 	private void dealRevocationData(Set<DigestAlgorithm> usedDigestAlgorithms, final CertificateToken certToken, final XmlCertificate xmlCert) {
+		final Set<RevocationToken> revocationTokens = certToken.getRevocationTokens();
+		if (CollectionUtils.isNotEmpty(revocationTokens)) {
+			for (RevocationToken revocationToken : revocationTokens) {
+				final XmlRevocationType xmlRevocation = new XmlRevocationType();
+				xmlRevocation.setOrigin(revocationToken.getOrigin().name());
+				final Boolean revocationTokenStatus = revocationToken.getStatus();
+				// revocationTokenStatus can be null when OCSP return Unknown. In
+				// this case we set status to false.
+				xmlRevocation.setStatus(revocationTokenStatus == null ? false : revocationTokenStatus);
+				xmlRevocation.setProductionDate(revocationToken.getProductionDate());
+				xmlRevocation.setThisUpdate(revocationToken.getThisUpdate());
+				xmlRevocation.setNextUpdate(revocationToken.getNextUpdate());
+				xmlRevocation.setRevocationDate(revocationToken.getRevocationDate());
+				xmlRevocation.setExpiredCertsOnCRL(revocationToken.getExpiredCertsOnCRL());
+				xmlRevocation.setArchiveCutOff(revocationToken.getArchiveCutOff());
+				xmlRevocation.setReason(revocationToken.getReason());
+				xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
 
-		final XmlRevocationType xmlRevocation = new XmlRevocationType();
-		final RevocationToken revocationToken = certToken.getRevocationToken();
-		if (revocationToken != null) {
-
-			final Boolean revocationTokenStatus = revocationToken.getStatus();
-			// revocationTokenStatus can be null when OCSP return Unknown. In
-			// this case we set status to false.
-			xmlRevocation.setStatus(revocationTokenStatus == null ? false : revocationTokenStatus);
-			xmlRevocation.setProductionDate(revocationToken.getProductionDate());
-			xmlRevocation.setThisUpdate(revocationToken.getThisUpdate());
-			xmlRevocation.setNextUpdate(revocationToken.getNextUpdate());
-			xmlRevocation.setRevocationDate(revocationToken.getRevocationDate());
-			xmlRevocation.setExpiredCertsOnCRL(revocationToken.getExpiredCertsOnCRL());
-			xmlRevocation.setArchiveCutOff(revocationToken.getArchiveCutOff());
-			xmlRevocation.setReason(revocationToken.getReason());
-			xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
-
-			String sourceURL = revocationToken.getSourceURL();
-			if (StringUtils.isNotEmpty(sourceURL)) { // not empty = online
-				xmlRevocation.setSourceAddress(sourceURL);
-				xmlRevocation.setAvailable(revocationToken.isAvailable());
-			}
-
-			// In case of CRL, the X509CRL can be the same for different
-			// certificates
-			byte[] digestForId = DSSUtils.digest(DigestAlgorithm.SHA256, certToken.getEncoded(), revocationToken.getEncoded());
-			xmlRevocation.setId(DatatypeConverter.printHexBinary(digestForId));
-
-			final XmlBasicSignatureType xmlBasicSignatureType = new XmlBasicSignatureType();
-			final SignatureAlgorithm revocationSignatureAlgo = revocationToken.getSignatureAlgorithm();
-			final boolean unknownAlgorithm = revocationSignatureAlgo == null;
-			final String encryptionAlgorithmName = unknownAlgorithm ? "?" : revocationSignatureAlgo.getEncryptionAlgorithm().getName();
-			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmName);
-			final String keyLength = DSSPKUtils.getPublicKeySize(revocationToken);
-			xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(keyLength);
-
-			final String digestAlgorithmName = unknownAlgorithm ? "?" : revocationSignatureAlgo.getDigestAlgorithm().getName();
-			xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(digestAlgorithmName);
-			final boolean signatureValid = revocationToken.isSignatureValid();
-			xmlBasicSignatureType.setReferenceDataFound(signatureValid);
-			xmlBasicSignatureType.setReferenceDataIntact(signatureValid);
-			xmlBasicSignatureType.setSignatureIntact(signatureValid);
-			xmlBasicSignatureType.setSignatureValid(signatureValid);
-			xmlRevocation.setBasicSignature(xmlBasicSignatureType);
-
-			for (final DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
-				final XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
-				xmlDigestAlgAndValue.setDigestMethod(digestAlgorithm.getName());
-				xmlDigestAlgAndValue.setDigestValue(DSSUtils.digest(digestAlgorithm, revocationToken));
-				xmlRevocation.getDigestAlgAndValue().add(xmlDigestAlgAndValue);
-			}
-
-			final CertificateToken issuerToken = revocationToken.getIssuerToken();
-			final XmlSigningCertificateType xmlRevocationSignCert = xmlForSigningCertificate(issuerToken);
-			xmlRevocation.setSigningCertificate(xmlRevocationSignCert);
-
-			final XmlCertificateChainType xmlCertChainType = xmlForCertificateChain(issuerToken);
-			xmlRevocation.setCertificateChain(xmlCertChainType);
-
-			final List<String> list = revocationToken.getValidationInfo();
-			if (list.size() > 0) {
-
-				final XmlInfoType xmlInfo = new XmlInfoType();
-				for (String message : list) {
-
-					final XmlMessage xmlMessage = new XmlMessage();
-					xmlMessage.setId(0);
-					xmlMessage.setValue(message);
-					xmlInfo.getMessage().add(xmlMessage);
+				String sourceURL = revocationToken.getSourceURL();
+				if (StringUtils.isNotEmpty(sourceURL)) { // not empty = online
+					xmlRevocation.setSourceAddress(sourceURL);
+					xmlRevocation.setAvailable(revocationToken.isAvailable());
 				}
-				xmlRevocation.setInfo(xmlInfo);
+
+				// In case of CRL, the X509CRL can be the same for different
+				// certificates
+				byte[] digestForId = DSSUtils.digest(DigestAlgorithm.SHA256, certToken.getEncoded(), revocationToken.getEncoded());
+				xmlRevocation.setId(DatatypeConverter.printHexBinary(digestForId));
+
+				final XmlBasicSignatureType xmlBasicSignatureType = new XmlBasicSignatureType();
+				final SignatureAlgorithm revocationSignatureAlgo = revocationToken.getSignatureAlgorithm();
+				final boolean unknownAlgorithm = revocationSignatureAlgo == null;
+				final String encryptionAlgorithmName = unknownAlgorithm ? "?" : revocationSignatureAlgo.getEncryptionAlgorithm().getName();
+				xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmName);
+				final String keyLength = DSSPKUtils.getPublicKeySize(revocationToken);
+				xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(keyLength);
+
+				final String digestAlgorithmName = unknownAlgorithm ? "?" : revocationSignatureAlgo.getDigestAlgorithm().getName();
+				xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(digestAlgorithmName);
+				final boolean signatureValid = revocationToken.isSignatureValid();
+				xmlBasicSignatureType.setReferenceDataFound(signatureValid);
+				xmlBasicSignatureType.setReferenceDataIntact(signatureValid);
+				xmlBasicSignatureType.setSignatureIntact(signatureValid);
+				xmlBasicSignatureType.setSignatureValid(signatureValid);
+				xmlRevocation.setBasicSignature(xmlBasicSignatureType);
+
+				for (final DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
+					final XmlDigestAlgAndValueType xmlDigestAlgAndValue = new XmlDigestAlgAndValueType();
+					xmlDigestAlgAndValue.setDigestMethod(digestAlgorithm.getName());
+					xmlDigestAlgAndValue.setDigestValue(DSSUtils.digest(digestAlgorithm, revocationToken));
+					xmlRevocation.getDigestAlgAndValue().add(xmlDigestAlgAndValue);
+				}
+
+				final CertificateToken issuerToken = revocationToken.getIssuerToken();
+				final XmlSigningCertificateType xmlRevocationSignCert = xmlForSigningCertificate(issuerToken);
+				xmlRevocation.setSigningCertificate(xmlRevocationSignCert);
+
+				final XmlCertificateChainType xmlCertChainType = xmlForCertificateChain(issuerToken);
+				xmlRevocation.setCertificateChain(xmlCertChainType);
+
+				final List<String> list = revocationToken.getValidationInfo();
+				if (list.size() > 0) {
+
+					final XmlInfoType xmlInfo = new XmlInfoType();
+					for (String message : list) {
+
+						final XmlMessage xmlMessage = new XmlMessage();
+						xmlMessage.setId(0);
+						xmlMessage.setValue(message);
+						xmlInfo.getMessage().add(xmlMessage);
+					}
+					xmlRevocation.setInfo(xmlInfo);
+				}
+				xmlCert.getRevocation().add(xmlRevocation);
 			}
-			xmlCert.setRevocation(xmlRevocation);
 		}
 	}
 

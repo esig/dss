@@ -77,6 +77,10 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getSource();
 	}
 
+	public String getOrigin() {
+		return revocation.getOrigin();
+	}
+
 	public List<XmlDigestAlgAndValueType> getDigestAlgAndValue() {
 		return revocation.getDigestAlgAndValue();
 	}

@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * This class if a basic skeleton that is able to retrieve needed CRL data from
@@ -63,7 +64,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		}
 		final CRLToken validCRLToken = validCRLTokenList.get(certificateToken);
 		if (validCRLToken != null) {
-
+			validCRLToken.setOrigin(RevocationOrigin.SIGNATURE);
 			return validCRLToken;
 		}
 		final CertificateToken issuerToken = certificateToken.getIssuerToken();
@@ -76,6 +77,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 			return null;
 		}
 		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity);
+		crlToken.setOrigin(RevocationOrigin.SIGNATURE);
 		validCRLTokenList.put(certificateToken, crlToken);
 		return crlToken;
 	}

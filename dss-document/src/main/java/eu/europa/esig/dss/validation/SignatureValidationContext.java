@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -308,18 +309,21 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public void addRevocationTokenForVerification(final RevocationToken revocationToken) {
+	public void addRevocationTokensForVerification(final List<RevocationToken> revocationTokens) {
+		for (RevocationToken revocationToken : revocationTokens) {
 
-		if (addTokenForVerification(revocationToken)) {
+			if (addTokenForVerification(revocationToken)) {
 
-			final boolean added = processedRevocations.add(revocationToken);
-			if (logger.isTraceEnabled()) {
-				if (added) {
-					logger.trace("RevocationToken added to processedRevocations: {} ", revocationToken);
-				} else {
-					logger.trace("RevocationToken already present processedRevocations: {} ", revocationToken);
+				final boolean added = processedRevocations.add(revocationToken);
+				if (logger.isTraceEnabled()) {
+					if (added) {
+						logger.trace("RevocationToken added to processedRevocations: {} ", revocationToken);
+					} else {
+						logger.trace("RevocationToken already present processedRevocations: {} ", revocationToken);
+					}
 				}
 			}
+
 		}
 	}
 
@@ -371,8 +375,8 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 
 				if (token instanceof CertificateToken) {
-					final RevocationToken revocationToken = getRevocationData((CertificateToken) token);
-					addRevocationTokenForVerification(revocationToken);
+					final List<RevocationToken> revocationToken = getRevocationData((CertificateToken) token);
+					addRevocationTokensForVerification(revocationToken);
 				}
 
 			}
@@ -387,7 +391,7 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @param certToken
 	 * @return
 	 */
-	private RevocationToken getRevocationData(final CertificateToken certToken) {
+	private List<RevocationToken> getRevocationData(final CertificateToken certToken) {
 
 		if (logger.isTraceEnabled()) {
 			logger.trace("Checking revocation data for: " + certToken.getDSSIdAsString());
@@ -396,36 +400,37 @@ public class SignatureValidationContext implements ValidationContext {
 
 			// It is not possible to check the revocation data without its signing certificate;
 			// This check is not needed for the trust anchor.
-			return null;
+			return Collections.emptyList();
 		}
 
 		if (DSSASN1Utils.isOCSPSigning(certToken) && DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
 			certToken.extraInfo().addInfo("OCSP check not needed: id-pkix-ocsp-nocheck extension present.");
-			return null;
+			return Collections.emptyList();
 		}
 
-		boolean checkOnLine = shouldCheckOnLine(certToken);
-		if (checkOnLine) {
+		List<RevocationToken> revocations = new ArrayList<RevocationToken>();
 
-			final OCSPAndCRLCertificateVerifier onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
-			final RevocationToken revocationToken = onlineVerifier.check(certToken);
-			if (revocationToken != null) {
-
-				return revocationToken;
-			}
+		// ALL Embedded revocation data
+		OCSPCertificateVerifier ocspCertVerifier = new OCSPCertificateVerifier(signatureOCSPSource, validationCertificatePool);
+		RevocationToken ocspToken = ocspCertVerifier.check(certToken);
+		if (ocspToken != null) {
+			revocations.add(ocspToken);
 		}
-		final OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource,
-				validationCertificatePool);
-		final RevocationToken revocationToken = offlineVerifier.check(certToken);
-		return revocationToken;
-	}
 
-	private boolean shouldCheckOnLine(final CertificateToken certificateToken) {
-		final boolean expired = certificateToken.isExpiredOn(currentTime);
-		if (!expired) {
-			return true;
+		CRLCertificateVerifier crlCertVerifier = new CRLCertificateVerifier(signatureCRLSource);
+		RevocationToken crlToken = crlCertVerifier.check(certToken);
+		if (crlToken != null) {
+			revocations.add(crlToken);
 		}
-		return false;
+
+		// Online resources (OCSP and CRL if OCSP doesn't reply)
+		final OCSPAndCRLCertificateVerifier onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+		final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
+		if (onlineRevocationToken != null) {
+			revocations.add(onlineRevocationToken);
+		}
+
+		return revocations;
 	}
 
 	@Override

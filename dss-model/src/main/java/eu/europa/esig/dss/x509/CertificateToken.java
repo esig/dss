@@ -81,7 +81,7 @@ public class CertificateToken extends Token {
 	/**
 	 * OCSP or CRL revocation data for this token.
 	 */
-	private RevocationToken revocationToken;
+	private Set<RevocationToken> revocationTokens = new HashSet<RevocationToken>();
 
 	/**
 	 * Indicates if the certificate is self-signed. This attribute stays null till the first call to
@@ -168,15 +168,15 @@ public class CertificateToken extends Token {
 	 *            This is the reference to the CertificateStatus. The object type is used because of the organisation
 	 *            of module.
 	 */
-	public void setRevocationToken(RevocationToken revocationToken) {
-		this.revocationToken = revocationToken;
+	public void addRevocationToken(RevocationToken revocationToken) {
+		this.revocationTokens.add(revocationToken);
 	}
 
 	/**
 	 * Returns the certificate revocation revocationToken object.
 	 */
-	public RevocationToken getRevocationToken() {
-		return revocationToken;
+	public Set<RevocationToken> getRevocationTokens() {
+		return revocationTokens;
 	}
 
 	/**
@@ -256,15 +256,26 @@ public class CertificateToken extends Token {
 		if (isTrusted()) {
 			return false;
 		}
-		if (revocationToken == null) {
+		RevocationToken latest = getLatestRevocationToken();
+		if (latest == null) {
 			return null;
 		}
-		Boolean status = revocationToken.getStatus();
+		Boolean status = latest.getStatus();
 		if (status == null) {
 			return null;
 		}
 		status = !status;
 		return status;
+	}
+
+	private RevocationToken getLatestRevocationToken() {
+		RevocationToken latest = null;
+		for (RevocationToken revocationToken : revocationTokens) {
+			if (latest == null || revocationToken.getProductionDate().after(latest.getProductionDate())) {
+				latest = revocationToken;
+			}
+		}
+		return latest;
 	}
 
 	/**
@@ -488,24 +499,6 @@ public class CertificateToken extends Token {
 					if (!signatureInvalidityReason.isEmpty()) {
 						out.append(indentStr).append("Signature validity : INVALID").append(" - ").append(signatureInvalidityReason).append('\n');
 					}
-				}
-			}
-			if (revocationToken != null) {
-				out.append(indentStr).append("Revocation data[\n");
-				indentStr += "\t";
-				final CertificateToken revocationTokenIssuerToken = revocationToken.getIssuerToken();
-				out.append(indentStr).append("Status: ").append(revocationToken.getStatus()).append(" / ").append(revocationToken.getProductionDate())
-						.append(" / issuer's certificate ").append(revocationTokenIssuerToken != null ? revocationTokenIssuerToken.getDSSIdAsString() : "null")
-						.append('\n');
-				indentStr = indentStr.substring(1);
-				out.append(indentStr).append("]\n");
-			} else {
-				if (isSelfSigned()) {
-					out.append(indentStr).append("Verification of revocation data is not necessary: self-signed certificate.\n");
-				} else if (isTrusted()) {
-					out.append(indentStr).append("Verification of revocation data is not necessary: trusted certificate.\n");
-				} else {
-					out.append(indentStr).append("There is no revocation data available!\n");
 				}
 			}
 			if (issuerToken != null) {

@@ -301,7 +301,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	private Date getRevocationDateForSigningCertificate(SignatureWrapper currentSignature) {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
 		if (signingCertificate != null && signingCertificate.getRevocationData() != null) {
-			return signingCertificate.getRevocationData().getRevocationDate();
+			return signingCertificate.getLatestRevocationData().getRevocationDate();
 		}
 		return null;
 	}

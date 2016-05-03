@@ -115,7 +115,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 			}
 
 			if (SubContext.CA_CERTIFICATE.equals(subContext) && certificate.isRevoked()) {
-				Date caRevocationDate = certificate.getRevocationData().getRevocationDate();
+				Date caRevocationDate = certificate.getLatestRevocationData().getRevocationDate();
 				if (caRevocationDate != null && intervalNotAfter.after(caRevocationDate)) {
 					intervalNotAfter = caRevocationDate;
 				}

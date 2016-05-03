@@ -211,7 +211,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		for (String certificateId : certificateChainIds) {
 			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
 			if (certificate != null && certificate.getRevocationData() != null) {
-				result.add(certificate.getRevocationData());
+				result.addAll(certificate.getRevocationData());
 			}
 		}
 	}

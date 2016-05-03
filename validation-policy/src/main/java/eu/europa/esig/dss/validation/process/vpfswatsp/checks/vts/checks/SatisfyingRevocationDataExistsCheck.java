@@ -8,11 +8,11 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class RevocationDataExistsCheck extends ChainItem<XmlVTS> {
+public class SatisfyingRevocationDataExistsCheck extends ChainItem<XmlVTS> {
 
 	private final RevocationWrapper revocationData;
 
-	public RevocationDataExistsCheck(XmlVTS result, RevocationWrapper revocationData, LevelConstraint constraint) {
+	public SatisfyingRevocationDataExistsCheck(XmlVTS result, RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.revocationData = revocationData;

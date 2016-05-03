@@ -26,6 +26,11 @@ import java.util.Date;
 public abstract class RevocationToken extends Token {
 
 	/**
+	 * Origin of the revocation data (signature or external)
+	 */
+	protected RevocationOrigin origin = RevocationOrigin.EXTERNAL;
+
+	/**
 	 * The URL which was used to obtain the revocation data (online).
 	 */
 	protected String sourceURL;
@@ -83,6 +88,14 @@ public abstract class RevocationToken extends Token {
 	 */
 	public void setSourceURL(final String sourceURL) {
 		this.sourceURL = sourceURL;
+	}
+
+	public RevocationOrigin getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(RevocationOrigin origin) {
+		this.origin = origin;
 	}
 
 	public boolean isAvailable() {

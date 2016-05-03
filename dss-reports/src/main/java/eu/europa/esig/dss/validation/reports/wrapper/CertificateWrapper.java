@@ -21,6 +21,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlKeyUsageBits;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatementIds;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 
@@ -66,14 +67,29 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isRevocationDataAvailable() {
-		return certificate.getRevocation() != null;
+		return CollectionUtils.isNotEmpty(certificate.getRevocation());
 	}
 
-	public RevocationWrapper getRevocationData() {
+	public Set<RevocationWrapper> getRevocationData() {
 		if (isRevocationDataAvailable()) {
-			return new RevocationWrapper(certificate.getRevocation());
+			List<XmlRevocationType> revocation = certificate.getRevocation();
+			Set<RevocationWrapper> result = new HashSet<RevocationWrapper>();
+			for (XmlRevocationType xmlRevocationType : revocation) {
+				result.add(new RevocationWrapper(xmlRevocationType));
+			}
+			return result;
 		}
-		return null;
+		return Collections.emptySet();
+	}
+
+	public RevocationWrapper getLatestRevocationData() {
+		RevocationWrapper latest = null;
+		for (RevocationWrapper revoc : getRevocationData()) {
+			if (latest == null || revoc.getProductionDate().after(latest.getProductionDate())) {
+				latest = revoc;
+			}
+		}
+		return latest;
 	}
 
 	public boolean isIdPkixOcspNoCheck() {
@@ -129,15 +145,14 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isRevoked() {
-		if ((certificate != null) && (certificate.getRevocation() != null)) {
-			return certificate.getRevocation().isStatus() && certificate.getRevocation().getRevocationDate() != null;
-		}
-		return false;
+		RevocationWrapper latestRevocationData = getLatestRevocationData();
+		return latestRevocationData != null && latestRevocationData.isStatus() && latestRevocationData.getRevocationDate() != null;
 	}
 
 	public boolean isValidCertificate() {
 		final boolean signatureValid = (certificate.getBasicSignature() != null) && certificate.getBasicSignature().isSignatureValid();
-		final boolean revocationValid = (certificate.getRevocation() != null) && certificate.getRevocation().isStatus();
+		RevocationWrapper latestRevocationData = getLatestRevocationData();
+		final boolean revocationValid = (latestRevocationData != null) && latestRevocationData.isStatus();
 		final boolean trusted = certificate.isTrusted();
 
 		final boolean validity = signatureValid && (trusted ? true : revocationValid);

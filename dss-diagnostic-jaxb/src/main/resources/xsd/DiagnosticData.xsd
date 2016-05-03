@@ -139,7 +139,7 @@
 										</xs:element>
 										
 										<xs:element type="TrustedServiceProviderType" name="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
-										<xs:element type="RevocationType" name="Revocation" minOccurs="0" />
+										<xs:element type="RevocationType" name="Revocation" minOccurs="0" maxOccurs="unbounded" />
 										<xs:element type="InfoType" name="Info" minOccurs="0" />
 									</xs:sequence>
 									<xs:attribute type="xs:string" name="Id" use="required" />
@@ -306,6 +306,7 @@
 	</xs:complexType>
 	<xs:complexType name="RevocationType">
 		<xs:sequence>
+			<xs:element type="xs:string" name="Origin" />
 			<xs:element type="xs:string" name="Source" />
 			<xs:element type="xs:string" name="SourceAddress" minOccurs="0" />
 			<xs:element type="xs:boolean" name="Available"  minOccurs="0" />

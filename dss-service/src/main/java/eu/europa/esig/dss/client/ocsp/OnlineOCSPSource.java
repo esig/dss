@@ -155,7 +155,7 @@ public class OnlineOCSPSource implements OCSPSource {
 				ocspToken.setBestSingleResp(getBestSingleResp(basicOCSPResp, certId));
 			}
 
-			certificateToken.setRevocationToken(ocspToken);
+			certificateToken.addRevocationToken(ocspToken);
 			return ocspToken;
 		} catch (OCSPException e) {
 			throw new DSSException(e);

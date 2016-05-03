@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * Abstract class that helps to implement an OCSPSource with an already loaded list of BasicOCSPResp
@@ -80,9 +81,10 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 
 		if (bestBasicOCSPResp != null) {
 			OCSPToken ocspToken = new OCSPToken();
+			ocspToken.setOrigin(RevocationOrigin.SIGNATURE);
 			ocspToken.setBasicOCSPResp(bestBasicOCSPResp);
 			ocspToken.setBestSingleResp(bestSingleResp);
-			certificateToken.setRevocationToken(ocspToken);
+			certificateToken.addRevocationToken(ocspToken);
 			return ocspToken;
 		}
 		return null;
