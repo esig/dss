@@ -88,9 +88,8 @@ public class OfflineResolver extends ResourceResolverSpi {
 					LOG.warn("OfflineResolver: WARNING: ", ex);
 				}
 			}
-			if (doesContainOnlyOneDocument()) {
-				return true;
-			}
+		} else if (doesContainOnlyOneDocument()) { // no URI is allowed in ASiC-S with one file
+			return true;
 		}
 		return false;
 	}
@@ -99,8 +98,12 @@ public class OfflineResolver extends ResourceResolverSpi {
 	public XMLSignatureInput engineResolveURI(ResourceResolverContext context) throws ResourceResolverException {
 
 		final Attr uriAttr = context.attr;
-		final String baseUriString = context.baseUri;
-		String documentUri = uriAttr.getNodeValue();
+		String documentUri = null;
+		if (uriAttr == null && doesContainOnlyOneDocument()) {
+			documentUri = "";
+		} else if (uriAttr != null) {
+			documentUri = uriAttr.getNodeValue();
+		}
 		documentUri = decodeUrl(documentUri);
 		final DSSDocument document = getDocument(documentUri);
 		if (document != null) {
@@ -122,9 +125,8 @@ public class OfflineResolver extends ResourceResolverSpi {
 			}
 			return result;
 		} else {
-
 			Object exArgs[] = { "The uriNodeValue " + documentUri + " is not configured for offline work" };
-			throw new ResourceResolverException("generic.EmptyMessage", exArgs, documentUri, baseUriString);
+			throw new ResourceResolverException("generic.EmptyMessage", exArgs, documentUri, context.baseUri);
 		}
 	}
 
