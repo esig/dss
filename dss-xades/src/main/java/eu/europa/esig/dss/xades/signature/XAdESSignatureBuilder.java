@@ -281,7 +281,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		certificateChains.addAll(params.getCertificateChain());
 		for (final CertificateToken x509Certificate : certificateChains) {
 			// do not include trusted cert
-			if (trustAnchorBPPolicy) {
+			if (trustAnchorBPPolicy && certificatePool != null) {
 				if (!certificatePool.get(x509Certificate.getSubjectX500Principal()).isEmpty()) {
 					continue;
 				}

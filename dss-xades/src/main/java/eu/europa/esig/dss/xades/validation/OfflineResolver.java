@@ -114,9 +114,6 @@ public class OfflineResolver extends ResourceResolverSpi {
 			// are added within the santuario which breaks the HASH.
 			// TODO-Vin (05/09/2014): Can you create an isolated test-case JIRA DSS-?
 			InputStream inputStream = document.openStream();
-			// final byte[] bytes = DSSUtils.toByteArray(inputStream);
-			// final String string = new String(bytes);
-			// inputStream = DSSUtils.toInputStream(bytes);
 			final XMLSignatureInput result = new XMLSignatureInput(inputStream);
 			result.setSourceURI(documentUri);
 			final MimeType mimeType = document.getMimeType();
