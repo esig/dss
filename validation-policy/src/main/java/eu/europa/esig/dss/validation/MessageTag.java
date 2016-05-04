@@ -69,8 +69,8 @@ public enum MessageTag {
 	ADEST_ROBVPIIC_ANS("The result of the Basic validation process is not conclusive!"),
 	ADEST_ROTVPIIC("Is the result of the timestamps validation process conclusive?"),
 	ADEST_ROTVPIIC_ANS("The result of the timestamps validation process is not conclusive!"),
-	ADEST_RORPIIC("Is the result of the revocation data validation process conclusive?"),
-	ADEST_RORPIIC_ANS("The result of the revocation data validation process is not conclusive!"),
+	ADEST_RORPIIC("Is the result of the revocation data validation process acceptable?"),
+	ADEST_RORPIIC_ANS("The result of the revocation data validation process is not acceptable!"),
 
 	LTV_ABSV("Is the result of the Basic Validation Process acceptable?"),
 	LTV_ABSV_ANS("The result of the Basic validation process is not acceptable to continue the process!"),

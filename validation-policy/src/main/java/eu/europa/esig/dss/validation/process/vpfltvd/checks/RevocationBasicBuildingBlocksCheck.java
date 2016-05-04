@@ -37,7 +37,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlISC isc = revocationBBB.getISC();
 		XmlConclusion iscConclusion = isc.getConclusion();
-		if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
+		if (!isAllowed(iscConclusion)) {
 			indication = iscConclusion.getIndication();
 			subIndication = iscConclusion.getSubIndication();
 			errors = iscConclusion.getErrors();
@@ -48,7 +48,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlCV cv = revocationBBB.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
+		if (!isAllowed(cvConclusion)) {
 			indication = cvConclusion.getIndication();
 			subIndication = cvConclusion.getSubIndication();
 			errors = cvConclusion.getErrors();
@@ -57,7 +57,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlXCV xcv = revocationBBB.getXCV();
 		XmlConclusion xcvConclusion = xcv.getConclusion();
-		if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
+		if (!isAllowed(xcvConclusion)) {
 			indication = xcvConclusion.getIndication();
 			subIndication = xcvConclusion.getSubIndication();
 			errors = xcvConclusion.getErrors();
@@ -66,7 +66,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 
 		XmlSAV sav = revocationBBB.getSAV();
 		XmlConclusion savConclusion = sav.getConclusion();
-		if (!Indication.PASSED.equals(savConclusion.getIndication())) {
+		if (!isAllowed(savConclusion)) {
 			indication = savConclusion.getIndication();
 			subIndication = savConclusion.getSubIndication();
 			errors = savConclusion.getErrors();
@@ -74,6 +74,14 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 		}
 
 		return true;
+	}
+
+	private boolean isAllowed(XmlConclusion conclusion) {
+		boolean allowed = Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+				&& (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
+		return allowed;
 	}
 
 	@Override
