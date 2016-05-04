@@ -25,12 +25,12 @@ public class SatisfyingRevocationDataExistsCheck extends ChainItem<XmlVTS> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_IRDPFC;
+		return MessageTag.BBB_VTS_IRDPFC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_IRDPFC_ANS;
+		return MessageTag.BBB_VTS_IRDPFC_ANS;
 	}
 
 	@Override
