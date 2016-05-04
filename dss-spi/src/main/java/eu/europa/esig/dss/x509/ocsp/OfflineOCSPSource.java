@@ -84,7 +84,6 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 			ocspToken.setOrigin(RevocationOrigin.SIGNATURE);
 			ocspToken.setBasicOCSPResp(bestBasicOCSPResp);
 			ocspToken.setBestSingleResp(bestSingleResp);
-			certificateToken.addRevocationToken(ocspToken);
 			return ocspToken;
 		}
 		return null;

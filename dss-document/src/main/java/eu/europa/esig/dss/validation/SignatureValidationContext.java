@@ -411,14 +411,13 @@ public class SignatureValidationContext implements ValidationContext {
 		List<RevocationToken> revocations = new ArrayList<RevocationToken>();
 
 		// ALL Embedded revocation data
-		OCSPCertificateVerifier ocspCertVerifier = new OCSPCertificateVerifier(signatureOCSPSource, validationCertificatePool);
-		RevocationToken ocspToken = ocspCertVerifier.check(certToken);
+		OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource, validationCertificatePool);
+		RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken);
 		if (ocspToken != null) {
 			revocations.add(ocspToken);
 		}
 
-		CRLCertificateVerifier crlCertVerifier = new CRLCertificateVerifier(signatureCRLSource);
-		RevocationToken crlToken = crlCertVerifier.check(certToken);
+		RevocationToken crlToken = offlineVerifier.checkCRL(certToken);
 		if (crlToken != null) {
 			revocations.add(crlToken);
 		}
@@ -426,7 +425,8 @@ public class SignatureValidationContext implements ValidationContext {
 		// Online resources (OCSP and CRL if OCSP doesn't reply)
 		final OCSPAndCRLCertificateVerifier onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
 		final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
-		if (onlineRevocationToken != null) {
+		// CRL can already exist in the signature
+		if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
 			revocations.add(onlineRevocationToken);
 		}
 

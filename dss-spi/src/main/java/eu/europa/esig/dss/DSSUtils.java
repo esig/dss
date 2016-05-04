@@ -68,6 +68,7 @@ import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1054,6 +1055,15 @@ public final class DSSUtils {
 	public static byte[] getEncoded(BasicOCSPResp basicOCSPResp) {
 		try {
 			final byte[] encoded = basicOCSPResp.getEncoded();
+			return encoded;
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public static byte[] getEncoded(OCSPResp ocspResp) {
+		try {
+			final byte[] encoded = ocspResp.getEncoded();
 			return encoded;
 		} catch (IOException e) {
 			throw new DSSException(e);

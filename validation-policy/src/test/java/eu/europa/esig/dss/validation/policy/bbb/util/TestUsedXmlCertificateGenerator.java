@@ -67,7 +67,7 @@ public class TestUsedXmlCertificateGenerator {
 		revocationType.setNextUpdate(new Date());
 		// revocationType.setReason("certificateHold");
 
-		cert.setRevocation(revocationType);
+		cert.getRevocation().add(revocationType);
 
 		TestXmlUsedCertificates result = new TestXmlUsedCertificates();
 		result.addXmlCertificates(cert);

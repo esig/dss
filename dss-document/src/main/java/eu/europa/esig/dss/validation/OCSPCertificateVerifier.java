@@ -84,6 +84,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 				if (!found) {
 					extractSigningCertificateFormResponderId(ocspToken);
 				}
+				toCheckToken.addRevocationToken(ocspToken);
 			}
 			return ocspToken;
 		} catch (DSSException e) {

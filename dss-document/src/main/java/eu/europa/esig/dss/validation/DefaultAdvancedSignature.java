@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -38,6 +39,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.crl.ListCRLSource;
@@ -245,36 +247,21 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return {@code RevocationDataForInclusion}
 	 */
 	public RevocationDataForInclusion getRevocationDataForInclusion(final ValidationContext validationContext) {
-
 		// TODO: to be checked: there can be also CRL and OCSP in TimestampToken CMS data
 		final Set<RevocationToken> revocationTokens = validationContext.getProcessedRevocations();
-		final OfflineCRLSource crlSource = getCRLSource();
-		final List<X509CRL> containedX509CRLs = crlSource.getContainedX509CRLs();
-		final OfflineOCSPSource ocspSource = getOCSPSource();
-		final List<BasicOCSPResp> containedBasicOCSPResponses = ocspSource.getContainedOCSPResponses();
 		final List<CRLToken> crlTokens = new ArrayList<CRLToken>();
 		final List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
 		for (final RevocationToken revocationToken : revocationTokens) {
-
-			if (revocationToken instanceof CRLToken) {
-
-				final CRLToken crlToken = (CRLToken) revocationToken;
-				final X509CRL x509crl = crlToken.getX509crl();
-				final boolean tokenIn = containedX509CRLs.contains(x509crl);
-				if (!tokenIn) {
-
+			if (!RevocationOrigin.SIGNATURE.equals(revocationToken.getOrigin())) {
+				if (revocationToken instanceof CRLToken) {
+					final CRLToken crlToken = (CRLToken) revocationToken;
 					crlTokens.add(crlToken);
-				}
-			} else if (revocationToken instanceof OCSPToken) {
-
-				final boolean tokenIn = DSSRevocationUtils.isTokenIn(revocationToken, containedBasicOCSPResponses);
-				if (!tokenIn) {
-
+				} else if (revocationToken instanceof OCSPToken) {
 					final OCSPToken ocspToken = (OCSPToken) revocationToken;
 					ocspTokens.add(ocspToken);
+				} else {
+					throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
 				}
-			} else {
-				throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
 			}
 		}
 		return new RevocationDataForInclusion(crlTokens, ocspTokens);
@@ -452,7 +439,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			if (CollectionUtils.isNotEmpty(containedOCSPResponses)) {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 				for (BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
-					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(basicOCSPResp));
+					OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
+					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(ocspResp));
 					references.add(new TimestampReference(DigestAlgorithm.SHA1, Base64.encodeBase64String(digest), TimestampReferenceCategory.REVOCATION));
 				}
 			}

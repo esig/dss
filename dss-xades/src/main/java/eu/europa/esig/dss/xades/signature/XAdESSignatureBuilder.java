@@ -276,20 +276,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final Element x509DataDom = DSSXMLUtils.addElement(documentDom, keyInfoDom, XMLNS, DS_X509_DATA);
 		final boolean trustAnchorBPPolicy = params.bLevel().isTrustAnchorBPPolicy();
 		final CertificatePool certificatePool = getCertificatePool();
-		boolean firstCertificate = true; // The signing certificate can be directly in the TSL
 		Set<CertificateToken> certificateChains = new HashSet<CertificateToken>();
 		certificateChains.add(params.getSigningCertificate());
 		certificateChains.addAll(params.getCertificateChain());
 		for (final CertificateToken x509Certificate : certificateChains) {
-			if (trustAnchorBPPolicy && (certificatePool != null)) {
-
+			// do not include trusted cert
+			if (trustAnchorBPPolicy) {
 				if (!certificatePool.get(x509Certificate.getSubjectX500Principal()).isEmpty()) {
-					if (firstCertificate) {
-						addCertificate(x509DataDom, x509Certificate);
-					}
-					break;
+					continue;
 				}
-				firstCertificate = false;
 			}
 			addCertificate(x509DataDom, x509Certificate);
 		}
