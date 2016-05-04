@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static eu.europa.esig.dss.DigestAlgorithm.SHA1;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentHint;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentIdentifier;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_commitmentType;
@@ -34,11 +33,9 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.pkcs_9_at_signing
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.CollectionUtils;
@@ -83,7 +80,6 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed
@@ -170,15 +166,16 @@ public class CAdESLevelBaselineB {
 
 					final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
 
-					//TODO: role attribute key (id_at_name) should be customizable
-					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name, new DERSet(roles));
+					// TODO: role attribute key (id_at_name) should be customizable
+					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name,
+							new DERSet(roles));
 					claimedAttributes.add(id_aa_ets_signerAttr);
 				}
 				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
 						new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
 				signedAttributes.add(attribute);
 			}
-			//TODO: handle CertifiedAttributes ::= AttributeCertificate -- as defined in RFC 3281: see clause 4.1.
+			// TODO: handle CertifiedAttributes ::= AttributeCertificate -- as defined in RFC 3281: see clause 4.1.
 			// final List<String> certifiedSignerRoles = parameters.bLevel().getCertifiedSignerRoles();
 		}
 	}
@@ -204,7 +201,8 @@ public class CAdESLevelBaselineB {
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
 	 * 5.11.2 signer-location Attribute
 	 * The signer-location attribute specifies a mnemonic for an address associated with the signer at a particular
-	 * geographical (e.g. city) location. The mnemonic is registered in the country in which the signer is located and is used in
+	 * geographical (e.g. city) location. The mnemonic is registered in the country in which the signer is located and
+	 * is used in
 	 * the provision of the Public Telegram Service (according to Recommendation ITU-T F.1 [11]).
 	 * The signer-location attribute shall be a signed attribute.
 	 *
@@ -243,7 +241,8 @@ public class CAdESLevelBaselineB {
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
 	 *
 	 * 5.11.1 commitment-type-indication Attribute
-	 * There may be situations where a signer wants to explicitly indicate to a verifier that by signing the data, it illustrates a
+	 * There may be situations where a signer wants to explicitly indicate to a verifier that by signing the data, it
+	 * illustrates a
 	 * type of commitment on behalf of the signer. The commitment-type-indication attribute conveys such
 	 * information.
 	 *
@@ -264,8 +263,9 @@ public class CAdESLevelBaselineB {
 
 				final String commitmentTypeId = commitmentTypeIndications.get(ii);
 				final ASN1ObjectIdentifier objectIdentifier = new ASN1ObjectIdentifier(commitmentTypeId);
-				// final CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(objectIdentifier);
-				//				final ASN1Primitive asn1Primitive = commitmentTypeIndication.toASN1Primitive();
+				// final CommitmentTypeIndication commitmentTypeIndication = new
+				// CommitmentTypeIndication(objectIdentifier);
+				// final ASN1Primitive asn1Primitive = commitmentTypeIndication.toASN1Primitive();
 				asn1Encodables[ii] = new DERSequence(objectIdentifier);
 			}
 			final DERSet attrValues = new DERSet(asn1Encodables);
@@ -275,23 +275,29 @@ public class CAdESLevelBaselineB {
 	}
 
 	/**
-	 * A content time-stamp allows a time-stamp token of the data to be signed to be incorporated into the signed information.
+	 * A content time-stamp allows a time-stamp token of the data to be signed to be incorporated into the signed
+	 * information.
 	 * It provides proof of the existence of the data before the signature was created.
 	 *
 	 * A content time-stamp attribute is the time-stamp token of the signed data content before it is signed.
 	 * This attribute is a signed attribute.
 	 * Its object identifier is :
-	 * id-aa-ets-contentTimestamp OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 20}
+	 * id-aa-ets-contentTimestamp OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9)
+	 * smime(16) id-aa(2) 20}
 	 *
 	 * Content time-stamp attribute values have ASN.1 type ContentTimestamp:
 	 * ContentTimestamp ::= TimeStampToken
 	 *
-	 * The value of messageImprint of TimeStampToken (as described in RFC 3161) is the hash of the message digest as defined in
+	 * The value of messageImprint of TimeStampToken (as described in RFC 3161) is the hash of the message digest as
+	 * defined in
 	 * ETSI standard 101733 v.2.2.1, clause 5.6.1.
 	 *
-	 * NOTE: content-time-stamp indicates that the signed information was formed before the date included in the content-time-stamp.
-	 * NOTE (bis): There is a small difference in treatment between the content-time-stamp and the archive-timestamp (ATSv2) when the signature
-	 * is attached. In that case, the content-time-stamp is computed on the raw data (without ASN.1 tag and length) whereas the archive-timestamp
+	 * NOTE: content-time-stamp indicates that the signed information was formed before the date included in the
+	 * content-time-stamp.
+	 * NOTE (bis): There is a small difference in treatment between the content-time-stamp and the archive-timestamp
+	 * (ATSv2) when the signature
+	 * is attached. In that case, the content-time-stamp is computed on the raw data (without ASN.1 tag and length)
+	 * whereas the archive-timestamp
 	 * is computed on data as read.
 	 *
 	 * @param parameters
@@ -321,7 +327,8 @@ public class CAdESLevelBaselineB {
 	 * one content is encapsulated in another.
 	 * The syntax of the content-hints attribute type of the ES is as defined in ESS (RFC 2634 [5]).
 	 * When used to indicate the precise format of the data to be presented to the user, the following rules apply:
-	 * • the contentType indicates the type of the associated content. It is an object identifier (i.e. a unique string of
+	 * • the contentType indicates the type of the associated content. It is an object identifier (i.e. a unique string
+	 * of
 	 * integers) assigned by an authority that defines the content type; and
 	 * • when the contentType is id-data the contentDescription shall define the presentation format; the
 	 * format may be defined by MIME types.
@@ -342,9 +349,10 @@ public class CAdESLevelBaselineB {
 
 			final ASN1ObjectIdentifier contentHintsType = new ASN1ObjectIdentifier(parameters.getContentHintsType());
 			final String contentHintsDescriptionString = parameters.getContentHintsDescription();
-			final DERUTF8String contentHintsDescription = StringUtils.isBlank(contentHintsDescriptionString) ? null : new DERUTF8String(contentHintsDescriptionString);
-			//		"text/plain";
-			//		"1.2.840.113549.1.7.1";
+			final DERUTF8String contentHintsDescription = StringUtils.isBlank(contentHintsDescriptionString) ? null
+					: new DERUTF8String(contentHintsDescriptionString);
+			// "text/plain";
+			// "1.2.840.113549.1.7.1";
 
 			final ContentHints contentHints = new ContentHints(contentHintsType, contentHintsDescription);
 			final DERSet attrValues = new DERSet(contentHints);
@@ -358,8 +366,10 @@ public class CAdESLevelBaselineB {
 	 *
 	 * 5.10.2 content-identifier Attribute
 	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
-	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
-	 * content-identifier shall be a signed attribute. content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
+	 * later required to that content; for example, in the content-reference attribute in other signed data sent later.
+	 * The
+	 * content-identifier shall be a signed attribute. content-identifier attribute type values for the ES have an ASN.1
+	 * type ContentIdentifier, as defined in
 	 * ESS (RFC 2634 [5]).
 	 *
 	 * The minimal content-identifier attribute should contain a concatenation of user-specific identification
@@ -415,10 +425,9 @@ public class CAdESLevelBaselineB {
 				OtherHashAlgAndValue otherHashAlgAndValue = new OtherHashAlgAndValue(algorithmIdentifier, new DEROctetString(policy.getDigestValue()));
 
 				if (StringUtils.isNotEmpty(policy.getSpuri())) {
-					SigPolicyQualifierInfo policyQualifierInfo = new SigPolicyQualifierInfo(PKCSObjectIdentifiers.id_spq_ets_uri, new DERUTF8String(policy.getSpuri()));
-					SigPolicyQualifierInfo[] qualifierInfos = new SigPolicyQualifierInfo[] {
-							policyQualifierInfo
-					};
+					SigPolicyQualifierInfo policyQualifierInfo = new SigPolicyQualifierInfo(PKCSObjectIdentifiers.id_spq_ets_uri,
+							new DERUTF8String(policy.getSpuri()));
+					SigPolicyQualifierInfo[] qualifierInfos = new SigPolicyQualifierInfo[] { policyQualifierInfo };
 					SigPolicyQualifiers qualifiers = new SigPolicyQualifiers(qualifierInfos);
 
 					sigPolicy = new SignaturePolicyIdentifier(new SignaturePolicyId(derOIPolicyId, otherHashAlgAndValue, qualifiers));
@@ -434,55 +443,25 @@ public class CAdESLevelBaselineB {
 	}
 
 	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
-
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		final Set<CertificateToken> chainCertificateList = new HashSet<CertificateToken>();
-		chainCertificateList.add(parameters.getSigningCertificate());
-//		chainCertificateList.addAll(parameters.getCertificateChain());
-		final List<ASN1Encodable> signingCertificates = new ArrayList<ASN1Encodable>();
-		for (final CertificateToken signingCertificate : chainCertificateList) {
-
-//			if (!chainCertificate.isSignedAttribute()) {
-//				continue;
-//			}
-//			final CertificateToken signingCertificate = chainCertificate.getX509Certificate();
-			final byte[] encoded = signingCertificate.getEncoded();
-			final byte[] certHash = DSSUtils.digest(digestAlgorithm, encoded);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Adding Certificate Hash {} with algorithm {}", Hex.encodeHexString(certHash), digestAlgorithm.getName());
-			}
-			final IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(signingCertificate);
-
-			ASN1Encodable asn1Encodable;
-			if (digestAlgorithm == SHA1) {
-
-				final ESSCertID essCertID = new ESSCertID(certHash, issuerSerial);
-				asn1Encodable = new SigningCertificate(essCertID);
-			} else {
-
-				asn1Encodable = new ESSCertIDv2(DSSASN1Utils.getAlgorithmIdentifier(digestAlgorithm), certHash, issuerSerial);
-			}
-			signingCertificates.add(asn1Encodable);
+		final byte[] encoded = parameters.getSigningCertificate().getEncoded();
+		final byte[] certHash = DSSUtils.digest(digestAlgorithm, encoded);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Adding Certificate Hash {} with algorithm {}", Hex.encodeHexString(certHash), digestAlgorithm.getName());
 		}
-		final Attribute attribute = createSigningCertificateAttributes(digestAlgorithm, signingCertificates);
+		final IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(parameters.getSigningCertificate());
+
+		Attribute attribute = null;
+		if (digestAlgorithm == DigestAlgorithm.SHA1) {
+			final ESSCertID essCertID = new ESSCertID(certHash, issuerSerial);
+			SigningCertificate signingCertificate = new SigningCertificate(essCertID);
+			attribute = new Attribute(id_aa_signingCertificate, new DERSet(signingCertificate));
+		} else {
+			final ESSCertIDv2 essCertIdv2 = new ESSCertIDv2(DSSASN1Utils.getAlgorithmIdentifier(digestAlgorithm), certHash, issuerSerial);
+			SigningCertificateV2 signingCertificateV2 = new SigningCertificateV2(essCertIdv2);
+			attribute = new Attribute(id_aa_signingCertificateV2, new DERSet(signingCertificateV2));
+		}
 		signedAttributes.add(attribute);
 	}
 
-	private Attribute createSigningCertificateAttributes(final DigestAlgorithm digestAlgorithm, final List<ASN1Encodable> signingCertificates) {
-
-		final Attribute attribute;
-		if (digestAlgorithm == SHA1) {
-
-			final SigningCertificate[] signingCertificatesV1s = signingCertificates.toArray(new SigningCertificate[0]);
-			final DERSet derSet = new DERSet(signingCertificatesV1s);
-			attribute = new Attribute(id_aa_signingCertificate, derSet);
-		} else {
-
-			final ESSCertIDv2[] essCertIDv2s = signingCertificates.toArray(new ESSCertIDv2[0]);
-			final SigningCertificateV2 signingCertificateV2 = new SigningCertificateV2(essCertIDv2s);
-			final DERSet derSet = new DERSet(signingCertificateV2);
-			attribute = new Attribute(id_aa_signingCertificateV2, derSet);
-		}
-		return attribute;
-	}
 }
