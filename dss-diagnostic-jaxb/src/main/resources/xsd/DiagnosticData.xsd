@@ -16,8 +16,8 @@
 
 							<xs:element type="StructuralValidationType" name="StructuralValidation" minOccurs="0" />
 							<xs:element type="BasicSignatureType" name="BasicSignature" />
-							<xs:element type="SigningCertificateType" name="SigningCertificate" />
-							<xs:element type="CertificateChainType" name="CertificateChain" />
+							<xs:element type="SigningCertificateType" name="SigningCertificate" minOccurs="0" />
+							<xs:element type="CertificateChainType" name="CertificateChain" minOccurs="0" />
 
 							<xs:element type="xs:string" name="ContentType" minOccurs="0" />
 							<xs:element type="xs:string" name="ContentIdentifier" minOccurs="0" />
@@ -71,7 +71,7 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="SignatureScopes">
+							<xs:element name="SignatureScopes" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element type="SignatureScopeType" name="SignatureScope" maxOccurs="unbounded" />
@@ -174,9 +174,9 @@
 	</xs:complexType>
 	<xs:complexType name="BasicSignatureType">
 		<xs:sequence>
-			<xs:element type="xs:string" name="EncryptionAlgoUsedToSignThisToken" />
-			<xs:element type="xs:string" name="KeyLengthUsedToSignThisToken" />
-			<xs:element type="xs:string" name="DigestAlgoUsedToSignThisToken" />
+			<xs:element type="xs:string" name="EncryptionAlgoUsedToSignThisToken" minOccurs="0" />
+			<xs:element type="xs:string" name="KeyLengthUsedToSignThisToken"  minOccurs="0" />
+			<xs:element type="xs:string" name="DigestAlgoUsedToSignThisToken" minOccurs="0"  />
 			<xs:element type="xs:boolean" name="ReferenceDataFound" />
 			<xs:element type="xs:boolean" name="ReferenceDataIntact" />
 			<xs:element type="xs:boolean" name="SignatureIntact" />
@@ -267,8 +267,8 @@
 			<xs:element type="xs:string" name="CanonicalizationMethod" minOccurs="0" />
 
 			<xs:element type="BasicSignatureType" name="BasicSignature" />
-			<xs:element type="SigningCertificateType" name="SigningCertificate" />
-			<xs:element type="CertificateChainType" name="CertificateChain" />
+			<xs:element type="SigningCertificateType" name="SigningCertificate" minOccurs="0" />
+			<xs:element type="CertificateChainType" name="CertificateChain" minOccurs="0" />
 
 			<xs:element type="SignedObjectsType" name="SignedObjects" minOccurs="0" />
 		</xs:sequence>
@@ -321,8 +321,8 @@
 			<xs:element type="DigestAlgAndValueType" name="DigestAlgAndValue" minOccurs="0" maxOccurs="unbounded" />
 			
 			<xs:element type="BasicSignatureType" name="BasicSignature" />
-			<xs:element type="SigningCertificateType" name="SigningCertificate" />
-			<xs:element type="CertificateChainType" name="CertificateChain" />
+			<xs:element type="SigningCertificateType" name="SigningCertificate" minOccurs="0" />
+			<xs:element type="CertificateChainType" name="CertificateChain" minOccurs="0" />
 
 			<xs:element type="InfoType" name="Info" minOccurs="0" />
 		</xs:sequence>
