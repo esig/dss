@@ -46,6 +46,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.keys.KeyInfo;
@@ -641,8 +642,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final SignaturePolicy signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DSSXMLUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
 				final String policyDigestMethodString = policyDigestMethod.getTextContent();
-				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
-				signaturePolicy.setDigestAlgorithm(digestAlgorithm);
+				if (StringUtils.isNotEmpty(policyDigestMethodString)) {
+					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
+					signaturePolicy.setDigestAlgorithm(digestAlgorithm);
+				}
 				final Element policyDigestValue = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_VALUE);
 				final String digestValue = policyDigestValue.getTextContent().trim();
 				signaturePolicy.setDigestValue(DatatypeConverter.parseBase64Binary(digestValue));
