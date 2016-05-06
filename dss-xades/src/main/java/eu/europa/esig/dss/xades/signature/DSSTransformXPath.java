@@ -32,8 +32,8 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.xades.DSSTransform;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 /**
  * This class implement the logic of {@code Transforms.TRANSFORM_XPATH}.

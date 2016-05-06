@@ -30,9 +30,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * Retrieves OCSP values from an XAdES (>XL) signature.

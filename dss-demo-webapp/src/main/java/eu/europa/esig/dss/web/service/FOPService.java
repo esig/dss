@@ -23,7 +23,7 @@ import org.apache.pdfbox.io.IOUtils;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
-import eu.europa.esig.dss.DSSXMLUtils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 @Component
 public class FOPService {

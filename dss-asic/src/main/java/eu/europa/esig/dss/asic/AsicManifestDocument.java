@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.asic;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -30,12 +30,17 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 
+import eu.europa.esig.dss.CommonDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+
 /**
  * AsicManifest file representation
  *
- *
  */
-
 public class AsicManifestDocument extends CommonDocument {
 
 	private byte[] bytes;
@@ -47,8 +52,10 @@ public class AsicManifestDocument extends CommonDocument {
 	/**
 	 * Creates dss document that retains the data in memory
 	 *
-	 * @param bytes array of bytes representing the document
-	 * @param name  the file name if the data originates from a file
+	 * @param bytes
+	 *            array of bytes representing the document
+	 * @param name
+	 *            the file name if the data originates from a file
 	 */
 	public AsicManifestDocument(final byte[] bytes, final String name) {
 
@@ -72,21 +79,18 @@ public class AsicManifestDocument extends CommonDocument {
 		return bytes;
 	}
 
+	@Override
 	public void setAbsolutePath(final String absolutePath) {
 		this.absolutePath = absolutePath;
 	}
 
 	@Override
 	public void save(final String filePath) {
-
 		try {
-
 			final FileOutputStream fos = new FileOutputStream(filePath);
 			DSSUtils.write(getBytes(), fos);
 			fos.close();
 		} catch (FileNotFoundException e) {
-			throw new DSSException(e);
-		} catch (DSSException e) {
 			throw new DSSException(e);
 		} catch (IOException e) {
 			throw new DSSException(e);

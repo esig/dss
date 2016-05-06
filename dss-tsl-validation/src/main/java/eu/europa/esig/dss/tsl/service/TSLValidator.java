@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -41,6 +40,7 @@ import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 /**

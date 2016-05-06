@@ -60,6 +60,12 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
+	public void getSKI() {
+		byte[] ski = DSSASN1Utils.getSki(certificateWithAIA);
+		assertEquals("4c4c4cfcacace6bb", Hex.encodeHexString(ski));
+	}
+
+	@Test
 	public void getExpiredCertsOnCRL() throws Exception {
 		X509CRL x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/crl_with_expiredCertsOnCRL_extension.crl"));
 		assertNotNull(DSSASN1Utils.getExpiredCertsOnCRL(x509crl));

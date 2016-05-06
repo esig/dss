@@ -63,8 +63,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -554,25 +552,6 @@ public final class DSSUtils {
 		}
 
 		return null;
-	}
-
-	/**
-	 * This method return SKI bytes from certificate or null.
-	 *
-	 * @param x509Certificate
-	 *            {@code X509Certificate}
-	 * @return ski bytes from the given certificate
-	 * @throws Exception
-	 */
-	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
-		try {
-			final byte[] skiBytesFromCert = XMLX509SKI.getSKIBytesFromCert(certificateToken.getCertificate());
-			return skiBytesFromCert;
-		} catch (XMLSecurityException e) {
-			return null;
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**

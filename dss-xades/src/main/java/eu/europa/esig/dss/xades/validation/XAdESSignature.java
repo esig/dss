@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static eu.europa.esig.dss.XPathQueryHolder.XMLE_ALGORITHM;
-import static eu.europa.esig.dss.XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP;
-import static eu.europa.esig.dss.XPathQueryHolder.XMLE_SIGNATURE_TIME_STAMP;
-import static eu.europa.esig.dss.XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP;
+import static eu.europa.esig.dss.xades.XPathQueryHolder.XMLE_ALGORITHM;
+import static eu.europa.esig.dss.xades.XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP;
+import static eu.europa.esig.dss.xades.XPathQueryHolder.XMLE_SIGNATURE_TIME_STAMP;
+import static eu.europa.esig.dss.xades.XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -73,15 +73,12 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
-import eu.europa.esig.dss.XAdESNamespaces;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CRLRef;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
@@ -104,6 +101,9 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESNamespaces;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must

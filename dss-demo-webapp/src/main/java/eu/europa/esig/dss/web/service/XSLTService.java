@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
-import eu.europa.esig.dss.DSSXMLUtils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 @Component
 public class XSLTService {

@@ -31,11 +31,11 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * This class provides the mechanism to retrieve certificates contained in a XAdES signature.

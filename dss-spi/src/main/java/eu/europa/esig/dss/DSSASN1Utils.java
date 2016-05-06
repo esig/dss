@@ -74,12 +74,14 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.PolicyInformation;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -354,6 +356,25 @@ public final class DSSASN1Utils {
 			}
 		}
 		return extensionIdList;
+	}
+
+	/**
+	 * This method returns SKI bytes from certificate.
+	 *
+	 * @param certificateToken
+	 *            {@code CertificateToken}
+	 * @return ski bytes from the given certificate
+	 * @throws DSSException
+	 */
+	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
+		try {
+			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
+			ASN1Primitive extension = X509ExtensionUtil.fromExtensionValue(sKI);
+			SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
+			return skiBC.getKeyIdentifier();
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
 	}
 
 	public static List<String> getAccessLocations(final CertificateToken certificate) {

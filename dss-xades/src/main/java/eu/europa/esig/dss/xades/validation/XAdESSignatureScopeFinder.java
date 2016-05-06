@@ -34,12 +34,12 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.XAdESNamespaces;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.SignatureScopeFinder;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESNamespaces;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  *

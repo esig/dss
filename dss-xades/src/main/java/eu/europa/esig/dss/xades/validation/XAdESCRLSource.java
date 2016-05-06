@@ -27,9 +27,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * Retrieves CRL values from an XAdES (-XL) signature.
