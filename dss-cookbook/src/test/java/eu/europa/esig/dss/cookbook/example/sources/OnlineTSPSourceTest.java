@@ -18,23 +18,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cookbook.sources;
+package eu.europa.esig.dss.cookbook.example.sources;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
 import org.bouncycastle.tsp.TimeStampToken;
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
 
 /**
  * How to initialize online TSP source.
  */
-public class InitOnlineTSPSource extends Cookbook {
+public class OnlineTSPSourceTest {
 
-	public static void main(String[] args) throws IOException {
+	@Test
+	public void test() throws IOException {
+
+		// tag::demo[]
 
 		final String tspServer = "http://services.globaltrustfinder.com/adss/tsa";
 		OnlineTSPSource tspSource = new OnlineTSPSource(tspServer);
@@ -46,5 +51,9 @@ public class InitOnlineTSPSource extends Cookbook {
 		final TimeStampToken tsr = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
 		System.out.println(DSSUtils.toHex(tsr.getEncoded()));
+
+		// end::demo[]
+
+		assertNotNull(tsr);
 	}
 }

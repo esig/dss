@@ -105,9 +105,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<properties>
-		<nexu.version>1.0.SNAPSHOT</nexu.version>
-	</properties>
 
 	<dependencies>
 		<dependency>

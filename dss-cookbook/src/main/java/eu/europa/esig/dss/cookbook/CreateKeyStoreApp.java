@@ -1,4 +1,4 @@
-package keystore;
+package eu.europa.esig.dss.cookbook;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,12 +30,10 @@ public class CreateKeyStoreApp {
 
 		KeyStore store = createKeyStore();
 
-		addCertificate(store, "europa1", "src/test/resources/keystore/ec.europa.eu.crt");
-		addCertificate(store, "europa2", "src/test/resources/keystore/ec.europa.eu.2.crt");
-		//		addCertificate(store, "europa3", "src/test/resources/keystore/ec.europa.eu.3.crt");
-		addCertificate(store, "europa4", "src/test/resources/keystore/ec.europa.eu.4.crt");
-		addCertificate(store, "europa5", "src/test/resources/keystore/ec.europa.eu.5.crt");
-		addCertificate(store, "europa6", "src/test/resources/keystore/ec.europa.eu.6.crt");
+		addCertificate(store, "europa1", "src/main/resources/keystore/ec.europa.eu.1.cer");
+		addCertificate(store, "europa2", "src/main/resources/keystore/ec.europa.eu.2.cer");
+		addCertificate(store, "europa3", "src/main/resources/keystore/ec.europa.eu.3.cer");
+		addCertificate(store, "europa4", "src/main/resources/keystore/ec.europa.eu.4.cer");
 
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		store.store(fos, KEYSTORE_PASSWORD.toCharArray());

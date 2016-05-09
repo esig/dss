@@ -1,165 +1,165 @@
-<DiagnosticData xmlns="http://dss.markt.ec.europa.eu/validation/diagnostic">
-   <DocumentName>…\XAdES detachedMOAID G2_qual_valid.xml</DocumentName>
-   <Signature Id="Signature-6362c43e-1">
-      <DateTime>2013-12-20T13:34:13Z</DateTime>
-      <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
-      <BasicSignature>
-         <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
-         <KeyLengthUsedToSignThisToken>192</KeyLengthUsedToSignThisToken>
-         <DigestAlgoUsedToSignThisToken>RIPEMD160</DigestAlgoUsedToSignThisToken>
-         <ReferenceDataFound>true</ReferenceDataFound>
-         <ReferenceDataIntact>true</ReferenceDataIntact>
-         <SignatureIntact>true</SignatureIntact>
-         <SignatureValid>true</SignatureValid>
-      </BasicSignature>
-      <SigningCertificate Id="24">
-         <DigestValueMatch>true</DigestValueMatch>
-         <IssuerSerialMatch>true</IssuerSerialMatch>
-      </SigningCertificate>
-      <CertificateChain>
-         <ChainCertificate Id="24">
-            <Source>SIGNATURE</Source>
-         </ChainCertificate>
-         <ChainCertificate Id="12">
-            <Source>TRUSTED_LIST</Source>
-         </ChainCertificate>
-      </CertificateChain>
-      <ContentType>text/xml</ContentType>
-      <Policy>
-         <Id/>
-         <Identified>false</Identified>
-         <Status>true</Status>
-         <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
-      </Policy>
-   </Signature>
-   <UsedCertificates>
-      <Certificate Id="17">
-         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
-         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
-         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
-         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
-         <IssuerCertificate>0</IssuerCertificate>
-         <SerialNumber>1026306</SerialNumber>
-         <DigestAlgAndValue>
-            <DigestMethod>RIPEMD160</DigestMethod>
-            <DigestValue>5HXTKVzoWuDjBgk9RVDJCzQXE+M=</DigestValue>
-         </DigestAlgAndValue>
-         <NotAfter>2018-09-11T12:14:19Z</NotAfter>
-         <NotBefore>2013-09-11T14:14:19Z</NotBefore>
-         <PublicKeySize>2048</PublicKeySize>
-         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
-         <IdKpOCSPSigning>true</IdKpOCSPSigning>
-         <BasicSignature>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>PAdES_B_PVDB.pdf</DocumentName>
+    <Signature Id="id-30b3acd8c4fe0ced13b26ed2e6574d91e2e77b19e06a42b6c513a0b046b4561b">
+        <DateTime>2015-07-30T13:49:14</DateTime>
+        <SignatureFormat>PAdES_BASELINE_B</SignatureFormat>
+        <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-            <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
-            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
             <ReferenceDataFound>true</ReferenceDataFound>
             <ReferenceDataIntact>true</ReferenceDataIntact>
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
-         </BasicSignature>
-         <Trusted>true</Trusted>
-         <SelfSigned>false</SelfSigned>
-      </Certificate>
-      <Certificate Id="24">
-         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
-         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
-         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
-         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
-         <IssuerCertificate>12</IssuerCertificate>
-         <SerialNumber>397752</SerialNumber>
-         <DigestAlgAndValue>
-            <DigestMethod>RIPEMD160</DigestMethod>
-            <DigestValue>5vllGPyjfO0f0mjk2kyVo8lPsGs=</DigestValue>
-         </DigestAlgAndValue>
-         <NotAfter>2014-10-13T08:28:09Z</NotAfter>
-         <NotBefore>2009-10-13T08:28:09Z</NotBefore>
-         <PublicKeySize>192</PublicKeySize>
-         <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
-         <BasicSignature>
-            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-            <ReferenceDataFound>true</ReferenceDataFound>
-            <ReferenceDataIntact>true</ReferenceDataIntact>
-            <SignatureIntact>true</SignatureIntact>
-            <SignatureValid>true</SignatureValid>
-         </BasicSignature>
-         <SigningCertificate Id="12">
+        </BasicSignature>
+        <SigningCertificate Id="4199E98D0E5B02935EB72DC8B7F9188E27DDF8A1DCB7BC8C3C3F3C7C1C099D5B">
+            <AttributePresent>true</AttributePresent>
+            <DigestValuePresent>true</DigestValuePresent>
             <DigestValueMatch>true</DigestValueMatch>
             <IssuerSerialMatch>true</IssuerSerialMatch>
-         </SigningCertificate>
-         <CertificateChain>
-            <ChainCertificate Id="12">
-               <Source>TRUSTED_LIST</Source>
+        </SigningCertificate>
+        <CertificateChain>
+            <ChainCertificate Id="4199E98D0E5B02935EB72DC8B7F9188E27DDF8A1DCB7BC8C3C3F3C7C1C099D5B">
+                <Source>SIGNATURE</Source>
             </ChainCertificate>
-         </CertificateChain>
-         <Trusted>false</Trusted>
-         <SelfSigned>false</SelfSigned>
-         <QCStatementIds>
-             <oid>0.4.0.1862.1.1</oid>
-         </QCStatementIds>
-         <TrustedServiceProvider>
-            <TSPName>A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</TSPName>
-            <TSPServiceName>a-sign-Premium-Sig-02 (key no. 1)</TSPServiceName>
-            <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-            <StartDate>2004-12-14T23:00:00Z</StartDate>
-            <WellSigned>true</WellSigned>
-         </TrustedServiceProvider>
-         <Revocation>
-            <Source>OCSPToken</Source>
-            <SourceAddress>http://ocsp.a-trust.at/ocsp</SourceAddress>
-            <Status>false</Status>
-            <DateTime>2014-01-08T05:23:38Z</DateTime>
-            <Reason>CRLReason: keyCompromise</Reason>
-            <IssuingTime>2014-02-12T10:20:26Z</IssuingTime>
+            <ChainCertificate Id="5A304EA217132A215EF6769CC2933E867377EBDD62815B8FB930F6151ECC6DD3">
+                <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                <Source>TRUSTED_LIST</Source>
+            </ChainCertificate>
+        </CertificateChain>
+        <ContentType>application/pdf</ContentType>
+        <SignatureScopes>
+            <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+        </SignatureScopes>
+    </Signature>
+    <UsedCertificates>
+        <Certificate Id="5A304EA217132A215EF6769CC2933E867377EBDD62815B8FB930F6151ECC6DD3">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031313036,cn=citizen ca,c=be</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1306323031313036,CN=Citizen CA,C=BE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Belgium Root CA2,C=BE</IssuerDistinguishedName>
+            <SerialNumber>62628443217889061938893850155211508130</SerialNumber>
+            <CommonName>Citizen CA</CommonName>
+            <CountryName>BE</CountryName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>dMxuVVn/18LdBSbAwhWTxWyThPM=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2017-07-16T13:00:00</NotAfter>
+            <NotBefore>2010-11-16T12:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
             <BasicSignature>
-               <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-               <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-               <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-               <ReferenceDataFound>true</ReferenceDataFound>
-               <ReferenceDataIntact>true</ReferenceDataIntact>
-               <SignatureIntact>true</SignatureIntact>
-               <SignatureValid>true</SignatureValid>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="17">
-               <DigestValueMatch>true</DigestValueMatch>
-               <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
-            <CertificateChain>
-               <ChainCertificate Id="17">
-                  <Source>TRUSTED_LIST</Source>
-               </ChainCertificate>
-            </CertificateChain>
-         </Revocation>
-      </Certificate>
-      <Certificate Id="12">
-         <SubjectDistinguishedName Format="CANONICAL">…</SubjectDistinguishedName>
-         <SubjectDistinguishedName Format="RFC2253">…</SubjectDistinguishedName>
-         <IssuerDistinguishedName Format="CANONICAL">…</IssuerDistinguishedName>
-         <IssuerDistinguishedName Format="RFC2253">…</IssuerDistinguishedName>
-         <IssuerCertificate>0</IssuerCertificate>
-         <SerialNumber>58531</SerialNumber>
-         <DigestAlgAndValue>
-            <DigestMethod>RIPEMD160</DigestMethod>
-            <DigestValue>CC+ntcCafY5zsjFmY3gQsbPzrU0=</DigestValue>
-         </DigestAlgAndValue>
-         <NotAfter>2014-12-13T23:00:00Z</NotAfter>
-         <NotBefore>2004-12-14T23:00:00Z</NotBefore>
-         <PublicKeySize>2048</PublicKeySize>
-         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
-         <BasicSignature>
-            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-            <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
-            <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-            <ReferenceDataFound>true</ReferenceDataFound>
-            <ReferenceDataIntact>true</ReferenceDataIntact>
-            <SignatureIntact>true</SignatureIntact>
-            <SignatureValid>true</SignatureValid>
-         </BasicSignature>
-         <Trusted>true</Trusted>
-         <SelfSigned>false</SelfSigned>
-      </Certificate>
-   </UsedCertificates>
+            ...
+        </Certificate>
+        <Certificate Id="7C37121A7E63DCE1F808523CC3A70AF9428A5C973FFAF773E615A526C9E363A7">
+            <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=BE,CN=Belgium OCSP Responder</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031313036,cn=citizen ca,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.5=#1306323031313036,CN=Citizen CA,C=BE</IssuerDistinguishedName>
+            <SerialNumber>4835703278459965209480678</SerialNumber>
+            <CommonName>Belgium OCSP Responder</CommonName>
+            <CountryName>BE</CountryName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>ywdlEr+sSR+BKDStlAOj2bdcwcE=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2017-01-29T12:00:00</NotAfter>
+            <NotBefore>2015-12-08T12:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            ...
+        </Certificate>
+        <Certificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+            <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Belgium Root CA2,C=BE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Belgium Root CA2,C=BE</IssuerDistinguishedName>
+            <SerialNumber>3098404661496965511</SerialNumber>
+            <CommonName>Belgium Root CA2</CommonName>
+            <CountryName>BE</CountryName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2021-12-15T09:00:00</NotAfter>
+            <NotBefore>2007-10-04T12:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            ...
+        </Certificate>
+        <Certificate Id="4199E98D0E5B02935EB72DC8B7F9188E27DDF8A1DCB7BC8C3C3F3C7C1C099D5B">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3837303132373330373338,2.5.4.42=#130d506965727269636b205061636f,2.5.4.4=#130d56616e64656e62726f75636b65,cn=pierrick vandenbroucke (signature),c=be</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130b3837303132373330373338,2.5.4.42=#130d506965727269636b205061636f,2.5.4.4=#130d56616e64656e62726f75636b65,CN=Pierrick Vandenbroucke (Signature),C=BE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031313036,cn=citizen ca,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.5=#1306323031313036,CN=Citizen CA,C=BE</IssuerDistinguishedName>
+            <SerialNumber>21267647932559036731803747676885855837</SerialNumber>
+            <CommonName>Pierrick Vandenbroucke (Signature)</CommonName>
+            <CountryName>BE</CountryName>
+            <GivenName>Pierrick Paco</GivenName>
+            <Surname>Vandenbroucke</Surname>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>42by2G4VKm3tcQ6c6F5XvOMsSLk=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2017-02-18T00:59:59</NotAfter>
+            <NotBefore>2012-02-23T09:24:09</NotBefore>
+            <PublicKeySize>1024</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+           ...
+        </Certificate>
+    </UsedCertificates>
 </DiagnosticData>

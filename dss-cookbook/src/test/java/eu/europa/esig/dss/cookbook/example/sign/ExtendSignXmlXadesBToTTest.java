@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cookbook.example.sign;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -37,7 +36,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class ExtendSignXmlXadesBToTTest extends CookbookTools {
 
 	@Test
-	public void extendXAdESBToT() {
+	public void extendXAdESBToT() throws Exception {
 
 		// tag::demo[]
 
@@ -48,11 +47,7 @@ public class ExtendSignXmlXadesBToTTest extends CookbookTools {
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService xadesService = new XAdESService(certificateVerifier);
-		try{
-			xadesService.setTspSource(getMockTSPSource());
-		}catch (Exception e) {
-			new DSSException("Error during MockTspSource",e);
-		}
+		xadesService.setTspSource(getMockTSPSource());
 
 		DSSDocument extendedDocument = xadesService.extendDocument(document, parameters);
 
