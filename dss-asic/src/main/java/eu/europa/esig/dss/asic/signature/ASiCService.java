@@ -318,7 +318,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		if (asice) {
 			if (cadesForm) {
 				storeAsicManifestCAdES(parameters, toSignDocument, zipOutputStream);
-			} else if (xadesForm) {
+			} else if (signDocument == null && xadesForm) { // only one manifest file / zip
 				storeManifestXAdES(parameters, toSignDocument, zipOutputStream);
 			}
 		}
