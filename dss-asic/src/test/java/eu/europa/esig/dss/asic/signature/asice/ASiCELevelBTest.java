@@ -50,7 +50,7 @@ public class ASiCELevelBTest extends AbstractTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text", MimeType.TEXT);
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
