@@ -403,7 +403,7 @@ public class SignatureValidationContext implements ValidationContext {
 			return Collections.emptyList();
 		}
 
-		if (DSSASN1Utils.isOCSPSigning(certToken) && DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
+		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
 			certToken.extraInfo().addInfo("OCSP check not needed: id-pkix-ocsp-nocheck extension present.");
 			return Collections.emptyList();
 		}
