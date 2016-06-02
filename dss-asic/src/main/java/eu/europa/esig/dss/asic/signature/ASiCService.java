@@ -94,8 +94,6 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 	public final static String ASICS_NS = "asic:XAdESSignatures";
 
-	private DocumentSignatureService underlyingASiCService;
-
 	/**
 	 * This is the constructor to create an instance of the {@code ASiCService}. A certificate verifier must be
 	 * provided.
@@ -866,16 +864,15 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	 * @return
 	 */
 	protected DocumentSignatureService getSpecificService(SignatureForm signatureForm) {
-		if (underlyingASiCService == null) {
-			if (signatureForm == SignatureForm.XAdES) {
-				underlyingASiCService = new XAdESService(certificateVerifier);
-			} else if (signatureForm == SignatureForm.CAdES) {
-				underlyingASiCService = new CAdESService(certificateVerifier);
-			} else {
-				throw new DSSException("Unsupported parameter value: only XAdES and CAdES forms are acceptable!");
-			}
-			underlyingASiCService.setTspSource(tspSource);
+		DocumentSignatureService underlyingASiCService;
+		if (signatureForm == SignatureForm.XAdES) {
+			underlyingASiCService = new XAdESService(certificateVerifier);
+		} else if (signatureForm == SignatureForm.CAdES) {
+			underlyingASiCService = new CAdESService(certificateVerifier);
+		} else {
+			throw new DSSException("Unsupported parameter value: only XAdES and CAdES forms are acceptable!");
 		}
+		underlyingASiCService.setTspSource(tspSource);
 		return underlyingASiCService;
 	}
 
