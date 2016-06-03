@@ -115,7 +115,7 @@ public class TSLRepository {
 			if (!allowExpiredTSLs) {
 				TSLParserResult parseResult = tslValidationModel.getParseResult();
 				if (parseResult != null) {
-					if (now.after(parseResult.getNextUpdateDate())) {
+					if (parseResult.getNextUpdateDate() == null || now.after(parseResult.getNextUpdateDate())) {
 						continue;
 					}
 				}
