@@ -21,29 +21,27 @@
 package eu.europa.esig.dss.client.http.commons;
 
 /**
- * Implementation of DataLoader using HttpClient. More flexible for HTTPS without having to add the certificate to the
- * JVM TrustStore.
- *
+ * Implementation of DataLoader using HttpClient to request a timestamp server.
  */
-public class OCSPDataLoader extends CommonsDataLoader {
+public class TimestampDataLoader extends CommonsDataLoader {
 
-	public static final String OCSP_CONTENT_TYPE = "application/ocsp-request";
+	public static final String TIMESTAMP_QUERY_CONTENT_TYPE = "application/timestamp-query";
 
 	/**
 	 * The default constructor for CommonsDataLoader.
 	 */
-	public OCSPDataLoader() {
-		super(OCSP_CONTENT_TYPE);
+	public TimestampDataLoader() {
+		super(TIMESTAMP_QUERY_CONTENT_TYPE);
 	}
 
 	/**
-	 * In case of OCSPDataLoader the contentType is fixed to: Content-Type "application/ocsp-request"
+	 * In case of TimestampDataLoader the contentType is fixed to: Content-Type "application/timestamp-query"
 	 *
 	 * @param contentType
 	 */
 	@Override
 	public void setContentType(final String contentType) {
-		// do nothing: in case of OCSPDataLoader the contentType is fixed.
+		// do nothing: in case of TimestampDataLoader the contentType is fixed.
 	}
 
 }
