@@ -32,6 +32,7 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -54,8 +55,6 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 	private final PasswordInputCallback callback;
 
 	private int slotIndex;
-
-	private static int smartCardNameIndex = 0;
 
 	/**
 	 * Create the SignatureTokenConnection, using the provided path for the library.
@@ -145,12 +144,14 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 	private void installProvider() {
 
 		/*
-		    The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive loading of multiple pkcs11 libraries
+		 * The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive
+		 * loading of multiple pkcs11 libraries
 		 */
 		String aPKCS11LibraryFileName = getPkcs11Path();
 		aPKCS11LibraryFileName = escapePath(aPKCS11LibraryFileName);
 
-		String pkcs11ConfigSettings = "name = SmartCard" + smartCardNameIndex + "\n" + "library = \"" + aPKCS11LibraryFileName + "\"\nslotListIndex = " + slotIndex;
+		String pkcs11ConfigSettings = "name = SmartCard" + UUID.randomUUID().toString() + "\n" + "library = \"" + aPKCS11LibraryFileName
+				+ "\"\nslotListIndex = " + slotIndex;
 
 		byte[] pkcs11ConfigBytes = pkcs11ConfigSettings.getBytes();
 		ByteArrayInputStream confStream = new ByteArrayInputStream(pkcs11ConfigBytes);
@@ -159,7 +160,6 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 		_pkcs11Provider = pkcs11;
 
 		Security.addProvider(_pkcs11Provider);
-		smartCardNameIndex++;
 	}
 
 	private String escapePath(String pathToEscape) {
