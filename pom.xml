@@ -694,6 +694,11 @@
 			<url>dav:https://joinup.ec.europa.eu/webdav/sd-dss/www</url>
 		</site>
 	</distributionManagement>
+	
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://esig-dss.atlassian.net/projects/DSS</url>
+	</issueManagement>
 
 	<profiles>
 		<profile>
