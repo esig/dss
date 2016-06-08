@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.naming.Context;
 import javax.naming.directory.Attribute;
@@ -440,22 +441,26 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		env.put(Context.PROVIDER_URL, urlString);
 		try {
 
-			String attributeName = StringUtils.substringAfterLast(urlString, "?");
+			// parse URL according to the template: 'ldap://host:port/DN?attributes?scope?filter?extensions'
+			String ldapParams = StringUtils.substringAfter(urlString, "?");
+			StringTokenizer tokenizer = new StringTokenizer(ldapParams, "?");
+			String attributeName = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : null;
+
 			if (StringUtils.isEmpty(attributeName)) {
 				// default was CRL
 				attributeName = "certificateRevocationList;binary";
 			}
 
 			final DirContext ctx = new InitialDirContext(env);
-			final Attributes attributes = ctx.getAttributes(StringUtils.EMPTY);
-			final Attribute attribute = attributes.get(attributeName);
-			if (attribute != null) {
+			final Attributes attributes = ctx.getAttributes(StringUtils.EMPTY, new String[] { attributeName });
+			if (attributes == null || attributes.size() < 1) {
+				LOG.warn("Cannot download CRL from: " + urlString + ", no attributes with name: " + attributeName + " returned");
+			} else {
+				final Attribute attribute = attributes.getAll().next();
 				final byte[] ldapBytes = (byte[]) attribute.get();
 				if (ArrayUtils.isNotEmpty(ldapBytes)) {
 					return ldapBytes;
 				}
-			} else {
-				LOG.warn("No attribute '" + attributeName + "' for url " + urlString);
 			}
 		} catch (Exception e) {
 			LOG.warn(e.getMessage(), e);
