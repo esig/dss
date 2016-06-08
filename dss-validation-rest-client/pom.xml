@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.7-SNAPSHOT</version>
+		<version>4.7.RC1</version>
 	</parent>
 	<artifactId>dss-validation-rest-client</artifactId>
 	<name>DSS Validation REST Client</name>
