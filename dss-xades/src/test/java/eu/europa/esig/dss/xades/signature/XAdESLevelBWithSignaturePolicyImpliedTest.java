@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
@@ -26,9 +25,8 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBWithSignaturePolicyImpliedTest extends AbstractTestSignature {
-	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithPolicyTest.class);
 
-	private static final String HTTP_SPURI_TEST = "http://spuri.test";
+	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithSignaturePolicyImpliedTest.class);
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;

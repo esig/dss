@@ -23,11 +23,14 @@ package eu.europa.esig.dss.xades.validation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.util.encoders.Base64;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,21 +39,22 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * Validator of XML Signed document
  *
  */
 public class XMLDocumentValidator extends SignedDocumentValidator {
-	
-	private static final byte[] xmlPreamble = new byte[]{'<', '?', 'x', 'm', 'l'};
-	private static final byte[] xmlUtf8 = new byte[]{-17, -69, -65, '<', '?'};
+
+	private static final byte[] xmlPreamble = new byte[] { '<', '?', 'x', 'm', 'l' };
+	private static final byte[] xmlUtf8 = new byte[] { -17, -69, -65, '<', '?' };
+	private static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -58,7 +62,9 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	protected List<XPathQueryHolder> xPathQueryHolders;
 
 	protected Document rootElement;
-	
+
+	private List<AdvancedSignature> signatures;
+
 	/**
 	 * Default constructor used with reflexion (see SignedDocumentValidator)
 	 */
@@ -67,9 +73,11 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * The default constructor for XMLDocumentValidator. The created instance is initialised with default {@code XPathQueryHolder} and {@code XAdES111XPathQueryHolder}.
+	 * The default constructor for XMLDocumentValidator. The created instance is initialised with default
+	 * {@code XPathQueryHolder} and {@code XAdES111XPathQueryHolder}.
 	 *
-	 * @param dssDocument The instance of {@code DSSDocument} to validate
+	 * @param dssDocument
+	 *            The instance of {@code DSSDocument} to validate
 	 * @throws DSSException
 	 */
 	public XMLDocumentValidator(final DSSDocument dssDocument) throws DSSException {
@@ -101,24 +109,24 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		DSSUtils.readToArray(dssDocument, headerLength, preamble);
 		if (isXmlPreamble(preamble)) {
 			return true;
-		} 
+		}
 		return false;
 	}
-	
-	private  boolean isXmlPreamble(byte[] preamble) {
+
+	private boolean isXmlPreamble(byte[] preamble) {
 		byte[] startOfPramble = ArrayUtils.subarray(preamble, 0, xmlPreamble.length);
 		return Arrays.equals(startOfPramble, xmlPreamble) || Arrays.equals(startOfPramble, xmlUtf8);
 	}
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-
 		if (signatures != null) {
 			return signatures;
 		}
 		signatures = new ArrayList<AdvancedSignature>();
 		final NodeList signatureNodeList = DSSXMLUtils.getNodeList(rootElement, "//ds:Signature[not(parent::xades:CounterSignature)]");
-		//final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		// final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS,
+		// XPathQueryHolder.XMLE_SIGNATURE);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
@@ -133,9 +141,11 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	/**
 	 * Retrieves a signature based on its Id
 	 *
-	 * @param signatureId the given Id
+	 * @param signatureId
+	 *            the given Id
 	 * @return the corresponding {@code XAdESSignature}
-	 * @throws DSSException in case no Id is provided, or in case no signature was found for the given Id
+	 * @throws DSSException
+	 *             in case no Id is provided, or in case no signature was found for the given Id
 	 */
 	public AdvancedSignature getSignatureById(final String signatureId) throws DSSException {
 
@@ -154,28 +164,91 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public DSSDocument removeSignature(final String signatureId) throws DSSException {
+	public DSSDocument getOriginalDocument(final String signatureId) throws DSSException {
 
 		if (StringUtils.isBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
-		// TODO (31/07/2014): Checks on signature packaging to be added
 		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		List<AdvancedSignature> signatureList = getSignatures();
+
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
 			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
-			if (signatureId.equals(idIdentifier)) {
 
-				signatureEl.getParentNode().removeChild(signatureEl);
-				// TODO (31/07/2014): Save the modified document
-				final Node documentElement = rootElement.getDocumentElement();
-				final byte[] documentBytes = DSSXMLUtils.serializeNode(documentElement);
-				final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-				return inMemoryDocument;
+			if (signatureId.equals(idIdentifier)) {
+				XAdESSignature signature = (XAdESSignature) signatureList.get(ii);
+				signature.checkSignatureIntegrity();
+				if (getSignatureObjects(signatureEl).isEmpty() && signature.getReferences().isEmpty()) {
+					throw new DSSException("The signature must be enveloped or enveloping!");
+				} else if (isEnveloping(signatureEl)) {
+					List<Element> references = getSignatureObjects(signatureEl);
+					DSSDocument firstDocument = null;
+					DSSDocument inMemoryDocument = null;
+					for (Element element : references) {
+						String content = element.getTextContent();
+						content = isBase64Encoded(content) ? new String(Base64.decode(content)) : content;
+						if (inMemoryDocument == null) {
+							inMemoryDocument = new InMemoryDocument(content.getBytes());
+							firstDocument = inMemoryDocument;
+						} else {
+							DSSDocument document = new InMemoryDocument(content.getBytes());
+							inMemoryDocument.setNextDocument(document);
+							inMemoryDocument = document;
+						}
+					}
+					return firstDocument;
+				} else {
+					signatureEl.getParentNode().removeChild(signatureEl);
+					final Node documentElement = rootElement.getDocumentElement();
+					byte[] documentBytes = DSSXMLUtils.serializeNode(documentElement);
+					documentBytes = isBase64Encoded(documentBytes) ? Base64.decode(documentBytes) : documentBytes;
+					final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
+					return inMemoryDocument;
+				}
 			}
 		}
 		throw new DSSException("The signature with the given id was not found!");
+	}
+
+	private boolean isBase64Encoded(byte[] array) {
+		return isBase64Encoded(new String(array));
+	}
+
+	private boolean isBase64Encoded(String text) {
+		Pattern pattern = Pattern.compile(BASE64_REGEX);
+		Matcher matcher = pattern.matcher(text);
+		return matcher.matches();
+	}
+
+	private boolean isEnveloping(Element signatureEl) {
+		final NodeList objectNodeList = signatureEl.getChildNodes();
+		int objectTagNumber = 0;
+		for (int i = 0; i < objectNodeList.getLength(); i++) {
+			String nodeName = objectNodeList.item(i).getNodeName();
+			if ("ds:Object".equals(nodeName)) {
+				objectTagNumber++;
+			}
+		}
+		return objectTagNumber >= 2;
+	}
+
+	private List<Element> getSignatureObjects(Element signatureEl) {
+
+		final NodeList list = DSSXMLUtils.getNodeList(signatureEl, XPathQueryHolder.XPATH_OBJECT);
+		final List<Element> references = new ArrayList<Element>(list.getLength());
+		for (int ii = 0; ii < list.getLength(); ii++) {
+			final Node node = list.item(ii);
+			final Element element = (Element) node;
+			XPathQueryHolder queryHolder = new XPathQueryHolder();
+			if (DSSXMLUtils.getElement(element, queryHolder.XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES) != null) {
+				// ignore signed properties
+				continue;
+			}
+			references.add(element);
+		}
+		return references;
 	}
 
 	/**

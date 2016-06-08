@@ -61,8 +61,8 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonCertificateSource;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 public class AlwaysValidOCSPSource implements OCSPSource {
 
@@ -86,7 +86,8 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 	}
 
 	/**
-	 * The default constructor for MockConfigurableOCSPSource using "src/test/resources/ocsp.p12" file as OCSP responses source.
+	 * The default constructor for MockConfigurableOCSPSource using "src/test/resources/ocsp.p12" file as OCSP responses
+	 * source.
 	 */
 	public AlwaysValidOCSPSource() {
 
@@ -146,7 +147,9 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 	/**
 	 * This method allows to set the status of the cert to REVOKED.
 	 *
-	 * unspecified = 0; keyCompromise = 1; cACompromise = 2; affiliationChanged = 3; superseded = 4; cessationOfOperation = 5; certificateHold = 6; // 7 -> unknown removeFromCRL = 8; privilegeWithdrawn = 9; aACompromise = 10;
+	 * unspecified = 0; keyCompromise = 1; cACompromise = 2; affiliationChanged = 3; superseded = 4;
+	 * cessationOfOperation = 5; certificateHold = 6; // 7 -> unknown removeFromCRL = 8; privilegeWithdrawn = 9;
+	 * aACompromise = 10;
 	 *
 	 * @param revocationDate
 	 * @param revocationReasonId
@@ -171,9 +174,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			final Extension extension = ocspReq.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
 			if (extension != null) {
 
-				basicOCSPRespBuilder.setResponseExtensions(new Extensions(new Extension[] {
-						extension
-				}));
+				basicOCSPRespBuilder.setResponseExtensions(new Extensions(new Extension[] { extension }));
 			}
 			final Req[] requests = ocspReq.getRequestList();
 			for (int ii = 0; ii != requests.length; ii++) {
@@ -195,14 +196,13 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 
 			final ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(privateKey);
 			final X509CertificateHolder x509CertificateHolder = new X509CertificateHolder(issuerCert.getEncoded());
-			final X509CertificateHolder[] chain = {
-					x509CertificateHolder
-			};
+			final X509CertificateHolder[] chain = { x509CertificateHolder };
 			BasicOCSPResp basicResp = basicOCSPRespBuilder.build(contentSigner, chain, ocspDate);
 			final SingleResp[] responses = basicResp.getResponses();
 
-			final OCSPToken ocspToken = new OCSPToken(basicResp, responses[0]);
-			//final OCSPResp ocspResp = new OCSPRespBuilder().build(OCSPRespBuilder.SUCCESSFUL, basicResp);
+			final OCSPToken ocspToken = new OCSPToken();
+			ocspToken.setBasicOCSPResp(basicResp);
+			ocspToken.setBestSingleResp(responses[0]);
 			return ocspToken;
 		} catch (OCSPException e) {
 			throw new DSSException(e);
@@ -232,9 +232,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			BigInteger nonce = BigInteger.valueOf(ocspDate.getTime());
 
 			Extension ext = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, true, new DEROctetString(nonce.toByteArray()));
-			ocspGen.setRequestExtensions(new Extensions(new Extension[] {
-					ext
-			}));
+			ocspGen.setRequestExtensions(new Extensions(new Extension[] { ext }));
 
 			return ocspGen.build();
 		} catch (OCSPException e) {

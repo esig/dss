@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.DSSException;
@@ -35,7 +36,8 @@ public interface ValidationContext {
 	/**
 	 * This function sets the validation time.
 	 *
-	 * @param currentTime {@code Date}
+	 * @param currentTime
+	 *            {@code Date}
 	 */
 	void setCurrentTime(final Date currentTime);
 
@@ -44,23 +46,29 @@ public interface ValidationContext {
 	Date getCurrentTime();
 
 	/**
-	 * Adds a new revocation token to the list of tokes to verify. If the revocation token has already been added then it is ignored.
+	 * Adds a list of new revocation tokens to the list of tokens to verify. If the revocation token has already been
+	 * added then it is ignored.
 	 *
-	 * @param revocationToken {@code RevocationToken} revocation token to verify
+	 * @param revocationToken
+	 *            {@code RevocationToken} revocation token to verify
 	 */
-	void addRevocationTokenForVerification(final RevocationToken revocationToken);
+	void addRevocationTokensForVerification(final List<RevocationToken> revocationTokens);
 
 	/**
-	 * Adds a new certificate token to the list of tokes to verify. If the certificate token has already been added then it is ignored.
+	 * Adds a new certificate token to the list of tokens to verify. If the certificate token has already been added
+	 * then it is ignored.
 	 *
-	 * @param certificateToken {@code CertificateToken} certificate token to verify
+	 * @param certificateToken
+	 *            {@code CertificateToken} certificate token to verify
 	 */
 	void addCertificateTokenForVerification(final CertificateToken certificateToken);
 
 	/**
-	 * Adds a new timestamp token to the list of tokes to verify. If the timestamp token has already been added then it is ignored.
+	 * Adds a new timestamp token to the list of tokens to verify. If the timestamp token has already been added then it
+	 * is ignored.
 	 *
-	 * @param timestampToken {@code TimestampToken} timestamp token to verify
+	 * @param timestampToken
+	 *            {@code TimestampToken} timestamp token to verify
 	 */
 	void addTimestampTokenForVerification(final TimestampToken timestampToken);
 
@@ -72,7 +80,8 @@ public interface ValidationContext {
 	void validate() throws DSSException;
 
 	/**
-	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the given document. This list
+	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
+	 * given document. This list
 	 * includes the certificate to check, certification chain certificates, OCSP response certificate...
 	 *
 	 * @return The list of CertificateToken(s)
@@ -80,14 +89,16 @@ public interface ValidationContext {
 	Set<CertificateToken> getProcessedCertificates();
 
 	/**
-	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the given document.
+	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the
+	 * given document.
 	 *
 	 * @return The list of CertificateToken(s)
 	 */
 	Set<RevocationToken> getProcessedRevocations();
 
 	/**
-	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given document.
+	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given
+	 * document.
 	 *
 	 * @return The list of CertificateToken(s)
 	 */

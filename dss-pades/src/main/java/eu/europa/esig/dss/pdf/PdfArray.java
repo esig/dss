@@ -30,8 +30,6 @@ public interface PdfArray {
 
 	int size();
 
-	byte[] getBytes(int i) throws IOException ;
-
-	void add(PdfStream stream);
+	byte[] getBytes(int i) throws IOException;
 
 }

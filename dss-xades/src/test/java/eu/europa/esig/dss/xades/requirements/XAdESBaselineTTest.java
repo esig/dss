@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.xades.requirements;
 
 import java.io.File;
-import java.util.Date;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -38,7 +37,7 @@ public class XAdESBaselineTTest extends AbstractRequirementChecks {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);

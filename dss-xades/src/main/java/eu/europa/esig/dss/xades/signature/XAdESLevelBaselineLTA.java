@@ -28,15 +28,15 @@ import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.TimestampParameters;
-import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESNamespaces;
 
 /**
  * Holds level LTA aspects of XAdES
@@ -53,7 +53,8 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	}
 
 	/**
-	 * Adds the ArchiveTimeStamp element which is an unsigned property qualifying the signature. The hash sent to the TSA
+	 * Adds the ArchiveTimeStamp element which is an unsigned property qualifying the signature. The hash sent to the
+	 * TSA
 	 * (messageImprint) is computed on the XAdES-LT form of the electronic signature and the signed data objects.<br>
 	 *
 	 * A XAdES-LTA form MAY contain several ArchiveTimeStamp elements.
@@ -95,8 +96,8 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 */
 	private void incorporateTimestampValidationData(final ValidationContext validationContext) {
 
-		final Element timeStampValidationDataDom = DSSXMLUtils
-				.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141, "xades141:TimeStampValidationData");
+		final Element timeStampValidationDataDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141,
+				"xades141:TimeStampValidationData");
 
 		final Set<CertificateToken> toIncludeSetOfCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
 		final List<CertificateToken> toIncludeCertificates = new ArrayList<CertificateToken>();
@@ -107,9 +108,8 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 		String id = "1";
 		final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
 		if (archiveTimestamps.size() > 0) {
-
 			final TimestampToken timestampToken = archiveTimestamps.get(archiveTimestamps.size() - 1);
-			id = "" + timestampToken.getDSSId();
+			id = timestampToken.getDSSId().asXmlId();
 		}
 
 		timeStampValidationDataDom.setAttribute("Id", "id-" + id);

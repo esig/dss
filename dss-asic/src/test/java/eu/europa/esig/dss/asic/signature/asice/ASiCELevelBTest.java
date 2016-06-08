@@ -39,7 +39,7 @@ import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class ASiCELevelBTest extends AbstractTestSignature {
 
@@ -50,7 +50,7 @@ public class ASiCELevelBTest extends AbstractTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+		documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text", MimeType.TEXT);
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);

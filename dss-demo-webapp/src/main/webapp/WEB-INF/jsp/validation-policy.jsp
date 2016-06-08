@@ -25,13 +25,23 @@
         </div>
     </div>
 
-    <c:set var="signature" value="${policy.mainSignature}" scope="request" />
+    <c:set var="signature" value="${policy.signatureConstraints}" scope="request" />
     <spring:message code="label.policy.title.signature" var="title" />
     <jsp:include page="policy/signature-constraints.jsp">
         <jsp:param name="id" value="signature" />
         <jsp:param name="title" value="${title}" />
-        <jsp:param name="pathToBindPrefix" value="MainSignature" />
+        <jsp:param name="pathToBindPrefix" value="SignatureConstraints" />
     </jsp:include>
+    
+    
+    <c:set var="counterSignature" value="${policy.counterSignatureConstraints}" scope="request" />
+    <spring:message code="label.policy.countersignature" var="title" />
+    <jsp:include page="policy/signature-constraints.jsp">
+        <jsp:param name="id" value="counterSignature" />
+        <jsp:param name="title" value="${title}" />
+        <jsp:param name="pathToBindPrefix" value="CounterSignatureConstraints" />
+    </jsp:include>
+    
 
     <c:set var="timestamp" value="${policy.timestamp}" scope="request" />
     <spring:message code="label.policy.timestamp" var="title" />
@@ -40,9 +50,20 @@
         <jsp:param name="title" value="${title}" />
         <jsp:param name="pathToBindPrefix" value="Timestamp" />
     </jsp:include>
-
+    
     <c:set var="revocation" value="${policy.revocation}" scope="request" />
-    <jsp:include page="policy/revocation-constraints.jsp" />
+    <spring:message code="label.policy.revocation" var="title" />
+    <jsp:include page="policy/revocation-constraints.jsp">
+        <jsp:param name="id" value="revocation" />
+        <jsp:param name="title" value="${title}" />
+        <jsp:param name="pathToBindPrefix" value="Revocation" />
+    </jsp:include>
+    
+    <c:set var="cryptographic" value="${policy.cryptographic}" scope="request" />
+    <jsp:include page="policy/cryptographic-constraints.jsp">
+        <jsp:param name="id" value="crypto" />
+        <jsp:param name="pathToBind" value="Cryptographic" />
+    </jsp:include>
     
     <div id="binding" class="hidden"></div>
 
@@ -56,6 +77,35 @@
     function escapeString(string) {
        return string.replace( /(:|\.|\[|\]|,)/g, "\\$1" );
     }
+	
+	// This function is used to add a value in a multi-value-constraint
+    function addValue(path) {
+		var id = "multi-value-"+path;
+		var block = document.getElementById(id);
+		var number = block.getElementsByTagName("input").length;
+		
+		var divNode = document.createElement("div");
+		divNode.setAttribute("class", "col-sm-7 col-sm-offset-5");
+		divNode.setAttribute("style", "margin-bottom: 15px;");
+		
+		var inputNode = document.createElement("input");
+		inputNode.setAttribute("class", "form-control");
+		inputNode.setAttribute("name", path+".Id["+number+"]");
+		
+		divNode.appendChild(inputNode);
+		block.appendChild(divNode);
+	}
+	
+	function removeLastValue(path) {
+		var id = "multi-value-" + path;
+		var block = document.getElementById(id);
+		var number = block.getElementsByTagName("input").length;
+		if(number > 0) {
+			var item = block.getElementsByTagName("input")[number-1];
+			var divBlock = item.parentNode;
+			divBlock.parentNode.removeChild(divBlock);
+		}
+	}
 
     $('.encryptionAlgo:checkbox').change(function() {
 

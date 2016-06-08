@@ -22,6 +22,8 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.validation.policy.rules.Indication;
+
 /**
  * This class is a DTO representation for an analysis summary.
  */
@@ -33,7 +35,7 @@ public class TSLValidationSummary {
 	private Date loadedDate;
 	private Date issueDate;
 	private Date nextUpdateDate;
-	private String indication;
+	private Indication indication;
 	private int nbServiceProviders;
 	private int nbServices;
 	private int nbCertificatesAndX500Principals;
@@ -86,11 +88,11 @@ public class TSLValidationSummary {
 		this.nextUpdateDate = nextUpdateDate;
 	}
 
-	public String getIndication() {
+	public Indication getIndication() {
 		return indication;
 	}
 
-	public void setIndication(String indication) {
+	public void setIndication(Indication indication) {
 		this.indication = indication;
 	}
 

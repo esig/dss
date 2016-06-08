@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleReport xmlns="http://dss.esig.europa.eu/validation/simple-report">
+    <Policy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+		Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+		signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+	</PolicyDescription>
+    </Policy>
+    <ValidationTime>20/01/2016 08:06:05.002</ValidationTime>
+    <DocumentName>PAdES_B_PVDB-extended_LTA.pdf</DocumentName>
+    <ValidSignaturesCount>1</ValidSignaturesCount>
+    <SignaturesCount>1</SignaturesCount>
+    <Signature Id="id-30b3acd8c4fe0ced13b26ed2e6574d91e2e77b19e06a42b6c513a0b046b4561b" SignatureFormat="PAdES_BASELINE_LTA">
+        <SigningTime>30/07/2015 13:49:14.000</SigningTime>
+        <SignedBy>Pierrick Vandenbroucke (Signature)</SignedBy>
+        <Indication>TOTAL_PASSED</Indication>
+        <SignatureLevel>AdESqc</SignatureLevel>
+    </Signature>
+</SimpleReport>

@@ -16,22 +16,14 @@
             <jsp:param name="label" value="${translation}" />
             <jsp:param name="pathToBindPrefix" value="Revocation.RevocationFreshness" />
         </jsp:include>
-        
-        <c:set var="currentCertificate" value="${revocation.signingCertificate}" scope="request" />
-        <spring:message code="label.policy.signingCertificate" var="translation" />
-        <jsp:include page="certificate-constraints.jsp">
-            <jsp:param name="id" value="signing-cert-revocation" />
-            <jsp:param name="title" value="${translation}" />
-            <jsp:param name="pathToBindPrefix" value="Revocation.SigningCertificate" />
-        </jsp:include> 
-        
-        <c:set var="currentCertificate" value="${revocation.CACertificate}" scope="request" />
-        <spring:message code="label.policy.caCertificate" var="translation" />
-        <jsp:include page="certificate-constraints.jsp">
-            <jsp:param name="id" value="ca-cert-revocation" />
-            <jsp:param name="title" value="${translation}" />
-            <jsp:param name="pathToBindPrefix" value="Revocation.CACertificate" />
-        </jsp:include>
+
+        <div >
+			<c:set var="basicSignatureConstraints" value="${revocation.basicSignatureConstraints}" scope="request" />
+			<jsp:include page="basic-signature-constraint.jsp">
+				<jsp:param name="id" value="basicSignatureConstraints-${param.id}" />
+	            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.BasicSignatureConstraints" />
+			</jsp:include>
+		</div>
         
     </div>
 </div>    

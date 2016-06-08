@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.signature;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.ChainCertificate;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -80,23 +80,21 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 		SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		SignatureForm signatureForm = signatureLevel.getSignatureForm();
 		switch (signatureForm) {
-			case XAdES:
-				return xadesService;
-			case CAdES:
-				return cadesService;
-			case PAdES:
-				return padesService;
-			case ASiC_E:
-			case ASiC_S:
-				return asicService;
-			default:
-				throw new DSSException("Unrecognized format " + signatureLevel);
+		case XAdES:
+			return xadesService;
+		case CAdES:
+			return cadesService;
+		case PAdES:
+			return padesService;
+		case ASiC_E:
+		case ASiC_S:
+			return asicService;
+		default:
+			throw new DSSException("Unrecognized format " + signatureLevel);
 		}
 	}
 
-	@SuppressWarnings({
-		"rawtypes", "unchecked"
-	})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public ToBeSigned getDataToSign(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) throws DSSException {
 		logger.info("GetDataToSign in process...");
@@ -108,11 +106,10 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 		return dataToSign;
 	}
 
-	@SuppressWarnings({
-		"rawtypes", "unchecked"
-	})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public DSSDocument signDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters, SignatureValue signatureValue) throws DSSException {
+	public DSSDocument signDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters, SignatureValue signatureValue)
+			throws DSSException {
 		logger.info("SignDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignatureLevel(remoteParameters);
@@ -122,9 +119,7 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 		return signDocument;
 	}
 
-	@SuppressWarnings({
-		"rawtypes", "unchecked"
-	})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public DSSDocument extendDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) throws DSSException {
 		logger.info("ExtendDocument in process...");
@@ -141,25 +136,25 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 
 		SignatureForm signatureForm = remoteParameters.getSignatureLevel().getSignatureForm();
 		switch (signatureForm) {
-			case CAdES:
-				parameters = new CAdESSignatureParameters();
-				break;
-			case PAdES:
-				PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
-				padesParams.setSignatureSize(9472 * 2); // double reserved space for signature
-				parameters = padesParams;
-				break;
-			case XAdES:
-				parameters = new XAdESSignatureParameters();
-				break;
-			case ASiC_E:
-			case ASiC_S:
-				ASiCSignatureParameters aSiCParameters = new ASiCSignatureParameters();
-				aSiCParameters.aSiC().setUnderlyingForm(remoteParameters.getUnderlyingASiCForm());
-				parameters = aSiCParameters;
-				break;
-			default:
-				throw new DSSException("Unsupported signature form : " + signatureForm);
+		case CAdES:
+			parameters = new CAdESSignatureParameters();
+			break;
+		case PAdES:
+			PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
+			padesParams.setSignatureSize(9472 * 2); // double reserved space for signature
+			parameters = padesParams;
+			break;
+		case XAdES:
+			parameters = new XAdESSignatureParameters();
+			break;
+		case ASiC_E:
+		case ASiC_S:
+			ASiCSignatureParameters aSiCParameters = new ASiCSignatureParameters();
+			aSiCParameters.aSiC().setUnderlyingForm(remoteParameters.getUnderlyingASiCForm());
+			parameters = aSiCParameters;
+			break;
+		default:
+			throw new DSSException("Unsupported signature form : " + signatureForm);
 		}
 
 		fillParameters(parameters, remoteParameters);
@@ -180,14 +175,16 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 		parameters.setSignWithExpiredCertificate(remoteParameters.isSignWithExpiredCertificate());
 
 		RemoteCertificate signingCertificate = remoteParameters.getSigningCertificate();
-		CertificateToken loadCertificate = DSSUtils.loadCertificate(signingCertificate.getEncodedCertificate());
-		parameters.setSigningCertificate(loadCertificate);
+		if (signingCertificate != null) { // extends do not require signing certificate
+			CertificateToken loadCertificate = DSSUtils.loadCertificate(signingCertificate.getEncodedCertificate());
+			parameters.setSigningCertificate(loadCertificate);
+		}
 
 		List<RemoteCertificate> remoteCertificateChain = remoteParameters.getCertificateChain();
 		if (CollectionUtils.isNotEmpty(remoteCertificateChain)) {
-			List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
+			Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 			for (RemoteCertificate remoteCertificate : remoteCertificateChain) {
-				certificateChain.add(new ChainCertificate(DSSUtils.loadCertificate(remoteCertificate.getEncodedCertificate()), true));
+				certificateChain.add(DSSUtils.loadCertificate(remoteCertificate.getEncodedCertificate()));
 			}
 			parameters.setCertificateChain(certificateChain);
 		}

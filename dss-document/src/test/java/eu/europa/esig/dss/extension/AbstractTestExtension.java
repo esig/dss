@@ -26,7 +26,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.GeneralSecurityException;
 import java.security.Signature;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
@@ -39,8 +42,11 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> {
 
@@ -85,29 +91,33 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		//		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		verifySimpleReport(reports.getSimpleReport());
+		verifyDetailedReport(reports.getDetailedReport());
 
 		checkOriginalLevel(diagnosticData);
 		checkBLevelValid(diagnosticData);
 
 		DSSDocument extendedDocument = extendSignature(signedDocument);
 
-		//		extendedDocument.save("target/xades.xml");
+		// extendedDocument.save("target/xades.xml");
 
 		assertNotNull(extendedDocument);
 		assertNotNull(extendedDocument.getMimeType());
-		assertNotNull(extendedDocument.getBytes());
+		assertNotNull(IOUtils.toByteArray(extendedDocument.openStream()));
 		assertNotNull(extendedDocument.getName());
 
 		validator = SignedDocumentValidator.fromDocument(extendedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		reports = validator.validateDocument();
 
-		//		reports.print();
+		// reports.print();
 
 		diagnosticData = reports.getDiagnosticData();
+		verifySimpleReport(reports.getSimpleReport());
+		verifyDetailedReport(reports.getDetailedReport());
 
 		checkFinalLevel(diagnosticData);
 		checkBLevelValid(diagnosticData);
@@ -121,9 +131,75 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extensionParameters);
 		assertNotNull(extendedDocument);
 
-		//		extendedDocument.save("target/pdf.pdf");
+		// extendedDocument.save("target/pdf.pdf");
 
 		return extendedDocument;
+	}
+
+	protected void verifySimpleReport(SimpleReport simpleReport) {
+		assertNotNull(simpleReport);
+
+		List<String> signatureIdList = simpleReport.getSignatureIdList();
+		assertTrue(CollectionUtils.isNotEmpty(signatureIdList));
+
+		for (String sigId : signatureIdList) {
+			Indication indication = simpleReport.getIndication(sigId);
+			assertNotNull(indication);
+			if (indication != Indication.PASSED) {
+				assertNotNull(simpleReport.getSubIndication(sigId));
+			}
+			assertNotNull(simpleReport.getSignatureLevel(sigId));
+		}
+		assertNotNull(simpleReport.getValidationTime());
+	}
+
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		assertNotNull(detailedReport);
+
+		int nbBBBs = detailedReport.getBasicBuildingBlocksNumber();
+		assertTrue(nbBBBs > 0);
+		for (int i = 0; i < nbBBBs; i++) {
+			String id = detailedReport.getBasicBuildingBlocksSignatureId(i);
+			assertNotNull(id);
+			assertNotNull(detailedReport.getBasicBuildingBlocksIndication(id));
+		}
+
+		List<String> signatureIds = detailedReport.getSignatureIds();
+		assertTrue(CollectionUtils.isNotEmpty(signatureIds));
+		for (String sigId : signatureIds) {
+			Indication basicIndication = detailedReport.getBasicValidationIndication(sigId);
+			assertNotNull(basicIndication);
+			if (!Indication.PASSED.equals(basicIndication)) {
+				assertNotNull(detailedReport.getBasicValidationSubIndication(sigId));
+			}
+		}
+
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		if (CollectionUtils.isNotEmpty(timestampIds)) {
+			for (String tspId : timestampIds) {
+				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
+				assertNotNull(timestampIndication);
+				if (!Indication.PASSED.equals(timestampIndication)) {
+					assertNotNull(detailedReport.getTimestampValidationSubIndication(tspId));
+				}
+			}
+		}
+
+		for (String sigId : signatureIds) {
+			Indication ltvIndication = detailedReport.getLongTermValidationIndication(sigId);
+			assertNotNull(ltvIndication);
+			if (!Indication.PASSED.equals(ltvIndication)) {
+				assertNotNull(detailedReport.getLongTermValidationSubIndication(sigId));
+			}
+		}
+
+		for (String sigId : signatureIds) {
+			Indication archiveDataIndication = detailedReport.getArchiveDataValidationIndication(sigId);
+			assertNotNull(archiveDataIndication);
+			if (!Indication.PASSED.equals(archiveDataIndication)) {
+				assertNotNull(detailedReport.getArchiveDataValidationSubIndication(sigId));
+			}
+		}
 	}
 
 	protected abstract SP getExtensionParameters();

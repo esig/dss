@@ -60,7 +60,7 @@ public class JKSSignatureToken extends AbstractSignatureTokenConnection {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
-			if (ksStream !=null) {
+			if (ksStream != null) {
 				try {
 					ksStream.close();
 				} catch (IOException e) {
@@ -72,9 +72,6 @@ public class JKSSignatureToken extends AbstractSignatureTokenConnection {
 
 	@Override
 	public void close() {
-		for (int ii = 0; ii < password.length; ii++) {
-			password[ii] = 0;
-		}
 	}
 
 	/**

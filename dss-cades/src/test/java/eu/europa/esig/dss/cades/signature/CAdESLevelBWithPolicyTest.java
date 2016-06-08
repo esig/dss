@@ -35,15 +35,14 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class CAdESLevelBWithPolicyTest extends AbstractTestSignature {
+public class CAdESLevelBWithPolicyTest extends AbstractCAdESTestSignature {
 
 	private static final String POLICY_ID = "1.2.3.4.5.6";
 	private static final String HELLO_WORLD = "Hello World";
@@ -64,9 +63,7 @@ public class CAdESLevelBWithPolicyTest extends AbstractTestSignature {
 		Policy signaturePolicy = new Policy();
 		signaturePolicy.setId(POLICY_ID);
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA1);
-		signaturePolicy.setDigestValue(new byte[] {
-				'd', 'i', 'g', 'e', 's', 't', 'v', 'a', 'l', 'u', 'e'
-		});
+		signaturePolicy.setDigestValue(new byte[] { 'd', 'i', 'g', 'e', 's', 't', 'v', 'a', 'l', 'u', 'e' });
 		signaturePolicy.setSpuri(HTTP_SPURI_TEST);
 
 		signatureParameters = new CAdESSignatureParameters();
@@ -81,7 +78,6 @@ public class CAdESLevelBWithPolicyTest extends AbstractTestSignature {
 		service = new CAdESService(certificateVerifier);
 
 	}
-
 
 	@Override
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {

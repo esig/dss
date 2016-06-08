@@ -45,8 +45,8 @@ import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @RunWith(Parameterized.class)
@@ -75,7 +75,7 @@ public class XAdESDoubleSignatureTest {
 	}
 
 	@Test
-	public void testDoubleSignature() throws InterruptedException {
+	public void testDoubleSignature() {
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(verifier);
@@ -102,9 +102,6 @@ public class XAdESDoubleSignatureTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
-
-		reports.print();
-
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();

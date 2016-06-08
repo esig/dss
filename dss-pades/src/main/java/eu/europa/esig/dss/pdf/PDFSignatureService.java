@@ -23,16 +23,16 @@ package eu.europa.esig.dss.pdf;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SignatureException;
+import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pdf.model.ModelPdfDict;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
- * The usage of this interface permits the user to choose the underlying PDF library use to created PDF signatures.
+ * The usage of this interface permits the user to choose the underlying PDF library used to create PDF signatures.
  *
  *
  */
@@ -44,7 +44,8 @@ public interface PDFSignatureService {
 	 * @param toSignDocument
 	 * @param parameters
 	 * @param digestAlgorithm
-	 * @param extraDictionariesToAddBeforeSign only in the case of timestamp
+	 * @param extraDictionariesToAddBeforeSign
+	 *            only in the case of timestamp
 	 * @return
 	 * @throws DSSException
 	 */
@@ -61,7 +62,8 @@ public interface PDFSignatureService {
 	 * @param extraDictionariesToAddBeforeSign
 	 * @throws DSSException
 	 */
-	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException;
+	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
+			final DigestAlgorithm digestAlgorithm) throws DSSException;
 
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document
@@ -72,8 +74,9 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 * @throws SignatureException
 	 */
-	void validateSignatures(final CertificatePool validationCertPool, final DSSDocument document, final SignatureValidationCallback callback) throws DSSException;
+	void validateSignatures(final CertificatePool validationCertPool, final DSSDocument document, final SignatureValidationCallback callback)
+			throws DSSException;
 
-	void addDssDictionary(InputStream inputStream, OutputStream outpuStream, ModelPdfDict dssDictionary) throws DSSException;
+	void addDssDictionary(InputStream inputStream, OutputStream outpuStream, List<DSSDictionaryCallback> callbacks) throws DSSException;
 
 }

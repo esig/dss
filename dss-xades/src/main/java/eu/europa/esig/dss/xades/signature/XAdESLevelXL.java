@@ -26,16 +26,16 @@ import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESNamespaces;
 
 /**
  * XL profile of XAdES signature

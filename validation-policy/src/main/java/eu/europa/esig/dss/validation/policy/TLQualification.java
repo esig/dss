@@ -22,49 +22,59 @@ package eu.europa.esig.dss.validation.policy;
 
 public class TLQualification {
 
-   int caqc = 0;
-   int qcWithSSCD = 0;
-   int qcCNoSSCD = 0;
-   int qcSSCDAsInCert = 0;
-   int qcForLegalPerson = 0;
+	int caqc = 0;
+	int qcWithSSCD = 0;
+	int qcCNoSSCD = 0;
+	int qcSSCDAsInCert = 0;
+	int qcForLegalPerson = 0;
+	int qcStatement = 0;
 
-   public int getCaqc() {
-      return caqc;
-   }
+	public int getCaqc() {
+		return caqc;
+	}
 
-   public void setCaqc(boolean caqc) {
-      this.caqc = caqc ? 1 : 0;
-   }
+	public void setCaqc(boolean caqc) {
+		this.caqc = caqc ? 1 : 0;
+	}
 
-   public int getQcWithSSCD() {
-      return qcWithSSCD;
-   }
+	public int getQcWithSSCD() {
+		return qcWithSSCD;
+	}
 
-   public void setQcWithSSCD(boolean qcWithSSCD) {
-      this.qcWithSSCD = qcWithSSCD ? 1 : 0;
-   }
+	public void setQcWithSSCD(boolean qcWithSSCD) {
+		this.qcWithSSCD = qcWithSSCD ? 1 : 0;
+	}
 
-   public int getQcCNoSSCD() {
-      return qcCNoSSCD;
-   }
+	public int getQcCNoSSCD() {
+		return qcCNoSSCD;
+	}
 
-   public void setQcCNoSSCD(boolean qcCNoSSCD) {
-      this.qcCNoSSCD = qcCNoSSCD ? 1 : 0;
-   }
+	public void setQcCNoSSCD(boolean qcCNoSSCD) {
+		this.qcCNoSSCD = qcCNoSSCD ? 1 : 0;
+	}
 
-   public int getQcSSCDAsInCert() {
-      return qcSSCDAsInCert;
-   }
+	public int getQcSSCDAsInCert() {
+		return qcSSCDAsInCert;
+	}
 
-   public void setQcSSCDAsInCert(boolean qcSSCDAsInCert) {
-      this.qcSSCDAsInCert = qcSSCDAsInCert ? 1 : 0;
-   }
+	public void setQcSSCDAsInCert(boolean qcSSCDAsInCert) {
+		this.qcSSCDAsInCert = qcSSCDAsInCert ? 1 : 0;
+	}
 
-   public int getQcForLegalPerson() {
-      return qcForLegalPerson;
-   }
+	public int getQcForLegalPerson() {
+		return qcForLegalPerson;
+	}
 
-   public void setQcForLegalPerson(boolean qcForLegalPerson) {
-      this.qcForLegalPerson = qcForLegalPerson ? 1 : 0;
-   }
+	public void setQcForLegalPerson(boolean qcForLegalPerson) {
+		this.qcForLegalPerson = qcForLegalPerson ? 1 : 0;
+	}
+
+	public int getQcStatement() {
+		return qcStatement;
+	}
+
+	public void setQcStatement(boolean qcStatement) {
+		this.qcStatement = qcStatement ? 1 : 0;
+	}
+
 }

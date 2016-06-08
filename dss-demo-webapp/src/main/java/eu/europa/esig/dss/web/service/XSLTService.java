@@ -10,6 +10,7 @@ import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -17,10 +18,9 @@ import org.apache.pdfbox.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
 
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 @Component
 public class XSLTService {
@@ -43,22 +43,33 @@ public class XSLTService {
 		IOUtils.closeQuietly(detailedIS);
 	}
 
-	public String generateSimpleReport(SimpleReport simpleReport) {
+	public String generateSimpleReport(String simpleReport) {
 		Writer writer = new StringWriter();
 		try {
 			Transformer transformer = templateSimpleReport.newTransformer();
-			transformer.transform(new StreamSource(new StringReader(simpleReport.toString())), new StreamResult(writer));
+			transformer.transform(new StreamSource(new StringReader(simpleReport)), new StreamResult(writer));
 		} catch (Exception e) {
 			logger.error("Error while generating simple report : " + e.getMessage(), e);
 		}
 		return writer.toString();
 	}
 
-	public String generateDetailedReport(DetailedReport detailedReport) {
+	public String generateSimpleReport(Document dom) {
+		Writer writer = new StringWriter();
+		try {
+			Transformer transformer = templateSimpleReport.newTransformer();
+			transformer.transform(new DOMSource(dom), new StreamResult(writer));
+		} catch (Exception e) {
+			logger.error("Error while generating simple report : " + e.getMessage(), e);
+		}
+		return writer.toString();
+	}
+
+	public String generateDetailedReport(String detailedReport) {
 		Writer writer = new StringWriter();
 		try {
 			Transformer transformer = templateDetailedReport.newTransformer();
-			transformer.transform(new StreamSource(new StringReader(detailedReport.toString())), new StreamResult(writer));
+			transformer.transform(new StreamSource(new StringReader(detailedReport)), new StreamResult(writer));
 		} catch (Exception e) {
 			logger.error("Error while generating detailed report : " + e.getMessage(), e);
 		}

@@ -28,9 +28,8 @@ public class ASiCSignatureParameters extends AbstractSignatureParameters {
 	}
 
 	@Override
-	public void setSignatureLevel(SignatureLevel signatureLevel) throws NullPointerException {
+	public void setSignatureLevel(SignatureLevel signatureLevel) {
 		super.setSignatureLevel(signatureLevel);
-
 		ASiCParameters aSiC = aSiC();
 		aSiC.containerForm = signatureLevel.getSignatureForm();
 	}

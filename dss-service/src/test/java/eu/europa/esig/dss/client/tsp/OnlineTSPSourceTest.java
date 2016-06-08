@@ -10,7 +10,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.client.http.commons.TimestampDataLoader;
 
 public class OnlineTSPSourceTest {
 
@@ -29,6 +29,16 @@ public class OnlineTSPSourceTest {
 	public void testWithCommonDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 		tspSource.setDataLoader(new CommonsDataLoader());
+
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		assertNotNull(timeStampResponse);
+	}
+
+	@Test
+	public void testWithTimestampDataLoader() {
+		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
+		tspSource.setDataLoader(new TimestampDataLoader()); // content-type is different
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);

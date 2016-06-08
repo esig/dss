@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -14,9 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,18 +28,17 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.web.WebAppUtils;
+import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.ValidationForm;
 import eu.europa.esig.dss.web.service.FOPService;
 import eu.europa.esig.dss.web.service.XSLTService;
 
 @Controller
-@SessionAttributes({
-	"simpleReportXml", "detailedReportXml"
-})
+@SessionAttributes({ "simpleReportXml", "detailedReportXml", "reportsList" })
 @RequestMapping(value = "/validation")
 public class ValidationController {
 
@@ -46,6 +49,7 @@ public class ValidationController {
 
 	private static final String SIMPLE_REPORT_ATTRIBUTE = "simpleReportXml";
 	private static final String DETAILED_REPORT_ATTRIBUTE = "detailedReportXml";
+	private static final String REPORTS_LIST = "reportsList";
 
 	@Autowired
 	private CertificateVerifier certificateVerifier;
@@ -56,9 +60,15 @@ public class ValidationController {
 	@Autowired
 	private FOPService fopService;
 
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(ValidationLevel.class, new EnumPropertyEditor(ValidationLevel.class));
+	}
+
 	@RequestMapping(method = RequestMethod.GET)
-	public String showValidationForm(Model model) {
+	public String showValidationForm(Model model, HttpServletRequest request) {
 		ValidationForm validationForm = new ValidationForm();
+		validationForm.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
 		validationForm.setDefaultPolicy(true);
 		model.addAttribute("validationForm", validationForm);
 		return VALIDATION_TILE;
@@ -79,6 +89,7 @@ public class ValidationController {
 			detachedContents.add(WebAppUtils.toDSSDocument(originalFile));
 			documentValidator.setDetachedContents(detachedContents);
 		}
+		documentValidator.setValidationLevel(validationForm.getValidationLevel());
 
 		Reports reports = null;
 
@@ -93,14 +104,61 @@ public class ValidationController {
 			reports = documentValidator.validateDocument();
 		}
 
-		SimpleReport simpleReport = reports.getSimpleReport();
-		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, simpleReport);
-		model.addAttribute("simpleReport", xsltService.generateSimpleReport(simpleReport));
+		// reports.print();
 
-		DetailedReport detailedReport = reports.getDetailedReport();
-		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, detailedReport);
-		model.addAttribute("detailedReport", xsltService.generateDetailedReport(detailedReport));
-		model.addAttribute("diagnosticTree", reports.getDiagnosticData().toString());
+		String xmlSimpleReport = reports.getXmlSimpleReport();
+		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, xmlSimpleReport);
+		model.addAttribute("simpleReport", xsltService.generateSimpleReport(xmlSimpleReport));
+
+		String xmlDetailedReport = reports.getXmlDetailedReport();
+		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, xmlDetailedReport);
+		model.addAttribute("detailedReport", xsltService.generateDetailedReport(xmlDetailedReport));
+
+		model.addAttribute("diagnosticTree", reports.getXmlDiagnosticData());
+
+		List<String> reportsNameList = new ArrayList<String>();
+		List<Reports> reportsList = new ArrayList<Reports>();
+		while (reports != null) {
+			reportsNameList.add(reports.getDiagnosticData().getDocumentName());
+			reportsList.add(reports);
+			reports = reports.getNextReports();
+		}
+		model.addAttribute(REPORTS_LIST, reportsList);
+		model.addAttribute("reports", reportsNameList);
+
+		return VALIDATION_RESULT_TILE;
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/report", method = RequestMethod.GET)
+	public String getReports(@RequestParam("name") String reportFileName, HttpSession session, Model model) {
+		Reports reports = null;
+		List<Reports> reportsList = (List<Reports>) session.getAttribute(REPORTS_LIST);
+		List<String> reportsNameList = new ArrayList<String>();
+		for (Reports report : reportsList) {
+			DiagnosticData diagnosticData = report.getDiagnosticData();
+			String name = diagnosticData.getDocumentName();
+			if (name.equals(reportFileName)) {
+				model.addAttribute("selected", name);
+				reports = report;
+			}
+		}
+
+		String xmlSimpleReport = reports.getXmlSimpleReport();
+		model.addAttribute(SIMPLE_REPORT_ATTRIBUTE, xmlSimpleReport);
+		model.addAttribute("simpleReport", xsltService.generateSimpleReport(xmlSimpleReport));
+
+		String xmlDetailedReport = reports.getXmlDetailedReport();
+		model.addAttribute(DETAILED_REPORT_ATTRIBUTE, xmlDetailedReport);
+		model.addAttribute("detailedReport", xsltService.generateDetailedReport(xmlDetailedReport));
+
+		model.addAttribute("diagnosticTree", reports.getXmlDiagnosticData());
+
+		for (Reports report : reportsList) {
+			DiagnosticData diagnosticData = report.getDiagnosticData();
+			reportsNameList.add(diagnosticData.getDocumentName());
+		}
+		model.addAttribute("reports", reportsNameList);
 
 		return VALIDATION_RESULT_TILE;
 	}
@@ -108,7 +166,7 @@ public class ValidationController {
 	@RequestMapping(value = "/download-simple-report")
 	public void downloadSimpleReport(HttpSession session, HttpServletResponse response) {
 		try {
-			SimpleReport simpleReport = (SimpleReport) session.getAttribute(SIMPLE_REPORT_ATTRIBUTE);
+			String simpleReport = (String) session.getAttribute(SIMPLE_REPORT_ATTRIBUTE);
 
 			response.setContentType(MimeType.PDF.getMimeTypeString());
 			response.setHeader("Content-Disposition", "attachment; filename=DSS-Simple-report.pdf");
@@ -122,7 +180,7 @@ public class ValidationController {
 	@RequestMapping(value = "/download-detailed-report")
 	public void downloadDetailedReport(HttpSession session, HttpServletResponse response) {
 		try {
-			DetailedReport detailedReport = (DetailedReport) session.getAttribute(DETAILED_REPORT_ATTRIBUTE);
+			String detailedReport = (String) session.getAttribute(DETAILED_REPORT_ATTRIBUTE);
 
 			response.setContentType(MimeType.PDF.getMimeTypeString());
 			response.setHeader("Content-Disposition", "attachment; filename=DSS-Detailed-report.pdf");
@@ -131,6 +189,11 @@ public class ValidationController {
 		} catch (Exception e) {
 			logger.error("An error occured while generating pdf for detailed report : " + e.getMessage(), e);
 		}
+	}
+
+	@ModelAttribute("validationLevels")
+	public ValidationLevel[] getValidationLevels() {
+		return new ValidationLevel[] { ValidationLevel.BASIC_SIGNATURES, ValidationLevel.LONG_TERM_DATA, ValidationLevel.ARCHIVAL_DATA };
 	}
 
 }

@@ -43,7 +43,8 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 	/**
 	 * Main constructor.
 	 *
-	 * @param crlSource the CRL repository used by this CRL trust linker.
+	 * @param crlSource
+	 *            the CRL repository used by this CRL trust linker.
 	 */
 	public CRLCertificateVerifier(final CRLSource crlSource) {
 
@@ -70,7 +71,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 				certificateToken.extraInfo().infoCRLIsNotValid();
 				return null;
 			}
-			certificateToken.setRevocationToken(crlToken);
+			certificateToken.addRevocationToken(crlToken);
 			return crlToken;
 		} catch (final Exception e) {
 			LOG.error("Exception when accessing CRL for " + certificateToken.getDSSIdAsString(), e);

@@ -30,16 +30,17 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 /**
@@ -62,7 +63,8 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 	 * @param countryCode
 	 *            the country code
 	 * @param dssKeyStore
-	 *            the key store which contains trusted certificates (allowed to sign the LOTL)
+	 *            the key store which contains trusted certificates (allowed to
+	 *            sign the LOTL)
 	 */
 	public TSLValidator(File file, String countryCode, KeyStoreCertificateSource dssKeyStore) {
 		this.file = file;
@@ -78,7 +80,8 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 	 * @param countryCode
 	 *            the country code
 	 * @param dssKeyStore
-	 *            the key store which contains trusted certificates (allowed to sign the LOTL)
+	 *            the key store which contains trusted certificates (allowed to
+	 *            sign the LOTL)
 	 * @param potentialSigners
 	 *            the list of certificates allowed to sign this TSL
 	 */
@@ -97,15 +100,17 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		DSSDocument dssDocument = new FileDocument(file);
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(dssDocument);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
-		// To increase the security: the default {@code XPathQueryHolder} is used.
+		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
+		// To increase the security: the default {@code XPathQueryHolder} is
+		// used.
 		List<XPathQueryHolder> xPathQueryHolders = xmlDocumentValidator.getXPathQueryHolder();
 		xPathQueryHolders.clear();
 		xPathQueryHolders.add(new XPathQueryHolder());
 
-		Reports reports = xmlDocumentValidator.validateDocument();
+		Reports reports = xmlDocumentValidator.validateDocument(TSLValidator.class.getResourceAsStream("/tsl-constraint.xml"));
 		SimpleReport simpleReport = reports.getSimpleReport();
-		String indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
-		boolean isValid = Indication.VALID.equals(indication);
+		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
+		boolean isValid = Indication.TOTAL_PASSED.equals(indication);
 
 		TSLValidationResult result = new TSLValidationResult();
 		result.setCountryCode(countryCode);
@@ -113,7 +118,8 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		result.setSubIndication(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		if (!isValid) {
-			logger.info("The TSL signature is not valid : \n" + simpleReport.toString());
+			logger.info("The TSL signature is not valid : \n");
+			reports.print();
 		}
 
 		return result;

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.6.0</version>
+		<version>4.7.RC1</version>
 	</parent>
 
 	<name>DSS Package: OOTB Web-Application</name>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>jre-win32</artifactId>
-			<version>7.0.79</version>
+			<version>8.0.45</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
@@ -37,6 +37,12 @@
 			<artifactId>tomcat</artifactId>
 			<version>8.0.21</version>
 			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>lu.nowina.apps</groupId>
+			<artifactId>nexu-bundle</artifactId>
+			<version>${nexu.version}</version>
+			<type>pom</type>
 		</dependency>
 	</dependencies>
 
@@ -61,7 +67,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-install-plugin</artifactId>
-				<version>2.5.2</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>

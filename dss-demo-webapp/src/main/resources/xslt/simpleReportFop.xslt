@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:fo="http://www.w3.org/1999/XSL/Format"
-	xmlns:dss="http://dss.esig.europa.eu/validation/diagnostic">
+	xmlns:dss="http://dss.esig.europa.eu/validation/simple-report">
 	<xsl:output method="xml" indent="yes" />
 
 	<xsl:template match="/dss:SimpleReport">
@@ -130,9 +130,9 @@
         <xsl:variable name="idSig" select="@Id" />
         <xsl:variable name="indicationColor">
         	<xsl:choose>
-				<xsl:when test="$indicationText='VALID'">green</xsl:when>
+				<xsl:when test="$indicationText='TOTAL_PASSED'">green</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-				<xsl:when test="$indicationText='INVALID'">red</xsl:when>
+				<xsl:when test="$indicationText='TOTAL_FAILED'">red</xsl:when>
 			</xsl:choose>
         </xsl:variable>
         
@@ -171,7 +171,8 @@
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 	       					<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-							<xsl:value-of select="dss:Indication" /> - <xsl:value-of select="dss:SubIndication" />
+	       					<xsl:variable name="subIndication"><xsl:value-of select="dss:SubIndication" /></xsl:variable>
+							<xsl:value-of select="dss:Indication" /> <xsl:if test="$subIndication != ''">- <xsl:value-of select="dss:SubIndication" /></xsl:if>
 						</fo:block>
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
@@ -272,7 +273,7 @@
 					</fo:table-cell>
 				</fo:table-row>
 			
-				<xsl:for-each select="./dss:SignatureScopes/dss:SignatureScope">
+				<xsl:for-each select="dss:SignatureScope">
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block>

@@ -36,7 +36,7 @@ public abstract class AbstractRequirementChecks {
 	public void init() throws Exception {
 		DSSDocument signedDocument = getSignedDocument();
 
-		ASN1InputStream asn1sInput = new ASN1InputStream(signedDocument.getBytes());
+		ASN1InputStream asn1sInput = new ASN1InputStream(signedDocument.openStream());
 		ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 		assertEquals(2, asn1Seq.size());
 		ASN1ObjectIdentifier oid = ASN1ObjectIdentifier.getInstance(asn1Seq.getObjectAt(0));

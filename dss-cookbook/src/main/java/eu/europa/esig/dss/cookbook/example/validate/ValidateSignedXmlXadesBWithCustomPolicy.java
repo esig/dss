@@ -34,9 +34,7 @@ import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -46,8 +44,10 @@ public class ValidateSignedXmlXadesBWithCustomPolicy extends Cookbook {
 
 	public static void main(String[] args) throws IOException {
 
-		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted anchor.
-		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this point.
+		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted
+		// anchor.
+		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this
+		// point.
 		preparePKCS12TokenAndKey();
 		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
 		final CertificateToken trustedCertificate = certificateChain[0];
@@ -69,12 +69,10 @@ public class ValidateSignedXmlXadesBWithCustomPolicy extends Cookbook {
 		validator.setCertificateVerifier(verifier);
 
 		Reports reports = validator.validateDocument(getPathFromResource("/constraints.xml"));
-		SimpleReport simpleReport = reports.getSimpleReport();
-		DetailedReport detailedReport = reports.getDetailedReport();
 
-		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
+		InputStream is = new ByteArrayInputStream(reports.getXmlSimpleReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationXmlXadesBWithCustomPolicy_simpleReport.xml");
-		is = new ByteArrayInputStream(detailedReport.toByteArray());
+		is = new ByteArrayInputStream(reports.getXmlDetailedReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationXmlXadesBWithCustomPolicy_detailReport.xml");
 	}
 }

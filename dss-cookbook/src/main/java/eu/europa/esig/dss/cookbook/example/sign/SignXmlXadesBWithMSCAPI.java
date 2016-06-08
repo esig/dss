@@ -51,9 +51,10 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		// Creation of MS-CAPI signature token
 		signingToken = new MSCAPISignatureToken();
 		List<DSSPrivateKeyEntry> list = signingToken.getKeys();
-		// Chose the right private key entry from store. The index will depend of the number of the certificates on your card.
-		System.out.println(signingToken.getKeys().size());
-		privateKey = signingToken.getKeys().get(0);
+		// Chose the right private key entry from store. The index will depend of the number of the certificates on your
+		// card.
+		System.out.println(list.size());
+		privateKey = list.get(0);
 
 		// Preparing parameters for the PAdES signature
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -87,7 +88,7 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = xadesService.signDocument(toSignDocument, parameters, signatureValue);
 
-		//DSSUtils.copy(signedDocument.openStream(), System.out);
+		// DSSUtils.copy(signedDocument.openStream(), System.out);
 		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesMSCapi.xml");
 	}
 }

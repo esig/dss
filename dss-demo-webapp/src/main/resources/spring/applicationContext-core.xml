@@ -6,12 +6,6 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<import resource="classpath:spring/applicationContext-dao.xml"/>
-	
-    <bean id="dssKeyStore" class="eu.europa.esig.dss.web.DSSKeyStoreFactoryBean">
-	    <property name="keyStoreType" value="${dss.keystore.type}" />
-	    <property name="keyStoreFilename" value="${dss.keystore.filename}" />
-	    <property name="keyStorePassword" value="${dss.keystore.password}" />
-	</bean>
 
 	<bean id="proxyPreferenceManager" class="eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager">
 		<property name="proxyDao" ref="proxyDao"/>
@@ -45,9 +39,7 @@
 		<property name="dataLoader" ref="ocspDataLoader"/>
 	</bean>
 
-	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.TrustedListsCertificateSource">
-		<property name="dssKeyStore" ref="dssKeyStore" />
-	</bean>
+	<bean id="trustedListSource" class="eu.europa.esig.dss.tsl.TrustedListsCertificateSource" />
 
 	<bean id="tspSource" class="eu.europa.esig.dss.client.tsp.OnlineTSPSource">
 		<property name="tspServer" value="http://tsa.belgium.be/connect"/>

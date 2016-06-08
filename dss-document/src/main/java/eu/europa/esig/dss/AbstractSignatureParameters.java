@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -47,7 +48,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * This field contains the {@code List} of chain of certificates. It includes the signing certificate.
 	 */
-	private List<ChainCertificate> certificateChain = new ArrayList<ChainCertificate>();
+	private Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 
 	/*
 	 * This parameter is here because that's a signed attribute. It must be computed before getDataToSign/signDocument
@@ -118,11 +119,6 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 */
 	public void setSigningCertificate(final CertificateToken signingCertificate) {
 		this.signingCertificate = signingCertificate;
-		final ChainCertificate chainCertificate = new ChainCertificate(signingCertificate, true);
-		if (!this.certificateChain.contains(chainCertificate)) {
-
-			this.certificateChain.add(0, chainCertificate);
-		}
 	}
 
 	/**
@@ -130,7 +126,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 *
 	 * @return the value
 	 */
-	public List<ChainCertificate> getCertificateChain() {
+	public Set<CertificateToken> getCertificateChain() {
 		return certificateChain;
 	}
 
@@ -149,12 +145,8 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 * @param certificateChain
 	 *            the {@code List} of {@code ChainCertificate}s
 	 */
-	public void setCertificateChain(final List<ChainCertificate> certificateChain) {
-		if (certificateChain != null) {
-			this.certificateChain = certificateChain;
-		} else {
-			this.certificateChain.clear();
-		}
+	public void setCertificateChain(final Set<CertificateToken> certificateChain) {
+		this.certificateChain = certificateChain;
 	}
 
 	/**
@@ -164,18 +156,9 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 *            the array containing all certificates composing the chain
 	 */
 	public void setCertificateChain(final CertificateToken... certificateChainArray) {
-
-		if ((certificateChainArray == null) || (certificateChainArray.length == 0)) {
-			certificateChain.clear();
-		}
 		for (final CertificateToken certificate : certificateChainArray) {
-
 			if (certificate != null) {
-
-				final ChainCertificate chainCertificate = new ChainCertificate(certificate, false);
-				if (!certificateChain.contains(chainCertificate)) {
-					certificateChain.add(chainCertificate);
-				}
+				certificateChain.add(certificate);
 			}
 		}
 	}
@@ -183,7 +166,6 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * This methods reinits the deterministicId to force to recompute it
 	 */
-	@Override
 	public void reinitDeterministicId() {
 		deterministicId = null;
 	}

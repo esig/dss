@@ -26,14 +26,34 @@ import java.util.Date;
 public abstract class RevocationToken extends Token {
 
 	/**
+	 * Origin of the revocation data (signature or external)
+	 */
+	protected RevocationOrigin origin = RevocationOrigin.EXTERNAL;
+
+	/**
+	 * The URL which was used to obtain the revocation data (online).
+	 */
+	protected String sourceURL;
+
+	/**
+	 * This boolean shows if the online resource is available
+	 */
+	protected boolean available;
+
+	/**
 	 * Contains the revocation status of the token. True if is not revoked, false if is revoked or null if unknown.
 	 */
 	protected Boolean status;
 
 	/**
-	 * Represents the this update date of the CRL or the production date of the OCSP response.
+	 * Represents the production date of the OCSP response or the thisUpdate in case of CRL.
 	 */
-	protected Date issuingTime;
+	protected Date productionDate;
+
+	/**
+	 * Represents the this update date of the CRL.
+	 */
+	protected Date thisUpdate;
 
 	/**
 	 * Represents the next update date of the CRL or null for OCSP response.
@@ -46,10 +66,45 @@ public abstract class RevocationToken extends Token {
 	 */
 	protected Date revocationDate;
 
+	protected Date expiredCertsOnCRL;
+
+	protected Date archiveCutOff;
+
 	/**
 	 * The reason of the revocation.
 	 */
 	protected String reason;
+
+	public String getSourceURL() {
+		return sourceURL;
+	}
+
+	/**
+	 * This sets the revocation data source URL. It is only used in case of
+	 * {@code OnlineSource}.
+	 *
+	 * @param sourceURL
+	 *            the URL which was used to retrieve this CRL
+	 */
+	public void setSourceURL(final String sourceURL) {
+		this.sourceURL = sourceURL;
+	}
+
+	public RevocationOrigin getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(RevocationOrigin origin) {
+		this.origin = origin;
+	}
+
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
 
 	/**
 	 * @return
@@ -58,11 +113,12 @@ public abstract class RevocationToken extends Token {
 		return status;
 	}
 
-	/**
-	 * @return
-	 */
-	public Date getIssuingTime() {
-		return issuingTime;
+	public Date getProductionDate() {
+		return productionDate;
+	}
+
+	public Date getThisUpdate() {
+		return thisUpdate;
 	}
 
 	/**
@@ -79,6 +135,14 @@ public abstract class RevocationToken extends Token {
 		return revocationDate;
 	}
 
+	public Date getExpiredCertsOnCRL() {
+		return expiredCertsOnCRL;
+	}
+
+	public Date getArchiveCutOff() {
+		return archiveCutOff;
+	}
+
 	/**
 	 * @return
 	 */
@@ -87,12 +151,11 @@ public abstract class RevocationToken extends Token {
 	}
 
 	/**
-	 * Indicates if the token signature is intact and the signing certificate matches with the signature and if the extended key usage is present.
+	 * Indicates if the token signature is intact and the signing certificate matches with the signature and if the
+	 * extended key usage is present.
 	 *
 	 * @return {@code true} if the conditions are meet
 	 */
 	public abstract boolean isValid();
-
-	public abstract String getSourceURL();
 
 }

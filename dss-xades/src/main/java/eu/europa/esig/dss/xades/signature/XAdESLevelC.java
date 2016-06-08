@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.security.cert.X509CRL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,17 +40,17 @@ import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESNamespaces;
 
 /**
  * Contains XAdES-C profile aspects
@@ -183,7 +184,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				final Element responderIDDom = DSSXMLUtils.addElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XAdES, "xades:ResponderID");
 
 				final RespID responderId = basicOcspResp.getResponderId();
-				final ResponderID responderIdAsASN1Object = responderId.toASN1Object();
+				final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
 				final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
 				if (2 == derTaggedObject.getTagNo()) {
 
@@ -258,10 +259,10 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			final CertificateToken certificateToken = xadesSignature.getSigningCertificateToken();
 			final Set<CertificateToken> processedCertificateTokens = validationContext.getProcessedCertificates();
-			final List<CertificateToken> processedCertificateTokenList = new ArrayList<CertificateToken>();
+			final Set<CertificateToken> processedCertificateTokenList = new HashSet<CertificateToken>();
 			processedCertificateTokenList.addAll(processedCertificateTokens);
 			processedCertificateTokenList.remove(certificateToken);
-			final List<CertificateToken> x509CertificateProcessedList = processedCertificateTokenList;
+			final Set<CertificateToken> x509CertificateProcessedList = processedCertificateTokenList;
 			incorporateCertificateRef(certRefsDom, x509CertificateProcessedList);
 
 

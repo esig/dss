@@ -31,14 +31,14 @@
 				<c:when test="${item.indication == 'INDETERMINATE' || item.nextUpdateDate le now}">
 					<c:set var="rowStyle" value="warning" />
 				</c:when>
-				<c:when test="${item.indication == 'INVALID' }">
+				<c:when test="${item.indication == 'TOTAL_FAILED' }">
 					<c:set var="rowStyle" value="danger" />
 				</c:when>
 			</c:choose>
 		
 			<tr class="${rowStyle}">
 				<c:choose>
-					<c:when test="${item.indication == 'VALID' }">
+					<c:when test="${item.indication == 'TOTAL_PASSED' }">
 						<td class="text-center">
 							<span class="glyphicon glyphicon-ok-sign text-success" title="valid"></span>
 						</td>
@@ -48,7 +48,7 @@
 							<span class="glyphicon glyphicon-question-sign text-warning" title="indeterminate"></span>
 						</td>
 					</c:when>
-					<c:when test="${item.indication == 'INVALID' }">
+					<c:when test="${item.indication == 'TOTAL_FAILED' }">
 						<td class="danger text-center">
 							<span class="glyphicon glyphicon-remove-sign text-danger" title="invalid"></span>
 						</td>

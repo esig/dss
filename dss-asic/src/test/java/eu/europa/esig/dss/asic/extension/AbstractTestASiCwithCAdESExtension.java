@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.asic.extension;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -39,7 +37,7 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExtension {
+public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExtension<ASiCSignatureParameters> {
 
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
@@ -58,7 +56,7 @@ public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExt
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		ASiCService service = new ASiCService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
@@ -78,7 +76,7 @@ public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExt
 	protected DocumentSignatureService<ASiCSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		ASiCService service = new ASiCService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 		return service;
 	}
 

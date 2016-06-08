@@ -22,6 +22,8 @@ package eu.europa.esig.dss.validation;
 
 import org.apache.commons.codec.binary.Hex;
 
+import eu.europa.esig.dss.DigestAlgorithm;
+
 /**
  * Reference a Certificate
  *
@@ -30,70 +32,70 @@ import org.apache.commons.codec.binary.Hex;
 
 public class CertificateRef {
 
-    private String digestAlgorithm;
-    private byte[] digestValue;
-    private String issuerName;
-    private String issuerSerial;
+	private DigestAlgorithm digestAlgorithm;
+	private byte[] digestValue;
+	private String issuerName;
+	private String issuerSerial;
 
-    /**
-     * @return
-     */
-    public String getDigestAlgorithm() {
-        return digestAlgorithm;
-    }
+	/**
+	 * @return
+	 */
+	public DigestAlgorithm getDigestAlgorithm() {
+		return digestAlgorithm;
+	}
 
-    /**
-     * @param digestAlgorithm
-     */
-    public void setDigestAlgorithm(String digestAlgorithm) {
-        this.digestAlgorithm = digestAlgorithm;
-    }
+	/**
+	 * @param digestAlgorithm
+	 */
+	public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		this.digestAlgorithm = digestAlgorithm;
+	}
 
-    /**
-     * @return
-     */
-    public byte[] getDigestValue() {
-        return digestValue;
-    }
+	/**
+	 * @return
+	 */
+	public byte[] getDigestValue() {
+		return digestValue;
+	}
 
-    /**
-     * @param digestValue
-     */
-    public void setDigestValue(byte[] digestValue) {
-        this.digestValue = digestValue;
-    }
+	/**
+	 * @param digestValue
+	 */
+	public void setDigestValue(byte[] digestValue) {
+		this.digestValue = digestValue;
+	}
 
-    /**
-     * @return
-     */
-    public String getIssuerName() {
-        return issuerName;
-    }
+	/**
+	 * @return
+	 */
+	public String getIssuerName() {
+		return issuerName;
+	}
 
-    /**
-     * @param issuerName
-     */
-    public void setIssuerName(String issuerName) {
-        this.issuerName = issuerName;
-    }
+	/**
+	 * @param issuerName
+	 */
+	public void setIssuerName(String issuerName) {
+		this.issuerName = issuerName;
+	}
 
-    /**
-     * @return
-     */
-    public String getIssuerSerial() {
-        return issuerSerial;
-    }
+	/**
+	 * @return
+	 */
+	public String getIssuerSerial() {
+		return issuerSerial;
+	}
 
-    /**
-     * @param issuerSerial
-     */
-    public void setIssuerSerial(String issuerSerial) {
-        this.issuerSerial = issuerSerial;
-    }
+	/**
+	 * @param issuerSerial
+	 */
+	public void setIssuerSerial(String issuerSerial) {
+		this.issuerSerial = issuerSerial;
+	}
 
-    @Override
-    public String toString() {
+	@Override
+	public String toString() {
 
-        return "CertificateRef[issuerName=" + issuerName + ",issuerSerial=" + issuerSerial + ",digest=" + Hex.encodeHexString(digestValue) + "]";
-    }
+		return "CertificateRef[issuerName=" + issuerName + ",issuerSerial=" + issuerSerial + ",digest=" + Hex.encodeHexString(digestValue) + "]";
+	}
 }

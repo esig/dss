@@ -12,11 +12,11 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class PolicySPURITest {
 
@@ -25,7 +25,7 @@ public class PolicySPURITest {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-728/CADES-B-DETACHED-withpolicy1586434883385020407.cades");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(new CommonsDataLoader());
+		certificateVerifier.setDataLoader(new MockDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(new FileDocument("src/test/resources/validation/dss-728/InfoSelladoTiempo.pdf"));
@@ -52,13 +52,17 @@ public class PolicySPURITest {
 
 	private void validatePolicy(Reports reports) {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		SignatureWrapper signatureWrapper = signatures.get(0);
+
 		String policyId = diagnosticData.getPolicyId();
 		assertEquals("2.16.724.1.3.1.1.2.1.9", policyId);
-		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", diagnosticData.getValue("/DiagnosticData/Signature[1]/Policy/Url/text()"));
+		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
+		assertFalse(signatureWrapper.isPolicyAsn1Processable());
+		assertTrue(signatureWrapper.isPolicyIdentified());
+		assertTrue(signatureWrapper.isPolicyStatus());
 
-		assertFalse(diagnosticData.getBoolValue("/DiagnosticData/Signature[1]/Policy/Asn1Processable/text()"));
-		assertTrue(diagnosticData.getBoolValue("/DiagnosticData/Signature[1]/Policy/Identified/text()"));
-		assertTrue(diagnosticData.getBoolValue("/DiagnosticData/Signature[1]/Policy/Status/text()"));
 	}
 
 }

@@ -3,7 +3,12 @@ package eu.europa.esig.dss.web.service;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.StringWriter;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -13,48 +18,51 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.w3c.dom.Document;
 
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
+import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 
 @ContextConfiguration("/spring/applicationContext.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class XSLTServiceTest {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(XSLTServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(XSLTServiceTest.class);
 
 	@Autowired
 	private XSLTService service;
 
 	@Test
-	public void generateSimpleReportFiveSignatures() throws Exception {
-		InputStream is = XSLTServiceTest.class
-				.getResourceAsStream("/simple-report-5-signatures.xml");
+	public void generateSimpleReport() throws Exception {
+		JAXBContext context = JAXBContext.newInstance(SimpleReport.class.getPackage().getName());
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		Marshaller marshaller = context.createMarshaller();
 
-		Document document = DSSXMLUtils.buildDOM(is);
-		SimpleReport report = new SimpleReport(document);
-		assertNotNull(report);
+		SimpleReport simpleReport = (SimpleReport) unmarshaller.unmarshal(new File("src/test/resources/simpleReport.xml"));
+		assertNotNull(simpleReport);
 
-		String htmlSimpleReport = service.generateSimpleReport(report);
+		StringWriter writer = new StringWriter();
+		marshaller.marshal(simpleReport, writer);
+
+		String htmlSimpleReport = service.generateSimpleReport(writer.toString());
 		assertTrue(StringUtils.isNotEmpty(htmlSimpleReport));
-		logger.info("Simple report html : " + htmlSimpleReport);
+		logger.debug("Simple report html : " + htmlSimpleReport);
 	}
 
 	@Test
 	public void generateDetailedReportFiveSignatures() throws Exception {
-		InputStream is = XSLTServiceTest.class
-				.getResourceAsStream("/validation-report-5-signatures.xml");
+		JAXBContext context = JAXBContext.newInstance(DetailedReport.class.getPackage().getName());
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		Marshaller marshaller = context.createMarshaller();
 
-		Document document = DSSXMLUtils.buildDOM(is);
-		DetailedReport report = new DetailedReport(document);
-		assertNotNull(report);
+		DetailedReport detailedReport = (DetailedReport) unmarshaller.unmarshal(new File("src/test/resources/detailedReport.xml"));
+		assertNotNull(detailedReport);
 
-		String htmlDetailedReport = service.generateDetailedReport(report);
+		StringWriter writer = new StringWriter();
+		marshaller.marshal(detailedReport, writer);
+
+		String htmlDetailedReport = service.generateDetailedReport(writer.toString());
 		assertTrue(StringUtils.isNotEmpty(htmlDetailedReport));
-		logger.info("Detailed report html : " + htmlDetailedReport);
+		logger.debug("Detailed report html : " + htmlDetailedReport);
 
 	}
 

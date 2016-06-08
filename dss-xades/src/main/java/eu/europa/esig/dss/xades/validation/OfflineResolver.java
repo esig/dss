@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
@@ -41,11 +42,10 @@ import eu.europa.esig.dss.MimeType;
 /**
  * This class helps us home users to resolve http URIs without a network connection
  *
- *
  */
 public class OfflineResolver extends ResourceResolverSpi {
 
-	private static final Logger logger = LoggerFactory.getLogger(OfflineResolver.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OfflineResolver.class);
 
 	private final List<DSSDocument> documents;
 
@@ -61,69 +61,59 @@ public class OfflineResolver extends ResourceResolverSpi {
 
 	@Override
 	public boolean engineCanResolveURI(final ResourceResolverContext context) {
-
 		final Attr uriAttr = context.attr;
-		final String baseUriString = context.baseUri;
-
-		String documentUri = uriAttr.getNodeValue();
-		documentUri = decodeUrl(documentUri);
-		if (documentUri.equals("") || documentUri.startsWith("#")) {
-			return false;
-		}
-		try {
-
-			if (isKnown(documentUri) != null) {
-
-				logger.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
-				return true;
+		if (uriAttr != null) {
+			String documentUri = uriAttr.getNodeValue();
+			documentUri = decodeUrl(documentUri);
+			if ("".equals(documentUri) || documentUri.startsWith("#")) {
+				return false;
 			}
-			final URI baseUri = new URI(baseUriString);
-			URI uriNew = new URI(baseUri, documentUri);
-			if (uriNew.getScheme().equals("http")) {
-
-				logger.debug("I state that I can resolve '" + uriNew.toString() + "'");
-				return true;
+			try {
+				if (isKnown(documentUri) != null) {
+					LOG.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
+					return true;
+				}
+				final String baseUriString = context.baseUri;
+				if (StringUtils.isNotEmpty(baseUriString)) {
+					final URI baseUri = new URI(baseUriString);
+					URI uriNew = new URI(baseUri, documentUri);
+					if (uriNew.getScheme().equals("http")) {
+						LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
+						return true;
+					}
+					LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
+				}
+			} catch (URI.MalformedURIException ex) {
+				if (documents == null || documents.size() == 0) {
+					LOG.warn("OfflineResolver: WARNING: ", ex);
+				}
 			}
-			logger.debug("I state that I can't resolve '" + uriNew.toString() + "'");
-		} catch (URI.MalformedURIException ex) {
-			if (documents == null || documents.size() == 0) {
-				logger.warn("OfflineResolver: WARNING: ", ex);
-			}
-		}
-		if (doesContainOnlyOneDocument()) {
-
+		} else if (doesContainOnlyOneDocument()) { // no URI is allowed in ASiC-S with one file
 			return true;
 		}
 		return false;
-	}
-
-	private String decodeUrl(String documentUri) {
-		try {
-			return URLDecoder.decode(documentUri, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			logger.error(e.getMessage(), e);
-		}
-		return documentUri;
 	}
 
 	@Override
 	public XMLSignatureInput engineResolveURI(ResourceResolverContext context) throws ResourceResolverException {
 
 		final Attr uriAttr = context.attr;
-		final String baseUriString = context.baseUri;
-		String documentUri = uriAttr.getNodeValue();
+		String documentUri = null;
+		if (uriAttr == null && doesContainOnlyOneDocument()) {
+			documentUri = "";
+		} else if (uriAttr != null) {
+			documentUri = uriAttr.getNodeValue();
+		}
 		documentUri = decodeUrl(documentUri);
 		final DSSDocument document = getDocument(documentUri);
 		if (document != null) {
 
 			// The input stream is closed automatically by XMLSignatureInput class
 
-			// TODO-Bob (05/09/2014):  There is an error concerning the input streams base64 encoded. Some extra bytes are added within the santuario which breaks the HASH.
+			// TODO-Bob (05/09/2014): There is an error concerning the input streams base64 encoded. Some extra bytes
+			// are added within the santuario which breaks the HASH.
 			// TODO-Vin (05/09/2014): Can you create an isolated test-case JIRA DSS-?
 			InputStream inputStream = document.openStream();
-			//			final byte[] bytes = DSSUtils.toByteArray(inputStream);
-			//			final String string = new String(bytes);
-			//			inputStream = DSSUtils.toInputStream(bytes);
 			final XMLSignatureInput result = new XMLSignatureInput(inputStream);
 			result.setSourceURI(documentUri);
 			final MimeType mimeType = document.getMimeType();
@@ -132,9 +122,8 @@ public class OfflineResolver extends ResourceResolverSpi {
 			}
 			return result;
 		} else {
-
-			Object exArgs[] = {"The uriNodeValue " + documentUri + " is not configured for offline work"};
-			throw new ResourceResolverException("generic.EmptyMessage", exArgs, documentUri, baseUriString);
+			Object exArgs[] = { "The uriNodeValue " + documentUri + " is not configured for offline work" };
+			throw new ResourceResolverException("generic.EmptyMessage", exArgs, documentUri, context.baseUri);
 		}
 	}
 
@@ -194,5 +183,14 @@ public class OfflineResolver extends ResourceResolverSpi {
 	private boolean doesContainOnlyOneDocument() {
 
 		return documents != null && documents.size() == 1;
+	}
+
+	private String decodeUrl(String documentUri) {
+		try {
+			return URLDecoder.decode(documentUri, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			LOG.error("Unable to decode '" + documentUri + "' : " + e.getMessage(), e);
+		}
+		return documentUri;
 	}
 }

@@ -38,7 +38,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 
 /**
@@ -52,10 +51,11 @@ public class CertificatePool implements Serializable {
 	private static final Logger LOG = LoggerFactory.getLogger(CertificatePool.class);
 
 	/**
-	 * Map of encapsulated certificates with unique DSS identifier as key (hash code calculated on issuer distinguished name and serial
+	 * Map of encapsulated certificates with unique DSS identifier as key (hash code calculated on issuer distinguished
+	 * name and serial
 	 * number)
 	 */
-	private Map<TokenIdentifier, CertificateToken> certById = new HashMap<TokenIdentifier, CertificateToken>();
+	private Map<String, CertificateToken> certById = new HashMap<String, CertificateToken>();
 
 	/**
 	 * Map f encapsulated certificates with subject distinguished name as key.
@@ -75,7 +75,8 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * This method returns the instance of a {@link CertificateToken} corresponding to the given {@link X509Certificate}.
+	 * This method returns the instance of a {@link CertificateToken} corresponding to the given {@link X509Certificate}
+	 * .
 	 * If the given certificate is not yet present in the pool it will be added. If the {@link CertificateToken} exists
 	 * already in the pool but has no {@link ServiceInfo} this reference will be added.
 	 *
@@ -98,7 +99,8 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * This method returns the instance of a {@link CertificateToken} corresponding to the given {@link X509Certificate}.
+	 * This method returns the instance of a {@link CertificateToken} corresponding to the given {@link X509Certificate}
+	 * .
 	 * If the given certificate is not yet present in the pool it will added. If the {@link CertificateToken} exists
 	 * already in the pool but has no {@link ServiceInfo} this reference will be added.
 	 *
@@ -121,13 +123,13 @@ public class CertificatePool implements Serializable {
 			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal() + "|" + certificateToAdd.getSerialNumber());
 		}
 
-		final TokenIdentifier id = certificateToAdd.getDSSId();
+		final String id = certificateToAdd.getDSSIdAsString();
 		synchronized (certById) {
 
 			CertificateToken certToken = certById.get(id);
 			if (certToken == null) {
 
-				LOG.debug("Certificate " + id + " is not in the pool");
+				LOG.trace("Certificate " + id + " is not in the pool");
 				certToken = certificateToAdd;
 				certById.put(id, certToken);
 				final String subjectName = certificateToAdd.getSubjectX500Principal().getName(X500Principal.CANONICAL);
@@ -140,14 +142,15 @@ public class CertificatePool implements Serializable {
 				list.add(certToken);
 			} else {
 
-				LOG.debug("Certificate " + id + " is already in the pool");
+				LOG.trace("Certificate " + id + " is already in the pool");
 				final X509Certificate foundCertificate = certToken.getCertificate();
 				final byte[] foundCertificateSignature = foundCertificate.getSignature();
 				final byte[] certificateToAddSignature = certificateToAdd.getSignature();
 				if (!Arrays.equals(foundCertificateSignature, certificateToAddSignature)) {
 
 					LOG.warn(" Found certificate: " + certToken.getIssuerX500Principal().toString() + "|" + certToken.getSerialNumber());
-					LOG.warn("More than one certificate for the same issuer subject name and serial number! The standard is not met by the certificate issuer!");
+					LOG.warn(
+							"More than one certificate for the same issuer subject name and serial number! The standard is not met by the certificate issuer!");
 				}
 			}
 			for (final CertificateSourceType sourceType : sources) {
@@ -173,7 +176,7 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * This method return the number  of certificates contained by this pool.
+	 * This method return the number of certificates contained by this pool.
 	 *
 	 * @return the number of certificates
 	 */
@@ -199,7 +202,8 @@ public class CertificatePool implements Serializable {
 	/**
 	 * This method returns the list of certificates with the same issuerDN.
 	 *
-	 * @param x500Principal subject distinguished name to match.
+	 * @param x500Principal
+	 *            subject distinguished name to match.
 	 * @return If no match is found then an empty list is returned.
 	 */
 	public List<CertificateToken> get(final X500Principal x500Principal) {
@@ -208,7 +212,8 @@ public class CertificatePool implements Serializable {
 		if (x500Principal != null) {
 
 			/**
-			 * TODO: (Bob: 2014 Feb 21) For some certificates the comparison based on X500Principal.CANONICAL does not returns the same result as this based on X500Principal
+			 * TODO: (Bob: 2014 Feb 21) For some certificates the comparison based on X500Principal.CANONICAL does not
+			 * returns the same result as this based on X500Principal
 			 * .RFC2253. The CANONICAL form seems to be compliant with the requirements of RFC 2459.
 			 * The returned list can be maybe enriched by RFC2253 form?
 			 */

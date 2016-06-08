@@ -78,7 +78,7 @@ public class CheckCertificate extends Cookbook {
 		System.out.println(toValidateCertificateToken);
 
 		toValidateCertificateToken.isRevoked();
-		final RevocationToken revocationToken = toValidateCertificateToken.getRevocationToken();
+		final Set<RevocationToken> revocationTokens = toValidateCertificateToken.getRevocationTokens();
 		/// ...
 
 		Set<CertificateToken> certTokens = validationContext.getProcessedCertificates();

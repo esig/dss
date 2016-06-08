@@ -31,8 +31,9 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSXMLUtils;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.xades.DSSTransform;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 /**
  * This class implement the logic of {@code Transforms.TRANSFORM_XPATH}.
@@ -61,7 +62,7 @@ class DSSTransformXPath {
 			final NodeList childNodes = document.getFirstChild().getChildNodes();
 			final Transform transformObject = new Transform(document, dssTransformAlgorithm, childNodes);
 
-			final byte[] bytes = input.getBytes();
+			final byte[] bytes = DSSUtils.toByteArray(input);
 			final XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(bytes);
 			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput);
 			return xmlSignatureInputOut.getBytes();

@@ -34,9 +34,6 @@ import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DetailedReport;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -69,14 +66,12 @@ public class ValidateSignedXmlCadesB extends Cookbook {
 
 		validator.setCertificateVerifier(verifier);
 
-		Reports reports = validator.validateDocument();
-		SimpleReport simpleReport = reports.getSimpleReport();
-		DetailedReport detailReport = reports.getDetailedReport();
+		eu.europa.esig.dss.validation.reports.Reports reports = validator.validateDocument();
 
-		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
+		InputStream is = new ByteArrayInputStream(reports.getXmlSimpleReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationXmlCadesB_simpleReport.xml");
 
-		is = new ByteArrayInputStream(detailReport.toByteArray());
+		is = new ByteArrayInputStream(reports.getXmlDetailedReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationXmlCadesB_detailReport.xml");
 	}
 }
