@@ -80,4 +80,8 @@ public enum CRLReasonEnum {
 		return CRLReasonEnum.unknow;
 	}
 
+	public int getValue() {
+		return value;
+	}
+
 }

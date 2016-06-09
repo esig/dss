@@ -154,6 +154,9 @@ public final class DSSRevocationUtils {
 	public static String getRevocationReason(final X509CRLEntry crlEntry) throws DSSException {
 		final String reasonId = Extension.reasonCode.getId();
 		final byte[] extensionBytes = crlEntry.getExtensionValue(reasonId);
+		if(extensionBytes==null) {
+			return null;
+		}
 
 		try {
 			final ASN1Enumerated reasonCodeExtension = ASN1Enumerated.getInstance(X509ExtensionUtil.fromExtensionValue(extensionBytes));
