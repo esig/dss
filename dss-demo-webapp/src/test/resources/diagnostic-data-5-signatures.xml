@@ -557,12 +557,6 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>false</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
       </Certificate>
       <Certificate Id="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81">
          <SubjectDistinguishedName Format="CANONICAL">cn=time stamp authority 1,ou=sibep,o=narodny bezpecnostny urad,c=sk</SubjectDistinguishedName>
@@ -602,12 +596,6 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>false</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
       </Certificate>
       <Certificate Id="c0c05a8d8da55eaf27aa9b910b0a6ef0d8bbded346928db872e182c2073e9802">
          <SubjectDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</SubjectDistinguishedName>
@@ -719,12 +707,9 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>true</QCC>
-            <QCSSCD>true</QCSSCD>
-         </QCStatement>
+         <QCStatementIds>
+             <oid>0.4.0.1862.1.1</oid>
+         </QCStatementIds>
       </Certificate>
       <Certificate Id="81108c44c387f8665c32af77a0f4890c1474a7db633b4a49c17cbf24ac982d88">
          <SubjectDistinguishedName Format="CANONICAL">cn=snca2,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
@@ -762,12 +747,6 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>false</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
       </Certificate>
       <Certificate Id="3a67305ae710bb5c3bea33f0e09c21fd4f87eb9772ce9cc4949c53006a648aeb">
          <SubjectDistinguishedName Format="CANONICAL">cn=ca disig,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</SubjectDistinguishedName>
@@ -805,12 +784,6 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>false</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
       </Certificate>
       <Certificate Id="d83477e0388c40ba092feca484a5ebd3ad3028bf60220132e95158c00ddce98f">
          <SubjectDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
@@ -841,12 +814,6 @@
          </BasicSignature>
          <Trusted>false</Trusted>
          <SelfSigned>true</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>false</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
       </Certificate>
       <Certificate Id="5f7db6aa051ca3384fce329513e5474706a2b2c5fa2edcab1ff3984ceec292d7">
          <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1310504e4f534b2035343037303231393833,2.5.4.5=#130e494341202d203130313530363933,1.2.840.113549.1.9.1=#16166772756e6e65727061766f6c40676d61696c2e636f6d,l=bratislava\, húščavova 1150/1\, 84101,st=bratislavský,cn=ing. pavol grünner,c=sk</SubjectDistinguishedName>
@@ -887,12 +854,9 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>true</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
+         <QCStatementIds>
+             <oid>0.4.0.1862.1.1</oid>
+         </QCStatementIds>
       </Certificate>
       <Certificate Id="849a6a6f5ad1f26dd487701a15499a31ce4b911a3fffa61502787456d06e9772">
          <SubjectDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</SubjectDistinguishedName>
@@ -930,12 +894,6 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>false</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
       </Certificate>
       <Certificate Id="6ca650ff093aee46e8542d6f319124d54394424b0341e18dc47c7c46f96f1eff">
          <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1310504e4f534b2036363132333136323035,c=sk,l=bratislava,ou=testovacie ucely,o=nbu sr,2.5.4.4=#1307436872656e6b6f,2.5.4.42=#13044976616e,cn=ivan chrenko</SubjectDistinguishedName>
@@ -976,12 +934,9 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>true</QCC>
-            <QCSSCD>true</QCSSCD>
-         </QCStatement>
+         <QCStatementIds>
+             <oid>0.4.0.1862.1.1</oid>
+         </QCStatementIds>
       </Certificate>
       <Certificate Id="93a3a101335fa7324b5711e923074713fbb2bb49b201f9f181db2a7956899e06">
          <SubjectDistinguishedName Format="CANONICAL">cn=time stamp authority 3,ou=sibep,o=narodny bezpecnostny urad,c=sk</SubjectDistinguishedName>
@@ -1021,12 +976,6 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <QCStatement>
-            <QCP>false</QCP>
-            <QCPPlus>false</QCPPlus>
-            <QCC>false</QCC>
-            <QCSSCD>false</QCSSCD>
-         </QCStatement>
       </Certificate>
    </UsedCertificates>
 </DiagnosticData>

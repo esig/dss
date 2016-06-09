@@ -2,10 +2,12 @@ package eu.europa.esig.dss;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.security.cert.X509CRL;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
@@ -55,5 +57,20 @@ public class DSSASN1UtilsTest {
 		qcStatementsIdList = DSSASN1Utils.getQCStatementsIdList(certificate);
 		assertTrue(CollectionUtils.isNotEmpty(qcStatementsIdList));
 		assertTrue(qcStatementsIdList.contains(ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.getId()));
+	}
+
+	@Test
+	public void getSKI() {
+		byte[] ski = DSSASN1Utils.getSki(certificateWithAIA);
+		assertEquals("4c4c4cfcacace6bb", Hex.encodeHexString(ski));
+	}
+
+	@Test
+	public void getExpiredCertsOnCRL() throws Exception {
+		X509CRL x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/crl_with_expiredCertsOnCRL_extension.crl"));
+		assertNotNull(DSSASN1Utils.getExpiredCertsOnCRL(x509crl));
+
+		x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
+		assertNull(DSSASN1Utils.getExpiredCertsOnCRL(x509crl));
 	}
 }

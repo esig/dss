@@ -20,54 +20,24 @@
  */
 package eu.europa.esig.dss.xades;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- */
 public class DSSReference {
 
 	private String id;
 	private String uri;
 	private String type;
-
 	private DigestAlgorithm digestMethod;
-
 	private DSSDocument contents;
-
 	private List<DSSTransform> transforms;
 
 	/**
 	 * The default constructor
 	 */
 	public DSSReference() {
-	}
-
-	public DSSReference(final DSSReference reference) {
-
-		id = reference.id;
-		uri = reference.uri;
-		type = reference.type;
-		digestMethod = reference.digestMethod;
-		contents = reference.contents;
-		if (reference.transforms != null && reference.transforms.size() > 0) {
-
-			transforms = new ArrayList<DSSTransform>();
-			for (final DSSTransform transform : reference.transforms) {
-
-				final DSSTransform dssTransform = new DSSTransform(transform);
-				transforms.add(dssTransform);
-			}
-		}
 	}
 
 	public String getId() {
@@ -118,16 +88,10 @@ public class DSSReference {
 		this.contents = contents;
 	}
 
-
 	@Override
 	public String toString() {
-		return "DSSReference{" +
-			  "id='" + id + '\'' +
-			  ", uri='" + uri + '\'' +
-			  ", type='" + type + '\'' +
-			  ", digestMethod='" + (digestMethod != null ? digestMethod.getName() : digestMethod) + '\'' +
-			  ", contents=" + (contents != null ? contents.toString() : contents) +
-			  ", transforms=" + transforms +
-			  '}';
+		return "DSSReference{" + "id='" + id + '\'' + ", uri='" + uri + '\'' + ", type='" + type + '\'' + ", digestMethod='"
+				+ (digestMethod != null ? digestMethod.getName() : digestMethod) + '\'' + ", contents=" + (contents != null ? contents.toString() : contents)
+				+ ", transforms=" + transforms + '}';
 	}
 }

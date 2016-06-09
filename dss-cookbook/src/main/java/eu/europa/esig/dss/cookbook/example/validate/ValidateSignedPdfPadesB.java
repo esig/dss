@@ -34,8 +34,7 @@ import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.Reports;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -70,9 +69,8 @@ public class ValidateSignedPdfPadesB extends Cookbook {
 		validator.setCertificateVerifier(verifier);
 
 		Reports reports = validator.validateDocument();
-		SimpleReport simpleReport = reports.getSimpleReport();
 
-		InputStream is = new ByteArrayInputStream(simpleReport.toByteArray());
+		InputStream is = new ByteArrayInputStream(reports.getXmlSimpleReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationPdfPadesB.xml");
 	}
 }

@@ -74,7 +74,6 @@ public class CMSSignedDocument extends CommonDocument {
 		return signedData;
 	}
 
-	@Override
 	public byte[] getBytes() throws DSSException {
 		try {
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -109,7 +108,6 @@ public class CMSSignedDocument extends CommonDocument {
 		return base64Encode;
 	}
 
-	@Override
 	public String getBase64Encoded() {
 		return Base64.encodeBase64String(getBytes());
 	}

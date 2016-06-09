@@ -44,12 +44,12 @@ import org.w3c.dom.NodeList;
  * An implementation of a resource resolver, which evaluates xpointer expressions.
  *
  *
- *         Adapted by
+ * Adapted by
  *
  */
 public class XPointerResourceResolver extends ResourceResolverSpi {
 
-	private static Logger LOG = LoggerFactory.getLogger(XPointerResourceResolver.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XPointerResourceResolver.class);
 
 	private static final String XP_OPEN = "xpointer(";
 
@@ -67,13 +67,15 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 
 	@Override
 	public boolean engineCanResolveURI(final ResourceResolverContext context) {
-
+		boolean xPointerQuery = false;
+		String uri = "?";
 		final Attr uriAttr = context.attr;
-		final String uri = uriAttr.getNodeValue();
-		final boolean xPointerQuery = isXPointerQuery(uri, false);
+		if (uriAttr != null) {
+			uri = uriAttr.getNodeValue();
+			xPointerQuery = isXPointerQuery(uri, false);
+		}
 		if (LOG.isDebugEnabled()) {
-
-			LOG.debug("I state that I " + (xPointerQuery ? "can" : "cannot") + " resolve Uri/Base Uri:'" + uri + "/" + context.baseUri + "'");
+			LOG.debug("I state that I " + (xPointerQuery ? "can" : "cannot") + " resolve Uri/Base Uri:'" + uri + "'/'" + context.baseUri + "'");
 		}
 		return xPointerQuery;
 	}
@@ -81,7 +83,8 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 	/**
 	 * Indicates if the given URI is an XPointer query.
 	 *
-	 * @param uriValue URI to be analysed
+	 * @param uriValue
+	 *            URI to be analysed
 	 * @return true if it is an XPointer query
 	 */
 	public static boolean isXPointerQuery(String uriValue, final boolean strict) {
@@ -213,7 +216,7 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 			return result;
 
 		} catch (XPathExpressionException e) {
-			throw new ResourceResolverException("malformed XPath inside XPointer expression", e, uriNodeValue, baseUri);
+			throw new ResourceResolverException(e, "malformed XPath inside XPointer expression", uriNodeValue, baseUri);
 		}
 	}
 }

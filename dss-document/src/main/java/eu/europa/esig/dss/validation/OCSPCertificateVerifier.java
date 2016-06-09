@@ -38,9 +38,9 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Check the status of the certificate using an OCSPSource
@@ -62,7 +62,6 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 	 * @param validationCertPool
 	 */
 	public OCSPCertificateVerifier(final OCSPSource ocspSource, final CertificatePool validationCertPool) {
-
 		this.ocspSource = ocspSource;
 		this.validationCertPool = validationCertPool;
 	}
@@ -78,15 +77,14 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 		try {
 			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken, toCheckToken.getIssuerToken());
 			if (ocspToken == null) {
-				if (logger.isInfoEnabled()) {
-					logger.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
-				}
+				logger.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
 			} else {
-
+				ocspToken.extractInfo();
 				final boolean found = extractSigningCertificateFromResponse(ocspToken);
 				if (!found) {
 					extractSigningCertificateFormResponderId(ocspToken);
 				}
+				toCheckToken.addRevocationToken(ocspToken);
 			}
 			return ocspToken;
 		} catch (DSSException e) {
@@ -107,9 +105,9 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 		return false;
 	}
 
-	private	void extractSigningCertificateFormResponderId(OCSPToken ocspToken) {
+	private void extractSigningCertificateFormResponderId(OCSPToken ocspToken) {
 		final RespID responderId = ocspToken.getBasicOCSPResp().getResponderId();
-		final ResponderID responderIdAsASN1Object = responderId.toASN1Object();
+		final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
 		final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
 		if (2 == derTaggedObject.getTagNo()) {
 			throw new DSSException("Certificate's key hash management not implemented yet!");

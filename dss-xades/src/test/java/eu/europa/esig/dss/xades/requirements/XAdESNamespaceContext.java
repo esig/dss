@@ -15,7 +15,7 @@ public class XAdESNamespaceContext implements NamespaceContext {
 		} else if ("ds".equals(prefix)) {
 			return "http://www.w3.org/2000/09/xmldsig#";
 		}
-		//		"http://uri.etsi.org/19132/v1.1.1#"
+		// "http://uri.etsi.org/19132/v1.1.1#"
 		return null;
 	}
 
@@ -25,7 +25,7 @@ public class XAdESNamespaceContext implements NamespaceContext {
 	}
 
 	@Override
-	public Iterator getPrefixes(String namespaceURI) {
+	public Iterator<?> getPrefixes(String namespaceURI) {
 		return null;
 	}
 

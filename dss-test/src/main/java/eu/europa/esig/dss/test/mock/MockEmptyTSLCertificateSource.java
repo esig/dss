@@ -20,15 +20,20 @@
  */
 package eu.europa.esig.dss.test.mock;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-import eu.europa.esig.dss.TSLConstant;
 import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 
 public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSource {
+
+	public static final String CA_QC = "http://uri.etsi.org/TrstSvc/Svctype/CA/QC";
+	public static final String SERVICE_STATUS_UNDERSUPERVISION = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/Svcstatus/undersupervision";
 
 	@Override
 	protected CertificateSourceType getCertificateSourceType() {
@@ -61,13 +66,14 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 
 		ServiceInfo serviceInfo = new ServiceInfo();
 		serviceInfo.setTspName("DSS, Mock Office DSS-CA");
-		serviceInfo.setType(TSLConstant.CA_QC);
+		serviceInfo.setType(CA_QC);
 		serviceInfo.setServiceName("MockTSPServiceName");
-		serviceInfo.setStatus(TSLConstant.SERVICE_STATUS_UNDERSUPERVISION);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.YEAR, -1);
-		serviceInfo.setStatusStartDate(calendar.getTime());
-		serviceInfo.setStatusEndDate(null);
+
+		List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
+		status.add(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION, calendar.getTime(), null));
+		serviceInfo.setStatus(status);
 		serviceInfo.setTlWellSigned(true);
 
 		return serviceInfo;

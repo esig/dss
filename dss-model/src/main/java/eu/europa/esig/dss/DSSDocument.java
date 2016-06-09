@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 
 /**
@@ -38,13 +39,14 @@ public interface DSSDocument extends Serializable {
 	 * @throws DSSException
 	 */
 	InputStream openStream() throws DSSException;
-
+	
 	/**
-	 * Returns the array of bytes representing the document. Do not use this method with large files.
-	 *
-	 * @return array of {@code byte}
+	 * Writes the content of the document to the provided OutputStream
+	 * 
+	 * @param stream
+	 * @throws IOException
 	 */
-	byte[] getBytes() throws DSSException;
+	void writeTo(OutputStream stream) throws IOException;
 
 	/**
 	 * Returns the name of the document. If the {@code DSSDocument} was built based on the {@code File} then the file name is returned.
@@ -95,12 +97,6 @@ public interface DSSDocument extends Serializable {
 	 * @return base64 encoded {@code String}
 	 */
 	String getDigest(final DigestAlgorithm digestAlgorithm);
-
-	/**
-	 * This method returns the base64 encoded file content
-	 * @return base64 encoded {@code String}
-	 */
-	String getBase64Encoded();
 
 	/**
 	 * This method return the next {@code DSSDocument}.

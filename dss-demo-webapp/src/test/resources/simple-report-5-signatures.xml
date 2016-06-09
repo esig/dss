@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><SimpleReport xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+<?xml version="1.0" encoding="UTF-8"?><SimpleReport xmlns="http://dss.esig.europa.eu/validation/simple-report">
 	<Policy>
 		<PolicyName>QES AdESQC TL based</PolicyName>
 		<PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a
@@ -12,7 +12,7 @@
 	<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657" SignatureFormat="PAdES_BASELINE_T">
 		<SigningTime>2011-05-05T09:06:38Z</SigningTime>
 		<SignedBy>Peter Rybár</SignedBy>
-		<Indication>VALID</Indication>
+		<Indication>TOTAL_PASSED</Indication>
 		<SubIndication>HASH_FAILURE</SubIndication>
 		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 		<SignatureLevel>QES</SignatureLevel>
@@ -34,7 +34,7 @@
 	<Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770" SignatureFormat="PAdES_BASELINE_T">
 		<SigningTime>2011-01-11T12:31:44Z</SigningTime>
 		<SignedBy>Ing. Pavol Grünner</SignedBy>
-		<Indication>INVALID</Indication>
+		<Indication>TOTAL_FAILED</Indication>
 		<SubIndication>HASH_FAILURE</SubIndication>
 		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 		<SignatureLevel>AdESqc</SignatureLevel>
@@ -45,7 +45,7 @@
 	<Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71" SignatureFormat="PAdES_BASELINE_T">
 		<SigningTime>2011-01-11T12:33:44Z</SigningTime>
 		<SignedBy>Ing. Pavol Grünner</SignedBy>
-		<Indication>INVALID</Indication>
+		<Indication>TOTAL_FAILED</Indication>
 		<SubIndication>HASH_FAILURE</SubIndication>
 		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 		<SignatureLevel>AdESqc</SignatureLevel>
@@ -56,7 +56,7 @@
 	<Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef" SignatureFormat="PAdES_BASELINE_T">
 		<SigningTime>2011-05-05T09:59:50Z</SigningTime>
 		<SignedBy>Ivan Chrenko</SignedBy>
-		<Indication>INVALID</Indication>
+		<Indication>TOTAL_FAILED</Indication>
 		<SubIndication>HASH_FAILURE</SubIndication>
 		<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 		<SignatureLevel>QES</SignatureLevel>

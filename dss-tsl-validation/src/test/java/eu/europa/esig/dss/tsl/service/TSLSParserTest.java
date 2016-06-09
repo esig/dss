@@ -22,6 +22,7 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
+import eu.europa.esig.dss.tsl.TSLServiceStatus;
 
 @RunWith(Parameterized.class)
 public class TSLSParserTest {
@@ -29,14 +30,10 @@ public class TSLSParserTest {
 	@Parameters(name = "TSL to parse {index} : {0}")
 	public static Collection<Object[]> data() {
 		File folder = new File("src/test/resources/tsls");
-		Collection<File> listFiles = FileUtils.listFiles(folder, new String[] {
-				"xml"
-		}, true);
+		Collection<File> listFiles = FileUtils.listFiles(folder, new String[] { "xml" }, true);
 		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
 		for (File file : listFiles) {
-			dataToRun.add(new Object[] {
-					file
-			});
+			dataToRun.add(new Object[] { file });
 		}
 		return dataToRun;
 	}
@@ -89,10 +86,15 @@ public class TSLSParserTest {
 				assertTrue(CollectionUtils.isNotEmpty(services));
 				for (TSLService tslService : services) {
 					assertTrue(StringUtils.isNotEmpty(tslService.getName()));
-					assertTrue(StringUtils.isNotEmpty(tslService.getStatus()));
 					assertTrue(StringUtils.isNotEmpty(tslService.getType()));
 
-					assertNotNull(tslService.getStartDate());
+					List<TSLServiceStatus> status = tslService.getStatus();
+					assertTrue(CollectionUtils.isNotEmpty(status));
+					for (TSLServiceStatus tslServiceStatus : status) {
+						assertTrue(StringUtils.isNotEmpty(tslServiceStatus.getStatus()));
+						assertNotNull(tslServiceStatus.getStartDate());
+					}
+
 					List<TSLServiceExtension> extensions = tslService.getExtensions();
 					if (CollectionUtils.isNotEmpty(extensions)) {
 						for (TSLServiceExtension tslServiceExtension : extensions) {

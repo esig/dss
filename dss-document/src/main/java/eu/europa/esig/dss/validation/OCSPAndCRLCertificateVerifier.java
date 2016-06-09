@@ -54,7 +54,6 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 	 * @param validationCertPool
 	 */
 	public OCSPAndCRLCertificateVerifier(final CRLSource crlSource, final OCSPSource ocspSource, final CertificatePool validationCertPool) {
-
 		this.crlSource = crlSource;
 		this.ocspSource = ocspSource;
 		this.validationCertPool = validationCertPool;
@@ -62,53 +61,65 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 
 	@Override
 	public RevocationToken check(final CertificateToken certificateToken) {
-
 		if (LOG.isTraceEnabled()) {
-			LOG.trace(certificateToken.toString());
+			LOG.trace("Check revocation for certificate : " + certificateToken.getDSSIdAsString());
 		}
-		final boolean debugEnabled = LOG.isDebugEnabled();
-		final String dssIdAsString = certificateToken.getDSSIdAsString();
+		RevocationToken result = null;
 		if (ocspSource != null) {
-
-			final OCSPCertificateVerifier ocspVerifier = new OCSPCertificateVerifier(ocspSource, validationCertPool);
-			if (debugEnabled) {
-				LOG.debug("OCSP request for: " + dssIdAsString + " using: " + ocspSource.getClass().getSimpleName());
-			}
-			final RevocationToken revocation = ocspVerifier.check(certificateToken);
-			if (revocation != null && revocation.getStatus() != null) {
-
-				if (debugEnabled) {
-					LOG.debug("OCSP response for " + dssIdAsString + " retrieved: " + revocation.getAbbreviation());
-				}
-				return revocation;
+			result = checkOCSP(certificateToken);
+			if (result != null) {
+				return result;
 			}
 		}
 		if (crlSource != null) {
-
-			if (debugEnabled) {
-				LOG.debug("CRL request for: " + dssIdAsString + " using: " + crlSource.getClass().getSimpleName());
-			}
-			/**
-			 * The validationPool is not needed for the CRLCertificateVerifier because it should be signed by the same certificate as the
-			 * certificate to be checked. But: - a CA Designated Responder (Authorized Responder, defined in
-			 Section 4.2.2.2) who holds a specially marked certificate issued
-			 directly by the CA, indicating that the responder may issue OCSP
-			 responses for that CA.
-
-			 */
-			final CRLCertificateVerifier crlVerifier = new CRLCertificateVerifier(crlSource);
-			final RevocationToken revocationToken = crlVerifier.check(certificateToken);
-			if (revocationToken != null && revocationToken.getStatus() != null) {
-
-				if (debugEnabled) {
-					LOG.debug("CRL for " + dssIdAsString + " retrieved: " + revocationToken.getAbbreviation());
-				}
-				return revocationToken;
+			result = checkCRL(certificateToken);
+			if (result != null) {
+				return result;
 			}
 		}
-		if (debugEnabled) {
-			LOG.debug("There is no response for " + dssIdAsString + " neither from OCSP nor from CRL!");
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("There is no response for " + certificateToken.getDSSIdAsString() + " neither from OCSP nor from CRL!");
 		}
 		return null;
 	}
+
+	public RevocationToken checkOCSP(final CertificateToken certificateToken) {
+		final OCSPCertificateVerifier ocspVerifier = new OCSPCertificateVerifier(ocspSource, validationCertPool);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("OCSP request for: " + certificateToken.getDSSIdAsString() + " using: " + ocspSource.getClass().getSimpleName());
+		}
+		final RevocationToken revocation = ocspVerifier.check(certificateToken);
+		if (revocation != null && revocation.getStatus() != null) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("OCSP response for " + certificateToken.getDSSIdAsString() + " retrieved: " + revocation.getAbbreviation());
+			}
+			return revocation;
+		}
+		return null;
+	}
+
+	public RevocationToken checkCRL(final CertificateToken certificateToken) {
+		/**
+		 * The validationPool is not needed for the CRLCertificateVerifier because it should be signed by the same
+		 * certificate as the
+		 * certificate to be checked. But: - a CA Designated Responder (Authorized Responder, defined in
+		 * Section 4.2.2.2) who holds a specially marked certificate issued
+		 * directly by the CA, indicating that the responder may issue OCSP
+		 * responses for that CA.
+		 * 
+		 */
+		final CRLCertificateVerifier crlVerifier = new CRLCertificateVerifier(crlSource);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("CRL request for: " + certificateToken.getDSSIdAsString() + " using: " + crlSource.getClass().getSimpleName());
+		}
+		final RevocationToken revocationToken = crlVerifier.check(certificateToken);
+		if (revocationToken != null && revocationToken.getStatus() != null) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("CRL for " + certificateToken.getDSSIdAsString() + " retrieved: " + revocationToken.getAbbreviation());
+			}
+			return revocationToken;
+		}
+		return null;
+	}
+
 }

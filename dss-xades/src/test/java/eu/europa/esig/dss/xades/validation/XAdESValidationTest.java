@@ -20,37 +20,40 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
+
+import org.junit.Test;
+
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.x509.SignaturePolicy;
-import org.junit.Test;
-
-import java.io.File;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 public class XAdESValidationTest {
 
-    private static final String POLICY_ID = "urn:oid:1.3.6.1.4.1.10015.1000.3.2.1";
-    private static final String POLICY_URL = "http://spuri.test";
-    private static final String POLICY_DIGEST_VALUE = "3Tl1oILSvOAWomdI9VeWV6IA/32eSXRUri9kPEz1IVs=";
+	private static final String POLICY_ID = "1.3.6.1.4.1.10015.1000.3.2.1";
+	private static final String POLICY_URL = "http://spuri.test";
+	private static final String POLICY_DIGEST_VALUE = "3Tl1oILSvOAWomdI9VeWV6IA/32eSXRUri9kPEz1IVs=";
 
-    @Test
-    public void validatedXadesSignatureShouldContainPolicyParameters() throws Exception {
-        XAdESSignature xadesSignature = openXadesSignature("src/test/resources/validation/valid-xades.xml");
-        SignaturePolicy policy = xadesSignature.getPolicyId();
-        assertEquals(POLICY_ID, policy.getIdentifier());
-        assertEquals(DigestAlgorithm.SHA256, policy.getDigestAlgorithm());
-        assertEquals(POLICY_DIGEST_VALUE, policy.getDigestValue());
-        assertEquals(POLICY_URL, policy.getUrl());
-    }
+	@Test
+	public void validatedXadesSignatureShouldContainPolicyParameters() throws Exception {
+		XAdESSignature xadesSignature = openXadesSignature("src/test/resources/validation/valid-xades.xml");
+		SignaturePolicy policy = xadesSignature.getPolicyId();
+		assertEquals(POLICY_ID, policy.getIdentifier());
+		assertEquals(DigestAlgorithm.SHA256, policy.getDigestAlgorithm());
+		assertEquals(POLICY_DIGEST_VALUE, DatatypeConverter.printBase64Binary(policy.getDigestValue()));
+		assertEquals(POLICY_URL, policy.getUrl());
+	}
 
-    private XAdESSignature openXadesSignature(String documentPath) {
-        SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(new File(documentPath)));
-        List<AdvancedSignature> signatureList = validator.getSignatures();
-        return (XAdESSignature) signatureList.get(0);
-    }
+	private XAdESSignature openXadesSignature(String documentPath) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(new File(documentPath)));
+		List<AdvancedSignature> signatureList = validator.getSignatures();
+		return (XAdESSignature) signatureList.get(0);
+	}
 }

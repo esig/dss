@@ -3,8 +3,6 @@ package eu.europa.esig.dss.xades.requirements;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -50,7 +48,7 @@ public abstract class AbstractRequirementChecks {
 		signedDocument.save("target/requirement-check.xml");
 
 		DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-		document = documentBuilder.parse(new ByteArrayInputStream(signedDocument.getBytes()));
+		document = documentBuilder.parse(signedDocument.openStream());
 	}
 
 	protected abstract DSSDocument getSignedDocument() throws Exception;

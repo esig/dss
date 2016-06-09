@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -60,6 +61,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 	private List<String> toIgnored;
 
+	private Long cacheExpirationTime;
+
 	/**
 	 * This method allows to set the file cache directory. If the cache folder does not exists then it's created.
 	 *
@@ -69,6 +72,19 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 		this.fileCacheDirectory = fileCacheDirectory;
 		this.fileCacheDirectory.mkdirs();
+	}
+
+	/**
+	 * Sets the expiration time for the cached files in milliseconds.
+	 * If more time has passed from the cache file's last modified time, then a fresh copy is downloaded and cached,
+	 * otherwise a cached copy is used.
+	 *
+	 * If the expiration time is not set, then the cache does not expire.
+	 *
+	 * @param cacheExpirationTimeInMilliseconds
+     */
+	public void setCacheExpirationTime(long cacheExpirationTimeInMilliseconds) {
+		this.cacheExpirationTime = cacheExpirationTimeInMilliseconds;
 	}
 
 	public void setResourceLoader(final ResourceLoader resourceLoader) {
@@ -120,7 +136,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		final String fileName = ResourceLoader.getNormalizedFileName(url);
 		final File file = getCacheFile(fileName);
 		final boolean fileExists = file.exists();
-		if (fileExists && !refresh) {
+		final boolean isCacheExpired = isCacheExpired(file);
+		if (fileExists && !refresh && !isCacheExpired) {
 
 			LOG.debug("Cached file was used");
 			final byte[] bytes = DSSUtils.toByteArray(file);
@@ -273,5 +290,20 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 			}
 		}
 		return returnedBytes;
+	}
+
+	private boolean isCacheExpired(File file) {
+		if (cacheExpirationTime == null) {
+			return false;
+		}
+		if (!file.exists()) {
+			return true;
+		}
+		long currentTime = new Date().getTime();
+		if (file.lastModified() + cacheExpirationTime < currentTime) {
+			LOG.debug("Cache is expired");
+			return true;
+		}
+		return false;
 	}
 }

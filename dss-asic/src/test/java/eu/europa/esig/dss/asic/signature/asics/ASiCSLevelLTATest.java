@@ -41,7 +41,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class ASiCSLevelLTATest extends AbstractTestSignature {
 
@@ -66,7 +66,7 @@ public class ASiCSLevelLTATest extends AbstractTestSignature {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 	}
 
 	@Override

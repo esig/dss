@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -51,12 +50,14 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
+import eu.europa.esig.dss.tsl.TSLServiceStatus;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.tsl.TSLValidationSummary;
@@ -114,7 +115,7 @@ public class TSLRepository {
 			if (!allowExpiredTSLs) {
 				TSLParserResult parseResult = tslValidationModel.getParseResult();
 				if (parseResult != null) {
-					if (now.after(parseResult.getNextUpdateDate())) {
+					if (parseResult.getNextUpdateDate() == null || now.after(parseResult.getNextUpdateDate())) {
 						continue;
 					}
 				}
@@ -303,10 +304,6 @@ public class TSLRepository {
 								for (CertificateToken certificate : service.getCertificates()) {
 									trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, tlWellSigned));
 								}
-
-								for (X500Principal x500Principal : service.getX500Principals()) {
-									trustedListsCertificateSource.addX500Principal(x500Principal, getServiceInfo(serviceProvider, service, tlWellSigned));
-								}
 							}
 						}
 					}
@@ -327,11 +324,6 @@ public class TSLRepository {
 										logger.info(certificate.getAbbreviation() + " is removed from trusted certificates");
 									}
 								}
-								for (X500Principal x500Principal : service.getX500Principals()) {
-									if (trustedListsCertificateSource.removeX500Principal(x500Principal)) {
-										logger.info(x500Principal.getName() + " is removed from trusted certificates");
-									}
-								}
 							}
 						}
 					}
@@ -342,6 +334,12 @@ public class TSLRepository {
 			logger.info("Nb of loaded trusted lists : " + tslValidationModels.size());
 			logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 			logger.info("Nb of skipped trusted lists : " + skippedTSLValidationModels.size());
+
+			if (CollectionUtils.isNotEmpty(skippedTSLValidationModels)) {
+				for (TSLValidationModel tslValidationModel : skippedTSLValidationModels) {
+					logger.info(tslValidationModel.getUrl() + " is skipped");
+				}
+			}
 		}
 	}
 
@@ -355,9 +353,15 @@ public class TSLRepository {
 
 		serviceInfo.setServiceName(service.getName());
 		serviceInfo.setType(service.getType());
-		serviceInfo.setStatus(service.getStatus());
-		serviceInfo.setStatusStartDate(service.getStartDate());
-		serviceInfo.setStatusEndDate(service.getEndDate());
+
+		List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
+		List<TSLServiceStatus> serviceStatus = service.getStatus();
+		if (CollectionUtils.isNotEmpty(serviceStatus)) {
+			for (TSLServiceStatus tslServiceStatus : serviceStatus) {
+				status.add(new ServiceInfoStatus(tslServiceStatus.getStatus(), tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate()));
+			}
+		}
+		serviceInfo.setStatus(status);
 
 		List<TSLServiceExtension> extensions = service.getExtensions();
 		if (CollectionUtils.isNotEmpty(extensions)) {
@@ -371,9 +375,6 @@ public class TSLRepository {
 				}
 			}
 		}
-
-		// TODO
-		// service.setExpiredCertsRevocationInfo(expiredCertsRevocationInfo);
 
 		serviceInfo.setTlWellSigned(tlWellSigned);
 		return serviceInfo;
@@ -408,9 +409,7 @@ public class TSLRepository {
 							nbServices += services.size();
 							for (TSLService tslService : services) {
 								List<CertificateToken> certificates = tslService.getCertificates();
-								List<X500Principal> x500Principals = tslService.getX500Principals();
 								nbCertificatesAndX500Principals += CollectionUtils.size(certificates);
-								nbCertificatesAndX500Principals += CollectionUtils.size(x500Principals);
 							}
 						}
 					}

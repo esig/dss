@@ -38,12 +38,12 @@ import java.util.List;
 
 import javax.crypto.Cipher;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.xml.security.utils.Base64;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -77,7 +77,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.reports.Reports;
 
 public class InfiniteLoopDSS621Test {
 
@@ -98,7 +98,7 @@ public class InfiniteLoopDSS621Test {
 		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
 		Reports reports = signedDocumentValidator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 		final List<AdvancedSignature> signatures = signedDocumentValidator.getSignatures();
 
@@ -114,9 +114,8 @@ public class InfiniteLoopDSS621Test {
 		}
 	}
 
-
 	/**
-	 * These signatures are invalid because of non ordered  signed attributes
+	 * These signatures are invalid because of non ordered signed attributes
 	 */
 	@Test
 	public void manualTest() throws Exception {
@@ -130,7 +129,7 @@ public class InfiniteLoopDSS621Test {
 		List<PDSignature> signatures = document.getSignatureDictionaries();
 		assertEquals(6, signatures.size());
 
-		int idx= 0;
+		int idx = 0;
 		for (PDSignature pdSignature : signatures) {
 			byte[] contents = pdSignature.getContents(pdfBytes);
 			byte[] signedContent = pdSignature.getSignedContent(pdfBytes);
@@ -186,11 +185,11 @@ public class InfiniteLoopDSS621Test {
 				assertNotNull(attributeDigest);
 
 				ASN1OctetString asn1ObjString = ASN1OctetString.getInstance(attributeDigest.getAttrValues().getObjectAt(0));
-				String embeddedDigest = Base64.encode(asn1ObjString.getOctets());
+				String embeddedDigest = Base64.encodeBase64String(asn1ObjString.getOctets());
 				logger.info("MESSAGE DIGEST : " + embeddedDigest);
 
 				byte[] digestSignedContent = DSSUtils.digest(digestAlgorithm, signedContent);
-				String computedDigestSignedContentEncodeBase64 = Base64.encode(digestSignedContent);
+				String computedDigestSignedContentEncodeBase64 = Base64.encodeBase64String(digestSignedContent);
 				logger.info("COMPUTED DIGEST SIGNED CONTENT BASE64 : " + computedDigestSignedContentEncodeBase64);
 				assertEquals(embeddedDigest, computedDigestSignedContentEncodeBase64);
 
@@ -230,12 +229,12 @@ public class InfiniteLoopDSS621Test {
 				DigestInfo digestInfo = new DigestInfo(seqDecrypt);
 				assertEquals(oidDigestAlgo, digestInfo.getAlgorithmId().getAlgorithm());
 
-				String decryptedDigestEncodeBase64 = Base64.encode(digestInfo.getDigest());
+				String decryptedDigestEncodeBase64 = Base64.encodeBase64String(digestInfo.getDigest());
 				logger.info("DECRYPTED BASE64 : " + decryptedDigestEncodeBase64);
 
 				byte[] encoded = authenticatedAttributeSet.getEncoded();
 				byte[] digest = DSSUtils.digest(digestAlgorithm, encoded);
-				String computedDigestFromSignatureEncodeBase64 = Base64.encode(digest);
+				String computedDigestFromSignatureEncodeBase64 = Base64.encodeBase64String(digest);
 				logger.info("COMPUTED DIGEST FROM SIGNATURE BASE64 : " + computedDigestFromSignatureEncodeBase64);
 
 				assertEquals(decryptedDigestEncodeBase64, computedDigestFromSignatureEncodeBase64);
@@ -251,7 +250,7 @@ public class InfiniteLoopDSS621Test {
 		document.close();
 	}
 
-	private List<X509Certificate>  extractCertificates(SignedData signedData) throws Exception {
+	private List<X509Certificate> extractCertificates(SignedData signedData) throws Exception {
 		ASN1Set certificates = signedData.getCertificates();
 		logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
 
@@ -260,8 +259,7 @@ public class InfiniteLoopDSS621Test {
 			ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
 
 			X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
-			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(
-					certificateHolder);
+			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(certificateHolder);
 
 			foundCertificates.add(certificate);
 		}

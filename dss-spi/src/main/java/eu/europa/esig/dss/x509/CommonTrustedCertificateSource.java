@@ -38,16 +38,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommonTrustedCertificateSource.class);
 
-	private KeyStoreCertificateSource dssKeyStore;
-
-	public void setDssKeyStore(KeyStoreCertificateSource dssKeyStore) {
-		this.dssKeyStore = dssKeyStore;
-	}
-
 	public CommonTrustedCertificateSource() {
-		if (dssKeyStore != null) {
-			importAsTrusted(dssKeyStore);
-		}
 	}
 
 	@Override

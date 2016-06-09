@@ -23,9 +23,11 @@ package eu.europa.esig.dss.cades.validation;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Test;
@@ -33,11 +35,10 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
-import eu.europa.esig.dss.validation.report.Reports;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 /**
  * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-662
@@ -52,7 +53,7 @@ public class CAdESWithDEREncodedTimestampTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
@@ -68,7 +69,7 @@ public class CAdESWithDEREncodedTimestampTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
@@ -77,12 +78,11 @@ public class CAdESWithDEREncodedTimestampTest {
 		assertTrue(CollectionUtils.isEmpty(timestampIdList));
 	}
 
-
 	@Test
-	public void testFile3() throws DSSException, CMSException  {
+	public void testFile3() throws DSSException, CMSException, IOException {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-CAdES/DE_CRY/Signature-C-DE_CRY-4.p7m");
 
-		CAdESSignature signature = new CAdESSignature(dssDocument.getBytes());
+		CAdESSignature signature = new CAdESSignature(IOUtils.toByteArray(dssDocument.openStream()));
 		CMSSignedData cmsSignedData = signature.getCmsSignedData();
 		assertNotNull(cmsSignedData);
 	}

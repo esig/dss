@@ -1,7 +1,9 @@
 package eu.europa.esig.jaxb.tsl;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import javax.xml.bind.JAXBContext;
@@ -21,7 +23,7 @@ public class LoadUELOTLTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void test() throws JAXBException{
+	public void test() throws JAXBException {
 		File euLOTL = new File("src/test/resources/tl-mp.xml");
 
 		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.tsl");
@@ -39,7 +41,9 @@ public class LoadUELOTLTest {
 
 		if (null == introspector.getElementName(euLOTLObj)) {
 			JAXBElement jaxbElement = new JAXBElement(new QName("ROOT"), Object.class, euLOTLObj);
-			marshaller.marshal(jaxbElement, System.out);
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			marshaller.marshal(jaxbElement, os);
+			assertTrue(os.toByteArray() != null && os.toByteArray().length > 0);
 		}
 
 	}

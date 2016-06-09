@@ -20,16 +20,12 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
+import static eu.europa.esig.dss.xades.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.util.List;
+import java.util.Set;
 
-import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.asn1.pkcs.IssuerAndSerialNumber;
-import org.bouncycastle.asn1.x500.X500Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -37,20 +33,19 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSXMLUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 public abstract class XAdESBuilder {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(XAdESBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESBuilder.class);
 
 	public static final String DS_CANONICALIZATION_METHOD = "ds:CanonicalizationMethod";
 	public static final String DS_DIGEST_METHOD = "ds:DigestMethod";
@@ -142,7 +137,8 @@ public abstract class XAdESBuilder {
 	public static final String NOT_ANCESTOR_OR_SELF_DS_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 
 	/**
-	 * This variable holds the {@code XPathQueryHolder} which contains all constants and queries needed to cope with the default signature schema.
+	 * This variable holds the {@code XPathQueryHolder} which contains all constants and queries needed to cope with the
+	 * default signature schema.
 	 */
 	protected final XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
 
@@ -165,7 +161,8 @@ public abstract class XAdESBuilder {
 	/**
 	 * The default constructor.
 	 *
-	 * @param certificateVerifier {@code CertificateVerifier}
+	 * @param certificateVerifier
+	 *            {@code CertificateVerifier}
 	 */
 	public XAdESBuilder(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
@@ -189,7 +186,8 @@ public abstract class XAdESBuilder {
 	 * This method creates the ds:DigestMethod DOM object
 	 *
 	 * @param parentDom
-	 * @param digestAlgorithm digest algorithm xml identifier
+	 * @param digestAlgorithm
+	 *            digest algorithm xml identifier
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
 
@@ -204,8 +202,10 @@ public abstract class XAdESBuilder {
 	 * This method creates the ds:DigestValue DOM object.
 	 *
 	 * @param parentDom
-	 * @param digestAlgorithm  digest algorithm
-	 * @param originalDocument to digest array of bytes
+	 * @param digestAlgorithm
+	 *            digest algorithm
+	 * @param originalDocument
+	 *            to digest array of bytes
 	 */
 	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final DSSDocument originalDocument) {
 
@@ -221,13 +221,16 @@ public abstract class XAdESBuilder {
 	}
 
 	/**
-	 * Incorporates the certificate's references as a child of the given parent node. The first element of the {@code X509Certificate} {@code List} MUST be the signing
+	 * Incorporates the certificate's references as a child of the given parent node. The first element of the
+	 * {@code X509Certificate} {@code List} MUST be the signing
 	 * certificate.
 	 *
-	 * @param signingCertificateDom DOM parent element
-	 * @param certificates          {@code List} of the certificates to be incorporated
+	 * @param signingCertificateDom
+	 *            DOM parent element
+	 * @param certificates
+	 *            {@code List} of the certificates to be incorporated
 	 */
-	protected void incorporateCertificateRef(final Element signingCertificateDom, final List<CertificateToken> certificates) {
+	protected void incorporateCertificateRef(final Element signingCertificateDom, final Set<CertificateToken> certificates) {
 
 		for (final CertificateToken certificate : certificates) {
 
@@ -240,22 +243,18 @@ public abstract class XAdESBuilder {
 
 			final InMemoryDocument inMemoryCertificate = new InMemoryDocument(certificate.getEncoded());
 			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, inMemoryCertificate);
-			
-			if(params.isEn319132()) {
-				// "The references to certificates shall not include the IssuerSerialV2 element" page 53 of EN 319 132-1 requirement j
-				
-			} else {
-				final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
 
-				final Element x509IssuerNameDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
-				final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
-				DSSXMLUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
+			final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
 
-				final Element x509SerialNumberDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
-				final BigInteger serialNumber = certificate.getSerialNumber();
-				final String serialNumberString = new String(serialNumber.toString());
-				DSSXMLUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
-			}
+			final Element x509IssuerNameDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
+			final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
+			DSSXMLUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
+
+			final Element x509SerialNumberDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
+			final BigInteger serialNumber = certificate.getSerialNumber();
+			final String serialNumberString = new String(serialNumber.toString());
+			DSSXMLUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
 		}
 	}
+
 }

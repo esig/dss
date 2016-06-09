@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
@@ -51,7 +52,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 /**
- * This class is job class which allows to launch TSL loading/parsing/validation. An instance of this class can be injected in a Spring quartz job.
+ * This class is job class which allows to launch TSL loading/parsing/validation. An instance of this class can be
+ * injected in a Spring quartz job.
  */
 public class TSLValidationJob {
 
@@ -149,7 +151,8 @@ public class TSLValidationJob {
 					String countryCode = entry.getKey();
 					if (!lotlCode.equals(countryCode)) {
 						TSLValidationModel countryModel = entry.getValue();
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, dssKeyStore, getPotentialSigners(pointers, countryCode));
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, dssKeyStore,
+								getPotentialSigners(pointers, countryCode));
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
 				}
@@ -170,7 +173,11 @@ public class TSLValidationJob {
 			resultLoaderLOTL = result.get();
 		} catch (Exception e) {
 			logger.error("Unable to load the LOTL : " + e.getMessage(), e);
-			return;
+			throw new DSSException("Unable to load the LOTL : " + e.getMessage());
+		}
+		if (resultLoaderLOTL.getContent() == null) {
+			logger.error("Unable to load the LOTL: content is empty");
+			throw new DSSException("Unable to load the LOTL: content is empty");
 		}
 
 		TSLValidationModel europeanModel = null;
@@ -235,8 +242,8 @@ public class TSLValidationJob {
 				}
 
 				if (checkTSLSignatures && (countryModel.getValidationResult() == null)) {
-					TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore, getPotentialSigners(pointers,
-							loaderResult.getCountryCode()));
+					TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore,
+							getPotentialSigners(pointers, loaderResult.getCountryCode()));
 					futureValidationResults.add(executorService.submit(tslValidator));
 				}
 			} catch (Exception e) {

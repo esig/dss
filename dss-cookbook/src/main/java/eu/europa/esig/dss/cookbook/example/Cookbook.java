@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.cookbook.example;
 
 import java.net.URL;
-import java.util.Date;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -98,7 +97,7 @@ public class Cookbook {
 	}
 
 	protected static MockTSPSource getMockTSPSource() throws DSSException, Exception {
-		return new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256),new Date());
+		return new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
 	}
 
 }

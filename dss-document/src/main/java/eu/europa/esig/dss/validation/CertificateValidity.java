@@ -25,9 +25,7 @@ import java.security.PublicKey;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -54,9 +52,11 @@ public class CertificateValidity implements Serializable {
 	private DigestAlgorithm digestAlgorithm;
 
 	/**
-	 * This constructor create an object containing all information concerning the validity of a candidate for the signing certificate.
+	 * This constructor create an object containing all information concerning the validity of a candidate for the
+	 * signing certificate.
 	 *
-	 * @param certificateToken the candidate for the signing certificate
+	 * @param certificateToken
+	 *            the candidate for the signing certificate
 	 */
 	public CertificateValidity(final CertificateToken certificateToken) {
 
@@ -64,10 +64,12 @@ public class CertificateValidity implements Serializable {
 	}
 
 	/**
-	 * This constructor create an object containing all information concerning the validity of a candidate for the signing certificate which is based only on the {@code
+	 * This constructor create an object containing all information concerning the validity of a candidate for the
+	 * signing certificate which is based only on the {@code
 	 * PublicKey}. To be used in case of a non AdES signature.
 	 *
-	 * @param publicKey the {@code PublicKey} associated to the signing certificate.
+	 * @param publicKey
+	 *            the {@code PublicKey} associated to the signing certificate.
 	 */
 	public CertificateValidity(final PublicKey publicKey) {
 
@@ -75,7 +77,8 @@ public class CertificateValidity implements Serializable {
 	}
 
 	/**
-	 * If the {@code certificateToken} is not null then the associated {@code PublicKey} will be returned otherwise the provided {@code publicKey} is returned.
+	 * If the {@code certificateToken} is not null then the associated {@code PublicKey} will be returned otherwise the
+	 * provided {@code publicKey} is returned.
 	 *
 	 * @return the public key associated with this instance.
 	 */
@@ -134,7 +137,8 @@ public class CertificateValidity implements Serializable {
 	}
 
 	/**
-	 * @return returns the signed element: X509Certificate, X509Data or KeyInfo. {@code null} if there is no signed element
+	 * @return returns the signed element: X509Certificate, X509Data or KeyInfo. {@code null} if there is no signed
+	 *         element
 	 */
 	public String getSigned() {
 		return signed;
@@ -143,18 +147,16 @@ public class CertificateValidity implements Serializable {
 	/**
 	 * Allows to set the signed element: X509Certificate, X509Data or KeyInfo
 	 *
-	 * @param signed indicates the element which was signed
+	 * @param signed
+	 *            indicates the element which was signed
 	 */
 	public void setSigned(final String signed) {
-
-		if (!XPathQueryHolder.XMLE_X509CERTIFICATE.equals(signed) && !XPathQueryHolder.XMLE_X509DATA.equals(signed) && !XPathQueryHolder.XMLE_KEYINFO.equals(signed)) {
-			throw new DSSException("The signed element should be one of the following: X509Certificate, X509Data or KeyInfo!");
-		}
 		this.signed = signed;
 	}
 
 	/**
-	 * This method returns {@code true} if the certificate digest or IssuerSerial/issuerAndSerialNumber match or the certificate is signed. The signed reference is checked
+	 * This method returns {@code true} if the certificate digest or IssuerSerial/issuerAndSerialNumber match or the
+	 * certificate is signed. The signed reference is checked
 	 * following the validation policy.
 	 *
 	 * @return {@code true} if the certificate digest matches.

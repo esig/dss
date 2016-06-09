@@ -40,7 +40,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.report.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelATest extends AbstractTestSignature {
@@ -66,7 +66,7 @@ public class XAdESLevelATest extends AbstractTestSignature {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 
 	}
 

@@ -93,12 +93,14 @@ public class TimestampToken extends Token {
 	private ArchiveTimestampType archiveTimestampType;
 
 	/**
-	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method used before creating the digest.
+	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method used before creating the
+	 * digest.
 	 */
 	private String canonicalizationMethod;
 
 	/**
-	 * This attribute is used only with XAdES timestamps. It represents the hash code of the DOM element containing the timestamp. It's an internal attribute which allows to
+	 * This attribute is used only with XAdES timestamps. It represents the hash code of the DOM element containing the
+	 * timestamp. It's an internal attribute which allows to
 	 * unambiguously identify a timestamp.
 	 */
 	private int hashCode;
@@ -106,9 +108,12 @@ public class TimestampToken extends Token {
 	/**
 	 * Constructor with an indication of the timestamp type. The default constructor for {@code TimestampToken}.
 	 *
-	 * @param timeStamp {@code TimeStampToken}
-	 * @param type      {@code TimestampType}
-	 * @param certPool  {@code CertificatePool} which is used to identify the signing certificate of the timestamp
+	 * @param timeStamp
+	 *            {@code TimeStampToken}
+	 * @param type
+	 *            {@code TimestampType}
+	 * @param certPool
+	 *            {@code CertificatePool} which is used to identify the signing certificate of the timestamp
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
 
@@ -184,29 +189,29 @@ public class TimestampToken extends Token {
 			timeStampToken.validate(verifier);
 			timestampValidity = TimestampValidity.VALID;
 		} catch (IllegalArgumentException e) {
-			if(logger.isDebugEnabled()) {
+			if (logger.isDebugEnabled()) {
 				logger.debug("No signing certificate for timestamp token: ", e);
 			} else {
 				logger.info("No signing certificate for timestamp token: ", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NO_SIGNING_CERTIFICATE;
 		} catch (TSPValidationException e) {
-			if(logger.isDebugEnabled()) {
-				logger.info("No valid signature for timestamp token: ", e);
+			if (logger.isDebugEnabled()) {
+				logger.debug("No valid signature for timestamp token: ", e);
 			} else {
 				logger.info("No valid signature for timestamp token: " + e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_SIGNATURE;
 		} catch (TSPException e) {
-			if(logger.isDebugEnabled()) {
-				logger.info("No valid structure for timestamp token: ", e);
+			if (logger.isDebugEnabled()) {
+				logger.debug("No valid structure for timestamp token: ", e);
 			} else {
 				logger.info("No valid structure for timestamp token: " + e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
 		} catch (OperatorCreationException e) {
-			if(logger.isDebugEnabled()) {
-				logger.info("No valid structure for timestamp token: ", e);
+			if (logger.isDebugEnabled()) {
+				logger.debug("No valid structure for timestamp token: ", e);
 			} else {
 				logger.info("No valid structure for timestamp token: " + e.getMessage());
 			}
@@ -219,7 +224,8 @@ public class TimestampToken extends Token {
 	/**
 	 * Checks if the {@code TimeStampToken} matches the signed data.
 	 *
-	 * @param data the array of {@code byte} representing the timestamped data
+	 * @param data
+	 *            the array of {@code byte} representing the timestamped data
 	 * @return true if the data is verified by the TimeStampToken
 	 */
 	public boolean matchData(final byte[] data) {
@@ -235,8 +241,6 @@ public class TimestampToken extends Token {
 			final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
 			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
 			if (!messageImprintIntact) {
-
-				logger.error("Extracted data from the document: {}", Hex.encodeHexString(data));
 				logger.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Hex.encodeHexString(computedDigest));
 				logger.error("Digest present in TimestampToken: {}", Hex.encodeHexString(timestampDigest));
 				logger.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
@@ -321,10 +325,12 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * This method is used to set the timestamped references. The reference can be the digest value of the certificate or of the revocation data. The same references can be
+	 * This method is used to set the timestamped references. The reference can be the digest value of the certificate
+	 * or of the revocation data. The same references can be
 	 * timestamped by different timestamps.
 	 *
-	 * @param timestampedReferences {@code List} of {@code TimestampReference}
+	 * @param timestampedReferences
+	 *            {@code List} of {@code TimestampReference}
 	 */
 	public void setTimestampedReferences(final List<TimestampReference> timestampedReferences) {
 
@@ -341,7 +347,8 @@ public class TimestampToken extends Token {
 	/**
 	 * Archive timestamps can be of different sub type.
 	 *
-	 * @param archiveTimestampType {@code ArchiveTimestampType}
+	 * @param archiveTimestampType
+	 *            {@code ArchiveTimestampType}
 	 */
 	public void setArchiveTimestampType(final ArchiveTimestampType archiveTimestampType) {
 		this.archiveTimestampType = archiveTimestampType;
@@ -359,7 +366,8 @@ public class TimestampToken extends Token {
 	/**
 	 * Allows to set the canonicalization method used by the timestamp. Applies only with XAdES timestamps.
 	 *
-	 * @param canonicalizationMethod {@code String} representing the canonicalization method
+	 * @param canonicalizationMethod
+	 *            {@code String} representing the canonicalization method
 	 */
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
 		this.canonicalizationMethod = canonicalizationMethod;
@@ -400,7 +408,8 @@ public class TimestampToken extends Token {
 	/**
 	 * Used only with XAdES timestamps.
 	 *
-	 * @param hashCode the hash code of the DOM element containing the timestamp
+	 * @param hashCode
+	 *            the hash code of the DOM element containing the timestamp
 	 */
 	public void setHashCode(final int hashCode) {
 		this.hashCode = hashCode;

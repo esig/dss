@@ -24,10 +24,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.XmlDom;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 public final class RuleUtils {
+
+	private static final Logger logger = LoggerFactory.getLogger(RuleUtils.class);
 
 	private RuleUtils() {
 	}
@@ -41,79 +47,37 @@ public final class RuleUtils {
 	 * @return
 	 */
 	public static long convertDuration(final String fromUnit, final String toUnit, long value) {
-
-		TimeUnit fromTimeUnit = null;
-		if (fromUnit.equals("DAYS")) {
-
-			fromTimeUnit = TimeUnit.DAYS;
-		} else if (fromUnit.equals("HOURS")) {
-
-			fromTimeUnit = TimeUnit.HOURS;
-		} else if (fromUnit.equals("MINUTES")) {
-
-			fromTimeUnit = TimeUnit.MINUTES;
-		} else if (fromUnit.equals("SECONDS")) {
-
-			fromTimeUnit = TimeUnit.SECONDS;
-		} else if (fromUnit.equals("MILLISECONDS")) {
-
-			fromTimeUnit = TimeUnit.MILLISECONDS;
-		}
-		try {
-
-			if (toUnit.equals("MILLISECONDS")) {
-
-				return TimeUnit.MILLISECONDS.convert(value, fromTimeUnit);
-			} else if (toUnit.equals("DAYS")) {
-
-				return TimeUnit.DAYS.convert(value, fromTimeUnit);
-			} else if (toUnit.equals("HOURS")) {
-
-				return TimeUnit.HOURS.convert(value, fromTimeUnit);
-			} else if (toUnit.equals("MINUTES")) {
-
-				return TimeUnit.MINUTES.convert(value, fromTimeUnit);
-			} else if (toUnit.equals("SECONDS")) {
-
-				return TimeUnit.SECONDS.convert(value, fromTimeUnit);
-			}
-			throw new DSSException("Unknown time unit: " + toUnit + ".");
-		} catch (Exception e) {
-
-			throw new DSSException("Error during the duration conversion: " + e.getMessage(), e);
+		TimeUnit fromTimeUnit = toTimeUnit(fromUnit);
+		TimeUnit toTimeUnit = toTimeUnit(toUnit);
+		if (fromTimeUnit != null && toTimeUnit != null) {
+			return toTimeUnit.convert(value, fromTimeUnit);
+		} else {
+			throw new DSSException("Cannot convert duration with args (" + fromUnit + ", " + toUnit + ", " + value + ")");
 		}
 	}
 
-	/**
-	 * @param id
-	 * @param idList
-	 * @return
-	 */
-	public static boolean contains(final String id, final List<XmlDom> idList) {
-
-		boolean found = false;
-		for (XmlDom xmlDom : idList) {
-
-			String value = xmlDom.getValue("./text()");
-			if (value.equals(id)) {
-
-				found = true;
-				break;
-			}
+	private static TimeUnit toTimeUnit(String timeUnitString) {
+		TimeUnit result = null;
+		try {
+			result = TimeUnit.valueOf(timeUnitString);
+		} catch (Exception e) {
+			logger.warn("Cannot parse '" + timeUnitString + "' to TimeUnit");
 		}
-		return found;
+		return result;
 	}
 
 	/**
 	 * This method checks if the given string is present in the list of {@code String}(s).
 	 *
-	 * @param id     {@code String} to check
-	 * @param idList the list of {@code String}(s)
+	 * @param id
+	 *            {@code String} to check
+	 * @param idList
+	 *            the list of {@code String}(s)
 	 * @return tru if the {@code id} is present in the {@code idList}, false otherwise
 	 */
 	public static boolean contains1(final String id, final List<String> idList) {
 
-		if (id != null && idList != null) {
+		if ((id != null) && (idList != null)) {
 			for (final String idFromList : idList) {
 				if (idFromList.equals(id)) {
 					return true;
@@ -121,16 +85,6 @@ public final class RuleUtils {
 			}
 		}
 		return false;
-	}
-
-	public static long convertToLong(final String value) {
-
-		try {
-
-			return Long.parseLong(value);
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	public static String canonicalizeDigestAlgo(final String algo) {
@@ -151,11 +105,9 @@ public final class RuleUtils {
 		return signatureAlgo;
 	}
 
-	public static boolean in(final String value, final String... values) {
-
+	public static boolean in(final SubIndication value, final SubIndication... values) {
 		final boolean contains = Arrays.asList(values).contains(value);
 		return contains;
-
 	}
 
 	public static String toString(List<String> strings) {
@@ -186,4 +138,23 @@ public final class RuleUtils {
 		}
 		return found;
 	}
+
+	public static long convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, int value) {
+		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
+		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
+		Long convert = to.convert(value, from);
+		if (convert == 0) {
+			return Long.MAX_VALUE;
+		} else {
+			return convert.longValue();
+		}
+	}
+
+	public static long convertDuration(TimeConstraint timeConstraint) {
+		if (timeConstraint != null) {
+			return convertDuration(timeConstraint.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, timeConstraint.getValue());
+		}
+		return Long.MAX_VALUE;
+	}
+
 }

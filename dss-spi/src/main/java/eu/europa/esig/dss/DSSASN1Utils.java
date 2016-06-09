@@ -23,6 +23,7 @@ package eu.europa.esig.dss;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.CertificateParsingException;
+import java.security.cert.X509CRL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
@@ -38,6 +40,7 @@ import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -59,6 +62,8 @@ import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -69,12 +74,14 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.PolicyInformation;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,14 +102,17 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method returns {@code T extends ASN1Primitive} created from array of bytes. The {@code IOException} is transformed in {@code DSSException}.
+	 * This method returns {@code T extends ASN1Primitive} created from array of bytes. The {@code IOException} is
+	 * transformed in {@code DSSException}.
 	 *
-	 * @param bytes array of bytes to be transformed to {@code ASN1Primitive}
+	 * @param bytes
+	 *            array of bytes to be transformed to {@code ASN1Primitive}
 	 * @return new {@code T extends ASN1Primitive}
 	 */
 	public static <T extends ASN1Primitive> T toASN1Primitive(final byte[] bytes) throws DSSException {
 		try {
-			@SuppressWarnings("unchecked") final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
+			@SuppressWarnings("unchecked")
+			final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
 			return asn1Primitive;
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -124,7 +134,8 @@ public final class DSSASN1Utils {
 	/**
 	 * This method return DER encoded ASN1 attribute. The {@code IOException} is transformed in {@code DSSException}.
 	 *
-	 * @param asn1Encodable asn1Encodable to be DER encoded
+	 * @param asn1Encodable
+	 *            asn1Encodable to be DER encoded
 	 * @return array of bytes representing the DER encoded asn1Encodable
 	 */
 	public static byte[] getDEREncoded(ASN1Encodable asn1Encodable) {
@@ -167,7 +178,8 @@ public final class DSSASN1Utils {
 	/**
 	 * Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
 	 *
-	 * @param timeStampToken {@code TimeStampToken}
+	 * @param timeStampToken
+	 *            {@code TimeStampToken}
 	 * @return Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
 	 */
 	public static byte[] getEncoded(final TimeStampToken timeStampToken) throws DSSException {
@@ -180,11 +192,14 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method returns the {@code ASN1Sequence} encapsulated in {@code DEROctetString}. The {@code DEROctetString} is represented as {@code byte} array.
+	 * This method returns the {@code ASN1Sequence} encapsulated in {@code DEROctetString}. The {@code DEROctetString}
+	 * is represented as {@code byte} array.
 	 *
-	 * @param bytes {@code byte} representation of {@code DEROctetString}
+	 * @param bytes
+	 *            {@code byte} representation of {@code DEROctetString}
 	 * @return encapsulated {@code ASN1Sequence}
-	 * @throws DSSException in case of a decoding problem
+	 * @throws DSSException
+	 *             in case of a decoding problem
 	 */
 	public static ASN1Sequence getAsn1SequenceFromDerOctetString(byte[] bytes) throws DSSException {
 		ASN1InputStream input = null;
@@ -207,7 +222,8 @@ public final class DSSASN1Utils {
 	/**
 	 * This method computes the digest of an ANS1 signature policy (used in CAdES)
 	 *
-	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value without the outer type and length
+	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value
+	 * without the outer type and length
 	 * fields, and the hashing algorithm shall be as specified in the field sigPolicyHash.
 	 */
 	public static byte[] getAsn1SignaturePolicyDigest(DigestAlgorithm digestAlgorithm, byte[] policyBytes) {
@@ -274,8 +290,10 @@ public final class DSSASN1Utils {
 	public static AlgorithmIdentifier getAlgorithmIdentifier(DigestAlgorithm digestAlgorithm) {
 
 		/*
-		 * The recommendation (cf. RFC 3380 section 2.1) is to omit the parameter for SHA-1, but some implementations still expect a
-		 * NULL there. Therefore we always include a NULL parameter even with SHA-1, despite the recommendation, because the RFC
+		 * The recommendation (cf. RFC 3380 section 2.1) is to omit the parameter for SHA-1, but some implementations
+		 * still expect a
+		 * NULL there. Therefore we always include a NULL parameter even with SHA-1, despite the recommendation, because
+		 * the RFC
 		 * states that implementations SHOULD support it as well anyway
 		 */
 		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
@@ -286,14 +304,16 @@ public final class DSSASN1Utils {
 	/**
 	 * Indicates if the revocation data should be checked for an OCSP signing certificate.<br>
 	 * http://www.ietf.org/rfc/rfc2560.txt?number=2560<br>
-	 * A CA may specify that an OCSP client can trust a responder for the lifetime of the responder's certificate. The CA
-	 * does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of the
+	 * A CA may specify that an OCSP client can trust a responder for the lifetime of the responder's certificate. The
+	 * CA
+	 * does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of
+	 * the
 	 * extension should be NULL.
 	 *
 	 * @return
 	 */
 	public static boolean hasIdPkixOcspNoCheckExtension(CertificateToken token) {
-		final byte[] extensionValue = token.getCertificate().getExtensionValue(OID.id_pkix_ocsp_no_check.getId());
+		final byte[] extensionValue = token.getCertificate().getExtensionValue(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId());
 		if (extensionValue != null) {
 			try {
 				final ASN1Primitive derObject = toASN1Primitive(extensionValue);
@@ -302,26 +322,6 @@ public final class DSSASN1Utils {
 				}
 			} catch (Exception e) {
 				LOG.debug("Exception when processing 'id_pkix_ocsp_no_check'", e);
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Indicates if this certificate has an CRL extension expiredCertOnCRL.
-	 *
-	 * @return
-	 */
-	public static boolean hasExpiredCertOnCRLExtension(CertificateToken token) {
-		final byte[] extensionValue = token.getCertificate().getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
-		if (extensionValue != null) {
-			try {
-				final ASN1Primitive derObject = toASN1Primitive(extensionValue);
-				if (derObject instanceof DEROctetString) {
-					return isDEROctetStringNull((DEROctetString) derObject);
-				}
-			} catch (Exception e) {
-				LOG.debug("Exception when processing 'id_ce_expiredCertsOnCRL'", e);
 			}
 		}
 		return false;
@@ -348,7 +348,7 @@ public final class DSSASN1Utils {
 		final List<String> extensionIdList = new ArrayList<String>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
 		if (qcStatement != null) {
-			final ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatement);
+			final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
 			// Sequence of QCStatement
 			for (int ii = 0; ii < seq.size(); ii++) {
 				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
@@ -356,6 +356,25 @@ public final class DSSASN1Utils {
 			}
 		}
 		return extensionIdList;
+	}
+
+	/**
+	 * This method returns SKI bytes from certificate.
+	 *
+	 * @param certificateToken
+	 *            {@code CertificateToken}
+	 * @return ski bytes from the given certificate
+	 * @throws DSSException
+	 */
+	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
+		try {
+			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
+			ASN1Primitive extension = X509ExtensionUtil.fromExtensionValue(sKI);
+			SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
+			return skiBC.getKeyIdentifier();
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
 	}
 
 	public static List<String> getAccessLocations(final CertificateToken certificate) {
@@ -377,7 +396,7 @@ public final class DSSASN1Utils {
 
 		List<String> locationsUrls = new ArrayList<String>();
 		for (AccessDescription accessDescription : accessDescriptions) {
-			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())){
+			if (X509ObjectIdentifiers.id_ad_caIssuers.equals(accessDescription.getAccessMethod())) {
 				GeneralName gn = accessDescription.getAccessLocation();
 				if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
 					DERIA5String str = (DERIA5String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
@@ -442,7 +461,7 @@ public final class DSSASN1Utils {
 	 * @return a IssuerSerial
 	 */
 	public static IssuerSerial getIssuerSerial(final CertificateToken certToken) {
-		final X500Name issuerX500Name = DSSUtils.getX509CertificateHolder(certToken).getIssuer();
+		final X500Name issuerX500Name = getX509CertificateHolder(certToken).getIssuer();
 		final GeneralName generalName = new GeneralName(issuerX500Name);
 		final GeneralNames generalNames = new GeneralNames(generalName);
 		final BigInteger serialNumber = certToken.getCertificate().getSerialNumber();
@@ -483,7 +502,7 @@ public final class DSSASN1Utils {
 		final StringBuilder stringBuilder = new StringBuilder();
 		/**
 		 * RFC 4514 LDAP: Distinguished Names
-		 * 2.1.  Converting the RDNSequence
+		 * 2.1. Converting the RDNSequence
 		 *
 		 * If the RDNSequence is an empty sequence, the result is the empty or
 		 * zero-length string.
@@ -511,13 +530,13 @@ public final class DSSASN1Utils {
 				String string = getString(attributeValue);
 
 				/**
-				 * RFC 4514               LDAP: Distinguished Names
+				 * RFC 4514 LDAP: Distinguished Names
 				 * ...
 				 * Other characters may be escaped.
 				 *
 				 * Each octet of the character to be escaped is replaced by a backslash
 				 * and two hex digits, which form a single octet in the code of the
-				 * character.  Alternatively, if and only if the character to be escaped
+				 * character. Alternatively, if and only if the character to be escaped
 				 * is one of
 				 *
 				 * ' ', '"', '#', '+', ',', ';', '<', '=', '>', or '\'
@@ -535,14 +554,15 @@ public final class DSSASN1Utils {
 				string = string.replace("<", "\\<");
 				string = string.replace("=", "\\=");
 				string = string.replace(">", "\\>");
-				// System.out.println(">>> " + attributeType.toString() + "=" + attributeValue.getClass().getSimpleName() + "[" + string + "]");
+				// System.out.println(">>> " + attributeType.toString() + "=" +
+				// attributeValue.getClass().getSimpleName() + "[" + string + "]");
 				if (stringBuilder.length() != 0) {
 					stringBuilder.append(',');
 				}
 				stringBuilder.append(attributeType).append('=').append(string);
 			}
 		}
-		//final X500Name x500Name = X500Name.getInstance(encoded);
+		// final X500Name x500Name = X500Name.getInstance(encoded);
 		return stringBuilder.toString();
 	}
 
@@ -568,6 +588,32 @@ public final class DSSASN1Utils {
 			LOG.error("!!!*******!!! value: " + string);
 		}
 		return string;
+	}
+
+	public static String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500Principal X500PrincipalName) {
+		final X500Name x500Name = X500Name.getInstance(X500PrincipalName.getEncoded());
+		RDN[] rdns = x500Name.getRDNs(identifier);
+		if (rdns.length > 0) {
+			return rdns[0].getFirst().getValue().toString();
+		}
+		return null;
+	}
+
+	public static Date getExpiredCertsOnCRL(X509CRL x509crl) {
+		Set<String> nonCriticalExtensionOIDs = x509crl.getNonCriticalExtensionOIDs();
+		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(OID.id_ce_expiredCertsOnCRL.getId())) {
+			byte[] extensionValue = x509crl.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
+			if (ArrayUtils.isNotEmpty(extensionValue)) {
+				try {
+					ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(extensionValue);
+					ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
+					return generalTime.getDate();
+				} catch (Exception e) {
+					LOG.error("Unable to retrieve id_ce_expiredCertsOnCRL on CRL : " + e.getMessage(), e);
+				}
+			}
+		}
+		return null;
 	}
 
 }

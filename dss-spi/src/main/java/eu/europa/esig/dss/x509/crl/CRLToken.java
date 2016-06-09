@@ -30,6 +30,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotApplicableMethodException;
 import eu.europa.esig.dss.DSSRevocationUtils;
@@ -50,11 +51,6 @@ public class CRLToken extends RevocationToken {
 	 * The reference to the related {@code CRLValidity}
 	 */
 	private final CRLValidity crlValidity;
-
-	/**
-	 * The Url which was used to obtain the CRL.
-	 */
-	private String sourceURL;
 
 	/**
 	 * The constructor to be used with the certificate which is managed by the
@@ -91,8 +87,11 @@ public class CRLToken extends RevocationToken {
 		final String sigAlgOID = x509crl.getSigAlgOID();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(sigAlgOID);
 		this.signatureAlgorithm = signatureAlgorithm;
-		this.issuingTime = x509crl.getThisUpdate();
+		this.thisUpdate = x509crl.getThisUpdate();
+		this.productionDate = x509crl.getThisUpdate(); // dates are equals in case of CRL
 		this.nextUpdate = x509crl.getNextUpdate();
+		this.expiredCertsOnCRL = DSSASN1Utils.getExpiredCertsOnCRL(x509crl);
+
 		issuerX500Principal = x509crl.getIssuerX500Principal();
 		this.extraInfo = new TokenValidationExtraInfo();
 
@@ -122,11 +121,8 @@ public class CRLToken extends RevocationToken {
 		final X509CRLEntry crlEntry = x509crl.getRevokedCertificate(serialNumber);
 		status = null == crlEntry;
 		if (!status) {
-
 			revocationDate = crlEntry.getRevocationDate();
-
-			final String revocationReason = DSSRevocationUtils.getRevocationReason(crlEntry);
-			reason = revocationReason;
+			reason = DSSRevocationUtils.getRevocationReason(crlEntry);
 		}
 	}
 
@@ -135,23 +131,6 @@ public class CRLToken extends RevocationToken {
 	 */
 	public X509CRL getX509crl() {
 		return crlValidity.getX509CRL();
-	}
-
-	@Override
-	public String getSourceURL() {
-		return sourceURL;
-	}
-
-	/**
-	 * This sets the revocation data source URL. It is only used in case of
-	 * {@code OnlineCRLSource}.
-	 *
-	 * @param sourceURL
-	 *            the URL which was used to retrieve this CRL
-	 */
-	public void setSourceURL(final String sourceURL) {
-
-		this.sourceURL = sourceURL;
 	}
 
 	@Override
@@ -168,7 +147,7 @@ public class CRLToken extends RevocationToken {
 	@Override
 	public String getAbbreviation() {
 
-		return "CRLToken[" + (issuingTime == null ? "?" : DSSUtils.formatInternal(issuingTime)) + ", signedBy="
+		return "CRLToken[" + (productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)) + ", signedBy="
 				+ (issuerToken == null ? "?" : issuerToken.getDSSIdAsString()) + "]";
 	}
 
@@ -197,6 +176,7 @@ public class CRLToken extends RevocationToken {
 	 *
 	 * @return the thisUpdate date from the CRL.
 	 */
+	@Override
 	public Date getThisUpdate() {
 		return crlValidity.getX509CRL().getThisUpdate();
 	}
@@ -210,9 +190,8 @@ public class CRLToken extends RevocationToken {
 			out.append(indentStr).append("CRLToken[\n");
 			indentStr += "\t";
 			out.append(indentStr).append("Version: ").append(crlValidity.getX509CRL().getVersion()).append('\n');
-			out.append(indentStr).append("Issuing time: ").append(issuingTime == null ? "?" : DSSUtils.formatInternal(issuingTime)).append('\n');
-			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm)
-			.append('\n');
+			out.append(indentStr).append("Production time: ").append(productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)).append('\n');
+			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 			out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
 			if (issuerToken != null) {
 				out.append(indentStr).append("Issuer's certificate: ").append(issuerToken.getDSSIdAsString()).append('\n');

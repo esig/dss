@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Signature-P-IT_STAMP-1.pdf</DocumentName>
+    <Signature Id="id-0a3d7678f962b64e24af1ea3410ee1a25e87cc4f861179aabd393cf288c70419">
+        <DateTime>2016-04-25T08:09:51</DateTime>
+        <SignatureFormat>PDF_NOT_ETSI</SignatureFormat>
+        <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <ReferenceDataFound>true</ReferenceDataFound>
+            <ReferenceDataIntact>true</ReferenceDataIntact>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+        </BasicSignature>
+        <SigningCertificate Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
+            <AttributePresent>false</AttributePresent>
+            <DigestValuePresent>false</DigestValuePresent>
+            <DigestValueMatch>false</DigestValueMatch>
+            <IssuerSerialMatch>false</IssuerSerialMatch>
+        </SigningCertificate>
+        <CertificateChain>
+            <ChainCertificate Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
+                <Source>SIGNATURE</Source>
+            </ChainCertificate>
+            <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                <Source>TRUSTED_LIST</Source>
+            </ChainCertificate>
+        </CertificateChain>
+        <ContentType>application/pdf</ContentType>
+        <SignatureScopes>
+            <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+        </SignatureScopes>
+    </Signature>
+    <UsedCertificates>
+        <Certificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
+            <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit ocsp validation,street=2 p. volov str.</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=BG,ST=B:831641791,L=Sofia,O=Information Services Plc.,CN=StampIT OCSP Validation,STREET=2 P. Volov Str.</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit qualified ca,street=2 p. volov str.</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=BG,ST=B:831641791,L=Sofia,O=Information Services Plc.,CN=StampIT Qualified CA,STREET=2 P. Volov Str.</IssuerDistinguishedName>
+            <SerialNumber>8763859607169005349</SerialNumber>
+            <CommonName>StampIT OCSP Validation</CommonName>
+            <CountryName>BG</CountryName>
+            <OrganizationName>Information Services Plc.</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>4F7bCO3UoPsM68QP52konFLaxi4=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2020-11-10T16:49:08</NotAfter>
+            <NotBefore>2011-02-17T10:41:07</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
+            <CertificateChain>
+                <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>1.3.6.1.4.1.11290.1.1.3</oid>
+            </CertificatePolicyIds>
+            <TrustedServiceProvider>
+                <TSPName>Information Services Plc.</TSPName>
+                <TSPServiceName>StampIT Qualified CA</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+                <ServiceStatus>
+                    <StatusService>
+                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                        <StartDate>2010-11-10T23:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Revocation Id="6FA33A27510825642B995F3A377396F43DE6C34204EA08EBD080D6AE935F6E91">
+                <Origin>EXTERNAL</Origin>
+                <Source>OCSPToken</Source>
+                <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
+                <Available>true</Available>
+                <Status>true</Status>
+                <ProductionDate>2016-05-04T16:20:02</ProductionDate>
+                <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
+                <DigestAlgAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>sfiKRUyRBkwxh0BNXiC6681QVus=</DigestValue>
+                </DigestAlgAndValue>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
+                <CertificateChain>
+                    <ChainCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
+                        <Source>OCSP_RESPONSE</Source>
+                    </ChainCertificate>
+                    <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+            </Revocation>
+            <Info>
+                <Message Id="0">No CRL info found !</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+            <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit qualified ca,street=2 p. volov str.</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=BG,ST=B:831641791,L=Sofia,O=Information Services Plc.,CN=StampIT Qualified CA,STREET=2 P. Volov Str.</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit primary root ca,street=2 p. volov str.</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=BG,ST=B:831641791,L=Sofia,O=Information Services Plc.,CN=StampIT Primary Root CA,STREET=2 P. Volov Str.</IssuerDistinguishedName>
+            <SerialNumber>3484907515277322923</SerialNumber>
+            <CommonName>StampIT Qualified CA</CommonName>
+            <CountryName>BG</CountryName>
+            <OrganizationName>Information Services Plc.</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>WWHsRoGqE5OpLRI6fW4j7D4API4=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2020-11-10T16:49:08</NotAfter>
+            <NotBefore>2010-11-11T16:49:08</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>crlSign</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>1.3.6.1.4.1.11290.1.1.1</oid>
+            </CertificatePolicyIds>
+            <TrustedServiceProvider>
+                <TSPName>Information Services Plc.</TSPName>
+                <TSPServiceName>StampIT Qualified CA</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+                <ServiceStatus>
+                    <StatusService>
+                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                        <StartDate>2010-11-10T23:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+        </Certificate>
+        <Certificate Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
+            <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791\,egn:7408013104,l=sofia,o=information services plc.,cn=E T K,1.2.840.113549.1.9.1=#161b656c696e2e6b6f6c6576406d61696c2e7374616d7069742e6f7267</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=BG,ST=B:831641791\,EGN:7408013104,L=Sofia,O=Information Services Plc.,CN=E T K,1.2.840.113549.1.9.1=#161b656c696e2e6b6f6c6576406d61696c2e7374616d7069742e6f7267</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit qualified ca,street=2 p. volov str.</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=BG,ST=B:831641791,L=Sofia,O=Information Services Plc.,CN=StampIT Qualified CA,STREET=2 P. Volov Str.</IssuerDistinguishedName>
+            <SerialNumber>9077740452086386543</SerialNumber>
+            <CommonName>E T K</CommonName>
+            <CountryName>BG</CountryName>
+            <OrganizationName>Information Services Plc.</OrganizationName>
+            <DigestAlgAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>Hccszp4wQjYaiWt16FH/DFAXLMQ=</DigestValue>
+            </DigestAlgAndValue>
+            <NotAfter>2016-12-18T12:47:38</NotAfter>
+            <NotBefore>2015-12-19T12:47:38</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+                <KeyUsage>dataEncipherment</KeyUsage>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyEncipherment</KeyUsage>
+            </KeyUsageBits>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
+            <CertificateChain>
+                <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainCertificate>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>1.3.6.1.4.1.11290.1.1.1.1</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds>
+                <oid>1.3.6.1.5.5.7.11.1</oid>
+                <oid>0.4.0.1862.1.1</oid>
+                <oid>0.4.0.1862.1.4</oid>
+            </QCStatementIds>
+            <TrustedServiceProvider>
+                <TSPName>Information Services Plc.</TSPName>
+                <TSPServiceName>StampIT Qualified CA</TSPServiceName>
+                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
+                <ServiceStatus>
+                    <StatusService>
+                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                        <StartDate>2010-11-10T23:00:00</StartDate>
+                    </StatusService>
+                </ServiceStatus>
+                <WellSigned>true</WellSigned>
+            </TrustedServiceProvider>
+            <Revocation Id="47DB90134AA46D1F36475B286BECB476FE6CED6AE5D74E39D4C623AF8FC9F499">
+                <Origin>EXTERNAL</Origin>
+                <Source>OCSPToken</Source>
+                <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
+                <Available>true</Available>
+                <Status>true</Status>
+                <ProductionDate>2016-05-04T16:20:02</ProductionDate>
+                <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
+                <DigestAlgAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>X5xkac/hEkeb3Yne7gkc4Pl/G5Q=</DigestValue>
+                </DigestAlgAndValue>
+                <BasicSignature>
+                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                    <ReferenceDataFound>true</ReferenceDataFound>
+                    <ReferenceDataIntact>true</ReferenceDataIntact>
+                    <SignatureIntact>true</SignatureIntact>
+                    <SignatureValid>true</SignatureValid>
+                </BasicSignature>
+                <SigningCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
+                <CertificateChain>
+                    <ChainCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
+                        <Source>OCSP_RESPONSE</Source>
+                    </ChainCertificate>
+                    <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                        <Source>TRUSTED_LIST</Source>
+                    </ChainCertificate>
+                </CertificateChain>
+            </Revocation>
+            <Info>
+                <Message Id="0">No CRL info found !</Message>
+            </Info>
+        </Certificate>
+    </UsedCertificates>
+</DiagnosticData>
