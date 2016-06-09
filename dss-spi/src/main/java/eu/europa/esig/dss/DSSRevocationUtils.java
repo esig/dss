@@ -157,9 +157,6 @@ public final class DSSRevocationUtils {
 	public static String getRevocationReason(final X509CRLEntry crlEntry) {
 		final String reasonId = Extension.reasonCode.getId();
 		final byte[] extensionBytes = crlEntry.getExtensionValue(reasonId);
-		if(extensionBytes==null) {
-			return null;
-		}
 
 		if (ArrayUtils.isEmpty(extensionBytes)) {
 			logger.warn("Empty reasonCode extension for crl entry");
