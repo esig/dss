@@ -104,7 +104,7 @@ public class CRLValidity {
 	 *
 	 * @return {@code true} if the CRL is valid {@code false} otherwise.
 	 */
-	boolean isValid() {
+	public boolean isValid() {
 
 		return issuerX509PrincipalMatches && signatureIntact && crlSignKeyUsage && !unknownCriticalExtension;
 	}
