@@ -461,7 +461,12 @@ public final class DSSUtils {
 	 */
 	public static CertificateToken loadCertificate(final InputStream inputStream) throws DSSException {
 		try {
+			// Note: even though according to the javadoc the following method call throws CertificateException on parsing errors,
+			//       it is not (always?) the case for the BouncyCastle provider.
 			final X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+			if (cert == null) {
+				throw new DSSException("Could not parse certificate");
+			}
 			return new CertificateToken(cert);
 		} catch (CertificateException e) {
 			throw new DSSException(e);
