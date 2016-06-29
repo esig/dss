@@ -369,9 +369,12 @@ public final class DSSASN1Utils {
 	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
 		try {
 			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
-			ASN1Primitive extension = X509ExtensionUtil.fromExtensionValue(sKI);
-			SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
-			return skiBC.getKeyIdentifier();
+			if (ArrayUtils.isNotEmpty(sKI)) {
+				ASN1Primitive extension = X509ExtensionUtil.fromExtensionValue(sKI);
+				SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
+				return skiBC.getKeyIdentifier();
+			}
+			return ArrayUtils.EMPTY_BYTE_ARRAY;
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
