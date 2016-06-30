@@ -51,10 +51,12 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERBMPString;
+import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERPrintableString;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERT61String;
 import org.bouncycastle.asn1.DERT61UTF8String;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -359,22 +361,42 @@ public final class DSSASN1Utils {
 	}
 
 	/**
+	 * This method returns SKI bytes from the certificate extension.
+	 *
+	 * @param certificateToken
+	 *            {@code CertificateToken}
+	 * @return ski bytes from the given certificate or null if missing
+	 * @throws DSSException
+	 */
+	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
+		return getSki(certificateToken, false);
+	}
+
+	/**
 	 * This method returns SKI bytes from certificate.
 	 *
 	 * @param certificateToken
 	 *            {@code CertificateToken}
+	 * @param computeIfMissing
+	 *            if the extension is missing and computeIfMissing = true, it will compute the SKI value from the Public
+	 *            Key
 	 * @return ski bytes from the given certificate
 	 * @throws DSSException
 	 */
-	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
+	public static byte[] getSki(final CertificateToken certificateToken, boolean computeIfMissing) throws DSSException {
 		try {
 			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
 			if (ArrayUtils.isNotEmpty(sKI)) {
 				ASN1Primitive extension = X509ExtensionUtil.fromExtensionValue(sKI);
 				SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
 				return skiBC.getKeyIdentifier();
+			} else if (computeIfMissing) {
+				// If extension not present, we compute it from the certificate public key
+				DLSequence seq = (DLSequence) DERSequence.fromByteArray(certificateToken.getPublicKey().getEncoded());
+				DERBitString item = (DERBitString) seq.getObjectAt(1);
+				return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
 			}
-			return ArrayUtils.EMPTY_BYTE_ARRAY;
+			return null;
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
