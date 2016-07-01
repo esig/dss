@@ -25,6 +25,8 @@
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
+				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
+				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id>
 			</TrustedServiceStatus>
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
@@ -158,6 +160,8 @@
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
+				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
+				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id>
 			</TrustedServiceStatus>
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
@@ -258,6 +262,8 @@
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
+				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
+				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id>
 			</TrustedServiceStatus>
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
