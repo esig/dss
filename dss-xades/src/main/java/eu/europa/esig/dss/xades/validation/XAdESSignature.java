@@ -634,11 +634,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Element policyId = DSSXMLUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_ID);
 			if (policyId != null) {
 				// Explicit policy
-				String policyIdString = policyId.getTextContent();
-				// urn:oid:1.2.3 --> 1.2.3
-				if (policyIdString.indexOf(':') >= 0) {
-					policyIdString = policyIdString.substring(policyIdString.lastIndexOf(':') + 1);
-				}
+				final String policyIdString = policyId.getTextContent();
 				final SignaturePolicy signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DSSXMLUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
 				final String policyDigestMethodString = policyDigestMethod.getTextContent();
