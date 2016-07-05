@@ -23,9 +23,8 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 import java.security.PublicKey;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -163,7 +162,7 @@ public class CertificateValidity implements Serializable {
 	 */
 	public boolean isValid() {
 
-		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual()) || StringUtils.isNotEmpty(getSigned());
+		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual()) || Utils.isStringNotEmpty(getSigned());
 		return valid;
 	}
 

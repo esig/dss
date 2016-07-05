@@ -57,12 +57,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -72,6 +67,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.Token;
 
@@ -142,7 +138,7 @@ public final class DSSUtils {
 			final String stringDate = new SimpleDateFormat(DSSUtils.DEFAULT_DATE_TIME_FORMAT).format(date);
 			return stringDate;
 		}
-		return StringUtils.EMPTY;
+		return "";
 	}
 
 	/**
@@ -212,7 +208,7 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static String toHex(final byte[] value) {
-		return (value != null) ? new String(Hex.encodeHex(value, false)) : null;
+		return (value != null) ? Utils.toHex(value) : null;
 	}
 
 	/**
@@ -241,8 +237,8 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static byte[] base64StringToBase64Binary(final String base64String) {
-		final byte[] decodedBase64 = Base64.decodeBase64(base64String);
-		final byte[] encodeBase64 = Base64.encodeBase64(decodedBase64);
+		final byte[] decodedBase64 = Utils.fromBase64(base64String);
+		final byte[] encodeBase64 = Utils.toBase64Binary(decodedBase64);
 		return encodeBase64;
 	}
 
@@ -324,7 +320,7 @@ public final class DSSUtils {
 	 */
 	public static String convertToPEM(final CertificateToken cert) throws DSSException {
 		final byte[] derCert = cert.getEncoded();
-		String pemCertPre = Base64.encodeBase64String(derCert);
+		String pemCertPre = Utils.toBase64(derCert);
 		final String pemCert = CERT_BEGIN + NEW_LINE + pemCertPre + NEW_LINE + CERT_END;
 		return pemCert;
 	}
@@ -338,7 +334,7 @@ public final class DSSUtils {
 	public static String convertCrlToPEM(final X509CRL crl) throws DSSException {
 		try {
 			final byte[] derCrl = crl.getEncoded();
-			String pemCrlPre = Base64.encodeBase64String(derCrl);
+			String pemCrlPre = Utils.toBase64(derCrl);
 			final String pemCrl = CRL_BEGIN + NEW_LINE + pemCrlPre + NEW_LINE + CRL_END;
 			return pemCrl;
 		} catch (CRLException e) {
@@ -395,7 +391,7 @@ public final class DSSUtils {
 		String base64 = pemCert.replace(CERT_BEGIN, "");
 		base64 = base64.replace(CERT_END, "");
 		base64 = base64.replaceAll("\\s", "");
-		return Base64.decodeBase64(base64);
+		return Utils.fromBase64(base64);
 	}
 
 	/**
@@ -409,7 +405,7 @@ public final class DSSUtils {
 		String base64 = pemCRL.replace(CRL_BEGIN, "");
 		base64 = base64.replace(CRL_END, "");
 		base64 = base64.replaceAll("\\s", "");
-		return Base64.decodeBase64(base64);
+		return Utils.fromBase64(base64);
 	}
 
 	/**
@@ -496,7 +492,7 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static CertificateToken loadCertificateFromBase64EncodedString(final String base64Encoded) {
-		final byte[] bytes = Base64.decodeBase64(base64Encoded);
+		final byte[] bytes = Utils.fromBase64(base64Encoded);
 		return loadCertificate(bytes);
 	}
 
@@ -516,7 +512,7 @@ public final class DSSUtils {
 	 */
 	public static CertificateToken loadIssuerCertificate(final CertificateToken cert, final DataLoader loader) {
 		List<String> urls = DSSASN1Utils.getAccessLocations(cert);
-		if (CollectionUtils.isEmpty(urls)) {
+		if (Utils.isCollectionEmpty(urls)) {
 			logger.info("There is no AIA extension for certificate download.");
 			return null;
 		}
@@ -530,9 +526,9 @@ public final class DSSUtils {
 			logger.debug("Loading certificate from {}", url);
 
 			byte[] bytes = loader.get(url);
-			if (ArrayUtils.isNotEmpty(bytes)) {
+			if (Utils.isArrayNotEmpty(bytes)) {
 				try {
-					logger.debug("Certificate : " + Base64.encodeBase64String(bytes));
+					logger.debug("Certificate : " + Utils.toBase64(bytes));
 
 					CertificateToken issuerCert = loadCertificate(bytes);
 					if (issuerCert != null) {
@@ -561,7 +557,7 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static X509CRL loadCRLBase64Encoded(final String base64Encoded) {
-		final byte[] derEncoded = Base64.decodeBase64(base64Encoded);
+		final byte[] derEncoded = Utils.fromBase64(base64Encoded);
 		final X509CRL crl = loadCRL(new ByteArrayInputStream(derEncoded));
 		return crl;
 	}
@@ -602,7 +598,7 @@ public final class DSSUtils {
 	 */
 	public static String getSHA1Digest(final String stringToDigest) {
 		final byte[] digest = getMessageDigest(DigestAlgorithm.SHA1).digest(stringToDigest.getBytes());
-		return Hex.encodeHexString(digest);
+		return Utils.toHex(digest);
 	}
 
 	/**
@@ -615,7 +611,7 @@ public final class DSSUtils {
 	public static String getSHA1Digest(final InputStream inputStream) throws IOException {
 		final byte[] bytes = IOUtils.toByteArray(inputStream);
 		final byte[] digest = getMessageDigest(DigestAlgorithm.SHA1).digest(bytes);
-		return Hex.encodeHexString(digest);
+		return Utils.toHex(digest);
 	}
 
 	/**
@@ -653,7 +649,7 @@ public final class DSSUtils {
 	 */
 	public static String digest(DigestAlgorithm digestAlgoritm, Token token) {
 		byte[] digest = digest(digestAlgoritm, token.getEncoded());
-		return Base64.encodeBase64String(digest);
+		return Utils.toBase64(digest);
 	}
 
 	/**
@@ -1081,7 +1077,7 @@ public final class DSSUtils {
 	public static String getMD5Digest(ByteArrayOutputStream baos) {
 		try {
 			byte[] digestValue = digest(DigestAlgorithm.MD5, baos.toByteArray());
-			return Hex.encodeHexString(digestValue);
+			return Utils.toHex(digestValue);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
@@ -1443,7 +1439,7 @@ public final class DSSUtils {
 		StringBuffer finalName = new StringBuffer();
 		String originalName = originalFile.getName();
 
-		if (StringUtils.isNotEmpty(originalName)) {
+		if (Utils.isStringNotEmpty(originalName)) {
 			int dotPosition = originalName.lastIndexOf('.');
 			if (dotPosition > 0) {
 				// remove extension
@@ -1461,7 +1457,7 @@ public final class DSSUtils {
 			finalName.append("-extended-");
 		}
 
-		finalName.append(StringUtils.lowerCase(level.name().replaceAll("_", "-")));
+		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
 		finalName.append('.');
 
 		SignatureForm signatureForm = level.getSignatureForm();

@@ -2,8 +2,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 /**
@@ -34,7 +33,7 @@ public class QCStatementPolicyIdentifiers {
 
 	private static boolean hasQCStatementOID(CertificateWrapper certificate, String... oids) {
 		List<String> qcStatementIds = certificate.getQCStatementIds();
-		if (CollectionUtils.isNotEmpty(qcStatementIds)) {
+		if (Utils.isCollectionNotEmpty(qcStatementIds)) {
 			for (String oid : oids) {
 				if (qcStatementIds.contains(oid)) {
 					return true;

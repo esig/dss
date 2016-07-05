@@ -24,7 +24,6 @@ import java.security.cert.X509CRL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
@@ -44,6 +43,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
@@ -132,7 +132,7 @@ public class OnlineCRLSource implements CRLSource {
 		}
 		final List<String> crlUrls = getCrlUrl(certificateToken);
 		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrls);
-		if (CollectionUtils.isEmpty(crlUrls)) {
+		if (Utils.isCollectionEmpty(crlUrls)) {
 			return null;
 		}
 		final DataLoader.DataAndUrl dataAndUrl = downloadCrl(crlUrls);
@@ -162,7 +162,7 @@ public class OnlineCRLSource implements CRLSource {
 	 */
 	private DataLoader.DataAndUrl downloadCrl(final List<String> downloadUrls) {
 
-		if (CollectionUtils.isEmpty(downloadUrls)) {
+		if (Utils.isCollectionEmpty(downloadUrls)) {
 			return null;
 		}
 		try {

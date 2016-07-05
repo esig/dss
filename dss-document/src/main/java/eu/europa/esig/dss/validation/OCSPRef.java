@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
-import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
@@ -34,6 +33,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Reference an OCSPResponse
@@ -93,8 +93,8 @@ public class OCSPRef {
 			}
 			byte[] computedValue = digest.digest();
 			if (LOG.isInfoEnabled()) {
-				LOG.info("Compare " + Hex.encodeHexString(digestValue) + " to computed value " + Hex.encodeHexString(computedValue) + " of " +
-						"BasicOCSPResp produced at " + ocspResp.getProducedAt());
+				LOG.info("Compare " + Utils.toHex(digestValue) + " to computed value " + Utils.toHex(computedValue) + " of " + "BasicOCSPResp produced at "
+						+ ocspResp.getProducedAt());
 			}
 			return Arrays.equals(digestValue, computedValue);
 		} catch (IOException e) {

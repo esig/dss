@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.web.controller;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.europa.esig.dss.tsl.service.TSLRepository;
+import eu.europa.esig.dss.utils.Utils;
 
 @Controller
 @RequestMapping(value = "/tsl-info")
@@ -25,7 +25,7 @@ public class TrustedListController {
 
 	@RequestMapping(value = "/{country:[a-z][a-z]}", method = RequestMethod.GET)
 	public String getByCountry(@PathVariable String country, Model model) {
-		String countryUppercase = StringUtils.upperCase(country);
+		String countryUppercase = Utils.upperCase(country);
 		model.addAttribute("country", countryUppercase);
 		model.addAttribute("countries", tslRepository.getAllMapTSLValidationModels().keySet());
 		model.addAttribute("model", tslRepository.getByCountry(countryUppercase));

@@ -1,8 +1,7 @@
 package eu.europa.esig.dss.validation.process.bbb.isc.checks;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -27,7 +26,7 @@ public class SigningCertificateRecognitionCheck extends ChainItem<XmlISC> {
 	protected boolean process() {
 		String signingCertificateId = token.getSigningCertificateId();
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
-		if (StringUtils.equals(signingCertificateId, certificate.getId())) {
+		if (Utils.areStringsEqual(signingCertificateId, certificate.getId())) {
 			return true;
 		} else {
 			return false;

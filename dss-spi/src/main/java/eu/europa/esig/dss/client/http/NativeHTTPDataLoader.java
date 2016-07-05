@@ -28,13 +28,12 @@ import java.net.URLConnection;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSCannotFetchDataException;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSCannotFetchDataException.MSG;
+import eu.europa.esig.dss.DSSException;
 
 /**
  * Implementation of HTTPDataLoader that use the java.net.URL class.
@@ -156,7 +155,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
-		throw new NotImplementedException();
+		throw new DSSException("Not implemented");
 	}
 
 }

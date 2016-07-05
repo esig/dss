@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,10 +29,10 @@ import java.util.Set;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.SignatureScopeFinder;
@@ -59,7 +58,6 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 		transformationToIgnore.add("http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments");
 		transformationToIgnore.add("http://www.w3.org/2006/12/xml-c14n11#WithComments");
 		transformationToIgnore.add("http://www.w3.org/2001/10/xml-exc-c14n#WithComments");
-
 
 		// those transformations change the document and must be reported
 		presentableTransformationNames.put("http://www.w3.org/2002/06/xmldsig-filter2", "XPath filtering");
@@ -89,7 +87,7 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 			}
 			final String uri = DSSXMLUtils.getValue(signatureReference, "@URI");
 			final List<String> transformations = getTransformationNames(signatureReference);
-			if (StringUtils.isBlank(uri)) {
+			if (Utils.isStringBlank(uri)) {
 				// self contained document
 				result.add(new XmlRootSignatureScope(transformations));
 			} else if (uri.startsWith("#")) {
@@ -111,8 +109,8 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
 					}
 				} else {
-					signedElement = DSSXMLUtils
-							.getElement(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(), "//*" + "[@Id='" + xmlIdOfSignedElement + "']");
+					signedElement = DSSXMLUtils.getElement(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
+							"//*" + "[@Id='" + xmlIdOfSignedElement + "']");
 					if (signedElement != null) {
 
 						final String namespaceURI = signedElement.getNamespaceURI();

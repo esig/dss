@@ -3,9 +3,8 @@ package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 import java.util.Date;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -25,7 +24,7 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 
 	@Override
 	protected boolean process() {
-		if (CollectionUtils.size(timestamps) <= 1) {
+		if (Utils.collectionSize(timestamps) <= 1) {
 			return true;
 		}
 

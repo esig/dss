@@ -3,7 +3,6 @@ package eu.europa.esig.dss.validation.process;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +11,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -150,7 +150,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		conclusion.setSubIndication(getFailedSubIndicationForConclusion());
 
 		List<XmlName> previousErrors = getPreviousErrors();
-		if (CollectionUtils.isNotEmpty(previousErrors)) {
+		if (Utils.isCollectionNotEmpty(previousErrors)) {
 			conclusion.getErrors().addAll(previousErrors);
 		}
 

@@ -40,7 +40,6 @@ import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -87,6 +86,7 @@ import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -386,7 +386,7 @@ public final class DSSASN1Utils {
 	public static byte[] getSki(final CertificateToken certificateToken, boolean computeIfMissing) throws DSSException {
 		try {
 			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
-			if (ArrayUtils.isNotEmpty(sKI)) {
+			if (Utils.isArrayNotEmpty(sKI)) {
 				ASN1Primitive extension = X509ExtensionUtil.fromExtensionValue(sKI);
 				SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
 				return skiBC.getKeyIdentifier();
@@ -628,7 +628,7 @@ public final class DSSASN1Utils {
 		Set<String> nonCriticalExtensionOIDs = x509crl.getNonCriticalExtensionOIDs();
 		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(OID.id_ce_expiredCertsOnCRL.getId())) {
 			byte[] extensionValue = x509crl.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
-			if (ArrayUtils.isNotEmpty(extensionValue)) {
+			if (Utils.isArrayNotEmpty(extensionValue)) {
 				try {
 					ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(extensionValue);
 					ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());

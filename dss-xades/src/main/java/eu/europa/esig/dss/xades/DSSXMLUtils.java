@@ -62,7 +62,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
@@ -85,6 +84,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.ResourceLoader;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Utility class that contains some XML related method.
@@ -722,7 +722,7 @@ public final class DSSXMLUtils {
 			final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			final Transformer transformer = transformerFactory.newTransformer();
 			final String xmlEncoding = documentDom.getXmlEncoding();
-			if (StringUtils.isNotBlank(xmlEncoding)) {
+			if (Utils.isStringNotBlank(xmlEncoding)) {
 				transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
 			}
 			final DOMSource source = new DOMSource(documentDom);
@@ -837,7 +837,7 @@ public final class DSSXMLUtils {
 			}
 			final Validator validator = schema.newValidator();
 			validator.validate(streamSource);
-			return StringUtils.EMPTY;
+			return Utils.EMPTY_STRING;
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();

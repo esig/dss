@@ -4,13 +4,11 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatusType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.Context;
@@ -47,9 +45,9 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 		List<XmlTrustedServiceProviderType> tspList = certificate.getCertificateTSPService();
 		for (XmlTrustedServiceProviderType trustedServiceProvider : tspList) {
 			XmlServiceStatus serviceStatus = trustedServiceProvider.getServiceStatus();
-			if (serviceStatus != null && CollectionUtils.isNotEmpty(serviceStatus.getStatusService())) {
+			if (serviceStatus != null && Utils.isCollectionNotEmpty(serviceStatus.getStatusService())) {
 				for (XmlServiceStatusType status : serviceStatus.getStatusService()) {
-					serviceTypeStr = StringUtils.trim(trustedServiceProvider.getTSPServiceType());
+					serviceTypeStr = Utils.trim(trustedServiceProvider.getTSPServiceType());
 					if (processValueCheck(serviceTypeStr)) {
 						Date statusStartDate = status.getStartDate();
 						Date statusEndDate = status.getEndDate();
@@ -67,7 +65,7 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 
 	@Override
 	protected String getAdditionalInfo() {
-		if (StringUtils.isNotEmpty(serviceTypeStr)) {
+		if (Utils.isStringNotEmpty(serviceTypeStr)) {
 			Object[] params = new Object[] { serviceTypeStr };
 			return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_TYPE, params);
 		}

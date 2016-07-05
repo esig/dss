@@ -1,8 +1,7 @@
 package eu.europa.esig.dss.validation.process.bbb.vci.checks;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -25,11 +24,11 @@ public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem
 	@Override
 	protected boolean process() {
 		String policyId = signature.getPolicyId();
-		if (multiValues.getId().contains(SignaturePolicy.NO_POLICY) && StringUtils.isEmpty(policyId)) {
+		if (multiValues.getId().contains(SignaturePolicy.NO_POLICY) && Utils.isStringEmpty(policyId)) {
 			return true;
-		} else if (multiValues.getId().contains(SignaturePolicy.ANY_POLICY) && StringUtils.isNotEmpty(policyId)) {
+		} else if (multiValues.getId().contains(SignaturePolicy.ANY_POLICY) && Utils.isStringNotEmpty(policyId)) {
 			return true;
-		} else if (multiValues.getId().contains(SignaturePolicy.IMPLICIT_POLICY) && StringUtils.equals(SignaturePolicy.IMPLICIT_POLICY, policyId)) {
+		} else if (multiValues.getId().contains(SignaturePolicy.IMPLICIT_POLICY) && Utils.areStringsEqual(SignaturePolicy.IMPLICIT_POLICY, policyId)) {
 			return true;
 		}
 		// oids

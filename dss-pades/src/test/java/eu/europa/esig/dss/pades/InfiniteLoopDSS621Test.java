@@ -38,10 +38,7 @@ import java.util.List;
 
 import javax.crypto.Cipher;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -73,6 +70,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
@@ -109,8 +107,8 @@ public class InfiniteLoopDSS621Test {
 			assertFalse(cryptographicVerification.isReferenceDataIntact());
 			assertFalse(cryptographicVerification.isSignatureIntact());
 			assertFalse(cryptographicVerification.isSignatureValid());
-			assertTrue(StringUtils.isEmpty(cryptographicVerification.getErrorMessage()));
-			assertTrue(CollectionUtils.isNotEmpty(signature.getSignatureTimestamps()));
+			assertTrue(Utils.isStringEmpty(cryptographicVerification.getErrorMessage()));
+			assertTrue(Utils.isCollectionNotEmpty(signature.getSignatureTimestamps()));
 		}
 	}
 
@@ -185,11 +183,11 @@ public class InfiniteLoopDSS621Test {
 				assertNotNull(attributeDigest);
 
 				ASN1OctetString asn1ObjString = ASN1OctetString.getInstance(attributeDigest.getAttrValues().getObjectAt(0));
-				String embeddedDigest = Base64.encodeBase64String(asn1ObjString.getOctets());
+				String embeddedDigest = Utils.toBase64(asn1ObjString.getOctets());
 				logger.info("MESSAGE DIGEST : " + embeddedDigest);
 
 				byte[] digestSignedContent = DSSUtils.digest(digestAlgorithm, signedContent);
-				String computedDigestSignedContentEncodeBase64 = Base64.encodeBase64String(digestSignedContent);
+				String computedDigestSignedContentEncodeBase64 = Utils.toBase64(digestSignedContent);
 				logger.info("COMPUTED DIGEST SIGNED CONTENT BASE64 : " + computedDigestSignedContentEncodeBase64);
 				assertEquals(embeddedDigest, computedDigestSignedContentEncodeBase64);
 
@@ -229,12 +227,12 @@ public class InfiniteLoopDSS621Test {
 				DigestInfo digestInfo = new DigestInfo(seqDecrypt);
 				assertEquals(oidDigestAlgo, digestInfo.getAlgorithmId().getAlgorithm());
 
-				String decryptedDigestEncodeBase64 = Base64.encodeBase64String(digestInfo.getDigest());
+				String decryptedDigestEncodeBase64 = Utils.toBase64(digestInfo.getDigest());
 				logger.info("DECRYPTED BASE64 : " + decryptedDigestEncodeBase64);
 
 				byte[] encoded = authenticatedAttributeSet.getEncoded();
 				byte[] digest = DSSUtils.digest(digestAlgorithm, encoded);
-				String computedDigestFromSignatureEncodeBase64 = Base64.encodeBase64String(digest);
+				String computedDigestFromSignatureEncodeBase64 = Utils.toBase64(digest);
 				logger.info("COMPUTED DIGEST FROM SIGNATURE BASE64 : " + computedDigestFromSignatureEncodeBase64);
 
 				assertEquals(decryptedDigestEncodeBase64, computedDigestFromSignatureEncodeBase64);

@@ -11,12 +11,11 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
@@ -70,12 +69,12 @@ public class CreateKeyStoreApp {
 		System.out.println(europanCert.getSubjectShortName());
 		System.out.println("SHA256 digest (Hex) : " + getPrintableHex(digestSHA256));
 		System.out.println("SHA1 digest (Hex) : " + getPrintableHex(digestSHA1));
-		System.out.println("SHA256 digest (Base64) : " + Base64.encodeBase64String(digestSHA256));
-		System.out.println("SHA1 digest (Base64) : " + Base64.encodeBase64String(digestSHA1));
+		System.out.println("SHA256 digest (Base64) : " + Utils.toBase64(digestSHA256));
+		System.out.println("SHA1 digest (Base64) : " + Utils.toBase64(digestSHA1));
 	}
 
 	private static String getPrintableHex(byte[] digest) {
-		String hexString = Hex.encodeHexString(digest);
+		String hexString = Utils.toHex(digest);
 		// Add space every two characters
 		return hexString.replaceAll("..", "$0 ");
 	}

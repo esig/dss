@@ -33,8 +33,6 @@ import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +46,7 @@ import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
@@ -111,7 +110,7 @@ public class TSLValidationJob {
 		logger.info("Initialization of the TSL repository ...");
 		int loadedTSL = 0;
 		List<File> cachedFiles = repository.getStoredFiles();
-		if (CollectionUtils.isNotEmpty(cachedFiles)) {
+		if (Utils.isCollectionNotEmpty(cachedFiles)) {
 			List<Future<TSLParserResult>> futureParseResults = new ArrayList<Future<TSLParserResult>>();
 			for (File file : cachedFiles) {
 				try {
@@ -217,7 +216,7 @@ public class TSLValidationJob {
 	private void analyzeCountryPointers(List<TSLPointer> pointers) {
 		List<Future<TSLLoaderResult>> futureLoaderResults = new ArrayList<Future<TSLLoaderResult>>();
 		for (TSLPointer tslPointer : pointers) {
-			if (CollectionUtils.isEmpty(filterTerritories) || filterTerritories.contains(tslPointer.getTerritory())) {
+			if (Utils.isCollectionEmpty(filterTerritories) || filterTerritories.contains(tslPointer.getTerritory())) {
 				TSLLoader tslLoader = new TSLLoader(dataLoader, tslPointer.getTerritory(), tslPointer.getUrl());
 				futureLoaderResults.add(executorService.submit(tslLoader));
 			}
@@ -281,13 +280,13 @@ public class TSLValidationJob {
 	private void loadMissingCertificates(TSLParserResult tslParserResult) {
 		if ("ES".equals(tslParserResult.getTerritory())) {
 			List<TSLServiceProvider> serviceProviders = tslParserResult.getServiceProviders();
-			if (CollectionUtils.isNotEmpty(serviceProviders)) {
+			if (Utils.isCollectionNotEmpty(serviceProviders)) {
 				for (TSLServiceProvider tslServiceProvider : serviceProviders) {
 					List<TSLService> services = tslServiceProvider.getServices();
-					if (CollectionUtils.isNotEmpty(services)) {
+					if (Utils.isCollectionNotEmpty(services)) {
 						for (TSLService tslService : services) {
 							List<String> certificateUrls = tslService.getCertificateUrls();
-							if (CollectionUtils.isNotEmpty(certificateUrls)) {
+							if (Utils.isCollectionNotEmpty(certificateUrls)) {
 								for (String url : certificateUrls) {
 									try {
 										byte[] byteArray = dataLoader.get(url);
@@ -308,9 +307,9 @@ public class TSLValidationJob {
 	}
 
 	private List<CertificateToken> getPotentialSigners(List<TSLPointer> pointers, String countryCode) {
-		if (CollectionUtils.isNotEmpty(pointers)) {
+		if (Utils.isCollectionNotEmpty(pointers)) {
 			for (TSLPointer tslPointer : pointers) {
-				if (StringUtils.equals(countryCode, tslPointer.getTerritory())) {
+				if (Utils.areStringsEqual(countryCode, tslPointer.getTerritory())) {
 					return tslPointer.getPotentialSigners();
 				}
 			}

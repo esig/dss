@@ -24,13 +24,13 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -127,12 +127,12 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 
 	private CommonTrustedCertificateSource buildTrustedCertificateSource(KeyStoreCertificateSource dssKeyStore, List<CertificateToken> potentialSigners) {
 		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
-		if (CollectionUtils.isNotEmpty(potentialSigners)) {
+		if (Utils.isCollectionNotEmpty(potentialSigners)) {
 			for (CertificateToken potentialSigner : potentialSigners) {
 				commonTrustedCertificateSource.addCertificate(potentialSigner);
 			}
 		}
-		if ((dssKeyStore != null) && CollectionUtils.isNotEmpty(dssKeyStore.getCertificatesFromKeyStore())) {
+		if ((dssKeyStore != null) && Utils.isCollectionNotEmpty(dssKeyStore.getCertificatesFromKeyStore())) {
 			List<CertificateToken> trustedCertificatesFromKeyStore = dssKeyStore.getCertificatesFromKeyStore();
 			for (CertificateToken certificateToken : trustedCertificatesFromKeyStore) {
 				commonTrustedCertificateSource.addCertificate(certificateToken);

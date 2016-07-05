@@ -2,9 +2,8 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.policy.ServiceQualification;
@@ -36,7 +35,7 @@ public class CertificateIssuedToLegalPersonCheck extends ChainItem<XmlSubXCV> {
 
 		boolean certPolicy = false;
 		List<String> policyIds = certificate.getPolicyIds();
-		if (CollectionUtils.isNotEmpty(policyIds)) {
+		if (Utils.isCollectionNotEmpty(policyIds)) {
 			if (policyIds.contains(CertificatePolicyIdentifiers.QCP_LEGAL) || policyIds.contains(CertificatePolicyIdentifiers.QCP_LEGAL_QSCD)) {
 				certPolicy = true;
 			}

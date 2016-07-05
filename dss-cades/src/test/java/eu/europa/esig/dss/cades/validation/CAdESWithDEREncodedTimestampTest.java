@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -35,6 +34,7 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -59,7 +59,7 @@ public class CAdESWithDEREncodedTimestampTest {
 		assertNotNull(diagnosticData);
 
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
-		assertTrue(CollectionUtils.isEmpty(timestampIdList));
+		assertTrue(Utils.isCollectionEmpty(timestampIdList));
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class CAdESWithDEREncodedTimestampTest {
 		assertNotNull(diagnosticData);
 
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
-		assertTrue(CollectionUtils.isEmpty(timestampIdList));
+		assertTrue(Utils.isCollectionEmpty(timestampIdList));
 	}
 
 	@Test

@@ -26,8 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.CollectionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
@@ -37,6 +35,7 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -436,12 +435,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		OfflineOCSPSource ocspSource = getOCSPSource();
 		if (ocspSource != null) {
 			List<BasicOCSPResp> containedOCSPResponses = ocspSource.getContainedOCSPResponses();
-			if (CollectionUtils.isNotEmpty(containedOCSPResponses)) {
+			if (Utils.isCollectionNotEmpty(containedOCSPResponses)) {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 				for (BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
 					OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
 					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(ocspResp));
-					references.add(new TimestampReference(DigestAlgorithm.SHA1, Base64.encodeBase64String(digest), TimestampReferenceCategory.REVOCATION));
+					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
 				}
 			}
 		}
@@ -457,11 +456,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		OfflineCRLSource crlSource = getCRLSource();
 		if (crlSource != null) {
 			List<X509CRL> containedX509CRLs = crlSource.getContainedX509CRLs();
-			if (CollectionUtils.isNotEmpty(containedX509CRLs)) {
+			if (Utils.isCollectionNotEmpty(containedX509CRLs)) {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 				for (X509CRL x509crl : containedX509CRLs) {
 					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(x509crl));
-					references.add(new TimestampReference(DigestAlgorithm.SHA1, Base64.encodeBase64String(digest), TimestampReferenceCategory.REVOCATION));
+					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
 				}
 			}
 		}

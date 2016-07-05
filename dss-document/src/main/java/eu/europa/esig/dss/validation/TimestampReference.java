@@ -22,10 +22,9 @@ package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
 
-import org.apache.commons.codec.binary.Base64;
-
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class stocks the timestamp reference, which is composed of:
@@ -49,7 +48,7 @@ public class TimestampReference implements Serializable {
 		}
 		this.signatureId = signatureId;
 		this.digestAlgorithm = DigestAlgorithm.SHA1;
-		this.digestValue = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
+		this.digestValue = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
 		this.category = TimestampReferenceCategory.SIGNATURE;
 	}
 

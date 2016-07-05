@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -22,6 +21,7 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.junit.Test;
 
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -66,7 +66,7 @@ public class CAdESWithContentTimestampTest {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
-		assertTrue(CollectionUtils.isNotEmpty(timestampIdList));
+		assertTrue(Utils.isCollectionNotEmpty(timestampIdList));
 
 		boolean foundContentTimestamp = false;
 		for (String timestampId : timestampIdList) {

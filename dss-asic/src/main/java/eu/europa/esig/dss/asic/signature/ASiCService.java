@@ -37,9 +37,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -67,6 +65,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -393,7 +392,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 			final Element digestValueDom = DSSXMLUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
 			final byte[] digest = DSSUtils.digest(digestAlgorithm, currentDetachedDocument);
-			final String base64Encoded = Base64.encodeBase64String(digest);
+			final String base64Encoded = Utils.toBase64(digest);
 			final Text textNode = documentDom.createTextNode(base64Encoded);
 			digestValueDom.appendChild(textNode);
 
@@ -477,7 +476,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	}
 
 	private void storeZipComment(final ASiCParameters asicParameters, final ZipOutputStream outZip, final String toSignDocumentName) {
-		if (asicParameters.isZipComment() && StringUtils.isNotEmpty(toSignDocumentName)) {
+		if (asicParameters.isZipComment() && Utils.isStringNotEmpty(toSignDocumentName)) {
 			outZip.setComment("mimetype=" + getMimeTypeBytes(asicParameters));
 		}
 	}
@@ -706,7 +705,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	}
 
 	private String getSignatureFileName(final ASiCParameters asicParameters) {
-		if (StringUtils.isNotBlank(asicParameters.getSignatureFileName())) {
+		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
 			return META_INF + asicParameters.getSignatureFileName();
 		}
 		final boolean asice = isAsice(asicParameters);
@@ -781,7 +780,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	private String getMimeTypeBytes(final ASiCParameters asicParameters) {
 		final String asicParameterMimeType = asicParameters.getMimeType();
 		String mimeTypeBytes;
-		if (StringUtils.isBlank(asicParameterMimeType)) {
+		if (Utils.isStringBlank(asicParameterMimeType)) {
 
 			if (isAsice(asicParameters)) {
 				mimeTypeBytes = MimeType.ASICE.getMimeTypeString();

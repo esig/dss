@@ -34,11 +34,11 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class hosts the set of certificates which is used during the validation process. A certificate can be found in
@@ -115,7 +115,7 @@ public class CertificatePool implements Serializable {
 			throw new NullPointerException("The certificate must be filled");
 		}
 
-		if (CollectionUtils.isEmpty(sources)) {
+		if (Utils.isCollectionEmpty(sources)) {
 			throw new IllegalStateException("The certificate source type must be set.");
 		}
 

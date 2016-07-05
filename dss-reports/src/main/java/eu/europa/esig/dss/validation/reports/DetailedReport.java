@@ -23,12 +23,10 @@ package eu.europa.esig.dss.validation.reports;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -64,7 +62,7 @@ public class DetailedReport {
 	public Indication getBasicBuildingBlocksIndication(String tokenId) {
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
-			if (StringUtils.equals(xmlBasicBuildingBlocks.getId(), tokenId)) {
+			if (Utils.areStringsEqual(xmlBasicBuildingBlocks.getId(), tokenId)) {
 				return xmlBasicBuildingBlocks.getConclusion().getIndication();
 			}
 		}
@@ -80,7 +78,7 @@ public class DetailedReport {
 	public SubIndication getBasicBuildingBlocksSubIndication(String tokenId) {
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
-			if (StringUtils.equals(xmlBasicBuildingBlocks.getId(), tokenId)) {
+			if (Utils.areStringsEqual(xmlBasicBuildingBlocks.getId(), tokenId)) {
 				return xmlBasicBuildingBlocks.getConclusion().getSubIndication();
 			}
 		}
@@ -105,7 +103,7 @@ public class DetailedReport {
 	 */
 	public String getBasicBuildingBlocksSignatureId(final int index) {
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
-		if (CollectionUtils.size(bbbs) >= index) {
+		if (Utils.collectionSize(bbbs) >= index) {
 			XmlBasicBuildingBlocks bbb = jaxbDetailedReport.getBasicBuildingBlocks().get(index);
 			if (bbb != null) {
 				return bbb.getId();
@@ -118,7 +116,7 @@ public class DetailedReport {
 		List<String> result = new ArrayList<String>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
-			if (StringUtils.equals(Context.SIGNATURE.name(), bbb.getType()) || StringUtils.equals(Context.COUNTER_SIGNATURE.name(), bbb.getType())) {
+			if (Utils.areStringsEqual(Context.SIGNATURE.name(), bbb.getType()) || Utils.areStringsEqual(Context.COUNTER_SIGNATURE.name(), bbb.getType())) {
 				result.add(bbb.getId());
 			}
 		}
@@ -129,7 +127,7 @@ public class DetailedReport {
 		List<String> result = new ArrayList<String>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
-			if (StringUtils.equals(Context.TIMESTAMP.name(), bbb.getType())) {
+			if (Utils.areStringsEqual(Context.TIMESTAMP.name(), bbb.getType())) {
 				result.add(bbb.getId());
 			}
 		}
@@ -140,7 +138,7 @@ public class DetailedReport {
 		List<String> result = new ArrayList<String>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
-			if (StringUtils.equals(Context.REVOCATION.name(), bbb.getType())) {
+			if (Utils.areStringsEqual(Context.REVOCATION.name(), bbb.getType())) {
 				result.add(bbb.getId());
 			}
 		}
@@ -167,12 +165,12 @@ public class DetailedReport {
 
 	public Indication getTimestampValidationIndication(String timestampId) {
 		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (CollectionUtils.isNotEmpty(signatures)) {
+		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (CollectionUtils.isNotEmpty(validationTimestamps)) {
+				if (Utils.isCollectionNotEmpty(validationTimestamps)) {
 					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-						if (StringUtils.equals(tspValidation.getId(), timestampId) && tspValidation.getConclusion() != null) {
+						if (Utils.areStringsEqual(tspValidation.getId(), timestampId) && tspValidation.getConclusion() != null) {
 							return tspValidation.getConclusion().getIndication();
 						}
 					}
@@ -184,12 +182,12 @@ public class DetailedReport {
 
 	public SubIndication getTimestampValidationSubIndication(String timestampId) {
 		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (CollectionUtils.isNotEmpty(signatures)) {
+		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (CollectionUtils.isNotEmpty(validationTimestamps)) {
+				if (Utils.isCollectionNotEmpty(validationTimestamps)) {
 					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-						if (StringUtils.equals(tspValidation.getId(), timestampId) && tspValidation.getConclusion() != null) {
+						if (Utils.areStringsEqual(tspValidation.getId(), timestampId) && tspValidation.getConclusion() != null) {
 							return tspValidation.getConclusion().getSubIndication();
 						}
 					}
@@ -233,9 +231,9 @@ public class DetailedReport {
 
 	private XmlSignature getXmlSignatureById(String signatureId) {
 		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (CollectionUtils.isNotEmpty(signatures)) {
+		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
-				if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+				if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
 					return xmlSignature;
 				}
 			}

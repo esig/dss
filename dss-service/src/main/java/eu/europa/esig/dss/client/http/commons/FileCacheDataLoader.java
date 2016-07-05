@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -45,6 +44,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.ResourceLoader;
 import eu.europa.esig.dss.client.http.Protocol;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class provides some caching features to handle the resources. The default cache folder is set to
@@ -107,7 +107,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 			toBeLoaded = new ArrayList<String>();
 		}
-		if (StringUtils.isNotBlank(url)) {
+		if (Utils.isStringNotBlank(url)) {
 
 			toBeLoaded.add(url);
 		}
@@ -127,7 +127,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 			toIgnored = new ArrayList<String>();
 		}
-		if (StringUtils.isNotBlank(urlString)) {
+		if (Utils.isStringNotBlank(urlString)) {
 
 			final String normalizedFileName = ResourceLoader.getNormalizedFileName(urlString);
 			toIgnored.add(normalizedFileName);

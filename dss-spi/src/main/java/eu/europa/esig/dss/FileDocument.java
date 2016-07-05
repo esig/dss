@@ -24,8 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Document implementation stored on file-system.
@@ -38,7 +39,8 @@ public class FileDocument extends CommonDocument {
 	/**
 	 * Create a FileDocument
 	 *
-	 * @param path the path to the file
+	 * @param path
+	 *            the path to the file
 	 */
 	public FileDocument(final String path) {
 		this(new File(path));
@@ -47,7 +49,8 @@ public class FileDocument extends CommonDocument {
 	/**
 	 * Create a FileDocument
 	 *
-	 * @param file {@code File}
+	 * @param file
+	 *            {@code File}
 	 */
 	public FileDocument(final File file) {
 		if (file == null) {
@@ -92,7 +95,7 @@ public class FileDocument extends CommonDocument {
 		final InputStream inputStream = openStream();
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, inputStream);
 		IOUtils.closeQuietly(inputStream);
-		final String base64Encode = Base64.encodeBase64String(digestBytes);
+		final String base64Encode = Utils.toBase64(digestBytes);
 		return base64Encode;
 	}
 

@@ -22,11 +22,11 @@ package eu.europa.esig.dss.xades.signature;
 
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationContext;
@@ -42,7 +42,6 @@ import eu.europa.esig.dss.xades.XAdESNamespaces;
  *
  */
 public class XAdESLevelXL extends XAdESLevelX {
-
 
 	/**
 	 * The default constructor for XAdESLevelXL.
@@ -143,7 +142,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		for (final RevocationToken revocationToken : crlTokens) {
 
 			final byte[] encodedCRL = revocationToken.getEncoded();
-			final String base64EncodedCRL = Base64.encodeBase64String(encodedCRL);
+			final String base64EncodedCRL = Utils.toBase64(encodedCRL);
 			DSSXMLUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
 		}
 	}
@@ -162,7 +161,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		for (final RevocationToken revocationToken : ocspTokens) {
 
 			final byte[] encodedOCSP = revocationToken.getEncoded();
-			final String base64EncodedOCSP = Base64.encodeBase64String(encodedOCSP);
+			final String base64EncodedOCSP = Utils.toBase64(encodedOCSP);
 			DSSXMLUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
 		}
 	}

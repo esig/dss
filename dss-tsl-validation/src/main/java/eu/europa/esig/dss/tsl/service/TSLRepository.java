@@ -37,11 +37,8 @@ import java.util.TreeMap;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +59,7 @@ import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.tsl.TSLValidationSummary;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -180,13 +178,13 @@ public class TSLRepository {
 			return false;
 		} else {
 			// TODO Best place ? Download didn't work, we use previous version
-			if (ArrayUtils.isEmpty(resultLoader.getContent())) {
+			if (Utils.isArrayEmpty(resultLoader.getContent())) {
 				return true;
 			}
 			validationModel.setUrl(resultLoader.getUrl());
 			validationModel.setLoadedDate(new Date());
 			String lastSha256 = getSHA256(resultLoader.getContent());
-			return StringUtils.equals(lastSha256, validationModel.getSha256FileContent());
+			return Utils.areStringsEqual(lastSha256, validationModel.getSha256FileContent());
 		}
 	}
 
@@ -335,7 +333,7 @@ public class TSLRepository {
 			logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 			logger.info("Nb of skipped trusted lists : " + skippedTSLValidationModels.size());
 
-			if (CollectionUtils.isNotEmpty(skippedTSLValidationModels)) {
+			if (Utils.isCollectionNotEmpty(skippedTSLValidationModels)) {
 				for (TSLValidationModel tslValidationModel : skippedTSLValidationModels) {
 					logger.info(tslValidationModel.getUrl() + " is skipped");
 				}
@@ -356,7 +354,7 @@ public class TSLRepository {
 
 		List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
 		List<TSLServiceStatus> serviceStatus = service.getStatus();
-		if (CollectionUtils.isNotEmpty(serviceStatus)) {
+		if (Utils.isCollectionNotEmpty(serviceStatus)) {
 			for (TSLServiceStatus tslServiceStatus : serviceStatus) {
 				status.add(new ServiceInfoStatus(tslServiceStatus.getStatus(), tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate()));
 			}
@@ -364,7 +362,7 @@ public class TSLRepository {
 		serviceInfo.setStatus(status);
 
 		List<TSLServiceExtension> extensions = service.getExtensions();
-		if (CollectionUtils.isNotEmpty(extensions)) {
+		if (Utils.isCollectionNotEmpty(extensions)) {
 			for (TSLServiceExtension tslServiceExtension : extensions) {
 				List<TSLConditionsForQualifiers> conditionsForQualifiers = tslServiceExtension.getConditionsForQualifiers();
 				for (TSLConditionsForQualifiers tslConditionsForQualifiers : conditionsForQualifiers) {
@@ -409,7 +407,7 @@ public class TSLRepository {
 							nbServices += services.size();
 							for (TSLService tslService : services) {
 								List<CertificateToken> certificates = tslService.getCertificates();
-								nbCertificatesAndX500Principals += CollectionUtils.size(certificates);
+								nbCertificatesAndX500Principals += Utils.collectionSize(certificates);
 							}
 						}
 					}

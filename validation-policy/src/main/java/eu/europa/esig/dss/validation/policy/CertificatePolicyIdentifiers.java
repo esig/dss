@@ -2,8 +2,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public final class CertificatePolicyIdentifiers {
@@ -81,7 +80,7 @@ public final class CertificatePolicyIdentifiers {
 
 	private static boolean hasPolicyIdOIDs(CertificateWrapper certificate, String... oids) {
 		List<String> policyIds = certificate.getPolicyIds();
-		if (CollectionUtils.isNotEmpty(policyIds)) {
+		if (Utils.isCollectionNotEmpty(policyIds)) {
 			for (String oid : oids) {
 				if (policyIds.contains(oid)) {
 					return true;

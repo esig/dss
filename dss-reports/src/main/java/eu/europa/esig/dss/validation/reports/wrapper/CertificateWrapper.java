@@ -8,10 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
@@ -24,6 +20,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
+import eu.europa.esig.dss.utils.Utils;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 
@@ -60,14 +57,14 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public List<String> getKeyUsages() {
 		List<String> keyUsages = new ArrayList<String>();
 		XmlKeyUsageBits keyUsageBits = certificate.getKeyUsageBits();
-		if ((keyUsageBits != null) && CollectionUtils.isNotEmpty(keyUsageBits.getKeyUsage())) {
+		if ((keyUsageBits != null) && Utils.isCollectionNotEmpty(keyUsageBits.getKeyUsage())) {
 			keyUsages.addAll(keyUsageBits.getKeyUsage());
 		}
 		return keyUsages;
 	}
 
 	public boolean isRevocationDataAvailable() {
-		return CollectionUtils.isNotEmpty(certificate.getRevocation());
+		return Utils.isCollectionNotEmpty(certificate.getRevocation());
 	}
 
 	public Set<RevocationWrapper> getRevocationData() {
@@ -93,11 +90,11 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isIdPkixOcspNoCheck() {
-		return BooleanUtils.isTrue(certificate.isIdPkixOcspNoCheck());
+		return Utils.isTrue(certificate.isIdPkixOcspNoCheck());
 	}
 
 	public boolean isIdKpOCSPSigning() {
-		return BooleanUtils.isTrue(certificate.isIdKpOCSPSigning());
+		return Utils.isTrue(certificate.isIdKpOCSPSigning());
 	}
 
 	public Date getNotBefore() {
@@ -111,10 +108,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public List<String> getCertificateTSPServiceQualifiers() {
 		Set<String> result = new HashSet<String>();
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
 			for (XmlTrustedServiceProviderType xmlTrustedServiceProvider : trustedServiceProviders) {
 				XmlQualifiers qualifiers = xmlTrustedServiceProvider.getQualifiers();
-				if ((qualifiers != null) && CollectionUtils.isNotEmpty(qualifiers.getQualifier())) {
+				if ((qualifiers != null) && Utils.isCollectionNotEmpty(qualifiers.getQualifier())) {
 					for (String qualifier : qualifiers.getQualifier()) {
 						result.add(qualifier);
 					}
@@ -126,22 +123,22 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public String getCertificateTSPServiceName() {
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
 			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
 				return trustedServiceProvider.getTSPServiceName(); // TODO correct ?? return first one
 			}
 		}
-		return StringUtils.EMPTY;
+		return Utils.EMPTY_STRING;
 	}
 
 	public String getCertificateTSPServiceType() {
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
 			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
 				return trustedServiceProvider.getTSPServiceType(); // TODO correct ?? return first one
 			}
 		}
-		return StringUtils.EMPTY;
+		return Utils.EMPTY_STRING;
 	}
 
 	public boolean isRevoked() {
@@ -161,47 +158,47 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public String getSerialNumber() {
 		BigInteger serialNumber = certificate.getSerialNumber();
-		return serialNumber == null ? StringUtils.EMPTY : serialNumber.toString();
+		return serialNumber == null ? Utils.EMPTY_STRING : serialNumber.toString();
 	}
 
 	public String getCommonName() {
 		String cn = certificate.getCommonName();
-		return cn == null ? StringUtils.EMPTY : cn;
+		return cn == null ? Utils.EMPTY_STRING : cn;
 	}
 
 	public String getCountryName() {
 		String c = certificate.getCountryName();
-		return c == null ? StringUtils.EMPTY : c;
+		return c == null ? Utils.EMPTY_STRING : c;
 	}
 
 	public String getGivenName() {
 		String givenName = certificate.getGivenName();
-		return givenName == null ? StringUtils.EMPTY : givenName;
+		return givenName == null ? Utils.EMPTY_STRING : givenName;
 	}
 
 	public String getOrganizationName() {
 		String o = certificate.getOrganizationName();
-		return o == null ? StringUtils.EMPTY : o;
+		return o == null ? Utils.EMPTY_STRING : o;
 	}
 
 	public String getOrganizationalUnit() {
 		String ou = certificate.getOrganizationalUnit();
-		return ou == null ? StringUtils.EMPTY : ou;
+		return ou == null ? Utils.EMPTY_STRING : ou;
 	}
 
 	public String getSurname() {
 		String surname = certificate.getSurname();
-		return surname == null ? StringUtils.EMPTY : surname;
+		return surname == null ? Utils.EMPTY_STRING : surname;
 	}
 
 	public String getPseudo() {
 		String pseudo = certificate.getPseudonym();
-		return pseudo == null ? StringUtils.EMPTY : pseudo;
+		return pseudo == null ? Utils.EMPTY_STRING : pseudo;
 	}
 
 	public boolean isCertificateRelatedTSLWellSigned() {
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (CollectionUtils.isNotEmpty(trustedServiceProviders)) {
+		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
 			boolean isWellSigned = true;
 			for (XmlTrustedServiceProviderType xmlTrustedServiceProviderType : trustedServiceProviders) {
 				isWellSigned &= xmlTrustedServiceProviderType.isWellSigned();
@@ -233,14 +230,14 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private String getFormat(List<XmlDistinguishedName> distinguishedNames, String format) {
-		if (CollectionUtils.isNotEmpty(distinguishedNames)) {
+		if (Utils.isCollectionNotEmpty(distinguishedNames)) {
 			for (XmlDistinguishedName distinguishedName : distinguishedNames) {
-				if (StringUtils.equals(distinguishedName.getFormat(), format)) {
+				if (Utils.areStringsEqual(distinguishedName.getFormat(), format)) {
 					return distinguishedName.getValue();
 				}
 			}
 		}
-		return StringUtils.EMPTY;
+		return Utils.EMPTY_STRING;
 	}
 
 	public List<String> getPolicyIds() {

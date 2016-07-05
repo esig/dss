@@ -3,11 +3,10 @@ package eu.europa.esig.dss.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
@@ -26,7 +25,7 @@ public class RemoteDocumentValidationService {
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		signedDocValidator.setCertificateVerifier(verifier);
 
-		if (originalFile != null && ArrayUtils.isNotEmpty(originalFile.getBytes())) {
+		if (originalFile != null && Utils.isArrayNotEmpty(originalFile.getBytes())) {
 			List<DSSDocument> list = new ArrayList<DSSDocument>();
 			DSSDocument orignalDocument = new InMemoryDocument(originalFile.getBytes(), originalFile.getName(), originalFile.getMimeType());
 			list.add(orignalDocument);

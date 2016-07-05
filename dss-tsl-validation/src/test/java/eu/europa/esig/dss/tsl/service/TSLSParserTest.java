@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -23,6 +21,7 @@ import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatus;
+import eu.europa.esig.dss.utils.Utils;
 
 @RunWith(Parameterized.class)
 public class TSLSParserTest {
@@ -61,44 +60,44 @@ public class TSLSParserTest {
 		assertNotNull(result);
 		assertNotNull(result.getNextUpdateDate());
 		assertNotNull(result.getIssueDate());
-		assertTrue(StringUtils.isNotEmpty(result.getTerritory()));
+		assertTrue(Utils.isStringNotEmpty(result.getTerritory()));
 		assertTrue(result.getSequenceNumber() > 0);
 		List<TSLPointer> pointers = result.getPointers();
-		assertTrue(CollectionUtils.isNotEmpty(pointers));
+		assertTrue(Utils.isCollectionNotEmpty(pointers));
 		for (TSLPointer tslPointer : pointers) {
-			assertTrue(StringUtils.isNotEmpty(tslPointer.getMimeType()));
-			assertTrue(StringUtils.isNotEmpty(tslPointer.getTerritory()));
-			assertTrue(StringUtils.isNotEmpty(tslPointer.getUrl()));
-			assertTrue(CollectionUtils.isNotEmpty(tslPointer.getPotentialSigners()));
+			assertTrue(Utils.isStringNotEmpty(tslPointer.getMimeType()));
+			assertTrue(Utils.isStringNotEmpty(tslPointer.getTerritory()));
+			assertTrue(Utils.isStringNotEmpty(tslPointer.getUrl()));
+			assertTrue(Utils.isCollectionNotEmpty(tslPointer.getPotentialSigners()));
 		}
 
 		List<TSLServiceProvider> serviceProviders = result.getServiceProviders();
 
 		if (countriesWithoutTSP.contains(result.getTerritory())) {
-			assertTrue(CollectionUtils.isEmpty(serviceProviders));
+			assertTrue(Utils.isCollectionEmpty(serviceProviders));
 		} else {
-			assertTrue(CollectionUtils.isNotEmpty(serviceProviders));
+			assertTrue(Utils.isCollectionNotEmpty(serviceProviders));
 			for (TSLServiceProvider tslServiceProvider : serviceProviders) {
-				assertTrue(StringUtils.isNotEmpty(tslServiceProvider.getName()));
-				assertTrue(StringUtils.isNotEmpty(tslServiceProvider.getPostalAddress()));
-				assertTrue(StringUtils.isNotEmpty(tslServiceProvider.getElectronicAddress()));
+				assertTrue(Utils.isStringNotEmpty(tslServiceProvider.getName()));
+				assertTrue(Utils.isStringNotEmpty(tslServiceProvider.getPostalAddress()));
+				assertTrue(Utils.isStringNotEmpty(tslServiceProvider.getElectronicAddress()));
 				List<TSLService> services = tslServiceProvider.getServices();
-				assertTrue(CollectionUtils.isNotEmpty(services));
+				assertTrue(Utils.isCollectionNotEmpty(services));
 				for (TSLService tslService : services) {
-					assertTrue(StringUtils.isNotEmpty(tslService.getName()));
-					assertTrue(StringUtils.isNotEmpty(tslService.getType()));
+					assertTrue(Utils.isStringNotEmpty(tslService.getName()));
+					assertTrue(Utils.isStringNotEmpty(tslService.getType()));
 
 					List<TSLServiceStatus> status = tslService.getStatus();
-					assertTrue(CollectionUtils.isNotEmpty(status));
+					assertTrue(Utils.isCollectionNotEmpty(status));
 					for (TSLServiceStatus tslServiceStatus : status) {
-						assertTrue(StringUtils.isNotEmpty(tslServiceStatus.getStatus()));
+						assertTrue(Utils.isStringNotEmpty(tslServiceStatus.getStatus()));
 						assertNotNull(tslServiceStatus.getStartDate());
 					}
 
 					List<TSLServiceExtension> extensions = tslService.getExtensions();
-					if (CollectionUtils.isNotEmpty(extensions)) {
+					if (Utils.isCollectionNotEmpty(extensions)) {
 						for (TSLServiceExtension tslServiceExtension : extensions) {
-							assertTrue(CollectionUtils.isNotEmpty(tslServiceExtension.getConditionsForQualifiers()));
+							assertTrue(Utils.isCollectionNotEmpty(tslServiceExtension.getConditionsForQualifiers()));
 						}
 					}
 				}

@@ -25,10 +25,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
@@ -117,7 +115,7 @@ public class SimpleReport {
 	public List<String> getSignatureIdList() {
 		final List<String> signatureIdList = new ArrayList<String>();
 		List<XmlSignature> signatures = simpleReport.getSignature();
-		if (CollectionUtils.isNotEmpty(signatures)) {
+		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				signatureIdList.add(xmlSignature.getId());
 			}
@@ -173,7 +171,7 @@ public class SimpleReport {
 		if (xmlSignature != null) {
 			return xmlSignature.getSignatureFormat();
 		}
-		return StringUtils.EMPTY;
+		return Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -201,7 +199,7 @@ public class SimpleReport {
 		if (xmlSignature != null) {
 			return xmlSignature.getSignedBy();
 		}
-		return StringUtils.EMPTY;
+		return Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -224,9 +222,9 @@ public class SimpleReport {
 
 	private XmlSignature getSignatureById(String signatureId) {
 		List<XmlSignature> signatures = simpleReport.getSignature();
-		if (CollectionUtils.isNotEmpty(signatures)) {
+		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
-				if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+				if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
 					return xmlSignature;
 				}
 			}

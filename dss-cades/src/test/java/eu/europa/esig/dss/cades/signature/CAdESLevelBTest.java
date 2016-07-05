@@ -33,9 +33,7 @@ import java.util.List;
 
 import javax.crypto.Cipher;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -74,6 +72,7 @@ import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
@@ -231,7 +230,7 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 
 			logger.info("Nb Auth Attributes : " + authenticatedAttributes.size());
 
-			String embeddedDigest = StringUtils.EMPTY;
+			String embeddedDigest = "";
 			for (int i = 0; i < authenticatedAttributes.size(); i++) {
 				ASN1Sequence authAttrSeq = ASN1Sequence.getInstance(authenticatedAttributes.getObjectAt(i));
 				logger.info(authAttrSeq.toString());
@@ -261,14 +260,14 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 			DigestInfo digestInfo = new DigestInfo(seqDecrypt);
 			assertEquals(oidDigestAlgo, digestInfo.getAlgorithmId().getAlgorithm());
 
-			String decryptedDigestEncodeBase64 = Base64.encodeBase64String(digestInfo.getDigest());
+			String decryptedDigestEncodeBase64 = Utils.toBase64(digestInfo.getDigest());
 			logger.info("Decrypted Base64 : " + decryptedDigestEncodeBase64);
 
 			byte[] encoded = signedInfo.getAuthenticatedAttributes().getEncoded();
 			MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getName());
 			byte[] digestOfAuthenticatedAttributes = messageDigest.digest(encoded);
 
-			String computedDigestEncodeBase64 = Base64.encodeBase64String(digestOfAuthenticatedAttributes);
+			String computedDigestEncodeBase64 = Utils.toBase64(digestOfAuthenticatedAttributes);
 			logger.info("Computed Base64 : " + computedDigestEncodeBase64);
 
 			assertEquals(decryptedDigestEncodeBase64, computedDigestEncodeBase64);

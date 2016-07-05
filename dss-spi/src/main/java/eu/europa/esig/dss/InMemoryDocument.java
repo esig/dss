@@ -25,7 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.codec.binary.Base64;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * In memory representation of a document
@@ -37,13 +37,14 @@ public class InMemoryDocument extends CommonDocument {
 
 	private byte[] bytes;
 
-	public InMemoryDocument(){
+	public InMemoryDocument() {
 	}
 
 	/**
 	 * Creates dss document that retains the data in memory
 	 *
-	 * @param bytes array of bytes representing the document
+	 * @param bytes
+	 *            array of bytes representing the document
 	 */
 	public InMemoryDocument(final byte[] bytes) {
 		this(bytes, null, null);
@@ -52,8 +53,10 @@ public class InMemoryDocument extends CommonDocument {
 	/**
 	 * Creates dss document that retains the data in memory
 	 *
-	 * @param bytes array of bytes representing the document
-	 * @param name  the file name if the data originates from a file
+	 * @param bytes
+	 *            array of bytes representing the document
+	 * @param name
+	 *            the file name if the data originates from a file
 	 */
 	public InMemoryDocument(final byte[] bytes, final String name) {
 		this.bytes = bytes;
@@ -64,9 +67,12 @@ public class InMemoryDocument extends CommonDocument {
 	/**
 	 * Creates dss document that retains the data in memory
 	 *
-	 * @param bytes    array of bytes representing the document
-	 * @param name     the file name if the data originates from a file
-	 * @param mimeType the mime type of the file if the data originates from a file
+	 * @param bytes
+	 *            array of bytes representing the document
+	 * @param name
+	 *            the file name if the data originates from a file
+	 * @param mimeType
+	 *            the mime type of the file if the data originates from a file
 	 */
 	public InMemoryDocument(final byte[] bytes, final String name, final MimeType mimeType) {
 		this.bytes = bytes;
@@ -77,7 +83,8 @@ public class InMemoryDocument extends CommonDocument {
 	/**
 	 * Creates dss document that retains the data in memory
 	 *
-	 * @param inputStream input stream representing the document
+	 * @param inputStream
+	 *            input stream representing the document
 	 * @throws DSSException
 	 */
 	public InMemoryDocument(final InputStream inputStream) throws DSSException {
@@ -87,8 +94,10 @@ public class InMemoryDocument extends CommonDocument {
 	/**
 	 * Creates dss document that retains the data in memory
 	 *
-	 * @param inputStream input stream representing the document
-	 * @param name        the file name if the data originates from a file
+	 * @param inputStream
+	 *            input stream representing the document
+	 * @param name
+	 *            the file name if the data originates from a file
 	 * @throws IOException
 	 */
 	public InMemoryDocument(final InputStream inputStream, final String name) throws DSSException {
@@ -98,9 +107,12 @@ public class InMemoryDocument extends CommonDocument {
 	/**
 	 * Creates dss document that retains the data in memory
 	 *
-	 * @param inputStream input stream representing the document
-	 * @param name        the file name if the data originates from a file
-	 * @param mimeType    the mime type of the file if the data originates from a file
+	 * @param inputStream
+	 *            input stream representing the document
+	 * @param name
+	 *            the file name if the data originates from a file
+	 * @param mimeType
+	 *            the mime type of the file if the data originates from a file
 	 * @throws IOException
 	 */
 	public InMemoryDocument(final InputStream inputStream, final String name, final MimeType mimeType) throws DSSException {
@@ -147,12 +159,12 @@ public class InMemoryDocument extends CommonDocument {
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, bytes);
-		final String base64Encode = Base64.encodeBase64String(digestBytes);
+		final String base64Encode = Utils.toBase64(digestBytes);
 		return base64Encode;
 	}
 
 	public String getBase64Encoded() {
-		return Base64.encodeBase64String(bytes);
+		return Utils.toBase64(bytes);
 	}
 
 }

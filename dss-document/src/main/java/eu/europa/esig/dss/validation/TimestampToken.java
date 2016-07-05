@@ -29,8 +29,6 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -51,6 +49,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -241,8 +240,8 @@ public class TimestampToken extends Token {
 			final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
 			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
 			if (!messageImprintIntact) {
-				logger.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Hex.encodeHexString(computedDigest));
-				logger.error("Digest present in TimestampToken: {}", Hex.encodeHexString(timestampDigest));
+				logger.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
+				logger.error("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
 				logger.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 			}
 		} catch (DSSException e) {
@@ -292,7 +291,7 @@ public class TimestampToken extends Token {
 	public String getEncodedSignedDataDigestValue() {
 
 		final byte[] messageImprintDigest = timeStamp.getTimeStampInfo().getMessageImprintDigest();
-		return Base64.encodeBase64String(messageImprintDigest);
+		return Utils.toBase64(messageImprintDigest);
 	}
 
 	/**

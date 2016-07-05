@@ -25,8 +25,6 @@ import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.ArrayUtils;
 import org.bouncycastle.asn1.ASN1Enumerated;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
@@ -52,6 +50,7 @@ import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
@@ -158,7 +157,7 @@ public final class DSSRevocationUtils {
 		final String reasonId = Extension.reasonCode.getId();
 		final byte[] extensionBytes = crlEntry.getExtensionValue(reasonId);
 
-		if (ArrayUtils.isEmpty(extensionBytes)) {
+		if (Utils.isArrayEmpty(extensionBytes)) {
 			logger.warn("Empty reasonCode extension for crl entry");
 			return null;
 		}
@@ -247,7 +246,7 @@ public final class DSSRevocationUtils {
 	 * @throws OCSPException
 	 */
 	public static BasicOCSPResp loadOCSPBase64Encoded(final String base64Encoded) throws IOException, OCSPException {
-		final byte[] derEncoded = Base64.decodeBase64(base64Encoded);
+		final byte[] derEncoded = Utils.fromBase64(base64Encoded);
 		final OCSPResp ocspResp = new OCSPResp(derEncoded);
 		final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 		return basicOCSPResp;

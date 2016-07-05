@@ -21,15 +21,12 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.security.cert.X509CRL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -43,6 +40,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -75,17 +73,17 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		if (processedRevocationTokens.isEmpty()) {
 
 			return;
-		} 
-		
+		}
+
 		boolean containsCrlToken = false;
-		for(RevocationToken revocationToken : processedRevocationTokens) {
+		for (RevocationToken revocationToken : processedRevocationTokens) {
 			containsCrlToken = revocationToken instanceof CRLToken;
-			if(containsCrlToken) {
+			if (containsCrlToken) {
 				break;
 			}
 		}
-		
-		if(!containsCrlToken) {
+
+		if (!containsCrlToken) {
 			return;
 		}
 		// <xades:CRLRefs>
@@ -143,20 +141,19 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			return;
 		}
-		
+
 		boolean containsOCSPToken = false;
-		for(RevocationToken revocationToken : processedRevocationTokens) {
+		for (RevocationToken revocationToken : processedRevocationTokens) {
 			containsOCSPToken = revocationToken instanceof OCSPToken;
-			if(containsOCSPToken) {
+			if (containsOCSPToken) {
 				break;
 			}
 		}
-		
-		if(!containsOCSPToken) {
+
+		if (!containsOCSPToken) {
 			return;
 		}
-		
-		
+
 		// ...<xades:CRLRefs/>
 		// ...<xades:OCSPRefs>
 		// ......<xades:OCSPRef>
@@ -190,7 +187,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 					final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
 					final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-					final String base65EncodedKeyHashOctetStringBytes = Base64.encodeBase64String(keyHashOctetStringBytes);
+					final String base65EncodedKeyHashOctetStringBytes = Utils.toBase64(keyHashOctetStringBytes);
 					DSSXMLUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, "xades:ByKey", base65EncodedKeyHashOctetStringBytes);
 				} else {
 
@@ -224,7 +221,8 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 * certificates.<br>
 	 * Adds <CompleteCertificateRefs> and <CompleteRevocationRefs> segments into <UnsignedSignatureProperties> element.
 	 *
-	 * There SHALL be at most <b>one occurrence of CompleteRevocationRefs & CompleteCertificateRefs</b> properties in the
+	 * There SHALL be at most <b>one occurrence of CompleteRevocationRefs & CompleteCertificateRefs</b> properties in
+	 * the
 	 * signature. Old references must be removed.
 	 *
 	 * @see XAdESLevelBaselineT#extendSignatureTag()
@@ -252,8 +250,8 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				unsignedSignaturePropertiesDom.removeChild(toRemove);
 			}
 
-			final Element completeCertificateRefsDom = DSSXMLUtils
-					.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:CompleteCertificateRefs");
+			final Element completeCertificateRefsDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES,
+					"xades:CompleteCertificateRefs");
 
 			final Element certRefsDom = DSSXMLUtils.addElement(documentDom, completeCertificateRefsDom, XAdESNamespaces.XAdES, "xades:CertRefs");
 
@@ -265,14 +263,14 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			final Set<CertificateToken> x509CertificateProcessedList = processedCertificateTokenList;
 			incorporateCertificateRef(certRefsDom, x509CertificateProcessedList);
 
-
 			toRemove = xadesSignature.getCompleteRevocationRefs();
 			if (toRemove != null) {
 				unsignedSignaturePropertiesDom.removeChild(toRemove);
 			}
 
 			// <xades:CompleteRevocationRefs>
-			final Element completeRevocationRefsDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES, "xades:CompleteRevocationRefs");
+			final Element completeRevocationRefsDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES,
+					"xades:CompleteRevocationRefs");
 			incorporateCRLRefs(completeRevocationRefsDom, validationContext.getProcessedRevocations());
 			incorporateOCSPRefs(completeRevocationRefsDom, validationContext.getProcessedRevocations());
 		}

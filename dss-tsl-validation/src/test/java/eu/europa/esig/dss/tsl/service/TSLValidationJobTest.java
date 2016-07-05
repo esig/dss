@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -20,6 +19,7 @@ import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 public class TSLValidationJobTest {
@@ -63,7 +63,7 @@ public class TSLValidationJobTest {
 		for (TSLServiceProvider tslServiceProvider : serviceProviders) {
 			List<TSLService> services = tslServiceProvider.getServices();
 			for (TSLService tslService : services) {
-				if (CollectionUtils.isNotEmpty(tslService.getCertificateUrls())) {
+				if (Utils.isCollectionNotEmpty(tslService.getCertificateUrls())) {
 					foundExternalCertificates = true;
 					break;
 				}

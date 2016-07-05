@@ -10,7 +10,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
+import eu.europa.esig.dss.utils.Utils;
 
 @ContextConfiguration("/spring/applicationContext.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,7 +44,7 @@ public class XSLTServiceTest {
 		marshaller.marshal(simpleReport, writer);
 
 		String htmlSimpleReport = service.generateSimpleReport(writer.toString());
-		assertTrue(StringUtils.isNotEmpty(htmlSimpleReport));
+		assertTrue(Utils.isStringNotEmpty(htmlSimpleReport));
 		logger.debug("Simple report html : " + htmlSimpleReport);
 	}
 
@@ -61,7 +61,7 @@ public class XSLTServiceTest {
 		marshaller.marshal(detailedReport, writer);
 
 		String htmlDetailedReport = service.generateDetailedReport(writer.toString());
-		assertTrue(StringUtils.isNotEmpty(htmlDetailedReport));
+		assertTrue(Utils.isStringNotEmpty(htmlDetailedReport));
 		logger.debug("Detailed report html : " + htmlDetailedReport);
 
 	}

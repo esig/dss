@@ -27,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -38,6 +37,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -49,7 +49,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	protected CMSSignedData cmsSignedData;
 	private static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
-	
+
 	/**
 	 * This constructor is used with {@code TimeStampToken}.
 	 */
@@ -102,7 +102,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		final String preambleString = new String(preamble);
 		if (preambleString.getBytes()[0] == 0x30) {
 			return true;
-		} 
+		}
 		return false;
 	}
 
@@ -125,7 +125,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public DSSDocument getOriginalDocument(final String signatureId) throws DSSException {
-		if (StringUtils.isBlank(signatureId)) {
+		if (Utils.isStringBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
 		for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {
@@ -134,7 +134,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationCertPool);
 			cadesSignature.setDetachedContents(detachedContents);
 			cadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
-			if(cadesSignature.getId().equals(signatureId)) {
+			if (cadesSignature.getId().equals(signatureId)) {
 				if (!cadesSignature.getDetachedContents().isEmpty()) {
 					throw new DSSException("The signature must be an enveloping signature");
 				}
@@ -145,11 +145,11 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		}
 		throw new DSSException("The signature with the given id was not found!");
 	}
-	
+
 	private boolean isBase64Encoded(byte[] array) {
 		return isBase64Encoded(new String(array));
 	}
-	
+
 	private boolean isBase64Encoded(String text) {
 		Pattern pattern = Pattern.compile(BASE64_REGEX);
 		Matcher matcher = pattern.matcher(text);

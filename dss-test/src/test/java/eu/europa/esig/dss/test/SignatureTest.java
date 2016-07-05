@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,6 +22,7 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 
 @Ignore("Only performance/support check. No need to be executed all the time")
 public class SignatureTest {
@@ -153,7 +153,7 @@ public class SignatureTest {
 		SignatureAlgorithm sigAlgo = SignatureAlgorithm.getAlgorithm(privateKeyEntry.getEncryptionAlgorithm(), digest);
 		SignatureValue signatureValue = TestUtils.sign(sigAlgo, privateKeyEntry, dataToSign);
 		assertNotNull(signatureValue);
-		assertTrue(ArrayUtils.isNotEmpty(signatureValue.getValue()));
+		assertTrue(Utils.isArrayNotEmpty(signatureValue.getValue()));
 		assertEquals(sigAlgo, signatureValue.getAlgorithm());
 	}
 

@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +17,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -96,7 +95,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
 
 		Set<RevocationWrapper> revocationData = getLinkedRevocationData();
-		if (CollectionUtils.isNotEmpty(revocationData)) {
+		if (Utils.isCollectionNotEmpty(revocationData)) {
 			for (RevocationWrapper revocation : revocationData) {
 				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocation.getId());
 				if (revocationBBB != null) {
@@ -115,7 +114,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		Set<TimestampWrapper> allowedTimestamps = filterInvalidTimestamps(currentSignature.getTimestampList());
 
-		if (CollectionUtils.isNotEmpty(allowedTimestamps)) {
+		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
 
 			/*
 			 * b) Time-stamp token validation: For each time-stamp token remaining in the set of signature time-stamp
@@ -166,7 +165,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
 		}
 
-		if (CollectionUtils.isNotEmpty(allowedTimestamps)) {
+		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
 			/*
 			 * d) For each time-stamp token remaining in the set of signature time-stamp tokens, the process shall check
 			 * the coherence in the values of the times indicated in the time-stamp tokens. They shall be posterior to
@@ -223,7 +222,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			for (XmlValidationProcessTimestamps timestampValidation : timestampValidations) {
 				List<XmlConstraint> constraints = timestampValidation.getConstraint();
 				for (XmlConstraint tspValidation : constraints) {
-					if (StringUtils.equals(timestampWrapper.getId(), tspValidation.getId())) {
+					if (Utils.areStringsEqual(timestampWrapper.getId(), tspValidation.getId())) {
 						foundValidationTSP = true;
 						// PVA : if OK message imprint is validated in SVA of timestamp (depending of constraint.xml)
 						if (XmlStatus.OK.equals(tspValidation.getStatus())) {

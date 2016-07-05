@@ -22,7 +22,6 @@ package eu.europa.esig.dss.client.tsp;
 
 import java.io.IOException;
 
-import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampRequest;
@@ -37,6 +36,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
@@ -104,7 +104,8 @@ public class OnlineTSPSource implements TSPSource {
 	/**
 	 * Set the DataLoader to use for querying the TSP server.
 	 *
-	 * @param dataLoader the component that allows to retrieve the TSP response using HTTP.
+	 * @param dataLoader
+	 *            the component that allows to retrieve the TSP response using HTTP.
 	 */
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
@@ -113,7 +114,8 @@ public class OnlineTSPSource implements TSPSource {
 	/**
 	 * Set the NonceSource to use for querying the TSP server.
 	 *
-	 * @param nonceSource the component that prevents the replay attack.
+	 * @param nonceSource
+	 *            the component that prevents the replay attack.
 	 */
 	public void setNonceSource(NonceSource nonceSource) {
 		this.nonceSource = nonceSource;
@@ -124,7 +126,7 @@ public class OnlineTSPSource implements TSPSource {
 		try {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
-				logger.trace("Timestamp digest value    : " + Hex.encodeHexString(digest));
+				logger.trace("Timestamp digest value    : " + Utils.toHex(digest));
 			}
 
 			// Setup the time stamp request
@@ -157,7 +159,7 @@ public class OnlineTSPSource implements TSPSource {
 			timeStampResponse.validate(timeStampRequest);
 
 			String statusString = timeStampResponse.getStatusString();
-			if (statusString !=null){
+			if (statusString != null) {
 				logger.info("Status: " + statusString);
 			}
 

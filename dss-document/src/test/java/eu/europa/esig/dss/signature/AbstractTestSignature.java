@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -44,6 +43,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -133,7 +133,7 @@ public abstract class AbstractTestSignature {
 		assertNotNull(simpleReport);
 
 		List<String> signatureIdList = simpleReport.getSignatureIdList();
-		assertTrue(CollectionUtils.isNotEmpty(signatureIdList));
+		assertTrue(Utils.isCollectionNotEmpty(signatureIdList));
 
 		for (String sigId : signatureIdList) {
 			Indication indication = simpleReport.getIndication(sigId);
@@ -158,7 +158,7 @@ public abstract class AbstractTestSignature {
 		}
 
 		List<String> signatureIds = detailedReport.getSignatureIds();
-		assertTrue(CollectionUtils.isNotEmpty(signatureIds));
+		assertTrue(Utils.isCollectionNotEmpty(signatureIds));
 		for (String sigId : signatureIds) {
 			Indication basicIndication = detailedReport.getBasicValidationIndication(sigId);
 			assertNotNull(basicIndication);
@@ -169,7 +169,7 @@ public abstract class AbstractTestSignature {
 
 		if (isBaselineT()) {
 			List<String> timestampIds = detailedReport.getTimestampIds();
-			assertTrue(CollectionUtils.isNotEmpty(timestampIds));
+			assertTrue(Utils.isCollectionNotEmpty(timestampIds));
 			for (String tspId : timestampIds) {
 				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
 				assertNotNull(timestampIndication);
@@ -213,7 +213,7 @@ public abstract class AbstractTestSignature {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
-		assertTrue(CollectionUtils.isNotEmpty(signatures));
+		assertTrue(Utils.isCollectionNotEmpty(signatures));
 
 		Reports reports = validator.validateDocument();
 		return reports;
@@ -224,7 +224,7 @@ public abstract class AbstractTestSignature {
 	}
 
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
-		assertEquals(1, CollectionUtils.size(diagnosticData.getSignatureIdList()));
+		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));
 	}
 
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {

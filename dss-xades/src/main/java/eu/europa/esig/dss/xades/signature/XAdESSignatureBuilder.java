@@ -30,9 +30,6 @@ import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -50,6 +47,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampToken;
@@ -145,13 +143,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected void setCanonicalizationMethods(final XAdESSignatureParameters params, final String canonicalizationMethod) {
 
 		final String signedInfoCanonicalizationMethod_ = params.getSignedInfoCanonicalizationMethod();
-		if (StringUtils.isNotBlank(signedInfoCanonicalizationMethod_)) {
+		if (Utils.isStringNotBlank(signedInfoCanonicalizationMethod_)) {
 			signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod_;
 		} else {
 			signedInfoCanonicalizationMethod = canonicalizationMethod;
 		}
 		final String signedPropertiesCanonicalizationMethod_ = params.getSignedPropertiesCanonicalizationMethod();
-		if (StringUtils.isNotBlank(signedPropertiesCanonicalizationMethod_)) {
+		if (Utils.isStringNotBlank(signedPropertiesCanonicalizationMethod_)) {
 			signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod_;
 		} else {
 			signedPropertiesCanonicalizationMethod = canonicalizationMethod;
@@ -173,7 +171,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		deterministicId = params.getDeterministicId();
 
 		final List<DSSReference> references = params.getReferences();
-		if (CollectionUtils.isEmpty(references)) {
+		if (Utils.isCollectionEmpty(references)) {
 			final List<DSSReference> defaultReferences = createDefaultReferences();
 			// The SignatureParameters object is updated with the default references.
 			params.setReferences(defaultReferences);
@@ -201,7 +199,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalized SignedInfo         --> {}", new String(canonicalizedSignedInfo));
 			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedSignedInfo);
-			LOG.trace("Canonicalized SignedInfo SHA256  --> {}", Base64.encodeBase64String(digest));
+			LOG.trace("Canonicalized SignedInfo SHA256  --> {}", Utils.toBase64(digest));
 		}
 		built = true;
 		return canonicalizedSignedInfo;
@@ -293,7 +291,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void addCertificate(final Element x509DataDom, final CertificateToken x509Certificate) {
 
 		final byte[] encoded = x509Certificate.getEncoded();
-		final String base64Encoded = Base64.encodeBase64String(encoded);
+		final String base64Encoded = Utils.toBase64(encoded);
 
 		// <ds:X509Certificate>...</ds:X509Certificate>
 		DSSXMLUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_CERTIFICATE, base64Encoded);
@@ -387,11 +385,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		final String elementName = dssTransform.getElementName();
 		final String textContent = dssTransform.getTextContent();
-		if (StringUtils.isNotBlank(elementName)) {
+		if (Utils.isStringNotBlank(elementName)) {
 
 			final String namespace = dssTransform.getNamespace();
 			DSSXMLUtils.addTextElement(document, transformDom, namespace, elementName, textContent);
-		} else if (StringUtils.isNotBlank(textContent)) {
+		} else if (Utils.isStringNotBlank(textContent)) {
 
 			final Document transformContentDoc = DSSXMLUtils.buildDOM(textContent);
 			final Element contextDocumentElement = transformContentDoc.getDocumentElement();
@@ -475,7 +473,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					XADES_SIGNATURE_POLICY_IDENTIFIER);
 
 			String signaturePolicyId = signaturePolicy.getId();
-			if (StringUtils.isEmpty(signaturePolicyId)) { // implicit
+			if (Utils.isStringEmpty(signaturePolicyId)) { // implicit
 				DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_IMPLIED);
 			} else { // explicit
 				final Element signaturePolicyIdDom = DSSXMLUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
@@ -484,7 +482,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);
 
 				String description = signaturePolicy.getDescription();
-				if (StringUtils.isNotEmpty(description)) {
+				if (Utils.isStringNotEmpty(description)) {
 					DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_DESCRIPTION, description);
 				}
 
@@ -497,12 +495,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					incorporateDigestMethod(sigPolicyHashDom, digestAlgorithm);
 
 					final byte[] hashValue = signaturePolicy.getDigestValue();
-					final String bas64EncodedHashValue = Base64.encodeBase64String(hashValue);
+					final String bas64EncodedHashValue = Utils.toBase64(hashValue);
 					DSSXMLUtils.addTextElement(documentDom, sigPolicyHashDom, XMLNS, DS_DIGEST_VALUE, bas64EncodedHashValue);
 				}
 
 				String spuri = signaturePolicy.getSpuri();
-				if (StringUtils.isNotEmpty(spuri)) {
+				if (Utils.isStringNotEmpty(spuri)) {
 					Element sigPolicyQualifiers = DSSXMLUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_QUALIFIERS);
 					Element sigPolicyQualifier = DSSXMLUtils.addElement(documentDom, sigPolicyQualifiers, XAdES, XADES_SIGNATURE_POLICY_QUALIFIER);
 
@@ -639,12 +637,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				signerRoleDom = DSSXMLUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XADES_SIGNER_ROLE);
 			}
 
-			if (CollectionUtils.isNotEmpty(claimedSignerRoles)) {
+			if (Utils.isCollectionNotEmpty(claimedSignerRoles)) {
 				final Element claimedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CLAIMED_ROLES);
 				addRoles(claimedSignerRoles, claimedRolesDom, XADES_CLAIMED_ROLE);
 			}
 
-			if (CollectionUtils.isNotEmpty(certifiedSignerRoles)) {
+			if (Utils.isCollectionNotEmpty(certifiedSignerRoles)) {
 				final Element certifiedRolesDom;
 				if (params.isEn319132()) {
 					certifiedRolesDom = DSSXMLUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CERTIFIED_ROLES_V2);
@@ -761,7 +759,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
-		final String signatureValueBase64Encoded = Base64.encodeBase64String(signatureValueBytes);
+		final String signatureValueBase64Encoded = Utils.toBase64(signatureValueBytes);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 
@@ -803,7 +801,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		timestampElement.appendChild(canonicalizationMethodElement);
 
 		Element encapsulatedTimestampElement = documentDom.createElementNS(XAdES, XADES_ENCAPSULATED_TIME_STAMP);
-		encapsulatedTimestampElement.setTextContent(Base64.encodeBase64String(token.getEncoded()));
+		encapsulatedTimestampElement.setTextContent(Utils.toBase64(token.getEncoded()));
 
 		timestampElement.appendChild(encapsulatedTimestampElement);
 	}

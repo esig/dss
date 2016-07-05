@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.bouncycastle.util.encoders.Base64;
 
@@ -39,6 +38,7 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureValidationCallback;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -105,7 +105,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public DSSDocument getOriginalDocument(String signatureId) throws DSSException {
-		if (StringUtils.isBlank(signatureId)) {
+		if (Utils.isStringBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
 		List<AdvancedSignature> signatures = getSignatures();

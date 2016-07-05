@@ -26,7 +26,6 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
-import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
@@ -36,6 +35,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
@@ -118,7 +118,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final byte[] signatureValueBytes = DSSSignatureUtils.convertToXmlDSig(encryptionAlgorithm, signatureValue);
-		final String signatureValueBase64Encoded = Base64.encodeBase64String(signatureValueBytes);
+		final String signatureValueBase64Encoded = Utils.toBase64(signatureValueBytes);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 
@@ -126,7 +126,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		for (final DSSReference reference : references) {
 
 			// <ds:Object>
-			final String base64EncodedOriginalDocument = Base64.encodeBase64String(DSSUtils.toByteArray(reference.getContents()));
+			final String base64EncodedOriginalDocument = Utils.toBase64(DSSUtils.toByteArray(reference.getContents()));
 			final Element objectDom = DSSXMLUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
 			final String id = reference.getUri().substring(1);
 			objectDom.setAttribute(ID, id);

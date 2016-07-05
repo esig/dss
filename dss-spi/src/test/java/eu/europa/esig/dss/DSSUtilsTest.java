@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class DSSUtilsTest {
@@ -59,7 +59,7 @@ public class DSSUtilsTest {
 
 		FileInputStream fis = new FileInputStream("src/test/resources/belgiumrs2.crt");
 		byte[] byteArray = IOUtils.toByteArray(fis);
-		logger.info(Base64.encodeBase64String(byteArray));
+		logger.info(Utils.toBase64(byteArray));
 		IOUtils.closeQuietly(fis);
 		CertificateToken certificate2 = DSSUtils.loadCertificate(byteArray);
 		assertNotNull(certificate2);
@@ -69,7 +69,7 @@ public class DSSUtilsTest {
 
 		FileInputStream fisNew = new FileInputStream("src/test/resources/belgiumrs2-new.crt");
 		byte[] byteArrayNew = IOUtils.toByteArray(fisNew);
-		logger.info(Base64.encodeBase64String(byteArrayNew));
+		logger.info(Utils.toBase64(byteArrayNew));
 		IOUtils.closeQuietly(fisNew);
 		CertificateToken certificate2New = DSSUtils.loadCertificate(byteArrayNew);
 		assertNotNull(certificate2New);
