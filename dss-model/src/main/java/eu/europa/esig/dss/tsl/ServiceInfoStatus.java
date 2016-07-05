@@ -1,8 +1,9 @@
 package eu.europa.esig.dss.tsl;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ServiceInfoStatus {
+public class ServiceInfoStatus implements Serializable{
 
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceStatus>
