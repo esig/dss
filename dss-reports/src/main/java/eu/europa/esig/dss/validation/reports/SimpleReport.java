@@ -85,11 +85,11 @@ public class SimpleReport {
 	/**
 	 * @param signatureId
 	 *            the signature id to test
-	 * @return true if the signature Indication element is equals to {@link Indication#PASSED}
+	 * @return true if the signature Indication element is equals to {@link Indication#TOTAL_PASSED}
 	 */
 	public boolean isSignatureValid(final String signatureId) {
 		final Indication indicationValue = getIndication(signatureId);
-		return Indication.PASSED.equals(indicationValue);
+		return Indication.TOTAL_PASSED.equals(indicationValue);
 	}
 
 	/**
