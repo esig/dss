@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 
 public interface IUtils {
@@ -60,5 +63,11 @@ public interface IUtils {
 	byte[] fromBase64(String base64);
 
 	byte[] fromBase64(byte[] base64);
+
+	byte[] toByteArray(InputStream is) throws IOException;
+
+	void closeQuietly(InputStream is);
+
+	void closeQuietly(OutputStream os);
 
 }

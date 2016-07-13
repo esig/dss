@@ -272,8 +272,8 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 
 			assertEquals(decryptedDigestEncodeBase64, computedDigestEncodeBase64);
 
-			IOUtils.closeQuietly(asn1sInput);
-			IOUtils.closeQuietly(inputDecrypted);
+			Utils.closeQuietly(asn1sInput);
+			Utils.closeQuietly(inputDecrypted);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			fail(e.getMessage());

@@ -241,7 +241,7 @@ public class CMSSignedDataBuilder {
 			if (!encapsulate) {
 				final InputStream inputStream = parameters.getDetachedContent().openStream();
 				final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(inputStream));
-				IOUtils.closeQuietly(inputStream);
+				Utils.closeQuietly(inputStream);
 				cmsSignedData = cmsSignedDataGenerator.generate(content, encapsulate);
 			} else {
 				cmsSignedData = cmsSignedDataGenerator.generate(cmsSignedData.getSignedContent(), encapsulate);

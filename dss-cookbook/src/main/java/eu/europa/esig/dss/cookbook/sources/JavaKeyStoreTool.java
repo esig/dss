@@ -59,7 +59,7 @@ public class JavaKeyStoreTool {
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 		} finally {
-			IOUtils.closeQuietly(ksStream);
+			Utils.closeQuietly(ksStream);
 		}
 	}
 

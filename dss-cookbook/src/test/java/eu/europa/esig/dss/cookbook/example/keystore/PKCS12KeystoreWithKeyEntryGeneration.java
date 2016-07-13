@@ -55,7 +55,7 @@ public class PKCS12KeystoreWithKeyEntryGeneration {
 		keyStore.load(null, KEYSTORE_PASSWORD.toCharArray());
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		keyStore.store(fos, KEYSTORE_PASSWORD.toCharArray());
-		IOUtils.closeQuietly(fos);
+		Utils.closeQuietly(fos);
 		return keyStore;
 	}
 }

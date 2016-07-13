@@ -36,11 +36,11 @@ public class XSLTService {
 
 		InputStream simpleIS = XSLTService.class.getResourceAsStream("/xslt/simpleReport.xslt");
 		templateSimpleReport = transformerFactory.newTemplates(new StreamSource(simpleIS));
-		IOUtils.closeQuietly(simpleIS);
+		Utils.closeQuietly(simpleIS);
 
 		InputStream detailedIS = XSLTService.class.getResourceAsStream("/xslt/validationReport.xslt");
 		templateDetailedReport = transformerFactory.newTemplates(new StreamSource(detailedIS));
-		IOUtils.closeQuietly(detailedIS);
+		Utils.closeQuietly(detailedIS);
 	}
 
 	public String generateSimpleReport(String simpleReport) {

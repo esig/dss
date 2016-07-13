@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -174,6 +176,18 @@ public final class Utils {
 
 	public static byte[] fromBase64(byte[] base64Bytes) {
 		return impl.fromBase64(base64Bytes);
+	}
+
+	public static byte[] toByteArray(InputStream is) throws IOException {
+		return impl.toByteArray(is);
+	}
+
+	public static void closeQuietly(InputStream is) {
+		impl.closeQuietly(is);
+	}
+
+	public static void closeQuietly(OutputStream os) {
+		impl.closeQuietly(os);
 	}
 
 }

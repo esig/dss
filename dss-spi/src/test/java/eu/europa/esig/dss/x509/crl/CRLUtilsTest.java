@@ -33,7 +33,7 @@ public class CRLUtilsTest {
 		assertEquals(certificate, validCRL.getIssuerToken());
 		assertEquals(x509CRL, validCRL.getX509CRL());
 		assertTrue(Utils.isStringEmpty(validCRL.getSignatureInvalidityReason()));
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class CRLUtilsTest {
 		assertFalse(validCRL.isSignatureIntact());
 		assertFalse(validCRL.isValid());
 		assertFalse(Utils.isStringEmpty(validCRL.getSignatureInvalidityReason()));
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 	}
 
 	@Test

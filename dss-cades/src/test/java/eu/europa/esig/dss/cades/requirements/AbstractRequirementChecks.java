@@ -50,7 +50,7 @@ public abstract class AbstractRequirementChecks {
 
 		signerInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
 
-		IOUtils.closeQuietly(asn1sInput);
+		Utils.closeQuietly(asn1sInput);
 	}
 
 	protected abstract DSSDocument getSignedDocument() throws Exception;

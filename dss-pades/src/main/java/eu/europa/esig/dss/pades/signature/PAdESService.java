@@ -98,7 +98,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 		final InputStream inputStream = toSignDocument.openStream();
 		final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 
 		SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
@@ -123,7 +123,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 		InputStream inputStream = toSignDocument.openStream();
 		final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
@@ -143,7 +143,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final byte[] encodedData = CMSUtils.getEncoded(data);
 		inputStream = toSignDocument.openStream();
 		pdfSignatureService.sign(inputStream, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 		DSSDocument signature = new InMemoryDocument(byteArrayOutputStream.toByteArray());
 		signature.setMimeType(MimeType.PDF);
 

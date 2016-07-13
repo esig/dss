@@ -506,7 +506,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 							} catch (IOException e) {
 								LOG.error("Unable to decode textContent " + textContent + " : " + e.getMessage(), e);
 							} finally {
-								IOUtils.closeQuietly(is);
+								Utils.closeQuietly(is);
 							}
 
 							try {

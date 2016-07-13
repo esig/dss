@@ -36,7 +36,7 @@ public class PolicyJaxbService {
 		} catch (Exception e) {
 			logger.error("Unable to parse '" + filePath+ "' : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(is);
+			Utils.closeQuietly(is);
 		}
 		return policy;
 	}

@@ -1,10 +1,14 @@
 package eu.europa.esig.dss.utils.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -150,6 +154,21 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public byte[] fromBase64(byte[] base64) {
 		return Base64.decodeBase64(base64);
+	}
+
+	@Override
+	public byte[] toByteArray(InputStream is) throws IOException {
+		return IOUtils.toByteArray(is);
+	}
+
+	@Override
+	public void closeQuietly(OutputStream os) {
+		IOUtils.closeQuietly(os);
+	}
+
+	@Override
+	public void closeQuietly(InputStream is) {
+		IOUtils.closeQuietly(is);
 	}
 
 }

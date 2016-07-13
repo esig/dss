@@ -217,7 +217,7 @@ public final class DSSASN1Utils {
 		} catch (IOException e) {
 			throw new DSSException("Error when computing certificate's extensions.", e);
 		} finally {
-			IOUtils.closeQuietly(input);
+			Utils.closeQuietly(input);
 		}
 	}
 

@@ -32,7 +32,7 @@ public class DSSASN1UtilsTest {
 	public void getDigestSignaturePolicy() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/signature-policy-example.der");
 		byte[] policyBytes = IOUtils.toByteArray(fis);
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 
 		byte[] signaturePolicyDigest = DSSASN1Utils.getAsn1SignaturePolicyDigest(DigestAlgorithm.SHA256, policyBytes);
 		String hexSignaturePolicyDigest = Utils.toHex(signaturePolicyDigest);

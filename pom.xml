@@ -519,12 +519,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
-			</dependency>
-
-			<dependency>
 				<groupId>xalan</groupId>
 				<artifactId>xalan</artifactId>
 				<version>2.7.2</version>

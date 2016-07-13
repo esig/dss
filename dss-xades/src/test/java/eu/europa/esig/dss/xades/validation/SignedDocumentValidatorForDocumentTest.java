@@ -27,7 +27,7 @@ public class SignedDocumentValidatorForDocumentTest {
 	public void testXmlUTF8InMemory() throws IOException {
 		FileInputStream fis = new FileInputStream(new File("src/test/resources/sample.xml"));
 		byte[] byteArray = IOUtils.toByteArray(fis);
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 		DSSDocument document = new InMemoryDocument(byteArray);
 		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(document);
 		assertTrue(documentValidator instanceof XMLDocumentValidator);
@@ -43,7 +43,7 @@ public class SignedDocumentValidatorForDocumentTest {
 	public void testXmlUISOInMemory() throws IOException {
 		FileInputStream fis = new FileInputStream(new File("src/test/resources/sampleISO.xml"));
 		byte[] byteArray = IOUtils.toByteArray(fis);
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 		DSSDocument document = new InMemoryDocument(byteArray);
 		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(document);
 		assertTrue(documentValidator instanceof XMLDocumentValidator);

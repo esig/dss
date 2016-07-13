@@ -62,7 +62,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature
 		DigestDocument digestDocument = new DigestDocument(file);
 		FileInputStream fis = new FileInputStream(file);
 		byte[] bytes = IOUtils.toByteArray(fis);
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 		String computedDigest = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, bytes));
 		digestDocument.addDigest(DigestAlgorithm.SHA256, computedDigest);
 

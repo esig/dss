@@ -104,7 +104,7 @@ public final class DSSSignatureUtils {
 		} catch (Exception e) {
 			throw new DSSException("Unable to convert to xmlDsig : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(is);
+			Utils.closeQuietly(is);
 		}
 	}
 
@@ -140,7 +140,7 @@ public final class DSSSignatureUtils {
 		} catch (Exception e) {
 			throw new DSSException("Unable to convert to xmlDsig : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(is);
+			Utils.closeQuietly(is);
 		}
 		return buffer.toByteArray();
 	}

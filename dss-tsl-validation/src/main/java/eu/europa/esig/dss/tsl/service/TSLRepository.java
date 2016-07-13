@@ -227,7 +227,7 @@ public class TSLRepository {
 		} catch (Exception e) {
 			logger.error("Unable to read '" + filePath + "' : " + e.getMessage());
 		} finally {
-			IOUtils.closeQuietly(fis);
+			Utils.closeQuietly(fis);
 		}
 		validationModel.setParseResult(tslParserResult);
 		validationModel.setCertificateSourceSynchronized(false);
@@ -249,7 +249,7 @@ public class TSLRepository {
 		} catch (Exception e) {
 			throw new DSSException("Cannot create file in cache : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(os);
+			Utils.closeQuietly(os);
 		}
 		return filePath;
 	}

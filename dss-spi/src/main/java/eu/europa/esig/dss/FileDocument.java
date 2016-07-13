@@ -87,14 +87,14 @@ public class FileDocument extends CommonDocument {
 	public void save(final String path) throws IOException {
 		final InputStream inputStream = openStream();
 		DSSUtils.saveToFile(inputStream, path);
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 	}
 
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		final InputStream inputStream = openStream();
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, inputStream);
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 		final String base64Encode = Utils.toBase64(digestBytes);
 		return base64Encode;
 	}

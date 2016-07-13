@@ -57,7 +57,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -700,7 +699,7 @@ public final class DSSUtils {
 	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
 		try {
 			final String digestAlgorithmOid = digestAlgorithm.getOid();
-			final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid);
+			final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid, BouncyCastleProvider);
 			return messageDigest;
 		} catch (NoSuchAlgorithmException e) {
 			throw new DSSException("Digest algorithm '" + digestAlgorithm.getName() + "' error: " + e.getMessage(), e);
@@ -895,7 +894,7 @@ public final class DSSUtils {
 			in = openInputStream(file);
 			return IOUtils.toByteArray(in);
 		} finally {
-			IOUtils.closeQuietly(in);
+			Utils.closeQuietly(in);
 		}
 	}
 
@@ -986,8 +985,8 @@ public final class DSSUtils {
 			final FileOutputStream fileOutputStream = new FileOutputStream(file);
 			final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 			IOUtils.copy(inputStream, fileOutputStream);
-			IOUtils.closeQuietly(inputStream);
-			IOUtils.closeQuietly(fileOutputStream);
+			Utils.closeQuietly(inputStream);
+			Utils.closeQuietly(fileOutputStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -1005,7 +1004,7 @@ public final class DSSUtils {
 	public static void saveToFile(final InputStream inputStream, final String path) throws IOException {
 		final FileOutputStream fileOutputStream = toFileOutputStream(path);
 		IOUtils.copy(inputStream, fileOutputStream);
-		IOUtils.closeQuietly(fileOutputStream);
+		Utils.closeQuietly(fileOutputStream);
 	}
 
 	public static X509CRL toX509CRL(final X509CRLHolder x509CRLHolder) {
@@ -1291,11 +1290,11 @@ public final class DSSUtils {
 			destination = fos.getChannel();
 			destination.transferFrom(source, 0, source.size());
 		} finally {
-			IOUtils.closeQuietly(source);
-			IOUtils.closeQuietly(fis);
+			Utils.closeQuietly(source);
+			Utils.closeQuietly(fis);
 
-			IOUtils.closeQuietly(destination);
-			IOUtils.closeQuietly(fos);
+			Utils.closeQuietly(destination);
+			Utils.closeQuietly(fos);
 		}
 	}
 
@@ -1380,7 +1379,7 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 		}
 	}
 

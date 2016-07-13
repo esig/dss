@@ -37,7 +37,7 @@ public class CreateKeyStoreApp {
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		store.store(fos, KEYSTORE_PASSWORD.toCharArray());
 
-		IOUtils.closeQuietly(fos);
+		Utils.closeQuietly(fos);
 
 		readKeyStore();
 
@@ -60,7 +60,7 @@ public class CreateKeyStoreApp {
 		displayCertificateDigests(europanCert);
 
 		store.setCertificateEntry(alias, europanCert.getCertificate());
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 	}
 
 	private static void displayCertificateDigests(CertificateToken europanCert) {
@@ -95,7 +95,7 @@ public class CreateKeyStoreApp {
 			}
 		}
 
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 	}
 
 	private static KeyStore createKeyStore() throws Exception {
@@ -104,7 +104,7 @@ public class CreateKeyStoreApp {
 
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		trustStore.store(fos, KEYSTORE_PASSWORD.toCharArray());
-		IOUtils.closeQuietly(fos);
+		Utils.closeQuietly(fos);
 
 		return trustStore;
 	}

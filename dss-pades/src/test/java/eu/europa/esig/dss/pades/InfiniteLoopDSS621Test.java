@@ -237,14 +237,14 @@ public class InfiniteLoopDSS621Test {
 
 				assertEquals(decryptedDigestEncodeBase64, computedDigestFromSignatureEncodeBase64);
 
-				IOUtils.closeQuietly(inputDecrypted);
+				Utils.closeQuietly(inputDecrypted);
 
 			}
 
-			IOUtils.closeQuietly(asn1sInput);
+			Utils.closeQuietly(asn1sInput);
 		}
 
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 		document.close();
 	}
 

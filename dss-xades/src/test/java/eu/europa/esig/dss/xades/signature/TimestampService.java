@@ -258,7 +258,7 @@ public class TimestampService {
 		if (LOG.isTraceEnabled()) {
 
 			LOG.trace("Bytes to digest : [" + new String(references) + "]");
-			LOG.trace("Digest to timestamp: " + Base64.encodeBase64String(digest));
+			LOG.trace("Digest to timestamp: " + Utils.toBase64(digest));
 		}
 		final TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digest);
 		final TimestampToken token = new TimestampToken(timeStampResponse, timestampType, certificatePool);

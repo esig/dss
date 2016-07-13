@@ -310,7 +310,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			}
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(asicsInputStream);
+			Utils.closeQuietly(asicsInputStream);
 		}
 	}
 

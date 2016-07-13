@@ -32,13 +32,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSEncodingException;
 import eu.europa.esig.dss.DSSEncodingException.MSG;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Implements a CertificateSource using a JKS KeyStore.
@@ -146,7 +146,8 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				if (certificateChain != null) {
 					for (Certificate chainCert : certificateChain) {
 						logger.debug("Alias " + alias + " Cert " + ((X509Certificate) chainCert).getSubjectDN());
-						CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert), CertificateSourceType.OCSP_RESPONSE);
+						CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert),
+								CertificateSourceType.OCSP_RESPONSE);
 						if (!list.contains(certToken)) {
 							list.add(certToken);
 						}
@@ -177,7 +178,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 		} catch (Exception e) {
 			logger.error("Unable to persist the keystore : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(os);
+			Utils.closeQuietly(os);
 		}
 	}
 
@@ -226,7 +227,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 		} catch (Exception e) {
 			logger.error("Unable to read keystore : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(is);
+			Utils.closeQuietly(is);
 		}
 		return store;
 	}

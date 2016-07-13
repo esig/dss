@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -107,7 +106,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		try {
 			final InputStream inputStream = signatureToExtend.openStream();
 			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
 			final CMSSignedDocument cmsSignedDocument = new CMSSignedDocument(extendCMSSignedData);
 			return cmsSignedDocument;

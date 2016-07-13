@@ -335,7 +335,7 @@ public class SignatureController implements Initializable {
 			try {
 				FileOutputStream fos = new FileOutputStream(fileToSave);
 				IOUtils.copy(signedDocument.openStream(), fos);
-				IOUtils.closeQuietly(fos);
+				Utils.closeQuietly(fos);
 			} catch (Exception e) {
 				Alert alert = new Alert(AlertType.ERROR, "Unable to save file : " + e.getMessage(), ButtonType.CLOSE);
 				alert.showAndWait();

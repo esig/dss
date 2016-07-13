@@ -62,8 +62,8 @@ public final class DSSPDFUtils {
 		} catch (IOException e) {
 			throw new DSSException("The process has no rights to write or to access 'java.io.tmpdir': " + System.getProperty("java.io.tmpdir"), e);
 		} finally {
-			IOUtils.closeQuietly(pdfData);
-			IOUtils.closeQuietly(fileOutputStream);
+			Utils.closeQuietly(pdfData);
+			Utils.closeQuietly(fileOutputStream);
 		}
 	}
 
@@ -85,7 +85,7 @@ public final class DSSPDFUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(fileInputStream);
+			Utils.closeQuietly(fileInputStream);
 		}
 	}
 

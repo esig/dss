@@ -77,8 +77,8 @@ public class CAdESWithContentTimestampTest {
 		}
 		assertTrue(foundContentTimestamp);
 
-		IOUtils.closeQuietly(asn1sInput);
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(asn1sInput);
+		Utils.closeQuietly(fis);
 	}
 
 }

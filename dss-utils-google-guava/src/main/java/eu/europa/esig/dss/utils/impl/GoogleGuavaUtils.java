@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.utils.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import com.google.common.base.CharMatcher;
@@ -140,8 +141,10 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	public byte[] subarray(byte[] array, int start, int length) {
-		// TODO Auto-generated method stub
-		return null;
+		if (array == null) {
+			return null;
+		}
+		return Arrays.copyOfRange(array, start, length);
 	}
 
 	@Override
@@ -169,7 +172,7 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	public String toHex(byte[] bytes) {
-		return BaseEncoding.base16().encode(bytes);
+		return BaseEncoding.base16().encode(bytes).toLowerCase();
 	}
 
 	@Override

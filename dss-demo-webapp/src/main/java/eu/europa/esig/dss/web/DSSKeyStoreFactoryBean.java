@@ -54,8 +54,8 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 			} catch (Exception e) {
 				throw new DSSException("Unable to create the keystore on the server : " + e.getMessage(), e);
 			} finally {
-				IOUtils.closeQuietly(is);
-				IOUtils.closeQuietly(os);
+				Utils.closeQuietly(is);
+				Utils.closeQuietly(os);
 			}
 		}
 		return new KeyStoreCertificateSource(keystoreFile, keyStoreType, keyStorePassword);

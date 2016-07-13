@@ -49,11 +49,11 @@ public class FOPService {
 
 		InputStream simpleIS = FOPService.class.getResourceAsStream("/xslt/simpleReportFop.xslt");
 		templateSimpleReport = transformerFactory.newTemplates(new StreamSource(simpleIS));
-		IOUtils.closeQuietly(simpleIS);
+		Utils.closeQuietly(simpleIS);
 
 		InputStream detailedIS = FOPService.class.getResourceAsStream("/xslt/validationReportFop.xslt");
 		templateDetailedReport = transformerFactory.newTemplates(new StreamSource(detailedIS));
-		IOUtils.closeQuietly(detailedIS);
+		Utils.closeQuietly(detailedIS);
 	}
 
 	public void generateSimpleReport(String simpleReport, OutputStream os) throws Exception {

@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSCannotFetchDataException;
 import eu.europa.esig.dss.DSSCannotFetchDataException.MSG;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Implementation of HTTPDataLoader that use the java.net.URL class.
@@ -90,7 +91,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 		} catch (IOException e) {
 			throw new DSSException("An error occured while HTTP GET for url '" + url + "' : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 		}
 		return result;
 	}
@@ -114,8 +115,8 @@ public class NativeHTTPDataLoader implements DataLoader {
 		} catch (IOException e) {
 			throw new DSSException("An error occured while HTTP POST for url '" + url + "' : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(out);
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(out);
+			Utils.closeQuietly(inputStream);
 		}
 		return result;
 	}

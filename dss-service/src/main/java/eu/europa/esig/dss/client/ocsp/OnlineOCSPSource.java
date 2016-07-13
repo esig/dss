@@ -256,8 +256,8 @@ public class OnlineOCSPSource implements OCSPSource {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(ais1);
-			IOUtils.closeQuietly(ais2);
+			Utils.closeQuietly(ais1);
+			Utils.closeQuietly(ais2);
 		}
 	}
 }

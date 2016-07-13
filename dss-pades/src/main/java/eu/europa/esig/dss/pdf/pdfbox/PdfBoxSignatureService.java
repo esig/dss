@@ -108,7 +108,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(pdDocument);
+			Utils.closeQuietly(pdDocument);
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
 		}
@@ -140,9 +140,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(fileInputStream);
-			IOUtils.closeQuietly(finalFileInputStream);
-			IOUtils.closeQuietly(pdDocument);
+			Utils.closeQuietly(fileInputStream);
+			Utils.closeQuietly(finalFileInputStream);
+			Utils.closeQuietly(pdDocument);
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
 		}
@@ -189,7 +189,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (SignatureException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(options.getVisualSignature());
+			Utils.closeQuietly(options.getVisualSignature());
 		}
 	}
 
@@ -210,7 +210,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			options.setVisualSignature(signatureProperties);
 			options.setPage(imgParams.getPage());
 		} finally {
-			IOUtils.closeQuietly(is);
+			Utils.closeQuietly(is);
 		}
 	}
 
@@ -285,7 +285,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (COSVisitorException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(signedFileInputStream);
+			Utils.closeQuietly(signedFileInputStream);
 		}
 	}
 
@@ -306,7 +306,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			logger.error("Cannot validate signatures : " + e.getMessage(), e);
 		}
 
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 	}
 
 	private List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, byte[] originalBytes) {
@@ -370,8 +370,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (Exception e) {
 			logger.warn("Cannot analyze signatures : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(bais);
-			IOUtils.closeQuietly(doc);
+			Utils.closeQuietly(bais);
+			Utils.closeQuietly(doc);
 		}
 
 		return signatures;
@@ -408,8 +408,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (Exception e) {
 			logger.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(bais);
-			IOUtils.closeQuietly(doc);
+			Utils.closeQuietly(bais);
+			Utils.closeQuietly(doc);
 		}
 
 		return dssDictionary != null;
@@ -452,8 +452,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(pdDocument);
-			IOUtils.closeQuietly(fis);
+			Utils.closeQuietly(pdDocument);
+			Utils.closeQuietly(fis);
 			DSSUtils.delete(toSignFile);
 			DSSUtils.delete(signedFile);
 		}

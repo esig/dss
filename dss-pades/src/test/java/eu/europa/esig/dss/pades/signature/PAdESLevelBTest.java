@@ -235,11 +235,11 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 
 				assertEquals(decryptedDigestEncodeBase64, computedDigestFromSignatureEncodeBase64);
 
-				IOUtils.closeQuietly(inputDecrypted);
-				IOUtils.closeQuietly(asn1sInput);
+				Utils.closeQuietly(inputDecrypted);
+				Utils.closeQuietly(asn1sInput);
 			}
 
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 			document.close();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

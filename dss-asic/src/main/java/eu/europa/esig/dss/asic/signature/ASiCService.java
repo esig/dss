@@ -233,15 +233,15 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 					createZipEntry(zipOutputStream, newEntry);
 					final InputStream inputStream = signedDocument.openStream();
 					IOUtils.copy(inputStream, zipOutputStream);
-					IOUtils.closeQuietly(inputStream);
+					Utils.closeQuietly(inputStream);
 				} else {
 
 					createZipEntry(zipOutputStream, newEntry);
 					IOUtils.copy(zipInputStream, zipOutputStream);
 				}
 			}
-			IOUtils.closeQuietly(zipInputStream);
-			IOUtils.closeQuietly(zipOutputStream);
+			Utils.closeQuietly(zipInputStream);
+			Utils.closeQuietly(zipOutputStream);
 			DSSDocument asicSignature = new InMemoryDocument(output.toByteArray(), null, getMimeType(parameters.aSiC().getContainerForm()));
 			asicSignature.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return asicSignature;
@@ -334,7 +334,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			createZipEntry(zipOutputStream, entry);
 			IOUtils.copy(zipInputStream, zipOutputStream);
 		}
-		IOUtils.closeQuietly(zipInputStream);
+		Utils.closeQuietly(zipInputStream);
 	}
 
 	private void copyMETAINFContent(DSSDocument toSignAsicContainer, ZipOutputStream zipOutputStream) throws IOException {
@@ -346,7 +346,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 				IOUtils.copy(zipInputStream, zipOutputStream);
 			}
 		}
-		IOUtils.closeQuietly(zipInputStream);
+		Utils.closeQuietly(zipInputStream);
 	}
 
 	private void storeAsicManifestCAdES(ASiCSignatureParameters parameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
@@ -767,7 +767,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 				createZipEntry(outZip, entryDocument);
 				final InputStream inputStream = currentDetachedDocument.openStream();
 				IOUtils.copy(inputStream, outZip);
-				IOUtils.closeQuietly(inputStream);
+				Utils.closeQuietly(inputStream);
 			} catch (DSSException e) {
 				if (!((e.getCause() instanceof ZipException) && e.getCause().getMessage().startsWith("duplicate entry:"))) {
 					throw e;

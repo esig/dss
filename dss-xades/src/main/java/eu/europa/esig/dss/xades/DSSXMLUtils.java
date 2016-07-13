@@ -575,7 +575,7 @@ public final class DSSXMLUtils {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 		}
 	}
 
@@ -593,7 +593,7 @@ public final class DSSXMLUtils {
 			final Document doc = buildDOM(input);
 			return doc;
 		} finally {
-			IOUtils.closeQuietly(input);
+			Utils.closeQuietly(input);
 		}
 	}
 

@@ -90,7 +90,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		} catch (CMSException e) {
 			throw new DSSException("Not a valid CAdES file", e);
 		} finally {
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 		}
 	}
 

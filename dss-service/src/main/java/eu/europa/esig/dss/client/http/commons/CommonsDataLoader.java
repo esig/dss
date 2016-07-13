@@ -224,8 +224,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		} catch (final Exception e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(fis);
-			IOUtils.closeQuietly(trustStoreIs);
+			Utils.closeQuietly(fis);
+			Utils.closeQuietly(trustStoreIs);
 		}
 	}
 
@@ -493,7 +493,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 			LOG.warn(e.getMessage());
 		} finally {
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 		}
 		return null;
 	}
@@ -660,7 +660,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(content);
+			Utils.closeQuietly(content);
 		}
 	}
 
