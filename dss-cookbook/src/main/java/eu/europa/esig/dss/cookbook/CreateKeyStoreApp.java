@@ -30,10 +30,10 @@ public class CreateKeyStoreApp {
 
 		KeyStore store = createKeyStore();
 
-		addCertificate(store, "europa1", "src/main/resources/keystore/ec.europa.eu.1.cer");
-		addCertificate(store, "europa2", "src/main/resources/keystore/ec.europa.eu.2.cer");
-		addCertificate(store, "europa3", "src/main/resources/keystore/ec.europa.eu.3.cer");
-		addCertificate(store, "europa4", "src/main/resources/keystore/ec.europa.eu.4.cer");
+		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.1.cer");
+		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.2.cer");
+		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.3.cer");
+		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.4.cer");
 
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		store.store(fos, KEYSTORE_PASSWORD.toCharArray());
@@ -51,16 +51,17 @@ public class CreateKeyStoreApp {
 		}
 	}
 
-	private static void addCertificate(KeyStore store, String alias, String filepath) throws Exception {
+	private static void addCertificate(KeyStore store, String filepath) throws Exception {
 		InputStream fis = new FileInputStream(filepath);
 		CertificateToken europanCert = DSSUtils.loadCertificate(fis);
 		if (europanCert.isExpiredOn(new Date())) {
-			throw new RuntimeException("Alias " + alias + " is expired");
+			throw new RuntimeException("Certificate " + europanCert.getSubjectShortName() + " is expired");
 		}
 		System.out.println("Adding certificate " + filepath);
 		displayCertificateDigests(europanCert);
 
-		store.setCertificateEntry(alias, europanCert.getCertificate());
+		// DSSID as key (used in the administration screen)
+		store.setCertificateEntry(europanCert.getDSSIdAsString(), europanCert.getCertificate());
 		IOUtils.closeQuietly(fis);
 	}
 
