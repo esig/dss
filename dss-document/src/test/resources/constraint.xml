@@ -151,6 +151,7 @@
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="WARN" />
 			<TrustedServiceTypeIdentifier Level="WARN">
+				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
 				<Id>http://uri.etsi.org/TrstSvc/Svctype/TSA</Id>
 				<Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</Id>
 				<Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</Id>
