@@ -138,7 +138,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * pools present in the certificate verifier are merged and added to this
 	 * pool.
 	 */
-	protected CertificatePool validationCertPool;
+	protected CertificatePool validationCertPool = null;
 
 	/**
 	 * The document to validated (with the signature(s))
@@ -239,23 +239,20 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	@Override
 	public DSSDocument getDocument() {
-
 		return document;
 	}
 
 	@Override
 	public List<DSSDocument> getDetachedContents() {
-
 		return detachedContents;
 	}
 
 	@Override
-	public void defineSigningCertificate(final CertificateToken x509Certificate) {
-
-		if (x509Certificate == null) {
+	public void defineSigningCertificate(final CertificateToken token) {
+		if (token == null) {
 			throw new NullPointerException();
 		}
-		providedSigningCertificateToken = validationCertPool.getInstance(x509Certificate, CertificateSourceType.OTHER);
+		providedSigningCertificateToken = token;
 	}
 
 	/**
@@ -271,15 +268,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
-		validationCertPool = certificateVerifier.createValidationPool();
-
 		// If ASiC, the certificateVerifier must be given to the subordinate
 		// validator
-		DocumentValidator subordinateValidator = getSubordinatedValidator();
-		while (subordinateValidator != null) {
-			subordinateValidator.setCertificateVerifier(certificateVerifier);
-			subordinateValidator = subordinateValidator.getNextValidator();
-		}
+		// DocumentValidator subordinateValidator = getSubordinatedValidator();
+		// while (subordinateValidator != null) {
+		// subordinateValidator.setCertificateVerifier(certificateVerifier);
+		// subordinateValidator = subordinateValidator.getNextValidator();
+		// }
 	}
 
 	@Override
@@ -410,6 +405,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			throw new NullPointerException();
 		}
 
+		ensureCertificatePoolInitialized();
+
 		Date date1 = new Date();
 
 		final ProcessExecutor executor = provideProcessExecutorInstance();
@@ -437,9 +434,26 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return reports;
 	}
 
+	protected void ensureCertificatePoolInitialized() {
+		if (validationCertPool == null) {
+			if (certificateVerifier == null) {
+				LOG.warn("No need of certificate pool ??");
+				return;
+			}
+			Date start = new Date();
+			validationCertPool = certificateVerifier.createValidationPool();
+			if (providedSigningCertificateToken != null) {
+				validationCertPool.getInstance(providedSigningCertificateToken, CertificateSourceType.OTHER);
+			}
+			Date end = new Date();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("CertificatePool building : {} ms.", DSSUtils.getDateDiff(start, end, TimeUnit.MILLISECONDS));
+			}
+		}
+	}
+
 	@Override
 	public void setProcessExecutor(final ProcessExecutor processExecutor) {
-
 		this.processExecutor = processExecutor;
 	}
 
@@ -450,7 +464,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return {@code ProcessExecutor}
 	 */
 	public ProcessExecutor provideProcessExecutorInstance() {
-
 		if (processExecutor == null) {
 			processExecutor = new CustomProcessExecutor();
 		}
