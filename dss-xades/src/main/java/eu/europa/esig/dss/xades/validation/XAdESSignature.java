@@ -1376,7 +1376,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						break;
 					}
 				} catch (XMLSignatureException e) {
-					LOG.warn("Exception when validating signature: ", e);
+					LOG.warn("Exception when validating signature: " + e.getMessage());
 					signatureCryptographicVerification.setErrorMessage(e.getMessage());
 				}
 			}
@@ -1406,7 +1406,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setSignatureIntact(coreValidity);
 		} catch (Exception e) {
 
-			LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage());
+			LOG.debug(e.getMessage(), e);
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
 			int lineNumber = 0;
