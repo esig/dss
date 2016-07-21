@@ -268,13 +268,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
-		// If ASiC, the certificateVerifier must be given to the subordinate
-		// validator
-		// DocumentValidator subordinateValidator = getSubordinatedValidator();
-		// while (subordinateValidator != null) {
-		// subordinateValidator.setCertificateVerifier(certificateVerifier);
-		// subordinateValidator = subordinateValidator.getNextValidator();
-		// }
 	}
 
 	@Override
