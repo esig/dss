@@ -71,7 +71,7 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest {
 
 		List<String> signatureIdList = reports.getSimpleReport().getSignatureIdList();
 
-		Assert.assertEquals(2, new HashSet<>(reports.getSimpleReport().getSignatureIdList()).size());
+		Assert.assertEquals(2, new HashSet<String>(reports.getSimpleReport().getSignatureIdList()).size());
 		Assert.assertNotEquals(signatureIdList.get(0), signatureIdList.get(1));
 
 	}

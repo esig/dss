@@ -101,7 +101,7 @@ public class OCSPToken extends RevocationToken {
 	}
 
 	private void extractStatusInfo(final CertificateStatus certStatus) {
-		if (certStatus == null) {
+		if (CertificateStatus.GOOD == certStatus) {
 			status = true;
 			return;
 		}

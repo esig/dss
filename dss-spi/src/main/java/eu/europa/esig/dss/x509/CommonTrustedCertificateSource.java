@@ -100,7 +100,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 	 * @param keyStore
 	 *            the set of certificates you have to trust
 	 */
-	public void importAsTrusted(final KeyStoreCertificateSource keyStore) {
+	public void importAsTrusted(final CommonCertificateSource keyStore) {
 		final List<CertificateToken> certTokenList = keyStore.getCertificates();
 		for (final CertificateToken certToken : certTokenList) {
 			certPool.getInstance(certToken, getCertificateSourceType());

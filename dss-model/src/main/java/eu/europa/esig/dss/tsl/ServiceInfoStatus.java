@@ -1,10 +1,13 @@
 package eu.europa.esig.dss.tsl;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import eu.europa.esig.dss.util.BaseTimeDependent;
 
-public class ServiceInfoStatus extends BaseTimeDependent {
+public class ServiceInfoStatus extends BaseTimeDependent implements Serializable {
+
+	private static final long serialVersionUID = 4258613511229825596L;
 
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceStatus>

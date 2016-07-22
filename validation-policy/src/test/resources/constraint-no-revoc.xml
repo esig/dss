@@ -1,4 +1,4 @@
-﻿<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/policy">
+<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/policy">
 	<Description>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
 		Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
 		signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
@@ -151,7 +151,6 @@
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="WARN" />
 			<TrustedServiceTypeIdentifier Level="WARN">
-				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
 				<Id>http://uri.etsi.org/TrstSvc/Svctype/TSA</Id>
 				<Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</Id>
 				<Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</Id>
@@ -270,11 +269,6 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
-				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="WARN" />
-				<NotRevoked Level="FAIL" />
-				<NotOnHold Level="FAIL" />
 				<Cryptographic Level="WARN">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
@@ -299,11 +293,6 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
-				<RevocationDataAvailable Level="WARN" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="WARN" />
-				<NotRevoked Level="FAIL" />
-				<NotOnHold Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>

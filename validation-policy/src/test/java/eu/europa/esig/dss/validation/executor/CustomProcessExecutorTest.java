@@ -26,6 +26,24 @@ import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 public class CustomProcessExecutorTest {
 
 	@Test
+	public void skipRevocationDataValidation() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/it.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicyNoRevoc());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date currentTime = sdf.parse("19/07/2016 11:30:00");
+		executor.setCurrentTime(currentTime);
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
 	public void signedDataNotFound() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/signed_data_not_found.xml");
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
@@ -260,6 +278,13 @@ public class CustomProcessExecutorTest {
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
 		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
+		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
+		assertNotNull(policyJaxB);
+		return new EtsiValidationPolicy(policyJaxB);
+	}
+
+	private EtsiValidationPolicy loadPolicyNoRevoc() throws Exception {
+		FileInputStream policyFis = new FileInputStream("src/test/resources/constraint-no-revoc.xml");
 		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
 		assertNotNull(policyJaxB);
 		return new EtsiValidationPolicy(policyJaxB);
