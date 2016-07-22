@@ -62,6 +62,7 @@ import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.tsl.TSLValidationSummary;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -354,11 +355,11 @@ public class TSLRepository {
 		serviceInfo.setServiceName(service.getName());
 		serviceInfo.setType(service.getType());
 
-		List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
-		List<TSLServiceStatus> serviceStatus = service.getStatus();
+		final MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
+		final List<TSLServiceStatus> serviceStatus = service.getStatus();
 		if (CollectionUtils.isNotEmpty(serviceStatus)) {
 			for (TSLServiceStatus tslServiceStatus : serviceStatus) {
-				status.add(new ServiceInfoStatus(tslServiceStatus.getStatus(), tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate()));
+				status.addOldest(new ServiceInfoStatus(tslServiceStatus.getStatus(), tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate()));
 			}
 		}
 		serviceInfo.setStatus(status);

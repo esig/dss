@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.europa.esig.dss.util.TimeDependentValues;
+
 /**
  * From a validation point of view, a Service is a set of pair ("Qualification Statement", "Condition").
  *
@@ -65,7 +67,7 @@ public class ServiceInfo implements Serializable {
 	 */
 	private String serviceName;
 
-	private List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
+	private TimeDependentValues<ServiceInfoStatus> status = new TimeDependentValues<ServiceInfoStatus>();
 
 	private Map<String, List<Condition>> qualifiersAndConditions = new HashMap<String, List<Condition>>();
 
@@ -194,12 +196,12 @@ public class ServiceInfo implements Serializable {
 		this.type = trim(type);
 	}
 
-	public List<ServiceInfoStatus> getStatus() {
+	public TimeDependentValues<ServiceInfoStatus> getStatus() {
 		return status;
 	}
 
-	public void setStatus(List<ServiceInfoStatus> status) {
-		this.status = status;
+	public void setStatus(TimeDependentValues<ServiceInfoStatus> status) {
+		this.status = new TimeDependentValues<ServiceInfoStatus>( status );
 	}
 
 	/**

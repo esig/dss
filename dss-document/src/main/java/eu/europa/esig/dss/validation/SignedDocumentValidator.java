@@ -1016,7 +1016,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
 
 				XmlServiceStatus xmlServiceStatus = new XmlServiceStatus();
-				List<ServiceInfoStatus> statusList = serviceInfo.getStatus();
+				Iterable<ServiceInfoStatus> statusList = serviceInfo.getStatus();
 				for (ServiceInfoStatus serviceInfoStatus : statusList) {
 					XmlServiceStatusType xmlStatus = new XmlServiceStatusType();
 					xmlStatus.setStatus(serviceInfoStatus.getStatus());
