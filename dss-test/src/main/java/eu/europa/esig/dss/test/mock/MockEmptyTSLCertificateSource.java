@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.test.mock;
 
 import java.util.Calendar;
+import java.util.Collections;
 
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
@@ -73,7 +74,7 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 		calendar.add(Calendar.YEAR, -1);
 
 		MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
-		status.addOldest(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION, calendar.getTime(), null));
+		status.addOldest(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION, Collections.emptyMap(), calendar.getTime(), null));
 		serviceInfo.setStatus(status);
 		serviceInfo.setTlWellSigned(true);
 

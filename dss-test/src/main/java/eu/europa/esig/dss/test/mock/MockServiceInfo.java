@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.test.mock;
 
 import java.util.Calendar;
+import java.util.Collections;
 
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
@@ -40,7 +41,7 @@ public class MockServiceInfo extends ServiceInfo {
 		calendar.add(Calendar.YEAR, -15);
 
 		MutableTimeDependentValues<ServiceInfoStatus> statusList = new MutableTimeDependentValues<ServiceInfoStatus>();
-		statusList.addOldest(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION_119612, calendar.getTime(), null));
+		statusList.addOldest(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION_119612, Collections.emptyMap(), calendar.getTime(), null));
 		setStatus(statusList);
 		setTlWellSigned(true);
 	}
