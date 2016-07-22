@@ -1394,13 +1394,23 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final CertificateToken signingCertificateToken = certificateValidity == null ? null : certificateValidity.getCertificateToken();
 		final int keyLength = signingCertificateToken == null ? 0 : DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
 		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
-		final DigestAlgorithm digestAlgorithm = signature.getDigestAlgorithm();
+		final DigestAlgorithm digestAlgorithm = getDigestAlgorithm(signature);
 		final String digestAlgorithmString = digestAlgorithm == null ? "?" : digestAlgorithm.getName();
 		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(digestAlgorithmString);
 		xmlSignature.setBasicSignature(xmlBasicSignature);
 		dealSignatureScope(xmlSignature, signature);
 
 		return signingCertificateToken;
+	}
+
+	private DigestAlgorithm getDigestAlgorithm(final AdvancedSignature signature) {
+		DigestAlgorithm digestAlgorithm = null;
+		try {
+			digestAlgorithm = signature.getDigestAlgorithm();
+		} catch (Exception e) {
+			LOG.error("Unable to retrieve digest algorithm : " + e.getMessage());
+		}
+		return digestAlgorithm;
 	}
 
 	private void performStructuralValidation(final AdvancedSignature signature, final XmlSignature xmlSignature) {
