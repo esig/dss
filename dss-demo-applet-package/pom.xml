@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>4.6.0</version>
+	</parent>
+
+	<artifactId>dss-demo-applet-package</artifactId>
+	<name>DSS Demo: Applet Packaging</name>
+	<description>DSS Demo: Applet Packaging</description>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<artifactSet>
+						<excludes>
+							<exclude>xalan:*</exclude>
+							<exclude>xerces:*</exclude>
+						</excludes>
+					</artifactSet>
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/maven/**/*</exclude>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+					<transformers>
+						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+							<manifestEntries>
+								<Application-Name>SD-DSS Demo Applet</Application-Name>
+								<Permissions>all-permissions</Permissions>
+								<Codebase>*</Codebase>
+							</manifestEntries>
+						</transformer>
+											
+					    <!--  transformers for CXF (see http://stackoverflow.com/a/9069435/61298) -->
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+					      <resource>META-INF/spring.handlers</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+					      <resource>META-INF/services/com.sun.tools.xjc.Plugin</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+					      <resource>META-INF/spring.schemas</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+					      <resource>META-INF/cxf/cxf.extension</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+					      <resource>META-INF/extensions.xml</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+					      <resource>META-INF/cxf/extensions.xml</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+					      <resource>META-INF/cxf/bus-extensions.txt</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+					      <resource>META-INF/cxf/bus-extensions.xml</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+					      <resource>META-INF/wsdl.plugin.xml</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+					      <resource>META-INF/tools.service.validator.xml</resource>
+					    </transformer>
+					    <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+					      <resource>META-INF/cxf/java2wsbeans.xml</resource>
+					    </transformer>
+					</transformers>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-demo-applet</artifactId>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>codesigning</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<storetype>${keystore.type}</storetype>
+							<keystore>${keystore.path}</keystore>
+							<alias>${keystore.alias}</alias>
+							<storepass>${keystore.store.password}</storepass>
+							<keypass>${keystore.key.password}</keypass>
+							<tsa>http://services.globaltrustfinder.com/adss/tsa</tsa>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

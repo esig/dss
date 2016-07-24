@@ -35,6 +35,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.EntityUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -257,6 +258,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 		HttpPost httpRequest = null;
 		HttpResponse httpResponse = null;
+                CloseableHttpClient client=null;
 		try {
 
 			final URI uri = URI.create(urlString.trim());
@@ -271,7 +273,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 				httpRequest.setHeader(CONTENT_TYPE, contentType);
 			}
 
-			httpResponse = super.getHttpResponse(httpRequest, urlString);
+                        client= getHttpClient(urlString);
+			httpResponse = super.getHttpResponse(client,httpRequest, urlString);
 
 			returnedBytes = readHttpResponse(urlString, httpResponse);
 			if (returnedBytes.length != 0) {
@@ -282,6 +285,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
+                    try
+                    {
 			if (httpRequest != null) {
 				httpRequest.releaseConnection();
 			}
@@ -289,8 +294,15 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 				EntityUtils.consumeQuietly(httpResponse.getEntity());
 			}
 		}
+                   
+                    finally
+                    {
+                        closeClient(client);
+                    }
+		}
 		return returnedBytes;
 	}
+
 
 	private boolean isCacheExpired(File file) {
 		if (cacheExpirationTime == null) {

@@ -715,6 +715,11 @@
 				<jfxrt.jar>${java.home}/lib/jfxrt.jar</jfxrt.jar>
 			</properties>
 
+			<properties>
+				<project.source.version>1.6</project.source.version>
+				<jfxrt.jar>${java.home}/lib/jfxrt.jar</jfxrt.jar>
+			</properties>
+
 			<!-- Skip dss-standalone-app (JavaFX) -->
 			<modules>
 				<module>dss-model</module>
@@ -760,6 +765,11 @@
 					<exists>${java.home}/lib/ext/jfxrt.jar</exists>
 				</file>
 			</activation>
+			<properties>
+				<project.source.version>1.8</project.source.version>
+				<jfxrt.jar>${java.home}/lib/ext/jfxrt.jar</jfxrt.jar>
+			</properties>
+
 			<properties>
 				<project.source.version>1.8</project.source.version>
 				<jfxrt.jar>${java.home}/lib/ext/jfxrt.jar</jfxrt.jar>
