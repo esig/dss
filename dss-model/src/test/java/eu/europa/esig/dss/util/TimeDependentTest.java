@@ -104,4 +104,34 @@ public class TimeDependentTest {
 		}
 	}
 
+	@Test
+	public void oneAddOldestLimited() {
+		final Date dx = new Date( 30000 );
+		final BaseTimeDependent v1In = new BaseTimeDependent( dx, new Date( 40000 ) );
+		final MutableTimeDependentValues<BaseTimeDependent> coll = new MutableTimeDependentValues<BaseTimeDependent>( Collections.singleton( v1In ) );
+		final BaseTimeDependent v2In = new BaseTimeDependent( new Date( 10000 ), dx );
+		coll.addOldest( v2In );
+		
+		final Iterator<BaseTimeDependent> i = coll.iterator();
+		assertTrue( i.hasNext() );
+		final BaseTimeDependent v1Out = i.next();
+		assertSame( v1In, v1Out );
+		assertTrue( i.hasNext() );
+		final BaseTimeDependent v2Out = i.next();
+		assertSame( v2In, v2Out );
+		assertFalse( i.hasNext() );
+
+		assertSame( v1In, coll.getLatest() );
+		assertNull( coll.getCurrent( new Date( 0 ) ) );
+		assertNull( coll.getCurrent( new Date( 5000 ) ) );
+		assertSame( v2In, coll.getCurrent( new Date( 10000 ) ) );
+		assertSame( v2In, coll.getCurrent( new Date( 15000 ) ) );
+		assertSame( v2In, coll.getCurrent( new Date( 20000 ) ) );
+		assertSame( v2In, coll.getCurrent( new Date( 25000 ) ) );
+		assertSame( v1In, coll.getCurrent( new Date( 30000 ) ) );
+		assertSame( v1In, coll.getCurrent( new Date( 35000 ) ) );
+		assertNull( coll.getCurrent( new Date( 40000 ) ) );
+		assertNull( coll.getCurrent( new Date() ) );
+		assertNull( coll.getCurrent( new Date( System.currentTimeMillis() + 5000 ) ) );
+	}
 }
