@@ -1,29 +1,28 @@
 package eu.europa.esig.dss.tsl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-public class ServiceInfoStatus implements Serializable{
+import eu.europa.esig.dss.util.BaseTimeDependent;
+
+public class ServiceInfoStatus extends BaseTimeDependent implements Serializable {
+
+	private static final long serialVersionUID = 4258613511229825596L;
 
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceStatus>
 	 */
 	private String status;
 
-	/**
-	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:StatusStartingTime>
-	 */
-	private Date startDate;
+	private Map<String, List<Condition>> qualifiersAndConditions;
 
-	/**
-	 * The start date of the previous service history or null if current service
-	 */
-	private Date endDate;
-
-	public ServiceInfoStatus(String status, Date startDate, Date endDate) {
+	public ServiceInfoStatus(String status, Map<String, List<Condition>> qualifiersAndConditions, Date startDate, Date endDate) {
+		super( startDate, endDate );
 		this.status = status;
-		this.startDate = startDate;
-		this.endDate = endDate;
+		this.qualifiersAndConditions = qualifiersAndConditions;
 	}
 
 	public String getStatus() {
@@ -34,20 +33,39 @@ public class ServiceInfoStatus implements Serializable{
 		this.status = status;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	/**
+	 * Add a qualifier and the corresponding conditionEntry
+	 *
+	 * @param qualifier
+	 * @param condition
+	 */
+	public void addQualifierAndCondition(String qualifier, Condition condition) {
+		List<Condition> conditions = qualifiersAndConditions.get(qualifier);
+		if (conditions == null) {
+
+			conditions = new ArrayList<Condition>();
+			qualifiersAndConditions.put(qualifier, conditions);
+		}
+		conditions.add(condition);
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public Map<String, List<Condition>> getQualifiersAndConditions() {
+		return qualifiersAndConditions;
 	}
 
-	public Date getEndDate() {
-		return endDate;
-	}
+// from toString()
+//	for (final Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
+//
+//		buffer.append(indent).append("QualifiersAndConditions    \t= ").append(conditionEntry.getKey()).append(":").append('\n');
+//		indent += "\t\t\t\t\t\t\t\t";
+//
+//		final List<Condition> conditions = conditionEntry.getValue();
+//		for (final Condition condition : conditions) {
+//
+//			buffer.append(condition.toString(indent));
+//		}
+//		indent = indent.substring(8);
+//	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
+	
 }

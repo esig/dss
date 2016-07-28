@@ -1022,7 +1022,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
 
 				XmlServiceStatus xmlServiceStatus = new XmlServiceStatus();
-				List<ServiceInfoStatus> statusList = serviceInfo.getStatus();
+				Iterable<ServiceInfoStatus> statusList = serviceInfo.getStatus();
 				for (ServiceInfoStatus serviceInfoStatus : statusList) {
 					XmlServiceStatusType xmlStatus = new XmlServiceStatusType();
 					xmlStatus.setStatus(serviceInfoStatus.getStatus());
@@ -1057,15 +1057,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		LOG.trace("--> GET_QUALIFIERS()");
 		List<String> list = new ArrayList<String>();
-		Map<String, List<Condition>> qualifiersAndConditions = serviceInfo.getQualifiersAndConditions();
-		for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
-			List<Condition> conditions = conditionEntry.getValue();
-			LOG.trace("  --> " + conditions);
-			for (final Condition condition : conditions) {
-				if (condition.check(certificateToken)) {
-					LOG.trace("    --> CONDITION TRUE / " + conditionEntry.getKey());
-					list.add(conditionEntry.getKey());
-					break;
+		final ServiceInfoStatus serviceStatusAtCertIssuance = serviceInfo.getStatus().getCurrent( certificateToken.getNotBefore() );
+		if ( serviceStatusAtCertIssuance != null ) {
+			final Map<String, List<Condition>> qualifiersAndConditions = serviceStatusAtCertIssuance.getQualifiersAndConditions();
+			for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
+				List<Condition> conditions = conditionEntry.getValue();
+				LOG.trace("  --> " + conditions);
+				for (final Condition condition : conditions) {
+					if (condition.check(certificateToken)) {
+						LOG.trace("    --> CONDITION TRUE / " + conditionEntry.getKey());
+						list.add(conditionEntry.getKey());
+						break;
+					}
 				}
 			}
 		}
