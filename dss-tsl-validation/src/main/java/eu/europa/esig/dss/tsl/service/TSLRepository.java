@@ -57,11 +57,13 @@ import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
-import eu.europa.esig.dss.tsl.TSLServiceStatus;
+import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.tsl.TSLValidationSummary;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -354,27 +356,28 @@ public class TSLRepository {
 		serviceInfo.setServiceName(service.getName());
 		serviceInfo.setType(service.getType());
 
-		List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
-		List<TSLServiceStatus> serviceStatus = service.getStatus();
-		if (CollectionUtils.isNotEmpty(serviceStatus)) {
-			for (TSLServiceStatus tslServiceStatus : serviceStatus) {
-				status.add(new ServiceInfoStatus(tslServiceStatus.getStatus(), tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate()));
+		final MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
+		final TimeDependentValues<TSLServiceStatusAndInformationExtensions> serviceStatus = service.getStatusAndInformationExtensions();
+		if (serviceStatus != null) {
+			for (TSLServiceStatusAndInformationExtensions tslServiceStatus : serviceStatus) {
+				final Map<String, List<Condition>> qualifiersAndConditions = new HashMap<String, List<Condition>>();
+				final ServiceInfoStatus s = new ServiceInfoStatus(tslServiceStatus.getStatus(), qualifiersAndConditions, tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate());
+				List<TSLServiceExtension> extensions = tslServiceStatus.getExtensions();
+				if (CollectionUtils.isNotEmpty(extensions)) {
+					for (TSLServiceExtension tslServiceExtension : extensions) {
+						List<TSLConditionsForQualifiers> conditionsForQualifiers = tslServiceExtension.getConditionsForQualifiers();
+						for (TSLConditionsForQualifiers tslConditionsForQualifiers : conditionsForQualifiers) {
+							Condition condition = tslConditionsForQualifiers.getCondition();
+							for (String qualifier : tslConditionsForQualifiers.getQualifiers()) {
+								s.addQualifierAndCondition(qualifier, condition);
+							}
+						}
+					}
+				}
+				status.addOldest(s);
 			}
 		}
 		serviceInfo.setStatus(status);
-
-		List<TSLServiceExtension> extensions = service.getExtensions();
-		if (CollectionUtils.isNotEmpty(extensions)) {
-			for (TSLServiceExtension tslServiceExtension : extensions) {
-				List<TSLConditionsForQualifiers> conditionsForQualifiers = tslServiceExtension.getConditionsForQualifiers();
-				for (TSLConditionsForQualifiers tslConditionsForQualifiers : conditionsForQualifiers) {
-					Condition condition = tslConditionsForQualifiers.getCondition();
-					for (String qualifier : tslConditionsForQualifiers.getQualifiers()) {
-						serviceInfo.addQualifierAndCondition(qualifier, condition);
-					}
-				}
-			}
-		}
 
 		serviceInfo.setTlWellSigned(tlWellSigned);
 		return serviceInfo;

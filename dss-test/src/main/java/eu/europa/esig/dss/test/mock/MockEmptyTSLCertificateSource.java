@@ -20,17 +20,19 @@
  */
 package eu.europa.esig.dss.test.mock;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Collections;
 
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 
 public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSource {
+
+	private static final long serialVersionUID = -2354302376180111712L;
 
 	public static final String CA_QC = "http://uri.etsi.org/TrstSvc/Svctype/CA/QC";
 	public static final String SERVICE_STATUS_UNDERSUPERVISION = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/Svcstatus/undersupervision";
@@ -71,8 +73,8 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.YEAR, -1);
 
-		List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
-		status.add(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION, calendar.getTime(), null));
+		MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
+		status.addOldest(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION, Collections.emptyMap(), calendar.getTime(), null));
 		serviceInfo.setStatus(status);
 		serviceInfo.setTlWellSigned(true);
 

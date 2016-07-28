@@ -23,6 +23,7 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
+import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class TSLParserTest {
@@ -93,7 +94,8 @@ public class TSLParserTest {
 		TSLService service = getESTEIDSK2007(serviceProviders);
 		assertNotNull(service);
 
-		List<TSLServiceExtension> extensions = service.getExtensions();
+		TSLServiceStatusAndInformationExtensions latestStatusAndExtensions = service.getStatusAndInformationExtensions().getLatest();
+		List<TSLServiceExtension> extensions = latestStatusAndExtensions.getExtensions();
 		assertEquals(1, extensions.size());
 		TSLServiceExtension extension = extensions.get(0);
 
@@ -117,7 +119,8 @@ public class TSLParserTest {
 		service = getESTEIDSK2007(serviceProviders);
 		assertNotNull(service);
 
-		extensions = service.getExtensions();
+		latestStatusAndExtensions = service.getStatusAndInformationExtensions().getLatest();
+		extensions = latestStatusAndExtensions.getExtensions();
 		assertEquals(1, extensions.size());
 		extension = extensions.get(0);
 

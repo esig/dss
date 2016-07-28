@@ -21,11 +21,8 @@
 package eu.europa.esig.dss.tsl;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+
+import eu.europa.esig.dss.util.TimeDependentValues;
 
 /**
  * From a validation point of view, a Service is a set of pair ("Qualification Statement", "Condition").
@@ -65,31 +62,9 @@ public class ServiceInfo implements Serializable {
 	 */
 	private String serviceName;
 
-	private List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
-
-	private Map<String, List<Condition>> qualifiersAndConditions = new HashMap<String, List<Condition>>();
+	private TimeDependentValues<ServiceInfoStatus> status = new TimeDependentValues<ServiceInfoStatus>();
 
 	private boolean tlWellSigned;
-
-	/**
-	 * Add a qualifier and the corresponding conditionEntry
-	 *
-	 * @param qualifier
-	 * @param condition
-	 */
-	public void addQualifierAndCondition(String qualifier, Condition condition) {
-		List<Condition> conditions = qualifiersAndConditions.get(qualifier);
-		if (conditions == null) {
-
-			conditions = new ArrayList<Condition>();
-			qualifiersAndConditions.put(qualifier, conditions);
-		}
-		conditions.add(condition);
-	}
-
-	public Map<String, List<Condition>> getQualifiersAndConditions() {
-		return qualifiersAndConditions;
-	}
 
 	/**
 	 * @return
@@ -194,12 +169,12 @@ public class ServiceInfo implements Serializable {
 		this.type = trim(type);
 	}
 
-	public List<ServiceInfoStatus> getStatus() {
+	public TimeDependentValues<ServiceInfoStatus> getStatus() {
 		return status;
 	}
 
-	public void setStatus(List<ServiceInfoStatus> status) {
-		this.status = status;
+	public void setStatus(TimeDependentValues<ServiceInfoStatus> status) {
+		this.status = new TimeDependentValues<ServiceInfoStatus>( status );
 	}
 
 	/**
@@ -212,19 +187,7 @@ public class ServiceInfo implements Serializable {
 			buffer.append(indent).append("Type                      \t= ").append(type).append('\n');
 			buffer.append(indent).append("TSPName                   \t= ").append(tspName).append('\n');
 			buffer.append(indent).append("ServiceName               \t= ").append(serviceName).append('\n');
-			buffer.append(indent).append("Status                    \t= ").append(status).append('\n');
-			for (final Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
-
-				buffer.append(indent).append("QualifiersAndConditions    \t= ").append(conditionEntry.getKey()).append(":").append('\n');
-				indent += "\t\t\t\t\t\t\t\t";
-
-				final List<Condition> conditions = conditionEntry.getValue();
-				for (final Condition condition : conditions) {
-
-					buffer.append(condition.toString(indent));
-				}
-				indent = indent.substring(8);
-			}
+			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');
 			buffer.append(indent).append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
 			buffer.append(indent).append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
 			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");

@@ -59,7 +59,9 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
-import eu.europa.esig.dss.tsl.TSLServiceStatus;
+import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.ecc.CriteriaListType;
 import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
@@ -319,31 +321,31 @@ public class TSLParser implements Callable<TSLParserResult> {
 		service.setType(serviceInfo.getServiceTypeIdentifier());
 		service.setCertificateUrls(extractCertificatesUrls(serviceInfo));
 		service.setCertificates(extractCertificates(serviceInfo.getServiceDigitalIdentity()));
-		service.setExtensions(extractExtensions(serviceInfo.getServiceInformationExtensions()));
-		service.setStatus(getStatusHistory(tslService));
+		service.setStatusAndInformationExtensions(getStatusHistory(tslService));
 		return service;
 	}
 
-	private List<TSLServiceStatus> getStatusHistory(TSPServiceType tslService) {
-		List<TSLServiceStatus> statusHistoryList = new ArrayList<TSLServiceStatus>();
+	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> getStatusHistory(TSPServiceType tslService) {
+		MutableTimeDependentValues<TSLServiceStatusAndInformationExtensions> statusHistoryList = new MutableTimeDependentValues<TSLServiceStatusAndInformationExtensions>();
 
 		TSPServiceInformationType serviceInfo = tslService.getServiceInformation();
 
-		TSLServiceStatus status = new TSLServiceStatus();
+		TSLServiceStatusAndInformationExtensions status = new TSLServiceStatusAndInformationExtensions();
 		status.setStatus(serviceInfo.getServiceStatus());
+		status.setExtensions(extractExtensions(serviceInfo.getServiceInformationExtensions())  );
 		Date nextEndDate = convertToDate(serviceInfo.getStatusStartingTime());
 		status.setStartDate(nextEndDate);
-		statusHistoryList.add(status);
+		statusHistoryList.addOldest(status);
 
 		if (tslService.getServiceHistory() != null && CollectionUtils.isNotEmpty(tslService.getServiceHistory().getServiceHistoryInstance())) {
 			for (ServiceHistoryInstanceType serviceHistory : tslService.getServiceHistory().getServiceHistoryInstance()) {
-				TSLServiceStatus statusHistory = new TSLServiceStatus();
+				TSLServiceStatusAndInformationExtensions statusHistory = new TSLServiceStatusAndInformationExtensions();
 				statusHistory.setStatus(serviceHistory.getServiceStatus());
+				statusHistory.setExtensions(extractExtensions(serviceHistory.getServiceInformationExtensions())  );
 				statusHistory.setEndDate(nextEndDate);
 				nextEndDate = convertToDate(serviceHistory.getStatusStartingTime());
 				statusHistory.setStartDate(nextEndDate);
-
-				statusHistoryList.add(statusHistory);
+				statusHistoryList.addOldest(statusHistory);
 			}
 		}
 

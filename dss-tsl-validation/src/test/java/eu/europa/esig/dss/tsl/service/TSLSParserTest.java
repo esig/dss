@@ -22,7 +22,8 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
-import eu.europa.esig.dss.tsl.TSLServiceStatus;
+import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.util.TimeDependentValues;
 
 @RunWith(Parameterized.class)
 public class TSLSParserTest {
@@ -88,19 +89,21 @@ public class TSLSParserTest {
 					assertTrue(StringUtils.isNotEmpty(tslService.getName()));
 					assertTrue(StringUtils.isNotEmpty(tslService.getType()));
 
-					List<TSLServiceStatus> status = tslService.getStatus();
-					assertTrue(CollectionUtils.isNotEmpty(status));
-					for (TSLServiceStatus tslServiceStatus : status) {
+					TimeDependentValues<TSLServiceStatusAndInformationExtensions> status = tslService.getStatusAndInformationExtensions();
+					int n = 0;
+					for (TSLServiceStatusAndInformationExtensions tslServiceStatus : status) {
 						assertTrue(StringUtils.isNotEmpty(tslServiceStatus.getStatus()));
 						assertNotNull(tslServiceStatus.getStartDate());
-					}
-
-					List<TSLServiceExtension> extensions = tslService.getExtensions();
-					if (CollectionUtils.isNotEmpty(extensions)) {
-						for (TSLServiceExtension tslServiceExtension : extensions) {
-							assertTrue(CollectionUtils.isNotEmpty(tslServiceExtension.getConditionsForQualifiers()));
+						List<TSLServiceExtension> extensions = tslServiceStatus.getExtensions();
+						if (CollectionUtils.isNotEmpty(extensions)) {
+							for (TSLServiceExtension tslServiceExtension : extensions) {
+								assertTrue(CollectionUtils.isNotEmpty(tslServiceExtension.getConditionsForQualifiers()));
+							}
 						}
+						++n;
 					}
+					assertTrue( n > 0 );
+
 				}
 			}
 		}

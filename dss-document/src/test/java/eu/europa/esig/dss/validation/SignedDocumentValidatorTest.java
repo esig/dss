@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +31,8 @@ import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -48,12 +52,21 @@ public class SignedDocumentValidatorTest {
 		CertificateToken issuer = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIID0zCCArugAwIBAgIERZugDTANBgkqhkiG9w0BAQUFADBdMRgwFgYJKoZIhvcNAQkBFglwa2lAc2suZWUxCzAJBgNVBAYTAkVFMSIwIAYDVQQKExlBUyBTZXJ0aWZpdHNlZXJpbWlza2Vza3VzMRAwDgYDVQQDEwdKdXVyLVNLMB4XDTA3MDEwMzEyMjIzN1oXDTE2MDgyNjE0MjMwMVowWzELMAkGA1UEBhMCRUUxIjAgBgNVBAoTGUFTIFNlcnRpZml0c2VlcmltaXNrZXNrdXMxDzANBgNVBAsTBkVTVEVJRDEXMBUGA1UEAxMORVNURUlELVNLIDIwMDcwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDtWp2jLCsA7K9AxoPDOL0geM1GoR0Q6wSUICCJYyFkUMboEMxpSzFB6tlb0ySlHEU6Fs+tjA4QrSqwaw0uNk4BXv1lkoOr6DUc+20+AQd5jB6A0atrltZ1XG5IvDEep3DJPykkk2MPxUz7dZx7XUEr/kdUWI9cDIkFWic7y9oTBY9JaV6lxm08kweZ/qTw5PU8/bTvZCE0ygvBXU4TDS2FpUJ/+jTzM2ocWa3QjFQv2Sir6LBvgNY3du/m+WLABq0dgN18R4nhFtmaVepqAeUuEi8eRBl6yLTSmMwYCY46LsK5CdjTCZSZv934FtNuyY6Ph9nCXJAgNAY+GfNJfdMXAgMBAAGjgZwwgZkwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAf4wMwYDVR0fBCwwKjAooCagJIYiaHR0cDovL3d3dy5zay5lZS9jcmxzL2p1dXIvY3JsLmNybDAfBgNVHSMEGDAWgBQEqnpHo+SJrxrPCkCnGD9v7+l9vjAdBgNVHQ4EFgQUSAbevoyHV5WAeGP6nCMrK6A6GHUwDQYJKoZIhvcNAQEFBQADggEBACO6SJrjN5WZuiLSMy/tSmT/w3dd/KPErSAdUIJYkC7hOIauW7jZ3VNgNUMHSIkUoP8AviEMjGA4lkT61YScpJAdmgl8Y80HFdZV5CsThhddoIdZ3cZjSI4NZmTVkSduTjoySALxKL3ZEIPrepQDvNEeV1WSpI5+u/vMekUWJSPc8BK9O2av1e9ResKyPJidqrIksHFjNS+Yt8Ouw7F10MHaPPzMiwoa0DYTVsIKJncPTQmvdJG8M0DDToiiNPQuUy5d1CA75Wtjs+yILGZXpOfbdoQhE7G4pbZaF1s69jKp+zc0ZT4g2OoKfI2TiIX9qeGJMxkOENcd1DDqYVfePmo=");
 
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, -30);
+
+		MutableTimeDependentValues<ServiceInfoStatus> statusList = new MutableTimeDependentValues<ServiceInfoStatus>();
+		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus( null, new HashMap<String, List<Condition>>(), calendar.getTime(), null );
+		statusList.addOldest(lastestStatus);
+
 		ServiceInfo serviceInfo = new ServiceInfo();
+		serviceInfo.setStatus( statusList );
+		
 		Condition condition = new KeyUsageCondition(KeyUsageBit.nonRepudiation, true);
-		serviceInfo.addQualifierAndCondition(TOTO, condition);
+		lastestStatus.addQualifierAndCondition(TOTO, condition);
 
 		Condition condition2 = new KeyUsageCondition(KeyUsageBit.crlSign, true);
-		serviceInfo.addQualifierAndCondition(TATA, condition2);
+		lastestStatus.addQualifierAndCondition(TATA, condition2);
 		assertNotNull(serviceInfo);
 
 		issuer.addSourceType(CertificateSourceType.TRUSTED_LIST);
