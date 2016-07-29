@@ -124,7 +124,7 @@
 		                                            <dt>Type :</dt>
 		                                            <dd><a href="<c:out value="${service.type}" />"><c:out value="${service.type}" /></a></dd>
 		                                            
-		                                   			<c:forEach var="serviceStatus" items="${service.status}">
+		                                   			<c:forEach var="serviceStatus" items="${service.statusAndInformationExtensions.list}">
 		                                   				<br />
 			                                            <dt>Status :</dt>
 			                                            <dd><a href="<c:out value="${serviceStatus.status}" />"><c:out value="${serviceStatus.status}"/></a></dd>

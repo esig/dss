@@ -20,7 +20,6 @@ import org.junit.runners.Parameterized.Parameters;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
-import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.util.TimeDependentValues;
@@ -94,15 +93,9 @@ public class TSLSParserTest {
 					for (TSLServiceStatusAndInformationExtensions tslServiceStatus : status) {
 						assertTrue(StringUtils.isNotEmpty(tslServiceStatus.getStatus()));
 						assertNotNull(tslServiceStatus.getStartDate());
-						List<TSLServiceExtension> extensions = tslServiceStatus.getExtensions();
-						if (CollectionUtils.isNotEmpty(extensions)) {
-							for (TSLServiceExtension tslServiceExtension : extensions) {
-								assertTrue(CollectionUtils.isNotEmpty(tslServiceExtension.getConditionsForQualifiers()));
-							}
-						}
 						++n;
 					}
-					assertTrue( n > 0 );
+					assertTrue(n > 0);
 
 				}
 			}

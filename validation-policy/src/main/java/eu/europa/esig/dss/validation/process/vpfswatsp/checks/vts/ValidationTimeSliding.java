@@ -18,8 +18,8 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
@@ -201,15 +201,37 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		Date certNotAfter = certificate.getNotAfter();
 		Date thisUpdate = revocationData.getThisUpdate();
 
-		Date expiredCertsOnCRL = revocationData.getExpiredCertsOnCRL();
 		Date notAfterRevoc = thisUpdate;
+
+		/*
+		 * If a CRL contains the extension expiredCertsOnCRL defined in [i.12], it shall prevail over the TL
+		 * extension value but only for that specific CRL.
+		 */
+		Date expiredCertsOnCRL = revocationData.getExpiredCertsOnCRL();
 		if (expiredCertsOnCRL != null) {
 			notAfterRevoc = expiredCertsOnCRL;
 		}
 
+		/*
+		 * If an OCSP response contains the extension ArchiveCutoff defined in section 4.4.4 of
+		 * IETF RFC 6960 [i.11], it shall prevail over the TL extension value but only for that specific OCSP
+		 * response.
+		 */
 		Date archiveCutOff = revocationData.getArchiveCutOff();
 		if (archiveCutOff != null) {
 			notAfterRevoc = archiveCutOff;
+		}
+
+		/* expiredCertsRevocationInfo Extension from TL */
+		if (expiredCertsOnCRL != null && archiveCutOff != null) {
+			String revocationSigningCertificateId = revocationData.getSigningCertificateId();
+			CertificateWrapper revocCert = diagnosticData.getUsedCertificateById(revocationSigningCertificateId);
+			if (revocCert != null) {
+				Date expiredCertsRevocationInfo = revocCert.getCertificateTSPServiceExpiredCertsRevocationInfo();
+				if (expiredCertsRevocationInfo != null) {
+					notAfterRevoc = expiredCertsRevocationInfo;
+				}
+			}
 		}
 
 		return certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(notAfterRevoc) >= 0);

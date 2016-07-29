@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.tsl;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,57 +14,35 @@ public class ServiceInfoStatus extends BaseTimeDependent implements Serializable
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceStatus>
 	 */
-	private String status;
+	private final String status;
 
-	private Map<String, List<Condition>> qualifiersAndConditions;
+	private final Map<String, List<Condition>> qualifiersAndConditions;
+	private final List<String> additionalServiceInfoUris;
+	private final Date expiredCertsRevocationInfo;
 
-	public ServiceInfoStatus(String status, Map<String, List<Condition>> qualifiersAndConditions, Date startDate, Date endDate) {
-		super( startDate, endDate );
+	public ServiceInfoStatus(String status, Map<String, List<Condition>> qualifiersAndConditions, List<String> additionalServiceInfoUris,
+			Date expiredCertsRevocationInfo, Date startDate, Date endDate) {
+		super(startDate, endDate);
 		this.status = status;
 		this.qualifiersAndConditions = qualifiersAndConditions;
+		this.additionalServiceInfoUris = additionalServiceInfoUris;
+		this.expiredCertsRevocationInfo = expiredCertsRevocationInfo;
 	}
 
 	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	/**
-	 * Add a qualifier and the corresponding conditionEntry
-	 *
-	 * @param qualifier
-	 * @param condition
-	 */
-	public void addQualifierAndCondition(String qualifier, Condition condition) {
-		List<Condition> conditions = qualifiersAndConditions.get(qualifier);
-		if (conditions == null) {
-
-			conditions = new ArrayList<Condition>();
-			qualifiersAndConditions.put(qualifier, conditions);
-		}
-		conditions.add(condition);
-	}
-
 	public Map<String, List<Condition>> getQualifiersAndConditions() {
 		return qualifiersAndConditions;
 	}
 
-// from toString()
-//	for (final Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
-//
-//		buffer.append(indent).append("QualifiersAndConditions    \t= ").append(conditionEntry.getKey()).append(":").append('\n');
-//		indent += "\t\t\t\t\t\t\t\t";
-//
-//		final List<Condition> conditions = conditionEntry.getValue();
-//		for (final Condition condition : conditions) {
-//
-//			buffer.append(condition.toString(indent));
-//		}
-//		indent = indent.substring(8);
-//	}
+	public List<String> getAdditionalServiceInfoUris() {
+		return additionalServiceInfoUris;
+	}
 
-	
+	public Date getExpiredCertsRevocationInfo() {
+		return expiredCertsRevocationInfo;
+	}
+
 }

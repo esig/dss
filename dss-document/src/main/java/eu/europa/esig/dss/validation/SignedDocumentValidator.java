@@ -63,6 +63,7 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlAdditionalServiceInfoUris;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
@@ -80,8 +81,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatementIds;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatus;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlServiceStatusType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
@@ -1021,25 +1020,33 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlTSP.setTSPServiceType(serviceInfo.getType());
 				xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
 
-				XmlServiceStatus xmlServiceStatus = new XmlServiceStatus();
-				Iterable<ServiceInfoStatus> statusList = serviceInfo.getStatus();
-				for (ServiceInfoStatus serviceInfoStatus : statusList) {
-					XmlServiceStatusType xmlStatus = new XmlServiceStatusType();
-					xmlStatus.setStatus(serviceInfoStatus.getStatus());
-					xmlStatus.setStartDate(serviceInfoStatus.getStartDate());
-					xmlStatus.setEndDate(serviceInfoStatus.getEndDate());
-					xmlServiceStatus.getStatusService().add(xmlStatus);
-				}
-				xmlTSP.setServiceStatus(xmlServiceStatus);
+				final ServiceInfoStatus serviceStatusAtCertIssuance = serviceInfo.getStatus().getCurrent(certToken.getNotBefore());
+				if (serviceStatusAtCertIssuance != null) {
 
-				// Check of the associated conditions to identify the qualifiers
-				final List<String> qualifiers = getQualifiers(serviceInfo, certToken);
-				if (CollectionUtils.isNotEmpty(qualifiers)) {
-					final XmlQualifiers xmlQualifiers = new XmlQualifiers();
-					for (String qualifier : qualifiers) {
-						xmlQualifiers.getQualifier().add(qualifier);
+					xmlTSP.setStatus(serviceStatusAtCertIssuance.getStatus());
+					xmlTSP.setStartDate(serviceStatusAtCertIssuance.getStartDate());
+					xmlTSP.setEndDate(serviceStatusAtCertIssuance.getEndDate());
+
+					// Check of the associated conditions to identify the qualifiers
+					final List<String> qualifiers = getQualifiers(serviceStatusAtCertIssuance, certToken);
+					if (CollectionUtils.isNotEmpty(qualifiers)) {
+						final XmlQualifiers xmlQualifiers = new XmlQualifiers();
+						for (String qualifier : qualifiers) {
+							xmlQualifiers.getQualifier().add(qualifier);
+						}
+						xmlTSP.setQualifiers(xmlQualifiers);
 					}
-					xmlTSP.setQualifiers(xmlQualifiers);
+
+					List<String> additionalServiceInfoUris = serviceStatusAtCertIssuance.getAdditionalServiceInfoUris();
+					if (CollectionUtils.isNotEmpty(additionalServiceInfoUris)) {
+						XmlAdditionalServiceInfoUris xmlAdditional = new XmlAdditionalServiceInfoUris();
+						for (String uri : additionalServiceInfoUris) {
+							xmlAdditional.getURI().add(uri);
+						}
+						xmlTSP.setAdditionalServiceInfoUris(xmlAdditional);
+					}
+
+					xmlTSP.setExpiredCertsRevocationInfo(serviceStatusAtCertIssuance.getExpiredCertsRevocationInfo());
 				}
 				xmlCert.getTrustedServiceProvider().add(xmlTSP);
 			}
@@ -1053,26 +1060,23 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param certificateToken
 	 * @return
 	 */
-	public List<String> getQualifiers(ServiceInfo serviceInfo, CertificateToken certificateToken) {
-
+	public List<String> getQualifiers(ServiceInfoStatus serviceStatusAtCertIssuance, CertificateToken certificateToken) {
 		LOG.trace("--> GET_QUALIFIERS()");
 		List<String> list = new ArrayList<String>();
-		final ServiceInfoStatus serviceStatusAtCertIssuance = serviceInfo.getStatus().getCurrent( certificateToken.getNotBefore() );
-		if ( serviceStatusAtCertIssuance != null ) {
-			final Map<String, List<Condition>> qualifiersAndConditions = serviceStatusAtCertIssuance.getQualifiersAndConditions();
-			for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
-				List<Condition> conditions = conditionEntry.getValue();
-				LOG.trace("  --> " + conditions);
-				for (final Condition condition : conditions) {
-					if (condition.check(certificateToken)) {
-						LOG.trace("    --> CONDITION TRUE / " + conditionEntry.getKey());
-						list.add(conditionEntry.getKey());
-						break;
-					}
+		final Map<String, List<Condition>> qualifiersAndConditions = serviceStatusAtCertIssuance.getQualifiersAndConditions();
+		for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
+			List<Condition> conditions = conditionEntry.getValue();
+			LOG.trace("  --> " + conditions);
+			for (final Condition condition : conditions) {
+				if (condition.check(certificateToken)) {
+					LOG.trace("    --> CONDITION TRUE / " + conditionEntry.getKey());
+					list.add(conditionEntry.getKey());
+					break;
 				}
 			}
 		}
 		return list;
+
 	}
 
 	/**

@@ -280,13 +280,10 @@
 			<xs:element type="xs:string" name="TSPName" />
 			<xs:element type="xs:string" name="TSPServiceName" />
 			<xs:element type="xs:string" name="TSPServiceType" />
-			<xs:element name="ServiceStatus">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="ServiceStatusType" name="StatusService" minOccurs="1" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element type="xs:string" name="Status" />
+			<xs:element type="xs:dateTime" name="StartDate" />
+			<xs:element type="xs:dateTime" name="EndDate" minOccurs="0" />
+			
 			<xs:element name="Qualifiers" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -294,14 +291,15 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element type="xs:string" name="URI" minOccurs="1" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element type="xs:dateTime" name="expiredCertsRevocationInfo" minOccurs="0" />
 			<xs:element type="xs:boolean" name="WellSigned" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="ServiceStatusType">
-		<xs:sequence>
-			<xs:element type="xs:anyURI" name="Status" />
-			<xs:element type="xs:dateTime" name="StartDate" />
-			<xs:element type="xs:dateTime" name="EndDate" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RevocationType">

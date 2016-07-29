@@ -8,14 +8,15 @@ import java.util.List;
 
 /**
  * Immutable list of time-dependent values, with the latest value first.
+ * 
  * @author jdvorak
  * @param <T>
  */
 public class TimeDependentValues<T extends TimeDependent> implements Iterable<T> {
 
 	protected final List<T> list = new LinkedList<T>();
-	private final List<T> immutableList = Collections.unmodifiableList( list );
-	
+	private final List<T> immutableList = Collections.unmodifiableList(list);
+
 	/**
 	 * Empty list of values.
 	 */
@@ -25,11 +26,12 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 
 	/**
 	 * Copy constructor.
+	 * 
 	 * @param srcList
 	 */
-	public TimeDependentValues( final Iterable<T> srcList ) {
-		for ( final T x : srcList ) {
-			list.add( x );
+	public TimeDependentValues(final Iterable<T> srcList) {
+		for (final T x : srcList) {
+			list.add(x);
 		}
 	}
 
@@ -39,14 +41,14 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 	}
 
 	public T getLatest() {
-		return ( list.isEmpty() ) ? null : list.get( 0 );
+		return (list.isEmpty()) ? null : list.get(0);
 	}
-	
-	public T getCurrent( final Date d ) {
-		for ( final T x : list ) {
-			if ( x.getStartDate().compareTo( d ) <= 0 ) {
+
+	public T getCurrent(final Date d) {
+		for (final T x : list) {
+			if (x.getStartDate().compareTo(d) <= 0) {
 				final Date endDate = x.getEndDate();
-				if ( endDate == null || endDate.compareTo( d ) > 0 ) {
+				if (endDate == null || endDate.compareTo(d) > 0) {
 					return x;
 				}
 			}

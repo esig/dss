@@ -55,7 +55,6 @@ import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLService;
-import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
@@ -360,27 +359,36 @@ public class TSLRepository {
 		final TimeDependentValues<TSLServiceStatusAndInformationExtensions> serviceStatus = service.getStatusAndInformationExtensions();
 		if (serviceStatus != null) {
 			for (TSLServiceStatusAndInformationExtensions tslServiceStatus : serviceStatus) {
-				final Map<String, List<Condition>> qualifiersAndConditions = new HashMap<String, List<Condition>>();
-				final ServiceInfoStatus s = new ServiceInfoStatus(tslServiceStatus.getStatus(), qualifiersAndConditions, tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate());
-				List<TSLServiceExtension> extensions = tslServiceStatus.getExtensions();
-				if (CollectionUtils.isNotEmpty(extensions)) {
-					for (TSLServiceExtension tslServiceExtension : extensions) {
-						List<TSLConditionsForQualifiers> conditionsForQualifiers = tslServiceExtension.getConditionsForQualifiers();
-						for (TSLConditionsForQualifiers tslConditionsForQualifiers : conditionsForQualifiers) {
-							Condition condition = tslConditionsForQualifiers.getCondition();
-							for (String qualifier : tslConditionsForQualifiers.getQualifiers()) {
-								s.addQualifierAndCondition(qualifier, condition);
-							}
-						}
-					}
-				}
+				final Map<String, List<Condition>> qualifiersAndConditions = getMapConditionsByQualifier(tslServiceStatus);
+				final ServiceInfoStatus s = new ServiceInfoStatus(tslServiceStatus.getStatus(), qualifiersAndConditions,
+						tslServiceStatus.getAdditionalServiceInfoUris(), tslServiceStatus.getExpiredCertsRevocationInfo(), tslServiceStatus.getStartDate(),
+						tslServiceStatus.getEndDate());
+
 				status.addOldest(s);
 			}
 		}
 		serviceInfo.setStatus(status);
-
 		serviceInfo.setTlWellSigned(tlWellSigned);
 		return serviceInfo;
+	}
+
+	private Map<String, List<Condition>> getMapConditionsByQualifier(TSLServiceStatusAndInformationExtensions tslServiceStatus) {
+		List<TSLConditionsForQualifiers> conditionsForQualifiers = tslServiceStatus.getConditionsForQualifiers();
+		final Map<String, List<Condition>> qualifiersAndConditions = new HashMap<String, List<Condition>>();
+		if (conditionsForQualifiers != null) {
+			for (TSLConditionsForQualifiers tslConditionsForQualifiers : conditionsForQualifiers) {
+				Condition condition = tslConditionsForQualifiers.getCondition();
+				for (String qualifier : tslConditionsForQualifiers.getQualifiers()) {
+					List<Condition> conditionsForQualif = qualifiersAndConditions.get(qualifier);
+					if (conditionsForQualif == null) {
+						conditionsForQualif = new ArrayList<Condition>();
+						qualifiersAndConditions.put(qualifier, conditionsForQualif);
+					}
+					conditionsForQualif.add(condition);
+				}
+			}
+		}
+		return qualifiersAndConditions;
 	}
 
 	public List<TSLValidationSummary> getSummary() {

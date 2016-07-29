@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,12 +57,13 @@ public class SignedDocumentValidatorTest {
 		calendar.add(Calendar.YEAR, -30);
 
 		MutableTimeDependentValues<ServiceInfoStatus> statusList = new MutableTimeDependentValues<ServiceInfoStatus>();
-		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus( null, new HashMap<String, List<Condition>>(), calendar.getTime(), null );
+		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus(null, new HashMap<String, List<Condition>>(), Collections.emptyList(), null,
+				calendar.getTime(), null);
 		statusList.addOldest(lastestStatus);
 
 		ServiceInfo serviceInfo = new ServiceInfo();
-		serviceInfo.setStatus( statusList );
-		
+		serviceInfo.setStatus(statusList);
+
 		Condition condition = new KeyUsageCondition(KeyUsageBit.nonRepudiation, true);
 		lastestStatus.addQualifierAndCondition(TOTO, condition);
 

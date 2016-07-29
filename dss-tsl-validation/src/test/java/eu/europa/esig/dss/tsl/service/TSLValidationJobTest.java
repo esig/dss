@@ -18,8 +18,10 @@ import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
+import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 public class TSLValidationJobTest {
@@ -67,6 +69,9 @@ public class TSLValidationJobTest {
 					foundExternalCertificates = true;
 					break;
 				}
+
+				TimeDependentValues<TSLServiceStatusAndInformationExtensions> statusAndInformationExtensions = tslService.getStatusAndInformationExtensions();
+				assertNotNull(statusAndInformationExtensions.getLatest());
 			}
 		}
 		assertTrue(foundExternalCertificates);

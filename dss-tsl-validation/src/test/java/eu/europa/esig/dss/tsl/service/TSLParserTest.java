@@ -21,7 +21,6 @@ import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
-import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -95,11 +94,7 @@ public class TSLParserTest {
 		assertNotNull(service);
 
 		TSLServiceStatusAndInformationExtensions latestStatusAndExtensions = service.getStatusAndInformationExtensions().getLatest();
-		List<TSLServiceExtension> extensions = latestStatusAndExtensions.getExtensions();
-		assertEquals(1, extensions.size());
-		TSLServiceExtension extension = extensions.get(0);
-
-		List<TSLConditionsForQualifiers> conditionsForQualifiers = extension.getConditionsForQualifiers();
+		List<TSLConditionsForQualifiers> conditionsForQualifiers = latestStatusAndExtensions.getConditionsForQualifiers();
 		assertEquals(1, conditionsForQualifiers.size());
 
 		TSLConditionsForQualifiers qcStatement = getQualificationQCStatement(conditionsForQualifiers);
@@ -120,11 +115,7 @@ public class TSLParserTest {
 		assertNotNull(service);
 
 		latestStatusAndExtensions = service.getStatusAndInformationExtensions().getLatest();
-		extensions = latestStatusAndExtensions.getExtensions();
-		assertEquals(1, extensions.size());
-		extension = extensions.get(0);
-
-		conditionsForQualifiers = extension.getConditionsForQualifiers();
+		conditionsForQualifiers = latestStatusAndExtensions.getConditionsForQualifiers();
 		assertEquals(2, conditionsForQualifiers.size());
 
 		qcStatement = getQualificationQCStatement(conditionsForQualifiers);
@@ -132,6 +123,23 @@ public class TSLParserTest {
 
 		Condition condition = qcStatement.getCondition();
 		assertTrue(condition.check(certificate));
+	}
+
+	@Test
+	public void getAdditionnalServiceInfo() throws Exception {
+		TSLParser parser = new TSLParser(new FileInputStream(new File("src/test/resources/tsls/tsl-be-v5.xml")));
+		TSLParserResult model = parser.call();
+
+		List<TSLServiceProvider> serviceProviders = model.getServiceProviders();
+		assertEquals(4, serviceProviders.size());
+
+		for (TSLServiceProvider tslServiceProvider : serviceProviders) {
+			if ("Certipost n.v./s.a.".equals(tslServiceProvider.getName())) {
+				List<TSLService> services = tslServiceProvider.getServices();
+				assertEquals(6, services.size());
+			}
+		}
+
 	}
 
 	private TSLConditionsForQualifiers getQualificationQCStatement(List<TSLConditionsForQualifiers> conditionsForQualifiers) {
