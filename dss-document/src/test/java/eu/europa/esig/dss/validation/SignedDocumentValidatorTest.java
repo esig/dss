@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,10 +66,14 @@ public class SignedDocumentValidatorTest {
 		serviceInfo.setStatus(statusList);
 
 		Condition condition = new KeyUsageCondition(KeyUsageBit.nonRepudiation, true);
-		lastestStatus.addQualifierAndCondition(TOTO, condition);
+		List<Condition> conditions = new ArrayList<Condition>();
+		conditions.add(condition);
+		lastestStatus.getQualifiersAndConditions().put(TOTO, conditions);
 
 		Condition condition2 = new KeyUsageCondition(KeyUsageBit.crlSign, true);
-		lastestStatus.addQualifierAndCondition(TATA, condition2);
+		List<Condition> conditions2 = new ArrayList<Condition>();
+		conditions2.add(condition2);
+		lastestStatus.getQualifiersAndConditions().put(TATA, conditions2);
 		assertNotNull(serviceInfo);
 
 		issuer.addSourceType(CertificateSourceType.TRUSTED_LIST);

@@ -293,14 +293,10 @@
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>
-                            http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision
-                        </Status>
-                        <StartDate>2007-10-04T12:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>
+                    http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision
+                </Status>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -353,14 +349,10 @@
                 <TSPName>Certipost n.v./s.a.</TSPName>
                 <TSPServiceName>CN=Belgium Root CA2, C=BE</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>
-                            http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision
-                        </Status>
-                        <StartDate>2007-10-04T12:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>
+                    http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision
+                </Status>
+                <StartDate>2007-10-04T12:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
@@ -478,12 +470,8 @@
                 <TSPName>eIdentity a.s.</TSPName>
                 <TSPServiceName>(23) ACAeID2 - issuing qualified certificates</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2010-02-22T18:29:38</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2010-02-22T18:29:38</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -542,12 +530,8 @@
                 <TSPName>eIdentity a.s.</TSPName>
                 <TSPServiceName>(23) ACAeID2 - issuing qualified certificates</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2010-02-22T18:29:38</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2010-02-22T18:29:38</StartDate>
                 <Qualifiers>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD</Qualifier>
                 </Qualifiers>

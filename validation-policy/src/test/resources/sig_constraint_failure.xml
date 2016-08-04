@@ -74,12 +74,8 @@
                 <TSPName>Trans Sped SRL</TSPName>
                 <TSPServiceName>Trans Sped QCA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2011-07-25T23:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2011-07-25T23:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -167,12 +163,8 @@
                 <TSPName>Trans Sped SRL</TSPName>
                 <TSPServiceName>Trans Sped QCA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2011-07-25T23:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2011-07-25T23:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
@@ -410,12 +402,8 @@
                 <TSPName>Trans Sped SRL</TSPName>
                 <TSPServiceName>Trans Sped QCA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2011-07-25T23:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2011-07-25T23:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>

@@ -69,17 +69,9 @@
                 <TSPName>Banca d'Italia</TSPName>
                 <TSPServiceName>CN=Banca d'Italia,OU=Servizi di certificazione,O=Banca d'Italia,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                        <StartDate>2016-07-01T02:00:00</StartDate>
-                    </StatusService>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2014-11-24T09:43:33</StartDate>
-                        <EndDate>2016-07-01T02:00:00</EndDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2014-11-24T09:43:33</StartDate>
+                <EndDate>2016-07-01T02:00:00</EndDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -125,17 +117,9 @@
                 <TSPName>Banca d'Italia</TSPName>
                 <TSPServiceName>CN=Banca d'Italia,OU=Servizi di certificazione,O=Banca d'Italia,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                        <StartDate>2016-07-01T02:00:00</StartDate>
-                    </StatusService>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2014-11-24T09:43:33</StartDate>
-                        <EndDate>2016-07-01T02:00:00</EndDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2014-11-24T09:43:33</StartDate>
+                <EndDate>2016-07-01T02:00:00</EndDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>
@@ -197,17 +181,9 @@
                 <TSPName>Banca d'Italia</TSPName>
                 <TSPServiceName>CN=Banca d'Italia,OU=Servizi di certificazione,O=Banca d'Italia,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                        <StartDate>2016-07-01T02:00:00</StartDate>
-                    </StatusService>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2014-11-24T09:43:33</StartDate>
-                        <EndDate>2016-07-01T02:00:00</EndDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2014-11-24T09:43:33</StartDate>
+                <EndDate>2016-07-01T02:00:00</EndDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="AC40244C9404372BD81970D28266FB99021557A64101DA5D92232BCF1A9E7326">

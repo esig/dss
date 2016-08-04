@@ -79,12 +79,8 @@
                 <TSPName>Information Services Plc.</TSPName>
                 <TSPServiceName>StampIT Qualified CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                        <StartDate>2010-11-10T23:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                <StartDate>2010-11-10T23:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="6FA33A27510825642B995F3A377396F43DE6C34204EA08EBD080D6AE935F6E91">
@@ -161,12 +157,8 @@
                 <TSPName>Information Services Plc.</TSPName>
                 <TSPServiceName>StampIT Qualified CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                        <StartDate>2010-11-10T23:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                <StartDate>2010-11-10T23:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -222,12 +214,8 @@
                 <TSPName>Information Services Plc.</TSPName>
                 <TSPServiceName>StampIT Qualified CA</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                        <StartDate>2010-11-10T23:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                <StartDate>2010-11-10T23:00:00</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="47DB90134AA46D1F36475B286BECB476FE6CED6AE5D74E39D4C623AF8FC9F499">

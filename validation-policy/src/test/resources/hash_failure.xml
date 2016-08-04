@@ -112,12 +112,8 @@
                 <TSPName>n S.p.A.</TSPName>
                 <TSPServiceName>CN=n CA Firma Qualificata,OU=Certification Authority,O=n S.p.A./02046570426,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2010-11-24T17:01:29</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2010-11-24T17:01:29</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="1CC343320B734D6C0D9A05B412E79F231C6E47637CE421C5633CBA753099780C">
@@ -187,12 +183,8 @@
                 <TSPName>n S.p.A.</TSPName>
                 <TSPServiceName>CN=n CA Firma Qualificata,OU=Certification Authority,O=n S.p.A./02046570426,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2010-11-24T17:01:29</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2010-11-24T17:01:29</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -238,12 +230,8 @@
                 <TSPName>n S.p.A.</TSPName>
                 <TSPServiceName>CN=n CA Firma Qualificata,OU=Certification Authority,O=n S.p.A./02046570426,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2010-11-24T17:01:29</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2010-11-24T17:01:29</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>
@@ -300,12 +288,8 @@
                 <TSPName>n S.p.A.</TSPName>
                 <TSPServiceName>CN=n CA Firma Qualificata,OU=Certification Authority,O=n S.p.A./02046570426,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2010-11-24T17:01:29</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2010-11-24T17:01:29</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="F952A9D82EC371D8DF1CE76CA4AB9DECB773AC290B13D9A04E7157CE13924EB5">

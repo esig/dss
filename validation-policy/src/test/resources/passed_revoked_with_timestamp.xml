@@ -108,12 +108,8 @@
                 <TSPName>Infocert S.p.A.</TSPName>
                 <TSPServiceName>CN=InfoCert Firma Qualificata 2,serialNumber=07945211006,OU=Certificatore Accreditato,O=INFOCERT SPA,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2013-04-19T18:26:15</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2013-04-19T18:26:15</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -157,12 +153,8 @@
                 <TSPName>Infocert S.p.A.</TSPName>
                 <TSPServiceName>CN=InfoCert Time Stamping Authority 2,serialNumber=07945211006,OU=TSA,O=INFOCERT SPA,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2013-04-19T18:30:33</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2013-04-19T18:30:33</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -218,12 +210,8 @@
                 <TSPName>Infocert S.p.A.</TSPName>
                 <TSPServiceName>CN=InfoCert Firma Qualificata 2,serialNumber=07945211006,OU=Certificatore Accreditato,O=INFOCERT SPA,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2013-04-19T18:26:15</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2013-04-19T18:26:15</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="69674FCADB3AF99EAB7E9700EEB220216D7E423B3C2FF3B79EF4FC1B1954D26E">
@@ -378,12 +366,8 @@
                 <TSPName>Infocert S.p.A.</TSPName>
                 <TSPServiceName>CN=InfoCert Time Stamping Authority 2,serialNumber=07945211006,OU=TSA,O=INFOCERT SPA,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2013-04-19T18:30:33</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2013-04-19T18:30:33</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>
@@ -435,12 +419,8 @@
                 <TSPName>Infocert S.p.A.</TSPName>
                 <TSPServiceName>CN=InfoCert Time Stamping Authority 2,serialNumber=07945211006,OU=TSA,O=INFOCERT SPA,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2013-04-19T18:30:33</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2013-04-19T18:30:33</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Revocation Id="E3338F7F9E1963241C750B0FABA972C18C401EF51A1FF049CB3CD1EAD069C29F">
@@ -523,12 +503,8 @@
                 <TSPName>Infocert S.p.A.</TSPName>
                 <TSPServiceName>CN=InfoCert Firma Qualificata 2,serialNumber=07945211006,OU=Certificatore Accreditato,O=INFOCERT SPA,C=IT</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                        <StartDate>2013-04-19T18:26:15</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                <StartDate>2013-04-19T18:26:15</StartDate>
                 <WellSigned>true</WellSigned>
             </TrustedServiceProvider>
             <Info>
