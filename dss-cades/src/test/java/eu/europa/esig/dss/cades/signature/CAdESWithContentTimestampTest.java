@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -35,7 +34,7 @@ public class CAdESWithContentTimestampTest {
 		File file = new File("src/test/resources/plugtest/cades/CAdES-BES/Sample_Set_11/Signature-C-BES-4.p7m");
 
 		FileInputStream fis = new FileInputStream(file);
-		ASN1InputStream asn1sInput = new ASN1InputStream(IOUtils.toByteArray(fis));
+		ASN1InputStream asn1sInput = new ASN1InputStream(Utils.toByteArray(fis));
 		ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 		ASN1TaggedObject taggedObj = DERTaggedObject.getInstance(asn1Seq.getObjectAt(1));

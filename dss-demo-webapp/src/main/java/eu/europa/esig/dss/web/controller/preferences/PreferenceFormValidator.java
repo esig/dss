@@ -22,7 +22,6 @@ package eu.europa.esig.dss.web.controller.preferences;
 
 import java.net.URL;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -50,7 +49,7 @@ public class PreferenceFormValidator implements Validator {
 			final String value = preferenceForm.getValue();
 			if (Utils.isStringNotBlank(value)) {
 				try {
-					IOUtils.toString(new URL(value).openStream());
+					Utils.toByteArray(new URL(value).openStream());
 				} catch (Exception e) {
 					errors.rejectValue("value", "url.error");
 				}

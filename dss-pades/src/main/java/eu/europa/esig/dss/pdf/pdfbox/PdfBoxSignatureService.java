@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -136,7 +135,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature, digestAlgorithm);
 
 			finalFileInputStream = new FileInputStream(signedFile);
-			IOUtils.copy(finalFileInputStream, signedStream);
+			Utils.copy(finalFileInputStream, signedStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
@@ -298,7 +297,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		// recursive search of signature
 		InputStream inputStream = document.openStream();
 		try {
-			List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, IOUtils.toByteArray(inputStream));
+			List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, Utils.toByteArray(inputStream));
 			for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
 				callback.validate(pdfSignatureOrDocTimestampInfo);
 			}
@@ -448,7 +447,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			pdDocument.saveIncremental(inputStream, fileOutputStream);
 
 			fis = new FileInputStream(signedFile);
-			IOUtils.copy(fis, outpuStream);
+			Utils.copy(fis, outpuStream);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {

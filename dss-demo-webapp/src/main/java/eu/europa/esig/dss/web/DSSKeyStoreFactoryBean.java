@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
@@ -50,7 +49,7 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 			try {
 				is = DSSKeyStoreFactoryBean.class.getResourceAsStream("/" + keyStoreFilename);
 				os = new FileOutputStream(keystoreFile);
-				IOUtils.copy(is, os);
+				Utils.copy(is, os);
 			} catch (Exception e) {
 				throw new DSSException("Unable to create the keystore on the server : " + e.getMessage(), e);
 			} finally {

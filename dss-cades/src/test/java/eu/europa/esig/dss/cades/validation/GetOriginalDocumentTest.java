@@ -2,7 +2,6 @@ package eu.europa.esig.dss.cades.validation;
 
 import java.util.Date;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.util.encoders.Base64;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,19 +19,20 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class GetOriginalDocumentTest {
-	
+
 	private static String HELLO_WORLD = "HELLO WORLD !";
-	
+
 	@Test
 	public final void getOriginalDocumentFromEnvelopingSignature() throws Exception {
 		DSSDocument document = new InMemoryDocument(HELLO_WORLD.getBytes());
-		
+
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
@@ -45,25 +45,25 @@ public class GetOriginalDocumentTest {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CAdESService service = new CAdESService(certificateVerifier);
-		
+
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		
+
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
-		String firstDocument = new String(IOUtils.toByteArray(document.openStream()));
-		String secondDocument = new String(IOUtils.toByteArray(removeResult.openStream()));
+		String firstDocument = new String(Utils.toByteArray(document.openStream()));
+		String secondDocument = new String(Utils.toByteArray(removeResult.openStream()));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
-	
+
 	@Test
 	public final void getOriginalDocumentFromEnvelopingSignatureWithBase64EncodedContent() throws Exception {
 		DSSDocument document = new InMemoryDocument(Base64.encode(HELLO_WORLD.getBytes()));
-		
+
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
@@ -76,25 +76,25 @@ public class GetOriginalDocumentTest {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CAdESService service = new CAdESService(certificateVerifier);
-		
+
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		
+
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
 		String firstDocument = new String(HELLO_WORLD.getBytes());
-		String secondDocument = new String(IOUtils.toByteArray(removeResult.openStream()));
+		String secondDocument = new String(Utils.toByteArray(removeResult.openStream()));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
-	
-	@Test(expected=DSSException.class)
+
+	@Test(expected = DSSException.class)
 	public final void getOriginalDocumentFromDetachedSignature() throws Exception {
 		DSSDocument document = new InMemoryDocument(HELLO_WORLD.getBytes());
-		
+
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
@@ -107,15 +107,15 @@ public class GetOriginalDocumentTest {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CAdESService service = new CAdESService(certificateVerifier);
-		
+
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		
+
 		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
 	}
 }

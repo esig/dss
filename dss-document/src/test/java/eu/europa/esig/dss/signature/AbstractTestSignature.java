@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +86,7 @@ public abstract class AbstractTestSignature {
 
 		if (logger.isDebugEnabled()) {
 			try {
-				byte[] byteArray = IOUtils.toByteArray(signedDocument.openStream());
+				byte[] byteArray = Utils.toByteArray(signedDocument.openStream());
 				onDocumentSigned(byteArray);
 				// LOGGER.debug(new String(byteArray));
 			} catch (Exception e) {

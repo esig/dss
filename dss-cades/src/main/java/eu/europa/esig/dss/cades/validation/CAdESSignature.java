@@ -51,7 +51,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -852,7 +851,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			// signedData, or it exists but has no eContent
 			byte[] originalDocumentBytes;
 			try {
-				originalDocumentBytes = IOUtils.toByteArray(getOriginalDocumentStream());
+				originalDocumentBytes = Utils.toByteArray(getOriginalDocumentStream());
 			} catch (IOException e) {
 				throw new DSSException(e);
 			}
@@ -1578,7 +1577,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				 */
 				if (getOriginalDocumentStream() != null) {
 					data.write(content.toASN1Primitive().getEncoded());
-					IOUtils.copy(getOriginalDocumentStream(), data);
+					Utils.copy(getOriginalDocumentStream(), data);
 				} else {
 					throw new DSSException("Signature is detached and no original data provided.");
 				}

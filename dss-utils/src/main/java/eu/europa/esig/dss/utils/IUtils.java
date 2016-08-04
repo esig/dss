@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.utils;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -66,8 +67,10 @@ public interface IUtils {
 
 	byte[] toByteArray(InputStream is) throws IOException;
 
-	void closeQuietly(InputStream is);
+	void closeQuietly(Closeable closeable);
 
-	void closeQuietly(OutputStream os);
+	void copy(InputStream is, OutputStream os) throws IOException;
+
+	void write(byte[] content, OutputStream os) throws IOException;
 
 }

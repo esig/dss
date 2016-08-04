@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.utils;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,14 +11,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.utils.impl.UtilsBinder;
 
 public final class Utils {
-
-	private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
 	public static final String EMPTY_STRING = "";
 
@@ -62,7 +58,7 @@ public final class Utils {
 				utilsImplementationPathSet.add(path);
 			}
 		} catch (IOException e) {
-			logger.error("Cannot retrieve classloader : " + e.getMessage(), e);
+			throw new RuntimeException("Cannot retrieve classloader : " + e.getMessage(), e);
 		}
 		return utilsImplementationPathSet;
 	}
@@ -182,12 +178,16 @@ public final class Utils {
 		return impl.toByteArray(is);
 	}
 
-	public static void closeQuietly(InputStream is) {
-		impl.closeQuietly(is);
+	public static void closeQuietly(Closeable closeable) {
+		impl.closeQuietly(closeable);
 	}
 
-	public static void closeQuietly(OutputStream os) {
-		impl.closeQuietly(os);
+	public static void copy(InputStream is, OutputStream os) throws IOException {
+		impl.copy(is, os);
+	}
+
+	public static void write(byte[] content, OutputStream os) throws IOException {
+		impl.write(content, os);
 	}
 
 }

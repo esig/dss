@@ -25,7 +25,6 @@ import java.math.BigInteger;
 import java.security.Security;
 import java.util.Date;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;

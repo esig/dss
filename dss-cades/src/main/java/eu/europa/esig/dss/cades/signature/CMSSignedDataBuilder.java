@@ -29,12 +29,10 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
@@ -56,6 +54,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -73,9 +72,12 @@ public class CMSSignedDataBuilder {
 	private CertificateVerifier certificateVerifier;
 
 	/**
-	 * This is the default constructor for {@code CMSSignedDataGeneratorBuilder}. The {@code CertificateVerifier} is used to find the trusted certificates.
+	 * This is the default constructor for {@code CMSSignedDataGeneratorBuilder}. The {@code CertificateVerifier} is
+	 * used to find the trusted certificates.
 	 *
-	 * @param certificateVerifier {@code CertificateVerifier} provides information on the sources to be used in the validation process in the context of a signature.
+	 * @param certificateVerifier
+	 *            {@code CertificateVerifier} provides information on the sources to be used in the validation process
+	 *            in the context of a signature.
 	 */
 	public CMSSignedDataBuilder(final CertificateVerifier certificateVerifier) {
 
@@ -90,16 +92,20 @@ public class CMSSignedDataBuilder {
 	 * SignedData version is required to be set to 1.
 	 * ---> CMS SignedData Version is handled automatically by BouncyCastle.
 	 *
-	 * @param parameters                 set of the driving signing parameters
-	 * @param contentSigner              the contentSigned to get the hash of the data to be signed
-	 * @param signerInfoGeneratorBuilder true if the unsigned attributes must be included
-	 * @param originalSignedData         the original signed data if extending an existing signature. null otherwise.
-	 * @return the bouncycastle signed data generator which signs the document and adds the required signed and unsigned CMS attributes
+	 * @param parameters
+	 *            set of the driving signing parameters
+	 * @param contentSigner
+	 *            the contentSigned to get the hash of the data to be signed
+	 * @param signerInfoGeneratorBuilder
+	 *            true if the unsigned attributes must be included
+	 * @param originalSignedData
+	 *            the original signed data if extending an existing signature. null otherwise.
+	 * @return the bouncycastle signed data generator which signs the document and adds the required signed and unsigned
+	 *         CMS attributes
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	protected CMSSignedDataGenerator createCMSSignedDataGenerator(final CAdESSignatureParameters parameters, final ContentSigner contentSigner,
-			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder,
-			final CMSSignedData originalSignedData) throws DSSException {
+			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder, final CMSSignedData originalSignedData) throws DSSException {
 		try {
 
 			final CertificateToken signingCertificate = parameters.getSigningCertificate();
@@ -144,9 +150,12 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
-	 * @param parameters                the parameters of the signature containing values for the attributes
-	 * @param includeUnsignedAttributes true if the unsigned attributes must be included
-	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the CAdESLevelBaselineB
+	 * @param parameters
+	 *            the parameters of the signature containing values for the attributes
+	 * @param includeUnsignedAttributes
+	 *            true if the unsigned attributes must be included
+	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the
+	 *         CAdESLevelBaselineB
 	 */
 	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final CAdESSignatureParameters parameters, final boolean includeUnsignedAttributes) {
 
@@ -161,8 +170,10 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
-	 * @param signedAttributes   the signedAttributes
-	 * @param unsignedAttributes the unsignedAttributes
+	 * @param signedAttributes
+	 *            the signedAttributes
+	 * @param unsignedAttributes
+	 *            the unsignedAttributes
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the parameters
 	 */
 	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(AttributeTable signedAttributes, AttributeTable unsignedAttributes) {
@@ -180,8 +191,10 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
-	 * @param signedAttributeGenerator   the signedAttribute generator
-	 * @param unsignedAttributeGenerator the unsignedAttribute generator
+	 * @param signedAttributeGenerator
+	 *            the signedAttribute generator
+	 * @param unsignedAttributeGenerator
+	 *            the unsignedAttribute generator
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the parameters
 	 */
 	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DefaultSignedAttributeTableGenerator signedAttributeGenerator,
@@ -226,8 +239,8 @@ public class CMSSignedDataBuilder {
 		}
 	}
 
-	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters, Store certificatesStore, Store attributeCertificatesStore,
-			Store crlsStore, Store otherRevocationInfoFormatStoreBasic, Store otherRevocationInfoFormatStoreOcsp) {
+	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters, Store certificatesStore,
+			Store attributeCertificatesStore, Store crlsStore, Store otherRevocationInfoFormatStoreBasic, Store otherRevocationInfoFormatStoreOcsp) {
 		try {
 
 			final CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
@@ -252,5 +265,5 @@ public class CMSSignedDataBuilder {
 		}
 	}
 
-	//TODO Vincent: regeneration of SignedData -> Content-TS
+	// TODO Vincent: regeneration of SignedData -> Content-TS
 }

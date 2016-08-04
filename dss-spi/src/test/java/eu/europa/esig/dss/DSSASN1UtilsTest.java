@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 import java.security.cert.X509CRL;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +30,7 @@ public class DSSASN1UtilsTest {
 	@Test
 	public void getDigestSignaturePolicy() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/signature-policy-example.der");
-		byte[] policyBytes = IOUtils.toByteArray(fis);
+		byte[] policyBytes = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
 
 		byte[] signaturePolicyDigest = DSSASN1Utils.getAsn1SignaturePolicyDigest(DigestAlgorithm.SHA256, policyBytes);

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -61,7 +60,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature
 		File file = new File("src/test/resources/sample.xml");
 		DigestDocument digestDocument = new DigestDocument(file);
 		FileInputStream fis = new FileInputStream(file);
-		byte[] bytes = IOUtils.toByteArray(fis);
+		byte[] bytes = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
 		String computedDigest = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, bytes));
 		digestDocument.addDigest(DigestAlgorithm.SHA256, computedDigest);

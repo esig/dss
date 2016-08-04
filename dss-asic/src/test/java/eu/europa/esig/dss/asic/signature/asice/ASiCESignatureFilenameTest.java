@@ -25,13 +25,13 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 public class ASiCESignatureFilenameTest extends ASiCELevelBTest {
 

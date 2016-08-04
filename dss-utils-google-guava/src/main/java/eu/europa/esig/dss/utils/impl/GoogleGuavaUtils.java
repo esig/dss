@@ -1,5 +1,10 @@
 package eu.europa.esig.dss.utils.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -8,6 +13,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.io.BaseEncoding;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
 
 import eu.europa.esig.dss.utils.IUtils;
 
@@ -193,6 +200,30 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public byte[] fromBase64(byte[] base64) {
 		return BaseEncoding.base64().decode(new String(base64, Charsets.UTF_8));
+	}
+
+	@Override
+	public byte[] toByteArray(InputStream is) throws IOException {
+		return ByteStreams.toByteArray(is);
+	}
+
+	@Override
+	public void closeQuietly(Closeable closeable) {
+		try {
+			Closeables.close(closeable, true);
+		} catch (IOException e) {
+			/* never happen */
+		}
+	}
+
+	@Override
+	public void copy(InputStream is, OutputStream os) throws IOException {
+		ByteStreams.copy(is, os);
+	}
+
+	@Override
+	public void write(byte[] content, OutputStream os) throws IOException {
+		ByteStreams.copy(new ByteArrayInputStream(content), os);
 	}
 
 }

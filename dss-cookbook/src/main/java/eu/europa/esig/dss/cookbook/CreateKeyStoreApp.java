@@ -11,8 +11,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;

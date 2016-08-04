@@ -38,7 +38,6 @@ import java.util.TreeMap;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,7 +221,7 @@ public class TSLRepository {
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(filePath);
-			byte[] data = IOUtils.toByteArray(fis);
+			byte[] data = Utils.toByteArray(fis);
 			validationModel.setSha256FileContent(getSHA256(data));
 		} catch (Exception e) {
 			logger.error("Unable to read '" + filePath + "' : " + e.getMessage());
@@ -245,7 +244,7 @@ public class TSLRepository {
 		OutputStream os = null;
 		try {
 			os = new FileOutputStream(fileToCreate);
-			IOUtils.write(resultLoader.getContent(), os);
+			Utils.write(resultLoader.getContent(), os);
 		} catch (Exception e) {
 			throw new DSSException("Cannot create file in cache : " + e.getMessage(), e);
 		} finally {

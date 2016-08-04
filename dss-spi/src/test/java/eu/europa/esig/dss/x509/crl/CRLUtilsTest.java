@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509CRL;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;

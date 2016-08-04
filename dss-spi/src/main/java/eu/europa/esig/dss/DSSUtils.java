@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -608,7 +609,7 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static String getSHA1Digest(final InputStream inputStream) throws IOException {
-		final byte[] bytes = IOUtils.toByteArray(inputStream);
+		final byte[] bytes = Utils.toByteArray(inputStream);
 		final byte[] digest = getMessageDigest(DigestAlgorithm.SHA1).digest(bytes);
 		return Utils.toHex(digest);
 	}
@@ -699,9 +700,9 @@ public final class DSSUtils {
 	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
 		try {
 			final String digestAlgorithmOid = digestAlgorithm.getOid();
-			final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid, BouncyCastleProvider);
+			final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid, BouncyCastleProvider.PROVIDER_NAME);
 			return messageDigest;
-		} catch (NoSuchAlgorithmException e) {
+		} catch (GeneralSecurityException e) {
 			throw new DSSException("Digest algorithm '" + digestAlgorithm.getName() + "' error: " + e.getMessage(), e);
 		}
 	}
@@ -892,7 +893,7 @@ public final class DSSUtils {
 		InputStream in = null;
 		try {
 			in = openInputStream(file);
-			return IOUtils.toByteArray(in);
+			return Utils.toByteArray(in);
 		} finally {
 			Utils.closeQuietly(in);
 		}
@@ -954,7 +955,7 @@ public final class DSSUtils {
 			throw new NullPointerException();
 		}
 		try {
-			final byte[] bytes = IOUtils.toByteArray(inputStream);
+			final byte[] bytes = Utils.toByteArray(inputStream);
 			return bytes;
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -984,7 +985,7 @@ public final class DSSUtils {
 		try {
 			final FileOutputStream fileOutputStream = new FileOutputStream(file);
 			final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-			IOUtils.copy(inputStream, fileOutputStream);
+			Utils.copy(inputStream, fileOutputStream);
 			Utils.closeQuietly(inputStream);
 			Utils.closeQuietly(fileOutputStream);
 		} catch (IOException e) {
@@ -1003,7 +1004,7 @@ public final class DSSUtils {
 	 */
 	public static void saveToFile(final InputStream inputStream, final String path) throws IOException {
 		final FileOutputStream fileOutputStream = toFileOutputStream(path);
-		IOUtils.copy(inputStream, fileOutputStream);
+		Utils.copy(inputStream, fileOutputStream);
 		Utils.closeQuietly(fileOutputStream);
 	}
 

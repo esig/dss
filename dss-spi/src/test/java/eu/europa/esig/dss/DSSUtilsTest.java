@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -58,9 +57,9 @@ public class DSSUtilsTest {
 		assertNotNull(certificate);
 
 		FileInputStream fis = new FileInputStream("src/test/resources/belgiumrs2.crt");
-		byte[] byteArray = IOUtils.toByteArray(fis);
+		byte[] byteArray = Utils.toByteArray(fis);
 		logger.info(Utils.toBase64(byteArray));
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(fis);
 		CertificateToken certificate2 = DSSUtils.loadCertificate(byteArray);
 		assertNotNull(certificate2);
 
@@ -68,9 +67,9 @@ public class DSSUtilsTest {
 		assertNotNull(certificateNew);
 
 		FileInputStream fisNew = new FileInputStream("src/test/resources/belgiumrs2-new.crt");
-		byte[] byteArrayNew = IOUtils.toByteArray(fisNew);
+		byte[] byteArrayNew = Utils.toByteArray(fisNew);
 		logger.info(Utils.toBase64(byteArrayNew));
-		IOUtils.closeQuietly(fisNew);
+		Utils.closeQuietly(fisNew);
 		CertificateToken certificate2New = DSSUtils.loadCertificate(byteArrayNew);
 		assertNotNull(certificate2New);
 

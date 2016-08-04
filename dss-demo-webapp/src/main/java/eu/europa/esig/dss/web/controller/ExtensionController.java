@@ -1,12 +1,9 @@
 package eu.europa.esig.dss.web.controller;
 
-import java.io.ByteArrayInputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.ExtensionForm;
 import eu.europa.esig.dss.web.service.SigningService;
@@ -52,7 +50,8 @@ public class ExtensionController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String extend(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("extensionForm") @Valid ExtensionForm extensionForm, BindingResult result) {
+	public String extend(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("extensionForm") @Valid ExtensionForm extensionForm,
+			BindingResult result) {
 		if (result.hasErrors()) {
 			return EXTENSION_TILE;
 		}
@@ -62,7 +61,7 @@ public class ExtensionController {
 		response.setContentType(extendedDocument.getMimeType().getMimeTypeString());
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + extendedDocument.getName() + "\"");
 		try {
-			IOUtils.copy(extendedDocument.openStream(), response.getOutputStream());
+			Utils.copy(extendedDocument.openStream(), response.getOutputStream());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

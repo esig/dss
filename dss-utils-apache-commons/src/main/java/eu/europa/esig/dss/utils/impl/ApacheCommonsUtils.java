@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.utils.impl;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -7,7 +8,7 @@ import java.util.Collection;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -162,13 +163,18 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
-	public void closeQuietly(OutputStream os) {
-		IOUtils.closeQuietly(os);
+	public void closeQuietly(Closeable closeable) {
+		IOUtils.closeQuietly(closeable);
 	}
 
 	@Override
-	public void closeQuietly(InputStream is) {
-		IOUtils.closeQuietly(is);
+	public void copy(InputStream is, OutputStream os) throws IOException {
+		IOUtils.copy(is, os);
+	}
+
+	@Override
+	public void write(byte[] content, OutputStream os) throws IOException {
+		IOUtils.write(content, os);
 	}
 
 }

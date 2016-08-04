@@ -37,7 +37,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -232,12 +231,12 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 					createZipEntry(zipOutputStream, newEntry);
 					final InputStream inputStream = signedDocument.openStream();
-					IOUtils.copy(inputStream, zipOutputStream);
+					Utils.copy(inputStream, zipOutputStream);
 					Utils.closeQuietly(inputStream);
 				} else {
 
 					createZipEntry(zipOutputStream, newEntry);
-					IOUtils.copy(zipInputStream, zipOutputStream);
+					Utils.copy(zipInputStream, zipOutputStream);
 				}
 			}
 			Utils.closeQuietly(zipInputStream);
@@ -332,7 +331,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		for (ZipEntry entry = getNextZipEntry(zipInputStream); entry != null; entry = getNextZipEntry(zipInputStream)) {
 
 			createZipEntry(zipOutputStream, entry);
-			IOUtils.copy(zipInputStream, zipOutputStream);
+			Utils.copy(zipInputStream, zipOutputStream);
 		}
 		Utils.closeQuietly(zipInputStream);
 	}
@@ -343,7 +342,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		for (ZipEntry entry = getNextZipEntry(zipInputStream); entry != null; entry = getNextZipEntry(zipInputStream)) {
 			if (entry.getName().contains("META-INF/")) {
 				createZipEntry(zipOutputStream, entry);
-				IOUtils.copy(zipInputStream, zipOutputStream);
+				Utils.copy(zipInputStream, zipOutputStream);
 			}
 		}
 		Utils.closeQuietly(zipInputStream);
@@ -766,7 +765,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			try {
 				createZipEntry(outZip, entryDocument);
 				final InputStream inputStream = currentDetachedDocument.openStream();
-				IOUtils.copy(inputStream, outZip);
+				Utils.copy(inputStream, outZip);
 				Utils.closeQuietly(inputStream);
 			} catch (DSSException e) {
 				if (!((e.getCause() instanceof ZipException) && e.getCause().getMessage().startsWith("duplicate entry:"))) {
