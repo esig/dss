@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -29,7 +28,7 @@ public class TSLSParserTest {
 	@Parameters(name = "TSL to parse {index} : {0}")
 	public static Collection<Object[]> data() {
 		File folder = new File("src/test/resources/tsls");
-		Collection<File> listFiles = FileUtils.listFiles(folder, new String[] { "xml" }, true);
+		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "xml" }, true);
 		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
 		for (File file : listFiles) {
 			dataToRun.add(new Object[] { file });

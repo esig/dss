@@ -6,13 +6,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
@@ -29,7 +29,7 @@ public class ETSISamplesValidationTest {
 	@Parameters(name = "Validation {index} : {0}")
 	public static Collection<Object[]> data() {
 		File folder = new File("src/test/resources/plugtest");
-		Collection<File> listFiles = FileUtils.listFiles(folder, new String[] { "p7", "p7b", "p7m", "p7s", "pkcs7", "csig", }, true);
+		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "p7", "p7b", "p7m", "p7s", "pkcs7", "csig", }, true);
 		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
 		for (File file : listFiles) {
 			dataToRun.add(new Object[] { file });

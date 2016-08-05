@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.utils;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -72,5 +73,9 @@ public interface IUtils {
 	void copy(InputStream is, OutputStream os) throws IOException;
 
 	void write(byte[] content, OutputStream os) throws IOException;
+
+	void cleanDirectory(File directory) throws IOException;
+
+	Collection<File> listFiles(File folder, String[] extensions, boolean recursive);
 
 }

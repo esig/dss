@@ -37,7 +37,6 @@ import java.util.TreeMap;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,7 +163,7 @@ public class TSLRepository {
 
 	public void clearRepository() {
 		try {
-			FileUtils.cleanDirectory(new File(cacheDirectoryPath));
+			Utils.cleanDirectory(new File(cacheDirectoryPath));
 			tsls.clear();
 		} catch (IOException e) {
 			logger.error("Unable to clean cache directory : " + e.getMessage(), e);

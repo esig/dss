@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +13,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import eu.europa.esig.dss.utils.Utils;
 
 public class WebappIT {
 
@@ -79,7 +80,7 @@ public class WebappIT {
 	public void webservicesAvailable() {
 		driver.get(BASE_URL + "services");
 		List<WebElement> linksService = driver.findElements(By.tagName("a"));
-		assertEquals(4, CollectionUtils.size(linksService));
+		assertEquals(4, Utils.collectionSize(linksService));
 	}
 
 	@Test

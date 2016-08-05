@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.utils;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -188,6 +189,14 @@ public final class Utils {
 
 	public static void write(byte[] content, OutputStream os) throws IOException {
 		impl.write(content, os);
+	}
+
+	public static void cleanDirectory(File directory) throws IOException {
+		impl.cleanDirectory(directory);
+	}
+
+	public static Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
+		return impl.listFiles(folder, extensions, recursive);
 	}
 
 }

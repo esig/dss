@@ -4,6 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -248,6 +252,31 @@ public abstract class AbstractUtilsTest {
 	@Test
 	public void fromBase64Binary() throws Exception {
 		assertTrue(Arrays.equals(new byte[] { 1, 2, 3, 4, 5 }, impl.fromBase64("AQIDBAU=".getBytes("UTF-8"))));
+	}
+
+	@Test
+	public void toByteArray() throws UnsupportedEncodingException, IOException {
+		String newFileName = "target/sample.txt";
+		String newFileContent = "Hello world!";
+
+		FileOutputStream fos = new FileOutputStream(newFileName);
+		fos.write(newFileContent.getBytes("UTF-8"));
+		fos.close();
+		assertTrue(Arrays.equals(newFileContent.getBytes("UTF-8"), impl.toByteArray(new FileInputStream(newFileName))));
+	}
+
+	@Test
+	public void closeQuietly() throws IOException {
+		impl.closeQuietly(null);
+		String newFileName = "target/sample2.txt";
+		String newFileContent = "Hello world!";
+
+		FileOutputStream fos = new FileOutputStream(newFileName);
+		fos.write(newFileContent.getBytes("UTF-8"));
+		fos.close();
+
+		impl.closeQuietly(new FileInputStream(newFileName));
+		impl.closeQuietly(new FileOutputStream("target/sample3.txt"));
 	}
 
 }
