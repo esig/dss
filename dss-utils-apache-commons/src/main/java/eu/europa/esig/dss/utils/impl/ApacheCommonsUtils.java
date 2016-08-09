@@ -145,17 +145,7 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
-	public byte[] toBase64Binary(byte[] bytes) {
-		return Base64.encodeBase64(bytes);
-	}
-
-	@Override
 	public byte[] fromBase64(String base64) {
-		return Base64.decodeBase64(base64);
-	}
-
-	@Override
-	public byte[] fromBase64(byte[] base64) {
 		return Base64.decodeBase64(base64);
 	}
 

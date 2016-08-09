@@ -9,10 +9,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
-import javax.xml.bind.DatatypeConverter;
-
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.io.BaseEncoding;
@@ -192,18 +189,8 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
-	public byte[] toBase64Binary(byte[] bytes) {
-		return BaseEncoding.base64().encode(bytes).getBytes(Charsets.UTF_8);
-	}
-
-	@Override
 	public byte[] fromBase64(String base64) {
-		return DatatypeConverter.parseBase64Binary(base64);
-	}
-
-	@Override
-	public byte[] fromBase64(byte[] base64) {
-		return BaseEncoding.base64().decode(new String(base64, Charsets.UTF_8));
+		return BaseEncoding.base64().decode(base64);
 	}
 
 	@Override

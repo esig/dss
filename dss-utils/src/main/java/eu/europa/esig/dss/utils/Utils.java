@@ -163,16 +163,8 @@ public final class Utils {
 		return impl.toBase64(bytes);
 	}
 
-	public static byte[] toBase64Binary(byte[] bytes) {
-		return impl.toBase64Binary(bytes);
-	}
-
 	public static byte[] fromBase64(String base64) {
 		return impl.fromBase64(base64);
-	}
-
-	public static byte[] fromBase64(byte[] base64Bytes) {
-		return impl.fromBase64(base64Bytes);
 	}
 
 	public static byte[] toByteArray(InputStream is) throws IOException {

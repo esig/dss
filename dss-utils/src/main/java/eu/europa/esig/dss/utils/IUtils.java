@@ -60,11 +60,7 @@ public interface IUtils {
 
 	String toBase64(byte[] bytes);
 
-	byte[] toBase64Binary(byte[] bytes);
-
 	byte[] fromBase64(String base64);
-
-	byte[] fromBase64(byte[] base64);
 
 	byte[] toByteArray(InputStream is) throws IOException;
 

@@ -231,18 +231,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method re-encode base 64 encoded string to base 64 encoded byte array.
-	 *
-	 * @param base64String
-	 * @return
-	 */
-	public static byte[] base64StringToBase64Binary(final String base64String) {
-		final byte[] decodedBase64 = Utils.fromBase64(base64String);
-		final byte[] encodeBase64 = Utils.toBase64Binary(decodedBase64);
-		return encodeBase64;
-	}
-
-	/**
 	 * Writes bytes from a {@code byte[]} to an {@code OutputStream}.
 	 *
 	 * @param data

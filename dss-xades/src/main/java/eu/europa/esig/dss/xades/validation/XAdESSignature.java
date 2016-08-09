@@ -468,7 +468,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					continue;
 				}
 				// That must be a binary comparison
-				final byte[] storedBase64DigestValue = DSSUtils.base64StringToBase64Binary(digestValueElement.getTextContent());
+				final byte[] storedBase64DigestValue = Utils.fromBase64(digestValueElement.getTextContent());
 
 				/**
 				 * Step 1:<br>
@@ -483,10 +483,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * returned.
 				 */
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
-				final byte[] recalculatedBase64DigestValue = Utils.fromBase64(digest);
 				certificateValidity.setDigestEqual(false);
 				BigInteger serialNumber = new BigInteger("0");
-				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
+				if (Arrays.equals(digest, storedBase64DigestValue)) {
 					X500Principal issuerName = null;
 					if (isEn319132) {
 						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
