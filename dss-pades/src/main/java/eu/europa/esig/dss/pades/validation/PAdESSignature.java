@@ -409,7 +409,7 @@ public class PAdESSignature extends CAdESSignature {
 		for (int i : signatureByteRange) {
 			baos.write(i);
 		}
-		return DSSUtils.getMD5Digest(baos);
+		return DSSUtils.getMD5Digest(baos.toByteArray());
 	}
 
 	@Override

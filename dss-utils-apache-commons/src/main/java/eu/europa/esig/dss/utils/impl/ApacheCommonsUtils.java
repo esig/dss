@@ -184,4 +184,9 @@ public class ApacheCommonsUtils implements IUtils {
 		FileUtils.cleanDirectory(directory);
 	}
 
+	@Override
+	public Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
+		return FileUtils.listFiles(folder, extensions, recursive);
+	}
+
 }

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,7 +89,7 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 
 	private DSSDocument createDocument(String filePath) throws IOException {
 		File file = new File(filePath);
-		byte[] content = Utils.toByteArray(file.toURI());
+		byte[] content = Utils.toByteArray(new FileInputStream(file));
 		return new InMemoryDocument(content, filePath);
 	}
 

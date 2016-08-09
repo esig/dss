@@ -2,11 +2,14 @@ package eu.europa.esig.dss.utils.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+
+import javax.xml.bind.DatatypeConverter;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Charsets;
@@ -15,6 +18,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
+import com.google.common.io.Files;
 
 import eu.europa.esig.dss.utils.IUtils;
 
@@ -194,7 +198,7 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	public byte[] fromBase64(String base64) {
-		return BaseEncoding.base64().decode(base64);
+		return DatatypeConverter.parseBase64Binary(base64);
 	}
 
 	@Override
@@ -224,6 +228,31 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public void write(byte[] content, OutputStream os) throws IOException {
 		ByteStreams.copy(new ByteArrayInputStream(content), os);
+	}
+
+	@Override
+	public void cleanDirectory(File directory) throws IOException {
+		if (directory == null || !directory.exists()) {
+			throw new IllegalArgumentException("Not exists");
+		} else if (directory.isDirectory()) {
+			File[] listFiles = directory.listFiles();
+			if (listFiles == null) {
+				return;
+			} else {
+				for (File file : listFiles) {
+					if (file.isDirectory()) {
+						cleanDirectory(file);
+					} else if (file.isFile()) {
+						file.delete();
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
+		return Files.fileTreeTraverser().preOrderTraversal(folder).filter(new FilterByExtensions(extensions)).toList();
 	}
 
 }

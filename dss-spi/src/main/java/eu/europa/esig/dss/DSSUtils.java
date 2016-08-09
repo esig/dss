@@ -1061,7 +1061,7 @@ public final class DSSUtils {
 			if (id != null) {
 				baos.write(id.asXmlId().getBytes());
 			}
-			final String deterministicId = "id-" + getMD5Digest(baos);
+			final String deterministicId = "id-" + getMD5Digest(baos.toByteArray());
 			return deterministicId;
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -1071,12 +1071,12 @@ public final class DSSUtils {
 	/**
 	 * Returns a Hex encoded of the MD5 digest of ByteArrayOutputStream
 	 *
-	 * @param baos
+	 * @param bytes
 	 * @return
 	 */
-	public static String getMD5Digest(ByteArrayOutputStream baos) {
+	public static String getMD5Digest(byte[] bytes) {
 		try {
-			byte[] digestValue = digest(DigestAlgorithm.MD5, baos.toByteArray());
+			byte[] digestValue = digest(DigestAlgorithm.MD5, bytes);
 			return Utils.toHex(digestValue);
 		} catch (Exception e) {
 			throw new DSSException(e);

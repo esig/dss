@@ -20,11 +20,8 @@
  */
 package eu.europa.esig.dss;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * This class is used to transport a DSSDocument with SOAP and/or REST
@@ -37,16 +34,22 @@ public class RemoteDocument implements Serializable {
 	private String absolutePath = "RemoteDocument";
 	private MimeType mimeType;
 
-	public RemoteDocument(){
+	public RemoteDocument() {
 	}
 
-	public RemoteDocument(DSSDocument document) throws IOException {
-		this.bytes = IOUtils.toByteArray(document.openStream());
-		this.mimeType = document.getMimeType();
-		this.name = document.getName();
-		this.absolutePath = document.getAbsolutePath();
+	public RemoteDocument(byte[] bytes, MimeType mimeType, String name) {
+		this.bytes = bytes;
+		this.mimeType = mimeType;
+		this.name = name;
 	}
-	
+
+	public RemoteDocument(byte[] bytes, MimeType mimeType, String name, String absolutePath) {
+		this.bytes = bytes;
+		this.mimeType = mimeType;
+		this.name = name;
+		this.absolutePath = absolutePath;
+	}
+
 	/**
 	 * Returns the array of bytes representing the document. Do not use this method with large files.
 	 *

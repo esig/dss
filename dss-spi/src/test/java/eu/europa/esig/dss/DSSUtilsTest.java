@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 
@@ -178,6 +179,10 @@ public class DSSUtilsTest {
 
 		assertTrue(tsa.isSignedBy(signed));
 		assertTrue(tsa.isSignedBy(selfSign));
+	}
 
+	@Test
+	public void getMD5Digest() throws UnsupportedEncodingException {
+		assertEquals("3e25960a79dbc69b674cd4ec67a72c62", DSSUtils.getMD5Digest("Hello world".getBytes("UTF-8")));
 	}
 }
