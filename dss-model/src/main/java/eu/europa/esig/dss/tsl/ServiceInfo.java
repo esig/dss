@@ -64,7 +64,14 @@ public class ServiceInfo implements Serializable {
 
 	private TimeDependentValues<ServiceInfoStatus> status = new TimeDependentValues<ServiceInfoStatus>();
 
-	private boolean tlWellSigned;
+	/**
+	 * the info about the trust list the service is listed on
+	 */
+	private final TLInfo tlInfo;
+	
+	public ServiceInfo(final TLInfo tlInfo) {
+		this.tlInfo = tlInfo;
+	}
 
 	/**
 	 * @return
@@ -114,7 +121,7 @@ public class ServiceInfo implements Serializable {
 	 * @return the tlWellSigned
 	 */
 	public boolean isTlWellSigned() {
-		return tlWellSigned;
+		return tlInfo.isWellSigned();
 	}
 
 	/**
@@ -122,14 +129,6 @@ public class ServiceInfo implements Serializable {
 	 */
 	public void setServiceName(String serviceName) {
 		this.serviceName = trim(serviceName);
-	}
-
-	/**
-	 * @param tlWellSigned
-	 *            the tlWellSigned to set
-	 */
-	public void setTlWellSigned(boolean tlWellSigned) {
-		this.tlWellSigned = tlWellSigned;
 	}
 
 	/**
@@ -190,8 +189,8 @@ public class ServiceInfo implements Serializable {
 			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');
 			buffer.append(indent).append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
 			buffer.append(indent).append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
-			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
-			buffer.append(indent).append("TLWellSigned              \t= ").append(tlWellSigned).append('\n');
+			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append('\n');
+			buffer.append(indent).append("Trusted List              \t= ").append(tlInfo).append('\n');
 			return buffer.toString();
 		} catch (Exception e) {
 			return super.toString();
@@ -218,6 +217,7 @@ public class ServiceInfo implements Serializable {
 		int result = 1;
 		result = (prime * result) + ((serviceName == null) ? 0 : serviceName.hashCode());
 		result = (prime * result) + ((tspName == null) ? 0 : tspName.hashCode());
+		result = (prime * result) + ((tlInfo == null) ? 0 : tlInfo.hashCode());
 		return result;
 	}
 
@@ -245,6 +245,13 @@ public class ServiceInfo implements Serializable {
 				return false;
 			}
 		} else if (!tspName.equals(other.tspName)) {
+			return false;
+		}
+		if (tlInfo == null) {
+			if (other.tlInfo != null) {
+				return false;
+			}
+		} else if (!tlInfo.equals(other.tlInfo)) {
 			return false;
 		}
 		return true;

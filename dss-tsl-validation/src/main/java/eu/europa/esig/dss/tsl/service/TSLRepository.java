@@ -51,6 +51,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.tsl.TLInfo;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -299,11 +300,15 @@ public class TSLRepository {
 
 					TSLParserResult parseResult = model.getParseResult();
 					if (parseResult != null) {
+						final TLInfo tlInfo = new TLInfo(tlWellSigned, parseResult.getTerritory(),
+								parseResult.getSequenceNumber(), parseResult.getIssueDate(),
+								parseResult.getNextUpdateDate(), model.getLoadedDate());
 						List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
 						for (TSLServiceProvider serviceProvider : serviceProviders) {
 							for (TSLService service : serviceProvider.getServices()) {
 								for (CertificateToken certificate : service.getCertificates()) {
-									trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, tlWellSigned));
+									final ServiceInfo serviceInfo = getServiceInfo(serviceProvider, service, tlInfo);
+									trustedListsCertificateSource.addCertificate(certificate, serviceInfo);
 								}
 							}
 						}
@@ -344,8 +349,8 @@ public class TSLRepository {
 		}
 	}
 
-	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, boolean tlWellSigned) {
-		ServiceInfo serviceInfo = new ServiceInfo();
+	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, TLInfo tlInfo) {
+		ServiceInfo serviceInfo = new ServiceInfo(tlInfo);
 
 		serviceInfo.setTspName(serviceProvider.getName());
 		serviceInfo.setTspTradeName(serviceProvider.getTradeName());
@@ -368,7 +373,6 @@ public class TSLRepository {
 			}
 		}
 		serviceInfo.setStatus(status);
-		serviceInfo.setTlWellSigned(tlWellSigned);
 		return serviceInfo;
 	}
 

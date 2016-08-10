@@ -29,6 +29,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
+import eu.europa.esig.dss.test.mock.MockTLInfo;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
@@ -61,8 +62,8 @@ public class SignedDocumentValidatorTest {
 		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus(null, new HashMap<String, List<Condition>>(), Collections.emptyList(), null,
 				calendar.getTime(), null);
 		statusList.addOldest(lastestStatus);
-
-		ServiceInfo serviceInfo = new ServiceInfo();
+		
+		ServiceInfo serviceInfo = new ServiceInfo(new MockTLInfo());
 		serviceInfo.setStatus(statusList);
 
 		Condition condition = new KeyUsageCondition(KeyUsageBit.nonRepudiation, true);
