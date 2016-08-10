@@ -45,4 +45,40 @@ public class ServiceInfoStatus extends BaseTimeDependent implements Serializable
 		return expiredCertsRevocationInfo;
 	}
 
+	public String toString(final String indent) {
+		try {
+			final StringBuilder buffer = new StringBuilder();
+			buffer.append(indent).append( "Status:\t " ).append( status ).append('\n');
+			buffer.append(indent).append( "Valid: \t " ).append(getStartDate()).append(" - ").append(( getEndDate() != null ) ? getEndDate().toString() : "(present)" ).append('\n');
+			final String indent1 = indent + "\t";
+			final String indent2 = indent1 + "\t";
+			if ( qualifiersAndConditions != null && ! qualifiersAndConditions.isEmpty() ) {
+				final String indent3 = indent2 + "\t";
+				buffer.append(indent1).append("QualifiersAndConditions:\n");
+				for ( final Map.Entry<String, List<Condition>> e : qualifiersAndConditions.entrySet() ) {
+					buffer.append( indent2 ).append(e.getKey()).append( ":\n" );
+					final List<Condition> conditions = e.getValue();
+					if ( conditions != null && ! conditions.isEmpty() ) {
+						for ( final Condition c : conditions ) {
+							buffer.append( c.toString( indent3 ) );
+						}
+					}
+				}
+			} else {
+				buffer.append(indent1).append("QualifiersAndConditions: (none)\n" );
+			}
+			if ( additionalServiceInfoUris != null && ! additionalServiceInfoUris.isEmpty() ) {
+				buffer.append(indent1).append("AdditionalServiceInfoUris:\n");
+				for ( final String uri : additionalServiceInfoUris ) {
+					buffer.append( indent2 ).append( uri ).append( '\n' );
+				}
+			} else {
+				buffer.append(indent1).append("AdditionalServiceInfoUris: (none)\n" );
+			}
+			buffer.append(indent1).append( "ExpiredCertsRevocationInfo: " ).append( ( expiredCertsRevocationInfo != null ) ? expiredCertsRevocationInfo.toString() : "(none)" ).append( '\n' );
+			return buffer.toString();
+		} catch (Exception e) {
+			return super.toString();
+		}
+	}
 }

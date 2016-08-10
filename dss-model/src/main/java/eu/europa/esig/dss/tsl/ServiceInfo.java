@@ -174,20 +174,29 @@ public class ServiceInfo implements Serializable {
 	}
 
 	public void setStatus(TimeDependentValues<ServiceInfoStatus> status) {
-		this.status = new TimeDependentValues<ServiceInfoStatus>( status );
+		this.status = new TimeDependentValues<ServiceInfoStatus>(status);
 	}
 
 	/**
 	 * @param indent
 	 * @return
 	 */
-	public String toString(String indent) {
+	public String toString(final String indent) {
 		try {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuilder buffer = new StringBuilder();
 			buffer.append(indent).append("Type                      \t= ").append(type).append('\n');
 			buffer.append(indent).append("TSPName                   \t= ").append(tspName).append('\n');
 			buffer.append(indent).append("ServiceName               \t= ").append(serviceName).append('\n');
-			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');
+			buffer.append(indent).append("StatusAndExtensions:\n");
+			final String indent1 = indent + "\t";
+			if (status != null && !status.isEmpty()) {
+				for (final ServiceInfoStatus sis : status) {
+					final String s = sis.toString(indent1);
+					buffer.append(s);
+				}
+			} else {
+				buffer.append(indent1).append("(none)\n");
+			}
 			buffer.append(indent).append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
 			buffer.append(indent).append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
 			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
