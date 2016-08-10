@@ -56,4 +56,8 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 		return null;
 	}
 
+	public boolean isEmpty() {
+		return list.isEmpty();
+	}
+
 }
