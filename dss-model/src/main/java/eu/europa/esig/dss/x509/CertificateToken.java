@@ -483,7 +483,7 @@ public class CertificateToken extends Token {
 			out.append(indentStr).append("Issuer subject name: ").append(getIssuerX500Principal()).append('\n');
 			if (sources.contains(CertificateSourceType.TRUSTED_LIST)) {
 				for (ServiceInfo si : associatedTSPS) {
-					out.append(indentStr).append("Service Info      :\n");
+					out.append(indentStr).append("Service Info       :\n");
 					indentStr += "\t";
 					out.append(si.toString(indentStr));
 					indentStr = indentStr.substring(1);
