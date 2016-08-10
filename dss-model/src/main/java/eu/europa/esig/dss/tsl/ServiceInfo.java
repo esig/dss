@@ -175,6 +175,13 @@ public class ServiceInfo implements Serializable {
 	public void setStatus(TimeDependentValues<ServiceInfoStatus> status) {
 		this.status = new TimeDependentValues<ServiceInfoStatus>( status );
 	}
+	
+	/**
+	 * Get the {@link TLInfo} the service is listed on.
+	 */
+	public TLInfo getTLInfo() {
+		return tlInfo;
+	}
 
 	/**
 	 * @param indent
