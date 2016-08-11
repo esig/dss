@@ -149,23 +149,16 @@
 			<artifactId>dss-policy-jaxb</artifactId>
 		</dependency>
 		
-		
+		<!-- Choose your implementation -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-utils-apache-commons</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-standalone-app-package</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-cookbook</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		
+<!-- 	<dependency> -->
+<!-- 		<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 		<artifactId>dss-utils-google-guava</artifactId> -->
+<!-- 	</dependency> -->
+
 		<dependency>
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>

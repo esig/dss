@@ -240,18 +240,9 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void toBase64Binary() throws Exception {
-		assertTrue(Arrays.equals("AQIDBAU=".getBytes("UTF-8"), impl.toBase64Binary(new byte[] { 1, 2, 3, 4, 5 })));
-	}
-
-	@Test
 	public void fromBase64() {
 		assertTrue(Arrays.equals(new byte[] { 1, 2, 3, 4, 5 }, impl.fromBase64("AQIDBAU=")));
-	}
-
-	@Test
-	public void fromBase64Binary() throws Exception {
-		assertTrue(Arrays.equals(new byte[] { 1, 2, 3, 4, 5 }, impl.fromBase64("AQIDBAU=".getBytes("UTF-8"))));
+		assertTrue(Arrays.equals(new byte[] { 1, 2, 3, 4, 5 }, impl.fromBase64("\nAQI\nD BA\tU=\n")));
 	}
 
 	@Test

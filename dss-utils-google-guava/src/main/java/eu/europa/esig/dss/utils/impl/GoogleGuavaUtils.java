@@ -190,7 +190,7 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	public byte[] fromBase64(String base64) {
-		return BaseEncoding.base64().decode(base64);
+		return BaseEncoding.base64().decode(CharMatcher.WHITESPACE.removeFrom(base64));
 	}
 
 	@Override
