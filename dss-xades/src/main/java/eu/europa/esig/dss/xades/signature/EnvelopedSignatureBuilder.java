@@ -26,8 +26,6 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,6 +35,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
@@ -78,7 +77,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	@Override
 	protected Node getParentNodeOfSignature() {
 		final String xPathLocationString = params.getXPathLocationString();
-		if (StringUtils.isNotEmpty(xPathLocationString)) {
+		if (Utils.isStringNotEmpty(xPathLocationString)) {
 			return DSSXMLUtils.getElement(documentDom, xPathLocationString);
 		}
 		return documentDom.getDocumentElement();
@@ -130,7 +129,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 
 		DSSDocument dssDocument = reference.getContents();
 		final List<DSSTransform> transforms = reference.getTransforms();
-		if (CollectionUtils.isEmpty(transforms)) {
+		if (Utils.isCollectionEmpty(transforms)) {
 			return dssDocument;
 		}
 
@@ -140,7 +139,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		Node nodeToTransform = null;
 		final String uri = reference.getUri();
 		// Check if the reference is related to the whole document
-		if (StringUtils.isNotBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
+		if (Utils.isStringNotBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
 
 			final Document document = DSSXMLUtils.buildDOM(dssDocument);
 			DSSXMLUtils.recursiveIdBrowse(document.getDocumentElement());

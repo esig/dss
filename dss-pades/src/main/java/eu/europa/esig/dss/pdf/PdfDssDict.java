@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -84,7 +84,7 @@ public class PdfDssDict {
 			logger.debug("There is a VRI dictionary in DSS dictionary");
 			try {
 				String[] names = vriDict.list();
-				if (ArrayUtils.isNotEmpty(names)) {
+				if (Utils.isArrayNotEmpty(names)) {
 					for (String name : names) {
 						extractCertsFromArray(vriDict.getAsDict(name), VRI_DICTIONARY_NAME + "/" + name, CERT_ARRAY_NAME_VRI);
 						extractOCSPsFromArray(vriDict.getAsDict(name), VRI_DICTIONARY_NAME + "/" + name, OCSP_ARRAY_NAME_VRI);

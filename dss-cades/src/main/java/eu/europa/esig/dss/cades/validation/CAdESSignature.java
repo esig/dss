@@ -51,10 +51,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -132,6 +128,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.validation.CRLRef;
@@ -388,7 +385,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 		final byte[] signingTokenCertHash = DSSUtils.digest(digestAlgorithm, signingCertificateValidity.getCertificateToken().getEncoded());
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Candidate Certificate Hash {} with algorithm {}", Hex.encodeHexString(signingTokenCertHash), digestAlgorithm.getName());
+			LOG.debug("Candidate Certificate Hash {} with algorithm {}", Utils.toHex(signingTokenCertHash), digestAlgorithm.getName());
 		}
 
 		final ASN1Set attrValues = signingCertificateAttributeV1.getAttrValues();
@@ -402,8 +399,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				final byte[] certHash = essCertID.getCertHash();
 				signingCertificateValidity.setDigestPresent(true);
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}", Hex.encodeHexString(certHash),
-							digestAlgorithm.getName());
+					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
 				}
 				final IssuerSerial issuerSerial = essCertID.getIssuerSerial();
 				final boolean match = verifySigningCertificateReferences(signingTokenSerialNumber, signingTokenIssuerName, signingTokenCertHash, certHash,
@@ -443,14 +439,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 					signingTokenCertHash = DSSUtils.digest(digestAlgorithm, signingCertificateValidity.getCertificateToken().getEncoded());
 					if (LOG.isDebugEnabled()) {
-						LOG.debug("Candidate Certificate Hash {} with algorithm {}", Hex.encodeHexString(signingTokenCertHash), digestAlgorithm.getName());
+						LOG.debug("Candidate Certificate Hash {} with algorithm {}", Utils.toHex(signingTokenCertHash), digestAlgorithm.getName());
 					}
 					lastDigestAlgorithm = digestAlgorithm;
 				}
 				final byte[] certHash = essCertIDv2.getCertHash();
 				signingCertificateValidity.setDigestPresent(true);
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", Hex.encodeHexString(certHash), digestAlgorithm.getName());
+					LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
 				}
 				final IssuerSerial issuerSerial = essCertIDv2.getIssuerSerial();
 				final boolean match = verifySigningCertificateReferences(signingTokenSerialNumber, signingTokenIssuerName, signingTokenCertHash, certHash,
@@ -467,7 +463,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private boolean verifySigningCertificateReferences(final BigInteger signingTokenSerialNumber, final GeneralNames signingTokenIssuerName,
 			final byte[] signingTokenCertHash, final byte[] certHash, final IssuerSerial issuerSerial) {
 
-		signingCertificateValidity.setDigest(Base64.encodeBase64String(signingTokenCertHash));
+		signingCertificateValidity.setDigest(Utils.toBase64(signingTokenCertHash));
 		final boolean hashEqual = Arrays.equals(certHash, signingTokenCertHash);
 		signingCertificateValidity.setDigestEqual(hashEqual);
 
@@ -855,7 +851,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			// signedData, or it exists but has no eContent
 			byte[] originalDocumentBytes;
 			try {
-				originalDocumentBytes = IOUtils.toByteArray(getOriginalDocumentStream());
+				originalDocumentBytes = Utils.toByteArray(getOriginalDocumentStream());
 			} catch (IOException e) {
 				throw new DSSException(e);
 			}
@@ -1074,7 +1070,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private TimestampReference createCertificateTimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] certHash) {
-		final TimestampReference reference = new TimestampReference(digestAlgorithm, Base64.encodeBase64String(certHash));
+		final TimestampReference reference = new TimestampReference(digestAlgorithm, Utils.toBase64(certHash));
 		return reference;
 	}
 
@@ -1120,7 +1116,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final SignerInformation signerInformationToCheck;
 			if (detachedSignature) {
 
-				if (CollectionUtils.isEmpty(detachedContents)) {
+				if (Utils.isCollectionEmpty(detachedContents)) {
 
 					if (certificateValidityList.size() > 0) {
 						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidityList.get(0));
@@ -1522,7 +1518,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (signedContent != null) {
 			return new ByteArrayInputStream(CMSUtils.getSignedContent(signedContent));
 		} else {
-			if (CollectionUtils.isNotEmpty(detachedContents)) {
+			if (Utils.isCollectionNotEmpty(detachedContents)) {
 				return detachedContents.get(0).openStream();
 			}
 			return new ByteArrayInputStream(DSSUtils.EMPTY_BYTE_ARRAY);
@@ -1581,7 +1577,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				 */
 				if (getOriginalDocumentStream() != null) {
 					data.write(content.toASN1Primitive().getEncoded());
-					IOUtils.copy(getOriginalDocumentStream(), data);
+					Utils.copy(getOriginalDocumentStream(), data);
 				} else {
 					throw new DSSException("Signature is detached and no original data provided.");
 				}
@@ -1723,7 +1719,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final List<CertificateRef> certRefs = getCertificateRefs();
 		for (final CertificateRef certificateRef : certRefs) {
 
-			final String digestValue = Base64.encodeBase64String(certificateRef.getDigestValue());
+			final String digestValue = Utils.toBase64(certificateRef.getDigestValue());
 			final DigestAlgorithm digestAlgorithm = certificateRef.getDigestAlgorithm();
 			usedCertificatesDigestAlgorithms.add(digestAlgorithm);
 			final TimestampReference reference = new TimestampReference(digestAlgorithm, digestValue);

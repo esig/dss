@@ -21,12 +21,12 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -41,6 +41,7 @@ import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -88,7 +89,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 
 	private DSSDocument createDocument(String filePath) throws IOException {
 		File file = new File(filePath);
-		byte[] content = IOUtils.toByteArray(file.toURI());
+		byte[] content = Utils.toByteArray(new FileInputStream(file));
 		return new InMemoryDocument(content, filePath);
 	}
 

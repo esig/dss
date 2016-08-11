@@ -6,15 +6,16 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Security;
 import java.security.Signature;
+import java.util.Arrays;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.signature.DSSSignatureUtils;
 
 public class EncodingXMLTest {
@@ -31,10 +32,10 @@ public class EncodingXMLTest {
 		byte[] signatureValue = DatatypeConverter.parseBase64Binary(test);
 
 		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
-		assertTrue(ArrayUtils.isNotEmpty(convertToXmlDSig));
+		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 
 		byte[] xmlsec = SignatureECDSA.convertASN1toXMLDSIG(signatureValue);
-		assertTrue(ArrayUtils.isEquals(convertToXmlDSig, xmlsec));
+		assertTrue(Arrays.equals(convertToXmlDSig, xmlsec));
 	}
 
 	@Test
@@ -48,7 +49,7 @@ public class EncodingXMLTest {
 		byte[] signatureValue = s.sign();
 
 		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.DSA, signatureValue);
-		assertTrue(ArrayUtils.isNotEmpty(convertToXmlDSig));
+		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 	}
 
 	@Test
@@ -60,7 +61,7 @@ public class EncodingXMLTest {
 		s.initSign(pair.getPrivate());
 		s.update(HELLO_WORLD.getBytes());
 		byte[] binary = s.sign();
-		assertTrue(ArrayUtils.isEquals(binary, DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.RSA, binary)));
+		assertTrue(Arrays.equals(binary, DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.RSA, binary)));
 	}
 
 	@Test
@@ -73,7 +74,7 @@ public class EncodingXMLTest {
 		s.initSign(pair.getPrivate());
 		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
-		assertTrue(ArrayUtils.isNotEmpty(DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.DSA, signatureValue)));
+		assertTrue(Utils.isArrayNotEmpty(DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.DSA, signatureValue)));
 	}
 
 	@Test
@@ -87,7 +88,7 @@ public class EncodingXMLTest {
 		byte[] signatureValue = s.sign();
 
 		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
-		assertTrue(ArrayUtils.isNotEmpty(convertToXmlDSig));
+		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 
 		byte[] asn1xmlsec = SignatureECDSA.convertXMLDSIGtoASN1(convertToXmlDSig);
 
@@ -110,7 +111,7 @@ public class EncodingXMLTest {
 		byte[] signatureValue = s.sign();
 
 		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
-		assertTrue(ArrayUtils.isNotEmpty(convertToXmlDSig));
+		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 
 		byte[] asn1xmlsec = SignatureECDSA.convertXMLDSIGtoASN1(convertToXmlDSig);
 

@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.xml.security.utils.Base64;
 import org.junit.Test;
 
@@ -16,6 +15,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -47,7 +47,7 @@ public class DSS874Test {
 	@Test
 	public void test2() throws IOException {
 		File policyDocument = new File("src/test/resources/validation/dss874/policy.pdf");
-		byte[] byteArray = IOUtils.toByteArray(new FileInputStream(policyDocument));
+		byte[] byteArray = Utils.toByteArray(new FileInputStream(policyDocument));
 
 		byte[] asn1SignaturePolicyDigest = DSSUtils.digest(DigestAlgorithm.SHA1, byteArray);
 

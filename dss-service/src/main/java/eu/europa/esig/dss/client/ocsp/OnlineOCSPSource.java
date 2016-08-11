@@ -25,9 +25,6 @@ import java.math.BigInteger;
 import java.security.Security;
 import java.util.Date;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
@@ -55,6 +52,7 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
@@ -121,7 +119,7 @@ public class OnlineOCSPSource implements OCSPSource {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
 			logger.trace("--> OnlineOCSPSource queried for " + dssIdAsString);
 			final String ocspAccessLocation = getAccessLocation(certificateToken);
-			if (StringUtils.isEmpty(ocspAccessLocation)) {
+			if (Utils.isStringEmpty(ocspAccessLocation)) {
 				logger.debug("No OCSP location found for " + dssIdAsString);
 				certificateToken.extraInfo().infoNoOcspUriFoundInCertificate();
 				return null;
@@ -134,7 +132,7 @@ public class OnlineOCSPSource implements OCSPSource {
 			final byte[] content = buildOCSPRequest(certId);
 
 			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
-			if (ArrayUtils.isEmpty(ocspRespBytes)) {
+			if (Utils.isArrayEmpty(ocspRespBytes)) {
 				return ocspToken;
 			}
 			ocspToken.setAvailable(true);
@@ -217,7 +215,7 @@ public class OnlineOCSPSource implements OCSPSource {
 	 */
 	public String getAccessLocation(final CertificateToken certificate) throws DSSException {
 		final byte[] authInfoAccessExtensionValue = certificate.getCertificate().getExtensionValue(Extension.authorityInfoAccess.getId());
-		if (ArrayUtils.isEmpty(authInfoAccessExtensionValue)) {
+		if (Utils.isArrayEmpty(authInfoAccessExtensionValue)) {
 			return null;
 		}
 
@@ -257,8 +255,8 @@ public class OnlineOCSPSource implements OCSPSource {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(ais1);
-			IOUtils.closeQuietly(ais2);
+			Utils.closeQuietly(ais1);
+			Utils.closeQuietly(ais2);
 		}
 	}
 }

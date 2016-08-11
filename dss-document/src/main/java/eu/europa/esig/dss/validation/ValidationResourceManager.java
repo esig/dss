@@ -30,11 +30,11 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.ObjectFactory;
 
@@ -99,7 +99,7 @@ public class ValidationResourceManager {
 	 * @return
 	 */
 	public static ConstraintsParameters load(final String path) {
-		if (StringUtils.isEmpty(path)) {
+		if (Utils.isStringEmpty(path)) {
 			return null;
 		}
 		final InputStream fileInputStream = getResourceInputStream(path);

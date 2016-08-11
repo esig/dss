@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ValidationResourceManager;
 import eu.europa.esig.dss.web.service.PolicyJaxbService;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
@@ -35,7 +35,7 @@ public class ValidationPolicyController {
 
 	@Autowired
 	private PolicyJaxbService policyJaxbService;
-	
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
@@ -53,9 +53,7 @@ public class ValidationPolicyController {
 
 	@ModelAttribute("supportedPolicies")
 	public String[] getSupportedPolicies() {
-		return new String[] {
-				"NO_POLICY", "ANY_POLICY", "IMPLICIT_POLICY"
-		};
+		return new String[] { "NO_POLICY", "ANY_POLICY", "IMPLICIT_POLICY" };
 	}
 
 	@ModelAttribute("timeUnits")
@@ -87,7 +85,7 @@ public class ValidationPolicyController {
 			response.setContentType("application/force-download");
 			response.setHeader("Content-Transfer-Encoding", "binary");
 			response.setHeader("Content-Disposition", "attachment; filename=constraints.xml");
-			IOUtils.copy(new ByteArrayInputStream(xmlResult.getBytes()), response.getOutputStream());
+			Utils.copy(new ByteArrayInputStream(xmlResult.getBytes()), response.getOutputStream());
 
 			return null;
 		} catch (Exception e) {

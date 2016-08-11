@@ -29,7 +29,6 @@ import java.util.ListIterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +40,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.asic.AsicManifestDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -311,7 +311,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			}
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(asicsInputStream);
+			Utils.closeQuietly(asicsInputStream);
 		}
 	}
 
@@ -328,7 +328,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		try {
 			final InputStream inputStream = mimeType.openStream();
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			IOUtils.copy(inputStream, byteArrayOutputStream);
+			Utils.copy(inputStream, byteArrayOutputStream);
 			final String mimeTypeString = byteArrayOutputStream.toString("UTF-8");
 			final MimeType asicMimeType = MimeType.fromMimeTypeString(mimeTypeString);
 			return asicMimeType;
@@ -340,7 +340,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	private static DSSDocument addEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) throws IOException {
 
 		final ByteArrayOutputStream signature = new ByteArrayOutputStream();
-		IOUtils.copy(asicsInputStream, signature);
+		Utils.copy(asicsInputStream, signature);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(signature.toByteArray(), entryName);
 		list.add(inMemoryDocument);
 		return inMemoryDocument;
@@ -350,7 +350,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			throws IOException {
 
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		IOUtils.copy(asicsInputStream, byteArrayOutputStream);
+		Utils.copy(asicsInputStream, byteArrayOutputStream);
 		final AsicManifestDocument inMemoryDocument = new AsicManifestDocument(byteArrayOutputStream.toByteArray(), entryName);
 		list.add(inMemoryDocument);
 	}
@@ -438,7 +438,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	private static MimeType getZipComment(final DSSDocument document) {
 		try {
-			byte[] buffer = IOUtils.toByteArray(document.openStream());
+			byte[] buffer = Utils.toByteArray(document.openStream());
 
 			final int len = buffer.length;
 			final byte[] magicDirEnd = { 0x50, 0x4b, 0x05, 0x06 };

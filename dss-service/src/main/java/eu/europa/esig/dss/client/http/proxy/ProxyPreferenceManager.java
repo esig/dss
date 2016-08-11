@@ -24,11 +24,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.commons.DSSNotifier;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * A proxy preference manager.
@@ -42,7 +42,6 @@ public class ProxyPreferenceManager {
 
 	Set<DSSNotifier> notifiers = new HashSet<DSSNotifier>();
 
-
 	/**
 	 * Get list of excluded hosts of the HTTP proxy
 	 *
@@ -50,10 +49,8 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpExcludedHosts() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_EXCLUDE);
-		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+		return preference != null ? preference.getValue() : Utils.EMPTY_STRING;
 	}
-
-
 
 	/**
 	 * Get list of excluded hosts of the HTTPS proxy
@@ -62,7 +59,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpsExcludedHosts() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_EXCLUDE);
-		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+		return preference != null ? preference.getValue() : Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -82,7 +79,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpHost() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_HOST);
-		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+		return preference != null ? preference.getValue() : Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -92,7 +89,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpPassword() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_PASSWORD);
-		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+		return preference != null ? preference.getValue() : Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -112,7 +109,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpsHost() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_HOST);
-		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+		return preference != null ? preference.getValue() : Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -122,7 +119,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpsPassword() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_PASSWORD);
-		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+		return preference != null ? preference.getValue() : Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -142,7 +139,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpsUser() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_USER);
-		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+		return preference != null ? preference.getValue() : Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -152,7 +149,7 @@ public class ProxyPreferenceManager {
 	 */
 	public String getHttpUser() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_USER);
-		return preference != null ? preference.getValue() : StringUtils.EMPTY;
+		return preference != null ? preference.getValue() : Utils.EMPTY_STRING;
 	}
 
 	/**
@@ -163,7 +160,7 @@ public class ProxyPreferenceManager {
 	public boolean isHttpEnabled() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_ENABLED);
 
-		if ((preference == null) || StringUtils.isEmpty(preference.getValue())) {
+		if ((preference == null) || Utils.isStringEmpty(preference.getValue())) {
 			return false;
 		} else {
 			return Boolean.valueOf(preference.getValue()).booleanValue();
@@ -178,7 +175,7 @@ public class ProxyPreferenceManager {
 	public boolean isHttpsEnabled() {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_ENABLED);
 
-		if ((preference == null) || StringUtils.isEmpty(preference.getValue())) {
+		if ((preference == null) || Utils.isStringEmpty(preference.getValue())) {
 			return false;
 		} else {
 			return Boolean.valueOf(preference.getValue()).booleanValue();
@@ -228,7 +225,7 @@ public class ProxyPreferenceManager {
 	 */
 	public void setHttpPort(Long port) {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_PORT);
-		preference.setValue(port != null ? String.valueOf(port) : StringUtils.EMPTY);
+		preference.setValue(port != null ? String.valueOf(port) : Utils.EMPTY_STRING);
 		getProxyDao().update(preference);
 		dssNotify();
 	}
@@ -268,7 +265,7 @@ public class ProxyPreferenceManager {
 	 */
 	public void setHttpsPort(Long port) {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_PORT);
-		preference.setValue(port != null ? String.valueOf(port) : StringUtils.EMPTY);
+		preference.setValue(port != null ? String.valueOf(port) : Utils.EMPTY_STRING);
 		getProxyDao().update(preference);
 		dssNotify();
 	}
@@ -296,7 +293,8 @@ public class ProxyPreferenceManager {
 	/**
 	 * Set list of excluded hosts of the HTTP proxy
 	 *
-	 * @param list comma separated list of hosts
+	 * @param list
+	 *            comma separated list of hosts
 	 */
 	public void setHttpExcludedHosts(String list) {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTP_EXCLUDE);
@@ -307,7 +305,8 @@ public class ProxyPreferenceManager {
 	/**
 	 * Set list of excluded hosts of the HTTPS proxy
 	 *
-	 * @param list comma separated list of hosts
+	 * @param list
+	 *            comma separated list of hosts
 	 */
 	public void setHttpsExcludedHosts(String list) {
 		ProxyPreference preference = getProxyDao().get(ProxyKey.HTTPS_EXCLUDE);
@@ -342,44 +341,44 @@ public class ProxyPreferenceManager {
 	public void update(ProxyKey proxyKey, String value) {
 
 		switch (proxyKey) {
-			case HTTP_ENABLED:
-				setHttpEnabled(Boolean.valueOf(value));
-				break;
-			case HTTP_HOST:
-				setHttpHost(value);
-				break;
-			case HTTP_PASSWORD:
-				setHttpPassword(value);
-				break;
-			case HTTP_PORT:
-				// TODO use regex to check if number
-				setHttpPort(Long.valueOf(value));
-				break;
-			case HTTP_USER:
-				setHttpUser(value);
-				break;
-			case HTTP_EXCLUDE:
-				setHttpExcludedHosts(value);
-				break;
-			case HTTPS_ENABLED:
-				setHttpsEnabled(Boolean.valueOf(value));
-				break;
-			case HTTPS_HOST:
-				setHttpsHost(value);
-				break;
-			case HTTPS_PASSWORD:
-				setHttpsPassword(value);
-				break;
-			case HTTPS_PORT:
-				// FIXME use regex to check if number
-				setHttpsPort(Long.valueOf(value));
-				break;
-			case HTTPS_USER:
-				setHttpsUser(value);
-				break;
-			case HTTPS_EXCLUDE:
-				setHttpsExcludedHosts(value);
-				break;
+		case HTTP_ENABLED:
+			setHttpEnabled(Boolean.valueOf(value));
+			break;
+		case HTTP_HOST:
+			setHttpHost(value);
+			break;
+		case HTTP_PASSWORD:
+			setHttpPassword(value);
+			break;
+		case HTTP_PORT:
+			// TODO use regex to check if number
+			setHttpPort(Long.valueOf(value));
+			break;
+		case HTTP_USER:
+			setHttpUser(value);
+			break;
+		case HTTP_EXCLUDE:
+			setHttpExcludedHosts(value);
+			break;
+		case HTTPS_ENABLED:
+			setHttpsEnabled(Boolean.valueOf(value));
+			break;
+		case HTTPS_HOST:
+			setHttpsHost(value);
+			break;
+		case HTTPS_PASSWORD:
+			setHttpsPassword(value);
+			break;
+		case HTTPS_PORT:
+			// FIXME use regex to check if number
+			setHttpsPort(Long.valueOf(value));
+			break;
+		case HTTPS_USER:
+			setHttpsUser(value);
+			break;
+		case HTTPS_EXCLUDE:
+			setHttpsExcludedHosts(value);
+			break;
 		}
 	}
 
@@ -401,7 +400,8 @@ public class ProxyPreferenceManager {
 	/**
 	 * This method allows to declare a new object to be notified if any properties have changed.
 	 *
-	 * @param dssNotifier the object to be notified
+	 * @param dssNotifier
+	 *            the object to be notified
 	 */
 	public void addNotifier(final DSSNotifier dssNotifier) {
 
@@ -413,8 +413,6 @@ public class ProxyPreferenceManager {
 
 	@Override
 	public String toString() {
-		return "ProxyPreferenceManager{" +
-				"proxyDao=" + proxyDao +
-				'}';
+		return "ProxyPreferenceManager{" + "proxyDao=" + proxyDao + '}';
 	}
 }

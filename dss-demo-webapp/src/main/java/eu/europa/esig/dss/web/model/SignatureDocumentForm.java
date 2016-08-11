@@ -6,7 +6,6 @@ import java.util.List;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -15,6 +14,7 @@ import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
+import eu.europa.esig.dss.utils.Utils;
 
 public class SignatureDocumentForm {
 
@@ -232,7 +232,7 @@ public class SignatureDocumentForm {
 	@AssertTrue(message = "{error.path.mandatory}")
 	public boolean isPkcsPathValid() {
 		if (SignatureTokenType.PKCS11.equals(token)) {
-			return StringUtils.isNotEmpty(pkcsPath);
+			return Utils.isStringNotEmpty(pkcsPath);
 		} else {
 			return true;
 		}
@@ -241,17 +241,17 @@ public class SignatureDocumentForm {
 	@AssertTrue(message = "{error.password.mandatory}")
 	public boolean isPkcsPasswordValid() {
 		if (SignatureTokenType.PKCS11.equals(token) || SignatureTokenType.PKCS12.equals(token)) {
-			return StringUtils.isNotEmpty(pkcsPassword);
+			return Utils.isStringNotEmpty(pkcsPassword);
 		} else {
 			return true;
 		}
 	}
 
 	@AssertTrue(message = "{error.signature.underlying.form.mandatory}")
-	public boolean isAsicUnderlyingFormValid(){
-		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)){
+	public boolean isAsicUnderlyingFormValid() {
+		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)) {
 			return SignatureForm.CAdES.equals(asicUnderlyingForm) || SignatureForm.XAdES.equals(asicUnderlyingForm);
-		} else{
+		} else {
 			return true;
 		}
 	}

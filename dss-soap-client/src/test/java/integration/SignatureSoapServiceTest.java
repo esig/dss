@@ -28,6 +28,7 @@ import eu.europa.esig.dss.signature.SoapDocumentSignatureService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/test-soap-context.xml")
@@ -48,8 +49,9 @@ public class SignatureSoapServiceTest {
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-		RemoteDocument toSignDocument = new RemoteDocument(new FileDocument(new File("src/test/resources/sample.xml")));
-
+		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName(),
+				fileToSign.getAbsolutePath());
 		ToBeSigned dataToSign = soapClient.getDataToSign(new DataToSignDTO(toSignDocument, parameters));
 		assertNotNull(dataToSign);
 

@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
@@ -17,6 +15,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -168,7 +167,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
 			List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-			if (CollectionUtils.isNotEmpty(contentTimestamps)) {
+			if (Utils.isCollectionNotEmpty(contentTimestamps)) {
 				boolean failed = false;
 				Date revocationDate = getRevocationDateForSigningCertificate(currentSignature);
 				for (TimestampWrapper timestamp : contentTimestamps) {
@@ -198,7 +197,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 				&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
 			List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-			if (CollectionUtils.isNotEmpty(contentTimestamps)) {
+			if (Utils.isCollectionNotEmpty(contentTimestamps)) {
 				boolean failed = false;
 				Date expirationDate = getExpirationDateForSigningCertificate(currentSignature);
 				for (TimestampWrapper timestamp : contentTimestamps) {
@@ -266,7 +265,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
 			List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-			if (CollectionUtils.isNotEmpty(contentTimestamps)) {
+			if (Utils.isCollectionNotEmpty(contentTimestamps)) {
 				boolean failed = false;
 				for (TimestampWrapper timestamp : contentTimestamps) {
 					if (isValidTimestamp(timestamp)) {

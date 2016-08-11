@@ -2,7 +2,7 @@ package eu.europa.esig.dss.web.editor;
 
 import java.beans.PropertyEditorSupport;
 
-import org.apache.commons.lang.StringUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 public class EnumPropertyEditor extends PropertyEditorSupport {
 
@@ -16,7 +16,7 @@ public class EnumPropertyEditor extends PropertyEditorSupport {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public String getAsText() {
-		return getValue() == null ? StringUtils.EMPTY : ((Enum) getValue()).name();
+		return getValue() == null ? Utils.EMPTY_STRING : ((Enum) getValue()).name();
 	}
 
 	@Override

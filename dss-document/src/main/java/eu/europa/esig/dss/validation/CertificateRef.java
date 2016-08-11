@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
-import org.apache.commons.codec.binary.Hex;
-
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Reference a Certificate
@@ -96,6 +95,6 @@ public class CertificateRef {
 	@Override
 	public String toString() {
 
-		return "CertificateRef[issuerName=" + issuerName + ",issuerSerial=" + issuerSerial + ",digest=" + Hex.encodeHexString(digestValue) + "]";
+		return "CertificateRef[issuerName=" + issuerName + ",issuerSerial=" + issuerSerial + ",digest=" + Utils.toHex(digestValue) + "]";
 	}
 }

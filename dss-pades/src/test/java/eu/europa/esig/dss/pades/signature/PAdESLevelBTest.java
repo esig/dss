@@ -38,8 +38,6 @@ import java.util.List;
 
 import javax.crypto.Cipher;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -79,6 +77,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
@@ -181,11 +180,11 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 				assertEquals(PKCSObjectIdentifiers.pkcs_9_at_messageDigest, attributeDigest.getAttrType());
 
 				ASN1OctetString asn1ObjString = ASN1OctetString.getInstance(attributeDigest.getAttrValues().getObjectAt(0));
-				String embeddedDigest = Base64.encodeBase64String(asn1ObjString.getOctets());
+				String embeddedDigest = Utils.toBase64(asn1ObjString.getOctets());
 				logger.info("MESSAGE DIGEST : " + embeddedDigest);
 
 				byte[] digestSignedContent = DSSUtils.digest(digestAlgorithm, signedContent);
-				String computedDigestSignedContentEncodeBase64 = Base64.encodeBase64String(digestSignedContent);
+				String computedDigestSignedContentEncodeBase64 = Utils.toBase64(digestSignedContent);
 				logger.info("COMPUTED DIGEST SIGNED CONTENT BASE64 : " + computedDigestSignedContentEncodeBase64);
 				assertEquals(embeddedDigest, computedDigestSignedContentEncodeBase64);
 
@@ -225,21 +224,21 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 				DigestInfo digestInfo = new DigestInfo(seqDecrypt);
 				assertEquals(oidDigestAlgo, digestInfo.getAlgorithmId().getAlgorithm());
 
-				String decryptedDigestEncodeBase64 = Base64.encodeBase64String(digestInfo.getDigest());
+				String decryptedDigestEncodeBase64 = Utils.toBase64(digestInfo.getDigest());
 				logger.info("DECRYPTED BASE64 : " + decryptedDigestEncodeBase64);
 
 				byte[] encoded = authenticatedAttributeSet.getEncoded();
 				byte[] digest = DSSUtils.digest(digestAlgorithm, encoded);
-				String computedDigestFromSignatureEncodeBase64 = Base64.encodeBase64String(digest);
+				String computedDigestFromSignatureEncodeBase64 = Utils.toBase64(digest);
 				logger.info("COMPUTED DIGEST FROM SIGNATURE BASE64 : " + computedDigestFromSignatureEncodeBase64);
 
 				assertEquals(decryptedDigestEncodeBase64, computedDigestFromSignatureEncodeBase64);
 
-				IOUtils.closeQuietly(inputDecrypted);
-				IOUtils.closeQuietly(asn1sInput);
+				Utils.closeQuietly(inputDecrypted);
+				Utils.closeQuietly(asn1sInput);
 			}
 
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 			document.close();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

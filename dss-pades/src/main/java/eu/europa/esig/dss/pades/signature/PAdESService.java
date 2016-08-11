@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
@@ -49,6 +48,7 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 /**
@@ -61,9 +61,12 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	private final PadesCMSSignedDataBuilder padesCMSSignedDataBuilder;
 
 	/**
-	 * This is the constructor to create an instance of the {@code PAdESService}. A certificate verifier must be provided.
+	 * This is the constructor to create an instance of the {@code PAdESService}. A certificate verifier must be
+	 * provided.
 	 *
-	 * @param certificateVerifier {@code CertificateVerifier} provides information on the sources to be used in the validation process in the context of a signature.
+	 * @param certificateVerifier
+	 *            {@code CertificateVerifier} provides information on the sources to be used in the validation process
+	 *            in the context of a signature.
 	 */
 	public PAdESService(CertificateVerifier certificateVerifier) {
 
@@ -74,16 +77,16 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(SignatureLevel signatureLevel) {
 		switch (signatureLevel) {
-			case PAdES_BASELINE_B:
-				return null;
-			case PAdES_BASELINE_T:
-				return new PAdESLevelBaselineT(tspSource);
-			case PAdES_BASELINE_LT:
-				return new PAdESLevelBaselineLT(tspSource, certificateVerifier);
-			case PAdES_BASELINE_LTA:
-				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier);
-			default:
-				throw new IllegalArgumentException("Signature format '" + signatureLevel + "' not supported");
+		case PAdES_BASELINE_B:
+			return null;
+		case PAdES_BASELINE_T:
+			return new PAdESLevelBaselineT(tspSource);
+		case PAdES_BASELINE_LT:
+			return new PAdESLevelBaselineLT(tspSource, certificateVerifier);
+		case PAdES_BASELINE_LTA:
+			return new PAdESLevelBaselineLTA(tspSource, certificateVerifier);
+		default:
+			throw new IllegalArgumentException("Signature format '" + signatureLevel + "' not supported");
 		}
 	}
 
@@ -98,11 +101,12 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 		final InputStream inputStream = toSignDocument.openStream();
 		final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 
 		SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
-		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, null);
+		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
+				signerInfoGeneratorBuilder, null);
 
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
 
@@ -113,7 +117,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue)
+			throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -123,11 +128,12 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 		InputStream inputStream = toSignDocument.openStream();
 		final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
-		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, null);
+		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
+				signerInfoGeneratorBuilder, null);
 
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
 		CMSSignedData data = CMSUtils.generateDetachedCMSSignedData(generator, content);
@@ -143,7 +149,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final byte[] encodedData = CMSUtils.getEncoded(data);
 		inputStream = toSignDocument.openStream();
 		pdfSignatureService.sign(inputStream, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
-		IOUtils.closeQuietly(inputStream);
+		Utils.closeQuietly(inputStream);
 		DSSDocument signature = new InMemoryDocument(byteArrayOutputStream.toByteArray());
 		signature.setMimeType(MimeType.PDF);
 

@@ -5,11 +5,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CommonsDataLoaderTest {
@@ -34,19 +34,19 @@ public class CommonsDataLoaderTest {
 	@Test
 	public void ldapTest1() {
 		String url = "ldap://x500.gov.si/ou=sigen-ca,o=state-institutions,c=si?certificateRevocationList?base";
-		assertTrue(ArrayUtils.isNotEmpty(dataLoader.get(url)));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
 	}
 
 	@Test
 	public void ldapTest2() {
 		String url = "ldap://postarca.posta.si/ou=POSTArCA,o=POSTA,c=SI?certificateRevocationList";
-		assertTrue(ArrayUtils.isNotEmpty(dataLoader.get(url)));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
 	}
 
 	@Test
 	public void ldapTest3() {
 		String url = "ldap://acldap.nlb.si/o=ACNLB,c=SI?certificateRevocationList";
-		assertTrue(ArrayUtils.isNotEmpty(dataLoader.get(url)));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
 	}
 
 }

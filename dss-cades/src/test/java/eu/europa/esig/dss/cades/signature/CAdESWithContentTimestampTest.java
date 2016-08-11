@@ -7,8 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -22,6 +20,7 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.junit.Test;
 
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -35,7 +34,7 @@ public class CAdESWithContentTimestampTest {
 		File file = new File("src/test/resources/plugtest/cades/CAdES-BES/Sample_Set_11/Signature-C-BES-4.p7m");
 
 		FileInputStream fis = new FileInputStream(file);
-		ASN1InputStream asn1sInput = new ASN1InputStream(IOUtils.toByteArray(fis));
+		ASN1InputStream asn1sInput = new ASN1InputStream(Utils.toByteArray(fis));
 		ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 		ASN1TaggedObject taggedObj = DERTaggedObject.getInstance(asn1Seq.getObjectAt(1));
@@ -66,7 +65,7 @@ public class CAdESWithContentTimestampTest {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
-		assertTrue(CollectionUtils.isNotEmpty(timestampIdList));
+		assertTrue(Utils.isCollectionNotEmpty(timestampIdList));
 
 		boolean foundContentTimestamp = false;
 		for (String timestampId : timestampIdList) {
@@ -77,8 +76,8 @@ public class CAdESWithContentTimestampTest {
 		}
 		assertTrue(foundContentTimestamp);
 
-		IOUtils.closeQuietly(asn1sInput);
-		IOUtils.closeQuietly(fis);
+		Utils.closeQuietly(asn1sInput);
+		Utils.closeQuietly(fis);
 	}
 
 }

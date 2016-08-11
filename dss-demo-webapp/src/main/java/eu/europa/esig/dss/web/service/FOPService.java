@@ -19,10 +19,10 @@ import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
-import org.apache.pdfbox.io.IOUtils;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 @Component
@@ -49,11 +49,11 @@ public class FOPService {
 
 		InputStream simpleIS = FOPService.class.getResourceAsStream("/xslt/simpleReportFop.xslt");
 		templateSimpleReport = transformerFactory.newTemplates(new StreamSource(simpleIS));
-		IOUtils.closeQuietly(simpleIS);
+		Utils.closeQuietly(simpleIS);
 
 		InputStream detailedIS = FOPService.class.getResourceAsStream("/xslt/validationReportFop.xslt");
 		templateDetailedReport = transformerFactory.newTemplates(new StreamSource(detailedIS));
-		IOUtils.closeQuietly(detailedIS);
+		Utils.closeQuietly(detailedIS);
 	}
 
 	public void generateSimpleReport(String simpleReport, OutputStream os) throws Exception {

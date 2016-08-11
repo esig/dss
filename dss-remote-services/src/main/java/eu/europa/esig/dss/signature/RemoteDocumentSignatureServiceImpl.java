@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +42,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -181,7 +181,7 @@ public class RemoteDocumentSignatureServiceImpl implements RemoteDocumentSignatu
 		}
 
 		List<RemoteCertificate> remoteCertificateChain = remoteParameters.getCertificateChain();
-		if (CollectionUtils.isNotEmpty(remoteCertificateChain)) {
+		if (Utils.isCollectionNotEmpty(remoteCertificateChain)) {
 			Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 			for (RemoteCertificate remoteCertificate : remoteCertificateChain) {
 				certificateChain.add(DSSUtils.loadCertificate(remoteCertificate.getEncodedCertificate()));

@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -38,6 +36,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -90,7 +89,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		} catch (CMSException e) {
 			throw new DSSException("Not a valid CAdES file", e);
 		} finally {
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 		}
 	}
 
@@ -127,7 +126,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public DSSDocument getOriginalDocument(final String signatureId) throws DSSException {
-		if (StringUtils.isBlank(signatureId)) {
+		if (Utils.isStringBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
 		for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {

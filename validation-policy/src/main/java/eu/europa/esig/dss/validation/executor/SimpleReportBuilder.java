@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +44,7 @@ import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AttributeValue;
 import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.policy.CertificateQualification;
@@ -179,7 +178,7 @@ public class SimpleReportBuilder {
 
 		XmlConclusion conclusion = constraintsConclusion.getConclusion();
 		List<XmlName> errors = conclusion.getErrors();
-		if (CollectionUtils.isNotEmpty(errors)) {
+		if (Utils.isCollectionNotEmpty(errors)) {
 			for (XmlName error : errors) {
 				errorList.add(error.getValue());
 			}
@@ -208,10 +207,10 @@ public class SimpleReportBuilder {
 		Set<String> warns = new HashSet<String>();
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
-			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+			if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
 				collectWarnings(warns, xmlSignature.getValidationProcessBasicSignatures());
 				List<XmlValidationProcessTimestamps> validationProcessTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (CollectionUtils.isNotEmpty(validationProcessTimestamps)) {
+				if (Utils.isCollectionNotEmpty(validationProcessTimestamps)) {
 					for (XmlValidationProcessTimestamps xmlValidationProcessTimestamps : validationProcessTimestamps) {
 						collectWarnings(warns, xmlValidationProcessTimestamps);
 					}
@@ -226,13 +225,13 @@ public class SimpleReportBuilder {
 
 	private void collectWarnings(Set<String> result, XmlConstraintsConclusion constraintConclusion) {
 		if (constraintConclusion != null) {
-			if (CollectionUtils.isNotEmpty(constraintConclusion.getConstraint())) {
+			if (Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
 				for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
-					if (StringUtils.isNotEmpty(constraint.getId())) {
+					if (Utils.isStringNotEmpty(constraint.getId())) {
 						List<XmlBasicBuildingBlocks> basicBuildingBlocks = detailedReport.getBasicBuildingBlocks();
-						if (CollectionUtils.isNotEmpty(basicBuildingBlocks)) {
+						if (Utils.isCollectionNotEmpty(basicBuildingBlocks)) {
 							for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
-								if (StringUtils.equals(xmlBasicBuildingBlocks.getId(), constraint.getId())) {
+								if (Utils.areStringsEqual(xmlBasicBuildingBlocks.getId(), constraint.getId())) {
 									collectWarnings(result, xmlBasicBuildingBlocks);
 								}
 							}
@@ -257,7 +256,7 @@ public class SimpleReportBuilder {
 			if (xcv != null) {
 				collectWarnings(result, xcv);
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
-				if (CollectionUtils.isNotEmpty(subXCV)) {
+				if (Utils.isCollectionNotEmpty(subXCV)) {
 					for (XmlSubXCV xmlSubXCV : subXCV) {
 						collectWarnings(result, xmlSubXCV);
 					}
@@ -271,10 +270,10 @@ public class SimpleReportBuilder {
 		Set<String> infos = new HashSet<String>();
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
-			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+			if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
 				collectInfos(infos, xmlSignature.getValidationProcessBasicSignatures());
 				List<XmlValidationProcessTimestamps> validationProcessTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (CollectionUtils.isNotEmpty(validationProcessTimestamps)) {
+				if (Utils.isCollectionNotEmpty(validationProcessTimestamps)) {
 					for (XmlValidationProcessTimestamps xmlValidationProcessTimestamps : validationProcessTimestamps) {
 						collectInfos(infos, xmlValidationProcessTimestamps);
 					}
@@ -289,13 +288,13 @@ public class SimpleReportBuilder {
 
 	private void collectInfos(Set<String> result, XmlConstraintsConclusion constraintConclusion) {
 		if (constraintConclusion != null) {
-			if (CollectionUtils.isNotEmpty(constraintConclusion.getConstraint())) {
+			if (Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
 				for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
-					if (StringUtils.isNotEmpty(constraint.getId())) {
+					if (Utils.isStringNotEmpty(constraint.getId())) {
 						List<XmlBasicBuildingBlocks> basicBuildingBlocks = detailedReport.getBasicBuildingBlocks();
-						if (CollectionUtils.isNotEmpty(basicBuildingBlocks)) {
+						if (Utils.isCollectionNotEmpty(basicBuildingBlocks)) {
 							for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
-								if (StringUtils.equals(xmlBasicBuildingBlocks.getId(), constraint.getId())) {
+								if (Utils.areStringsEqual(xmlBasicBuildingBlocks.getId(), constraint.getId())) {
 									collectInfos(result, xmlBasicBuildingBlocks);
 								}
 							}
@@ -320,7 +319,7 @@ public class SimpleReportBuilder {
 			if (xcv != null) {
 				collectInfos(result, xcv);
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
-				if (CollectionUtils.isNotEmpty(subXCV)) {
+				if (Utils.isCollectionNotEmpty(subXCV)) {
 					for (XmlSubXCV xmlSubXCV : subXCV) {
 						collectInfos(result, xmlSubXCV);
 					}
@@ -333,7 +332,7 @@ public class SimpleReportBuilder {
 	private XmlConstraintsConclusion getBasicSignatureValidationConclusion(String signatureId) {
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
-			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+			if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessBasicSignatures();
 			}
 		}
@@ -343,7 +342,7 @@ public class SimpleReportBuilder {
 	private XmlConstraintsConclusion getLongTermDataValidationConclusion(String signatureId) {
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
-			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+			if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessLongTermData();
 			}
 		}
@@ -353,7 +352,7 @@ public class SimpleReportBuilder {
 	private XmlConstraintsConclusion getArchivalValidationConclusion(String signatureId) {
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
-			if (StringUtils.equals(signatureId, xmlSignature.getId())) {
+			if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
 				return xmlSignature.getValidationProcessArchivalData();
 			}
 		}
@@ -369,7 +368,7 @@ public class SimpleReportBuilder {
 
 	private void addSignatureScope(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
 		XmlSignatureScopes signatureScopes = diagnosticSignature.getSignatureScopes();
-		if (signatureScopes != null && CollectionUtils.isNotEmpty(signatureScopes.getSignatureScope())) {
+		if (signatureScopes != null && Utils.isCollectionNotEmpty(signatureScopes.getSignatureScope())) {
 			for (XmlSignatureScopeType scopeType : signatureScopes.getSignatureScope()) {
 				XmlSignatureScope scope = new XmlSignatureScope();
 				scope.setName(scopeType.getName());
@@ -392,15 +391,15 @@ public class SimpleReportBuilder {
 		String unknown = "?";
 		String signedBy = unknown;
 		String certificateId = diagnosticSignature.getSigningCertificateId();
-		if (StringUtils.isNotEmpty(certificateId)) {
+		if (Utils.isStringNotEmpty(certificateId)) {
 			signedBy = diagnosticData.getUsedCertificateById(certificateId).getCommonName();
-			if (signedBy.equals(StringUtils.EMPTY)) {
+			if (signedBy.equals(Utils.EMPTY_STRING)) {
 				signedBy = diagnosticData.getUsedCertificateById(certificateId).getGivenName();
-				if (signedBy.equals(StringUtils.EMPTY)) {
+				if (signedBy.equals(Utils.EMPTY_STRING)) {
 					signedBy = diagnosticData.getUsedCertificateById(certificateId).getSurname();
-					if (signedBy.equals(StringUtils.EMPTY)) {
+					if (signedBy.equals(Utils.EMPTY_STRING)) {
 						signedBy = diagnosticData.getUsedCertificateById(certificateId).getPseudo();
-						if (signedBy.equals(StringUtils.EMPTY)) {
+						if (signedBy.equals(Utils.EMPTY_STRING)) {
 							signedBy = unknown;
 						}
 					}

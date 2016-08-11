@@ -5,6 +5,21 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignatureTokenType;
+import eu.europa.esig.dss.signature.RemoteDocumentSignatureService;
+import eu.europa.esig.dss.standalone.fx.FileToStringConverter;
+import eu.europa.esig.dss.standalone.fx.TypedToggleGroup;
+import eu.europa.esig.dss.standalone.model.SignatureModel;
+import eu.europa.esig.dss.standalone.task.SigningTask;
+import eu.europa.esig.dss.utils.Utils;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -28,23 +43,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-
-import org.apache.commons.io.IOUtils;
-
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureTokenType;
-import eu.europa.esig.dss.signature.RemoteDocumentSignatureService;
-import eu.europa.esig.dss.standalone.fx.FileToStringConverter;
-import eu.europa.esig.dss.standalone.fx.TypedToggleGroup;
-import eu.europa.esig.dss.standalone.model.SignatureModel;
-import eu.europa.esig.dss.standalone.task.SigningTask;
 
 public class SignatureController implements Initializable {
 
@@ -71,7 +69,7 @@ public class SignatureController implements Initializable {
 
 	@FXML
 	private ComboBox<SignatureLevel> comboLevel;
-	
+
 	@FXML
 	private Label warningLabel;
 
@@ -115,10 +113,10 @@ public class SignatureController implements Initializable {
 	private RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> signatureService;
 
 	static {
-		// Fix a freeze in Windows 10, JDK 8 and touchscreen 
+		// Fix a freeze in Windows 10, JDK 8 and touchscreen
 		System.setProperty("glass.accessible.force", "false");
 	}
-	
+
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
@@ -137,7 +135,7 @@ public class SignatureController implements Initializable {
 		hPkcsPassword.managedProperty().bind(hPkcsPassword.visibleProperty());
 		labelPkcs11File.managedProperty().bind(labelPkcs11File.visibleProperty());
 		labelPkcs12File.managedProperty().bind(labelPkcs12File.visibleProperty());
-		
+
 		fileSelectButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -334,8 +332,8 @@ public class SignatureController implements Initializable {
 		if (fileToSave != null) {
 			try {
 				FileOutputStream fos = new FileOutputStream(fileToSave);
-				IOUtils.copy(signedDocument.openStream(), fos);
-				IOUtils.closeQuietly(fos);
+				Utils.copy(signedDocument.openStream(), fos);
+				Utils.closeQuietly(fos);
 			} catch (Exception e) {
 				Alert alert = new Alert(AlertType.ERROR, "Unable to save file : " + e.getMessage(), ButtonType.CLOSE);
 				alert.showAndWait();

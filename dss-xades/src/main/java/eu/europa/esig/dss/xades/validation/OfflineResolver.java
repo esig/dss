@@ -25,7 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
@@ -38,6 +37,7 @@ import org.w3c.dom.Attr;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class helps us home users to resolve http URIs without a network connection
@@ -74,7 +74,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 					return true;
 				}
 				final String baseUriString = context.baseUri;
-				if (StringUtils.isNotEmpty(baseUriString)) {
+				if (Utils.isStringNotEmpty(baseUriString)) {
 					final URI baseUri = new URI(baseUriString);
 					URI uriNew = new URI(baseUri, documentUri);
 					if (uriNew.getScheme().equals("http")) {

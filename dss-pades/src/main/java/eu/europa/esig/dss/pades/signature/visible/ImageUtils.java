@@ -20,7 +20,6 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -28,6 +27,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * A static utilities that helps in creating ImageAndResolution
@@ -43,7 +43,7 @@ public class ImageUtils {
 
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
 
-		if ((textParamaters != null) && StringUtils.isNotEmpty(textParamaters.getText())) {
+		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
 
 			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), textParamaters.getFont(), textParamaters.getTextColor(),
 					textParamaters.getBackgroundColor(), DPI);

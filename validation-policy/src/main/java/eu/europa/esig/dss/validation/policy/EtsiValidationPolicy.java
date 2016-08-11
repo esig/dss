@@ -23,10 +23,10 @@ package eu.europa.esig.dss.validation.policy;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DateUtils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
@@ -76,17 +76,17 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		AlgoExpirationDate algoExpirationDate = signatureCryptographicConstraint.getAlgoExpirationDate();
 		String dateFormat = DateUtils.DEFAULT_DATE_FORMAT;
 		if (algoExpirationDate != null) {
-			if (StringUtils.isNotEmpty(algoExpirationDate.getFormat())) {
+			if (Utils.isStringNotEmpty(algoExpirationDate.getFormat())) {
 				dateFormat = algoExpirationDate.getFormat();
 			}
 			List<Algo> algos = algoExpirationDate.getAlgo();
 			String foundExpirationDate = null;
 			for (Algo algo : algos) {
-				if (StringUtils.equalsIgnoreCase(algo.getValue(), algorithm)) {
+				if (Utils.areStringsEqualIgnoreCase(algo.getValue(), algorithm)) {
 					foundExpirationDate = algo.getDate();
 				}
 			}
-			if (StringUtils.isNotEmpty(foundExpirationDate)) {
+			if (Utils.isStringNotEmpty(foundExpirationDate)) {
 				return DateUtils.parseDate(dateFormat, foundExpirationDate);
 			}
 		}

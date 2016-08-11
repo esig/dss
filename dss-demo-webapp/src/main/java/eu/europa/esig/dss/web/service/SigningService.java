@@ -6,9 +6,6 @@ import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,7 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.model.ExtensionForm;
 import eu.europa.esig.dss.web.model.NexuSignatureDocumentForm;
@@ -121,12 +119,12 @@ public class SigningService {
 		// parameters.setEncryptionAlgorithm(form.getEncryptionAlgorithm()); retrieved from certificate
 		parameters.bLevel().setSigningDate(form.getSigningDate());
 
-		if (StringUtils.isNotEmpty(form.getPolicyOid()) && StringUtils.isNotEmpty(form.getPolicyBase64HashValue())
+		if (Utils.isStringNotEmpty(form.getPolicyOid()) && Utils.isStringNotEmpty(form.getPolicyBase64HashValue())
 				&& (form.getPolicyDigestAlgorithm() != null)) {
 			Policy signaturePolicy = new Policy();
 			signaturePolicy.setId(form.getPolicyOid());
 			signaturePolicy.setDigestAlgorithm(form.getPolicyDigestAlgorithm());
-			signaturePolicy.setDigestValue(Base64.decodeBase64(form.getPolicyBase64HashValue()));
+			signaturePolicy.setDigestValue(Utils.fromBase64(form.getPolicyBase64HashValue()));
 			parameters.bLevel().setSignaturePolicy(signaturePolicy);
 		}
 
@@ -137,7 +135,7 @@ public class SigningService {
 		parameters.setEncryptionAlgorithm(signingCertificate.getEncryptionAlgorithm());
 
 		List<String> base64CertificateChain = form.getBase64CertificateChain();
-		if (CollectionUtils.isNotEmpty(base64CertificateChain)) {
+		if (Utils.isCollectionNotEmpty(base64CertificateChain)) {
 			Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
 			for (String base64Certificate : base64CertificateChain) {
 				certificateChain.add(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate));

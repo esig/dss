@@ -23,50 +23,46 @@ package eu.europa.esig.dss.cookbook.sources;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 
 public class JavaKeyStoreTool {
+
+	private static final Logger logger = LoggerFactory.getLogger(JavaKeyStoreTool.class);
 
 	protected KeyStore ks = null;
 
 	public JavaKeyStoreTool(final String ksUrlLocation, final String ksPassword) {
-
 		InputStream ksStream = null;
 		try {
 			final URL ksLocation = new URL(ksUrlLocation);
 			ks = KeyStore.getInstance(KeyStore.getDefaultType());
 			ksStream = ksLocation.openStream();
 			ks.load(ksStream, (ksPassword == null) ? null : ksPassword.toCharArray());
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			e.printStackTrace();
+		} catch (GeneralSecurityException e) {
+			logger.error(e.getMessage(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(ksStream);
+			Utils.closeQuietly(ksStream);
 		}
 	}
 
 	public X509Certificate getCertificate(String certAlias, String password) {
 
 		try {
-
 			Certificate cert = ks.getCertificate(certAlias);
 			if (cert == null) {
 				return null;
@@ -76,7 +72,6 @@ public class JavaKeyStoreTool {
 			}
 			return (X509Certificate) cert;
 		} catch (KeyStoreException e) {
-
 			throw new DSSException(e);
 		}
 	}
@@ -96,11 +91,7 @@ public class JavaKeyStoreTool {
 			KeyStore.PrivateKeyEntry privateKey = new KeyStore.PrivateKeyEntry((PrivateKey) key, certificateChain);
 			KSPrivateKeyEntry ksPrivateKey = new KSPrivateKeyEntry(privateKey);
 			return ksPrivateKey;
-		} catch (KeyStoreException e) {
-			throw new DSSException(e);
-		} catch (UnrecoverableKeyException e) {
-			throw new DSSException(e);
-		} catch (NoSuchAlgorithmException e) {
+		} catch (GeneralSecurityException e) {
 			throw new DSSException(e);
 		}
 	}

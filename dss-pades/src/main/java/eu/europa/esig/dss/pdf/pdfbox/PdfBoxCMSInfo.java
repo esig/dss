@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 
 abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
@@ -53,7 +53,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	/**
 	 * The original signed pdf document
 	 */
-	private	final byte[] signedBytes;
+	private final byte[] signedBytes;
 
 	private boolean verified;
 	private SignatureCryptographicVerification verifyResult;
@@ -61,15 +61,18 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
 	private Set<PdfSignatureOrDocTimestampInfo> outerSignatures = new HashSet<PdfSignatureOrDocTimestampInfo>();
 
-
 	/**
 	 *
-	 * @param signature The signature object
-	 * @param dssDictionary the DSS dictionary
-	 * @param cms the signature binary
-	 * @param signedContent the signed content
+	 * @param signature
+	 *            The signature object
+	 * @param dssDictionary
+	 *            the DSS dictionary
+	 * @param cms
+	 *            the signature binary
+	 * @param signedContent
+	 *            the signed content
 	 */
-	PdfBoxCMSInfo(PDSignature signature, PdfDssDict dssDictionary, byte[] cms,	byte[] signedContent) {
+	PdfBoxCMSInfo(PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent) {
 		this.cms = cms;
 		this.location = signature.getLocation();
 		this.reason = signature.getReason();
@@ -116,9 +119,9 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
 	@Override
 	public String uniqueId() {
-		if (uniqueId == null){
+		if (uniqueId == null) {
 			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, cms);
-			uniqueId =  Hex.encodeHexString(digest);
+			uniqueId = Utils.toHex(digest);
 		}
 		return uniqueId;
 	}
@@ -165,8 +168,8 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
 	@Override
 	public String toString() {
-		return "PdfBoxCMSInfo [subFilter=" + subFilter + ", uniqueId=" + uniqueId() + ", signatureByteRange=" + Arrays.toString(signatureByteRange) + ", outerSignatures="
-				+ outerSignatures + "]";
+		return "PdfBoxCMSInfo [subFilter=" + subFilter + ", uniqueId=" + uniqueId() + ", signatureByteRange=" + Arrays.toString(signatureByteRange)
+				+ ", outerSignatures=" + outerSignatures + "]";
 	}
 
 }

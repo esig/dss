@@ -22,12 +22,11 @@ package eu.europa.esig.dss.web.controller.preferences;
 
 import java.net.URL;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.web.model.PreferenceForm;
 import eu.europa.esig.dss.web.model.PreferenceKey;
 
@@ -48,9 +47,9 @@ public class PreferenceFormValidator implements Validator {
 		if (preferenceForm.getKey().equals(PreferenceKey.DEFAULT_POLICY_URL.toString())) {
 			// check that the entered URL is loadable
 			final String value = preferenceForm.getValue();
-			if (StringUtils.isNotBlank(value)) {
+			if (Utils.isStringNotBlank(value)) {
 				try {
-					IOUtils.toString(new URL(value).openStream());
+					Utils.toByteArray(new URL(value).openStream());
 				} catch (Exception e) {
 					errors.rejectValue("value", "url.error");
 				}

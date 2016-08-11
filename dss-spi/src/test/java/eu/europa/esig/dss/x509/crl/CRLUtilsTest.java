@@ -9,17 +9,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509CRL;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CRLUtilsTest {
 
 	@Test
-	public void isValidCRL() throws Exception{
+	public void isValidCRL() throws Exception {
 		FileInputStream fis = new FileInputStream(new File("src/test/resources/crl/belgium2.crl"));
 		X509CRL x509CRL = DSSUtils.loadCRL(fis);
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
@@ -32,12 +31,12 @@ public class CRLUtilsTest {
 		assertTrue(validCRL.isValid());
 		assertEquals(certificate, validCRL.getIssuerToken());
 		assertEquals(x509CRL, validCRL.getX509CRL());
-		assertTrue(StringUtils.isEmpty(validCRL.getSignatureInvalidityReason()));
-		IOUtils.closeQuietly(fis);
+		assertTrue(Utils.isStringEmpty(validCRL.getSignatureInvalidityReason()));
+		Utils.closeQuietly(fis);
 	}
 
 	@Test
-	public void isValidCRLWrongCertificate() throws Exception{
+	public void isValidCRLWrongCertificate() throws Exception {
 		FileInputStream fis = new FileInputStream(new File("src/test/resources/crl/belgium2.crl"));
 		X509CRL x509CRL = DSSUtils.loadCRL(fis);
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
@@ -46,8 +45,8 @@ public class CRLUtilsTest {
 		assertFalse(validCRL.isIssuerX509PrincipalMatches());
 		assertFalse(validCRL.isSignatureIntact());
 		assertFalse(validCRL.isValid());
-		assertFalse(StringUtils.isEmpty(validCRL.getSignatureInvalidityReason()));
-		IOUtils.closeQuietly(fis);
+		assertFalse(Utils.isStringEmpty(validCRL.getSignatureInvalidityReason()));
+		Utils.closeQuietly(fis);
 	}
 
 	@Test

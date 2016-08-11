@@ -17,10 +17,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -304,7 +304,7 @@ public class CustomProcessExecutorTest {
 	private <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd) throws Exception {
 		JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
 		Unmarshaller unmarshaller = context.createUnmarshaller();
-		if (StringUtils.isNotEmpty(xsd)) {
+		if (Utils.isStringNotEmpty(xsd)) {
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			InputStream inputStream = this.getClass().getResourceAsStream(xsd);
 			Source source = new StreamSource(inputStream);

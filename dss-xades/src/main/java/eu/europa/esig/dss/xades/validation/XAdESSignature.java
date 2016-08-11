@@ -44,9 +44,6 @@ import javax.xml.bind.DatatypeConverter;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.keys.KeyInfo;
@@ -79,6 +76,7 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CRLRef;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
@@ -470,7 +468,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					continue;
 				}
 				// That must be a binary comparison
-				final byte[] storedBase64DigestValue = DSSUtils.base64StringToBase64Binary(digestValueElement.getTextContent());
+				final byte[] storedBase64DigestValue = Utils.fromBase64(digestValueElement.getTextContent());
 
 				/**
 				 * Step 1:<br>
@@ -485,10 +483,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * returned.
 				 */
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
-				final byte[] recalculatedBase64DigestValue = Base64.encodeBase64(digest);
 				certificateValidity.setDigestEqual(false);
 				BigInteger serialNumber = new BigInteger("0");
-				if (Arrays.equals(recalculatedBase64DigestValue, storedBase64DigestValue)) {
+				if (Arrays.equals(digest, storedBase64DigestValue)) {
 					X500Principal issuerName = null;
 					if (isEn319132) {
 						final Element issuerNameEl = DSSXMLUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
@@ -499,7 +496,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 							GeneralName name = null;
 							ASN1Integer serial = null;
 							try {
-								is = new ASN1InputStream(Base64.decodeBase64(textContent));
+								is = new ASN1InputStream(Utils.fromBase64(textContent));
 								ASN1Sequence seq = (ASN1Sequence) is.readObject();
 								ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
 								name = GeneralName.getInstance(obj.getObjectAt(0));
@@ -507,7 +504,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 							} catch (IOException e) {
 								LOG.error("Unable to decode textContent " + textContent + " : " + e.getMessage(), e);
 							} finally {
-								IOUtils.closeQuietly(is);
+								Utils.closeQuietly(is);
 							}
 
 							try {
@@ -642,7 +639,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final SignaturePolicy signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DSSXMLUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
 				final String policyDigestMethodString = policyDigestMethod.getTextContent();
-				if (StringUtils.isNotEmpty(policyDigestMethodString)) {
+				if (Utils.isStringNotEmpty(policyDigestMethodString)) {
 					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
 					signaturePolicy.setDigestAlgorithm(digestAlgorithm);
 				}
@@ -816,7 +813,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	private TimeStampToken createTimeStampToken(final String base64EncodedTimestamp) throws DSSException {
 		try {
-			final byte[] tokenBytes = Base64.decodeBase64(base64EncodedTimestamp);
+			final byte[] tokenBytes = Utils.fromBase64(base64EncodedTimestamp);
 			final CMSSignedData signedData = new CMSSignedData(tokenBytes);
 			return new TimeStampToken(signedData);
 		} catch (Exception e) {
@@ -1590,7 +1587,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 			genericCertId.setDigestAlgorithm(DigestAlgorithm.forXML(xmlName));
 
-			genericCertId.setDigestValue(Base64.decodeBase64(digestValueEl.getTextContent()));
+			genericCertId.setDigestValue(Utils.fromBase64(digestValueEl.getTextContent()));
 			certIds.add(genericCertId);
 		}
 
@@ -1614,7 +1611,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 
-				final CRLRef ref = new CRLRef(digestAlgo, Base64.decodeBase64(digestValueEl.getTextContent()));
+				final CRLRef ref = new CRLRef(digestAlgo, Utils.fromBase64(digestValueEl.getTextContent()));
 				certIds.add(ref);
 			}
 		}
@@ -1642,7 +1639,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 
 				final String digestValue = digestValueEl.getTextContent();
-				final byte[] base64EncodedDigestValue = Base64.decodeBase64(digestValue);
+				final byte[] base64EncodedDigestValue = Utils.fromBase64(digestValue);
 				final OCSPRef ocspRef = new OCSPRef(digestAlgo, base64EncodedDigestValue, false);
 				certIds.add(ocspRef);
 			}

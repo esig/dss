@@ -2,9 +2,8 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -28,11 +27,11 @@ public class CommitmentTypeIndicationsCheck extends ChainItem<XmlSAV> {
 		List<String> commitmentTypeIdentifiers = signature.getCommitmentTypeIdentifiers();
 		List<String> expectedValues = constraint.getId();
 
-		if (CollectionUtils.isEmpty(commitmentTypeIdentifiers)) {
+		if (Utils.isCollectionEmpty(commitmentTypeIdentifiers)) {
 			return false;
 		}
 
-		if (CollectionUtils.isNotEmpty(expectedValues)) {
+		if (Utils.isCollectionNotEmpty(expectedValues)) {
 			return expectedValues.containsAll(commitmentTypeIdentifiers);
 		}
 

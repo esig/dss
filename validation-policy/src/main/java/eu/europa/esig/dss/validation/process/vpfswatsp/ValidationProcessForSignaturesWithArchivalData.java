@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +14,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AttributeValue;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -108,7 +107,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * perform the time-stamp validation, as per clause 5.4.
 		 */
 		List<TimestampWrapper> timestampsList = signature.getTimestampList();
-		if (CollectionUtils.isNotEmpty(timestampsList)) {
+		if (Utils.isCollectionNotEmpty(timestampsList)) {
 			Collections.sort(timestampsList, new TimestampComparator());
 			for (TimestampWrapper newestTimestamp : timestampsList) {
 				XmlBasicBuildingBlocks bbbTsp = bbbs.get(newestTimestamp.getId());
@@ -194,7 +193,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private XmlConstraintsConclusion getTimestampValidation(TimestampWrapper newestTimestamp) {
 		for (XmlValidationProcessTimestamps tspValidation : validationProcessTimestamps) {
-			if (StringUtils.equals(tspValidation.getId(), newestTimestamp.getId())) {
+			if (Utils.areStringsEqual(tspValidation.getId(), newestTimestamp.getId())) {
 				return tspValidation;
 			}
 		}

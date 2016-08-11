@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +35,7 @@ import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.DataToSignParams;
 import eu.europa.esig.dss.web.model.GetDataToSignResponse;
@@ -131,7 +131,7 @@ public class NexuController {
 			}
 			response.setHeader("Content-Transfer-Encoding", "binary");
 			response.setHeader("Content-Disposition", "attachment; filename=\"" + signedDocument.getName() + "\"");
-			IOUtils.copy(new ByteArrayInputStream(signedDocument.getBytes()), response.getOutputStream());
+			Utils.copy(new ByteArrayInputStream(signedDocument.getBytes()), response.getOutputStream());
 
 		} catch (Exception e) {
 			logger.error("An error occured while pushing file in response : " + e.getMessage(), e);

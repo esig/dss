@@ -23,8 +23,6 @@ package eu.europa.esig.dss.cookbook.example.sign;
 import java.io.IOException;
 import java.util.Date;
 
-import org.apache.commons.io.IOUtils;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
@@ -32,6 +30,7 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -57,6 +56,6 @@ public class SigningApplication extends Cookbook {
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
 		SignatureValue signatureValue = signingToken.sign(dataToSign, params.getDigestAlgorithm(), privateKey);
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
-		IOUtils.copy(signedDocument.openStream(), System.out);
+		Utils.copy(signedDocument.openStream(), System.out);
 	}
 }

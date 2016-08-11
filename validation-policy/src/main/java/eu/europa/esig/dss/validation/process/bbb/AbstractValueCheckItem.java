@@ -1,8 +1,7 @@
 package eu.europa.esig.dss.validation.process.bbb;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
@@ -15,14 +14,14 @@ public abstract class AbstractValueCheckItem<T extends XmlConstraintsConclusion>
 	}
 
 	protected boolean processValueCheck(String value, String expected) {
-		if (StringUtils.isEmpty(value)) {
+		if (Utils.isStringEmpty(value)) {
 			return false;
 		}
 
 		if (ALL_VALUE.equals(expected)) {
 			return true;
 		} else {
-			return StringUtils.equals(expected, value);
+			return Utils.areStringsEqual(expected, value);
 		}
 	}
 

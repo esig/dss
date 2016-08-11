@@ -4,10 +4,9 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.Context;
@@ -43,7 +42,7 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 
 		List<XmlTrustedServiceProviderType> tspList = certificate.getCertificateTSPService();
 		for (XmlTrustedServiceProviderType trustedServiceProvider : tspList) {
-			serviceStatusStr = StringUtils.trim(trustedServiceProvider.getStatus());
+			serviceStatusStr = Utils.trim(trustedServiceProvider.getStatus());
 			Date statusStartDate = trustedServiceProvider.getStartDate();
 			if (processValueCheck(serviceStatusStr) && statusStartDate != null) {
 				Date statusEndDate = trustedServiceProvider.getEndDate();
@@ -59,7 +58,7 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 
 	@Override
 	protected String getAdditionalInfo() {
-		if (StringUtils.isNotEmpty(serviceStatusStr)) {
+		if (Utils.isStringNotEmpty(serviceStatusStr)) {
 			Object[] params = new Object[] { serviceStatusStr };
 			return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_STATUS, params);
 		}

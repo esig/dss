@@ -26,9 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
-
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class proposes some utility methods to manipulate PDF files.
@@ -57,13 +56,13 @@ public final class DSSPDFUtils {
 			file.deleteOnExit();
 
 			fileOutputStream = new FileOutputStream(file);
-			IOUtils.copy(pdfData, fileOutputStream);
+			Utils.copy(pdfData, fileOutputStream);
 			return file;
 		} catch (IOException e) {
 			throw new DSSException("The process has no rights to write or to access 'java.io.tmpdir': " + System.getProperty("java.io.tmpdir"), e);
 		} finally {
-			IOUtils.closeQuietly(pdfData);
-			IOUtils.closeQuietly(fileOutputStream);
+			Utils.closeQuietly(pdfData);
+			Utils.closeQuietly(fileOutputStream);
 		}
 	}
 
@@ -80,12 +79,12 @@ public final class DSSPDFUtils {
 		try {
 			final FileOutputStream fileOutputStream = new FileOutputStream(signedFile);
 			fileInputStream = new FileInputStream(toSignFile);
-			IOUtils.copy(fileInputStream, fileOutputStream);
+			Utils.copy(fileInputStream, fileOutputStream);
 			return fileOutputStream;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(fileInputStream);
+			Utils.closeQuietly(fileInputStream);
 		}
 	}
 

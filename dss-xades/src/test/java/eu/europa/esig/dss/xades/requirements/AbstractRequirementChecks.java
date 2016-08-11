@@ -11,8 +11,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,6 +21,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public abstract class AbstractRequirementChecks {
@@ -67,7 +66,7 @@ public abstract class AbstractRequirementChecks {
 		for (int i = 0; i < length; i++) {
 			Node node = nodeList.item(i);
 			String certificateBase64 = node.getTextContent();
-			byte[] decodeCertificate = Base64.decodeBase64(certificateBase64);
+			byte[] decodeCertificate = Utils.fromBase64(certificateBase64);
 			CertificateToken certificateToken = DSSUtils.loadCertificate(decodeCertificate);
 			assertNotNull(certificateToken);
 		}
@@ -83,7 +82,7 @@ public abstract class AbstractRequirementChecks {
 		assertNotNull(node);
 		NamedNodeMap attributes = node.getAttributes();
 		Node algoNode = attributes.getNamedItem("Algorithm");
-		assertTrue(StringUtils.isNotEmpty(algoNode.getTextContent()));
+		assertTrue(Utils.isStringNotEmpty(algoNode.getTextContent()));
 	}
 
 	/**
@@ -129,7 +128,7 @@ public abstract class AbstractRequirementChecks {
 
 		NamedNodeMap attributes = node.getAttributes();
 		Node objectReferenceAttribute = attributes.getNamedItem("ObjectReference");
-		assertTrue(StringUtils.isNotEmpty(objectReferenceAttribute.getTextContent()));
+		assertTrue(Utils.isStringNotEmpty(objectReferenceAttribute.getTextContent()));
 	}
 
 	/**
@@ -140,7 +139,7 @@ public abstract class AbstractRequirementChecks {
 		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat/xades:MimeType");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
 		assertNotNull(node);
-		assertTrue(StringUtils.isNotEmpty(node.getTextContent()));
+		assertTrue(Utils.isStringNotEmpty(node.getTextContent()));
 	}
 
 	/**

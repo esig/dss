@@ -5,12 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.FutureTask;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
-
 import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
@@ -28,7 +22,10 @@ import eu.europa.esig.dss.token.MSCAPISignatureToken;
 import eu.europa.esig.dss.token.Pkcs11SignatureToken;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 
 public class SigningTask extends Task<DSSDocument> {
 
@@ -52,7 +49,9 @@ public class SigningTask extends Task<DSSDocument> {
 
 		DSSPrivateKeyEntry signer = getSigner(keys);
 
-		RemoteDocument toSignDocument = new RemoteDocument(new FileDocument(model.getFileToSign()));
+		FileDocument fileToSign = new FileDocument(model.getFileToSign());
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName(),
+				fileToSign.getAbsolutePath());
 		RemoteSignatureParameters parameters = buildParameters(signer);
 
 		ToBeSigned toBeSigned = getDataToSign(toSignDocument, parameters);
@@ -80,7 +79,7 @@ public class SigningTask extends Task<DSSDocument> {
 		parameters.setSigningCertificate(new RemoteCertificate(signer.getCertificate().getEncoded()));
 		parameters.setEncryptionAlgorithm(signer.getEncryptionAlgorithm());
 		CertificateToken[] certificateChain = signer.getCertificateChain();
-		if (ArrayUtils.isNotEmpty(certificateChain)) {
+		if (Utils.isArrayNotEmpty(certificateChain)) {
 			List<RemoteCertificate> certificateChainList = new ArrayList<RemoteCertificate>();
 			for (CertificateToken certificateToken : certificateChain) {
 				certificateChainList.add(new RemoteCertificate(certificateToken.getEncoded()));
@@ -126,9 +125,9 @@ public class SigningTask extends Task<DSSDocument> {
 
 	private DSSPrivateKeyEntry getSigner(List<DSSPrivateKeyEntry> keys) throws Exception {
 		DSSPrivateKeyEntry selectedKey = null;
-		if (CollectionUtils.isEmpty(keys)) {
+		if (Utils.isCollectionEmpty(keys)) {
 			throwException("No certificate found", null);
-		} else if (CollectionUtils.size(keys) == 1) {
+		} else if (Utils.collectionSize(keys) == 1) {
 			selectedKey = keys.get(0);
 		} else {
 			FutureTask<DSSPrivateKeyEntry> future = new FutureTask<DSSPrivateKeyEntry>(new SelectCertificateTask(keys));
@@ -143,14 +142,14 @@ public class SigningTask extends Task<DSSDocument> {
 
 	private SignatureTokenConnection getToken(SignatureModel model) {
 		switch (model.getTokenType()) {
-			case PKCS11:
-				return new Pkcs11SignatureToken(model.getPkcsFile().getAbsolutePath(), model.getPassword().toCharArray());
-			case PKCS12:
-				return new Pkcs12SignatureToken(model.getPassword().toCharArray(), model.getPkcsFile());
-			case MSCAPI:
-				return new MSCAPISignatureToken();
-			default:
-				throw new IllegalArgumentException("Unsupported token type " + model.getTokenType());
+		case PKCS11:
+			return new Pkcs11SignatureToken(model.getPkcsFile().getAbsolutePath(), model.getPassword().toCharArray());
+		case PKCS12:
+			return new Pkcs12SignatureToken(model.getPassword().toCharArray(), model.getPkcsFile());
+		case MSCAPI:
+			return new MSCAPISignatureToken();
+		default:
+			throw new IllegalArgumentException("Unsupported token type " + model.getTokenType());
 		}
 	}
 

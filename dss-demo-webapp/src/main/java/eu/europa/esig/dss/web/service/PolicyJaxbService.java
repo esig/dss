@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Component;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 @Component
@@ -34,9 +34,9 @@ public class PolicyJaxbService {
 			is = PolicyJaxbService.class.getResourceAsStream(filePath);
 			policy = (ConstraintsParameters) policyUnmarshaller.unmarshal(new StreamSource(is));
 		} catch (Exception e) {
-			logger.error("Unable to parse '" + filePath+ "' : " + e.getMessage(), e);
+			logger.error("Unable to parse '" + filePath + "' : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(is);
+			Utils.closeQuietly(is);
 		}
 		return policy;
 	}

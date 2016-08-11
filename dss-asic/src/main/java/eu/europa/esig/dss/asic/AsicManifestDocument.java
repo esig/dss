@@ -26,8 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.CommonDocument;
@@ -35,6 +33,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 /**
@@ -64,7 +63,7 @@ public class AsicManifestDocument extends CommonDocument {
 		this.mimeType = MimeType.XML;
 		final Document document = DSSXMLUtils.buildDOM(bytes);
 		signatureUri = DSSXMLUtils.getValue(document, "/asic:ASiCManifest/asic:SigReference/@URI");
-		if (StringUtils.isBlank(signatureUri)) {
+		if (Utils.isStringBlank(signatureUri)) {
 			throw new DSSException("The AsicManifest file must contains the URI of the related signature.");
 		}
 	}
@@ -106,12 +105,12 @@ public class AsicManifestDocument extends CommonDocument {
 	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, bytes);
-		final String base64Encode = Base64.encodeBase64String(digestBytes);
+		final String base64Encode = Utils.toBase64(digestBytes);
 		return base64Encode;
 	}
 
 	public String getBase64Encoded() {
-		return Base64.encodeBase64String(bytes);
+		return Utils.toBase64(bytes);
 	}
 
 	public String getSignatureUri() {

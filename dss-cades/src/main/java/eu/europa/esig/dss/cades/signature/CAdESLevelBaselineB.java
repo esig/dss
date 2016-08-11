@@ -37,9 +37,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -79,6 +76,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.TimestampToken;
 
 /**
@@ -255,7 +253,7 @@ public class CAdESLevelBaselineB {
 		final BLevelParameters bLevelParameters = parameters.bLevel();
 
 		final List<String> commitmentTypeIndications = bLevelParameters.getCommitmentTypeIndications();
-		if (CollectionUtils.isNotEmpty(commitmentTypeIndications)) {
+		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 
 			final int size = commitmentTypeIndications.size();
 			ASN1Encodable[] asn1Encodables = new ASN1Encodable[size];
@@ -345,11 +343,11 @@ public class CAdESLevelBaselineB {
 	 * @return
 	 */
 	private void addContentHints(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
-		if (StringUtils.isNotBlank(parameters.getContentHintsType())) {
+		if (Utils.isStringNotBlank(parameters.getContentHintsType())) {
 
 			final ASN1ObjectIdentifier contentHintsType = new ASN1ObjectIdentifier(parameters.getContentHintsType());
 			final String contentHintsDescriptionString = parameters.getContentHintsDescription();
-			final DERUTF8String contentHintsDescription = StringUtils.isBlank(contentHintsDescriptionString) ? null
+			final DERUTF8String contentHintsDescription = Utils.isStringBlank(contentHintsDescriptionString) ? null
 					: new DERUTF8String(contentHintsDescriptionString);
 			// "text/plain";
 			// "1.2.840.113549.1.7.1";
@@ -386,10 +384,10 @@ public class CAdESLevelBaselineB {
 
 			final BLevelParameters bLevelParameters = parameters.bLevel();
 			final String contentIdentifierPrefix = parameters.getContentIdentifierPrefix();
-			if (StringUtils.isNotBlank(contentIdentifierPrefix)) {
+			if (Utils.isStringNotBlank(contentIdentifierPrefix)) {
 
 				final String contentIdentifierSuffix;
-				if (StringUtils.isBlank(parameters.getContentIdentifierSuffix())) {
+				if (Utils.isStringBlank(parameters.getContentIdentifierSuffix())) {
 
 					final Date now = new Date();
 					final String asn1GeneralizedTimeString = new ASN1GeneralizedTime(now).getTimeString();
@@ -416,7 +414,7 @@ public class CAdESLevelBaselineB {
 			final String policyId = policy.getId();
 			SignaturePolicyIdentifier sigPolicy = null;
 
-			if (StringUtils.isEmpty(policyId)) {// implicit
+			if (Utils.isStringEmpty(policyId)) {// implicit
 				sigPolicy = new SignaturePolicyIdentifier();
 			} else { // explicit
 				final ASN1ObjectIdentifier derOIPolicyId = new ASN1ObjectIdentifier(policyId);
@@ -424,7 +422,7 @@ public class CAdESLevelBaselineB {
 				final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(oid);
 				OtherHashAlgAndValue otherHashAlgAndValue = new OtherHashAlgAndValue(algorithmIdentifier, new DEROctetString(policy.getDigestValue()));
 
-				if (StringUtils.isNotEmpty(policy.getSpuri())) {
+				if (Utils.isStringNotEmpty(policy.getSpuri())) {
 					SigPolicyQualifierInfo policyQualifierInfo = new SigPolicyQualifierInfo(PKCSObjectIdentifiers.id_spq_ets_uri,
 							new DERUTF8String(policy.getSpuri()));
 					SigPolicyQualifierInfo[] qualifierInfos = new SigPolicyQualifierInfo[] { policyQualifierInfo };
@@ -447,7 +445,7 @@ public class CAdESLevelBaselineB {
 		final byte[] encoded = parameters.getSigningCertificate().getEncoded();
 		final byte[] certHash = DSSUtils.digest(digestAlgorithm, encoded);
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Adding Certificate Hash {} with algorithm {}", Hex.encodeHexString(certHash), digestAlgorithm.getName());
+			LOG.debug("Adding Certificate Hash {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
 		}
 		final IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(parameters.getSigningCertificate());
 

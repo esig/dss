@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -24,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractRequirementChecks {
 
@@ -50,7 +50,7 @@ public abstract class AbstractRequirementChecks {
 
 		signerInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
 
-		IOUtils.closeQuietly(asn1sInput);
+		Utils.closeQuietly(asn1sInput);
 	}
 
 	protected abstract DSSDocument getSignedDocument() throws Exception;
@@ -66,8 +66,7 @@ public abstract class AbstractRequirementChecks {
 		for (int i = 0; i < certificates.size(); i++) {
 			ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
 			X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
-			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(
-					certificateHolder);
+			X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(certificateHolder);
 
 			certificate.checkValidity();
 		}
@@ -98,7 +97,7 @@ public abstract class AbstractRequirementChecks {
 	}
 
 	/**
-	 *  signature-time-stamp shall be present in T/LT/LTA
+	 * signature-time-stamp shall be present in T/LT/LTA
 	 */
 	@Test
 	public void checkSignatureTimeStampPresent() {
@@ -112,13 +111,13 @@ public abstract class AbstractRequirementChecks {
 	public abstract void checkCertificateValue();
 
 	/**
-	 * complete-certificate-references  shall not be present (B/T 1 or 0 ; LT/LTA 0)
+	 * complete-certificate-references shall not be present (B/T 1 or 0 ; LT/LTA 0)
 	 */
 	@Test
 	public abstract void checkCompleteCertificateReference();
 
 	/**
-	 * revocation-values  shall not be present (B/T 1 or 0 ; LT/LTA 0)
+	 * revocation-values shall not be present (B/T 1 or 0 ; LT/LTA 0)
 	 */
 	@Test
 	public abstract void checkRevocationValues();
@@ -130,13 +129,13 @@ public abstract class AbstractRequirementChecks {
 	public abstract void checkCompleteRevocationReferences();
 
 	/**
-	 * 	CAdES-C-timestamp shall not be present (B/T >= 0 ; LT/LTA 0)
+	 * CAdES-C-timestamp shall not be present (B/T >= 0 ; LT/LTA 0)
 	 */
 	@Test
 	public abstract void checkCAdESCTimestamp();
 
 	/**
-	 * 	time-stamped-certs-crls-references shall not be present (B/T >= 0 ; LT/LTA 0)
+	 * time-stamped-certs-crls-references shall not be present (B/T >= 0 ; LT/LTA 0)
 	 */
 	@Test
 	public abstract void checkTimestampedCertsCrlsReferences();
@@ -146,7 +145,7 @@ public abstract class AbstractRequirementChecks {
 	}
 
 	protected boolean isUnsignedAttributeFound(ASN1ObjectIdentifier oid) {
-		return countUnsignedAttribute(oid) >0;
+		return countUnsignedAttribute(oid) > 0;
 	}
 
 	protected int countSignedAttribute(ASN1ObjectIdentifier oid) {

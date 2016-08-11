@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -31,6 +30,7 @@ import org.bouncycastle.util.BigIntegers;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This is the utility class to manipulate different signature types.
@@ -104,7 +104,7 @@ public final class DSSSignatureUtils {
 		} catch (Exception e) {
 			throw new DSSException("Unable to convert to xmlDsig : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(is);
+			Utils.closeQuietly(is);
 		}
 	}
 
@@ -140,7 +140,7 @@ public final class DSSSignatureUtils {
 		} catch (Exception e) {
 			throw new DSSException("Unable to convert to xmlDsig : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(is);
+			Utils.closeQuietly(is);
 		}
 		return buffer.toByteArray();
 	}

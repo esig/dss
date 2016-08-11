@@ -5,10 +5,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -31,7 +31,7 @@ public class DTDInjectionTest {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		List<String> claimedRoles = signatures.get(0).getClaimedRoles();
-		assertTrue(CollectionUtils.isEmpty(claimedRoles) || claimedRoles.contains("&test1;") || claimedRoles.contains(""));
+		assertTrue(Utils.isCollectionEmpty(claimedRoles) || claimedRoles.contains("&test1;") || claimedRoles.contains(""));
 	}
 
 }

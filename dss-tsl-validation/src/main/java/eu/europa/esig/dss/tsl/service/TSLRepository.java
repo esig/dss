@@ -37,11 +37,6 @@ import java.util.TreeMap;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +58,7 @@ import eu.europa.esig.dss.tsl.TSLValidationSummary;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.util.TimeDependentValues;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -168,7 +164,7 @@ public class TSLRepository {
 
 	public void clearRepository() {
 		try {
-			FileUtils.cleanDirectory(new File(cacheDirectoryPath));
+			Utils.cleanDirectory(new File(cacheDirectoryPath));
 			tsls.clear();
 		} catch (IOException e) {
 			logger.error("Unable to clean cache directory : " + e.getMessage(), e);
@@ -181,13 +177,13 @@ public class TSLRepository {
 			return false;
 		} else {
 			// TODO Best place ? Download didn't work, we use previous version
-			if (ArrayUtils.isEmpty(resultLoader.getContent())) {
+			if (Utils.isArrayEmpty(resultLoader.getContent())) {
 				return true;
 			}
 			validationModel.setUrl(resultLoader.getUrl());
 			validationModel.setLoadedDate(new Date());
 			String lastSha256 = getSHA256(resultLoader.getContent());
-			return StringUtils.equals(lastSha256, validationModel.getSha256FileContent());
+			return Utils.areStringsEqual(lastSha256, validationModel.getSha256FileContent());
 		}
 	}
 
@@ -225,12 +221,12 @@ public class TSLRepository {
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(filePath);
-			byte[] data = IOUtils.toByteArray(fis);
+			byte[] data = Utils.toByteArray(fis);
 			validationModel.setSha256FileContent(getSHA256(data));
 		} catch (Exception e) {
 			logger.error("Unable to read '" + filePath + "' : " + e.getMessage());
 		} finally {
-			IOUtils.closeQuietly(fis);
+			Utils.closeQuietly(fis);
 		}
 		validationModel.setParseResult(tslParserResult);
 		validationModel.setCertificateSourceSynchronized(false);
@@ -248,11 +244,11 @@ public class TSLRepository {
 		OutputStream os = null;
 		try {
 			os = new FileOutputStream(fileToCreate);
-			IOUtils.write(resultLoader.getContent(), os);
+			Utils.write(resultLoader.getContent(), os);
 		} catch (Exception e) {
 			throw new DSSException("Cannot create file in cache : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(os);
+			Utils.closeQuietly(os);
 		}
 		return filePath;
 	}
@@ -336,7 +332,7 @@ public class TSLRepository {
 			logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 			logger.info("Nb of skipped trusted lists : " + skippedTSLValidationModels.size());
 
-			if (CollectionUtils.isNotEmpty(skippedTSLValidationModels)) {
+			if (Utils.isCollectionNotEmpty(skippedTSLValidationModels)) {
 				for (TSLValidationModel tslValidationModel : skippedTSLValidationModels) {
 					logger.info(tslValidationModel.getUrl() + " is skipped");
 				}
@@ -383,6 +379,7 @@ public class TSLRepository {
 					if (conditionsForQualif == null) {
 						conditionsForQualif = new ArrayList<Condition>();
 						qualifiersAndConditions.put(qualifier, conditionsForQualif);
+
 					}
 					conditionsForQualif.add(condition);
 				}
@@ -420,7 +417,7 @@ public class TSLRepository {
 							nbServices += services.size();
 							for (TSLService tslService : services) {
 								List<CertificateToken> certificates = tslService.getCertificates();
-								nbCertificatesAndX500Principals += CollectionUtils.size(certificates);
+								nbCertificatesAndX500Principals += Utils.collectionSize(certificates);
 							}
 						}
 					}

@@ -3,12 +3,11 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -103,7 +102,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 			}
 
 			SubContext subContext = SubContext.CA_CERTIFICATE;
-			if (StringUtils.equals(signingCertificateId, certChainItem.getId())) {
+			if (Utils.areStringsEqual(signingCertificateId, certChainItem.getId())) {
 				subContext = SubContext.SIGNING_CERT;
 			}
 
@@ -153,7 +152,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 				}
 
 				SubContext subContext = SubContext.CA_CERTIFICATE;
-				if (StringUtils.equals(signingCertificateId, certChainItem.getId())) {
+				if (Utils.areStringsEqual(signingCertificateId, certChainItem.getId())) {
 					subContext = SubContext.SIGNING_CERT;
 				}
 

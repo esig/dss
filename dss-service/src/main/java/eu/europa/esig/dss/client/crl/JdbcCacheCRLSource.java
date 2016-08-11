@@ -31,12 +31,12 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
@@ -59,7 +59,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	public static final String SQL_INIT_CHECK_EXISTENCE = "SELECT COUNT(*) FROM CACHED_CRL";
 
 	/**
-	 * used in the init method to create the table, if not existing: ID (char40  = SHA1 length) and DATA (blob)
+	 * used in the init method to create the table, if not existing: ID (char40 = SHA1 length) and DATA (blob)
 	 */
 	public static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA LONGVARBINARY)";
 
@@ -124,7 +124,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			return null;
 		}
 		final List<String> crlUrls = cachedSource.getCrlUrl(certificateToken);
-		if (CollectionUtils.isEmpty(crlUrls)) {
+		if (Utils.isCollectionEmpty(crlUrls)) {
 			return null;
 		}
 		final String crlUrl = crlUrls.get(0);
@@ -170,7 +170,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	}
 
 	/**
-	 * @param cachedSource the cachedSource to set
+	 * @param cachedSource
+	 *            the cachedSource to set
 	 */
 	public void setCachedSource(OnlineCRLSource cachedSource) {
 
@@ -236,7 +237,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * Get the cached CRL from the datasource
 	 *
-	 * @param key the key of the CRL
+	 * @param key
+	 *            the key of the CRL
 	 * @return the cached crl
 	 * @throws java.sql.SQLException
 	 */
@@ -266,8 +268,10 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * Insert a new CRL into the cache
 	 *
-	 * @param key     the key
-	 * @param encoded the encoded CRL
+	 * @param key
+	 *            the key
+	 * @param encoded
+	 *            the encoded CRL
 	 * @throws java.sql.SQLException
 	 */
 	private void insertCrlInDb(String key, byte[] encoded) throws SQLException {
@@ -289,8 +293,10 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * Update the cache with the CRL
 	 *
-	 * @param key     the key
-	 * @param encoded the encoded CRL
+	 * @param key
+	 *            the key
+	 * @param encoded
+	 *            the encoded CRL
 	 * @throws java.sql.SQLException
 	 */
 	private void updateCrlInDb(String key, byte[] encoded) throws SQLException {
@@ -319,7 +325,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	}
 
 	/**
-	 * @param dataSource the dataSource to set
+	 * @param dataSource
+	 *            the dataSource to set
 	 * @throws Exception
 	 */
 	public void setDataSource(DataSource dataSource) throws Exception {
@@ -341,7 +348,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used in the init method to check if the table exists
 	 *
-	 * @param sqlInitCheckExistence the value
+	 * @param sqlInitCheckExistence
+	 *            the value
 	 */
 	public void setSqlInitCheckExistence(final String sqlInitCheckExistence) {
 
@@ -361,7 +369,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used in the init method to create the table, if not existing: ID (char20) and DATA (blob)
 	 *
-	 * @param sqlInitCreateTable the value
+	 * @param sqlInitCreateTable
+	 *            the value
 	 */
 	public void setSqlInitCreateTable(final String sqlInitCreateTable) {
 
@@ -381,7 +390,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used in the find method to select the crl via the id
 	 *
-	 * @param sqlFindQuery the value
+	 * @param sqlFindQuery
+	 *            the value
 	 */
 	public void setSqlFindQuery(final String sqlFindQuery) {
 
@@ -401,7 +411,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used in the find method when selecting the crl via the id to get the ID (char20) from the resultset
 	 *
-	 * @param sqlFindQueryId the value
+	 * @param sqlFindQueryId
+	 *            the value
 	 */
 	public void setSqlFindQueryId(final String sqlFindQueryId) {
 
@@ -421,7 +432,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used in the find method when selecting the crl via the id to get the DATA (blob) from the resultset
 	 *
-	 * @param sqlFindQueryData the value
+	 * @param sqlFindQueryData
+	 *            the value
 	 */
 	public void setSqlFindQueryData(final String sqlFindQueryData) {
 
@@ -441,7 +453,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used via the find method to insert a new record
 	 *
-	 * @param sqlFindInsert the value
+	 * @param sqlFindInsert
+	 *            the value
 	 */
 	public void setSqlFindInsert(final String sqlFindInsert) {
 
@@ -461,7 +474,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used via the find method to update an existing record via the id
 	 *
-	 * @param sqlFindUpdate the value
+	 * @param sqlFindUpdate
+	 *            the value
 	 */
 	public void setSqlFindUpdate(final String sqlFindUpdate) {
 
@@ -471,9 +485,12 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * Close the statement and connection and resultset without throwing the exception
 	 *
-	 * @param c  the connection
-	 * @param s  the statement
-	 * @param rs the ResultSet
+	 * @param c
+	 *            the connection
+	 * @param s
+	 *            the statement
+	 * @param rs
+	 *            the ResultSet
 	 */
 	private void closeQuietly(Connection c, Statement s, ResultSet rs) {
 

@@ -6,7 +6,6 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.util.Date;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,6 +15,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class PKCS12KeystoreWithKeyEntryGeneration {
@@ -55,7 +55,7 @@ public class PKCS12KeystoreWithKeyEntryGeneration {
 		keyStore.load(null, KEYSTORE_PASSWORD.toCharArray());
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		keyStore.store(fos, KEYSTORE_PASSWORD.toCharArray());
-		IOUtils.closeQuietly(fos);
+		Utils.closeQuietly(fos);
 		return keyStore;
 	}
 }

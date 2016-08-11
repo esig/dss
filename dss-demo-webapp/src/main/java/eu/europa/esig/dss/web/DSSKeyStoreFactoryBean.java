@@ -5,13 +5,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertificateSource> {
@@ -50,12 +49,12 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 			try {
 				is = DSSKeyStoreFactoryBean.class.getResourceAsStream("/" + keyStoreFilename);
 				os = new FileOutputStream(keystoreFile);
-				IOUtils.copy(is, os);
+				Utils.copy(is, os);
 			} catch (Exception e) {
 				throw new DSSException("Unable to create the keystore on the server : " + e.getMessage(), e);
 			} finally {
-				IOUtils.closeQuietly(is);
-				IOUtils.closeQuietly(os);
+				Utils.closeQuietly(is);
+				Utils.closeQuietly(os);
 			}
 		}
 		return new KeyStoreCertificateSource(keystoreFile, keyStoreType, keyStorePassword);
@@ -81,13 +80,13 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 
 	private String getDssDataFolder() {
 		String dssDataFolder = System.getProperty(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER);
-		if (StringUtils.isNotEmpty(dssDataFolder)) {
+		if (Utils.isStringNotEmpty(dssDataFolder)) {
 			logger.info(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER + " found as system property : " + dssDataFolder);
 			return dssDataFolder;
 		}
 
 		dssDataFolder = System.getenv(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER);
-		if (StringUtils.isNotEmpty(dssDataFolder)) {
+		if (Utils.isStringNotEmpty(dssDataFolder)) {
 			logger.info(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER + " found as environment variable : " + dssDataFolder);
 			return dssDataFolder;
 		}

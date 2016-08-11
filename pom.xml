@@ -460,6 +460,27 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-utils</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-utils-apache-commons</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-utils-google-guava</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-cookbook</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -495,32 +516,6 @@
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.3.6</version>
-			</dependency>
-
-			<dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>1.6</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-lang</groupId>
-				<artifactId>commons-lang</artifactId>
-				<version>2.6</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-collections</groupId>
-				<artifactId>commons-collections</artifactId>
-				<version>3.2.2</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-fileupload</groupId>
-				<artifactId>commons-fileupload</artifactId>
-				<version>1.3.1</version>
 			</dependency>
 
 			<dependency>
@@ -719,6 +714,9 @@
 			<modules>
 				<module>dss-model</module>
 				<module>dss-token</module>
+				<module>dss-utils</module>
+				<module>dss-utils-apache-commons</module>
+				<module>dss-utils-google-guava</module>
 				<module>dss-document</module>
 				<module>dss-service</module>
 				<module>dss-spi</module>
@@ -768,6 +766,9 @@
 			<modules>
 				<module>dss-model</module>
 				<module>dss-token</module>
+				<module>dss-utils</module>
+				<module>dss-utils-apache-commons</module>
+				<module>dss-utils-google-guava</module>
 				<module>dss-document</module>
 				<module>dss-service</module>
 				<module>dss-spi</module>

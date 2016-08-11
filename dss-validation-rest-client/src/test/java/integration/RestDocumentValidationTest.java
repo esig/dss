@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RestDocumentValidationService;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -34,7 +36,9 @@ public class RestDocumentValidationTest {
 
 	@Test
 	public void testWithNoPolicyAndNoOriginalFile() throws Exception {
-		RemoteDocument signedFile = new RemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
+		FileDocument fileDoc = new FileDocument(new File("src/test/resources/XAdESLTA.xml"));
+		RemoteDocument signedFile = new RemoteDocument(Utils.toByteArray(fileDoc.openStream()), fileDoc.getMimeType(), fileDoc.getName(),
+				fileDoc.getAbsolutePath());
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, null, null);
 
@@ -54,8 +58,14 @@ public class RestDocumentValidationTest {
 
 	@Test
 	public void testWithNoPolicyAndOriginalFile() throws Exception {
-		RemoteDocument signedFile = new RemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
-		RemoteDocument originalFile = new RemoteDocument(new FileDocument("src/test/resources/sample.xml"));
+
+		FileDocument fileDoc = new FileDocument(new File("src/test/resources/xades-detached.xml"));
+		RemoteDocument signedFile = new RemoteDocument(Utils.toByteArray(fileDoc.openStream()), fileDoc.getMimeType(), fileDoc.getName(),
+				fileDoc.getAbsolutePath());
+
+		FileDocument fileDoc2 = new FileDocument(new File("src/test/resources/sample.xml"));
+		RemoteDocument originalFile = new RemoteDocument(Utils.toByteArray(fileDoc2.openStream()), fileDoc2.getMimeType(), fileDoc2.getName(),
+				fileDoc2.getAbsolutePath());
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, originalFile, null);
 
@@ -74,8 +84,14 @@ public class RestDocumentValidationTest {
 
 	@Test
 	public void testWithPolicyAndOriginalFile() throws Exception {
-		RemoteDocument signedFile = new RemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
-		RemoteDocument originalFile = new RemoteDocument(new FileDocument("src/test/resources/sample.xml"));
+
+		FileDocument fileDoc = new FileDocument(new File("src/test/resources/xades-detached.xml"));
+		RemoteDocument signedFile = new RemoteDocument(Utils.toByteArray(fileDoc.openStream()), fileDoc.getMimeType(), fileDoc.getName(),
+				fileDoc.getAbsolutePath());
+
+		FileDocument fileDoc2 = new FileDocument(new File("src/test/resources/sample.xml"));
+		RemoteDocument originalFile = new RemoteDocument(Utils.toByteArray(fileDoc2.openStream()), fileDoc2.getMimeType(), fileDoc2.getName(),
+				fileDoc2.getAbsolutePath());
 
 		JAXBContext context = JAXBContext.newInstance(ConstraintsParameters.class.getPackage().getName());
 		Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -99,7 +115,10 @@ public class RestDocumentValidationTest {
 
 	@Test
 	public void testWithPolicyAndNoOriginalFile() throws Exception {
-		RemoteDocument signedFile = new RemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+
+		FileDocument fileDoc = new FileDocument(new File("src/test/resources/xades-detached.xml"));
+		RemoteDocument signedFile = new RemoteDocument(Utils.toByteArray(fileDoc.openStream()), fileDoc.getMimeType(), fileDoc.getName(),
+				fileDoc.getAbsolutePath());
 
 		JAXBContext context = JAXBContext.newInstance(ConstraintsParameters.class.getPackage().getName());
 		Unmarshaller unmarshaller = context.createUnmarshaller();

@@ -27,14 +27,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSCannotFetchDataException;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSCannotFetchDataException.MSG;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Implementation of HTTPDataLoader that use the java.net.URL class.
@@ -87,11 +86,11 @@ public class NativeHTTPDataLoader implements DataLoader {
 		byte[] result = null;
 		try {
 			inputStream = new MaxSizeInputStream(new URL(url).openStream(), MAX_SIZE, url);
-			result = IOUtils.toByteArray(inputStream);
+			result = Utils.toByteArray(inputStream);
 		} catch (IOException e) {
 			throw new DSSException("An error occured while HTTP GET for url '" + url + "' : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 		}
 		return result;
 	}
@@ -109,14 +108,14 @@ public class NativeHTTPDataLoader implements DataLoader {
 			connection.setUseCaches(false);
 
 			out = connection.getOutputStream();
-			IOUtils.write(content, out);
+			Utils.write(content, out);
 			inputStream = connection.getInputStream();
-			result = IOUtils.toByteArray(inputStream);
+			result = Utils.toByteArray(inputStream);
 		} catch (IOException e) {
 			throw new DSSException("An error occured while HTTP POST for url '" + url + "' : " + e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(out);
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(out);
+			Utils.closeQuietly(inputStream);
 		}
 		return result;
 	}
@@ -156,7 +155,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
-		throw new NotImplementedException();
+		throw new DSSException("Not implemented");
 	}
 
 }

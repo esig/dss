@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -22,6 +21,7 @@ import eu.europa.esig.dss.asic.signature.ASiCService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -56,7 +56,7 @@ public class CertificatePoolSharingTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
-		assertTrue(CollectionUtils.isNotEmpty(signatures));
+		assertTrue(Utils.isCollectionNotEmpty(signatures));
 
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

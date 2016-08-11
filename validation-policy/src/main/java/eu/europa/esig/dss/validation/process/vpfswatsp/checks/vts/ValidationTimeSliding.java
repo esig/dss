@@ -5,10 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
@@ -68,7 +67,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		controlTime = currentTime;
 
 		List<String> certificateChainIds = token.getCertificateChainIds();
-		if (CollectionUtils.isNotEmpty(certificateChainIds)) {
+		if (Utils.isCollectionNotEmpty(certificateChainIds)) {
 
 			/*
 			 * 2) For each certificate in the chain starting from the first

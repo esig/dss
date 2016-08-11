@@ -7,9 +7,9 @@ import java.io.FileInputStream;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
+
+import eu.europa.esig.dss.utils.Utils;
 
 public class DSSRevocationUtilsTest {
 
@@ -17,14 +17,15 @@ public class DSSRevocationUtilsTest {
 	public void testRevocationReasonFromCRL() throws Exception {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTGRCA.crl"));
 		assertNotNull(crl);
-		assertTrue(CollectionUtils.isNotEmpty(crl.getRevokedCertificates()));
-		for (X509CRLEntry entry: crl.getRevokedCertificates()) {
+		assertTrue(Utils.isCollectionNotEmpty(crl.getRevokedCertificates()));
+		for (X509CRLEntry entry : crl.getRevokedCertificates()) {
 			String revocationReason = DSSRevocationUtils.getRevocationReason(entry);
-			assertTrue(StringUtils.isNotEmpty(revocationReason));
+			assertTrue(Utils.isStringNotEmpty(revocationReason));
 		}
 
 		crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/belgium2.crl"));
 		assertNotNull(crl);
-		assertTrue(CollectionUtils.isEmpty(crl.getRevokedCertificates()));
+		assertTrue(Utils.isCollectionEmpty(crl.getRevokedCertificates()));
 	}
+
 }

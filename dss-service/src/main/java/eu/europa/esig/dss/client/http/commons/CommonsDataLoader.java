@@ -46,9 +46,6 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
@@ -91,6 +88,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Implementation of DataLoader for any protocol.
@@ -144,7 +142,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * Keystore's password.
 	 */
-	private String sslKeystorePassword = StringUtils.EMPTY;
+	private String sslKeystorePassword = Utils.EMPTY_STRING;
 
 	/**
 	 * Path to the truststore.
@@ -157,7 +155,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	/**
 	 * Truststore's password.
 	 */
-	private String sslTruststorePassword = StringUtils.EMPTY;
+	private String sslTruststorePassword = Utils.EMPTY_STRING;
 
 	/**
 	 * The default constructor for CommonsDataLoader.
@@ -204,7 +202,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		try {
 
 			SSLContext sslContext = null;
-			if (StringUtils.isEmpty(sslKeystorePath)) {
+			if (Utils.isStringEmpty(sslKeystorePath)) {
 				LOG.debug("Use default SSL configuration");
 				sslContext = SSLContext.getInstance("TLS");
 				sslContext.init(new KeyManager[0], new TrustManager[] { new AcceptAllTrustManager() }, new SecureRandom());
@@ -225,8 +223,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		} catch (final Exception e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(fis);
-			IOUtils.closeQuietly(trustStoreIs);
+			Utils.closeQuietly(fis);
+			Utils.closeQuietly(trustStoreIs);
 		}
 	}
 
@@ -322,7 +320,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 				proxyPassword = proxyPreferenceManager.getHttpPassword();
 				proxyExcludedHosts = proxyPreferenceManager.getHttpExcludedHosts();
 			}
-			if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
+			if (Utils.isStringNotEmpty(proxyUser) && Utils.isStringNotEmpty(proxyPassword)) {
 
 				AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
 				UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
@@ -333,7 +331,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			// TODO SSL peer shut down incorrectly when protocol is https
 			final HttpHost proxy = new HttpHost(proxyHost, proxyPort, Protocol.HTTP.getName());
 
-			if (StringUtils.isNotEmpty(proxyExcludedHosts)) {
+			if (Utils.isStringNotEmpty(proxyExcludedHosts)) {
 				final String[] hosts = proxyExcludedHosts.split("[,; ]");
 
 				HttpRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy) {
@@ -450,23 +448,23 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		try {
 
 			// parse URL according to the template: 'ldap://host:port/DN?attributes?scope?filter?extensions'
-			String ldapParams = StringUtils.substringAfter(urlString, "?");
+			String ldapParams = Utils.substringAfter(urlString, "?");
 			StringTokenizer tokenizer = new StringTokenizer(ldapParams, "?");
 			String attributeName = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : null;
 
-			if (StringUtils.isEmpty(attributeName)) {
+			if (Utils.isStringEmpty(attributeName)) {
 				// default was CRL
 				attributeName = "certificateRevocationList;binary";
 			}
 
 			final DirContext ctx = new InitialDirContext(env);
-			final Attributes attributes = ctx.getAttributes(StringUtils.EMPTY, new String[] { attributeName });
+			final Attributes attributes = ctx.getAttributes(Utils.EMPTY_STRING, new String[] { attributeName });
 			if (attributes == null || attributes.size() < 1) {
 				LOG.warn("Cannot download CRL from: " + urlString + ", no attributes with name: " + attributeName + " returned");
 			} else {
 				final Attribute attribute = attributes.getAll().next();
 				final byte[] ldapBytes = (byte[]) attribute.get();
-				if (ArrayUtils.isNotEmpty(ldapBytes)) {
+				if (Utils.isArrayNotEmpty(ldapBytes)) {
 					return ldapBytes;
 				}
 			}
@@ -494,7 +492,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 			LOG.warn(e.getMessage());
 		} finally {
-			IOUtils.closeQuietly(inputStream);
+			Utils.closeQuietly(inputStream);
 		}
 		return null;
 	}
@@ -661,7 +659,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			IOUtils.closeQuietly(content);
+			Utils.closeQuietly(content);
 		}
 	}
 
