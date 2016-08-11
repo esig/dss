@@ -39,7 +39,7 @@ public class CertificateSupportedBySSCDCheck extends ChainItem<XmlSubXCV> {
 
 		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 
-		boolean sie = qualifiers.contains(ServiceQualification.QC_WITH_SSCD) || qualifiers.contains(ServiceQualification.QC_WITH_SSCD_119612);
+		boolean sie = ServiceQualification.isQcWithSSCD(qualifiers);
 
 		if (!(policyIdSupportedByQSCD || qcStatementSupportedByQSCD || sie)) {
 			return false;

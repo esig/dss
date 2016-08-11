@@ -35,7 +35,7 @@ public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
 		 * Sie field of the applicable service entry;
 		 */
 		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
-		boolean isSIE = qualifiers.contains(ServiceQualification.QC_STATEMENT) || qualifiers.contains(ServiceQualification.QC_STATEMENT_119612);
+		boolean isSIE = ServiceQualification.isQcStatement(qualifiers);
 
 		return isQCCompliant || isQCP || isQCPPlus || isSIE;
 	}
