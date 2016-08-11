@@ -25,6 +25,7 @@ import java.util.Date;
 
 /**
  * Info about a specific trusted list. Immutable.
+ * 
  * @author jdvorak
  */
 public class TLInfo implements Serializable {
@@ -34,6 +35,8 @@ public class TLInfo implements Serializable {
 	private final boolean wellSigned;
 
 	private final String territory;
+
+	private final String territoryAsISO3166;
 
 	private final int sequenceNumber;
 
@@ -48,6 +51,7 @@ public class TLInfo implements Serializable {
 		super();
 		this.wellSigned = wellSigned;
 		this.territory = territory;
+		this.territoryAsISO3166 = ("UK".equals(territory)) ? "GB" : ("EL".equals(territory)) ? "GR" : territory;
 		this.sequenceNumber = sequenceNumber;
 		this.issueDate = issueDate;
 		this.nextUpdateDate = nextUpdateDate;
@@ -60,6 +64,10 @@ public class TLInfo implements Serializable {
 
 	public String getTerritory() {
 		return territory;
+	}
+
+	public String getTerritoryAsISO3166() {
+		return territoryAsISO3166;
 	}
 
 	public int getSequenceNumber() {
