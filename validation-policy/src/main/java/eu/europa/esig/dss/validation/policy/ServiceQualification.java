@@ -27,139 +27,120 @@ public final class ServiceQualification {
 	private ServiceQualification() {
 	}
 
-	public static final String CA_QC = "http://uri.etsi.org/TrstSvc/Svctype/CA/QC";
+	private static final String CA_QC = "http://uri.etsi.org/TrstSvc/Svctype/CA/QC";
 
 	/**
-	 * QCStatement
-	 * it is ensured by the CSP and controlled (supervision model) or audited
-	 * (accreditation model) by the Member State (respectively its Supervisory Body or
-	 * Accreditation Body) that all certificates issued under the service (CA/QC)
-	 * identified in 'Service digital identity' (clause 5.5.3) and further identified by the
-	 * above (filters) information used to further identify under the 'Sdi' identified trust
-	 * service that precise set of certificates for which this additional information is
-	 * required with regard to the issuance of such certificates is issued as a
-	 * Qualified Certificate.
-	 * This value shall not be used as an extension, if the service type is not
-	 * http://uri.etsi.org/TrstSvc/Svctype/CA/QC
+	 * QCStatement ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"): to indicate that all certificates
+	 * identified by the applicable list of criteria are issued as qualified certificates.
 	 */
-	public static final String QC_STATEMENT = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/SvcInfoExt/QCStatement";
-	public static final String QC_STATEMENT_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement";
+	private static final String QC_STATEMENT = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement";
 
 	/**
-	 * It is ensured by the certification service provider and controlled (supervision model) or audited (accreditation
-	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any
-	 * Qualified
-	 * Certificate issued under the service (RootCA/QC or CA/QC) identified in "Service digital identity" and further
-	 * identified by the filters information used to further identify under the "Sdi" identified certification service
-	 * that precise set of Qualified Certificates for which this additional information is required with regards to the
-	 * presence or absence of Secure Signature Creation Device (SSCD) support ARE supported by an SSCD (i.e. that that
-	 * the private key associated with the public key in the certificate is stored in a Secure Signature Creation Device
-	 * conformant with annex III of Directive 1999/93/EC [1]); Only to be used as an extension, if the servicetype is
-	 * http://uri.etsi.org/TrstSvc/Svctype/CA/QC
+	 * QCWithSSCD ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD"): to indicate that all certificates
+	 * identified by the applicable list of criteria, when they are claimed or stated as being qualified, have their
+	 * private key residing in an SSCD
 	 */
-	public static final String QC_WITH_SSCD = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/SvcInfoExt/QCWithSSCD";
-	public static final String QC_WITH_SSCD_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD";
+	private static final String QC_WITH_SSCD = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD";
 
 	/**
-	 * It is ensured by the certification service provider and controlled (supervision model) or audited (accreditation
-	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any
-	 * Qualified
-	 * Certificate issued under the service (RootCA/QC or CA/QC) identified in "Service digital identity" and further
-	 * identified by the filters information used to further identify under the "Sdi" identified certification service
-	 * that precise set of Qualified Certificates for which this additional information is required with regards to the
-	 * presence or absence of Secure Signature Creation Device (SSCD) support ARE NOT supported by an SSCD (i.e. that
-	 * that the private key associated with the public key in the certificate is not stored in a Secure Signature
-	 * Creation Device conformant with annex III of the Directive 1999/93/EC [1]). Only to be used as an extension, if
-	 * the servicetype is http://uri.etsi.org/TrstSvc/Svctype/CA/QC
+	 * QCWithQSCD ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"): to indicate that all certificates
+	 * identified by the applicable list of criteria, when they are claimed or stated as being qualified, have their
+	 * private key residing in a QSCD
 	 */
-	public static final String QC_NO_SSCD = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/SvcInfoExt/QCNoSSCD";
-	public static final String QC_NO_SSCD_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD";
+	private static final String QC_WITH_QSCD = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD";
 
 	/**
-	 * It is ensured by the certification service provider and controlled (supervision model) or audited (accreditation
-	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any
-	 * Qualified
-	 * Certificate issued under the service (RootCA/QC or CA/QC) identified in "Service digital identity" and further
-	 * identified by the filters information used to further identify under the "Sdi" identified certification service
-	 * that precise set of Qualified Certificates for which this additional information is required with regards to the
-	 * presence or absence of Secure Signature Creation Device (SSCD) support SHALL contain the machine-processable
-	 * information indicating whether or not the Qualified Certificate is supported by an SSCD. Only to be used as an
-	 * extension, if the servicetype is http://uri.etsi.org/TrstSvc/Svctype/CA/QC.
+	 * QCNoSSCD ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD"): to indicate that all certificates
+	 * identified by the applicable list of criteria, when they are claimed or stated as being qualified, do not have
+	 * their private key residing in an SSCD
 	 */
-	public static final String QCSSCD_STATUS_AS_IN_CERT = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/SvcInfoExt/QCSSCDStatusAsInCert";
-	public static final String QCSSCD_STATUS_AS_IN_CERT_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert";
+	private static final String QC_NO_SSCD = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD";
 
 	/**
-	 * It is ensured by the certification service provider and controlled (supervision model) or audited (accreditation
-	 * model) by the referenced Member State (respectively its Supervisory Body or Accreditation Body) that any
-	 * Qualified
-	 * Certificate issued under the service (RootCA/QC or CA/QC) identified in "Service digital identity" and further
-	 * identified by the filters information used to further identify under the "Sdi" identified certification service
-	 * that precise set of Qualified Certificates for which this additional information is required with regards to the
-	 * issuance to Legal Person ARE issued to Legal Persons. Only to be used as an extension, if the servicetype is
-	 * http://uri.etsi.org/TrstSvc/Svctype/CA/QC
+	 * QCNoQSCD ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"): to indicate that all certificates
+	 * identified by the applicable list of criteria, when they are claimed or stated as being qualified, do not have
+	 * their private key residing in a QSCD
 	 */
-	public static final String QC_FOR_LEGAL_PERSON = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/SvcInfoExt/QCForLegalPerson";
-	public static final String QC_FOR_LEGAL_PERSON_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson";
+	private static final String QC_NO_QSCD = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD";
 
 	/**
-	 * <b>Supervision of Service in Cessation</b><br>
-	 * The service identified in "Service digital identity" (see clause 5.5.3) provided by the Certification Service
-	 * Provider (CSP) identified in "TSP name" (see clause 5.4.1) is currently in a cessation phase but still supervised
-	 * until supervision is ceased or revoked. In the event a different legal person than the one identified in
-	 * "TSP name" has taken over the responsibility of ensuring this cessation phase, the identification of this new or
-	 * fallback legal person (fallback CSP) shall be provided in clause 5.5.6 of the service entry
-	 *
-	 * This status means that there is only the revocation check. Example: https://www.eett.gr/tsl/EL-TSL.xml (ADACOM
-	 * Qualified Certificate Services CA)
+	 * QCSSCDStatusAsInCert ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert"): to indicate
+	 * that all certificates identified by the applicable list of criteria, when they are claimed or stated as being
+	 * qualified, do contain proper machine processable information about whether or not their private key residing in
+	 * an SSCD;
 	 */
-	public static final String SERVICE_STATUS_SUPERVISIONINCESSATION = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/Svcstatus/supervisionincessation";
-	public static final String SERVICE_STATUS_SUPERVISIONINCESSATION_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation";
+	private static final String QCSSCD_STATUS_AS_IN_CERT = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert";
 
 	/**
-	 * Under Supervision<b><br>
-	 * The service identified in "Service digital identity" (see clause 5.5.3) provided by the Certification Service
-	 * Provider (CSP) identified in "TSP name" (see clause 5.4.1) is currently under supervision, for compliance with
-	 * the
-	 * provisions laid down in Directive 1999/93/EC [1], by the Member State identified in the "Scheme territory" (see
-	 * clause 5.3.10) in which the CSP is established.
+	 * QCQSCDStatusAsInCert ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert"): to indicate
+	 * that all certificates identified by the applicable list of criteria, when they are claimed or stated as being
+	 * qualified, do contain proper machine processable information about whether or not their private key residing in a
+	 * QSCD;
 	 */
-	public static final String SERVICE_STATUS_UNDERSUPERVISION = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/Svcstatus/undersupervision";
-	public static final String SERVICE_STATUS_UNDERSUPERVISION_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision";
+	private static final String QCQSCD_STATUS_AS_IN_CERT = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert";
 
 	/**
-	 * Accredited<br>
-	 * An accreditation assessment has been performed by the Accreditation Body on behalf of the Member State identified
-	 * in the "Scheme territory" (see clause 5.3.10) and the service identified in "Service digital identity" (see
-	 * clause
-	 * 5.5.3) provided by the trust service provider identified in "TSP name" (see clause 5.4.1) is found to be in
-	 * compliance with the provisions laid down in Directive 1999/93/EC [i.3].<br>
-	 * This accredited trust service provider may be established in another Member State than the one identified in the
-	 * "Scheme territory" (see clause 5.3.10) of the trusted list or in a non-EU country (see article 7.1(a) of
-	 * Directive
-	 * 1999/93/EC [i.3]).
+	 * QCForLegalPerson("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson"): to indicate that all
+	 * certificates identified by the applicable list of criteria, when they are claimed or stated as being qualified,
+	 * are issued to legal persons;
 	 */
-	public static final String SERVICE_STATUS_ACCREDITED = "http://uri.etsi.org/TrstSvc/eSigDir-1999-93-EC-TrustedList/Svcstatus/accredited";
-	public static final String SERVICE_STATUS_ACCREDITED_119612 = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited";
+	private static final String QC_FOR_LEGAL_PERSON = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson";
+
+	/**
+	 * QCForESig ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"): to indicate that all certificates
+	 * identified by the applicable list of criteria, when they are claimed or stated as being qualified, are issued for
+	 * electronic signatures;
+	 */
+	private static final String QC_FOR_ESIG = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig";
+
+	/**
+	 * QCForESeal ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"): to indicate that all certificates
+	 * identified by the applicable list of criteria, when they are claimed or stated as being qualified, are issued for
+	 * electronic seals;
+	 */
+	private static final String QC_FOR_ESEAL = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal";
+
+	/**
+	 * QCForWSA ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForWSA"): to indicate that all certificates
+	 * identified by the applicable list of criteria, when they are claimed or stated as being qualified, are issued for
+	 * web site authentication;
+	 */
+	private static final String QC_FOR_WSA = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForWSA";
+
+	public static boolean isCaQc(String serviceType) {
+		return CA_QC.equals(serviceType);
+	}
 
 	public static boolean isQcStatement(List<String> qualifiers) {
-		return qualifiers.contains(QC_STATEMENT) || qualifiers.contains(QC_STATEMENT_119612);
+		return qualifiers.contains(QC_STATEMENT);
 	}
 
 	public static boolean isQcNoSSCD(List<String> qualifiers) {
-		return qualifiers.contains(QC_NO_SSCD) || qualifiers.contains(QC_NO_SSCD_119612);
+		return qualifiers.contains(QC_NO_QSCD) || qualifiers.contains(QC_NO_SSCD);
 	}
 
 	public static boolean isQcForLegalPerson(List<String> qualifiers) {
-		return qualifiers.contains(QC_FOR_LEGAL_PERSON) || qualifiers.contains(QC_FOR_LEGAL_PERSON_119612);
+		return qualifiers.contains(QC_FOR_LEGAL_PERSON);
 	}
 
 	public static boolean isQcSscdStatusAsInCert(List<String> qualifiers) {
-		return qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT) || qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT_119612);
+		return qualifiers.contains(QCQSCD_STATUS_AS_IN_CERT) || qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT);
 	}
 
 	public static boolean isQcWithSSCD(List<String> qualifiers) {
-		return qualifiers.contains(QC_WITH_SSCD) || qualifiers.contains(QC_WITH_SSCD_119612);
+		return qualifiers.contains(QC_WITH_QSCD) || qualifiers.contains(QC_WITH_SSCD);
+	}
+
+	public static boolean isQcForEsig(List<String> qualifiers) {
+		return qualifiers.contains(QC_FOR_ESIG);
+	}
+
+	public static boolean isQcForEseal(List<String> qualifiers) {
+		return qualifiers.contains(QC_FOR_ESEAL);
+	}
+
+	public static boolean isQcForWSA(List<String> qualifiers) {
+		return qualifiers.contains(QC_FOR_WSA);
 	}
 
 }

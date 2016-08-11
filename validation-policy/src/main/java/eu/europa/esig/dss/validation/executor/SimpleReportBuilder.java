@@ -439,11 +439,11 @@ public class SimpleReportBuilder {
 
 		final TLQualification trustedListQualification = new TLQualification();
 
-		final String caqc = certificate.getCertificateTSPServiceType();
+		final String serviceType = certificate.getCertificateTSPServiceType();
 
 		final List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
 
-		trustedListQualification.setCaqc(ServiceQualification.CA_QC.equals(caqc));
+		trustedListQualification.setCaqc(ServiceQualification.isCaQc(serviceType));
 		trustedListQualification.setQcCNoSSCD(ServiceQualification.isQcNoSSCD(qualifiers));
 		trustedListQualification.setQcForLegalPerson(ServiceQualification.isQcForLegalPerson(qualifiers));
 		trustedListQualification.setQcSSCDAsInCert(ServiceQualification.isQcSscdStatusAsInCert(qualifiers));
