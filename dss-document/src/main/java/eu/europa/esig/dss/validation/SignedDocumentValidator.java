@@ -495,14 +495,24 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		// the extraction of diagnostic data is
 		// launched.
 		final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
+		// Also the earliest date of all signatures is extracted.
+		Date earliestSignatureDate = null;
 		for (final AdvancedSignature signature : allSignatureList) {
-
 			final XmlSignature xmlSignature = validateSignature(signature);
 			usedCertificatesDigestAlgorithms.addAll(signature.getUsedCertificatesDigestAlgorithms());
 			jaxbDiagnosticData.getSignature().add(xmlSignature);
+			// FIXME - Take into account the signature timestamps where they exist
+			final Date thisDate = signature.getSigningTime();
+			if ( thisDate != null && ( earliestSignatureDate == null || thisDate.before( earliestSignatureDate ) ) ) {
+				earliestSignatureDate = thisDate;
+			}
+		}
+		if ( earliestSignatureDate == null ) {
+			earliestSignatureDate = new Date();
 		}
 		final Set<CertificateToken> processedCertificates = validationContext.getProcessedCertificates();
-		dealUsedCertificates(usedCertificatesDigestAlgorithms, processedCertificates);
+		// FIXME - This is rough. Each signature should be validated at its own signing time: the associated TSP services can have different statuses. 
+		dealUsedCertificates(usedCertificatesDigestAlgorithms, earliestSignatureDate, processedCertificates);
 
 		return jaxbDiagnosticData;
 	}
@@ -812,7 +822,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param usedCertificatesDigestAlgorithms
 	 * @param usedCertTokens
 	 */
-	private void dealUsedCertificates(final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms, final Set<CertificateToken> usedCertTokens) {
+	private void dealUsedCertificates(final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms, final Date testDate, final Set<CertificateToken> usedCertTokens) {
 
 		final XmlUsedCertificates xmlUsedCerts = new XmlUsedCertificates();
 		jaxbDiagnosticData.setUsedCertificates(xmlUsedCerts);
@@ -825,7 +835,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				final String pem = DSSUtils.convertToPEM(certToken);
 				LOG.trace("\n" + pem);
 			}
-			dealTrustedService(certToken, xmlCert);
+			dealTrustedService(certToken, testDate, xmlCert);
 			dealRevocationData(usedCertificatesDigestAlgorithms, certToken, xmlCert);
 			dealCertificateValidationInfo(certToken, xmlCert);
 			xmlUsedCerts.getCertificate().add(xmlCert);
@@ -1001,7 +1011,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param certToken
 	 * @param xmlCert
 	 */
-	private void dealTrustedService(final CertificateToken certToken, final XmlCertificate xmlCert) {
+	private void dealTrustedService(final CertificateToken certToken, final Date testDate, final XmlCertificate xmlCert) {
 		Set<ServiceInfo> services = null;
 		if (certToken.isTrusted()) {
 			services = certToken.getAssociatedTSPS();
@@ -1020,7 +1030,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlTSP.setTSPServiceType(serviceInfo.getType());
 				xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
 
-				final ServiceInfoStatus serviceStatusAtCertIssuance = serviceInfo.getStatus().getCurrent(certToken.getNotBefore());
+				final ServiceInfoStatus serviceStatusAtCertIssuance = serviceInfo.getStatus().getCurrent(testDate);
 				if (serviceStatusAtCertIssuance != null) {
 
 					xmlTSP.setStatus(serviceStatusAtCertIssuance.getStatus());
