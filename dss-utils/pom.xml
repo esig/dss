@@ -13,6 +13,17 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>animal-sniffer-maven-plugin</artifactId>
+				<version>1.14</version>
+				<configuration>
+					<ignores>
+						<ignore>eu.europa.esig.dss.utils.impl.UtilsBinder</ignore>
+					</ignores>
+				</configuration>
+			</plugin>
+		
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
