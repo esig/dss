@@ -1030,15 +1030,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlTSP.setTSPServiceType(serviceInfo.getType());
 				xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
 
-				final ServiceInfoStatus serviceStatusAtCertIssuance = serviceInfo.getStatus().getCurrent(testDate);
-				if (serviceStatusAtCertIssuance != null) {
+				final ServiceInfoStatus serviceStatusAtTestDate = serviceInfo.getStatus().getCurrent(testDate);
+				if (serviceStatusAtTestDate != null) {
 
-					xmlTSP.setStatus(serviceStatusAtCertIssuance.getStatus());
-					xmlTSP.setStartDate(serviceStatusAtCertIssuance.getStartDate());
-					xmlTSP.setEndDate(serviceStatusAtCertIssuance.getEndDate());
+					xmlTSP.setStatus(serviceStatusAtTestDate.getStatus());
+					xmlTSP.setStartDate(serviceStatusAtTestDate.getStartDate());
+					xmlTSP.setEndDate(serviceStatusAtTestDate.getEndDate());
 
 					// Check of the associated conditions to identify the qualifiers
-					final List<String> qualifiers = getQualifiers(serviceStatusAtCertIssuance, certToken);
+					final List<String> qualifiers = getQualifiers(serviceStatusAtTestDate, certToken);
 					if (CollectionUtils.isNotEmpty(qualifiers)) {
 						final XmlQualifiers xmlQualifiers = new XmlQualifiers();
 						for (String qualifier : qualifiers) {
@@ -1047,7 +1047,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 						xmlTSP.setQualifiers(xmlQualifiers);
 					}
 
-					List<String> additionalServiceInfoUris = serviceStatusAtCertIssuance.getAdditionalServiceInfoUris();
+					List<String> additionalServiceInfoUris = serviceStatusAtTestDate.getAdditionalServiceInfoUris();
 					if (CollectionUtils.isNotEmpty(additionalServiceInfoUris)) {
 						XmlAdditionalServiceInfoUris xmlAdditional = new XmlAdditionalServiceInfoUris();
 						for (String uri : additionalServiceInfoUris) {
@@ -1056,7 +1056,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 						xmlTSP.setAdditionalServiceInfoUris(xmlAdditional);
 					}
 
-					xmlTSP.setExpiredCertsRevocationInfo(serviceStatusAtCertIssuance.getExpiredCertsRevocationInfo());
+					xmlTSP.setExpiredCertsRevocationInfo(serviceStatusAtTestDate.getExpiredCertsRevocationInfo());
 				}
 				xmlCert.getTrustedServiceProvider().add(xmlTSP);
 			}
