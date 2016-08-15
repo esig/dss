@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -86,9 +87,9 @@ public class SignedDocumentValidatorTest {
 		XmlCertificate cert = (XmlCertificate) method.invoke(sdv, new HashSet<Object>(), certificate);
 		assertNotNull(cert);
 
-		Method methodDealTrustedService = SignedDocumentValidator.class.getDeclaredMethod("dealTrustedService", CertificateToken.class, XmlCertificate.class);
+		Method methodDealTrustedService = SignedDocumentValidator.class.getDeclaredMethod("dealTrustedService", CertificateToken.class, Date.class, XmlCertificate.class);
 		methodDealTrustedService.setAccessible(true);
-		methodDealTrustedService.invoke(sdv, certificate, cert);
+		methodDealTrustedService.invoke(sdv, certificate, certificate.getNotBefore(), cert);
 
 		List<XmlTrustedServiceProviderType> trustedServiceProviders = cert.getTrustedServiceProvider();
 		assertTrue(CollectionUtils.isNotEmpty(trustedServiceProviders));
