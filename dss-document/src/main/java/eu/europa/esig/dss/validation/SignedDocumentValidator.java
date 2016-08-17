@@ -98,6 +98,7 @@ import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -124,6 +125,11 @@ import eu.europa.esig.jaxb.policy.ConstraintsParameters;
  * eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
 public abstract class SignedDocumentValidator implements DocumentValidator {
+
+	/**
+	 * The service status URI to indicate that the service listed on the TL does not have a history record valid for the signature signing time.
+	 */
+	public static final String NOT_YET_LISTED_SERVICE_STATUS_URI = "https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature/TrustedList/Svcstatus/notYetListed";
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
 
@@ -1030,7 +1036,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				xmlTSP.setTSPServiceType(serviceInfo.getType());
 				xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
 
-				final ServiceInfoStatus serviceStatusAtTestDate = serviceInfo.getStatus().getCurrent(testDate);
+				final TimeDependentValues<ServiceInfoStatus> status = serviceInfo.getStatus();
+				final ServiceInfoStatus serviceStatusAtTestDate = status.getCurrent(testDate);
 				if (serviceStatusAtTestDate != null) {
 
 					xmlTSP.setStatus(serviceStatusAtTestDate.getStatus());
@@ -1057,6 +1064,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 					}
 
 					xmlTSP.setExpiredCertsRevocationInfo(serviceStatusAtTestDate.getExpiredCertsRevocationInfo());
+				} else {
+					xmlTSP.setStartDate(testDate);
+					ServiceInfoStatus earliestStatus = null;
+					for ( final ServiceInfoStatus s : status ) {
+						earliestStatus = s;
+					}
+					xmlTSP.setEndDate(earliestStatus.getStartDate());
+					xmlTSP.setStatus(NOT_YET_LISTED_SERVICE_STATUS_URI);
 				}
 				xmlCert.getTrustedServiceProvider().add(xmlTSP);
 			}
