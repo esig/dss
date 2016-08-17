@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -40,7 +39,6 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -270,21 +268,6 @@ public class SignatureValidationContext implements ValidationContext {
 		return null;
 	}
 
-	private CertificateToken getCertFromPool(final Token token) {
-		if (token instanceof CertificateToken) {
-			final List<CertificateToken> certList = validationCertificatePool.get(token.getX500Principal());
-			if (Utils.isCollectionNotEmpty(certList)) {
-				final PublicKey pubKey1 = ((CertificateToken) token).getPublicKey();
-				for (final CertificateToken certToken : certList) {
-					if (token.equals(certToken) && certToken.getPublicKey().equals(pubKey1)) {
-						return certToken;
-					}
-				}
-			}
-		}
-		return null;
-	}
-	
 	/**
 	 * Adds a new token to the list of tokes to verify only if it was not already verified.
 	 *
@@ -383,15 +366,6 @@ public class SignatureValidationContext implements ValidationContext {
 			token = getNotYetVerifiedToken();
 			if (token != null) {
 
-				final CertificateToken certToken = getCertFromPool(token);
-				if ( certToken != null && certToken != token && token instanceof CertificateToken ) {
-					final CertificateToken token1 = (CertificateToken) token;
-					if ( Utils.isCollectionEmpty(token1.getAssociatedTSPS()) ) {
-						token1.copyServiceInfoFrom(certToken);
-						token1.copySourceTypeFrom(certToken);
-					}
-				}
-				
 				/**
 				 * Gets the issuer certificate of the Token and checks its signature
 				 */
