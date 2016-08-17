@@ -606,4 +606,22 @@ public class CertificateToken extends Token {
 		return readableCertificate;
 	}
 
+	public void copySourceTypeFrom(final CertificateToken srcCertToken) {
+		final Set<CertificateSourceType> sources2 = srcCertToken.getSources();
+		if (sources2 != null) {
+			for (final CertificateSourceType cst : sources2) {
+				addSourceType(cst);
+			}
+		}
+	}
+
+	public void copyServiceInfoFrom(final CertificateToken srcCertToken) {
+		final Set<ServiceInfo> services2 = srcCertToken.getAssociatedTSPS();
+		if (services2 != null) {
+			for (final ServiceInfo serviceInfo : services2) {
+				addServiceInfo(serviceInfo);
+			}
+		}
+	}
+
 }
