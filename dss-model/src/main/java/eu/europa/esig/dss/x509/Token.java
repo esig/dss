@@ -48,6 +48,11 @@ public abstract class Token implements Serializable {
 	 */
 	protected X500Principal issuerX500Principal;
 
+	/**
+	 * The normalized {@link X500Principal} of this token (used for {@link CertificateToken}).
+	 */
+	protected X500Principal x500Principal = null;
+
 	/*
 	 * Indicates the token signature is valid.
 	 */
@@ -139,6 +144,15 @@ public abstract class Token implements Serializable {
 	 */
 	public X500Principal getIssuerX500Principal() {
 		return issuerX500Principal;
+	}
+
+	/**
+	 * Returns the {@code X500Principal} of the certificate in this token.
+	 *
+	 * @return
+	 */
+	public X500Principal getX500Principal() {
+		return x500Principal;
 	}
 
 	/**
