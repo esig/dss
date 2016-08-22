@@ -104,6 +104,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 	private static final String ENGLISH_LANGUAGE = "en";
 
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
+	
+	private static final String HUMAN_READABLE_TSL_MIME_TYPE = "application/pdf";
 
 	private static final JAXBContext jaxbContext;
 
@@ -142,6 +144,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		tslModel.setNextUpdateDate(getNextUpdate(tsl));
 		tslModel.setDistributionPoints(getDistributionPoints(tsl));
 		tslModel.setPointers(getMachineProcessableTSLPointers(tsl));
+		tslModel.setHumanReadableTSLPointers(getHumanReadableTSLPointers(tsl));
 		tslModel.setServiceProviders(getServiceProviders(tsl));
 		return tslModel;
 	}
@@ -195,6 +198,19 @@ public class TSLParser implements Callable<TSLParserResult> {
 		if (Utils.isCollectionNotEmpty(tslPointers)) {
 			for (TSLPointer tslPointer : tslPointers) {
 				if (TSL_MIME_TYPE.equals(tslPointer.getMimeType())) {
+					list.add(tslPointer);
+				}
+			}
+		}
+		return list;
+	}
+
+	private List<TSLPointer> getHumanReadableTSLPointers(TrustStatusListType tsl) {
+		List<TSLPointer> list = new ArrayList<TSLPointer>();
+		List<TSLPointer> tslPointers = getTSLPointers(tsl);
+		if (Utils.isCollectionNotEmpty(tslPointers)) {
+			for (TSLPointer tslPointer : tslPointers) {
+				if (HUMAN_READABLE_TSL_MIME_TYPE.equals(tslPointer.getMimeType())) {
 					list.add(tslPointer);
 				}
 			}

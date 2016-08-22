@@ -34,6 +34,7 @@ public class TSLParserResult {
 	private Date issueDate;
 	private Date nextUpdateDate;
 	private List<TSLPointer> pointers;
+	private List<TSLPointer> humanReadableTSLPointers;
 	private List<TSLServiceProvider> serviceProviders;
 	private List<String> distributionPoints;
 
@@ -75,6 +76,14 @@ public class TSLParserResult {
 
 	public void setPointers(List<TSLPointer> pointers) {
 		this.pointers = pointers;
+	}
+
+	public List<TSLPointer> getHumanReadableTSLPointers() {
+		return humanReadableTSLPointers;
+	}
+
+	public void setHumanReadableTSLPointers(List<TSLPointer> humanReadableTSLPointers) {
+		this.humanReadableTSLPointers = humanReadableTSLPointers;
 	}
 
 	public List<TSLServiceProvider> getServiceProviders() {
