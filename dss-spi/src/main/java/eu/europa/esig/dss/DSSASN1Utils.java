@@ -342,21 +342,35 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * @param x509Certificate
-	 * @return
+	 * Get the OIDs of the QCStatements extension of the certificate.
+	 * @param certToken
+	 * @return list of OIDs: empty list if no QCStatements extension found
 	 */
 	public static List<String> getQCStatementsIdList(final CertificateToken certToken) {
 		final List<String> extensionIdList = new ArrayList<String>();
+		for (final QCStatement qcStatement : getQCStatementsList(certToken)) {
+			extensionIdList.add(qcStatement.getStatementId().getId());
+		}
+		return extensionIdList;
+	}
+
+	/**
+	 * Get the contents of the QCStatements extension of the certificate.
+	 * @param certToken
+	 * @return list of OIDs: empty list if no QCStatements extension found
+	 */
+	public static List<QCStatement> getQCStatementsList(final CertificateToken certToken) {
+		final List<QCStatement> extensionList = new ArrayList<QCStatement>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
 		if (qcStatement != null) {
 			final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
 			// Sequence of QCStatement
-			for (int ii = 0; ii < seq.size(); ii++) {
-				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
-				extensionIdList.add(statement.getStatementId().getId());
+			for (final Object item : seq) {
+				final QCStatement statement = QCStatement.getInstance(item);
+				extensionList.add(statement);
 			}
 		}
-		return extensionIdList;
+		return extensionList;
 	}
 
 	/**
