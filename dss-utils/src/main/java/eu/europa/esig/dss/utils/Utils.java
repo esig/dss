@@ -38,7 +38,7 @@ public final class Utils {
 		if (utilsImplementationPathSet == null || utilsImplementationPathSet.size() == 0) {
 			throw new RuntimeException("No implementation found in the classpath");
 		} else if (utilsImplementationPathSet.size() > 1) {
-			throw new RuntimeException("More than one implementation found in the classpath");
+			throw new RuntimeException("More than one implementation found in the classpath: " + utilsImplementationPathSet);
 		}
 		impl = UtilsBinder.getSingleton().getUtilsFactory().getUtils();
 		status = UtilsStatus.INITIALIZED;
