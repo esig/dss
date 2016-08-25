@@ -112,7 +112,7 @@ public abstract class AbstractRequirementChecks {
 	 */
 	@Test
 	public void checkSigningCertificatePresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate");
+		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificateV2");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
 		assertNotNull(node);
 	}

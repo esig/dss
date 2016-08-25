@@ -30,7 +30,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	private String xPathLocationString;
 	
-	private boolean en319132 = false;
+	private boolean en319132 = true;
 
 	/**
 	 *	This attribute is used to inject ASiC root (inclusive canonicalization)
