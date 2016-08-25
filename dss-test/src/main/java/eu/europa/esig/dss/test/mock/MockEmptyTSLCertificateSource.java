@@ -56,7 +56,6 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 	 */
 	@Override
 	public CertificateToken addCertificate(CertificateToken cert) {
-		Collections.emptyList();
 		final ServiceInfo serviceInfo = getMockServiceInfo();
 		final CertificateToken certToken = addCertificate(cert, serviceInfo);
 		return certToken;
@@ -79,7 +78,8 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 
 		MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
 		Map<String, List<Condition>> emptyMap = new HashMap<String, List<Condition>>();
-		status.addOldest(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION, emptyMap, Collections.emptyList(), null, calendar.getTime(), null));
+		List<String> emptyList = Collections.emptyList();
+		status.addOldest(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION, emptyMap, emptyList, null, calendar.getTime(), null));
 		serviceInfo.setStatus(status);
 		serviceInfo.setTlWellSigned(true);
 

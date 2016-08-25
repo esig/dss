@@ -60,7 +60,8 @@ public class SignedDocumentValidatorTest {
 
 		MutableTimeDependentValues<ServiceInfoStatus> statusList = new MutableTimeDependentValues<ServiceInfoStatus>();
 		Map<String, List<Condition>> emptyMap = new HashMap<String, List<Condition>>();
-		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus(null, emptyMap, Collections.emptyList(), null, calendar.getTime(), null);
+		List<String> emptyList = Collections.emptyList();
+		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus(null, emptyMap, emptyList, null, calendar.getTime(), null);
 		statusList.addOldest(lastestStatus);
 
 		ServiceInfo serviceInfo = new ServiceInfo();
