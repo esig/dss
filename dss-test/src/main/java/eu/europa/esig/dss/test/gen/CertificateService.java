@@ -73,7 +73,7 @@ public class CertificateService {
 		if(algorithm == EncryptionAlgorithm.ECDSA) {
 			return generateECDSAKeyPair();
 		} else {
-			KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm.getName());
+			KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm.getName(), SECURITY_PROVIDER);
 			keyGenerator.initialize(2048);
 			return keyGenerator.generateKeyPair();
 		}
@@ -81,7 +81,7 @@ public class CertificateService {
 	
 	private KeyPair generateECDSAKeyPair() throws GeneralSecurityException {
 		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("prime256v1");
-		KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA");
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA", SECURITY_PROVIDER);
 		generator.initialize(ecSpec, new SecureRandom());
 		return generator.generateKeyPair();
 	}
