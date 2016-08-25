@@ -124,7 +124,7 @@ public class OCSPToken extends RevocationToken {
 			if (logger.isInfoEnabled()) {
 				logger.info("OCSP status unknown");
 			}
-			reason = "OCSP status: unknown";
+			reason = CRLReasonEnum.unknow.name();
 		}
 	}
 
