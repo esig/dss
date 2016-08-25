@@ -103,8 +103,8 @@ public abstract class AbstractUtilsTest {
 	@Test
 	public void joinStrings() {
 		assertEquals(null, impl.joinStrings(null, null));
-		assertEquals("", impl.joinStrings(new ArrayList<>(), null));
-		assertEquals("", impl.joinStrings(new ArrayList<>(), ","));
+		assertEquals("", impl.joinStrings(new ArrayList<String>(), null));
+		assertEquals("", impl.joinStrings(new ArrayList<String>(), ","));
 
 		List<String> list = new ArrayList<String>();
 		list.add("a");

@@ -58,7 +58,7 @@ public class SignedDocumentValidatorTest {
 		calendar.add(Calendar.YEAR, -30);
 
 		MutableTimeDependentValues<ServiceInfoStatus> statusList = new MutableTimeDependentValues<ServiceInfoStatus>();
-		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus(null, new HashMap<String, List<Condition>>(), Collections.emptyList(), null,
+		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus(null, Collections.EMPTY_MAP, Collections.EMPTY_LIST, null,
 				calendar.getTime(), null);
 		statusList.addOldest(lastestStatus);
 

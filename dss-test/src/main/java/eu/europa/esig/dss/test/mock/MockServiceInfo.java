@@ -42,7 +42,7 @@ public class MockServiceInfo extends ServiceInfo {
 
 		MutableTimeDependentValues<ServiceInfoStatus> statusList = new MutableTimeDependentValues<ServiceInfoStatus>();
 		statusList.addOldest(
-				new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION_119612, Collections.emptyMap(), Collections.emptyList(), null, calendar.getTime(), null));
+				new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION_119612, Collections.EMPTY_MAP, Collections.EMPTY_LIST, null, calendar.getTime(), null));
 		setStatus(statusList);
 		setTlWellSigned(true);
 	}
