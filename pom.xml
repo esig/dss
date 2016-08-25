@@ -705,13 +705,13 @@
 			<id>notJava8</id>
 
 			<activation>
-				<jdk>[1.6,1.8)</jdk>
+				<jdk>[1.7,1.8)</jdk>
 				<file>
 					<exists>${java.home}/lib/jfxrt.jar</exists>
 				</file>
 			</activation>
 			<properties>
-				<project.source.version>1.6</project.source.version>
+				<project.source.version>1.7</project.source.version>
 				<jfxrt.jar>${java.home}/lib/jfxrt.jar</jfxrt.jar>
 			</properties>
 
@@ -761,7 +761,7 @@
 				</file>
 			</activation>
 			<properties>
-				<project.source.version>1.8</project.source.version>
+				<project.source.version>1.7</project.source.version>
 				<jfxrt.jar>${java.home}/lib/ext/jfxrt.jar</jfxrt.jar>
 			</properties>
 
