@@ -5,63 +5,24 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
-import eu.europa.esig.dss.utils.impl.UtilsBinder;
+import java.util.ServiceLoader;
 
 public final class Utils {
 
 	public static final String EMPTY_STRING = "";
 
-	private static final String STATIC_UTILS_BINDER_PATH = "eu/europa/esig/dss/utils/impl/UtilsBinder.class";
-
-	private static UtilsStatus status = UtilsStatus.NOT_INITIALIZED;
-
 	private static IUtils impl;
 
 	static {
-		if (UtilsStatus.NOT_INITIALIZED == status) {
-			performInitialization();
-		}
+		ServiceLoader<IUtils> loader = ServiceLoader.load(IUtils.class);
+		Iterator<IUtils> iterator = loader.iterator();
+		impl = iterator.next();
 	}
 
 	private Utils() {
-	}
-
-	private static void performInitialization() {
-		Set<URL> utilsImplementationPathSet = findPossibleUtilsImplementations();
-		if (utilsImplementationPathSet == null || utilsImplementationPathSet.size() == 0) {
-			throw new RuntimeException("No implementation found in the classpath");
-		} else if (utilsImplementationPathSet.size() > 1) {
-			throw new RuntimeException("More than one implementation found in the classpath: " + utilsImplementationPathSet);
-		}
-		impl = UtilsBinder.getSingleton().getUtilsFactory().getUtils();
-		status = UtilsStatus.INITIALIZED;
-	}
-
-	private static Set<URL> findPossibleUtilsImplementations() {
-		Set<URL> utilsImplementationPathSet = new LinkedHashSet<URL>();
-		try {
-			ClassLoader utilsClassLoader = Utils.class.getClassLoader();
-			Enumeration<URL> paths;
-			if (utilsClassLoader == null) {
-				paths = ClassLoader.getSystemResources(STATIC_UTILS_BINDER_PATH);
-			} else {
-				paths = utilsClassLoader.getResources(STATIC_UTILS_BINDER_PATH);
-			}
-			while (paths.hasMoreElements()) {
-				URL path = paths.nextElement();
-				utilsImplementationPathSet.add(path);
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Cannot retrieve classloader : " + e.getMessage(), e);
-		}
-		return utilsImplementationPathSet;
 	}
 
 	public static boolean isStringEmpty(String text) {

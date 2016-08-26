@@ -12,237 +12,227 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.utils.IUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractUtilsTest {
 
-	private IUtils impl;
-
-	@Before
-	public void init() {
-		impl = getImpl();
-	}
-
-	public abstract IUtils getImpl();
-
 	@Test
 	public void isStringEmpty() {
-		assertTrue(impl.isStringEmpty(""));
-		assertFalse(impl.isStringEmpty("  "));
-		assertTrue(impl.isStringEmpty(null));
-		assertFalse(impl.isStringEmpty("bla"));
+		assertTrue(Utils.isStringEmpty(""));
+		assertFalse(Utils.isStringEmpty("  "));
+		assertTrue(Utils.isStringEmpty(null));
+		assertFalse(Utils.isStringEmpty("bla"));
 	}
 
 	@Test
 	public void isStringNotEmpty() {
-		assertFalse(impl.isStringNotEmpty(""));
-		assertTrue(impl.isStringNotEmpty("  "));
-		assertFalse(impl.isStringNotEmpty(null));
-		assertTrue(impl.isStringNotEmpty("bla"));
+		assertFalse(Utils.isStringNotEmpty(""));
+		assertTrue(Utils.isStringNotEmpty("  "));
+		assertFalse(Utils.isStringNotEmpty(null));
+		assertTrue(Utils.isStringNotEmpty("bla"));
 	}
 
 	@Test
 	public void isStringBlank() {
-		assertTrue(impl.isStringBlank(""));
-		assertTrue(impl.isStringBlank("  "));
-		assertTrue(impl.isStringBlank(null));
-		assertFalse(impl.isStringBlank("bla"));
+		assertTrue(Utils.isStringBlank(""));
+		assertTrue(Utils.isStringBlank("  "));
+		assertTrue(Utils.isStringBlank(null));
+		assertFalse(Utils.isStringBlank("bla"));
 	}
 
 	@Test
 	public void isStringNotBlank() {
-		assertFalse(impl.isStringNotBlank(""));
-		assertFalse(impl.isStringNotBlank("  "));
-		assertFalse(impl.isStringNotBlank(null));
-		assertTrue(impl.isStringNotBlank("bla"));
+		assertFalse(Utils.isStringNotBlank(""));
+		assertFalse(Utils.isStringNotBlank("  "));
+		assertFalse(Utils.isStringNotBlank(null));
+		assertTrue(Utils.isStringNotBlank("bla"));
 	}
 
 	@Test
 	public void areStringsEqual() {
-		assertTrue(impl.areStringsEqual(null, null));
-		assertTrue(impl.areStringsEqual("", ""));
-		assertFalse(impl.areStringsEqual("", "123"));
-		assertFalse(impl.areStringsEqual("123", "456"));
-		assertFalse(impl.areStringsEqual(null, ""));
-		assertTrue(impl.areStringsEqual("bla", "bla"));
-		assertFalse(impl.areStringsEqual("bla", "BLA"));
+		assertTrue(Utils.areStringsEqual(null, null));
+		assertTrue(Utils.areStringsEqual("", ""));
+		assertFalse(Utils.areStringsEqual("", "123"));
+		assertFalse(Utils.areStringsEqual("123", "456"));
+		assertFalse(Utils.areStringsEqual(null, ""));
+		assertTrue(Utils.areStringsEqual("bla", "bla"));
+		assertFalse(Utils.areStringsEqual("bla", "BLA"));
 	}
 
 	@Test
 	public void areStringsEqualIgnoreCase() {
-		assertTrue(impl.areStringsEqualIgnoreCase(null, null));
-		assertTrue(impl.areStringsEqualIgnoreCase("", ""));
-		assertFalse(impl.areStringsEqualIgnoreCase("", "123"));
-		assertFalse(impl.areStringsEqualIgnoreCase("123", "456"));
-		assertFalse(impl.areStringsEqualIgnoreCase(null, ""));
-		assertTrue(impl.areStringsEqualIgnoreCase("bla", "bla"));
-		assertTrue(impl.areStringsEqualIgnoreCase("bla", "BLA"));
+		assertTrue(Utils.areStringsEqualIgnoreCase(null, null));
+		assertTrue(Utils.areStringsEqualIgnoreCase("", ""));
+		assertFalse(Utils.areStringsEqualIgnoreCase("", "123"));
+		assertFalse(Utils.areStringsEqualIgnoreCase("123", "456"));
+		assertFalse(Utils.areStringsEqualIgnoreCase(null, ""));
+		assertTrue(Utils.areStringsEqualIgnoreCase("bla", "bla"));
+		assertTrue(Utils.areStringsEqualIgnoreCase("bla", "BLA"));
 	}
 
 	@Test
 	public void isStringDigits() {
-		assertFalse(impl.isStringDigits(""));
-		assertFalse(impl.isStringDigits(null));
-		assertFalse(impl.isStringDigits("bla"));
-		assertTrue(impl.isStringDigits("123"));
-		assertFalse(impl.isStringDigits("123BLA"));
+		assertFalse(Utils.isStringDigits(""));
+		assertFalse(Utils.isStringDigits(null));
+		assertFalse(Utils.isStringDigits("bla"));
+		assertTrue(Utils.isStringDigits("123"));
+		assertFalse(Utils.isStringDigits("123BLA"));
 	}
 
 	@Test
 	public void trim() {
-		assertEquals(null, impl.trim(null));
-		assertEquals("", impl.trim(""));
-		assertEquals("", impl.trim("   "));
-		assertEquals("AAA", impl.trim(" AAA  "));
-		assertEquals("AA A", impl.trim(" AA A  "));
+		assertEquals(null, Utils.trim(null));
+		assertEquals("", Utils.trim(""));
+		assertEquals("", Utils.trim("   "));
+		assertEquals("AAA", Utils.trim(" AAA  "));
+		assertEquals("AA A", Utils.trim(" AA A  "));
 	}
 
 	@Test
 	public void joinStrings() {
-		assertEquals(null, impl.joinStrings(null, null));
-		assertEquals("", impl.joinStrings(new ArrayList<String>(), null));
-		assertEquals("", impl.joinStrings(new ArrayList<String>(), ","));
+		assertEquals(null, Utils.joinStrings(null, null));
+		assertEquals("", Utils.joinStrings(new ArrayList<String>(), null));
+		assertEquals("", Utils.joinStrings(new ArrayList<String>(), ","));
 
 		List<String> list = new ArrayList<String>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
 
-		assertEquals("a,b,c", impl.joinStrings(list, ","));
-		assertEquals("abc", impl.joinStrings(list, ""));
+		assertEquals("a,b,c", Utils.joinStrings(list, ","));
+		assertEquals("abc", Utils.joinStrings(list, ""));
 	}
 
 	@Test
 	public void substringAfter() {
-		assertEquals(null, impl.substringAfter(null, null));
-		assertEquals("", impl.substringAfter("", null));
-		assertEquals("bbb", impl.substringAfter("aaaaa?bbb", "?"));
+		assertEquals(null, Utils.substringAfter(null, null));
+		assertEquals("", Utils.substringAfter("", null));
+		assertEquals("bbb", Utils.substringAfter("aaaaa?bbb", "?"));
 	}
 
 	@Test
 	public void endsWithIgnoreCase() {
-		assertTrue(impl.endsWithIgnoreCase("hello", "lo"));
-		assertFalse(impl.endsWithIgnoreCase("hello", null));
-		assertFalse(impl.endsWithIgnoreCase(null, "lo"));
-		assertFalse(impl.endsWithIgnoreCase("hello", "la"));
+		assertTrue(Utils.endsWithIgnoreCase("hello", "lo"));
+		assertFalse(Utils.endsWithIgnoreCase("hello", null));
+		assertFalse(Utils.endsWithIgnoreCase(null, "lo"));
+		assertFalse(Utils.endsWithIgnoreCase("hello", "la"));
 	}
 
 	@Test
 	public void lowerCase() {
-		assertEquals(null, impl.lowerCase(null));
-		assertEquals("", impl.lowerCase(""));
-		assertEquals(" ", impl.lowerCase(" "));
-		assertEquals("aaaa", impl.lowerCase("AaAa"));
-		assertEquals("aaaa-_&", impl.lowerCase("AaAa-_&"));
+		assertEquals(null, Utils.lowerCase(null));
+		assertEquals("", Utils.lowerCase(""));
+		assertEquals(" ", Utils.lowerCase(" "));
+		assertEquals("aaaa", Utils.lowerCase("AaAa"));
+		assertEquals("aaaa-_&", Utils.lowerCase("AaAa-_&"));
 	}
 
 	@Test
 	public void upperCase() {
-		assertEquals(null, impl.upperCase(null));
-		assertEquals("", impl.upperCase(""));
-		assertEquals(" ", impl.upperCase(" "));
-		assertEquals("AAAA", impl.upperCase("AaAa"));
-		assertEquals("AAAA-_&", impl.upperCase("AaAa-_&"));
+		assertEquals(null, Utils.upperCase(null));
+		assertEquals("", Utils.upperCase(""));
+		assertEquals(" ", Utils.upperCase(" "));
+		assertEquals("AAAA", Utils.upperCase("AaAa"));
+		assertEquals("AAAA-_&", Utils.upperCase("AaAa-_&"));
 	}
 
 	@Test
 	public void isArrayEmptyObj() {
-		assertTrue(impl.isArrayEmpty(new Object[] {}));
-		assertFalse(impl.isArrayEmpty(new Object[] { null }));
-		assertFalse(impl.isArrayEmpty(new Object[] { "1", 1 }));
+		assertTrue(Utils.isArrayEmpty(new Object[] {}));
+		assertFalse(Utils.isArrayEmpty(new Object[] { null }));
+		assertFalse(Utils.isArrayEmpty(new Object[] { "1", 1 }));
 	}
 
 	@Test
 	public void isArrayNotEmptyObj() {
-		assertFalse(impl.isArrayNotEmpty(new Object[] {}));
-		assertTrue(impl.isArrayNotEmpty(new Object[] { null }));
-		assertTrue(impl.isArrayNotEmpty(new Object[] { "1", 1 }));
+		assertFalse(Utils.isArrayNotEmpty(new Object[] {}));
+		assertTrue(Utils.isArrayNotEmpty(new Object[] { null }));
+		assertTrue(Utils.isArrayNotEmpty(new Object[] { "1", 1 }));
 	}
 
 	@Test
 	public void isArrayNotEmpty() {
-		assertFalse(impl.isArrayNotEmpty(new byte[] {}));
-		assertTrue(impl.isArrayNotEmpty(new byte[] { 1 }));
+		assertFalse(Utils.isArrayNotEmpty(new byte[] {}));
+		assertTrue(Utils.isArrayNotEmpty(new byte[] { 1 }));
 	}
 
 	@Test
 	public void isArrayEmpty() {
-		assertTrue(impl.isArrayEmpty(new byte[] {}));
-		assertFalse(impl.isArrayEmpty(new byte[] { 1 }));
+		assertTrue(Utils.isArrayEmpty(new byte[] {}));
+		assertFalse(Utils.isArrayEmpty(new byte[] { 1 }));
 	}
 
 	@Test
 	public void subarray() {
 		byte[] array = new byte[] { 1, 2, 3, 4, 5 };
-		assertTrue(Arrays.equals(array, impl.subarray(array, 0, array.length)));
-		assertTrue(Arrays.equals(new byte[] { 1, 2, 3 }, impl.subarray(array, 0, 3)));
-		assertTrue(Arrays.equals(new byte[] {}, impl.subarray(array, 0, 0)));
-		assertTrue(Arrays.equals(null, impl.subarray(null, 0, 0)));
+		assertTrue(Arrays.equals(array, Utils.subarray(array, 0, array.length)));
+		assertTrue(Arrays.equals(new byte[] { 1, 2, 3 }, Utils.subarray(array, 0, 3)));
+		assertTrue(Arrays.equals(new byte[] {}, Utils.subarray(array, 0, 0)));
+		assertTrue(Arrays.equals(null, Utils.subarray(null, 0, 0)));
 	}
 
 	@Test
 	public void isTrue() {
-		assertFalse(impl.isTrue(null));
-		assertFalse(impl.isTrue(false));
-		assertTrue(impl.isTrue(true));
-		assertTrue(impl.isTrue(Boolean.TRUE));
+		assertFalse(Utils.isTrue(null));
+		assertFalse(Utils.isTrue(false));
+		assertTrue(Utils.isTrue(true));
+		assertTrue(Utils.isTrue(Boolean.TRUE));
 	}
 
 	@Test
 	public void isCollectionEmpty() {
-		assertTrue(impl.isCollectionEmpty(null));
-		assertTrue(impl.isCollectionEmpty(new ArrayList<String>()));
+		assertTrue(Utils.isCollectionEmpty(null));
+		assertTrue(Utils.isCollectionEmpty(new ArrayList<String>()));
 
 		List<String> list = new ArrayList<String>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
-		assertFalse(impl.isCollectionEmpty(list));
+		assertFalse(Utils.isCollectionEmpty(list));
 	}
 
 	@Test
 	public void isCollectionNotEmpty() {
-		assertFalse(impl.isCollectionNotEmpty(null));
-		assertFalse(impl.isCollectionNotEmpty(new ArrayList<String>()));
+		assertFalse(Utils.isCollectionNotEmpty(null));
+		assertFalse(Utils.isCollectionNotEmpty(new ArrayList<String>()));
 
 		List<String> list = new ArrayList<String>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
-		assertTrue(impl.isCollectionNotEmpty(list));
+		assertTrue(Utils.isCollectionNotEmpty(list));
 	}
 
 	@Test
 	public void collectionSize() {
-		assertEquals(0, impl.collectionSize(new ArrayList<String>()));
+		assertEquals(0, Utils.collectionSize(new ArrayList<String>()));
 
 		List<String> list = new ArrayList<String>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
-		assertEquals(3, impl.collectionSize(list));
+		assertEquals(3, Utils.collectionSize(list));
 	}
 
 	@Test
 	public void toHex() {
-		assertEquals("", impl.toHex(new byte[] {}));
-		assertEquals("0102030405", impl.toHex(new byte[] { 1, 2, 3, 4, 5 }));
-		assertEquals("61027a6a09", impl.toHex(new byte[] { 'a', 2, 'z', 'j', 9 }));
+		assertEquals("", Utils.toHex(new byte[] {}));
+		assertEquals("0102030405", Utils.toHex(new byte[] { 1, 2, 3, 4, 5 }));
+		assertEquals("61027a6a09", Utils.toHex(new byte[] { 'a', 2, 'z', 'j', 9 }));
 	}
 
 	@Test
 	public void toBase64() {
-		assertEquals("", impl.toBase64(new byte[] {}));
-		assertEquals("AQIDBAU=", impl.toBase64(new byte[] { 1, 2, 3, 4, 5 }));
+		assertEquals("", Utils.toBase64(new byte[] {}));
+		assertEquals("AQIDBAU=", Utils.toBase64(new byte[] { 1, 2, 3, 4, 5 }));
 	}
 
 	@Test
 	public void fromBase64() {
-		assertTrue(Arrays.equals(new byte[] { 1, 2, 3, 4, 5 }, impl.fromBase64("AQIDBAU=")));
-		assertTrue(Arrays.equals(new byte[] { 1, 2, 3, 4, 5 }, impl.fromBase64("\nAQI\nD BA\tU=\n")));
+		assertTrue(Arrays.equals(new byte[] { 1, 2, 3, 4, 5 }, Utils.fromBase64("AQIDBAU=")));
+		assertTrue(Arrays.equals(new byte[] { 1, 2, 3, 4, 5 }, Utils.fromBase64("\nAQI\nD BA\tU=\n")));
 	}
 
 	@Test
@@ -253,12 +243,12 @@ public abstract class AbstractUtilsTest {
 		FileOutputStream fos = new FileOutputStream(newFileName);
 		fos.write(newFileContent.getBytes("UTF-8"));
 		fos.close();
-		assertTrue(Arrays.equals(newFileContent.getBytes("UTF-8"), impl.toByteArray(new FileInputStream(newFileName))));
+		assertTrue(Arrays.equals(newFileContent.getBytes("UTF-8"), Utils.toByteArray(new FileInputStream(newFileName))));
 	}
 
 	@Test
 	public void closeQuietly() throws IOException {
-		impl.closeQuietly(null);
+		Utils.closeQuietly(null);
 		String newFileName = "target/sample2.txt";
 		String newFileContent = "Hello world!";
 
@@ -266,8 +256,8 @@ public abstract class AbstractUtilsTest {
 		fos.write(newFileContent.getBytes("UTF-8"));
 		fos.close();
 
-		impl.closeQuietly(new FileInputStream(newFileName));
-		impl.closeQuietly(new FileOutputStream("target/sample3.txt"));
+		Utils.closeQuietly(new FileInputStream(newFileName));
+		Utils.closeQuietly(new FileOutputStream("target/sample3.txt"));
 	}
 
 }
