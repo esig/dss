@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -58,8 +59,9 @@ public class SignedDocumentValidatorTest {
 		calendar.add(Calendar.YEAR, -30);
 
 		MutableTimeDependentValues<ServiceInfoStatus> statusList = new MutableTimeDependentValues<ServiceInfoStatus>();
-		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus(null, Collections.EMPTY_MAP, Collections.EMPTY_LIST, null,
-				calendar.getTime(), null);
+		Map<String, List<Condition>> emptyMap = new HashMap<String, List<Condition>>();
+		List<String> emptyList = Collections.emptyList();
+		final ServiceInfoStatus lastestStatus = new ServiceInfoStatus(null, emptyMap, emptyList, null, calendar.getTime(), null);
 		statusList.addOldest(lastestStatus);
 
 		ServiceInfo serviceInfo = new ServiceInfo();

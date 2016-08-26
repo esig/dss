@@ -34,11 +34,11 @@ public class XSLTService {
 	public void init() throws TransformerConfigurationException {
 		TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
 
-		InputStream simpleIS = XSLTService.class.getResourceAsStream("/xslt/simpleReport.xslt");
+		InputStream simpleIS = XSLTService.class.getResourceAsStream("/xslt/html/simple-report.xslt");
 		templateSimpleReport = transformerFactory.newTemplates(new StreamSource(simpleIS));
 		Utils.closeQuietly(simpleIS);
 
-		InputStream detailedIS = XSLTService.class.getResourceAsStream("/xslt/validationReport.xslt");
+		InputStream detailedIS = XSLTService.class.getResourceAsStream("/xslt/html/detailed-report.xslt");
 		templateDetailedReport = transformerFactory.newTemplates(new StreamSource(detailedIS));
 		Utils.closeQuietly(detailedIS);
 	}

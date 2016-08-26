@@ -47,18 +47,14 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
-import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.DERT61String;
-import org.bouncycastle.asn1.DERT61UTF8String;
 import org.bouncycastle.asn1.DERTaggedObject;
-import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
@@ -592,20 +588,10 @@ public final class DSSASN1Utils {
 
 	private static String getString(ASN1Encodable attributeValue) {
 		String string;
-		if (attributeValue instanceof DERUTF8String) {
-			string = ((DERUTF8String) attributeValue).getString();
-		} else if (attributeValue instanceof DERPrintableString) {
-			string = ((DERPrintableString) attributeValue).getString();
-		} else if (attributeValue instanceof DERBMPString) {
-			string = ((DERBMPString) attributeValue).getString();
-		} else if (attributeValue instanceof DERT61String) {
-			string = ((DERT61String) attributeValue).getString();
-		} else if (attributeValue instanceof DERIA5String) {
-			string = ((DERIA5String) attributeValue).getString();
+		if (attributeValue instanceof ASN1String) {
+			string = ((ASN1String) attributeValue).getString();
 		} else if (attributeValue instanceof ASN1ObjectIdentifier) {
 			string = ((ASN1ObjectIdentifier) attributeValue).getId();
-		} else if (attributeValue instanceof DERT61UTF8String) {
-			string = ((DERT61UTF8String) attributeValue).getString();
 		} else {
 			LOG.error("!!!*******!!! This encoding is unknown: " + attributeValue.getClass().getSimpleName());
 			string = attributeValue.toString();

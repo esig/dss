@@ -47,11 +47,11 @@ public class FOPService {
 
 		TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
 
-		InputStream simpleIS = FOPService.class.getResourceAsStream("/xslt/simpleReportFop.xslt");
+		InputStream simpleIS = FOPService.class.getResourceAsStream("/xslt/pdf/simple-report.xslt");
 		templateSimpleReport = transformerFactory.newTemplates(new StreamSource(simpleIS));
 		Utils.closeQuietly(simpleIS);
 
-		InputStream detailedIS = FOPService.class.getResourceAsStream("/xslt/validationReportFop.xslt");
+		InputStream detailedIS = FOPService.class.getResourceAsStream("/xslt/pdf/detailed-report.xslt");
 		templateDetailedReport = transformerFactory.newTemplates(new StreamSource(detailedIS));
 		Utils.closeQuietly(detailedIS);
 	}
