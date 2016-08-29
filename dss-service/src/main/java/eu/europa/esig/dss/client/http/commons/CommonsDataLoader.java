@@ -203,9 +203,10 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		try {
 
 			X509TrustManager trustManager = null;
-			if(Utils.isStringEmpty(sslTruststorePath)) {
+			if (Utils.isStringEmpty(sslTruststorePath)) {
 				trustManager = new AcceptAllTrustManager();
 			} else {
+				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
 				trustManager = new DefaultTrustManager(trustStoreIs, sslTruststoreType, sslTruststorePassword);
 			}
 
@@ -216,7 +217,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			} else {
 				LOG.debug("Use provided info for SSL");
 				fis = new FileInputStream(new File(sslKeystorePath));
-				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
 				DefaultKeyManager dkm = new DefaultKeyManager(fis, sslKeystoreType, sslKeystorePassword);
 				keysManager = new KeyManager[] { dkm };
 			}
