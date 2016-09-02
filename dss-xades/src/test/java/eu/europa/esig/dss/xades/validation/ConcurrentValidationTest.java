@@ -14,6 +14,8 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -28,10 +30,14 @@ public class ConcurrentValidationTest {
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		DataLoader dataLoader = new NativeHTTPDataLoader();
+		certificateVerifier.setDataLoader(dataLoader);
+
 		List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 
-		for (int i = 0; i < 20; i++) {
-			futures.add(executor.submit(new TestConcurrent()));
+		for (int i = 0; i < 200; i++) {
+			futures.add(executor.submit(new TestConcurrent(certificateVerifier)));
 		}
 
 		for (Future<Boolean> future : futures) {
@@ -43,11 +49,17 @@ public class ConcurrentValidationTest {
 
 	class TestConcurrent implements Callable<Boolean> {
 
+		private final CommonCertificateVerifier certificateVerifier;
+
+		public TestConcurrent(CommonCertificateVerifier certificateVerifier) {
+			this.certificateVerifier = certificateVerifier;
+		}
+
 		@Override
 		public Boolean call() throws Exception {
 			DSSDocument doc = new FileDocument("src/test/resources/dss-817-test.xml");
 			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-			validator.setCertificateVerifier(new CommonCertificateVerifier());
+			validator.setCertificateVerifier(certificateVerifier);
 
 			return new Boolean(validator.validateDocument() != null);
 		}
