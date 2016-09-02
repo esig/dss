@@ -35,13 +35,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
-import eu.europa.esig.dss.tsl.TSLService;
-import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.utils.Utils;
@@ -121,7 +118,6 @@ public class TSLValidationJob {
 			for (Future<TSLParserResult> futureParseResult : futureParseResults) {
 				try {
 					TSLParserResult tslParserResult = futureParseResult.get();
-					loadMissingCertificates(tslParserResult);
 					repository.addParsedResultFromCacheToMap(tslParserResult);
 					loadedTSL++;
 				} catch (Exception e) {
@@ -177,7 +173,8 @@ public class TSLValidationJob {
 		}
 
 		TSLValidationModel europeanModel = null;
-		if (!repository.isLastVersion(resultLoaderLOTL)) {
+		boolean newLotl = !repository.isLastVersion(resultLoaderLOTL);
+		if (newLotl) {
 			europeanModel = repository.storeInCache(resultLoaderLOTL);
 		} else {
 			europeanModel = repository.getByCountry(resultLoaderLOTL.getCountryCode());
@@ -203,14 +200,14 @@ public class TSLValidationJob {
 			}
 		}
 
-		analyzeCountryPointers(parseResult.getPointers());
+		analyzeCountryPointers(parseResult.getPointers(), newLotl);
 
 		repository.synchronize();
 
 		logger.debug("TSL Validation Job is finishing ...");
 	}
 
-	private void analyzeCountryPointers(List<TSLPointer> pointers) {
+	private void analyzeCountryPointers(List<TSLPointer> pointers, boolean newLotl) {
 		List<Future<TSLLoaderResult>> futureLoaderResults = new ArrayList<Future<TSLLoaderResult>>();
 		for (TSLPointer tslPointer : pointers) {
 			if (Utils.isCollectionEmpty(filterTerritories) || filterTerritories.contains(tslPointer.getTerritory())) {
@@ -237,7 +234,7 @@ public class TSLValidationJob {
 					futureParseResults.add(executorService.submit(new TSLParser(fis)));
 				}
 
-				if (checkTSLSignatures && (countryModel.getValidationResult() == null)) {
+				if (checkTSLSignatures && ((countryModel.getValidationResult() == null) || newLotl)) {
 					TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore,
 							getPotentialSigners(pointers, loaderResult.getCountryCode()));
 					futureValidationResults.add(executorService.submit(tslValidator));
@@ -250,7 +247,6 @@ public class TSLValidationJob {
 		for (Future<TSLParserResult> futureParseResult : futureParseResults) {
 			try {
 				TSLParserResult tslParserResult = futureParseResult.get();
-				loadMissingCertificates(tslParserResult);
 				repository.updateParseResult(tslParserResult);
 			} catch (Exception e) {
 				logger.error("Unable to get parsing result : " + e.getMessage(), e);
@@ -267,38 +263,6 @@ public class TSLValidationJob {
 				repository.updateValidationResult(tslValidationResult);
 			} catch (Exception e) {
 				logger.error("Unable to get validation result : " + e.getMessage(), e);
-			}
-		}
-	}
-
-	/**
-	 * The spanish TSL contains some urls with certificates to download
-	 */
-	private void loadMissingCertificates(TSLParserResult tslParserResult) {
-		if ("ES".equals(tslParserResult.getTerritory())) {
-			List<TSLServiceProvider> serviceProviders = tslParserResult.getServiceProviders();
-			if (Utils.isCollectionNotEmpty(serviceProviders)) {
-				for (TSLServiceProvider tslServiceProvider : serviceProviders) {
-					List<TSLService> services = tslServiceProvider.getServices();
-					if (Utils.isCollectionNotEmpty(services)) {
-						for (TSLService tslService : services) {
-							List<String> certificateUrls = tslService.getCertificateUrls();
-							if (Utils.isCollectionNotEmpty(certificateUrls)) {
-								for (String url : certificateUrls) {
-									try {
-										byte[] byteArray = dataLoader.get(url);
-										CertificateToken certificate = DSSUtils.loadCertificate(byteArray);
-										if (certificate != null) {
-											tslService.getCertificates().add(certificate);
-										}
-									} catch (Exception e) {
-										logger.warn("Cannot load certificate from url '" + url + "' : " + e.getMessage());
-									}
-								}
-							}
-						}
-					}
-				}
 			}
 		}
 	}
