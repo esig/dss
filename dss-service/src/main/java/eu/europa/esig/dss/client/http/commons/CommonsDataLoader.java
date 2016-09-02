@@ -45,6 +45,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -201,22 +202,27 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		FileInputStream trustStoreIs = null;
 		try {
 
-			SSLContext sslContext = null;
+			X509TrustManager trustManager = null;
+			if (Utils.isStringEmpty(sslTruststorePath)) {
+				trustManager = new AcceptAllTrustManager();
+			} else {
+				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
+				trustManager = new DefaultTrustManager(trustStoreIs, sslTruststoreType, sslTruststorePassword);
+			}
+
+			KeyManager[] keysManager = null;
 			if (Utils.isStringEmpty(sslKeystorePath)) {
 				LOG.debug("Use default SSL configuration");
-				sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(new KeyManager[0], new TrustManager[] { new AcceptAllTrustManager() }, new SecureRandom());
-				SSLContext.setDefault(sslContext);
+				keysManager = new KeyManager[0];
 			} else {
 				LOG.debug("Use provided info for SSL");
 				fis = new FileInputStream(new File(sslKeystorePath));
-				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
-
-				sslContext = SSLContext.getInstance("TLS");
 				DefaultKeyManager dkm = new DefaultKeyManager(fis, sslKeystoreType, sslKeystorePassword);
-				sslContext.init(new KeyManager[] { dkm },
-						new TrustManager[] { new DefaultTrustManager(trustStoreIs, sslTruststoreType, sslTruststorePassword) }, null);
+				keysManager = new KeyManager[] { dkm };
 			}
+
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(keysManager, new TrustManager[] { trustManager }, new SecureRandom());
 
 			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
