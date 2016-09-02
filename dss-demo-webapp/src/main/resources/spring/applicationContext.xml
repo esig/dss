@@ -60,7 +60,7 @@
 	    <property name="keyStorePassword" value="${dss.keystore.password}" />
 	</bean>
 
-	<bean id="tslValidationJob" class="eu.europa.esig.dss.tsl.service.TSLValidationJob">
+	<bean id="tslValidationJob" class="eu.europa.esig.dss.tsl.service.TSLValidationJob" init-method="initRepository">
 		<property name="dataLoader" ref="dataLoader" />
 		<property name="repository" ref="tslRepository" />
 		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml" />
