@@ -573,36 +573,8 @@ public class CertificateToken extends Token {
 		return x509Certificate.getSubjectDN();
 	}
 
-	private String extractCNName(X500Principal principal) {
-		String name = principal.getName();
-		int index = name.indexOf("CN=") + 3;
-		if (index == -1) {
-			return name;
-		}
-		int stop = name.indexOf(",", index);
-		if (stop == -1) {
-			return name.substring(index);
-		} else {
-			return name.substring(index, stop);
-		}
-	}
-
-	public String getSubjectShortName() {
-		return extractCNName(getSubjectX500Principal());
-	}
-
 	public String getBase64Encoded() {
 		return DatatypeConverter.printBase64Binary(getEncoded());
-	}
-
-	public String getReadableCertificate() {
-		String readableCertificate = x509Certificate.getSubjectDN().getName();
-		final int dnStartIndex = readableCertificate.indexOf("CN=") + 3;
-		if ((dnStartIndex > 0) && (readableCertificate.indexOf(",", dnStartIndex) > 0)) {
-			readableCertificate = readableCertificate.substring(dnStartIndex, readableCertificate.indexOf(",", dnStartIndex)) + " (SN:" + getSerialNumber()
-					+ ")";
-		}
-		return readableCertificate;
 	}
 
 }

@@ -8,15 +8,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import javafx.scene.control.ChoiceDialog;
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
+import javafx.scene.control.ChoiceDialog;
 
 public class SelectCertificateTask implements Callable<DSSPrivateKeyEntry> {
 
 	private List<DSSPrivateKeyEntry> keys;
 
-	public SelectCertificateTask( List<DSSPrivateKeyEntry> keys) {
+	public SelectCertificateTask(List<DSSPrivateKeyEntry> keys) {
 		this.keys = keys;
 	}
 
@@ -25,7 +26,7 @@ public class SelectCertificateTask implements Callable<DSSPrivateKeyEntry> {
 		Map<String, DSSPrivateKeyEntry> map = new HashMap<String, DSSPrivateKeyEntry>();
 		for (DSSPrivateKeyEntry dssPrivateKeyEntry : keys) {
 			CertificateToken certificate = dssPrivateKeyEntry.getCertificate();
-			String text = certificate.getSubjectShortName() + " (" + certificate.getSerialNumber() + ")";
+			String text = DSSASN1Utils.getSubjectCommonName(certificate) + " (" + certificate.getSerialNumber() + ")";
 			map.put(text, dssPrivateKeyEntry);
 		}
 		Set<String> keySet = map.keySet();

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
@@ -50,22 +51,22 @@ public class CreateKeyStoreApp {
 
 	private static void addCertificate(KeyStore store, String filepath) throws Exception {
 		InputStream fis = new FileInputStream(filepath);
-		CertificateToken europanCert = DSSUtils.loadCertificate(fis);
-		if (europanCert.isExpiredOn(new Date())) {
-			throw new RuntimeException("Certificate " + europanCert.getSubjectShortName() + " is expired");
+		CertificateToken europeanCert = DSSUtils.loadCertificate(fis);
+		if (europeanCert.isExpiredOn(new Date())) {
+			throw new RuntimeException("Certificate " + DSSASN1Utils.getSubjectCommonName(europeanCert) + " is expired");
 		}
 		System.out.println("Adding certificate " + filepath);
-		displayCertificateDigests(europanCert);
+		displayCertificateDigests(europeanCert);
 
 		// DSSID as key (used in the administration screen)
-		store.setCertificateEntry(europanCert.getDSSIdAsString(), europanCert.getCertificate());
+		store.setCertificateEntry(europeanCert.getDSSIdAsString(), europeanCert.getCertificate());
 		Utils.closeQuietly(fis);
 	}
 
-	private static void displayCertificateDigests(CertificateToken europanCert) {
-		byte[] digestSHA256 = DSSUtils.digest(DigestAlgorithm.SHA256, europanCert.getEncoded());
-		byte[] digestSHA1 = DSSUtils.digest(DigestAlgorithm.SHA1, europanCert.getEncoded());
-		System.out.println(europanCert.getSubjectShortName());
+	private static void displayCertificateDigests(CertificateToken europeanCert) {
+		byte[] digestSHA256 = DSSUtils.digest(DigestAlgorithm.SHA256, europeanCert.getEncoded());
+		byte[] digestSHA1 = DSSUtils.digest(DigestAlgorithm.SHA1, europeanCert.getEncoded());
+		System.out.println(DSSASN1Utils.getSubjectCommonName(europeanCert));
 		System.out.println("SHA256 digest (Hex) : " + getPrintableHex(digestSHA256));
 		System.out.println("SHA1 digest (Hex) : " + getPrintableHex(digestSHA1));
 		System.out.println("SHA256 digest (Base64) : " + Utils.toBase64(digestSHA256));

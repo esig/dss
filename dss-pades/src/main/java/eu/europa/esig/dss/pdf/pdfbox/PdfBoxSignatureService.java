@@ -55,6 +55,7 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleS
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -224,12 +225,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		if (token == null) {
 			signature.setName("Unknown signer" + encodedDate);
 		} else {
-			if (parameters.getSigningCertificate().getSubjectShortName() != null) {
-				String shortName = parameters.getSigningCertificate().getSubjectShortName() + encodedDate;
-				signature.setName(shortName);
-			} else {
-				signature.setName("Unknown signer" + encodedDate);
-			}
+			String shortName = DSSASN1Utils.getSubjectCommonName(parameters.getSigningCertificate()) + encodedDate;
+			signature.setName(shortName);
 		}
 
 		signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE); // default filter

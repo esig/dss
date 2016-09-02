@@ -61,6 +61,7 @@ import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
@@ -600,13 +601,17 @@ public final class DSSASN1Utils {
 		return string;
 	}
 
-	public static String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500Principal X500PrincipalName) {
-		final X500Name x500Name = X500Name.getInstance(X500PrincipalName.getEncoded());
+	public static String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500Principal x500PrincipalName) {
+		final X500Name x500Name = X500Name.getInstance(x500PrincipalName.getEncoded());
 		RDN[] rdns = x500Name.getRDNs(identifier);
 		if (rdns.length > 0) {
 			return rdns[0].getFirst().getValue().toString();
 		}
 		return null;
+	}
+
+	public static String getSubjectCommonName(CertificateToken cert) {
+		return extractAttributeFromX500Principal(BCStyle.CN, cert.getSubjectX500Principal());
 	}
 
 	public static Date getExpiredCertsOnCRL(X509CRL x509crl) {
