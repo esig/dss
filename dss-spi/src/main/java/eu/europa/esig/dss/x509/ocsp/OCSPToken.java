@@ -253,9 +253,13 @@ public class OCSPToken extends RevocationToken {
 	@Override
 	public byte[] getEncoded() {
 		try {
-			final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
-			final byte[] bytes = ocspResp.getEncoded();
-			return bytes;
+			if (basicOCSPResp != null) {
+				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
+				final byte[] bytes = ocspResp.getEncoded();
+				return bytes;
+			} else {
+				return sourceURL.getBytes("UTF-8");
+			}
 		} catch (IOException e) {
 			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
 		}

@@ -8,6 +8,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
+import eu.europa.esig.dss.utils.Utils;
 
 public class RevocationWrapper extends AbstractTokenProxy {
 
@@ -42,11 +43,11 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isStatus() {
-		return revocation.isStatus();
+		return Utils.isTrue(revocation.isStatus());
 	}
 
 	public boolean isAvailable() {
-		return revocation.isAvailable();
+		return Utils.isTrue(revocation.isAvailable());
 	}
 
 	public Date getThisUpdate() {
