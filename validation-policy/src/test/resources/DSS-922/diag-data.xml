@@ -75,12 +75,8 @@
                 <TSPName>AS Sertifitseerimiskeskus</TSPName>
                 <TSPServiceName>TEST of SK OCSP RESPONDER 2011</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                        <StartDate>2011-03-09T00:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                <StartDate>2011-03-09T00:00:00</StartDate>
                 <WellSigned>false</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
@@ -130,12 +126,8 @@
                 <TSPName>AS Sertifitseerimiskeskus</TSPName>
                 <TSPServiceName>TEST of ESTEID-SK 2011: Test certificates for Estonian ID-card, the residence permit card, digital personal identification document</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                        <StartDate>2011-03-09T00:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                <StartDate>2011-03-09T00:00:00</StartDate>
                 <Qualifiers>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
                     <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
@@ -204,12 +196,8 @@
                 <TSPName>AS Sertifitseerimiskeskus</TSPName>
                 <TSPServiceName>TEST of ESTEID-SK 2011: Test certificates for Estonian ID-card, the residence permit card, digital personal identification document</TSPServiceName>
                 <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <ServiceStatus>
-                    <StatusService>
-                        <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                        <StartDate>2011-03-09T00:00:00</StartDate>
-                    </StatusService>
-                </ServiceStatus>
+                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                <StartDate>2011-03-09T00:00:00</StartDate>
                 <WellSigned>false</WellSigned>
             </TrustedServiceProvider>
         </Certificate>
