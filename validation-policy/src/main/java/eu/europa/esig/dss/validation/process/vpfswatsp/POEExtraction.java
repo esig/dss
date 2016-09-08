@@ -158,7 +158,7 @@ public class POEExtraction {
 		List<Date> dates = poe.get(id);
 		if (dates != null) {
 			for (Date date : dates) {
-				if (date.compareTo(controlTime) <= 0) {
+				if (date.compareTo(controlTime) < 0) {
 					return true;
 				}
 			}
