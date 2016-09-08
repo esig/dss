@@ -126,6 +126,10 @@ public abstract class AbstractTestSignature {
 		checkTLevelAndValid(diagnosticData);
 		checkALevelAndValid(diagnosticData);
 		checkTimestamps(diagnosticData);
+		checkSignatureScopes(diagnosticData);
+	}
+
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 	}
 
 	protected void verifySimpleReport(SimpleReport simpleReport) {
