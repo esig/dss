@@ -77,6 +77,7 @@ import eu.europa.esig.jaxb.tsl.ExtensionsListType;
 import eu.europa.esig.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.jaxb.tsl.NextUpdateType;
+import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIListType;
 import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.jaxb.tsl.NonEmptyURIListType;
 import eu.europa.esig.jaxb.tsl.ObjectFactory;
@@ -140,6 +141,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		tslModel.setDistributionPoints(getDistributionPoints(tsl));
 		tslModel.setPointers(getMachineProcessableTSLPointers(tsl));
 		tslModel.setServiceProviders(getServiceProviders(tsl));
+		tslModel.setEnglishSchemeInformationURIs(getEnglishSchemeInformationURIs(tsl));
 		return tslModel;
 	}
 
@@ -520,6 +522,19 @@ public class TSLParser implements Callable<TSLParserResult> {
 			}
 		}
 		return names.getName().get(0).getValue();
+	}
+
+	private List<String> getEnglishSchemeInformationURIs(TrustStatusListType tsl) {
+		List<String> result = new ArrayList<String>();
+		NonEmptyMultiLangURIListType schemeInformationURI = tsl.getSchemeInformation().getSchemeInformationURI();
+		if (schemeInformationURI != null && Utils.isCollectionNotEmpty(schemeInformationURI.getURI())) {
+			for (NonEmptyMultiLangURIType uri : schemeInformationURI.getURI()) {
+				if (ENGLISH_LANGUAGE.equals(uri.getLang())) {
+					result.add(uri.getValue());
+				}
+			}
+		}
+		return result;
 	}
 
 }
