@@ -192,7 +192,8 @@ public class TSLValidationJob {
 		}
 
 		TSLValidationModel europeanModel = null;
-		if (!repository.isLastVersion(resultLoaderLOTL)) {
+		boolean newLotl = !repository.isLastVersion(resultLoaderLOTL);
+		if (newLotl) {
 			europeanModel = repository.storeInCache(resultLoaderLOTL);
 		} else {
 			europeanModel = repository.getByCountry(resultLoaderLOTL.getCountryCode());
@@ -222,7 +223,7 @@ public class TSLValidationJob {
 			}
 		}
 
-		analyzeCountryPointers(parseResult.getPointers());
+		analyzeCountryPointers(parseResult.getPointers(), newLotl);
 
 		repository.synchronize();
 
@@ -241,7 +242,7 @@ public class TSLValidationJob {
 		return englishSchemeInformationURIs.contains(ojUrl);
 	}
 
-	private void analyzeCountryPointers(List<TSLPointer> pointers) {
+	private void analyzeCountryPointers(List<TSLPointer> pointers, boolean newLotl) {
 		List<Future<TSLLoaderResult>> futureLoaderResults = new ArrayList<Future<TSLLoaderResult>>();
 		for (TSLPointer tslPointer : pointers) {
 			if (CollectionUtils.isEmpty(filterTerritories) || filterTerritories.contains(tslPointer.getTerritory())) {
@@ -268,7 +269,7 @@ public class TSLValidationJob {
 					futureParseResults.add(executorService.submit(new TSLParser(fis)));
 				}
 
-				if (checkTSLSignatures && (countryModel.getValidationResult() == null)) {
+				if (checkTSLSignatures && ((countryModel.getValidationResult() == null)) || newLotl) {
 					TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore,
 							getPotentialSigners(pointers, loaderResult.getCountryCode()));
 					futureValidationResults.add(executorService.submit(tslValidator));
