@@ -65,6 +65,7 @@
 		<property name="repository" ref="tslRepository" />
 		<property name="lotlUrl" value="https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml" />
 		<property name="lotlCode" value="EU" />
+		<property name="ojUrl" value="${dss.oj.url}" />
 		<property name="dssKeyStore" ref="dssKeyStore" />
 		<property name="checkLOTLSignature" value="true" />
 		<property name="checkTSLSignatures" value="true" />

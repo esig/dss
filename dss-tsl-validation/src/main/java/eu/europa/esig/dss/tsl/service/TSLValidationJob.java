@@ -62,6 +62,13 @@ public class TSLValidationJob {
 	private TSLRepository repository;
 	private String lotlCode;
 	private String lotlUrl;
+
+	/*
+	 * Official journal URL where the allowed certificates can be found. This URL is present in the LOTL
+	 * (SchemeInformationURI)
+	 */
+	private String ojUrl;
+
 	private KeyStoreCertificateSource dssKeyStore;
 	private boolean checkLOTLSignature = true;
 	private boolean checkTSLSignatures = true;
@@ -85,6 +92,10 @@ public class TSLValidationJob {
 
 	public void setLotlUrl(String lotlUrl) {
 		this.lotlUrl = lotlUrl;
+	}
+
+	public void setOjUrl(String ojUrl) {
+		this.ojUrl = ojUrl;
 	}
 
 	public void setDssKeyStore(KeyStoreCertificateSource dssKeyStore) {
@@ -194,6 +205,10 @@ public class TSLValidationJob {
 			}
 		}
 
+		if (!isLatestDssKeystore(parseResult)) {
+			logger.warn("DSS keystore is out-dated !");
+		}
+
 		if (checkLOTLSignature && (europeanModel.getValidationResult() == null)) {
 			try {
 				TSLValidationResult validationResult = validateLOTL(europeanModel);
@@ -208,6 +223,18 @@ public class TSLValidationJob {
 		repository.synchronize();
 
 		logger.debug("TSL Validation Job is finishing ...");
+	}
+
+	/**
+	 * This method checks if the OJ url is still correct. If not, the DSS keystore is outdated.
+	 * 
+	 * @param parseResult
+	 * 
+	 * @return
+	 */
+	private boolean isLatestDssKeystore(TSLParserResult parseResult) {
+		List<String> englishSchemeInformationURIs = parseResult.getEnglishSchemeInformationURIs();
+		return englishSchemeInformationURIs.contains(ojUrl);
 	}
 
 	private void analyzeCountryPointers(List<TSLPointer> pointers) {
