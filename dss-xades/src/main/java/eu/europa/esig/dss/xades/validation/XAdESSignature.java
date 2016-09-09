@@ -248,10 +248,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final Element childElement = (Element) node;
 				final String namespaceURI = childElement.getNamespaceURI();
-				// final String tagName = childElement.getTagName();
 				final String localName = childElement.getLocalName();
-				// final String nodeName = childElement.getNodeName();
-				// System.out.println(tagName + "-->" + namespaceURI);
 				if (XPathQueryHolder.XMLE_TRANSFORM.equals(localName) && javax.xml.crypto.dsig.XMLSignature.XMLNS.equals(namespaceURI)) {
 					continue;
 				} else if (XPathQueryHolder.XMLE_QUALIFYING_PROPERTIES.equals(localName)) {

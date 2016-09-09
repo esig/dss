@@ -8,7 +8,7 @@
   
   <artifactId>dss-remote-services</artifactId>
   <name>DSS Remote Services</name>
-  <description>DSS Remote Services contrains common implementation used in REST and SOAP services.</description>
+  <description>DSS Remote Services contains common implementation used in REST and SOAP services.</description>
   
   <dependencies>
   	<dependency>
