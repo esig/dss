@@ -27,10 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.xml.bind.JAXBContext;
@@ -322,7 +320,6 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSPServiceInformationType serviceInfo = tslService.getServiceInformation();
 		service.setName(getEnglishOrFirst(serviceInfo.getServiceName()));
 		service.setType(serviceInfo.getServiceTypeIdentifier());
-		service.setCertificateUrls(extractCertificatesUrls(serviceInfo));
 		service.setCertificates(extractCertificates(serviceInfo.getServiceDigitalIdentity()));
 		service.setStatusAndInformationExtensions(getStatusHistory(tslService));
 		return service;
@@ -363,24 +360,6 @@ public class TSLParser implements Callable<TSLParserResult> {
 		}
 
 		return statusHistoryList;
-	}
-
-	private List<String> extractCertificatesUrls(TSPServiceInformationType serviceInfo) {
-		Set<String> certificateUrls = new HashSet<String>();
-		if ((serviceInfo.getSchemeServiceDefinitionURI() != null) && Utils.isCollectionNotEmpty(serviceInfo.getSchemeServiceDefinitionURI().getURI())) {
-			List<NonEmptyMultiLangURIType> uris = serviceInfo.getSchemeServiceDefinitionURI().getURI();
-			for (NonEmptyMultiLangURIType uri : uris) {
-				String value = uri.getValue();
-				if (isCertificateURI(value)) {
-					certificateUrls.add(value);
-				}
-			}
-		}
-		return new ArrayList<String>(certificateUrls);
-	}
-
-	private boolean isCertificateURI(String value) {
-		return Utils.endsWithIgnoreCase(value, ".crt");
 	}
 
 	@SuppressWarnings("rawtypes")
