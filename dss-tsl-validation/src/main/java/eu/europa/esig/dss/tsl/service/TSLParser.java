@@ -101,6 +101,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final Logger logger = LoggerFactory.getLogger(TSLParser.class);
 
+	private static final String ENGLISH_LANGUAGE = "en";
+
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
 
 	private static final JAXBContext jaxbContext;
@@ -473,7 +475,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 			return null;
 		}
 		for (PostalAddressType c : tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress()) {
-			if ("en".equalsIgnoreCase(c.getLang())) {
+			if (ENGLISH_LANGUAGE.equalsIgnoreCase(c.getLang())) {
 				a = c;
 				break;
 			}
@@ -517,7 +519,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 			return null;
 		}
 		for (MultiLangNormStringType s : names.getName()) {
-			if ("en".equalsIgnoreCase(s.getLang())) {
+			if (ENGLISH_LANGUAGE.equalsIgnoreCase(s.getLang())) {
 				return s.getValue();
 			}
 		}
@@ -527,7 +529,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	private List<String> getEnglishSchemeInformationURIs(TrustStatusListType tsl) {
 		List<String> result = new ArrayList<String>();
 		NonEmptyMultiLangURIListType schemeInformationURI = tsl.getSchemeInformation().getSchemeInformationURI();
-		if (schemeInformationURI != null && Utils.isCollectionNotEmpty(schemeInformationURI.getURI())) {
+		if (schemeInformationURI != null && CollectionUtils.isNotEmpty(schemeInformationURI.getURI())) {
 			for (NonEmptyMultiLangURIType uri : schemeInformationURI.getURI()) {
 				if (ENGLISH_LANGUAGE.equals(uri.getLang())) {
 					result.add(uri.getValue());
