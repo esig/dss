@@ -75,10 +75,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
-import org.w3c.dom.bootstrap.DOMImplementationRegistry;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSOutput;
-import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -352,28 +348,22 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Document Object Model (DOM) Level 3 Load and Save Specification See:
-	 * http://www.w3.org/TR/2004/REC-DOM-Level-3-LS-20040407/
+	 * This method is used to serialize a given node
 	 *
 	 * @param xmlNode
 	 *            The node to be serialized.
 	 * @return
 	 */
 	public static byte[] serializeNode(final Node xmlNode) {
-
 		try {
+			TransformerFactory secureTransformerFactory = DSSXMLUtils.getSecureTransformerFactory();
+			Transformer transformer = secureTransformerFactory.newTransformer();
 
-			final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
-			final DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
-			final LSSerializer writer = impl.createLSSerializer();
-
-			final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			final LSOutput output = impl.createLSOutput();
-			output.setByteStream(buffer);
-			writer.write(xmlNode, output);
-
-			final byte[] bytes = buffer.toByteArray();
-			return bytes;
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			StreamResult result = new StreamResult(bos);
+			Source source = new DOMSource(xmlNode);
+			transformer.transform(source, result);
+			return bos.toByteArray();
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
@@ -837,7 +827,7 @@ public final class DSSXMLUtils {
 			}
 			final Validator validator = schema.newValidator();
 			validator.validate(streamSource);
-			return StringUtils.EMPTY;
+			return "";
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();
