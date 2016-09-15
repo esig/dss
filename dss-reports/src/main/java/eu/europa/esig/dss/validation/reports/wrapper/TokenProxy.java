@@ -4,7 +4,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 
 public interface TokenProxy {
 
@@ -46,7 +46,7 @@ public interface TokenProxy {
 
 	String getId();
 
-	List<XmlChainCertificate> getCertificateChain();
+	List<XmlChainItem> getCertificateChain();
 
 	List<String> getCertificateChainIds();
 

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
@@ -40,8 +40,8 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 			return true;
 		}
 
-		List<XmlTrustedServiceProviderType> tspList = certificate.getCertificateTSPService();
-		for (XmlTrustedServiceProviderType trustedServiceProvider : tspList) {
+		List<XmlTrustedServiceProvider> tspList = certificate.getCertificateTSPService();
+		for (XmlTrustedServiceProvider trustedServiceProvider : tspList) {
 			serviceTypeStr = Utils.trim(trustedServiceProvider.getTSPServiceType());
 			Date statusStartDate = trustedServiceProvider.getStartDate();
 			if (processValueCheck(serviceTypeStr) && statusStartDate != null) {

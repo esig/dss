@@ -38,8 +38,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopeType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
@@ -367,9 +365,9 @@ public class SimpleReportBuilder {
 	}
 
 	private void addSignatureScope(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
-		XmlSignatureScopes signatureScopes = diagnosticSignature.getSignatureScopes();
-		if (signatureScopes != null && Utils.isCollectionNotEmpty(signatureScopes.getSignatureScope())) {
-			for (XmlSignatureScopeType scopeType : signatureScopes.getSignatureScope()) {
+		List<eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope> signatureScopes = diagnosticSignature.getSignatureScopes();
+		if (Utils.isCollectionNotEmpty(signatureScopes)) {
+			for (eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope scopeType : signatureScopes) {
 				XmlSignatureScope scope = new XmlSignatureScope();
 				scope.setName(scopeType.getName());
 				scope.setScope(scopeType.getScope());

@@ -5,34 +5,33 @@ import java.util.List;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractTokenProxy implements TokenProxy {
 
-	protected abstract XmlBasicSignatureType getCurrentBasicSignature();
+	protected abstract XmlBasicSignature getCurrentBasicSignature();
 
-	protected abstract XmlCertificateChainType getCurrentCertificateChain();
+	protected abstract List<XmlChainItem> getCurrentCertificateChain();
 
-	protected abstract XmlSigningCertificateType getCurrentSigningCertificate();
+	protected abstract XmlSigningCertificate getCurrentSigningCertificate();
 
 	@Override
-	public List<XmlChainCertificate> getCertificateChain() {
+	public List<XmlChainItem> getCertificateChain() {
 		if (getCurrentCertificateChain() != null) {
-			return getCurrentCertificateChain().getChainCertificate();
+			return getCurrentCertificateChain();
 		}
-		return new ArrayList<XmlChainCertificate>();
+		return new ArrayList<XmlChainItem>();
 	}
 
 	@Override
 	public List<String> getCertificateChainIds() {
 		List<String> result = new ArrayList<String>();
-		List<XmlChainCertificate> certificateChain = getCertificateChain();
+		List<XmlChainItem> certificateChain = getCertificateChain();
 		if (Utils.isCollectionNotEmpty(certificateChain)) {
-			for (XmlChainCertificate xmlChainCertificate : certificateChain) {
+			for (XmlChainItem xmlChainCertificate : certificateChain) {
 				result.add(xmlChainCertificate.getId());
 			}
 		}
@@ -41,31 +40,31 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public boolean isReferenceDataFound() {
-		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		return (basicSignature != null) && Utils.isTrue(basicSignature.isReferenceDataFound());
 	}
 
 	@Override
 	public boolean isReferenceDataIntact() {
-		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		return (basicSignature != null) && Utils.isTrue(basicSignature.isReferenceDataIntact());
 	}
 
 	@Override
 	public boolean isSignatureIntact() {
-		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		return (basicSignature != null) && Utils.isTrue(basicSignature.isSignatureIntact());
 	}
 
 	@Override
 	public boolean isSignatureValid() {
-		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		return (basicSignature != null) && Utils.isTrue(basicSignature.isSignatureValid());
 	}
 
 	@Override
 	public String getDigestAlgoUsedToSignThisToken() {
-		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		if (basicSignature != null) {
 			return basicSignature.getDigestAlgoUsedToSignThisToken();
 		}
@@ -80,7 +79,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public String getEncryptionAlgoUsedToSignThisToken() {
-		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		if (basicSignature != null) {
 			return basicSignature.getEncryptionAlgoUsedToSignThisToken();
 		}
@@ -95,7 +94,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public String getKeyLengthUsedToSignThisToken() {
-		XmlBasicSignatureType basicSignature = getCurrentBasicSignature();
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		if (basicSignature != null) {
 			return basicSignature.getKeyLengthUsedToSignThisToken();
 		}
@@ -104,31 +103,31 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public boolean isIssuerSerialMatch() {
-		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
+		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		return (currentSigningCertificate != null) && Utils.isTrue(currentSigningCertificate.isIssuerSerialMatch());
 	}
 
 	@Override
 	public boolean isAttributePresent() {
-		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
+		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		return (currentSigningCertificate != null) && Utils.isTrue(currentSigningCertificate.isAttributePresent());
 	}
 
 	@Override
 	public boolean isDigestValueMatch() {
-		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
+		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		return (currentSigningCertificate != null) && Utils.isTrue(currentSigningCertificate.isDigestValueMatch());
 	}
 
 	@Override
 	public boolean isDigestValuePresent() {
-		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
+		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		return (currentSigningCertificate != null) && Utils.isTrue(currentSigningCertificate.isDigestValuePresent());
 	}
 
 	@Override
 	public String getSigningCertificateId() {
-		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
+		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		if (currentSigningCertificate != null) {
 			return currentSigningCertificate.getId();
 		}
@@ -137,7 +136,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public String getSigningCertificateSigned() {
-		XmlSigningCertificateType currentSigningCertificate = getCurrentSigningCertificate();
+		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		if (currentSigningCertificate != null) {
 			return currentSigningCertificate.getSigned();
 		}
@@ -146,37 +145,35 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public String getLastChainCertificateId() {
-		XmlChainCertificate item = getLastChainCertificate();
+		XmlChainItem item = getLastChainCertificate();
 		return item == null ? Utils.EMPTY_STRING : item.getId();
 	}
 
 	@Override
 	public String getFirstChainCertificateId() {
-		XmlChainCertificate item = getFirstChainCertificate();
+		XmlChainItem item = getFirstChainCertificate();
 		return item == null ? Utils.EMPTY_STRING : item.getId();
 	}
 
 	@Override
 	public String getLastChainCertificateSource() {
-		XmlChainCertificate item = getLastChainCertificate();
+		XmlChainItem item = getLastChainCertificate();
 		return item == null ? Utils.EMPTY_STRING : item.getSource();
 	}
 
-	public XmlChainCertificate getLastChainCertificate() {
-		XmlCertificateChainType certificateChain = getCurrentCertificateChain();
-		if ((certificateChain != null) && Utils.isCollectionNotEmpty(certificateChain.getChainCertificate())) {
-			List<XmlChainCertificate> list = certificateChain.getChainCertificate();
-			XmlChainCertificate lastItem = list.get(list.size() - 1);
+	public XmlChainItem getLastChainCertificate() {
+		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
+		if (Utils.isCollectionNotEmpty(certificateChain)) {
+			XmlChainItem lastItem = certificateChain.get(certificateChain.size() - 1);
 			return lastItem;
 		}
 		return null;
 	}
 
-	public XmlChainCertificate getFirstChainCertificate() {
-		XmlCertificateChainType certificateChain = getCurrentCertificateChain();
-		if ((certificateChain != null) && Utils.isCollectionNotEmpty(certificateChain.getChainCertificate())) {
-			List<XmlChainCertificate> list = certificateChain.getChainCertificate();
-			return list.get(0);
+	public XmlChainItem getFirstChainCertificate() {
+		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
+		if (Utils.isCollectionNotEmpty(certificateChain)) {
+			return certificateChain.get(0);
 		}
 		return null;
 	}
