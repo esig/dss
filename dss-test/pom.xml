@@ -26,10 +26,24 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+ 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
+		
+		<!-- Choose your implementation -->
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-utils-apache-commons</artifactId>
+		</dependency>
+<!-- 	<dependency> -->
+<!-- 		<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 		<artifactId>dss-utils-google-guava</artifactId> -->
+<!-- 	</dependency> -->
+		
 	</dependencies>
 	
 </project>

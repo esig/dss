@@ -1,7 +1,6 @@
 package eu.europa.esig.dss;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,12 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SerializationTest {
-
-	private static Logger logger = LoggerFactory.getLogger(SerializationTest.class);
 
 	@Test
 	public void testSerializationSignatureLevel() throws Exception {
@@ -71,7 +66,7 @@ public class SerializationTest {
 	@Test
 	public void testSerializationToBeSigned() throws Exception {
 		ToBeSigned toBeSigned = new ToBeSigned();
-		toBeSigned.setBytes(new byte[]{1,2,3,4});
+		toBeSigned.setBytes(new byte[] { 1, 2, 3, 4 });
 		byte[] serialized = serialize(toBeSigned);
 		ToBeSigned unserialized = unserialize(serialized, ToBeSigned.class);
 		assertEquals(toBeSigned, unserialized);
@@ -81,7 +76,7 @@ public class SerializationTest {
 	public void testSerializationSignatureValue() throws Exception {
 		SignatureValue signatureValue = new SignatureValue();
 		signatureValue.setAlgorithm(SignatureAlgorithm.DSA_SHA256);
-		signatureValue.setValue(new byte[]{1,2,3,4});
+		signatureValue.setValue(new byte[] { 1, 2, 3, 4 });
 		byte[] serialized = serialize(signatureValue);
 		SignatureValue unserialized = unserialize(serialized, SignatureValue.class);
 		assertEquals(signatureValue, unserialized);
@@ -92,9 +87,7 @@ public class SerializationTest {
 		Policy signaturePolicy = new Policy();
 		signaturePolicy.setDescription("description");
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.MD5);
-		signaturePolicy.setDigestValue(new byte[] {
-				1, 2
-		});
+		signaturePolicy.setDigestValue(new byte[] { 1, 2 });
 		signaturePolicy.setId("id");
 		signaturePolicy.setSpuri("uri");
 
@@ -133,7 +126,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerialization2() {
+	public void testSerialization2() throws Exception {
 		MockSignatureParameters testObj = new MockSignatureParameters();
 		testObj.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
 		testObj.setSignaturePackaging(SignaturePackaging.DETACHED);
@@ -146,9 +139,7 @@ public class SerializationTest {
 		Policy signaturePolicy = new Policy();
 		signaturePolicy.setDescription("description");
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.MD5);
-		signaturePolicy.setDigestValue(new byte[] {
-				1, 2
-		});
+		signaturePolicy.setDigestValue(new byte[] { 1, 2 });
 		signaturePolicy.setId("id");
 		signaturePolicy.setSpuri("uri");
 		testObj.bLevel().setSignaturePolicy(signaturePolicy);
@@ -162,18 +153,10 @@ public class SerializationTest {
 		signerLocation.setStateOrProvince("state");
 		testObj.bLevel().setSignerLocation(signerLocation);
 
-		try {
-			byte[] serialized = serialize(testObj);
-			MockSignatureParameters unserialized = unserialize(serialized, MockSignatureParameters.class);
+		byte[] serialized = serialize(testObj);
+		MockSignatureParameters unserialized = unserialize(serialized, MockSignatureParameters.class);
 
-			logger.info("Obj 1 : "+testObj);
-			logger.info("Obj 2 : "+unserialized);
-
-			assertEquals(testObj, unserialized);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			fail(e.getMessage());
-		}
+		assertEquals(testObj, unserialized);
 	}
 
 	private static <T extends Serializable> byte[] serialize(T obj) throws Exception {

@@ -20,32 +20,36 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.*;
-import eu.europa.esig.dss.signature.AbstractTestSignature;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.signature.AbstractTestSignature;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.xades.DSSReference;
+import eu.europa.esig.dss.xades.DSSTransform;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class TrustedListSigningTest extends AbstractTestSignature {
 
@@ -71,59 +75,56 @@ public class TrustedListSigningTest extends AbstractTestSignature {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
 
-        final List<DSSReference> references = new ArrayList<DSSReference>();
+		final List<DSSReference> references = new ArrayList<DSSReference>();
 
-        DSSReference dssReference = new DSSReference();
-        dssReference.setId("xml_ref_id");
-        dssReference.setUri("");
-        dssReference.setContents(documentToSign);
-        dssReference.setDigestMethodAlgorithm(signatureParameters.getDigestAlgorithm());
+		DSSReference dssReference = new DSSReference();
+		dssReference.setId("xml_ref_id");
+		dssReference.setUri("");
+		dssReference.setContents(documentToSign);
+		dssReference.setDigestMethodAlgorithm(signatureParameters.getDigestAlgorithm());
 
-        final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 
-        DSSTransform dssTransform = new DSSTransform();
-        dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
-        transforms.add(dssTransform);
+		DSSTransform dssTransform = new DSSTransform();
+		dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
+		transforms.add(dssTransform);
 
-        dssTransform = new DSSTransform();
-        dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
-        transforms.add(dssTransform);
+		dssTransform = new DSSTransform();
+		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
+		transforms.add(dssTransform);
 
-        dssReference.setTransforms(transforms);
-        references.add(dssReference);
+		dssReference.setTransforms(transforms);
+		references.add(dssReference);
 
-        signatureParameters.setReferences(references);
+		signatureParameters.setReferences(references);
 
-    }
+	}
 
-    @Override
-    protected void onDocumentSigned(byte[] byteArray) {
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+			Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(byteArray));
 
-        System.out.println(new String(byteArray));
+			NodeList taglist = doc.getDocumentElement().getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Signature");
+			Assert.assertEquals(1, taglist.getLength());
 
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(byteArray));
+			NodeList refList = ((Element) taglist.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Reference");
+			Assert.assertEquals(2, refList.getLength());
 
-            NodeList taglist = doc.getDocumentElement().getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Signature");
-            Assert.assertEquals(1, taglist.getLength());
+			NodeList transormfList = ((Element) refList.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Transform");
+			Assert.assertEquals(2, transormfList.getLength());
 
-            NodeList refList = ((Element)taglist.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Reference");
-            Assert.assertEquals(2, refList.getLength());
+			Assert.assertEquals("http://www.w3.org/2000/09/xmldsig#enveloped-signature", ((Element) transormfList.item(0)).getAttribute("Algorithm"));
 
-            NodeList transormfList = ((Element)refList.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Transform");
-            Assert.assertEquals(2, transormfList.getLength());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
 
-            Assert.assertEquals("http://www.w3.org/2000/09/xmldsig#enveloped-signature", ((Element) transormfList.item(0)).getAttribute("Algorithm"));
-
-        } catch(Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Override
+	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}

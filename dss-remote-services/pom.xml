@@ -8,13 +8,9 @@
   
   <artifactId>dss-remote-services</artifactId>
   <name>DSS Remote Services</name>
-  <description>DSS Remote Services contrains common implementation used in REST and SOAP services.</description>
+  <description>DSS Remote Services contains common implementation used in REST and SOAP services.</description>
   
   <dependencies>
-  	<dependency>
-    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-model</artifactId>
-  	</dependency>
   	<dependency>
     	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
   		<artifactId>dss-xades</artifactId>

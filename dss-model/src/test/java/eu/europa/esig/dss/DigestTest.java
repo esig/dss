@@ -28,12 +28,8 @@ import java.security.MessageDigest;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DigestTest {
-
-	private static final Logger logger = LoggerFactory.getLogger(DigestTest.class);
 
 	@Test
 	public void testEquals() throws Exception {
@@ -42,9 +38,7 @@ public class DigestTest {
 		byte[] value = md.digest("Hello World !".getBytes());
 
 		Digest d1 = new Digest(DigestAlgorithm.SHA256, value);
-		logger.info("Digest 1 " + d1);
 		Digest d2 = new Digest(DigestAlgorithm.SHA256, value);
-		logger.info("Digest 2 " + d2);
 
 		Assert.assertTrue(d1.equals(d2));
 		Assert.assertTrue(d1.hashCode() == d2.hashCode());

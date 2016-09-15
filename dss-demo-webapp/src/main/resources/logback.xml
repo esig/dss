@@ -1,21 +1,15 @@
 <configuration>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>INFO</level>
-		</filter>
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      		<pattern>%d %5p | %t | %-55logger{55} | %m %n</pattern>
 		</encoder>
 	</appender>
 
+	<logger name="eu.europa.esig.dss" level="INFO" />
 	<logger name="org.apache.http" level="WARN"/>
-	<logger name="org.apache.xml" level="INFO"/>
-	<logger name="org.apache.pdfbox." level="INFO"/>
-	<logger name="org.apache.commons" level="INFO"/>
-	<logger name="org.apache.tiles" level="INFO"/>
-	<logger name="org.apache.cxf" level="INFO"/>
+	<logger name="org.apache.pdfbox" level="WARN"/>
+	<logger name="org.apache" level="INFO"/>
 	<logger name="org.springframework" level="INFO"/>
 
 	<root level="INFO">
