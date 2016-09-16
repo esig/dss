@@ -530,9 +530,7 @@ public final class DSSXMLUtils {
 	 * @throws SAXException
 	 */
 	public static Document buildDOM() {
-
 		ensureDocumentBuilder();
-
 		try {
 			return dbFactory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
@@ -551,9 +549,7 @@ public final class DSSXMLUtils {
 	 * @throws SAXException
 	 */
 	public static Document buildDOM(final String xmlString) throws DSSException {
-
-		final InputStream input = new ByteArrayInputStream(DSSUtils.getUtf8Bytes(xmlString));
-		return buildDOM(input);
+		return buildDOM(DSSUtils.getUtf8Bytes(xmlString));
 	}
 
 	/**
@@ -567,9 +563,19 @@ public final class DSSXMLUtils {
 	 * @throws SAXException
 	 */
 	public static Document buildDOM(final byte[] bytes) throws DSSException {
+		return buildDOM(new ByteArrayInputStream(bytes));
+	}
 
-		final InputStream input = new ByteArrayInputStream(bytes);
-		return buildDOM(input);
+	/**
+	 * This method returns the {@link org.w3c.dom.Document} created based on the {@link eu.europa.esig.dss.DSSDocument}.
+	 *
+	 * @param dssDocument
+	 *            The DSS representation of the document from which the dssDocument is created.
+	 * @return
+	 * @throws DSSException
+	 */
+	public static Document buildDOM(final DSSDocument dssDocument) throws DSSException {
+		return buildDOM(dssDocument.openStream());
 	}
 
 	/**
@@ -589,24 +595,6 @@ public final class DSSXMLUtils {
 			throw new DSSException(e);
 		} finally {
 			Utils.closeQuietly(inputStream);
-		}
-	}
-
-	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on the {@link eu.europa.esig.dss.DSSDocument}.
-	 *
-	 * @param dssDocument
-	 *            The DSS representation of the document from which the dssDocument is created.
-	 * @return
-	 * @throws DSSException
-	 */
-	public static Document buildDOM(final DSSDocument dssDocument) throws DSSException {
-		final InputStream input = dssDocument.openStream();
-		try {
-			final Document doc = buildDOM(input);
-			return doc;
-		} finally {
-			Utils.closeQuietly(input);
 		}
 	}
 
@@ -666,25 +654,6 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method canonicalizes the given {@code NodeList}.
-	 *
-	 * @param canonicalizationMethod
-	 *            canonicalization method
-	 * @param nodeList
-	 *            {@code NodeList} to canonicalize
-	 * @return array of canonicalized bytes
-	 */
-	public static byte[] canonicalizeXPathNodeSet(final String canonicalizationMethod, final Set<Node> nodeList) {
-		try {
-			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
-			final byte[] canonicalized = c14n.canonicalizeXPathNodeSet(nodeList);
-			return canonicalized;
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * This method creates and adds a new XML {@code Element} with text value
 	 *
 	 * @param document
@@ -700,7 +669,6 @@ public final class DSSXMLUtils {
 	 * @return added element
 	 */
 	public static Element addTextElement(final Document document, final Element parentDom, final String namespace, final String name, final String value) {
-
 		final Element dom = document.createElementNS(namespace, name);
 		parentDom.appendChild(dom);
 		final Text valueNode = document.createTextNode(value);
@@ -800,14 +768,12 @@ public final class DSSXMLUtils {
 	 * @return {@code Date} converted or null
 	 */
 	public static Date getDate(final String text) {
-
 		try {
-
 			final DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 			final XMLGregorianCalendar xmlGregorianCalendar = datatypeFactory.newXMLGregorianCalendar(text);
 			return xmlGregorianCalendar.toGregorianCalendar().getTime();
 		} catch (DatatypeConfigurationException e) {
-			// do nothing
+			LOG.warn("Unable to parse '{}'", text);
 		}
 		return null;
 	}
@@ -820,9 +786,7 @@ public final class DSSXMLUtils {
 	 * @return null if the XSD validates the XML, error message otherwise
 	 */
 	public static String validateAgainstXSD(final StreamSource streamSource) {
-
 		try {
-
 			if (schema == null) {
 				schema = getSchema();
 			}
@@ -836,7 +800,6 @@ public final class DSSXMLUtils {
 	}
 
 	private static Schema getSchema() throws SAXException {
-
 		final ResourceLoader resourceLoader = new ResourceLoader();
 		final InputStream xadesXsd = resourceLoader.getResource(XAD_ESV141_XSD);
 		final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
