@@ -33,7 +33,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.crypto.dsig.XMLSignature;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -839,8 +839,8 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		try {
 			final DOMSource xmlSource = new DOMSource(xml);
 			final StreamResult outputTarget = new StreamResult(outZip);
-			TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
-			transformerFactory.newTransformer().transform(xmlSource, outputTarget);
+			Transformer transformer = DSSXMLUtils.getSecureTransformer();
+			transformer.transform(xmlSource, outputTarget);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}

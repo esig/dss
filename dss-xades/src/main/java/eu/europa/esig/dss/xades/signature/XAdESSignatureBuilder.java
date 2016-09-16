@@ -763,7 +763,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
 
-		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
+		byte[] documentBytes = DSSXMLUtils.serializeNode(documentDom);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
 		inMemoryDocument.setMimeType(MimeType.XML);
 		return inMemoryDocument;

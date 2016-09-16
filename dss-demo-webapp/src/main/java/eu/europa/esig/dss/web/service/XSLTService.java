@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.DSSXmlErrorListener;
 
 @Component
 public class XSLTService {
@@ -47,6 +48,7 @@ public class XSLTService {
 		Writer writer = new StringWriter();
 		try {
 			Transformer transformer = templateSimpleReport.newTransformer();
+			transformer.setErrorListener(new DSSXmlErrorListener());
 			transformer.transform(new StreamSource(new StringReader(simpleReport)), new StreamResult(writer));
 		} catch (Exception e) {
 			logger.error("Error while generating simple report : " + e.getMessage(), e);
@@ -58,6 +60,7 @@ public class XSLTService {
 		Writer writer = new StringWriter();
 		try {
 			Transformer transformer = templateSimpleReport.newTransformer();
+			transformer.setErrorListener(new DSSXmlErrorListener());
 			transformer.transform(new DOMSource(dom), new StreamResult(writer));
 		} catch (Exception e) {
 			logger.error("Error while generating simple report : " + e.getMessage(), e);
@@ -69,6 +72,7 @@ public class XSLTService {
 		Writer writer = new StringWriter();
 		try {
 			Transformer transformer = templateDetailedReport.newTransformer();
+			transformer.setErrorListener(new DSSXmlErrorListener());
 			transformer.transform(new StreamSource(new StringReader(detailedReport)), new StreamResult(writer));
 		} catch (Exception e) {
 			logger.error("Error while generating detailed report : " + e.getMessage(), e);

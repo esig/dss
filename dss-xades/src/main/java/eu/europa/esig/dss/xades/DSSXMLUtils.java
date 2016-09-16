@@ -47,7 +47,6 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -271,7 +270,7 @@ public final class DSSXMLUtils {
 	 */
 	public static List<String> getChildrenNames(final Node xmlNode, final String xPathString) {
 
-		ArrayList<String> childrenNames = new ArrayList<String>();
+		List<String> childrenNames = new ArrayList<String>();
 
 		final Element element = DSSXMLUtils.getElement(xmlNode, xPathString);
 		if (element != null) {
@@ -355,8 +354,20 @@ public final class DSSXMLUtils {
 	 */
 	public static byte[] serializeNode(final Node xmlNode) {
 		try {
-			TransformerFactory secureTransformerFactory = DSSXMLUtils.getSecureTransformerFactory();
-			Transformer transformer = secureTransformerFactory.newTransformer();
+			Transformer transformer = getSecureTransformer();
+			Document document = null;
+			if (Node.DOCUMENT_NODE == xmlNode.getNodeType()) {
+				document = (Document) xmlNode;
+			} else {
+				document = xmlNode.getOwnerDocument();
+			}
+
+			if (document != null) {
+				String xmlEncoding = document.getXmlEncoding();
+				if (Utils.isStringNotBlank(xmlEncoding)) {
+					transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
+				}
+			}
 
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			StreamResult result = new StreamResult(bos);
@@ -494,7 +505,20 @@ public final class DSSXMLUtils {
 		} catch (TransformerConfigurationException e) {
 			throw new DSSException(e);
 		}
+		transformerFactory.setErrorListener(new DSSXmlErrorListener());
 		return transformerFactory;
+	}
+
+	public static Transformer getSecureTransformer() {
+		TransformerFactory transformerFactory = getSecureTransformerFactory();
+		Transformer transformer = null;
+		try {
+			transformer = transformerFactory.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new DSSException(e);
+		}
+		transformer.setErrorListener(new DSSXmlErrorListener());
+		return transformer;
 	}
 
 	/**
@@ -704,28 +728,6 @@ public final class DSSXMLUtils {
 		return dom;
 	}
 
-	public static byte[] transformDomToByteArray(final Document documentDom) {
-
-		try {
-
-			final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			final Transformer transformer = transformerFactory.newTransformer();
-			final String xmlEncoding = documentDom.getXmlEncoding();
-			if (Utils.isStringNotBlank(xmlEncoding)) {
-				transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
-			}
-			final DOMSource source = new DOMSource(documentDom);
-
-			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			final StreamResult streamResult = new StreamResult(byteArrayOutputStream);
-			transformer.transform(source, streamResult);
-			byte[] byteArray = byteArrayOutputStream.toByteArray();
-			return byteArray;
-		} catch (final TransformerException e) {
-			throw new DSSException(e);
-		}
-	}
-
 	/**
 	 * This method sets a text node to the given DOM element.
 	 *
@@ -853,8 +855,7 @@ public final class DSSXMLUtils {
 			final Source source = new DOMSource(node);
 			final StringWriter stringWriter = new StringWriter();
 			final Result result = new StreamResult(stringWriter);
-			final TransformerFactory factory = TransformerFactory.newInstance();
-			final Transformer transformer = factory.newTransformer();
+			final Transformer transformer = getSecureTransformer();
 			transformer.transform(source, result);
 			return stringWriter.getBuffer().toString();
 		} catch (Exception e) {

@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.DSSXmlErrorListener;
 
 @Component
 public class FOPService {
@@ -60,6 +61,7 @@ public class FOPService {
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, os);
 		Result res = new SAXResult(fop.getDefaultHandler());
 		Transformer transformer = templateSimpleReport.newTransformer();
+		transformer.setErrorListener(new DSSXmlErrorListener());
 		transformer.transform(new StreamSource(new StringReader(simpleReport)), res);
 	}
 
@@ -67,6 +69,7 @@ public class FOPService {
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, os);
 		Result res = new SAXResult(fop.getDefaultHandler());
 		Transformer transformer = templateSimpleReport.newTransformer();
+		transformer.setErrorListener(new DSSXmlErrorListener());
 		transformer.transform(new DOMSource(dom), res);
 	}
 
@@ -74,6 +77,7 @@ public class FOPService {
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, os);
 		Result res = new SAXResult(fop.getDefaultHandler());
 		Transformer transformer = templateDetailedReport.newTransformer();
+		transformer.setErrorListener(new DSSXmlErrorListener());
 		transformer.transform(new StreamSource(new StringReader(detailedReport)), res);
 	}
 
