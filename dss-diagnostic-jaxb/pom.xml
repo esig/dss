@@ -46,7 +46,6 @@
 									
 									<extension>true</extension>
 					                <args>
-					                    <arg>-no-header</arg>
 					                    <arg>-Xxew</arg>
 					                    <arg>-Xxew:instantiate lazy</arg>
 					                </args>

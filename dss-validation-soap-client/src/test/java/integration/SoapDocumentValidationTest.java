@@ -50,7 +50,7 @@ public class SoapDocumentValidationTest {
 		assertNotNull(result.getSimpleReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertEquals(2, result.getDiagnosticData().getSignature().get(0).getTimestamps().getTimestamp().size());
+		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getTimestamps().size());
 		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.TOTAL_PASSED));
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());

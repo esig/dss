@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>firmaok.zip.p7m</DocumentName>
-    <Signature Id="id-5f10afd0f54237a13101adc397e64fd1">
-        <DateTime>2016-06-10T16:50:58</DateTime>
-        <SignatureFormat>CAdES_BASELINE_B</SignatureFormat>
-        <BasicSignature>
-            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-            <ReferenceDataFound>true</ReferenceDataFound>
-            <ReferenceDataIntact>true</ReferenceDataIntact>
-            <SignatureIntact>true</SignatureIntact>
-            <SignatureValid>true</SignatureValid>
-        </BasicSignature>
-        <SigningCertificate Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
-            <AttributePresent>true</AttributePresent>
-            <DigestValuePresent>true</DigestValuePresent>
-            <DigestValueMatch>true</DigestValueMatch>
-            <IssuerSerialMatch>true</IssuerSerialMatch>
-        </SigningCertificate>
-        <CertificateChain>
-            <ChainCertificate Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
-                <Source>SIGNATURE</Source>
-            </ChainCertificate>
-            <ChainCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
-                <Source>TRUSTED_LIST</Source>
-            </ChainCertificate>
-        </CertificateChain>
-        <ContentType>1.2.840.113549.1.7.1</ContentType>
-        <SignatureScopes>
-            <SignatureScope name="Full document" scope="FullSignatureScope">Full document</SignatureScope>
-        </SignatureScopes>
-    </Signature>
+    <ValidationDate>2016-07-19T11:30:00</ValidationDate>
+    <Signatures>
+	    <Signature Id="id-5f10afd0f54237a13101adc397e64fd1">
+	        <DateTime>2016-06-10T16:50:58</DateTime>
+	        <SignatureFormat>CAdES_BASELINE_B</SignatureFormat>
+	        <BasicSignature>
+	            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	            <ReferenceDataFound>true</ReferenceDataFound>
+	            <ReferenceDataIntact>true</ReferenceDataIntact>
+	            <SignatureIntact>true</SignatureIntact>
+	            <SignatureValid>true</SignatureValid>
+	        </BasicSignature>
+	        <SigningCertificate Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
+	            <AttributePresent>true</AttributePresent>
+	            <DigestValuePresent>true</DigestValuePresent>
+	            <DigestValueMatch>true</DigestValueMatch>
+	            <IssuerSerialMatch>true</IssuerSerialMatch>
+	        </SigningCertificate>
+	        <CertificateChain>
+	            <ChainItem Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
+	                <Source>SIGNATURE</Source>
+	            </ChainItem>
+	            <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+	                <Source>TRUSTED_LIST</Source>
+	            </ChainItem>
+	        </CertificateChain>
+	        <ContentType>1.2.840.113549.1.7.1</ContentType>
+	        <SignatureScopes>
+	            <SignatureScope name="Full document" scope="FullSignatureScope">Full document</SignatureScope>
+	        </SignatureScopes>
+	    </Signature>
+    </Signatures>
     <UsedCertificates>
         <Certificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
             <SubjectDistinguishedName Format="CANONICAL">cn=banca d'italia,ou=servizi di certificazione,o=banca d'italia,c=it</SubjectDistinguishedName>
@@ -104,9 +107,9 @@
             </BasicSignature>
             <SigningCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
             <CertificateChain>
-                <ChainCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
                     <Source>TRUSTED_LIST</Source>
-                </ChainCertificate>
+                </ChainItem>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -163,9 +166,9 @@
             </BasicSignature>
             <SigningCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
             <CertificateChain>
-                <ChainCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
                     <Source>TRUSTED_LIST</Source>
-                </ChainCertificate>
+                </ChainItem>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -206,12 +209,12 @@
                 </BasicSignature>
                 <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
                 <CertificateChain>
-                    <ChainCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
                         <Source>OCSP_RESPONSE</Source>
-                    </ChainCertificate>
-                    <ChainCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                    </ChainItem>
+                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
                         <Source>TRUSTED_LIST</Source>
-                    </ChainCertificate>
+                    </ChainItem>
                 </CertificateChain>
             </Revocation>
             <Revocation Id="C088D84D6BD4740306551C0780A9323896071255EF5509334E70FE593FEF14AC">
@@ -234,12 +237,12 @@
                 </BasicSignature>
                 <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
                 <CertificateChain>
-                    <ChainCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
                         <Source>OCSP_RESPONSE</Source>
-                    </ChainCertificate>
-                    <ChainCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                    </ChainItem>
+                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
                         <Source>TRUSTED_LIST</Source>
-                    </ChainCertificate>
+                    </ChainItem>
                 </CertificateChain>
             </Revocation>
             <Revocation Id="5AA34C169A86F12918C17B226D96475B97B6F1B1E99EA04773CB5330563A9717">
@@ -262,12 +265,12 @@
                 </BasicSignature>
                 <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
                 <CertificateChain>
-                    <ChainCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
                         <Source>OCSP_RESPONSE</Source>
-                    </ChainCertificate>
-                    <ChainCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                    </ChainItem>
+                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
                         <Source>TRUSTED_LIST</Source>
-                    </ChainCertificate>
+                    </ChainItem>
                 </CertificateChain>
             </Revocation>
             <Info>

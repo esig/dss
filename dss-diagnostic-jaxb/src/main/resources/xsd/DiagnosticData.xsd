@@ -7,9 +7,21 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="DocumentName" type="xs:string" />
-				<xs:element name="validationDate" type="xs:dateTime" />
-				<xs:element name="Signatures" type="Signature" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="UsedCertificates" type="Certificate" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="ValidationDate" type="xs:dateTime" />
+				<xs:element name="Signatures" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Signature" type="Signature" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="UsedCertificates" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -47,8 +59,21 @@
 			<xs:element name="CertifiedRoles" type="CertifiedRole" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="Policy" type="Policy" minOccurs="0" />
 			
-			<xs:element name="Timestamps" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="SignatureScopes" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Timestamps" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="SignatureScopes" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
@@ -91,7 +116,7 @@
 			<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
 			<xs:element name="Surname" type="xs:string" minOccurs="0"/>
 			<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
-			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			<xs:element name="NotAfter" type="xs:dateTime" />
 			<xs:element name="NotBefore" type="xs:dateTime" />
 			<xs:element name="PublicKeySize" type="xs:int" />
@@ -100,7 +125,7 @@
 			<xs:element name="KeyUsageBits" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="KeyUsageBit" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="KeyUsage" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -219,7 +244,8 @@
 					</xs:simpleContent>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="unbounded" />
+			
+			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -316,7 +342,8 @@
 			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="ExpiredCertsOnCRL" type="xs:dateTime" minOccurs="0" /> <!-- CRL -->
 			<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
-			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="unbounded" />
+
+			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			
 			<xs:element name="BasicSignature" type="BasicSignature" />
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
@@ -325,6 +352,12 @@
 			<xs:element name="Info" type="InfoType" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="DigestAlgoAndValues">
+		<xs:sequence>
+			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 	
 </xs:schema>
