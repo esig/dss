@@ -8,18 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicyIds;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlKeyUsageBits;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlQCStatementIds;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
 
 public class CertificateWrapper extends AbstractTokenProxy {
@@ -36,17 +32,17 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	@Override
-	protected XmlBasicSignatureType getCurrentBasicSignature() {
+	protected XmlBasicSignature getCurrentBasicSignature() {
 		return certificate.getBasicSignature();
 	}
 
 	@Override
-	protected XmlCertificateChainType getCurrentCertificateChain() {
+	protected List<XmlChainItem> getCurrentCertificateChain() {
 		return certificate.getCertificateChain();
 	}
 
 	@Override
-	protected XmlSigningCertificateType getCurrentSigningCertificate() {
+	protected XmlSigningCertificate getCurrentSigningCertificate() {
 		return certificate.getSigningCertificate();
 	}
 
@@ -55,12 +51,11 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<String> getKeyUsages() {
-		List<String> keyUsages = new ArrayList<String>();
-		XmlKeyUsageBits keyUsageBits = certificate.getKeyUsageBits();
-		if ((keyUsageBits != null) && Utils.isCollectionNotEmpty(keyUsageBits.getKeyUsage())) {
-			keyUsages.addAll(keyUsageBits.getKeyUsage());
+		List<String> keyUsageBits = certificate.getKeyUsageBits();
+		if (Utils.isCollectionNotEmpty(keyUsageBits)) {
+			return keyUsageBits;
 		}
-		return keyUsages;
+		return new ArrayList<String>();
 	}
 
 	public boolean isRevocationDataAvailable() {
@@ -69,9 +64,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public Set<RevocationWrapper> getRevocationData() {
 		if (isRevocationDataAvailable()) {
-			List<XmlRevocationType> revocation = certificate.getRevocation();
+			List<XmlRevocation> revocation = certificate.getRevocation();
 			Set<RevocationWrapper> result = new HashSet<RevocationWrapper>();
-			for (XmlRevocationType xmlRevocationType : revocation) {
+			for (XmlRevocation xmlRevocationType : revocation) {
 				result.add(new RevocationWrapper(xmlRevocationType));
 			}
 			return result;
@@ -107,14 +102,12 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public List<String> getCertificateTSPServiceQualifiers() {
 		Set<String> result = new HashSet<String>();
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
 		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType xmlTrustedServiceProvider : trustedServiceProviders) {
-				XmlQualifiers qualifiers = xmlTrustedServiceProvider.getQualifiers();
-				if ((qualifiers != null) && Utils.isCollectionNotEmpty(qualifiers.getQualifier())) {
-					for (String qualifier : qualifiers.getQualifier()) {
-						result.add(qualifier);
-					}
+			for (XmlTrustedServiceProvider xmlTrustedServiceProvider : trustedServiceProviders) {
+				List<String> qualifiers = xmlTrustedServiceProvider.getQualifiers();
+				if (Utils.isCollectionNotEmpty(qualifiers)) {
+					result.addAll(qualifiers);
 				}
 			}
 		}
@@ -122,9 +115,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public String getCertificateTSPServiceName() {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
 		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
 				return trustedServiceProvider.getTSPServiceName(); // TODO correct ?? return first one
 			}
 		}
@@ -132,9 +125,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public String getCertificateTSPServiceType() {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
 		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
 				return trustedServiceProvider.getTSPServiceType(); // TODO correct ?? return first one
 			}
 		}
@@ -142,9 +135,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public Date getCertificateTSPServiceExpiredCertsRevocationInfo() {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
 		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
 				return trustedServiceProvider.getExpiredCertsRevocationInfo();
 			}
 		}
@@ -207,10 +200,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isCertificateRelatedTSLWellSigned() {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = certificate.getTrustedServiceProvider();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
 		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
 			boolean isWellSigned = true;
-			for (XmlTrustedServiceProviderType xmlTrustedServiceProviderType : trustedServiceProviders) {
+			for (XmlTrustedServiceProvider xmlTrustedServiceProviderType : trustedServiceProviders) {
 				isWellSigned &= xmlTrustedServiceProviderType.isWellSigned();
 			}
 			return isWellSigned;
@@ -223,11 +216,11 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		// return wellSigned;
 	}
 
-	public List<XmlDigestAlgAndValueType> getDigestAlgAndValue() {
-		return certificate.getDigestAlgAndValue();
+	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
+		return certificate.getDigestAlgoAndValues();
 	}
 
-	public List<XmlTrustedServiceProviderType> getCertificateTSPService() {
+	public List<XmlTrustedServiceProvider> getCertificateTSPService() {
 		return certificate.getTrustedServiceProvider();
 	}
 
@@ -251,18 +244,18 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<String> getPolicyIds() {
-		XmlCertificatePolicyIds certificatePolicyIds = certificate.getCertificatePolicyIds();
-		if (certificatePolicyIds != null) {
-			return certificatePolicyIds.getOid();
+		List<String> certificatePolicyIds = certificate.getCertificatePolicyIds();
+		if (Utils.isCollectionNotEmpty(certificatePolicyIds)) {
+			return certificatePolicyIds;
 		} else {
 			return Collections.emptyList();
 		}
 	}
 
 	public List<String> getQCStatementIds() {
-		XmlQCStatementIds certificateQCStatementIds = certificate.getQCStatementIds();
-		if (certificateQCStatementIds != null) {
-			return certificateQCStatementIds.getOid();
+		List<String> certificateQCStatementIds = certificate.getQCStatementIds();
+		if (Utils.isCollectionNotEmpty(certificateQCStatementIds)) {
+			return certificateQCStatementIds;
 		} else {
 			return Collections.emptyList();
 		}

@@ -5,8 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -32,9 +30,7 @@ public class DSS922Test {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date currentTime = sdf.parse("25/08/2016 08:05:00");
-		executor.setCurrentTime(currentTime);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();

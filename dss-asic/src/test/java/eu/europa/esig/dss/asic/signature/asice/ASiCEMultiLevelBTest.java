@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.asic.signature.asice;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 
@@ -34,7 +34,7 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCService;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -79,9 +79,8 @@ public class ASiCEMultiLevelBTest extends AbstractTestSignature {
 	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		XmlSignatureScopes signatureScopes = signature.getSignatureScopes();
-		assertNotNull(signatureScopes);
-		assertEquals(2, Utils.collectionSize(signatureScopes.getSignatureScope()));
+		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		assertEquals(2, Utils.collectionSize(signatureScopes));
 	}
 
 	@Override

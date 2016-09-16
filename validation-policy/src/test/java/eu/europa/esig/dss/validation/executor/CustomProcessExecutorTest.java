@@ -40,9 +40,7 @@ public class CustomProcessExecutorTest {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicyNoRevoc());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date currentTime = sdf.parse("19/07/2016 11:30:00");
-		executor.setCurrentTime(currentTime);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
@@ -58,9 +56,7 @@ public class CustomProcessExecutorTest {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date currentTime = sdf.parse("04/05/2016 15:05:00");
-		executor.setCurrentTime(currentTime);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);
@@ -91,9 +87,7 @@ public class CustomProcessExecutorTest {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date currentTime = sdf.parse("04/05/2016 15:10:00");
-		executor.setCurrentTime(currentTime);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);
@@ -124,9 +118,7 @@ public class CustomProcessExecutorTest {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date currentTime = sdf.parse("04/05/2016 15:15:00");
-		executor.setCurrentTime(currentTime);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);
@@ -157,9 +149,7 @@ public class CustomProcessExecutorTest {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date currentTime = sdf.parse("04/05/2016 15:15:00");
-		executor.setCurrentTime(currentTime);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);
@@ -192,9 +182,7 @@ public class CustomProcessExecutorTest {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date currentTime = sdf.parse("04/05/2016 15:50:00");
-		executor.setCurrentTime(currentTime);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);
@@ -225,9 +213,7 @@ public class CustomProcessExecutorTest {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date currentTime = sdf.parse("04/05/2016 15:55:00");
-		executor.setCurrentTime(currentTime);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);

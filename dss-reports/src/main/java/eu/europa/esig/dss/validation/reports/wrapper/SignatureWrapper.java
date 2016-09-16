@@ -7,18 +7,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRolesType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlClaimedRoles;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCommitmentTypeIndication;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScopes;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamps;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -36,17 +33,17 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	@Override
-	protected XmlBasicSignatureType getCurrentBasicSignature() {
+	protected XmlBasicSignature getCurrentBasicSignature() {
 		return signature.getBasicSignature();
 	}
 
 	@Override
-	protected XmlCertificateChainType getCurrentCertificateChain() {
+	protected List<XmlChainItem> getCurrentCertificateChain() {
 		return signature.getCertificateChain();
 	}
 
 	@Override
-	protected XmlSigningCertificateType getCurrentSigningCertificate() {
+	protected XmlSigningCertificate getCurrentSigningCertificate() {
 		return signature.getSigningCertificate();
 	}
 
@@ -55,7 +52,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public String getStructuralValidationMessage() {
-		XmlStructuralValidationType structuralValidation = signature.getStructuralValidation();
+		XmlStructuralValidation structuralValidation = signature.getStructuralValidation();
 		if (structuralValidation != null) {
 			return structuralValidation.getMessage();
 		}
@@ -84,9 +81,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public List<TimestampWrapper> getTimestampList() {
 		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
-		XmlTimestamps timestamps = signature.getTimestamps();
-		if ((timestamps != null) && Utils.isCollectionNotEmpty(timestamps.getTimestamp())) {
-			for (XmlTimestampType timestamp : timestamps.getTimestamp()) {
+		List<XmlTimestamp> timestamps = signature.getTimestamps();
+		if (Utils.isCollectionNotEmpty(timestamps)) {
+			for (XmlTimestamp timestamp : timestamps) {
 				tsps.add(new TimestampWrapper(timestamp));
 			}
 		}
@@ -146,7 +143,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isSigningCertificateIdentified() {
-		XmlSigningCertificateType signingCertificate = signature.getSigningCertificate();
+		XmlSigningCertificate signingCertificate = signature.getSigningCertificate();
 		if (signingCertificate != null) {
 			return signingCertificate.isDigestValueMatch() && signingCertificate.isIssuerSerialMatch();
 		}
@@ -237,15 +234,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getParentId();
 	}
 
-	public XmlSignatureScopes getSignatureScopes() {
+	public List<XmlSignatureScope> getSignatureScopes() {
 		return signature.getSignatureScopes();
 	}
 
 	public List<String> getCertifiedRoles() {
 		List<String> result = new ArrayList<String>();
-		List<XmlCertifiedRolesType> certifiedRoles = signature.getCertifiedRoles();
+		List<XmlCertifiedRole> certifiedRoles = signature.getCertifiedRoles();
 		if (Utils.isCollectionNotEmpty(certifiedRoles)) {
-			for (XmlCertifiedRolesType certifiedRole : certifiedRoles) {
+			for (XmlCertifiedRole certifiedRole : certifiedRoles) {
 				result.add(certifiedRole.getCertifiedRole());
 			}
 		}
@@ -253,17 +250,17 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public List<String> getCommitmentTypeIdentifiers() {
-		XmlCommitmentTypeIndication commitmentTypeIndication = signature.getCommitmentTypeIndication();
-		if ((commitmentTypeIndication != null) && Utils.isCollectionNotEmpty(commitmentTypeIndication.getIdentifier())) {
-			return commitmentTypeIndication.getIdentifier();
+		List<String> commitmentTypeIndications = signature.getCommitmentTypeIndication();
+		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
+			return commitmentTypeIndications;
 		}
 		return Collections.emptyList();
 	}
 
 	public List<String> getClaimedRoles() {
-		XmlClaimedRoles claimedRoles = signature.getClaimedRoles();
-		if ((claimedRoles != null) && Utils.isCollectionNotEmpty(claimedRoles.getClaimedRole())) {
-			return claimedRoles.getClaimedRole();
+		List<String> claimedRoles = signature.getClaimedRoles();
+		if (Utils.isCollectionNotEmpty(claimedRoles)) {
+			return claimedRoles;
 		}
 		return Collections.emptyList();
 	}

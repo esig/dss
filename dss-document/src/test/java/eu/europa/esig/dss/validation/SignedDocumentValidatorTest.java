@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlQualifiers;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
@@ -92,15 +90,15 @@ public class SignedDocumentValidatorTest {
 		methodDealTrustedService.setAccessible(true);
 		methodDealTrustedService.invoke(sdv, certificate, cert);
 
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = cert.getTrustedServiceProvider();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = cert.getTrustedServiceProvider();
 		assertTrue(Utils.isCollectionNotEmpty(trustedServiceProviders));
 
 		boolean foundTOTO = false;
 		boolean foundTATA = false;
-		for (XmlTrustedServiceProviderType xmlTrustedServiceProviderType : trustedServiceProviders) {
-			XmlQualifiers qualifiers = xmlTrustedServiceProviderType.getQualifiers();
+		for (XmlTrustedServiceProvider xmlTrustedServiceProviderType : trustedServiceProviders) {
+			List<String> qualifiers = xmlTrustedServiceProviderType.getQualifiers();
 			assertNotNull(qualifiers);
-			for (String qualifier : qualifiers.getQualifier()) {
+			for (String qualifier : qualifiers) {
 				if (TOTO.equals(qualifier)) {
 					foundTOTO = true;
 				} else if (TATA.equals(qualifier)) {
@@ -112,9 +110,7 @@ public class SignedDocumentValidatorTest {
 		assertFalse(foundTATA);
 
 		DiagnosticData dd = new DiagnosticData();
-		XmlUsedCertificates value = new XmlUsedCertificates();
-		value.getCertificate().add(cert);
-		dd.setUsedCertificates(value);
+		dd.getUsedCertificates().add(cert);
 
 		logger.info(getJAXBObjectAsString(dd, eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData.class.getPackage().getName()));
 	}

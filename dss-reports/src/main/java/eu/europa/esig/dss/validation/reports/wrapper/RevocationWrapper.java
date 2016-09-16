@@ -3,18 +3,18 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignatureType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateChainType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgAndValueType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificateType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
 
 public class RevocationWrapper extends AbstractTokenProxy {
 
-	private final XmlRevocationType revocation;
+	private final XmlRevocation revocation;
 
-	public RevocationWrapper(XmlRevocationType revocation) {
+	public RevocationWrapper(XmlRevocation revocation) {
 		this.revocation = revocation;
 	}
 
@@ -24,17 +24,17 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	}
 
 	@Override
-	protected XmlBasicSignatureType getCurrentBasicSignature() {
+	protected XmlBasicSignature getCurrentBasicSignature() {
 		return revocation.getBasicSignature();
 	}
 
 	@Override
-	protected XmlCertificateChainType getCurrentCertificateChain() {
+	protected List<XmlChainItem> getCurrentCertificateChain() {
 		return revocation.getCertificateChain();
 	}
 
 	@Override
-	protected XmlSigningCertificateType getCurrentSigningCertificate() {
+	protected XmlSigningCertificate getCurrentSigningCertificate() {
 		return revocation.getSigningCertificate();
 	}
 
@@ -82,8 +82,8 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getOrigin();
 	}
 
-	public List<XmlDigestAlgAndValueType> getDigestAlgAndValue() {
-		return revocation.getDigestAlgAndValue();
+	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
+		return revocation.getDigestAlgoAndValues();
 	}
 
 }

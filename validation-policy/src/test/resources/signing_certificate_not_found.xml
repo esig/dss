@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-IT_STAMP-1.pdf</DocumentName>
-    <Signature Id="id-0a3d7678f962b64e24af1ea3410ee1a25e87cc4f861179aabd393cf288c70419">
-        <DateTime>2016-04-25T08:09:51</DateTime>
-        <SignatureFormat>PDF_NOT_ETSI</SignatureFormat>
-        <BasicSignature>
-            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-            <ReferenceDataFound>true</ReferenceDataFound>
-            <ReferenceDataIntact>true</ReferenceDataIntact>
-            <SignatureIntact>true</SignatureIntact>
-            <SignatureValid>true</SignatureValid>
-        </BasicSignature>
-        <SigningCertificate Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
-            <AttributePresent>false</AttributePresent>
-            <DigestValuePresent>false</DigestValuePresent>
-            <DigestValueMatch>false</DigestValueMatch>
-            <IssuerSerialMatch>false</IssuerSerialMatch>
-        </SigningCertificate>
-        <CertificateChain>
-            <ChainCertificate Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
-                <Source>SIGNATURE</Source>
-            </ChainCertificate>
-            <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-                <Source>TRUSTED_LIST</Source>
-            </ChainCertificate>
-        </CertificateChain>
-        <ContentType>application/pdf</ContentType>
-        <SignatureScopes>
-            <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
-        </SignatureScopes>
-    </Signature>
+    <ValidationDate>2016-05-04T15:55:00</ValidationDate>
+    <Signatures>
+	    <Signature Id="id-0a3d7678f962b64e24af1ea3410ee1a25e87cc4f861179aabd393cf288c70419">
+	        <DateTime>2016-04-25T08:09:51</DateTime>
+	        <SignatureFormat>PDF_NOT_ETSI</SignatureFormat>
+	        <BasicSignature>
+	            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	            <ReferenceDataFound>true</ReferenceDataFound>
+	            <ReferenceDataIntact>true</ReferenceDataIntact>
+	            <SignatureIntact>true</SignatureIntact>
+	            <SignatureValid>true</SignatureValid>
+	        </BasicSignature>
+	        <SigningCertificate Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
+	            <AttributePresent>false</AttributePresent>
+	            <DigestValuePresent>false</DigestValuePresent>
+	            <DigestValueMatch>false</DigestValueMatch>
+	            <IssuerSerialMatch>false</IssuerSerialMatch>
+	        </SigningCertificate>
+	        <CertificateChain>
+	            <ChainItem Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
+	                <Source>SIGNATURE</Source>
+	            </ChainItem>
+	            <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+	                <Source>TRUSTED_LIST</Source>
+	            </ChainItem>
+	        </CertificateChain>
+	        <ContentType>application/pdf</ContentType>
+	        <SignatureScopes>
+	            <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+	        </SignatureScopes>
+	    </Signature>
+    </Signatures>
     <UsedCertificates>
         <Certificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
             <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit ocsp validation,street=2 p. volov str.</SubjectDistinguishedName>
@@ -42,10 +45,12 @@
             <CommonName>StampIT OCSP Validation</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
-            <DigestAlgAndValue>
-                <DigestMethod>SHA1</DigestMethod>
-                <DigestValue>4F7bCO3UoPsM68QP52konFLaxi4=</DigestValue>
-            </DigestAlgAndValue>
+            <DigestAlgoAndValues>
+	            <DigestAlgoAndValue>
+	                <DigestMethod>SHA1</DigestMethod>
+	                <DigestValue>4F7bCO3UoPsM68QP52konFLaxi4=</DigestValue>
+	            </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
             <NotAfter>2020-11-10T16:49:08</NotAfter>
             <NotBefore>2011-02-17T10:41:07</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -66,9 +71,9 @@
             </BasicSignature>
             <SigningCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             <CertificateChain>
-                <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
                     <Source>TRUSTED_LIST</Source>
-                </ChainCertificate>
+                </ChainItem>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -91,10 +96,12 @@
                 <Status>true</Status>
                 <ProductionDate>2016-05-04T16:20:02</ProductionDate>
                 <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
-                <DigestAlgAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>sfiKRUyRBkwxh0BNXiC6681QVus=</DigestValue>
-                </DigestAlgAndValue>
+                <DigestAlgoAndValues>
+	                <DigestAlgoAndValue>
+	                    <DigestMethod>SHA1</DigestMethod>
+	                    <DigestValue>sfiKRUyRBkwxh0BNXiC6681QVus=</DigestValue>
+	                </DigestAlgoAndValue>
+                </DigestAlgoAndValues>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -106,12 +113,12 @@
                 </BasicSignature>
                 <SigningCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
                 <CertificateChain>
-                    <ChainCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
+                    <ChainItem Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
                         <Source>OCSP_RESPONSE</Source>
-                    </ChainCertificate>
-                    <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                    </ChainItem>
+                    <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
                         <Source>TRUSTED_LIST</Source>
-                    </ChainCertificate>
+                    </ChainItem>
                 </CertificateChain>
             </Revocation>
             <Info>
@@ -127,10 +134,12 @@
             <CommonName>StampIT Qualified CA</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
-            <DigestAlgAndValue>
-                <DigestMethod>SHA1</DigestMethod>
-                <DigestValue>WWHsRoGqE5OpLRI6fW4j7D4API4=</DigestValue>
-            </DigestAlgAndValue>
+            <DigestAlgoAndValues>
+	            <DigestAlgoAndValue>
+	                <DigestMethod>SHA1</DigestMethod>
+	                <DigestValue>WWHsRoGqE5OpLRI6fW4j7D4API4=</DigestValue>
+	            </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
             <NotAfter>2020-11-10T16:49:08</NotAfter>
             <NotBefore>2010-11-11T16:49:08</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -171,10 +180,12 @@
             <CommonName>E T K</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
-            <DigestAlgAndValue>
-                <DigestMethod>SHA1</DigestMethod>
-                <DigestValue>Hccszp4wQjYaiWt16FH/DFAXLMQ=</DigestValue>
-            </DigestAlgAndValue>
+            <DigestAlgoAndValues>
+	            <DigestAlgoAndValue>
+	                <DigestMethod>SHA1</DigestMethod>
+	                <DigestValue>Hccszp4wQjYaiWt16FH/DFAXLMQ=</DigestValue>
+	            </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
             <NotAfter>2016-12-18T12:47:38</NotAfter>
             <NotBefore>2015-12-19T12:47:38</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -196,9 +207,9 @@
             </BasicSignature>
             <SigningCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             <CertificateChain>
-                <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
                     <Source>TRUSTED_LIST</Source>
-                </ChainCertificate>
+                </ChainItem>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -226,10 +237,12 @@
                 <Status>true</Status>
                 <ProductionDate>2016-05-04T16:20:02</ProductionDate>
                 <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
-                <DigestAlgAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>X5xkac/hEkeb3Yne7gkc4Pl/G5Q=</DigestValue>
-                </DigestAlgAndValue>
+                <DigestAlgoAndValues>
+	                <DigestAlgoAndValue>
+	                    <DigestMethod>SHA1</DigestMethod>
+	                    <DigestValue>X5xkac/hEkeb3Yne7gkc4Pl/G5Q=</DigestValue>
+	                </DigestAlgoAndValue>
+                </DigestAlgoAndValues>
                 <BasicSignature>
                     <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                     <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -241,12 +254,12 @@
                 </BasicSignature>
                 <SigningCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
                 <CertificateChain>
-                    <ChainCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
+                    <ChainItem Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
                         <Source>OCSP_RESPONSE</Source>
-                    </ChainCertificate>
-                    <ChainCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+                    </ChainItem>
+                    <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
                         <Source>TRUSTED_LIST</Source>
-                    </ChainCertificate>
+                    </ChainItem>
                 </CertificateChain>
             </Revocation>
             <Info>

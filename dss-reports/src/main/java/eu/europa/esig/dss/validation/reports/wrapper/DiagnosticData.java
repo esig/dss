@@ -30,9 +30,8 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProviderType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlUsedCertificates;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -62,7 +61,7 @@ public class DiagnosticData {
 	 */
 	public List<String> getSignatureIdList() {
 		List<String> signatureIds = new ArrayList<String>();
-		List<XmlSignature> signatures = diagnosticData.getSignature();
+		List<XmlSignature> signatures = diagnosticData.getSignatures();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				signatureIds.add(xmlSignature.getId());
@@ -407,9 +406,9 @@ public class DiagnosticData {
 	}
 
 	public String getCertificateTSPServiceType(XmlCertificate xmlCertificate) {
-		List<XmlTrustedServiceProviderType> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
 		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProviderType trustedServiceProvider : trustedServiceProviders) {
+			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
 				return trustedServiceProvider.getTSPServiceType(); // TODO correct ?? return first one
 			}
 		}
@@ -520,7 +519,7 @@ public class DiagnosticData {
 				}
 			}
 		}
-		return new TimestampWrapper(new XmlTimestampType());
+		return new TimestampWrapper(new XmlTimestamp());
 	}
 
 	public CertificateWrapper getUsedCertificateByIdNullSafe(String id) {
@@ -550,7 +549,7 @@ public class DiagnosticData {
 	public List<SignatureWrapper> getSignatures() {
 		if (foundSignatures == null) {
 			foundSignatures = new ArrayList<SignatureWrapper>();
-			List<XmlSignature> xmlSignatures = diagnosticData.getSignature();
+			List<XmlSignature> xmlSignatures = diagnosticData.getSignatures();
 			if (Utils.isCollectionNotEmpty(xmlSignatures)) {
 				for (XmlSignature xmlSignature : xmlSignatures) {
 					foundSignatures.add(new SignatureWrapper(xmlSignature));
@@ -563,9 +562,9 @@ public class DiagnosticData {
 	public List<CertificateWrapper> getUsedCertificates() {
 		if (usedCertificates == null) {
 			usedCertificates = new ArrayList<CertificateWrapper>();
-			XmlUsedCertificates xmlCertificates = diagnosticData.getUsedCertificates();
-			if ((xmlCertificates != null) && Utils.isCollectionNotEmpty(xmlCertificates.getCertificate())) {
-				for (XmlCertificate certificate : xmlCertificates.getCertificate()) {
+			List<XmlCertificate> xmlCertificates = diagnosticData.getUsedCertificates();
+			if (Utils.isCollectionNotEmpty(xmlCertificates)) {
+				for (XmlCertificate certificate : xmlCertificates) {
 					usedCertificates.add(new CertificateWrapper(certificate));
 				}
 			}

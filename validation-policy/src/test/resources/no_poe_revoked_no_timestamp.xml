@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-X-IT_ETSI-3.xml</DocumentName>
-    <Signature Id="xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2">
-        <DateTime>2014-10-14T14:49:13</DateTime>
-        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
-        <BasicSignature>
-            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-            <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
-            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-            <ReferenceDataFound>true</ReferenceDataFound>
-            <ReferenceDataIntact>true</ReferenceDataIntact>
-            <SignatureIntact>true</SignatureIntact>
-            <SignatureValid>true</SignatureValid>
-        </BasicSignature>
-        <SigningCertificate Id="725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
-            <AttributePresent>true</AttributePresent>
-            <DigestValuePresent>true</DigestValuePresent>
-            <DigestValueMatch>true</DigestValueMatch>
-            <IssuerSerialMatch>true</IssuerSerialMatch>
-        </SigningCertificate>
-        <CertificateChain>
-            <ChainCertificate Id="725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
-                <Source>SIGNATURE</Source>
-            </ChainCertificate>
-            <ChainCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-                <Source>TRUSTED_LIST</Source>
-            </ChainCertificate>
-        </CertificateChain>
-        <ContentType>text/xml</ContentType>
-        <SignatureScopes>
-            <SignatureScope name="xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0" scope="XmlElementSignatureScope">The XML element with ID 'xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0'</SignatureScope>
-        </SignatureScopes>
-    </Signature>
+    <ValidationDate>2016-05-04T15:10:00</ValidationDate>
+    <Signatures>
+	    <Signature Id="xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2">
+	        <DateTime>2014-10-14T14:49:13</DateTime>
+	        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
+	        <BasicSignature>
+	            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	            <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+	            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	            <ReferenceDataFound>true</ReferenceDataFound>
+	            <ReferenceDataIntact>true</ReferenceDataIntact>
+	            <SignatureIntact>true</SignatureIntact>
+	            <SignatureValid>true</SignatureValid>
+	        </BasicSignature>
+	        <SigningCertificate Id="725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
+	            <AttributePresent>true</AttributePresent>
+	            <DigestValuePresent>true</DigestValuePresent>
+	            <DigestValueMatch>true</DigestValueMatch>
+	            <IssuerSerialMatch>true</IssuerSerialMatch>
+	        </SigningCertificate>
+	        <CertificateChain>
+	            <ChainItem Id="725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
+	                <Source>SIGNATURE</Source>
+	            </ChainItem>
+	            <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+	                <Source>TRUSTED_LIST</Source>
+	            </ChainItem>
+	        </CertificateChain>
+	        <ContentType>text/xml</ContentType>
+	        <SignatureScopes>
+	            <SignatureScope name="xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0" scope="XmlElementSignatureScope">The XML element with ID 'xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0'</SignatureScope>
+	        </SignatureScopes>
+	    </Signature>
+    </Signatures>
     <UsedCertificates>
         <Certificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
             <SubjectDistinguishedName Format="CANONICAL">cn=infocert firma qualificata 2,2.5.4.5=#130b3037393435323131303036,ou=certificatore accreditato,o=infocert spa,c=it</SubjectDistinguishedName>
@@ -103,9 +106,9 @@
             </BasicSignature>
             <SigningCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             <CertificateChain>
-                <ChainCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+                <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
                     <Source>TRUSTED_LIST</Source>
-                </ChainCertificate>
+                </ChainItem>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -148,12 +151,12 @@
                 </BasicSignature>
                 <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
                 <CertificateChain>
-                    <ChainCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+                    <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
                         <Source>OCSP_RESPONSE</Source>
-                    </ChainCertificate>
-                    <ChainCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+                    </ChainItem>
+                    <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
                         <Source>TRUSTED_LIST</Source>
-                    </ChainCertificate>
+                    </ChainItem>
                 </CertificateChain>
             </Revocation>
             <Revocation Id="55F56C98A1A43A431C6DD59F46D921DDE91F9FFE23FB1E4CC53A372CD38B4495">
@@ -178,12 +181,12 @@
                 </BasicSignature>
                 <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
                 <CertificateChain>
-                    <ChainCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+                    <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
                         <Source>OCSP_RESPONSE</Source>
-                    </ChainCertificate>
-                    <ChainCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+                    </ChainItem>
+                    <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
                         <Source>TRUSTED_LIST</Source>
-                    </ChainCertificate>
+                    </ChainItem>
                 </CertificateChain>
             </Revocation>
             <Info>
@@ -221,9 +224,9 @@
             </BasicSignature>
             <SigningCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             <CertificateChain>
-                <ChainCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+                <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
                     <Source>TRUSTED_LIST</Source>
-                </ChainCertificate>
+                </ChainItem>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
