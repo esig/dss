@@ -26,7 +26,7 @@ public class SelectCertificateTask implements Callable<DSSPrivateKeyEntry> {
 		Map<String, DSSPrivateKeyEntry> map = new HashMap<String, DSSPrivateKeyEntry>();
 		for (DSSPrivateKeyEntry dssPrivateKeyEntry : keys) {
 			CertificateToken certificate = dssPrivateKeyEntry.getCertificate();
-			String text = DSSASN1Utils.getSubjectCommonName(certificate) + " (" + certificate.getSerialNumber() + ")";
+			String text = DSSASN1Utils.getHumanReadableName(certificate) + " (" + certificate.getSerialNumber() + ")";
 			map.put(text, dssPrivateKeyEntry);
 		}
 		Set<String> keySet = map.keySet();

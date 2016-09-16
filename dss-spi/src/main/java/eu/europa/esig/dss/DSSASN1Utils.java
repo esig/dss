@@ -614,6 +614,20 @@ public final class DSSASN1Utils {
 		return extractAttributeFromX500Principal(BCStyle.CN, cert.getSubjectX500Principal());
 	}
 
+	public static String getHumanReadableName(CertificateToken cert) {
+		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME, BCStyle.PSEUDONYM);
+	}
+
+	private static String firstNotNull(CertificateToken cert, ASN1ObjectIdentifier... oids) {
+		for (ASN1ObjectIdentifier oid : oids) {
+			String value = extractAttributeFromX500Principal(oid, cert.getSubjectX500Principal());
+			if (value != null) {
+				return value;
+			}
+		}
+		return null;
+	}
+
 	public static Date getExpiredCertsOnCRL(X509CRL x509crl) {
 		Set<String> nonCriticalExtensionOIDs = x509crl.getNonCriticalExtensionOIDs();
 		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(OID.id_ce_expiredCertsOnCRL.getId())) {

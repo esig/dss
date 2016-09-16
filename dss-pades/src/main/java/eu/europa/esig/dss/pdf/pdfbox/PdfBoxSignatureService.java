@@ -225,7 +225,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		if (token == null) {
 			signature.setName("Unknown signer" + encodedDate);
 		} else {
-			String shortName = DSSASN1Utils.getSubjectCommonName(parameters.getSigningCertificate()) + encodedDate;
+			String shortName = DSSASN1Utils.getHumanReadableName(parameters.getSigningCertificate()) + encodedDate;
 			signature.setName(shortName);
 		}
 
