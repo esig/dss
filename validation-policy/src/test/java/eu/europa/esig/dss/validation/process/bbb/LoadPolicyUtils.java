@@ -31,7 +31,7 @@ public class LoadPolicyUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd)
+	public static <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd)
 			throws Exception {
 		JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
 		Unmarshaller unmarshaller = context.createUnmarshaller();
