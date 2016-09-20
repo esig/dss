@@ -5,13 +5,21 @@
 	</Description>
 	<SignatureConstraints>
 		<AcceptablePolicies Level="FAIL">
-			<Id>ANY_POLICY</Id>
 			<Id>NO_POLICY</Id>
+			<Id>IMPLICIT_POLICY</Id>
 		</AcceptablePolicies>
 		<PolicyAvailable Level="FAIL" />
 		<PolicyHashMatch Level="FAIL" />
 		<AcceptableFormats Level="FAIL">
-			<Id>*</Id>
+			<Id>CAdES_BASELINE_B</Id>
+			<Id>CAdES_BASELINE_T</Id>
+			<Id>CAdES_BASELINE_LT</Id>
+			<Id>CAdES_BASELINE_LTA</Id>
+			<Id>PAdES_BASELINE_B</Id>
+			<Id>PAdES_BASELINE_T</Id>
+			<Id>PAdES_BASELINE_LT</Id>
+			<Id>PAdES_BASELINE_LTA</Id>
+			<Id>XAdES_BASELINE_B</Id>
 		</AcceptableFormats>
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
