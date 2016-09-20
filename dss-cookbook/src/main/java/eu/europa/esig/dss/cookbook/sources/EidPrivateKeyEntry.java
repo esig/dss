@@ -42,7 +42,9 @@ public class EidPrivateKeyEntry implements DSSPrivateKeyEntry {
 
 		this.certificate = certificate;
 		certificateChain = new CertificateToken[signatureChain.size()];
-		certificateChain = signatureChain.toArray(certificateChain);
+		for (int i = 0; i < signatureChain.size(); i++) {
+			certificateChain[i] = new CertificateToken(signatureChain.get(i));
+		}
 	}
 
 	@Override

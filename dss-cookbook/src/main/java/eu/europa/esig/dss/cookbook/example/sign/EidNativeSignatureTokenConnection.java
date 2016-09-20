@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +31,18 @@ import org.slf4j.LoggerFactory;
 import be.fedict.eid.applet.Messages;
 import be.fedict.eid.applet.sc.PcscEid;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.sources.AppletView;
 import eu.europa.esig.dss.cookbook.sources.EidPrivateKeyEntry;
-import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public class EidNativeSignatureTokenConnection extends AbstractSignatureTokenConnection {
+public class EidNativeSignatureTokenConnection implements SignatureTokenConnection {
 
 	private static final Logger logger = LoggerFactory.getLogger(EidNativeSignatureTokenConnection.class);
 
@@ -58,6 +61,28 @@ public class EidNativeSignatureTokenConnection extends AbstractSignatureTokenCon
 	}
 
 	@Override
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
+
+		if (digestAlgorithm != DigestAlgorithm.SHA1) {
+			throw new RuntimeException("Only SH1 supported in cookbook");
+		}
+
+		byte[] digestValue = DSSUtils.digest(digestAlgorithm, toBeSigned.getBytes());
+
+		try {
+			eid.isEidPresent();
+			byte[] sig = this.eid.sign(digestValue, digestAlgorithm.getName());
+			SignatureValue sigval = new SignatureValue(SignatureAlgorithm.RSA_SHA1, sig);
+			return sigval;
+		} catch (Exception e) {
+			logger.error("An error occured while signing : " + e.getMessage(), e);
+			throw new DSSException(e);
+		}
+
+	}
+
+	@Override
 	public List<DSSPrivateKeyEntry> getKeys() {
 		try {
 			eid.isEidPresent();
@@ -68,17 +93,6 @@ public class EidNativeSignatureTokenConnection extends AbstractSignatureTokenCon
 			return entries;
 		} catch (Exception e) {
 			logger.error("An error occured while retrieving keys : " + e.getMessage(), e);
-			throw new DSSException(e);
-		}
-	}
-
-	// @Override
-	public byte[] encryptDigest(byte[] digestValue, DigestAlgorithm digestAlgo, DSSPrivateKeyEntry keyEntry) throws NoSuchAlgorithmException {
-		try {
-			eid.isEidPresent();
-			return eid.sign(digestValue, digestAlgo.getName());
-		} catch (Exception e) {
-			logger.error("An error occured while encrypting digest : " + e.getMessage(), e);
 			throw new DSSException(e);
 		}
 	}
