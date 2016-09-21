@@ -20,7 +20,8 @@ public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 	private final Date validationDate;
 	private final TimeConstraint timeConstraint;
 
-	public RevocationDataFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate, TimeConstraint constraint) {
+	public RevocationDataFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate,
+			TimeConstraint constraint) {
 		super(result, constraint);
 
 		this.revocationData = revocationData;
