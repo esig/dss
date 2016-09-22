@@ -21,13 +21,19 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -69,12 +75,12 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 	protected List<DSSReference> createDefaultReferences() {
 
 		final List<DSSReference> references = new ArrayList<DSSReference>();
-		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 
-		final DSSTransform transform = new DSSTransform();
-		transform.setAlgorithm(CanonicalizationMethod.BASE64);
+		final DSSTransform base64Transform = new DSSTransform();
+		base64Transform.setAlgorithm(CanonicalizationMethod.BASE64);
 
-		transforms.add(transform);
+		DSSTransform xmlTransform = new DSSTransform();
+		xmlTransform.setAlgorithm(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
 
 		DSSDocument document = detachedDocument;
 		int referenceId = 1;
@@ -87,7 +93,11 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 			reference.setUri("#o-id-" + referenceId);
 			reference.setContents(document);
 			reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
-			reference.setTransforms(transforms);
+			if(reference.getContents().getMimeType() == MimeType.XML && params.isEmbedXML()) {
+				reference.setTransforms(Arrays.asList(xmlTransform));
+			} else {
+				reference.setTransforms(Arrays.asList(base64Transform));
+			}
 			references.add(reference);
 
 			referenceId++;
@@ -126,10 +136,32 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		for (final DSSReference reference : references) {
 
 			// <ds:Object>
-			final String base64EncodedOriginalDocument = Base64.encodeBase64String(DSSUtils.toByteArray(reference.getContents()));
-			final Element objectDom = DSSXMLUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
-			final String id = reference.getUri().substring(1);
-			objectDom.setAttribute(ID, id);
+			DSSDocument tbsDoc = reference.getContents();
+			if(tbsDoc.getMimeType() == MimeType.XML && params.isEmbedXML()) {
+				try {
+					DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+					dbf.setNamespaceAware(true);
+					DocumentBuilder db = dbf.newDocumentBuilder();
+					Document doc = db.parse(reference.getContents().openStream());
+					Element root = doc.getDocumentElement();
+					Node adopted = documentDom.adoptNode(root);
+
+					final Element dom = documentDom.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+					dom.appendChild(adopted);
+					signatureDom.appendChild(dom);
+					final String id = reference.getUri().substring(1);
+					dom.setAttribute(ID, id);
+
+				} catch(Exception e) {
+					throw new RuntimeException(e);
+				}
+			} else {
+				final String base64EncodedOriginalDocument = Base64.encodeBase64String(DSSUtils.toByteArray(reference.getContents()));
+				final Element objectDom = DSSXMLUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
+				final String id = reference.getUri().substring(1);
+				objectDom.setAttribute(ID, id);
+			}
+
 		}
 
 		byte[] documentBytes = DSSXMLUtils.transformDomToByteArray(documentDom);
