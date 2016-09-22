@@ -31,8 +31,8 @@ public class KeyUsageCheckTest {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck fc = new KeyUsageCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		KeyUsageCheck kuc = new KeyUsageCheck(result, new CertificateWrapper(xc), constraint);
+		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -52,8 +52,8 @@ public class KeyUsageCheckTest {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck fc = new KeyUsageCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		KeyUsageCheck kuc = new KeyUsageCheck(result, new CertificateWrapper(xc), constraint);
+		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

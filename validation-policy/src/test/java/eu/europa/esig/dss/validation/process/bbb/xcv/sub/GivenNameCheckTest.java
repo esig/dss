@@ -27,8 +27,8 @@ public class GivenNameCheckTest {
 		xc.setGivenName("Valid_Name");
 
 		XmlSubXCV result = new XmlSubXCV();
-		GivenNameCheck fc = new GivenNameCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		GivenNameCheck gnc = new GivenNameCheck(result, new CertificateWrapper(xc), constraint);
+		gnc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -45,8 +45,8 @@ public class GivenNameCheckTest {
 		xc.setGivenName("Valid_Name");
 
 		XmlSubXCV result = new XmlSubXCV();
-		GivenNameCheck fc = new GivenNameCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		GivenNameCheck gnc = new GivenNameCheck(result, new CertificateWrapper(xc), constraint);
+		gnc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

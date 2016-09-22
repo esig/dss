@@ -24,11 +24,11 @@ public class OrganizationUnitCheckTest {
 		constraint.getId().add("Valid_Org");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setOrganizationName("Valid_Org");
+		xc.setOrganizationalUnit("Valid_Org");
 
 		XmlSubXCV result = new XmlSubXCV();
-		OrganizationUnitCheck fc = new OrganizationUnitCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		OrganizationUnitCheck ouc = new OrganizationUnitCheck(result, new CertificateWrapper(xc), constraint);
+		ouc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -42,11 +42,11 @@ public class OrganizationUnitCheckTest {
 		constraint.getId().add("Invalid_Org");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setOrganizationName("Valid_Org");
+		xc.setOrganizationalUnit("Valid_Org");
 
 		XmlSubXCV result = new XmlSubXCV();
-		OrganizationUnitCheck fc = new OrganizationUnitCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		OrganizationUnitCheck ouc = new OrganizationUnitCheck(result, new CertificateWrapper(xc), constraint);
+		ouc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

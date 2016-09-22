@@ -30,8 +30,8 @@ public class CertificateOnHoldCheckTest {
 		xc.getRevocation().add(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateOnHoldCheck cec = new CertificateOnHoldCheck(result, new CertificateWrapper(xc), constraint);
-		cec.execute();
+		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateWrapper(xc), constraint);
+		cohc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -51,8 +51,8 @@ public class CertificateOnHoldCheckTest {
 		xc.getRevocation().add(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateOnHoldCheck cec = new CertificateOnHoldCheck(result, new CertificateWrapper(xc), constraint);
-		cec.execute();
+		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateWrapper(xc), constraint);
+		cohc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

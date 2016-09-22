@@ -29,9 +29,9 @@ public class CertificateSignatureValidCheckTest {
 		xc.setBasicSignature(xbs);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSignatureValidCheck<XmlSubXCV> cec = new CertificateSignatureValidCheck<XmlSubXCV>(result,
+		CertificateSignatureValidCheck<XmlSubXCV> csvc = new CertificateSignatureValidCheck<XmlSubXCV>(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		csvc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -49,9 +49,9 @@ public class CertificateSignatureValidCheckTest {
 		xc.setBasicSignature(xbs);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSignatureValidCheck<XmlSubXCV> cec = new CertificateSignatureValidCheck<XmlSubXCV>(result,
+		CertificateSignatureValidCheck<XmlSubXCV> csvc = new CertificateSignatureValidCheck<XmlSubXCV>(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		csvc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

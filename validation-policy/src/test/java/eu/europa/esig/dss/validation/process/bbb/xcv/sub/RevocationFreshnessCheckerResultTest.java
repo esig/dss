@@ -30,8 +30,8 @@ public class RevocationFreshnessCheckerResultTest {
 		resultRFC.setConclusion(xc);
 
 		XmlSubXCV result = new XmlSubXCV();
-		RevocationFreshnessCheckerResult fc = new RevocationFreshnessCheckerResult(result, resultRFC, constraint);
-		fc.execute();
+		RevocationFreshnessCheckerResult rfc = new RevocationFreshnessCheckerResult(result, resultRFC, constraint);
+		rfc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -50,8 +50,8 @@ public class RevocationFreshnessCheckerResultTest {
 		resultRFC.setConclusion(xc);
 
 		XmlSubXCV result = new XmlSubXCV();
-		RevocationFreshnessCheckerResult fc = new RevocationFreshnessCheckerResult(result, resultRFC, constraint);
-		fc.execute();
+		RevocationFreshnessCheckerResult rfc = new RevocationFreshnessCheckerResult(result, resultRFC, constraint);
+		rfc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

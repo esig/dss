@@ -33,9 +33,9 @@ public class RevocationDataFreshCheckWithNullConstraintTest {
 															// fresh
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataFreshCheckWithNullConstraint rdec = new RevocationDataFreshCheckWithNullConstraint(result,
+		RevocationDataFreshCheckWithNullConstraint rdfwncc = new RevocationDataFreshCheckWithNullConstraint(result,
 				new RevocationWrapper(xr), now, constraint);
-		rdec.execute();
+		rdfwncc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -57,9 +57,9 @@ public class RevocationDataFreshCheckWithNullConstraintTest {
 															// not fresh
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataFreshCheckWithNullConstraint rdec = new RevocationDataFreshCheckWithNullConstraint(result,
+		RevocationDataFreshCheckWithNullConstraint rdfwncc = new RevocationDataFreshCheckWithNullConstraint(result,
 				new RevocationWrapper(xr), now, constraint);
-		rdec.execute();
+		rdfwncc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

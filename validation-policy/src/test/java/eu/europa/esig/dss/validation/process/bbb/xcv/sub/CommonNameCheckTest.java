@@ -27,8 +27,8 @@ public class CommonNameCheckTest {
 		xc.setCommonName("Valid_Name");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CommonNameCheck fc = new CommonNameCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		CommonNameCheck cnc = new CommonNameCheck(result, new CertificateWrapper(xc), constraint);
+		cnc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -45,8 +45,8 @@ public class CommonNameCheckTest {
 		xc.setCommonName("Valid_Name");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CommonNameCheck fc = new CommonNameCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		CommonNameCheck cnc = new CommonNameCheck(result, new CertificateWrapper(xc), constraint);
+		cnc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

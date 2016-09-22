@@ -34,9 +34,9 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		xc.getTrustedServiceProvider().add(xtsp);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToLegalPersonCheck cec = new CertificateIssuedToLegalPersonCheck(result,
+		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		citlp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -57,9 +57,9 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		xc.setCertificatePolicyIds(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToLegalPersonCheck cec = new CertificateIssuedToLegalPersonCheck(result,
+		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		citlp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -80,9 +80,9 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		xc.getTrustedServiceProvider().add(xtsp);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToLegalPersonCheck cec = new CertificateIssuedToLegalPersonCheck(result,
+		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		citlp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -103,9 +103,9 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		xc.setCertificatePolicyIds(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToLegalPersonCheck cec = new CertificateIssuedToLegalPersonCheck(result,
+		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		citlp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

@@ -31,9 +31,9 @@ public class CertificateQCStatementIdsCheckTest {
 		xc.setQCStatementIds(qcStatementIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQCStatementIdsCheck fc = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc),
+		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc),
 				constraint);
-		fc.execute();
+		cqcsic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -53,9 +53,9 @@ public class CertificateQCStatementIdsCheckTest {
 		xc.setQCStatementIds(qcStatementIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQCStatementIdsCheck fc = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc),
+		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc),
 				constraint);
-		fc.execute();
+		cqcsic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

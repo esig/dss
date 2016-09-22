@@ -34,9 +34,9 @@ public class CertificateIssuedToNaturalPersonCheckTest {
 		xc.getTrustedServiceProvider().add(xtsp);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToNaturalPersonCheck cec = new CertificateIssuedToNaturalPersonCheck(result,
+		CertificateIssuedToNaturalPersonCheck citnp = new CertificateIssuedToNaturalPersonCheck(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		citnp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -57,9 +57,9 @@ public class CertificateIssuedToNaturalPersonCheckTest {
 		xc.setCertificatePolicyIds(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToNaturalPersonCheck cec = new CertificateIssuedToNaturalPersonCheck(result,
+		CertificateIssuedToNaturalPersonCheck citnp = new CertificateIssuedToNaturalPersonCheck(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		citnp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -80,9 +80,9 @@ public class CertificateIssuedToNaturalPersonCheckTest {
 		xc.getTrustedServiceProvider().add(xtsp);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToNaturalPersonCheck cec = new CertificateIssuedToNaturalPersonCheck(result,
+		CertificateIssuedToNaturalPersonCheck citnp = new CertificateIssuedToNaturalPersonCheck(result,
 				new CertificateWrapper(xc), constraint);
-		cec.execute();
+		citnp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

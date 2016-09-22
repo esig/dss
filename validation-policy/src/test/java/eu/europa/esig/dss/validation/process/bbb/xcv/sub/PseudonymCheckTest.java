@@ -27,8 +27,8 @@ public class PseudonymCheckTest {
 		xc.setPseudonym("Valid_Pseudonym");
 
 		XmlSubXCV result = new XmlSubXCV();
-		PseudonymCheck fc = new PseudonymCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		PseudonymCheck pc = new PseudonymCheck(result, new CertificateWrapper(xc), constraint);
+		pc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -45,8 +45,8 @@ public class PseudonymCheckTest {
 		xc.setPseudonym("Valid_Pseudonym");
 
 		XmlSubXCV result = new XmlSubXCV();
-		PseudonymCheck fc = new PseudonymCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		PseudonymCheck pc = new PseudonymCheck(result, new CertificateWrapper(xc), constraint);
+		pc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

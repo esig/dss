@@ -27,8 +27,8 @@ public class SurnameCheckTest {
 		xc.setSurname("Valid_Surname");
 
 		XmlSubXCV result = new XmlSubXCV();
-		SurnameCheck fc = new SurnameCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		SurnameCheck sc = new SurnameCheck(result, new CertificateWrapper(xc), constraint);
+		sc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -45,8 +45,8 @@ public class SurnameCheckTest {
 		xc.setSurname("Valid_Surname");
 
 		XmlSubXCV result = new XmlSubXCV();
-		SurnameCheck fc = new SurnameCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		SurnameCheck sc = new SurnameCheck(result, new CertificateWrapper(xc), constraint);
+		sc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

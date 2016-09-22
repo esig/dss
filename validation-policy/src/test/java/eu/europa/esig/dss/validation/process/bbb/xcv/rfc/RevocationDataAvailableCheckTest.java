@@ -23,9 +23,9 @@ public class RevocationDataAvailableCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataAvailableCheck rdec = new RevocationDataAvailableCheck(result,
+		RevocationDataAvailableCheck rdac = new RevocationDataAvailableCheck(result,
 				new RevocationWrapper(new XmlRevocation()), constraint);
-		rdec.execute();
+		rdac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -38,8 +38,8 @@ public class RevocationDataAvailableCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataAvailableCheck rdec = new RevocationDataAvailableCheck(result, null, constraint);
-		rdec.execute();
+		RevocationDataAvailableCheck rdac = new RevocationDataAvailableCheck(result, null, constraint);
+		rdac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

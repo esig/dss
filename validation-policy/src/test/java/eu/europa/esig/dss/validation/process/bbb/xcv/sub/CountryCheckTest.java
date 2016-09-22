@@ -27,8 +27,8 @@ public class CountryCheckTest {
 		xc.setCountryName("BE");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CountryCheck fc = new CountryCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		CountryCheck cc = new CountryCheck(result, new CertificateWrapper(xc), constraint);
+		cc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -45,8 +45,8 @@ public class CountryCheckTest {
 		xc.setCountryName("LU");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CountryCheck fc = new CountryCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		CountryCheck cc = new CountryCheck(result, new CertificateWrapper(xc), constraint);
+		cc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

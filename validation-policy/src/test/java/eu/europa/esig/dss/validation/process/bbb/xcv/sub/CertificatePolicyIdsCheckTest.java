@@ -31,8 +31,8 @@ public class CertificatePolicyIdsCheckTest {
 		xc.setCertificatePolicyIds(policyIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificatePolicyIdsCheck fc = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
+		cpic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -52,8 +52,8 @@ public class CertificatePolicyIdsCheckTest {
 		xc.setCertificatePolicyIds(policyIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificatePolicyIdsCheck fc = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
+		cpic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

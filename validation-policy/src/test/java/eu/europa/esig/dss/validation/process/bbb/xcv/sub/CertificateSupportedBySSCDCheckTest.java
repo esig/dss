@@ -26,9 +26,9 @@ public class CertificateSupportedBySSCDCheckTest {
 		xc.getCertificatePolicyIds().add("0.4.0.1456.1.1");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedBySSCDCheck cec = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc),
+		CertificateSupportedBySSCDCheck csbsc = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc),
 				constraint);
-		cec.execute();
+		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -44,9 +44,9 @@ public class CertificateSupportedBySSCDCheckTest {
 		xc.getCertificatePolicyIds().add("0.4.0.1456.1.12");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedBySSCDCheck cec = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc),
+		CertificateSupportedBySSCDCheck csbsc = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc),
 				constraint);
-		cec.execute();
+		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

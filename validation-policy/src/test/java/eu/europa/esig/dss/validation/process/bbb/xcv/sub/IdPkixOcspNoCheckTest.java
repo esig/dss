@@ -21,8 +21,8 @@ public class IdPkixOcspNoCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSubXCV result = new XmlSubXCV();
-		IdPkixOcspNoCheck fc = new IdPkixOcspNoCheck(result, constraint);
-		fc.execute();
+		IdPkixOcspNoCheck ic = new IdPkixOcspNoCheck(result, constraint);
+		ic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

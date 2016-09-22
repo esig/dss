@@ -24,11 +24,11 @@ public class OrganizationNameCheckTest {
 		constraint.getId().add("Valid_Org");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setOrganizationalUnit("Valid_Org");
+		xc.setOrganizationName("Valid_Org");
 
 		XmlSubXCV result = new XmlSubXCV();
-		OrganizationNameCheck fc = new OrganizationNameCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		OrganizationNameCheck onc = new OrganizationNameCheck(result, new CertificateWrapper(xc), constraint);
+		onc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -42,11 +42,11 @@ public class OrganizationNameCheckTest {
 		constraint.getId().add("Invalid_Org");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setOrganizationalUnit("Valid_Org");
+		xc.setOrganizationName("Valid_Org");
 
 		XmlSubXCV result = new XmlSubXCV();
-		OrganizationNameCheck fc = new OrganizationNameCheck(result, new CertificateWrapper(xc), constraint);
-		fc.execute();
+		OrganizationNameCheck onc = new OrganizationNameCheck(result, new CertificateWrapper(xc), constraint);
+		onc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
