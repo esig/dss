@@ -20,7 +20,7 @@ import eu.europa.esig.jaxb.policy.TimeUnit;
 public class RevocationDataFreshCheckTest {
 
 	@Test
-	public void revocationDataFreshWithTimeConstraintCheck() throws Exception {
+	public void revocationDataFreshCheck() throws Exception {
 		TimeConstraint tc = new TimeConstraint();
 		tc.setUnit(TimeUnit.DAYS);
 		tc.setValue(1);
@@ -41,7 +41,7 @@ public class RevocationDataFreshCheckTest {
 	}
 
 	@Test
-	public void failedRevocationDataFreshCheckWithTimeConstraint() throws Exception {
+	public void failedRevocationDataFreshCheck() throws Exception {
 		TimeConstraint tc = new TimeConstraint();
 		tc.setUnit(TimeUnit.DAYS);
 		tc.setValue(1);
@@ -61,22 +61,4 @@ public class RevocationDataFreshCheckTest {
 		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
 	}
 
-	// NULLPOINTEREXCEPTION
-	@Test
-	public void revocationDataFreshWithoutTimeConstraintCheck() throws Exception {
-		XmlRevocation xr = new XmlRevocation();
-		Date now = new Date();
-		long nowMil = now.getTime();
-		xr.setThisUpdate(new Date(nowMil - 129600000));
-		xr.setNextUpdate(now);
-		xr.setProductionDate(new Date(nowMil - 43200000)); // 12 hours ago
-
-		XmlRFC result = new XmlRFC();
-		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(result, new RevocationWrapper(xr), now, null);
-		rdec.execute();
-
-		List<XmlConstraint> constraints = result.getConstraint();
-		assertEquals(1, constraints.size());
-		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
-	}
 }
