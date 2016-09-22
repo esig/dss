@@ -23,7 +23,6 @@ package eu.europa.esig.dss;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Enumerated;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -52,9 +51,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
-import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Utility class used to convert OCSPResp to BasicOCSPResp
@@ -123,25 +120,6 @@ public final class DSSRevocationUtils {
 		// !!! todo to be checked: System.out.println("===> RECREATED: " +
 		// ocspResp.hashCode());
 		return ocspResp;
-	}
-
-	/**
-	 * This method indicates if the given revocation token is present in the CRL
-	 * or OCSP response list.
-	 *
-	 * @param revocationToken
-	 *            revocation token to be checked
-	 * @param basicOCSPResponses
-	 *            list of basic OCSP responses
-	 * @return true if revocation token is present in one of the lists
-	 */
-	public static boolean isTokenIn(final RevocationToken revocationToken, final List<BasicOCSPResp> basicOCSPResponses) {
-		if ((revocationToken instanceof OCSPToken) && (basicOCSPResponses != null)) {
-			final BasicOCSPResp basicOCSPResp = ((OCSPToken) revocationToken).getBasicOCSPResp();
-			final boolean contains = basicOCSPResponses.contains(basicOCSPResp);
-			return contains;
-		}
-		return false;
 	}
 
 	/**
