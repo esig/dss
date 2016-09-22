@@ -179,7 +179,7 @@
     </xsl:template>
     
 	<xsl:template match="dss:ValidationProcessTimestamps">
-		<fo:block keep-together.within-page="always">
+		<fo:block>
 			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationColor">
 	        	<xsl:choose>
@@ -190,6 +190,7 @@
 				</xsl:choose>
 	        </xsl:variable>
 			
+			<xsl:attribute name="keep-together.within-page">always</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
        		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
