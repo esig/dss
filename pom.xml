@@ -96,6 +96,9 @@
 				<configuration>
 					<!-- Default test configuration -->
 					<skipTests>true</skipTests>
+					<classpathDependencyExcludes>
+			            <classpathDependencyExclude>commons-logging:commons-logging</classpathDependencyExclude>
+			        </classpathDependencyExcludes>
 				</configuration>
 				<executions>
 					<execution>

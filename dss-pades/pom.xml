@@ -14,7 +14,7 @@
 	<name>DSS PAdES</name>
 	<description>DSS PAdES contains the code for the creation and validation of PAdES signatures.</description>
 	
-	<dependencies>
+  	<dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-document</artifactId>
@@ -32,16 +32,6 @@
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
 			<version>1.8.12</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
         
 		<dependency>
