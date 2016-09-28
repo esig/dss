@@ -268,6 +268,24 @@ public class CustomProcessExecutorTest {
 		assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
 	}
 
+	@Test
+	public void testDSS943() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/DSS-943/NotQualified-service.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicyNoRevoc());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		System.out.println( reports.getXmlDetailedReport() );
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+
 	private EtsiValidationPolicy loadPolicy() throws Exception {
 		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
 		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
