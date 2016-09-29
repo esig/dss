@@ -261,7 +261,7 @@ public class TSLValidationJob {
 					futureParseResults.add(executorService.submit(new TSLParser(fis)));
 				}
 
-				if (checkTSLSignatures && ((countryModel.getValidationResult() == null) || newLotl)) {
+				if (checkTSLSignatures && (countryModel.getValidationResult() == null || newLotl)) {
 					TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore,
 							getPotentialSigners(pointers, loaderResult.getCountryCode()));
 					futureValidationResults.add(executorService.submit(tslValidator));
