@@ -24,21 +24,31 @@ import static eu.europa.esig.dss.xades.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Set;
+
+import javax.xml.crypto.dsig.XMLSignature;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.xades.DSSReference;
+import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
@@ -211,12 +221,53 @@ public abstract class XAdESBuilder {
 
 		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
 		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
-		final String base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
+
+		if (originalDocument.getMimeType() == MimeType.XML && params.isEmbedXML()) {
+
+			try {
+				List<DSSReference> references = params.getReferences();
+				if (Utils.collectionSize(references) != 1) {
+					throw new DSSException("Unsupported operation");
+				}
+				DSSReference dssReference = references.get(0);
+
+				Document doc = DSSXMLUtils.buildDOM(originalDocument.openStream());
+				Element root = doc.getDocumentElement();
+
+				Document doc2 = DSSXMLUtils.buildDOM();
+				final Element dom = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+				final Element dom2 = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+				doc2.appendChild(dom2);
+				dom2.appendChild(dom);
+				dom.setAttribute(ID, dssReference.getUri().substring(1));
+
+				Node adopted = doc2.adoptNode(root);
+				dom.appendChild(adopted);
+
+				List<DSSTransform> transforms = dssReference.getTransforms();
+				if (Utils.collectionSize(transforms) != 1) {
+					throw new DSSException("Unsupported operation");
+				}
+				DSSTransform dssTransform = transforms.get(0);
+
+				byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), dom);
+
+				final String c14nDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
+				LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), c14nDigestBytes);
+				final Text textNode = documentDom.createTextNode(c14nDigestBytes);
+				digestValueDom.appendChild(textNode);
+			} catch (Exception e) {
+				throw new DSSException(e);
+			}
+		} else {
+			final String base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
+			}
+			final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
+			digestValueDom.appendChild(textNode);
 		}
-		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
-		digestValueDom.appendChild(textNode);
+
 		parentDom.appendChild(digestValueDom);
 	}
 

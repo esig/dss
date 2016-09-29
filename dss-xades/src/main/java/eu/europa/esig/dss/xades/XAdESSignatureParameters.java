@@ -37,6 +37,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	private Document rootDocument;
 
+	private boolean embedXML;
+
 	/**
 	 * This property is a part of the standard:<br>
 	 * 7.2.2 The SigningCertificate element (101 903 V1.4.2 (2010-12) XAdES)<br>
@@ -131,6 +133,14 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	public void setEn319132(boolean en319132) {
 		this.en319132 = en319132;
+	}
+
+	public boolean isEmbedXML() {
+		return embedXML;
+	}
+
+	public void setEmbedXML(boolean embedXML) {
+		this.embedXML = embedXML;
 	}
 	
 }
