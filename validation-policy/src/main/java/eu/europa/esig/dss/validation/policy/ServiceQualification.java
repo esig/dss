@@ -36,6 +36,12 @@ public final class ServiceQualification {
 	private static final String QC_STATEMENT = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement";
 
 	/**
+	 * NotQualified ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/NotQualified"): to indicate that no certificates 
+	 * identified by the applicable list of criteria are to be considered as qualified certificates.
+	 */
+	private static final String NOT_QUALIFIED = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/NotQualified";
+
+	/**
 	 * QCWithSSCD ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD"): to indicate that all certificates
 	 * identified by the applicable list of criteria, when they are claimed or stated as being qualified, have their
 	 * private key residing in an SSCD
@@ -113,6 +119,10 @@ public final class ServiceQualification {
 
 	public static boolean isQcStatement(List<String> qualifiers) {
 		return qualifiers.contains(QC_STATEMENT);
+	}
+
+	public static boolean isNotQualified(List<String> qualifiers) {
+		return qualifiers.contains(NOT_QUALIFIED);
 	}
 
 	public static boolean isQcNoSSCD(List<String> qualifiers) {
