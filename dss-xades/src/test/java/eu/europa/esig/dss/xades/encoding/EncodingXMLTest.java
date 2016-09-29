@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.xades.encoding;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
@@ -121,4 +123,11 @@ public class EncodingXMLTest {
 		assertTrue(s2.verify(asn1xmlsec));
 	}
 
+	@Test
+	public void testECDSA_CVC_ConcatenatedSignature() throws Exception {
+		String cvcSignatureInHex = "2B9099C9885DDB5BFDA2E9634905B9A63E7E3A6EC87BDC0A89014716B23F00B0AD787FC8D0DCF28F007E7DEC097F30DA892BE2AC61D90997DCDF05740E4D5B0C";
+		byte[] signatureValue = DatatypeConverter.parseHexBinary(cvcSignatureInHex);
+		byte[] xmlDSigValue = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
+		assertThat(signatureValue, equalTo(xmlDSigValue));
+	}
 }
