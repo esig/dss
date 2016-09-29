@@ -7,31 +7,28 @@ import java.util.Date;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.validation.AdditionalInfo;
 import eu.europa.esig.dss.validation.MessageTag;
-import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
+public class RevocationDataFreshCheckWithNullConstraint extends ChainItem<XmlRFC> {
 
 	private final RevocationWrapper revocationData;
 	private final Date validationDate;
-	private final TimeConstraint timeConstraint;
 
-	public RevocationDataFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate,
-			TimeConstraint constraint) {
+	public RevocationDataFreshCheckWithNullConstraint(XmlRFC result, RevocationWrapper revocationData,
+			Date validationDate, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.revocationData = revocationData;
 		this.validationDate = validationDate;
-		this.timeConstraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
-		if (revocationData != null) {
+		if (revocationData != null && revocationData.getNextUpdate() != null) {
 			long maxFreshness = getMaxFreshness();
 			long validationDateTime = validationDate.getTime();
 			long limit = validationDateTime - maxFreshness;
@@ -43,7 +40,13 @@ public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 	}
 
 	private long getMaxFreshness() {
-		return RuleUtils.convertDuration(timeConstraint);
+		return diff(revocationData.getNextUpdate(), revocationData.getThisUpdate());
+	}
+
+	private long diff(Date nextUpdate, Date thisUpdate) {
+		long nextUpdateTime = nextUpdate == null ? 0 : nextUpdate.getTime();
+		long thisUpdateTime = thisUpdate == null ? 0 : thisUpdate.getTime();
+		return nextUpdateTime - thisUpdateTime;
 	}
 
 	@Override

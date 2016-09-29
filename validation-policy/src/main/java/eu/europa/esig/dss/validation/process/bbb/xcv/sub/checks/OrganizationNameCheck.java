@@ -20,7 +20,7 @@ public class OrganizationNameCheck extends AbstractMultiValuesCheckItem<XmlSubXC
 
 	@Override
 	protected boolean process() {
-		return processValueCheck(certificate.getOrganizationalUnit());
+		return processValueCheck(certificate.getOrganizationName());
 	}
 
 	@Override

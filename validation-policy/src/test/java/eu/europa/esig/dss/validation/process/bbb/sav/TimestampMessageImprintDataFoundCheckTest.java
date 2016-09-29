@@ -1,0 +1,55 @@
+package eu.europa.esig.dss.validation.process.bbb.sav;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.TimestampMessageImprintDataFoundCheck;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.jaxb.policy.Level;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
+
+public class TimestampMessageImprintDataFoundCheckTest {
+
+	@Test
+	public void TimestampMessageImprintDataFoundCheck() throws Exception {
+		XmlTimestamp xts = new XmlTimestamp();
+		xts.setMessageImprintDataFound(true);
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		TimestampMessageImprintDataFoundCheck tmpdfc = new TimestampMessageImprintDataFoundCheck(result,
+				new TimestampWrapper(xts), constraint);
+		tmpdfc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+
+	}
+
+	@Test
+	public void failedTimestampMessageImprintDataFoundCheck() throws Exception {
+		XmlTimestamp xts = new XmlTimestamp();
+		xts.setMessageImprintDataFound(false);
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		TimestampMessageImprintDataFoundCheck tmpdfc = new TimestampMessageImprintDataFoundCheck(result,
+				new TimestampWrapper(xts), constraint);
+		tmpdfc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+}
