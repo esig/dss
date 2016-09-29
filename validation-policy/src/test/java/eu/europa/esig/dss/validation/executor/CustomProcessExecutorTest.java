@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -280,10 +282,10 @@ public class CustomProcessExecutorTest {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
-		System.out.println( reports.getXmlDetailedReport() );
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
+		assertTrue(warnings.contains(MessageTag.BBB_XCV_CMDCIQC_ANS.getMessage()));
 	}
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
