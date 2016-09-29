@@ -26,6 +26,7 @@ import java.io.IOException;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1StreamParser;
 import org.bouncycastle.util.BigIntegers;
 
 import eu.europa.esig.dss.DSSException;
@@ -50,7 +51,7 @@ public final class DSSSignatureUtils {
 	 * @return
 	 */
 	public static byte[] convertToXmlDSig(final EncryptionAlgorithm algorithm, byte[] signatureValue) {
-		if (EncryptionAlgorithm.ECDSA == algorithm) {
+		if (EncryptionAlgorithm.ECDSA == algorithm && isAsn1Encoded(signatureValue)) {
 			return convertECDSAASN1toXMLDSIG(signatureValue);
 		} else if (EncryptionAlgorithm.DSA == algorithm) {
 			return convertDSAASN1toXMLDSIG(signatureValue);
@@ -143,6 +144,21 @@ public final class DSSSignatureUtils {
 			Utils.closeQuietly(is);
 		}
 		return buffer.toByteArray();
+	}
+
+	/**
+	 * Checks if the signature is ASN.1 encoded.
+	 *
+	 * @param signatureValue signature value to check.
+	 * @return if the signature is ASN.1 encoded.
+     */
+	private static boolean isAsn1Encoded(byte[] signatureValue) {
+		try {
+			new ASN1StreamParser(signatureValue).readObject();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 
 }
