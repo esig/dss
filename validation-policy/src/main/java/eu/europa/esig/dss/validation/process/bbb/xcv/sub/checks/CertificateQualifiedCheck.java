@@ -29,15 +29,12 @@ public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
 		boolean isQCP = CertificatePolicyIdentifiers.isQCP(certificate);
 		boolean isQCPPlus = CertificatePolicyIdentifiers.isQCPPlus(certificate);
 
-		/**
-		 * • The content of a Trusted service Status List;<br>
-		 * • The content of a Trusted List through information provided in the
-		 * Sie field of the applicable service entry;
-		 */
+		// The content of a Trusted List through information provided in the Sie field of the applicable service entry
 		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
-		boolean isSIE = ServiceQualification.isQcStatement(qualifiers);
+		boolean isQcStatementInSIE = ServiceQualification.isQcStatement(qualifiers);
+		boolean isNotQualifiedInSIE = ServiceQualification.isNotQualified(qualifiers);
 
-		return isQCCompliant || isQCP || isQCPPlus || isSIE;
+		return ( ! isNotQualifiedInSIE ) && ( isQCCompliant || isQCP || isQCPPlus || isQcStatementInSIE );
 	}
 
 	@Override
