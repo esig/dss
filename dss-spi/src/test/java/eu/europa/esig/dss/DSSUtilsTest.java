@@ -81,7 +81,11 @@ public class DSSUtilsTest {
 		// CertificateToken certificate3 =
 		// DSSUtils.loadCertificate(base64StringToBase64Binary);
 		// assertNotNull(certificate3);
+	}
 
+	@Test(expected = DSSException.class)
+	public void loadCertificateDoesNotThrowNullPointerExceptionWhenProvidedNonCertificateFile() throws Exception {
+		DSSUtils.loadCertificate(new ByteArrayInputStream("test".getBytes("UTF-8")));
 	}
 
 	@Test
