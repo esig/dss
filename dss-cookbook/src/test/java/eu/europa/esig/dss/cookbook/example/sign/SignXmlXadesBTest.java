@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -39,7 +41,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class SignXmlXadesBTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineB() {
+	public void signXAdESBaselineB() throws IOException {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -89,11 +91,11 @@ public class SignXmlXadesBTest extends CookbookTools {
 
 		// end::demo[]
 
-		//		try {
-		//			signedDocument.save("src/test/resources/signedXmlXadesB.xml");
-		//		} catch (IOException e) {
-		//			e.printStackTrace();
-		//		}
+		// try {
+		// signedDocument.save("src/test/resources/signedXmlXadesB.xml");
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 		testFinalDocument(signedDocument);
 	}

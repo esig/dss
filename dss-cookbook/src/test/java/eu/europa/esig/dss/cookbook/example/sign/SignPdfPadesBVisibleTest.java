@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -44,7 +45,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 	@Test
-	public void signPAdESBaselineBWithVisibleSignature() {
+	public void signPAdESBaselineBWithVisibleSignature() throws IOException {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

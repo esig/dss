@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class SignXmlXadesBPropertiesTest extends CookbookTools {
 
 	@Test
-	public void testWithProperties() {
+	public void testWithProperties() throws IOException {
 
 		prepareXmlDoc();
 

@@ -20,167 +20,63 @@
  */
 package eu.europa.esig.dss.token;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.KeyStore.PasswordProtection;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-import javax.crypto.BadPaddingException;
-
-import eu.europa.esig.dss.DSSException;
 
 /**
  * Class holding all PKCS#12 file access logic.
  */
-public class Pkcs12SignatureToken extends AbstractSignatureTokenConnection {
+public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 
-	private char[] password;
-
-	private File pkcs12File;
-	private byte[] pkcs12Data;
+	private static final String KS_TYPE = "PKCS12";
 
 	/**
-	 * Creates a SignatureTokenConnection with the provided password and path to PKCS#12 file.
+	 * Creates a SignatureTokenConnection with the provided InputStream to PKCS#12 KeyStore file and password.
 	 *
-	 * @param password
-	 * @param pkcs12FilePath
+	 * @param ksStream
+	 *            the inputstream
+	 * @param ksPassword
+	 *            the keystore password
 	 */
-	public Pkcs12SignatureToken(String password, String pkcs12FilePath) {
-		this(password.toCharArray(), new File(pkcs12FilePath));
-	}
-
-	/**
-	 * Creates a SignatureTokenConnection with the provided password and path to PKCS#12 file.
-	 *
-	 * @param password
-	 * @param pkcs12FilePath
-	 */
-	public Pkcs12SignatureToken(char[] password, String pkcs12FilePath) {
-		this(password, new File(pkcs12FilePath));
+	public Pkcs12SignatureToken(InputStream ksStream, String ksPassword) {
+		super(ksStream, KS_TYPE, ksPassword);
 	}
 
 	/**
-	 * Creates a SignatureTokenConnection with the provided password and path to PKCS#12 file object.
+	 * Creates a SignatureTokenConnection with the provided binaries to PKCS#12 KeyStore and password.
 	 *
-	 * @param password
-	 * @param pkcs12File
+	 * @param ksBytes
+	 *            the binaries
+	 * @param ksPassword
+	 *            the keystore password
 	 */
-	public Pkcs12SignatureToken(String password, File pkcs12File) {
-		this(password.toCharArray(), pkcs12File);
+	public Pkcs12SignatureToken(byte[] ksBytes, String ksPassword) {
+		super(ksBytes, KS_TYPE, ksPassword);
 	}
 
 	/**
-	 * Creates a SignatureTokenConnection with the provided password and PKCS#12 file object.
+	 * Creates a SignatureTokenConnection with the provided File to PKCS#12 KeyStore and password.
 	 *
-	 * @param password
-	 * @param pkcs12File
+	 * @param ksFile
+	 *            the keystore file
+	 * @param ksPassword
+	 *            the keystore password
 	 */
-	public Pkcs12SignatureToken(char[] password, File pkcs12File) {
-		this.password = password;
-		if (!pkcs12File.exists()) {
-			throw new DSSException("File Not Found " + pkcs12File.getAbsolutePath());
-		}
-		this.pkcs12File = pkcs12File;
+	public Pkcs12SignatureToken(File ksFile, String ksPassword) throws IOException {
+		super(ksFile, KS_TYPE, ksPassword);
 	}
 
 	/**
-	 * A specific constructor to allow non-file based usage of p12 data
+	 * Creates a SignatureTokenConnection with the provided filepath to PKCS#12 KeyStore file and password.
 	 *
-	 * @param password
-	 * @param pkcs12Data
+	 * @param filepath
+	 *            the filepath of the keystore
+	 * @param ksPassword
+	 *            the keystore password
 	 */
-	public Pkcs12SignatureToken(char[] password, byte[] pkcs12Data) {
-
-		this.password = password;
-		if (pkcs12Data == null) {
-			throw new DSSException("PKCS12 data not provided");
-		}
-		this.pkcs12Data = pkcs12Data;
+	public Pkcs12SignatureToken(String filepath, String ksPassword) throws IOException {
+		super(filepath, KS_TYPE, ksPassword);
 	}
 
-	/**
-	 * A specific constructor to allow non-file based usage of p12 data
-	 *
-	 * @param password
-	 * @param inputStream
-	 */
-	public Pkcs12SignatureToken(String password, InputStream inputStream) {
-
-		this.password = password.toCharArray();
-		if (inputStream == null) {
-			throw new RuntimeException("PKCS12 data not provided");
-		}
-		try {
-			this.pkcs12Data = toByteArray(inputStream);
-		} catch (IOException e) {
-			throw new RuntimeException("Unable to read input : " + e.getMessage(), e);
-		}
-	}
-
-	private byte[] toByteArray(InputStream inputStream) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] data = new byte[2048];
-		int nRead = 0;
-		while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-			baos.write(data, 0, nRead);
-		}
-		return baos.toByteArray();
-	}
-
-	@Override
-	public void close() {
-	}
-
-	@Override
-	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
-
-		List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
-
-		InputStream input = null;
-		try {
-			KeyStore keyStore = KeyStore.getInstance("PKCS12");
-
-			if (pkcs12Data != null) {
-				input = new ByteArrayInputStream(pkcs12Data);
-			} else {
-				input = new FileInputStream(pkcs12File);
-			}
-
-			keyStore.load(input, password);
-			PasswordProtection pp = new KeyStore.PasswordProtection(password);
-			Enumeration<String> aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
-
-				String alias = aliases.nextElement();
-				if (keyStore.isKeyEntry(alias)) {
-
-					PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, pp);
-					final KSPrivateKeyEntry privateKeyEntry = new KSPrivateKeyEntry(entry);
-					list.add(privateKeyEntry);
-				}
-			}
-		} catch (Exception e) {
-			if (e.getCause() instanceof BadPaddingException) {
-				throw new DSSException("Bad password for PKCS12");
-			}
-			throw new DSSException("Can't initialize Sun PKCS#12 security provider. Reason: " + e.getMessage(), e);
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
-		}
-		return list;
-	}
 }

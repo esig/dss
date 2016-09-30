@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.standalone.task;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -140,12 +141,12 @@ public class SigningTask extends Task<DSSDocument> {
 		return selectedKey;
 	}
 
-	private SignatureTokenConnection getToken(SignatureModel model) {
+	private SignatureTokenConnection getToken(SignatureModel model) throws IOException {
 		switch (model.getTokenType()) {
 		case PKCS11:
 			return new Pkcs11SignatureToken(model.getPkcsFile().getAbsolutePath(), model.getPassword().toCharArray());
 		case PKCS12:
-			return new Pkcs12SignatureToken(model.getPassword().toCharArray(), model.getPkcsFile());
+			return new Pkcs12SignatureToken(model.getPkcsFile(), model.getPassword());
 		case MSCAPI:
 			return new MSCAPISignatureToken();
 		default:

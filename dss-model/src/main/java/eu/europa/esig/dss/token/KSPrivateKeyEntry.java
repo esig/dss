@@ -40,6 +40,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 
+	private final String alias;
+
 	private final CertificateToken certificate;
 
 	private final CertificateToken[] certificateChain;
@@ -49,8 +51,8 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 	/**
 	 * The default constructor for KSPrivateKeyEntry.
 	 */
-	public KSPrivateKeyEntry(final PrivateKeyEntry privateKeyEntry) {
-
+	public KSPrivateKeyEntry(final String alias, final PrivateKeyEntry privateKeyEntry) {
+		this.alias = alias;
 		certificate = new CertificateToken((X509Certificate) privateKeyEntry.getCertificate());
 		final List<CertificateToken> x509CertificateList = new ArrayList<CertificateToken>();
 		final Certificate[] simpleCertificateChain = privateKeyEntry.getCertificateChain();
@@ -61,6 +63,10 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 		final CertificateToken[] certificateChain_ = new CertificateToken[x509CertificateList.size()];
 		certificateChain = x509CertificateList.toArray(certificateChain_);
 		privateKey = privateKeyEntry.getPrivateKey();
+	}
+
+	public String getAlias() {
+		return alias;
 	}
 
 	@Override

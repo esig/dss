@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -39,7 +41,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 public class SignPdfASiCSBTest extends CookbookTools {
 
 	@Test
-	public void signASiCSBaselineB() {
+	public void signASiCSBaselineB() throws IOException {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

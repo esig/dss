@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -16,7 +18,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 public class SignPdfASiCSEWithCAdESTest extends CookbookTools {
 
 	@Test
-	public void signASiCSBaselineB() {
+	public void signASiCSBaselineB() throws IOException {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -37,12 +39,12 @@ public class SignPdfASiCSEWithCAdESTest extends CookbookTools {
 
 		// Preparing parameters for the AsicE signature
 		ASiCSignatureParameters parameters = new ASiCSignatureParameters();
-		
+
 		// We choose the level of the signature (-B, -T, -LT or -LTA).
 		parameters.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
 		// We choose CAdES as underlying form
 		parameters.aSiC().setUnderlyingForm(SignatureForm.CAdES);
-		
+
 		// We set the digest algorithm to use with the signature algorithm. You
 		// must use the
 		// same parameter when you invoke the method sign on the token. The

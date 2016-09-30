@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cookbook.example.validate;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -51,7 +52,7 @@ import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 public class ValidateXmlXadesLTWithOnlineSourcesTest extends CookbookTools {
 
 	@Test
-	public void validateXAdESBaselineLTWithOnlineSources() {
+	public void validateXAdESBaselineLTWithOnlineSources() throws IOException {
 
 		// tag::demo[]
 

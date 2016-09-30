@@ -4,9 +4,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -60,13 +60,15 @@ public class CookbookTools {
 
 	/**
 	 * This method sets the common parameters.
+	 * 
+	 * @throws IOException
 	 */
-	protected static void preparePKCS12TokenAndKey() {
-		signingToken = new Pkcs12SignatureToken("password", "src/main/resources/user_a_rsa.p12");
+	protected static void preparePKCS12TokenAndKey() throws IOException {
+		signingToken = new Pkcs12SignatureToken("src/main/resources/user_a_rsa.p12", "password");
 		privateKey = signingToken.getKeys().get(0);
 	}
 
-	protected static MockTSPSource getMockTSPSource() throws DSSException, Exception {
+	protected static MockTSPSource getMockTSPSource() throws Exception {
 		return new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
 	}
 

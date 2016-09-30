@@ -89,7 +89,7 @@ public class JavaKeyStoreTool {
 			}
 			final Certificate[] certificateChain = ks.getCertificateChain(certAlias);
 			KeyStore.PrivateKeyEntry privateKey = new KeyStore.PrivateKeyEntry((PrivateKey) key, certificateChain);
-			KSPrivateKeyEntry ksPrivateKey = new KSPrivateKeyEntry(privateKey);
+			KSPrivateKeyEntry ksPrivateKey = new KSPrivateKeyEntry(certAlias, privateKey);
 			return ksPrivateKey;
 		} catch (GeneralSecurityException e) {
 			throw new DSSException(e);

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example;
 
+import java.io.IOException;
 import java.net.URL;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -89,10 +90,12 @@ public class Cookbook {
 
 	/**
 	 * This method sets the common parameters.
+	 * 
+	 * @throws IOException
 	 */
-	protected static void preparePKCS12TokenAndKey() {
+	protected static void preparePKCS12TokenAndKey() throws IOException {
 		String pkcs12TokenFile = getPathFromResource("/user_a_rsa.p12");
-		signingToken = new Pkcs12SignatureToken("password", pkcs12TokenFile);
+		signingToken = new Pkcs12SignatureToken(pkcs12TokenFile, "password");
 		privateKey = signingToken.getKeys().get(0);
 	}
 

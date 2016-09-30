@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.BLevelParameters;
@@ -42,7 +44,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 
 	@Test
-	public void testWithExplicitPolicy() {
+	public void testWithExplicitPolicy() throws IOException {
 
 		prepareXmlDoc();
 
@@ -62,7 +64,7 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 
 		BLevelParameters bLevelParameters = parameters.bLevel();
 
-		//Get and use the explicit policy
+		// Get and use the explicit policy
 		String signaturePolicyId = "http://www.example.com/policy.txt";
 		DigestAlgorithm signaturePolicyHashAlgo = DigestAlgorithm.SHA256;
 		String signaturePolicyDescription = "Policy text to digest";

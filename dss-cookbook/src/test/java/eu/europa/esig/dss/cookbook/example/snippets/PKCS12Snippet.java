@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import java.io.IOException;
 import java.util.List;
 
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -12,11 +13,11 @@ import eu.europa.esig.dss.utils.Utils;
 
 public class PKCS12Snippet {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		// tag::demo[]
 
-		SignatureTokenConnection token = new Pkcs12SignatureToken("password", "src/main/resources/user_a_rsa.p12");
+		SignatureTokenConnection token = new Pkcs12SignatureToken("src/main/resources/user_a_rsa.p12", "password");
 
 		List<DSSPrivateKeyEntry> keys = token.getKeys();
 		for (DSSPrivateKeyEntry entry : keys) {
@@ -29,6 +30,7 @@ public class PKCS12Snippet {
 		System.out.println("Signature value : " + Utils.toBase64(signatureValue.getValue()));
 
 		// end::demo[]
+
 	}
 
 }

@@ -67,11 +67,14 @@ public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 	}
 
 	/**
-	 * This method is a workaround for scenarios when multiple entries have the same alias. Since the alias is the only "official"
+	 * This method is a workaround for scenarios when multiple entries have the same alias. Since the alias is the only
+	 * "official"
 	 * way of retrieving an entry, only the first entry with a given alias is accessible.
-	 * See: https://joinup.ec.europa.eu/software/sd-dss/issue/problem-possible-keystore-aliases-collision-when-using-mscapi
+	 * See:
+	 * https://joinup.ec.europa.eu/software/sd-dss/issue/problem-possible-keystore-aliases-collision-when-using-mscapi
 	 *
-	 * @param keyStore the key store to fix
+	 * @param keyStore
+	 *            the key store to fix
 	 */
 	private static void _fixAliases(KeyStore keyStore) {
 		Field field;
@@ -129,7 +132,7 @@ public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 				String alias = aliases.nextElement();
 				if (keyStore.isKeyEntry(alias)) {
 					PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, protectionParameter);
-					list.add(new KSPrivateKeyEntry(entry));
+					list.add(new KSPrivateKeyEntry(alias, entry));
 				}
 			}
 

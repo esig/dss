@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cookbook.example.validate;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -45,7 +46,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public class ValidateSignedXmlXadesBTest extends CookbookTools {
 
 	@Test
-	public void validateXAdESBaselineB() {
+	public void validateXAdESBaselineB() throws IOException {
 
 		// tag::demo[]
 

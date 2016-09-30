@@ -20,86 +20,64 @@
  */
 package eu.europa.esig.dss.token;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.KeyStore.PasswordProtection;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.DSSException;
 
 /**
  * Class holding all Java KeyStore file access logic.
  *
  */
-public class JKSSignatureToken extends AbstractSignatureTokenConnection {
+public class JKSSignatureToken extends KeyStoreSignatureTokenConnection {
 
-	private static final Logger logger = LoggerFactory.getLogger(JKSSignatureToken.class);
-
-	private char[] password;
-
-	protected KeyStore keyStore = null;
+	private static final String KS_TYPE = "JKS";
 
 	/**
 	 * Creates a SignatureTokenConnection with the provided InputStream to Java KeyStore file and password.
 	 *
 	 * @param ksStream
+	 *            the inputstream
 	 * @param ksPassword
+	 *            the keystore password
 	 */
 	public JKSSignatureToken(InputStream ksStream, String ksPassword) {
-		try {
-			keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-			password = (ksPassword == null) ? null : ksPassword.toCharArray();
-			keyStore.load(ksStream, password);
-		} catch (Exception e) {
-			throw new DSSException(e);
-		} finally {
-			if (ksStream != null) {
-				try {
-					ksStream.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
-		}
-	}
-
-	@Override
-	public void close() {
+		super(ksStream, KS_TYPE, ksPassword);
 	}
 
 	/**
-	 * Retrieves all the available keys (private keys entries) from the Java KeyStore.
+	 * Creates a SignatureTokenConnection with the provided binaries to Java KeyStore and password.
 	 *
-	 * @return
-	 * @throws DSSException
+	 * @param ksBytes
+	 *            the binaries
+	 * @param ksPassword
+	 *            the keystore password
 	 */
-	@Override
-	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
-
-		final List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
-
-		try {
-			final PasswordProtection pp = new KeyStore.PasswordProtection(password);
-			final Enumeration<String> aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
-
-				final String alias = aliases.nextElement();
-				if (keyStore.isKeyEntry(alias)) {
-
-					final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, pp);
-					list.add(new KSPrivateKeyEntry(entry));
-				}
-			}
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
-		return list;
+	public JKSSignatureToken(byte[] ksBytes, String ksPassword) {
+		super(ksBytes, KS_TYPE, ksPassword);
 	}
+
+	/**
+	 * Creates a SignatureTokenConnection with the provided File to Java KeyStore and password.
+	 *
+	 * @param ksFile
+	 *            the keystore file
+	 * @param ksPassword
+	 *            the keystore password
+	 */
+	public JKSSignatureToken(File ksFile, String ksPassword) throws IOException {
+		super(ksFile, KS_TYPE, ksPassword);
+	}
+
+	/**
+	 * Creates a SignatureTokenConnection with the provided filepath to Java KeyStore file and password.
+	 *
+	 * @param filepath
+	 *            the filepath of the keystore
+	 * @param ksPassword
+	 *            the keystore password
+	 */
+	public JKSSignatureToken(String filepath, String ksPassword) throws IOException {
+		super(filepath, KS_TYPE, ksPassword);
+	}
+
 }
