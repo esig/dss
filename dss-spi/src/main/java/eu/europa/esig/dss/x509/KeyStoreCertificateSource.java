@@ -23,11 +23,13 @@ package eu.europa.esig.dss.x509;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -35,8 +37,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSEncodingException;
-import eu.europa.esig.dss.DSSEncodingException.MSG;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -127,46 +128,13 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 		this.password = password;
 	}
 
-	public List<CertificateToken> populate() {
-		List<CertificateToken> list = new ArrayList<CertificateToken>();
-		try {
-			KeyStore keyStore = getKeyStore();
-			Enumeration<String> aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
-				String alias = aliases.nextElement();
-				final Certificate certificate = keyStore.getCertificate(alias);
-				if (certificate != null) {
-					X509Certificate x509Certificate = (X509Certificate) certificate;
-					logger.debug("Alias " + alias + " Cert " + x509Certificate.getSubjectDN());
-
-					CertificateToken certToken = certPool.getInstance(new CertificateToken(x509Certificate), CertificateSourceType.OTHER);
-					list.add(certToken);
-				}
-				Certificate[] certificateChain = keyStore.getCertificateChain(alias);
-				if (certificateChain != null) {
-					for (Certificate chainCert : certificateChain) {
-						logger.debug("Alias " + alias + " Cert " + ((X509Certificate) chainCert).getSubjectDN());
-						CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert),
-								CertificateSourceType.OCSP_RESPONSE);
-						if (!list.contains(certToken)) {
-							list.add(certToken);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new DSSEncodingException(MSG.CERTIFICATE_CANNOT_BE_READ, e);
-		}
-		return list;
-	}
-
 	public void addCertificateToKeyStore(CertificateToken certificateToken) {
 		try {
 			KeyStore keyStore = getKeyStore();
 			keyStore.setCertificateEntry(certificateToken.getDSSIdAsString(), certificateToken.getCertificate());
 			persistKeyStore(keyStore);
 		} catch (Exception e) {
-			logger.error("Unable to add certificate to the keystore : " + e.getMessage(), e);
+			throw new DSSException("Unable to add certificate to the keystore", e);
 		}
 	}
 
@@ -176,15 +144,30 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 			os = new FileOutputStream(keyStoreFile);
 			keyStore.store(os, password.toCharArray());
 		} catch (Exception e) {
-			logger.error("Unable to persist the keystore : " + e.getMessage(), e);
+			throw new DSSException("Unable to persist the keystore", e);
 		} finally {
 			Utils.closeQuietly(os);
 		}
 	}
 
-	public void deleteCertificateFromKeyStore(String dssId) {
-		KeyStore keyStore = getKeyStore();
+	public CertificateToken getCertificate(String dssId) {
 		try {
+			KeyStore keyStore = getKeyStore();
+			if (keyStore.containsAlias(dssId)) {
+				Certificate certificate = keyStore.getCertificate(dssId);
+				return DSSUtils.loadCertificate(certificate.getEncoded());
+			} else {
+				logger.warn("Certificate " + dssId + " not found in the keystore");
+				return null;
+			}
+		} catch (Exception e) {
+			throw new DSSException("Unable to retrieve certificate from the keystore", e);
+		}
+	}
+
+	public void deleteCertificateFromKeyStore(String dssId) {
+		try {
+			KeyStore keyStore = getKeyStore();
 			if (keyStore.containsAlias(dssId)) {
 				keyStore.deleteEntry(dssId);
 				persistKeyStore(keyStore);
@@ -193,15 +176,14 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				logger.warn("Certificate " + dssId + " not found in the keystore");
 			}
 		} catch (Exception e) {
-			logger.error("Unable to delete certificate from the keystore : " + e.getMessage(), e);
+			throw new DSSException("Unable to delete certificate from the keystore", e);
 		}
 	}
 
 	public List<CertificateToken> getCertificatesFromKeyStore() {
 		List<CertificateToken> list = new ArrayList<CertificateToken>();
-
-		KeyStore keyStore = getKeyStore();
 		try {
+			KeyStore keyStore = getKeyStore();
 			Enumeration<String> aliases = keyStore.aliases();
 			while (aliases.hasMoreElements()) {
 				String alias = aliases.nextElement();
@@ -212,23 +194,22 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("Unable to retrieve certificates from the keystore : " + e.getMessage(), e);
+			throw new DSSException("Unable to retrieve certificates from the keystore", e);
 		}
 		return list;
 	}
 
-	private KeyStore getKeyStore() {
+	private KeyStore getKeyStore() throws KeyStoreException, IOException, GeneralSecurityException {
 		KeyStore store = null;
 		InputStream is = null;
 		try {
 			store = KeyStore.getInstance(keyStoreType);
 			is = new FileInputStream(keyStoreFile);
 			store.load(is, password.toCharArray());
-		} catch (Exception e) {
-			logger.error("Unable to read keystore : " + e.getMessage(), e);
 		} finally {
 			Utils.closeQuietly(is);
 		}
 		return store;
 	}
+
 }
