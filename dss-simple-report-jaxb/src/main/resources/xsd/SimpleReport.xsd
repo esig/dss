@@ -84,6 +84,7 @@
 			<xs:enumeration value="REVOKED" />
 			<xs:enumeration value="EXPIRED" />
 			<xs:enumeration value="NO_POE" />
+			<xs:enumeration value="CERTIFICATE_CHAIN_GENERAL_FAILURE" />
 			<xs:enumeration value="UNEXPECTED_ERROR" />
 		</xs:restriction>
 	</xs:simpleType>
