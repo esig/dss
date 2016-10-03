@@ -43,6 +43,7 @@ public enum SubIndication {
 	REVOKED,
 	EXPIRED,
 	NO_POE,
+	CERTIFICATE_CHAIN_GENERAL_FAILURE,
 
 	/**
 	 * Added to handle any unexpected error encountered during the validation process.
