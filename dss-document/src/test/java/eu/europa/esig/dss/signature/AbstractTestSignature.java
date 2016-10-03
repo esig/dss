@@ -84,14 +84,14 @@ public abstract class AbstractTestSignature {
 
 		// signedDocument.save("target/xades.xml");
 
-		if (logger.isDebugEnabled()) {
-			try {
-				byte[] byteArray = Utils.toByteArray(signedDocument.openStream());
-				onDocumentSigned(byteArray);
-				// LOGGER.debug(new String(byteArray));
-			} catch (Exception e) {
-				logger.error("Cannot display file content", e);
+		try {
+			byte[] byteArray = Utils.toByteArray(signedDocument.openStream());
+			onDocumentSigned(byteArray);
+			if (logger.isDebugEnabled()) {
+				logger.debug(new String(byteArray));
 			}
+		} catch (Exception e) {
+			logger.error("Cannot display file content", e);
 		}
 
 		checkMimeType(signedDocument);
