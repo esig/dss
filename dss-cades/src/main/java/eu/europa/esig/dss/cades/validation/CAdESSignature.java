@@ -1110,21 +1110,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
 		try {
 
-			final List<CertificateValidity> certificateValidityList = getCertificateValidityList();
-			if (certificateValidityList.size() == 0) {
-
+			final CertificateValidity bestCandidate = getTheBestCandidate();
+			if (bestCandidate == null) {
 				signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature.");
 				return signatureCryptographicVerification;
 			}
 			boolean detachedSignature = isDetachedSignature();
 			final SignerInformation signerInformationToCheck;
 			if (detachedSignature) {
-
 				if (CollectionUtils.isEmpty(detachedContents)) {
-
-					if (certificateValidityList.size() > 0) {
-						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidityList.get(0));
-					}
+					candidatesForSigningCertificate.setTheCertificateValidity(bestCandidate);
 					signatureCryptographicVerification.setErrorMessage("Detached file not found!");
 					return signatureCryptographicVerification;
 				}
@@ -1197,11 +1192,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return (cmsSignedData.getSignedContent() == null) || (cmsSignedData.getSignedContent().getContent() == null) ? true : false;
 	}
 
-	private List<CertificateValidity> getCertificateValidityList() {
-
-		final List<CertificateValidity> certificateValidityList;
+	private CertificateValidity getTheBestCandidate() {
 		if (providedSigningCertificateToken == null) {
-
 			// To determine the signing certificate it is necessary to browse
 			// through all candidates found before.
 			candidatesForSigningCertificate = getCandidatesForSigningCertificate();
@@ -1211,8 +1203,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final CertificateValidity certificateValidity = new CertificateValidity(providedSigningCertificateToken);
 			candidatesForSigningCertificate.add(certificateValidity);
 		}
-		certificateValidityList = candidatesForSigningCertificate.getCertificateValidityList();
-		return certificateValidityList;
+		return candidatesForSigningCertificate.getTheBestCandidate();
 	}
 
 	@Override
