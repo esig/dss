@@ -1,14 +1,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+ 	   xmlns:jaxrs-client="http://cxf.apache.org/jaxrs-client"
        xsi:schemaLocation="
        	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+        http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd">
 
-	<jaxrs:client id="restClient" address="http://localhost:8080/dss-demo-webapp/services/rest/signature" serviceClass="eu.europa.esig.dss.signature.RestDocumentSignatureService">
-		<jaxrs:providers>
+	<jaxrs-client:client 
+		id="restClient" 
+		address="http://localhost:8080/dss-demo-webapp/services/rest/signature" 
+		serviceClass="eu.europa.esig.dss.signature.RestDocumentSignatureService">
+		
+		<jaxrs-client:providers>
 			<bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
-		</jaxrs:providers>
-	</jaxrs:client>
+		</jaxrs-client:providers>
+		
+	</jaxrs-client:client>
 
 </beans>

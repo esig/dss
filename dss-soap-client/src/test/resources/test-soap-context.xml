@@ -1,11 +1,9 @@
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
 	xsi:schemaLocation="
        	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
-
-	<import resource="classpath:META-INF/cxf/cxf.xml" />
-	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
-	<!-- <import resource="classpath:META-INF/cxf/cxf-extension-http.xml" /> -->
 
 	<jaxws:client id="soapClient" address="http://localhost:8080/dss-demo-webapp/services/SignatureService?wsdl" serviceClass="eu.europa.esig.dss.signature.SoapDocumentSignatureService">
 		<jaxws:properties>

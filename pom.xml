@@ -48,7 +48,7 @@
 		<slf4j.version>1.7.21</slf4j.version>
 		<logback-classic.version>1.1.7</logback-classic.version>
 		<bouncycastle.version>1.55</bouncycastle.version>
-		<cxf.version>2.7.16</cxf.version>
+		<cxf.version>3.1.7</cxf.version>
 		<junit.version>4.11</junit.version>
 		<jackson-jaxrs-json-provider.version>2.5.4</jackson-jaxrs-json-provider.version>
 		<nexu.version>1.3</nexu.version>
@@ -493,28 +493,30 @@
 				<version>${project.version}</version>
 				<scope>test</scope>
 			</dependency>
+			
 			<!-- Public Dependencies -->
 			<dependency>
-				<groupId>javax.mail</groupId>
-				<artifactId>javax.mail-api</artifactId>
-				<version>1.5.5</version>
-			</dependency>
-			<dependency>
-			    <groupId>com.sun.mail</groupId>
-			    <artifactId>javax.mail</artifactId>
-			    <version>1.5.5</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>com.fasterxml.jackson.jaxrs</groupId>
-				<artifactId>jackson-jaxrs-json-provider</artifactId>
-				<version>${jackson-jaxrs-json-provider.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+				<artifactId>cxf-rt-frontend-jaxws</artifactId>
 				<version>${cxf.version}</version>
 			</dependency>
+		    <dependency>
+		        <groupId>org.apache.cxf</groupId>
+		        <artifactId>cxf-rt-transports-http</artifactId>
+		        <version>${cxf.version}</version>
+		    </dependency>
+		    	
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-rs-client</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+		        <artifactId>jackson-jaxrs-json-provider</artifactId>
+		        <version>${jackson-jaxrs-json-provider.version}</version>
+			</dependency>	
+
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
