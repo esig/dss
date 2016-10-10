@@ -64,12 +64,12 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
 import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
-import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.DSSPDFUtils;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;
@@ -496,8 +496,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				sigVriDictionary.setItem("CRL", vriCrlArray);
 			}
 
-			PAdESSignature signature = callback.getSignature();
-			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, signature.getCAdESSignature().getCmsSignedData().getEncoded());
+			// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
+			PdfSignatureInfo pdfSignatureInfo = callback.getSignature().getPdfSignatureInfo();
+			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, pdfSignatureInfo.getContent());
 			String hexHash = Utils.toHex(digest).toUpperCase();
 
 			vriDictionary.setItem(hexHash, sigVriDictionary);
