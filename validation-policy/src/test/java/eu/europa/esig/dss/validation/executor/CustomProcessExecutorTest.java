@@ -288,6 +288,44 @@ public class CustomProcessExecutorTest {
 		assertTrue(warnings.contains(MessageTag.BBB_XCV_CMDCIQC_ANS.getMessage()));
 	}
 
+	@Test
+	public void testDSS956AllValidationLevels() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/passed_revoked_with_timestamp.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
+		checkReports(executor.execute());
+
+		executor.setValidationLevel(ValidationLevel.TIMESTAMPS);
+		checkReports(executor.execute());
+
+		executor.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
+		checkReports(executor.execute());
+
+		executor.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
+		checkReports(executor.execute());
+	}
+
+	private void checkReports(Reports reports) {
+		reports.print();
+		assertNotNull(reports);
+		assertNotNull(reports.getDiagnosticData());
+		assertNotNull(reports.getDiagnosticDataJaxb());
+		assertNotNull(reports.getSimpleReport());
+		assertNotNull(reports.getSimpleReportJaxb());
+		assertNotNull(reports.getDetailedReport());
+		assertNotNull(reports.getDetailedReportJaxb());
+		assertTrue(Utils.isStringNotBlank(reports.getXmlDiagnosticData()));
+		assertTrue(Utils.isStringNotBlank(reports.getXmlSimpleReport()));
+		assertTrue(Utils.isStringNotBlank(reports.getXmlDetailedReport()));
+	}
+
 	private EtsiValidationPolicy loadPolicy() throws Exception {
 		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
 		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);

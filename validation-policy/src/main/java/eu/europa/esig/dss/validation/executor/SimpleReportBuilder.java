@@ -155,9 +155,9 @@ public class SimpleReportBuilder {
 		XmlConstraintsConclusion constraintsConclusion = null;
 		switch (validationLevel) {
 		case BASIC_SIGNATURES:
+		case TIMESTAMPS:
 			constraintsConclusion = getBasicSignatureValidationConclusion(signatureId);
 			break;
-		case TIMESTAMPS:
 		case LONG_TERM_DATA:
 			constraintsConclusion = getLongTermDataValidationConclusion(signatureId);
 			break;
