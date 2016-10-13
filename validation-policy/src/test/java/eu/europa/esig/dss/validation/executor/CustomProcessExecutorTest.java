@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -12,6 +13,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
@@ -256,6 +258,45 @@ public class CustomProcessExecutorTest {
 
 		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testDSS956AllValidationLevels() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/passed_revoked_with_timestamp.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date currentTime = sdf.parse("04/05/2016 15:15:00");
+		executor.setCurrentTime(currentTime);
+
+		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
+		checkReports(executor.execute());
+
+		executor.setValidationLevel(ValidationLevel.TIMESTAMPS);
+		checkReports(executor.execute());
+
+		executor.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
+		checkReports(executor.execute());
+
+		executor.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
+		checkReports(executor.execute());
+	}
+
+	private void checkReports(Reports reports) {
+		assertNotNull(reports);
+		assertNotNull(reports.getDiagnosticData());
+		assertNotNull(reports.getDiagnosticDataJaxb());
+		assertNotNull(reports.getSimpleReport());
+		assertNotNull(reports.getSimpleReportJaxb());
+		assertNotNull(reports.getDetailedReport());
+		assertNotNull(reports.getDetailedReportJaxb());
+		assertTrue(StringUtils.isNotBlank(reports.getXmlDiagnosticData()));
+		assertTrue(StringUtils.isNotBlank(reports.getXmlSimpleReport()));
+		assertTrue(StringUtils.isNotBlank(reports.getXmlDetailedReport()));
 	}
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
