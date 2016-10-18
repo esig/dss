@@ -1358,20 +1358,34 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			boolean coreValidity = false;
 			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
 					providedSigningCertificateToken);
+			LOG.debug("Determining signing certificate from certificate candidates list");
+			final List<String> preliminaryErrorMessages = new ArrayList<String>();
+			int certificateNumber = 0;
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
-
+				String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
 				try {
 
 					final PublicKey publicKey = certificateValidity.getPublicKey();
 					coreValidity = santuarioSignature.checkSignatureValue(publicKey);
 					if (coreValidity) {
-
+						LOG.info("Determining signing certificate from certificate candidates list succeeded");
 						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
 						break;
+					} else {
+						// upon returning false, santuarioSignature (class XMLSignature) will log "Signature
+						// verification failed." with WARN level.
+						preliminaryErrorMessages.add(errorMessagePrefix + "Signature verification failed");
 					}
 				} catch (XMLSignatureException e) {
-					LOG.warn("Exception when validating signature: " + e.getMessage());
-					signatureCryptographicVerification.setErrorMessage(e.getMessage());
+					LOG.debug("Exception while probing candidate certificate as signing certificate: " + e.getMessage());
+					preliminaryErrorMessages.add(errorMessagePrefix + e.getMessage());
+				}
+				certificateNumber++;
+			}
+			if (!coreValidity) {
+				LOG.warn("Determining signing certificate from certificate candidates list failed: {}", preliminaryErrorMessages);
+				for (String preliminaryErrorMessage : preliminaryErrorMessages) {
+					signatureCryptographicVerification.setErrorMessage(preliminaryErrorMessage);
 				}
 			}
 			final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
