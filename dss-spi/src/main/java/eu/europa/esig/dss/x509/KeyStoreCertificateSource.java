@@ -31,6 +31,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -197,6 +198,11 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 			throw new DSSException("Unable to retrieve certificates from the keystore", e);
 		}
 		return list;
+	}
+
+	@Override
+	public List<CertificateToken> getCertificates() {
+		return Collections.unmodifiableList(getCertificatesFromKeyStore());
 	}
 
 	private KeyStore getKeyStore() throws KeyStoreException, IOException, GeneralSecurityException {
