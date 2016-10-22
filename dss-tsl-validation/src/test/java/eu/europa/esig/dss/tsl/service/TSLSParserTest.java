@@ -19,6 +19,7 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.util.LanguagePreference;
 import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -52,9 +53,11 @@ public class TSLSParserTest {
 		this.fileToTest = fileToTest;
 	}
 
+	protected final LanguagePreference langPref = new LanguagePreference( "en" );
+	
 	@Test
 	public void parseTSL() throws Exception {
-		TSLParser parser = new TSLParser(new FileInputStream(fileToTest));
+		TSLParser parser = new TSLParser(new FileInputStream(fileToTest), langPref);
 		TSLParserResult result = parser.call();
 		assertNotNull(result);
 		assertNotNull(result.getNextUpdateDate());

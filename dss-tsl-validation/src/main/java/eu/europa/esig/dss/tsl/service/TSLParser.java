@@ -55,6 +55,7 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.util.LanguagePreference;
 import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
@@ -68,6 +69,7 @@ import eu.europa.esig.jaxb.ecc.QualificationsType;
 import eu.europa.esig.jaxb.ecc.QualifierType;
 import eu.europa.esig.jaxb.ecc.QualifiersType;
 import eu.europa.esig.jaxb.tsl.AdditionalServiceInformationType;
+import eu.europa.esig.jaxb.tsl.AddressType;
 import eu.europa.esig.jaxb.tsl.AnyType;
 import eu.europa.esig.jaxb.tsl.DigitalIdentityListType;
 import eu.europa.esig.jaxb.tsl.DigitalIdentityType;
@@ -81,6 +83,7 @@ import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.jaxb.tsl.NonEmptyURIListType;
 import eu.europa.esig.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
+import eu.europa.esig.jaxb.tsl.PostalAddressListType;
 import eu.europa.esig.jaxb.tsl.PostalAddressType;
 import eu.europa.esig.jaxb.tsl.ServiceHistoryInstanceType;
 import eu.europa.esig.jaxb.tsl.TSPInformationType;
@@ -107,6 +110,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 	private static final JAXBContext jaxbContext;
 
 	private InputStream inputStream;
+	
+	private final LanguagePreference langPref;
 
 	static {
 		try {
@@ -116,8 +121,9 @@ public class TSLParser implements Callable<TSLParserResult> {
 		}
 	}
 
-	public TSLParser(InputStream inputStream) {
+	public TSLParser(final InputStream inputStream, final LanguagePreference langPref) {
 		this.inputStream = inputStream;
+		this.langPref = langPref;
 	}
 
 	@Override
@@ -294,9 +300,12 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSLServiceProvider serviceProvider = new TSLServiceProvider();
 		TSPInformationType tspInformation = tsp.getTSPInformation();
 		if (tspInformation != null) {
-			serviceProvider.setName(getEnglishOrFirst(tspInformation.getTSPName()));
-			serviceProvider.setTradeName(getEnglishOrFirst(tspInformation.getTSPTradeName()));
-			serviceProvider.setPostalAddress(getPostalAddress(tspInformation));
+			serviceProvider.setName(getPreferredValue(tspInformation.getTSPName()));
+			serviceProvider.setTradeName(getPreferredValue(tspInformation.getTSPTradeName()));
+			final AddressType tspAddress = tspInformation.getTSPAddress();
+			if (tspAddress != null) {
+				serviceProvider.setPostalAddress(getPreferredPostalAddress(tspAddress.getPostalAddresses()));
+			}
 			serviceProvider.setElectronicAddress(getElectronicAddress(tspInformation));
 			serviceProvider.setServices(getServices(tsp.getTSPServices()));
 		}
@@ -318,7 +327,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	private TSLService getService(TSPServiceType tslService) {
 		TSLService service = new TSLService();
 		TSPServiceInformationType serviceInfo = tslService.getServiceInformation();
-		service.setName(getEnglishOrFirst(serviceInfo.getServiceName()));
+		service.setName(getPreferredValue(serviceInfo.getServiceName()));
 		service.setType(serviceInfo.getServiceTypeIdentifier());
 		service.setCertificates(extractCertificates(serviceInfo.getServiceDigitalIdentity()));
 		service.setStatusAndInformationExtensions(getStatusHistory(tslService));
@@ -404,7 +413,6 @@ public class TSLParser implements Callable<TSLParserResult> {
 									Condition condition = getCondition(qualificationElement.getCriteriaList());
 									if (Utils.isCollectionNotEmpty(qualifiers) && (condition != null)) {
 										conditionsForQualifiers.add(new TSLConditionsForQualifiers(qualifiers, condition));
-
 									}
 								}
 							}
@@ -497,20 +505,11 @@ public class TSLParser implements Callable<TSLParserResult> {
 		}
 	}
 
-	private String getPostalAddress(TSPInformationType tspInformation) {
-		PostalAddressType a = null;
-		if (tspInformation.getTSPAddress() == null) {
+	private String getPreferredPostalAddress(final PostalAddressListType addresses) {
+		if (addresses == null) {
 			return null;
 		}
-		for (PostalAddressType c : tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress()) {
-			if (ENGLISH_LANGUAGE.equalsIgnoreCase(c.getLang())) {
-				a = c;
-				break;
-			}
-		}
-		if (a == null) {
-			a = tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress().get(0);
-		}
+		final PostalAddressType a = langPref.getPreferredOrFirst(addresses.getPostalAddress());
 
 		StringBuffer sb = new StringBuffer();
 		if (Utils.isStringNotEmpty(a.getStreetAddress())) {
@@ -542,16 +541,12 @@ public class TSLParser implements Callable<TSLParserResult> {
 		return tspInformation.getTSPAddress().getElectronicAddress().getURI().get(0).getValue();
 	}
 
-	private String getEnglishOrFirst(InternationalNamesType names) {
+	private String getPreferredValue(final InternationalNamesType names) {
 		if (names == null) {
 			return null;
 		}
-		for (MultiLangNormStringType s : names.getName()) {
-			if (ENGLISH_LANGUAGE.equalsIgnoreCase(s.getLang())) {
-				return s.getValue();
-			}
-		}
-		return names.getName().get(0).getValue();
+		final MultiLangNormStringType preferredOrFirst = langPref.getPreferredOrFirst(names.getName());
+		return preferredOrFirst.getValue();
 	}
 
 	private List<String> getEnglishSchemeInformationURIs(TrustStatusListType tsl) {

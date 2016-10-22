@@ -41,6 +41,7 @@ import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
+import eu.europa.esig.dss.util.LanguagePreference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
@@ -70,7 +71,10 @@ public class TSLValidationJob {
 	private boolean checkLOTLSignature = true;
 	private boolean checkTSLSignatures = true;
 	private List<String> filterTerritories;
+	private LanguagePreference langPref = DEFAULT_LANGUAGE_PREFERENCE;
 
+	public static final LanguagePreference DEFAULT_LANGUAGE_PREFERENCE = new LanguagePreference("en");
+	
 	public void setExecutorService(ExecutorService executorService) {
 		this.executorService = executorService;
 	}
@@ -111,6 +115,10 @@ public class TSLValidationJob {
 		this.filterTerritories = filterTerritories;
 	}
 
+	public void setLangPref(LanguagePreference langPref) {
+		this.langPref = langPref;
+	}
+	
 	public void initRepository() {
 		logger.info("Initialization of the TSL repository ...");
 		int loadedTSL = 0;
@@ -120,7 +128,7 @@ public class TSLValidationJob {
 			for (File file : cachedFiles) {
 				try {
 					FileInputStream fis = new FileInputStream(file);
-					futureParseResults.add(executorService.submit(new TSLParser(fis)));
+					futureParseResults.add(executorService.submit(new TSLParser(fis, langPref)));
 				} catch (Exception e) {
 					logger.error("Unable to parse file '" + file.getAbsolutePath() + "' : " + e.getMessage(), e);
 				}
@@ -258,7 +266,7 @@ public class TSLValidationJob {
 				TSLParserResult countryParseResult = countryModel.getParseResult();
 				if (countryParseResult == null) {
 					FileInputStream fis = new FileInputStream(countryModel.getFilepath());
-					futureParseResults.add(executorService.submit(new TSLParser(fis)));
+					futureParseResults.add(executorService.submit(new TSLParser(fis, langPref)));
 				}
 
 				if (checkTSLSignatures && (countryModel.getValidationResult() == null || newLotl)) {
@@ -313,7 +321,7 @@ public class TSLValidationJob {
 
 	private TSLParserResult parseLOTL(TSLValidationModel validationModel) throws Exception {
 		FileInputStream fis = new FileInputStream(validationModel.getFilepath());
-		Future<TSLParserResult> future = executorService.submit(new TSLParser(fis));
+		Future<TSLParserResult> future = executorService.submit(new TSLParser(fis, langPref));
 		return future.get();
 	}
 
