@@ -248,7 +248,7 @@ public class TSLValidationJob {
 		for (Future<TSLLoaderResult> futureLoaderResult : futureLoaderResults) {
 			try {
 				TSLLoaderResult loaderResult = futureLoaderResult.get();
-				if ( loaderResult != null ) {
+				if ( loaderResult != null && loaderResult.getContent() != null ) {
 					TSLValidationModel countryModel = null;
 					if (!repository.isLastVersion(loaderResult)) {
 						countryModel = repository.storeInCache(loaderResult);
