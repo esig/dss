@@ -248,23 +248,25 @@ public class TSLValidationJob {
 		for (Future<TSLLoaderResult> futureLoaderResult : futureLoaderResults) {
 			try {
 				TSLLoaderResult loaderResult = futureLoaderResult.get();
-				TSLValidationModel countryModel = null;
-				if (!repository.isLastVersion(loaderResult)) {
-					countryModel = repository.storeInCache(loaderResult);
-				} else {
-					countryModel = repository.getByCountry(loaderResult.getCountryCode());
-				}
-
-				TSLParserResult countryParseResult = countryModel.getParseResult();
-				if (countryParseResult == null) {
-					FileInputStream fis = new FileInputStream(countryModel.getFilepath());
-					futureParseResults.add(executorService.submit(new TSLParser(fis)));
-				}
-
-				if (checkTSLSignatures && (countryModel.getValidationResult() == null || newLotl)) {
-					TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore,
-							getPotentialSigners(pointers, loaderResult.getCountryCode()));
-					futureValidationResults.add(executorService.submit(tslValidator));
+				if ( loaderResult != null ) {
+					TSLValidationModel countryModel = null;
+					if (!repository.isLastVersion(loaderResult)) {
+						countryModel = repository.storeInCache(loaderResult);
+					} else {
+						countryModel = repository.getByCountry(loaderResult.getCountryCode());
+					}
+	
+					TSLParserResult countryParseResult = countryModel.getParseResult();
+					if (countryParseResult == null) {
+						FileInputStream fis = new FileInputStream(countryModel.getFilepath());
+						futureParseResults.add(executorService.submit(new TSLParser(fis)));
+					}
+	
+					if (checkTSLSignatures && (countryModel.getValidationResult() == null || newLotl)) {
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore,
+								getPotentialSigners(pointers, loaderResult.getCountryCode()));
+						futureValidationResults.add(executorService.submit(tslValidator));
+					}
 				}
 			} catch (Exception e) {
 				logger.error("Unable to load/parse TSL : " + e.getMessage(), e);
