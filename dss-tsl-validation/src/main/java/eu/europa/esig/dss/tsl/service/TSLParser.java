@@ -77,6 +77,7 @@ import eu.europa.esig.jaxb.tsl.ExtensionsListType;
 import eu.europa.esig.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.jaxb.tsl.NextUpdateType;
+import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIListType;
 import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.jaxb.tsl.NonEmptyURIListType;
 import eu.europa.esig.jaxb.tsl.ObjectFactory;
@@ -99,6 +100,8 @@ import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
 public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final Logger logger = LoggerFactory.getLogger(TSLParser.class);
+
+	private static final String ENGLISH_LANGUAGE = "en";
 
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
 
@@ -140,6 +143,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		tslModel.setDistributionPoints(getDistributionPoints(tsl));
 		tslModel.setPointers(getMachineProcessableTSLPointers(tsl));
 		tslModel.setServiceProviders(getServiceProviders(tsl));
+		tslModel.setEnglishSchemeInformationURIs(getEnglishSchemeInformationURIs(tsl));
 		return tslModel;
 	}
 
@@ -471,7 +475,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 			return null;
 		}
 		for (PostalAddressType c : tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress()) {
-			if ("en".equalsIgnoreCase(c.getLang())) {
+			if (ENGLISH_LANGUAGE.equalsIgnoreCase(c.getLang())) {
 				a = c;
 				break;
 			}
@@ -515,11 +519,24 @@ public class TSLParser implements Callable<TSLParserResult> {
 			return null;
 		}
 		for (MultiLangNormStringType s : names.getName()) {
-			if ("en".equalsIgnoreCase(s.getLang())) {
+			if (ENGLISH_LANGUAGE.equalsIgnoreCase(s.getLang())) {
 				return s.getValue();
 			}
 		}
 		return names.getName().get(0).getValue();
+	}
+
+	private List<String> getEnglishSchemeInformationURIs(TrustStatusListType tsl) {
+		List<String> result = new ArrayList<String>();
+		NonEmptyMultiLangURIListType schemeInformationURI = tsl.getSchemeInformation().getSchemeInformationURI();
+		if (schemeInformationURI != null && CollectionUtils.isNotEmpty(schemeInformationURI.getURI())) {
+			for (NonEmptyMultiLangURIType uri : schemeInformationURI.getURI()) {
+				if (ENGLISH_LANGUAGE.equals(uri.getLang())) {
+					result.add(uri.getValue());
+				}
+			}
+		}
+		return result;
 	}
 
 }

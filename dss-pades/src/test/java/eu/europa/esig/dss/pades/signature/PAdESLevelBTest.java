@@ -128,8 +128,6 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 
 				logger.info("Byte range : " + Arrays.toString(pdSignature.getByteRange()));
 
-				// IOUtils.write(contents, new FileOutputStream("sig.p7s"));
-
 				ASN1InputStream asn1sInput = new ASN1InputStream(contents);
 				ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
@@ -160,6 +158,9 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 				ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 				logger.info("SIGNER INFO ASN1 : " + signerInfosAsn1.toString());
 				SignerInfo signedInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
+
+				ASN1Set unauthenticatedAttributes = signedInfo.getUnauthenticatedAttributes();
+				assertNull(unauthenticatedAttributes);
 
 				ASN1Set authenticatedAttributeSet = signedInfo.getAuthenticatedAttributes();
 				logger.info("AUTHENTICATED ATTR : " + authenticatedAttributeSet);

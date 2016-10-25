@@ -45,6 +45,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -59,7 +60,6 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -77,6 +77,7 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
@@ -95,9 +96,10 @@ import eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager;
 /**
  * Implementation of DataLoader for any protocol.
  * <p/>
- * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without having to add the certificate to the JVM
- * TrustStore. It takes into account a proxy management through {@code ProxyPreferenceManager}. The authentication is
- * also supported.
+ * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without
+ * having to add the certificate to the JVM TrustStore. It takes into account a
+ * proxy management through {@code ProxyPreferenceManager}. The authentication
+ * is also supported.
  */
 public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
@@ -120,7 +122,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	// TODO: (Bob: 2014 Jan 28) It is extracted from:
 	// https://joinup.ec.europa.eu/software/sd-dss/issue/dss-41-tsa-service-basic-auth
 	// tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
-
 	private ProxyPreferenceManager proxyPreferenceManager;
 
 	private int timeoutConnection = TIMEOUT_CONNECTION;
@@ -131,22 +132,32 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
 
-	private HttpClient httpClient;
-
 	private boolean updated;
 
-	/** Path to the keystore. */
+	/**
+	 * Path to the keystore.
+	 */
 	private String sslKeystorePath;
-	/** Keystore's type. */
+	/**
+	 * Keystore's type.
+	 */
 	private String sslKeystoreType = KeyStore.getDefaultType();
-	/** Keystore's password. */
+	/**
+	 * Keystore's password.
+	 */
 	private String sslKeystorePassword = StringUtils.EMPTY;
 
-	/** Path to the truststore. */
+	/**
+	 * Path to the truststore.
+	 */
 	private String sslTruststorePath;
-	/** Trust store's type */
+	/**
+	 * Trust store's type
+	 */
 	private String sslTruststoreType = KeyStore.getDefaultType();
-	/** Truststore's password. */
+	/**
+	 * Truststore's password.
+	 */
 	private String sslTruststorePassword = StringUtils.EMPTY;
 
 	/**
@@ -193,22 +204,29 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		FileInputStream trustStoreIs = null;
 		try {
 
-			SSLContext sslContext = null;
+			X509TrustManager trustManager = null;
+			if (StringUtils.isEmpty(sslTruststorePath)) {
+				LOG.debug("Accept all sources");
+				trustManager = new AcceptAllTrustManager();
+			} else {
+				LOG.debug("Accept sources from the truststore");
+				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
+				trustManager = new DefaultTrustManager(trustStoreIs, sslTruststoreType, sslTruststorePassword);
+			}
+
+			KeyManager[] keysManager = null;
 			if (StringUtils.isEmpty(sslKeystorePath)) {
 				LOG.debug("Use default SSL configuration");
-				sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(new KeyManager[0], new TrustManager[] { new AcceptAllTrustManager() }, new SecureRandom());
-				SSLContext.setDefault(sslContext);
+				keysManager = new KeyManager[0];
 			} else {
 				LOG.debug("Use provided info for SSL");
 				fis = new FileInputStream(new File(sslKeystorePath));
-				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
-
-				sslContext = SSLContext.getInstance("TLS");
 				DefaultKeyManager dkm = new DefaultKeyManager(fis, sslKeystoreType, sslKeystorePassword);
-				sslContext.init(new KeyManager[] { dkm },
-						new TrustManager[] { new DefaultTrustManager(trustStoreIs, sslTruststoreType, sslTruststorePassword) }, null);
+				keysManager = new KeyManager[] { dkm };
 			}
+
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(keysManager, new TrustManager[] { trustManager }, new SecureRandom());
 
 			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
@@ -220,11 +238,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		}
 	}
 
-	protected synchronized HttpClient getHttpClient(final String url) throws DSSException {
+	protected synchronized CloseableHttpClient getHttpClient(final String url) throws DSSException {
 
-		if ((httpClient != null) && !updated) {
-			return httpClient;
-		}
 		if (LOG.isTraceEnabled() && updated) {
 			LOG.trace(">>> Proxy preferences updated");
 		}
@@ -241,7 +256,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
 		httpClientBuilder.setConnectionManager(getConnectionManager());
 
-		httpClient = httpClientBuilder.build();
+		CloseableHttpClient httpClient = httpClientBuilder.build();
 		return httpClient;
 	}
 
@@ -403,7 +418,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
-	 * This method is useful only with the cache handling implementation of the {@code DataLoader}.
+	 * This method is useful only with the cache handling implementation of the
+	 * {@code DataLoader}.
 	 *
 	 * @param url
 	 *            to access
@@ -426,8 +442,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
-	 * This method retrieves data using LDAP protocol.
-	 * - CRL from given LDAP url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
+	 * This method retrieves data using LDAP protocol. - CRL from given LDAP
+	 * url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
 	 * - ex URL from AIA
 	 * ldap://xadessrv.plugtests.net/CN=LevelBCAOK,OU=Plugtests_2015-2016,O=ETSI,C=FR?cACertificate;binary
 	 *
@@ -502,6 +518,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 		HttpGet httpRequest = null;
 		HttpResponse httpResponse = null;
+		CloseableHttpClient client = null;
 		try {
 
 			final URI uri = new URI(url.trim());
@@ -510,7 +527,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 				httpRequest.setHeader(CONTENT_TYPE, contentType);
 			}
 
-			httpResponse = getHttpResponse(httpRequest, url);
+			client = getHttpClient(url);
+			httpResponse = getHttpResponse(client, httpRequest, url);
 
 			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
 			return returnedBytes;
@@ -520,14 +538,16 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 		} finally {
 
-			if (httpRequest != null) {
-				httpRequest.releaseConnection();
+			try {
+				if (httpRequest != null) {
+					httpRequest.releaseConnection();
+				}
+				if (httpResponse != null) {
+					EntityUtils.consumeQuietly(httpResponse.getEntity());
+				}
+			} finally {
+				closeClient(client);
 			}
-
-			if (httpResponse != null) {
-				EntityUtils.consumeQuietly(httpResponse.getEntity());
-			}
-
 		}
 	}
 
@@ -538,7 +558,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 		HttpPost httpRequest = null;
 		HttpResponse httpResponse = null;
-
+		CloseableHttpClient client = null;
 		try {
 			final URI uri = URI.create(url.trim());
 			httpRequest = new HttpPost(uri);
@@ -558,25 +578,40 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 				httpRequest.setHeader(CONTENT_TYPE, contentType);
 			}
 
-			httpResponse = getHttpResponse(httpRequest, url);
+			client = getHttpClient(url);
+			httpResponse = getHttpResponse(client, httpRequest, url);
 
 			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
 			return returnedBytes;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			if (httpRequest != null) {
-				httpRequest.releaseConnection();
-			}
-			if (httpResponse != null) {
-				EntityUtils.consumeQuietly(httpResponse.getEntity());
+			try {
+				if (httpRequest != null) {
+					httpRequest.releaseConnection();
+				}
+				if (httpResponse != null) {
+					EntityUtils.consumeQuietly(httpResponse.getEntity());
+				}
+			} finally {
+				closeClient(client);
 			}
 		}
 	}
 
-	protected HttpResponse getHttpResponse(final HttpUriRequest httpRequest, final String url) throws DSSException {
+	void closeClient(CloseableHttpClient httpClient) {
+		if (httpClient != null) {
+			try {
+				httpClient.close();
+			} catch (Exception ex) {
+				LOG.warn("Cound not close client", ex);
+			} finally {
+				httpClient = null;
+			}
+		}
+	}
 
-		final HttpClient client = getHttpClient(url);
+	protected HttpResponse getHttpResponse(final CloseableHttpClient client, final HttpUriRequest httpRequest, final String url) throws DSSException {
 
 		final String host = httpRequest.getURI().getHost();
 		final int port = httpRequest.getURI().getPort();
@@ -600,6 +635,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+
 	}
 
 	protected byte[] readHttpResponse(final String url, final HttpResponse httpResponse) throws DSSException {
@@ -653,7 +689,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 *            the value (millis)
 	 */
 	public void setTimeoutConnection(final int timeoutConnection) {
-		httpClient = null;
+
 		this.timeoutConnection = timeoutConnection;
 	}
 
@@ -673,7 +709,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 *            the value (millis)
 	 */
 	public void setTimeoutSocket(final int timeoutSocket) {
-		httpClient = null;
+
 		this.timeoutSocket = timeoutSocket;
 	}
 
@@ -742,7 +778,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
-	 * This allows to set the content type. Example: Content-Type "application/ocsp-request"
+	 * This allows to set the content type. Example: Content-Type
+	 * "application/ocsp-request"
 	 *
 	 * @param contentType
 	 */
@@ -765,7 +802,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 */
 	public void setProxyPreferenceManager(final ProxyPreferenceManager proxyPreferenceManager) {
 
-		httpClient = null;
 		this.proxyPreferenceManager = proxyPreferenceManager;
 		if (proxyPreferenceManager != null) {
 			proxyPreferenceManager.addNotifier(this);
@@ -817,15 +853,17 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		final HttpHost httpHost = new HttpHost(host, port, scheme);
 		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(login, password);
 		authenticationMap.put(httpHost, credentials);
-		httpClient = null;
+
 		return this;
 	}
 
 	/**
-	 * This method allows to propagate the authentication information from the current object.
+	 * This method allows to propagate the authentication information from the
+	 * current object.
 	 *
 	 * @param commonsDataLoader
-	 *            {@code CommonsDataLoader} to be initialized with authentication information
+	 *            {@code CommonsDataLoader} to be initialized with
+	 *            authentication information
 	 */
 	public void propagateAuthentication(final CommonsDataLoader commonsDataLoader) {
 

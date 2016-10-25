@@ -36,20 +36,26 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 
-	private CAdESSignature cades;
+	private final CAdESSignature cades;
+
+	private final byte[] content;
 
 	/**
 	 * @param validationCertPool
-	 * @param dssDictionary		the DSS dictionary
-	 * @param cms                the CMS (CAdES) bytes
-	 * @param originalBytes        the original bytes of the whole signed document
+	 * @param dssDictionary
+	 *            the DSS dictionary
+	 * @param cms
+	 *            the CMS (CAdES) bytes
+	 * @param originalBytes
+	 *            the original bytes of the whole signed document
 	 * @throws IOException
 	 */
-	PdfBoxSignatureInfo(CertificatePool validationCertPool, PDSignature signature, PdfDssDict dssDictionary, byte[] cms,
-			byte[] originalBytes) throws IOException {
+	PdfBoxSignatureInfo(CertificatePool validationCertPool, PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] originalBytes)
+			throws IOException {
 		super(signature, dssDictionary, cms, originalBytes);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
+			content = cms;
 			final InMemoryDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
 			cades.setDetachedContents(detachedContent);
 		} catch (CMSException e) {
@@ -80,7 +86,6 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 			return false;
 		}
 
-
 		PdfBoxSignatureInfo that = (PdfBoxSignatureInfo) o;
 
 		if (!cades.equals(that.cades)) {
@@ -106,4 +111,10 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 	public CAdESSignature getCades() {
 		return cades;
 	}
+
+	@Override
+	public byte[] getContent() {
+		return content;
+	}
+
 }

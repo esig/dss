@@ -21,12 +21,22 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -64,6 +74,26 @@ public class PAdESLevelLTTest extends AbstractPAdESTestSignature {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new PAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+	}
+
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		try {
+			ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
+
+			PDDocument pdDoc = PDDocument.load(bais);
+			List<PDSignature> sigs = pdDoc.getSignatureDictionaries();
+			PDSignature pdSignature = sigs.get(0);
+			byte[] contents = pdSignature.getContents(byteArray);
+
+			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, contents);
+			String hex = Hex.encodeHexString(digest).toUpperCase();
+
+			String pdfString = new String(byteArray, "UTF-8");
+			assertTrue(pdfString.contains(hex));
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
 	}
 
 	@Override

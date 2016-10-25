@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -58,7 +57,8 @@ class PAdESLevelBaselineB {
 	}
 
 	AttributeTable getUnsignedAttributes() {
-		return new AttributeTable(new Hashtable());
+		// Unsigned attributes can't be an empty set (RFC 5652 5.3.)
+		return null;
 	}
 
 }

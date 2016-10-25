@@ -123,6 +123,9 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		if (signatures != null) {
 			return signatures;
 		}
+
+		ensureCertificatePoolInitialized();
+
 		signatures = new ArrayList<AdvancedSignature>();
 		final NodeList signatureNodeList = DSSXMLUtils.getNodeList(rootElement, "//ds:Signature[not(parent::xades:CounterSignature)]");
 		// final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS,

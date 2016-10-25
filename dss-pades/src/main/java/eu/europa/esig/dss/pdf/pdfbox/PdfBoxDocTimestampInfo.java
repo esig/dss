@@ -47,6 +47,8 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 
 	private final TimestampToken timestampToken;
 
+	private final byte[] content;
+
 	/**
 	 * @param validationCertPool
 	 * @param dssDictionary
@@ -58,7 +60,8 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 	 *            the stream of the whole signed document
 	 * @throws DSSException
 	 */
-	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean isArchiveTimestamp) throws DSSException {
+	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent,
+			boolean isArchiveTimestamp) throws DSSException {
 		super(signature, dssDictionary, cms, signedContent);
 		try {
 			TimeStampToken timeStampToken = new TimeStampToken(new CMSSignedData(cms));
@@ -67,6 +70,7 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
 			timestampToken = new TimestampToken(timeStampToken, timestampType, validationCertPool);
+			content = cms;
 			logger.debug("Created PdfBoxDocTimestampInfo {} : {}", timestampType, uniqueId());
 		} catch (Exception e) {
 			throw new DSSException(e);
@@ -103,4 +107,10 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 	public TimestampToken getTimestampToken() {
 		return timestampToken;
 	}
+
+	@Override
+	public byte[] getContent() {
+		return content;
+	}
+
 }
