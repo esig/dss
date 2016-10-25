@@ -532,7 +532,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	}
 
 	private boolean isAsicValidator(final DocumentValidator documentValidator) {
-		final boolean result = (documentValidator != null) && (documentValidator instanceof ASiCContainerValidator);
+		final boolean result = documentValidator instanceof ASiCContainerValidator;
 		return result;
 	}
 

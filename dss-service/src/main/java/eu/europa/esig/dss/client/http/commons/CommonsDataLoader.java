@@ -432,7 +432,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		try {
 			return DSSUtils.toByteArray(new URL(urlString).openStream());
 		} catch (IOException e) {
-			LOG.warn(e.getMessage(), e);
+			LOG.warn("An IO error occured while reading url "+urlString, e);
 		}
 		return null;
 	}

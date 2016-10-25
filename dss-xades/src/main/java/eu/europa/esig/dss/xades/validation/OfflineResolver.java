@@ -70,7 +70,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 			}
 			try {
 				if (isKnown(documentUri) != null) {
-					LOG.debug("I state that I can resolve '" + documentUri.toString() + "' (external document)");
+					LOG.debug("I state that I can resolve '" + documentUri+"' (external document)");
 					return true;
 				}
 				final String baseUriString = context.baseUri;

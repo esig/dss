@@ -2,7 +2,6 @@ package integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +49,7 @@ public class RestDocumentValidationTest {
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
 		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getTimestamps().size());
-		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.TOTAL_PASSED));
+		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.TOTAL_PASSED);
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
 		assertNotNull(reports);
@@ -76,7 +75,7 @@ public class RestDocumentValidationTest {
 		assertNotNull(result.getSimpleReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INDETERMINATE));
+		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.INDETERMINATE);
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
 		assertNotNull(reports);
@@ -107,7 +106,7 @@ public class RestDocumentValidationTest {
 		assertNotNull(result.getSimpleReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.TOTAL_FAILED));
+		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.TOTAL_FAILED);
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
 		assertNotNull(reports);
@@ -134,7 +133,7 @@ public class RestDocumentValidationTest {
 		assertNotNull(result.getSimpleReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertTrue(result.getSimpleReport().getSignature().get(0).getIndication().equals(Indication.INDETERMINATE));
+		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.INDETERMINATE);
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
 		assertNotNull(reports);

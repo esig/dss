@@ -1429,7 +1429,7 @@ public final class DSSUtils {
 	}
 
 	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
-		StringBuffer finalName = new StringBuffer();
+		StringBuilder finalName = new StringBuilder();
 		String originalName = originalFile.getName();
 
 		if (Utils.isStringNotEmpty(originalName)) {

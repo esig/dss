@@ -191,28 +191,28 @@ public class TimestampToken extends Token {
 			if (logger.isDebugEnabled()) {
 				logger.debug("No signing certificate for timestamp token: ", e);
 			} else {
-				logger.info("No signing certificate for timestamp token: ", e.getMessage());
+				logger.info("No signing certificate for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NO_SIGNING_CERTIFICATE;
 		} catch (TSPValidationException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("No valid signature for timestamp token: ", e);
 			} else {
-				logger.info("No valid signature for timestamp token: " + e.getMessage());
+				logger.info("No valid signature for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_SIGNATURE;
 		} catch (TSPException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("No valid structure for timestamp token: ", e);
 			} else {
-				logger.info("No valid structure for timestamp token: " + e.getMessage());
+				logger.info("No valid structure for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
 		} catch (OperatorCreationException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("No valid structure for timestamp token: ", e);
 			} else {
-				logger.info("No valid structure for timestamp token: " + e.getMessage());
+				logger.info("No valid structure for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
 		}

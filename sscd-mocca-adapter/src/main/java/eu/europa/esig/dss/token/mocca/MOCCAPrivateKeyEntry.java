@@ -37,7 +37,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class MOCCAPrivateKeyEntry implements DSSPrivateKeyEntry {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MOCCASignatureTokenConnection.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MOCCAPrivateKeyEntry.class);
 
 	private CertificateToken signingCert;
 
