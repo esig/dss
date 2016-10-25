@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.7.RC2</version>
+		<version>4.7.0</version>
 	</parent>
 
 	<artifactId>dss-diagnostic-jaxb</artifactId>
