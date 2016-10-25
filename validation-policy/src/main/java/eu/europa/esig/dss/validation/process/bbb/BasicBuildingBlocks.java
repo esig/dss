@@ -195,7 +195,7 @@ public class BasicBuildingBlocks {
 		} else {
 			logger.info("Unsupported context " + context);
 		}
-		return aav.execute();
+		return aav!=null ? aav.execute() : null;
 	}
 
 }

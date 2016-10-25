@@ -1,8 +1,11 @@
 package eu.europa.esig.dss.tsl;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ServiceInfoStatus {
+public class ServiceInfoStatus implements Serializable{
+
+	private static final long serialVersionUID = -7051723692607917863L;
 
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceStatus>

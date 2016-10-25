@@ -1,8 +1,8 @@
 package eu.europa.esig.dss;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class TokenIdentifierTest {
 		TokenIdentifier t3 = new TokenIdentifier(bytes2);
 
 		assertEquals(t1, t2);
-		assertFalse(t1.equals(t3));
+		Assert.assertNotEquals(t1,t3);
 
 		String id1 = t1.asXmlId();
 		logger.info("T1 = " + t1 + " : " + id1);
@@ -37,7 +37,7 @@ public class TokenIdentifierTest {
 		logger.info("T3 = " + t3 + " : " + id3);
 
 		assertEquals(id1, id2);
-		assertFalse(id2.equals(id3));
+		Assert.assertNotEquals(id2,id3);
 	}
 
 }
