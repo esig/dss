@@ -535,10 +535,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	private COSStream getStream(Map<String, COSStream> streams, Token token) throws IOException {
 		COSStream stream = streams.get(token.getDSSIdAsString());
 		if (stream == null) {
-			//TODO TvT define scratchfile?
-			//RandomAccessBuffer storage = new RandomAccessBuffer();
 			stream = new COSStream();
-			
 			//implicitly close the stream (try-with-resources) otherwise "Cannot read while there is an open stream writer" exception is thrown!
 			try(OutputStream unfilteredStream = stream.createOutputStream()){
 				unfilteredStream.write(token.getEncoded());
