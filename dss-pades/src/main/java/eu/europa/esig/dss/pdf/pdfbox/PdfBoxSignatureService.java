@@ -45,11 +45,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.exceptions.COSVisitorException;
-import org.apache.pdfbox.exceptions.SignatureException;
 import org.apache.pdfbox.io.RandomAccessBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
@@ -103,7 +102,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			PDSignature pdSignature = createSignatureDictionary(parameters);
 
 			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
-			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
+			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(signedFile);
 
 			final byte[] digestValue = signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature,
 					digestAlgorithm);
@@ -134,7 +133,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			final PDSignature pdSignature = createSignatureDictionary(parameters);
 
 			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
-			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
+			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(signedFile);
 
 			signDocumentAndReturnDigest(parameters, signatureValue, signedFile, fileOutputStream, pdDocument, pdSignature, digestAlgorithm);
 
@@ -163,7 +162,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			SignatureInterface signatureInterface = new SignatureInterface() {
 
 				@Override
-				public byte[] sign(InputStream content) throws SignatureException, IOException {
+				public byte[] sign(InputStream content) throws IOException {
 
 					byte[] b = new byte[4096];
 					int count;
@@ -174,7 +173,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				}
 			};
 
-			options.setPreferedSignatureSize(parameters.getSignatureSize());
+			options.setPreferredSignatureSize(parameters.getSignatureSize());
 			if (parameters.getImageParameters() != null) {
 				fillImageParameters(pdDocument, parameters.getImageParameters(), options);
 			}
@@ -189,9 +188,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			return digestValue;
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} catch (SignatureException e) {
-			throw new DSSException(e);
-		} finally {
+		} 
+		finally {
 			IOUtils.closeQuietly(options.getVisualSignature());
 		}
 	}
@@ -269,10 +267,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, File signedFile, FileOutputStream fileOutputStream, PDDocument pdDocument)
 			throws DSSException {
 
-		FileInputStream signedFileInputStream = null;
 		try {
 
-			signedFileInputStream = new FileInputStream(signedFile);
 			// the document needs to have an ID, if not a ID based on the current system time is used, and then the
 			// digest of the signed data is
 			// different
@@ -282,13 +278,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				pdDocument.setDocumentId(DSSUtils.toLong(documentIdBytes));
 				pdDocument.setDocumentId(0L);
 			}
-			pdDocument.saveIncremental(signedFileInputStream, fileOutputStream);
+			pdDocument.saveIncremental(fileOutputStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} catch (COSVisitorException e) {
-			throw new DSSException(e);
-		} finally {
-			IOUtils.closeQuietly(signedFileInputStream);
 		}
 	}
 
@@ -325,7 +317,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			if (CollectionUtils.isNotEmpty(pdSignatures)) {
 				logger.debug("{} signature(s) found", pdSignatures.size());
 
-				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
+				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
 				PdfDssDict dssDictionary = PdfDssDict.extract(catalog);
 
 				for (PDSignature signature : pdSignatures) {
@@ -405,7 +397,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			doc = PDDocument.load(bais);
 			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
 			if (CollectionUtils.isNotEmpty(pdSignatures)) {
-				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSDictionary(), doc);
+				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
 				dssDictionary = PdfDssDict.extract(catalog);
 			}
 		} catch (Exception e) {
@@ -437,18 +429,19 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			signedFile = File.createTempFile("sd-dss-", "-signed.pdf");
 
-			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(toSignFile, signedFile);
+			final FileOutputStream fileOutputStream = DSSPDFUtils.getFileOutputStream(signedFile);
 
 			if (CollectionUtils.isNotEmpty(callbacks)) {
-				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSDictionary();
+				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
 				cosDictionary.setItem("DSS", buildDSSDictionary(callbacks));
-				cosDictionary.setNeedToBeUpdate(true);
+				cosDictionary.setNeedToBeUpdated(true);
 			}
 
 			if (pdDocument.getDocumentId() == null) {
 				pdDocument.setDocumentId(0L);
 			}
-			pdDocument.saveIncremental(inputStream, fileOutputStream);
+			
+			pdDocument.saveIncremental(fileOutputStream);
 
 			fis = new FileInputStream(signedFile);
 			IOUtils.copy(fis, outpuStream);
@@ -542,11 +535,15 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	private COSStream getStream(Map<String, COSStream> streams, Token token) throws IOException {
 		COSStream stream = streams.get(token.getDSSIdAsString());
 		if (stream == null) {
-			RandomAccessBuffer storage = new RandomAccessBuffer();
-			stream = new COSStream(storage);
-			OutputStream unfilteredStream = stream.createUnfilteredStream();
-			unfilteredStream.write(token.getEncoded());
-			unfilteredStream.flush();
+			//TODO TvT define scratchfile?
+			//RandomAccessBuffer storage = new RandomAccessBuffer();
+			stream = new COSStream();
+			
+			//implicitly close the stream (try-with-resources) otherwise "Cannot read while there is an open stream writer" exception is thrown!
+			try(OutputStream unfilteredStream = stream.createOutputStream()){
+				unfilteredStream.write(token.getEncoded());
+				unfilteredStream.flush();
+			}
 			streams.put(token.getDSSIdAsString(), stream);
 		}
 		return stream;
