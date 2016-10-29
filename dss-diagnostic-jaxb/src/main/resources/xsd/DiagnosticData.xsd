@@ -154,6 +154,13 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="QCTypes" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="oid" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			
 			<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
