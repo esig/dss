@@ -261,4 +261,13 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		}
 	}
 
+	public List<String> getQCTypes() {
+		List<String> certificateQCTypeIds = certificate.getQCTypes();
+		if (Utils.isCollectionNotEmpty(certificateQCTypeIds)) {
+			return certificateQCTypeIds;
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
 }
