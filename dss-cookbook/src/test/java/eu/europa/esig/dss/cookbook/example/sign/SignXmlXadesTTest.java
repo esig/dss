@@ -86,7 +86,7 @@ public class SignXmlXadesTTest extends CookbookTools {
 			mockTSPSource = new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
 			service.setTspSource(mockTSPSource);
 		} catch (Exception e) {
-			new DSSException("Error during MockTspSource", e);
+			throw new DSSException("Error during MockTspSource", e);
 		}
 
 		// Get the SignedInfo XML segment that need to be signed.

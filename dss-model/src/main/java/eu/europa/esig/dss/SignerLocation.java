@@ -92,7 +92,7 @@ public class SignerLocation implements Serializable {
 	 * @param addressItem
 	 */
 	public void addPostalAddress(final String addressItem) {
-		if (postalAddress != null) {
+		if (postalAddress == null) {
 			postalAddress = new ArrayList<String>();
 		}
 		postalAddress.add(addressItem);

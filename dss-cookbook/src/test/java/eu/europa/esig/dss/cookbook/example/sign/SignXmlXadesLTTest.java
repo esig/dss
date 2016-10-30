@@ -116,7 +116,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 		try {
 			service.setTspSource(getMockTSPSource());
 		} catch (Exception e) {
-			new DSSException("Error during MockTspSource", e);
+			throw new DSSException("Error during MockTspSource", e);
 		}
 
 		// Get the SignedInfo XML segment that need to be signed.

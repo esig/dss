@@ -97,7 +97,7 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 			contentTimestamps.add(timestampToken);
 			signatureParameters.setContentTimestamps(contentTimestamps);
 		} catch (Exception e) {
-			new DSSException("Error during MockTspSource", e);
+			throw new DSSException("Error during MockTspSource", e);
 		}
 		// Create the signature, including the AllDataObjectsTimestamp
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();

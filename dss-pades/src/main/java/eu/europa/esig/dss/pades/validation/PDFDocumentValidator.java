@@ -105,6 +105,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		return signatures;
 	}
 
+	/**
+	 * Please note, that his functionality is broken. (Produces invalid PDF files)
+	 */
+	//FIXME This has to be fixed(https://esig-dss.atlassian.net/browse/DSS-969)
 	@Override
 	public DSSDocument getOriginalDocument(String signatureId) throws DSSException {
 		if (StringUtils.isBlank(signatureId)) {

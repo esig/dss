@@ -34,6 +34,7 @@ public interface DSSDocument extends Serializable {
 	/**
 	 * Opens a {@code InputStream} on the {@code DSSDocument} contents. The type of the {@code InputStream} depends on the type of the {@code DSSDocument}. The stream must be
 	 * closed in case of the {@code FileDocument}.
+	 * This method is idempotent, thus openStram can be called multiple times (the InputStream has to be closed though). 
 	 *
 	 * @return an {@code InputStream}
 	 * @throws DSSException

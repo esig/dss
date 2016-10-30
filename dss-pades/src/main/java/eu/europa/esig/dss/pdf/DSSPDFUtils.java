@@ -75,18 +75,12 @@ public final class DSSPDFUtils {
 	 * @return
 	 * @throws DSSException
 	 */
-	public static FileOutputStream getFileOutputStream(final File toSignFile, final File signedFile) throws DSSException {
-		FileInputStream fileInputStream = null;
+	public static FileOutputStream getFileOutputStream(final File signedFile) throws DSSException {
 		try {
-			final FileOutputStream fileOutputStream = new FileOutputStream(signedFile);
-			fileInputStream = new FileInputStream(toSignFile);
-			IOUtils.copy(fileInputStream, fileOutputStream);
-			return fileOutputStream;
-		} catch (IOException e) {
+			return new FileOutputStream(signedFile);
+		} 
+		catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-			IOUtils.closeQuietly(fileInputStream);
-		}
+		} 
 	}
-
 }

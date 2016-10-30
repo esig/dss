@@ -46,7 +46,7 @@ public class JksCertificateInformation {
 		try {
 			url = new File(Cookbook.getPathFromResource("/myJks.jks")).toURI().toURL();
 		} catch (final MalformedURLException e) {
-			logger.equals(e);
+			logger.error(e.getMessage(),e);
 		}
 		System.out.println(url.toString());
 		JKSSignatureToken jksSignatureToken = new JKSSignatureToken(url.openStream(), "password");

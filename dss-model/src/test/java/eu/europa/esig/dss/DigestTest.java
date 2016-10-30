@@ -46,8 +46,8 @@ public class DigestTest {
 		Digest d2 = new Digest(DigestAlgorithm.SHA256, value);
 		logger.info("Digest 2 " + d2);
 
-		Assert.assertTrue(d1.equals(d2));
-		Assert.assertTrue(d1.hashCode() == d2.hashCode());
+		Assert.assertEquals(d1,d2);
+		Assert.assertEquals(d1.hashCode(), d2.hashCode());
 
 	}
 
@@ -67,8 +67,9 @@ public class DigestTest {
 		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(buffer.toByteArray()));
 		Digest d2 = (Digest) in.readObject();
 
-		Assert.assertTrue(d1.equals(d2));
-		Assert.assertTrue(d1.hashCode() == d2.hashCode());
+		Assert.assertEquals(d1,d2);
+		Assert.assertEquals(d1.hashCode(),d2.hashCode());
+
 	}
 
 }
