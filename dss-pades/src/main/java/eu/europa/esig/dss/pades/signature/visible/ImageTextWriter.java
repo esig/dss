@@ -29,6 +29,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import eu.europa.esig.dss.pades.TextAlignment;
+
 /**
  * This class allows to generate image with text
  *
@@ -40,13 +42,13 @@ public final class ImageTextWriter {
 	private ImageTextWriter() {
 	}
 
-	public static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int dpi) {
+	public static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int dpi, final TextAlignment horizontalTextAlignment) {
 		// Computing image size depending of the font
 		float fontSize = Math.round((font.getSize() * dpi) / 72.0);
 		Font largerFont = font.deriveFont(fontSize);
 		Dimension dimension = computeSize(largerFont, text);
 		// gettters returns doubles ??
-		return createTextImage(text, largerFont, textColor, bgColor, dimension.width, dimension.height);
+		return createTextImage(text, largerFont, textColor, bgColor, dimension.width, dimension.height, horizontalTextAlignment);
 	}
 
 	public static Dimension computeSize(Font font, String text) {
@@ -55,13 +57,42 @@ public final class ImageTextWriter {
 		g.setFont(font);
 		FontMetrics fontMetrics = g.getFontMetrics();
 
-		int width = fontMetrics.stringWidth(text) + DEFAULT_MARGIN;
-		int height = fontMetrics.getHeight() + DEFAULT_MARGIN;
+		int width = getMultilineTextWidth(text, fontMetrics) + DEFAULT_MARGIN;
+		int height = getMultilineTextHeight(text, fontMetrics) + DEFAULT_MARGIN;
 		return new Dimension(width, height);
 	}
 
+	/**
+	 * Calculates multi-line text width as the widest line width plus the default margin.
+	 *
+	 * @param text             multi-line text (\n denotes a line break)
+	 * @param fontMetrics       font metrics
+	 *
+	 * @return width of the widest multi-line text line
+	 */
+	private static int getMultilineTextWidth(final String text, final FontMetrics fontMetrics) {
+		int maxLineWidth = 0;
+		for (String line : text.split("\n")) {
+			int lineWidth = fontMetrics.stringWidth(line);
+			if (lineWidth > maxLineWidth) maxLineWidth = lineWidth;
+		}
+		return maxLineWidth;
+	}
+
+	/**
+	 * Calculates multi-line text height as the sum of all line heights plus the default margin.
+	 *
+	 * @param fontMetrics
+	 * @return
+	 */
+	private static int getMultilineTextHeight(final String text, final FontMetrics fontMetrics) {
+		int textHeight = 0;
+		for (String ignored : text.split("\n")) textHeight += fontMetrics.getHeight();
+		return textHeight;
+	}
+
 	private static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int width,
-			final int height) {
+	                                             final int height, final TextAlignment horizontalTextAlignment) {
 		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
 		Graphics2D g = img.createGraphics();
@@ -79,13 +110,39 @@ public final class ImageTextWriter {
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 
-		int x = img.getWidth() - fm.stringWidth(text) - (DEFAULT_MARGIN / 2);
-		int y = ((img.getHeight() - fm.getHeight()) / 2) + fm.getAscent();
+		int x = img.getWidth() - getMultilineTextWidth(text, fm);
+		int y = ((img.getHeight() - getMultilineTextHeight(text, fm)) / 2) + fm.getAscent();
 
-		g.drawString(text, x, y);
+		drawMultilineString(text, g, fm, x, y, img.getWidth(), horizontalTextAlignment);
 		g.dispose();
 
 		return img;
 	}
 
+	/**
+	 * Draws multi-line string at the specified coordinates.
+	 * @param text                  multi-line string
+	 * @param g                     2D renderer
+	 * @param fontMetrics           text font metrics
+	 * @param x                     x position of the first line of text
+	 * @param y                     y position of the baseline of the first line of text
+	 * @param boxWidth              text box width
+	 * @param horizontalAlignment   horizontal text alignment
+	 */
+	private static void drawMultilineString(final String text, final Graphics2D g, final FontMetrics fontMetrics, final int x, final int y, final int boxWidth, final TextAlignment horizontalAlignment) {
+		// draw the lines
+		int lineY = y;
+		for (String line : text.split("\n")) {
+			// determine text line x position for the specified text horizontal alignment
+			int lineX = x - (DEFAULT_MARGIN / 2);
+			if (horizontalAlignment == TextAlignment.HORIZONTAL_CENTER) lineX += (boxWidth - fontMetrics.stringWidth(line)) / 2 - (DEFAULT_MARGIN / 2);
+			else if (horizontalAlignment == TextAlignment.HORIZONTAL_RIGHT) lineX += (boxWidth - fontMetrics.stringWidth(line)) - DEFAULT_MARGIN;
+
+			// draw the line
+			g.drawString(line, lineX, lineY);
+
+			// move to the next line
+			lineY += fontMetrics.getHeight();
+		}
+	}
 }

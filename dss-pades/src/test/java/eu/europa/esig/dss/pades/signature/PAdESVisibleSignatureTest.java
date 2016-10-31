@@ -42,6 +42,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
+import eu.europa.esig.dss.pades.TextAlignment;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -53,6 +54,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class PAdESVisibleSignatureTest {
+	public static final String DEFAULT_SIGNATURE_IMAGE = "src/test/resources/small-red.jpg";
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -92,7 +94,7 @@ public class PAdESVisibleSignatureTest {
 	@Test
 	public void testGeneratedImageOnly() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new File("src/test/resources/small-red.jpg"));
+		imageParameters.setImage(new File(DEFAULT_SIGNATURE_IMAGE));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
 		signatureParameters.setImageParameters(imageParameters);
@@ -102,43 +104,67 @@ public class PAdESVisibleSignatureTest {
 
 	@Test
 	public void testGeneratedImageAndTextOnTop() throws IOException {
+		testGeneratedImageAndTextOnTop("My signature", TextAlignment.HORIZONTAL_LEFT);
+	}
+
+	@Test
+	public void testGeneratedImageAndMultilineTextOnTop() throws IOException {
+		testGeneratedImageAndTextOnTop("X\nxx\nxXx", TextAlignment.HORIZONTAL_CENTER);
+	}
+
+	private void testGeneratedImageAndTextOnTop(String text, TextAlignment horizontalAlignment) throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new File("src/test/resources/small-red.jpg"));
-		imageParameters.setxAxis(200);
-		imageParameters.setyAxis(300);
+		imageParameters.setImage(new File(DEFAULT_SIGNATURE_IMAGE));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
+		textParameters.setText(text);
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setFont(new Font("Arial", Font.BOLD, 15));
 		textParameters.setSignerNamePosition(SignerPosition.TOP);
+		textParameters.setSignerNameHorizontalAlignment(horizontalAlignment);
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate();
+		signAndValidate("target/test-top-" + horizontalAlignment.name() + ".pdf");
 	}
 
 	@Test
 	public void testGeneratedImageAndTextOnLeft() throws IOException {
+		testGeneratedImageAndTextOnLeft("My signature", TextAlignment.HORIZONTAL_LEFT);
+	}
+
+	@Test
+	public void testGeneratedImageAndMultilineTextOnLeft() throws IOException {
+		testGeneratedImageAndTextOnLeft("x\nxx\nxxX\nxx\nx", TextAlignment.HORIZONTAL_LEFT);
+	}
+
+	private void testGeneratedImageAndTextOnLeft(String text, TextAlignment horizontalAlignment) throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new File("src/test/resources/small-red.jpg"));
-		imageParameters.setxAxis(200);
-		imageParameters.setyAxis(300);
+		imageParameters.setImage(new File(DEFAULT_SIGNATURE_IMAGE));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
+		textParameters.setText(text);
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setSignerNamePosition(SignerPosition.LEFT);
+		textParameters.setSignerNameHorizontalAlignment(horizontalAlignment);
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate();
+		signAndValidate("target/test-left-" + horizontalAlignment.name() + ".pdf");
 	}
 
 	private void signAndValidate() throws IOException {
+		signAndValidate(null);
+	}
+
+	private void signAndValidate(String signedPdfFilename) throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		// signedDocument.save("target/test.pdf");
+//		if (signedPdfFilename != null) signedDocument.save(signedPdfFilename);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
@@ -147,5 +173,4 @@ public class PAdESVisibleSignatureTest {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
-
 }

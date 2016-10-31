@@ -46,7 +46,7 @@ public class ImageUtils {
 		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
 
 			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), textParamaters.getFont(), textParamaters.getTextColor(),
-					textParamaters.getBackgroundColor(), DPI);
+					textParamaters.getBackgroundColor(), DPI, textParamaters.getSignerNameHorizontalAlignment());
 
 			if (imageParameters.getImage() != null) {
 				switch (textParamaters.getSignerNamePosition()) {

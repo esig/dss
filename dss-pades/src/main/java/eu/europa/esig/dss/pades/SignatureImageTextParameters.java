@@ -46,6 +46,11 @@ public class SignatureImageTextParameters {
 	private SignerPosition signerNamePosition = SignerPosition.LEFT;
 
 	/**
+	 * This variable defines how signer name is aligned horizontally
+	 */
+	private TextAlignment signerNameHorizontalAlignment = TextAlignment.HORIZONTAL_LEFT;
+
+	/**
 	 * This variable defines the text to sign
 	 */
 	private String text;
@@ -74,6 +79,24 @@ public class SignatureImageTextParameters {
 
 	public void setSignerNamePosition(SignerPosition signerNamePosition) {
 		this.signerNamePosition = signerNamePosition;
+	}
+
+	/**
+	 * Gets signer name (signature text) horizontal alignment.
+	 *
+	 * @return signature text horizontal alignment
+	 */
+	public TextAlignment getSignerNameHorizontalAlignment() {
+		return signerNameHorizontalAlignment;
+	}
+
+	/**
+	 * Sets signer name (signature text) horizontal alignment.
+	 *
+	 * @param alignment     horizontal values of {@link TextAlignment}
+	 */
+	public void setSignerNameHorizontalAlignment(TextAlignment alignment) {
+		this.signerNameHorizontalAlignment = alignment;
 	}
 
 	public Font getFont() {
