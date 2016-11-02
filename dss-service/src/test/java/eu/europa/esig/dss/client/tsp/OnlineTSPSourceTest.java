@@ -15,6 +15,8 @@ import eu.europa.esig.dss.client.http.commons.TimestampDataLoader;
 public class OnlineTSPSourceTest {
 
 	private static final String TSA_URL = "http://tsa.belgium.be/connect";
+	
+	private static final String TSA_SSL_URL = "https_url";
 
 	@Test
 	public void testWithoutNonce() {
@@ -66,4 +68,13 @@ public class OnlineTSPSourceTest {
 		assertNotNull(timeStampResponse);
 	}
 
+	@Test
+	public void testWithTLS() {
+		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
+		tspSource.setDataLoader(new TimestampDataLoader());
+
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		assertNotNull(timeStampResponse);
+	}
 }

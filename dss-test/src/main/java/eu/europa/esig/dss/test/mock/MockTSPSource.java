@@ -192,4 +192,10 @@ public class MockTSPSource implements TSPSource {
 		return signatureAlgorithm;
 	}
 
+	@Override
+	public TimeStampToken getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest, byte[] p12,String p12Password) throws DSSException 
+	{
+		return null;
+	}
+
 }
