@@ -2,9 +2,13 @@ package eu.europa.esig.dss.client.tsp;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.NonceSource;
@@ -14,9 +18,9 @@ import eu.europa.esig.dss.client.http.commons.TimestampDataLoader;
 
 public class OnlineTSPSourceTest {
 
-	private static final String TSA_URL = "http://tsa.belgium.be/connect";
+	private static final String TSA_URL 	= "http://tsa.belgium.be/connect";
 	
-	private static final String TSA_SSL_URL = "https_url";
+	private static final String TSA_TLS_URL = "https://localhost:8082";
 
 	@Test
 	public void testWithoutNonce() {
@@ -70,11 +74,27 @@ public class OnlineTSPSourceTest {
 
 	@Test
 	public void testWithTLS() {
-		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
+		
+		
+		new TSServer().start();
+
+		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_TLS_URL);
+		
 		tspSource.setDataLoader(new TimestampDataLoader());
 
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, "Hello world".getBytes());
+		
+		TimeStampToken timeStampResponse = null;
+
+		try 
+		{
+			timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest,IOUtils.toByteArray(OnlineTSPSourceTest.class.getResourceAsStream("tsa.p12")), "password");
+		}
+		catch (DSSException | IOException e) {
+			e.printStackTrace();
+		}
+		
 		assertNotNull(timeStampResponse);
+		
 	}
 }
