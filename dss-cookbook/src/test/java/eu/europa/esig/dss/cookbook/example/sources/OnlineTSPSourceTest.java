@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
@@ -49,6 +50,28 @@ public class OnlineTSPSourceTest {
 		final byte[] toDigest = "digest value".getBytes();
 		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
 		final TimeStampToken tsr = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
+
+		System.out.println(DSSUtils.toHex(tsr.getEncoded()));
+
+		// end::demo[]
+
+		assertNotNull(tsr);
+	}
+	
+	
+	@Test
+	public void testTLS() throws IOException {
+
+		// tag::demo[]
+
+		final String tspServer = "https://localhost:8082";
+		OnlineTSPSource tspSource = new OnlineTSPSource(tspServer);
+		tspSource.setPolicyOid("1.2.3.4.5");
+
+		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
+		final byte[] toDigest = "digest value".getBytes();
+		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
+		final TimeStampToken tsr = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digestValue,IOUtils.toByteArray(OnlineTSPSourceTest.class.getResourceAsStream("/tsa.p12")), "password");
 
 		System.out.println(DSSUtils.toHex(tsr.getEncoded()));
 
