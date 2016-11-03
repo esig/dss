@@ -109,9 +109,7 @@ public class TimestampDataLoader extends CommonsDataLoader {
 			@Override
 			public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException 
 			{
-				// TODO Auto-generated method stub
 				return true;
-				//return false;
 			}
 		};
 		LOG.debug("Fetching data via POST from url " + url);
