@@ -168,29 +168,23 @@ public class OnlineTSPSource implements TSPSource {
 		}
 	}
 
-	@Override
 	public TimeStampToken getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest, byte[] p12,	String p12Password) throws DSSException {
 		try {
+			
 			if (logger.isTraceEnabled()) {
 				logger.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
 				logger.trace("Timestamp digest value    : " + Utils.toHex(digest));
 			}
-			TimeStampRequest timeStampRequest = getRequest(digestAlgorithm, digest);
+			TimeStampRequest timeStampRequest 	= getRequest(digestAlgorithm, digest);
 
-			final byte[] requestBytes = timeStampRequest.getEncoded();
+			final byte[] requestBytes 			= timeStampRequest.getEncoded();
 
-			// Call the communications layer
-			if (dataLoader == null ) {
-				dataLoader = new TimestampDataLoader();
-			}
-			
-			
-			TimestampDataLoader timeStampDataLoader = new TimestampDataLoader();
+			TimestampDataLoader timeStampDataLoader 	= new TimestampDataLoader();
 			
 			byte[] respBytes = timeStampDataLoader.post(tspServer, requestBytes, p12, p12Password);
 
 			// Handle the TSA response
-			final TimeStampResponse timeStampResponse = new TimeStampResponse(respBytes);
+			final TimeStampResponse timeStampResponse 	= new TimeStampResponse(respBytes);
 
 			// Validates nonce, policy id, ... if present
 			timeStampResponse.validate(timeStampRequest);
