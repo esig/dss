@@ -46,15 +46,4 @@ public interface TSPSource extends Serializable {
 	 */
 	TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException;
 	
-	/**
-	 * Gets a TimeStampResponse relevant to the provided digest via TLS 
-	 * @param digestAlgorithm
-	 * @param digest
-	 * @param p12
-	 * @param p12Password
-	 * @return
-	 * @throws DSSException
-	 */
-	TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest, byte[] p12, String p12Password) throws DSSException;
-
 }
