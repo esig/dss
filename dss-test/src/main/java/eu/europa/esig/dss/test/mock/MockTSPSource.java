@@ -172,7 +172,7 @@ public class MockTSPSource implements TSPSource {
 			throw new DSSException(e);
 		}
 	}
-
+	
 	private String getSignatureAlgorithm(DigestAlgorithm algorithm, byte[] digest) {
 		String signatureAlgorithm;
 		if (DigestAlgorithm.SHA1.equals(algorithm)) {
@@ -190,12 +190,6 @@ public class MockTSPSource implements TSPSource {
 			throw new UnsupportedOperationException("No support for " + algorithm);
 		}
 		return signatureAlgorithm;
-	}
-
-	@Override
-	public TimeStampToken getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest, byte[] p12,String p12Password) throws DSSException 
-	{
-		return null;
 	}
 
 }
