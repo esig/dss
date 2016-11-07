@@ -2,6 +2,7 @@ package eu.europa.esig.dss.client.tsp;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
@@ -74,27 +75,28 @@ public class OnlineTSPSourceTest {
 
 	@Test
 	public void testWithTLS() {
-		
-		
-		new TSServer().start();
 
-		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_TLS_URL);
+		try	{
+			
+			byte[] p12 = IOUtils.toByteArray(new FileInputStream("src/test/resources/tsa.p12"));
 		
-		tspSource.setDataLoader(new TimestampDataLoader());
+			new TSServer(p12,"password"	).start();
 
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, "Hello world".getBytes());
+			OnlineTSPSource tspSource = new OnlineTSPSource(TSA_TLS_URL);
 		
-		TimeStampToken timeStampResponse = null;
+			tspSource.setDataLoader(new TimestampDataLoader());
 
-		try 
-		{
-			timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest,IOUtils.toByteArray(OnlineTSPSourceTest.class.getResourceAsStream("tsa.p12")), "password");
+			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, "Hello world".getBytes());
+		
+			TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest,p12,"password");
+			
+			assertNotNull(timeStampResponse);
 		}
 		catch (DSSException | IOException e) {
 			e.printStackTrace();
 		}
 		
-		assertNotNull(timeStampResponse);
+
 		
 	}
 }

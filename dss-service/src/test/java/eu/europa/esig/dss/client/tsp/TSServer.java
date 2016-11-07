@@ -22,7 +22,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 
@@ -74,15 +73,16 @@ public class TSServer extends Thread
 		Security.addProvider(new BouncyCastleProvider());
 	}
 	
-	private final static String P12 		= "tsa.p12"; 
-	
-	private final static String P12PASSWORD = "password";
+	private static byte[] p12 = null;
+
+	private static String P12PASSWORD = null;
 
     private static final int 	PORT_NO 	= 8082;
 
-    public static void main(String[] args) 
+    public TSServer(byte[] p12, String p12Password) 
     {
-    	new TSServer().start();
+    	TSServer.p12 	= p12;
+    	P12PASSWORD 	= p12Password;
 	}
     
     SSLContext createSSLContext()
@@ -90,7 +90,8 @@ public class TSServer extends Thread
     {
        
         KeyStore 			serverStore = KeyStore.getInstance("PKCS12");
-        serverStore.load(TSServer.class.getResourceAsStream(P12), P12PASSWORD.toCharArray());
+        //serverStore.load(TSServer.class.getResourceAsStream(P12), P12PASSWORD.toCharArray());
+        serverStore.load(new ByteArrayInputStream(p12), P12PASSWORD.toCharArray());
         KeyManagerFactory 	mgrFact 	= KeyManagerFactory.getInstance("SunX509");
         mgrFact.init(serverStore, P12PASSWORD.toCharArray());
         // set up a trust manager so we can recognize the server
@@ -149,7 +150,7 @@ public class TSServer extends Thread
             {
 	    		sslSock.startHandshake();
 	            byte[] request 				= readRequest(sslSock.getInputStream());
-	            byte[] timeStampResponse	= processRequest(IOUtils.toByteArray(TSServer.class.getResourceAsStream("tsa.p12")), "password", request);
+	            byte[] timeStampResponse	= processRequest(p12, "password", request);
 	            sendResponse(timeStampResponse, sslSock.getOutputStream());
 	            sslSock.close();
             }
