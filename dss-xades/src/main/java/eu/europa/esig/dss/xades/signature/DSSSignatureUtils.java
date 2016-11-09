@@ -154,7 +154,8 @@ public final class DSSSignatureUtils {
      */
 	private static boolean isAsn1Encoded(byte[] signatureValue) {
 		try {
-			new ASN1StreamParser(signatureValue).readObject();
+			ASN1InputStream is = new ASN1InputStream(signatureValue);
+			is.readObject();
 			return true;
 		} catch (IOException e) {
 			return false;
