@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2016 European Commission, provided under the CEF programme
+ *
+ * This file is part of the "DSS - Digital Signature Services" project.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.client.tsp;
 
 import java.io.ByteArrayInputStream;
@@ -62,304 +82,320 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
+ * TimeStamp Server implementation for collecting Timestamp via TLS sources
  * 
- * @author mpalacios
+ * Provided by OpenLimit SignCubes GmbH under LPGL
+ * 
+ * @author m.palacios
  *
  */
-public class TSServer extends Thread
-{
-	static 
-	{
+public class TSServer extends Thread {
+	static {
 		Security.addProvider(new BouncyCastleProvider());
 	}
-	
+
 	private static byte[] p12 = null;
 
 	private static String P12PASSWORD = null;
 
-    private static final int 	PORT_NO 	= 8082;
+	private static final int PORT_NO = 8082;
 
-    public TSServer(byte[] p12, String p12Password) 
-    {
-    	TSServer.p12 	= p12;
-    	P12PASSWORD 	= p12Password;
+	public TSServer(byte[] p12, String p12Password) {
+		TSServer.p12 = p12;
+		P12PASSWORD = p12Password;
 	}
-    
-    SSLContext createSSLContext()
-	throws Exception
-    {
-       
-        KeyStore 			serverStore = KeyStore.getInstance("PKCS12");
-        //serverStore.load(TSServer.class.getResourceAsStream(P12), P12PASSWORD.toCharArray());
-        serverStore.load(new ByteArrayInputStream(p12), P12PASSWORD.toCharArray());
-        KeyManagerFactory 	mgrFact 	= KeyManagerFactory.getInstance("SunX509");
-        mgrFact.init(serverStore, P12PASSWORD.toCharArray());
-        // set up a trust manager so we can recognize the server
-        TrustManagerFactory trustFact 	= TrustManagerFactory.getInstance("SunX509");
-        trustFact.init(serverStore);
-        // create a context and set up a socket factory
-        SSLContext 	sslContext 			= SSLContext.getInstance("TLS");
-        sslContext.init(mgrFact.getKeyManagers(), trustFact.getTrustManagers(), null);
-        
-//      for (String cipher : sslContext.getSupportedSSLParameters().getCipherSuites()) 
-//      {
-//			System.out.println("Cipher: " + cipher);
-//		}
-                
-        return sslContext;
-    }
 
-    /**
-     * 
-     */
-    public void run()
-    {
-        try {
-        	
-            SSLContext 				sslContext 	= createSSLContext();
-            SSLServerSocketFactory 	fact 		= sslContext.getServerSocketFactory();
-            SSLServerSocket 		sSock 		= (SSLServerSocket)fact.createServerSocket(PORT_NO);
-            SSLSocket sslSock = (SSLSocket)sSock.accept();
-            Thread t = new SocketThread(sslSock);
-            t.start();
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    
-    /**
-     * 
-     * 	@author mpalacios
-     *
-     */
-    public static class SocketThread extends Thread
-    {
-    	private SSLSocket sslSock;
-    	
-    	public SocketThread( SSLSocket sslSock ) 
-    	{
-    		this.sslSock = sslSock;
+	/**
+	 * creates SSL Context
+	 * 
+	 * @return sslContext
+	 * @throws Exception
+	 */
+	SSLContext createSSLContext() throws Exception {
+		KeyStore serverStore = KeyStore.getInstance("PKCS12");
+		
+		serverStore.load(new ByteArrayInputStream(p12), P12PASSWORD.toCharArray());
+		KeyManagerFactory mgrFact = KeyManagerFactory.getInstance("SunX509");
+		mgrFact.init(serverStore, P12PASSWORD.toCharArray());
+		
+		// set up a trust manager so we can recognize the server
+		TrustManagerFactory trustFact = TrustManagerFactory.getInstance("SunX509");
+		trustFact.init(serverStore);
+		
+		// create a context and set up a socket factory
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+		sslContext.init(mgrFact.getKeyManagers(), trustFact.getTrustManagers(), null);
+
+		return sslContext;
+	}
+
+	/**
+	 * 
+	 */
+	public void run() {
+		try {
+
+			SSLContext sslContext = createSSLContext();
+			SSLServerSocketFactory fact = sslContext.getServerSocketFactory();
+			SSLServerSocket sSock = (SSLServerSocket) fact.createServerSocket(PORT_NO);
+			SSLSocket sslSock = (SSLSocket) sSock.accept();
+			Thread t = new SocketThread(sslSock);
+			t.start();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-    	@Override
-    	public void run() 
-    	{
-            try
-            {
-	    		sslSock.startHandshake();
-	            byte[] request 				= readRequest(sslSock.getInputStream());
-	            byte[] timeStampResponse	= processRequest(p12, "password", request);
-	            sendResponse(timeStampResponse, sslSock.getOutputStream());
-	            sslSock.close();
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-    	}
-    	
-    	/**
-    	 * processes a Request
-    	 * @param p12
-    	 * @param password
-    	 * @param request
-    	 * @return
-    	 * @throws Exception
-    	 */
-        private byte[] processRequest(byte[] p12, String password, byte[] request) throws Exception 
-        {
-        	
-    		CertificateService certificateService = new CertificateService();
-			
-    		MockPrivateKeyEntry privateKeyEntry = certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256);
+	}
+
+	public static class SocketThread extends Thread {
+		private SSLSocket sslSock;
+
+		public SocketThread(SSLSocket sslSock) {
+			this.sslSock = sslSock;
+		}
+
+		@Override
+		public void run() {
+			try {
+				sslSock.startHandshake();
+				byte[] request = readRequest(sslSock.getInputStream());
+				byte[] timeStampResponse = processRequest(p12, "password", request);
+				sendResponse(timeStampResponse, sslSock.getOutputStream());
+				sslSock.close();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		/**
+		 * processes Request
+		 * 
+		 * @param p12
+		 * @param password
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		private byte[] processRequest(byte[] p12, String password, byte[] request) throws Exception {
+
+			CertificateService certificateService = new CertificateService();
+
+			MockPrivateKeyEntry privateKeyEntry = certificateService
+					.generateTspCertificate(SignatureAlgorithm.RSA_SHA256);
 
 			TimeStampRequest tstRequest = new TimeStampRequest(request);
-    		
+
 			ASN1ObjectIdentifier msgImprintOID = tstRequest.getMessageImprintAlgOID();
-			
+
 			TimeStampProducer producer = new TimeStampProducer(privateKeyEntry);
-			
-			return encode(producer.getTimeStampResponse(DigestAlgorithm.forOID(msgImprintOID.getId()), tstRequest.getMessageImprintDigest()).getEncoded());
+
+			return encode(producer.getTimeStampResponse(DigestAlgorithm.forOID(msgImprintOID.getId()),
+					tstRequest.getMessageImprintDigest()).getEncoded());
 		}
-        
-    	public static byte[] encode(byte[] berEncoded) throws IOException 
-    	{
-    		ASN1InputStream AIn = new ASN1InputStream(berEncoded);
-    		ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-    		DEROutputStream dOut = new DEROutputStream(bOut);
-    		dOut.writeObject(AIn.readObject());
-    		dOut.close();
-    		AIn.close();
-    		return bOut.toByteArray();
-    		
-    	}
+
 		/**
-         * Reads a HTTP request
-         */
+		 * encode converts BER to DER
+		 * 
+		 * @param berEncoded
+		 * @return
+		 * @throws IOException
+		 */
+		public static byte[] encode(byte[] berEncoded) throws IOException {
+			ASN1InputStream AIn = new ASN1InputStream(berEncoded);
+			ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+			DEROutputStream dOut = new DEROutputStream(bOut);
 
-    	private byte[] readRequest(InputStream in)      throws IOException
-    	{
-    		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			dOut.writeObject(AIn.readObject());
+			dOut.close();
+			AIn.close();
 
-    		byte[] 	buf = new byte[4096];
-    		int 	len = in.read(buf);
-    		
-    		baos.write(buf, 0, len);
-    		buf = baos.toByteArray();
-    		String serverHeader = new String(buf);
-    		
-    		int contentLengthIndex 	= serverHeader.lastIndexOf("Content-Length: ");
-    		int contentLastIndex 	= serverHeader.length()-1;
-    		String contentText 		= serverHeader.substring(contentLengthIndex + 16, contentLastIndex);
-    		String lengthHeader 	= contentText.substring(0, contentText.indexOf("\r\n"));
-    		int contentLength 		= Integer.parseInt(lengthHeader);
-    		System.out.println("Content-Length: " + contentLength);
-    		
-    		byte[] request = new byte[contentLength];
-    		System.arraycopy(buf, buf.length-contentLength, request, 0, contentLength);
-    		return request;
-    	}
+			return bOut.toByteArray();
+		}
 
-        /**
-         * Senda a response
-         * @throws IOException 
-         */
-        
-        private void sendResponse(byte[] timeStampResponse, OutputStream out) throws IOException {
-        	
-        	DataOutputStream dos = new DataOutputStream(out);
-        	dos.write("HTTP/1.1 200 OK\r\n".getBytes());
-        	dos.write("Content-Type: application/octet-stream\r\n".getBytes());
-        	dos.write("\r\n".getBytes());
-        	InputStream tstIS = new ByteArrayInputStream(timeStampResponse);
-        	dos.write(IOUtils.toByteArray(tstIS));
-        	dos.write("\r\n".getBytes());
-        	dos.flush();
-    	}
-    }
-    
-    
-    public static class TimeStampProducer {
-    	  
-    	private ASN1ObjectIdentifier policyOid;
+		/**
+		 * Reads HTTP request
+		 */
 
-    	private boolean useNonce;
-    	
-    	private SecureRandom random;
-    	
-    	private final PrivateKey key;
+		private byte[] readRequest(InputStream in) throws IOException {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    	private final CertificateToken cert;
+			byte[] buf = new byte[4096];
+			int len = in.read(buf);
 
-    	
-    	public TimeStampProducer(PrivateKey tsaKey, CertificateToken tsaCert, boolean useNonce, byte[] nonceSeed, String policyOid) {
-    		this.key = tsaKey;
-    		this.cert = tsaCert;
-    		this.useNonce = useNonce;
-    		if (useNonce) {
-    			if (nonceSeed != null) {
-    				random = new SecureRandom(nonceSeed);
-    			} else {
-    				random = new SecureRandom();
-    			}
-    		}
-    		this.policyOid = new ASN1ObjectIdentifier(policyOid);
-    	}
+			baos.write(buf, 0, len);
+			buf = baos.toByteArray();
+			String serverHeader = new String(buf);
 
-    	/**
-    	 * The default constructor for MockTSPSource.
-    	 */
-    	public TimeStampProducer(final MockPrivateKeyEntry entry) throws DSSException {
-    		this(entry.getPrivateKey(), entry.getCertificate(), true, null, "1.234.567.890");
-    	}
+			int contentLengthIndex = serverHeader.lastIndexOf("Content-Length: ");
+			int contentLastIndex = serverHeader.length() - 1;
+			String contentText = serverHeader.substring(contentLengthIndex + 16, contentLastIndex);
+			String lengthHeader = contentText.substring(0, contentText.indexOf("\r\n"));
+			int contentLength = Integer.parseInt(lengthHeader);
+			System.out.println("Content-Length: " + contentLength);
 
-    	
-    	public TimeStampResponse getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
+			byte[] request = new byte[contentLength];
+			System.arraycopy(buf, buf.length - contentLength, request, 0, contentLength);
+			return request;
+		}
 
-    		final String signatureAlgorithm = getSignatureAlgorithm(digestAlgorithm, digest);
+		/**
+		 * Return response
+		 * 
+		 * @throws IOException
+		 */
+		private void sendResponse(byte[] timeStampResponse, OutputStream out) throws IOException {
 
-    		final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
-    		tsqGenerator.setCertReq(true);
+			DataOutputStream dos = new DataOutputStream(out);
+			dos.write("HTTP/1.1 200 OK\r\n".getBytes());
+			dos.write("Content-Type: application/octet-stream\r\n".getBytes());
+			dos.write("\r\n".getBytes());
+			InputStream tstIS = new ByteArrayInputStream(timeStampResponse);
+			dos.write(IOUtils.toByteArray(tstIS));
+			dos.write("\r\n".getBytes());
+			dos.flush();
+		}
+	}
 
-    		/**
-    		 * The code below guarantee that the dates of the two successive
-    		 * timestamps are different. This is activated only if timestampDate is provided at
-    		 * construction time
-    		 */
-    		Date timestampDate_ = new Date();
+	/**
+	 * 
+	 * @author f.fischer
+	 *
+	 */
+	public static class TimeStampProducer {
 
-    		if (policyOid != null) {
-    			tsqGenerator.setReqPolicy(policyOid);
-    		}
+		private ASN1ObjectIdentifier policyOid;
 
-    		TimeStampRequest tsRequest = null;
-    		if (useNonce) {
-    			final BigInteger nonce = BigInteger.valueOf(random.nextLong());
-    			tsRequest = tsqGenerator.generate(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), digest, nonce);
-    		} else {
-    			tsRequest = tsqGenerator.generate(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), digest);
-    		}
+		private boolean useNonce;
 
-    		try {
-    			final ContentSigner sigGen = new JcaContentSignerBuilder(signatureAlgorithm).build(key);
-    			final JcaX509CertificateHolder certHolder = new JcaX509CertificateHolder(cert.getCertificate());
+		private SecureRandom random;
 
-    			// that to make sure we generate the same timestamp data for the
-    			// same timestamp date
-    			AttributeTable signedAttributes = new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Object>());
-    			signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.pkcs_9_at_signingTime, new Time(timestampDate_));
-    			final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
-    			AttributeTable unsignedAttributes = new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Object>());
-    			final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);
+		private final PrivateKey key;
 
-    			final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
-    			SignerInfoGeneratorBuilder sigInfoGeneratorBuilder = new SignerInfoGeneratorBuilder(digestCalculatorProvider);
-    			sigInfoGeneratorBuilder.setSignedAttributeGenerator(signedAttributeGenerator);
-    			sigInfoGeneratorBuilder.setUnsignedAttributeGenerator(unsignedAttributeGenerator);
-    			final SignerInfoGenerator sig = sigInfoGeneratorBuilder.build(sigGen, certHolder);
+		private final CertificateToken cert;
 
-    			final DigestCalculator sha1DigestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
+		public TimeStampProducer(PrivateKey tsaKey, CertificateToken tsaCert, boolean useNonce, byte[] nonceSeed,
+				String policyOid) {
+			this.key = tsaKey;
+			this.cert = tsaCert;
+			this.useNonce = useNonce;
+			if (useNonce) {
+				if (nonceSeed != null) {
+					random = new SecureRandom(nonceSeed);
+				} else {
+					random = new SecureRandom();
+				}
+			}
+			this.policyOid = new ASN1ObjectIdentifier(policyOid);
+		}
 
-    			final TimeStampTokenGenerator tokenGenerator = new TimeStampTokenGenerator(sig, sha1DigestCalculator, policyOid);
-    			final Set<X509Certificate> singleton = new HashSet<X509Certificate>();
-    			singleton.add(cert.getCertificate());
-    			tokenGenerator.addCertificates(new JcaCertStore(singleton));
-    			final TimeStampResponseGenerator generator = new TimeStampResponseGenerator(tokenGenerator, TSPAlgorithms.ALLOWED);
+		/**
+		 * The default constructor for MockTSPSource.
+		 */
+		public TimeStampProducer(final MockPrivateKeyEntry entry) throws DSSException {
+			this(entry.getPrivateKey(), entry.getCertificate(), true, null, "1.234.567.890");
+		}
 
-    			Date responseDate = new Date();
-    			TimeStampResponse tsResponse = generator.generate(tsRequest, BigInteger.ONE, responseDate);
-    			
-    			return tsResponse;
-    		} catch (OperatorCreationException e) {
-    			throw new DSSException(e);
-    		} catch (CertificateEncodingException e) {
-    			throw new DSSException(e);
-    		} catch (TSPException e) {
-    			throw new DSSException(e);
-    		}
-    	}
+		/**
+		 * getTimeStampResponse
+		 * 
+		 * @param digestAlgorithm
+		 * @param digest
+		 * @return
+		 * @throws DSSException
+		 */
+		public TimeStampResponse getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest)
+				throws DSSException {
 
-    	private String getSignatureAlgorithm(DigestAlgorithm algorithm, byte[] digest) {
-    		String signatureAlgorithm;
-    		if (DigestAlgorithm.SHA1.equals(algorithm)) {
-    			signatureAlgorithm = "SHA1withRSA";
-    			if (digest.length != 20) {
-    				throw new IllegalArgumentException("Not valid size for a SHA1 digest : " + digest.length + " bytes");
-    			}
-    		} else if (DigestAlgorithm.SHA256.equals(algorithm)) {
-    			signatureAlgorithm = "SHA256withRSA";
-    			if (digest.length != 32) {
-    				throw new IllegalArgumentException("Not valid size for a SHA256 digest : " + digest.length + " bytes");
-    			}
-    		} else {
+			final String signatureAlgorithm = getSignatureAlgorithm(digestAlgorithm, digest);
 
-    			throw new UnsupportedOperationException("No support for " + algorithm);
-    		}
-    		return signatureAlgorithm;
-    	}
-    	
-    }
+			final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
+			tsqGenerator.setCertReq(true);
+
+			/**
+			 * The code below guarantee that the dates of the two successive
+			 * timestamps are different. This is activated only if timestampDate
+			 * is provided at construction time
+			 */
+			Date timestampDate_ = new Date();
+
+			if (policyOid != null) {
+				tsqGenerator.setReqPolicy(policyOid);
+			}
+
+			TimeStampRequest tsRequest = null;
+			if (useNonce) {
+				final BigInteger nonce = BigInteger.valueOf(random.nextLong());
+				tsRequest = tsqGenerator.generate(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), digest, nonce);
+			} else {
+				tsRequest = tsqGenerator.generate(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), digest);
+			}
+
+			try {
+				final ContentSigner sigGen = new JcaContentSignerBuilder(signatureAlgorithm).build(key);
+				final JcaX509CertificateHolder certHolder = new JcaX509CertificateHolder(cert.getCertificate());
+
+				// that to make sure we generate the same timestamp data for the
+				// same timestamp date
+				AttributeTable signedAttributes = new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Object>());
+				signedAttributes = signedAttributes.add(PKCSObjectIdentifiers.pkcs_9_at_signingTime, new Time(timestampDate_));
+				final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
+				AttributeTable unsignedAttributes = new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Object>());
+				final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);
+
+				final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
+				SignerInfoGeneratorBuilder sigInfoGeneratorBuilder = new SignerInfoGeneratorBuilder(digestCalculatorProvider);
+				sigInfoGeneratorBuilder.setSignedAttributeGenerator(signedAttributeGenerator);
+				sigInfoGeneratorBuilder.setUnsignedAttributeGenerator(unsignedAttributeGenerator);
+				final SignerInfoGenerator sig = sigInfoGeneratorBuilder.build(sigGen, certHolder);
+
+				final DigestCalculator sha1DigestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
+
+				final TimeStampTokenGenerator tokenGenerator = new TimeStampTokenGenerator(sig, sha1DigestCalculator, policyOid);
+				final Set<X509Certificate> singleton = new HashSet<X509Certificate>();
+				singleton.add(cert.getCertificate());
+				tokenGenerator.addCertificates(new JcaCertStore(singleton));
+				final TimeStampResponseGenerator generator = new TimeStampResponseGenerator(tokenGenerator, TSPAlgorithms.ALLOWED);
+
+				Date responseDate = new Date();
+				TimeStampResponse tsResponse = generator.generate(tsRequest, BigInteger.ONE, responseDate);
+
+				return tsResponse;
+			} catch (OperatorCreationException e) {
+				throw new DSSException(e);
+			} catch (CertificateEncodingException e) {
+				throw new DSSException(e);
+			} catch (TSPException e) {
+				throw new DSSException(e);
+			}
+		}
+
+		/**
+		 * getSignatureAlgorithm - maps signature algorithm name
+		 * 
+		 * @param algorithm
+		 * @param digest
+		 * @return
+		 */
+		private String getSignatureAlgorithm(DigestAlgorithm algorithm, byte[] digest) {
+			String signatureAlgorithm;
+			if (DigestAlgorithm.SHA1.equals(algorithm)) {
+				signatureAlgorithm = "SHA1withRSA";
+				if (digest.length != 20) {
+					throw new IllegalArgumentException(
+							"Not valid size for a SHA1 digest : " + digest.length + " bytes");
+				}
+			} else if (DigestAlgorithm.SHA256.equals(algorithm)) {
+				signatureAlgorithm = "SHA256withRSA";
+				if (digest.length != 32) {
+					throw new IllegalArgumentException(
+							"Not valid size for a SHA256 digest : " + digest.length + " bytes");
+				}
+			} else {
+
+				throw new UnsupportedOperationException("No support for " + algorithm);
+			}
+			return signatureAlgorithm;
+		}
+
+	}
 
 }
