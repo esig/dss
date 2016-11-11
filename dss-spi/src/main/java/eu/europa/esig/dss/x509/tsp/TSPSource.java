@@ -46,4 +46,16 @@ public interface TSPSource extends Serializable {
 	 */
 	TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException;
 	
+	/**
+	 * Gets a TimeStampResponse relevant to the provided digest
+	 *
+	 * @param digestAlgorithm
+	 * @param digest
+	 * @param pkcs12 container
+	 * @param pkcs12 container password
+	 * @return
+	 * @throws DSSException
+	 */
+	// f.fischer: Can be added to Interface, but than MockTSPSource needs to me modified.
+	//TimeStampToken getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest, byte[] p12, String p12Password) throws DSSException;
 }

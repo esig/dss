@@ -75,28 +75,24 @@ public class OnlineTSPSourceTest {
 
 	@Test
 	public void testWithTLS() {
+		try {
 
-		try	{
-			
 			byte[] p12 = IOUtils.toByteArray(new FileInputStream("src/test/resources/tsa.p12"));
-		
-			new TSServer(p12,"password"	).start();
+
+			new TSServer(p12, "password").start();
 
 			OnlineTSPSource tspSource = new OnlineTSPSource(TSA_TLS_URL);
-		
+
 			tspSource.setDataLoader(new TimestampDataLoader());
 
 			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, "Hello world".getBytes());
-		
-			TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest,p12,"password");
-			
+
+			TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest, p12, "password");
+
 			assertNotNull(timeStampResponse);
-		}
-		catch (DSSException | IOException e) {
+		} catch (DSSException | IOException e) {
 			e.printStackTrace();
 		}
-		
 
-		
 	}
 }
