@@ -39,7 +39,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
@@ -52,25 +51,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 
 	private File file;
 	private String countryCode;
-	private KeyStoreCertificateSource dssKeyStore;
 	private List<CertificateToken> potentialSigners;
-
-	/**
-	 * Constructor used to instantiate a validator for a LOTL
-	 *
-	 * @param file
-	 *            the file to validate (a LOTL file)
-	 * @param countryCode
-	 *            the country code
-	 * @param dssKeyStore
-	 *            the key store which contains trusted certificates (allowed to
-	 *            sign the LOTL)
-	 */
-	public TSLValidator(File file, String countryCode, KeyStoreCertificateSource dssKeyStore) {
-		this.file = file;
-		this.countryCode = countryCode;
-		this.dssKeyStore = dssKeyStore;
-	}
 
 	/**
 	 * Constructor used to instantiate a validator for a TSL
@@ -79,23 +60,19 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 	 *            the file to validate (a TSL file (not LOTL)
 	 * @param countryCode
 	 *            the country code
-	 * @param dssKeyStore
-	 *            the key store which contains trusted certificates (allowed to
-	 *            sign the LOTL)
 	 * @param potentialSigners
 	 *            the list of certificates allowed to sign this TSL
 	 */
-	public TSLValidator(File file, String countryCode, KeyStoreCertificateSource dssKeyStore, List<CertificateToken> potentialSigners) {
+	public TSLValidator(File file, String countryCode, List<CertificateToken> potentialSigners) {
 		this.file = file;
 		this.countryCode = countryCode;
-		this.dssKeyStore = dssKeyStore;
 		this.potentialSigners = potentialSigners;
 	}
 
 	@Override
 	public TSLValidationResult call() throws Exception {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
-		certificateVerifier.setTrustedCertSource(buildTrustedCertificateSource(dssKeyStore, potentialSigners));
+		certificateVerifier.setTrustedCertSource(buildTrustedCertificateSource(potentialSigners));
 
 		DSSDocument dssDocument = new FileDocument(file);
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(dssDocument);
@@ -125,17 +102,11 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		return result;
 	}
 
-	private CommonTrustedCertificateSource buildTrustedCertificateSource(KeyStoreCertificateSource dssKeyStore, List<CertificateToken> potentialSigners) {
+	private CommonTrustedCertificateSource buildTrustedCertificateSource(List<CertificateToken> potentialSigners) {
 		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		if (Utils.isCollectionNotEmpty(potentialSigners)) {
 			for (CertificateToken potentialSigner : potentialSigners) {
 				commonTrustedCertificateSource.addCertificate(potentialSigner);
-			}
-		}
-		if ((dssKeyStore != null) && Utils.isCollectionNotEmpty(dssKeyStore.getCertificatesFromKeyStore())) {
-			List<CertificateToken> trustedCertificatesFromKeyStore = dssKeyStore.getCertificatesFromKeyStore();
-			for (CertificateToken certificateToken : trustedCertificatesFromKeyStore) {
-				commonTrustedCertificateSource.addCertificate(certificateToken);
 			}
 		}
 		return commonTrustedCertificateSource;

@@ -154,7 +154,7 @@ public class TSLValidationJob {
 					String countryCode = entry.getKey();
 					if (!lotlCode.equals(countryCode)) {
 						TSLValidationModel countryModel = entry.getValue();
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, dssKeyStore,
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode,
 								getPotentialSigners(pointers, countryCode));
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
@@ -248,22 +248,22 @@ public class TSLValidationJob {
 		for (Future<TSLLoaderResult> futureLoaderResult : futureLoaderResults) {
 			try {
 				TSLLoaderResult loaderResult = futureLoaderResult.get();
-				if ( loaderResult != null && loaderResult.getContent() != null ) {
+				if (loaderResult != null && loaderResult.getContent() != null) {
 					TSLValidationModel countryModel = null;
 					if (!repository.isLastVersion(loaderResult)) {
 						countryModel = repository.storeInCache(loaderResult);
 					} else {
 						countryModel = repository.getByCountry(loaderResult.getCountryCode());
 					}
-	
+
 					TSLParserResult countryParseResult = countryModel.getParseResult();
 					if (countryParseResult == null) {
 						FileInputStream fis = new FileInputStream(countryModel.getFilepath());
 						futureParseResults.add(executorService.submit(new TSLParser(fis)));
 					}
-	
+
 					if (checkTSLSignatures && (countryModel.getValidationResult() == null || newLotl)) {
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore,
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(),
 								getPotentialSigners(pointers, loaderResult.getCountryCode()));
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
@@ -308,7 +308,11 @@ public class TSLValidationJob {
 	}
 
 	private TSLValidationResult validateLOTL(TSLValidationModel validationModel) throws Exception {
-		TSLValidator tslValidator = new TSLValidator(new File(validationModel.getFilepath()), lotlCode, dssKeyStore);
+		List<CertificateToken> certsFromKeystore = Collections.emptyList();
+		if (dssKeyStore != null) {
+			certsFromKeystore = dssKeyStore.getCertificatesFromKeyStore();
+		}
+		TSLValidator tslValidator = new TSLValidator(new File(validationModel.getFilepath()), lotlCode, certsFromKeystore);
 		Future<TSLValidationResult> future = executorService.submit(tslValidator);
 		return future.get();
 	}
