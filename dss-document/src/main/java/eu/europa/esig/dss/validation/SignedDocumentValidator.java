@@ -906,6 +906,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlCert.setQCStatementIds(qcStatementsIdList);
 		}
 
+		final List<String> qcTypesIdList = DSSASN1Utils.getQCTypesIdList(certToken);
+		if (Utils.isCollectionNotEmpty(qcTypesIdList)) {
+			xmlCert.setQCTypes(qcTypesIdList);
+		}
+		
 		List<String> policyIdentifiersList = DSSASN1Utils.getPolicyIdentifiers(certToken);
 		if (Utils.isCollectionNotEmpty(policyIdentifiersList)) {
 			xmlCert.setCertificatePolicyIds(policyIdentifiersList);

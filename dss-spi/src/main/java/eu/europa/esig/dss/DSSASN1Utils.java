@@ -92,6 +92,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public final class DSSASN1Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
+	
+	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -339,6 +341,8 @@ public final class DSSASN1Utils {
 	}
 
 	/**
+	 * Get the list of all QCStatement Ids that are present in the certificate.
+	 * (As per ETSI EN 319 412-5 V2.1.1)
 	 * @param x509Certificate
 	 * @return
 	 */
@@ -354,6 +358,43 @@ public final class DSSASN1Utils {
 			}
 		}
 		return extensionIdList;
+	}
+	
+	/**
+	 * Get the list of all QCType Ids that are present in the certificate.
+	 * (As per ETSI EN 319 412-5 V2.1.1)
+	 * @param certToken
+	 * @return
+	 */
+	public static List<String> getQCTypesIdList(final CertificateToken certToken) {
+		final List<String> qcTypesIdList = new ArrayList<String>();
+		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
+		if (qcStatement != null) {
+			final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
+			// Sequence of QCStatement
+			for (int ii = 0; ii < seq.size(); ii++) {
+				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
+				if (QC_TYPE_STATEMENT_OID.equals(statement.getStatementId().getId())) {
+					final ASN1Encodable qcTypeInfo1 = statement.getStatementInfo();
+					if ( qcTypeInfo1 instanceof ASN1Sequence ) {
+						final ASN1Sequence qcTypeInfo = (ASN1Sequence) qcTypeInfo1;
+						for (int jj = 0; jj < qcTypeInfo.size(); jj++) {
+							final ASN1Encodable e1 = qcTypeInfo.getObjectAt(jj);
+							if ( e1 instanceof ASN1ObjectIdentifier ) {
+								final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) e1;
+								qcTypesIdList.add( oid.getId() );
+							} else {
+								throw new IllegalStateException( "ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but " + e1.getClass().getName() );
+							}
+						}
+					} else {
+						throw new IllegalStateException( "QcTypes not an ASN1Sequence, but " + qcTypeInfo1.getClass().getName() );
+					}
+				}
+			}
+		}
+		
+		return qcTypesIdList;
 	}
 
 	/**
