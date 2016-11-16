@@ -25,8 +25,8 @@ import java.io.IOException;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1StreamParser;
 import org.bouncycastle.util.BigIntegers;
 
 import eu.europa.esig.dss.DSSException;
@@ -149,16 +149,20 @@ public final class DSSSignatureUtils {
 	/**
 	 * Checks if the signature is ASN.1 encoded.
 	 *
-	 * @param signatureValue signature value to check.
+	 * @param signatureValue
+	 *            signature value to check.
 	 * @return if the signature is ASN.1 encoded.
-     */
+	 */
 	private static boolean isAsn1Encoded(byte[] signatureValue) {
+		ASN1InputStream is = null;
 		try {
-			ASN1InputStream is = new ASN1InputStream(signatureValue);
-			is.readObject();
-			return true;
+			is = new ASN1InputStream(signatureValue);
+			ASN1Primitive obj = is.readObject();
+			return obj != null;
 		} catch (IOException e) {
 			return false;
+		} finally {
+			Utils.closeQuietly(is);
 		}
 	}
 
