@@ -293,6 +293,10 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 					final ASN1Encodable objectAt = attributeToAdd.getAttrValues().getObjectAt(0);
 					unsignedAttributes = unsignedAttributes.add(attrType, objectAt);
 				}
+				// Unsigned attributes cannot be empty (RFC 5652 5.3)
+				if (unsignedAttributes.size() == 0) {
+					unsignedAttributes = null;
+				}
 				final SignerInformation newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 				final List<SignerInformation> signerInformationList = new ArrayList<SignerInformation>();
 				signerInformationList.add(newSignerInformation);
