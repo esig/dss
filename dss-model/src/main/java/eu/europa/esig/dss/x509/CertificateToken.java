@@ -90,11 +90,6 @@ public class CertificateToken extends Token {
 	private Boolean selfSigned;
 
 	/**
-	 * Extra information collected during the validation process.
-	 */
-	protected CertificateTokenValidationExtraInfo extraInfo;
-
-	/**
 	 * In the case of the XML signature this is the Id associated with the certificate if any.
 	 */
 	private String xmlId;
@@ -133,7 +128,7 @@ public class CertificateToken extends Token {
 		this.digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 		this.encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
 
-		super.extraInfo = this.extraInfo = new CertificateTokenValidationExtraInfo();
+		this.extraInfo = new TokenValidationExtraInfo();
 	}
 
 	/**
@@ -394,16 +389,6 @@ public class CertificateToken extends Token {
 			throw new DSSException(e);
 		}
 		return signatureValid;
-	}
-
-	/**
-	 * Returns the object managing the validation extra info.
-	 *
-	 * @return
-	 */
-	@Override
-	public CertificateTokenValidationExtraInfo extraInfo() {
-		return extraInfo;
 	}
 
 	public DigestAlgorithm getDigestAlgorithm() {
