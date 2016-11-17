@@ -23,7 +23,6 @@ package eu.europa.esig.dss.client.ocsp;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
-import java.util.Date;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERIA5String;
@@ -42,7 +41,6 @@ import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPReqBuilder;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,6 +127,8 @@ public class OnlineOCSPSource implements OCSPSource {
 			ocspToken.setSourceURL(ocspAccessLocation);
 
 			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
+			ocspToken.setCertId(certId);
+
 			final byte[] content = buildOCSPRequest(certId);
 
 			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
@@ -149,8 +149,6 @@ public class OnlineOCSPSource implements OCSPSource {
 					ocspToken.setUseNonce(true);
 					ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp));
 				}
-
-				ocspToken.setBestSingleResp(getBestSingleResp(basicOCSPResp, certId));
 			}
 			return ocspToken;
 		} catch (OCSPException e) {
@@ -188,21 +186,6 @@ public class OnlineOCSPSource implements OCSPSource {
 		DEROctetString derReceivedNonce = (DEROctetString) extension.getExtnValue();
 		BigInteger receivedNonce = new BigInteger(derReceivedNonce.getOctets());
 		return receivedNonce.equals(nonceSource.getNonce());
-	}
-
-	private SingleResp getBestSingleResp(final BasicOCSPResp basicOCSPResp, final CertificateID certId) {
-		Date bestUpdate = null;
-		SingleResp bestSingleResp = null;
-		for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
-			if (DSSRevocationUtils.matches(certId, singleResp)) {
-				final Date thisUpdate = singleResp.getThisUpdate();
-				if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
-					bestSingleResp = singleResp;
-					bestUpdate = thisUpdate;
-				}
-			}
-		}
-		return bestSingleResp;
 	}
 
 	/**
