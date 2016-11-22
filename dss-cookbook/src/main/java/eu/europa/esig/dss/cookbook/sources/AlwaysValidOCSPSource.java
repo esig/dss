@@ -45,7 +45,6 @@ import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPReqBuilder;
 import org.bouncycastle.cert.ocsp.Req;
 import org.bouncycastle.cert.ocsp.RevokedStatus;
-import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.cert.ocsp.UnknownStatus;
 import org.bouncycastle.cert.ocsp.jcajce.JcaBasicOCSPRespBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -198,11 +197,10 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			final X509CertificateHolder x509CertificateHolder = new X509CertificateHolder(issuerCert.getEncoded());
 			final X509CertificateHolder[] chain = { x509CertificateHolder };
 			BasicOCSPResp basicResp = basicOCSPRespBuilder.build(contentSigner, chain, ocspDate);
-			final SingleResp[] responses = basicResp.getResponses();
-
 			final OCSPToken ocspToken = new OCSPToken();
+			CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
+			ocspToken.setCertId(certId);
 			ocspToken.setBasicOCSPResp(basicResp);
-			ocspToken.setBestSingleResp(responses[0]);
 			return ocspToken;
 		} catch (OCSPException e) {
 			throw new DSSException(e);

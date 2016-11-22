@@ -50,21 +50,8 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 			LOG.trace("--> OfflineOCSPSource queried for " + dssIdAsString + " contains: " + containedOCSPResponses.size() + " element(s).");
 		}
 
-		/**
-		 * TODO: (Bob 2013.05.08) Does the OCSP responses always use SHA1?<br>
-		 * RFC 2560:<br>
-		 * CertID ::= SEQUENCE {<br>
-		 * hashAlgorithm AlgorithmIdentifier,<br>
-		 * issuerNameHash OCTET STRING, -- Hash of Issuer's DN<br>
-		 * issuerKeyHash OCTET STRING, -- Hash of Issuer's public key<br>
-		 * serialNumber CertificateSerialNumber }<br>
-		 *
-		 * ... The hash algorithm used for both these hashes, is identified in hashAlgorithm. serialNumber is the
-		 * serial number of the cert for which status is being requested.
-		 */
 		Date bestUpdate = null;
 		BasicOCSPResp bestBasicOCSPResp = null;
-		SingleResp bestSingleResp = null;
 		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
 		for (final BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
 			for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
@@ -72,7 +59,6 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 					final Date thisUpdate = singleResp.getThisUpdate();
 					if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
 						bestBasicOCSPResp = basicOCSPResp;
-						bestSingleResp = singleResp;
 						bestUpdate = thisUpdate;
 					}
 				}
@@ -81,9 +67,9 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 
 		if (bestBasicOCSPResp != null) {
 			OCSPToken ocspToken = new OCSPToken();
+			ocspToken.setCertId(certId);
 			ocspToken.setOrigin(RevocationOrigin.SIGNATURE);
 			ocspToken.setBasicOCSPResp(bestBasicOCSPResp);
-			ocspToken.setBestSingleResp(bestSingleResp);
 			return ocspToken;
 		}
 		return null;

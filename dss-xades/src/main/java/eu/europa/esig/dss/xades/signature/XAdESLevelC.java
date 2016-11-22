@@ -174,40 +174,42 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			if (revocationToken instanceof OCSPToken) {
 
 				BasicOCSPResp basicOcspResp = ((OCSPToken) revocationToken).getBasicOCSPResp();
+				if (basicOcspResp != null) {
 
-				final Element ocspRefDom = DSSXMLUtils.addElement(documentDom, ocspRefsDom, XAdESNamespaces.XAdES, "xades:OCSPRef");
+					final Element ocspRefDom = DSSXMLUtils.addElement(documentDom, ocspRefsDom, XAdESNamespaces.XAdES, "xades:OCSPRef");
 
-				final Element ocspIdentifierDom = DSSXMLUtils.addElement(documentDom, ocspRefDom, XAdESNamespaces.XAdES, "xades:OCSPIdentifier");
-				final Element responderIDDom = DSSXMLUtils.addElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XAdES, "xades:ResponderID");
+					final Element ocspIdentifierDom = DSSXMLUtils.addElement(documentDom, ocspRefDom, XAdESNamespaces.XAdES, "xades:OCSPIdentifier");
+					final Element responderIDDom = DSSXMLUtils.addElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XAdES, "xades:ResponderID");
 
-				final RespID responderId = basicOcspResp.getResponderId();
-				final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
-				final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
-				if (2 == derTaggedObject.getTagNo()) {
+					final RespID responderId = basicOcspResp.getResponderId();
+					final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
+					final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
+					if (2 == derTaggedObject.getTagNo()) {
 
-					final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
-					final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-					final String base65EncodedKeyHashOctetStringBytes = Utils.toBase64(keyHashOctetStringBytes);
-					DSSXMLUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, "xades:ByKey", base65EncodedKeyHashOctetStringBytes);
-				} else {
+						final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
+						final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
+						final String base65EncodedKeyHashOctetStringBytes = Utils.toBase64(keyHashOctetStringBytes);
+						DSSXMLUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, "xades:ByKey", base65EncodedKeyHashOctetStringBytes);
+					} else {
 
-					final ASN1Primitive derObject = derTaggedObject.getObject();
-					final X500Name name = X500Name.getInstance(derObject);
-					DSSXMLUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, "xades:ByName", name.toString());
+						final ASN1Primitive derObject = derTaggedObject.getObject();
+						final X500Name name = X500Name.getInstance(derObject);
+						DSSXMLUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, "xades:ByName", name.toString());
+					}
+
+					final Date producedAt = basicOcspResp.getProducedAt();
+					final XMLGregorianCalendar xmlGregorianCalendar = DSSXMLUtils.createXMLGregorianCalendar(producedAt);
+					final String producedAtXmlEncoded = xmlGregorianCalendar.toXMLFormat();
+					DSSXMLUtils.addTextElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XAdES, "xades:ProducedAt", producedAtXmlEncoded);
+
+					final Element digestAlgAndValueDom = DSSXMLUtils.addElement(documentDom, ocspRefDom, XAdESNamespaces.XAdES, "xades:DigestAlgAndValue");
+					// TODO: to be added as field to eu.europa.esig.dss.AbstractSignatureParameters.
+					DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
+					incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
+
+					final InMemoryDocument inMemoryDocument = new InMemoryDocument(revocationToken.getEncoded());
+					incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, inMemoryDocument);
 				}
-
-				final Date producedAt = basicOcspResp.getProducedAt();
-				final XMLGregorianCalendar xmlGregorianCalendar = DSSXMLUtils.createXMLGregorianCalendar(producedAt);
-				final String producedAtXmlEncoded = xmlGregorianCalendar.toXMLFormat();
-				DSSXMLUtils.addTextElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XAdES, "xades:ProducedAt", producedAtXmlEncoded);
-
-				final Element digestAlgAndValueDom = DSSXMLUtils.addElement(documentDom, ocspRefDom, XAdESNamespaces.XAdES, "xades:DigestAlgAndValue");
-				// TODO: to be added as field to eu.europa.esig.dss.AbstractSignatureParameters.
-				DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
-				incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
-
-				final InMemoryDocument inMemoryDocument = new InMemoryDocument(revocationToken.getEncoded());
-				incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, inMemoryDocument);
 			}
 		}
 	}

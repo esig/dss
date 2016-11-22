@@ -21,8 +21,10 @@
 package eu.europa.esig.dss.x509;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -34,14 +36,6 @@ public class TokenValidationExtraInfo implements Serializable {
 	 */
 	private List<String> validationInfo = new ArrayList<String>();
 
-	public void infoTheSigningCertNotFound() {
-		validationInfo.add("The certificate used to sign this token is not found or not valid!");
-	}
-
-	public void addInfo(String message) {
-		validationInfo.add(message);
-	}
-
 	/**
 	 * Returns the additional information gathered during the validation process.
 	 *
@@ -49,6 +43,86 @@ public class TokenValidationExtraInfo implements Serializable {
 	 */
 	public List<String> getValidationInfo() {
 		return Collections.unmodifiableList(validationInfo);
+	}
+
+	public void infoTheSigningCertNotFound() {
+		addInfo("The certificate used to sign this token is not found or not valid!");
+	}
+
+	/**
+	 * This method adds an information as OCSP source is null
+	 */
+	public void infoOCSPSourceIsNull() {
+		addInfo("The OCSP source is null !");
+	}
+
+	/**
+	 * This method adds an information as no OCSP URI found
+	 */
+	public void infoNoOcspUriFoundInCertificate() {
+		addInfo("OSCP Uri not found in certificate meta-data !");
+	}
+
+	/**
+	 * This method allows to add an exception message with OCSP
+	 */
+	public void infoOCSPException(final String message) {
+		addInfo("An exception occurred during the OCSP retrieval process : " + message);
+	}
+
+	/**
+	 * This method adds an information as CRL source is null
+	 */
+	public void infoCRLSourceIsNull() {
+		addInfo("The CRL source is null!");
+	}
+
+	/**
+	 * This method adds an information as CRL not found
+	 */
+	public void infoNoCRLInfoFound() {
+		addInfo("No CRL info found !");
+	}
+
+	/**
+	 * This method adds an information as invalid CRL
+	 */
+	public void infoCRLIsNotValid() {
+		addInfo("The CRL is not valid!");
+	}
+
+	/**
+	 * This method allows to add an exception message with CRL
+	 */
+	public void infoCRLException(final String message) {
+		addInfo("An exception occurred during the CRL retrieval process : " + message);
+	}
+
+	public void infoOCSPNoCheckPresent() {
+		addInfo("OCSP check not needed: id-pkix-ocsp-nocheck extension present.");
+	}
+
+	public void infoTheCertNotValidYet(final Date validationDate, final Date notAfter, final Date notBefore) {
+		final String endDate = formatInternal(notAfter);
+		final String startDate = formatInternal(notBefore);
+		final String valDate = formatInternal(validationDate);
+		addInfo("The certificate is not valid yet! [" + startDate + "-" + endDate + "] on " + valDate);
+	}
+
+	public void infoTheCertIsExpired(final Date validationDate, final Date notAfter, final Date notBefore) {
+		final String endDate = formatInternal(notAfter);
+		final String startDate = formatInternal(notBefore);
+		final String valDate = formatInternal(validationDate);
+		addInfo("The certificate is expired! [" + startDate + "-" + endDate + "] on " + valDate);
+	}
+
+	private String formatInternal(final Date date) {
+		String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date);
+		return formatedDate;
+	}
+
+	private void addInfo(String message) {
+		validationInfo.add(message);
 	}
 
 }
