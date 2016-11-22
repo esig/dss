@@ -1778,7 +1778,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					}
 					referenceURIs.add(uri);
 					final byte[] bytes = reference.getReferencedBytes();
-					DSSUtils.write(bytes, buffer);
+					Utils.write(bytes, buffer);
 				} catch (XMLSignatureException e) {
 					throw new DSSException(e);
 				}

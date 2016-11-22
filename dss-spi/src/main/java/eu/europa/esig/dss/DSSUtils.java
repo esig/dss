@@ -31,9 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -45,7 +43,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -128,78 +125,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Formats the given date-time using the default pattern: {@code DSSUtils.DEFAULT_DATE_TIME_FORMAT}
-	 *
-	 * @param date
-	 * @return
-	 */
-	public static String formatDate(final Date date) {
-		if (date != null) {
-			final String stringDate = new SimpleDateFormat(DSSUtils.DEFAULT_DATE_TIME_FORMAT).format(date);
-			return stringDate;
-		}
-		return "";
-	}
-
-	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}.
-	 *
-	 * @param dateString
-	 *            the date string representation
-	 * @return the {@code Date}
-	 * @throws DSSException
-	 *             if the conversion is not possible the {@code DSSException} is thrown.
-	 */
-	public static Date parseDate(final String dateString) throws DSSException {
-		try {
-			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT);
-			final Date date = sdf.parse(dateString);
-			return date;
-		} catch (ParseException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * Converts the given string representation of the date using the format pattern.
-	 *
-	 * @param format
-	 *            the format to use
-	 * @param dateString
-	 *            the date string representation
-	 * @return the {@code Date}
-	 * @throws DSSException
-	 *             if the conversion is not possible the {@code DSSException} is thrown.
-	 */
-	public static Date parseDate(final String format, final String dateString) throws DSSException {
-		try {
-			final SimpleDateFormat sdf = new SimpleDateFormat(format);
-			final Date date = sdf.parse(dateString);
-			return date;
-		} catch (ParseException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}. If an exception
-	 * is frown durring the prsing then null is returned.
-	 *
-	 * @param dateString
-	 *            the date string representation
-	 * @return the {@code Date} or null if the parsing is not possible
-	 */
-	public static Date quietlyParseDate(final String dateString) throws DSSException {
-		try {
-			final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT);
-			final Date date = sdf.parse(dateString);
-			return date;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/**
 	 * Converts an array of bytes into a String representing the hexadecimal values of each byte in order. The returned
 	 * String will be double the length of the passed array, as it takes two characters to represent any given byte. If
 	 * the input array is null then null is returned. The obtained string is converted to uppercase.
@@ -228,28 +153,6 @@ public final class DSSUtils {
 			throw new DSSException("Illegal hexadecimal character " + ch + " at index " + index);
 		}
 		return digit;
-	}
-
-	/**
-	 * Writes bytes from a {@code byte[]} to an {@code OutputStream}.
-	 *
-	 * @param data
-	 *            the byte array to write, do not modify during output,
-	 *            null ignored
-	 * @param output
-	 *            the {@code OutputStream} to write to
-	 * @throws DSSException
-	 *             if output is null or an I/O error occurs
-	 * @since Commons IO 1.1
-	 */
-	public static void write(byte[] data, OutputStream output) throws DSSException {
-		try {
-			if (data != null) {
-				output.write(data);
-			}
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**
@@ -445,8 +348,9 @@ public final class DSSUtils {
 	 */
 	public static CertificateToken loadCertificate(final InputStream inputStream) throws DSSException {
 		try {
-			// Note: even though according to the javadoc the following method call throws CertificateException on parsing errors,
-			//       it is not (always?) the case for the BouncyCastle provider.
+			// Note: even though according to the javadoc the following method call throws CertificateException on
+			// parsing errors,
+			// it is not (always?) the case for the BouncyCastle provider.
 			final X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(inputStream);
 			if (cert == null) {
 				throw new DSSException("Could not parse certificate");
@@ -736,32 +640,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method opens the {@code URLConnection} using the given URL.
-	 *
-	 * @param url
-	 *            URL to be accessed
-	 * @return {@code URLConnection}
-	 */
-	public static URLConnection openURLConnection(final String url) {
-		try {
-			final URL tspUrl = new URL(url);
-			return tspUrl.openConnection();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	public static void writeToURLConnection(final URLConnection urlConnection, final byte[] bytes) throws DSSException {
-		try {
-			final OutputStream out = urlConnection.getOutputStream();
-			out.write(bytes);
-			out.close();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * This method returns an {@code InputStream} which needs to be closed, based on {@code FileInputStream}.
 	 *
 	 * @param filePath
@@ -975,14 +853,17 @@ public final class DSSUtils {
 	 */
 	public static void saveToFile(final byte[] bytes, final File file) throws DSSException {
 		file.getParentFile().mkdirs();
+		InputStream is = null;
+		OutputStream os = null;
 		try {
-			final FileOutputStream fileOutputStream = new FileOutputStream(file);
-			final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-			Utils.copy(inputStream, fileOutputStream);
-			Utils.closeQuietly(inputStream);
-			Utils.closeQuietly(fileOutputStream);
+			os = new FileOutputStream(file);
+			is = new ByteArrayInputStream(bytes);
+			Utils.copy(is, os);
 		} catch (IOException e) {
 			throw new DSSException(e);
+		} finally {
+			Utils.closeQuietly(is);
+			Utils.closeQuietly(os);
 		}
 	}
 
@@ -1259,49 +1140,6 @@ public final class DSSUtils {
 
 		try {
 			return is.available();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	public static void copyFile(final String path, final File sourceFile, final File destinationFile) throws IOException {
-
-		final File destinationPath = new File(path);
-		if (!destinationPath.exists()) {
-			destinationPath.mkdirs();
-			destinationFile.createNewFile();
-		}
-
-		FileInputStream fis = null;
-		FileOutputStream fos = null;
-		FileChannel source = null;
-		FileChannel destination = null;
-
-		try {
-			fis = new FileInputStream(sourceFile);
-			fos = new FileOutputStream(destinationFile);
-			source = fis.getChannel();
-			destination = fos.getChannel();
-			destination.transferFrom(source, 0, source.size());
-		} finally {
-			Utils.closeQuietly(source);
-			Utils.closeQuietly(fis);
-
-			Utils.closeQuietly(destination);
-			Utils.closeQuietly(fos);
-		}
-	}
-
-	/**
-	 * This method closes the given {@code OutputStream} and throws a {@code DSSException} when the operation fails.
-	 *
-	 * @param outputStream
-	 *            {@code OutputStream} to be closed
-	 */
-	public static void close(final OutputStream outputStream) {
-
-		try {
-			outputStream.close();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

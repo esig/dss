@@ -149,7 +149,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		int headerLength = 500;
+		int headerLength = 50;
 		byte[] preamble = new byte[headerLength];
 		DSSUtils.readToArray(dssDocument, headerLength, preamble);
 		if ((preamble[0] == 'P') && (preamble[1] == 'K')) {
@@ -298,7 +298,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 					final DSSDocument dssDocument = dssDocumentListIterator.next();
 					final String detachedContentName = dssDocument.getName();
-					if ("mimetype".equals(detachedContentName)) {
+					if (MIME_TYPE.equals(detachedContentName)) {
 						dssDocumentListIterator.remove();
 					} else if (detachedContentName.indexOf('/') != -1) {
 						dssDocumentListIterator.remove();
@@ -438,6 +438,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	private static MimeType getZipComment(final DSSDocument document) {
 		try {
+
 			byte[] buffer = Utils.toByteArray(document.openStream());
 
 			final int len = buffer.length;
@@ -505,7 +506,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 				final DSSDocument signature = currentSubordinatedValidator.getDocument();
 				final AsicManifestDocument relatedAsicManifest = getRelatedAsicManifest(signature);
-				final ArrayList<DSSDocument> relatedAsicManifests = new ArrayList<DSSDocument>();
+				final List<DSSDocument> relatedAsicManifests = new ArrayList<DSSDocument>();
 				relatedAsicManifests.add(relatedAsicManifest);
 				currentSubordinatedValidator.setDetachedContents(relatedAsicManifests);
 			} else {

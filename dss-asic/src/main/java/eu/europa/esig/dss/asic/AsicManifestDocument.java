@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.asic;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,14 +84,14 @@ public class AsicManifestDocument extends CommonDocument {
 
 	@Override
 	public void save(final String filePath) {
+		FileOutputStream fos = null;
 		try {
-			final FileOutputStream fos = new FileOutputStream(filePath);
-			DSSUtils.write(getBytes(), fos);
-			fos.close();
-		} catch (FileNotFoundException e) {
-			throw new DSSException(e);
+			fos = new FileOutputStream(filePath);
+			Utils.write(getBytes(), fos);
 		} catch (IOException e) {
 			throw new DSSException(e);
+		} finally {
+			Utils.closeQuietly(fos);
 		}
 	}
 

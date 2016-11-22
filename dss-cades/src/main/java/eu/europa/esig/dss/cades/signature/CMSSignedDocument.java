@@ -22,7 +22,6 @@ package eu.europa.esig.dss.cades.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,14 +89,14 @@ public class CMSSignedDocument extends CommonDocument {
 
 	@Override
 	public void save(final String filePath) {
+		FileOutputStream fos = null;
 		try {
-			final FileOutputStream fos = new FileOutputStream(filePath);
-			DSSUtils.write(getBytes(), fos);
-			fos.close();
-		} catch (FileNotFoundException e) {
-			throw new DSSException(e);
+			fos = new FileOutputStream(filePath);
+			Utils.write(getBytes(), fos);
 		} catch (IOException e) {
 			throw new DSSException(e);
+		} finally {
+			Utils.closeQuietly(fos);
 		}
 	}
 

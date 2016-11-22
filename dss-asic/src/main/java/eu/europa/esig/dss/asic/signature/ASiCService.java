@@ -318,7 +318,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 				storeManifestXAdES(parameters, toSignDocument, zipOutputStream);
 			}
 		}
-		DSSUtils.close(zipOutputStream);
+		Utils.closeQuietly(zipOutputStream);
 
 		final InMemoryDocument asicContainer = createASiCContainer(asicParameters, outBytes);
 		return asicContainer;

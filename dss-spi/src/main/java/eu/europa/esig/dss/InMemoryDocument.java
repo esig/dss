@@ -145,14 +145,14 @@ public class InMemoryDocument extends CommonDocument {
 
 	@Override
 	public void save(final String filePath) {
+		FileOutputStream fos = null;
 		try {
-			final FileOutputStream fos = new FileOutputStream(filePath);
-			DSSUtils.write(getBytes(), fos);
-			fos.close();
-		} catch (DSSException e) {
-			throw new DSSException(e);
+			fos = new FileOutputStream(filePath);
+			Utils.write(getBytes(), fos);
 		} catch (IOException e) {
 			throw new DSSException(e);
+		} finally {
+			Utils.closeQuietly(fos);
 		}
 	}
 
