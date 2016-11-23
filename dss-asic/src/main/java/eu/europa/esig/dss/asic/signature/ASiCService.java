@@ -59,7 +59,7 @@ import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
-import eu.europa.esig.dss.asic.validation.ASiCContainerValidator;
+import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
@@ -224,10 +224,10 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 				final String name = entry.getName();
 				final ZipEntry newEntry = new ZipEntry(name);
-				if (ASiCContainerValidator.isMimetype(name)) {
+				if (ASiCUtils.isMimetype(name)) {
 
 					storeMimetype(parameters.aSiC(), zipOutputStream);
-				} else if (ASiCContainerValidator.isXAdES(name) || ASiCContainerValidator.isCAdES(name)) {
+				} else if (ASiCUtils.isXAdES(name) || ASiCUtils.isCAdES(name)) {
 
 					createZipEntry(zipOutputStream, newEntry);
 					final InputStream inputStream = signedDocument.openStream();
@@ -268,17 +268,8 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	}
 
 	private DocumentValidator getAsicValidator(final DSSDocument toSignDocument) {
-
-		// Check if this is an existing container
-		try {
-
-			final DocumentValidator validator = SignedDocumentValidator.fromDocument(toSignDocument);
-			if (isAsicValidator(validator)) {
-
-				return validator;
-			}
-		} catch (Exception e) {
-			// do nothing
+		if (ASiCUtils.isASiCContainer(toSignDocument)) {
+			return SignedDocumentValidator.fromDocument(toSignDocument);
 		}
 		return null;
 	}
@@ -488,7 +479,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		final boolean asice = isAsice(asicParameters);
 		final boolean cadesForm = isCAdESForm(asicParameters);
 		final DocumentValidator validator = getAsicValidator(detachedDocument);
-		if (isAsicValidator(validator)) {
+		if (validator != null) {
 
 			// This is already an existing ASiC container; a new signature should be added.
 			final DocumentValidator subordinatedValidator = validator.getSubordinatedValidator();
@@ -531,11 +522,6 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		return contextToSignDocument;
 	}
 
-	private boolean isAsicValidator(final DocumentValidator documentValidator) {
-		final boolean result = documentValidator instanceof ASiCContainerValidator;
-		return result;
-	}
-
 	private ZipEntry getNextZipEntry(final ZipInputStream zipInputStream) throws DSSException {
 		try {
 			return zipInputStream.getNextEntry();
@@ -560,7 +546,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			originalDocument = null;
 			DSSDocument lastDocument = null;
 			for (final DSSDocument currentDocument : detachedContents) {
-				if (ASiCContainerValidator.isASiCManifest(currentDocument.getName())) {
+				if (ASiCUtils.isASiCManifest(currentDocument.getName())) {
 					originalDocument = currentDocument;
 					lastDocument = currentDocument;
 				}

@@ -36,9 +36,9 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.AsicManifestDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -137,6 +137,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	public ASiCContainerValidator(final DSSDocument asicContainer) {
 		super(null);
+		this.document = asicContainer;
 		this.asicContainer = asicContainer;
 		analyseEntries();
 
@@ -149,13 +150,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		int headerLength = 50;
-		byte[] preamble = new byte[headerLength];
-		DSSUtils.readToArray(dssDocument, headerLength, preamble);
-		if ((preamble[0] == 'P') && (preamble[1] == 'K')) {
-			return true;
-		}
-		return false;
+		return ASiCUtils.isASiCContainer(dssDocument);
 	}
 
 	private MimeType determinateAsicMimeType(final MimeType asicContainerMimetype, final MimeType asicEntryMimetype) {
@@ -246,14 +241,14 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 			for (ZipEntry entry = asicsInputStream.getNextEntry(); entry != null; entry = asicsInputStream.getNextEntry()) {
 
 				String entryName = entry.getName();
-				if (isCAdES(entryName)) {
+				if (ASiCUtils.isCAdES(entryName)) {
 
 					if (xadesSigned) {
 						throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.DIFFERENT_SIGNATURE_FORMATS);
 					}
 					addEntryElement(entryName, signatures, asicsInputStream);
 					cadesSigned = true;
-				} else if (isXAdES(entryName)) {
+				} else if (ASiCUtils.isXAdES(entryName)) {
 
 					if (cadesSigned) {
 						throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.DIFFERENT_SIGNATURE_FORMATS);
@@ -264,7 +259,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 
 					addEntryElement(entryName, signatures, asicsInputStream);
 					timestamped = true;
-				} else if (isASiCManifest(entryName)) {
+				} else if (ASiCUtils.isASiCManifest(entryName)) {
 
 					addAsicManifestEntryElement(entryName, detachedContents, asicsInputStream);
 				} else if (isManifest(entryName)) {
@@ -276,7 +271,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 				} else if (isMetadata(entryName)) {
 
 					addEntryElement(entryName, detachedContents, asicsInputStream);
-				} else if (isMimetype(entryName)) {
+				} else if (ASiCUtils.isMimetype(entryName)) {
 
 					final DSSDocument mimeType = addEntryElement(entryName, detachedContents, asicsInputStream);
 					asicEntryMimeType = getMimeType(mimeType);
@@ -323,7 +318,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		this.asicMimeType = asicMimeType;
 	}
 
-	private static MimeType getMimeType(final DSSDocument mimeType) throws DSSException {
+	private MimeType getMimeType(final DSSDocument mimeType) throws DSSException {
 
 		try {
 			final InputStream inputStream = mimeType.openStream();
@@ -337,7 +332,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		}
 	}
 
-	private static DSSDocument addEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) throws IOException {
+	private DSSDocument addEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) throws IOException {
 
 		final ByteArrayOutputStream signature = new ByteArrayOutputStream();
 		Utils.copy(asicsInputStream, signature);
@@ -346,8 +341,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return inMemoryDocument;
 	}
 
-	private static void addAsicManifestEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream)
-			throws IOException {
+	private void addAsicManifestEntryElement(final String entryName, final List<DSSDocument> list, final ZipInputStream asicsInputStream) throws IOException {
 
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		Utils.copy(asicsInputStream, byteArrayOutputStream);
@@ -365,8 +359,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	 * @param entryName
 	 * @return
 	 */
-	private static boolean isMetadata(final String entryName) {
-
+	private boolean isMetadata(final String entryName) {
 		final boolean manifest = entryName.equals(META_INF_FOLDER + "metadata.xml");
 		return manifest;
 	}
@@ -382,8 +375,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	 * @param entryName
 	 * @return
 	 */
-	private static boolean isContainer(final String entryName) {
-
+	private boolean isContainer(final String entryName) {
 		final boolean manifest = entryName.equals(META_INF_FOLDER + "container.xml");
 		return manifest;
 	}
@@ -401,42 +393,17 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	 * @param entryName
 	 * @return
 	 */
-	private static boolean isManifest(final String entryName) {
-
+	private boolean isManifest(final String entryName) {
 		final boolean manifest = entryName.equals(META_INF_FOLDER + "manifest.xml");
 		return manifest;
 	}
 
-	public static boolean isASiCManifest(String entryName) {
-
-		final boolean manifest = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER + "ASiCManifest");
-		return manifest;
-	}
-
-	public static boolean isMimetype(String entryName) {
-		return MIME_TYPE.equalsIgnoreCase(entryName);
-	}
-
-	public static boolean isTimestamp(String entryName) {
-
+	public boolean isTimestamp(String entryName) {
 		final boolean timestamp = entryName.endsWith(".tst") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("timestamp");
 		return timestamp;
 	}
 
-	public static boolean isXAdES(final String entryName) {
-
-		final boolean signature = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature")
-				&& !entryName.contains("Manifest");
-		return signature;
-	}
-
-	public static boolean isCAdES(final String entryName) {
-
-		final boolean signature = entryName.endsWith(".p7s") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature");
-		return signature;
-	}
-
-	private static MimeType getZipComment(final DSSDocument document) {
+	private MimeType getZipComment(final DSSDocument document) {
 		try {
 
 			byte[] buffer = Utils.toByteArray(document.openStream());
@@ -545,9 +512,20 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		DocumentValidator currentSubordinatedValidator = subordinatedValidator;
 		do {
 			currentSubordinatedValidator.setCertificateVerifier(certificateVerifier);
+			currentSubordinatedValidator.setProcessExecutor(processExecutor);
+
+			if (MimeType.ASICE.equals(asicMimeType) && currentSubordinatedValidator instanceof ASiCCMSDocumentValidator) {
+				final DSSDocument signature = currentSubordinatedValidator.getDocument();
+				final AsicManifestDocument relatedAsicManifest = getRelatedAsicManifest(signature);
+				final List<DSSDocument> relatedAsicManifests = new ArrayList<DSSDocument>();
+				relatedAsicManifests.add(relatedAsicManifest);
+				currentSubordinatedValidator.setDetachedContents(relatedAsicManifests);
+			} else {
+				currentSubordinatedValidator.setDetachedContents(detachedContents);
+			}
+
 			final List<AdvancedSignature> signatures = currentSubordinatedValidator.getSignatures();
 			for (final AdvancedSignature signature : signatures) {
-
 				validatedSignatures.add(signature);
 			}
 			currentSubordinatedValidator = currentSubordinatedValidator.getNextValidator();

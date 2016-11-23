@@ -613,7 +613,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			dealPolicy(signature, xmlSignature);
 
-			dealCertificateChain(xmlSignature, signingToken);
+			xmlSignature.setCertificateChain(xmlForCertificateChain(signingToken));
 
 			signature.validateTimestamps();
 
@@ -910,7 +910,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (Utils.isCollectionNotEmpty(qcTypesIdList)) {
 			xmlCert.setQCTypes(qcTypesIdList);
 		}
-		
+
 		List<String> policyIdentifiersList = DSSASN1Utils.getPolicyIdentifiers(certToken);
 		if (Utils.isCollectionNotEmpty(policyIdentifiersList)) {
 			xmlCert.setCertificatePolicyIds(policyIdentifiersList);
@@ -941,22 +941,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final String x500PrincipalName = X500PrincipalName.getName(x500PrincipalFormat);
 		xmlDistinguishedName.setValue(x500PrincipalName);
 		return xmlDistinguishedName;
-	}
-
-	/**
-	 * This method deals with the certificate chain. The retrieved information
-	 * is transformed to the JAXB object.
-	 *
-	 * @param xmlSignature
-	 *            The JAXB object containing all diagnostic data pertaining to
-	 *            the signature
-	 * @param signingToken
-	 *            {@code CertificateToken} relative to the current signature
-	 */
-	private void dealCertificateChain(final XmlSignature xmlSignature, final CertificateToken signingToken) {
-		if (signingToken != null) {
-			xmlSignature.setCertificateChain(xmlForCertificateChain(signingToken));
-		}
 	}
 
 	/**
@@ -1459,13 +1443,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	protected void dealSignatureScope(XmlSignature xmlSignature, AdvancedSignature signature) {
-		final List<SignatureScope> signatureScope = signatureScopeFinder.findSignatureScope(signature);
-		for (final SignatureScope scope : signatureScope) {
-			final XmlSignatureScope xmlSignatureScope = new XmlSignatureScope();
-			xmlSignatureScope.setName(scope.getName());
-			xmlSignatureScope.setScope(scope.getType());
-			xmlSignatureScope.setValue(scope.getDescription());
-			xmlSignature.getSignatureScopes().add(xmlSignatureScope);
+		if (signatureScopeFinder != null) {
+			final List<SignatureScope> signatureScope = signatureScopeFinder.findSignatureScope(signature);
+			for (final SignatureScope scope : signatureScope) {
+				final XmlSignatureScope xmlSignatureScope = new XmlSignatureScope();
+				xmlSignatureScope.setName(scope.getName());
+				xmlSignatureScope.setScope(scope.getType());
+				xmlSignatureScope.setValue(scope.getDescription());
+				xmlSignature.getSignatureScopes().add(xmlSignatureScope);
+			}
 		}
 	}
 
