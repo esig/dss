@@ -276,25 +276,24 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @return true if the token was not yet verified, false otherwise.
 	 */
 	private boolean addTokenForVerification(final Token token) {
+		if (token == null) {
+			return false;
+		}
 
 		final boolean traceEnabled = logger.isTraceEnabled();
+		if (traceEnabled) {
+			logger.trace("addTokenForVerification: trying to acquire synchronized block");
+		}
+
 		synchronized (tokensToProcess) {
-
-			if (traceEnabled) {
-				logger.trace("addTokenForVerification: trying to acquire synchronized block");
-			}
 			try {
-
-				if (token == null) {
-					return false;
-				}
 				if (tokensToProcess.containsKey(token)) {
-
 					if (traceEnabled) {
 						logger.trace("Token was already in the list {}:{}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
 					}
 					return false;
 				}
+
 				tokensToProcess.put(token, null);
 				if (traceEnabled) {
 					logger.trace("+ New {} to check: {}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
@@ -375,8 +374,8 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 
 				if (token instanceof CertificateToken) {
-					final List<RevocationToken> revocationToken = getRevocationData((CertificateToken) token);
-					addRevocationTokensForVerification(revocationToken);
+					final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token);
+					addRevocationTokensForVerification(revocationTokens);
 				}
 
 			}

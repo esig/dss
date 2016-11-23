@@ -541,7 +541,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * For all signatures to be validated this method merges the OCSP sources.
+	 * For all signatures to be validated this method merges the CRL sources.
 	 *
 	 * @param allSignatureList
 	 *            {@code List} of {@code AdvancedSignature}s to validate
@@ -549,10 +549,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return {@code ListCRLSource}
 	 */
 	private ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
-
 		final ListCRLSource signatureCrlSource = new ListCRLSource();
 		for (final AdvancedSignature signature : allSignatureList) {
-
 			signatureCrlSource.addAll(signature.getCRLSource());
 		}
 		return signatureCrlSource;
@@ -567,10 +565,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return {@code ListOCSPSource}
 	 */
 	private ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
-
 		final ListOCSPSource signatureOcspSource = new ListOCSPSource();
 		for (final AdvancedSignature signature : allSignatureList) {
-
 			signatureOcspSource.addAll(signature.getOCSPSource());
 		}
 		return signatureOcspSource;
@@ -703,11 +699,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final CertificateToken issuerToken = timestampToken.getIssuerToken();
 
-		XmlSigningCertificate xmlTSSignCert = xmlForSigningCertificate(issuerToken);
-		xmlTimestampToken.setSigningCertificate(xmlTSSignCert);
-
-		final List<XmlChainItem> xmlCertChainType = xmlForCertificateChain(issuerToken);
-		xmlTimestampToken.setCertificateChain(xmlCertChainType);
+		xmlTimestampToken.setSigningCertificate(xmlForSigningCertificate(issuerToken));
+		xmlTimestampToken.setCertificateChain(xmlForCertificateChain(issuerToken));
 
 		final List<TimestampReference> timestampReferences = timestampToken.getTimestampedReferences();
 		if (Utils.isCollectionNotEmpty(timestampReferences)) {
@@ -1084,8 +1077,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				}
 
 				final CertificateToken issuerToken = revocationToken.getIssuerToken();
-				final XmlSigningCertificate xmlRevocationSignCert = xmlForSigningCertificate(issuerToken);
-				xmlRevocation.setSigningCertificate(xmlRevocationSignCert);
+				xmlRevocation.setSigningCertificate(xmlForSigningCertificate(issuerToken));
 				xmlRevocation.setCertificateChain(xmlForCertificateChain(issuerToken));
 
 				final List<String> list = revocationToken.getValidationInfo();

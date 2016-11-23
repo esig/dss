@@ -300,10 +300,9 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 					}
 				}
 			}
+		} catch (DSSException e) {
+			throw e;
 		} catch (Exception e) {
-			if (e instanceof DSSException) {
-				throw (DSSException) e;
-			}
 			throw new DSSException(e);
 		} finally {
 			Utils.closeQuietly(asicsInputStream);
@@ -319,16 +318,17 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	}
 
 	private MimeType getMimeType(final DSSDocument mimeType) throws DSSException {
-
+		InputStream is = null;
 		try {
-			final InputStream inputStream = mimeType.openStream();
-			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			Utils.copy(inputStream, byteArrayOutputStream);
-			final String mimeTypeString = byteArrayOutputStream.toString("UTF-8");
+			is = mimeType.openStream();
+			byte[] byteArray = Utils.toByteArray(is);
+			final String mimeTypeString = new String(byteArray, "UTF-8");
 			final MimeType asicMimeType = MimeType.fromMimeTypeString(mimeTypeString);
 			return asicMimeType;
 		} catch (IOException e) {
 			throw new DSSException(e);
+		} finally {
+			Utils.closeQuietly(is);
 		}
 	}
 
@@ -398,7 +398,7 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		return manifest;
 	}
 
-	public boolean isTimestamp(String entryName) {
+	private boolean isTimestamp(String entryName) {
 		final boolean timestamp = entryName.endsWith(".tst") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("timestamp");
 		return timestamp;
 	}
@@ -499,9 +499,6 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 
-		if (signatures == null) {
-			return null;
-		}
 		if (validatedSignatures != null) {
 			return validatedSignatures;
 		}
@@ -513,19 +510,8 @@ public class ASiCContainerValidator extends SignedDocumentValidator {
 		do {
 			currentSubordinatedValidator.setCertificateVerifier(certificateVerifier);
 			currentSubordinatedValidator.setProcessExecutor(processExecutor);
-
-			if (MimeType.ASICE.equals(asicMimeType) && currentSubordinatedValidator instanceof ASiCCMSDocumentValidator) {
-				final DSSDocument signature = currentSubordinatedValidator.getDocument();
-				final AsicManifestDocument relatedAsicManifest = getRelatedAsicManifest(signature);
-				final List<DSSDocument> relatedAsicManifests = new ArrayList<DSSDocument>();
-				relatedAsicManifests.add(relatedAsicManifest);
-				currentSubordinatedValidator.setDetachedContents(relatedAsicManifests);
-			} else {
-				currentSubordinatedValidator.setDetachedContents(detachedContents);
-			}
-
-			final List<AdvancedSignature> signatures = currentSubordinatedValidator.getSignatures();
-			for (final AdvancedSignature signature : signatures) {
+			final List<AdvancedSignature> subSignatures = currentSubordinatedValidator.getSignatures();
+			for (final AdvancedSignature signature : subSignatures) {
 				validatedSignatures.add(signature);
 			}
 			currentSubordinatedValidator = currentSubordinatedValidator.getNextValidator();

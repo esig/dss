@@ -306,7 +306,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 			if (cadesForm) {
 				storeAsicManifestCAdES(parameters, toSignDocument, zipOutputStream);
 			} else if (signDocument == null && xadesForm) { // only one manifest file / zip
-				storeManifestXAdES(parameters, toSignDocument, zipOutputStream);
+				storeManifestXAdES(toSignDocument, zipOutputStream);
 			}
 		}
 		Utils.closeQuietly(zipOutputStream);
@@ -392,12 +392,12 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		storeXmlDom(outputStream, documentDom);
 	}
 
-	private void storeManifestXAdES(ASiCSignatureParameters parameters, final DSSDocument detachedDocument, final ZipOutputStream outZip) {
+	private void storeManifestXAdES(final DSSDocument detachedDocument, final ZipOutputStream outZip) {
 		final String asicManifestZipEntryName = META_INF + "manifest.xml";
 		final ZipEntry entrySignature = new ZipEntry(asicManifestZipEntryName);
 		createZipEntry(outZip, entrySignature);
 
-		buildAsicManifestXAdES(parameters, detachedDocument, outZip);
+		buildAsicManifestXAdES(detachedDocument, outZip);
 	}
 
 	// <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
@@ -406,7 +406,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	// <manifest:file-entry manifest:full-path="test.txt" manifest:media-type="text/plain"/>
 	// <manifest:file-entry manifest:full-path="test-data-file.bin" manifest:media-type="application/octet-stream"/>
 	// </manifest:manifest>
-	private void buildAsicManifestXAdES(ASiCSignatureParameters parameters, DSSDocument detachedDocument, OutputStream outputStream) {
+	private void buildAsicManifestXAdES(DSSDocument detachedDocument, OutputStream outputStream) {
 		final Document documentDom = DSSXMLUtils.buildDOM();
 		final Element manifestDom = documentDom.createElementNS(ASiCNamespaces.MANIFEST_NS, "manifest:manifest");
 		documentDom.appendChild(manifestDom);
@@ -886,4 +886,5 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	private boolean isArchive(DSSDocument doc) {
 		return (doc.getName().endsWith(".zip") || doc.getName().endsWith(".bdoc") || doc.getName().endsWith(".asice") || doc.getName().endsWith(".asics"));
 	}
+
 }
