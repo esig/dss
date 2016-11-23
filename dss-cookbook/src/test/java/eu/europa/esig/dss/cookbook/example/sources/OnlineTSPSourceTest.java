@@ -41,12 +41,11 @@ public class OnlineTSPSourceTest {
 
 		// tag::demo[]
 
-		final String tspServer = "http://services.globaltrustfinder.com/adss/tsa";
+		final String tspServer = "http://tsa.belgium.be/connect";
 		OnlineTSPSource tspSource = new OnlineTSPSource(tspServer);
-		tspSource.setPolicyOid("1.2.3.4.5");
 
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
-		final byte[] toDigest = "digest value".getBytes();
+		final byte[] toDigest = "digest value".getBytes("UTF-8");
 		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
 		final TimeStampToken tsr = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
