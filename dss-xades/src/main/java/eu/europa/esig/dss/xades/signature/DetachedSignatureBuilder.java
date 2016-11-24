@@ -32,9 +32,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 /**
@@ -65,7 +65,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		if (params.getRootDocument() != null) {
 			return params.getRootDocument();
 		}
-		return DSSXMLUtils.buildDOM();
+		return DomUtils.buildDOM();
 	}
 
 	@Override

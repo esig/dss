@@ -6,12 +6,15 @@
 		<artifactId>sd-dss</artifactId>
 		<version>4.8-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>dss-asic-common</artifactId>
+	<description>DSS ASiC-common contains common classes between ASiC C/XAdES.</description>
+	
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-model</artifactId>
+			<artifactId>dss-document</artifactId>
 		</dependency>
 
 		<dependency>

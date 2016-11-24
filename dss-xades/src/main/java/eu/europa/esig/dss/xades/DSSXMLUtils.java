@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.xades;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -40,14 +38,10 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -65,7 +59,6 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -74,9 +67,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.ResourceLoader;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -90,8 +82,6 @@ public final class DSSXMLUtils {
 
 	public static final String ID_ATTRIBUTE_NAME = "id";
 	public static final String XAD_ESV141_XSD = "/XAdESv141.xsd";
-
-	private static DocumentBuilderFactory dbFactory;
 
 	private static final XPathFactory factory = XPathFactory.newInstance();
 
@@ -131,7 +121,6 @@ public final class DSSXMLUtils {
 		registerNamespace("xades141", XAdESNamespaces.XAdES141);
 		registerNamespace("xades122", XAdESNamespaces.XAdES122);
 		registerNamespace("xades111", XAdESNamespaces.XAdES111);
-		registerNamespace("asic", ASiCNamespaces.ASiC);
 	}
 
 	/**
@@ -354,7 +343,7 @@ public final class DSSXMLUtils {
 	 */
 	public static byte[] serializeNode(final Node xmlNode) {
 		try {
-			Transformer transformer = getSecureTransformer();
+			Transformer transformer = DomUtils.getSecureTransformer();
 			Document document = null;
 			if (Node.DOCUMENT_NODE == xmlNode.getNodeType()) {
 				document = (Document) xmlNode;
@@ -476,129 +465,6 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Guarantees that the xmlString builder has been created.
-	 *
-	 * @throws ParserConfigurationException
-	 */
-	private static void ensureDocumentBuilder() throws DSSException {
-
-		if (dbFactory != null) {
-			return;
-		}
-		dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setNamespaceAware(true);
-		try {
-			// disable external entities
-			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-			dbFactory.setXIncludeAware(false);
-			dbFactory.setExpandEntityReferences(false);
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	public static TransformerFactory getSecureTransformerFactory() {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		try {
-			transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		} catch (TransformerConfigurationException e) {
-			throw new DSSException(e);
-		}
-		transformerFactory.setErrorListener(new DSSXmlErrorListener());
-		return transformerFactory;
-	}
-
-	public static Transformer getSecureTransformer() {
-		TransformerFactory transformerFactory = getSecureTransformerFactory();
-		Transformer transformer = null;
-		try {
-			transformer = transformerFactory.newTransformer();
-		} catch (TransformerConfigurationException e) {
-			throw new DSSException(e);
-		}
-		transformer.setErrorListener(new DSSXmlErrorListener());
-		return transformer;
-	}
-
-	/**
-	 * Creates the new empty Document.
-	 *
-	 * @return
-	 * @throws ParserConfigurationException
-	 * @throws IOException
-	 * @throws SAXException
-	 */
-	public static Document buildDOM() {
-		ensureDocumentBuilder();
-		try {
-			return dbFactory.newDocumentBuilder().newDocument();
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on the XML string.
-	 *
-	 * @param xmlString
-	 *            The string representing the dssDocument to be created.
-	 * @return
-	 * @throws ParserConfigurationException
-	 * @throws IOException
-	 * @throws SAXException
-	 */
-	public static Document buildDOM(final String xmlString) throws DSSException {
-		return buildDOM(DSSUtils.getUtf8Bytes(xmlString));
-	}
-
-	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on byte array.
-	 *
-	 * @param bytes
-	 *            The bytes array representing the dssDocument to be created.
-	 * @return
-	 * @throws ParserConfigurationException
-	 * @throws IOException
-	 * @throws SAXException
-	 */
-	public static Document buildDOM(final byte[] bytes) throws DSSException {
-		return buildDOM(new ByteArrayInputStream(bytes));
-	}
-
-	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on the {@link eu.europa.esig.dss.DSSDocument}.
-	 *
-	 * @param dssDocument
-	 *            The DSS representation of the document from which the dssDocument is created.
-	 * @return
-	 * @throws DSSException
-	 */
-	public static Document buildDOM(final DSSDocument dssDocument) throws DSSException {
-		return buildDOM(dssDocument.openStream());
-	}
-
-	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on the XML inputStream.
-	 *
-	 * @param inputStream
-	 *            The inputStream stream representing the dssDocument to be created.
-	 * @return
-	 * @throws DSSException
-	 */
-	public static Document buildDOM(final InputStream inputStream) throws DSSException {
-		try {
-			ensureDocumentBuilder();
-			final Document rootElement = dbFactory.newDocumentBuilder().parse(inputStream);
-			return rootElement;
-		} catch (Exception e) {
-			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(inputStream);
-		}
-	}
-
-	/**
 	 * This method says if the framework can canonicalize an XML data with the provided method.
 	 *
 	 * @param canonicalizationMethod
@@ -677,26 +543,6 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method creates and adds a new XML {@code Element}
-	 *
-	 * @param document
-	 *            root document
-	 * @param parentDom
-	 *            parent node
-	 * @param namespace
-	 *            namespace
-	 * @param name
-	 *            element name
-	 * @return added element
-	 */
-	public static Element addElement(final Document document, final Element parentDom, final String namespace, final String name) {
-
-		final Element dom = document.createElementNS(namespace, name);
-		parentDom.appendChild(dom);
-		return dom;
-	}
-
-	/**
 	 * This method sets a text node to the given DOM element.
 	 *
 	 * @param document
@@ -710,28 +556,6 @@ public final class DSSXMLUtils {
 
 		final Text textNode = document.createTextNode(text);
 		parentDom.appendChild(textNode);
-	}
-
-	/**
-	 * Creates a DOM document without document element.
-	 *
-	 * @param namespaceURI
-	 *            the namespace URI of the document element to create or null
-	 * @param qualifiedName
-	 *            the qualified name of the document element to be created or null
-	 * @return {@code Document}
-	 */
-	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
-		ensureDocumentBuilder();
-
-		DOMImplementation domImpl;
-		try {
-			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-
-		return domImpl.createDocument(namespaceURI, qualifiedName, null);
 	}
 
 	/**
@@ -818,7 +642,7 @@ public final class DSSXMLUtils {
 			final Source source = new DOMSource(node);
 			final StringWriter stringWriter = new StringWriter();
 			final Result result = new StreamResult(stringWriter);
-			final Transformer transformer = getSecureTransformer();
+			final Transformer transformer = DomUtils.getSecureTransformer();
 			transformer.transform(source, result);
 			return stringWriter.getBuffer().toString();
 		} catch (Exception e) {

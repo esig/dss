@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.signature.asics;
+package eu.europa.esig.dss.asic.signature.asice;
 
 import java.util.Date;
 
@@ -39,7 +39,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class ASiCSLevelBTest extends AbstractTestSignature {
+public class ASiCEXAdESLevelBTest extends AbstractTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -58,7 +58,7 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCWithXAdESService(certificateVerifier);
@@ -76,7 +76,7 @@ public class ASiCSLevelBTest extends AbstractTestSignature {
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
+		return MimeType.ASICE;
 	}
 
 	@Override

@@ -36,6 +36,7 @@ import org.w3c.dom.Text;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
@@ -136,7 +137,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 			DSSDocument tbsDoc = reference.getContents();
 			if (tbsDoc.getMimeType() == MimeType.XML && params.isEmbedXML()) {
 				try {
-					Document doc = DSSXMLUtils.buildDOM(reference.getContents().openStream());
+					Document doc = DomUtils.buildDOM(reference.getContents().openStream());
 					Element root = doc.getDocumentElement();
 					Node adopted = documentDom.adoptNode(root);
 

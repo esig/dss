@@ -37,6 +37,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
@@ -83,7 +84,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 		super(new XAdESSignatureScopeFinder());
 		this.document = dssDocument;
-		this.rootElement = DSSXMLUtils.buildDOM(dssDocument);
+		this.rootElement = DomUtils.buildDOM(dssDocument);
 
 		xPathQueryHolders = new ArrayList<XPathQueryHolder>();
 

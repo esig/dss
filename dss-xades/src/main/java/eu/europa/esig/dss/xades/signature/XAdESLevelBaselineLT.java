@@ -25,6 +25,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -145,7 +146,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		if (!revocationsForInclusion.isEmpty()) {
 
-			final Element revocationValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
+			final Element revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
 
 			incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
 			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
@@ -159,7 +160,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 			return;
 		}
 		// ...<xades:CRLValues/>
-		final Element crlValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
+		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
 
 		for (final RevocationToken revocationToken : crlTokens) {
 
@@ -178,7 +179,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		// ...<xades:OCSPValues>
 		// .........<xades:EncapsulatedOCSPValue>MIIERw...
-		final Element ocspValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
+		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
 
 		for (final RevocationToken revocationToken : ocspTokens) {
 

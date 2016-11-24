@@ -49,6 +49,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureForm;
@@ -57,6 +58,7 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.asic.ASiCNamespaces;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCSignatureParameters;
 import eu.europa.esig.dss.asic.ASiCUtils;
@@ -68,8 +70,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.ASiCNamespaces;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -360,11 +360,11 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 
 		ASiCParameters asicParameters = underlyingParameters.aSiC();
 
-		final Document documentDom = DSSXMLUtils.buildDOM();
+		final Document documentDom = DomUtils.buildDOM();
 		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespaces.ASiC, "asic:ASiCManifest");
 		documentDom.appendChild(asicManifestDom);
 
-		final Element sigReferenceDom = DSSXMLUtils.addElement(documentDom, asicManifestDom, ASiCNamespaces.ASiC, "asic:SigReference");
+		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespaces.ASiC, "asic:SigReference");
 		final String signatureName = getSignatureFileName(asicParameters);
 		sigReferenceDom.setAttribute("URI", signatureName);
 		sigReferenceDom.setAttribute("MimeType", MimeType.PKCS7.getMimeTypeString()); // only CAdES form
@@ -373,14 +373,14 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		do {
 
 			final String detachedDocumentName = currentDetachedDocument.getName();
-			final Element dataObjectReferenceDom = DSSXMLUtils.addElement(documentDom, sigReferenceDom, ASiCNamespaces.ASiC, "asic:DataObjectReference");
+			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, sigReferenceDom, ASiCNamespaces.ASiC, "asic:DataObjectReference");
 			dataObjectReferenceDom.setAttribute("URI", detachedDocumentName);
 
-			final Element digestMethodDom = DSSXMLUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestMethod");
+			final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestMethod");
 			final DigestAlgorithm digestAlgorithm = underlyingParameters.getDigestAlgorithm();
 			digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getXmlId());
 
-			final Element digestValueDom = DSSXMLUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
+			final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
 			final byte[] digest = DSSUtils.digest(digestAlgorithm, currentDetachedDocument);
 			final String base64Encoded = Utils.toBase64(digest);
 			final Text textNode = documentDom.createTextNode(base64Encoded);
@@ -407,17 +407,17 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 	// <manifest:file-entry manifest:full-path="test-data-file.bin" manifest:media-type="application/octet-stream"/>
 	// </manifest:manifest>
 	private void buildAsicManifestXAdES(DSSDocument detachedDocument, OutputStream outputStream) {
-		final Document documentDom = DSSXMLUtils.buildDOM();
+		final Document documentDom = DomUtils.buildDOM();
 		final Element manifestDom = documentDom.createElementNS(ASiCNamespaces.MANIFEST_NS, "manifest:manifest");
 		documentDom.appendChild(manifestDom);
 
-		final Element rootDom = DSSXMLUtils.addElement(documentDom, manifestDom, ASiCNamespaces.MANIFEST_NS, "manifest:file-entry");
+		final Element rootDom = DomUtils.addElement(documentDom, manifestDom, ASiCNamespaces.MANIFEST_NS, "manifest:file-entry");
 		rootDom.setAttribute("manifest:full-path", "/");
 		rootDom.setAttribute("manifest:media-type", MimeType.ASICE.getMimeTypeString());
 
 		DSSDocument currentDetachedDocument = detachedDocument;
 		do {
-			Element fileDom = DSSXMLUtils.addElement(documentDom, manifestDom, ASiCNamespaces.MANIFEST_NS, "manifest:file-entry");
+			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ASiCNamespaces.MANIFEST_NS, "manifest:file-entry");
 			fileDom.setAttribute("manifest:full-path", currentDetachedDocument.getName());
 			fileDom.setAttribute("manifest:media-type", currentDetachedDocument.getMimeType().getMimeTypeString());
 
@@ -794,9 +794,9 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		DSSDocument enclosedSignature = asicParameters.getEnclosedSignature();
 		Document rootDocument;
 		if ((enclosedSignature != null) && isAsics(asicParameters)) {
-			rootDocument = DSSXMLUtils.buildDOM(enclosedSignature);
+			rootDocument = DomUtils.buildDOM(enclosedSignature);
 		} else {
-			rootDocument = DSSXMLUtils.createDocument(ASiCNamespaces.ASiC, ASICS_NS);
+			rootDocument = DomUtils.createDocument(ASiCNamespaces.ASiC, ASICS_NS);
 		}
 		xadesParameters.setRootDocument(rootDocument);
 	}
@@ -817,7 +817,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		final String signatureZipEntryName = getSignatureFileName(asicParameters);
 		final ZipEntry entrySignature = new ZipEntry(signatureZipEntryName);
 		createZipEntry(outZip, entrySignature);
-		Document xmlSignatureDoc = DSSXMLUtils.buildDOM(signature);
+		Document xmlSignatureDoc = DomUtils.buildDOM(signature);
 		storeXmlDom(outZip, xmlSignatureDoc);
 	}
 
@@ -825,7 +825,7 @@ public class ASiCService extends AbstractSignatureService<ASiCSignatureParameter
 		try {
 			final DOMSource xmlSource = new DOMSource(xml);
 			final StreamResult outputTarget = new StreamResult(outZip);
-			Transformer transformer = DSSXMLUtils.getSecureTransformer();
+			Transformer transformer = DomUtils.getSecureTransformer();
 			transformer.transform(xmlSource, outputTarget);
 		} catch (Exception e) {
 			throw new DSSException(e);

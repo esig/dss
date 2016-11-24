@@ -31,6 +31,7 @@ import eu.europa.esig.dss.CommonDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -60,7 +61,7 @@ public class AsicManifestDocument extends CommonDocument {
 		this.bytes = bytes;
 		this.name = name;
 		this.mimeType = MimeType.XML;
-		final Document document = DSSXMLUtils.buildDOM(bytes);
+		final Document document = DomUtils.buildDOM(bytes);
 		signatureUri = DSSXMLUtils.getValue(document, "/asic:ASiCManifest/asic:SigReference/@URI");
 		if (Utils.isStringBlank(signatureUri)) {
 			throw new DSSException("The AsicManifest file must contains the URI of the related signature.");

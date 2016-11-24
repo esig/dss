@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
+import eu.europa.esig.dss.DSSXmlErrorListener;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.DSSXmlErrorListener;
 
 @Component
 public class XSLTService {
@@ -33,7 +33,7 @@ public class XSLTService {
 
 	@PostConstruct
 	public void init() throws TransformerConfigurationException {
-		TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
+		TransformerFactory transformerFactory = DomUtils.getSecureTransformerFactory();
 
 		InputStream simpleIS = XSLTService.class.getResourceAsStream("/xslt/html/simple-report.xslt");
 		templateSimpleReport = transformerFactory.newTemplates(new StreamSource(simpleIS));

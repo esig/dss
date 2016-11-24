@@ -32,8 +32,8 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.xades.DSSTransform;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 /**
  * This class implement the logic of {@code Transforms.TRANSFORM_XPATH}.
@@ -49,7 +49,7 @@ class DSSTransformXPath {
 	public DSSTransformXPath(final DSSTransform dssTransform) {
 
 		this.dssTransform = dssTransform;
-		document = DSSXMLUtils.buildDOM();
+		document = DomUtils.buildDOM();
 		final Element transformDom = document.createElementNS(XMLSignature.XMLNS, XAdESSignatureBuilder.DS_TRANSFORM);
 		document.appendChild(transformDom);
 

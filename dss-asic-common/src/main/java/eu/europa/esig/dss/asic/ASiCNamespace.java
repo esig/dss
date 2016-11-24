@@ -18,17 +18,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades;
+package eu.europa.esig.dss.asic;
 
 /**
  * This enum contains all known ASiC version with their namespace.
  *
  */
-public final class ASiCNamespaces {
+public final class ASiCNamespace {
 
 	public static final String ASiC = "http://uri.etsi.org/02918/v1.2.1#";
-	public static final String MANIFEST_NS = "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0";
 
-	private ASiCNamespaces() {
+	private ASiCNamespace() {
 	}
 }

@@ -379,6 +379,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-asic-cades</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-cades</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -775,6 +780,7 @@
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-asic-xades</module>
+				<module>dss-asic-cades</module>
 				<module>dss-asic-common</module>
 				<module>dss-cades</module>
 				<module>dss-pades</module>
@@ -831,6 +837,7 @@
 				<module>validation-policy</module>
 				<module>dss-asic</module>
 				<module>dss-asic-xades</module>
+				<module>dss-asic-cades</module>
 				<module>dss-asic-common</module>
 				<module>dss-cades</module>
 				<module>dss-pades</module>

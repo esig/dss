@@ -6,10 +6,11 @@
 		<artifactId>sd-dss</artifactId>
 		<version>4.8-SNAPSHOT</version>
 	</parent>
-
-	<artifactId>dss-asic-xades</artifactId>
-	<description>DSS ASiC with XAdES contains the code for the creation and validation of ASiC containers with XAdES signature(s).</description>
-
+	
+	<artifactId>dss-asic-cades</artifactId>
+	<description>DSS ASiC with CAdES contains the code for the creation and validation of ASiC containers with CAdES signature(s).</description>
+	
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -17,9 +18,8 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-xades</artifactId>
+			<artifactId>dss-cades</artifactId>
 		</dependency>
-
 
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

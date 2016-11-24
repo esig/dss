@@ -22,14 +22,18 @@ public final class ASiCUtils {
 		return MIME_TYPE.equalsIgnoreCase(entryName);
 	}
 
+	public static boolean isSignature(final String entryName) {
+		final boolean signature = entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature") && !entryName.contains("Manifest");
+		return signature;
+	}
+
 	public static boolean isXAdES(final String entryName) {
-		final boolean signature = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature")
-				&& !entryName.contains("Manifest");
+		final boolean signature = isSignature(entryName) && entryName.endsWith(".xml");
 		return signature;
 	}
 
 	public static boolean isCAdES(final String entryName) {
-		final boolean signature = entryName.endsWith(".p7s") && entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature");
+		final boolean signature = isSignature(entryName) && entryName.endsWith(".p7s");
 		return signature;
 	}
 
@@ -40,17 +44,17 @@ public final class ASiCUtils {
 
 	public static String getMimeTypeString(final ASiCParameters asicParameters) {
 		final String asicParameterMimeType = asicParameters.getMimeType();
-		String mimeTypeBytes;
+		String mimeTypeString;
 		if (Utils.isStringBlank(asicParameterMimeType)) {
 			if (isASiCE(asicParameters)) {
-				mimeTypeBytes = MimeType.ASICE.getMimeTypeString();
+				mimeTypeString = MimeType.ASICE.getMimeTypeString();
 			} else {
-				mimeTypeBytes = MimeType.ASICS.getMimeTypeString();
+				mimeTypeString = MimeType.ASICS.getMimeTypeString();
 			}
 		} else {
-			mimeTypeBytes = asicParameterMimeType;
+			mimeTypeString = asicParameterMimeType;
 		}
-		return mimeTypeBytes;
+		return mimeTypeString;
 	}
 
 	public static boolean isASiCE(final ASiCParameters asicParameters) {
@@ -68,12 +72,11 @@ public final class ASiCUtils {
 		try {
 			is = toSignDocument.openStream();
 			zis = new ZipInputStream(is);
-			ZipEntry entry = zis.getNextEntry();
-			while (entry != null) {
-				if (entry.getName().startsWith("META-INF") && entry.getName().contains("signature") && !entry.getName().contains("Manifest")) {
+			ZipEntry entry;
+			while ((entry = zis.getNextEntry()) != null) {
+				if (isSignature(entry.getName())) {
 					isSignatureTypeCorrect &= entry.getName().endsWith(extension);
 				}
-				entry = zis.getNextEntry();
 			}
 		} catch (IOException e) {
 			throw new DSSException("Unable to analyze the archive content", e);
