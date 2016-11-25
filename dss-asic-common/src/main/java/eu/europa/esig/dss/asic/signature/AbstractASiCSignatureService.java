@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -59,6 +60,42 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 			}
 			currentDetachedDocument = currentDetachedDocument.getNextDocument();
 		} while (currentDetachedDocument != null);
+	}
+
+	protected DSSDocument getDetachedContents(final DocumentValidator subordinatedValidator, DSSDocument originalDocument) {
+		final List<DSSDocument> detachedContents = subordinatedValidator.getDetachedContents();
+		if ((detachedContents == null) || (detachedContents.size() == 0)) {
+
+			final List<DSSDocument> detachedContentsList = new ArrayList<DSSDocument>();
+			DSSDocument currentDocument = originalDocument;
+			do {
+				detachedContentsList.add(currentDocument);
+				subordinatedValidator.setDetachedContents(detachedContentsList);
+				currentDocument = currentDocument.getNextDocument();
+			} while (currentDocument != null);
+		} else {
+			originalDocument = null;
+			DSSDocument lastDocument = null;
+			for (final DSSDocument currentDocument : detachedContents) {
+				if (ASiCUtils.isASiCManifestWithCAdES(currentDocument.getName())) {
+					originalDocument = currentDocument;
+					lastDocument = currentDocument;
+				}
+			}
+			if (originalDocument != null) {
+				detachedContents.remove(originalDocument);
+			}
+			for (final DSSDocument currentDocument : detachedContents) {
+				if (originalDocument == null) {
+					originalDocument = currentDocument;
+				} else {
+					lastDocument.setNextDocument(currentDocument);
+				}
+				lastDocument = currentDocument;
+			}
+
+		}
+		return originalDocument;
 	}
 
 	protected DSSDocument copyDetachedContent(final AbstractSignatureParameters parameters, final DocumentValidator subordinatedValidator) {

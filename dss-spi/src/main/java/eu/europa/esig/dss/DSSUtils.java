@@ -1266,7 +1266,7 @@ public final class DSSUtils {
 		return joinedArray;
 	}
 
-	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
+	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, ASiCContainerType containerType) {
 		StringBuilder finalName = new StringBuilder();
 		String originalName = originalFile.getName();
 
@@ -1291,28 +1291,39 @@ public final class DSSUtils {
 		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
 		finalName.append('.');
 
-		SignatureForm signatureForm = level.getSignatureForm();
-		switch (signatureForm) {
-		case XAdES:
-			finalName.append("xml");
-			break;
-		case CAdES:
-			finalName.append("pkcs7");
-			break;
-		case PAdES:
-			finalName.append("pdf");
-			break;
-		case ASiC_S:
-			finalName.append("asics");
-			break;
-		case ASiC_E:
-			finalName.append("asice");
-			break;
-		default:
-			break;
+		if (containerType != null) {
+			switch (containerType) {
+			case ASiC_S:
+				finalName.append("asics");
+				break;
+			case ASiC_E:
+				finalName.append("asice");
+				break;
+			default:
+				break;
+			}
+		} else {
+			SignatureForm signatureForm = level.getSignatureForm();
+			switch (signatureForm) {
+			case XAdES:
+				finalName.append("xml");
+				break;
+			case CAdES:
+				finalName.append("pkcs7");
+				break;
+			case PAdES:
+				finalName.append("pdf");
+				break;
+			default:
+				break;
+			}
 		}
 
 		return finalName.toString();
+	}
+
+	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
+		return getFinalFileName(originalFile, operation, level, null);
 	}
 
 }

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic;
+package eu.europa.esig.dss;
 
 public enum ASiCContainerType {
 

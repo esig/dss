@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.MimeType;
@@ -27,21 +28,6 @@ public final class ASiCUtils {
 		return signature;
 	}
 
-	public static boolean isXAdES(final String entryName) {
-		final boolean signature = isSignature(entryName) && entryName.endsWith(".xml");
-		return signature;
-	}
-
-	public static boolean isCAdES(final String entryName) {
-		final boolean signature = isSignature(entryName) && entryName.endsWith(".p7s");
-		return signature;
-	}
-
-	public static boolean isASiCManifest(String entryName) {
-		final boolean manifest = entryName.endsWith(".xml") && entryName.startsWith(META_INF_FOLDER + "ASiCManifest");
-		return manifest;
-	}
-
 	public static String getMimeTypeString(final ASiCParameters asicParameters) {
 		final String asicParameterMimeType = asicParameters.getMimeType();
 		String mimeTypeString;
@@ -55,6 +41,20 @@ public final class ASiCUtils {
 			mimeTypeString = asicParameterMimeType;
 		}
 		return mimeTypeString;
+	}
+
+	public static boolean isASiCMimeType(final MimeType asicMimeType) {
+		return MimeType.ASICS.equals(asicMimeType) || MimeType.ASICE.equals(asicMimeType);
+	}
+
+	public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
+		if (MimeType.ASICS == asicMimeType) {
+			return ASiCContainerType.ASiC_S;
+		} else if (MimeType.ASICE == asicMimeType) {
+			return ASiCContainerType.ASiC_E;
+		} else {
+			throw new IllegalArgumentException("Not allowed mimetype " + asicMimeType);
+		}
 	}
 
 	public static boolean isASiCE(final ASiCParameters asicParameters) {
@@ -109,4 +109,31 @@ public final class ASiCUtils {
 		return ((preamble[0] == 'P') && (preamble[1] == 'K'));
 	}
 
+	public static boolean isASiCManifestWithCAdES(String entryName) {
+		final boolean manifest = entryName.startsWith(META_INF_FOLDER + "ASiCManifest") && entryName.endsWith(".xml");
+		return manifest;
+	}
+
+	public static boolean isASiCManifestWithXAdES(String entryName) {
+		final boolean manifest = entryName.equals(META_INF_FOLDER + "manifest.xml");
+		return manifest;
+	}
+
+	public static boolean isXAdES(final String entryName) {
+		final boolean signature = isSignature(entryName) && entryName.endsWith(".xml");
+		return signature;
+	}
+
+	public static boolean isCAdES(final String entryName) {
+		final boolean signature = isSignature(entryName) && (entryName.endsWith(".p7s") || entryName.endsWith(".p7m"));
+		return signature;
+	}
+
+	public static boolean isMetaInfFolder(String entryName) {
+		return entryName.startsWith(META_INF_FOLDER);
+	}
+
+	public static boolean isFolder(String entryName) {
+		return entryName.endsWith("/");
+	}
 }

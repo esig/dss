@@ -27,6 +27,7 @@ package eu.europa.esig.dss.asic;
 public final class ASiCNamespace {
 
 	public static final String ASiC = "http://uri.etsi.org/02918/v1.2.1#";
+	public final static String XADES_SIGNATURES = "asic:XAdESSignatures";
 
 	private ASiCNamespace() {
 	}

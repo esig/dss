@@ -3,8 +3,6 @@ package eu.europa.esig.dss.asic.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -82,7 +80,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		}
 
 		final InMemoryDocument asicSignature = buildASiCContainer(contextToSignDocument, asicContainer, parameters, signature);
-		asicSignature.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+		asicSignature.setName(
+				DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
 	}
@@ -121,54 +120,18 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 					Utils.copy(zis, zos);
 				}
 			}
-			Utils.closeQuietly(zos);
 		} catch (IOException e) {
 			throw new DSSException("Unable to extend the ASiC container", e);
 		} finally {
 			Utils.closeQuietly(zis);
+			Utils.closeQuietly(zos);
 			Utils.closeQuietly(baos);
 		}
 
 		DSSDocument asicSignature = new InMemoryDocument(baos.toByteArray(), null, toExtendDocument.getMimeType());
-		asicSignature.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
+		asicSignature.setName(
+				DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		return asicSignature;
-	}
-
-	private DSSDocument getDetachedContents(final DocumentValidator subordinatedValidator, DSSDocument originalDocument) {
-
-		final List<DSSDocument> detachedContents = subordinatedValidator.getDetachedContents();
-		if ((detachedContents == null) || (detachedContents.size() == 0)) {
-
-			final List<DSSDocument> detachedContentsList = new ArrayList<DSSDocument>();
-			DSSDocument currentDocument = originalDocument;
-			do {
-				detachedContentsList.add(currentDocument);
-				subordinatedValidator.setDetachedContents(detachedContentsList);
-				currentDocument = currentDocument.getNextDocument();
-			} while (currentDocument != null);
-		} else {
-			originalDocument = null;
-			DSSDocument lastDocument = null;
-			for (final DSSDocument currentDocument : detachedContents) {
-				if (ASiCUtils.isASiCManifest(currentDocument.getName())) {
-					originalDocument = currentDocument;
-					lastDocument = currentDocument;
-				}
-			}
-			if (originalDocument != null) {
-				detachedContents.remove(originalDocument);
-			}
-			for (final DSSDocument currentDocument : detachedContents) {
-				if (originalDocument == null) {
-					originalDocument = currentDocument;
-				} else {
-					lastDocument.setNextDocument(currentDocument);
-				}
-				lastDocument = currentDocument;
-			}
-
-		}
-		return originalDocument;
 	}
 
 	private DSSDocument prepare(final DSSDocument detachedDocument, final ASiCWithXAdESSignatureParameters parameters) {
@@ -279,6 +242,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	private XAdESSignatureParameters getXAdESParameters(ASiCWithXAdESSignatureParameters parameters) {
 		XAdESSignatureParameters xadesParameters = parameters;
 		xadesParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		Document rootDocument = DomUtils.createDocument(ASiCNamespace.ASiC, ASiCNamespace.XADES_SIGNATURES);
+		xadesParameters.setRootDocument(rootDocument);
 		return xadesParameters;
 	}
 
