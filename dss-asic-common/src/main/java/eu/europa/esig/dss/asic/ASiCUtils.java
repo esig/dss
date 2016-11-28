@@ -61,6 +61,10 @@ public final class ASiCUtils {
 		return ASiCContainerType.ASiC_E.equals(asicParameters.getContainerType());
 	}
 
+	public static boolean isASiCS(final ASiCParameters asicParameters) {
+		return ASiCContainerType.ASiC_S.equals(asicParameters.getContainerType());
+	}
+
 	public static MimeType getMimeType(ASiCParameters asicParameters) {
 		return isASiCE(asicParameters) ? MimeType.ASICE : MimeType.ASICS;
 	}

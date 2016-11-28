@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.asic.signature;
 
+import java.util.List;
+
 import javax.xml.crypto.dsig.XMLSignature;
 
 import org.w3c.dom.Document;
@@ -34,44 +36,41 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class ASiCEWithCAdESManifestBuilder {
 
-	private final DSSDocument document;
+	private final List<DSSDocument> documents;
 	private final DigestAlgorithm digestAlgorithm;
 	private final String signatureUri;
 
-	public ASiCEWithCAdESManifestBuilder(DSSDocument document, DigestAlgorithm digestAlgorithm, String signatureUri) {
-		this.document = document;
+	public ASiCEWithCAdESManifestBuilder(List<DSSDocument> documents, DigestAlgorithm digestAlgorithm, String signatureUri) {
+		this.documents = documents;
 		this.digestAlgorithm = digestAlgorithm;
 		this.signatureUri = signatureUri;
 	}
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.ASiC, "asic:ASiCManifest");
+		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.ASiC, ASiCNamespace.ASiC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
-		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASiC, "asic:SigReference");
+		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASiC, ASiCNamespace.ASiC_SIG_REFERENCE);
 		sigReferenceDom.setAttribute("URI", signatureUri);
 		sigReferenceDom.setAttribute("MimeType", MimeType.PKCS7.getMimeTypeString());
 
-		DSSDocument currentDetachedDocument = document;
-		do {
-			final String detachedDocumentName = currentDetachedDocument.getName();
-			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, sigReferenceDom, ASiCNamespace.ASiC, "asic:DataObjectReference");
+		for (DSSDocument document : documents) {
+			final String detachedDocumentName = document.getName();
+			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, sigReferenceDom, ASiCNamespace.ASiC,
+					ASiCNamespace.ASiC_DATA_OBJECT_REFERENCE);
 			dataObjectReferenceDom.setAttribute("URI", detachedDocumentName);
 
 			final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestMethod");
 			digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getXmlId());
 
 			final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
-			final byte[] digest = DSSUtils.digest(digestAlgorithm, currentDetachedDocument);
+			final byte[] digest = DSSUtils.digest(digestAlgorithm, document);
 			final String base64Encoded = Utils.toBase64(digest);
 			final Text textNode = documentDom.createTextNode(base64Encoded);
 			digestValueDom.appendChild(textNode);
-
-			currentDetachedDocument = currentDetachedDocument.getNextDocument();
-		} while (currentDetachedDocument != null);
+		}
 
 		return documentDom;
-
 	}
 }

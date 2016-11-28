@@ -1,12 +1,9 @@
 package eu.europa.esig.dss.asic.validation;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +12,9 @@ import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.asic.ASiCContainerExtractor;
+import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -32,18 +30,11 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	private static final String MIME_TYPE = "mimetype";
 	private static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 
-	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
-
-	private DSSDocument mimeTypeDocument;
-
-	private List<DSSDocument> otherDocuments = new ArrayList<DSSDocument>();
+	private ASiCExtractResult extractResult;
 
 	private ASiCContainerType containerType;
 
 	private String zipComment;
-
-	private ContainerAnalysis analysis;
 
 	/**
 	 * Default constructor used with reflexion (see SignedDocumentValidator)
@@ -59,58 +50,11 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	protected void analyseEntries() {
-		loopOnFiles(document);
+		ASiCContainerExtractor extractor = new ASiCContainerExtractor(document);
+		extractResult = extractor.extract();
+
 		extractZipComment(document);
-
 		determineContainerType();
-
-		analysis = new ContainerAnalysis();
-		analysis.setZipFile(true);
-		if (mimeTypeDocument != null) {
-			analysis.setMimetypeFilePresent(true);
-		}
-		analysis.setNbSignatureFiles(signatureDocuments.size());
-		analysis.setNbManifestFiles(manifestDocuments.size());
-		analysis.setNbDataFiles(otherDocuments.size());
-		analysis.setZipComment(zipComment);
-	}
-
-	private void loopOnFiles(DSSDocument container) {
-		ZipInputStream asicsInputStream = null;
-		try {
-			List<String> unsupportedFiles = new ArrayList<String>();
-			asicsInputStream = new ZipInputStream(container.openStream());
-			ZipEntry entry;
-			while ((entry = asicsInputStream.getNextEntry()) != null) {
-				String entryName = entry.getName();
-				if (ASiCUtils.isMetaInfFolder(entryName)) {
-					if (isAcceptedSignature(entryName)) {
-						signatureDocuments.add(getCurrentDocument(entryName, asicsInputStream));
-					} else if (isAcceptedManifest(entryName)) {
-						manifestDocuments.add(getCurrentDocument(entryName, asicsInputStream));
-					} else {
-						unsupportedFiles.add(entryName);
-					}
-				} else if (!ASiCUtils.isFolder(entryName)) {
-					if (ASiCUtils.isMimetype(entryName)) {
-						mimeTypeDocument = getCurrentDocument(entryName, asicsInputStream);
-					} else {
-						otherDocuments.add(getCurrentDocument(entryName, asicsInputStream));
-					}
-				} else {
-					unsupportedFiles.add(entryName);
-				}
-			}
-
-			if (Utils.isCollectionNotEmpty(unsupportedFiles)) {
-				LOG.warn("Unsupported files : " + unsupportedFiles);
-			}
-
-		} catch (IOException e) {
-			throw new DSSException("Unable to analyze the ASiC Container content", e);
-		} finally {
-			Utils.closeQuietly(asicsInputStream);
-		}
 	}
 
 	abstract boolean isAcceptedSignature(String entryName);
@@ -119,6 +63,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	private void determineContainerType() {
 		MimeType mimeTypeFromContainer = document.getMimeType();
+		DSSDocument mimeTypeDocument = extractResult.getMimeTypeDocument();
 		if (ASiCUtils.isASiCMimeType(mimeTypeFromContainer)) {
 			containerType = ASiCUtils.getASiCContainerType(mimeTypeFromContainer);
 		} else if (mimeTypeDocument != null) {
@@ -135,17 +80,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 					containerType = ASiCUtils.getASiCContainerType(mimeTypeFromZipComment);
 				}
 			}
-		}
-	}
-
-	private DSSDocument getCurrentDocument(String filepath, ZipInputStream zis) throws IOException {
-		ByteArrayOutputStream baos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			Utils.copy(zis, baos);
-			return new InMemoryDocument(baos.toByteArray(), filepath);
-		} finally {
-			Utils.closeQuietly(baos);
 		}
 	}
 
@@ -197,20 +131,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		}
 	}
 
-	public List<DSSDocument> getSignatureDocuments() {
-		return signatureDocuments;
-	}
-
-	public List<DSSDocument> getManifestDocuments() {
-		return manifestDocuments;
-	}
-
-	public DSSDocument getMimeTypeDocument() {
-		return mimeTypeDocument;
-	}
-
-	public List<DSSDocument> getOtherDocuments() {
-		return otherDocuments;
+	public ASiCContainerType getContainerType() {
+		return containerType;
 	}
 
 	@Override
@@ -248,6 +170,27 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		}
 
 		return first;
+	}
+
+	protected List<DSSDocument> getSignatureDocuments() {
+		return extractResult.getSignatureDocuments();
+	}
+
+	protected List<DSSDocument> getOtherDocuments() {
+		return extractResult.getOtherDocuments();
+	}
+
+	public ContainerAnalysis getContainerAnalysis() {
+		ContainerAnalysis analysis = new ContainerAnalysis();
+		analysis.setZipFile(true);
+		if (extractResult.getMimeTypeDocument() != null) {
+			analysis.setMimetypeFilePresent(true);
+		}
+		analysis.setNbSignatureFiles(extractResult.getSignatureDocuments().size());
+		analysis.setNbManifestFiles(extractResult.getManifestDocuments().size());
+		analysis.setNbDataFiles(extractResult.getOtherDocuments().size());
+		analysis.setZipComment(zipComment);
+		return analysis;
 	}
 
 	@Override

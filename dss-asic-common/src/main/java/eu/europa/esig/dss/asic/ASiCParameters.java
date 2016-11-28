@@ -23,7 +23,6 @@ package eu.europa.esig.dss.asic;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.ASiCContainerType;
-import eu.europa.esig.dss.DSSDocument;
 
 /**
  * This class regroups the signature parameters related to ASiC form.
@@ -48,11 +47,6 @@ public class ASiCParameters implements Serializable {
 	private ASiCContainerType containerType;
 
 	/**
-	 * This variable contains already enclosed signature(s) when appending a new one.
-	 */
-	private DSSDocument enclosedSignature;
-
-	/**
 	 * This property allows to provide a specific signature file name in the case of an ASiC-E container.
 	 */
 	private String signatureFileName;
@@ -61,21 +55,6 @@ public class ASiCParameters implements Serializable {
 	 * Default constructor
 	 */
 	public ASiCParameters() {
-	}
-
-	/**
-	 * A copy constructor.
-	 *
-	 * @param source
-	 *            {@code ASiCParameters}
-	 */
-	public ASiCParameters(final ASiCParameters source) {
-
-		zipComment = source.zipComment;
-		mimeType = source.mimeType;
-		containerType = source.containerType;
-		enclosedSignature = source.enclosedSignature;
-		signatureFileName = source.signatureFileName;
 	}
 
 	/**
@@ -122,25 +101,6 @@ public class ASiCParameters implements Serializable {
 	}
 
 	/**
-	 * This method allows to set the already existing signature. It is used when re-sign the ASIC-S container.
-	 *
-	 * @param signature
-	 *            extracted from the already existing container.
-	 */
-	public void setEnclosedSignature(final DSSDocument signature) {
-		this.enclosedSignature = signature;
-	}
-
-	/**
-	 * This method returns the already existing signature within a container.
-	 *
-	 * @return {@code DSSDocument} representing a signature
-	 */
-	public DSSDocument getEnclosedSignature() {
-		return enclosedSignature;
-	}
-
-	/**
 	 * This method returns the name of the signature file to use with ASiC-E container.
 	 *
 	 * @return signature file name
@@ -158,4 +118,5 @@ public class ASiCParameters implements Serializable {
 	public void setSignatureFileName(final String signatureFileName) {
 		this.signatureFileName = signatureFileName;
 	}
+
 }

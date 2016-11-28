@@ -3,7 +3,7 @@ package eu.europa.esig.dss.asic.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -19,8 +19,6 @@ import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureParameters> extends AbstractSignatureService<SP> {
 
@@ -42,83 +40,29 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	abstract boolean canBeSigned(DSSDocument toSignDocument, ASiCParameters asicParameters);
 
-	protected void storeSignedFiles(final DSSDocument detachedDocument, final ZipOutputStream outZip) throws IOException {
-		DSSDocument currentDetachedDocument = detachedDocument;
-		do {
+	protected void storeSignedFiles(final List<DSSDocument> detachedDocuments, final ZipOutputStream zos) throws IOException {
+		for (DSSDocument detachedDocument : detachedDocuments) {
 			InputStream is = null;
 			try {
-				final String detachedDocumentName = currentDetachedDocument.getName();
+				final String detachedDocumentName = detachedDocument.getName();
 				final String name = detachedDocumentName != null ? detachedDocumentName : ZIP_ENTRY_DETACHED_FILE;
 				final ZipEntry entryDocument = new ZipEntry(name);
-				outZip.setLevel(ZipEntry.DEFLATED);
+				zos.setLevel(ZipEntry.DEFLATED);
 
-				outZip.putNextEntry(entryDocument);
-				is = currentDetachedDocument.openStream();
-				Utils.copy(is, outZip);
+				zos.putNextEntry(entryDocument);
+				is = detachedDocument.openStream();
+				Utils.copy(is, zos);
 			} finally {
 				Utils.closeQuietly(is);
 			}
-			currentDetachedDocument = currentDetachedDocument.getNextDocument();
-		} while (currentDetachedDocument != null);
-	}
-
-	protected DSSDocument getDetachedContents(final DocumentValidator subordinatedValidator, DSSDocument originalDocument) {
-		final List<DSSDocument> detachedContents = subordinatedValidator.getDetachedContents();
-		if ((detachedContents == null) || (detachedContents.size() == 0)) {
-
-			final List<DSSDocument> detachedContentsList = new ArrayList<DSSDocument>();
-			DSSDocument currentDocument = originalDocument;
-			do {
-				detachedContentsList.add(currentDocument);
-				subordinatedValidator.setDetachedContents(detachedContentsList);
-				currentDocument = currentDocument.getNextDocument();
-			} while (currentDocument != null);
-		} else {
-			originalDocument = null;
-			DSSDocument lastDocument = null;
-			for (final DSSDocument currentDocument : detachedContents) {
-				if (ASiCUtils.isASiCManifestWithCAdES(currentDocument.getName())) {
-					originalDocument = currentDocument;
-					lastDocument = currentDocument;
-				}
-			}
-			if (originalDocument != null) {
-				detachedContents.remove(originalDocument);
-			}
-			for (final DSSDocument currentDocument : detachedContents) {
-				if (originalDocument == null) {
-					originalDocument = currentDocument;
-				} else {
-					lastDocument.setNextDocument(currentDocument);
-				}
-				lastDocument = currentDocument;
-			}
-
 		}
-		return originalDocument;
 	}
 
-	protected DSSDocument copyDetachedContent(final AbstractSignatureParameters parameters, final DocumentValidator subordinatedValidator) {
-		DSSDocument contextToSignDocument = null;
-		DSSDocument currentDetachedDocument = null;
-		final List<DSSDocument> detachedContents = subordinatedValidator.getDetachedContents();
-		for (final DSSDocument detachedDocument : detachedContents) {
-			if (contextToSignDocument == null) {
-				contextToSignDocument = detachedDocument;
-			} else {
-				currentDetachedDocument.setNextDocument(detachedDocument);
-			}
-			currentDetachedDocument = detachedDocument;
-		}
-		parameters.setDetachedContent(contextToSignDocument);
-		return contextToSignDocument;
-	}
-
-	protected void storeMimetype(final ASiCParameters asicParameters, final ZipOutputStream outZip) throws IOException {
+	protected void storeMimetype(final ASiCParameters asicParameters, final ZipOutputStream zos) throws IOException {
 		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes("UTF-8");
 		final ZipEntry entryMimetype = getZipEntryMimeType(mimeTypeBytes);
-		outZip.putNextEntry(entryMimetype);
-		Utils.write(mimeTypeBytes, outZip);
+		zos.putNextEntry(entryMimetype);
+		Utils.write(mimeTypeBytes, zos);
 	}
 
 	private ZipEntry getZipEntryMimeType(final byte[] mimeTypeBytes) {
@@ -149,18 +93,14 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		}
 	}
 
-	protected void storeZipComment(final ASiCParameters asicParameters, final ZipOutputStream zos, final String toSignDocumentName) {
-		if (asicParameters.isZipComment() && Utils.isStringNotEmpty(toSignDocumentName)) {
+	protected void storeZipComment(final ASiCParameters asicParameters, final ZipOutputStream zos) {
+		if (asicParameters.isZipComment()) {
 			zos.setComment("mimetype=" + ASiCUtils.getMimeTypeString(asicParameters));
 		}
 	}
 
-	protected String getSignatureNumber(DSSDocument enclosedSignature) {
-		int signatureNumbre = 0;
-		while (enclosedSignature != null) {
-			signatureNumbre++;
-			enclosedSignature = enclosedSignature.getNextDocument();
-		}
+	protected String getSignatureNumber(Collection<DSSDocument> existingSignatures) {
+		int signatureNumbre = existingSignatures.size() + 1;
 		String sigNumberStr = String.valueOf(signatureNumbre);
 		String zeroPad = "000";
 		return zeroPad.substring(sigNumberStr.length()) + sigNumberStr; // 2 -> 002
@@ -168,13 +108,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	protected InMemoryDocument createASiCContainer(final ASiCParameters asicParameters, final ByteArrayOutputStream baos) {
 		return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
-	}
-
-	protected DocumentValidator getAsicValidator(final DSSDocument toSignDocument) {
-		if (ASiCUtils.isASiCContainer(toSignDocument)) {
-			return SignedDocumentValidator.fromDocument(toSignDocument);
-		}
-		return null;
 	}
 
 }

@@ -16,7 +16,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	public ASiCContainerWithCAdESValidator(final DSSDocument asicContainer) {
 		super(asicContainer);
-		analyseEntries();
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.asic.signature;
 
+import java.util.List;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -27,10 +29,10 @@ public class ASiCEWithXAdESManifestBuilder {
 
 	public static final String MANIFEST_NS = "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0";
 
-	private final DSSDocument document;
+	private final List<DSSDocument> documents;
 
-	public ASiCEWithXAdESManifestBuilder(DSSDocument document) {
-		this.document = document;
+	public ASiCEWithXAdESManifestBuilder(List<DSSDocument> documents) {
+		this.documents = documents;
 	}
 
 	public Document build() {
@@ -42,14 +44,11 @@ public class ASiCEWithXAdESManifestBuilder {
 		rootDom.setAttribute("manifest:full-path", "/");
 		rootDom.setAttribute("manifest:media-type", MimeType.ASICE.getMimeTypeString());
 
-		DSSDocument currentDetachedDocument = document;
-		do {
+		for (DSSDocument document : documents) {
 			Element fileDom = DomUtils.addElement(documentDom, manifestDom, MANIFEST_NS, "manifest:file-entry");
-			fileDom.setAttribute("manifest:full-path", currentDetachedDocument.getName());
-			fileDom.setAttribute("manifest:media-type", currentDetachedDocument.getMimeType().getMimeTypeString());
-
-			currentDetachedDocument = currentDetachedDocument.getNextDocument();
-		} while (currentDetachedDocument != null);
+			fileDom.setAttribute("manifest:full-path", document.getName());
+			fileDom.setAttribute("manifest:media-type", document.getMimeType().getMimeTypeString());
+		}
 
 		return documentDom;
 	}
