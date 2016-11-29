@@ -21,7 +21,6 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCNamespace;
 import eu.europa.esig.dss.asic.ASiCParameters;
@@ -58,11 +57,9 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		List<DSSDocument> documents = new ArrayList<DSSDocument>();
 		if (ASiCUtils.isArchive(toSignDocument)) {
 			// If archive, we copy the documents to be signed
-			ASiCContainerExtractor extractor = new ASiCContainerExtractor(toSignDocument);
-			ASiCExtractResult extractResult = extractor.extract();
-			documents.addAll(extractResult.getOtherDocuments());
-
-			List<DSSDocument> embeddedSignatures = extractResult.getSignatureDocuments();
+			ASiCExtractResult archiveContent = extractCurrentArchive(toSignDocument);
+			documents.addAll(archiveContent.getOtherDocuments());
+			List<DSSDocument> embeddedSignatures = archiveContent.getSignatureDocuments();
 			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(embeddedSignatures) == 1) {
 				existingXAdESSignatureASiCS = embeddedSignatures.get(0);
 			}
@@ -90,11 +87,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		List<DSSDocument> signatures = new ArrayList<DSSDocument>();
 		if (isArchive) {
 			// If archive, we copy the documents to be signed
-			ASiCContainerExtractor extractor = new ASiCContainerExtractor(toSignDocument);
-			ASiCExtractResult extractResult = extractor.extract();
-			documents.addAll(extractResult.getOtherDocuments());
+			ASiCExtractResult archiveContent = extractCurrentArchive(toSignDocument);
+			documents.addAll(archiveContent.getOtherDocuments());
 
-			signatures = extractResult.getSignatureDocuments();
+			signatures = archiveContent.getSignatureDocuments();
 			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(signatures) == 1) {
 				existingXAdESSignatureASiCS = signatures.get(0);
 			}
@@ -138,11 +134,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			throw new DSSException("Unsupported file type");
 		}
 
-		ASiCContainerExtractor extractor = new ASiCContainerExtractor(toExtendDocument);
-		ASiCExtractResult extractResult = extractor.extract();
+		ASiCExtractResult archiveContent = extractCurrentArchive(toExtendDocument);
 
-		List<DSSDocument> otherDocuments = extractResult.getOtherDocuments();
-		List<DSSDocument> signatureDocuments = extractResult.getSignatureDocuments();
+		List<DSSDocument> otherDocuments = archiveContent.getOtherDocuments();
+		List<DSSDocument> signatureDocuments = archiveContent.getSignatureDocuments();
 
 		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
 
@@ -180,10 +175,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		}
 	}
 
-	private void copyArchiveContentWithoutSignatures(DSSDocument toExtendDocument, ZipOutputStream zos) throws IOException {
+	private void copyArchiveContentWithoutSignatures(DSSDocument archiveDocument, ZipOutputStream zos) throws IOException {
 		ZipInputStream zis = null;
 		try {
-			zis = new ZipInputStream(toExtendDocument.openStream());
+			zis = new ZipInputStream(archiveDocument.openStream());
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				final String name = entry.getName();

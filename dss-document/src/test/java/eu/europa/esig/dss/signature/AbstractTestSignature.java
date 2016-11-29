@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -82,7 +83,7 @@ public abstract class AbstractTestSignature {
 
 		logger.info("=================== VALIDATION =================");
 
-		// signedDocument.save("target/xades.xml");
+		// signedDocument.save("target/" + signedDocument.getName());
 
 		try {
 			byte[] byteArray = Utils.toByteArray(signedDocument.openStream());
@@ -214,12 +215,17 @@ public abstract class AbstractTestSignature {
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setPolicyFile(getPolicyFile());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertTrue(Utils.isCollectionNotEmpty(signatures));
 
 		Reports reports = validator.validateDocument();
 		return reports;
+	}
+
+	protected File getPolicyFile() {
+		return null;
 	}
 
 	protected void checkMimeType(DSSDocument signedDocument) {

@@ -154,7 +154,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private DiagnosticData jaxbDiagnosticData; // JAXB object
 
 	// Single policy document to use with all signatures.
-	private File policyDocument;
+	protected File policyDocument;
 
 	// Default configuration with the highest level
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
