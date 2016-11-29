@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.asic;
 
 /**
- * This enum contains all known ASiC version with their namespace.
+ * This class contains data ASiC and its namespace.
  *
  */
 public final class ASiCNamespace {

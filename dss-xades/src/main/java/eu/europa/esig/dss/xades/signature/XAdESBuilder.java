@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.xades.XAdESNamespaces.XAdES;
+import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.math.BigInteger;
@@ -302,12 +302,12 @@ public abstract class XAdESBuilder {
 
 			final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
 			final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
-			DSSXMLUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
+			DomUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
 
 			final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
 			final BigInteger serialNumber = certificate.getSerialNumber();
 			final String serialNumberString = new String(serialNumber.toString());
-			DSSXMLUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
+			DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
 		}
 	}
 

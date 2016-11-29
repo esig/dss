@@ -10,7 +10,7 @@ public class ASiCExtractResult {
 	private DSSDocument mimeTypeDocument;
 	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> otherDocuments = new ArrayList<DSSDocument>();
+	private List<DSSDocument> signedDocuments = new ArrayList<DSSDocument>();
 
 	public DSSDocument getMimeTypeDocument() {
 		return mimeTypeDocument;
@@ -36,12 +36,12 @@ public class ASiCExtractResult {
 		this.manifestDocuments = manifestDocuments;
 	}
 
-	public List<DSSDocument> getOtherDocuments() {
-		return otherDocuments;
+	public List<DSSDocument> getSignedDocuments() {
+		return signedDocuments;
 	}
 
-	public void setOtherDocuments(List<DSSDocument> otherDocuments) {
-		this.otherDocuments = otherDocuments;
+	public void setSignedDocuments(List<DSSDocument> signedDocuments) {
+		this.signedDocuments = signedDocuments;
 	}
 
 }

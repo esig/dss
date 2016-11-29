@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.xades.XAdESNamespaces.XAdES;
+import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.util.Date;
@@ -48,6 +48,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampInclude;
@@ -59,7 +60,6 @@ import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureBuilder;
-import eu.europa.esig.dss.xades.XAdESNamespaces;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 /**
@@ -295,7 +295,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final String base64Encoded = Utils.toBase64(encoded);
 
 		// <ds:X509Certificate>...</ds:X509Certificate>
-		DSSXMLUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_CERTIFICATE, base64Encoded);
+		DomUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_CERTIFICATE, base64Encoded);
 	}
 
 	/**
@@ -389,7 +389,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (Utils.isStringNotBlank(elementName)) {
 
 			final String namespace = dssTransform.getNamespace();
-			DSSXMLUtils.addTextElement(document, transformDom, namespace, elementName, textContent);
+			DomUtils.addTextElement(document, transformDom, namespace, elementName, textContent);
 		} else if (Utils.isStringNotBlank(textContent)) {
 
 			final Document transformContentDoc = DomUtils.buildDOM(textContent);
@@ -480,7 +480,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				final Element signaturePolicyIdDom = DomUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
 				final Element sigPolicyIdDom = DomUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIG_POLICY_ID);
 
-				Element identifierDom = DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);
+				Element identifierDom = DomUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);
 				String qualifier = signaturePolicy.getQualifier();
 				if (Utils.isStringNotBlank(qualifier)) {
 					identifierDom.setAttribute(QUALIFIER, qualifier);
@@ -488,7 +488,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 				String description = signaturePolicy.getDescription();
 				if (Utils.isStringNotEmpty(description)) {
-					DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_DESCRIPTION, description);
+					DomUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_DESCRIPTION, description);
 				}
 
 				if ((signaturePolicy.getDigestAlgorithm() != null) && (signaturePolicy.getDigestValue() != null)) {
@@ -501,7 +501,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 					final byte[] hashValue = signaturePolicy.getDigestValue();
 					final String bas64EncodedHashValue = Utils.toBase64(hashValue);
-					DSSXMLUtils.addTextElement(documentDom, sigPolicyHashDom, XMLNS, DS_DIGEST_VALUE, bas64EncodedHashValue);
+					DomUtils.addTextElement(documentDom, sigPolicyHashDom, XMLNS, DS_DIGEST_VALUE, bas64EncodedHashValue);
 				}
 
 				String spuri = signaturePolicy.getSpuri();
@@ -509,7 +509,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					Element sigPolicyQualifiers = DomUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIGNATURE_POLICY_QUALIFIERS);
 					Element sigPolicyQualifier = DomUtils.addElement(documentDom, sigPolicyQualifiers, XAdES, XADES_SIGNATURE_POLICY_QUALIFIER);
 
-					DSSXMLUtils.addTextElement(documentDom, sigPolicyQualifier, XAdES, XADES_SPURI, spuri);
+					DomUtils.addTextElement(documentDom, sigPolicyQualifier, XAdES, XADES_SPURI, spuri);
 				}
 			}
 		}
@@ -521,7 +521,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void incorporateSigningTime() {
 
 		final Date signingDate = params.bLevel().getSigningDate();
-		final XMLGregorianCalendar xmlGregorianCalendar = DSSXMLUtils.createXMLGregorianCalendar(signingDate);
+		final XMLGregorianCalendar xmlGregorianCalendar = DomUtils.createXMLGregorianCalendar(signingDate);
 		final String xmlSigningTime = xmlGregorianCalendar.toXMLFormat();
 
 		// <SigningTime>2013-11-23T11:22:52Z</SigningTime>
@@ -571,7 +571,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 			final Element mimeTypeDom = DomUtils.addElement(documentDom, dataObjectFormatDom, XAdES, XADES_MIME_TYPE);
 			MimeType dataObjectFormatMimeType = getReferenceMimeType(reference);
-			DSSXMLUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType.getMimeTypeString());
+			DomUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType.getMimeTypeString());
 		}
 
 		incorporateContentTimestamps();
@@ -666,7 +666,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		for (final String signerRole : signerRoles) {
 
 			final Element roleDom = DomUtils.addElement(documentDom, rolesDom, XAdES, roleType);
-			DSSXMLUtils.setTextNode(documentDom, roleDom, signerRole);
+			DomUtils.setTextNode(documentDom, roleDom, signerRole);
 		}
 	}
 
@@ -684,29 +684,29 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 			final String city = signatureProductionPlace.getLocality();
 			if (city != null) {
-				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_CITY, city);
+				DomUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_CITY, city);
 			}
 
 			if (params.isEn319132()) {
 				final String streetAddress = signatureProductionPlace.getStreet();
 				if (streetAddress != null) {
-					DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_STREET_ADDRESS, streetAddress);
+					DomUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_STREET_ADDRESS, streetAddress);
 				}
 			}
 
 			final String stateOrProvince = signatureProductionPlace.getStateOrProvince();
 			if (stateOrProvince != null) {
-				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_STATE_OR_PROVINCE, stateOrProvince);
+				DomUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_STATE_OR_PROVINCE, stateOrProvince);
 			}
 
 			final String postalCode = signatureProductionPlace.getPostalCode();
 			if (postalCode != null) {
-				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_POSTAL_CODE, postalCode);
+				DomUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_POSTAL_CODE, postalCode);
 			}
 
 			final String country = signatureProductionPlace.getCountry();
 			if (country != null) {
-				DSSXMLUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_COUNTRY_NAME, country);
+				DomUtils.addTextElement(documentDom, signatureProductionPlaceDom, XAdES, XADES_COUNTRY_NAME, country);
 			}
 		}
 	}
@@ -736,8 +736,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			final Element commitmentTypeIdDom = DomUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdES, XADES_COMMITMENT_TYPE_ID);
 
 			for (final String commitmentTypeIndication : commitmentTypeIndications) {
-
-				DSSXMLUtils.addTextElement(documentDom, commitmentTypeIdDom, XAdES, XADES_IDENTIFIER, commitmentTypeIndication);
+				DomUtils.addTextElement(documentDom, commitmentTypeIdDom, XAdES, XADES_IDENTIFIER, commitmentTypeIndication);
 			}
 			// final Element objectReferenceDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom,
 			// XADES, "ObjectReference");

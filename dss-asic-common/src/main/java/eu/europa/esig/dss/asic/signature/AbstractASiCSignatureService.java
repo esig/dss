@@ -29,6 +29,8 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	private final static String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 	private final static String ZIP_ENTRY_MIMETYPE = "mimetype";
 
+	private ASiCExtractResult archiveContent = new ASiCExtractResult();
+
 	protected AbstractASiCSignatureService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}
@@ -41,9 +43,25 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	abstract boolean canBeSigned(DSSDocument toSignDocument, ASiCParameters asicParameters);
 
-	protected ASiCExtractResult extractCurrentArchive(DSSDocument archive) {
+	protected void extractCurrentArchive(DSSDocument archive) {
 		ASiCContainerExtractor extractor = new ASiCContainerExtractor(archive);
-		return extractor.extract();
+		archiveContent = extractor.extract();
+	}
+
+	protected List<DSSDocument> getEmbeddedSignatures() {
+		return archiveContent.getSignatureDocuments();
+	}
+
+	protected List<DSSDocument> getEmbeddedManifests() {
+		return archiveContent.getManifestDocuments();
+	}
+
+	protected List<DSSDocument> getEmbeddedSignedDocuments() {
+		return archiveContent.getSignedDocuments();
+	}
+
+	protected DSSDocument getEmbeddedMimetype() {
+		return archiveContent.getMimeTypeDocument();
 	}
 
 	protected void storeSignedFiles(final List<DSSDocument> detachedDocuments, final ZipOutputStream zos) throws IOException {

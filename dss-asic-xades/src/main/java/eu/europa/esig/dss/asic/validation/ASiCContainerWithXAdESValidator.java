@@ -42,7 +42,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 			xadesValidator.setCertificateVerifier(certificateVerifier);
 			xadesValidator.setProcessExecutor(processExecutor);
 			xadesValidator.setPolicyFile(policyDocument);
-			xadesValidator.setDetachedContents(getOtherDocuments());
+			xadesValidator.setDetachedContents(getSignedDocuments());
 			validators.add(xadesValidator);
 		}
 		return validators;

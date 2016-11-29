@@ -22,10 +22,10 @@ package eu.europa.esig.dss.xades.signature;
 
 import static eu.europa.esig.dss.SignatureLevel.XAdES_BASELINE_T;
 import static eu.europa.esig.dss.SignaturePackaging.ENVELOPED;
+import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
+import static eu.europa.esig.dss.XAdESNamespaces.XAdES141;
 import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
-import static eu.europa.esig.dss.xades.XAdESNamespaces.XAdES;
-import static eu.europa.esig.dss.xades.XAdESNamespaces.XAdES141;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.io.IOException;
@@ -135,7 +135,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			final CertificatePool certPool = new CertificatePool();
 			// TODO-Bob (13/07/2014): The XPath query holder can be inherited from the xadesSignature: to be analysed
 			xadesSignature = new XAdESSignature(currentSignatureDom, certPool);
-			xadesSignature.setDetachedContents(params.getDetachedContent());
+			xadesSignature.setDetachedContents(params.getDetachedContents());
 			extendSignatureTag();
 		}
 		final byte[] documentBytes = DSSXMLUtils.serializeNode(documentDom);
@@ -227,7 +227,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 				}
 				final byte[] bytes = certificateToken.getEncoded();
 				final String base64EncodeCertificate = Utils.toBase64(bytes);
-				DSSXMLUtils.addTextElement(documentDom, certificateValuesDom, XAdES, XADES_ENCAPSULATED_X509_CERTIFICATE, base64EncodeCertificate);
+				DomUtils.addTextElement(documentDom, certificateValuesDom, XAdES, XADES_ENCAPSULATED_X509_CERTIFICATE, base64EncodeCertificate);
 			}
 			if (trustAnchorBPPolicy && !trustAnchorIncluded) {
 				LOG.warn("The trust anchor is missing but its inclusion is required by the signature policy!");
@@ -319,7 +319,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
 			final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom, XAdES, XADES_ENCAPSULATED_TIME_STAMP);
 			encapsulatedTimeStampDom.setAttribute(ID, "ETS-" + timestampId);
-			DSSXMLUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
+			DomUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
 		} catch (IOException e) {
 			throw new DSSException("Error during the creation of the XAdES timestamp!", e);
 		}

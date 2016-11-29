@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -47,7 +46,7 @@ public class ASiCContainerExtractor {
 					if (ASiCUtils.isMimetype(entryName)) {
 						result.setMimeTypeDocument(getCurrentDocument(entryName, asicsInputStream));
 					} else {
-						result.getOtherDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getSignedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
 					}
 				} else {
 					unsupportedFiles.add(entryName);
@@ -59,7 +58,7 @@ public class ASiCContainerExtractor {
 			}
 
 		} catch (IOException e) {
-			throw new DSSException("Unable to analyze the ASiC Container content", e);
+			LOG.warn("Unable to parse the container " + e.getMessage());
 		} finally {
 			Utils.closeQuietly(asicsInputStream);
 		}

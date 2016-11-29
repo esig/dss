@@ -79,7 +79,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	protected Node getParentNodeOfSignature() {
 		final String xPathLocationString = params.getXPathLocationString();
 		if (Utils.isStringNotEmpty(xPathLocationString)) {
-			return DSSXMLUtils.getElement(documentDom, xPathLocationString);
+			return DomUtils.getElement(documentDom, xPathLocationString);
 		}
 		return documentDom.getDocumentElement();
 	}

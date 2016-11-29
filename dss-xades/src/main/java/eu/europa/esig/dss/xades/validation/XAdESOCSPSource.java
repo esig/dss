@@ -30,8 +30,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -69,7 +69,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 
 	private void addOCSP(final List<BasicOCSPResp> list, final String xPathQuery) {
 
-		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQuery);
+		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 
 			final Element certEl = (Element) nodeList.item(ii);

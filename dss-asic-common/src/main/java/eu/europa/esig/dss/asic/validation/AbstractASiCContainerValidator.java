@@ -176,8 +176,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		return extractResult.getSignatureDocuments();
 	}
 
-	protected List<DSSDocument> getOtherDocuments() {
-		return extractResult.getOtherDocuments();
+	protected List<DSSDocument> getSignedDocuments() {
+		return extractResult.getSignedDocuments();
+	}
+
+	protected List<DSSDocument> getManifestDocuments() {
+		return extractResult.getManifestDocuments();
 	}
 
 	public ContainerAnalysis getContainerAnalysis() {
@@ -188,7 +192,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		}
 		analysis.setNbSignatureFiles(extractResult.getSignatureDocuments().size());
 		analysis.setNbManifestFiles(extractResult.getManifestDocuments().size());
-		analysis.setNbDataFiles(extractResult.getOtherDocuments().size());
+		analysis.setNbDataFiles(extractResult.getSignedDocuments().size());
 		analysis.setZipComment(zipComment);
 		return analysis;
 	}

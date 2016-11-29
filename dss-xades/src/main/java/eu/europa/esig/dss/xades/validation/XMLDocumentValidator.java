@@ -127,7 +127,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		ensureCertificatePoolInitialized();
 
 		signatures = new ArrayList<AdvancedSignature>();
-		final NodeList signatureNodeList = DSSXMLUtils.getNodeList(rootElement, "//ds:Signature[not(parent::xades:CounterSignature)]");
+		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, "//ds:Signature[not(parent::xades:CounterSignature)]");
 		// final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS,
 		// XPathQueryHolder.XMLE_SIGNATURE);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
@@ -239,13 +239,13 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	private List<Element> getSignatureObjects(Element signatureEl) {
 
-		final NodeList list = DSSXMLUtils.getNodeList(signatureEl, XPathQueryHolder.XPATH_OBJECT);
+		final NodeList list = DomUtils.getNodeList(signatureEl, XPathQueryHolder.XPATH_OBJECT);
 		final List<Element> references = new ArrayList<Element>(list.getLength());
 		for (int ii = 0; ii < list.getLength(); ii++) {
 			final Node node = list.item(ii);
 			final Element element = (Element) node;
 			XPathQueryHolder queryHolder = new XPathQueryHolder();
-			if (DSSXMLUtils.getElement(element, queryHolder.XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES) != null) {
+			if (DomUtils.getElement(element, queryHolder.XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES) != null) {
 				// ignore signed properties
 				continue;
 			}
