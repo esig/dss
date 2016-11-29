@@ -31,6 +31,9 @@ public class Policy implements Serializable {
 
 	private String id;
 
+	/* Qualifier attribute for XAdES Identifier */
+	private String qualifier;
+
 	private String description;
 
 	private DigestAlgorithm digestAlgorithm;
@@ -58,6 +61,24 @@ public class Policy implements Serializable {
 	 */
 	public void setId(final String id) {
 		this.id = id;
+	}
+
+	/**
+	 * Get the identifier qualifier
+	 *
+	 * @return
+	 */
+	public String getQualifier() {
+		return qualifier;
+	}
+
+	/**
+	 * Set the identifier qualifier
+	 *
+	 * @param qualifier
+	 */
+	public void setQualifier(String qualifier) {
+		this.qualifier = qualifier;
 	}
 
 	/**
@@ -188,8 +209,8 @@ public class Policy implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Policy [id=" + id + ", description=" + description + ", digestAlgorithm=" + digestAlgorithm + ", digestValue=" + Arrays.toString(digestValue) + ", spuri=" + spuri
-				+ "]";
+		return "Policy [id=" + id + ", description=" + description + ", digestAlgorithm=" + digestAlgorithm + ", digestValue=" + Arrays.toString(digestValue)
+				+ ", spuri=" + spuri + "]";
 	}
 
 }

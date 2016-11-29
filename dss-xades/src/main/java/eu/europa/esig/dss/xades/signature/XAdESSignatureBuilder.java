@@ -480,7 +480,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				final Element signaturePolicyIdDom = DomUtils.addElement(documentDom, signaturePolicyIdentifierDom, XAdES, XADES_SIGNATURE_POLICY_ID);
 				final Element sigPolicyIdDom = DomUtils.addElement(documentDom, signaturePolicyIdDom, XAdES, XADES_SIG_POLICY_ID);
 
-				DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);
+				Element identifierDom = DSSXMLUtils.addTextElement(documentDom, sigPolicyIdDom, XAdES, XADES_IDENTIFIER, signaturePolicyId);
+				String qualifier = signaturePolicy.getQualifier();
+				if (Utils.isStringNotBlank(qualifier)) {
+					identifierDom.setAttribute(QUALIFIER, qualifier);
+				}
 
 				String description = signaturePolicy.getDescription();
 				if (Utils.isStringNotEmpty(description)) {

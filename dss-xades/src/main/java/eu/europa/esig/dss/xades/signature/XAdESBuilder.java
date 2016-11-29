@@ -138,6 +138,8 @@ public abstract class XAdESBuilder {
 	public static final String TYPE = "Type";
 	public static final String URI = "URI";
 
+	public static final String QUALIFIER = "Qualifier";
+
 	public static final String XMLNS_DS = "xmlns:ds";
 	public static final String XMLNS_XADES = "xmlns:xades";
 

@@ -66,7 +66,8 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		Policy policy = new Policy();
-		policy.setId("1.3.6.1.4.1.10015.1000.3.2.1");
+		policy.setId("urn:oid:1.3.6.1.4.1.10015.1000.3.2.1");
+		policy.setQualifier("OIDAsURN");
 		policy.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		policy.setDigestValue(Utils.fromBase64("gIHiaetEE94gbkCRygQ9WspxUdw="));
 		policy.setSpuri("https://www.sk.ee/repository/bdoc-spec21.pdf");
