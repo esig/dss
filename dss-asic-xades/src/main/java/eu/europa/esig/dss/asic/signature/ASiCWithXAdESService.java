@@ -57,7 +57,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			// If archive, we copy the documents to be signed
 			extractCurrentArchive(toSignDocument);
 			documents.addAll(getEmbeddedSignedDocuments());
-			List<DSSDocument> embeddedSignatures = getEmbeddedSignedDocuments();
+			List<DSSDocument> embeddedSignatures = getEmbeddedSignatures();
 			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(embeddedSignatures) == 1) {
 				existingXAdESSignatureASiCS = embeddedSignatures.get(0);
 			}
@@ -88,7 +88,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			extractCurrentArchive(toSignDocument);
 			documents.addAll(getEmbeddedSignedDocuments());
 
-			signatures = getEmbeddedSignedDocuments();
+			signatures = getEmbeddedSignatures();
 			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(signatures) == 1) {
 				existingXAdESSignatureASiCS = signatures.get(0);
 			}

@@ -1268,7 +1268,13 @@ public final class DSSUtils {
 
 	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, ASiCContainerType containerType) {
 		StringBuilder finalName = new StringBuilder();
-		String originalName = originalFile.getName();
+
+		String originalName = null;
+		if (containerType != null) {
+			originalName = "container";
+		} else {
+			originalName = originalFile.getName();
+		}
 
 		if (Utils.isStringNotEmpty(originalName)) {
 			int dotPosition = originalName.lastIndexOf('.');

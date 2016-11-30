@@ -31,7 +31,7 @@ public class CAdESDoubleSignatureTest {
 
 	@Test
 	public void test() throws Exception {
-		DSSDocument documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);

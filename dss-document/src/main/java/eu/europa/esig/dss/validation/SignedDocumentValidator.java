@@ -52,7 +52,6 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSPKUtils;
-import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
@@ -1532,28 +1531,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			xmlSignCertType.setId(issuerCertificateToken.getDSSId().asXmlId());
 			return xmlSignCertType;
 		}
-		return null;
-	}
-
-	/**
-	 * This method allows to define the sequence of the validator related to a
-	 * document to validate. It's only used with ASiC-E container.
-	 *
-	 * @param validator
-	 *            {@code SignedDocumentValidator} corresponding to the next
-	 *            signature with in the contained.
-	 */
-	public void setNextValidator(final DocumentValidator validator) {
-		throw new DSSUnsupportedOperationException("This method is not applicable in this context!");
-	}
-
-	@Override
-	public DocumentValidator getNextValidator() {
-		return null;
-	}
-
-	@Override
-	public DocumentValidator getSubordinatedValidator() {
 		return null;
 	}
 

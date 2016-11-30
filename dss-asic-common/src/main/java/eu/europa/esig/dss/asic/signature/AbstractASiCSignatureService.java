@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
@@ -98,23 +97,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		crc.update(mimeTypeBytes);
 		entryMimetype.setCrc(crc.getValue());
 		return entryMimetype;
-	}
-
-	protected void copyZipContent(DSSDocument toSignAsicContainer, ZipOutputStream zos) throws IOException {
-		InputStream is = null;
-		ZipInputStream zis = null;
-		try {
-			is = toSignAsicContainer.openStream();
-			zis = new ZipInputStream(is);
-			ZipEntry entry = null;
-			while ((entry = zis.getNextEntry()) != null) {
-				zos.putNextEntry(entry);
-				Utils.copy(zis, zos);
-			}
-		} finally {
-			Utils.closeQuietly(zis);
-			Utils.closeQuietly(is);
-		}
 	}
 
 	protected void storeZipComment(final ASiCParameters asicParameters, final ZipOutputStream zos) {

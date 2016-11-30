@@ -166,19 +166,6 @@ public interface DocumentValidator {
 	Reports validateDocument(final ValidationPolicy validationPolicy);
 
 	/**
-	 * This method returns always {@code null} in case of the no ASiC containers.
-	 *
-	 * @return {@code SignedDocumentValidator} which corresponds to the next signature found within an ASiC-E container.
-	 *         {@code null} if there is no more signatures.
-	 */
-	DocumentValidator getNextValidator();
-
-	/**
-	 * @return
-	 */
-	DocumentValidator getSubordinatedValidator();
-
-	/**
 	 * This method returns the signed document without his signature
 	 *
 	 * @param signatureId
@@ -187,4 +174,5 @@ public interface DocumentValidator {
 	 *             the exception is thrown when the removal is not possible.
 	 */
 	DSSDocument getOriginalDocument(final String signatureId) throws DSSException;
+
 }

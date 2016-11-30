@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.signature.asice;
+package eu.europa.esig.dss.asic.signature.asics;
 
 import java.util.Date;
 
@@ -30,8 +30,8 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
-import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -39,10 +39,10 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractTestSignature {
+public class ASiCSCAdESLevelBSpecialCharInFilenameTest extends AbstractTestSignature {
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
-	private ASiCWithXAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
+	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private MockPrivateKeyEntry privateKeyEntry;
 
@@ -53,30 +53,30 @@ public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractTestSigna
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
-		signatureParameters = new ASiCWithXAdESSignatureParameters();
+		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new ASiCWithXAdESService(certificateVerifier);
+		service = new ASiCWithCAdESService(certificateVerifier);
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
+	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
+		return MimeType.ASICS;
 	}
 
 	@Override

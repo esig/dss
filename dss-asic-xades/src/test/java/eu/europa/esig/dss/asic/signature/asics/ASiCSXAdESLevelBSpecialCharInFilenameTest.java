@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.signature.asice;
+package eu.europa.esig.dss.asic.signature.asics;
 
 import java.util.Date;
 
@@ -39,7 +39,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractTestSignature {
+public class ASiCSXAdESLevelBSpecialCharInFilenameTest extends AbstractTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -58,7 +58,7 @@ public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractTestSigna
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCWithXAdESService(certificateVerifier);
@@ -76,7 +76,7 @@ public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractTestSigna
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
+		return MimeType.ASICS;
 	}
 
 	@Override
